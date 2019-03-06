@@ -1,0 +1,5 @@
+- Only use 3 type of data
+  + Scene gameobject : drag-drop on scene
+  + Scriptable Object: drag-drop to DataController, get from Controllers.Get<TypeName>()
+  + Game, Player dynamic data: use Components.Get<TypeName>() or Components.GetMap<TypeName>()
+- Careful use struct with Scriptable Object (error serialize name)
