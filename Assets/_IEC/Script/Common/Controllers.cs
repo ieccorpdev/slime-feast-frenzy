@@ -20,7 +20,7 @@ public static class Controllers {
 		var type = typeof(T);
 		if(m_Dict.ContainsKey(type))
 		{
-			return (T)m_Dict[type];
+			return m_Dict[type] as T;
 		}
 		return null;
 	}

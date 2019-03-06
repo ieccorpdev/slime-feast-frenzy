@@ -10,15 +10,19 @@ namespace IEC
         [SerializeField]
         EventsList m_EventsList;
 
+        [SerializeField]
+        EventObject[] m_DefaultOrderEvents;
+
+        [SerializeField]
+        EventListeners[] m_CustomOrderEvents;
+
         IEventListener[] m_Listeners;
         IEventAwake[] m_AwakeEvents;
         IEventStart[] m_StartEvents;
         IEventUpdate[] m_UpdateEvents;
         IEventFixedUpdate[] m_FixedUpdateEvents;
 
-        public static long UpdateStep { get; private set; }
-
-        Dictionary<int, List<Action<EventParam>>> m_DictEvents = new Dictionary<int, List<Action<EventParam>>>();
+        Dictionary<int, List<IEventListener>> m_DictEvents = new Dictionary<int, List<IEventListener>>();
 
         void Awake()
         {
@@ -26,7 +30,6 @@ namespace IEC
             //ServicesManager.Instance.InitServices(true, false, false);
 
             CameraHelper.SetMainCam(Camera.main);
-            UpdateStep = 0;
 
             m_Listeners = GetEventArray<IEventListener>();
             m_AwakeEvents = GetEventArray<IEventAwake>();
@@ -34,10 +37,11 @@ namespace IEC
             m_UpdateEvents = GetEventArray<IEventUpdate>();
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
 
+            SetDefaultEventListenersOrder();
+            SetCustomEventListenersOrder();
+
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
-
-            SetListenEvents();
 
             for (int i = 0; i < m_AwakeEvents.Length; i++)
             {
@@ -99,7 +103,6 @@ namespace IEC
 
         void FixedUpdate()
         {
-            UpdateStep++;
             float deltaTime = Time.fixedDeltaTime;
             for (int i = 0; i < m_FixedUpdateEvents.Length; i++)
             {
@@ -110,17 +113,6 @@ namespace IEC
             }
         }
 
-        // public void RaiseEvent(GameEvent gameEvent, object sender, params object[] param)
-        // {
-        //     for (int i = 0; i < m_Listeners.Length; i++)
-        //     {
-        //         if (m_Listeners[i].IsActive())
-        //         {
-        //             m_Listeners[i].OnEventRaise(gameEvent, sender, param);
-        //         }
-        //     }
-        // }
-
         public void RaiseEvent(EventObject gameEvent, EventParam param)
         {
             var eventKey = gameEvent.GetInstanceID();
@@ -130,35 +122,8 @@ namespace IEC
                 var list = m_DictEvents[eventKey];
                 for (int i = 0; i < list.Count; i++)
                 {
-                    list[i].Invoke(param);
+                    list[i].OnEventRaise(gameEvent, m_EventsList, param);
                 }
-            }
-        }
-
-        public void ListenEvent(EventObject gameEvent, Action<EventParam> onEvent)
-        {
-            var eventKey = gameEvent.GetInstanceID();
-
-            if (!m_DictEvents.ContainsKey(eventKey))
-            {
-                m_DictEvents[eventKey] = new List<Action<EventParam>>();
-            }
-            m_DictEvents[eventKey].Add(onEvent);
-        }
-
-        public void ListenEvent(EventObject[] gameEvents, Action<EventParam> onEvent)
-        {
-            for (int i = 0; i < gameEvents.Length; i++)
-            {
-                ListenEvent(gameEvents[i], onEvent);
-            }
-        }
-
-        public void ListenEvent(Action<EventParam> onEvent, params EventObject[] gameEvents)
-        {
-            for (int i = 0; i < gameEvents.Length; i++)
-            {
-                ListenEvent(gameEvents[i], onEvent);
             }
         }
 
@@ -189,16 +154,37 @@ namespace IEC
             }
         }
 
-        void SetListenEvents()
+        void SetDefaultEventListenersOrder()
         {
-            for (int i = 0; i < m_Listeners.Length; i++)
+            var defaultOrderList = new List<IEventListener>(m_Listeners);
+            for (int i = 0; i < m_DefaultOrderEvents.Length; i++)
             {
-                if (m_Listeners[i].IsActive())
-                {
-                    m_Listeners[i].SetListenEvents(this, m_EventsList);
-                }
+                int eventKey = m_DefaultOrderEvents[i].GetInstanceID();
+                m_DictEvents[eventKey] = defaultOrderList;
             }
         }
+
+        void SetCustomEventListenersOrder()
+        {
+            for(int i = 0; i < m_CustomOrderEvents.Length; i++)
+            {
+                int eventKey = m_CustomOrderEvents[i].gameEvent.GetInstanceID();
+                var list = new List<IEventListener>();
+                var listeners = m_CustomOrderEvents[i].listenersBehaviour;
+                for(int k = 0; k < listeners.Length; k++)
+                {
+                    list.Add(listeners[k] as IEventListener);
+                }
+                m_DictEvents[eventKey] = list;
+            }
+        }
+    }
+
+    [Serializable]
+    public struct EventListeners
+    {
+        public EventObject gameEvent;
+        public MonoBehaviour[] listenersBehaviour;
     }
 
     public struct EventParam

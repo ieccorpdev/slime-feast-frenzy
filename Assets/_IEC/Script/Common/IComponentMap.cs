@@ -11,5 +11,7 @@ namespace IEC
         bool IsContain(int objID);
 
         void Remove(int objID);
+
+        void RemoveAll();
     }
 }

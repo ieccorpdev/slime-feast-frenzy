@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ComponentMap<TComponent> : IComponentMap where TComponent : new()
+    public class ComponentMap<TComponent> : IComponentMap where TComponent : class, new()
     {
 		private Dictionary<int, TComponent> m_Map = new Dictionary<int, TComponent>();
 
@@ -88,6 +88,21 @@ namespace IEC
 				m_IsListChanged = true;
 			}
 		}
+
+        public void RemoveAll()
+        {
+            var list = GetListObjID();
+            int count = list.Count;
+            for(int i = 0; i < count; i++)
+            {
+                int objID = list[i];
+                m_Pool.Free(m_Map[objID]);
+            }
+
+            m_Map.Clear();
+            m_IsArrayChanged = true;
+            m_IsListChanged = true;
+        }
 
     }
 }
