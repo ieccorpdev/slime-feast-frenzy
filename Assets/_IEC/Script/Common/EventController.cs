@@ -168,14 +168,18 @@ namespace IEC
         {
             for(int i = 0; i < m_CustomOrderEvents.Length; i++)
             {
-                int eventKey = m_CustomOrderEvents[i].gameEvent.GetInstanceID();
                 var list = new List<IEventListener>();
                 var listeners = m_CustomOrderEvents[i].listenersBehaviour;
                 for(int k = 0; k < listeners.Length; k++)
                 {
                     list.Add(listeners[k] as IEventListener);
                 }
-                m_DictEvents[eventKey] = list;
+
+                for(int k = 0; k < m_CustomOrderEvents[i].gameEvents.Length; k++)
+                {
+                    int eventKey = m_CustomOrderEvents[i].gameEvents[k].GetInstanceID();
+                    m_DictEvents[eventKey] = list;
+                }
             }
         }
     }
@@ -183,7 +187,7 @@ namespace IEC
     [Serializable]
     public struct EventListeners
     {
-        public EventObject gameEvent;
+        public EventObject[] gameEvents;
         public MonoBehaviour[] listenersBehaviour;
     }
 
