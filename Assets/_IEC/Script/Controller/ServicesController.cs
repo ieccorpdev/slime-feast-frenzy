@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Root;
+using IEC.Component;
 
 namespace IEC
 {
@@ -28,8 +29,6 @@ namespace IEC
         Action m_OnRewardSkip = null;
         AdsState m_RewardState = AdsState.None;
         enum AdsState { None, Finish, Skip };
-
-        public static bool IsNoAds = false;
 
         #endregion
 
@@ -259,7 +258,7 @@ namespace IEC
 
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null)
         {
-            if (m_Config.IsNoAds || IsNoAds)
+            if (m_Config.IsNoAds || Components.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {
@@ -288,7 +287,7 @@ namespace IEC
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
         {
-            if (m_Config.IsNoAds || IsNoAds)
+            if (m_Config.IsNoAds || Components.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {
