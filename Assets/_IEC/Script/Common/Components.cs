@@ -9,8 +9,8 @@ namespace IEC
     {
         static List<IComponentMap> s_ListMap = new List<IComponentMap>();
 
-        static Dictionary<Type, Object> m_Dict = new Dictionary<Type, object>();
-        static Dictionary<Type, Object> m_DictMap = new Dictionary<Type, object>();
+        static Dictionary<Type, object> m_Dict = new Dictionary<Type, object>();
+        static Dictionary<Type, object> m_DictMap = new Dictionary<Type, object>();
 
         static Components()
         {
@@ -33,9 +33,9 @@ namespace IEC
             {
                 var map = new ComponentMap<T>();
                 s_ListMap.Add(map);
-                m_Dict[type] = map;
+                m_DictMap[type] = map;
             }
-            return m_Dict[type] as ComponentMap<T>;
+            return m_DictMap[type] as ComponentMap<T>;
         }
 
         static ComponentMap<T> NewMap<T>(ComponentMap<T> map) where T : class, new()
