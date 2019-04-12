@@ -189,7 +189,14 @@ namespace IEC
             m_Time = new TimeModule();
 
             m_DataNormal = new PlayerPrefsModule(m_Json);
-            m_DataSecure = new SecurePlayerPrefsModule(m_Json);
+            if (Application.isEditor)
+            {
+                m_DataSecure = new SecurePlayerPrefsUtilModule(m_Json);
+            }
+            else
+            {
+                m_DataSecure = new SecurePlayerPrefsModule(m_Json);
+            }
 
             m_Location = new UserLocationIP(this, m_Json);
 
