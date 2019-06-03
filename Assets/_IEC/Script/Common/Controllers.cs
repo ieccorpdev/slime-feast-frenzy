@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public static class Controllers {
 
-	static Dictionary<Type, Object> m_Dict = new Dictionary<Type, object>();
+	static Dictionary<Type, object> m_Dict = new Dictionary<Type, object>();
 
 	public static void Add<T>(T controller) where T : class
 	{

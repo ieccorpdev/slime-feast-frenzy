@@ -27,7 +27,7 @@ namespace IEC
         void Awake()
         {
             LocateController();
-            //ServicesManager.Instance.InitServices(true, false, false);
+            Controllers.Get<ServicesController>().InitServices(true, false, false);
 
             CameraHelper.SetMainCam(Camera.main);
 

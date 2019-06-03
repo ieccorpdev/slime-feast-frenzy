@@ -16,6 +16,12 @@ namespace IEC
         {
         }
 
+        public static void Set<T>(T t) where T : class, new()
+        {
+            var type = typeof(T);
+            m_Dict[type] = t;
+        }
+
         public static T Get<T>() where T : class, new()
         {
             var type = typeof(T);
