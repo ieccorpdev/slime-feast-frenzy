@@ -7,11 +7,10 @@ namespace IEC
 {
     public class EventController : MonoBehaviour
     {
-        [SerializeField]
-        EventsList m_EventsList;
+        private static EventController s_Instance;
 
         [SerializeField]
-        EventObject[] m_DefaultOrderEvents;
+        EventsList m_EventsList;
 
         [SerializeField]
         EventListeners[] m_CustomOrderEvents;
@@ -21,11 +20,12 @@ namespace IEC
         IEventStart[] m_StartEvents;
         IEventUpdate[] m_UpdateEvents;
         IEventFixedUpdate[] m_FixedUpdateEvents;
-
+        
         Dictionary<int, List<IEventListener>> m_DictEvents = new Dictionary<int, List<IEventListener>>();
 
         void Awake()
         {
+            s_Instance = this;
             LocateController();
             Controllers.Get<ServicesController>().InitServices(true, false, false);
 
@@ -36,8 +36,7 @@ namespace IEC
             m_StartEvents = GetEventArray<IEventStart>();
             m_UpdateEvents = GetEventArray<IEventUpdate>();
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
-
-            SetDefaultEventListenersOrder();
+            
             SetCustomEventListenersOrder();
 
             Application.targetFrameRate = 60;
@@ -113,7 +112,7 @@ namespace IEC
             }
         }
 
-        public void RaiseEvent(EventObject gameEvent, EventParam param)
+        void RaiseEventLocal(EventObject gameEvent, EventParam param)
         {
             var eventKey = gameEvent.GetInstanceID();
 
@@ -124,6 +123,33 @@ namespace IEC
                 {
                     list[i].OnEventRaise(gameEvent, m_EventsList, param);
                 }
+            }
+            else
+            {
+                for (int i = 0; i < m_Listeners.Length; i++)
+                {
+                    m_Listeners[i].OnEventRaise(gameEvent, m_EventsList, param);
+                }
+            }
+        }
+
+        public static void RaiseEvent(EventObject gameEvent, EventParam param)
+        {
+            if (s_Instance != null)
+            {
+                s_Instance.RaiseEventLocal(gameEvent, param);
+            }
+        }
+
+        public static EventsList GetList()
+        {
+            if (s_Instance != null)
+            {
+                return s_Instance.m_EventsList;
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -151,16 +177,6 @@ namespace IEC
                         controller.LocateController();
                     }
                 }
-            }
-        }
-
-        void SetDefaultEventListenersOrder()
-        {
-            var defaultOrderList = new List<IEventListener>(m_Listeners);
-            for (int i = 0; i < m_DefaultOrderEvents.Length; i++)
-            {
-                int eventKey = m_DefaultOrderEvents[i].GetInstanceID();
-                m_DictEvents[eventKey] = defaultOrderList;
             }
         }
 

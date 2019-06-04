@@ -20,11 +20,12 @@ namespace IEC
             {
                 button.onClick.AddListener(() =>
                 {
-                    var controller = Controllers.Get<EventController>();
                     var events = Controllers.Get<EventsList>();
-                    var param = new EventParam();
-                    param.sender = gameObject;
-                    controller.RaiseEvent(m_EventObj, param);
+                    var param = new EventParam
+                    {
+                        sender = gameObject
+                    };
+                    EventController.RaiseEvent(m_EventObj, param);
                 });
             }
         }

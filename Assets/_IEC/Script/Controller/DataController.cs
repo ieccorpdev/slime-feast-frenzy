@@ -6,12 +6,12 @@ namespace IEC
     public class DataController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         [SerializeField]
-        _EmptyData m_EmptyData;
+        private GlobalDataScope m_Data;
 
         public void LocateController()
         {
             Controllers.Add(this);
-            Controllers.Add(m_EmptyData);
+            Controllers.Add(m_Data);
         }
 
         public bool IsActive()
@@ -34,7 +34,9 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            Controllers.Get<EventController>().RaiseEvent(Controllers.Get<EventsList>().NONE, new EventParam());
+            EventController.RaiseEvent(EventController.GetList().NONE, new EventParam());
+            int emptyData = Controllers.Get<GlobalDataScope>().emptyData.data;
+            Debug.Log("emptyData : " + emptyData);
         }
     }
 }
