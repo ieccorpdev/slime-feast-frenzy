@@ -24,10 +24,6 @@ namespace IEC
         Action m_OnFullAdsFinish = null;
         Action m_OnFullAdsSkip = null;
         AdsState m_FullAdsState = AdsState.None;
-
-        Action m_OnRewardFinish = null;
-        Action m_OnRewardSkip = null;
-        AdsState m_RewardState = AdsState.None;
         enum AdsState { None, Finish, Skip };
 
         #endregion
@@ -78,25 +74,6 @@ namespace IEC
                 {
                     m_OnFullAdsSkip();
                     m_OnFullAdsSkip = null;
-                }
-            }
-
-            if (m_RewardState == AdsState.Finish)
-            {
-                m_RewardState = AdsState.None;
-                if (m_OnRewardFinish != null)
-                {
-                    m_OnRewardFinish.Invoke();
-                    m_OnRewardFinish = null;
-                }
-            }
-            else if (m_RewardState == AdsState.Skip)
-            {
-                m_RewardState = AdsState.None;
-                if (m_OnRewardSkip != null)
-                {
-                    m_OnRewardSkip.Invoke();
-                    m_OnRewardSkip = null;
                 }
             }
         }
@@ -172,6 +149,8 @@ namespace IEC
                 );
             });
             m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
+
+            EventController.RaiseEvent(EventController.GetList().services.INIT_DONE, new EventParam(this));
         }
 
         void Init()
@@ -230,13 +209,6 @@ namespace IEC
             m_OnFullAdsSkip = skipCallback;
         }
 
-        void SetWaitRewardClose(Action closeCallback, Action skipCallback)
-        {
-            m_RewardState = AdsState.None;
-            m_OnRewardFinish = closeCallback;
-            m_OnRewardSkip = skipCallback;
-        }
-
         void OnFullAdsFinish()
         {
             m_FullAdsState = AdsState.Finish;
@@ -247,23 +219,13 @@ namespace IEC
             m_FullAdsState = AdsState.Skip;
         }
 
-        void OnRewardFinish()
-        {
-            m_RewardState = AdsState.Finish;
-        }
-
-        void OnRewardSkip()
-        {
-            m_RewardState = AdsState.Skip;
-        }
-
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
             m_Analytic.PushEvent(eventName, value, param);
             m_FirebaseAnalytic.PushEvent(eventName, value, param);
         }
 
-        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null)
+        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
             if (m_Config.IsNoAds || Components.Get<PlayerSecret>().isNoAds)
             {
@@ -273,14 +235,19 @@ namespace IEC
                 }
                 return;
             }
+
+            Debug.Log("Show full ads");
+
             if (m_AppodealModule.IsFullAdsLoaded())
             {
+                Analytic().PushEvent("Ads-Full");
+                lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+                SetWaitFullAdsClose(closeCallback, cantShowCallback);
+                m_AppodealModule.ShowFullAds(OnFullAdsFinish);
                 if (canShowCallback != null)
                 {
                     canShowCallback.Invoke();
                 }
-                lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
-                m_AppodealModule.ShowFullAds(closeCallback);
             }
             else
             {
@@ -289,7 +256,6 @@ namespace IEC
                     closeCallback.Invoke();
                 }
             }
-            Debug.Log("Show full ads");
         }
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
@@ -316,11 +282,21 @@ namespace IEC
             return false;
         }
 
-        public void ShowReward(Action completeCallback = null, Action skipCallback = null)
+        public void ShowRewardAds(Action closeCallback, Action skipCallback = null)
         {
+            Debug.Log("Show reward ads");
             if (m_AppodealModule.IsRewardAdsLoaded())
             {
-                m_AppodealModule.ShowRewardAds(completeCallback, skipCallback);
+                SetWaitFullAdsClose(closeCallback, skipCallback);
+                Analytic().PushEvent("Ads-Reward");
+                m_AppodealModule.ShowRewardAds(OnFullAdsFinish, OnFullAdsSkip);
+            }
+            else
+            {
+                if (skipCallback != null)
+                {
+                    skipCallback();
+                }
             }
         }
 

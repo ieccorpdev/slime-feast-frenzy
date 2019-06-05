@@ -27,8 +27,6 @@ namespace IEC
         {
             s_Instance = this;
             LocateController();
-            Controllers.Get<ServicesController>().InitServices(true, false, false);
-
             CameraHelper.SetMainCam(Camera.main);
 
             m_Listeners = GetEventArray<IEventListener>();
@@ -36,7 +34,9 @@ namespace IEC
             m_StartEvents = GetEventArray<IEventStart>();
             m_UpdateEvents = GetEventArray<IEventUpdate>();
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
-            
+
+            Controllers.Get<ServicesController>().InitServices(true, false, false);
+
             SetCustomEventListenersOrder();
 
             Application.targetFrameRate = 60;

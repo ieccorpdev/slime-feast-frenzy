@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/Event/Events List")]
 public class EventsList : ScriptableObject
 {
-	public EventObject NONE;
+    public EventsService services;
+    public EventObject NONE;
 }
         
