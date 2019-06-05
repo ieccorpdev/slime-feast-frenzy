@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace IEC.Component
+namespace IEC
 {
     public class Player
     {
