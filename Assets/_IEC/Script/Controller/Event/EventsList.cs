@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/Event/Events List")]
-public class EventsList : ScriptableObject
+namespace IEC
 {
-    public EventsService services;
-    public EventObject NONE;
+    [CreateAssetMenu(menuName = "Game/Event/Events List")]
+    public class EventsList : ScriptableObject
+    {
+        public EventsService services;
+        public EventObject NONE;
+    }
 }
         
