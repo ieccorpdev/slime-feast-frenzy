@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿//#define FIREBASE_REMOTE
+#if FIREBASE_REMOTE
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.RemoteConfig;
@@ -10,8 +12,7 @@ namespace Root
         public RemoteConfigs remoteConfigs;
         IDataService data;
 
-
-        public void Init(IDataService dataService, RemoteConfigs configs)
+        public FirebaseRemoteModule(IDataService dataService, RemoteConfigs configs)
         {
             if (isInit)
             {
@@ -115,3 +116,4 @@ namespace Root
         }
     }
 }
+#endif

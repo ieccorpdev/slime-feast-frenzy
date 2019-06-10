@@ -9,8 +9,5 @@ namespace Root
         bool GetBoolValue(RemoteConfig config);
         int GetIntValue(RemoteConfig config);
         string GetStringValue(RemoteConfig config);
-        void Init(IDataService dataService, RemoteConfigs configs);
     }
-
-
 }
