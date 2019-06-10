@@ -37,12 +37,13 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void OnEventRaise(EventObject gameEvent, EventsList events, EventParam param)
+        public void OnEventRaise(string gameEvent, EventParam param)
         {
-            if (gameEvent == events.NONE)
+            switch (gameEvent)
             {
-                //handle event
-                Debug.Log("event none");
+                case EventList.NONE:
+                    Debug.Log("event none");
+                    break;
             }
         }
 
@@ -149,7 +150,7 @@ namespace IEC
             });
             m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
 
-            EventController.RaiseEvent(EventController.GetList().services.INIT_DONE, new EventParam(this));
+            EventController.RaiseEvent(EventList.Service.INIT_DONE, new EventParam(this));
         }
 
         void Init()
@@ -226,7 +227,7 @@ namespace IEC
 
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
-            if (m_Config.IsNoAds || Components.Get<PlayerSecret>().isNoAds)
+            if (m_Config.IsNoAds || Dynamics.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {
@@ -259,7 +260,7 @@ namespace IEC
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
         {
-            if (m_Config.IsNoAds || Components.Get<PlayerSecret>().isNoAds)
+            if (m_Config.IsNoAds || Dynamics.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {

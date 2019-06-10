@@ -19,12 +19,13 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void OnEventRaise(EventObject gameEvent, EventsList events, EventParam param)
+        public void OnEventRaise(string gameEvent, EventParam param)
         {
-            if (gameEvent == events.NONE)
+            switch (gameEvent)
             {
-                //handle event
-                Debug.Log("event none");
+                case EventList.NONE:
+                    Debug.Log("event none");
+                    break;
             }
         }
 
@@ -34,8 +35,9 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventController.GetList().NONE, new EventParam());
+            EventController.RaiseEvent(EventList.NONE);
             int emptyData = Controllers.Get<GlobalDataScope>().emptyData.data;
+            
             Debug.Log("emptyData : " + emptyData);
         }
     }

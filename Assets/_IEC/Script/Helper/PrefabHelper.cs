@@ -24,6 +24,11 @@ public class PrefabHelper
         prefab.CreatePool(initNumber);
     }
 
+    public static T Clone<T>(GameObject prefab)
+    {
+        return Clone(prefab).GetComponent<T>();
+    }
+
     public static GameObject Clone(GameObject prefab)
     {
         return prefab.Spawn();

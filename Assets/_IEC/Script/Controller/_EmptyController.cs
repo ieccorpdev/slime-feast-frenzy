@@ -14,12 +14,13 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void OnEventRaise(EventObject gameEvent, EventsList events, EventParam param)
+        public void OnEventRaise(string gameEvent, EventParam param)
         {
-            if(gameEvent == events.NONE)
+            switch (gameEvent)
             {
-                //handle event
-                Debug.Log("event none");
+                case EventList.NONE:
+                    Debug.Log("event none");
+                    break;
             }
         }
 

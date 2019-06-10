@@ -5,6 +5,6 @@ namespace IEC
 {
     public interface IEventListener : IEventBehaviour
     {
-        void OnEventRaise(EventObject gameEvent, EventsList events, EventParam param);
+        void OnEventRaise(string gameEvent, EventParam param);
     }
 }

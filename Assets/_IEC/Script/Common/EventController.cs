@@ -9,19 +9,13 @@ namespace IEC
     {
         private static EventController s_Instance;
 
-        [SerializeField]
-        EventsList m_EventsList;
-
-        [SerializeField]
-        EventListeners[] m_CustomOrderEvents;
+        [SerializeField] EventListeners[] m_CustomOrderEvents;
 
         IEventListener[] m_Listeners;
         IEventAwake[] m_AwakeEvents;
         IEventStart[] m_StartEvents;
         IEventUpdate[] m_UpdateEvents;
         IEventFixedUpdate[] m_FixedUpdateEvents;
-        
-        Dictionary<int, List<IEventListener>> m_DictEvents = new Dictionary<int, List<IEventListener>>();
 
         void Awake()
         {
@@ -37,8 +31,6 @@ namespace IEC
 
             Controllers.Get<ServicesController>().InitServices(true, false, false);
 
-            SetCustomEventListenersOrder();
-
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
 
@@ -53,20 +45,20 @@ namespace IEC
 
         void Start()
         {
-            for (int i = 0; i < m_StartEvents.Length; i++)
+            foreach (var eventStart in m_StartEvents)
             {
-                if (m_StartEvents[i].IsActive())
+                if (eventStart.IsActive())
                 {
-                    m_StartEvents[i].BehaviourStart();
+                    eventStart.BehaviourStart();
                 }
             }
         }
 
-        T[] GetEventArray<T>() where T : IEventBehaviour
+        private T[] GetEventArray<T>() where T : IEventBehaviour
         {
-            List<T> listeners = new List<T>();
+            var listeners = new List<T>();
 
-            for (int i = 0; i < transform.childCount; i++)
+            for (var i = 0; i < transform.childCount; i++)
             {
                 var child = transform.GetChild(i);
                 var listener = transform.GetChild(i).GetComponent<T>();
@@ -75,7 +67,7 @@ namespace IEC
                     listeners.Add(listener);
                 }
 
-                for (int j = 0; j < child.childCount; j++)
+                for (var j = 0; j < child.childCount; j++)
                 {
                     listener = child.GetChild(j).GetComponent<T>();
                     if (listener != null && listener.IsActive())
@@ -84,6 +76,7 @@ namespace IEC
                     }
                 }
             }
+
             return listeners.ToArray();
         }
 
@@ -97,6 +90,7 @@ namespace IEC
                     m_UpdateEvents[i].BehaviourUpdate(deltaTime);
                 }
             }
+
             //m_CustomFixedUpdate.Update();
         }
 
@@ -112,28 +106,15 @@ namespace IEC
             }
         }
 
-        void RaiseEventLocal(EventObject gameEvent, EventParam param)
+        void RaiseEventLocal(string gameEvent, EventParam param)
         {
-            var eventKey = gameEvent.GetInstanceID();
-
-            if (m_DictEvents.ContainsKey(eventKey))
+            for (int i = 0; i < m_Listeners.Length; i++)
             {
-                var list = m_DictEvents[eventKey];
-                for (int i = 0; i < list.Count; i++)
-                {
-                    list[i].OnEventRaise(gameEvent, m_EventsList, param);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < m_Listeners.Length; i++)
-                {
-                    m_Listeners[i].OnEventRaise(gameEvent, m_EventsList, param);
-                }
+                m_Listeners[i].OnEventRaise(gameEvent, param);
             }
         }
 
-        public static void RaiseEvent(EventObject gameEvent, EventParam param)
+        public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())
         {
             if (s_Instance != null)
             {
@@ -141,22 +122,9 @@ namespace IEC
             }
         }
 
-        public static EventsList GetList()
-        {
-            if (s_Instance != null)
-            {
-                return s_Instance.m_EventsList;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
         void LocateController()
         {
             Controllers.Add(this);
-            Controllers.Add(m_EventsList);
 
             for (int i = 0; i < transform.childCount; i++)
             {
@@ -179,31 +147,11 @@ namespace IEC
                 }
             }
         }
-
-        void SetCustomEventListenersOrder()
-        {
-            for(int i = 0; i < m_CustomOrderEvents.Length; i++)
-            {
-                var list = new List<IEventListener>();
-                var listeners = m_CustomOrderEvents[i].listenersBehaviour;
-                for(int k = 0; k < listeners.Length; k++)
-                {
-                    list.Add(listeners[k] as IEventListener);
-                }
-
-                for(int k = 0; k < m_CustomOrderEvents[i].gameEvents.Length; k++)
-                {
-                    int eventKey = m_CustomOrderEvents[i].gameEvents[k].GetInstanceID();
-                    m_DictEvents[eventKey] = list;
-                }
-            }
-        }
     }
 
     [Serializable]
     public struct EventListeners
     {
-        public EventObject[] gameEvents;
         public MonoBehaviour[] listenersBehaviour;
     }
 
