@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace IEC
 {
-    public static class Dynamics
+    public static class Pool
     {
         static List<IComponentMap> s_ListMap = new List<IComponentMap>();
 
         static Dictionary<Type, object> m_Dict = new Dictionary<Type, object>();
         static Dictionary<Type, object> m_DictMap = new Dictionary<Type, object>();
 
-        static Dynamics()
+        static Pool()
         {
         }
 

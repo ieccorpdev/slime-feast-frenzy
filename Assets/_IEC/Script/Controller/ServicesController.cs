@@ -227,7 +227,7 @@ namespace IEC
 
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
-            if (m_Config.IsNoAds || Dynamics.Get<PlayerSecret>().isNoAds)
+            if (m_Config.IsNoAds || Pool.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {
@@ -260,7 +260,7 @@ namespace IEC
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
         {
-            if (m_Config.IsNoAds || Dynamics.Get<PlayerSecret>().isNoAds)
+            if (m_Config.IsNoAds || Pool.Get<PlayerSecret>().isNoAds)
             {
                 if (closeCallback != null)
                 {

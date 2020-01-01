@@ -3,15 +3,24 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class DataController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class DataController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventPauseApp, IEventQuitApp
     {
+        public const string PLAYER_DATA_KEY = "PlayerData";
+
         [SerializeField]
-        private GlobalDataScope m_Data;
+        private GameConfig m_GameConfig;
+
+        [SerializeField]
+        private Game m_GameData;
+
+        [SerializeField]
+        private PlayerSecret m_PlayerSecret;
+
+        ServicesController m_ServicesController;
 
         public void LocateController()
         {
             Controllers.Add(this);
-            Controllers.Add(m_Data);
         }
 
         public bool IsActive()
@@ -31,14 +40,49 @@ namespace IEC
 
         public void BehaviourAwake()
         {
+            m_ServicesController = Controllers.Get<ServicesController>();
+            Pool.Set(m_GameConfig);
+
+            m_GameData = Pool.Get<Game>();
+            LoadData();
         }
 
         public void BehaviourStart()
         {
             EventController.RaiseEvent(EventList.NONE);
-            int emptyData = Controllers.Get<GlobalDataScope>().emptyData.data;
-            
-            Debug.Log("emptyData : " + emptyData);
+            int emptyConfig = Pool.Get<GameConfig>().emptyConfig.configData;
+            Debug.Log("emptyConfig : " + emptyConfig);
+        }
+
+        public void SaveData()
+        {
+            m_ServicesController.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
+            m_ServicesController.DataSecure().Save();
+        }
+
+        void LoadData()
+        {
+            var playerData = m_ServicesController.DataSecure().GetObject(PLAYER_DATA_KEY, new PlayerSecret());
+            Pool.Set(playerData);
+
+            m_PlayerSecret = Pool.Get<PlayerSecret>();
+
+            // check update version
+            m_PlayerSecret.lastVersion = Application.version;
+            Debug.Log("Application.version " + Application.version);
+        }
+
+        public void BehaviourPauseApp(bool pause)
+        {
+            if (pause)
+            {
+                SaveData();
+            }
+        }
+
+        public void BehaviourQuitApp()
+        {
+            SaveData();
         }
     }
 }

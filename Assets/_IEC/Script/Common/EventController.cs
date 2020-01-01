@@ -16,20 +16,30 @@ namespace IEC
         IEventStart[] m_StartEvents;
         IEventUpdate[] m_UpdateEvents;
         IEventFixedUpdate[] m_FixedUpdateEvents;
+        IEventPauseApp[] m_PauseAppEvents;
+        IEventQuitApp[] m_QuitAppEvents;
 
         void Awake()
         {
             s_Instance = this;
             LocateController();
-            CameraHelper.SetMainCam(Camera.main);
 
             m_Listeners = GetEventArray<IEventListener>();
             m_AwakeEvents = GetEventArray<IEventAwake>();
             m_StartEvents = GetEventArray<IEventStart>();
             m_UpdateEvents = GetEventArray<IEventUpdate>();
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
+            m_PauseAppEvents = GetEventArray<IEventPauseApp>();
+            m_QuitAppEvents = GetEventArray<IEventQuitApp>();
 
-            Controllers.Get<ServicesController>().InitServices(true, false, false);
+            if (Application.isEditor)
+            {
+                Debug.unityLogger.filterLogType = LogType.Log;
+            }
+            else
+            {
+                Debug.unityLogger.filterLogType = LogType.Warning;
+            }
 
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
@@ -106,11 +116,42 @@ namespace IEC
             }
         }
 
+        void OnApplicationPause(bool pause)
+        {
+            if (m_PauseAppEvents != null)
+            {
+                for (int i = 0; i < m_PauseAppEvents.Length; i++)
+                {
+                    if (m_PauseAppEvents[i].IsActive())
+                    {
+                        m_PauseAppEvents[i].BehaviourPauseApp(pause);
+                    }
+                }
+            }
+        }
+
+        void OnApplicationQuit()
+        {
+            if (m_QuitAppEvents != null)
+            {
+                for (int i = 0; i < m_QuitAppEvents.Length; i++)
+                {
+                    if (m_QuitAppEvents[i].IsActive())
+                    {
+                        m_QuitAppEvents[i].BehaviourQuitApp();
+                    }
+                }
+            }
+        }
+
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
             for (int i = 0; i < m_Listeners.Length; i++)
             {
-                m_Listeners[i].OnEventRaise(gameEvent, param);
+                if (m_Listeners[i].IsActive())
+                {
+                    m_Listeners[i].OnEventRaise(gameEvent, param);
+                }
             }
         }
 
@@ -118,6 +159,23 @@ namespace IEC
         {
             if (s_Instance != null)
             {
+                s_Instance.RaiseEventLocal(gameEvent, param);
+            }
+        }
+
+        public static void RaiseEventDelay(float timeDelay, string gameEvent, EventParam param = new EventParam())
+        {
+            if (s_Instance != null)
+            {
+                s_Instance.StartCoroutine(IERaiseEventDelay(timeDelay, gameEvent, param));
+            }
+        }
+
+        static IEnumerator IERaiseEventDelay(float timeDelay, string gameEvent, EventParam param)
+        {
+            if (s_Instance != null)
+            {
+                yield return new WaitForSeconds(timeDelay);
                 s_Instance.RaiseEventLocal(gameEvent, param);
             }
         }
