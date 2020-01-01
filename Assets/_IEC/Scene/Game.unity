@@ -248,6 +248,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_GameConfig: {fileID: 11400000, guid: bfc5543f643320743a828afe609e9189, type: 2}
   m_GameData:
+    isDebugReset: 0
     emptyData: 0
   m_PlayerSecret:
     lastVersion: 
@@ -309,8 +310,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1501107472}
+  - component: {fileID: 1501107473}
   m_Layer: 0
-  m_Name: Gameplay
+  m_Name: CheatCode
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -330,6 +332,18 @@ Transform:
   m_Father: {fileID: 1106150894}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1501107473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1501107471}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1f8304898bf17548a89d39f820492cb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1895083742
 GameObject:
   m_ObjectHideFlags: 0

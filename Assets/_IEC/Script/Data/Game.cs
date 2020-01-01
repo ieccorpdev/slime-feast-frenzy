@@ -10,6 +10,7 @@ namespace IEC
     [System.Serializable]
     public class Game
     {
+        public bool isDebugReset;
         public int emptyData;
     }
 }
