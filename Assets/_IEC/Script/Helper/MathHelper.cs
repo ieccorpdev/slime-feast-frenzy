@@ -10,4 +10,75 @@ public class MathHelper
         value = (value > max) ? max : value;
 		return value;
     }
+
+    public static Vector3 DivideVector(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x / b.x, a.y / b.y, a.z / b.z);
+    }
+
+    public static Vector3 MultiplyVector(Vector3 a, Vector3 b)
+    {
+        return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
+    }
+
+    public static void SetRandomSeed(int seed)
+    {
+        UnityEngine.Random.InitState(seed);
+    }
+
+    public static int GetRandomIndexByRatioList(int[] ratio, int itemLength)
+    {
+        if (ratio == null || ratio.Length == 0)
+        {
+            return UnityEngine.Random.Range(0, itemLength);
+        }
+
+        float sum = 0;
+        for (int i = 0; i < ratio.Length; i++)
+        {
+            sum += ratio[i];
+        }
+        float randValue = UnityEngine.Random.Range(0, sum);
+        sum = 0;
+        for (int i = 0; i < ratio.Length; i++)
+        {
+            if (ratio[i] <= 0)
+                continue;
+            sum += ratio[i];
+            if (randValue <= sum)
+            {
+                return i;
+            }
+        }
+
+        return UnityEngine.Random.Range(0, itemLength);
+    }
+
+    public static int GetRandomIndexByRatioList(float[] ratio, int itemLength)
+    {
+        if (ratio == null || ratio.Length == 0)
+        {
+            return UnityEngine.Random.Range(0, itemLength);
+        }
+
+        float sum = 0;
+        for (int i = 0; i < ratio.Length; i++)
+        {
+            sum += ratio[i];
+        }
+        float randValue = UnityEngine.Random.Range(0, sum);
+        sum = 0;
+        for (int i = 0; i < ratio.Length; i++)
+        {
+            if (ratio[i] <= 0)
+                continue;
+            sum += ratio[i];
+            if (randValue <= sum)
+            {
+                return i;
+            }
+        }
+
+        return UnityEngine.Random.Range(0, itemLength);
+    }
 }

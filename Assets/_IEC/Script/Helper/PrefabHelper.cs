@@ -34,6 +34,11 @@ public class PrefabHelper
         return prefab.Spawn();
     }
 
+    public static GameObject Clone(GameObject prefab, Transform parent)
+    {
+        return prefab.Spawn(parent);
+    }
+
     public static GameObject CloneTransform(GameObject prefab)
     {
         var obj = prefab.Spawn();
