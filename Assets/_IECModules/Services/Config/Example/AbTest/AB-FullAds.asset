@@ -4,21 +4,21 @@
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72cf6b18b8ec6b6498561c3cfcbc3300, type: 3}
-  m_Name: ABTest-Difficulty
+  m_Name: AB-FullAds
   m_EditorClassIdentifier: 
-  KeyName: ABTestDifficulty
-  IsActive: 1
-  IsOnlyNewInstall: 1
-  IsOverride: 0
+  KeyName: AB-FullAds
+  IsActive: 0
+  IsOnlyNewInstall: 0
+  IsOverride: 1
   ListEventsAB:
-  - Difficult-1
-  - Difficult-2
-  - Difficult-3
+  - AB-FullAds-30
+  - AB-FullAds-60
   ListRandomRatio: 010000000100000001000000
   DefaultValue: 0
   IsForceValue: 0
