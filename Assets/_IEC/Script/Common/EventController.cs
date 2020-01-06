@@ -8,8 +8,7 @@ namespace IEC
     public class EventController : MonoBehaviour
     {
         private static EventController s_Instance;
-
-        [SerializeField] EventListeners[] m_CustomOrderEvents;
+        private static StaticObjectsContainer s_StaticObjects;
 
         IEventListener[] m_Listeners;
         IEventAwake[] m_AwakeEvents;
@@ -22,6 +21,21 @@ namespace IEC
         void Awake()
         {
             s_Instance = this;
+            if (s_StaticObjects == null)
+            {
+                s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
+                DontDestroyOnLoad(s_StaticObjects.gameObject);
+            }
+            else
+            {
+                var otherStaticContainers = FindObjectsOfType<StaticObjectsContainer>();
+                foreach(var item in otherStaticContainers)
+                {
+                    if (item != s_StaticObjects)
+                        Destroy(item.gameObject);
+                }
+            }
+
             LocateController();
 
             m_Listeners = GetEventArray<IEventListener>();
@@ -68,13 +82,24 @@ namespace IEC
         {
             var listeners = new List<T>();
 
-            for (var i = 0; i < transform.childCount; i++)
+            if (s_StaticObjects != null)
             {
-                var child = transform.GetChild(i);
-                var listener = transform.GetChild(i).GetComponent<T>();
+                GetListFromObject(s_StaticObjects.staticControllersParent, listeners);
+            }
+            GetListFromObject(transform, listeners);
+
+            return listeners.ToArray();
+        }
+
+        void GetListFromObject<T>(Transform parentT, List<T> list) where T : IEventBehaviour
+        {
+            for (var i = 0; i < parentT.childCount; i++)
+            {
+                var child = parentT.GetChild(i);
+                var listener = parentT.GetChild(i).GetComponent<T>();
                 if (listener != null && listener.IsActive())
                 {
-                    listeners.Add(listener);
+                    list.Add(listener);
                 }
 
                 for (var j = 0; j < child.childCount; j++)
@@ -82,12 +107,10 @@ namespace IEC
                     listener = child.GetChild(j).GetComponent<T>();
                     if (listener != null && listener.IsActive())
                     {
-                        listeners.Add(listener);
+                        list.Add(listener);
                     }
                 }
             }
-
-            return listeners.ToArray();
         }
 
         void Update()
@@ -184,16 +207,22 @@ namespace IEC
         {
             Controllers.Add(this);
 
-            for (int i = 0; i < transform.childCount; i++)
+            LocateController(s_StaticObjects.staticControllersParent);
+            LocateController(transform);
+        }
+
+        void LocateController(Transform parentT)
+        {
+            for (int i = 0; i < parentT.childCount; i++)
             {
-                var go = transform.GetChild(i).gameObject;
+                var go = parentT.GetChild(i).gameObject;
                 var controller = go.GetComponent<IController>();
                 if (controller != null && go.activeSelf)
                 {
                     controller.LocateController();
                 }
 
-                var child = transform.GetChild(i);
+                var child = parentT.GetChild(i);
                 for (int j = 0; j < child.childCount; j++)
                 {
                     go = child.GetChild(j).gameObject;
