@@ -9,9 +9,6 @@ namespace IEC
     {
         #region properties
 
-        private static ServicesController s_Instance = null;
-        private static bool s_IsSingleton = true;
-
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         const string FULL_AD_COUNT = "FullAdCount";
         const string REWARD_AD_COUNT = "RewardCount";
@@ -24,6 +21,7 @@ namespace IEC
 
         bool isInit = false;
         bool isInitAllServices = false;
+        bool isInitAwake = false;
 
         float lastFullAdsTime = -1f;
 
@@ -40,26 +38,7 @@ namespace IEC
 
         public void LocateController()
         {
-            if (s_Instance == null)
-            {
-                s_Instance = this;
-                Controllers.Add(this);
-            }
-            else
-            {
-                if (s_IsSingleton)
-                {
-                    s_Instance.transform.SetParent(gameObject.transform.parent);
-                    s_Instance.transform.SetSiblingIndex(gameObject.transform.GetSiblingIndex());
-                    gameObject.SetActive(false);
-                    Destroy(gameObject);
-                }
-                else
-                {
-                    s_Instance = this;
-                    Controllers.Add(this);
-                }
-            }
+            Controllers.Add(this);
         }
 
         public bool IsActive()
@@ -72,11 +51,6 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.Service.LOAD_SCENE:
-                    if (s_IsSingleton)
-                    {
-                        gameObject.transform.SetParent(null);
-                        DontDestroyOnLoad(gameObject);
-                    }
                     break;
                 case EventList.Service.FACEBOOK_LOADED:
                     PushCachedEvents();
@@ -93,6 +67,7 @@ namespace IEC
 
         public void BehaviourAwake()
         {
+            if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
 
@@ -105,6 +80,7 @@ namespace IEC
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
             TimeServer().SetServerURL(serverUrl);
             StartCoroutine(IE_CountOneSec());
+            isInitAwake = true;
         }
 
         public void BehaviourStart()
