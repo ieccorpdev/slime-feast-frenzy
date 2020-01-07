@@ -1,0 +1,304 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace IEC
+{
+    public class EventController : MonoBehaviour
+    {
+        private static EventController s_Instance;
+        private static StaticObjectsContainer s_StaticObjects;
+
+        IEventListener[] m_Listeners;
+        IEventAwake[] m_AwakeEvents;
+        IEventStart[] m_StartEvents;
+        IEventUpdate[] m_UpdateEvents;
+        IEventFixedUpdate[] m_FixedUpdateEvents;
+        IEventPauseApp[] m_PauseAppEvents;
+        IEventQuitApp[] m_QuitAppEvents;
+
+        void Awake()
+        {
+            s_Instance = this;
+            if (s_StaticObjects == null)
+            {
+                s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
+                DontDestroyOnLoad(s_StaticObjects.gameObject);
+            }
+            else
+            {
+                var otherStaticContainers = FindObjectsOfType<StaticObjectsContainer>();
+                foreach(var item in otherStaticContainers)
+                {
+                    if (item != s_StaticObjects)
+                        Destroy(item.gameObject);
+                }
+            }
+
+            LocateController();
+
+            m_Listeners = GetEventArray<IEventListener>();
+            m_AwakeEvents = GetEventArray<IEventAwake>();
+            m_StartEvents = GetEventArray<IEventStart>();
+            m_UpdateEvents = GetEventArray<IEventUpdate>();
+            m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
+            m_PauseAppEvents = GetEventArray<IEventPauseApp>();
+            m_QuitAppEvents = GetEventArray<IEventQuitApp>();
+
+            if (Application.isEditor)
+            {
+                Debug.unityLogger.filterLogType = LogType.Log;
+            }
+            else
+            {
+                Debug.unityLogger.filterLogType = LogType.Warning;
+            }
+
+            Application.targetFrameRate = 60;
+            //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
+
+            for (int i = 0; i < m_AwakeEvents.Length; i++)
+            {
+                if (m_AwakeEvents[i].IsActive())
+                {
+                    m_AwakeEvents[i].BehaviourAwake();
+                }
+            }
+        }
+
+        void Start()
+        {
+            foreach (var eventStart in m_StartEvents)
+            {
+                if (eventStart.IsActive())
+                {
+                    eventStart.BehaviourStart();
+                }
+            }
+        }
+
+        private T[] GetEventArray<T>() where T : IEventBehaviour
+        {
+            var listeners = new List<T>();
+
+            if (s_StaticObjects != null)
+            {
+                GetListFromObject(s_StaticObjects.staticControllersParent, listeners);
+            }
+            GetListFromObject(transform, listeners);
+
+            return listeners.ToArray();
+        }
+
+        void GetListFromObject<T>(Transform parentT, List<T> list) where T : IEventBehaviour
+        {
+            for (var i = 0; i < parentT.childCount; i++)
+            {
+                var child = parentT.GetChild(i);
+                var listener = parentT.GetChild(i).GetComponent<T>();
+                if (listener != null && listener.IsActive())
+                {
+                    list.Add(listener);
+                }
+
+                for (var j = 0; j < child.childCount; j++)
+                {
+                    listener = child.GetChild(j).GetComponent<T>();
+                    if (listener != null && listener.IsActive())
+                    {
+                        list.Add(listener);
+                    }
+                }
+            }
+        }
+
+        void Update()
+        {
+            float deltaTime = Time.deltaTime;
+            for (int i = 0; i < m_UpdateEvents.Length; i++)
+            {
+                if (m_UpdateEvents[i].IsActive())
+                {
+                    m_UpdateEvents[i].BehaviourUpdate(deltaTime);
+                }
+            }
+
+            //m_CustomFixedUpdate.Update();
+        }
+
+        void FixedUpdate()
+        {
+            float deltaTime = Time.fixedDeltaTime;
+            for (int i = 0; i < m_FixedUpdateEvents.Length; i++)
+            {
+                if (m_FixedUpdateEvents[i].IsActive())
+                {
+                    m_FixedUpdateEvents[i].BehaviourFixedUpdate(deltaTime);
+                }
+            }
+        }
+
+        void OnApplicationPause(bool pause)
+        {
+            if (m_PauseAppEvents != null)
+            {
+                for (int i = 0; i < m_PauseAppEvents.Length; i++)
+                {
+                    if (m_PauseAppEvents[i].IsActive())
+                    {
+                        m_PauseAppEvents[i].BehaviourPauseApp(pause);
+                    }
+                }
+            }
+        }
+
+        void OnApplicationQuit()
+        {
+            if (m_QuitAppEvents != null)
+            {
+                for (int i = 0; i < m_QuitAppEvents.Length; i++)
+                {
+                    if (m_QuitAppEvents[i].IsActive())
+                    {
+                        m_QuitAppEvents[i].BehaviourQuitApp();
+                    }
+                }
+            }
+        }
+
+        void RaiseEventLocal(string gameEvent, EventParam param)
+        {
+            for (int i = 0; i < m_Listeners.Length; i++)
+            {
+                if (m_Listeners[i].IsActive())
+                {
+                    m_Listeners[i].OnEventRaise(gameEvent, param);
+                }
+            }
+        }
+
+        public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())
+        {
+            if (s_Instance != null)
+            {
+                s_Instance.RaiseEventLocal(gameEvent, param);
+            }
+        }
+
+        public static void RaiseEventDelay(float timeDelay, string gameEvent, EventParam param = new EventParam())
+        {
+            if (s_Instance != null)
+            {
+                s_Instance.StartCoroutine(IERaiseEventDelay(timeDelay, gameEvent, param));
+            }
+        }
+
+        static IEnumerator IERaiseEventDelay(float timeDelay, string gameEvent, EventParam param)
+        {
+            if (s_Instance != null)
+            {
+                yield return new WaitForSeconds(timeDelay);
+                s_Instance.RaiseEventLocal(gameEvent, param);
+            }
+        }
+
+        void LocateController()
+        {
+            Controllers.Add(this);
+
+            LocateController(s_StaticObjects.staticControllersParent);
+            LocateController(transform);
+        }
+
+        void LocateController(Transform parentT)
+        {
+            for (int i = 0; i < parentT.childCount; i++)
+            {
+                var go = parentT.GetChild(i).gameObject;
+                var controller = go.GetComponent<IController>();
+                if (controller != null && go.activeSelf)
+                {
+                    controller.LocateController();
+                }
+
+                var child = parentT.GetChild(i);
+                for (int j = 0; j < child.childCount; j++)
+                {
+                    go = child.GetChild(j).gameObject;
+                    controller = go.GetComponent<IController>();
+                    if (controller != null && go.activeSelf)
+                    {
+                        controller.LocateController();
+                    }
+                }
+            }
+        }
+    }
+
+    [Serializable]
+    public struct EventListeners
+    {
+        public MonoBehaviour[] listenersBehaviour;
+    }
+
+    public struct EventParam
+    {
+        public object sender;
+        public object p0;
+        public object p1;
+        public object p2;
+        public object p3;
+        public object p4;
+
+        public EventParam(object sender)
+        {
+            this.sender = sender;
+            p0 = p1 = p2 = p3 = p4 = null;
+        }
+
+        public EventParam(object sender, object p0)
+        {
+            this.sender = sender;
+            this.p0 = p0;
+            p1 = p2 = p3 = p4 = null;
+        }
+
+        public EventParam(object sender, object p0, object p1)
+        {
+            this.sender = sender;
+            this.p0 = p0;
+            this.p1 = p1;
+            p2 = p3 = p4 = null;
+        }
+
+        public EventParam(object sender, object p0, object p1, object p2)
+        {
+            this.sender = sender;
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+            p3 = p4 = null;
+        }
+
+        public EventParam(object sender, object p0, object p1, object p2, object p3)
+        {
+            this.sender = sender;
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+            this.p3 = p3;
+            p4 = null;
+        }
+
+        public EventParam(object sender, object p0, object p1, object p2, object p3, object p4)
+        {
+            this.sender = sender;
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+            this.p3 = p3;
+            this.p4 = p4;
+        }
+    }
+}
