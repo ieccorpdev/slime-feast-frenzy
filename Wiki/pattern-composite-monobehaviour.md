@@ -35,6 +35,8 @@ Một số Component
 ### Nhược điểm
 
 * Do vẫn phụ thuộc trực tiếp vào `MonoBehaviour` và API của Unity nên vẫn mang nhiều nhược điểm như Phương pháp OOP (cần link sang page OOP)
+* Thường sẽ mất nhiều thời gian để xây dựng toàn bộ các GameObject đều là tổ hợp của Components, nên hay được xây dựng đan xen giữa OOP và Composite, hình thành thiết kế code không thống nhất.
 
 ### Đánh giá
 
+* Thích hợp với xây dựng game prototype đơn giản trong thời gian ngắn nhưng có thể bóc tách Component cho việc tái sử dụng.
