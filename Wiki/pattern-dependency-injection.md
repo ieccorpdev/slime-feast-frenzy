@@ -36,18 +36,18 @@ Nếu sử dụng framework Zenject thì ở class UIManager chỉ cần khai b�
 * Thực hiện hoàn toàn qua hệ thống trung gian
 * Cách thức khởi tạo cho object (single hay new cho mỗi lần `Get()`), hay nạp từ object cho trước được thực hiện riêng ngoài các Class và thường vào lúc Awake Scene.
 
-Ưu điểm
+### Ưu điểm
 
 * Liên kết giữa các Class được xử lý bởi trung gian nên giảm bớt sự phụ thuộc trực tiếp coupling
 * Nếu các Class giao tiếp thông qua Interface thì có thể dễ dàng làm object giả Interface cho việc viết Unit Test
 * Tách bớt sự phụ thuộc vào Unity nên có thể áp dụng cho cả những game engine khác
 
-Nhược điểm
+### Nhược điểm
 
 * Áp dụng framework như Zenject có thể khiến thiết kế code tăng sự phức tạp, phải làm quen với thêm nhiều khái niệm như Factory, Memory Pools, Signals,...
 * Việc tìm reference qua Interface phức tạp hơn tìm trực tiếp qua Class
 
-Đánh giá
+### Đánh giá
 
 * Có thể áp dụng để xây dựng một hệ thống tổng quát dùng chung khi code game trên mọi engine hay nền tảng
 * Kết hợp với OOP đơn giản hay Composite cũng có thể mang lại nhiều hiệu quả nhờ giảm coupling
