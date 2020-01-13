@@ -9,6 +9,7 @@ Bao gồm
 * Main Camera
 * `_StaticObjects` : GameObject mang script `StaticObjectsContainer`, sẽ được đặt `DontDestroyOnLoad`, nạp sẵn `ServicesController` và `DataController` chung cho mọi Scene
 * `_Controllers` : GameObject mang script `EventController`, mang các phần tử con đều là Controller để nạp riêng cho Scene, thiết lập ban đầu có `CheatCodeController`
+* `_SceneRoot` : GameObject sẽ được `EventController` tự động xử lý tìm các phần tử con theo interface `IGroup`
 * `IEC Module Controller` : GameObject cho singleton không nằm trong EDC
 
 ### Event
@@ -24,7 +25,9 @@ Bao gồm
 
 ### Data
 
-Dữ liệu được bắt đầu load và nạp từ `DataController` vào Pool qua `Pool.Set(...)`. Dữ liệu mẫu gồm 3 class
+Dữ liệu dạng GameObject trên Scene nếu được kéo làm child của `_SceneRoot` và có script theo interface `IGroup` thì sẽ được tự động nạp vào `Pool`.
+
+Dữ liệu được bắt đầu load và nạp từ `DataController` thông qua `Pool.Set(...)`. Dữ liệu mẫu gồm 3 class
 
 * `Game.cs` thông tin liên quan session game, không cần phải lưu lại
 * `PlayerSecret.cs` thông tin liên quan tiến trình người chơi, cần phải lưu lại
@@ -41,7 +44,46 @@ Mỗi class Controller có đặc điểm sau
 * Interface `IEventAwake`, `IEventStart`, `IEventUpdate`, `IEventFixedUpdate`, `IEventPauseApp`, `IEventQuitApp` : để `EventController` gửi các Event của Unity tương ứng với tên interface
 * Interface `IEventListener` : để `EventController` gửi Custom Event
 * Các Event Interface có dùng chung function `bool IsActive()` để nhận biết Controller đang bật hay tắt
+* Controller chỉ cần implement Event Interface nào cần thiết
+* Ưu tiên thứ tự khi xử lý Event : trước hết là `ServiceController` xong đến `DataController`
 
 ### Service
 
-### Một số quy tắc
+Hệ thống Module tái sử dụng giữa các project. Các Module cùng vai trò đều có Interface chung để thay đổi.
+
+* Data : lưu trữ qua PlayerPrefs, hỗ trợ mã hóa chống hack, hỗ trợ đọc remote config từ Firebase
+* Advertise : interface chung cho nhiều module quảng cáo như Admob, Appodeal, Applovin, IronSource, hỗ trợ hiển thị ads tối ưu ecpm
+* Analytic Tracking : interface chung cho nhiều module analytic như Facebook, Firebase, Kochava
+* AB Test : hỗ trợ random AB test tại local
+* In App Purchase : hỗ trợ qua Unity IAP
+* Time Server : lấy thời gian qua Online API
+* User Location : lấy địa chỉ quốc gia qua Online API
+* Score : lưu trữ, cập nhật highscore offline
+
+Các code phụ thuộc vào SDK có thể bật tắt thông qua Scripting Define Symbols ở Unity Player Setting 
+
+```
+PluginFirebase;PluginFirebaseAnalytic;PluginFirebaseRemote;PluginFacebook;PluginKochava;PluginApplovin;PluginUnityIAP;PluginIS;PluginAppodeal
+```
+
+* `PluginFirebase` : code khởi tạo chung cho Firebase
+* `PluginFirebaseAnalytic` : code cho Firebase Analytic
+* `PluginFirebaseRemote` : code cho Firebase Remote Config
+* `PluginFacebook` : code cho Facebook SDK
+* `PluginKochava` : code cho Kochava SDK
+* `PluginApplovin` : code cho Applovin SDK
+* `PluginAppodeal` : code cho Appodeal SDK
+* `PluginIS` : code cho IronSource SDK
+* `PluginUnityIAP` : code cho Unity In App Purchase
+
+### Trình tự code tính năng mới
+
+1. Xây dựng Data
+   * Dữ liệu cho session chơi
+   * Dữ liệu lưu cho session chơi sau
+   * Dữ liệu config
+   * Dữ liệu dạng GameObject trên Scene hay Prefab
+2. Khởi tạo Data
+   * Dữ liệu dạng GameObject trên Scene cần tập trung theo từng Group để giảm bước kéo thả khi duplicate.
+   * Dữ liệu các dạng còn lại nên tập trung nạp vào `Pool` từ `DataController` để đảm bảo dữ liệu luôn có trước khi Controller khác xử lý
+3. Xây dựng Controller cho tính năng và các Custom Event cần thiết
