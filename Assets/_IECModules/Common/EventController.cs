@@ -40,7 +40,10 @@ namespace IEC
             }
 
             LocateController();
-            LocateGroup(m_SceneRootObj.transform);
+            if (m_SceneRootObj != null)
+            {
+                LocateGroup(m_SceneRootObj.transform);
+            }
 
             m_Listeners = GetEventArray<IEventListener>();
             m_AwakeEvents = GetEventArray<IEventAwake>();
