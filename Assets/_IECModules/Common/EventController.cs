@@ -10,6 +10,7 @@ namespace IEC
         private static EventController s_Instance;
         private static StaticObjectsContainer s_StaticObjects;
 
+        [SerializeField]
         private GameObject m_SceneRootObj;
 
         IEventListener[] m_Listeners;
@@ -240,25 +241,10 @@ namespace IEC
 
         void LocateGroup(Transform parentT)
         {
-            for (int i = 0; i < parentT.childCount; i++)
+            var groups = parentT.GetComponentsInChildren<IGroup>(true);
+            foreach (var g in groups)
             {
-                var go = parentT.GetChild(i).gameObject;
-                var controller = go.GetComponent<IGroup>();
-                if (controller != null && go.activeSelf)
-                {
-                    controller.LocateGroup();
-                }
-
-                var child = parentT.GetChild(i);
-                for (int j = 0; j < child.childCount; j++)
-                {
-                    go = child.GetChild(j).gameObject;
-                    controller = go.GetComponent<IGroup>();
-                    if (controller != null && go.activeSelf)
-                    {
-                        controller.LocateGroup();
-                    }
-                }
+                g.LocateGroup();
             }
         }
     }
