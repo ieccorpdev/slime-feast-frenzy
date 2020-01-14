@@ -9,6 +9,7 @@ namespace IEC
     {
         #region properties
 
+        const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         const string FULL_AD_COUNT = "FullAdCount";
         const string REWARD_AD_COUNT = "RewardCount";
@@ -70,8 +71,7 @@ namespace IEC
             if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
-
-            m_ServiceData = Pool.Get<ServiceData>();
+            
             fullAdCount = DataNormal().GetInt(FULL_AD_COUNT, 0);
             rewardCount = DataNormal().GetInt(REWARD_AD_COUNT, 0);
 
@@ -257,6 +257,9 @@ namespace IEC
             m_Location = new UserLocationIP(this, m_Json);
 
             m_TimeServer = new TimeServerModule(this, m_Json);
+
+            m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
+            Pool.Set(m_ServiceData);
         }
 
         void InitAdsAfterGDPR(bool isAcceptConsent)
@@ -339,6 +342,7 @@ namespace IEC
         void SaveData()
         {
             Init();
+            DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
             m_DataNormal.Save();
             m_DataSecure.Save();
         }
