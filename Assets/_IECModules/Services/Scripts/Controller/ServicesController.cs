@@ -31,6 +31,7 @@ namespace IEC
         private List<string> m_InitEvents = new List<string>();
 
         EventCountModule m_EventCount;
+        RetentionModule m_Retention;
 
         #endregion
 
@@ -251,6 +252,7 @@ namespace IEC
             m_Location = new UserLocationIP(this, m_Json);
             m_TimeServer = new TimeServerModule(this, m_Json);
             m_EventCount = new EventCountModule(m_DataNormal);
+            m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             Pool.Set(m_ServiceData);
