@@ -11,8 +11,6 @@ namespace IEC
 
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
-        const string FULL_AD_COUNT = "FullAdCount";
-        const string REWARD_AD_COUNT = "RewardCount";
         public const string SERVER_URL_KEY = "ServerUrl";
 
         public ServicesConfig config;
@@ -26,14 +24,13 @@ namespace IEC
 
         float lastFullAdsTime = -1f;
 
-        int fullAdCount = 0;
-        int rewardCount = 0;
-
         bool m_IsNewInstall = true;
         WaitForSecondsRealtime oneSec = new WaitForSecondsRealtime(1f);
 
         private bool m_IsInitializing = true;
         private List<string> m_InitEvents = new List<string>();
+
+        EventCountModule m_EventCount;
 
         #endregion
 
@@ -71,9 +68,6 @@ namespace IEC
             if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
-            
-            fullAdCount = DataNormal().GetInt(FULL_AD_COUNT, 0);
-            rewardCount = DataNormal().GetInt(REWARD_AD_COUNT, 0);
 
             InitServices();
 
@@ -255,8 +249,8 @@ namespace IEC
             }
 
             m_Location = new UserLocationIP(this, m_Json);
-
             m_TimeServer = new TimeServerModule(this, m_Json);
+            m_EventCount = new EventCountModule(m_DataNormal);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             Pool.Set(m_ServiceData);
@@ -414,17 +408,16 @@ namespace IEC
             {
                 if (param.isSuccess)
                 {
+                    var fullAdCount = m_EventCount.IncreaseCount("show_full_ad");
                     PushEvent("show_full_ad");
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
-                    fullAdCount++;
                     if (fullAdCount == 50)
                     {
                         PushEvent("inter_50");
                     }
-                    DataNormal().SetInt(FULL_AD_COUNT, fullAdCount);
                     SafeInvoke(canShowCallback);
                 }
                 else
@@ -470,6 +463,7 @@ namespace IEC
                 {
                     if (param.isSuccess)
                     {
+                        var rewardCount = m_EventCount.IncreaseCount("show_reward_ad");
                         lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
@@ -477,13 +471,10 @@ namespace IEC
 #endif
                         PushEvent("show_reward_ad", 1);
 
-                        rewardCount++;
                         if (rewardCount == 15)
                         {
                             PushEvent("reward_15");
                         }
-
-                        DataNormal().SetInt(REWARD_AD_COUNT, rewardCount);
                     }
 
                     if (param.isSkip)
