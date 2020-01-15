@@ -6,7 +6,6 @@
 
 Bao gồm
 
-* Main Camera
 * `_StaticObjects` : GameObject mang script `StaticObjectsContainer`, sẽ được đặt `DontDestroyOnLoad`, nạp sẵn `ServicesController` và `DataController` chung cho mọi Scene
 * `_Controllers` : GameObject mang script `EventController`, mang các phần tử con đều là Controller để nạp riêng cho Scene, thiết lập ban đầu có `CheatCodeController`
 * `_SceneRoot` : GameObject sẽ được `EventController` tự động xử lý tìm các phần tử con theo interface `IGroup`
@@ -27,7 +26,7 @@ Bao gồm
 
 Dữ liệu dạng GameObject trên Scene nếu được kéo làm child của `_SceneRoot` và có script theo interface `IGroup` thì sẽ được tự động nạp vào `Pool`.
 
-Dữ liệu được bắt đầu load và nạp từ `DataController` thông qua `Pool.Set(...)`. Dữ liệu mẫu gồm 3 class
+Dữ liệu được bắt đầu load và nạp từ `DataController` thông qua `Pool.Set(dataObject)`. Dữ liệu mẫu gồm 3 class
 
 * `Game.cs` thông tin liên quan session game, không cần phải lưu lại
 * `PlayerSecret.cs` thông tin liên quan tiến trình người chơi, cần phải lưu lại
@@ -84,6 +83,6 @@ PluginFirebase;PluginFirebaseAnalytic;PluginFirebaseRemote;PluginFacebook;Plugin
    * Dữ liệu config
    * Dữ liệu dạng GameObject trên Scene hay Prefab
 2. Khởi tạo Data
-   * Dữ liệu dạng GameObject trên Scene cần tập trung theo từng Group để giảm bước kéo thả khi duplicate.
+   * Dữ liệu dạng GameObject trên Scene cần tập trung theo từng Group để giảm bước kéo thả khi duplicate, đồng thời Interface `IGroup` trong `_SceneRoot` sẽ được Locate tự động cho vào `Pool`
    * Dữ liệu các dạng còn lại nên tập trung nạp vào `Pool` từ `DataController` để đảm bảo dữ liệu luôn có trước khi Controller khác xử lý
 3. Xây dựng Controller cho tính năng và các Custom Event cần thiết
