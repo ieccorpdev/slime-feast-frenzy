@@ -375,6 +375,9 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            param["count"] = m_EventCount.IncreaseCount(eventName);
+            param["Dx"] = m_Retention.GetCountDate();
+            param["Dy"] = m_Retention.GetCountDay();
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.PushEvent(eventName, value, param);
@@ -419,12 +422,12 @@ namespace IEC
             {
                 if (param.isSuccess)
                 {
-                    var fullAdCount = m_EventCount.IncreaseCount("show_full_ad");
                     PushEvent("show_full_ad");
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+                    var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     if (fullAdCount == 50)
                     {
                         PushEvent("inter_50");
@@ -474,7 +477,6 @@ namespace IEC
                 {
                     if (param.isSuccess)
                     {
-                        var rewardCount = m_EventCount.IncreaseCount("show_reward_ad");
                         lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
@@ -482,6 +484,7 @@ namespace IEC
 #endif
                         PushEvent("show_reward_ad", 1);
 
+                        var rewardCount = m_EventCount.GetCount("show_reward_ad");
                         if (rewardCount == 15)
                         {
                             PushEvent("reward_15");
