@@ -5,7 +5,7 @@ using UnityEngine;
 using Firebase;
 using Firebase.Extensions;
 
-namespace Root
+namespace IEC
 {
     public class SetUpFirebaseModule : ISetUpSdkService
     {
