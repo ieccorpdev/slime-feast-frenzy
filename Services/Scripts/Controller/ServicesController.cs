@@ -11,8 +11,6 @@ namespace IEC
 
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
-        const string FULL_AD_COUNT = "FullAdCount";
-        const string REWARD_AD_COUNT = "RewardCount";
         public const string SERVER_URL_KEY = "ServerUrl";
 
         public ServicesConfig config;
@@ -26,14 +24,14 @@ namespace IEC
 
         float lastFullAdsTime = -1f;
 
-        int fullAdCount = 0;
-        int rewardCount = 0;
-
         bool m_IsNewInstall = true;
         WaitForSecondsRealtime oneSec = new WaitForSecondsRealtime(1f);
 
         private bool m_IsInitializing = true;
         private List<string> m_InitEvents = new List<string>();
+
+        EventCountModule m_EventCount;
+        RetentionModule m_Retention;
 
         #endregion
 
@@ -71,14 +69,20 @@ namespace IEC
             if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
-            
-            fullAdCount = DataNormal().GetInt(FULL_AD_COUNT, 0);
-            rewardCount = DataNormal().GetInt(REWARD_AD_COUNT, 0);
 
             InitServices();
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
             TimeServer().SetServerURL(serverUrl);
+            TimeServer().SetCheckType(m_ServiceData.timeCheckType);
+            TimeServer().RequestTimeAuto(60f, (result) =>
+            {
+                if (result)
+                {
+                    m_Retention.UpdateTimeNow();
+                    EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
+                }
+            });
             StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
@@ -255,8 +259,9 @@ namespace IEC
             }
 
             m_Location = new UserLocationIP(this, m_Json);
-
             m_TimeServer = new TimeServerModule(this, m_Json);
+            m_EventCount = new EventCountModule(m_DataNormal);
+            m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             Pool.Set(m_ServiceData);
@@ -370,6 +375,9 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            param["count"] = m_EventCount.IncreaseCount(eventName);
+            param["Dx"] = m_Retention.GetCountDate();
+            param["Dy"] = m_Retention.GetCountDay();
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.PushEvent(eventName, value, param);
@@ -419,12 +427,11 @@ namespace IEC
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
-                    fullAdCount++;
+                    var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     if (fullAdCount == 50)
                     {
                         PushEvent("inter_50");
                     }
-                    DataNormal().SetInt(FULL_AD_COUNT, fullAdCount);
                     SafeInvoke(canShowCallback);
                 }
                 else
@@ -477,13 +484,11 @@ namespace IEC
 #endif
                         PushEvent("show_reward_ad", 1);
 
-                        rewardCount++;
+                        var rewardCount = m_EventCount.GetCount("show_reward_ad");
                         if (rewardCount == 15)
                         {
                             PushEvent("reward_15");
                         }
-
-                        DataNormal().SetInt(REWARD_AD_COUNT, rewardCount);
                     }
 
                     if (param.isSkip)
@@ -539,6 +544,18 @@ namespace IEC
             {
                 Ads().Show(AdsEnum.BANNER_BOTTOM, null);
             }
+        }
+
+        public void RequestTimeServer()
+        {
+            TimeServer().RequestTimeNow((result) =>
+            {
+                if (result)
+                {
+                    m_Retention.UpdateTimeNow();
+                    EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
+                }
+            });
         }
 
         IEnumerator IE_CountOneSec()

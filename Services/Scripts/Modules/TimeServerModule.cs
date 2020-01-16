@@ -18,14 +18,22 @@ namespace IEC
         DateTime m_Now;
         IJsonService m_Json;
 
-        List<Action<bool>> m_ListCallback;
         Coroutine m_RequestCorou;
+
+        float m_LastRequestTime;
+        float m_TimeDelayRequest;
+
+        TimeCheckType m_TimeCheckType;
 
         public TimeServerModule(MonoBehaviour coroutiner, IJsonService json)
         {
             m_Coroutiner = coroutiner;
             m_Json = json;
-            m_ListCallback = new List<Action<bool>>();
+        }
+
+        public void SetCheckType(TimeCheckType checkType)
+        {
+            m_TimeCheckType = checkType;
         }
 
         public DateTime GetTimeNowToLocal()
@@ -57,14 +65,39 @@ namespace IEC
             return m_IsHaveServerResult;
         }
 
+        public void RequestTimeAuto(float delayTime, Action<bool> callback)
+        {
+            m_TimeDelayRequest = delayTime;
+            m_Coroutiner.StartCoroutine(IERequestTimeAuto(callback));
+        }
+
+        IEnumerator IERequestTimeAuto(Action<bool> callback)
+        {
+            while(true)
+            {
+                yield return null;
+                if (m_LastRequestTime == 0 || Time.realtimeSinceStartup - m_LastRequestTime >= m_TimeDelayRequest)
+                {
+                    RequestTimeNow(callback);
+                }
+            }
+        }
+
         public void RequestTimeNow(Action<bool> callback)
         {
-            m_ListCallback.Add(callback);
-
             if (m_RequestCorou == null)
             {
+                m_LastRequestTime = Time.realtimeSinceStartup;
                 m_IsHaveServerResult = false;
-                m_RequestCorou = m_Coroutiner.StartCoroutine(IERequestTime(callback));
+                
+                if (m_TimeCheckType == TimeCheckType.AllOffline)
+                {
+                    RaiseCallbacks(callback, true);
+                }
+                else
+                {
+                    m_RequestCorou = m_Coroutiner.StartCoroutine(IERequestTime(callback));
+                }
             }
         }
 
@@ -77,7 +110,7 @@ namespace IEC
             if (www.isNetworkError || www.isHttpError)
             {
                 Debug.Log("Error get time server: " + www.error);
-                RaiseCallbacks(false);
+                RaiseCallbacks(callback, false);
             }
             else
             {
@@ -96,14 +129,14 @@ namespace IEC
                     Debug.Log("Time Server to Local now:" + m_NowToLocal.ToString());
                     m_IsHaveServerResult = true;
                     //callback(true);
-                    RaiseCallbacks(true);
+                    RaiseCallbacks(callback, true);
 
                 }
                 else
                 {
                     Debug.Log("error to long");
                     //callback(false);
-                    RaiseCallbacks(false);
+                    RaiseCallbacks(callback, false);
                 }
                 //}
                 //else
@@ -121,19 +154,19 @@ namespace IEC
             public string unixtime;
         }
 
-        void RaiseCallbacks(bool result)
+        void RaiseCallbacks(Action<bool> callback, bool result)
         {
-            for (int i = 0; i < m_ListCallback.Count; i++)
+            if (m_TimeCheckType != TimeCheckType.AllOnline && result == false)
             {
-                m_ListCallback[i](result);
+                result = true;
             }
-            m_ListCallback.Clear();
+            callback?.Invoke(result);
         }
 
         public void SetServerURL(string url)
         {
             serverURL = url;
-            Debug.Log("Set server url:" + serverURL);
+            Debug.Log("Set server url: " + serverURL);
         }
     }
 }

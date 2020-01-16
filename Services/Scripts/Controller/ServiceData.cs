@@ -8,5 +8,6 @@ namespace IEC
     public class ServiceData
     {
         public bool isInterFallbackForReward;
+        public TimeCheckType timeCheckType;
     }
 }
