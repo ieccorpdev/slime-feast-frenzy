@@ -153,7 +153,7 @@ namespace IEC
             m_ReceiptVerify = new ReceiptVerifyOffline();
 #endif
 #if (PluginUnityIAP)
-            var iapUnity = new IapUnityModule(m_Config.IapConfig, m_DataSecure, m_ReceiptVerify);
+            var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
             m_IAP = iapUnity;
             iapUnity.SetCallbackAnalytic(
             (p) =>
@@ -199,14 +199,14 @@ namespace IEC
 #endif
 
 #if (PluginKochava)
-                m_KochavaAnalytic = new KochavaAnalyticModule(m_Config.kochavaConfig.androidID, m_Config.kochavaConfig.iosID);
+                m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
                 m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
             }
 
             m_DataRemote = m_DataNormal;
 #if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, m_Config.isTestRemoteConfig, m_Config.remoteConfigs);
+            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.remoteConfigs);
 #endif
 
             InitAdsAfterGDPR(true);
@@ -288,12 +288,12 @@ namespace IEC
                 };
 
                 var adsAppodeal = new AppodealModule();
-                adsAppodeal.InitAppodeal(m_Config.AppodealConfig, disableNetworks, isAcceptConsent, !isNoAds, !isNoAds);
+                adsAppodeal.InitAppodeal(config.AppodealConfig, disableNetworks, isAcceptConsent, !isNoAds, !isNoAds);
                 m_Ads = adsAppodeal;
 #endif
 
 #if (PluginGoogleAds)
-                var ecpmConfigs = m_Config.GetEcpmAdsWaterfall();
+                var ecpmConfigs = config.GetEcpmAdsWaterfall();
                 var listAdsEcpm = new List<IAdsService>();
                 if (ecpmConfigs.Length > 0)
                 {
@@ -314,7 +314,7 @@ namespace IEC
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(m_Config.ApplovinConfig, true, true, (result) =>
+                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
                   {
                       if (result)
                       {
