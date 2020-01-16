@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
 
-namespace Root
+namespace IEC
 {
     public class IapUnityModule : IInAppPurchaseService, IStoreListener
     {

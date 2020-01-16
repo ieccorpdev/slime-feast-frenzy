@@ -6,7 +6,7 @@ using UnityEngine;
 using System;
 using GoogleMobileAds.Api;
 
-namespace Root
+namespace IEC
 {
     public class AdmobModule : IAdsService
     {

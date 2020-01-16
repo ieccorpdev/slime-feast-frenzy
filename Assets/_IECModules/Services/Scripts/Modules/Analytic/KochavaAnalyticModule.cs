@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Root
+namespace IEC
 {
     public class KochavaAnalyticModule : IAnalyticEvent
     {

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Analytics;
 
-namespace Root
+namespace IEC
 {
     public class FirebaseAnalyticModule : IAnalyticEvent
     {

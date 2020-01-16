@@ -7,7 +7,7 @@ using AppodealAds.Unity.Api;
 using AppodealAds.Unity.Common;
 using System;
 
-namespace Root
+namespace IEC
 {
     public class AppodealModule : IAdsService, IBannerAdListener, IInterstitialAdListener, IRewardedVideoAdListener
     {
@@ -184,7 +184,7 @@ namespace Root
             return m_NullAdsState;
         }
 
-        #region bannerAds
+#region bannerAds
 
         public void onBannerLoaded(bool isPrecache)
         {
@@ -228,9 +228,9 @@ namespace Root
             AdsStateData.DebugLog("Appodeal onBannerExpired");
         }
 
-        #endregion
+#endregion
 
-        #region fullAds
+#region fullAds
 
         public void onInterstitialLoaded(bool isPrecache)
         {
@@ -267,9 +267,9 @@ namespace Root
             AdsStateData.DebugLog("Appodeal onInterstitialExpired");
         }
 
-        #endregion
+#endregion
 
-        #region rewardAds
+#region rewardAds
 
         public void onRewardedVideoLoaded(bool precache)
         {
@@ -315,7 +315,7 @@ namespace Root
             AdsStateData.SafeInvoke(m_RewardAdsState.onClick);
         }
 
-        #endregion
+#endregion
     }
 }
 
