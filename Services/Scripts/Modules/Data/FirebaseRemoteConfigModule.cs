@@ -6,7 +6,7 @@ using UnityEngine;
 using Firebase.RemoteConfig;
 using Firebase.Extensions;
 
-namespace Root
+namespace IEC
 {
     public class FirebaseRemoteConfigModule : IDataService
     {
