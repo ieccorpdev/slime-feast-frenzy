@@ -74,6 +74,15 @@ namespace IEC
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
             TimeServer().SetServerURL(serverUrl);
+            TimeServer().SetCheckType(m_ServiceData.timeCheckType);
+            TimeServer().RequestTimeAuto(60f, (result) =>
+            {
+                if (result)
+                {
+                    m_Retention.UpdateTimeNow();
+                    EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
+                }
+            });
             StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
@@ -532,6 +541,18 @@ namespace IEC
             {
                 Ads().Show(AdsEnum.BANNER_BOTTOM, null);
             }
+        }
+
+        public void RequestTimeServer()
+        {
+            TimeServer().RequestTimeNow((result) =>
+            {
+                if (result)
+                {
+                    m_Retention.UpdateTimeNow();
+                    EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
+                }
+            });
         }
 
         IEnumerator IE_CountOneSec()

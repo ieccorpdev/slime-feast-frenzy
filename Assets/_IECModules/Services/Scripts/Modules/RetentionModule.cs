@@ -8,8 +8,8 @@ namespace IEC
     {
         public const string FIRST_TIME_KEY = "Retention.FirstTime";
         public const string LAST_TIME_KEY = "Retention.LastTime";
-        public const string DAY_X_KEY = "Retention.DayX";
-        public const string DAY_Y_KEY = "Retention.DayY";
+        public const string COUNT_DATE_KEY = "Retention.CountDate";
+        public const string COUNT_DAY_KEY = "Retention.CountDay";
 
         IDataService m_Data;
         ITimeServer m_Time;
@@ -17,13 +17,15 @@ namespace IEC
         DateTime m_FirstTime;
         DateTime m_LastTime;
 
-        int m_DayX;
-        int m_DayY;
+        int m_CountDate;
+        int m_CountDay;
 
         public RetentionModule(IDataService dataService, ITimeServer timeServer)
         {
             m_Data = dataService;
             m_Time = timeServer;
+            m_CountDate = 1;
+            m_CountDay = 1;
         }
 
         public void UpdateTimeNow()
@@ -47,33 +49,33 @@ namespace IEC
             m_FirstTime = new DateTime(firstTimeTicks);
             m_LastTime = new DateTime(lastTimeTicks);
 
-            m_DayX = m_Data.GetInt(DAY_X_KEY, 1);
-            m_DayY = m_Data.GetInt(DAY_Y_KEY, 1);
+            m_CountDate = m_Data.GetInt(COUNT_DATE_KEY, 1);
+            m_CountDay = m_Data.GetInt(COUNT_DAY_KEY, 1);
 
             if (m_LastTime.Date != now.Date)
             {
-                m_DayX += 1;
+                m_CountDate += 1;
             }
             m_Data.SetString(LAST_TIME_KEY, now.Ticks.ToString());
 
             var timeDuration = now - m_FirstTime;
             if (timeDuration.Days >= 0)
             {
-                m_DayY = timeDuration.Days + 1;
+                m_CountDay = timeDuration.Days + 1;
             }
 
-            m_Data.SetInt(DAY_X_KEY, m_DayX);
-            m_Data.SetInt(DAY_Y_KEY, m_DayY);
+            m_Data.SetInt(COUNT_DATE_KEY, m_CountDate);
+            m_Data.SetInt(COUNT_DAY_KEY, m_CountDay);
         }
 
-        public int GetDayX()
+        public int GetCountDate()
         {
-            return m_DayX;
+            return m_CountDate;
         }
 
-        public int GetDayY()
+        public int GetCountDay()
         {
-            return m_DayY;
+            return m_CountDay;
         }
     }
 }

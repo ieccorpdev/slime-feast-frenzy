@@ -14,6 +14,7 @@ namespace IEC
             public const string COUNT_ONE_SEC = "Service.COUNT_ONE_SEC";
 
             public const string REMOTE_CONFIG_LOADED = "Service.REMOTE_CONFIG_LOADED";
+            public const string UPDATE_TIME_SERVER = "Service.UPDATE_TIME_SERVER";
         }
     }
 }
