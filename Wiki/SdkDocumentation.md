@@ -71,7 +71,7 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 **7. Kochava SDK**
 
-* Link download https://support.kochava.com/sdk-integration/unity-sdk-integration/
+* Link download: https://support.kochava.com/sdk-integration/unity-sdk-integration/
 * Thêm define `PluginKochava`.
 * Thêm id Kochava vào file `ServicesConfig` (*)
 
