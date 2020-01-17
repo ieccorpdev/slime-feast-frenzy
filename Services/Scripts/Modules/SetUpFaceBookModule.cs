@@ -4,7 +4,7 @@ using System;
 using UnityEngine;
 using Facebook.Unity;
 
-namespace Root
+namespace IEC
 {
     public class SetUpFacebookModule : ISetUpSdkService
     {
