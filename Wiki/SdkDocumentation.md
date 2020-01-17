@@ -64,7 +64,7 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 **6. Firebase SDK**
 
-* Link download: 
+* Link download: https://dl.google.com/firebase/sdk/unity/firebase_unity_sdk_6.1.1.zip
 * Liên hệ PM để biết cần import các plugin nào (Analytic, RemoteConfig).
 * Thêm file config firebase vào project (Liên hệ PM để lấy link các file config).
 * Thêm define `PluginFirebase`, `PluginFirebaseAnalytic`, `PluginFirebaseRemote`. (**)
