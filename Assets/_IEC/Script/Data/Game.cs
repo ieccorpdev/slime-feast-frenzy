@@ -12,5 +12,7 @@ namespace IEC
     {
         public bool isDebugReset;
         public int emptyData;
+
+        public float timeDelayFullAds;
     }
 }
