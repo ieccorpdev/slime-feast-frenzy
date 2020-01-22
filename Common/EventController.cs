@@ -10,6 +10,11 @@ namespace IEC
         private static EventController s_Instance;
         private static StaticObjectsContainer s_StaticObjects;
 
+        private static bool s_IsCheckInstance;
+
+        [SerializeField]
+        private bool m_IsDontDestroy;
+
         [SerializeField]
         private GameObject m_SceneRootObj;
 
@@ -23,7 +28,45 @@ namespace IEC
 
         void Awake()
         {
-            s_Instance = this;
+            if (!s_IsCheckInstance)
+            {
+                s_IsCheckInstance = true;
+                var instances = FindObjectsOfType<EventController>();
+                int count = 0;
+                for (int i = 0; i < instances.Length; i++)
+                {
+                    if (instances[i] != null && s_Instance != instances[i])
+                    {
+                        count++;
+                    }
+                }
+                if (count > 1)
+                {
+                    throw new Exception("More than 1 EventController on Scene");
+                }
+                else
+                {
+                    for (int i = 0; i < instances.Length; i++)
+                    {
+                        if (instances[i] != null && s_Instance != instances[i])
+                        {
+                            if (s_Instance != null)
+                            {
+                                Destroy(s_Instance.gameObject);
+                            }
+                            s_Instance = instances[i];
+                            break;
+                        }
+                    }
+                }
+            }
+            if (s_Instance != this) return;
+
+            if (m_IsDontDestroy)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+
             if (s_StaticObjects == null)
             {
                 s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
@@ -32,7 +75,7 @@ namespace IEC
             else
             {
                 var otherStaticContainers = FindObjectsOfType<StaticObjectsContainer>();
-                foreach(var item in otherStaticContainers)
+                foreach (var item in otherStaticContainers)
                 {
                     if (item != s_StaticObjects)
                         Destroy(item.gameObject);
@@ -76,6 +119,8 @@ namespace IEC
 
         void Start()
         {
+            s_IsCheckInstance = false;
+            if (m_StartEvents == null) return;
             foreach (var eventStart in m_StartEvents)
             {
                 if (eventStart.IsActive())
@@ -122,6 +167,7 @@ namespace IEC
 
         void Update()
         {
+            if (m_UpdateEvents == null) return;
             float deltaTime = Time.deltaTime;
             for (int i = 0; i < m_UpdateEvents.Length; i++)
             {
@@ -136,6 +182,7 @@ namespace IEC
 
         void FixedUpdate()
         {
+            if (m_FixedUpdateEvents == null) return;
             float deltaTime = Time.fixedDeltaTime;
             for (int i = 0; i < m_FixedUpdateEvents.Length; i++)
             {
