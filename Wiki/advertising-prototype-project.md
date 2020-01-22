@@ -4,9 +4,9 @@
 2. Ghép IEC Modules
 3. Đẩy project lên gitlab
 4. Thêm các plugin SDK
-   1. Facebook
-   2. Kochava
-   3. Applovin
+   4.1. Facebook
+   4.2. Kochava
+   4.3. Applovin
 5. Thêm các event Analytic
 6. Hiển thị quảng cáo
 7. Cập nhật ID từ File Checklist
