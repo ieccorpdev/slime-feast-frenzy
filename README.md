@@ -21,3 +21,4 @@
 
 ### [Cấu trúc mẫu project EDC](Wiki/event-data-controller-template-project.md)
 
+[Project IEC Module](https://gitlab.com/iecgames/iec-unity-modules)
