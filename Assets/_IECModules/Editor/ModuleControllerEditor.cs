@@ -29,5 +29,15 @@ namespace _IECModules
         {
             PlayerPrefsEditor.Init();
         }
+
+        [MenuItem("IEC/Create Prototype Controller", false, 0)]
+        public static void CreatePrototypeController()
+        {
+            var modulePrefab =
+                AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_IECModules/_PrototypeControllers.prefab");
+            var moduleGameObject = (GameObject)PrefabUtility.InstantiatePrefab(modulePrefab);
+            moduleGameObject.name = "_PrototypeControllers";
+            moduleGameObject.transform.SetAsFirstSibling();
+        }
     }
 }
