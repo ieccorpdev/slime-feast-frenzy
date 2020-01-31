@@ -70,7 +70,10 @@ namespace IEC
             if (s_StaticObjects == null)
             {
                 s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
-                DontDestroyOnLoad(s_StaticObjects.gameObject);
+                if (s_StaticObjects)
+                {
+                    DontDestroyOnLoad(s_StaticObjects.gameObject);
+                }
             }
             else
             {
@@ -261,7 +264,10 @@ namespace IEC
         {
             Controllers.Add(this);
 
-            LocateController(s_StaticObjects.staticControllersParent);
+            if (s_StaticObjects != null)
+            {
+                LocateController(s_StaticObjects.staticControllersParent);
+            }
             LocateController(transform);
         }
 
