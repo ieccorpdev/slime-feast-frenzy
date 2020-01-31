@@ -74,7 +74,6 @@
 10. Thiết lập Unity Cloud Build
 
     * [Unity Cloud Build Documentation](https://docs.google.com/document/d/1S_Zg0yQF_j4PlHPyJLaGSL27jkoOpvxDYiwJ4fdwt5c/edit)
-    * Bỏ bước Setup Webhook
     * Chỉ Setup vào Discord :
       * Tạo một Integration Discord vào channel `build-advertising-prototypes` với các event build started, failure và success
       * Tạo một Integration Discord vào channel `advertising-prototypes` với event build success
