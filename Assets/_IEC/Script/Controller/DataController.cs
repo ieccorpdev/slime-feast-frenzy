@@ -62,7 +62,7 @@ namespace IEC
 
         void LoadData()
         {
-            var playerData = m_ServicesController.DataSecure().GetObject(PLAYER_DATA_KEY, new PlayerSecret());
+            var playerData = m_ServicesController.DataSecure().GetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
             Pool.Set(playerData);
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();
