@@ -78,8 +78,10 @@
     * Config build apk test
       * Tên : `Dev Armv7`
       * Branch: `master`
+      * Auto build: `Yes`
     * Config build aab
       * Tên: `Release AAB`
       * Branch : `release-aab`
       * Advanced : bật `Build App Bundles (.aab)`
+      * Auto build: `Yes`
 
