@@ -53,13 +53,13 @@ namespace IEC
 
                     if (isTransactionValid == false)
                     {
-                        Debug.Log("Transaction is not valid");
+                        Debug.LogError("Transaction is not valid");
                         throw new IAPSecurityException();
                     }
                 }
                 catch (IAPSecurityException)
                 {
-                    Debug.Log("Invalid receipt, not unlocking content");
+                    Debug.LogError("Invalid receipt, not unlocking content");
                     validPurchase = false;
                 }
             }

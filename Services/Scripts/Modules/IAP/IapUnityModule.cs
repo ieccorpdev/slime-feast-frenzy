@@ -161,7 +161,7 @@ namespace IEC
                 else
                 {
                     // ... report the product look-up failure situation  
-                    Debug.Log("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
+                    Debug.LogError("BuyProductID: FAIL. Not purchasing product, either is not found or is not available for purchase");
                     PurchaseProductResult(productId, false);
                 }
             }
@@ -170,7 +170,7 @@ namespace IEC
             {
                 // ... report the fact Purchasing has not succeeded initializing yet. Consider waiting longer or 
                 // retrying initiailization.
-                Debug.Log("BuyProductID FAIL. Not initialized.");
+                Debug.LogError("BuyProductID FAIL. Not initialized.");
                 PurchaseProductResult(productId, false);
             }
         }
@@ -189,7 +189,7 @@ namespace IEC
             if (!IsInitialized())
             {
                 // ... report the situation and stop restoring. Consider either waiting longer, or retrying initialization.
-                Debug.Log("RestorePurchases FAIL. Not initialized.");
+                Debug.LogError("RestorePurchases FAIL. Not initialized.");
                 onRestoreDone(false);
                 return;
             }
@@ -237,14 +237,14 @@ namespace IEC
             else
             {
                 // We are not running on an Apple device. No work is necessary to restore purchases.
-                Debug.Log("RestorePurchases FAIL. Not supported on this platform. Current = " + Application.platform);
+                Debug.LogError("RestorePurchases FAIL. Not supported on this platform. Current = " + Application.platform);
                 onRestoreDone(false);
             }
         }
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
-            Debug.Log("Unity IAP Module Init failed:" + error.ToString());
+            Debug.LogError("Unity IAP Module Init failed:" + error.ToString());
         }
 
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
@@ -269,12 +269,12 @@ namespace IEC
                     }
                     else
                     {
-                        Debug.Log(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", productId));
+                        Debug.LogError(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", productId));
                     }
                 }
                 else
                 {
-                    Debug.Log(string.Format("ProcessPurchase: FAIL. Not valid puchase of product: '{0}'", productId));
+                    Debug.LogError(string.Format("ProcessPurchase: FAIL. Not valid puchase of product: '{0}'", productId));
                 }
             });
 
@@ -370,17 +370,17 @@ namespace IEC
                     }
                     else
                     {
-                        Debug.Log("This product is not available for SubscriptionManager class, only products that are purchase by 1.19+ SDK can use this class.");
+                        Debug.LogError("This product is not available for SubscriptionManager class, only products that are purchase by 1.19+ SDK can use this class.");
                     }
                 }
                 else
                 {
-                    Debug.Log("the product is not a subscription product");
+                    Debug.LogError("the product is not a subscription product");
                 }
             }
             else
             {
-                Debug.Log("the product should have a valid receipt");
+                Debug.LogError("the product should have a valid receipt");
             }
 
             return false;
@@ -391,7 +391,7 @@ namespace IEC
             var receipt_wrapper = (Dictionary<string, object>)MiniJson.JsonDecode(receipt);
             if (!receipt_wrapper.ContainsKey("Store") || !receipt_wrapper.ContainsKey("Payload"))
             {
-                Debug.Log("The product receipt does not contain enough information");
+                Debug.LogError("The product receipt does not contain enough information");
                 return false;
             }
             var store = (string)receipt_wrapper["Store"];
@@ -406,20 +406,20 @@ namespace IEC
                             var payload_wrapper = (Dictionary<string, object>)MiniJson.JsonDecode(payload);
                             if (!payload_wrapper.ContainsKey("json"))
                             {
-                                Debug.Log("The product receipt does not contain enough information, the 'json' field is missing");
+                                Debug.LogError("The product receipt does not contain enough information, the 'json' field is missing");
                                 return false;
                             }
                             var original_json_payload_wrapper = (Dictionary<string, object>)MiniJson.JsonDecode((string)payload_wrapper["json"]);
                             if (original_json_payload_wrapper == null || !original_json_payload_wrapper.ContainsKey("developerPayload"))
                             {
-                                Debug.Log("The product receipt does not contain enough information, the 'developerPayload' field is missing");
+                                Debug.LogError("The product receipt does not contain enough information, the 'developerPayload' field is missing");
                                 return false;
                             }
                             var developerPayloadJSON = (string)original_json_payload_wrapper["developerPayload"];
                             var developerPayload_wrapper = (Dictionary<string, object>)MiniJson.JsonDecode(developerPayloadJSON);
                             if (developerPayload_wrapper == null || !developerPayload_wrapper.ContainsKey("is_free_trial") || !developerPayload_wrapper.ContainsKey("has_introductory_price_trial"))
                             {
-                                Debug.Log("The product receipt does not contain enough information, the product is not purchased using 1.19 or later");
+                                Debug.LogError("The product receipt does not contain enough information, the product is not purchased using 1.19 or later");
                                 return false;
                             }
                             return true;
@@ -455,7 +455,7 @@ namespace IEC
             }
             else
             {
-                Debug.Log("the product is not a subscription product");
+                Debug.LogError("the product is not a subscription product");
             }
 
             return false;
@@ -497,17 +497,17 @@ namespace IEC
                     }
                     else
                     {
-                        Debug.Log("This product is not available for SubscriptionManager class, only products that are purchase by 1.19+ SDK can use this class.");
+                        Debug.LogError("This product is not available for SubscriptionManager class, only products that are purchase by 1.19+ SDK can use this class.");
                     }
                 }
                 else
                 {
-                    Debug.Log("the product is not a subscription product");
+                    Debug.LogError("the product is not a subscription product");
                 }
             }
             else
             {
-                Debug.Log("the product should have a valid receipt");
+                Debug.LogError("the product should have a valid receipt");
             }
 
             return null;

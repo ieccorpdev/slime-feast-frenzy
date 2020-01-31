@@ -17,13 +17,13 @@ namespace IEC
             m_CallBack = callback;
             if (m_State == SdkState.Initializing)
             {
-                Debug.Log("Call Init Firebase while initializing");
+                Debug.LogError("Call Init Firebase while initializing");
                 return;
             }
 
             if (m_State == SdkState.Initialized)
             {
-                Debug.Log("Call Init Firebase but initialized");
+                Debug.LogError("Call Init Firebase but initialized");
                 if (callback != null)
                 {
                     callback.Invoke(true);
@@ -33,7 +33,7 @@ namespace IEC
 
             if (m_State == SdkState.FailInit)
             {
-                Debug.Log("Call Init Firebase but already fail initialized");
+                Debug.LogError("Call Init Firebase but already fail initialized");
                 if (callback != null)
                 {
                     callback.Invoke(false);

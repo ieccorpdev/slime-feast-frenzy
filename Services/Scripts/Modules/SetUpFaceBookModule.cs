@@ -14,13 +14,13 @@ namespace IEC
         {
             if (m_State == SdkState.Initializing)
             {
-                Debug.Log("Call Init Facebook while initializing");
+                Debug.LogError("Call Init Facebook while initializing");
                 return;
             }
 
             if (m_State == SdkState.Initialized)
             {
-                Debug.Log("Call Init Facebook but initialized");
+                Debug.LogError("Call Init Facebook but initialized");
                 return;
             }
 
@@ -52,6 +52,7 @@ namespace IEC
                     else
                     {
                         m_State = SdkState.NotInit;
+                        Debug.LogError("Facebook init fail");
                     }
                     
                     UnityToolbag.Dispatcher.InvokeAsync(() =>

@@ -53,8 +53,8 @@ namespace IEC
             var productId = product.definition.id;
             var receipt = jsonConverter.FromJson<PurchaseReceipt>(product.receipt);
             var url = urlCheck;
-            //Debug.Log("CheckReceiptOnline url : " + url);
-            //Debug.Log("CheckReceiptOnline payload : " + receipt.Payload);
+            Debug.Log("CheckReceiptOnline url : " + url);
+            Debug.Log("CheckReceiptOnline payload : " + receipt.Payload);
 
             var form = new WWWForm();
             form.AddField("payload", receipt.Payload);
@@ -65,7 +65,7 @@ namespace IEC
             var www = new WWW(url, form);
             yield return www;
 
-            //Debug.Log("CheckReceiptOnline www response : " + www.text);
+            Debug.Log("CheckReceiptOnline www response : " + www.text);
 
             bool isValid = false;
             if (www.error == null)
@@ -79,17 +79,17 @@ namespace IEC
                     }
                     else
                     {
-                        Debug.Log("CheckReceiptOnline error status : " + result.status);
+                        Debug.LogError("CheckReceiptOnline error status : " + result.status);
                     }
                 }
                 else
                 {
-                    Debug.Log("CheckReceiptOnline error response json");
+                    Debug.LogError("CheckReceiptOnline error response json");
                 }
             }
             else
             {
-                Debug.Log("CheckReceiptOnline www error : " + www.error);
+                Debug.LogError("CheckReceiptOnline www error : " + www.error);
             }
 
             callback(isValid);
