@@ -14,11 +14,9 @@
      * Thêm các Scene của source ngoài vào `Build Settings`, test thử game có thể chạy bình thường không
    * Ghép Start Scene (với source ngoài)
      * Mở Scene khởi chạy Game (Start Scene)
-     * Mở thêm (Open Additive) Scene `_IEC/Game`
-     * Copy `_StaticObjects`, `_Controllers`, `IEC MOdule Controller`  từ Game sang Start Scene
-     * Đóng (Remove) Scene `_IEC/Game`
+     * Thêm prefab `_IEC/Prefab/_PrototypeControllers` vào scene
      * Tùy chỉnh `_Controllers` cho phù hợp với game: bỏ Test, bổ sung CheatCode, thêm Controller kết nối với code source ngoài
-   * Xóa Readme.md và folder Wiki
+   * Xóa `Readme.md` và folder Wiki
    * Tạo `first commit` lưu lại kết quả ghép project
 
 2. Cập nhật IEC Modules
