@@ -23,7 +23,7 @@
 
 [Project IEC Module](https://gitlab.com/iecgames/iec-unity-modules)
 
-## [Hướng dẫn tạo project advertising prototype](Wiki/advertising-prototype-project.md)
+## Hướng dẫn tạo project advertising prototype
 
 1. Ghép với empty project
 
