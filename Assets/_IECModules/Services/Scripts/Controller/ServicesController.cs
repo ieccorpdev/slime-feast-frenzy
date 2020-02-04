@@ -492,7 +492,7 @@ namespace IEC
                         }
                     }
 
-                    if (param.isSkip)
+                    if ((!param.isSuccess) || param.isSkip)
                     {
                         SafeInvoke(skipCallback);
                     }
