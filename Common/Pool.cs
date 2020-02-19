@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace IEC
 {
@@ -17,6 +18,11 @@ namespace IEC
 
         public static void Set<T>(T t) where T : class, new()
         {
+            if (t == null)
+            {
+                Debug.LogError("Cannot set null object to Pool");
+                return;
+            }
             var type = typeof(T);
             m_Dict[type] = t;
         }

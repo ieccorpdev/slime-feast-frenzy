@@ -359,9 +359,9 @@ namespace _IECModules
                     PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
                     PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
 
-                    if (bundleId.Contains("GMA")) PlayerSettings.companyName = "GMA";
-                    else if (bundleId.Contains("IEC")) PlayerSettings.companyName = "IEC";
-                    else if (bundleId.Contains("DTA")) PlayerSettings.companyName = "DTA";
+                    if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
+                    else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
+                    else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
                     else
                     {
                         AddLog($"ERROR: Unknown Company Name");
