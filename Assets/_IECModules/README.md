@@ -80,6 +80,9 @@ ModuleController.cheatCode.RemoveCheatCodeButtonByName(buttonText);
 * `PluginFirebase` : add after import any Firebase SDK
 * `PluginFirebaseAnalytic` : add after import Firebase Analytic SDK to use `FirebaseAnalyticModule`
 * `PluginFirebaseRemote` : add after import Firebase Remote SDK to use `FirebaseRemoteConfigModule`
+* `PluginAppodeal` : add after import Appodeal SDK to use `AppodealModule`
+* `PluginGoogleAds` : add after import Admob SDK to use `AdmobModule` with `EcpmAdsModule`
+* `PluginApplovin` : add after import Applovin SDK to use `ApplovinModule`
 * `PluginKochava` : add after import Kochava SDK to use `KochavaAnalyticModule`
 * `PluginUnityIAP` : add after add Unity IAP SDK to use `IapUnityModule`
 * `PluginReceiptVerify` : add after create `GooglePlayTangle` and `AppleTangle` to verify IAP offline
