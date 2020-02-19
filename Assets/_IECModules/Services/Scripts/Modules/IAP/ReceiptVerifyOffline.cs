@@ -1,4 +1,4 @@
-﻿#if (PluginUnityIAP && PluginVerifyOfflineIAP)
+﻿#if (PluginUnityIAP && PluginReceiptVerify)
 using System;
 using UnityEngine;
 using UnityEngine.Purchasing;
