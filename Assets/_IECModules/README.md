@@ -74,3 +74,12 @@ ModuleController.cheatCode.GetCheatCodeParam(buttonText);
 ModuleController.cheatCode.RemoveCheatCodeButtonByName(buttonText);
 
 ```
+
+#### 4. Plugin Define Symbols
+* `PluginFacebook` : add after import Facebook SDK to use `FBAnalyticEvent`
+* `PluginFirebase` : add after import any Firebase SDK
+* `PluginFirebaseAnalytic` : add after import Firebase Analytic SDK to use `FirebaseAnalyticModule`
+* `PluginFirebaseRemote` : add after import Firebase Remote SDK to use `FirebaseRemoteConfigModule`
+* `PluginKochava` : add after import Kochava SDK to use `KochavaAnalyticModule`
+* `PluginUnityIAP` : add after add Unity IAP SDK to use `IapUnityModule`
+* `PluginReceiptVerify` : add after create `GooglePlayTangle` and `AppleTangle` to verify IAP offline
