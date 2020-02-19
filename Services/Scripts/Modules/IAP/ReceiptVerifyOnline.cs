@@ -1,9 +1,8 @@
-﻿using System;
+﻿#if (PluginUnityIAP && PluginVerifyOnlineIAP)
+using System;
 using System.Collections;
 using UnityEngine;
-#if (PluginUnityIAP)
 using UnityEngine.Purchasing;
-#endif
 
 namespace IEC
 {
@@ -33,7 +32,6 @@ namespace IEC
             this.jsonConverter = jsonConverter;
         }
 
-#if (PluginUnityIAP)
         public override void CheckReceipt(Product product, Action<bool> callback)
         {
             bool validPurchase = IsValidOffline(product);
@@ -94,6 +92,6 @@ namespace IEC
 
             callback(isValid);
         }
-#endif
     }
 }
+#endif

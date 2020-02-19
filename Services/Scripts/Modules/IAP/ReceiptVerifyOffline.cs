@@ -1,15 +1,13 @@
-﻿using System;
+﻿#if (PluginUnityIAP && PluginVerifyOfflineIAP)
+using System;
 using UnityEngine;
-#if (PluginUnityIAP)
 using UnityEngine.Purchasing;
 using UnityEngine.Purchasing.Security;
-#endif
 
 namespace IEC
 {
     public class ReceiptVerifyOffline : IReceiptVerifyService
     {
-#if (PluginUnityIAP)
         public virtual void CheckReceipt(Product product, Action<bool> callback)
         {
             callback(IsValidOffline(product));
@@ -64,9 +62,8 @@ namespace IEC
                 }
             }
 #endif
-
             return validPurchase;
         }
-#endif
     }
 }
+#endif
