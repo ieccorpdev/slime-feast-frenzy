@@ -252,7 +252,7 @@ namespace IEC
             var productId = args.purchasedProduct.definition.id;
             SafeInvoke(m_LogSuccess1, productId);
 
-            receiptVerify.CheckReceipt(new IapProduct(args.purchasedProduct), isValid =>
+            receiptVerify.CheckReceipt(args.purchasedProduct, isValid =>
             {
                 if (isValid)
                 {
