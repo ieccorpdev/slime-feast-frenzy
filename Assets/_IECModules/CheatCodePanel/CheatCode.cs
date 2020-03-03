@@ -24,10 +24,7 @@ namespace _IECModules
         {
             public int value;
 
-            public string selected
-            {
-                get { return options[value]; }
-            }
+            public string selected => options[value];
 
             public List<string> options;
 
@@ -58,10 +55,7 @@ namespace _IECModules
 
         private ShowCheatCodeState m_ShowCheatCodeState;
 
-        public ShowCheatCodeState showCheatCodeState
-        {
-            get { return m_ShowCheatCodeState; }
-        }
+        public ShowCheatCodeState showCheatCodeState => m_ShowCheatCodeState;
 
         [NonSerialized] public UnityEvent onCheatCodeOpen = new UnityEvent();
         [NonSerialized] public UnityEvent onCheatCodeClose = new UnityEvent();
@@ -75,6 +69,7 @@ namespace _IECModules
         private Vector2 m_ScrollviewVector2;
 
         string m_PasswordInputEditString = "";
+        string m_InputSearchString = "";
 
 
         private static readonly int FontSize = Screen.width / 27;
@@ -247,6 +242,12 @@ namespace _IECModules
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
+                    
+                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20,
+                            300, ButtonSize.y), m_InputSearchString, m_InputFieldStyle);
+                    
+                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20,
+                        150, ButtonSize.y), "Search", m_LabelTextStyle);
 
                     var cheatCodeRectHeight = screenHeight * 0.9f;
                     var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight;
@@ -255,15 +256,19 @@ namespace _IECModules
                     var guiSkin = GUI.skin;
                     guiSkin.verticalScrollbar.fixedWidth = Screen.width * 0.05f;
 
+                    var cheatCodeParamListFilter = m_CheatCodeParamList
+                        .Where(x => string.IsNullOrEmpty(m_InputSearchString) || x.buttonText.ToLower().Contains(m_InputSearchString.ToLower()))
+                        .ToList();
+                    
                     m_ScrollviewVector2 = GUI.BeginScrollView(
                         new Rect(0, cheatCodeRectStartY, screenWidth, cheatCodeRectHeight),
                         m_ScrollviewVector2,
                         new Rect(0, cheatCodeRectStartY, screenWidth,
-                            Mathf.Max(cheatCodeRectHeight, cheatCodeSizeEach * (m_CheatCodeParamList.Count + 7))));
+                            Mathf.Max(cheatCodeRectHeight, cheatCodeSizeEach * (cheatCodeParamListFilter.Count + 7))));
 
-                    for (var i = 0; i < m_CheatCodeParamList.Count; i++)
+                    for (var i = 0; i < cheatCodeParamListFilter.Count; i++)
                     {
-                        var cheatCodeParam = m_CheatCodeParamList[i];
+                        var cheatCodeParam = cheatCodeParamListFilter[i];
 
                         var commonButtonRect = new Rect(0, cheatCodeRectStartY + cheatCodeSizeEach * i, 0,
                             ButtonSize.y);
