@@ -416,6 +416,11 @@ namespace IEC
             return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
         }
 
+        public bool IsCanShowFullAds()
+        {
+            return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
+        }
+
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
             if (config.IsNoAds || Application.isEditor)
