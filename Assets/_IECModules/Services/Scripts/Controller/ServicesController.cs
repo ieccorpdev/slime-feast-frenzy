@@ -373,6 +373,16 @@ namespace IEC
             });
         }
 
+        public void PushEventIapKochava(string packName, float price)
+        {
+#if (PluginKochava)
+            Kochava.Event myEvent = new Kochava.Event(Kochava.EventType.Purchase);
+            myEvent.name = packName;
+            myEvent.price = price;
+            Kochava.Tracker.SendEvent(myEvent);
+#endif
+        }
+
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
             if (param == null) param = new Dictionary<string, object>();
