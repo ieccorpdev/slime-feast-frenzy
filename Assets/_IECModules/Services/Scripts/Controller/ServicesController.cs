@@ -411,6 +411,11 @@ namespace IEC
 #endif
         }
 
+        public bool IsCanShowFullAds()
+        {
+            return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
+        }
+
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
             if (config.IsNoAds || Application.isEditor)
@@ -442,6 +447,11 @@ namespace IEC
 
                 SafeInvoke(closeCallback);
             });
+        }
+
+        public bool IsCanShowFullAdsWithTime(float timeCondition)
+        {
+            return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();
         }
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
