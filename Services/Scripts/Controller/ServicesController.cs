@@ -411,14 +411,9 @@ namespace IEC
             }
         }
 
-        public void PushEventIapKochava(string packName, float price)
+        public bool IsCanShowFullAds()
         {
-#if (PluginKochava)
-            Kochava.Event myEvent = new Kochava.Event(Kochava.EventType.Purchase);
-            myEvent.name = packName;
-            myEvent.price = price;
-            Kochava.Tracker.SendEvent(myEvent);
-#endif
+            return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
         }
 
         public bool IsCanShowFullAds()
