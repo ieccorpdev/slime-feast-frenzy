@@ -373,6 +373,16 @@ namespace IEC
             });
         }
 
+        public void PushEventIapKochava(string packName, float price)
+        {
+#if (PluginKochava)
+            Kochava.Event myEvent = new Kochava.Event(Kochava.EventType.Purchase);
+            myEvent.name = packName;
+            myEvent.price = price;
+            Kochava.Tracker.SendEvent(myEvent);
+#endif
+        }
+
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
             if (param == null) param = new Dictionary<string, object>();
@@ -411,6 +421,11 @@ namespace IEC
 #endif
         }
 
+        public bool IsCanShowFullAds()
+        {
+            return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
+        }
+
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
             if (config.IsNoAds || Application.isEditor)
@@ -442,6 +457,11 @@ namespace IEC
 
                 SafeInvoke(closeCallback);
             });
+        }
+
+        public bool IsCanShowFullAdsWithTime(float timeCondition)
+        {
+            return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();
         }
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
