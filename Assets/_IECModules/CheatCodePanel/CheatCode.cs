@@ -213,6 +213,14 @@ namespace _IECModules
                 case ShowCheatCodeState.Hide:
                     break;
                 case ShowCheatCodeState.ShowPasswordInput:
+                    var bgColorCurrent = GUI.backgroundColor;
+                    GUI.backgroundColor = new Color(0 , 0,0,0);
+                    if (GuiButton(new Rect(0, Screen.height * 0.25f, Screen.width, Screen.height * 0.75f), ""))
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.Hide);
+                    }
+                    GUI.backgroundColor = bgColorCurrent;
+                    
                     var passwordInputTextSize = new Vector2(screenWidthCenter, 300);
                     var passwordInputTextRect = new Rect((screenWidth - passwordInputTextSize.x) / 2,
                         50, passwordInputTextSize.x, passwordInputTextSize.y);
