@@ -143,7 +143,10 @@ namespace IEC
             m_SetUpFirebase = new SetUpFirebaseModule();
             m_SetUpFirebase.Init((isLoaded) =>
             {
-                RaiseInitEvent(EventList.Service.FIREBASE_LOADED);
+                if (isLoaded)
+                {
+                    RaiseInitEvent(EventList.Service.FIREBASE_LOADED);
+                }
             });
 #endif
             m_IAP = new InAppPurchaseMock(m_DataSecure);
