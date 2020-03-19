@@ -77,9 +77,11 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 **8. Unity Iap SDK** (Coming soon)
 
-**9. Multidex**
+**9. Multidex** (With AndroidX)
 
-* Thêm `android:name="android.support.multidex.MultiDexApplication"` vào thẻ `application` trong file `AndroidManifest`
+* Thêm vào thẻ `application` trong file `AndroidManifest`:
+  * TH **không** sử dụng Android X:`android:name="android.support.multidex.MultiDexApplication"`.
+  * TH **có** sử dụng Android X: `android:name="androidx.multidex.MultiDexApplication"`.
 * Thêm `multiDexEnabled true` vào mục `android - defaultConfig` trong file `mainTemplate.gradle`
 * Thêm  vào mục `dependencies` trong file `mainTemplate.gradle`:
   * TH **không** sử dụng Android X: `implementation 'com.android.support:multidex:1.0.3'`.
@@ -92,6 +94,7 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 * `Assets - Play Service Resolver - Android Resolver - Setting`.
 * TH **không** sử dụng AndroidX: Bỏ tick `Use Jetifier`.
 * TH **có** sử dụng AndroidX: Tích `Use Jetifier`.
+* Sau khi tick hay bỏ tick, nhấn OK và chạy resolver.
 
 **11. Resolver**
 
