@@ -32,8 +32,15 @@ namespace IEC
             }
         }
 
+        bool IsFirebaseReady()
+        {
+            return m_FirebaseSetUp.IsReady();
+        }
+
         public void Load(Action callback)
         {
+            if (!IsFirebaseReady()) return;
+
             FirebaseRemoteConfig.FetchAsync(new System.TimeSpan(0)).ContinueWithOnMainThread(taskFetch =>
             {
                 var info = FirebaseRemoteConfig.Info;

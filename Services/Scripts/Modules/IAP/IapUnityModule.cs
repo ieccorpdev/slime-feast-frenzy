@@ -73,32 +73,14 @@ namespace IEC
         public void ConnectInit(Action initializedCallback = null)
         {
             this.initializedCallback = initializedCallback;
+
+            StandardPurchasingModule module = StandardPurchasingModule.Instance();
+            module.useFakeStoreUIMode = FakeStoreUIMode.StandardUser;
+
             var builder = ConfigurationBuilder.Instance(StandardPurchasingModule.Instance());
 
-            if (config.isAndroidStaticTest && Application.platform == RuntimePlatform.Android)
-            {
-                builder.AddProduct(STATIC_TEST, ProductType.Consumable, new IDs
-                    {
-                        { config.androidStaticTestKey, GooglePlay.Name },
-                        { config.androidStaticTestKey, MacAppStore.Name }
-                    });
-            }
-            else
-            {
-                for (int i = 0; i < config.products.Length; i++)
-                {
-                    var product = config.products[i];
-                    ProductType type = ProductType.Consumable;
-                    type = (product.Type == IapType.NonConsume) ? ProductType.NonConsumable : type;
-                    type = (product.Type == IapType.Subscription) ? ProductType.Subscription : type;
-
-                    builder.AddProduct(product.Id, type, new IDs
-                        {
-                            { product.AndroidId, GooglePlay.Name },
-                            { product.IosId, AppleAppStore.Name }
-                        });
-                }
-            }
+            ProductCatalog catalog = ProductCatalog.LoadDefaultCatalog();
+            IAPConfigurationHelper.PopulateConfigurationBuilder(ref builder, catalog);
 
             UnityPurchasing.Initialize(this, builder);
         }
