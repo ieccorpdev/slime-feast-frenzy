@@ -62,6 +62,8 @@ namespace IEC
             }
             if (s_Instance != this) return;
 
+            Debug.Log("EventController Awake");
+
             if (m_IsDontDestroy)
             {
                 DontDestroyOnLoad(gameObject);
@@ -91,6 +93,25 @@ namespace IEC
                 LocateGroup(m_SceneRootObj.transform);
             }
 
+            var consentController = FindObjectOfType<ConsentController>();
+            if (consentController != null)
+            {
+                gameObject.SetActive(false);
+
+                consentController.StartGetConsent(Controllers.Get<ServicesController>().config, () =>
+                {
+                    gameObject.SetActive(true);
+                    InitFromAwake();
+                });
+            }
+            else
+            {
+                InitFromAwake();
+            }
+        }
+
+        void InitFromAwake()
+        {
             m_Listeners = GetEventArray<IEventListener>();
             m_AwakeEvents = GetEventArray<IEventAwake>();
             m_StartEvents = GetEventArray<IEventStart>();
@@ -122,6 +143,7 @@ namespace IEC
 
         void Start()
         {
+            Debug.Log("EventController Start");
             s_IsCheckInstance = false;
             if (m_StartEvents == null) return;
             foreach (var eventStart in m_StartEvents)
