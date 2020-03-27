@@ -66,7 +66,26 @@ namespace IEC
             {
                 DontDestroyOnLoad(gameObject);
             }
+            
+            var consentController = FindObjectOfType<ConsentController>();
+            if (consentController != null)
+            {
+                gameObject.SetActive(false);
 
+                consentController.StartGetConsent(() =>
+                {
+                    InitFromAwake();
+                    gameObject.SetActive(true);
+                });
+            }
+            else
+            {
+                InitFromAwake();
+            }
+        }
+
+        void InitFromAwake()
+        {
             if (s_StaticObjects == null)
             {
                 s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
@@ -122,6 +141,7 @@ namespace IEC
 
         void Start()
         {
+            Debug.Log("EventController Start");
             s_IsCheckInstance = false;
             if (m_StartEvents == null) return;
             foreach (var eventStart in m_StartEvents)
