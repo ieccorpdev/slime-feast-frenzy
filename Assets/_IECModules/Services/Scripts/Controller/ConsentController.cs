@@ -18,7 +18,7 @@ namespace IEC
         private IConsentService m_ConsentService;
 
         // Start is called before the first frame update
-        public void StartGetConsent(Action onGetDone)
+        public void StartGetConsent(ServicesConfig config, Action onGetDone)
         {
             canvasConsent.SetActive(true);
             panelConsent.SetActive(false);
@@ -27,7 +27,7 @@ namespace IEC
             m_ConsentService = new ConsentMock();
 #if (PluginApplovin)
             var applovinConsent = new ApplovinConsentModule();
-            applovinConsent.Init(FindObjectOfType<ServicesController>().config.ApplovinConfig);
+            applovinConsent.Init(config.ApplovinConfig);
             m_ConsentService = applovinConsent;
 #endif
 

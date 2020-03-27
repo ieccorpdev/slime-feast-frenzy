@@ -10,6 +10,7 @@ namespace IEC
 
         private ApplovinModule m_ApplovinModule;
         private AdsConfig m_ApplovinConfig;
+        private Action<bool> m_OnConsentState;
 
         public void Init(AdsConfig adsConfig)
         {
@@ -28,26 +29,34 @@ namespace IEC
             var config = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
             config.appID = config.appID.Trim();
 
+            m_OnConsentState = onConsentState;
+
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
-                MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
-                {
-                    if (sdkConfiguration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Applies
-                            || sdkConfiguration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Unknown)
-                    {
-                        onConsentState?.Invoke(false);
-                    }
-                    else
-                    {
-                        SetAcceptConsent();
-                        onConsentState?.Invoke(true);
-                    }
-                };
+                MaxSdk.SetSdkKey(config.appID);
+                MaxSdk.InitializeSdk();
+                MaxSdkCallbacks.OnSdkInitializedEvent += OnMaxSdkInitCallback;
             }
             else
             {
                 Debug.LogError("Applovin ID null, cannot init SDK for Consent");
                 onConsentState?.Invoke(false);
+            }
+        }
+
+        void OnMaxSdkInitCallback(MaxSdkBase.SdkConfiguration sdkConfiguration)
+        {
+            MaxSdkCallbacks.OnSdkInitializedEvent -= OnMaxSdkInitCallback;
+
+            if (sdkConfiguration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Applies
+                    || sdkConfiguration.ConsentDialogState == MaxSdkBase.ConsentDialogState.Unknown)
+            {
+                m_OnConsentState?.Invoke(false);
+            }
+            else
+            {
+                SetAcceptConsent();
+                m_OnConsentState?.Invoke(true);
             }
         }
 
