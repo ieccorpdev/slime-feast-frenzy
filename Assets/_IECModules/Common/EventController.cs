@@ -68,26 +68,7 @@ namespace IEC
             {
                 DontDestroyOnLoad(gameObject);
             }
-            
-            var consentController = FindObjectOfType<ConsentController>();
-            if (consentController != null)
-            {
-                gameObject.SetActive(false);
 
-                consentController.StartGetConsent(() =>
-                {
-                    InitFromAwake();
-                    gameObject.SetActive(true);
-                });
-            }
-            else
-            {
-                InitFromAwake();
-            }
-        }
-
-        void InitFromAwake()
-        {
             if (s_StaticObjects == null)
             {
                 s_StaticObjects = FindObjectOfType<StaticObjectsContainer>();
