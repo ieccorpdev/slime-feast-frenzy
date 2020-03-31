@@ -421,7 +421,7 @@ namespace IEC
 
         public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
-            if (config.IsNoAds || Application.isEditor)
+            if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
             {
                 SafeInvoke(closeCallback);
                 return;
@@ -459,7 +459,7 @@ namespace IEC
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
         {
-            if (config.IsNoAds)
+            if (config.IsNoAds || m_ServiceData.isNoAds)
             {
                 SafeInvoke(closeCallback);
                 return false;
@@ -550,13 +550,21 @@ namespace IEC
 
         public void ActiveNoAds(bool isActive)
         {
+            m_ServiceData.isNoAds = isActive;
+            SaveData();
+            SetActiveBanner(AdsEnum.BANNER_BOTTOM, !isActive);
+        }
+
+        public void SetActiveBanner(AdsEnum bannerType, bool isActive)
+        {
+            if (m_ServiceData.isNoAds && isActive) return;
             if (isActive)
             {
-                Ads().Hide(AdsEnum.BANNER_BOTTOM);
+                Ads().Show(AdsEnum.BANNER_BOTTOM, null);
             }
             else
             {
-                Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                Ads().Hide(AdsEnum.BANNER_BOTTOM);
             }
         }
 
