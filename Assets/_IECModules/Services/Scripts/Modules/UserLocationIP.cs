@@ -9,7 +9,7 @@ namespace IEC
     public class UserLocationIP : IUserLocation
     {
         const string REQUEST_INFO_URL = "http://extreme-ip-lookup.com/json/";
-        const string REQUEST_INFO_URL_2 = "http://apigame.dtac.vn/helper/get_country";
+        const string REQUEST_INFO_URL_2 = "http://apigame.ieccorp.vn/helper/get_country";
 
         MonoBehaviour m_Coroutiner;
         IJsonService m_Jsoner;
