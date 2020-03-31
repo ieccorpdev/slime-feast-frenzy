@@ -7,6 +7,7 @@ namespace IEC
     [System.Serializable]
     public class ServiceData
     {
+        public bool isNoAds;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
     }

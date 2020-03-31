@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if (PluginApplovin)
+using UnityEngine;
 using System;
 using System.Collections;
 
@@ -72,3 +73,4 @@ namespace IEC
         }
     }
 }
+#endif
