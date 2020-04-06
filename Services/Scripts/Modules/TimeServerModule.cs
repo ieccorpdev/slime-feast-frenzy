@@ -8,7 +8,7 @@ namespace IEC
 {
     public class TimeServerModule : ITimeServer
     {
-        public const string REQUEST_URL = "http://apigame.dtac.vn/helper/get_time_utc";
+        public const string REQUEST_URL = "http://apigame.ieccorp.vn/helper/get_time_utc";
 
         string serverURL = REQUEST_URL;
 
