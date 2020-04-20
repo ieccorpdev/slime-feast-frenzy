@@ -117,7 +117,13 @@ namespace _IECModules
             {
                 value = 2
             });
-
+#if PluginApplovin
+            ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
+                cheatCodeParam =>
+                {
+                    if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
+                });
+#endif
 //            AddTestButton();
         }
 
