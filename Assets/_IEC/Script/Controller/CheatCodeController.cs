@@ -3,7 +3,7 @@ using _IECModules;
 
 namespace IEC
 {
-    public class CheatCodeController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class CheatCodeController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {
@@ -33,7 +33,7 @@ namespace IEC
         {
             ModuleController.cheatCode.AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
             {
-                Pool.Get<Game>().isDebugReset = true;
+                Game.isDebugReset = true;
                 PlayerPrefs.DeleteAll();
                 Application.Quit();
 

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class DataController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventPauseApp, IEventQuitApp
+    public class DataController : _BaseController, IController, IEventListener, IEventAwake, IEventStart, IEventPauseApp, IEventQuitApp
     {
         public const string PLAYER_DATA_KEY = "PlayerData";
 
@@ -40,7 +40,6 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            m_ServicesController = Controllers.Get<ServicesController>();
             Pool.Set(m_GameConfig);
 
             m_GameData = Pool.Get<Game>();
@@ -56,13 +55,13 @@ namespace IEC
 
         public void SaveData()
         {
-            m_ServicesController.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
-            m_ServicesController.DataSecure().Save();
+            Services.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
+            Services.DataSecure().Save();
         }
 
         void LoadData()
         {
-            var playerData = m_ServicesController.DataSecure().GetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
+            var playerData = Services.DataSecure().GetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
             Pool.Set(playerData);
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();

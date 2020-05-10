@@ -4,7 +4,7 @@ using DG.Tweening;
 
 namespace IEC
 {
-    public class TestController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate
+    public class TestController : _BaseController, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate
     {
         public void LocateController()
         {
@@ -32,7 +32,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            var textHello = Pool.Get<UIGroup>().textHello;
+            var textHello = UI.textHello;
             Debug.Log("textHello", textHello.gameObject);
             var rectT = textHello.gameObject.GetComponent<RectTransform>();
             var curPosY = rectT.anchoredPosition.y;

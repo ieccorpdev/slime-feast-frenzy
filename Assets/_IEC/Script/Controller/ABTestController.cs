@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ABTestController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class ABTestController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {
@@ -21,7 +21,6 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.NONE:
-                    Debug.Log("event none");
                     break;
             }
         }
@@ -32,12 +31,11 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            var servicesController = Controllers.Get<ServicesController>();
-            var abTestConfigs = servicesController.config.abTestConfigs;
+            var abTestConfigs = Services.config.abTestConfigs;
             if (abTestConfigs.Length == 0) return;
-            var abTestConfig = servicesController.config.abTestConfigs.Last();
+            var abTestConfig = Services.config.abTestConfigs.Last();
 
-            var abValue = servicesController.ABTest().GetValue(abTestConfig.KeyName, 0);
+            var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAbFullAds(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
@@ -47,14 +45,13 @@ namespace IEC
                     UpdateAbFullAds(abValue);
                     // set new AB Test Value
                 }, abTestConfig.ListEventsAB.ToList()
-                , servicesController.ABTest().GetValue(abTestConfig.KeyName, 0)
+                , Services.ABTest().GetValue(abTestConfig.KeyName, 0)
             );
         }
 
         public void UpdateAbFullAds(int abValue)
         {
-            var game = Pool.Get<Game>();
-            game.timeDelayFullAds = (abValue == 0) ? 30f : 60f;
+            Game.timeDelayFullAds = (abValue == 0) ? 30f : 60f;
         }
     }
 }
