@@ -386,6 +386,11 @@ namespace IEC
 #endif
         }
 
+        public void PushEvent(TrackingEvent.AnalyticEvent evt)
+        {
+            PushEvent(evt.Name, 1f, evt.GetParams());
+        }
+
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
             if (param == null) param = new Dictionary<string, object>();
