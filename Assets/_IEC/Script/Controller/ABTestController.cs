@@ -43,9 +43,12 @@ namespace IEC
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     UpdateAbFullAds(abValue);
+                    Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
+                    EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     // set new AB Test Value
-                }, abTestConfig.ListEventsAB.ToList()
-                , Services.ABTest().GetValue(abTestConfig.KeyName, 0)
+                }, 
+                abTestConfig.ListEventsAB.ToList(), 
+                abValue
             );
         }
 

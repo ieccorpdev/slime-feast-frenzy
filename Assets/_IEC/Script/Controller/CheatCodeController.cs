@@ -42,12 +42,13 @@ namespace IEC
 #endif
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", cheatCodeParam =>
+            ModuleController.cheatCode.AddCheatCodeButton("Toggle NoAds", cheatCodeParam =>
             {
-                // add code here
-            }, new CheatCode.InputParam
-            {
-                value = 50
+                var data = Pool.Get<ServiceData>();
+                Services.ActiveNoAds(!data.isNoAds);
+                data.isNoAdsReward = data.isNoAds;
+
+                cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
             });
         }
     }
