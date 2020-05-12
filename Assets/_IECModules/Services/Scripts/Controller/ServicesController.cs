@@ -484,7 +484,7 @@ namespace IEC
         public void ShowRewardAds(Action closeCallback, Action skipCallback = null)
         {
             var serviceData = Pool.Get<ServiceData>();
-            if (Application.isEditor || config.IsNoAds)
+            if (Application.isEditor || config.IsNoAds || serviceData.isNoAdsReward)
             {
                 SafeInvoke(closeCallback);
                 return;
