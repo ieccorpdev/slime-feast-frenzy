@@ -10,7 +10,7 @@ namespace IEC.TrackingEvent
 
         public virtual float GetValue()
         {
-            return 0f;
+            return 1f;
         }
 
         public virtual Dictionary<string, object> GetParams()
