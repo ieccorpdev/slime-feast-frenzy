@@ -5,6 +5,11 @@ public static class RandomUtils
 {
     private static System.Random rng = new System.Random();  
 
+    public static T SampleWithSeed<T>(this List<T> list, int seed)
+    {
+        rng = new System.Random(seed);
+        return list[rng.Next(list.Count)];
+    }
     public static T Sample<T>(this List<T> list)
     {
         return list[Random.Range(0, list.Count)];
