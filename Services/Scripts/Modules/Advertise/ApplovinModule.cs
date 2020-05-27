@@ -249,6 +249,11 @@ namespace IEC
 #endregion
 #region full ads
 
+        bool IsFullAdsLoaded()
+        {
+            return MaxSdk.IsInterstitialReady(m_Config.interstitialID);
+        }
+
         void LoadFullAds(Action<AdsEventArgs> loadCallback)
         {
             if (string.IsNullOrEmpty(m_Config.bannerID))
@@ -265,7 +270,7 @@ namespace IEC
                 return;
             }
 
-            if (adsState.isLoaded)
+            if (IsFullAdsLoaded())
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
                 return;
@@ -284,11 +289,10 @@ namespace IEC
             var adsState = m_FullAdsState;
             adsState.isWaitToShow = true;
 
-            if (adsState.isLoaded)
+            if (IsFullAdsLoaded())
             {
                 adsState.onShow = showCallback;
                 MaxSdk.ShowInterstitial(m_Config.interstitialID);
-
             }
             else
             {

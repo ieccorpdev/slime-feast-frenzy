@@ -14,4 +14,11 @@ public class RandomHelper
 	{
 		return Random.Range(min, max);
 	}
+
+	// Returns a random integer number between min [inclusive] and max [exclusive] with seed
+	public static int RangeWithSeed(int seed, int min, int max)
+	{
+		System.Random r = new System.Random(seed);
+		return r.Next(min, max);
+	}
 }
