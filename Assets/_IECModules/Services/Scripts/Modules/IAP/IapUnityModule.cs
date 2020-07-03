@@ -159,10 +159,15 @@ namespace IEC
 
         public void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone)
         {
-            restoreCallbacks = callbacks;
+            SetRestoreCallbacks(callbacks);
             this.onRestoreDone = onRestoreDone;
             isHaveProductRestore = false;
             Restore();
+        }
+
+        public void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks)
+        {
+            restoreCallbacks = callbacks;
         }
 
         void Restore()

@@ -69,6 +69,10 @@ namespace IEC
             return null;
         }
 #endif
+
+        public void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks)
+        {
+        }
     }
 }
 

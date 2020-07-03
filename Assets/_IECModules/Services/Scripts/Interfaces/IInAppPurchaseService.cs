@@ -18,6 +18,8 @@ namespace IEC
 
         void PurchaseProduct(string productID, Action<bool> callBack);
 
+        void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks);
+
         void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone);
 
         LocalizePriceInfo GetLocalizePrice(string productID, bool isNewFormat = true);

@@ -81,4 +81,19 @@ public class MathHelper
 
         return UnityEngine.Random.Range(0, itemLength);
     }
+
+    private static List<int> listTemp = new List<int>();
+    public static int GetRandomIndexByList(List<int> listUsed, int itemCount)
+    {
+        listTemp.Clear();
+        for (int i = 0; i < itemCount; i++)
+        {
+            if (!listUsed.Contains(i))
+            {
+                listTemp.Add(i);
+            }
+        }
+
+        return listTemp[UnityEngine.Random.Range(0, listTemp.Count)];
+    }
 }

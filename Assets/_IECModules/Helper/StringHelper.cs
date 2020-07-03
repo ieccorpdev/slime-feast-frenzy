@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,4 +16,19 @@ public static class StringHelper {
 		}
 		return s_MapNumber[number];
 	}
+	
+	
+	public static string RemoveBetweenParenthesis (this string original)
+	{
+		return RemoveBetweenString(original, "(", ")");
+	}
+	public static string RemoveBetweenString(this string original, string start, string end)
+	{
+		var pFrom = original.IndexOf(start, StringComparison.Ordinal) + start.Length;
+		var pTo = original.LastIndexOf(end, StringComparison.Ordinal);
+
+		if (pFrom == -1 || pTo == -1 || pFrom >= pTo) return original;
+		return original.Remove(pFrom - 1, pTo - pFrom + 2);
+	}
+
 }

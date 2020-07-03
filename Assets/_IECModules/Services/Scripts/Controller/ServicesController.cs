@@ -397,6 +397,16 @@ namespace IEC
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
             param["Dy"] = m_Retention.GetCountDay();
+
+            if (m_ServiceData.dictCustomParams != null && m_ServiceData.dictCustomParams.ContainsKey(eventName))
+            {
+                var customParam = m_ServiceData.dictCustomParams[eventName].Invoke();
+                foreach (var p in customParam)
+                {
+                    param[p.Key] = p.Value;
+                }
+            }
+
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.PushEvent(eventName, value, param);

@@ -25,6 +25,7 @@ namespace IEC
         IEventFixedUpdate[] m_FixedUpdateEvents;
         IEventPauseApp[] m_PauseAppEvents;
         IEventQuitApp[] m_QuitAppEvents;
+        IEventLateUpdate[] m_LateUpdateEvents;
 
         void Awake()
         {
@@ -119,6 +120,7 @@ namespace IEC
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
             m_PauseAppEvents = GetEventArray<IEventPauseApp>();
             m_QuitAppEvents = GetEventArray<IEventQuitApp>();
+            m_LateUpdateEvents = GetEventArray<IEventLateUpdate>();
 
             if (Application.isEditor)
             {
@@ -218,6 +220,19 @@ namespace IEC
             }
         }
 
+        void LateUpdate()
+        {
+            if (m_LateUpdateEvents == null) return;
+            float deltaTime = Time.deltaTime;
+            for (int i = 0; i < m_LateUpdateEvents.Length; i++)
+            {
+                if (m_LateUpdateEvents[i].IsActive())
+                {
+                    m_LateUpdateEvents[i].BehaviourLateUpdate(deltaTime);
+                }
+            }
+        }
+
         void OnApplicationPause(bool pause)
         {
             if (m_PauseAppEvents != null)
@@ -248,6 +263,7 @@ namespace IEC
 
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
+            if(CheatCodeController.debugShowEventRaise && gameEvent != EventList.Service.COUNT_ONE_SEC) print($"RaiseEventLocal: {gameEvent}");
             for (int i = 0; i < m_Listeners.Length; i++)
             {
                 if (m_Listeners[i].IsActive())
