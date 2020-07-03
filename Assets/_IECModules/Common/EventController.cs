@@ -263,7 +263,6 @@ namespace IEC
 
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
-            if(CheatCodeController.debugShowEventRaise && gameEvent != EventList.Service.COUNT_ONE_SEC) print($"RaiseEventLocal: {gameEvent}");
             for (int i = 0; i < m_Listeners.Length; i++)
             {
                 if (m_Listeners[i].IsActive())
