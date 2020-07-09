@@ -95,6 +95,11 @@ namespace IEC
                 EventController.RaiseEvent(sEvent, new EventParam(this));
             }
             m_InitEvents.Clear();
+
+            m_IAP.ConnectInit(() =>
+            {
+                RaiseInitEvent(EventList.Service.INIT_IAP_DONE);
+            });
         }
 
         public void BehaviourUpdate(float deltaTime)
@@ -177,10 +182,7 @@ namespace IEC
             });
 #endif
             m_Ads = new AdsMock(false);
-            m_IAP.ConnectInit(() =>
-            {
-                RaiseInitEvent(EventList.Service.INIT_IAP_DONE);
-            });
+            
             m_Login = new LoginMock();
             m_LeaderBoard = new LeaderBoardMock();
 
