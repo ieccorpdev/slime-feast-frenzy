@@ -25,6 +25,7 @@ namespace IEC
         IEventFixedUpdate[] m_FixedUpdateEvents;
         IEventPauseApp[] m_PauseAppEvents;
         IEventQuitApp[] m_QuitAppEvents;
+        IEventLateUpdate[] m_LateUpdateEvents;
 
         void Awake()
         {
@@ -119,6 +120,7 @@ namespace IEC
             m_FixedUpdateEvents = GetEventArray<IEventFixedUpdate>();
             m_PauseAppEvents = GetEventArray<IEventPauseApp>();
             m_QuitAppEvents = GetEventArray<IEventQuitApp>();
+            m_LateUpdateEvents = GetEventArray<IEventLateUpdate>();
 
             if (Application.isEditor)
             {
@@ -214,6 +216,19 @@ namespace IEC
                 if (m_FixedUpdateEvents[i].IsActive())
                 {
                     m_FixedUpdateEvents[i].BehaviourFixedUpdate(deltaTime);
+                }
+            }
+        }
+
+        void LateUpdate()
+        {
+            if (m_LateUpdateEvents == null) return;
+            float deltaTime = Time.deltaTime;
+            for (int i = 0; i < m_LateUpdateEvents.Length; i++)
+            {
+                if (m_LateUpdateEvents[i].IsActive())
+                {
+                    m_LateUpdateEvents[i].BehaviourLateUpdate(deltaTime);
                 }
             }
         }

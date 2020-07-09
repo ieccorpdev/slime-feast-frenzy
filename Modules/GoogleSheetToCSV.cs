@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -28,7 +28,7 @@ namespace _IECModules
         public void TestDownloadFromUrl()
         {
             var url = "https://docs.google.com/spreadsheets/d/1siFrtchtGuq8gQYQMX19_z7ZpdBpoQQRDZnHiNsKrUA/edit#gid=927018210"; 
-            url = "https://docs.google.com/spreadsheets/d/1siFrtchtGuq8gQYQMX19_z7ZpdBpoQQRDZnHiNsKrUA/edit"; 
+            // url = "https://docs.google.com/spreadsheets/d/1siFrtchtGuq8gQYQMX19_z7ZpdBpoQQRDZnHiNsKrUA/edit"; 
             print(GetDocId(url));
             print(GetSheetId(url));
             DownLoadCsv(url, false, data =>
@@ -52,8 +52,27 @@ namespace _IECModules
 
         private static string GetSheetId(string url)
         {
-            var uri = new Uri(url.Replace("#", "?"));
-            return HttpUtility.ParseQueryString(uri.Query).Get(SpreadSheetId);
+            url = url.Replace("#", "?");
+            var uri = new Uri(url);
+            var decodeParam = DecodeQueryParameters(uri); 
+            return decodeParam.ContainsKey(SpreadSheetId) ? decodeParam[SpreadSheetId] : null; 
+        }
+        
+        public static Dictionary<string, string> DecodeQueryParameters(Uri uri)
+        {
+            if (uri == null)
+                throw new ArgumentNullException("uri");
+
+            if (uri.Query.Length == 0)
+                return new Dictionary<string, string>();
+
+            return uri.Query.TrimStart('?')
+                .Split(new[] { '&', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(parameter => parameter.Split(new[] { '=' }, StringSplitOptions.RemoveEmptyEntries))
+                .GroupBy(parts => parts[0],
+                    parts => parts.Length > 2 ? string.Join("=", parts, 1, parts.Length - 1) : (parts.Length > 1 ? parts[1] : ""))
+                .ToDictionary(grouping => grouping.Key,
+                    grouping => string.Join(",", grouping));
         }
 
         public static string ParseGoogleSheetUrl(string url)
@@ -72,7 +91,7 @@ namespace _IECModules
         public void DownLoadCsv(string url, bool skipFirstLine = false, Action<List<List<string>>> onComplete = null,
             Action<string> onError = null)
         {
-            DownLoadCsv(ParseGoogleSheetUrl(url), skipFirstLine, onComplete, onError);
+            DownLoadCsv(GetDocId(url), GetSheetId(url), skipFirstLine, onComplete, onError);
         }
 
         public void DownLoadCsv(string docId, string sheetId, bool skipFirstLine,

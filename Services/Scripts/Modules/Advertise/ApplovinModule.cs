@@ -108,9 +108,9 @@ namespace IEC
                 case AdsEnum.BANNER_BOTTOM:
                     return true;
                 case AdsEnum.INTERSTITIAL:
-                    return m_FullAdsState.isLoaded;
+                    return IsFullAdsLoaded();
                 case AdsEnum.REWARD:
-                    return m_RewardAdsState.isLoaded;
+                    return IsRewardLoaded();
             }
 
             return false;
@@ -256,7 +256,7 @@ namespace IEC
 
         void LoadFullAds(Action<AdsEventArgs> loadCallback)
         {
-            if (string.IsNullOrEmpty(m_Config.bannerID))
+            if (string.IsNullOrEmpty(m_Config.interstitialID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
@@ -370,9 +370,14 @@ namespace IEC
 
 #region rewardAds
 
+        bool IsRewardLoaded()
+        {
+            return MaxSdk.IsRewardedAdReady(m_Config.rewardID);
+        }
+
         void LoadRewardAds(Action<AdsEventArgs> loadCallback)
         {
-            if (string.IsNullOrEmpty(m_Config.bannerID))
+            if (string.IsNullOrEmpty(m_Config.rewardID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
@@ -386,7 +391,7 @@ namespace IEC
                 return;
             }
 
-            if (adsState.isLoaded)
+            if (IsRewardLoaded())
             {
                 return;
             }
@@ -402,7 +407,7 @@ namespace IEC
         {
             var adsState = m_RewardAdsState;
 
-            if (adsState.isLoaded)
+            if (IsRewardLoaded())
             {
                 adsState.onShow = showCallback;
                 MaxSdk.ShowRewardedAd(m_Config.rewardID);
