@@ -159,10 +159,16 @@ namespace IEC
 
         public void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone)
         {
-            restoreCallbacks = callbacks;
+            SetRestoreCallbacks(callbacks);
             this.onRestoreDone = onRestoreDone;
             isHaveProductRestore = false;
             Restore();
+        }
+
+        public void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks)
+        {
+            Debug.LogWarning("SetRestoreCallbacks: " + (callbacks != null ? callbacks.Count : 0));
+            restoreCallbacks = callbacks;
         }
 
         void Restore()
@@ -236,16 +242,20 @@ namespace IEC
 
             receiptVerify.CheckReceipt(args.purchasedProduct, isValid =>
             {
+                Debug.LogWarning("CheckReceipt isValid: " + isValid + " | ProductId: " + productId);
+                Debug.LogWarning("restoreCallbacks: " + (restoreCallbacks != null ? restoreCallbacks.Count : 0));
                 if (isValid)
                 {
                     // Unlock the appropriate content here.
                     if (purchaseCallbacks.ContainsKey(productId))
                     {
+                        controller.ConfirmPendingPurchase(args.purchasedProduct);
                         SafeInvoke(m_LogSuccess2, productId);
                         PurchaseProductResult(productId, true);
                     }
                     else if (restoreCallbacks != null && restoreCallbacks.ContainsKey(productId))
                     {
+                        controller.ConfirmPendingPurchase(args.purchasedProduct);
                         isHaveProductRestore = true;
                         restoreCallbacks[productId](true);
                     }
@@ -260,7 +270,7 @@ namespace IEC
                 }
             });
 
-            return PurchaseProcessingResult.Complete;
+            return PurchaseProcessingResult.Pending;
         }
 
         public void OnPurchaseFailed(Product i, PurchaseFailureReason p)

@@ -19,6 +19,7 @@ namespace _IECModules
             PlayerSettings.SetScriptingDefineSymbolsForGroup(
                 EditorUserBuildSettings.selectedBuildTargetGroup,
                 string.Join(";", allDefines.ToArray()));
+            AssetDatabase.SaveAssets();
         }
 
         public static List<string> GetListDefineSymbol()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public static class RandomUtils
@@ -10,10 +11,24 @@ public static class RandomUtils
         rng = new System.Random(seed);
         return list[rng.Next(list.Count)];
     }
+
+    public static int WeightRandom(List<float> listWeight)
+    {
+        var random = Random.Range(0, listWeight.Sum());
+        var sum = 0f;
+        for (var i = 0; i < listWeight.Count; i++)
+        {
+            sum += listWeight[i];
+            if (random < sum) return i;
+        }
+        return 0;
+    }
+
     public static T Sample<T>(this List<T> list)
     {
         return list[Random.Range(0, list.Count)];
     }
+
     public static void Shuffle<T>(this IList<T> list)
     {
         var n = list.Count;
@@ -51,7 +66,7 @@ namespace IEC
 
         public float Range(float min, float max)
         {
-            float rand = (float)m_RNG.NextDouble();
+            float rand = (float) m_RNG.NextDouble();
             float range = max - min;
             return min + range * rand;
         }

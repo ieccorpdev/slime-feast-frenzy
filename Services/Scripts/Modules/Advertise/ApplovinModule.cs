@@ -251,7 +251,8 @@ namespace IEC
 
         bool IsFullAdsLoaded()
         {
-            return MaxSdk.IsInterstitialReady(m_Config.interstitialID);
+            return MaxSdk.IsInterstitialReady(m_Config.interstitialID) && 
+                Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         void LoadFullAds(Action<AdsEventArgs> loadCallback)
@@ -372,7 +373,8 @@ namespace IEC
 
         bool IsRewardLoaded()
         {
-            return MaxSdk.IsRewardedAdReady(m_Config.rewardID);
+            return MaxSdk.IsRewardedAdReady(m_Config.rewardID) &&
+                Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         void LoadRewardAds(Action<AdsEventArgs> loadCallback)

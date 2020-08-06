@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
 using Random = System.Random;
@@ -61,12 +62,45 @@ public static class NumberFormatter {
 	public static string MinifyFormat(this long num) => MinifyFormat((double) num);
 	public static string MinifyFormat(this float num) => MinifyFormat((double) num);
 
-	public static string FormatMoney(this long num)
+	public const string ALPHABET_STR = "abcdefghijklmnopqrstuvwxyz";
+
+	private static List<double> m_ListBigNumber;
+
+	public static List<double> ListBigNumber => m_ListBigNumber ?? (
+		m_ListBigNumber = ALPHABET_STR
+			.Select((x, index) => Math.Pow(10, 12 + index * 3)).ToList());
+
+    public static string FormatMoney(this long num, bool isFullFormat = true)
 	{
-		var suffix = "";
-		// if (num >= Mathf.Pow(10, 10)) return num / (long) Mathf.Pow(10, 9) + "B";
+        if (isFullFormat)
+        {
+            return num.ToString();
+        }
+		for (var i = ALPHABET_STR.Length - 1; i >= 0; i--)
+		{
+			var letterStr = $"{ALPHABET_STR[i]}{ALPHABET_STR[i]}";
+			if (num >= ListBigNumber[i]) return num / (long) ListBigNumber[i] + letterStr;
+		}
+		if (num >= Mathf.Pow(10, 10)) return num / (long) Mathf.Pow(10, 9) + "B";
 		if(num >= Mathf.Pow(10, 7)) return num / (long) Mathf.Pow(10, 6) + "M";
-		// if(num >= Mathf.Pow(10, 4)) return num / (long) Mathf.Pow(10, 3) + "K";
+		if(num >= Mathf.Pow(10, 5)) return num / (long) Mathf.Pow(10, 3) + "K";
+		return num.ToString();
+	}
+
+	public static string FormatMoney(this int num, bool isFullFormat = true)
+	{
+        if (isFullFormat)
+        {
+            return num.ToString();
+        }
+        for (var i = ALPHABET_STR.Length - 1; i >= 0; i--)
+		{
+			var letterStr = $"{ALPHABET_STR[i]}{ALPHABET_STR[i]}";
+			if (num >= ListBigNumber[i]) return num / (long)ListBigNumber[i] + letterStr;
+		}
+		if (num >= Mathf.Pow(10, 10)) return num / (long)Mathf.Pow(10, 9) + "B";
+		if (num >= Mathf.Pow(10, 7)) return num / (long)Mathf.Pow(10, 6) + "M";
+		if (num >= Mathf.Pow(10, 5)) return num / (long)Mathf.Pow(10, 3) + "K";
 		return num.ToString();
 	}
 

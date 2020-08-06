@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
+using Debug = UnityEngine.Debug;
 
 
 namespace _IECModules
@@ -21,10 +23,11 @@ namespace _IECModules
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk));
+            GetWindow(typeof(ModuleSetIdSdk), false, "Set ID SDK");
         }
 
-        private const string TempIECDirectory = "Temp/IEC/";
+
+        private const string PROJECT_CHECKLIST_URL = "project_checklist_url";
         
         private string m_GoogleSheetUrl =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
@@ -33,9 +36,13 @@ namespace _IECModules
         private const string FirebaseCurrentVersion = "6.1.1";
         private const string ApplovinCurrentVersion = "2.3.0";
         private const string IronSourceCurrentVersion = "6.13.0";
+        private const string KochavaCurrentVersion = "4.1.1";
 
         private const string FacebookSdkBaseUrl =
             "https://origincache.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
+        
+        private const string KochavaSdkBaseUrl =
+            "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
         
         private const string FirebaseSdkBaseUrl =
             "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
@@ -52,8 +59,9 @@ namespace _IECModules
         private static string FirebaseSdkUrlByVersion => string.Format(FirebaseSdkBaseUrl, FirebaseCurrentVersion);
         private static string ApplovinSdkUrlByVersion => string.Format(ApplovinSdkBaseUrl, ApplovinCurrentVersion);
         private static string IronSourceSdkUrlByVersion => string.Format(IronSourceSdkBaseUrl, IronSourceCurrentVersion);
+        private static string KochavaSdkUrlByVersion => string.Format(KochavaSdkBaseUrl, KochavaCurrentVersion);
 
-        private string m_SetSdkLog = "";
+        private List<LogData> m_SetSdkLog = new List<LogData>();
 
         public enum PluginDefineSymbol
         {
@@ -69,8 +77,9 @@ namespace _IECModules
 
         public enum ChecklistItemName
         {
-            GameName,
-            BundleID_,
+            ProductName,
+            BundleID,
+            KeyStoreName,
             KanboardSwimlane,
             DiscordChannel,
             FirebaseProject,
@@ -109,8 +118,9 @@ namespace _IECModules
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
         {
-            {"Tên game", ChecklistItemName.GameName},
-            {"BundleID", ChecklistItemName.BundleID_},
+            {"Tên game", ChecklistItemName.ProductName},
+            {"BundleID", ChecklistItemName.BundleID},
+            {"Keystore Name", ChecklistItemName.KeyStoreName},
             {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
             {"Discord Channel", ChecklistItemName.DiscordChannel},
             {"Firebase Project", ChecklistItemName.FirebaseProject},
@@ -149,40 +159,120 @@ namespace _IECModules
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
             new Dictionary<ChecklistItemName, string>();
+
+        private void Awake()
+        {
+            var savedUrl = PlayerPrefs.GetString(PROJECT_CHECKLIST_URL); 
+            if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
+        }
+
+        private static Vector2 buttonSize = new Vector2(200, 20);
         
         private void OnGUI()
         {
-            m_GoogleSheetUrl = EditorGUILayout.TextField("Google Sheet Info URL", m_GoogleSheetUrl);
-            // if (GUILayout.Button("Install Facebook SDK"))
-            // {
-            //     DownloadPackage(FacebookSdkCurrentVersionUrl);
-            //     AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-            // }
-            // if (GUILayout.Button("Install Firebase SDK"))
+            EditorGUILayout.BeginHorizontal();
+
+            if (GUILayout.Button("Install Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                DownloadPackage(FacebookSdkCurrentVersionUrl);
+                AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+            }
+            if (GUILayout.Button($"Install Kochava SDK {KochavaCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                DownloadPackage(KochavaSdkUrlByVersion);
+                AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            }
+            // if (GUILayout.Button("Install Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             // {
             //     DownloadPackage(FirebaseSdkUrlByVersion); 
             //     AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
             //     AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
             // }
-            // if (GUILayout.Button("Install Applovin SDK"))
-            // {
-            //     DownloadPackage(ApplovinSdkUrlByVersion);
-            //     AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-            // }
-            // if (GUILayout.Button("Install Applovin SDK"))
-            // {
-            //     DownloadPackage(ApplovinSdkUrlByVersion); 
-            // }
+            if (GUILayout.Button($"Install Applovin SDK {ApplovinCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                DownloadPackage(ApplovinSdkUrlByVersion);
+                AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+            }
             // if (GUILayout.Button("Apply Setting"))
             // {
             //     OnClickApplySetting();
             // }
-            if (GUILayout.Button("Set SDK Id From Project Checklist"))
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button("Update Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
             }
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            EditorGUILayout.EndHorizontal();
+            
+            // if (GUILayout.Button("Test Create Keystore"))
+            // {
+            //     CreateKeyStore("thanhdeptrai");
+            // }
 
-            if (m_SetSdkLog.Length > 0) m_SetSdkLog = EditorGUILayout.TextArea(m_SetSdkLog);
+            m_SetSdkLog.ForEach(logData =>
+            {
+                var guiStyle = GUI.skin.textArea;
+                guiStyle.normal.textColor = guiStyle.focused.textColor = Color.black;
+                if(logData.logType == LogType.Warning) guiStyle.normal.textColor = guiStyle.focused.textColor = new Color(1f, 0.5f, 0f);
+                if(logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
+                EditorGUILayout.TextArea(logData.log, guiStyle);
+            });
+        }
+
+        private void CreateKeyStore(string keystoreName)
+        {
+            var keystoreFileName = $"{keystoreName}.keystore";
+            var keyToolPath = $"{EditorPrefs.GetString("JdkPath").Replace(" ", "\" \"")}/bin/keytool.exe";
+            var processInfo = new ProcessStartInfo
+            {
+                FileName= @"cmd.exe",
+                Arguments = "/C" 
+                            + $"{keyToolPath} -genkey -noprompt -v "
+                            + "-dname \"CN=, OU=, O=, L=, S=, C=\" "
+                            + $"-keystore {keystoreFileName} "
+                            + $"-storepass {keystoreName} "
+                            + $"-alias {keystoreName} "
+                            + $"-keypass {keystoreName} "
+                            + "-keyalg RSA -keysize 2048 -validity 10000",
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardInput = true,
+                RedirectStandardError = true
+            };
+                
+            using(var process = new Process()) {
+                process.StartInfo = processInfo;
+                process.Start();
+
+                // Add this: wait until process does its work
+                process.WaitForExit();
+
+                // and only then read the result
+                var standardOutput = process.StandardOutput.ReadToEnd(); 
+                var standardError = process.StandardError.ReadToEnd();
+                Debug.Log($"StandardOutput: {standardOutput}");
+                Debug.Log($"StandardError: {standardError}");
+                
+                if (standardError.Contains($"[Storing {keystoreFileName}]"))
+                {
+                    AddLog($"Keystore Created: {keystoreFileName}");
+                }
+                else if (standardOutput.Contains($"Key pair not generated, alias <{keystoreName}> already exists"))
+                {
+                    AddLogWarning($"Keystore Already Exists: {keystoreFileName}");
+                }
+                else
+                {
+                    AddLogError($"Key Store Creation Error: \nStandardOutput: {standardOutput}\nStandardError: {standardError}");   
+                }
+            }
         }
 
         private void OnClickApplySetting()
@@ -193,7 +283,9 @@ namespace _IECModules
             
         private void OnClickSetSDKId()
         {
-            m_SetSdkLog = "";
+            m_SetSdkLog = new List<LogData>();
+            
+            PlayerPrefs.SetString(PROJECT_CHECKLIST_URL, m_GoogleSheetUrl);
 
             var checklistData = DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(m_GoogleSheetUrl));
 
@@ -234,10 +326,8 @@ namespace _IECModules
                             AddLog(entry.Name);
                             var zippedStream = zipFile.GetInputStream(entry);
                             var fileByteArray = ZipUtils.ReadFully(zippedStream);
-                    
-                            Directory.CreateDirectory(TempIECDirectory);
-
-                            var filePath = $"{TempIECDirectory}{entry.Name.Split('/').Last()}";
+                            
+                            var filePath = $"{GetTempFolderPath()}{entry.Name.Split('/').Last()}";
                         
                             AddLog($"Start Unzip To: {filePath}");
 
@@ -257,7 +347,9 @@ namespace _IECModules
 
         private void ImportPackage(byte[] packageByteArray, string packageName)
         {
-            var filePath = $"{TempIECDirectory}{packageName.Split('/').Last()}";
+            var fileName = packageName.Split('/').Last();
+            fileName = fileName.Split(new[] { "%2F" }, StringSplitOptions.None).Last();
+            var filePath = $"{GetTempFolderPath()}{fileName}";
             using (var fs = File.Create(filePath)) 
             {
                 fs.Write(packageByteArray, 0, packageByteArray.Length);
@@ -269,6 +361,14 @@ namespace _IECModules
             AssetDatabase.importPackageCompleted += ImportPackageComplete;
             AssetDatabase.ImportPackage(filePath, false);
 
+        }
+
+        private string GetTempFolderPath()
+        {
+            var consoleLogFile = new FileInfo(Application.consoleLogPath);
+            var tempFolderPath = $"{consoleLogFile.Directory}/Temp/";
+            Directory.CreateDirectory(tempFolderPath); 
+            return tempFolderPath;
         }
 
         private void ImportPackageComplete(string packageName)
@@ -343,132 +443,158 @@ namespace _IECModules
             AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
 
-            sdkData.ForEach(line =>
+            foreach (var keyValuePair in dictionaryCheckListValue)
             {
-                if (line[0] == "Tên game")
+                var checklistItemName = keyValuePair.Key;
+                var checklistItemValue = keyValuePair.Value;
+                switch (checklistItemName)
                 {
-                    AddLog($"Product Name: {line[1]}");
-                    PlayerSettings.productName = line[1];
-                }
+                    case ChecklistItemName.ProductName:
+                        var productName = checklistItemValue;
+                        AddLog($"Product Name: {productName}");
+                        PlayerSettings.productName = productName;
+                        break;
+                    case ChecklistItemName.BundleID:
+                        var bundleId = checklistItemValue;
+                        AddLog($"Bundle ID: {bundleId}");
+                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone, bundleId);
+                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
+                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
 
-                if (line[0] == "BundleID")
-                {
-                    var bundleId = line[1];
-                    AddLog($"Bundle ID: {bundleId}");
-                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone, bundleId);
-                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
-                    PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
-
-                    if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
-                    else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
-                    else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
-                    else
-                    {
-                        AddLog($"ERROR: Unknown Company Name");
-                    }
-                }
-
-                if (line[0] == "Facebook ID")
-                {
-                    AddLog($"Facebook ID: {line[1]}");
+                        if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
+                        else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
+                        else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
+                        else
+                        {
+                            AddLogError("Unknown Company Name");
+                        }
+                        break;
+                    case ChecklistItemName.KeyStoreName:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) CreateKeyStore(checklistItemValue);
+                        break;
+                    case ChecklistItemName.KanboardSwimlane:
+                        break;
+                    case ChecklistItemName.DiscordChannel:
+                        break;
+                    case ChecklistItemName.FirebaseProject:
+                        break;
+                    case ChecklistItemName.UnityCloudProject:
+                        break;
+                    case ChecklistItemName.UnityCloudBuildKanboardWebhooks:
+                        break;
+                    case ChecklistItemName.UnityCloudBuildDiscordWebhooks:
+                        break;
+                    case ChecklistItemName.GitlabProject:
+                        break;
+                    case ChecklistItemName.GitlabIntegration:
+                        break;
+                    case ChecklistItemName.UnityCloudBuildTargetConfig:
+                        break;
+                    case ChecklistItemName.TrackingEventList:
+                        break;
+                    case ChecklistItemName.FacebookID:
+                        var facebookId = checklistItemValue;
+                        AddLog($"Facebook ID: {facebookId}");
 #if PluginFacebook
-                    if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
-                    {
-                        var instance = CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
-                        var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
-                        if (!Directory.Exists(path1))
-                            Directory.CreateDirectory(path1);
-                        var path2 = Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
-                        AssetDatabase.CreateAsset(instance, path2);
-                    }
-                    Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
-                    Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {line[1]};
-                    Facebook.Unity.Settings.FacebookSettings.AppLabels = new List<string> {PlayerSettings.productName};
-                    Facebook.Unity.Editor.ManifestMod.GenerateManifest();
+                        if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
+                        {
+                            var instance = CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
+                            var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
+                            if (!Directory.Exists(path1))
+                                Directory.CreateDirectory(path1);
+                            var path2 = Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
+                            AssetDatabase.CreateAsset(instance, path2);
+                        }
+                        Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
+                        Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {facebookId};
+                        Facebook.Unity.Settings.FacebookSettings.AppLabels = new List<string> {PlayerSettings.productName};
+                        EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
+                        Facebook.Unity.Editor.ManifestMod.GenerateManifest();
 #endif
+                        break;
+                    case ChecklistItemName.FirebaseConfigFileIOS:
+                        break;
+                    case ChecklistItemName.FirebaseConfigFileAndroid:
+                        break;
+                    case ChecklistItemName.KochavaIDIOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID IOS: {checklistItemValue}");
+                        serviceConfig.kochavaConfig.iosID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.KochavaIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID Android: {checklistItemValue}");
+                        serviceConfig.kochavaConfig.androidID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AppodealIDIOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID IOS: {checklistItemValue}");
+                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AppodealIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID Android: {checklistItemValue}");
+                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AdmobIDIOS:
+                        break;
+                    case ChecklistItemName.AdmobIDAndroid:
+                        break;
+                    case ChecklistItemName.MarketingChecklist:
+                        break;
+                    case ChecklistItemName.IAPChecklist:
+                        break;
+                    case ChecklistItemName.IAPIOSList:
+                        break;
+                    case ChecklistItemName.IAPAndroidList:
+                        break;
+                    case ChecklistItemName.AdPosition:
+                        break;
+                    case ChecklistItemName.ApplovinIOSID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.ios.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.android.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSInterID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSBannerID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSRewardID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidInterID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Inter ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidBannerID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Banner ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.android.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidRewardID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Reward ID: {checklistItemValue}");
+                        serviceConfig.ApplovinConfig.android.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.IronSourceIOSID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source IOS ID: {checklistItemValue}");
+                        serviceConfig.IronSourceConfig.ios.appID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.ios.interstitialID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.ios.bannerID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.IronSourceAndroidID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source Android ID: {checklistItemValue}");
+                        serviceConfig.IronSourceConfig.android.appID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.android.bannerID = checklistItemValue;
+                        serviceConfig.IronSourceConfig.android.rewardID = checklistItemValue;
+                        break;
                 }
-
-#if PluginFacebook
-                if (line[0] == "Kochava ID IOS")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Kochava ID IOS: {line[1]}");
-                    serviceConfig.kochavaConfig.iosID = line[1];
-                }
-                if (line[0] == "Kochava ID Android")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Kochava ID Android: {line[1]}");
-                    serviceConfig.kochavaConfig.androidID = line[1];
-                }
-                if (line[0] == "Appodeal ID IOS")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Appodeal ID IOS: {line[1]}");
-                    serviceConfig.AppodealConfig.android.appID = line[1];
-                }
-                if (line[0] == "Appodeal ID Android")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Appodeal ID Android: {line[1]}");
-                    serviceConfig.AppodealConfig.android.appID = line[1];
-                }
-                if (line[0] == "Applovin Android ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin Android ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.android.appID = line[1];
-                }
-                if (line[0] == "Applovin IOS ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin IOS ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.ios.appID = line[1];
-                }
-                if (line[0] == "Applovin Android Inter ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin Android Inter ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.android.interstitialID = line[1];
-                }
-                if (line[0] == "Applovin Android Banner ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin Android Banner ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.android.bannerID = line[1];
-                }
-                if (line[0] == "Applovin Android Reward ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin Android Reward ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.android.rewardID = line[1];
-                }
-                if (line[0] == "Applovin IOS Inter ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin IOS Inter ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.ios.interstitialID = line[1];
-                }
-                if (line[0] == "Applovin IOS Banner ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin IOS Banner ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.ios.bannerID = line[1];
-                }
-                if (line[0] == "Applovin IOS Reward ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Applovin IOS Reward ID: {line[1]}");
-                    serviceConfig.ApplovinConfig.ios.rewardID = line[1];
-                }
-                if (line[0] == "Iron Source IOS ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Iron Source IOS ID: {line[1]}");
-                    serviceConfig.IronSourceConfig.ios.appID = line[1];
-                    serviceConfig.IronSourceConfig.ios.interstitialID = line[1];
-                    serviceConfig.IronSourceConfig.ios.bannerID = line[1];
-                    serviceConfig.IronSourceConfig.ios.rewardID = line[1];
-                }
-                if (line[0] == "Iron Source Android ID")
-                {
-                    if(!string.IsNullOrEmpty(line[1])) AddLog($"Iron Source Android ID: {line[1]}");
-                    serviceConfig.IronSourceConfig.android.appID = line[1];
-                    serviceConfig.IronSourceConfig.android.interstitialID = line[1];
-                    serviceConfig.IronSourceConfig.android.bannerID = line[1];
-                    serviceConfig.IronSourceConfig.android.rewardID = line[1];
-                }
-#endif
-            });
-
-
+            }
+            
 #if PluginFacebook
             EditorUtility.SetDirty(serviceConfig);
             AssetDatabase.SaveAssets();
@@ -478,18 +604,30 @@ namespace _IECModules
 
         private void AddLogError(string log)
         {
-            AddLog($"--- ERROR: {log}");
+            AddLog($"Error: {log}", LogType.Error);
         }
-
+        private void AddLogWarning(string log)
+        {
+            AddLog($"Warning: {log}", LogType.Warning);
+        }
         private void AddLog(object log)
         {
             AddLog(log.ToString());
         }
-        private void AddLog(string log)
+        private void AddLog(string log, LogType logType = LogType.Debug)
         {
-            if (m_SetSdkLog.Length != 0) m_SetSdkLog += "\n";
-            m_SetSdkLog += $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {log}";
-            
+            var logStr = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {log}";
+            if (m_SetSdkLog.Count > 0 && m_SetSdkLog.Last().logType == LogType.Debug && logType == LogType.Debug)
+            {
+                m_SetSdkLog.Last().log += $"\n{logStr}";
+            }
+            else {
+                m_SetSdkLog.Add(new LogData
+                {
+                    log = logStr,
+                    logType = logType
+                });
+            }
         }
 
         private static void AddDefineSymbol(PluginDefineSymbol defineSymbol)
@@ -497,4 +635,18 @@ namespace _IECModules
             ScriptingDefineSymbolEditor.AddDefineSymbol(defineSymbol.ToString());
         }
     }
+
+    public class LogData
+    {
+        public string log;
+        public LogType logType = LogType.Debug;
+    }
+
+    public enum LogType
+    {
+        Debug,
+        Warning,
+        Error
+    }
 }
+
