@@ -492,10 +492,10 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.TrackingEventList:
                         break;
+#if PluginFacebook
                     case ChecklistItemName.FacebookID:
                         var facebookId = checklistItemValue;
                         AddLog($"Facebook ID: {facebookId}");
-#if PluginFacebook
                         if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
                         {
                             var instance = CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
@@ -510,7 +510,6 @@ namespace _IECModules
                         Facebook.Unity.Settings.FacebookSettings.AppLabels = new List<string> {PlayerSettings.productName};
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
-#endif
                         break;
                     case ChecklistItemName.FirebaseConfigFileIOS:
                         break;
@@ -592,6 +591,7 @@ namespace _IECModules
                         serviceConfig.IronSourceConfig.android.bannerID = checklistItemValue;
                         serviceConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
+#endif
                 }
             }
             
