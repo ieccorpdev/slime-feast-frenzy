@@ -228,7 +228,12 @@ namespace _IECModules
         private void CreateKeyStore(string keystoreName)
         {
             var keystoreFileName = $"{keystoreName}.keystore";
-            var keyToolPath = $"{EditorPrefs.GetString("JdkPath").Replace(" ", "\" \"")}/bin/keytool.exe";
+            var jdkPath = EditorPrefs.GetString("JdkPath");
+            if (EditorPrefs.GetInt("JdkUseEmbedded") == 1)
+            {
+                jdkPath = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
+            }
+            var keyToolPath = $"{jdkPath.Replace(" ", "\" \"")}/bin/keytool.exe";
             var processInfo = new ProcessStartInfo
             {
                 FileName= @"cmd.exe",
