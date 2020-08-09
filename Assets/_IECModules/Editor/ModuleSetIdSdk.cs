@@ -229,11 +229,27 @@ namespace _IECModules
         {
             var keystoreFileName = $"{keystoreName}.keystore";
             var jdkPath = EditorPrefs.GetString("JdkPath");
+            
             if (EditorPrefs.GetInt("JdkUseEmbedded") == 1)
             {
-                jdkPath = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
+                var folderName = "MacOS";
+                if (Application.platform.ToString().Contains("Windows")) folderName = "Windows";
+                if (Application.platform.ToString().Contains("Linux")) folderName = "Linux";
+                var jdkPath2019_2 = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{folderName}";
+                var jdkPath2019_3_Or_Newer = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
+
+                if (Directory.Exists(jdkPath2019_2)) jdkPath = jdkPath2019_2;
+                else if (Directory.Exists(jdkPath2019_3_Or_Newer)) jdkPath = jdkPath2019_3_Or_Newer;
+                else if (!Directory.Exists(jdkPath))
+                {
+                    AddLogError($"Key Store Error: Cannot find keytool in following folder: " +
+                                $"\nJDKPath: {jdkPath}" +
+                                $"\nJDKPath Unity 2019.2: {jdkPath2019_2}" + 
+                                $"\nJDKPath Unity 2019.3 or Newer: {jdkPath2019_3_Or_Newer}");
+                    return;
+                }
             }
-            var keyToolPath = $"{jdkPath.Replace(" ", "\" \"")}/bin/keytool.exe";
+            var keyToolPath = $"{jdkPath.Replace(" ", "\" \"")}/bin/keytool";
             var processInfo = new ProcessStartInfo
             {
                 FileName= @"cmd.exe",
