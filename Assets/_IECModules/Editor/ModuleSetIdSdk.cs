@@ -230,12 +230,13 @@ namespace _IECModules
             var keystoreFileName = $"{keystoreName}.keystore";
             var jdkPath = EditorPrefs.GetString("JdkPath");
             
+            var osName = "MacOS";
+            if (Application.platform.ToString().Contains("Windows")) osName = "Windows";
+            if (Application.platform.ToString().Contains("Linux")) osName = "Linux";
+            
             if (EditorPrefs.GetInt("JdkUseEmbedded") == 1)
             {
-                var folderName = "MacOS";
-                if (Application.platform.ToString().Contains("Windows")) folderName = "Windows";
-                if (Application.platform.ToString().Contains("Linux")) folderName = "Linux";
-                var jdkPath2019_2 = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{folderName}";
+                var jdkPath2019_2 = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{osName}";
                 var jdkPath2019_3_Or_Newer = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
 
                 if (Directory.Exists(jdkPath2019_2)) jdkPath = jdkPath2019_2;
@@ -253,20 +254,27 @@ namespace _IECModules
             var processInfo = new ProcessStartInfo
             {
                 FileName= @"cmd.exe",
-                Arguments = "/C" 
-                            + $"{keyToolPath} -genkey -noprompt -v "
-                            + "-dname \"CN=, OU=, O=, L=, S=, C=\" "
-                            + $"-keystore {keystoreFileName} "
-                            + $"-storepass {keystoreName} "
-                            + $"-alias {keystoreName} "
-                            + $"-keypass {keystoreName} "
-                            + "-keyalg RSA -keysize 2048 -validity 10000",
+                Arguments = $"/C {keyToolPath}",
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
                 RedirectStandardInput = true,
                 RedirectStandardError = true
             };
+
+            if (osName != "Windows")
+            {
+                processInfo.FileName = $"{keyToolPath}";
+                processInfo.Arguments = "";
+            }
+
+            processInfo.Arguments += " -genkey -noprompt -v "
+                + "-dname \"CN=, OU=, O=, L=, S=, C=\" "
+                + $"-keystore {keystoreFileName} "
+                + $"-storepass {keystoreName} "
+                + $"-alias {keystoreName} "
+                + $"-keypass {keystoreName} "
+                + "-keyalg RSA -keysize 2048 -validity 10000";
                 
             using(var process = new Process()) {
                 process.StartInfo = processInfo;
