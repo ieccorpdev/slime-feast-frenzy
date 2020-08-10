@@ -32,38 +32,12 @@ namespace _IECModules
         private string m_GoogleSheetUrl =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
-        private const string FacebookCurrentVersion = "7.18.0";
-        private const string FirebaseCurrentVersion = "6.1.1";
-        private const string ApplovinCurrentVersion = "2.3.0";
-        private const string IronSourceCurrentVersion = "6.13.0";
-        private const string KochavaCurrentVersion = "4.1.1";
-
-        private const string FacebookSdkBaseUrl =
-            "https://origincache.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
-        
-        private const string KochavaSdkBaseUrl =
-            "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
-        
-        private const string FirebaseSdkBaseUrl =
-            "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
-        
-        private const string ApplovinSdkBaseUrl =
-            "https://gitlab.com/iec-unity-plugins/applovin-unity-plugin/raw/master/AppLovin-MAX-Unity-Plugin-{0}-Android-9.11.1-iOS-6.11.1.unitypackage";
-        
-        private const string IronSourceSdkBaseUrl =
-            "https://dl.bintray.com/ironsource-mobile/unity-sdk/IronSource_v{0}.unitypackage";
-
-        private const string FacebookSdkCurrentVersionUrl =
-            "https://origincache.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
-        private static string FacebookSdkUrlByVersion => string.Format(FacebookSdkBaseUrl, FacebookCurrentVersion);
-        private static string FirebaseSdkUrlByVersion => string.Format(FirebaseSdkBaseUrl, FirebaseCurrentVersion);
-        private static string ApplovinSdkUrlByVersion => string.Format(ApplovinSdkBaseUrl, ApplovinCurrentVersion);
-        private static string IronSourceSdkUrlByVersion => string.Format(IronSourceSdkBaseUrl, IronSourceCurrentVersion);
-        private static string KochavaSdkUrlByVersion => string.Format(KochavaSdkBaseUrl, KochavaCurrentVersion);
-
         private List<LogData> m_SetSdkLog = new List<LogData>();
         
         private bool m_ShowDebugButton = false;
+
+        private int m_PluginApplovinVersionSelect;
+        private int m_PluginFirebaseVersionSelect;
 
         public enum PluginDefineSymbol
         {
@@ -169,6 +143,7 @@ namespace _IECModules
         }
 
         private static Vector2 buttonSize = new Vector2(200, 20);
+        private static Vector2 dropdownSize = new Vector2(60, 20);
         
         private void OnGUI()
         {
@@ -186,30 +161,47 @@ namespace _IECModules
             }
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            
             EditorGUILayout.BeginHorizontal();
 
             if (GUILayout.Button("Install Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
-                DownloadPackage(FacebookSdkCurrentVersionUrl);
+                DownloadPackage(PluginUrl.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             }
-            if (GUILayout.Button($"Install Kochava SDK {KochavaCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            
+            
+            GUILayout.Space(20);
+            if (GUILayout.Button($"Install Applovin SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
-                DownloadPackage(KochavaSdkUrlByVersion);
-                AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            }
-            // if (GUILayout.Button("Install Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
-            // {
-            //     DownloadPackage(FirebaseSdkUrlByVersion); 
-            //     AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-            //     AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            // }
-            if (GUILayout.Button($"Install Applovin SDK {ApplovinCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
-            {
-                DownloadPackage(ApplovinSdkUrlByVersion);
+                DownloadPackage(PluginUrl.ApplovinSdkUrlByVersion(PluginUrl.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             }
+            
+            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
+                PluginUrl.ListApplovinVersion, 
+                GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button($"Install Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                DownloadPackage(PluginUrl.KochavaSdkUrlByVersion);
+                AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            }
+            
+            GUILayout.Space(20);
+            if (GUILayout.Button($"Install Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                DownloadPackage(PluginUrl.FirebaseSdkUrlByVersion(PluginUrl.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
+                AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
+            }
+            
+            m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
+                PluginUrl.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
+            
             // if (GUILayout.Button("Apply Setting"))
             // {
             //     OnClickApplySetting();
@@ -388,8 +380,7 @@ namespace _IECModules
 
         private void ImportPackage(byte[] packageByteArray, string packageName)
         {
-            var fileName = packageName.Split('/').Last();
-            fileName = fileName.Split(new[] { "%2F" }, StringSplitOptions.None).Last();
+            var fileName = GetFileNameFromURL(packageName);
             var filePath = $"{GetTempFolderPath()}{fileName}";
             using (var fs = File.Create(filePath)) 
             {
@@ -402,6 +393,14 @@ namespace _IECModules
             AssetDatabase.importPackageCompleted += ImportPackageComplete;
             AssetDatabase.ImportPackage(filePath, false);
 
+        }
+
+        private string GetFileNameFromURL(string url)
+        {
+            var fileName = url.Split('/').Last();
+            fileName = fileName.Split(new[] { "%2F" }, StringSplitOptions.None).Last();
+            fileName = fileName.Split(new[] { "=" }, StringSplitOptions.None).Last();
+            return fileName;
         }
 
         private string GetTempFolderPath()
