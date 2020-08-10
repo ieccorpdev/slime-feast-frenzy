@@ -62,6 +62,8 @@ namespace _IECModules
         private static string KochavaSdkUrlByVersion => string.Format(KochavaSdkBaseUrl, KochavaCurrentVersion);
 
         private List<LogData> m_SetSdkLog = new List<LogData>();
+        
+        private bool m_ShowDebugButton = false;
 
         public enum PluginDefineSymbol
         {
@@ -170,6 +172,21 @@ namespace _IECModules
         
         private void OnGUI()
         {
+            if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                m_ShowDebugButton = !m_ShowDebugButton;
+            }
+
+            if (m_ShowDebugButton)
+            {
+                if (GUILayout.Button("Test Create Keystore", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+                {
+                    CreateKeyStore("thanhdeptrai");
+                }
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            
             EditorGUILayout.BeginHorizontal();
 
             if (GUILayout.Button("Install Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
@@ -209,11 +226,6 @@ namespace _IECModules
             }
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
             EditorGUILayout.EndHorizontal();
-            
-            // if (GUILayout.Button("Test Create Keystore"))
-            // {
-            //     CreateKeyStore("thanhdeptrai");
-            // }
 
             m_SetSdkLog.ForEach(logData =>
             {
