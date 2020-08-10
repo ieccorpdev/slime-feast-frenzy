@@ -246,7 +246,7 @@ namespace _IECModules
             if (Application.platform.ToString().Contains("Windows")) osName = "Windows";
             if (Application.platform.ToString().Contains("Linux")) osName = "Linux";
             
-            if (EditorPrefs.GetInt("JdkUseEmbedded") == 1)
+            if (string.IsNullOrEmpty(jdkPath) || EditorPrefs.GetInt("JdkUseEmbedded") == 1)
             {
                 var jdkPath2019_2 = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{osName}";
                 var jdkPath2019_3_Or_Newer = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
