@@ -29,7 +29,8 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 **4. Applovin SDK**
 
-* Link download và document: https://drive.google.com/drive/u/0/folders/1m3s0SO4iVs46LTL3fFfjyFFeCAh5Y84M
+* Link download: https://applovin.bintray.com/Unity/
+* Link document: https://drive.google.com/drive/u/0/folders/1m3s0SO4iVs46LTL3fFfjyFFeCAh5Y84M
 
 * Với project Prototype: 
 
