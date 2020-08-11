@@ -146,9 +146,7 @@ namespace _IECModules
 
         private void InitGuiParams()
         {
-            m_LabelStyle = GUI.skin.label;
-            m_LabelStyle.fontSize = 18;
-            m_LabelStyle.fontStyle = FontStyle.Bold;
+            m_LabelStyle = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
         }
 
         private static Vector2 buttonSize = new Vector2(170, 20);
@@ -220,9 +218,9 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             
-            if (GUILayout.Button("Apply Setting", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update Main Template and Android Resolve", GUILayout.Width(buttonSize.x * 2), GUILayout.Height(buttonSize.y)))
             {
-                OnClickApplySetting();
+                OnClickUpdateMainTemplateAndResolve();
             }
             
             EditorGUILayout.EndHorizontal();
@@ -327,10 +325,26 @@ namespace _IECModules
             }
         }
 
-        private void OnClickApplySetting()
+        private void OnClickUpdateMainTemplateAndResolve()
         {
-            Directory.CreateDirectory("Assets/Plugins/Android/");
-            FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/mainTemplate.gradle.template", "Assets/Plugins/Android/mainTemplate.gradle");
+            m_SetSdkLog?.Clear();
+            var mainTemplateDirectory = "Assets/Plugins/Android/";
+            var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
+            if (File.Exists(mainTemplateFileName))
+            {
+                AddLogWarning("mainTemplate.gradle already exists");
+            }
+            else
+            {
+                Directory.CreateDirectory(mainTemplateDirectory);
+                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/mainTemplate.gradle.template", "Assets/Plugins/Android/mainTemplate.gradle");
+                AddLog("mainTemplate.gradle created");
+            }
+            
+#if PluginFacebook || PluginApplovin
+            // GooglePlayServices.SettingsDialog
+            GooglePlayServices.PlayServicesResolver.MenuForceResolve();
+#endif
         }
             
         private void OnClickSetSDKId()
