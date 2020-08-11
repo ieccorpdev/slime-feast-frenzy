@@ -39,6 +39,8 @@ namespace _IECModules
         private int m_PluginApplovinVersionSelect;
         private int m_PluginFirebaseVersionSelect;
 
+        private GUIStyle m_LabelStyle;
+
         public enum PluginDefineSymbol
         {
             PluginFacebook,
@@ -142,11 +144,21 @@ namespace _IECModules
             if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
         }
 
-        private static Vector2 buttonSize = new Vector2(200, 20);
+        private void InitGuiParams()
+        {
+            m_LabelStyle = GUI.skin.label;
+            m_LabelStyle.fontSize = 18;
+            m_LabelStyle.fontStyle = FontStyle.Bold;
+        }
+
+        private static Vector2 buttonSize = new Vector2(170, 20);
         private static Vector2 dropdownSize = new Vector2(60, 20);
         
         private void OnGUI()
         {
+            InitGuiParams();
+            
+            EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
@@ -154,24 +166,26 @@ namespace _IECModules
 
             if (m_ShowDebugButton)
             {
+                GUILayout.Space(20);
                 if (GUILayout.Button("Test Create Keystore", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
                 {
                     CreateKeyStore("thanhdeptrai");
                 }
             }
+            EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
+            GUILayout.Label("Install SDK", m_LabelStyle);
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Install Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 DownloadPackage(PluginUrl.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             }
-            
-            
+
             GUILayout.Space(20);
-            if (GUILayout.Button($"Install Applovin SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button($"Applovin SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 DownloadPackage(PluginUrl.ApplovinSdkUrlByVersion(PluginUrl.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
@@ -185,14 +199,14 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             
-            if (GUILayout.Button($"Install Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button($"Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 DownloadPackage(PluginUrl.KochavaSdkUrlByVersion);
                 AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             }
             
             GUILayout.Space(20);
-            if (GUILayout.Button($"Install Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button($"Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 DownloadPackage(PluginUrl.FirebaseSdkUrlByVersion(PluginUrl.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
@@ -202,17 +216,22 @@ namespace _IECModules
             m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
                 PluginUrl.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
             
-            // if (GUILayout.Button("Apply Setting"))
-            // {
-            //     OnClickApplySetting();
-            // }
-            
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             
-            if (GUILayout.Button("Update Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Apply Setting", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                OnClickApplySetting();
+            }
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label("Update Project Checklist", m_LabelStyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            
+            if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
             }
