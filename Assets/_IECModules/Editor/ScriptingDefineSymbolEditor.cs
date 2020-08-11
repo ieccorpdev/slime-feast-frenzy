@@ -16,12 +16,24 @@ namespace _IECModules
             var allDefines = GetListDefineSymbol();
             if(allDefines.Contains(symbol)) return;
             allDefines.Add(symbol);
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(
-                EditorUserBuildSettings.selectedBuildTargetGroup,
-                string.Join(";", allDefines.ToArray()));
-            AssetDatabase.SaveAssets();
+            SetListDefineSymbol(allDefines);
         }
 
+        public static void RemoveDefineSymbol(string symbol)
+        {
+            var allDefines = GetListDefineSymbol();
+            if(!allDefines.Contains(symbol)) return;
+            allDefines.Remove(symbol);
+            SetListDefineSymbol(allDefines);
+        }
+
+        public static void SetListDefineSymbol(List<string> allDefines)
+        {
+            var defineStr = string.Join(";", allDefines.ToArray());
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, defineStr);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, defineStr);
+            AssetDatabase.SaveAssets();
+        }
         public static List<string> GetListDefineSymbol()
         {
             var definesString =

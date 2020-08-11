@@ -167,11 +167,22 @@ namespace _IECModules
             if (m_ShowDebugButton)
             {
                 GUILayout.Space(20);
-                if (GUILayout.Button("Test Create Keystore", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+                CreateGuiButton("Test Create Keystore", () =>
                 {
-                    ClearLog();
                     CreateKeyStore("thanhdeptrai");
-                }
+                });
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Add Define PluginFacebook", () =>
+                {
+                    AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                }, 220);
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Remove Define PluginFacebook", () =>
+                {
+                    RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                }, 220);
             }
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -179,20 +190,18 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            CreateGuiButton("Facebook SDK (latest)", () =>
             {
-                ClearLog();
                 DownloadPackage(PluginUrl.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-            }
+            });
 
             GUILayout.Space(20);
-            if (GUILayout.Button($"Applovin SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            CreateGuiButton("Applovin SDK", () =>
             {
-                ClearLog();
                 DownloadPackage(PluginUrl.ApplovinSdkUrlByVersion(PluginUrl.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-            }
+            });
             
             m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
                 PluginUrl.ListApplovinVersion, 
@@ -201,22 +210,20 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
-            
-            if (GUILayout.Button($"Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+
+            CreateGuiButton($"Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", () =>
             {
-                ClearLog();
                 DownloadPackage(PluginUrl.KochavaSdkUrlByVersion);
                 AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            }
+            });
             
             GUILayout.Space(20);
-            if (GUILayout.Button($"Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            CreateGuiButton($"Firebase SDK", () =>
             {
-                ClearLog();
                 DownloadPackage(PluginUrl.FirebaseSdkUrlByVersion(PluginUrl.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            }
+            });
             
             m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
                 PluginUrl.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
@@ -224,11 +231,8 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
-            
-            if (GUILayout.Button("Update Main Template and Android Resolve", GUILayout.Width(buttonSize.x * 2), GUILayout.Height(buttonSize.y)))
-            {
-                OnClickUpdateMainTemplateAndResolve();
-            }
+
+            CreateGuiButton("Update Main Template and Android Resolve", OnClickUpdateMainTemplateAndResolve, buttonSize.x * 2);
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -256,6 +260,14 @@ namespace _IECModules
                 if(logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
                 EditorGUILayout.TextArea(logData.log, guiStyle);
             });
+        }
+
+        private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
+        private void CreateGuiButton(string text, Action onClickButton, float buttonWidth)
+        {
+            if (!GUILayout.Button(text, GUILayout.Width(buttonWidth), GUILayout.Height(buttonSize.y))) return;
+            ClearLog();
+            onClickButton?.Invoke();
         }
 
         private void CreateKeyStore(string keystoreName)
@@ -339,7 +351,6 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
-            ClearLog();
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
             if (File.Exists(mainTemplateFileName))
@@ -742,6 +753,10 @@ namespace _IECModules
         private static void AddDefineSymbol(PluginDefineSymbol defineSymbol)
         {
             ScriptingDefineSymbolEditor.AddDefineSymbol(defineSymbol.ToString());
+        }
+        private static void RemoveDefineSymbol(PluginDefineSymbol defineSymbol)
+        {
+            ScriptingDefineSymbolEditor.RemoveDefineSymbol(defineSymbol.ToString());
         }
     }
 
