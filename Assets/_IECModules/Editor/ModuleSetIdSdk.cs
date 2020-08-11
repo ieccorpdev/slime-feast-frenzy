@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using Debug = UnityEngine.Debug;
 
 
@@ -28,6 +29,7 @@ namespace _IECModules
 
 
         private const string PROJECT_CHECKLIST_URL = "project_checklist_url";
+        private const string LOG_SET_ID_SDK = "log_set_id_sdk";
         
         private string m_GoogleSheetUrl =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
@@ -167,6 +169,7 @@ namespace _IECModules
                 GUILayout.Space(20);
                 if (GUILayout.Button("Test Create Keystore", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
                 {
+                    ClearLog();
                     CreateKeyStore("thanhdeptrai");
                 }
             }
@@ -178,6 +181,7 @@ namespace _IECModules
 
             if (GUILayout.Button("Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
+                ClearLog();
                 DownloadPackage(PluginUrl.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             }
@@ -185,6 +189,7 @@ namespace _IECModules
             GUILayout.Space(20);
             if (GUILayout.Button($"Applovin SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
+                ClearLog();
                 DownloadPackage(PluginUrl.ApplovinSdkUrlByVersion(PluginUrl.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             }
@@ -199,6 +204,7 @@ namespace _IECModules
             
             if (GUILayout.Button($"Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
+                ClearLog();
                 DownloadPackage(PluginUrl.KochavaSdkUrlByVersion);
                 AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             }
@@ -206,6 +212,7 @@ namespace _IECModules
             GUILayout.Space(20);
             if (GUILayout.Button($"Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
+                ClearLog();
                 DownloadPackage(PluginUrl.FirebaseSdkUrlByVersion(PluginUrl.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
@@ -236,6 +243,11 @@ namespace _IECModules
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
             EditorGUILayout.EndHorizontal();
 
+            if (m_SetSdkLog.Count == 0)
+            {
+                var savedLogData = PlayerPrefs.GetString(LOG_SET_ID_SDK);
+                if(!string.IsNullOrEmpty(savedLogData)) m_SetSdkLog = JsonConvert.DeserializeObject<List<LogData>>(savedLogData);   
+            }
             m_SetSdkLog.ForEach(logData =>
             {
                 var guiStyle = GUI.skin.textArea;
@@ -327,7 +339,7 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
-            m_SetSdkLog?.Clear();
+            ClearLog();
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
             if (File.Exists(mainTemplateFileName))
@@ -343,13 +355,13 @@ namespace _IECModules
             
 #if PluginFacebook || PluginApplovin
             // GooglePlayServices.SettingsDialog
-            GooglePlayServices.PlayServicesResolver.MenuForceResolve();
+            // GooglePlayServices.PlayServicesResolver.MenuForceResolve();
 #endif
         }
             
         private void OnClickSetSDKId()
         {
-            m_SetSdkLog = new List<LogData>();
+            ClearLog();
             
             PlayerPrefs.SetString(PROJECT_CHECKLIST_URL, m_GoogleSheetUrl);
 
@@ -368,7 +380,7 @@ namespace _IECModules
                 EditorUtility.ClearProgressBar();
                 onComplete?.Invoke();
                 
-                AddLog($"Download SDK Complete: {response.Data.Length} bytes");
+                AddLog($"Download SDK Complete: {BytesToString(response.Data.Length)}");
                 // using (var fs = File.Create("Assets/facebook.zip")) 
                 // {
                 //     fs.Write(response.Data, 0, response.Data.Length);
@@ -407,8 +419,19 @@ namespace _IECModules
             }).Send();
             httpRequest.OnProgress += (request, downloaded, length) =>
             {
-                EditorUtility.DisplayProgressBar("Downloading", $"{downloaded}/{length}", (float) downloaded/ length);
+                EditorUtility.DisplayProgressBar("Downloading", $"{BytesToString(downloaded)}/{BytesToString(length)}", (float) downloaded/ length);
             }; 
+        }
+
+        public static string BytesToString(long byteCount)
+        {
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
+            if (byteCount == 0)
+                return "0" + suf[0];
+            var bytes = Math.Abs(byteCount);
+            var place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            var num = Math.Round(bytes / Math.Pow(1024, place), 1);
+            return (Math.Sign(byteCount) * num) + suf[place];
         }
 
         private void ImportPackage(byte[] packageByteArray, string packageName)
@@ -701,6 +724,19 @@ namespace _IECModules
                     logType = logType
                 });
             }
+            SaveLogToPlayerPref();
+        }
+
+        private void ClearLog()
+        {
+            Debug.Log("Clear Log");
+            m_SetSdkLog?.Clear();
+            SaveLogToPlayerPref();
+        }
+
+        private void SaveLogToPlayerPref()
+        {
+            PlayerPrefs.SetString(LOG_SET_ID_SDK, JsonConvert.SerializeObject(m_SetSdkLog));
         }
 
         private static void AddDefineSymbol(PluginDefineSymbol defineSymbol)
