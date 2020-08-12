@@ -440,7 +440,7 @@ namespace _IECModules
             var gvhFileContent = File.ReadAllText(gvhProjectSettingFile);
             if (gvhFileContent.Contains("<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />"))
             {
-                AddLog("Jetifier already enabled!");
+                AddLog("Jetifier (androidx) already enabled!");
                 return;
             }
             if (gvhFileContent.Contains("<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"False\" />"))
@@ -449,7 +449,7 @@ namespace _IECModules
                     "<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"False\" />",
                     "<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />");
                 File.WriteAllText(gvhProjectSettingFile, gvhFileContent);
-                AddLog("Jetifier switched from FALSE to TRUE!");
+                AddLog("Jetifier (androidx) switched from FALSE to TRUE!");
                 return;
             }
             
@@ -457,7 +457,7 @@ namespace _IECModules
                 "\n</projectSettings>",
                 "  <projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />\n</projectSettings>");
             File.WriteAllText(gvhProjectSettingFile, gvhFileContent);
-            AddLog("Jetifier added to True!");
+            AddLog("Jetifier (androidx) added to True!");
         }
         
         private void GooglePlayServicesForceResolve()
