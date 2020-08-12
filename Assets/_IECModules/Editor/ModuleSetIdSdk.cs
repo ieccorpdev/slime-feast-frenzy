@@ -351,6 +351,7 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
+            EnableJetifier();
             UpdateMultidexInMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
         }
@@ -423,9 +424,42 @@ namespace _IECModules
             
             if (multiDexAlreadyEnabled)
             {
-                AddLog("MultiDex are already enabled in mainTemplate.gradle and AndroidManifest.xml");
+                AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
             }
         }
+
+        private void EnableJetifier()
+        {
+            const string gvhProjectSettingFile = "ProjectSettings/GvhProjectSettings.xml";
+            if (!File.Exists(gvhProjectSettingFile))
+            {
+                AddLogError($"{gvhProjectSettingFile} Not Found!");
+                return;
+            }
+
+            var gvhFileContent = File.ReadAllText(gvhProjectSettingFile);
+            if (gvhFileContent.Contains("<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />"))
+            {
+                AddLog("Jetifier already enabled!");
+                return;
+            }
+            if (gvhFileContent.Contains("<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"False\" />"))
+            {
+                gvhFileContent = gvhFileContent.Replace(
+                    "<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"False\" />",
+                    "<projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />");
+                File.WriteAllText(gvhProjectSettingFile, gvhFileContent);
+                AddLog("Jetifier switched from FALSE to TRUE!");
+                return;
+            }
+            
+            gvhFileContent = gvhFileContent.Replace(
+                "\n</projectSettings>",
+                "  <projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />\n</projectSettings>");
+            File.WriteAllText(gvhProjectSettingFile, gvhFileContent);
+            AddLog("Jetifier added to True!");
+        }
+        
         private void GooglePlayServicesForceResolve()
         {
             AddLog("Android Play Service Start Force Resolve");
