@@ -30,5 +30,13 @@ public static class StringHelper {
 		if (pFrom == -1 || pTo == -1 || pFrom >= pTo) return original;
 		return original.Remove(pFrom - 1, pTo - pFrom + 2);
 	}
+	public static string GetBetweenString(this string original, string start, string end)
+	{
+		var pFrom = original.IndexOf(start, StringComparison.Ordinal);
+		var pTo = original.IndexOf(end, pFrom + start.Length, StringComparison.Ordinal);
+
+		if (pFrom == -1 || pTo == -1) return "";
+		return original.Substring(pFrom, pTo - pFrom + end.Length);
+	}
 
 }

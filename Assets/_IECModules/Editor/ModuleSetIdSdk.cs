@@ -351,8 +351,18 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
+            UpdateMultidexInMainTemplateAndAndroidManifest();
+            GooglePlayServicesForceResolve();
+        }
+
+        private void UpdateMultidexInMainTemplateAndAndroidManifest()
+        {
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
+            
+            var androidManifestDirectory = "Assets/Plugins/Android/";
+            var androidManifestFileName = $"{androidManifestDirectory}AndroidManifest.xml";
+            
             if (File.Exists(mainTemplateFileName))
             {
                 AddLogWarning("mainTemplate.gradle already exists");
@@ -360,14 +370,87 @@ namespace _IECModules
             else
             {
                 Directory.CreateDirectory(mainTemplateDirectory);
-                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/mainTemplate.gradle.template", "Assets/Plugins/Android/mainTemplate.gradle");
+                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.mainTemplate.gradle", mainTemplateFileName);
                 AddLog("mainTemplate.gradle created");
             }
             
-#if PluginFacebook || PluginApplovin
-            // GooglePlayServices.SettingsDialog
-            // GooglePlayServices.PlayServicesResolver.MenuForceResolve();
-#endif
+            if (File.Exists(androidManifestFileName))
+            {
+                AddLogWarning("AndroidManifest.xml already exists");
+            }
+            else
+            {
+                Directory.CreateDirectory(androidManifestDirectory);
+                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.AndroidManifest.xml", androidManifestFileName);
+                AddLog("AndroidManifest.xml created");
+            }
+            
+            var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
+            var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
+            var multiDexAlreadyEnabled = true;
+            
+            if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
+            {
+                multiDexAlreadyEnabled = false;
+                mainTemplateFileContent = mainTemplateFileContent.Replace(
+                    "        versionName '**VERSIONNAME**'" , 
+                    "        versionName '**VERSIONNAME**'\n        multiDexEnabled true");
+                File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+                AddLog("mainTemplate.gradle Updated: multiDexEnabled true");
+            }
+            
+            if (!mainTemplateFileContent.Contains("implementation 'androidx.multidex:multidex:2.0.1'"))
+            {
+                multiDexAlreadyEnabled = false;
+                mainTemplateFileContent = mainTemplateFileContent.Replace(
+                    "\ndependencies {" , 
+                    "\ndependencies {\n	implementation 'androidx.multidex:multidex:2.0.1'");
+                File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+                AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
+            }
+
+            if (!androidManifestFileContent.Contains("android:name=\"androidx.multidex.MultiDexApplication\""))
+            {
+                multiDexAlreadyEnabled = false;
+                var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
+                var applicationTagReplaced = applicationTag.Replace(
+                    ">" , 
+                    " android:name=\"androidx.multidex.MultiDexApplication\">");
+                androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                AddLog("AndroidManifest.xml Updated: implementation 'androidx.multidex:multidex:2.0.1'");
+            }
+            
+            if (multiDexAlreadyEnabled)
+            {
+                AddLog("MultiDex are already enabled in mainTemplate.gradle and AndroidManifest.xml");
+            }
+        }
+        private void GooglePlayServicesForceResolve()
+        {
+            AddLog("Android Play Service Start Force Resolve");
+            
+            var googlePlayServicesNameSpace = "GooglePlayServices";
+            var googlePlayServicesClassName = "PlayServicesResolver";
+            var googlePlayServicesMethodForceResolve = "MenuForceResolve";
+
+            var googlePlayServicesClassType = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                from type in assembly.GetTypes()
+                where type.Namespace == googlePlayServicesNameSpace && type.Name == googlePlayServicesClassName
+                select type).FirstOrDefault();
+            
+            if (googlePlayServicesClassType == null)
+            {
+                AddLogError($"{googlePlayServicesNameSpace}.{googlePlayServicesClassName} NOT Defined.");
+                return;
+            }
+            var googlePlayServicesMethodForceResolveMethod = googlePlayServicesClassType.GetMethod(googlePlayServicesMethodForceResolve);
+            if (googlePlayServicesMethodForceResolveMethod == null)
+            {
+                AddLogError($"Method {googlePlayServicesMethodForceResolve} NOT Exist!");
+                return;
+            }
+            googlePlayServicesMethodForceResolveMethod.Invoke(null, null);
         }
             
         private void OnClickSetSDKId()
@@ -740,7 +823,6 @@ namespace _IECModules
 
         private void ClearLog()
         {
-            Debug.Log("Clear Log");
             m_SetSdkLog?.Clear();
             SaveLogToPlayerPref();
         }
