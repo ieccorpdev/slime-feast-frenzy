@@ -351,7 +351,7 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
-            EnableJetifier();
+            // EnableJetifier();
             UpdateMultidexInMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
         }
