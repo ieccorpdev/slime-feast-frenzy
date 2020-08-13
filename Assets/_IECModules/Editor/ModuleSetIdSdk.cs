@@ -144,6 +144,7 @@ namespace _IECModules
         {
             var savedUrl = PlayerPrefs.GetString(PROJECT_CHECKLIST_URL); 
             if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
+            PluginUrl.LoadApplovinVersionList();
         }
 
         private void InitGuiParams()
@@ -205,7 +206,7 @@ namespace _IECModules
             
             m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
                 PluginUrl.ListApplovinVersion, 
-                GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();

@@ -1,5 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using BestHTTP;
+using UnityEngine;
 
 namespace _IECModules
 {
@@ -31,24 +34,31 @@ namespace _IECModules
         
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
-        public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, ApplovinSdkNameByVersion[version]);
+        public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, version);
         
         public static string IronSourceSdkUrlByVersion => string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
         public static string KochavaSdkUrlByVersion => string.Format(KOCHAVA_SDK_BASE_URL, KOCHAVA_CURRENT_VERSION);
 
-        public static Dictionary<string, string> ApplovinSdkNameByVersion = new Dictionary<string, string>
-        {
-            {"3.0.0", "3.0.0-Android-9.13.2-iOS-6.13.2"},
-            {"2.4.16", "2.4.16-Android-9.13.1-iOS-6.13.1"},
-            {"2.3.5", "2.4.16-Android-9.11.6-iOS-6.11.6"}
+        public static string[] ListApplovinVersion = {
+            "3.0.0-Android-9.13.2-iOS-6.13.2",
+            "2.4.16-Android-9.13.1-iOS-6.13.1"
         };
-
-        private static string[] m_ListApplovinVersion;
-        public static string[] ListApplovinVersion => m_ListApplovinVersion ?? (m_ListApplovinVersion = ApplovinSdkNameByVersion.Keys.ToArray());
 
         public static string[] ListFirebaseVersion = {
             "6.15.2",
             "6.1.1"
         };
+
+        public static void LoadApplovinVersionList()
+        {
+            var httpRequest = new HTTPRequest(
+                new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
+                (originalRequest, response) =>
+                {
+                    Debug.Log(response.DataAsText);
+                    
+                }).Send();
+
+        }
     }
 }
