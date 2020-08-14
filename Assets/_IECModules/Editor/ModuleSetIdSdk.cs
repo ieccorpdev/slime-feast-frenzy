@@ -144,7 +144,7 @@ namespace _IECModules
         {
             var savedUrl = PlayerPrefs.GetString(PROJECT_CHECKLIST_URL); 
             if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
-            PluginUrl.LoadApplovinVersionList();
+            SdkHelper.LoadApplovinVersionList();
         }
 
         private void InitGuiParams()
@@ -193,41 +193,46 @@ namespace _IECModules
 
             CreateGuiButton("Facebook SDK (latest)", () =>
             {
-                DownloadPackage(PluginUrl.FACEBOOK_SDK_CURRENT_VERSION_URL);
+                DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
 
             GUILayout.Space(20);
-            CreateGuiButton("Applovin SDK", () =>
+
+            var loadingDotText = "";
+            var loadingDotCount = DateTime.Now.Second % 3 + 1;
+            for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+            var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                DownloadPackage(PluginUrl.ApplovinSdkUrlByVersion(PluginUrl.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+                DownloadPackage(SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
             
             m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
-                PluginUrl.ListApplovinVersion, 
+                SdkHelper.ListApplovinVersion, 
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            CreateGuiButton($"Kochava SDK {PluginUrl.KOCHAVA_CURRENT_VERSION}", () =>
+            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
             {
-                DownloadPackage(PluginUrl.KochavaSdkUrlByVersion);
+                DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
                 AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             });
             
             GUILayout.Space(20);
             CreateGuiButton($"Firebase SDK", () =>
             {
-                DownloadPackage(PluginUrl.FirebaseSdkUrlByVersion(PluginUrl.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
+                DownloadPackage(SdkHelper.FirebaseSdkUrlByVersion(SdkHelper.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
                 AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
             });
             
             m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
-                PluginUrl.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
+                SdkHelper.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
