@@ -502,6 +502,17 @@ namespace _IECModules
             var checklistData = DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(m_GoogleSheetUrl));
 
             ApplySdkSetting(GoogleSheetToCSV.ParseCSV(checklistData, false));
+
+            ProjectSettingRemoveSplashScreen();
+        }
+
+        private void ProjectSettingRemoveSplashScreen()
+        {
+            var projectSettingFileName = "ProjectSettings/ProjectSettings.asset";
+            var projectSettingFileContent = File.ReadAllText(projectSettingFileName);
+            projectSettingFileContent =
+                projectSettingFileContent.Replace("m_ShowUnitySplashScreen: 1", "m_ShowUnitySplashScreen: 0");
+            File.WriteAllText(projectSettingFileName, projectSettingFileContent);
         }
 
         private void DownloadPackage(string url, Action onComplete  = null)
@@ -827,9 +838,9 @@ namespace _IECModules
             
 #if PluginFacebook
             EditorUtility.SetDirty(serviceConfig);
+#endif
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-#endif
         }
 
         private void AddLogError(string log)
