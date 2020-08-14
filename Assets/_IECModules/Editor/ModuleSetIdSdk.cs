@@ -362,17 +362,25 @@ namespace _IECModules
         private void OnClickUpdateMainTemplateAndResolve()
         {
             // EnableJetifier();
-            UpdateMultidexInMainTemplateAndAndroidManifest();
+            
+            UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
         }
 
-        private void UpdateMultidexInMainTemplateAndAndroidManifest()
+        /// <summary>Update <c>mainTemplate.gradle</c> and <c>AndroidManifest.xml</c> </summary>
+        /// Update Multidex in mainTemplate.gradle and AndroidManifest.xml
+        /// Create network_security_config.xml and update in AndroidManifest.xml
+
+        private void UpdateMainTemplateAndAndroidManifest()
         {
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
             
             var androidManifestDirectory = "Assets/Plugins/Android/";
             var androidManifestFileName = $"{androidManifestDirectory}AndroidManifest.xml";
+            
+            var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
+            var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
             
             if (File.Exists(mainTemplateFileName))
             {
@@ -383,6 +391,17 @@ namespace _IECModules
                 Directory.CreateDirectory(mainTemplateDirectory);
                 FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.mainTemplate.gradle", mainTemplateFileName);
                 AddLog("mainTemplate.gradle created");
+            }
+            
+            if (File.Exists(networkSecurityConfigFileName))
+            {
+                AddLogWarning("network_security_config.xml already exists");
+            }
+            else
+            {
+                Directory.CreateDirectory(networkSecurityConfigDirectory);
+                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
+                AddLog("network_security_config created");
             }
             
             if (File.Exists(androidManifestFileName))
@@ -420,21 +439,38 @@ namespace _IECModules
                 AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
             }
 
-            if (!androidManifestFileContent.Contains("android:name=\"androidx.multidex.MultiDexApplication\""))
+            var androidManifestMultidexString = "android:name=\"androidx.multidex.MultiDexApplication\"";
+            if (!androidManifestFileContent.Contains(androidManifestMultidexString))
             {
                 multiDexAlreadyEnabled = false;
                 var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
                 var applicationTagReplaced = applicationTag.Replace(
                     ">" , 
-                    " android:name=\"androidx.multidex.MultiDexApplication\">");
+                    $" {androidManifestMultidexString}>");
                 androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
                 File.WriteAllText(androidManifestFileName, androidManifestFileContent);
-                AddLog("AndroidManifest.xml Updated: implementation 'androidx.multidex:multidex:2.0.1'");
+                AddLog($"AndroidManifest.xml Updated: {androidManifestMultidexString}");
             }
             
             if (multiDexAlreadyEnabled)
             {
                 AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
+            }
+            
+            var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
+            if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
+            {
+                var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
+                var applicationTagReplaced = applicationTag.Replace(
+                    ">" , 
+                    $" {androidManifestNetworkSecurityConfigString}>");
+                androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                AddLog($"AndroidManifest.xml Updated: {androidManifestNetworkSecurityConfigString}");
+            }
+            else
+            {
+                AddLog("network_security_config already enabled in AndroidManifest.xml");
             }
         }
 
