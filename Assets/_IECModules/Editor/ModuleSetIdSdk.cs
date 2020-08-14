@@ -27,12 +27,13 @@ namespace _IECModules
             GetWindow(typeof(ModuleSetIdSdk), false, "Set ID SDK");
         }
 
-
-        private const string PROJECT_CHECKLIST_URL = "project_checklist_url";
-        private const string LOG_SET_ID_SDK = "log_set_id_sdk";
         
-        private string m_GoogleSheetUrl =
+        private const string LOG_SET_ID_SDK = "log_set_id_sdk";
+
+        private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
+
+        private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private List<LogData> m_SetSdkLog = new List<LogData>();
         
@@ -42,6 +43,8 @@ namespace _IECModules
         private int m_PluginFirebaseVersionSelect;
 
         private GUIStyle m_LabelStyle;
+        
+        private ServicesConfig m_ServicesConfig;
 
         public enum PluginDefineSymbol
         {
@@ -142,8 +145,9 @@ namespace _IECModules
 
         private void Awake()
         {
-            var savedUrl = PlayerPrefs.GetString(PROJECT_CHECKLIST_URL); 
-            if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
+            LoadServicesConfig();
+            if (m_ServicesConfig != null && !string.IsNullOrEmpty(m_ServicesConfig.projectChecklistUrl))
+                m_GoogleSheetUrl = m_ServicesConfig.projectChecklistUrl; 
             SdkHelper.LoadApplovinVersionList();
         }
 
@@ -497,8 +501,6 @@ namespace _IECModules
         {
             ClearLog();
             
-            PlayerPrefs.SetString(PROJECT_CHECKLIST_URL, m_GoogleSheetUrl);
-
             var checklistData = DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(m_GoogleSheetUrl));
 
             ApplySdkSetting(GoogleSheetToCSV.ParseCSV(checklistData, false));
@@ -657,7 +659,22 @@ namespace _IECModules
             }
             return uwr;
         }
-        
+
+        private string LoadServicesConfig()
+        {
+            try
+            {
+                var assets = AssetDatabase.FindAssets("t:ServicesConfig");
+                var m_ServicesConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
+                m_ServicesConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(m_ServicesConfigPath);
+                return m_ServicesConfigPath;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"{e.Message}\n{e.StackTrace}");
+                return e.StackTrace;
+            }
+        }
 
         private void ApplySdkSetting(List<List<string>> sdkData)
         {
@@ -665,22 +682,21 @@ namespace _IECModules
             dictionaryCheckListValue = sdkData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
+            var getServicesConfigResult = LoadServicesConfig();
+            
+            if (m_ServicesConfig != null)
+            {
+                AddLog("Service Config Load Success: " + getServicesConfigResult);
+            }
+            else
+            {
+                AddLogError($"Error Loading Service Config!: \n{getServicesConfigResult}");
+                return;
+            }
 
-#if PluginFacebook
-            ServicesConfig serviceConfig;
-            try
-            {
-                var assets = AssetDatabase.FindAssets("t:ServicesConfig");
-                var serviceConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
-                serviceConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(serviceConfigPath);
-                AddLog("Service Config Load Success: " + serviceConfigPath);
-            }
-            catch (Exception e)
-            {
-                AddLog("Error Loading Service Config: " + e.Message + "\n" + e.StackTrace);
-                throw;
-            }
-#else
+            m_ServicesConfig.projectChecklistUrl = m_GoogleSheetUrl;
+            
+#if !PluginFacebook
             AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
 
@@ -758,19 +774,19 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.KochavaIDIOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID IOS: {checklistItemValue}");
-                        serviceConfig.kochavaConfig.iosID = checklistItemValue;
+                        m_ServicesConfig.kochavaConfig.iosID = checklistItemValue;
                         break;
                     case ChecklistItemName.KochavaIDAndroid:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID Android: {checklistItemValue}");
-                        serviceConfig.kochavaConfig.androidID = checklistItemValue;
+                        m_ServicesConfig.kochavaConfig.androidID = checklistItemValue;
                         break;
                     case ChecklistItemName.AppodealIDIOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID IOS: {checklistItemValue}");
-                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
+                        m_ServicesConfig.AppodealConfig.android.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.AppodealIDAndroid:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID Android: {checklistItemValue}");
-                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
+                        m_ServicesConfig.AppodealConfig.android.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.AdmobIDIOS:
                         break;
@@ -788,57 +804,55 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.ApplovinIOSID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.appID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinAndroidID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.appID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.android.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinIOSInterID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinIOSBannerID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinIOSRewardID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinAndroidInterID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Inter ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinAndroidBannerID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Banner ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.bannerID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.android.bannerID = checklistItemValue;
                         break;
                     case ChecklistItemName.ApplovinAndroidRewardID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Reward ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.rewardID = checklistItemValue;
+                        m_ServicesConfig.ApplovinConfig.android.rewardID = checklistItemValue;
                         break;
                     case ChecklistItemName.IronSourceIOSID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source IOS ID: {checklistItemValue}");
-                        serviceConfig.IronSourceConfig.ios.appID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.interstitialID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.bannerID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.rewardID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.ios.appID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.ios.interstitialID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.ios.bannerID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.ios.rewardID = checklistItemValue;
                         break;
                     case ChecklistItemName.IronSourceAndroidID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source Android ID: {checklistItemValue}");
-                        serviceConfig.IronSourceConfig.android.appID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.bannerID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.rewardID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.android.appID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
+                        m_ServicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #endif
                 }
             }
             
-#if PluginFacebook
-            EditorUtility.SetDirty(serviceConfig);
-#endif
+            EditorUtility.SetDirty(m_ServicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
