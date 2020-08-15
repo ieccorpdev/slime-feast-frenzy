@@ -145,6 +145,7 @@ namespace _IECModules
 
         private void Awake()
         {
+            ClearLog();
             LoadServicesConfig();
             if (m_ServicesConfig != null && !string.IsNullOrEmpty(m_ServicesConfig.projectChecklistUrl))
                 m_GoogleSheetUrl = m_ServicesConfig.projectChecklistUrl; 
@@ -361,10 +362,10 @@ namespace _IECModules
 
         private void OnClickUpdateMainTemplateAndResolve()
         {
-            // EnableJetifier();
-            
+            EnableJetifier();
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
+            UpdateJetifierInMainTemplate();
         }
 
         /// <summary>Update <c>mainTemplate.gradle</c> and <c>AndroidManifest.xml</c> </summary>
@@ -472,6 +473,38 @@ namespace _IECModules
             {
                 AddLog("network_security_config already enabled in AndroidManifest.xml");
             }
+        }
+
+        private void UpdateJetifierInMainTemplate()
+        {
+            var jetifierMainTemplateStr = "// Android Resolver Repos Start\n" +
+            "([rootProject] + (rootProject.subprojects as List)).each {" + "\n" +
+                "    ext {" + "\n" +
+                "        it.setProperty(\"android.useAndroidX\", true)" + "\n" +
+                "        it.setProperty(\"android.enableJetifier\", true)" + "\n" +
+                "    }" + "\n" +
+                "}" + "\n";
+            
+            var mainTemplateDirectory = "Assets/Plugins/Android/";
+            var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
+            
+            if (!File.Exists(mainTemplateFileName))
+            {
+                AddLogError("mainTemplate.gradle NOT exists!!");
+                return;
+            }
+
+            var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
+            if (mainTemplateFileContent.Contains("it.setProperty(\"android.useAndroidX\", true")
+                && mainTemplateFileContent.Contains("it.setProperty(\"android.enableJetifier\", true"))
+            {
+                AddLog("Jetifier (androidx) already enabled in mainTemplate.gradle");
+                return;
+            }
+
+            mainTemplateFileContent = mainTemplateFileContent.Replace("// Android Resolver Repos Start\n", jetifierMainTemplateStr);
+            File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+            AddLog("Jetifier (androidx) added in mainTemplate.gradle");
         }
 
         private void EnableJetifier()
@@ -735,6 +768,7 @@ namespace _IECModules
 #if !PluginFacebook
             AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
+            PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) 29;
 
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
