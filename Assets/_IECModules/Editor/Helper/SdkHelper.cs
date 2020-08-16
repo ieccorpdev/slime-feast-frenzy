@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _IECModules
 {
-    public class SdkHelper
+    public static class SdkHelper
     {
         public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
         

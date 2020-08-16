@@ -11,6 +11,8 @@ namespace _IECModules
             return GetListDefineSymbol().Contains(symbol);
         }
 
+        public static void AddDefineSymbol(object symbol) => AddDefineSymbol(symbol.ToString());
+        public static void RemoveDefineSymbol(object symbol) => RemoveDefineSymbol(symbol.ToString());
         public static void AddDefineSymbol(string symbol)
         {
             var allDefines = GetListDefineSymbol();
