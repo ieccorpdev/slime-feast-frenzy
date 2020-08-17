@@ -24,8 +24,10 @@ namespace _IECModules
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk), false, "Set ID SDK");
+            GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
+
+        public const string VERSION = "1.0.0";
         
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";

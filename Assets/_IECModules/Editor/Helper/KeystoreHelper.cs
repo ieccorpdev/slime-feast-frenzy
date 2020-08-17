@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -19,17 +21,37 @@ namespace _IECModules
             
             if (string.IsNullOrEmpty(jdkPath) || EditorPrefs.GetInt("JdkUseEmbedded") == 1)
             {
-                var jdkPath2019_2 = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{osName}";
-                var jdkPath2019_3_Or_Newer = $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK";
-
-                if (Directory.Exists(jdkPath2019_2)) jdkPath = jdkPath2019_2;
-                else if (Directory.Exists(jdkPath2019_3_Or_Newer)) jdkPath = jdkPath2019_3_Or_Newer;
-                else if (!Directory.Exists(jdkPath))
+                
+                var listPathCheck = new List<string>
                 {
-                    LogEditorHelper.AddLogError($"Key Store Error: Cannot find keytool in following folder: " +
-                                $"\nJDKPath: {jdkPath}" +
-                                $"\nJDKPath Unity 2019.2: {jdkPath2019_2}" + 
-                                $"\nJDKPath Unity 2019.3 or Newer: {jdkPath2019_3_Or_Newer}");
+                    $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{osName}",
+                    $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/OpenJDK"
+                };
+                
+                var directoryInfo = new FileInfo(EditorApplication.applicationPath).Directory;
+                if (directoryInfo != null)
+                {
+                    var applicationPathFile = directoryInfo.ToString();
+                    listPathCheck.Add($"{applicationPathFile}/PlaybackEngines/AndroidPlayer/OpenJDK");
+                    listPathCheck.Add($"{applicationPathFile}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK/{osName}");
+                    listPathCheck.Add($"{applicationPathFile}/PlaybackEngines/AndroidPlayer/Tools/OpenJDK");
+                }
+
+                foreach (var path in listPathCheck.Where(Directory.Exists))
+                {
+                    jdkPath = path; 
+                    break;
+                }
+                
+                if (!Directory.Exists(jdkPath))
+                {
+                    var logError = "Key Store Error: Cannot find keytool in following folder: " +
+                                   $"\nJDKPath: {jdkPath}";
+                    for (var i = 0; i < listPathCheck.Count; i++)
+                    {
+                        logError += $"\nJDKPath {i + 1}: {listPathCheck[i]}";
+                    }
+                    LogEditorHelper.AddLogError(logError);
                     return;
                 }
             }
