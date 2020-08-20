@@ -233,10 +233,6 @@ namespace _IECModules
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Appodeal ID Android: {checklistItemValue}");
                         servicesConfig.AppodealConfig.android.appID = checklistItemValue;
                         break;
-                    case ChecklistItemName.AdmobIDIOS:
-                        break;
-                    case ChecklistItemName.AdmobIDAndroid:
-                        break;
                     case ChecklistItemName.MarketingChecklist:
                         break;
                     case ChecklistItemName.IAPChecklist:
@@ -292,6 +288,19 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
+                        break;
+#endif
+                    
+#if PluginApplovin 
+                    case ChecklistItemName.AdmobIDIOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob IOS ID: {checklistItemValue}");
+                        AppLovinSettings.Instance.AdMobIosAppId = checklistItemValue;
+                        AppLovinSettings.Instance.SaveAsync();
+                        break;
+                    case ChecklistItemName.AdmobIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob Android ID: {checklistItemValue}");
+                        AppLovinSettings.Instance.AdMobAndroidAppId = checklistItemValue;
+                        AppLovinSettings.Instance.SaveAsync();
                         break;
 #endif
                 }
