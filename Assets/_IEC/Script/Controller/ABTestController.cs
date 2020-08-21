@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ABTestController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
+    public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {

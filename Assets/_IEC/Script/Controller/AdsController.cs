@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class AdsController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
+    public class AdsController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class GamePlayGroup : MonoBehaviour, IGroup
+    public class GamePlayGroup : _BaseBehaviour, IGroup
     {
         public Camera mainCamera;
 

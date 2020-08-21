@@ -2,7 +2,7 @@
 
 namespace IEC
 {
-    public class _EmptyController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class _EmptyController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {

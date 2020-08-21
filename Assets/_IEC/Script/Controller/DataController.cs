@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class DataController : _BaseController, IController, IEventListener, IEventAwake, IEventStart, IEventPauseApp, IEventQuitApp
+    public class DataController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventPauseApp, IEventQuitApp
     {
         public const string PLAYER_DATA_KEY = "PlayerData";
 

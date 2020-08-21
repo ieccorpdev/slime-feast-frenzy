@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class _EmptyGroup : MonoBehaviour, IGroup
+    public class _EmptyGroup : _BaseBehaviour, IGroup
     {
         public GameObject emptyObject;
         public Transform emptyTransform;

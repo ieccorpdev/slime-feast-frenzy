@@ -6,7 +6,7 @@ using TMPro;
 
 namespace IEC
 {
-    public class UIGroup : MonoBehaviour, IGroup
+    public class UIGroup : _BaseBehaviour, IGroup
     {
         public Canvas canvas;
         public EventSystem eventSystem;
