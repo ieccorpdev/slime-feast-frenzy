@@ -22,6 +22,7 @@ public class PostProcessBuildIOS : MonoBehaviour
         PlistElementDict rootDict = plist.root;
         rootDict.SetBoolean("ITSAppUsesNonExemptEncryption", false);
         rootDict.SetString("NSCalendarsUsageDescription", "advertisement");
+        rootDict.SetString("NSCameraUsageDescription", "camera");
         rootDict.SetString("NSPhotoLibraryUsageDescription", "advertisement");
         rootDict.SetString("NSLocationWhenInUseUsageDescription", "advertisement");
         rootDict.values.Remove("UIApplicationExitsOnSuspend");
