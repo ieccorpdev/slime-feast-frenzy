@@ -27,7 +27,7 @@ namespace _IECModules
             GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
 
-        public const string VERSION = "1.0.1";
+        public const string VERSION = "1.1.0";
 
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
@@ -42,6 +42,15 @@ namespace _IECModules
 
         private GUIStyle m_LabelStyle;
 
+        private static RegistryManifest GoogleRegistry = new RegistryManifest
+        {
+            name = "Game Package Registry by Google",
+            url = "https://unityregistry-pa.googleapis.com/",
+            scopes = new List<string>()
+            {
+                "com.google"
+            }
+        };
 
         public enum PluginDefineSymbol
         {
@@ -158,7 +167,8 @@ namespace _IECModules
             var edmSdkLoaded = SdkHelper.LoadEDMVersionFromCache();
             CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
              {
-                 AddPackageToPackageManager("com.google.external-dependency-manager", "1.2.152");
+                 //AddPackageToPackageManager("com.google.external-dependency-manager", "1.2.152");
+                 AddRegistries(GoogleRegistry);
              });
 
             m_PluginEDMVersionSelect = EditorGUILayout.Popup("", m_PluginEDMVersionSelect,
@@ -225,7 +235,47 @@ namespace _IECModules
             manifestFileContent = manifestFileContent.Replace("\"dependencies\": {\n", $"\"dependencies\": {{\n    \"{package}\": \"{version}\",\n");
             File.WriteAllText(manifestFileName, manifestFileContent);
         }
+
+        private void AddRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+            if (!manifestFileContent.Contains("scopedRegistries"))
+            {
+                manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
+            }
+
+            if (!manifestFileContent.Contains(registry.url))
+            {
+                manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
+            }
+            File.WriteAllText(manifestFileName, manifestFileContent);
+        }
     }
 
+    public class RegistryManifest
+    {
+        public string name;
+        public string url;
+        public List<string> scopes;
+
+        public string ToManifestString()
+        {
+            var result = string.Empty;
+            result = $"  {{\n    \"name\":\"{name}\",\n"
+                + $"    \"url\":\"{url}\",\n"
+                + $"    \"scopes\":[";
+            for (int i = 0; i < scopes.Count; i++)
+            {
+                result += $"\n      \"{scopes[i]}\"";
+                if (i != scopes.Count - 1)
+                {
+                    result += ",";
+                }
+            }
+            result += "\n   ]\n  }";
+            return result;
+        }
+    }
 }
 
