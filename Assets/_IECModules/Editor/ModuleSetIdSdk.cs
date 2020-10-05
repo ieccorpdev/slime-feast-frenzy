@@ -13,6 +13,9 @@ using UnityEngine.Networking;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
+using SimpleJSON;
+using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 using Debug = UnityEngine.Debug;
 
 
@@ -241,17 +244,60 @@ namespace _IECModules
         {
             var manifestFileName = "Packages/manifest.json";
             var manifestFileContent = File.ReadAllText(manifestFileName);
-            if (!manifestFileContent.Contains("scopedRegistries"))
+            var jsonNode = JSON.Parse(manifestFileContent);
+            // jsonNode["dependencies"]["com.google.external-dependency-manager"] = "1.2.152";
+            jsonNode["scopedRegistries"] = new JSONArray();
+            var scopes = new JSONArray();
+            scopes.Add(new JSONString("com.google"));
+            var item = new JSONObject
             {
-                manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
-            }
+                ["name"] = "Game Package Registry by Google",
+                ["url"] = "https://unityregistry-pa.googleapis.com",
+                ["scopes"] = scopes
+            };
+            jsonNode["scopedRegistries"].Add(item);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+            Add("com.google.external-dependency-manager@1.2.152");
 
-            if (!manifestFileContent.Contains(registry.url))
+
+            // if (!manifestFileContent.Contains("scopedRegistries"))
+            // {
+            //     LogEditorHelper.AddLog("No Scope Registry Found");
+            //     LogEditorHelper.AddLog(manifestFileContent.Contains("}\n}"));
+            //     // LogEditorHelper.AddLog(manifestFileContent.Contains("}\n}"));
+            //     manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
+            //     
+            // }
+            //
+            // if (!manifestFileContent.Contains(registry.url))
+            // {
+            //     manifestFileContent = manifestFileContent.Replace("\n  \"scopedRegistries\":[\n  ]\n}",
+            //         $"\n  \"scopedRegistries\":[\n{registry.ToManifestString()}\n  ]\n}}");
+            // }
+            // File.WriteAllText(manifestFileName, manifestFileContent);
+        }
+        
+        static AddRequest Request;
+
+        [MenuItem("Window/Add Package Example")]
+        static void Add(string package)
+        {
+            // Add a package to the project
+            Request = Client.Add(package);
+            EditorApplication.update += Progress;
+        }
+
+        static void Progress()
+        {
+            if (Request.IsCompleted)
             {
-                manifestFileContent = manifestFileContent.Replace("\n  \"scopedRegistries\":[\n  ]\n}",
-                    $"\n  \"scopedRegistries\":[\n{registry.ToManifestString()}\n  ]\n}}");
+                if (Request.Status == StatusCode.Success)
+                    Debug.Log("Installed: " + Request.Result.packageId);
+                else if (Request.Status >= StatusCode.Failure)
+                    Debug.Log(Request.Error.message);
+
+                EditorApplication.update -= Progress;
             }
-            File.WriteAllText(manifestFileName, manifestFileContent);
         }
     }
 

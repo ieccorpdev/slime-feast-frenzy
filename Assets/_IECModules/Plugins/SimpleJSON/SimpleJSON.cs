@@ -1003,7 +1003,7 @@ namespace SimpleJSON
                 if (aMode == JSONTextMode.Compact)
                     aSB.Append(':');
                 else
-                    aSB.Append(" : ");
+                    aSB.Append(": ");
                 k.Value.WriteToStringBuilder(aSB, aIndent + aIndentInc, aIndentInc, aMode);
             }
             if (aMode == JSONTextMode.Indent)
