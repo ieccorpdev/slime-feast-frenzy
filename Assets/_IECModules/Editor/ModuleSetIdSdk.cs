@@ -48,7 +48,7 @@ namespace _IECModules
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
             name = "Game Package Registry by Google",
-            url = "https://unityregistry-pa.googleapis.com/",
+            url = "https://unityregistry-pa.googleapis.com",
             scopes = new List<string>()
             {
                 "com.google"
@@ -172,7 +172,7 @@ namespace _IECModules
             CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
                 AddRegistries(GoogleRegistry);
-                AddPackageToPackageManager("com.google.external-dependency-manager", SdkHelper.ListEDMVersion[m_PluginApplovinVersionSelect]);
+                AddPackageToPackageManager("com.google.external-dependency-manager", SdkHelper.ListEDMVersion[m_PluginEDMVersionSelect]);
             });
 
             m_PluginEDMVersionSelect = EditorGUILayout.Popup("", m_PluginEDMVersionSelect,
@@ -236,6 +236,7 @@ namespace _IECModules
         {
             var manifestFileName = "Packages/manifest.json";
             var manifestFileContent = File.ReadAllText(manifestFileName);
+            
             var jsonNode = JSON.Parse(manifestFileContent);
             jsonNode["scopedRegistries"] = new JSONArray();
             var scopes = new JSONArray();
@@ -243,7 +244,7 @@ namespace _IECModules
             {
                 scopes.Add(new JSONString(regScope));
             }
-
+            
             var item = new JSONObject
             {
                 ["name"] = registry.name,
