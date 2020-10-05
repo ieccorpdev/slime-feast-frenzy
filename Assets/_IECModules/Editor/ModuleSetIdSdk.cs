@@ -170,10 +170,10 @@ namespace _IECModules
 
             var edmSdkLoaded = SdkHelper.LoadEDMVersionFromCache();
             CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-             {
-                 AddPackageToPackageManager("com.google.external-dependency-manager", "1.2.152");
-                 AddRegistries(GoogleRegistry);
-             });
+            {
+                AddRegistries(GoogleRegistry);
+                AddPackageToPackageManager("com.google.external-dependency-manager", SdkHelper.ListEDMVersion[m_PluginApplovinVersionSelect]);
+            });
 
             m_PluginEDMVersionSelect = EditorGUILayout.Popup("", m_PluginEDMVersionSelect,
                SdkHelper.ListEDMVersion,
@@ -229,15 +229,7 @@ namespace _IECModules
 
         private void AddPackageToPackageManager(string package, string version)
         {
-            var manifestFileName = "Packages/manifest.json";
-            var manifestFileContent = File.ReadAllText(manifestFileName);
-            if (manifestFileContent.Contains(package))
-            {
-                LogEditorHelper.AddLog("Contain Package");
-                manifestFileContent = manifestFileContent.RemoveBetweenString($"\"{package}", "\",\n    ");
-            }
-            manifestFileContent = manifestFileContent.Replace("\"dependencies\": {\n", $"\"dependencies\": {{\n    \"{package}\": \"{version}\",\n");
-            File.WriteAllText(manifestFileName, manifestFileContent);
+            PackageManagerHelper.Add($"{package}@{version}");
         }
 
         private void AddRegistries(RegistryManifest registry)
@@ -245,60 +237,24 @@ namespace _IECModules
             var manifestFileName = "Packages/manifest.json";
             var manifestFileContent = File.ReadAllText(manifestFileName);
             var jsonNode = JSON.Parse(manifestFileContent);
-            // jsonNode["dependencies"]["com.google.external-dependency-manager"] = "1.2.152";
             jsonNode["scopedRegistries"] = new JSONArray();
             var scopes = new JSONArray();
-            scopes.Add(new JSONString("com.google"));
+            foreach (var regScope in registry.scopes)
+            {
+                scopes.Add(new JSONString(regScope));
+            }
+
             var item = new JSONObject
             {
-                ["name"] = "Game Package Registry by Google",
-                ["url"] = "https://unityregistry-pa.googleapis.com",
+                ["name"] = registry.name,
+                ["url"] = registry.url,
                 ["scopes"] = scopes
             };
             jsonNode["scopedRegistries"].Add(item);
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
-            Add("com.google.external-dependency-manager@1.2.152");
-
-
-            // if (!manifestFileContent.Contains("scopedRegistries"))
-            // {
-            //     LogEditorHelper.AddLog("No Scope Registry Found");
-            //     LogEditorHelper.AddLog(manifestFileContent.Contains("}\n}"));
-            //     // LogEditorHelper.AddLog(manifestFileContent.Contains("}\n}"));
-            //     manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
-            //     
-            // }
-            //
-            // if (!manifestFileContent.Contains(registry.url))
-            // {
-            //     manifestFileContent = manifestFileContent.Replace("\n  \"scopedRegistries\":[\n  ]\n}",
-            //         $"\n  \"scopedRegistries\":[\n{registry.ToManifestString()}\n  ]\n}}");
-            // }
-            // File.WriteAllText(manifestFileName, manifestFileContent);
-        }
-        
-        static AddRequest Request;
-
-        [MenuItem("Window/Add Package Example")]
-        static void Add(string package)
-        {
-            // Add a package to the project
-            Request = Client.Add(package);
-            EditorApplication.update += Progress;
         }
 
-        static void Progress()
-        {
-            if (Request.IsCompleted)
-            {
-                if (Request.Status == StatusCode.Success)
-                    Debug.Log("Installed: " + Request.Result.packageId);
-                else if (Request.Status >= StatusCode.Failure)
-                    Debug.Log(Request.Error.message);
 
-                EditorApplication.update -= Progress;
-            }
-        }
     }
 
     public class RegistryManifest
@@ -306,24 +262,6 @@ namespace _IECModules
         public string name;
         public string url;
         public List<string> scopes;
-
-        public string ToManifestString()
-        {
-            var result = string.Empty;
-            result = $"    {{\n      \"name\":\"{name}\",\n"
-                + $"      \"url\":\"{url}\",\n"
-                + $"      \"scopes\":[";
-            for (int i = 0; i < scopes.Count; i++)
-            {
-                result += $"\n        \"{scopes[i]}\"";
-                if (i != scopes.Count - 1)
-                {
-                    result += ",";
-                }
-            }
-            result += "\n      ]\n    }";
-            return result;
-        }
     }
 }
 
