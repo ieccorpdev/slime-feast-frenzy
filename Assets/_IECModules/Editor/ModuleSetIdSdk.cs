@@ -71,6 +71,7 @@ namespace _IECModules
             if (ProjectChecklistHelper.servicesConfig != null && !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
             SdkHelper.LoadApplovinVersionList();
+            SdkHelper.LoadEDMVersionList();
         }
 
         private void InitGuiParams()
@@ -167,7 +168,7 @@ namespace _IECModules
             var edmSdkLoaded = SdkHelper.LoadEDMVersionFromCache();
             CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
              {
-                 //AddPackageToPackageManager("com.google.external-dependency-manager", "1.2.152");
+                 AddPackageToPackageManager("com.google.external-dependency-manager", "1.2.152");
                  AddRegistries(GoogleRegistry);
              });
 
@@ -247,7 +248,8 @@ namespace _IECModules
 
             if (!manifestFileContent.Contains(registry.url))
             {
-                manifestFileContent = manifestFileContent.Replace("}\n}", "},\n  \"scopedRegistries\":[\n  ]\n}");
+                manifestFileContent = manifestFileContent.Replace("\n  \"scopedRegistries\":[\n  ]\n}",
+                    $"\n  \"scopedRegistries\":[\n{registry.ToManifestString()}\n  ]\n}}");
             }
             File.WriteAllText(manifestFileName, manifestFileContent);
         }
@@ -262,18 +264,18 @@ namespace _IECModules
         public string ToManifestString()
         {
             var result = string.Empty;
-            result = $"  {{\n    \"name\":\"{name}\",\n"
-                + $"    \"url\":\"{url}\",\n"
-                + $"    \"scopes\":[";
+            result = $"    {{\n      \"name\":\"{name}\",\n"
+                + $"      \"url\":\"{url}\",\n"
+                + $"      \"scopes\":[";
             for (int i = 0; i < scopes.Count; i++)
             {
-                result += $"\n      \"{scopes[i]}\"";
+                result += $"\n        \"{scopes[i]}\"";
                 if (i != scopes.Count - 1)
                 {
                     result += ",";
                 }
             }
-            result += "\n   ]\n  }";
+            result += "\n      ]\n    }";
             return result;
         }
     }

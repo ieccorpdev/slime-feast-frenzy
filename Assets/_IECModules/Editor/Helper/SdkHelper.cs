@@ -127,7 +127,7 @@ namespace _IECModules
             for (int i = 0; i < jsonArray.Count; i++)
             {
                 var jsonNode = jsonArray[i];
-                var version = jsonNode["name"].ToString().Replace("\"", "");
+                var version = jsonNode["name"].ToString().Replace("\"", "").Replace("v", "");
                 ListEDMVersionFromGithub[i] = version;
             }
             return true;
