@@ -5,13 +5,13 @@ using BestHTTP;
 using Newtonsoft.Json;
 using UnityEngine;
 using SimpleJSON;
+using UnityEditor.PackageManager;
 
 namespace _IECModules
 {
     public static class SdkHelper
     {
         public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
-        public const string EDM_VERSION_CACHE = "edm_version_cache";
 
         public const string FACEBOOK_CURRENT_VERSION = "7.18.0";
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
@@ -40,6 +40,11 @@ namespace _IECModules
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
 
 
+
+        public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
+        public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
+        public const string FIREBAE_ANALYTIC_PKG = "com.google.firebase.analytics";
+
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
         public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, version);
@@ -65,14 +70,12 @@ namespace _IECModules
             "6.1.1"
         };
 
-        public static string[] ListEDMVersionDefault = { "1.2.24" };
-        public static string[] ListEDMVersionFromGithub;
-
-        public static string[] ListEDMVersion =>
-            ListEDMVersionFromGithub == null ||
-            ListEDMVersionFromGithub.Length <= ListEDMVersionDefault.Length
-                ? ListEDMVersionDefault
-                : ListEDMVersionFromGithub;
+        public static Dictionary<string, UnityPackageInfo> DictUnityPackage = new Dictionary<string, UnityPackageInfo>
+        {
+            [EXTERNAL_DEPENDENCY_PKG] = new UnityPackageInfo { id = EXTERNAL_DEPENDENCY_PKG },
+            [FIREBASE_REMOTE_CONFIG_PKG] = new UnityPackageInfo { id = FIREBASE_REMOTE_CONFIG_PKG },
+            [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo { id = FIREBAE_ANALYTIC_PKG }
+        };
 
         public static void LoadApplovinVersionList()
         {
@@ -100,38 +103,6 @@ namespace _IECModules
                 ).ToArray();
             return true;
         }
-
-
-        public static void LoadEDMVersionList()
-        {
-            var httpRequest = new HTTPRequest(
-               new Uri("https://api.github.com/repos/googlesamples/unity-jar-resolver/tags"),
-               (originalRequest, response) =>
-               {
-                   //Debug.Log("response EDM:" + response.DataAsText);
-                   PlayerPrefs.SetString(EDM_VERSION_CACHE, response.DataAsText);
-
-
-
-               }).Send();
-        }
-
-        public static bool LoadEDMVersionFromCache()
-        {
-            if (ListEDMVersionFromGithub != null) return true;
-            var data = PlayerPrefs.GetString(EDM_VERSION_CACHE);
-            if (string.IsNullOrEmpty(data)) return false;
-
-            var jsonArray = JSON.Parse(data).AsArray;
-            ListEDMVersionFromGithub = new string[jsonArray.Count];
-            for (int i = 0; i < jsonArray.Count; i++)
-            {
-                var jsonNode = jsonArray[i];
-                var version = jsonNode["name"].ToString().Replace("\"", "").Replace("v", "");
-                ListEDMVersionFromGithub[i] = version;
-            }
-            return true;
-        }
     }
 
     [Serializable]
@@ -142,5 +113,57 @@ namespace _IECModules
         public string[] versions;
         public string latest_version;
         public string updated;
+    }
+
+    public class UnityPackageInfo
+    {
+        public int versionSelected;
+        string versionInstalled;
+        public string[] listDefaultVerion = new string[] { "1.0" };
+        public string[] listVersionLoadFromUnity;
+        public string[] listVersion =>
+                listVersionLoadFromUnity == null ||
+                listVersionLoadFromUnity.Length <= listDefaultVerion.Length
+                ? listDefaultVerion
+                : listVersionLoadFromUnity;
+
+        public string id;
+        public string cache
+        {
+            get
+            {
+                return id + "_cache";
+            }
+        }
+
+        public void LoadPKGVersionList()
+        {
+            PackageManagerHelper.Search(id, (searchRequest) =>
+            {
+                var packageInfo = searchRequest.Result[0];
+                listVersionLoadFromUnity = packageInfo.versions.compatible.Reverse().ToArray();
+                PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(listVersionLoadFromUnity));
+            });
+        }
+
+        public bool LoadPKGVersionFromCache()
+        {
+            if (listVersionLoadFromUnity != null) return true;
+            var data = PlayerPrefs.GetString(cache);
+            if (string.IsNullOrEmpty(data)) return false;
+
+            listVersionLoadFromUnity = JSON.Parse(data).AsStringArray;
+            return true;
+        }
+
+        public void Install()
+        {
+            PackageManagerHelper.Add($"{id}@{listVersion[versionSelected]}");
+        }
+
+        public void Uninstall()
+        {
+            PackageManagerHelper.Remove(id);
+        }
     }
 }
