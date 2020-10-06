@@ -19,18 +19,17 @@ namespace _IECModules
             if (listSetSdkLog.Count == 0)
             {
                 var savedLogData = PlayerPrefs.GetString(LOG_SET_ID_SDK);
-                if(!string.IsNullOrEmpty(savedLogData)) listSetSdkLog = JsonConvert.DeserializeObject<List<LogData>>(savedLogData);   
+                if (!string.IsNullOrEmpty(savedLogData)) listSetSdkLog = JsonConvert.DeserializeObject<List<LogData>>(savedLogData);
             }
             listSetSdkLog.ForEach(logData =>
             {
                 var guiStyle = GUI.skin.textArea;
-                guiStyle.normal.textColor = guiStyle.focused.textColor = Color.black;
-                if(logData.logType == LogType.Warning) guiStyle.normal.textColor = guiStyle.focused.textColor = new Color(1f, 0.5f, 0f);
-                if(logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
+                if (logData.logType == LogType.Warning) guiStyle.normal.textColor = guiStyle.focused.textColor = new Color(1f, 0.5f, 0f);
+                if (logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
                 EditorGUILayout.TextArea(logData.log, guiStyle);
             });
         }
-        
+
         public static void AddLogError(string log)
         {
             AddLog($"Error: {log}", LogType.Error);
@@ -46,11 +45,16 @@ namespace _IECModules
         public static void AddLog(string log, LogType logType = LogType.Debug)
         {
             var logStr = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {log}";
+            if (listSetSdkLog == null)
+            {
+                ClearLog();
+            }
             if (listSetSdkLog.Count > 0 && listSetSdkLog.Last().logType == LogType.Debug && logType == LogType.Debug)
             {
                 listSetSdkLog.Last().log += $"\n{logStr}";
             }
-            else {
+            else
+            {
                 listSetSdkLog.Add(new LogData
                 {
                     log = logStr,
@@ -71,7 +75,7 @@ namespace _IECModules
             PlayerPrefs.SetString(LOG_SET_ID_SDK, JsonConvert.SerializeObject(listSetSdkLog));
         }
     }
-    
+
     public class LogData
     {
         public string log;
