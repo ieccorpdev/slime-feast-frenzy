@@ -81,7 +81,9 @@ namespace _IECModules
         private void OnGUI()
         {
             InitGuiParams();
-
+            var loadingDotText = "";
+            var loadingDotCount = DateTime.Now.Second % 3 + 1;
+            for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
@@ -114,6 +116,31 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
+            #region External Dependency Manager
+            //GUILayout.TextArea("External Dependency Manager");
+
+            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!edmSdkLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                edmPkg.Install();
+            });
+
+            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
+               edmPkg.listVersion,
+               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
             CreateGuiButton("Facebook SDK (latest)", () =>
             {
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
@@ -122,9 +149,7 @@ namespace _IECModules
 
             GUILayout.Space(20);
 
-            var loadingDotText = "";
-            var loadingDotCount = DateTime.Now.Second % 3 + 1;
-            for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+
             var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
@@ -150,30 +175,7 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            #region External Dependency Manager
-            //GUILayout.TextArea("External Dependency Manager");
 
-            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
-            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!edmSdkLoaded)
-                {
-                    return;
-                }
-                AddRegistries(GoogleRegistry);
-                edmPkg.Install();
-            });
-
-            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
-               edmPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            #endregion
 
             #region Firebase Analytics
 
