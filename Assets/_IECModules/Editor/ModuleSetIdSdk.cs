@@ -1,19 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net;
-using System.Text;
-using BestHTTP;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Networking;
-using ICSharpCode.SharpZipLib.BZip2;
-using ICSharpCode.SharpZipLib.Zip;
-using Newtonsoft.Json;
-using Debug = UnityEngine.Debug;
+using SimpleJSON;
 
 
 namespace _IECModules
@@ -27,20 +17,31 @@ namespace _IECModules
             GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
 
-        public const string VERSION = "1.0.1";
-        
+        public const string VERSION = "1.1.0";
+
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
-        
+
         private bool m_ShowDebugButton = false;
 
         private int m_PluginApplovinVersionSelect;
         private int m_PluginFirebaseVersionSelect;
+        private int m_PluginEDMVersionSelect;
+        private int m_PluginFirebaseCoreSelect;
 
         private GUIStyle m_LabelStyle;
-        
+
+        private static RegistryManifest GoogleRegistry = new RegistryManifest
+        {
+            name = "Game Package Registry by Google",
+            url = "https://unityregistry-pa.googleapis.com",
+            scopes = new List<string>()
+            {
+                "com.google"
+            }
+        };
 
         public enum PluginDefineSymbol
         {
@@ -59,22 +60,28 @@ namespace _IECModules
             LogEditorHelper.ClearLog();
             ProjectChecklistHelper.LoadServicesConfig();
             if (ProjectChecklistHelper.servicesConfig != null && !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
-                m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl; 
+                m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
+            AddRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
+            var unityPackages = SdkHelper.DictUnityPackage.Values;
+            foreach (var pkg in unityPackages)
+            {
+                pkg.LoadPKGVersionList();
+            }
         }
 
         private void InitGuiParams()
         {
-            m_LabelStyle = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
+            m_LabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
         }
 
-        private static Vector2 buttonSize = new Vector2(170, 20);
+        private static Vector2 buttonSize = new Vector2(300, 20);
         private static Vector2 dropdownSize = new Vector2(60, 20);
-        
+
         private void OnGUI()
         {
             InitGuiParams();
-            
+
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
@@ -88,13 +95,13 @@ namespace _IECModules
                 {
                     KeystoreHelper.CreateKeyStore("thanhdeptrai");
                 });
-                
+
                 GUILayout.Space(20);
                 CreateGuiButton("Test Add Define PluginFacebook", () =>
                 {
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
                 }, 220);
-                
+
                 GUILayout.Space(20);
                 CreateGuiButton("Test Remove Define PluginFacebook", () =>
                 {
@@ -124,11 +131,11 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
-            
-            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
-                SdkHelper.ListApplovinVersion, 
+
+            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
+                SdkHelper.ListApplovinVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-            
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
@@ -138,30 +145,97 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             });
-            
-            GUILayout.Space(20);
-            CreateGuiButton($"Firebase SDK", () =>
-            {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FirebaseSdkUrlByVersion(SdkHelper.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            });
-            
-            m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
-                SdkHelper.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
-            
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
+            #region External Dependency Manager
+            //GUILayout.TextArea("External Dependency Manager");
+
+            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!edmSdkLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                edmPkg.Install();
+            });
+
+            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
+               edmPkg.listVersion,
+               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
+            #region Firebase Analytics
+
+            var firebaseAnalyticPkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBAE_ANALYTIC_PKG];
+            var firebaseAnalyticLoaded = firebaseAnalyticPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Firebase Analytics {(firebaseAnalyticLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!firebaseAnalyticLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                firebaseAnalyticPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
+            });
+
+            firebaseAnalyticPkg.versionSelected = EditorGUILayout.Popup("", firebaseAnalyticPkg.versionSelected,
+               firebaseAnalyticPkg.listVersion,
+               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
+            #region Firebase RemoteConfig
+
+            var firebaseRemotePkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBASE_REMOTE_CONFIG_PKG];
+            var firebaseRemoteLoaded = firebaseRemotePkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Firebase Remote Config {(firebaseRemoteLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!firebaseRemoteLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                firebaseRemotePkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseRemote);
+            });
+
+            firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
+               firebaseRemotePkg.listVersion,
+               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
+
             CreateGuiButton("Update Main Template and Android Resolve", ProjectResolveHelper.UpdateMainTemplateAndResolve, buttonSize.x * 2);
-            
+
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             GUILayout.Label("Update Project Checklist", m_LabelStyle);
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
-            
+
             if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
@@ -179,11 +253,11 @@ namespace _IECModules
             LogEditorHelper.ClearLog();
             onClickButton?.Invoke();
         }
-        
+
         private void OnClickSetSDKId()
         {
             LogEditorHelper.ClearLog();
-            
+
             ProjectChecklistHelper.ApplySdkSetting(m_GoogleSheetUrl);
 
             ProjectSettingRemoveSplashScreen();
@@ -198,7 +272,37 @@ namespace _IECModules
             File.WriteAllText(projectSettingFileName, projectSettingFileContent);
         }
 
+        private void AddRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+
+            var jsonNode = JSON.Parse(manifestFileContent);
+            jsonNode["scopedRegistries"] = new JSONArray();
+            var scopes = new JSONArray();
+            foreach (var regScope in registry.scopes)
+            {
+                scopes.Add(new JSONString(regScope));
+            }
+
+            var item = new JSONObject
+            {
+                ["name"] = registry.name,
+                ["url"] = registry.url,
+                ["scopes"] = scopes
+            };
+            jsonNode["scopedRegistries"].Add(item);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        }
+
+
     }
 
+    public class RegistryManifest
+    {
+        public string name;
+        public string url;
+        public List<string> scopes;
+    }
 }
 
