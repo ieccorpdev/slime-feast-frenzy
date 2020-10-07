@@ -77,5 +77,5 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 * Điền link checklist vào mục `IEC - Set ID SDK - Update Project Checklist`
 * Bấm nút `Update from Google Docs`
 
-**12. Update Manifest, Main Template and Android Resolve
+**12. Update Manifest, Main Template and Android Resolve**
 * `IEC - Set ID SDK - Update Main Template and Android Resolve`
