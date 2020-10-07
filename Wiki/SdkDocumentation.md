@@ -1,36 +1,20 @@
 Thứ tự thực hiện việc thêm SDK vào một project :
 
-`1 - 2 - 3 - (4,5,6,7,8) - 9 - 10 - 11`
+`1 - (3,4,6,7,8) - 11 - 12`
 
-Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi thêm sdk cần thực hiện lại bước 11.
+Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi thêm sdk cần thực hiện lại bước 12 (nếu SDK có id thì phải thực hiện lại bước 11).
 
-**1. Custom Gradle:**
+**1. External Dependency Manager:**
 
-* `File - Project Setting - Player - Publishing Settings - Build - Tick Custom Gradle Template`.
-
-**2. Unity-jar-resolver:**
-
-* Link download: https://github.com/googlesamples/unity-jar-resolver/releases
-* Sử dụng phiên bản 1.2.124.
+* `IEC - Set ID SDK - External Dependency Manager`
 
 **3. Facebook SDK:**
 
-* Link download: https://developers.facebook.com/docs/unity/downloads/
-
-* Sử dụng phiên bản 7.17.0 trở lên (Yêu cầu của Applovin).
-
-* Điền App name, ID, sau đó bấm Generate Android Manifest. (*)
-
-  `Facebook - Edit Setting`.
-
-  (Note: Trường hợp thay facebook id mới thì khi điền xong id mới phải bấm Regenerate Android Manifest).
-
-* Thêm define `PluginFacebook`(**)
+* `IEC - Set ID SDK - Facebook SDK`
 
 **4. Applovin SDK**
 
-* Link download: https://applovin.bintray.com/Unity/
-* Link document: https://drive.google.com/drive/u/0/folders/1m3s0SO4iVs46LTL3fFfjyFFeCAh5Y84M
+* `IEC - Set ID SDK - Applovin SDK`
 
 * Với project Prototype: 
 
@@ -40,13 +24,7 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
   Import các ad network giống các game trước trừ khi có yêu cầu riêng của bên monetizer.
 
-* Đọc kĩ và làm đầy đủ hướng dẫn trong document Applovin.
-
-* Thêm define `PluginApplovin` (**)
-* Thêm Applovin App ID vào file `ServicesConfig`,  build một bản android và chạy trên device để monetizer tạo ad id (*)
-* Thêm ad id vào file `ServicesConfig`.(*)
-
-**5. IronSource SDK**
+**5. IronSource SDK** (Deprecated)
 
 * Link download và document: https://developers.ironsrc.com/ironsource-mobile/unity/unity-plugin/
 
@@ -65,20 +43,17 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 **6. Firebase SDK**
 
-* Link download: https://dl.google.com/firebase/sdk/unity/firebase_unity_sdk_6.1.1.zip
+* `IEC - Set ID SDK - Firebase Analytics (Firebase Remote Config)
 * Liên hệ PM để biết cần import các plugin nào (Analytic, RemoteConfig).
 * Thêm file config firebase vào project (Liên hệ PM để lấy link các file config).
-* Thêm define `PluginFirebase`, `PluginFirebaseAnalytic`, `PluginFirebaseRemote`. (**)
 
 **7. Kochava SDK**
 
-* Link download: https://support.kochava.com/sdk-integration/unity-sdk-integration/
-* Thêm define `PluginKochava`.
-* Thêm id Kochava vào file `ServicesConfig` (*)
+* `IEC - Set ID SDK - Kochava SDK`
 
 **8. Unity Iap SDK** (Coming soon)
 
-**9. Multidex** (With AndroidX)
+**9. Multidex** (With AndroidX) (Deprecated)
 
 * Thêm vào thẻ `application` trong file `AndroidManifest`:
   * TH **không** sử dụng Android X:`android:name="android.support.multidex.MultiDexApplication"`.
@@ -90,22 +65,17 @@ Khi thêm một SDK mới vào project đã có sẵn các sdk khác, sau khi th
 
 * Tài liệu tham khảo: https://developer.android.com/studio/build/multidex#kotlin
 
-**10. Jetifier:**
+**10. Jetifier:** (Deprecated)
 
 * `Assets - Play Service Resolver - Android Resolver - Setting`.
 * TH **không** sử dụng AndroidX: Bỏ tick `Use Jetifier`.
 * TH **có** sử dụng AndroidX: Tích `Use Jetifier`.
 * Sau khi tick hay bỏ tick, nhấn OK và chạy resolver.
 
-**11. Resolver**
+**11. Điền SDK ID từ checklist**
 
-* `Assets - Play Service Resolver - Android Resolver - Force Resolver`
+* Điền link checklist vào mục `IEC - Set ID SDK - Update Project Checklist`
+* Bấm nút `Update from Google Docs`
 
-(*): Các phần thêm id đã có plugin tự động, liên hệ anh Phạm Trung Thành hoặc anh Nguyễn Thanh Tùng để biết cách sử dụng
-
-(**): Cách thêm define:
-
-* Điền các define vào mục: `File - Project Setting - Player - Other Settings - Scripting Define Symbols`
-* Các define cách nhau bởi dấu `;`
-* Sau khi thêm define xong, bấm phím `Enter` để apply
-* Ví dụ: PluginFirebase;PluginFirebaseAnalytic;PluginFacebook;PluginKochava;PluginApplovin;PluginUnityIAP;PluginFirebaseRemote
+**12. Update Manifest, Main Template and Android Resolve
+* `IEC - Set ID SDK - Update Main Template and Android Resolve`
