@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using ICSharpCode.SharpZipLib.BZip2;
 using ICSharpCode.SharpZipLib.Zip;
+using Newtonsoft.Json;
 using Debug = UnityEngine.Debug;
 
 
@@ -23,45 +24,23 @@ namespace _IECModules
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk), false, "Set ID SDK");
+            GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
 
-
-        private const string PROJECT_CHECKLIST_URL = "project_checklist_url";
+        public const string VERSION = "1.0.1";
         
-        private string m_GoogleSheetUrl =
+        private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
-        private const string FacebookCurrentVersion = "7.18.0";
-        private const string FirebaseCurrentVersion = "6.1.1";
-        private const string ApplovinCurrentVersion = "2.3.0";
-        private const string IronSourceCurrentVersion = "6.13.0";
-        private const string KochavaCurrentVersion = "4.1.1";
+        private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
+        
+        private bool m_ShowDebugButton = false;
 
-        private const string FacebookSdkBaseUrl =
-            "https://origincache.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
-        
-        private const string KochavaSdkBaseUrl =
-            "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
-        
-        private const string FirebaseSdkBaseUrl =
-            "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
-        
-        private const string ApplovinSdkBaseUrl =
-            "https://gitlab.com/iec-unity-plugins/applovin-unity-plugin/raw/master/AppLovin-MAX-Unity-Plugin-{0}-Android-9.11.1-iOS-6.11.1.unitypackage";
-        
-        private const string IronSourceSdkBaseUrl =
-            "https://dl.bintray.com/ironsource-mobile/unity-sdk/IronSource_v{0}.unitypackage";
+        private int m_PluginApplovinVersionSelect;
+        private int m_PluginFirebaseVersionSelect;
 
-        private const string FacebookSdkCurrentVersionUrl =
-            "https://origincache.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
-        private static string FacebookSdkUrlByVersion => string.Format(FacebookSdkBaseUrl, FacebookCurrentVersion);
-        private static string FirebaseSdkUrlByVersion => string.Format(FirebaseSdkBaseUrl, FirebaseCurrentVersion);
-        private static string ApplovinSdkUrlByVersion => string.Format(ApplovinSdkBaseUrl, ApplovinCurrentVersion);
-        private static string IronSourceSdkUrlByVersion => string.Format(IronSourceSdkBaseUrl, IronSourceCurrentVersion);
-        private static string KochavaSdkUrlByVersion => string.Format(KochavaSdkBaseUrl, KochavaCurrentVersion);
-
-        private List<LogData> m_SetSdkLog = new List<LogData>();
+        private GUIStyle m_LabelStyle;
+        
 
         public enum PluginDefineSymbol
         {
@@ -75,578 +54,151 @@ namespace _IECModules
             PluginUnityIAP,
         }
 
-        public enum ChecklistItemName
-        {
-            ProductName,
-            BundleID,
-            KeyStoreName,
-            KanboardSwimlane,
-            DiscordChannel,
-            FirebaseProject,
-            UnityCloudProject,
-            UnityCloudBuildKanboardWebhooks,
-            UnityCloudBuildDiscordWebhooks,
-            GitlabProject,
-            GitlabIntegration,
-            UnityCloudBuildTargetConfig,
-            TrackingEventList,
-            FacebookID,
-            FirebaseConfigFileIOS,
-            FirebaseConfigFileAndroid,
-            KochavaIDIOS,
-            KochavaIDAndroid,
-            AppodealIDIOS,
-            AppodealIDAndroid,
-            AdmobIDIOS,
-            AdmobIDAndroid,
-            MarketingChecklist,
-            IAPChecklist,
-            IAPIOSList,
-            IAPAndroidList,
-            AdPosition,
-            ApplovinIOSID,
-            ApplovinAndroidID,
-            ApplovinIOSInterID,
-            ApplovinIOSBannerID,
-            ApplovinIOSRewardID,
-            ApplovinAndroidInterID,
-            ApplovinAndroidBannerID,
-            ApplovinAndroidRewardID,
-            IronSourceIOSID,
-            IronSourceAndroidID
-        }
-
-        private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
-        {
-            {"Tên game", ChecklistItemName.ProductName},
-            {"BundleID", ChecklistItemName.BundleID},
-            {"Keystore Name", ChecklistItemName.KeyStoreName},
-            {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
-            {"Discord Channel", ChecklistItemName.DiscordChannel},
-            {"Firebase Project", ChecklistItemName.FirebaseProject},
-            {"Unity Cloud Project", ChecklistItemName.UnityCloudProject},
-            {"Unity Cloud Build Kanboard Webhooks", ChecklistItemName.UnityCloudBuildKanboardWebhooks},
-            {"Unity Cloud Build Discord Webhooks", ChecklistItemName.UnityCloudBuildDiscordWebhooks},
-            {"Gitlab project", ChecklistItemName.GitlabProject},
-            {"Gitlab integration", ChecklistItemName.GitlabIntegration},
-            {"Unity Cloud Build Target Config", ChecklistItemName.UnityCloudBuildTargetConfig},
-            {"Tracking Event List", ChecklistItemName.TrackingEventList},
-            {"Facebook ID", ChecklistItemName.FacebookID},
-            {"Firebase Config File IOS", ChecklistItemName.FirebaseConfigFileIOS},
-            {"Firebase Config File Android", ChecklistItemName.FirebaseConfigFileAndroid},
-            {"Kochava ID IOS", ChecklistItemName.KochavaIDIOS},
-            {"Kochava ID Android", ChecklistItemName.KochavaIDAndroid},
-            {"Appodeal ID IOS", ChecklistItemName.AppodealIDIOS},
-            {"Appodeal ID Android", ChecklistItemName.AppodealIDAndroid},
-            {"Admob ID IOS", ChecklistItemName.AdmobIDIOS},
-            {"Admob ID Android", ChecklistItemName.AdmobIDAndroid},
-            {"Marketing Checklist", ChecklistItemName.MarketingChecklist},
-            {"IAP Checklist", ChecklistItemName.IAPChecklist},
-            {"IAP IOS list", ChecklistItemName.IAPIOSList},
-            {"IAP Android list", ChecklistItemName.IAPAndroidList},
-            {"Vị trí đặt quảng cáo", ChecklistItemName.AdPosition},
-            {"Applovin IOS ID", ChecklistItemName.ApplovinIOSID},
-            {"Applovin Android ID", ChecklistItemName.ApplovinAndroidID},
-            {"Applovin IOS Inter ID", ChecklistItemName.ApplovinIOSInterID},
-            {"Applovin IOS Banner ID", ChecklistItemName.ApplovinIOSBannerID},
-            {"Applovin IOS Reward ID", ChecklistItemName.ApplovinIOSRewardID},
-            {"Applovin Android Inter ID", ChecklistItemName.ApplovinAndroidInterID},
-            {"Applovin Android Banner ID", ChecklistItemName.ApplovinAndroidBannerID},
-            {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
-            {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
-            {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
-        };
-
-        public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
-            new Dictionary<ChecklistItemName, string>();
-
         private void Awake()
         {
-            var savedUrl = PlayerPrefs.GetString(PROJECT_CHECKLIST_URL); 
-            if(!string.IsNullOrEmpty(savedUrl)) m_GoogleSheetUrl = savedUrl;
+            LogEditorHelper.ClearLog();
+            ProjectChecklistHelper.LoadServicesConfig();
+            if (ProjectChecklistHelper.servicesConfig != null && !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
+                m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl; 
+            SdkHelper.LoadApplovinVersionList();
         }
 
-        private static Vector2 buttonSize = new Vector2(200, 20);
+        private void InitGuiParams()
+        {
+            m_LabelStyle = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
+        }
+
+        private static Vector2 buttonSize = new Vector2(170, 20);
+        private static Vector2 dropdownSize = new Vector2(60, 20);
         
         private void OnGUI()
         {
+            InitGuiParams();
+            
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                m_ShowDebugButton = !m_ShowDebugButton;
+            }
+
+            if (m_ShowDebugButton)
+            {
+                GUILayout.Space(20);
+                CreateGuiButton("Test Create Keystore", () =>
+                {
+                    KeystoreHelper.CreateKeyStore("thanhdeptrai");
+                });
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Add Define PluginFacebook", () =>
+                {
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                }, 220);
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Remove Define PluginFacebook", () =>
+                {
+                    ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                }, 220);
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label("Install SDK", m_LabelStyle);
+            EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            if (GUILayout.Button("Install Facebook SDK (latest)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            CreateGuiButton("Facebook SDK (latest)", () =>
             {
-                DownloadPackage(FacebookSdkCurrentVersionUrl);
-                AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-            }
-            if (GUILayout.Button($"Install Kochava SDK {KochavaCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+            });
+
+            GUILayout.Space(20);
+
+            var loadingDotText = "";
+            var loadingDotCount = DateTime.Now.Second % 3 + 1;
+            for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+            var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                DownloadPackage(KochavaSdkUrlByVersion);
-                AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            }
-            // if (GUILayout.Button("Install Firebase SDK", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
-            // {
-            //     DownloadPackage(FirebaseSdkUrlByVersion); 
-            //     AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-            //     AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            // }
-            if (GUILayout.Button($"Install Applovin SDK {ApplovinCurrentVersion}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
-            {
-                DownloadPackage(ApplovinSdkUrlByVersion);
-                AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-            }
-            // if (GUILayout.Button("Apply Setting"))
-            // {
-            //     OnClickApplySetting();
-            // }
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+            });
+            
+            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect, 
+                SdkHelper.ListApplovinVersion, 
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            });
+            
+            GUILayout.Space(20);
+            CreateGuiButton($"Firebase SDK", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FirebaseSdkUrlByVersion(SdkHelper.ListFirebaseVersion[m_PluginFirebaseVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
+            });
+            
+            m_PluginFirebaseVersionSelect = EditorGUILayout.Popup("", m_PluginFirebaseVersionSelect, 
+                SdkHelper.ListFirebaseVersion, GUILayout.Width(dropdownSize.x), GUILayout.Height(dropdownSize.y));
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            CreateGuiButton("Update Main Template and Android Resolve", ProjectResolveHelper.UpdateMainTemplateAndResolve, buttonSize.x * 2);
+            
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label("Update Project Checklist", m_LabelStyle);
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             
-            if (GUILayout.Button("Update Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
             }
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
             EditorGUILayout.EndHorizontal();
-            
-            // if (GUILayout.Button("Test Create Keystore"))
-            // {
-            //     CreateKeyStore("thanhdeptrai");
-            // }
 
-            m_SetSdkLog.ForEach(logData =>
-            {
-                var guiStyle = GUI.skin.textArea;
-                guiStyle.normal.textColor = guiStyle.focused.textColor = Color.black;
-                if(logData.logType == LogType.Warning) guiStyle.normal.textColor = guiStyle.focused.textColor = new Color(1f, 0.5f, 0f);
-                if(logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
-                EditorGUILayout.TextArea(logData.log, guiStyle);
-            });
+            LogEditorHelper.EditorDrawLog();
         }
 
-        private void CreateKeyStore(string keystoreName)
+        private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
+        private void CreateGuiButton(string text, Action onClickButton, float buttonWidth)
         {
-            var keystoreFileName = $"{keystoreName}.keystore";
-            var keyToolPath = $"{EditorPrefs.GetString("JdkPath").Replace(" ", "\" \"")}/bin/keytool.exe";
-            var processInfo = new ProcessStartInfo
-            {
-                FileName= @"cmd.exe",
-                Arguments = "/C" 
-                            + $"{keyToolPath} -genkey -noprompt -v "
-                            + "-dname \"CN=, OU=, O=, L=, S=, C=\" "
-                            + $"-keystore {keystoreFileName} "
-                            + $"-storepass {keystoreName} "
-                            + $"-alias {keystoreName} "
-                            + $"-keypass {keystoreName} "
-                            + "-keyalg RSA -keysize 2048 -validity 10000",
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-                RedirectStandardError = true
-            };
-                
-            using(var process = new Process()) {
-                process.StartInfo = processInfo;
-                process.Start();
-
-                // Add this: wait until process does its work
-                process.WaitForExit();
-
-                // and only then read the result
-                var standardOutput = process.StandardOutput.ReadToEnd(); 
-                var standardError = process.StandardError.ReadToEnd();
-                Debug.Log($"StandardOutput: {standardOutput}");
-                Debug.Log($"StandardError: {standardError}");
-                
-                if (standardError.Contains($"[Storing {keystoreFileName}]"))
-                {
-                    AddLog($"Keystore Created: {keystoreFileName}");
-                }
-                else if (standardOutput.Contains($"Key pair not generated, alias <{keystoreName}> already exists"))
-                {
-                    AddLogWarning($"Keystore Already Exists: {keystoreFileName}");
-                }
-                else
-                {
-                    AddLogError($"Key Store Creation Error: \nStandardOutput: {standardOutput}\nStandardError: {standardError}");   
-                }
-            }
-        }
-
-        private void OnClickApplySetting()
-        {
-            Directory.CreateDirectory("Assets/Plugins/Android/");
-            FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/mainTemplate.gradle.template", "Assets/Plugins/Android/mainTemplate.gradle");
-        }
-            
-        private void OnClickSetSDKId()
-        {
-            m_SetSdkLog = new List<LogData>();
-            
-            PlayerPrefs.SetString(PROJECT_CHECKLIST_URL, m_GoogleSheetUrl);
-
-            var checklistData = DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(m_GoogleSheetUrl));
-
-            ApplySdkSetting(GoogleSheetToCSV.ParseCSV(checklistData, false));
-        }
-
-        private void DownloadPackage(string url, Action onComplete  = null)
-        {
-            AddLog($"Start Download SDK: {url}");
-
-            HTTPManager.Setup();
-            var httpRequest = new HTTPRequest(new Uri(url), (originalRequest, response) =>
-            {
-                EditorUtility.ClearProgressBar();
-                onComplete?.Invoke();
-                
-                AddLog($"Download SDK Complete: {response.Data.Length} bytes");
-                // using (var fs = File.Create("Assets/facebook.zip")) 
-                // {
-                //     fs.Write(response.Data, 0, response.Data.Length);
-                // }
-                
-                // var byteArray = File.ReadAllBytes("Assets/facebook.zip");
-                // AddLog($"Assets/facebook.zip: {byteArray.Length} bytes");
-
-                if (url.EndsWith(".unitypackage"))
-                {
-                    ImportPackage(response.Data, url);
-                }
-                else
-                {
-                    ZipUtils.GetZipFileFromByteArray(response.Data, zipFile =>
-                    {
-                        foreach (ZipEntry entry in zipFile)
-                        {
-                            if(entry.IsDirectory) continue;
-                            if(!entry.Name.EndsWith(".unitypackage")) continue;
-                            AddLog(entry.Name);
-                            var zippedStream = zipFile.GetInputStream(entry);
-                            var fileByteArray = ZipUtils.ReadFully(zippedStream);
-                            
-                            var filePath = $"{GetTempFolderPath()}{entry.Name.Split('/').Last()}";
-                        
-                            AddLog($"Start Unzip To: {filePath}");
-
-                            ImportPackage(fileByteArray, entry.Name);
-                        
-                            break;
-                        }
-
-                    });
-                }
-            }).Send();
-            httpRequest.OnProgress += (request, downloaded, length) =>
-            {
-                EditorUtility.DisplayProgressBar("Downloading", $"{downloaded}/{length}", (float) downloaded/ length);
-            }; 
-        }
-
-        private void ImportPackage(byte[] packageByteArray, string packageName)
-        {
-            var fileName = packageName.Split('/').Last();
-            fileName = fileName.Split(new[] { "%2F" }, StringSplitOptions.None).Last();
-            var filePath = $"{GetTempFolderPath()}{fileName}";
-            using (var fs = File.Create(filePath)) 
-            {
-                fs.Write(packageByteArray, 0, packageByteArray.Length);
-            }
-                        
-            AddLog($"Waiting Import Package");
-
-            AssetDatabase.importPackageStarted += ImportPackageStart;
-            AssetDatabase.importPackageCompleted += ImportPackageComplete;
-            AssetDatabase.ImportPackage(filePath, false);
-
-        }
-
-        private string GetTempFolderPath()
-        {
-            var consoleLogFile = new FileInfo(Application.consoleLogPath);
-            var tempFolderPath = $"{consoleLogFile.Directory}/Temp/";
-            Directory.CreateDirectory(tempFolderPath); 
-            return tempFolderPath;
-        }
-
-        private void ImportPackageComplete(string packageName)
-        {
-            AddLog($"Import Package Done: {packageName}");
-            AssetDatabase.importPackageCompleted -= ImportPackageComplete;
-        }
-        private void ImportPackageStart(string packageName)
-        {
-            AddLog($"Import Package Start: {packageName}");
-            AssetDatabase.importPackageStarted -= ImportPackageStart;
-        }
-        private byte[] DownloadDataFromUrl(string url)
-        {
-            var uwr = DownloadFromUrl(url);
-            var data = uwr.downloadHandler.data;
-            uwr.Dispose();
-            return data;
-        }
-        private string DownloadTextFromUrl(string url)
-        {
-            var uwr = DownloadFromUrl(url);
-            var text = uwr.downloadHandler.text;
-            uwr.Dispose();
-            return text;
-        }
-        private UnityWebRequest DownloadFromUrl(string url)
-        {
-            var uwr = UnityWebRequest.Get(url);
-            
-            // uwr.SetRequestHeader("accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" ); 
-            // // uwr.SetRequestHeader("accept-encoding", "gzip, deflate, br");
-            // uwr.SetRequestHeader("accept-language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
-
-            uwr.SendWebRequest();
-            while (!uwr.isDone)
-            {
-                // Debug.Log(uwr.downloadProgress);
-            }
-
-            if (uwr.isNetworkError)
-            {
-                Debug.LogError("Download Error");
-                AddLogError($"Downloading: {url}");
-            }
-            return uwr;
+            if (!GUILayout.Button(text, GUILayout.Width(buttonWidth), GUILayout.Height(buttonSize.y))) return;
+            LogEditorHelper.ClearLog();
+            onClickButton?.Invoke();
         }
         
-
-        private void ApplySdkSetting(List<List<string>> sdkData)
+        private void OnClickSetSDKId()
         {
-
-            dictionaryCheckListValue = sdkData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
-                .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
-
-
-#if PluginFacebook
-            ServicesConfig serviceConfig;
-            try
-            {
-                var assets = AssetDatabase.FindAssets("t:ServicesConfig");
-                var serviceConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
-                serviceConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(serviceConfigPath);
-                AddLog("Service Config Load Success: " + serviceConfigPath);
-            }
-            catch (Exception e)
-            {
-                AddLog("Error Loading Service Config: " + e.Message + "\n" + e.StackTrace);
-                throw;
-            }
-#else
-            AddLogError("PluginFacebook NOT Defined!!!!!");
-#endif
-
-            foreach (var keyValuePair in dictionaryCheckListValue)
-            {
-                var checklistItemName = keyValuePair.Key;
-                var checklistItemValue = keyValuePair.Value;
-                switch (checklistItemName)
-                {
-                    case ChecklistItemName.ProductName:
-                        var productName = checklistItemValue;
-                        AddLog($"Product Name: {productName}");
-                        PlayerSettings.productName = productName;
-                        break;
-                    case ChecklistItemName.BundleID:
-                        var bundleId = checklistItemValue;
-                        AddLog($"Bundle ID: {bundleId}");
-                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone, bundleId);
-                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
-                        PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
-
-                        if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
-                        else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
-                        else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
-                        else
-                        {
-                            AddLogError("Unknown Company Name");
-                        }
-                        break;
-                    case ChecklistItemName.KeyStoreName:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) CreateKeyStore(checklistItemValue);
-                        break;
-                    case ChecklistItemName.KanboardSwimlane:
-                        break;
-                    case ChecklistItemName.DiscordChannel:
-                        break;
-                    case ChecklistItemName.FirebaseProject:
-                        break;
-                    case ChecklistItemName.UnityCloudProject:
-                        break;
-                    case ChecklistItemName.UnityCloudBuildKanboardWebhooks:
-                        break;
-                    case ChecklistItemName.UnityCloudBuildDiscordWebhooks:
-                        break;
-                    case ChecklistItemName.GitlabProject:
-                        break;
-                    case ChecklistItemName.GitlabIntegration:
-                        break;
-                    case ChecklistItemName.UnityCloudBuildTargetConfig:
-                        break;
-                    case ChecklistItemName.TrackingEventList:
-                        break;
-                    case ChecklistItemName.FacebookID:
-                        var facebookId = checklistItemValue;
-                        AddLog($"Facebook ID: {facebookId}");
-#if PluginFacebook
-                        if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
-                        {
-                            var instance = CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
-                            var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
-                            if (!Directory.Exists(path1))
-                                Directory.CreateDirectory(path1);
-                            var path2 = Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
-                            AssetDatabase.CreateAsset(instance, path2);
-                        }
-                        Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
-                        Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {facebookId};
-                        Facebook.Unity.Settings.FacebookSettings.AppLabels = new List<string> {PlayerSettings.productName};
-                        EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
-                        Facebook.Unity.Editor.ManifestMod.GenerateManifest();
-#endif
-                        break;
-                    case ChecklistItemName.FirebaseConfigFileIOS:
-                        break;
-                    case ChecklistItemName.FirebaseConfigFileAndroid:
-                        break;
-                    case ChecklistItemName.KochavaIDIOS:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID IOS: {checklistItemValue}");
-                        serviceConfig.kochavaConfig.iosID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.KochavaIDAndroid:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Kochava ID Android: {checklistItemValue}");
-                        serviceConfig.kochavaConfig.androidID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AppodealIDIOS:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID IOS: {checklistItemValue}");
-                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AppodealIDAndroid:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Appodeal ID Android: {checklistItemValue}");
-                        serviceConfig.AppodealConfig.android.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AdmobIDIOS:
-                        break;
-                    case ChecklistItemName.AdmobIDAndroid:
-                        break;
-                    case ChecklistItemName.MarketingChecklist:
-                        break;
-                    case ChecklistItemName.IAPChecklist:
-                        break;
-                    case ChecklistItemName.IAPIOSList:
-                        break;
-                    case ChecklistItemName.IAPAndroidList:
-                        break;
-                    case ChecklistItemName.AdPosition:
-                        break;
-                    case ChecklistItemName.ApplovinIOSID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Inter ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Banner ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Applovin Android Reward ID: {checklistItemValue}");
-                        serviceConfig.ApplovinConfig.android.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.IronSourceIOSID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source IOS ID: {checklistItemValue}");
-                        serviceConfig.IronSourceConfig.ios.appID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.interstitialID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.bannerID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.ios.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.IronSourceAndroidID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) AddLog($"Iron Source Android ID: {checklistItemValue}");
-                        serviceConfig.IronSourceConfig.android.appID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.bannerID = checklistItemValue;
-                        serviceConfig.IronSourceConfig.android.rewardID = checklistItemValue;
-                        break;
-                }
-            }
+            LogEditorHelper.ClearLog();
             
-#if PluginFacebook
-            EditorUtility.SetDirty(serviceConfig);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
-#endif
+            ProjectChecklistHelper.ApplySdkSetting(m_GoogleSheetUrl);
+
+            ProjectSettingRemoveSplashScreen();
         }
 
-        private void AddLogError(string log)
+        private void ProjectSettingRemoveSplashScreen()
         {
-            AddLog($"Error: {log}", LogType.Error);
-        }
-        private void AddLogWarning(string log)
-        {
-            AddLog($"Warning: {log}", LogType.Warning);
-        }
-        private void AddLog(object log)
-        {
-            AddLog(log.ToString());
-        }
-        private void AddLog(string log, LogType logType = LogType.Debug)
-        {
-            var logStr = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {log}";
-            if (m_SetSdkLog.Count > 0 && m_SetSdkLog.Last().logType == LogType.Debug && logType == LogType.Debug)
-            {
-                m_SetSdkLog.Last().log += $"\n{logStr}";
-            }
-            else {
-                m_SetSdkLog.Add(new LogData
-                {
-                    log = logStr,
-                    logType = logType
-                });
-            }
+            var projectSettingFileName = "ProjectSettings/ProjectSettings.asset";
+            var projectSettingFileContent = File.ReadAllText(projectSettingFileName);
+            projectSettingFileContent =
+                projectSettingFileContent.Replace("m_ShowUnitySplashScreen: 1", "m_ShowUnitySplashScreen: 0");
+            File.WriteAllText(projectSettingFileName, projectSettingFileContent);
         }
 
-        private static void AddDefineSymbol(PluginDefineSymbol defineSymbol)
-        {
-            ScriptingDefineSymbolEditor.AddDefineSymbol(defineSymbol.ToString());
-        }
     }
 
-    public class LogData
-    {
-        public string log;
-        public LogType logType = LogType.Debug;
-    }
-
-    public enum LogType
-    {
-        Debug,
-        Warning,
-        Error
-    }
 }
 

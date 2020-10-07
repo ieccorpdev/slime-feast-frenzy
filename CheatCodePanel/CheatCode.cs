@@ -10,6 +10,7 @@ namespace _IECModules
 {
     public class CheatCode : MonoBehaviour
     {
+        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
         public class CheatCodeParam
         {
             public CheatCodeType type;
@@ -114,6 +115,14 @@ namespace _IECModules
             AddCheatCodeButtonWithInput("Time Scale", param => { Time.timeScale = float.Parse(param.inputParams[0].value.ToString()); }, new InputParam
             {
                 value = 2
+            });
+
+            var verboseLogging = PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0);
+            AddCheatCodeButton($"Applovin Verbose Log: {verboseLogging}", param =>
+            {
+                verboseLogging = 1 - verboseLogging;
+                param.buttonText = $"Applovin Verbose Log: {verboseLogging}";
+                PlayerPrefs.SetInt(APPLOVIN_VERBOSE_LOGGING, verboseLogging);
             });
 #if PluginApplovin
             ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
