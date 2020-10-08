@@ -116,30 +116,7 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            #region External Dependency Manager
-            //GUILayout.TextArea("External Dependency Manager");
 
-            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
-            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!edmSdkLoaded)
-                {
-                    return;
-                }
-                AddRegistries(GoogleRegistry);
-                edmPkg.Install();
-            });
-
-            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
-               edmPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            #endregion
 
             CreateGuiButton("Facebook SDK (latest)", () =>
             {
@@ -175,7 +152,31 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
+            #region External Dependency Manager
+            //GUILayout.TextArea("External Dependency Manager");
 
+            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!edmSdkLoaded)
+                {
+                    return;
+                }
+                DeleteObsoleteResolver();
+                AddRegistries(GoogleRegistry);
+                edmPkg.Install();
+            });
+
+            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
+               edmPkg.listVersion,
+               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
 
             #region Firebase Analytics
 
@@ -297,6 +298,18 @@ namespace _IECModules
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
+        private void DeleteObsoleteResolver()
+        {
+            if (FileUtil.DeleteFileOrDirectory("Assets/ExternalDependencyManager"))
+            {
+                LogEditorHelper.AddLog("Delete EDM");
+            }
+            if (FileUtil.DeleteFileOrDirectory("Assets/PlayServicesResolver"))
+            {
+                LogEditorHelper.AddLog("Delete Play Service Resolver");
+            }
+            AssetDatabase.Refresh();
+        }
 
     }
 
