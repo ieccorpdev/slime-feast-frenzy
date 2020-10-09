@@ -2,7 +2,7 @@
 
 namespace IEC
 {
-    public class RestorePurchaseController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
+    public class RestorePurchaseController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {

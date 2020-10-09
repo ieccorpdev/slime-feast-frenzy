@@ -7,6 +7,9 @@ using IEC;
 [CreateAssetMenu(fileName = "ServicesConfig", menuName = "Services/ServicesConfig")]
 public class ServicesConfig : ScriptableObject
 {
+    [Header("Project Checklist URL")]
+    public string projectChecklistUrl;
+    
     [Header("Bundle Version")]
     public int bundleVersion;
 

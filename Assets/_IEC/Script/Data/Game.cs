@@ -14,5 +14,7 @@ namespace IEC
         public int emptyData;
 
         public float timeDelayFullAds;
+
+        public bool isPlaying;
     }
 }

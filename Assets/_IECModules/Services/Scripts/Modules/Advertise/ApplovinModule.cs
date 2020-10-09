@@ -8,6 +8,8 @@ namespace IEC
 {
     public class ApplovinModule : IAdsService
     {
+        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+
         AdsPlatformConfig m_Config;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -35,6 +37,10 @@ namespace IEC
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 MaxSdk.SetSdkKey(config.appID);
+                if (PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0) != 0)
+                {
+                    MaxSdk.SetVerboseLogging(true);
+                }
                 MaxSdk.InitializeSdk();
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>

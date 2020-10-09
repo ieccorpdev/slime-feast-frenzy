@@ -3,7 +3,7 @@ using _IECModules;
 
 namespace IEC
 {
-    public class CheatCodeController : _BaseController, IController, IEventListener, IEventAwake, IEventStart
+    public class CheatCodeController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         public void LocateController()
         {

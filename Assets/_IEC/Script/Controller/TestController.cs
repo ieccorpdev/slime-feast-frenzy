@@ -4,7 +4,7 @@ using DG.Tweening;
 
 namespace IEC
 {
-    public class TestController : _BaseController, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate
+    public class TestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate
     {
         public void LocateController()
         {
