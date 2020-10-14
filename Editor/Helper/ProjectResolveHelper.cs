@@ -7,10 +7,11 @@ namespace _IECModules
 {
     public static class ProjectResolveHelper
     {
-        
+
         public static void UpdateMainTemplateAndResolve()
         {
-            EnableJetifier();
+            //EnableJetifier();
+            EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
@@ -24,13 +25,13 @@ namespace _IECModules
         {
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
-            
+
             var androidManifestDirectory = "Assets/Plugins/Android/";
             var androidManifestFileName = $"{androidManifestDirectory}AndroidManifest.xml";
-            
+
             var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
             var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
-            
+
             if (File.Exists(mainTemplateFileName))
             {
                 LogEditorHelper.AddLogWarning("mainTemplate.gradle already exists");
@@ -41,7 +42,7 @@ namespace _IECModules
                 FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.mainTemplate.gradle", mainTemplateFileName);
                 LogEditorHelper.AddLog("mainTemplate.gradle created");
             }
-            
+
             if (File.Exists(networkSecurityConfigFileName))
             {
                 LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
@@ -52,7 +53,7 @@ namespace _IECModules
                 FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
                 LogEditorHelper.AddLog("network_security_config created");
             }
-            
+
             if (File.Exists(androidManifestFileName))
             {
                 LogEditorHelper.AddLogWarning("AndroidManifest.xml already exists");
@@ -63,26 +64,26 @@ namespace _IECModules
                 FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.AndroidManifest.xml", androidManifestFileName);
                 LogEditorHelper.AddLog("AndroidManifest.xml created");
             }
-            
+
             var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
             var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
             var multiDexAlreadyEnabled = true;
-            
+
             if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
             {
                 multiDexAlreadyEnabled = false;
                 mainTemplateFileContent = mainTemplateFileContent.Replace(
-                    "        versionName '**VERSIONNAME**'" , 
+                    "        versionName '**VERSIONNAME**'",
                     "        versionName '**VERSIONNAME**'\n        multiDexEnabled true");
                 File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
                 LogEditorHelper.AddLog("mainTemplate.gradle Updated: multiDexEnabled true");
             }
-            
+
             if (!mainTemplateFileContent.Contains("implementation 'androidx.multidex:multidex:2.0.1'"))
             {
                 multiDexAlreadyEnabled = false;
                 mainTemplateFileContent = mainTemplateFileContent.Replace(
-                    "\ndependencies {" , 
+                    "\ndependencies {",
                     "\ndependencies {\n	implementation 'androidx.multidex:multidex:2.0.1'");
                 File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
                 LogEditorHelper.AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
@@ -94,24 +95,24 @@ namespace _IECModules
                 multiDexAlreadyEnabled = false;
                 var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
                 var applicationTagReplaced = applicationTag.Replace(
-                    ">" , 
+                    ">",
                     $" {androidManifestMultidexString}>");
                 androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
                 File.WriteAllText(androidManifestFileName, androidManifestFileContent);
                 LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestMultidexString}");
             }
-            
+
             if (multiDexAlreadyEnabled)
             {
                 LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
             }
-            
+
             var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
             if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
             {
                 var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
                 var applicationTagReplaced = applicationTag.Replace(
-                    ">" , 
+                    ">",
                     $" {androidManifestNetworkSecurityConfigString}>");
                 androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
                 File.WriteAllText(androidManifestFileName, androidManifestFileContent);
@@ -132,10 +133,10 @@ namespace _IECModules
                 "        it.setProperty(\"android.enableJetifier\", true)" + "\n" +
                 "    }" + "\n" +
                 "}" + "\n";
-            
+
             var mainTemplateDirectory = "Assets/Plugins/Android/";
             var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
-            
+
             if (!File.Exists(mainTemplateFileName))
             {
                 LogEditorHelper.AddLogError("mainTemplate.gradle NOT exists!!");
@@ -179,27 +180,43 @@ namespace _IECModules
                 LogEditorHelper.AddLog("Jetifier (androidx) switched from FALSE to TRUE!");
                 return;
             }
-            
+
             gvhFileContent = gvhFileContent.Replace(
                 "\n</projectSettings>",
                 "  <projectSetting name=\"GooglePlayServices.UseJetifier\" value=\"True\" />\n</projectSettings>");
             File.WriteAllText(gvhProjectSettingFile, gvhFileContent);
             LogEditorHelper.AddLog("Jetifier (androidx) added to True!");
         }
-        
+
+        private static void EnableJetifierNew()
+        {
+            var gradleDirectoty = "Assets/Plugins/Android/";
+            const string gradleProperties = "Assets/Plugins/Android/gradleTemplate.properties";
+            if (!File.Exists(gradleProperties))
+            {
+                Directory.CreateDirectory(gradleDirectoty);
+                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.gradle.properties", gradleProperties);
+                LogEditorHelper.AddLog("gradle.properties created");
+            }
+            else
+            {
+                LogEditorHelper.AddLogWarning("gradle.properties already exist");
+            }
+        }
+
         private static void GooglePlayServicesForceResolve()
         {
             LogEditorHelper.AddLog("Android Play Service Start Force Resolve");
-            
+
             var googlePlayServicesNameSpace = "GooglePlayServices";
             var googlePlayServicesClassName = "PlayServicesResolver";
             var googlePlayServicesMethodForceResolve = "MenuForceResolve";
 
             var googlePlayServicesClassType = (from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                from type in assembly.GetTypes()
-                where type.Namespace == googlePlayServicesNameSpace && type.Name == googlePlayServicesClassName
-                select type).FirstOrDefault();
-            
+                                               from type in assembly.GetTypes()
+                                               where type.Namespace == googlePlayServicesNameSpace && type.Name == googlePlayServicesClassName
+                                               select type).FirstOrDefault();
+
             if (googlePlayServicesClassType == null)
             {
                 LogEditorHelper.AddLogError($"{googlePlayServicesNameSpace}.{googlePlayServicesClassName} NOT Defined.");
@@ -213,6 +230,6 @@ namespace _IECModules
             }
             googlePlayServicesMethodForceResolveMethod.Invoke(null, null);
         }
-        
+
     }
 }

@@ -39,6 +39,8 @@ public class GoogleSheetUtility : MonoBehaviour
 
         var fieldParamListSorted = firstRow
             .Select(column => column.RemoveBetweenParenthesis().Replace(" ", "").Trim().ToLower())
+            // remove same name column
+            .Distinct()
             .Select(lower => fieldParamList.FirstOrDefault(f => f.Name.ToLower() == lower))
             .ToList();
 
@@ -61,6 +63,8 @@ public class GoogleSheetUtility : MonoBehaviour
                     value = string.IsNullOrEmpty(cell) ? 0 : int.Parse(cell);
                 else if (fieldInfo.FieldType == typeof(bool))
                     value = !string.IsNullOrEmpty(cell);
+                else if (fieldInfo.FieldType == typeof(string))
+                    value = string.IsNullOrEmpty(cell) ? "" : cell;
                 else if (fieldInfo.FieldType.IsEnum)
                 {
                     var cellTrim = cell?.Replace(" ", "").Trim();
