@@ -13,8 +13,11 @@ namespace _IECModules
 
         public static List<LogData> listSetSdkLog;
 
+        private static Color? m_DefaultTextColor;
+
         public static void EditorDrawLog()
         {
+            if (m_DefaultTextColor == null) m_DefaultTextColor = GUI.skin.textArea.normal.textColor;
             if (listSetSdkLog == null) listSetSdkLog = new List<LogData>();
             if (listSetSdkLog.Count == 0)
             {
@@ -24,6 +27,7 @@ namespace _IECModules
             listSetSdkLog.ForEach(logData =>
             {
                 var guiStyle = GUI.skin.textArea;
+                guiStyle.normal.textColor = guiStyle.focused.textColor = m_DefaultTextColor.Value;
                 if (logData.logType == LogType.Warning) guiStyle.normal.textColor = guiStyle.focused.textColor = new Color(1f, 0.5f, 0f);
                 if (logData.logType == LogType.Error) guiStyle.normal.textColor = guiStyle.focused.textColor = Color.red;
                 EditorGUILayout.TextArea(logData.log, guiStyle);
