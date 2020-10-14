@@ -48,10 +48,12 @@ namespace _IECModules
         public static void ResolveProject() 
         {
             //EnableJetifier();
+            RemoveUnityAdsPackage();
             EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
+            UpdateApplovinQualityService();
         }
 
         public static void DeleteObsoleteResolver()
@@ -64,6 +66,23 @@ namespace _IECModules
                 }
             });
             AssetDatabase.Refresh();
+        }
+
+        private static void RemoveUnityAdsPackage()
+        {
+            LogEditorHelper.AddLog($"Remove Package: com.unity.ads");
+            PackageManagerHelper.Remove("com.unity.ads", null, true);
+        }
+        
+        private static void UpdateApplovinQualityService()
+        {
+#if PluginApplovin
+            LogEditorHelper.AddLog("AppLovin Disable Quality Service");
+            AppLovinSettings.Instance.QualityServiceEnabled = false;
+            EditorUtility.SetDirty(AppLovinSettings.Instance);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
         }
 
         /// <summary>Update <c>mainTemplate.gradle</c> and <c>AndroidManifest.xml</c> </summary>
