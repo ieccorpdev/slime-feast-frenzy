@@ -31,7 +31,8 @@ namespace _IECModules
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
 
-        private GUIStyle m_LabelStyle;
+        private GUIStyle m_StyleHeader1;
+        private GUIStyle m_StyleHeader2;
 
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
@@ -72,7 +73,8 @@ namespace _IECModules
 
         private void InitGuiParams()
         {
-            if(m_LabelStyle == null) m_LabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if(m_StyleHeader1 == null) m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if(m_StyleHeader2 == null) m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -110,13 +112,10 @@ namespace _IECModules
                     ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
                 }, 220);
             }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.Label("Install SDK", m_LabelStyle);
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-
+            
+            CreateGuiLabel("1. Install SDK", m_StyleHeader1);
+            
+            CreateGuiLabel("- SDK For Prototype", m_StyleHeader2);
 
             CreateGuiButton("Facebook SDK (latest)", () =>
             {
@@ -126,6 +125,13 @@ namespace _IECModules
 
             GUILayout.Space(20);
 
+            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            });
+
+            CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
 
             var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
@@ -138,19 +144,7 @@ namespace _IECModules
                 SdkHelper.ListApplovinVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
-            {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            });
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiBreakLine();
 
             #region Firebase Analytics
 
@@ -198,17 +192,11 @@ namespace _IECModules
                firebaseRemotePkg.listVersion,
                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiBreakLine();
 
             #endregion
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.Label("Project Resolver", m_LabelStyle);
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiLabel("2. Project Resolver", m_StyleHeader1);
             
             #region External Dependency Manager
 
@@ -234,17 +222,11 @@ namespace _IECModules
             
             CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiBreakLine();
 
             ProjectResolveHelper.EditorOnGUI();
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.Label("Update Project Checklist", m_LabelStyle);
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
 
             if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
@@ -262,6 +244,20 @@ namespace _IECModules
             if (!GUILayout.Button(text, GUILayout.Width(buttonWidth), GUILayout.Height(buttonSize.y))) return;
             LogEditorHelper.ClearLog();
             onClickButton?.Invoke();
+        }
+        private void CreateGuiLabel(string text, GUIStyle guiStyle)
+        {
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label(text, guiStyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+        }
+        private void CreateGuiBreakLine()
+        {
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
         }
 
         private void OnClickSetSDKId()
