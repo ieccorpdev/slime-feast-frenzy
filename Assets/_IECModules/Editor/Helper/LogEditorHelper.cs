@@ -15,7 +15,7 @@ namespace _IECModules
 
         private static Color? m_DefaultTextColor;
 
-        public static void EditorDrawLog()
+        public static void EditorOnGUI()
         {
             if (m_DefaultTextColor == null) m_DefaultTextColor = GUI.skin.textArea.normal.textColor;
             if (listSetSdkLog == null) listSetSdkLog = new List<LogData>();

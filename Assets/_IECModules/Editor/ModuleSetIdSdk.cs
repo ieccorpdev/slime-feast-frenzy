@@ -72,7 +72,7 @@ namespace _IECModules
 
         private void InitGuiParams()
         {
-            m_LabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if(m_LabelStyle == null) m_LabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -152,32 +152,6 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
-            #region External Dependency Manager
-            //GUILayout.TextArea("External Dependency Manager");
-
-            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
-            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!edmSdkLoaded)
-                {
-                    return;
-                }
-                DeleteObsoleteResolver();
-                AddRegistries(GoogleRegistry);
-                edmPkg.Install();
-            });
-
-            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
-               edmPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            #endregion
-
             #region Firebase Analytics
 
             var firebaseAnalyticPkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBAE_ANALYTIC_PKG];
@@ -196,7 +170,7 @@ namespace _IECModules
 
             firebaseAnalyticPkg.versionSelected = EditorGUILayout.Popup("", firebaseAnalyticPkg.versionSelected,
                firebaseAnalyticPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -222,7 +196,7 @@ namespace _IECModules
 
             firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
                firebaseRemotePkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -230,8 +204,41 @@ namespace _IECModules
 
             #endregion
 
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label("Project Resolver", m_LabelStyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+            
+            #region External Dependency Manager
 
-            CreateGuiButton("Update Main Template and Android Resolve", ProjectResolveHelper.UpdateMainTemplateAndResolve, buttonSize.x * 2);
+            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!edmSdkLoaded) return;
+                ProjectResolveHelper.DeleteObsoleteResolver();
+                AddRegistries(GoogleRegistry);
+                edmPkg.Install();
+            });
+
+            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
+                edmPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+            
+            CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            ProjectResolveHelper.EditorOnGUI();
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -246,7 +253,7 @@ namespace _IECModules
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
             EditorGUILayout.EndHorizontal();
 
-            LogEditorHelper.EditorDrawLog();
+            LogEditorHelper.EditorOnGUI();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
@@ -298,18 +305,6 @@ namespace _IECModules
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
-        private void DeleteObsoleteResolver()
-        {
-            if (FileUtil.DeleteFileOrDirectory("Assets/ExternalDependencyManager"))
-            {
-                LogEditorHelper.AddLog("Delete EDM");
-            }
-            if (FileUtil.DeleteFileOrDirectory("Assets/PlayServicesResolver"))
-            {
-                LogEditorHelper.AddLog("Delete Play Service Resolver");
-            }
-            AssetDatabase.Refresh();
-        }
 
     }
 

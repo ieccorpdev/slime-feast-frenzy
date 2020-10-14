@@ -1,20 +1,59 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace _IECModules
 {
     public static class ProjectResolveHelper
     {
+        public static List<string> listObsoleteResolver = new List<string>
+        {
+            "Assets/ExternalDependencyManager",
+            "Assets/PlayServicesResolver"
+        };
+        private static GUIStyle m_WarningTextStyle;
+        private static string m_WarningString;
 
-        public static void UpdateMainTemplateAndResolve()
+
+        public static void EditorOnGUI()
+        {
+            if (m_WarningTextStyle == null)
+            {
+                m_WarningTextStyle = new GUIStyle(GUI.skin.textArea);
+                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0.5f, 0f);   
+            }
+            
+            m_WarningString = "";
+            listObsoleteResolver.ForEach(path =>
+            {
+                if (Directory.Exists(path)) m_WarningString += $"\n{path} Exist! Please Install External Dependency Manager Above!";
+
+            });
+            if(!string.IsNullOrEmpty(m_WarningString)) EditorGUILayout.TextArea($"WARNING:{m_WarningString}", m_WarningTextStyle);
+        }
+        
+        public static void ResolveProject() 
         {
             //EnableJetifier();
             EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
+        }
+
+        public static void DeleteObsoleteResolver()
+        {
+            listObsoleteResolver.ForEach(path =>
+            {
+                if (FileUtil.DeleteFileOrDirectory(path))
+                {
+                    LogEditorHelper.AddLog($"DELETED: {path}");
+                }
+            });
+            AssetDatabase.Refresh();
         }
 
         /// <summary>Update <c>mainTemplate.gradle</c> and <c>AndroidManifest.xml</c> </summary>
