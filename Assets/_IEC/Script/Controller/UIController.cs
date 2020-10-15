@@ -19,13 +19,13 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.NEW_GAME:
-                    UI.ShowInGame();
+                    UI.ShowScreenByGameState();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    UI.ShowLevelWin();
+                    UI.ShowScreenByGameState();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
-                    UI.ShowLevelLose();
+                    UI.ShowScreenByGameState();
                     break;
             }
         }

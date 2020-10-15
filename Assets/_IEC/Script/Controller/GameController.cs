@@ -19,6 +19,13 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.NEW_GAME:
+                    Game.SetGameState(GameState.Playing);
+                    break;
+                case EventList.GamePlay.LEVEL_WIN:
+                    Game.SetGameState(GameState.Win);
+                    break;
+                case EventList.GamePlay.LEVEL_LOSE:
+                    Game.SetGameState(GameState.Lose);
                     break;
             }
         }

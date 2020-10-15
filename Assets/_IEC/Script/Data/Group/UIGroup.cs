@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using NaughtyAttributes;
 
 namespace IEC
 {
@@ -21,8 +22,6 @@ namespace IEC
         public ScreenLevelWin screenLevelWin;
         public ScreenLevelLose screenLevelLose;
 
-        List<ScreenUI> screens;
-
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -30,23 +29,30 @@ namespace IEC
 
         public void HideAllScreens()
         {
-            screens = transform.GetComponentsInChildren<ScreenUI>().ToList();
+            var screens = transform.GetComponentsInChildren<ScreenUI>().ToList();
             screens.ForEach(s => s.SetActive(false));
         }
 
-        public void ShowInGame()
+        [Button]
+        public void ShowScreenByGameState()
         {
-            ShowScreen(screenInGame);
+            ShowScreen(Game.gameState);
         }
 
-        public void ShowLevelWin()
+        public void ShowScreen(GameState state)
         {
-            ShowScreen(screenLevelWin);
-        }
-
-        public void ShowLevelLose()
-        {
-            ShowScreen(screenLevelLose);
+            switch(state)
+            {
+                case GameState.Playing:
+                    ShowScreen(screenInGame);
+                    break;
+                case GameState.Win:
+                    ShowScreen(screenLevelWin);
+                    break;
+                case GameState.Lose:
+                    ShowScreen(screenLevelLose);
+                    break;
+            }
         }
 
         public void ShowScreen(ScreenUI screen)
