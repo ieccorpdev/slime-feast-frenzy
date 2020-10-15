@@ -42,6 +42,18 @@ namespace IEC
 #endif
             });
 
+            ModuleController.cheatCode.AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
+            {
+                Game.isDebugReset = true;
+                Services.DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+                Services.DataSecure().Save();
+                Application.Quit();
+
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Toggle NoAds", cheatCodeParam =>
             {
                 var data = Pool.Get<ServiceData>();
@@ -49,6 +61,23 @@ namespace IEC
                 data.isNoAdsReward = data.isNoAds;
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
+            });
+
+            ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
+            {
+                ModuleController.cheatCode.AddCheatCodeFromObject("Game", Game);
+            });
+
+            ModuleController.cheatCode.onCheatCodeStateChange.AddListener(() =>
+            {
+                if (ModuleController.cheatCode.showCheatCodeState == CheatCode.ShowCheatCodeState.ShowPasswordInput)
+                {
+                    Services.PushEvent(new TrackingEvent.OpenCheat());
+                }
+                else if (ModuleController.cheatCode.showCheatCodeState == CheatCode.ShowCheatCodeState.ShowCheatCode)
+                {
+                    Services.PushEvent(new TrackingEvent.UnlockCheat());
+                }
             });
         }
     }
