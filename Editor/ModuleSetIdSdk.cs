@@ -17,7 +17,7 @@ namespace _IECModules
             GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
 
-        public const string VERSION = "1.1.0";
+        public const string VERSION = "1.2.0";
 
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
@@ -31,7 +31,8 @@ namespace _IECModules
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
 
-        private GUIStyle m_LabelStyle;
+        private GUIStyle m_StyleHeader1;
+        private GUIStyle m_StyleHeader2;
 
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
@@ -72,7 +73,8 @@ namespace _IECModules
 
         private void InitGuiParams()
         {
-            m_LabelStyle = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if(m_StyleHeader1 == null) m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if(m_StyleHeader2 == null) m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -110,13 +112,10 @@ namespace _IECModules
                     ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
                 }, 220);
             }
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.Label("Install SDK", m_LabelStyle);
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-
+            
+            CreateGuiLabel("1. Install SDK", m_StyleHeader1);
+            
+            CreateGuiLabel("- SDK For Prototype", m_StyleHeader2);
 
             CreateGuiButton("Facebook SDK (latest)", () =>
             {
@@ -126,6 +125,13 @@ namespace _IECModules
 
             GUILayout.Space(20);
 
+            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            });
+
+            CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
 
             var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
@@ -138,45 +144,7 @@ namespace _IECModules
                 SdkHelper.ListApplovinVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
-            {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            });
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            #region External Dependency Manager
-            //GUILayout.TextArea("External Dependency Manager");
-
-            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
-            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!edmSdkLoaded)
-                {
-                    return;
-                }
-                DeleteObsoleteResolver();
-                AddRegistries(GoogleRegistry);
-                edmPkg.Install();
-            });
-
-            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
-               edmPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
-
-            #endregion
+            CreateGuiBreakLine();
 
             #region Firebase Analytics
 
@@ -196,7 +164,7 @@ namespace _IECModules
 
             firebaseAnalyticPkg.versionSelected = EditorGUILayout.Popup("", firebaseAnalyticPkg.versionSelected,
                firebaseAnalyticPkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -222,22 +190,43 @@ namespace _IECModules
 
             firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
                firebaseRemotePkg.listVersion,
-               GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+
+            CreateGuiBreakLine();
+
+            #endregion
+
+            CreateGuiLabel("2. Project Resolver", m_StyleHeader1);
+            
+            #region External Dependency Manager
+
+            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!edmSdkLoaded) return;
+                ProjectResolveHelper.DeleteObsoleteResolver();
+                AddRegistries(GoogleRegistry);
+                edmPkg.Install();
+            });
+
+            edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
+                edmPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
 
             #endregion
+            
+            CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
 
+            CreateGuiBreakLine();
 
-            CreateGuiButton("Update Main Template and Android Resolve", ProjectResolveHelper.UpdateMainTemplateAndResolve, buttonSize.x * 2);
+            ProjectResolveHelper.EditorOnGUI();
 
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            GUILayout.Label("Update Project Checklist", m_LabelStyle);
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+            CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
 
             if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
@@ -246,7 +235,7 @@ namespace _IECModules
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
             EditorGUILayout.EndHorizontal();
 
-            LogEditorHelper.EditorDrawLog();
+            LogEditorHelper.EditorOnGUI();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
@@ -255,6 +244,20 @@ namespace _IECModules
             if (!GUILayout.Button(text, GUILayout.Width(buttonWidth), GUILayout.Height(buttonSize.y))) return;
             LogEditorHelper.ClearLog();
             onClickButton?.Invoke();
+        }
+        private void CreateGuiLabel(string text, GUIStyle guiStyle)
+        {
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.Label(text, guiStyle);
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+        }
+        private void CreateGuiBreakLine()
+        {
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
         }
 
         private void OnClickSetSDKId()
@@ -298,18 +301,6 @@ namespace _IECModules
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
-        private void DeleteObsoleteResolver()
-        {
-            if (FileUtil.DeleteFileOrDirectory("Assets/ExternalDependencyManager"))
-            {
-                LogEditorHelper.AddLog("Delete EDM");
-            }
-            if (FileUtil.DeleteFileOrDirectory("Assets/PlayServicesResolver"))
-            {
-                LogEditorHelper.AddLog("Delete Play Service Resolver");
-            }
-            AssetDatabase.Refresh();
-        }
 
     }
 

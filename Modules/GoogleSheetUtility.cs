@@ -19,7 +19,7 @@ public class GoogleSheetUtility : MonoBehaviour
     }
     public static void ParseGoogleDocToScriptableObject(string docUrl, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null)
     {
-        DownLoadCsvEditor(docUrl, false, data => { ParseCSVToScriptableObject(data, scriptableObject); });
+        DownLoadCsvEditor(docUrl, false, data => { ParseCSVToScriptableObject(data, scriptableObject, onLoadComplete); });
     }
 
     public static void ParseCSVToScriptableObject(List<List<string>> csvData, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null)
@@ -49,6 +49,7 @@ public class GoogleSheetUtility : MonoBehaviour
             var rowObject = Activator.CreateInstance(listType);
             listNewValue.Add(rowObject);
 
+            var rowIsEmpty = true;
             for (var i = 0; i < fieldParamListSorted.Count; i++)
             {
                 var fieldInfo = fieldParamListSorted[i];
@@ -56,6 +57,7 @@ public class GoogleSheetUtility : MonoBehaviour
 
                 var cell = row[i];
                 object value = cell;
+                if (!string.IsNullOrWhiteSpace(cell)) rowIsEmpty = false;
 
                 if (fieldInfo.FieldType == typeof(float))
                     value = string.IsNullOrEmpty(cell) ? 0 : float.Parse(cell);
@@ -75,6 +77,12 @@ public class GoogleSheetUtility : MonoBehaviour
                     value = null;
 
                 fieldInfo.SetValue(rowObject, value);
+            }
+            
+            if (rowIsEmpty)
+            {
+                listNewValue.RemoveAt(listNewValue.Count - 1);
+                break;
             }
         }
         

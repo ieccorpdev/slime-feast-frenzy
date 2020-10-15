@@ -45,11 +45,11 @@ namespace _IECModules
 
         }
 
-        public static void Remove(string package, Action<RemoveRequest> onSuccess = null)
+        public static void Remove(string package, Action<RemoveRequest> onSuccess = null, bool skipError = false)
         {
             var removePKGRequest = Client.Remove(package);
             var pkgRequest = new PKGRequest();
-            pkgRequest.InitRemoveRequest(removePKGRequest, onSuccess);
+            pkgRequest.InitRemoveRequest(removePKGRequest, onSuccess, skipError);
             QueueAndRun(pkgRequest);
         }
 
@@ -112,7 +112,7 @@ namespace _IECModules
                             }
                             break;
                     }
-                else if (request.Status >= StatusCode.Failure)
+                else if (request.Status >= StatusCode.Failure && !currentRequest.skipErrorMessage)
                     LogEditorHelper.AddLogError(request.Error.message);
 
                 EditorApplication.update -= Progress;
@@ -137,6 +137,8 @@ namespace _IECModules
     {
         public RequestType type;
         public Request request;
+
+        public bool skipErrorMessage;
 
         public Action<AddRequest> onAddRequestDone;
         public Action<ListRequest> onListRequestDone;
@@ -173,11 +175,12 @@ namespace _IECModules
             onPackRequestDone = onSuccess;
         }
 
-        public void InitRemoveRequest(RemoveRequest removeRequest, Action<RemoveRequest> onSuccess = null)
+        public void InitRemoveRequest(RemoveRequest removeRequest, Action<RemoveRequest> onSuccess = null, bool skipError = false)
         {
             type = RequestType.RemoveRequest;
             request = removeRequest;
             onRemoveRequestDone = onSuccess;
+            skipErrorMessage = skipError;
         }
 
         public void InitSearchRequest(SearchRequest searchRequest, Action<SearchRequest> onSuccess = null)
