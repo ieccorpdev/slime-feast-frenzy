@@ -12,5 +12,6 @@ namespace IEC
     public class GameConfig : ScriptableObject
     {
         public _EmptyConfig emptyConfig;
+        public ComponentConfig componentConfig;
     }
 }
