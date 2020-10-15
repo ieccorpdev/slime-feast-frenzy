@@ -207,6 +207,14 @@ namespace _IECModules
                 {
                     LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
                 }
+                
+                var androidDebuggableStr = "android:debuggable=\"true\"";
+                if (androidManifestFileContent.Contains(androidDebuggableStr))
+                {
+                    androidManifestFileContent = androidManifestFileContent.Replace(androidDebuggableStr, androidDebuggableStr.Replace("true", "false"));
+                    File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: android:debuggable Set to False");
+                }
 
                 var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
                 if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
