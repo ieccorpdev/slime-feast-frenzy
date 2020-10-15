@@ -17,6 +17,7 @@ namespace IEC
         //private List<GridComponent> m_Grids;
 
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
+        public Transform m_GridParent;
 
         private List<GameObject> m_ListObj = new List<GameObject>();
 
@@ -76,11 +77,77 @@ namespace IEC
             m_ListObj.Clear();
         }
 
+        int[,] array = new int[3, 3] {
+            { 0,1,0},
+            { 0,1,0},
+            { 0,1,0}
+        };
+
+        static int[,] RotateMatrix(int[,] matrix, int n)
+        {
+            int[,] ret = new int[n, n];
+
+            for (int i = 0; i < n; ++i)
+            {
+                for (int j = 0; j < n; ++j)
+                {
+                    ret[i, j] = matrix[n - j - 1, i];
+                }
+            }
+
+            return ret;
+        }
+
         [Button]
+        private void SpawnLevel()
+        {
+            //RemoveWall();
+
+            //SpawnWalls();
+            //SpawnGrid();
+
+            int[,] rotated = RotateMatrix(array, 3);
+
+            
+            for (int i = 0; i < 3; i++)
+            {
+                var str = "";
+
+                for (int j = 0; j < 3; j++)
+                {
+                    str += rotated[i, j];
+                }
+                Debug.LogError(str + "\n");
+            }
+        }
+
+        private void SpawnGrid()
+        {
+            var startPos = (size - 1) / -2f;
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    var posSpawn = new Vector3(startPos + j, 0f, startPos + i);
+                    SpawnGrid(m_GridParent, posSpawn);
+                }
+            }
+        }
+
+        private void SpawnGrid(Transform parent, Vector3 posSpawn)
+        {
+            var grid = PrefabHelper.Clone(ComponentConfig.straightObj).transform;
+            grid.SetParent(parent);
+            grid.localPosition = posSpawn;
+            grid.localRotation = Quaternion.identity;
+            grid.localScale = Vector3.one;
+
+            m_ListObj.Add(grid.gameObject);
+        }
+
         private void SpawnWalls()
         {
-            RemoveWall();
-
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
@@ -107,6 +174,8 @@ namespace IEC
                 wallTrans.localPosition = posSpawn;
                 wallTrans.localRotation = Quaternion.identity;
                 wallTrans.localScale = Vector3.one;
+
+                m_ListObj.Add(wallTrans.gameObject);
             }
         }
 
