@@ -12,8 +12,8 @@ GameObject:
   - component: {fileID: 221183724334353450}
   - component: {fileID: 1902534296014400264}
   - component: {fileID: 8087676114135033293}
-  m_Layer: 0
-  m_Name: Screen-LevelComplete
+  m_Layer: 5
+  m_Name: Screen-LevelWin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 8607587608403158496}
   - component: {fileID: 5954164955778858945}
   - component: {fileID: 8792133620999463436}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 3045199141392921349}
   - component: {fileID: 4979278732405501591}
   - component: {fileID: 3579833104225117037}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Button-Next
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -394,6 +394,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: DarkBG
+      objectReference: {fileID: 0}
+    - target: {fileID: 5289329726188480442, guid: f817cdce30a3c0a40ba8b9e422043b1d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f817cdce30a3c0a40ba8b9e422043b1d, type: 3}
