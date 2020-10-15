@@ -54,6 +54,17 @@ namespace _IECModules
             ShowCheatCode
         }
 
+        [Flags]
+        public enum PositionActivate
+        {
+            TopLeft = 1 << 0,
+            TopRight = 1 << 1,
+            BotLeft = 1 << 2,
+            BotRight = 1 << 3
+        }
+
+        public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
+
         private ShowCheatCodeState m_ShowCheatCodeState;
 
         public ShowCheatCodeState showCheatCodeState => m_ShowCheatCodeState;
@@ -185,15 +196,19 @@ namespace _IECModules
             if (!Input.GetMouseButtonUp(0)) return;
 
             var cornerSize = 0.2f;
+            var isClickActivate = false;
 
-            if (Input.mousePosition.x < Screen.width * cornerSize &&
-                (Input.mousePosition.y < Screen.height * cornerSize ||
-                 Input.mousePosition.y > Screen.height * (1 - cornerSize))
-                || Input.mousePosition.x > Screen.width * (1 - cornerSize) &&
-                (
-// Remove bottom right corner
-//                    Input.mousePosition.y < Screen.height * cornerSize ||
-                    Input.mousePosition.y > Screen.height * (1 - cornerSize)))
+            var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
+            var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
+            var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
+            var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
+
+            isClickActivate |= ((positionActivate & PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
+            isClickActivate |= ((positionActivate & PositionActivate.TopRight) != 0 && isClickTop && isClickRight);
+            isClickActivate |= ((positionActivate & PositionActivate.BotLeft) != 0 && isClickBot && isClickLeft);
+            isClickActivate |= ((positionActivate & PositionActivate.BotRight) != 0 && isClickBot && isClickRight);
+
+            if (isClickActivate)
             {
                 m_TestIndex++;
                 if (m_TestIndex != 8 && (m_TestIndex != 3 || !m_HaveInputPassword && !Application.isEditor)) return;
