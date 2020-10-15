@@ -20,6 +20,7 @@ namespace IEC
             {
                 case EventList.GamePlay.NEW_GAME:
                     UI.ShowScreenByGameState();
+                    UI.textHello.text = "Hello IEC " + PlayerData.level;
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     UI.ShowScreenByGameState();

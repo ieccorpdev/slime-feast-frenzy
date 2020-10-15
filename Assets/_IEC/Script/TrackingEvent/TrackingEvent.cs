@@ -31,4 +31,39 @@ namespace IEC.TrackingEvent
     {
         public override string Name => "unlock_cheat";
     }
+
+    public abstract class Level : Game
+    {
+        public override string Name => "LEVEL";
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["level"] = DataPlayer.levelTracking;
+            return dict;
+        }
+    }
+
+    public class PlayLevel : Level
+    {
+        public override string Name => "play_level";
+    }
+
+    public class PlayLevelFirstTime : Level
+    {
+        public override string Name => "play_level_first_time";
+    }
+
+    public class GameOver : Level
+    {
+        public override string Name => "game_over";
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["time"] = DataGame.TimeFinishLevel;
+            dict["isWin"] = DataGame.IsWin;
+            return dict;
+        }
+    }
 }

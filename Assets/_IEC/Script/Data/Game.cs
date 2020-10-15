@@ -26,11 +26,21 @@ namespace IEC
 
         public GameState gameState = GameState.Playing;
 
+        public bool IsWin => gameState == GameState.Win;
+
         public void SetGameState(GameState state)
         {
             gameState = state;
         }
 
-        public bool IsWin => gameState == GameState.Win;
+        public void SetTimeStartLevel()
+        {
+            timeStartLevel = System.DateTime.Now;
+        }
+
+        public void SetTimeEndLevel()
+        {
+            timeEndLevel = System.DateTime.Now;
+        }
     }
 }

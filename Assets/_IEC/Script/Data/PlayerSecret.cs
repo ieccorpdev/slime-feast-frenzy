@@ -13,5 +13,15 @@ namespace IEC
         public string lastVersion;
         public bool isNoAds;
         public int gold;
+
+        public int level = 1;
+        public int levelTracking = 1;
+        public int levelFirstTime = 0;
+
+        public void AddLevel()
+        {
+            level += 1;
+        }
+
     }
 }
