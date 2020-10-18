@@ -16,7 +16,10 @@ namespace IEC
         [HideInInspector]
         public int WaterColor, Row, Col;
 
-        public int m_RotY;
+        protected int m_RotY;
+
+        protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
+
 
         protected virtual int[,] DefaultLine => new int[3, 3]
         {
@@ -39,6 +42,8 @@ namespace IEC
             Row = row;
             Col = col;
             CurerentLine = DefaultLine;
+
+            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
         }
 
         public virtual void PrepareCheckConnect()

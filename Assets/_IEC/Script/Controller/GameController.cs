@@ -101,7 +101,7 @@ namespace IEC
 
         private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, int rot)
         {
-            var grid = PrefabHelper.Clone(ComponentConfig.straightObj).transform;
+            var grid = PrefabHelper.Clone(ComponentConfig.curveObj).transform;
             var gridComp = grid.GetComponent<BaseGrid>();
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
