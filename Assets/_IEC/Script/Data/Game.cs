@@ -16,6 +16,18 @@ namespace IEC
         public float timeDelayFullAds;
 
         public bool isPlaying;
+
+        public int size;
+
+        public BaseComponent[,] grids;
+
+        public BaseComponent GetGrid(int row, int col)
+        {
+            if (row < 0 || row > size - 1) return null;
+            if (col < 0 || col > size - 1) return null;
+
+            return grids[row, col];
+        }
     }
 
     public enum WallType

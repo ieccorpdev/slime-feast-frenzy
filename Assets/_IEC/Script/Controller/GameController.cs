@@ -60,14 +60,12 @@ namespace IEC
             }
         }
 
-        public int size;
-
         private void RemoveWall()
         {
             for (int i = 0; i < m_ListObj.Count; i++)
             {
                 var obj = m_ListObj[i];
-                if(obj != null)
+                if (obj != null)
                 {
                     PrefabHelper.Destroy(obj);
                 }
@@ -79,13 +77,14 @@ namespace IEC
         [Button]
         private void SpawnLevel()
         {
+            int size = 5;
+            Game.grids = new BaseComponent[size, size];
             RemoveWall();
-
-            SpawnWalls();
-            SpawnGrid();
+            SpawnWalls(size - 2);
+            SpawnGrid(size - 2);
         }
 
-        private void SpawnGrid()
+        private void SpawnGrid(int size)
         {
             var startPosX = (size - 1) / -2f;
             var startPosZ = (size - 1) / 2f;
@@ -95,7 +94,7 @@ namespace IEC
                 for (int j = 0; j < size; j++)
                 {
                     var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
-                    SpawnGrid(m_GridParent, posSpawn, i, j, RandomHelper.Range(0, 4));
+                    SpawnGrid(m_GridParent, posSpawn, i + 1, j + 1, 0);
                 }
             }
         }
@@ -112,10 +111,12 @@ namespace IEC
 
             gridComp.OnInit(row, col, rot);
 
+            Game.grids[row, col] = gridComp;
+
             m_ListObj.Add(grid.gameObject);
         }
 
-        private void SpawnWalls()
+        private void SpawnWalls(int size)
         {
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
@@ -124,20 +125,20 @@ namespace IEC
             SpawnWall(m_WallParents[0], size, startPos, WallType.TOP, true, 0);
 
             m_WallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
-            SpawnWall(m_WallParents[1], size, startPos, WallType.BOT, true, size - 1);
+            SpawnWall(m_WallParents[1], size, startPos, WallType.BOT, true, size + 1);
 
             m_WallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
             SpawnWall(m_WallParents[2], size, startPos, WallType.LEFT, false, 0);
 
             m_WallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
-            SpawnWall(m_WallParents[3], size, startPos, WallType.RIGHT, false, size - 1);
+            SpawnWall(m_WallParents[3], size, startPos, WallType.RIGHT, false, size + 1);
         }
 
         private void SpawnWall(Transform parent, int count, float startPos, WallType wallType, bool isSameRow, int index)
         {
-            for (int i = 0; i < count; i++)
+            for (int i = 1; i <= count; i++)
             {
-                var posSpawn = new Vector3(startPos + i * 1, 0f, 0f);
+                var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj).transform;
                 var wallComp = wallTrans.GetComponent<WallComponent>();
@@ -150,10 +151,14 @@ namespace IEC
                 var row = isSameRow ? index : i;
                 var col = isSameRow ? i : index;
 
+                wallTrans.gameObject.name = "Row " + row + " | Col " + col;
+
                 wallComp.OnInit(row, col);
                 wallComp.SetupWall(wallType, false);
 
                 m_ListObj.Add(wallTrans.gameObject);
+
+                Game.grids[row, col] = wallComp;
             }
         }
 
