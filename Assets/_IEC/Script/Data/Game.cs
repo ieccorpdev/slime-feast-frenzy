@@ -30,11 +30,17 @@ namespace IEC
         }
     }
 
-    public enum WallType
+    public enum GridType
     {
-        TOP,
-        BOT,
-        LEFT,
-        RIGHT
+        NONE,
+        WALL_TOP,
+        WALL_BOT,
+        WALL_LEFT,
+        WALL_RIGHT,
+        GRID_SOURCE,
+        GRID_TARGET,
+        GRID_CROSS,
+        GRID_STRAIGHT,
+        GRID_CURVE
     }
 }

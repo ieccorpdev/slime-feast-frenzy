@@ -122,19 +122,19 @@ namespace IEC
             var wallPos = (size / 2f) + .18f;
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
-            SpawnWall(m_WallParents[0], size, startPos, WallType.TOP, true, 0);
+            SpawnWall(m_WallParents[0], size, startPos, GridType.WALL_TOP, true, 0);
 
             m_WallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
-            SpawnWall(m_WallParents[1], size, startPos, WallType.BOT, true, size + 1);
+            SpawnWall(m_WallParents[1], size, startPos, GridType.WALL_BOT, true, size + 1);
 
             m_WallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
-            SpawnWall(m_WallParents[2], size, startPos, WallType.LEFT, false, 0);
+            SpawnWall(m_WallParents[2], size, startPos, GridType.WALL_LEFT, false, 0);
 
             m_WallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
-            SpawnWall(m_WallParents[3], size, startPos, WallType.RIGHT, false, size + 1);
+            SpawnWall(m_WallParents[3], size, startPos, GridType.WALL_RIGHT, false, size + 1);
         }
 
-        private void SpawnWall(Transform parent, int count, float startPos, WallType wallType, bool isSameRow, int index)
+        private void SpawnWall(Transform parent, int count, float startPos, GridType wallType, bool isSameRow, int index)
         {
             for (int i = 1; i <= count; i++)
             {
