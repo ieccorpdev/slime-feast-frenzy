@@ -35,7 +35,6 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.sourceObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.targetObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.wallObj);
-            PrefabHelper.SetUpPrefab(ComponentConfig.wallHoleObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.cornerObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.straightObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
@@ -77,71 +76,41 @@ namespace IEC
             m_ListObj.Clear();
         }
 
-        int[,] array = new int[3, 3] {
-            { 0,1,0},
-            { 0,1,0},
-            { 0,1,0}
-        };
-
-        static int[,] RotateMatrix(int[,] matrix, int n)
-        {
-            int[,] ret = new int[n, n];
-
-            for (int i = 0; i < n; ++i)
-            {
-                for (int j = 0; j < n; ++j)
-                {
-                    ret[i, j] = matrix[n - j - 1, i];
-                }
-            }
-
-            return ret;
-        }
-
         [Button]
         private void SpawnLevel()
         {
-            //RemoveWall();
+            RemoveWall();
 
-            //SpawnWalls();
-            //SpawnGrid();
-
-            int[,] rotated = RotateMatrix(array, 3);
-
-            
-            for (int i = 0; i < 3; i++)
-            {
-                var str = "";
-
-                for (int j = 0; j < 3; j++)
-                {
-                    str += rotated[i, j];
-                }
-                Debug.LogError(str + "\n");
-            }
+            SpawnWalls();
+            SpawnGrid();
         }
 
         private void SpawnGrid()
         {
-            var startPos = (size - 1) / -2f;
+            var startPosX = (size - 1) / -2f;
+            var startPosZ = (size - 1) / 2f;
 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    var posSpawn = new Vector3(startPos + j, 0f, startPos + i);
-                    SpawnGrid(m_GridParent, posSpawn);
+                    var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
+                    SpawnGrid(m_GridParent, posSpawn, i, j, RandomHelper.Range(0, 4));
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, int rot)
         {
             var grid = PrefabHelper.Clone(ComponentConfig.straightObj).transform;
+            var gridComp = grid.GetComponent<BaseGrid>();
             grid.SetParent(parent);
+            grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
+
+            gridComp.OnInit(row, col, rot);
 
             m_ListObj.Add(grid.gameObject);
         }
@@ -152,28 +121,37 @@ namespace IEC
             var wallPos = (size / 2f) + .18f;
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
+            SpawnWall(m_WallParents[0], size, startPos, WallType.TOP, true, 0);
+
             m_WallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
+            SpawnWall(m_WallParents[1], size, startPos, WallType.BOT, true, size - 1);
 
             m_WallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
-            m_WallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
+            SpawnWall(m_WallParents[2], size, startPos, WallType.LEFT, false, 0);
 
-            for (int i = 0; i < 4; i++)
-            {
-                SpawnWall(m_WallParents[i], size, startPos);
-            }
+            m_WallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
+            SpawnWall(m_WallParents[3], size, startPos, WallType.RIGHT, false, size - 1);
         }
 
-        private void SpawnWall(Transform parent, int count, float startPos)
+        private void SpawnWall(Transform parent, int count, float startPos, WallType wallType, bool isSameRow, int index)
         {
             for (int i = 0; i < count; i++)
             {
                 var posSpawn = new Vector3(startPos + i * 1, 0f, 0f);
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj).transform;
+                var wallComp = wallTrans.GetComponent<WallComponent>();
+
                 wallTrans.SetParent(parent);
                 wallTrans.localPosition = posSpawn;
                 wallTrans.localRotation = Quaternion.identity;
                 wallTrans.localScale = Vector3.one;
+
+                var row = isSameRow ? index : i;
+                var col = isSameRow ? i : index;
+
+                wallComp.OnInit(row, col);
+                wallComp.SetupWall(wallType, false);
 
                 m_ListObj.Add(wallTrans.gameObject);
             }

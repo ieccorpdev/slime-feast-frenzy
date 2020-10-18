@@ -10,7 +10,6 @@ namespace IEC
         public GameObject sourceObj;
         public GameObject targetObj;
         public GameObject wallObj;
-        public GameObject wallHoleObj;
         public GameObject cornerObj;
         public GameObject straightObj;
         public GameObject crossObj;

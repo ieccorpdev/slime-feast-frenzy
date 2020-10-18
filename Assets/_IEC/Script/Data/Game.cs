@@ -17,4 +17,12 @@ namespace IEC
 
         public bool isPlaying;
     }
+
+    public enum WallType
+    {
+        TOP,
+        BOT,
+        LEFT,
+        RIGHT
+    }
 }
