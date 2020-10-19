@@ -8,10 +8,14 @@ namespace IEC
     {
         public int ID => gameObject.GetInstanceID();
 
+        public GridType GridType;
+
         public virtual bool IsCanRotate() => false;
 
+        public bool IsHaveWater;
+
         [HideInInspector]
-        public bool IsHaveWater, IsRotating, IsCheckedConnect;
+        public bool IsRotating, IsCheckedConnect;
 
         [HideInInspector]
         public int WaterColor, Row, Col;
@@ -19,7 +23,6 @@ namespace IEC
         protected int m_RotY;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
-
 
         protected virtual int[,] DefaultLine => new int[3, 3]
         {
@@ -37,11 +40,13 @@ namespace IEC
 
         private List<BaseComponent> listGridConnect = new List<BaseComponent>();
 
-        public virtual void OnInit(int row, int col, int rot = 0, int color = 0)
+        public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0)
         {
+            GridType = gridType;
             Row = row;
             Col = col;
             CurerentLine = DefaultLine;
+            m_RotY = rot;
 
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
         }
@@ -49,59 +54,75 @@ namespace IEC
         public virtual void PrepareCheckConnect()
         {
             IsCheckedConnect = false;
+            IsHaveWater = false;
+        }
+
+        public void SetConnect()
+        {
+            IsHaveWater = true;
+            IsCheckedConnect = true;
         }
 
         private BaseComponent m_TempGrid;
-        public virtual void CheckConnect()
+
+        public List<BaseComponent> GetGridNearCanConnect()
         {
-            if (IsCheckedConnect) return;
-            IsHaveWater = true;
             listGridConnect.Clear();
 
             if (IsHaveLineTop())
             {
                 m_TempGrid = Game.GetGrid(Row + 1, Col);
-                if (m_TempGrid.IsHaveLineBot())
+                if (m_TempGrid != null)
                 {
-                    listGridConnect.Add(m_TempGrid);
+                    if (m_TempGrid.IsHaveLineBot())
+                    { 
+                        listGridConnect.Add(m_TempGrid);
+                    }
                 }
             }
 
             if (IsHaveLineBot())
             {
                 m_TempGrid = Game.GetGrid(Row - 1, Col);
-                if (m_TempGrid.IsHaveLineTop())
+                if (m_TempGrid != null)
                 {
-                    listGridConnect.Add(m_TempGrid);
+                    if (m_TempGrid.IsHaveLineTop())
+                    {
+                        listGridConnect.Add(m_TempGrid);
+                    }
                 }
             }
 
             if (IsHaveLineLeft())
             {
                 m_TempGrid = Game.GetGrid(Row, Col - 1);
-                if (m_TempGrid.IsHaveLineRight())
+                if (m_TempGrid != null)
                 {
-                    listGridConnect.Add(m_TempGrid);
+                    if (m_TempGrid.IsHaveLineRight())
+                    {
+                        listGridConnect.Add(m_TempGrid);
+                    }
                 }
             }
 
             if (IsHaveLineRight())
             {
                 m_TempGrid = Game.GetGrid(Row, Col + 1);
-                if (m_TempGrid.IsHaveLineLeft())
+                if(m_TempGrid != null)
                 {
-                    listGridConnect.Add(m_TempGrid);
+                    if (m_TempGrid.IsHaveLineLeft())
+                    {
+                        listGridConnect.Add(m_TempGrid);
+                    }
                 }
             }
 
-            for (int i = 0; i < listGridConnect.Count; i++)
-            {
-                m_TempGrid = listGridConnect[i];
-                if (m_TempGrid.IsCheckedConnect) continue;
-                m_TempGrid.CheckConnect();
-            }
+            return listGridConnect;
+        }
 
-            IsCheckedConnect = true;
+        public void OnDestroyMe()
+        {
+            PrefabHelper.Destroy(gameObject);
         }
     }
 }

@@ -21,22 +21,37 @@ namespace IEC
 
         public BaseComponent[,] grids;
 
+        public List<BaseComponent> listSource = new List<BaseComponent>();
+        public List<BaseComponent> listGrids = new List<BaseComponent>();
+
         public BaseComponent GetGrid(int row, int col)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
 
-            return grids[row, col];
+            var grid = grids[row, col];
+            if(grid != null)
+            {
+                if (!grid.IsCheckedConnect)
+                {
+                    return grid;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 
     public enum GridType
     {
         NONE,
-        WALL_TOP,
-        WALL_BOT,
-        WALL_LEFT,
-        WALL_RIGHT,
+        WALL,
         GRID_SOURCE,
         GRID_TARGET,
         GRID_STRAIGHT,

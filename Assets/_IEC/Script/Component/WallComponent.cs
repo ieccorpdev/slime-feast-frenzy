@@ -35,18 +35,17 @@ namespace IEC
 
         public override bool IsCanRotate() => false;
 
-        public override void OnInit(int row, int col, int rot = 0, int color = 0)
+        public virtual void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0)
         {
-            base.OnInit(row, col, rot, color);
+            base.OnInit(gridType, row, col, rot, color);
             IsRotating = false;
         }
 
-        public void SetupWall(bool isHaveHole, bool isReverse)
+        public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
         {
             m_IsHaveHole = isHaveHole;
-
             m_TransWallHole.localRotation = Quaternion.Euler(0f, (isReverse && isHaveHole) ? 180f : 0f, 0f);
+            CurerentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : DefaultLine;
         }
-
     }
 }

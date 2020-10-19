@@ -9,11 +9,9 @@ namespace IEC
     {
         protected Tween m_Tween;
 
-        public override void OnInit(int row, int col, int rot = 0, int color = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0)
         {
-            base.OnInit(row, col, rot, color);
-
-            m_RotY = rot;
+            base.OnInit(gridType, row, col, rot, color);
             for (int i = 0; i < rot; i++)
             {
                 CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
@@ -32,17 +30,7 @@ namespace IEC
             transform.DOLocalRotateQuaternion(rot, .3f).OnComplete(() => {
                 IsRotating = false;
                 CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
-
-                //for (int i = 0; i < 3; i++)
-                //{
-                //    var str = "";
-                //    for (int j = 0; j < 3; j++)
-                //    {
-                //        str += CurerentLine[i, j];
-                //    }
-                //    Debug.LogError(str + "\n");
-                //}
-                //EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+                EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
             });
         }
     }

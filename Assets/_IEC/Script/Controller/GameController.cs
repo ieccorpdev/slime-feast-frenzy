@@ -19,8 +19,6 @@ namespace IEC
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
         public Transform m_GridParent;
 
-        private List<GameObject> m_ListObj = new List<GameObject>();
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -44,7 +42,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            //OnStartLevel();
+            EventController.RaiseEvent(EventList.GamePlay.START_LEVEL);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -53,34 +51,22 @@ namespace IEC
             {
                 case EventList.GamePlay.START_LEVEL:
                     //OnStartLevel();
+                    SpawnLevel();
                     break;
 
                 case EventList.GamePlay.CHECK_GAME_OVER:
-                    //CheckGameOver();
+                    CheckGameOver();
                     break;
             }
         }
 
-        private void RemoveWall()
-        {
-            for (int i = 0; i < m_ListObj.Count; i++)
-            {
-                var obj = m_ListObj[i];
-                if (obj != null)
-                {
-                    PrefabHelper.Destroy(obj);
-                }
-            }
-
-            m_ListObj.Clear();
-        }
-
-
         const string jsonSavePath = "Assets/_IEC/Config/Levels/level1.txt";
 
-        [Button]
         private void SpawnLevel()
         {
+            Game.listGrids.ForEach(x => x.OnDestroyMe());
+            Game.listGrids.Clear();
+
             var file = File.ReadAllText(jsonSavePath);
             string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
@@ -92,10 +78,11 @@ namespace IEC
             levelConfig.SetSize(size, gridTypes);
             Game.size = size;
             Game.grids = new BaseComponent[size, size];
-            RemoveWall();
 
             SpawnWalls(levelConfig);
             SpawnGrid(levelConfig);
+
+            EventController.RaiseEventDelay(.2f, EventList.GamePlay.CHECK_GAME_OVER);
         }
 
         private string[,] GetGridValue(string[] str, int size, int startRow)
@@ -138,6 +125,12 @@ namespace IEC
             var type = int.Parse(gridtype[0]);
             var grid = PrefabHelper.Clone(GetGridObj(type)).transform;
             var gridComp = grid.GetComponent<BaseComponent>();
+
+            if(type == 5)
+            {
+                Game.listSource.Add(gridComp);
+            }
+
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
@@ -145,11 +138,35 @@ namespace IEC
             grid.localScale = Vector3.one;
 
             var gridRot = int.Parse(gridtype[1]);
-            gridComp.OnInit(row, col, gridRot);
+            gridComp.OnInit(GetType(type), row, col, gridRot / 90);
 
             Game.grids[row, col] = gridComp;
+            Game.listGrids.Add(gridComp);
+        }
 
-            m_ListObj.Add(grid.gameObject);
+        private GridType GetType(int gridType)
+        {
+            GridType type = GridType.NONE;
+            switch (gridType)
+            {
+                case 5:
+                    type = GridType.GRID_SOURCE;
+                    break;
+                case 10:
+                    type = GridType.GRID_TARGET;
+                    break;
+                case 15:
+                    type = GridType.GRID_STRAIGHT;
+                    break;
+                case 16:
+                    type = GridType.GRID_CROSS;
+                    break;
+                case 17:
+                    type = GridType.GRID_CURVE;
+                    break;
+            }
+
+            return type;
         }
 
         private GameObject GetGridObj(int gridType)
@@ -216,40 +233,56 @@ namespace IEC
 
                 wallTrans.gameObject.name = "Row " + row + " | Col " + col;
 
-                wallComp.OnInit(row, col);
-                wallComp.SetupWall(wallValue == 2, isReverse);
-
-                m_ListObj.Add(wallTrans.gameObject);
+                wallComp.OnInit(GridType.WALL, row, col);
+                wallComp.SetupWall(wallValue == 2, isBotTop, isReverse);
 
                 Game.grids[row, col] = wallComp;
+                Game.listGrids.Add(wallComp);
             }
         }
 
-        //private void OnStartLevel()
-        //{
-        //    m_Grids.ForEach(x => x.OnInit());
-        //    Game.isPlaying = true;
-        //}
+        private List<BaseComponent> m_ListGridHaveWater = new List<BaseComponent>();
 
-        //private void CheckGameOver()
-        //{
-        //    if (IsWin())
-        //    {
-        //        Game.isPlaying = false;
-        //        m_PsWin.Play();
-        //        EventController.RaiseEventDelay(3f, EventList.GamePlay.START_LEVEL);
-        //    }
-        //}
+        private void CheckGameOver()
+        {
+            for (int i = 0; i < Game.size; i++)
+            {
+                for (int j = 0; j < Game.size; j++)
+                {
+                    var grid = Game.GetGrid(i, j);
+                    if(grid != null)
+                    {
+                        grid.PrepareCheckConnect();
+                    }
+                }
+            }
 
-        //private bool IsWin()
-        //{
-        //    for (int i = 0; i < m_Grids.Count; i++)
-        //    {
-        //        if (!m_Grids[i].IsTrueRot()) return false;
-        //    }
-        //    return true;
-        //}
+            Game.listSource.ForEach(x => x.SetConnect());
 
+            m_ListGridHaveWater.Clear();
+            m_ListGridHaveWater.AddRange(Game.listSource);
+
+            var totalGrid = Game.size * Game.size;
+            bool isChanged = false;
+
+            while ((m_ListGridHaveWater.Count < totalGrid) && !isChanged)
+            {
+                var count = m_ListGridHaveWater.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    var grid = m_ListGridHaveWater[i];
+                    var listGridNear = grid.GetGridNearCanConnect();
+
+                    listGridNear.ForEach(x => x.SetConnect());
+                    m_ListGridHaveWater.AddRange(listGridNear);
+                }
+
+                if(m_ListGridHaveWater.Count == count)
+                {
+                    isChanged = true;
+                }
+            }
+        }
     }
 
     [Serializable]
