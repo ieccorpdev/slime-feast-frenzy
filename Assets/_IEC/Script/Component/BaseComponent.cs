@@ -33,12 +33,10 @@ namespace IEC
 
         protected int[,] CurerentLine = new int[3, 3];
 
-        public bool IsHaveLineTop() => CurerentLine[0, 1] == 1;
-        public bool IsHaveLineBot() => CurerentLine[2, 1] == 1;
-        public bool IsHaveLineLeft() => CurerentLine[1, 0] == 1;
-        public bool IsHaveLineRight() => CurerentLine[1, 2] == 1;
-
-        private List<BaseComponent> listGridConnect = new List<BaseComponent>();
+        public bool IsHaveLineTop => CurerentLine[0, 1] == 1;
+        public bool IsHaveLineBot => CurerentLine[2, 1] == 1;
+        public bool IsHaveLineLeft => CurerentLine[1, 0] == 1;
+        public bool IsHaveLineRight => CurerentLine[1, 2] == 1;
 
         public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0)
         {
@@ -64,60 +62,61 @@ namespace IEC
         }
 
         private BaseComponent m_TempGrid;
+        private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
 
         public List<BaseComponent> GetGridNearCanConnect()
         {
-            listGridConnect.Clear();
+            m_ListGridConnect.Clear();
 
-            if (IsHaveLineTop())
-            {
-                m_TempGrid = Game.GetGrid(Row + 1, Col);
-                if (m_TempGrid != null)
-                {
-                    if (m_TempGrid.IsHaveLineBot())
-                    { 
-                        listGridConnect.Add(m_TempGrid);
-                    }
-                }
-            }
-
-            if (IsHaveLineBot())
+            if (IsHaveLineTop)
             {
                 m_TempGrid = Game.GetGrid(Row - 1, Col);
                 if (m_TempGrid != null)
                 {
-                    if (m_TempGrid.IsHaveLineTop())
-                    {
-                        listGridConnect.Add(m_TempGrid);
+                    if (m_TempGrid.IsHaveLineBot)
+                    { 
+                        m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
             }
 
-            if (IsHaveLineLeft())
+            if (IsHaveLineBot)
+            {
+                m_TempGrid = Game.GetGrid(Row + 1, Col);
+                if (m_TempGrid != null)
+                {
+                    if (m_TempGrid.IsHaveLineTop)
+                    {
+                        m_ListGridConnect.Add(m_TempGrid);
+                    }
+                }
+            }
+
+            if (IsHaveLineLeft)
             {
                 m_TempGrid = Game.GetGrid(Row, Col - 1);
                 if (m_TempGrid != null)
                 {
-                    if (m_TempGrid.IsHaveLineRight())
+                    if (m_TempGrid.IsHaveLineRight)
                     {
-                        listGridConnect.Add(m_TempGrid);
+                        m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
             }
 
-            if (IsHaveLineRight())
+            if (IsHaveLineRight)
             {
                 m_TempGrid = Game.GetGrid(Row, Col + 1);
-                if(m_TempGrid != null)
+                if (m_TempGrid != null)
                 {
-                    if (m_TempGrid.IsHaveLineLeft())
+                    if (m_TempGrid.IsHaveLineLeft)
                     {
-                        listGridConnect.Add(m_TempGrid);
+                        m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
             }
 
-            return listGridConnect;
+            return m_ListGridConnect;
         }
 
         public void OnDestroyMe()

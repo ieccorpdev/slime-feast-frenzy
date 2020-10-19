@@ -245,24 +245,13 @@ namespace IEC
 
         private void CheckGameOver()
         {
-            for (int i = 0; i < Game.size; i++)
-            {
-                for (int j = 0; j < Game.size; j++)
-                {
-                    var grid = Game.GetGrid(i, j);
-                    if(grid != null)
-                    {
-                        grid.PrepareCheckConnect();
-                    }
-                }
-            }
-
+            Game.listGrids.ForEach(x => x.PrepareCheckConnect());
             Game.listSource.ForEach(x => x.SetConnect());
 
             m_ListGridHaveWater.Clear();
             m_ListGridHaveWater.AddRange(Game.listSource);
 
-            var totalGrid = Game.size * Game.size;
+            var totalGrid = (Game.size * Game.size) - 4;
             bool isChanged = false;
 
             while ((m_ListGridHaveWater.Count < totalGrid) && !isChanged)
@@ -273,8 +262,11 @@ namespace IEC
                     var grid = m_ListGridHaveWater[i];
                     var listGridNear = grid.GetGridNearCanConnect();
 
-                    listGridNear.ForEach(x => x.SetConnect());
-                    m_ListGridHaveWater.AddRange(listGridNear);
+                    if(listGridNear.Count > 0)
+                    {
+                        listGridNear.ForEach(x => x.SetConnect());
+                        m_ListGridHaveWater.AddRange(listGridNear);
+                    }
                 }
 
                 if(m_ListGridHaveWater.Count == count)
