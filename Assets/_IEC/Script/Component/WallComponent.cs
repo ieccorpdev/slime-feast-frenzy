@@ -6,7 +6,6 @@ namespace IEC
 {
     public class WallComponent : BaseComponent
     {
-        private GridType m_WallType;
         private bool m_IsHaveHole;
 
         [SerializeField]
@@ -42,12 +41,11 @@ namespace IEC
             IsRotating = false;
         }
 
-        public void SetupWall(GridType type, bool isHaveHole)
+        public void SetupWall(bool isHaveHole, bool isReverse)
         {
-            m_WallType = type;
             m_IsHaveHole = isHaveHole;
 
-            m_TransWallHole.localRotation = Quaternion.Euler(0f, (type == GridType.WALL_BOT && isHaveHole) ? 180f : 0f, 0f);
+            m_TransWallHole.localRotation = Quaternion.Euler(0f, (isReverse && isHaveHole) ? 180f : 0f, 0f);
         }
 
     }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using NaughtyAttributes;
-
+using System.IO;
 
 namespace IEC
 {
@@ -39,6 +39,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.straightObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
+            PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
         }
 
         public void BehaviourStart()
@@ -74,18 +75,48 @@ namespace IEC
             m_ListObj.Clear();
         }
 
+
+        const string jsonSavePath = "Assets/_IEC/Config/Levels/level1.txt";
+
         [Button]
         private void SpawnLevel()
         {
-            int size = 5;
+            var file = File.ReadAllText(jsonSavePath);
+            string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            LevelConfig levelConfig = new LevelConfig();
+
+            int size = int.Parse(f[0]);
+            string[,] gridTypes= GetGridValue(f, size, 1);
+            levelConfig.SetSize(size, gridTypes);
+            Game.size = size;
             Game.grids = new BaseComponent[size, size];
             RemoveWall();
-            SpawnWalls(size - 2);
-            SpawnGrid(size - 2);
+
+            SpawnWalls(levelConfig);
+            SpawnGrid(levelConfig);
         }
 
-        private void SpawnGrid(int size)
+        private string[,] GetGridValue(string[] str, int size, int startRow)
         {
+            var grid = new string[size, size];
+            var count = startRow + size;
+            for (int i = startRow; i < count; i++)
+            {
+                var row = str[i].Trim().Split(' ');
+                for (int j = 0; j < size; j++)
+                {
+                    grid[i - 1, j] = row[j];
+                }
+            }
+
+            return grid;
+        }
+
+        private void SpawnGrid(LevelConfig levelConfig)
+        {
+            var size = levelConfig.size - 2;
             var startPosX = (size - 1) / -2f;
             var startPosZ = (size - 1) / 2f;
 
@@ -94,51 +125,83 @@ namespace IEC
                 for (int j = 0; j < size; j++)
                 {
                     var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
-                    SpawnGrid(m_GridParent, posSpawn, i + 1, j + 1, 0);
+                    var row = i + 1;
+                    var col = j + 1;
+                    var grid = levelConfig.gridTypes[row, col].Trim().Split('_');
+                    SpawnGrid(m_GridParent, posSpawn, row, col, grid);
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, int rot)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string[] gridtype)
         {
-            var grid = PrefabHelper.Clone(ComponentConfig.curveObj).transform;
-            var gridComp = grid.GetComponent<BaseGrid>();
+            var type = int.Parse(gridtype[0]);
+            var grid = PrefabHelper.Clone(GetGridObj(type)).transform;
+            var gridComp = grid.GetComponent<BaseComponent>();
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            gridComp.OnInit(row, col, rot);
+            var gridRot = int.Parse(gridtype[1]);
+            gridComp.OnInit(row, col, gridRot);
 
             Game.grids[row, col] = gridComp;
 
             m_ListObj.Add(grid.gameObject);
         }
 
-        private void SpawnWalls(int size)
+        private GameObject GetGridObj(int gridType)
         {
+            GameObject obj = null;
+            switch (gridType)
+            {
+                case 5:
+                    obj = ComponentConfig.sourceObj;
+                    break;
+                case 10:
+                    obj = ComponentConfig.targetObj;
+                    break;
+                case 15:
+                    obj = ComponentConfig.straightObj;
+                    break;
+                case 16:
+                    obj = ComponentConfig.crossObj;
+                    break;
+                case 17:
+                    obj = ComponentConfig.curveObj;
+                    break;
+            }
+
+            return obj;
+        }
+
+        private void SpawnWalls(LevelConfig levelConfig)
+        {
+            var size = levelConfig.size - 2;
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
-            SpawnWall(m_WallParents[0], size, startPos, GridType.WALL_TOP, true, 0);
+            SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
 
             m_WallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
-            SpawnWall(m_WallParents[1], size, startPos, GridType.WALL_BOT, true, size + 1);
+            SpawnWall(m_WallParents[1], size, startPos, levelConfig.botWall, true, size + 1, true);
 
             m_WallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
-            SpawnWall(m_WallParents[2], size, startPos, GridType.WALL_LEFT, false, 0);
+            SpawnWall(m_WallParents[2], size, startPos, levelConfig.leftWall, false, 0, false);
 
             m_WallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
-            SpawnWall(m_WallParents[3], size, startPos, GridType.WALL_RIGHT, false, size + 1);
+            SpawnWall(m_WallParents[3], size, startPos, levelConfig.rightWall, false, size + 1, true);
         }
 
-        private void SpawnWall(Transform parent, int count, float startPos, GridType wallType, bool isSameRow, int index)
+        private void SpawnWall(Transform parent, int count, float startPos, int[] walls, bool isBotTop, int index, bool isReverse)
         {
             for (int i = 1; i <= count; i++)
             {
                 var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
+                var wallValue = walls[i - 1];
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj).transform;
                 var wallComp = wallTrans.GetComponent<WallComponent>();
@@ -148,13 +211,13 @@ namespace IEC
                 wallTrans.localRotation = Quaternion.identity;
                 wallTrans.localScale = Vector3.one;
 
-                var row = isSameRow ? index : i;
-                var col = isSameRow ? i : index;
+                var row = isBotTop ? index : i;
+                var col = isBotTop ? i : index;
 
                 wallTrans.gameObject.name = "Row " + row + " | Col " + col;
 
                 wallComp.OnInit(row, col);
-                wallComp.SetupWall(wallType, false);
+                wallComp.SetupWall(wallValue == 2, isReverse);
 
                 m_ListObj.Add(wallTrans.gameObject);
 
@@ -187,8 +250,48 @@ namespace IEC
         //    return true;
         //}
 
+    }
 
+    [Serializable]
+    public class LevelConfig
+    {
+        public int size;
+        public int[] topWall, botWall, leftWall, rightWall;
+        public string[,] gridTypes;
 
+        public void SetSize(int size, string[,] gridTypes)
+        {
+            this.size = size;
 
+            topWall = new int[size];
+            botWall = new int[size];
+            leftWall = new int[size];
+            rightWall = new int[size];
+
+            this.gridTypes = gridTypes;
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    var grid = gridTypes[i, j].Trim().Split('_');
+                    var tempValue = int.Parse(grid[0]);
+
+                    if (i == 0)
+                    {
+                        topWall[j] = tempValue;
+                    }else if (i == size - 1)
+                    {
+                        botWall[j] = tempValue;
+                    }else if (j == 0)
+                    {
+                        leftWall[i] = tempValue;
+                    }else if (j == size - 1)
+                    {
+                        rightWall[i] = tempValue;
+                    }
+                }
+            }
+        }
     }
 }

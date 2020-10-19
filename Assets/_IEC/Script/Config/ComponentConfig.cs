@@ -14,5 +14,7 @@ namespace IEC
         public GameObject straightObj;
         public GameObject crossObj;
         public GameObject curveObj;
+
+        public GameObject noneObj;
     }
 }

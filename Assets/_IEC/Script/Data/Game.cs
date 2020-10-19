@@ -39,8 +39,20 @@ namespace IEC
         WALL_RIGHT,
         GRID_SOURCE,
         GRID_TARGET,
-        GRID_CROSS,
         GRID_STRAIGHT,
+        GRID_CROSS,
         GRID_CURVE
     }
+
+    // Wall 1
+    // Wall hole 2
+    // Grid source 5
+    // Grid target 10
+    // Grid straight 15
+    // Grid cross 16
+    // Grid curve 17
+
+    // Color [1, 5]
+
+    // 10_1_1 GridType_Rot_Style_Color
 }
