@@ -6,10 +6,10 @@ namespace IEC
 {
     public class WallComponent : BaseComponent
     {
-        private bool m_IsHaveHole;
-
         [SerializeField]
-        private Transform m_TransWallHole;
+        private GameObject m_WallObj, m_WallHoleObj;
+
+        private bool m_IsHaveHole;
 
         protected override int[,] DefaultLine => new int[3, 3]
         {
@@ -40,9 +40,26 @@ namespace IEC
 
         public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
         {
+            m_WallObj.SetActive(!isHaveHole);
+            m_WallHoleObj.SetActive(isHaveHole);
+
             m_IsHaveHole = isHaveHole;
-            m_TransWallHole.localRotation = Quaternion.Euler(0f, (isReverse && isHaveHole) ? 180f : 0f, 0f);
+
+            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
             CurerentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : DefaultLine;
         }
+
+        private float GetRotY(bool isBotTop, bool isReverse)
+        {
+            if (isBotTop)
+            {
+                return isReverse ? 180f : 0f;
+            }
+            else
+            {
+                return isReverse ? 0f : 180f;
+            }
+        }
+
     }
 }

@@ -33,22 +33,5 @@ namespace IEC
                 EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
             });
         }
-
-        [NaughtyAttributes.Button]
-        protected void CheckLine()
-        {
-            for (int i = 0; i < 3; i++)
-            {
-                var str = "";
-                for (int j = 0; j < 3; j++)
-                {
-                    str += CurerentLine[i, j];
-                }
-                Debug.LogError(str);
-            }
-
-            Debug.LogError("IsHaveLineTop: " + IsHaveLineTop + " | IsHaveLineBot: " + IsHaveLineBot
-                + " | IsHaveLineLeft: " + IsHaveLineLeft + " | IsHaveLineRight: " + IsHaveLineRight);
-        }
     }
 }

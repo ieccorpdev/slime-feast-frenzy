@@ -50,7 +50,7 @@ namespace IEC
             }
         }
 
-        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_5.txt";
+        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_12.txt";
 
         private void SpawnLevel()
         {
@@ -228,7 +228,7 @@ namespace IEC
             for (int i = 1; i <= count; i++)
             {
                 var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
-                var wallValue = walls[i - 1];
+                var wallValue = walls[i];
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj).transform;
                 var wallComp = wallTrans.GetComponent<WallComponent>();
@@ -333,18 +333,51 @@ namespace IEC
                     if (i == 0)
                     {
                         topWall[j] = tempValue;
-                    }else if (i == size - 1)
+                    }
+                    if (i == size - 1)
                     {
                         botWall[j] = tempValue;
-                    }else if (j == 0)
+                    }
+
+                    if (j == 0)
                     {
                         leftWall[i] = tempValue;
-                    }else if (j == size - 1)
+                    }
+
+                    if (j == size - 1)
                     {
                         rightWall[i] = tempValue;
                     }
                 }
             }
+
+            //var str = "";
+            //for (int i = 0; i < topWall.Length; i++)
+            //{
+            //    str += topWall[i] + " ";
+            //}
+            //Debug.LogError("topWall: " + str);
+
+            //str = "";
+            //for (int i = 0; i < botWall.Length; i++)
+            //{
+            //    str += botWall[i] + " ";
+            //}
+            //Debug.LogError("botWall: " + str);
+
+            //str = "";
+            //for (int i = 0; i < leftWall.Length; i++)
+            //{
+            //    str += leftWall[i] + " ";
+            //}
+            //Debug.LogError("leftWall: " + str);
+
+            //str = "";
+            //for (int i = 0; i < rightWall.Length; i++)
+            //{
+            //    str += rightWall[i] + " ";
+            //}
+            //Debug.LogError("rightWall: " + str);
         }
     }
 }
