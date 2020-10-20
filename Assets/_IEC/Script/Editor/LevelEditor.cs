@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace IEC
     [CustomEditor(typeof(LevelConfigData))]
     public class LevelEditor : Editor
     {
+        
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
@@ -33,12 +35,28 @@ namespace IEC
                 {
                     var levelConfig = obj.GetComponent<LevelConfigData>();
                     var data = levelConfig.GetData();
-                    Debug.LogError("Data: \n" + data);
+                    var count = TotalLevel();
+                    count += 1;
+                    string name = "Level_" + count;
+                    string path = "Assets/_IEC/Config/Levels/" + name + ".txt";
+
+                    //Write some text to the test.txt file
+                    StreamWriter writer = new StreamWriter(path, true);
+                    writer.WriteLine(data);
+                    writer.Close();
+                    AssetDatabase.Refresh();
                 }
             }
 
-
             EditorUtility.SetDirty(target);
+        }
+
+        private int TotalLevel()
+        {
+            var count = Directory.GetFiles(
+                Application.dataPath + "/_IEC/Config/Levels/",
+                "*.txt", SearchOption.AllDirectories);
+            return count.Length;
         }
 
 
