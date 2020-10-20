@@ -6,6 +6,9 @@ namespace IEC
 {
     public class BaseComponent : _BaseBehaviour
     {
+        [SerializeField]
+        protected WaterComponent[] m_WaterComponent;
+
         public int ID => gameObject.GetInstanceID();
 
         public GridType GridType;
@@ -47,6 +50,11 @@ namespace IEC
             CurerentLine = GetDefaultLine(style);
 
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
+
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].OnInit();
+            }
         }
 
         protected virtual int[,] GetDefaultLine(int style)

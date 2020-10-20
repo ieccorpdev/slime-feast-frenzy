@@ -139,6 +139,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f11b5fb241d07aa4f9d8ed5f16c1422e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_WaterComponent:
+  - {fileID: 8580716948787404194}
   GridType: 0
   IsHaveWater: 0
   IsRotating: 0
@@ -236,12 +238,12 @@ PrefabInstance:
     - target: {fileID: 100039286723411516, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6495032591273012674, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.205
+      value: 0.207
       objectReference: {fileID: 0}
     - target: {fileID: 6495032591273012674, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
         type: 3}
@@ -251,7 +253,7 @@ PrefabInstance:
     - target: {fileID: 6495032591273012674, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.205
+      value: -0.202
       objectReference: {fileID: 0}
     - target: {fileID: 6495032591273012674, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
         type: 3}
@@ -301,3 +303,15 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 4290008254382187579}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &8580716948787404194 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5520849493514533273, guid: 6e5a1e8be47ee5b41b3f7b610830f691,
+    type: 3}
+  m_PrefabInstance: {fileID: 4290008254382187579}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49599035231486f42b4b346915c528c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
