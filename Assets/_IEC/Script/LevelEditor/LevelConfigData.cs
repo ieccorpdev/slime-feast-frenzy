@@ -36,7 +36,7 @@ namespace IEC
             }
         }
 
-        public void OnResetRotAllGrid()
+        public void OnResetAll()
         {
             for (int i = 0; i < wallParents.Length; i++)
             {
@@ -45,7 +45,9 @@ namespace IEC
 
                 for (int j = 0; j < childCount; j++)
                 {
-                    child.GetChild(j).localRotation = Quaternion.identity;
+                    var wall = child.GetChild(j);
+                    wall.localRotation = Quaternion.identity;
+                    wall.GetComponent<GridItem>().color = 0;
                 }
             }
 
@@ -54,6 +56,7 @@ namespace IEC
             {
                 var grid = gridParent.GetChild(i);
                 var childCount = grid.childCount;
+                grid.GetComponent<GridItem>().color = 0;
                 for (int j = 0; j < childCount; j++)
                 {
                     grid.GetChild(j).localRotation = Quaternion.identity;

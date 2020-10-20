@@ -27,13 +27,13 @@ namespace IEC
                 }
             }
             GUILayout.Space(10);
-            if (GUILayout.Button("Reset Rotation"))
+            if (GUILayout.Button("Reset All"))
             {
                 var obj = Selection.activeGameObject;
                 if (obj)
                 {
                     var levelConfig = obj.GetComponent<LevelConfigData>();
-                    levelConfig.OnResetRotAllGrid();
+                    levelConfig.OnResetAll();
                 }
             }
 
