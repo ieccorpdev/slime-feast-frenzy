@@ -97,13 +97,14 @@ namespace IEC
         private void SpawnGrids(LevelConfigData levelConfig)
         {
             var size = levelConfig.size;
-            var startPos = (size - 1) / -2f;
+            var startPosX = (size - 1) / -2f;
+            var startPosZ = (size - 1) / 2f;
 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    var posSpawn = new Vector3(startPos + j, 0f, startPos + i);
+                    var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
                     var name = "Grid_" + ((i * size) + j);
 
                     SpawnGrid(levelConfig.gridParent, levelConfig.gridObj, posSpawn, name);

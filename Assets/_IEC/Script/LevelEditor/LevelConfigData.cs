@@ -81,12 +81,12 @@ namespace IEC
                         var gridItem = grid.GetComponent<GridItem>();
 
                         var gridValue = "" + GetGridType(gridItem.GetGridType());
-                        if (int.Parse(gridValue) == 5)
+                        var intValue = int.Parse(gridValue);
+                        var rot = grid.localEulerAngles.y / 90;
+                        gridValue += "_" + rot;
+                        if (intValue == 5 || intValue == 10)
                         {
-                            gridValue += "_0_" + gridItem.color;
-                        }else if(int.Parse(gridValue) == 10)
-                        {
-                            gridValue += "_0_" + gridItem.color;
+                            gridValue += "_" + gridItem.color +"_0";
                         }
                         strRow += " " + gridValue;
                     }

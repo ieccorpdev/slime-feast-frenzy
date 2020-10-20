@@ -70,5 +70,5 @@ namespace IEC
 
     // Color [1, 5]
 
-    // 10_1_1 GridType_Color_Style
+    // 10_0_0_0 GridType_Rot_Color_Style
 }

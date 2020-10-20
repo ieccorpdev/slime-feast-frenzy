@@ -50,7 +50,7 @@ namespace IEC
             }
         }
 
-        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_01.txt";
+        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_1.txt";
 
         private void SpawnLevel()
         {
@@ -130,22 +130,22 @@ namespace IEC
             {
                 var sourceComp = grid.GetComponent<GridSourceComponent>();
                 Game.listSource.Add(sourceComp);
-                gridColor = int.Parse(gridtype[1]);
+                gridColor = int.Parse(gridtype[2]);
             }
             else if(type == 10)
             {
                 var targetComp = grid.GetComponent<GridTargetComponent>();
                 Game.listTarget.Add(targetComp);
-                gridColor = int.Parse(gridtype[1]);
+                gridColor = int.Parse(gridtype[2]);
             }
-
+            var gridRot = int.Parse(gridtype[1]);
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            gridComp.OnInit(GetType(type), row, col, UnityEngine.Random.Range(0, 4), gridColor);
+            gridComp.OnInit(GetType(type), row, col, gridRot, gridColor);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
