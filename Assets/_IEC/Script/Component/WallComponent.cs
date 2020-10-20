@@ -60,6 +60,5 @@ namespace IEC
                 return isReverse ? 0f : 180f;
             }
         }
-
     }
 }

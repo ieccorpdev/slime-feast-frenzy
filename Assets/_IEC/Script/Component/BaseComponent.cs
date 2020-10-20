@@ -129,7 +129,46 @@ namespace IEC
                 }
             }
 
+            if(GridType == GridType.WALL)
+            {
+                var m_TempGrid = GetOppositeWall();
+                if (m_TempGrid != null)
+                {
+                    m_ListGridConnect.Add(m_TempGrid);
+                }
+            }
+
             return m_ListGridConnect;
+        }
+
+        private BaseComponent GetOppositeWall()
+        {
+            var maxIndex = Game.size - 1;
+            var row = Row;
+            var col = Col;
+
+            if (Row == 0)
+            {
+                row = maxIndex;
+            }
+
+            if (Row == maxIndex)
+            {
+                row = 0;
+            }
+
+            if (Col == 0)
+            {
+                col = maxIndex;
+            }
+
+            if (Col == maxIndex)
+            {
+                col = 0;
+            }
+
+            return Game.GetGrid(row, col);
+
         }
 
         public void OnDestroyMe()
