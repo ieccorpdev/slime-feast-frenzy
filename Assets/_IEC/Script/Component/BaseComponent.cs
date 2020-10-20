@@ -12,14 +12,13 @@ namespace IEC
         public int ID => gameObject.GetInstanceID();
 
         public GridType GridType;
-
-        public bool IsHaveWater;
+        [HideInInspector]
+        public bool IsRotating, IsCheckedConnect, IsHaveWater;
 
         [HideInInspector]
-        public bool IsRotating, IsCheckedConnect;
+        public int Row, Col;
 
-        [HideInInspector]
-        public int WaterColor, Row, Col;
+        public int WaterColor;
 
         protected int m_RotY;
 
@@ -46,14 +45,32 @@ namespace IEC
             GridType = gridType;
             Row = row;
             Col = col;
+            WaterColor = color;
             m_RotY = rot;
             CurerentLine = GetDefaultLine(style);
-
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnInit();
+                m_WaterComponent[i].OnInit(Config.waterColor[color]);
+            }
+
+            SetActiveWater(false);
+        }
+
+        public virtual void OnUpdate(float deltaTime)
+        {
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].OnUpdate();
+            }
+        }
+
+        protected void SetActiveWater(bool isActive)
+        {
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].gameObject.SetActive(isActive);
             }
         }
 
@@ -75,11 +92,17 @@ namespace IEC
             IsHaveWater = true;
             IsCheckedConnect = true;
             WaterColor = color;
+
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].SetColor(Config.waterColor[WaterColor]);
+            }
         }
 
         public virtual void AfterCheckConnect()
         {
-
+            if (m_IsStatusWater == IsHaveWater) return;
+            SetActiveWater(IsHaveWater);
         }
 
         private BaseComponent m_TempGrid;

@@ -13,5 +13,7 @@ namespace IEC
     {
         public _EmptyConfig emptyConfig;
         public ComponentConfig componentConfig;
+
+        public Color[] waterColor;
     }
 }

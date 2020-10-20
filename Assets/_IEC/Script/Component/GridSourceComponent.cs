@@ -58,6 +58,8 @@ namespace IEC
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
+
+            m_WaterComponent[m_WaterComponent.Length - 1].gameObject.SetActive(true);
         }
 
         protected override int[,] GetDefaultLine(int style)

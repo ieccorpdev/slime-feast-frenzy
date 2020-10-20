@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Collections;
 
 namespace IEC
 {
-    public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake
+    public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake, IEventUpdate
     {
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
         public Transform m_GridParent;
@@ -41,7 +42,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.START_LEVEL:
-                    SpawnLevel();
+                    StartCoroutine(SpawnLevel());
                     break;
 
                 case EventList.GamePlay.CHECK_GAME_OVER:
@@ -50,9 +51,15 @@ namespace IEC
             }
         }
 
+        public void BehaviourUpdate(float deltaTime)
+        {
+            if (!Game.isPlaying) return;
+            Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
+        }
+
         const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_12.txt";
 
-        private void SpawnLevel()
+        private IEnumerator SpawnLevel()
         {
             OnClearAll();
 
@@ -71,7 +78,9 @@ namespace IEC
             SpawnWalls(levelConfig);
             SpawnGrid(levelConfig);
 
-            EventController.RaiseEventDelay(.2f, EventList.GamePlay.CHECK_GAME_OVER);
+            yield return null;
+            Game.isPlaying = true;
+            EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
         }
 
         private void OnClearAll()
@@ -289,6 +298,7 @@ namespace IEC
 
             if (IsWin())
             {
+                Game.isPlaying = false;
                 Debug.LogError("Win");
             }
         }

@@ -38,9 +38,15 @@ namespace IEC
             get { return materialPropertyBlock; }
         }
 
-        public void OnInit()
+        public void OnInit(Color color)
         {
             materialPropertyBlock = new MaterialPropertyBlock();
+            SetColor(color);
+        }
+
+        public void SetColor(Color color)
+        {
+            waterColor = color;
             SetUpPropertyBlock(materialPropertyBlock);
 
             if (waterRenderers != null)
@@ -52,7 +58,7 @@ namespace IEC
             }
         }
 
-        public void OnUpdate(float deltaTime)
+        public void OnUpdate()
         {
             if (Application.isEditor)
             {
