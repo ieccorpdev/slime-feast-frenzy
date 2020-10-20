@@ -50,7 +50,7 @@ namespace IEC
             }
         }
 
-        const string jsonSavePath = "Assets/_IEC/Config/Levels/level1.txt";
+        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_01.txt";
 
         private void SpawnLevel()
         {
@@ -141,7 +141,7 @@ namespace IEC
             grid.localScale = Vector3.one;
 
             var gridRot = int.Parse(gridtype[1]);
-            gridComp.OnInit(GetType(type), row, col, gridRot / 90);
+            gridComp.OnInit(GetType(type), row, col, gridRot);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
