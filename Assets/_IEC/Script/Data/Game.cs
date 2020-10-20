@@ -15,13 +15,14 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isPlaying;
+        public bool isPlaying = true;
 
         public int size;
 
         public BaseComponent[,] grids;
 
-        public List<BaseComponent> listSource = new List<BaseComponent>();
+        public List<GridSourceComponent> listSource = new List<GridSourceComponent>();
+        public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
 
         public BaseComponent GetGrid(int row, int col)

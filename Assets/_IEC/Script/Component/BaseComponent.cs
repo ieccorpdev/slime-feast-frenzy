@@ -10,8 +10,6 @@ namespace IEC
 
         public GridType GridType;
 
-        public virtual bool IsCanRotate() => false;
-
         public bool IsHaveWater;
 
         [HideInInspector]
@@ -55,10 +53,11 @@ namespace IEC
             IsHaveWater = false;
         }
 
-        public void SetConnect()
+        public virtual void SetConnect(int color)
         {
             IsHaveWater = true;
             IsCheckedConnect = true;
+            WaterColor = color;
         }
 
         private BaseComponent m_TempGrid;

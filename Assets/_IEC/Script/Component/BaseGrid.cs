@@ -20,7 +20,7 @@ namespace IEC
 
         private void OnMouseDown()
         {
-            if (!IsCanRotate()) return;
+            if (!Game.isPlaying) return;
             if (IsRotating) return;
             IsRotating = true;
             m_Tween?.Kill(true);

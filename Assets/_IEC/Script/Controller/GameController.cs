@@ -10,12 +10,6 @@ namespace IEC
 {
     public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake
     {
-        //[SerializeField]
-        //private ParticleSystem m_PsWin;
-
-        //[SerializeField]
-        //private List<GridComponent> m_Grids;
-
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
         public Transform m_GridParent;
 
@@ -50,7 +44,6 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.START_LEVEL:
-                    //OnStartLevel();
                     SpawnLevel();
                     break;
 
@@ -64,8 +57,7 @@ namespace IEC
 
         private void SpawnLevel()
         {
-            Game.listGrids.ForEach(x => x.OnDestroyMe());
-            Game.listGrids.Clear();
+            OnClearAll();
 
             var file = File.ReadAllText(jsonSavePath);
             string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
@@ -83,6 +75,15 @@ namespace IEC
             SpawnGrid(levelConfig);
 
             EventController.RaiseEventDelay(.2f, EventList.GamePlay.CHECK_GAME_OVER);
+        }
+
+        private void OnClearAll()
+        {
+            Game.listGrids.ForEach(x => x.OnDestroyMe());
+            Game.listGrids.Clear();
+
+            Game.listSource.Clear();
+            Game.listTarget.Clear();
         }
 
         private string[,] GetGridValue(string[] str, int size, int startRow)
@@ -128,7 +129,12 @@ namespace IEC
 
             if(type == 5)
             {
-                Game.listSource.Add(gridComp);
+                var sourceComp = grid.GetComponent<GridSourceComponent>();
+                Game.listSource.Add(sourceComp);
+            }else if(type == 10)
+            {
+                var targetComp = grid.GetComponent<GridTargetComponent>();
+                Game.listTarget.Add(targetComp);
             }
 
             grid.SetParent(parent);
@@ -246,7 +252,7 @@ namespace IEC
         private void CheckGameOver()
         {
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
-            Game.listSource.ForEach(x => x.SetConnect());
+            Game.listSource.ForEach(x => x.SetConnect(x.WaterColor));
 
             m_ListGridHaveWater.Clear();
             m_ListGridHaveWater.AddRange(Game.listSource);
@@ -264,7 +270,7 @@ namespace IEC
 
                     if(listGridNear.Count > 0)
                     {
-                        listGridNear.ForEach(x => x.SetConnect());
+                        listGridNear.ForEach(x => x.SetConnect(grid.WaterColor));
                         m_ListGridHaveWater.AddRange(listGridNear);
                     }
                 }
@@ -274,6 +280,22 @@ namespace IEC
                     isChanged = true;
                 }
             }
+
+            if (IsWin())
+            {
+                Debug.LogError("Win");
+            }
+        }
+
+        private bool IsWin()
+        {
+            var count = Game.listTarget.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (!Game.listGrids[i].IsHaveWater) return false;
+            }
+
+            return true;
         }
     }
 
