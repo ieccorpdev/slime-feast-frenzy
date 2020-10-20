@@ -16,7 +16,7 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        protected int[,] StraightLine => new int[3, 3]
+        protected int[,] EndLine => new int[3, 3]
         {
             { 0, 0, 0},
             { 1, 1, 0},
@@ -36,6 +36,13 @@ namespace IEC
             { 1, 1, 0},
             { 0, 1, 0}
         };
+
+        protected int[,] StraightLine => new int[3, 3]
+{
+            { 0, 0, 0},
+            { 1, 1, 1},
+            { 0, 0, 0}
+};
 
         public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
         {
@@ -58,9 +65,13 @@ namespace IEC
             {
                 return CurveLine;
             }
-            else
+            else if(style == 3)
             {
                 return StraightLine;
+            }
+            else
+            {
+                return EndLine;
             }
         }
     }
