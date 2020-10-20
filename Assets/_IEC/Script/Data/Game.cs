@@ -68,7 +68,7 @@ namespace IEC
     // Grid cross 16
     // Grid curve 17
 
-    // Color [1, 5]
+    // Color [0, 5] // Blue - Red - Yellow
 
     // 10_0_0_0 GridType_Rot_Color_Style
 }
