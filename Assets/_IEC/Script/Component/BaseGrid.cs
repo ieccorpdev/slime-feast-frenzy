@@ -9,9 +9,9 @@ namespace IEC
     {
         protected Tween m_Tween;
 
-        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
         {
-            base.OnInit(gridType, row, col, rot, color);
+            base.OnInit(gridType, row, col, rot, color, style);
             for (int i = 0; i < rot; i++)
             {
                 CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);

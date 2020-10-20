@@ -38,15 +38,20 @@ namespace IEC
         public bool IsHaveLineLeft => CurerentLine[1, 0] == 1;
         public bool IsHaveLineRight => CurerentLine[1, 2] == 1;
 
-        public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0)
+        public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0, int style = 0)
         {
             GridType = gridType;
             Row = row;
             Col = col;
-            CurerentLine = DefaultLine;
             m_RotY = rot;
+            CurerentLine = GetDefaultLine(style);
 
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
+        }
+
+        protected virtual int[,] GetDefaultLine(int style)
+        {
+            return DefaultLine;
         }
 
         public virtual void PrepareCheckConnect()

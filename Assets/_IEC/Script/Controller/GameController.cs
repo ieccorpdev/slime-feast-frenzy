@@ -126,11 +126,14 @@ namespace IEC
 
 
             var gridColor = 0;
+            var gridStyle = 0;
+
             if (type == 5)
             {
                 var sourceComp = grid.GetComponent<GridSourceComponent>();
                 Game.listSource.Add(sourceComp);
                 gridColor = int.Parse(gridtype[2]);
+                gridStyle = int.Parse(gridtype[3]);
             }
             else if(type == 10)
             {
@@ -145,7 +148,7 @@ namespace IEC
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            gridComp.OnInit(GetType(type), row, col, gridRot, gridColor);
+            gridComp.OnInit(GetType(type), row, col, gridRot, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);

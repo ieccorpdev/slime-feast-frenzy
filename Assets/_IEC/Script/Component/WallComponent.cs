@@ -32,9 +32,9 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int type = 0)
         {
-            base.OnInit(gridType, row, col, rot, color);
+            base.OnInit(gridType, row, col, rot, color, type);
             IsRotating = false;
         }
 

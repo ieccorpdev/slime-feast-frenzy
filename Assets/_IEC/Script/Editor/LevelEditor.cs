@@ -33,11 +33,22 @@ namespace IEC
                 if (obj)
                 {
                     var levelConfig = obj.GetComponent<LevelConfigData>();
-                    levelConfig.OnResetAll();
+                    levelConfig.OnResetAll(true);
                 }
             }
 
             GUILayout.Space(30);
+            if (GUILayout.Button("Check"))
+            {
+                var obj = Selection.activeGameObject;
+                if (obj)
+                {
+                    var levelConfig = obj.GetComponent<LevelConfigData>();
+                    levelConfig.OnResetAll(false);
+                }
+            }
+
+            GUILayout.Space(10);
             if (GUILayout.Button("Spawn Level"))
             {
                 var obj = Selection.activeGameObject;

@@ -36,7 +36,7 @@ namespace IEC
             }
         }
 
-        public void OnResetAll()
+        public void OnResetAll(bool isResetAll)
         {
             for (int i = 0; i < wallParents.Length; i++)
             {
@@ -47,7 +47,10 @@ namespace IEC
                 {
                     var wall = child.GetChild(j);
                     wall.localRotation = Quaternion.identity;
-                    wall.GetComponent<GridItem>().color = 0;
+                    if (isResetAll)
+                    {
+                        wall.GetComponent<GridItem>().color = 0;
+                    }
                 }
             }
 
@@ -55,8 +58,16 @@ namespace IEC
             for (int i = 0; i < gridCount; i++)
             {
                 var grid = gridParent.GetChild(i);
+                if (isResetAll)
+                {
+                    grid.localRotation = Quaternion.identity;
+                }
                 var childCount = grid.childCount;
-                grid.GetComponent<GridItem>().color = 0;
+                if (isResetAll)
+                {
+                    grid.GetComponent<GridItem>().color = 0;
+                }
+
                 for (int j = 0; j < childCount; j++)
                 {
                     grid.GetChild(j).localRotation = Quaternion.identity;
@@ -114,7 +125,7 @@ namespace IEC
                         gridValue += "_" + rot;
                         if (intValue == 5 || intValue == 10)
                         {
-                            gridValue += "_" + gridItem.color +"_0";
+                            gridValue += "_" + gridItem.color + "_" + (intValue == 5 ? gridItem.GetSourceStyle() : gridItem.GetTargetStyle());
                         }
                         strRow += " " + gridValue;
                     }
