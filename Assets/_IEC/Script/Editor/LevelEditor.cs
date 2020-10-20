@@ -11,9 +11,9 @@ namespace IEC
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
-            GUILayout.Space(10);
+            GUILayout.Space(30);
 
-            if (GUILayout.Button("SpawnBoard"))
+            if (GUILayout.Button("Spawn Board"))
             {
                 var obj = Selection.activeGameObject;
                 if (obj)
@@ -21,10 +21,22 @@ namespace IEC
                     var levelConfig = obj.GetComponent<LevelConfigData>();
                     levelConfig.DestroyAll();
                     SpawnWalls(levelConfig);
-                    SpawnGrid(levelConfig);
+                    SpawnGrids(levelConfig);
                 }
             }
-            GUILayout.Label("Create New Level");
+
+            GUILayout.Space(10);
+            if (GUILayout.Button("Spawn Level"))
+            {
+                var obj = Selection.activeGameObject;
+                if (obj)
+                {
+                    var levelConfig = obj.GetComponent<LevelConfigData>();
+                    var data = levelConfig.GetData();
+                    Debug.LogError("Data: \n" + data);
+                }
+            }
+
 
             EditorUtility.SetDirty(target);
         }
@@ -64,7 +76,7 @@ namespace IEC
             }
         }
 
-        private void SpawnGrid(LevelConfigData levelConfig)
+        private void SpawnGrids(LevelConfigData levelConfig)
         {
             var size = levelConfig.size;
             var startPos = (size - 1) / -2f;
@@ -74,18 +86,22 @@ namespace IEC
                 for (int j = 0; j < size; j++)
                 {
                     var posSpawn = new Vector3(startPos + j, 0f, startPos + i);
-                    SpawnGrid(levelConfig.gridParent, levelConfig.gridObj, posSpawn);
+                    var name = "Grid_" + ((i * size) + j);
+
+                    SpawnGrid(levelConfig.gridParent, levelConfig.gridObj, posSpawn, name);
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, GameObject gridObj, Vector3 posSpawn)
+        private void SpawnGrid(Transform parent, GameObject gridObj, Vector3 posSpawn, string name)
         {
             var grid = Instantiate(gridObj).transform;
             grid.SetParent(parent);
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
+
+            grid.gameObject.name = name;
         }
     }
 }

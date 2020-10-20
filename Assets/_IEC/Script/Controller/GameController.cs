@@ -124,14 +124,19 @@ namespace IEC
             var grid = PrefabHelper.Clone(GetGridObj(type)).transform;
             var gridComp = grid.GetComponent<BaseComponent>();
 
-            if(type == 5)
+
+            var gridColor = 0;
+            if (type == 5)
             {
                 var sourceComp = grid.GetComponent<GridSourceComponent>();
                 Game.listSource.Add(sourceComp);
-            }else if(type == 10)
+                gridColor = int.Parse(gridtype[1]);
+            }
+            else if(type == 10)
             {
                 var targetComp = grid.GetComponent<GridTargetComponent>();
                 Game.listTarget.Add(targetComp);
+                gridColor = int.Parse(gridtype[1]);
             }
 
             grid.SetParent(parent);
@@ -140,8 +145,7 @@ namespace IEC
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            var gridRot = int.Parse(gridtype[1]);
-            gridComp.OnInit(GetType(type), row, col, gridRot);
+            gridComp.OnInit(GetType(type), row, col, UnityEngine.Random.Range(0, 4), gridColor);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);

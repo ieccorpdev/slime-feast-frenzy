@@ -167,7 +167,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9106535123726001709}
-  - component: {fileID: 4264680655482477067}
+  - component: {fileID: 5948623245839340745}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -191,7 +191,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4264680655482477067
+--- !u!114 &5948623245839340745
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -200,14 +200,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 4719021286492321454}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a56c23558753b604ca0d00418ea4cf73, type: 3}
+  m_Script: {fileID: 11500000, guid: 034013b8da75dda409d61142288f0d02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GridType: 0
-  IsHaveWater: 0
-  IsRotating: 0
-  IsCheckedConnect: 0
-  WaterColor: 0
-  Row: 0
-  Col: 0
-  m_TransWallHole: {fileID: 4029508901122201853}
+  groupItem:
+  - {fileID: 1874409741248230249}
+  - {fileID: 4029508901122201853}
+  color: 0

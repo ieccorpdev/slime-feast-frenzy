@@ -1435,7 +1435,7 @@ Transform:
   - {fileID: 1056305375732565052}
   - {fileID: 1534355269647398418}
   m_Father: {fileID: 3198475626942280519}
-  m_RootOrder: 1
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1534355269647398419
 GameObject:
@@ -1546,7 +1546,7 @@ Transform:
   - {fileID: 697091646977435228}
   - {fileID: 3294357129771042457}
   m_Father: {fileID: 3198475626942280519}
-  m_RootOrder: 0
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2160613287359777278
 GameObject:
@@ -1585,7 +1585,7 @@ Transform:
   - {fileID: 7406363617639143828}
   - {fileID: 6080816098413180907}
   m_Father: {fileID: 3198475626942280519}
-  m_RootOrder: 4
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2992264647641184081
 GameObject:
@@ -1596,6 +1596,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3198475626942280519}
+  - component: {fileID: -6377642039521278698}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -1614,14 +1615,33 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 6333216760518346625}
+  - {fileID: 2160613287359777277}
+  - {fileID: 7870365144274586402}
   - {fileID: 1604129328094924881}
   - {fileID: 1245054066400768561}
-  - {fileID: 6333216760518346625}
-  - {fileID: 7870365144274586402}
-  - {fileID: 2160613287359777277}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-6377642039521278698
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2992264647641184081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034013b8da75dda409d61142288f0d02, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  groupItem:
+  - {fileID: 6333216760518346625}
+  - {fileID: 2160613287359777277}
+  - {fileID: 1604129328094924881}
+  - {fileID: 1245054066400768561}
+  - {fileID: 7870365144274586402}
+  color: 0
 --- !u!1 &3294357129771042022
 GameObject:
   m_ObjectHideFlags: 0
@@ -1733,7 +1753,7 @@ Transform:
   - {fileID: 9205597683193304690}
   - {fileID: 1104657769916688039}
   m_Father: {fileID: 3198475626942280519}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6634832230529229990
 GameObject:
@@ -1923,7 +1943,7 @@ Transform:
   - {fileID: 8275000726883892527}
   - {fileID: 6634832230529230110}
   m_Father: {fileID: 3198475626942280519}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9205597683193304860
 GameObject:

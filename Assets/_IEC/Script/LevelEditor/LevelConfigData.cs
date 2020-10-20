@@ -35,6 +35,99 @@ namespace IEC
                 DestroyImmediate(gridParent.GetChild(0).gameObject);
             }
         }
+
+        public string GetData()
+        {
+            string data = "" + (size + 2) + "\n";
+            for (int i = 0; i < size + 2; i++)
+            {
+                var strRow = "1";
+
+                if (i == 0)
+                {
+                    // Wall top
+                    for (int j = 0; j < size; j++)
+                    {
+                        var wallChild = wallParents[0].GetChild(j);
+                        var wallItem = wallChild.GetComponent<GridItem>();
+
+                        strRow += " " + wallItem.GetGridType();
+                    }
+                    strRow += " 1";
+                }
+                else if (i == size + 1)
+                {
+                    // Wall bot
+                    for (int j = 0; j < size; j++)
+                    {
+                        var wallChild = wallParents[1].GetChild(j);
+                        var wallItem = wallChild.GetComponent<GridItem>();
+
+                        strRow += " " + wallItem.GetGridType();
+                    }
+                    strRow += " 1";
+                }
+                else
+                {
+                    strRow = "";
+                    var wallChildLeft = wallParents[2].GetChild(i - 1);
+                    var wallItemLeft = wallChildLeft.GetComponent<GridItem>();
+                    strRow += wallItemLeft.GetGridType();
+
+                    for (int j = 0; j < size; j++)
+                    {
+                        var index = ((i- 1) * size) + j;
+                        var grid = gridParent.GetChild(index);
+                        var gridItem = grid.GetComponent<GridItem>();
+
+                        var gridValue = "" + GetGridType(gridItem.GetGridType());
+                        if (int.Parse(gridValue) == 5)
+                        {
+                            gridValue += "_0_" + gridItem.color;
+                        }else if(int.Parse(gridValue) == 10)
+                        {
+                            gridValue += "_0_" + gridItem.color;
+                        }
+                        strRow += " " + gridValue;
+                    }
+
+                    var wallChildRight = wallParents[3].GetChild(i - 1);
+                    var wallItemRight = wallChildRight.GetComponent<GridItem>();
+                    strRow += " " + wallItemRight.GetGridType();
+                }
+
+                
+                data += strRow + "\n";
+            }
+
+            return data;
+        }
+
+        private string GetGridType(int type)
+        {
+            if (type == 1)
+            {
+                return "5";
+            }
+            else if (type == 2)
+            {
+                return "10";
+            }
+            else if (type == 3)
+            {
+                return "15";
+            }
+            else if (type == 4)
+            {
+                return "16";
+            }
+            else if (type == 5)
+            {
+                return "17";
+            }
+            else return "0";
+        }
+
     }
 }
 
