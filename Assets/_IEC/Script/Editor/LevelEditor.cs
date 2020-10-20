@@ -26,8 +26,18 @@ namespace IEC
                     SpawnGrids(levelConfig);
                 }
             }
-
             GUILayout.Space(10);
+            if (GUILayout.Button("Reset Rotation"))
+            {
+                var obj = Selection.activeGameObject;
+                if (obj)
+                {
+                    var levelConfig = obj.GetComponent<LevelConfigData>();
+                    levelConfig.OnResetRotAllGrid();
+                }
+            }
+
+            GUILayout.Space(30);
             if (GUILayout.Button("Spawn Level"))
             {
                 var obj = Selection.activeGameObject;
@@ -76,11 +86,11 @@ namespace IEC
 
             for (int i = 0; i < 4; i++)
             {
-                SpawnWall(wallParents[i], levelConfig.wallObj, size, startPos);
+                SpawnWall(wallParents[i], levelConfig.wallObj, size, startPos, (i == 0 || i == 3));
             }
         }
 
-        private void SpawnWall(Transform parent, GameObject wallObj, int count, float startPos)
+        private void SpawnWall(Transform parent, GameObject wallObj, int count, float startPos, bool isReverse)
         {
             for (int i = 0; i < count; i++)
             {
@@ -91,6 +101,11 @@ namespace IEC
                 wallTrans.localPosition = posSpawn;
                 wallTrans.localRotation = Quaternion.identity;
                 wallTrans.localScale = Vector3.one;
+
+                if (isReverse)
+                {
+                    wallTrans.GetChild(1).localRotation = Quaternion.Euler(0f, 0f, 0f);
+                }
             }
         }
 

@@ -36,6 +36,31 @@ namespace IEC
             }
         }
 
+        public void OnResetRotAllGrid()
+        {
+            for (int i = 0; i < wallParents.Length; i++)
+            {
+                var child = wallParents[i];
+                var childCount = child.childCount;
+
+                for (int j = 0; j < childCount; j++)
+                {
+                    child.GetChild(j).localRotation = Quaternion.identity;
+                }
+            }
+
+            var gridCount = gridParent.childCount;
+            for (int i = 0; i < gridCount; i++)
+            {
+                var grid = gridParent.GetChild(i);
+                var childCount = grid.childCount;
+                for (int j = 0; j < childCount; j++)
+                {
+                    grid.GetChild(j).localRotation = Quaternion.identity;
+                }
+            }
+        }
+
         public string GetData()
         {
             string data = "" + (size + 2) + "\n";

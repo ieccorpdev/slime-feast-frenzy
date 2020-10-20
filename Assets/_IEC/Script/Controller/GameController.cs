@@ -50,7 +50,7 @@ namespace IEC
             }
         }
 
-        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_1.txt";
+        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_3.txt";
 
         private void SpawnLevel()
         {
