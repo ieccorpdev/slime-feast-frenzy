@@ -20,6 +20,8 @@ namespace IEC
 
         protected int m_RotY;
 
+        protected bool m_IsStatusWater;
+
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
 
         protected virtual int[,] DefaultLine => new int[3, 3]
@@ -49,6 +51,8 @@ namespace IEC
 
         public virtual void PrepareCheckConnect()
         {
+            m_IsStatusWater = IsHaveWater;
+
             IsCheckedConnect = false;
             IsHaveWater = false;
         }
@@ -58,6 +62,11 @@ namespace IEC
             IsHaveWater = true;
             IsCheckedConnect = true;
             WaterColor = color;
+        }
+
+        public virtual void AfterCheckConnect()
+        {
+
         }
 
         private BaseComponent m_TempGrid;

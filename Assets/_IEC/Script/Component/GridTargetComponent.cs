@@ -16,10 +16,14 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public override void SetConnect(int color)
+        public override void AfterCheckConnect()
         {
-            base.SetConnect(color);
-            m_PsWin.Play();
+            base.AfterCheckConnect();
+            if (m_IsStatusWater == IsHaveWater) return;
+            if (IsHaveWater)
+            {
+                m_PsWin.Play();
+            }
         }
     }
 }

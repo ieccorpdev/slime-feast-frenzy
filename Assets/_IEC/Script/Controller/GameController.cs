@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEngine;
-using NaughtyAttributes;
 using System.IO;
 
 namespace IEC
@@ -281,6 +278,8 @@ namespace IEC
                 }
             }
 
+            Game.listGrids.ForEach(x => x.AfterCheckConnect());
+
             if (IsWin())
             {
                 Debug.LogError("Win");
@@ -292,7 +291,7 @@ namespace IEC
             var count = Game.listTarget.Count;
             for (int i = 0; i < count; i++)
             {
-                if (!Game.listGrids[i].IsHaveWater) return false;
+                if (!Game.listTarget[i].IsHaveWater) return false;
             }
 
             return true;
