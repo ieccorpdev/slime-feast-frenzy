@@ -27,11 +27,34 @@ namespace IEC
 
             m_RotY = (m_RotY + 1) % 4;
             var rot = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
-            transform.DOLocalRotateQuaternion(rot, .3f).OnComplete(() => {
-                IsRotating = false;
-                CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
-                EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-            });
+
+            var time = .3f;
+
+            Sequence sequence = DOTween.Sequence();
+
+            var currentPos = transform.localPosition;
+
+            //var tempPos = currentPos;
+            //tempPos.y += .02f;
+            //transform.localPosition = tempPos;
+
+            m_Tween = sequence.Join(transform.DOLocalRotateQuaternion(rot, time))
+                .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
+                .OnComplete(() =>
+                {
+                    transform.localPosition = currentPos;
+                    IsRotating = false;
+                    CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+                    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+                });
+
+            //transform.DOLocalRotateQuaternion(rot, .3f).OnComplete(() => {
+            //    transform.localPosition = currentPos;
+
+            //    IsRotating = false;
+            //    CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+            //    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+            //});
         }
     }
 }
