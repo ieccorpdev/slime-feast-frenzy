@@ -9,6 +9,7 @@ namespace IEC
     public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake, IEventUpdate
     {
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
+        public Transform[] m_WallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
         public void LocateController()
@@ -218,6 +219,11 @@ namespace IEC
             var size = levelConfig.size - 2;
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
+
+            m_WallCorners[0].localPosition = new Vector3(-wallPos, 0f, wallPos);
+            m_WallCorners[1].localPosition = new Vector3(wallPos, 0f, wallPos);
+            m_WallCorners[2].localPosition = new Vector3(-wallPos, 0f, -wallPos);
+            m_WallCorners[3].localPosition = new Vector3(wallPos, 0f, -wallPos);
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
