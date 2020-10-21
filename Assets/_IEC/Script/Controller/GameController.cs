@@ -12,6 +12,14 @@ namespace IEC
         public Transform[] m_WallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
+        private static float RATIO_DEFAULT = 16f / 9; //size 3 60 21:9 75
+        private static float RATIO_SIZE = 15 / (21f / 9 - 16f / 9);
+
+        private float m_ScreenRatio, m_DeltaRatio;
+
+        private bool m_IsInitCam;
+
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -76,6 +84,7 @@ namespace IEC
             LevelConfig levelConfig = new LevelConfig();
 
             int size = int.Parse(f[0]);
+
             string[,] gridTypes= GetGridValue(f, size, 1);
             levelConfig.SetSize(size, gridTypes);
             Game.size = size;
@@ -91,6 +100,17 @@ namespace IEC
             SpawnGrid(levelConfig);
 
             yield return null;
+
+            if (!m_IsInitCam)
+            {
+                m_ScreenRatio = Screen.height / (float)Screen.width;
+                m_DeltaRatio = m_ScreenRatio - RATIO_DEFAULT;
+                m_IsInitCam = true;
+            }
+
+            var cameraSize = 60 + m_DeltaRatio * RATIO_SIZE + ((size - 5) * 14);
+            GamePlay.mainCamera.fieldOfView = cameraSize;
+
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
         }
