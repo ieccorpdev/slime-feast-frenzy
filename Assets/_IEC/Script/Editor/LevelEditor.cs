@@ -59,7 +59,7 @@ namespace IEC
                     var count = TotalLevel();
                     count += 1;
                     string name = "Level_" + count;
-                    string path = "Assets/_IEC/Config/Levels/" + name + ".txt";
+                    string path = "Assets/_IEC/Resources/Levels/" + name + ".txt";
 
                     //Write some text to the test.txt file
                     StreamWriter writer = new StreamWriter(path, true);
@@ -75,7 +75,7 @@ namespace IEC
         private int TotalLevel()
         {
             var count = Directory.GetFiles(
-                Application.dataPath + "/_IEC/Config/Levels/",
+                Application.dataPath + "/_IEC/Resources/Levels/",
                 "*.txt", SearchOption.AllDirectories);
             return count.Length;
         }
