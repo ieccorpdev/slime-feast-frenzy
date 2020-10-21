@@ -81,6 +81,12 @@ namespace IEC
             Game.size = size;
             Game.grids = new BaseComponent[size, size];
 
+            for (int i = 0; i < 2; i++)
+            {
+                var type = MathHelper.GetRandomIndexByList(Game.listTerrainType, 4);
+                Game.listTerrainType.Add(type);
+            }
+
             SpawnWalls(levelConfig);
             SpawnGrid(levelConfig);
 
@@ -96,6 +102,7 @@ namespace IEC
 
             Game.listSource.Clear();
             Game.listTarget.Clear();
+            Game.listTerrainType.Clear();
         }
 
         private string[,] GetGridValue(string[] str, int size, int startRow)

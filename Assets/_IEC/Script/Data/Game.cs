@@ -25,6 +25,8 @@ namespace IEC
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
 
+        public List<int> listTerrainType = new List<int>();
+
         public BaseComponent GetGrid(int row, int col)
         {
             if (row < 0 || row > size - 1) return null;

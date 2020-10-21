@@ -9,6 +9,9 @@ namespace IEC
         [SerializeField]
         protected WaterComponent[] m_WaterComponent;
 
+        [SerializeField]
+        private TerrainComponent m_Terrain;
+
         public int ID => gameObject.GetInstanceID();
 
         public GridType GridType;
@@ -56,6 +59,37 @@ namespace IEC
             }
 
             SetActiveWater(false);
+
+            if(GridType != GridType.WALL)
+            {
+                m_Terrain.SetupTerrain(GetTerrainType(row, col));
+            }
+        }
+
+        private int GetTerrainType(int row, int col)
+        {
+            if(row % 2 == 0)
+            {
+                if(col % 2 == 0)
+                {
+                    return Game.listTerrainType[0];
+                }
+                else
+                {
+                    return Game.listTerrainType[1];
+                }
+            }
+            else
+            {
+                if (col % 2 == 0)
+                {
+                    return Game.listTerrainType[1];
+                }
+                else
+                {
+                    return Game.listTerrainType[0];
+                }
+            }
         }
 
         public virtual void OnUpdate(float deltaTime)
