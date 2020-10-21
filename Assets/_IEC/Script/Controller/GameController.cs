@@ -58,13 +58,18 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        const string jsonSavePath = "Assets/_IEC/Config/Levels/Level_12.txt";
+        const string LEVEL_PATH = "Assets/_IEC/Config/Levels/Level_";
 
         private IEnumerator SpawnLevel()
         {
             OnClearAll();
-
-            var file = File.ReadAllText(jsonSavePath);
+            var level = PlayerData.level % 20;
+            if(level == 0)
+            {
+                level = 20;
+            }
+            var strLevel = LEVEL_PATH + level + ".txt";
+            var file = File.ReadAllText(strLevel);
             string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
