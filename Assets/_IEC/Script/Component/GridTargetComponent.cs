@@ -11,6 +11,9 @@ namespace IEC
         private ParticleSystem m_PsWin;
 
         [SerializeField]
+        private ParticleSystem[] m_PsWins;
+
+        [SerializeField]
         private MeshRenderer[] m_MeshTargets;
 
         [SerializeField]
@@ -38,6 +41,13 @@ namespace IEC
             base.AfterInit(isMultiColor);
             var mat = isMultiColor ? Config.targetMats[m_TrueWaterColor] : Config.targetDefaultMat;
 
+            var color = isMultiColor ? Config.waterColor[m_TrueWaterColor] : Config.targetColorDefault;
+
+            for (int i = 0; i < m_PsWins.Length; i++)
+            {
+                m_PsWins[i].startColor = color;
+            }
+
             for (int i = 0; i < m_MeshTargets.Length; i++)
             {
                 m_MeshTargets[i].material = mat;
@@ -53,10 +63,20 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
+            if (IsHaveWater)
+            {
+                if(m_OldWaterColor != WaterColor)
+                {
+                    m_IsOldStatusWater = !IsHaveWater;
+                }
+            }
+
             if (m_IsOldStatusWater == IsHaveWater) return;
             SetActiveWater(IsHaveWater);
 
+            m_TweenScale?.Kill(true);
             Sequence sequence = DOTween.Sequence();
+            m_TweenScale = sequence;
             for (int i = 0; i < m_TranTargets.Length; i++)
             {
                 sequence.Join(m_TranTargets[i].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f));

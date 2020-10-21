@@ -25,7 +25,7 @@ namespace IEC
 
         public int WaterColor;
 
-        protected int m_RotY;
+        protected int m_RotY, m_OldWaterColor;
 
         protected bool m_IsOldStatusWater;
 
@@ -121,7 +121,7 @@ namespace IEC
         public virtual void PrepareCheckConnect()
         {
             m_IsOldStatusWater = IsHaveWater;
-
+            m_OldWaterColor = WaterColor;
             IsCheckedConnect = false;
             IsHaveWater = false;
         }
@@ -247,6 +247,7 @@ namespace IEC
             IsCheckedConnect = false;
             IsHaveWater = false;
             m_IsOldStatusWater = false;
+            m_OldWaterColor = 0;
             PrefabHelper.Destroy(gameObject);
         }
 
