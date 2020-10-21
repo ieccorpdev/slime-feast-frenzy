@@ -1,0 +1,61 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace IEC
+{
+    public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake
+    {
+        private static readonly List<string> TextWinBonus = new List<string>
+        {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
+
+        public void LocateController()
+        {
+            Controllers.Add(this);
+        }
+
+        public bool IsActive()
+        {
+            return gameObject.activeSelf;
+        }
+
+        public void BehaviourAwake()
+        {
+            InitButtonEvent();
+        }
+
+        public void OnEventRaise(string gameEvent, EventParam param)
+        {
+            switch (gameEvent)
+            {
+                case EventList.GamePlay.GAME_INIT:
+                    UI.groupGameOver.gameObject.SetActive(false);
+                    UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+                    break;
+                case EventList.GamePlay.GAME_OVER:
+                    UI.groupGameOver.gameObject.SetActive(true);
+                    UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+                    break;
+            }
+        }
+
+        private void InitButtonEvent()
+        {
+            UI.btnRestart.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
+            });
+
+            UI.btnSkip.onClick.AddListener(() => {
+                Services.ShowRewardAds(() => {
+                    PlayerData.level += 1;
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+                });
+            });
+
+            UI.btnGONext.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
+            });
+
+        }
+    }
+}

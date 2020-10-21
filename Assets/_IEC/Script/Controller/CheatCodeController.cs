@@ -55,7 +55,7 @@ namespace IEC
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 Pool.Get<PlayerSecret>().level = level;
-                EventController.RaiseEvent(EventList.GamePlay.START_LEVEL);
+                EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
             }, new CheatCode.InputParam
             {
                 value = 1

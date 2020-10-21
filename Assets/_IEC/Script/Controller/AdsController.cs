@@ -19,12 +19,12 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                //case EventList.GamePlay.END_LEVEL_ADS:
-                //    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                //    {
-                //        EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                //    });
-                //    break;
+                case EventList.GamePlay.GAME_RESTART:
+                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                    {
+                        EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+                    });
+                    break;
                 case EventList.Service.INIT_AD_DONE:
                     Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
                     Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);

@@ -35,14 +35,14 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventList.GamePlay.START_LEVEL);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.START_LEVEL:
+                case EventList.GamePlay.GAME_INIT:
                     StartCoroutine(SpawnLevel());
                     break;
 
@@ -309,8 +309,9 @@ namespace IEC
 
             if (IsWin())
             {
+                PlayerData.level += 1;
                 Game.isPlaying = false;
-                Debug.LogError("Win");
+                EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER);
             }
         }
 
@@ -371,34 +372,6 @@ namespace IEC
                     }
                 }
             }
-
-            //var str = "";
-            //for (int i = 0; i < topWall.Length; i++)
-            //{
-            //    str += topWall[i] + " ";
-            //}
-            //Debug.LogError("topWall: " + str);
-
-            //str = "";
-            //for (int i = 0; i < botWall.Length; i++)
-            //{
-            //    str += botWall[i] + " ";
-            //}
-            //Debug.LogError("botWall: " + str);
-
-            //str = "";
-            //for (int i = 0; i < leftWall.Length; i++)
-            //{
-            //    str += leftWall[i] + " ";
-            //}
-            //Debug.LogError("leftWall: " + str);
-
-            //str = "";
-            //for (int i = 0; i < rightWall.Length; i++)
-            //{
-            //    str += rightWall[i] + " ";
-            //}
-            //Debug.LogError("rightWall: " + str);
         }
     }
 }
