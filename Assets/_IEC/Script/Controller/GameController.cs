@@ -348,7 +348,7 @@ namespace IEC
             {
                 PlayerData.level += 1;
                 Game.isPlaying = false;
-                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
+                EventController.RaiseEventDelay(3f, EventList.GamePlay.GAME_OVER);
             }
         }
 

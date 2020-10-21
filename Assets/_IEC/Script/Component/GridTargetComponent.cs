@@ -42,7 +42,7 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            if (m_IsStatusWater == IsHaveWater) return;
+            if (m_IsOldStatusWater == IsHaveWater) return;
             SetActiveWater(IsHaveWater);
             if (IsDone)
             {

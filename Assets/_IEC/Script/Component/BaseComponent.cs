@@ -16,7 +16,9 @@ namespace IEC
 
         public GridType GridType;
         [HideInInspector]
-        public bool IsRotating, IsCheckedConnect, IsHaveWater;
+        public bool IsRotating, IsCheckedConnect;
+
+        public bool IsHaveWater;
 
         [HideInInspector]
         public int Row, Col;
@@ -25,7 +27,7 @@ namespace IEC
 
         protected int m_RotY;
 
-        protected bool m_IsStatusWater;
+        protected bool m_IsOldStatusWater;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
 
@@ -118,7 +120,7 @@ namespace IEC
 
         public virtual void PrepareCheckConnect()
         {
-            m_IsStatusWater = IsHaveWater;
+            m_IsOldStatusWater = IsHaveWater;
 
             IsCheckedConnect = false;
             IsHaveWater = false;
@@ -138,7 +140,7 @@ namespace IEC
 
         public virtual void AfterCheckConnect()
         {
-            if (m_IsStatusWater == IsHaveWater) return;
+            if (m_IsOldStatusWater == IsHaveWater) return;
             SetActiveWater(IsHaveWater);
         }
 
@@ -239,8 +241,12 @@ namespace IEC
 
         }
 
-        public void OnDestroyMe()
+        public virtual void OnDestroyMe()
         {
+            IsRotating = false;
+            IsCheckedConnect = false;
+            IsHaveWater = false;
+            m_IsOldStatusWater = false;
             PrefabHelper.Destroy(gameObject);
         }
 

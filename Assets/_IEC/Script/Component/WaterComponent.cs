@@ -48,7 +48,6 @@ namespace IEC
         public void OnInit(Color color, bool isShowDefault)
         {
             materialPropertyBlock = new MaterialPropertyBlock();
-            SetColor(color);
 
             m_TempColor = Color.white;
 
@@ -56,6 +55,8 @@ namespace IEC
             m_IsIncrease = false;
             m_TempColorAlpha = isShowDefault ? 1 : 0;
             m_TempColor.a = m_TempColorAlpha;
+
+            SetColor(color);
         }
 
         public void SetColor(Color color)
@@ -71,8 +72,6 @@ namespace IEC
                 }
             }
         }
-
-        
 
         public void SetFading(bool IsIncrease)
         {
