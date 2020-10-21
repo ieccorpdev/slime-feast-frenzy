@@ -66,6 +66,11 @@ namespace IEC
             }
         }
 
+        public virtual void AfterInit(bool isMultiColor)
+        {
+
+        }
+
         private int GetTerrainType(int row, int col)
         {
             if(row % 2 == 0)

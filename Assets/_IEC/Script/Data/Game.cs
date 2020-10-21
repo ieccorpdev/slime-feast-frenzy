@@ -15,7 +15,7 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isPlaying;
+        public bool isPlaying, isMultiColor;
 
         public int size;
 

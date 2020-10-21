@@ -15,5 +15,8 @@ namespace IEC
         public ComponentConfig componentConfig;
 
         public Color[] waterColor;
+
+        public Material[] targetMats;
+        public Material targetDefaultMat;
     }
 }

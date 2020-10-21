@@ -101,6 +101,8 @@ namespace IEC
 
             yield return null;
 
+            Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
+
             if (!m_IsInitCam)
             {
                 m_ScreenRatio = Screen.height / (float)Screen.width;
@@ -123,6 +125,8 @@ namespace IEC
             Game.listSource.Clear();
             Game.listTarget.Clear();
             Game.listTerrainType.Clear();
+
+            Game.isMultiColor = false;
         }
 
         private string[,] GetGridValue(string[] str, int size, int startRow)
@@ -183,6 +187,12 @@ namespace IEC
                 Game.listTarget.Add(targetComp);
                 gridColor = int.Parse(gridtype[2]);
             }
+
+            if(gridColor != 0)
+            {
+                Game.isMultiColor = true;
+            }
+
             var gridRot = int.Parse(gridtype[1]);
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
@@ -347,7 +357,7 @@ namespace IEC
             var count = Game.listTarget.Count;
             for (int i = 0; i < count; i++)
             {
-                if (!Game.listTarget[i].IsHaveWater) return false;
+                if (!Game.listTarget[i].IsDone) return false;
             }
 
             return true;
