@@ -42,8 +42,8 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            base.AfterCheckConnect();
             if (m_IsStatusWater == IsHaveWater) return;
+            SetActiveWater(IsHaveWater);
             if (IsDone)
             {
                 m_PsWin.Play();

@@ -55,10 +55,8 @@ namespace IEC
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnInit(Config.waterColor[color]);
+                m_WaterComponent[i].OnInit(Config.waterColor[color], GridType == GridType.GRID_SOURCE);
             }
-
-            SetActiveWater(false);
 
             if(GridType != GridType.WALL)
             {
@@ -101,7 +99,7 @@ namespace IEC
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnUpdate();
+                m_WaterComponent[i].OnUpdate(deltaTime);
             }
         }
 
@@ -109,7 +107,7 @@ namespace IEC
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].gameObject.SetActive(isActive);
+                m_WaterComponent[i].SetFading(isActive);
             }
         }
 

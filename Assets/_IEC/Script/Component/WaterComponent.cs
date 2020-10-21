@@ -38,10 +38,24 @@ namespace IEC
             get { return materialPropertyBlock; }
         }
 
-        public void OnInit(Color color)
+
+        private Color m_TempColor;
+
+        private bool m_IsFading, m_IsIncrease;
+
+        private float m_TempColorAlpha;
+
+        public void OnInit(Color color, bool isShowDefault)
         {
             materialPropertyBlock = new MaterialPropertyBlock();
             SetColor(color);
+
+            m_TempColor = Color.white;
+
+            m_IsFading = false;
+            m_IsIncrease = false;
+            m_TempColorAlpha = isShowDefault ? 1 : 0;
+            m_TempColor.a = m_TempColorAlpha;
         }
 
         public void SetColor(Color color)
@@ -58,11 +72,27 @@ namespace IEC
             }
         }
 
-        public void OnUpdate()
+        
+
+        public void SetFading(bool IsIncrease)
         {
-            if (Application.isEditor)
+            m_IsIncrease = IsIncrease;
+            m_IsFading = true;
+        }
+
+        
+        public void OnUpdate(float deltaTime)
+        {
+            if (m_IsFading)
             {
-                SetUpPropertyBlock(materialPropertyBlock);
+                m_TempColorAlpha = m_TempColor.a;
+                m_TempColorAlpha = Mathf.Clamp(m_TempColorAlpha + (m_IsIncrease ? deltaTime : -deltaTime), 0f, 1f);
+                m_TempColor.a = m_TempColorAlpha;
+                if (m_TempColorAlpha <= 0 || m_TempColorAlpha >= 1)
+                {
+                    m_IsFading = false;
+                }
+                materialPropertyBlock.SetColor("_Tint", m_TempColor);
 
                 if (waterRenderers != null)
                 {
@@ -77,6 +107,7 @@ namespace IEC
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
             propertyBlock.SetColor("_WaterColor", waterColor);
+            propertyBlock.SetColor("_Tint", m_TempColor);
             propertyBlock.SetColor("_BorderColor", borderColor);
 
             propertyBlock.SetVector("_Tiling", waterTile);

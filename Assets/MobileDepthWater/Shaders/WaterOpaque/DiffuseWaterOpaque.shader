@@ -3,6 +3,7 @@
 	Properties
 	{
 		_WaterColor ("Water color", Color) = (1, 1, 1, 1)
+		_Tint ("Tint", Color) = (1, 1, 1, 1)
 		_WaterTex ("Water texture", 2D) = "white" {}
 		_Tiling ("Water tiling", Vector) = (1, 1, 1, 1)
 		_TextureVisibility("Texture visibility", Range(0, 1)) = 1
@@ -19,8 +20,10 @@
 	}
 	SubShader
 	{
-		Tags { "RenderType" = "Opaque" }
-		LOD 100
+		Tags{ "RenderType"="Transparent" "Queue"="Transparent"}
+
+		Blend SrcAlpha OneMinusSrcAlpha
+		ZWrite off
 
 		Pass
 		{
@@ -54,6 +57,7 @@
 			sampler2D _WaterTex;
 			fixed2 _Tiling;
 			fixed4 _WaterColor;
+			fixed4 _Tint;
 
 			sampler2D _DistTex;
 			fixed2 _DistTiling;
@@ -103,7 +107,7 @@
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r * _TextureVisibility);
 
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
-
+				waterCol *= _Tint;
 				return waterCol;
 			}
 			ENDCG

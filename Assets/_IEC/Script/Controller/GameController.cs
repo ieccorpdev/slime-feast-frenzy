@@ -62,7 +62,7 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
-            if (!Game.isPlaying) return;
+            //if (!Game.isPlaying) return;
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
@@ -348,7 +348,7 @@ namespace IEC
             {
                 PlayerData.level += 1;
                 Game.isPlaying = false;
-                EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER);
+                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
             }
         }
 
