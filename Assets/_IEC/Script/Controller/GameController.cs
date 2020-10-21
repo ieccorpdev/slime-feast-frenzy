@@ -71,13 +71,16 @@ namespace IEC
         private IEnumerator SpawnLevel()
         {
             OnClearAll();
-            var level = PlayerData.level % 20;
-            if(level == 0)
-            {
-                level = 20;
-            }
-            var strLevel = LEVEL_PATH + level;
-            var textFile = Resources.Load<TextAsset>(strLevel);
+            Game.seed = PlayerData.level;
+            var level = (PlayerData.level - 1) % Config.ListLevels.Count;
+            //if(level == 0)
+            //{
+            //    level = 21;
+            //}
+            //var strLevel = LEVEL_PATH + level;
+            //var textFile = Resources.Load<TextAsset>(strLevel);
+
+            var textFile = Config.ListLevels[level];
 
             var file = textFile.text;
 

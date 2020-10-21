@@ -19,9 +19,12 @@ namespace IEC
         [SerializeField]
         private Transform[] m_TranTargets;
 
+        [SerializeField]
+        private GameObject[] m_TargetStyles;
+
         private Tween m_TweenScale;
 
-        private int m_TrueWaterColor;
+        private int m_TrueWaterColor, m_TargetStyle;
 
         public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
 
@@ -30,10 +33,17 @@ namespace IEC
             base.OnInit(gridType, row, col, rot, color, style);
             m_TrueWaterColor = color;
 
-            for (int i = 0; i < m_TranTargets.Length; i++)
+            m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
+
+            Game.seed += 1;
+
+            for (int i = 0; i < m_TargetStyles.Length; i++)
             {
-                m_TranTargets[i].localScale = Vector3.one * .5f;
+                m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
+
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * .5f;
+
         }
 
         public override void AfterInit(bool isMultiColor)
@@ -75,19 +85,13 @@ namespace IEC
             SetActiveWater(IsHaveWater);
 
             m_TweenScale?.Kill(true);
-            Sequence sequence = DOTween.Sequence();
-            m_TweenScale = sequence;
-            for (int i = 0; i < m_TranTargets.Length; i++)
-            {
-                sequence.Join(m_TranTargets[i].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f));
-            }
-
-            sequence.OnComplete(() => {
-                if (IsDone)
-                {
-                    m_PsWin.Play();
-                }
-            });
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f)
+                .OnComplete(() => {
+                    if (IsDone)
+                    {
+                        m_PsWin.Play();
+                    }
+                });
         }
 
         public override void OnDestroyMe()

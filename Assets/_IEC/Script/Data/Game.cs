@@ -17,7 +17,7 @@ namespace IEC
 
         public bool isPlaying, isMultiColor;
 
-        public int size;
+        public int size, seed;
 
         public BaseComponent[,] grids;
 

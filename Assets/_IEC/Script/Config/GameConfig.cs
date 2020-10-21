@@ -19,5 +19,7 @@ namespace IEC
 
         public Material[] targetMats;
         public Material targetDefaultMat;
+
+        public List<TextAsset> ListLevels;
     }
 }
