@@ -13,5 +13,7 @@ namespace IEC
         public string lastVersion;
         public bool isNoAds;
         public int gold;
+
+        public int level = 1;
     }
 }
