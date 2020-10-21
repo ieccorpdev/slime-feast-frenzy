@@ -142,12 +142,12 @@ MonoBehaviour:
   m_WaterComponent:
   - {fileID: 967956672049454958}
   GridType: 0
-  IsHaveWater: 0
   IsRotating: 0
   IsCheckedConnect: 0
-  WaterColor: 0
+  IsHaveWater: 0
   Row: 0
   Col: 0
+  WaterColor: 0
 --- !u!1001 &1151067514904640784
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -230,6 +230,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4246915434836711482}
     m_Modifications:
+    - target: {fileID: 3273791728684417225, guid: 29be04fe8fc19f54fb74ab053eaa1b69,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5935480426426932905, guid: 29be04fe8fc19f54fb74ab053eaa1b69,
         type: 3}
       propertyPath: m_Name
