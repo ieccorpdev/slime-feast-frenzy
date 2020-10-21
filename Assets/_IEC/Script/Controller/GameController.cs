@@ -66,7 +66,7 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        const string LEVEL_PATH = "Assets/_IEC/Config/Levels/Level_";
+        const string LEVEL_PATH = "Levels/Level_";
 
         private IEnumerator SpawnLevel()
         {
@@ -76,8 +76,11 @@ namespace IEC
             {
                 level = 20;
             }
-            var strLevel = LEVEL_PATH + level + ".txt";
-            var file = File.ReadAllText(strLevel);
+            var strLevel = LEVEL_PATH + level;
+            var textFile = Resources.Load<TextAsset>(strLevel);
+
+            var file = textFile.text;
+
             string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
@@ -348,7 +351,7 @@ namespace IEC
             {
                 PlayerData.level += 1;
                 Game.isPlaying = false;
-                EventController.RaiseEventDelay(2.5f, EventList.GamePlay.GAME_OVER);
+                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
             }
         }
 
