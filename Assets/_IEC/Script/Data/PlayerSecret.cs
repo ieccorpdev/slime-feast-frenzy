@@ -15,5 +15,7 @@ namespace IEC
         public int gold;
 
         public int level = 1;
+        public int levelFirstTime = 1;
+        public int countPlayThisLevel;
     }
 }

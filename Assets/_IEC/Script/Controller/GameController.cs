@@ -19,6 +19,7 @@ namespace IEC
 
         private bool m_IsInitCam;
 
+        private System.DateTime m_TimeStart;
 
         public void LocateController()
         {
@@ -106,7 +107,7 @@ namespace IEC
             SpawnGrid(levelConfig);
 
             yield return null;
-
+            m_TimeStart = System.DateTime.Now;
             Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
 
             if (!m_IsInitCam)
@@ -121,6 +122,9 @@ namespace IEC
 
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+
+            PlayerData.countPlayThisLevel += 1;
+            PushPlayLevelEvent();
         }
 
         private void OnClearAll()
@@ -352,6 +356,9 @@ namespace IEC
 
             if (IsWin())
             {
+                Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
+                Services.PushEvent(new IEC.TrackingEvent.GameOver());
+                PlayerData.countPlayThisLevel = 0;
                 PlayerData.level += 1;
                 Game.isPlaying = false;
                 EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
@@ -367,6 +374,22 @@ namespace IEC
             }
 
             return true;
+        }
+
+        public static void PushPlayLevelEvent()
+        {
+            var level = PlayerData.level;
+            Services.PushEvent(new IEC.TrackingEvent.PlayLevel());
+
+            if (PlayerData.levelFirstTime != level)
+            {
+                PlayerData.levelFirstTime = level;
+                Services.PushEvent(new IEC.TrackingEvent.PlayLevelFirstTime());
+                Services.SetUserProperty("Level", level.ToString());
+            }
+
+            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
+                Services.PushEvent($"play_level_{level}");
         }
     }
 

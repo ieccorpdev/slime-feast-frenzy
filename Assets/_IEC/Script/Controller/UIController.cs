@@ -42,11 +42,13 @@ namespace IEC
         private void InitButtonEvent()
         {
             UI.btnRestart.onClick.AddListener(() => {
+                Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
             });
 
             UI.btnSkip.onClick.AddListener(() => {
                 Services.ShowRewardAds(() => {
+                    Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
                     PlayerData.level += 1;
                     EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
                 });
