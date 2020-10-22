@@ -123,7 +123,7 @@ namespace IEC
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
-            PlayerData.countPlayThisLevel += 1;
+            
             PushPlayLevelEvent();
         }
 
@@ -378,6 +378,7 @@ namespace IEC
 
         public static void PushPlayLevelEvent()
         {
+            PlayerData.countPlayThisLevel += 1;
             var level = PlayerData.level;
             Services.PushEvent(new IEC.TrackingEvent.PlayLevel());
 
