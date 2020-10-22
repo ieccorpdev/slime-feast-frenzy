@@ -50,6 +50,16 @@ namespace IEC
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
             });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
+            {
+                int level = int.Parse(param.inputParams[0].value.ToString());
+                Pool.Get<PlayerSecret>().level = level;
+                EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
         }
     }
 }

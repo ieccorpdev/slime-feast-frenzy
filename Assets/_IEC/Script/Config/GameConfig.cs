@@ -12,5 +12,14 @@ namespace IEC
     public class GameConfig : ScriptableObject
     {
         public _EmptyConfig emptyConfig;
+        public ComponentConfig componentConfig;
+
+        public Color[] waterColor;
+        public Color targetColorDefault;
+
+        public Material[] targetMats;
+        public Material targetDefaultMat;
+
+        public List<TextAsset> ListLevels;
     }
 }

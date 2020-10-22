@@ -13,5 +13,9 @@ namespace IEC
         public string lastVersion;
         public bool isNoAds;
         public int gold;
+
+        public int level = 1;
+        public int levelFirstTime = 1;
+        public int countPlayThisLevel;
     }
 }

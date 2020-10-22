@@ -14,7 +14,11 @@ namespace IEC
         public EventSystem eventSystem;
 
         public RectTransform bottomAds;
-        public TMP_Text textHello;
+        public TMP_Text textHello, txtLevel, txtGO;
+
+        public GameObject groupGameOver;
+
+        public Button btnRestart, btnSkip, btnGONext;
 
         public void LocateGroup()
         {

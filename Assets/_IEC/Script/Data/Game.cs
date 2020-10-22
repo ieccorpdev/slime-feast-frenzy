@@ -15,6 +15,63 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isPlaying;
+        public bool isPlaying, isMultiColor;
+
+        public int size, seed, timePlay;
+
+        public BaseComponent[,] grids;
+
+        public List<GridSourceComponent> listSource = new List<GridSourceComponent>();
+        public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
+        public List<BaseComponent> listGrids = new List<BaseComponent>();
+
+        public List<int> listTerrainType = new List<int>();
+
+        public BaseComponent GetGrid(int row, int col)
+        {
+            if (row < 0 || row > size - 1) return null;
+            if (col < 0 || col > size - 1) return null;
+
+            var grid = grids[row, col];
+            if(grid != null)
+            {
+                if (!grid.IsCheckedConnect)
+                {
+                    return grid;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
     }
+
+    public enum GridType
+    {
+        NONE,
+        WALL,
+        GRID_SOURCE,
+        GRID_TARGET,
+        GRID_STRAIGHT,
+        GRID_CROSS,
+        GRID_CURVE
+    }
+
+    // Wall 1
+    // Wall hole 2
+    // Grid source 5
+    // Grid target 10
+    // Grid straight 15
+    // Grid cross 16
+    // Grid curve 17
+
+    // Color [0, 5] // Blue - Red - Yellow
+    // Source [0 - 2] straight - cross - curve
+
+    // 10_0_0_0 GridType_Rot_Color_Style
 }
