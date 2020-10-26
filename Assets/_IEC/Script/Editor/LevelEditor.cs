@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -69,7 +70,41 @@ namespace IEC
                 }
             }
 
+            GUILayout.Space(10);
+            if (GUILayout.Button("Read File"))
+            {
+                var obj = Selection.activeGameObject;
+                if (obj)
+                {
+                    ClearLog();
+                    string path = "Assets/_IEC/Config/levelsList.txt";
+                    var file = File.ReadAllText(path);
+                    string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
+                                     System.StringSplitOptions.RemoveEmptyEntries);
+
+                    var levelConfig = f[0].Trim().Split(':');
+
+                    var size = int.Parse(levelConfig[0].Substring(levelConfig[0].Length - 1)) + 2;
+                    var strmode = levelConfig[1];
+                    
+                    var strgrid = levelConfig[3];
+                    var grids = strgrid.Trim().Split('_');
+                    for (int i = 0; i < grids.Length; i++)
+                    {
+                        Debug.LogError("Grid: " + grids[i]);
+                    }
+                }
+            }
+
             EditorUtility.SetDirty(target);
+        }
+
+        public void ClearLog() //you can copy/paste this code to the bottom of your script
+        {
+            var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
+            var type = assembly.GetType("UnityEditor.LogEntries");
+            var method = type.GetMethod("Clear");
+            method.Invoke(new object(), null);
         }
 
         private int TotalLevel()

@@ -67,8 +67,6 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        const string LEVEL_PATH = "Levels/Level_";
-
         private IEnumerator SpawnLevel()
         {
             OnClearAll();
