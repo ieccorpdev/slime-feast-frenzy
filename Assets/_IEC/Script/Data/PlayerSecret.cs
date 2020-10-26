@@ -17,5 +17,6 @@ namespace IEC
         public int level = 1;
         public int levelFirstTime = 1;
         public int countPlayThisLevel;
+        public int levelOffset = 0;
     }
 }

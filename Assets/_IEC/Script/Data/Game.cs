@@ -27,6 +27,8 @@ namespace IEC
 
         public List<int> listTerrainType = new List<int>();
 
+        public string[] levelDatas;
+
         public BaseComponent GetGrid(int row, int col)
         {
             if (row < 0 || row > size - 1) return null;
@@ -74,4 +76,6 @@ namespace IEC
     // Source [0 - 2] straight - cross - curve
 
     // 10_0_0_0 GridType_Rot_Color_Style
+
+
 }
