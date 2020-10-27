@@ -13,9 +13,12 @@ namespace IEC
         public Transform m_GridParent;
 
         private static float RATIO_DEFAULT = 16f / 9; //size 3 60 21:9 75
-        private static float RATIO_SIZE = 15 / (21f / 9 - 16f / 9);
+        private static float RATIO_DISTANCE = 10f / 6; //size 3 60 21:9 75
+        private static float RATIO_SIZE = 4.5f / (21f / 9 - 16f / 9);
 
-        private float m_ScreenRatio, m_DeltaRatio;
+        private float m_ScreenRatio, m_DeltaRatio, m_AddDist;
+
+        public Vector3 m_CamDirOrigin, m_CamOriginPos;
 
         private bool m_IsInitCam;
 
@@ -45,6 +48,17 @@ namespace IEC
             var file = File.ReadAllText(path);
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+
+            m_CamOriginPos = GamePlay.mainCamera.transform.position;
+            m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
+        }
+
+        [NaughtyAttributes.Button]
+        private void GetDistance()
+        {
+            var currentPos = GamePlay.mainCamera.transform.position;
+            var dist = Vector3.Distance(m_CamOriginPos, currentPos);
+            Debug.LogError("Dist: " + dist);
         }
 
         public void BehaviourStart()
@@ -76,8 +90,6 @@ namespace IEC
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-
-            Debug.LogError("Level: " + PlayerData.level);
 
             var leveText = Game.levelDatas[Game.seed - 1].Trim().Split(':');
             var strMode = leveText[1];
@@ -112,12 +124,14 @@ namespace IEC
             {
                 m_ScreenRatio = Screen.height / (float)Screen.width;
                 m_DeltaRatio = m_ScreenRatio - RATIO_DEFAULT;
+                m_AddDist = RATIO_SIZE * m_DeltaRatio;
+
                 m_IsInitCam = true;
             }
 
-
-            //var cameraSize = 60 + m_DeltaRatio * RATIO_SIZE + ((size - 5) * 14);
-            //GamePlay.mainCamera.fieldOfView = cameraSize;
+            var delta = ((size - 5) * RATIO_DISTANCE) + m_AddDist;
+            var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
+            GamePlay.mainCamera.transform.position = cameraPos;
 
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
