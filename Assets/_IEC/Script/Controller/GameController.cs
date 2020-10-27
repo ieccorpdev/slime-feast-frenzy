@@ -13,8 +13,8 @@ namespace IEC
         public Transform m_GridParent;
 
         private static float RATIO_DEFAULT = 16f / 9; //size 3 60 21:9 75
-        private static float RATIO_DISTANCE = 10f / 6; //size 3 60 21:9 75
-        private static float RATIO_SIZE = 4.5f / (21f / 9 - 16f / 9);
+        private static float RATIO_DISTANCE = 11f / 6; //size 3 60 21:9 75
+        private static float RATIO_SIZE = 4f / (21f / 9 - 16f / 9);
 
         private float m_ScreenRatio, m_DeltaRatio, m_AddDist;
 
