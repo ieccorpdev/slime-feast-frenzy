@@ -77,13 +77,6 @@ namespace IEC
             OnClearAll();
             Game.seed = PlayerData.level;
 
-            //string path = "Assets/_IEC/Config/levelsList.txt";
-            //var file = File.ReadAllText(path);
-            //string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
-            //                 System.StringSplitOptions.RemoveEmptyEntries);
-
-            LevelConfig levelConfig = new LevelConfig();
-
             var leveText = Game.levelDatas[Game.seed - 1].Trim().Split(':');
             var strMode = leveText[1];
             var strGrid = leveText[3];
@@ -93,6 +86,7 @@ namespace IEC
             var gridsData = strGrid.Trim().Split('_');
             string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
 
+            LevelConfig levelConfig = new LevelConfig();
             levelConfig.SetSize(size, grids);
             Game.size = size;
             Game.grids = new BaseComponent[size, size];
@@ -119,8 +113,9 @@ namespace IEC
                 m_IsInitCam = true;
             }
 
-            var cameraSize = 60 + m_DeltaRatio * RATIO_SIZE + ((size - 5) * 14);
-            GamePlay.mainCamera.fieldOfView = cameraSize;
+
+            //var cameraSize = 60 + m_DeltaRatio * RATIO_SIZE + ((size - 5) * 14);
+            //GamePlay.mainCamera.fieldOfView = cameraSize;
 
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
@@ -270,6 +265,7 @@ namespace IEC
             {
                 var targetComp = grid.GetComponent<GridTargetComponent>();
                 Game.listTarget.Add(targetComp);
+                gridStyle = GetTargetStyle(gridType);
             }
 
             gridComp.OnInit(GetType(gridType), row, col, gridRot, gridColor, gridStyle);
@@ -290,12 +286,12 @@ namespace IEC
 
         private bool IsSourceGird(int gridType)
         {
-            return (gridType == 51 || gridType == 11 || gridType == 31 || gridType == 21);
+            return (gridType == 51 || gridType == 11 || gridType == 21 || gridType == 31);
         }
 
         private bool IsTargetGrid(int gridType)
         {
-            return (gridType == 52);
+            return (gridType == 52 || gridType == 12 || gridType == 22 || gridType == 32);
         }
 
         private int GetSourceStyle(int input)
@@ -317,6 +313,26 @@ namespace IEC
             }
         }
 
+        private int GetTargetStyle(int input)
+        {
+            if (input == 12)
+            {
+                return 1;
+            }
+            else if (input == 32)
+            {
+                return 2;
+            }
+            else if (input == 22)
+            {
+                return 3;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
         private GridType GetType(int gridType)
         {
             GridType type = GridType.NONE;
@@ -329,6 +345,9 @@ namespace IEC
                     type = GridType.GRID_SOURCE;
                     break;
                 case 52:
+                case 22:
+                case 32:
+                case 12:
                     type = GridType.GRID_TARGET;
                     break;
                 case 10:
@@ -357,6 +376,9 @@ namespace IEC
                     obj = ComponentConfig.sourceObj;
                     break;
                 case 52:
+                case 12:
+                case 22:
+                case 32:
                     obj = ComponentConfig.targetObj;
                     break;
                 case 10:
@@ -367,6 +389,10 @@ namespace IEC
                     break;
                 case 20:
                     obj = ComponentConfig.curveObj;
+                    break;
+                default:
+                    Debug.LogError("gridType: " + gridType);
+                    obj = ComponentConfig.straightObj;
                     break;
             }
 
