@@ -104,7 +104,7 @@
 				fixed2 distorted_uv = ((water_uv + distortion.rg) - _Time.y * _MoveDirection.xz) * _Tiling;
 
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
-				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r * _TextureVisibility);
+				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
 				waterCol *= _Tint;
