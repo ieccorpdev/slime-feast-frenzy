@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -69,7 +70,147 @@ namespace IEC
                 }
             }
 
+            GUILayout.Space(10);
+            if (GUILayout.Button("Sort File"))
+            {
+                var obj = Selection.activeGameObject;
+                if (obj)
+                {
+                    ClearLog();
+                    LevelConfig levelConfig = new LevelConfig();
+
+                    string path = "Assets/_IEC/Config/levelsList.txt";
+                    var file = File.ReadAllText(path);
+                    string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
+                                     System.StringSplitOptions.RemoveEmptyEntries);
+
+                    var str = "";
+                    var count = f.Length;
+                    for (int i = 0; i < count; i++)
+                    {
+                        var level = f[i];
+                        if (level.Contains("Mix")) continue;
+                        str += level + "\n";
+                    }
+
+
+                    string path2 = "Assets/_IEC/Config/levelsList1.txt";
+                    //Write some text to the test.txt file
+                    StreamWriter writer = new StreamWriter(path2, true);
+                    writer.WriteLine(str);
+                    writer.Close();
+                    AssetDatabase.Refresh();
+
+                    //var leveText = f[36].Trim().Split(':');
+
+                    //var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
+                    //var strMode = leveText[1];
+                    //var strGrid = leveText[3];
+
+                    //var gridsData = strGrid.Trim().Split('_');
+
+
+                    //string[,] grids = GetGridValue(gridsData, size, true);
+
+                    //var str = "";
+                    //for (int i = 0; i < size; i++)
+                    //{
+                    //    for (int j = 0; j < size; j++)
+                    //    {
+                    //        str += grids[i, j] + " ";
+                    //    }
+
+                    //    str += "\n";
+                    //}
+
+                    //Debug.LogError(str);
+                }
+            }
+
             EditorUtility.SetDirty(target);
+        }
+
+        private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)
+        {
+            var grids = new string[size, size];
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    if(i == 0 || j == 0 || i == size - 1 || j == size - 1)
+                    {
+                        if(grids[i, j] == null)
+                        {
+                            grids[i, j] = "1";
+                        }
+                    }
+                    else
+                    {
+                        var index = (i - 1) * (size - 2) + (j - 1);
+                        var gridData = strGrids[index];
+                        var gridType = "";
+
+                        if (isLoop)
+                        {
+                            var startIndex = gridData.IndexOf('(');
+                            var endIndex = gridData.IndexOf(')');
+                            gridType = gridData.Substring(0, startIndex);
+
+                            var edgeData = gridData.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                            var edges = edgeData.Split(',');
+
+                            if (i == 1)
+                            {
+                                if (edges[0] != "-1")
+                                {
+                                    grids[0, j] = "2";
+                                }
+                            }
+
+                            if (j == 1)
+                            {
+                                if (edges[1] != "-1")
+                                {
+                                    grids[i, 0] = "2";
+                                }
+                            }
+
+                            if (i == size - 2)
+                            {
+                                if (edges[2] != "-1")
+                                {
+                                    grids[size - 1, j] = "2";
+                                }
+                            }
+
+                            if (j == size - 2)
+                            {
+                                if (edges[3] != "-1")
+                                {
+                                    grids[i, size - 1] = "2";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            gridType = gridData;
+                        }
+
+                        grids[i, j] = gridType;
+                    }
+                }
+            }
+
+            return grids;
+        }
+
+        public void ClearLog() //you can copy/paste this code to the bottom of your script
+        {
+            var assembly = Assembly.GetAssembly(typeof(UnityEditor.Editor));
+            var type = assembly.GetType("UnityEditor.LogEntries");
+            var method = type.GetMethod("Clear");
+            method.Invoke(new object(), null);
         }
 
         private int TotalLevel()

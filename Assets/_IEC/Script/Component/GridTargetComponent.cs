@@ -22,11 +22,69 @@ namespace IEC
         [SerializeField]
         private GameObject[] m_TargetStyles;
 
+        [SerializeField]
+        private GameObject[] m_StyleLineObj;
+
         private Tween m_TweenScale;
 
         private int m_TrueWaterColor, m_TargetStyle;
 
         public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
+
+        protected override int[,] DefaultLine => new int[3, 3]
+{
+            { 0, 0, 0},
+            { 0, 1, 0},
+            { 0, 0, 0}
+};
+
+        private int[,] EndLine => new int[3, 3]
+        {
+            { 0, 0, 0},
+            { 1, 1, 0},
+            { 0, 0, 0}
+        };
+
+        private int[,] CrossLine => new int[3, 3]
+        {
+            { 0, 1, 0},
+            { 1, 1, 0},
+            { 0, 1, 0}
+        };
+
+        private int[,] CurveLine => new int[3, 3]
+        {
+            { 0, 0, 0},
+            { 1, 1, 0},
+            { 0, 1, 0}
+        };
+
+        private int[,] StraightLine => new int[3, 3]
+        {
+            { 0, 0, 0},
+            { 1, 1, 1},
+            { 0, 0, 0}
+        };
+
+        protected override int[,] GetDefaultLine(int style)
+        {
+            if (style == 1)
+            {
+                return CrossLine;
+            }
+            else if (style == 2)
+            {
+                return CurveLine;
+            }
+            else if (style == 3)
+            {
+                return StraightLine;
+            }
+            else
+            {
+                return EndLine;
+            }
+        }
 
         public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
         {
@@ -44,14 +102,24 @@ namespace IEC
 
             m_TranTargets[m_TargetStyle].localScale = Vector3.one * .5f;
 
+            // Line
+            for (int i = 0; i < m_StyleLineObj.Length; i++)
+            {
+                m_StyleLineObj[i].SetActive(i == style);
+            }
+
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].gameObject.SetActive(i == style);
+            }
         }
 
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
-            var mat = isMultiColor ? Config.targetMats[m_TrueWaterColor] : Config.targetDefaultMat;
+            var mat = Config.GetWaterColorMat(m_TrueWaterColor, isMultiColor);
 
-            var color = isMultiColor ? Config.waterColor[m_TrueWaterColor] : Config.targetColorDefault;
+            var color = mat.color;
 
             for (int i = 0; i < m_PsWins.Length; i++)
             {
@@ -63,13 +131,6 @@ namespace IEC
                 m_MeshTargets[i].material = mat;
             }
         }
-
-        protected override int[,] DefaultLine => new int[3, 3]
-        {
-            { 0, 1, 0},
-            { 0, 1, 0},
-            { 0, 0, 0}
-        };
 
         public override void AfterCheckConnect()
         {

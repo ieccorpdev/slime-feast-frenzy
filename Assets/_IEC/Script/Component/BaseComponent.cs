@@ -57,10 +57,10 @@ namespace IEC
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnInit(Config.waterColor[color], GridType == GridType.GRID_SOURCE);
+                m_WaterComponent[i].OnInit(Config.GetWaterColor(color, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
             }
 
-            if(GridType != GridType.WALL)
+            if (GridType != GridType.WALL)
             {
                 m_Terrain.SetupTerrain(GetTerrainType(row, col));
             }
@@ -130,12 +130,41 @@ namespace IEC
         {
             IsHaveWater = true;
             IsCheckedConnect = true;
-            WaterColor = color;
+            WaterColor = GetColor(color);
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetColor(Config.waterColor[WaterColor]);
+                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor));
             }
+        }
+
+        private int GetColor(int newColor)
+        {
+            var resultColor = newColor;
+            if (m_IsOldStatusWater)
+            {
+                if((m_OldWaterColor == 1 && newColor == 2) || (m_OldWaterColor == 2 && newColor == 1))
+                {
+                    resultColor = 4;
+                }
+
+                if ((m_OldWaterColor == 2 && newColor == 3) || (m_OldWaterColor == 3&& newColor == 2))
+                {
+                    resultColor = 5;
+                }
+
+                if ((m_OldWaterColor == 1 && newColor == 3) || (m_OldWaterColor == 3 && newColor == 1))
+                {
+                    resultColor = 6;
+                }
+
+                if ((m_OldWaterColor == 1 && newColor == 5) || (m_OldWaterColor == 5 && newColor == 1))
+                {
+                    resultColor = 7;
+                }
+            }
+
+            return resultColor;
         }
 
         public virtual void AfterCheckConnect()

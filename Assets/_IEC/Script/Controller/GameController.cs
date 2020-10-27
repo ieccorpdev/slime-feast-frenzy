@@ -13,9 +13,12 @@ namespace IEC
         public Transform m_GridParent;
 
         private static float RATIO_DEFAULT = 16f / 9; //size 3 60 21:9 75
-        private static float RATIO_SIZE = 15 / (21f / 9 - 16f / 9);
+        private static float RATIO_DISTANCE = 11f / 6; //size 3 60 21:9 75
+        private static float RATIO_SIZE = 4f / (21f / 9 - 16f / 9);
 
-        private float m_ScreenRatio, m_DeltaRatio;
+        private float m_ScreenRatio, m_DeltaRatio, m_AddDist;
+
+        public Vector3 m_CamDirOrigin, m_CamOriginPos;
 
         private bool m_IsInitCam;
 
@@ -40,6 +43,23 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
+
+            var strLevels = Resources.Load<TextAsset>("levelsList1");
+
+            var file = strLevels.text;
+            Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            m_CamOriginPos = GamePlay.mainCamera.transform.position;
+            m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
+        }
+
+        [NaughtyAttributes.Button]
+        private void GetDistance()
+        {
+            var currentPos = GamePlay.mainCamera.transform.position;
+            var dist = Vector3.Distance(m_CamOriginPos, currentPos);
+            Debug.LogError("Dist: " + dist);
         }
 
         public void BehaviourStart()
@@ -67,35 +87,37 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        const string LEVEL_PATH = "Levels/Level_";
-
         private IEnumerator SpawnLevel()
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-            var level = (PlayerData.level - 1) % Config.ListLevels.Count;
-            //if(level == 0)
-            //{
-            //    level = 21;
-            //}
-            //var strLevel = LEVEL_PATH + level;
-            //var textFile = Resources.Load<TextAsset>(strLevel);
 
-            var textFile = Config.ListLevels[level];
+            var levelSpawn = 0;
 
-            var file = textFile.text;
+            if(Game.seed > Game.levelDatas.Length)
+            {
+                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
+            }
+            else
+            {
+                levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+            }
 
-            string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
+            var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+            var strMode = leveText[1];
+            var strGrid = leveText[3];
+
+            int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
+
+            var gridsData = strGrid.Trim().Split('_');
+            string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
 
             LevelConfig levelConfig = new LevelConfig();
-
-            int size = int.Parse(f[0]);
-
-            string[,] gridTypes= GetGridValue(f, size, 1);
-            levelConfig.SetSize(size, gridTypes);
+            levelConfig.SetSize(size, grids);
             Game.size = size;
             Game.grids = new BaseComponent[size, size];
+
+            Game.isMultiColor = IsMultiColor(strMode);
 
             for (int i = 0; i < 2; i++)
             {
@@ -114,16 +136,18 @@ namespace IEC
             {
                 m_ScreenRatio = Screen.height / (float)Screen.width;
                 m_DeltaRatio = m_ScreenRatio - RATIO_DEFAULT;
+                m_AddDist = RATIO_SIZE * m_DeltaRatio;
+
                 m_IsInitCam = true;
             }
 
-            var cameraSize = 60 + m_DeltaRatio * RATIO_SIZE + ((size - 5) * 14);
-            GamePlay.mainCamera.fieldOfView = cameraSize;
+            var delta = ((size - 5) * RATIO_DISTANCE) + m_AddDist;
+            var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
+            GamePlay.mainCamera.transform.position = cameraPos;
 
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
-            
             PushPlayLevelEvent();
         }
 
@@ -139,20 +163,79 @@ namespace IEC
             Game.isMultiColor = false;
         }
 
-        private string[,] GetGridValue(string[] str, int size, int startRow)
+        private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)
         {
-            var grid = new string[size, size];
-            var count = startRow + size;
-            for (int i = startRow; i < count; i++)
+            var grids = new string[size, size];
+
+            for (int i = 0; i < size; i++)
             {
-                var row = str[i].Trim().Split(' ');
                 for (int j = 0; j < size; j++)
                 {
-                    grid[i - 1, j] = row[j];
+                    if (i == 0 || j == 0 || i == size - 1 || j == size - 1)
+                    {
+                        if (grids[i, j] == null)
+                        {
+                            grids[i, j] = "1";
+                        }
+                    }
+                    else
+                    {
+                        var index = (i - 1) * (size - 2) + (j - 1);
+                        var gridData = strGrids[index];
+                        var gridType = "";
+
+                        if (isLoop)
+                        {
+                            var startIndex = gridData.IndexOf('(');
+                            var endIndex = gridData.IndexOf(')');
+                            gridType = gridData.Substring(0, startIndex);
+
+                            var edgeData = gridData.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
+                            var edges = edgeData.Split(',');
+
+                            if (i == 1)
+                            {
+                                if (edges[0] != "-1")
+                                {
+                                    grids[0, j] = "2";
+                                }
+                            }
+
+                            if (j == 1)
+                            {
+                                if (edges[1] != "-1")
+                                {
+                                    grids[i, 0] = "2";
+                                }
+                            }
+
+                            if (i == size - 2)
+                            {
+                                if (edges[2] != "-1")
+                                {
+                                    grids[size - 1, j] = "2";
+                                }
+                            }
+
+                            if (j == size - 2)
+                            {
+                                if (edges[3] != "-1")
+                                {
+                                    grids[i, size - 1] = "2";
+                                }
+                            }
+                        }
+                        else
+                        {
+                            gridType = gridData;
+                        }
+
+                        grids[i, j] = gridType;
+                    }
                 }
             }
 
-            return grid;
+            return grids;
         }
 
         private void SpawnGrid(LevelConfig levelConfig)
@@ -168,52 +251,114 @@ namespace IEC
                     var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
                     var row = i + 1;
                     var col = j + 1;
-                    var grid = levelConfig.gridTypes[row, col].Trim().Split('_');
-                    SpawnGrid(m_GridParent, posSpawn, row, col, grid);
+                    var gridData = levelConfig.gridTypes[row, col].Trim();
+                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData);
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string[] gridtype)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string gridData)
         {
-            var type = int.Parse(gridtype[0]);
-            var grid = PrefabHelper.Clone(GetGridObj(type)).transform;
-            var gridComp = grid.GetComponent<BaseComponent>();
-
+            var gridType = int.Parse(gridData.Substring(0, 2));
+            var gridRot = int.Parse(gridData.Substring(2, 1));
 
             var gridColor = 0;
             var gridStyle = 0;
 
-            if (type == 5)
+            var grid = PrefabHelper.Clone(GetGridObj(gridType)).transform;
+            var gridComp = grid.GetComponent<BaseComponent>();
+
+            if (IsSourceGird(gridType) || IsTargetGrid(gridType))
             {
-                var sourceComp = grid.GetComponent<GridSourceComponent>();
-                Game.listSource.Add(sourceComp);
-                gridColor = int.Parse(gridtype[2]);
-                gridStyle = int.Parse(gridtype[3]);
-            }
-            else if(type == 10)
-            {
-                var targetComp = grid.GetComponent<GridTargetComponent>();
-                Game.listTarget.Add(targetComp);
-                gridColor = int.Parse(gridtype[2]);
+                if (Game.isMultiColor)
+                {
+                    gridColor = int.Parse(gridData.Substring(3, 1));
+                }
             }
 
-            if(gridColor != 0)
-            {
-                Game.isMultiColor = true;
-            }
-
-            var gridRot = int.Parse(gridtype[1]);
             grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            gridComp.OnInit(GetType(type), row, col, gridRot, gridColor, gridStyle);
+            if (IsSourceGird(gridType))
+            {
+                var sourceComp = grid.GetComponent<GridSourceComponent>();
+                Game.listSource.Add(sourceComp);
+                gridStyle = GetSourceStyle(gridType);
+            }
+            
+            if (IsTargetGrid(gridType))
+            {
+                var targetComp = grid.GetComponent<GridTargetComponent>();
+                Game.listTarget.Add(targetComp);
+                gridStyle = GetTargetStyle(gridType);
+            }
+
+            gridComp.OnInit(GetType(gridType), row, col, gridRot, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
+        }
+
+        private bool IsLoopLevel(string mode)
+        {
+            return (mode.IndexOf("Loop") > -1);
+        }
+
+        private bool IsMultiColor(string mode)
+        {
+            return (mode.IndexOf("colors") > -1);
+        }
+
+        private bool IsSourceGird(int gridType)
+        {
+            return (gridType == 51 || gridType == 11 || gridType == 21 || gridType == 31);
+        }
+
+        private bool IsTargetGrid(int gridType)
+        {
+            return (gridType == 52 || gridType == 12 || gridType == 22 || gridType == 32);
+        }
+
+        private int GetSourceStyle(int input)
+        {
+            if(input == 11)
+            {
+                return 1;
+            }else if(input == 31)
+            {
+                return 2;
+            }
+            else if(input == 21)
+            {
+                return 3;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        private int GetTargetStyle(int input)
+        {
+            if (input == 12)
+            {
+                return 1;
+            }
+            else if (input == 32)
+            {
+                return 2;
+            }
+            else if (input == 22)
+            {
+                return 3;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         private GridType GetType(int gridType)
@@ -221,19 +366,25 @@ namespace IEC
             GridType type = GridType.NONE;
             switch (gridType)
             {
-                case 5:
+                case 11:
+                case 21:
+                case 31:
+                case 51:
                     type = GridType.GRID_SOURCE;
                     break;
-                case 10:
+                case 52:
+                case 22:
+                case 32:
+                case 12:
                     type = GridType.GRID_TARGET;
                     break;
-                case 15:
+                case 10:
                     type = GridType.GRID_STRAIGHT;
                     break;
-                case 16:
+                case 30:
                     type = GridType.GRID_CROSS;
                     break;
-                case 17:
+                case 20:
                     type = GridType.GRID_CURVE;
                     break;
             }
@@ -246,20 +397,30 @@ namespace IEC
             GameObject obj = null;
             switch (gridType)
             {
-                case 5:
+                case 11:
+                case 21:
+                case 31:
+                case 51:
                     obj = ComponentConfig.sourceObj;
                     break;
-                case 10:
+                case 52:
+                case 12:
+                case 22:
+                case 32:
                     obj = ComponentConfig.targetObj;
                     break;
-                case 15:
+                case 10:
                     obj = ComponentConfig.straightObj;
                     break;
-                case 16:
+                case 30:
                     obj = ComponentConfig.crossObj;
                     break;
-                case 17:
+                case 20:
                     obj = ComponentConfig.curveObj;
+                    break;
+                default:
+                    Debug.LogError("gridType: " + gridType);
+                    obj = ComponentConfig.straightObj;
                     break;
             }
 
@@ -329,9 +490,9 @@ namespace IEC
             m_ListGridHaveWater.AddRange(Game.listSource);
 
             var totalGrid = (Game.size * Game.size) - 4;
-            bool isChanged = false;
+            bool isChanged = true;
 
-            while ((m_ListGridHaveWater.Count < totalGrid) && !isChanged)
+            while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
             {
                 var count = m_ListGridHaveWater.Count;
                 for (int i = 0; i < count; i++)
@@ -348,7 +509,7 @@ namespace IEC
 
                 if(m_ListGridHaveWater.Count == count)
                 {
-                    isChanged = true;
+                    isChanged = false;
                 }
             }
 
