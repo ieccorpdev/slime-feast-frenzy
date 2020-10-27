@@ -71,7 +71,7 @@ namespace IEC
             }
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Read File"))
+            if (GUILayout.Button("Sort File"))
             {
                 var obj = Selection.activeGameObject;
                 if (obj)
@@ -84,33 +84,46 @@ namespace IEC
                     string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
                                      System.StringSplitOptions.RemoveEmptyEntries);
 
-                    var leveText = f[36].Trim().Split(':');
-
-                    var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
-                    var strMode = leveText[1];
-                    var strGrid = leveText[3];
-
-                    var gridsData = strGrid.Trim().Split('_');
-
-                    //for (int i = 0; i < grids.Length; i++)
-                    //{
-                    //    Debug.LogError("Grid: " + grids[i]);
-                    //}
-
-                    string[,] grids = GetGridValue(gridsData, size, true);
-
                     var str = "";
-                    for (int i = 0; i < size; i++)
+                    var count = f.Length;
+                    for (int i = 0; i < count; i++)
                     {
-                        for (int j = 0; j < size; j++)
-                        {
-                            str += grids[i, j] + " ";
-                        }
-
-                        str += "\n";
+                        var level = f[i];
+                        if (level.Contains("Mix")) continue;
+                        str += level + "\n";
                     }
 
-                    Debug.LogError(str);
+
+                    string path2 = "Assets/_IEC/Config/levelsList1.txt";
+                    //Write some text to the test.txt file
+                    StreamWriter writer = new StreamWriter(path2, true);
+                    writer.WriteLine(str);
+                    writer.Close();
+                    AssetDatabase.Refresh();
+
+                    //var leveText = f[36].Trim().Split(':');
+
+                    //var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
+                    //var strMode = leveText[1];
+                    //var strGrid = leveText[3];
+
+                    //var gridsData = strGrid.Trim().Split('_');
+
+
+                    //string[,] grids = GetGridValue(gridsData, size, true);
+
+                    //var str = "";
+                    //for (int i = 0; i < size; i++)
+                    //{
+                    //    for (int j = 0; j < size; j++)
+                    //    {
+                    //        str += grids[i, j] + " ";
+                    //    }
+
+                    //    str += "\n";
+                    //}
+
+                    //Debug.LogError(str);
                 }
             }
 

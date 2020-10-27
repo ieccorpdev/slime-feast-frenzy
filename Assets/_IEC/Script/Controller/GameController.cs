@@ -44,7 +44,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            string path = "Assets/_IEC/Config/levelsList.txt";
+            string path = "Assets/_IEC/Config/levelsList1.txt";
             var file = File.ReadAllText(path);
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
@@ -91,7 +91,18 @@ namespace IEC
             OnClearAll();
             Game.seed = PlayerData.level;
 
-            var leveText = Game.levelDatas[Game.seed - 1].Trim().Split(':');
+            var levelSpawn = 0;
+
+            if(Game.seed > Game.levelDatas.Length)
+            {
+                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
+            }
+            else
+            {
+                levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+            }
+
+            var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
             var strMode = leveText[1];
             var strGrid = leveText[3];
 
@@ -478,9 +489,9 @@ namespace IEC
             m_ListGridHaveWater.AddRange(Game.listSource);
 
             var totalGrid = (Game.size * Game.size) - 4;
-            bool isChanged = false;
+            bool isChanged = true;
 
-            while ((m_ListGridHaveWater.Count < totalGrid) && !isChanged)
+            while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
             {
                 var count = m_ListGridHaveWater.Count;
                 for (int i = 0; i < count; i++)
@@ -497,7 +508,7 @@ namespace IEC
 
                 if(m_ListGridHaveWater.Count == count)
                 {
-                    isChanged = true;
+                    isChanged = false;
                 }
             }
 
