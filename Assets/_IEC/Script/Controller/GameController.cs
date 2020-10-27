@@ -77,6 +77,8 @@ namespace IEC
             OnClearAll();
             Game.seed = PlayerData.level;
 
+            Debug.LogError("Level: " + PlayerData.level);
+
             var leveText = Game.levelDatas[Game.seed - 1].Trim().Split(':');
             var strMode = leveText[1];
             var strGrid = leveText[3];

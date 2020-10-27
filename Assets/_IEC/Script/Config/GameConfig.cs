@@ -21,5 +21,17 @@ namespace IEC
         public Material targetDefaultMat;
 
         public List<TextAsset> ListLevels;
+
+        public Color GetWaterColor(int color)
+        {
+            var colorIndex = Mathf.Clamp(color - 1, 0, waterColor.Length - 1);
+            return waterColor[colorIndex];
+        }
+
+        public Material GetWaterColorMat(int color)
+        {
+            var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
+            return targetMats[colorIndex];
+        }
     }
 }
