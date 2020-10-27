@@ -116,9 +116,9 @@ namespace IEC
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
-            var mat = isMultiColor ? Config.GetWaterColorMat(m_TrueWaterColor) : Config.targetDefaultMat;
+            var mat = Config.GetWaterColorMat(m_TrueWaterColor, isMultiColor);
 
-            var color = isMultiColor ? Config.GetWaterColor(m_TrueWaterColor) : Config.targetColorDefault;
+            var color = Config.GetWaterColor(m_TrueWaterColor, isMultiColor);
 
             for (int i = 0; i < m_PsWins.Length; i++)
             {

@@ -57,7 +57,7 @@ namespace IEC
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnInit(Config.GetWaterColor(color), GridType == GridType.GRID_SOURCE);
+                m_WaterComponent[i].OnInit(Config.GetWaterColor(color, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
             }
 
             if (GridType != GridType.WALL)
@@ -134,7 +134,7 @@ namespace IEC
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor));
+                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor));
             }
         }
 
