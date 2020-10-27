@@ -130,7 +130,8 @@ namespace IEC
         {
             IsHaveWater = true;
             IsCheckedConnect = true;
-            WaterColor = GetColor(color);
+            //WaterColor = GetColor(color);
+            WaterColor = color;
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
