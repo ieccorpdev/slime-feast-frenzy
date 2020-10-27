@@ -40,8 +40,8 @@ namespace IEC
 
         private int[,] EndLine => new int[3, 3]
         {
-            { 0, 1, 0},
-            { 0, 1, 0},
+            { 0, 0, 0},
+            { 1, 1, 0},
             { 0, 0, 0}
         };
 
@@ -102,6 +102,7 @@ namespace IEC
 
             m_TranTargets[m_TargetStyle].localScale = Vector3.one * .5f;
 
+            // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
             {
                 m_StyleLineObj[i].SetActive(i == style);
@@ -118,7 +119,7 @@ namespace IEC
             base.AfterInit(isMultiColor);
             var mat = Config.GetWaterColorMat(m_TrueWaterColor, isMultiColor);
 
-            var color = Config.GetWaterColor(m_TrueWaterColor, isMultiColor);
+            var color = mat.color;
 
             for (int i = 0; i < m_PsWins.Length; i++)
             {
