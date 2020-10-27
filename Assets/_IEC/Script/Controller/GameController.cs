@@ -44,8 +44,9 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            string path = "Assets/_IEC/Config/levelsList1.txt";
-            var file = File.ReadAllText(path);
+            var strLevels = Resources.Load<TextAsset>("levelsList1");
+
+            var file = strLevels.text;
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
