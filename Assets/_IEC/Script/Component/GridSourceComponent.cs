@@ -66,7 +66,7 @@ namespace IEC
         {
             if (style == 1)
             {
-                return CrossLine;
+                return StraightLine;
             }
             else if (style == 2)
             {
@@ -74,7 +74,7 @@ namespace IEC
             }
             else if(style == 3)
             {
-                return StraightLine;
+                return CrossLine;
             }
             else
             {
