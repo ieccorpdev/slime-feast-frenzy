@@ -327,11 +327,11 @@ namespace IEC
             if(input == 11)
             {
                 return 1;
-            }else if(input == 31)
+            }else if(input == 21)
             {
                 return 2;
             }
-            else if(input == 21)
+            else if(input == 31)
             {
                 return 3;
             }
@@ -343,15 +343,15 @@ namespace IEC
 
         private int GetTargetStyle(int input)
         {
-            if (input == 12)
+            if (input == 11)
             {
                 return 1;
             }
-            else if (input == 32)
+            else if (input == 21)
             {
                 return 2;
             }
-            else if (input == 22)
+            else if (input == 31)
             {
                 return 3;
             }
