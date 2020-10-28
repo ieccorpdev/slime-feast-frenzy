@@ -64,9 +64,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_WaterComponent:
   - {fileID: 9215769004668439766}
-  - {fileID: 607164079640254333}
-  - {fileID: 7623597564610203048}
   - {fileID: 7591000073849759979}
+  - {fileID: 7623597564610203048}
+  - {fileID: 607164079640254333}
   - {fileID: 8910613191730960898}
   m_Terrain: {fileID: 1860116765786680560}
   GridType: 0
@@ -78,9 +78,9 @@ MonoBehaviour:
   WaterColor: 0
   m_StyleObj:
   - {fileID: 5749882327549544748}
-  - {fileID: 6262082002328442548}
-  - {fileID: 5789825499742119454}
   - {fileID: 8583129460743896390}
+  - {fileID: 5789825499742119454}
+  - {fileID: 6262082002328442548}
 --- !u!1 &3823708860571776831
 GameObject:
   m_ObjectHideFlags: 0
@@ -109,9 +109,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5749882327549544655}
-  - {fileID: 6262082002328442059}
-  - {fileID: 5789825499742119455}
   - {fileID: 8583129460743896318}
+  - {fileID: 5789825499742119455}
+  - {fileID: 6262082002328442059}
   m_Father: {fileID: 1692013112663632361}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -329,9 +329,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1258561144163199776}
-  - {fileID: 3936325243867785789}
-  - {fileID: 9183815389084277235}
   - {fileID: 5340028121842511613}
+  - {fileID: 9183815389084277235}
+  - {fileID: 3936325243867785789}
   m_Father: {fileID: 1692013112663632361}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 5789825499742119450}
   - component: {fileID: 5789825499742119453}
   m_Layer: 8
-  m_Name: Ground_tile_corner
+  m_Name: Ground_tile_curve
   m_TagString: 
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -523,7 +523,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8031562682437103000}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
 --- !u!33 &6262082002328447943
 MeshFilter:
@@ -602,7 +602,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8031562682437103000}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 90, y: 90, z: 0}
 --- !u!33 &8583129460743881333
 MeshFilter:
@@ -850,7 +850,7 @@ PrefabInstance:
     - target: {fileID: 2517544023307864672, guid: c83c1e106637dc1419ecee8de5f91669,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.2
+      value: -0.21
       objectReference: {fileID: 0}
     - target: {fileID: 2517544023307864672, guid: c83c1e106637dc1419ecee8de5f91669,
         type: 3}
@@ -983,7 +983,7 @@ PrefabInstance:
     - target: {fileID: 8710303741301231678, guid: 29be04fe8fc19f54fb74ab053eaa1b69,
         type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 8710303741301231678, guid: 29be04fe8fc19f54fb74ab053eaa1b69,
         type: 3}
@@ -1075,7 +1075,7 @@ PrefabInstance:
     - target: {fileID: 4492173771472845118, guid: e7b3bd417da062f49887ebfe4162e8a0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4492173771472845118, guid: e7b3bd417da062f49887ebfe4162e8a0,
         type: 3}
