@@ -7,10 +7,7 @@ namespace IEC
     public class SoundController : _BaseBehaviour, IController, IEventListener, IEventAwake
     {
         [SerializeField]
-        private AudioSource m_AudioSource;
-
-        [SerializeField]
-        private AudioListener m_AudioListener;
+        private AudioSource m_AudioSource, m_AudioSourceBG;
 
         [SerializeField]
         private AudioClip[] m_AudioClip;
@@ -52,7 +49,8 @@ namespace IEC
 
         private void SetupAudio()
         {
-            m_AudioListener.enabled = PlayerData.isSoundOn;
+            m_AudioSourceBG.mute = !PlayerData.isSoundOn;
+            m_AudioSource.mute = !PlayerData.isSoundOn;
         }
 
     }

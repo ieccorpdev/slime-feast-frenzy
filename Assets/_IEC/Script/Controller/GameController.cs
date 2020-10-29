@@ -367,15 +367,15 @@ namespace IEC
 
         private int GetTargetStyle(int input)
         {
-            if (input == 11)
+            if (input == 12)
             {
                 return 1;
             }
-            else if (input == 21)
+            else if (input == 22)
             {
                 return 2;
             }
-            else if (input == 31)
+            else if (input == 32)
             {
                 return 3;
             }

@@ -214,6 +214,8 @@ namespace IEC
         {
             m_ListGridConnect.Clear();
 
+            if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
+
             if (IsHaveLineTop)
             {
                 m_TempGrid = Game.GetGrid(Row - 1, Col, color);
