@@ -145,7 +145,7 @@ namespace IEC
             WaterColor = GetColor();
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor));
+                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor), !m_IsOldStatusWater);
             }
         }
 

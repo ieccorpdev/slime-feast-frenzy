@@ -139,7 +139,7 @@ namespace IEC
 
             if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .1f, .4f)
                 .OnComplete(() => {
                     if (IsDone)
                     {
