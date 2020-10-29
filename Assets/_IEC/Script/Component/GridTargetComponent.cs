@@ -134,17 +134,7 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            if (IsHaveWater)
-            {
-                if(m_OldWaterColor != WaterColor)
-                {
-                    m_IsOldStatusWater = !IsHaveWater;
-                }
-            }
-
-            if (m_IsOldStatusWater == IsHaveWater) return;
-            SetActiveWater(IsHaveWater);
-
+            base.AfterCheckConnect();
             m_TweenScale?.Kill(true);
             m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f)
                 .OnComplete(() => {

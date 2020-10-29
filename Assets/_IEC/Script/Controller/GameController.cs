@@ -44,7 +44,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            var strLevels = Resources.Load<TextAsset>("levelsList1");
+            var strLevels = Resources.Load<TextAsset>("levelsList");
 
             var file = strLevels.text;
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
@@ -479,37 +479,45 @@ namespace IEC
             }
         }
 
-        private List<BaseComponent> m_ListGridHaveWater = new List<BaseComponent>();
+        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
 
         private void CheckGameOver()
         {
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
-            Game.listSource.ForEach(x => x.SetConnect(x.WaterColor));
 
-            m_ListGridHaveWater.Clear();
-            m_ListGridHaveWater.AddRange(Game.listSource);
-
-            var totalGrid = (Game.size * Game.size) - 4;
-            bool isChanged = true;
-
-            while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
+            var sourceCount = Game.listSource.Count;
+            for (int i = 0; i < sourceCount; i++)
             {
-                var count = m_ListGridHaveWater.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    var grid = m_ListGridHaveWater[i];
-                    var listGridNear = grid.GetGridNearCanConnect();
+                var source = Game.listSource[i];
 
-                    if(listGridNear.Count > 0)
+                m_ListTempGridHaveWater.Clear();
+                m_ListTempGridHaveWater.Add(source);
+
+                var totalGrid = Game.size * Game.size;
+                bool isChanged = true;
+                var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+
+                while (totalGridHaveWaterCount < totalGrid && isChanged)
+                {
+                    var count = m_ListTempGridHaveWater.Count;
+                    for (int j = 0; j < count; j++)
                     {
-                        listGridNear.ForEach(x => x.SetConnect(grid.WaterColor));
-                        m_ListGridHaveWater.AddRange(listGridNear);
-                    }
-                }
+                        var grid = m_ListTempGridHaveWater[j];
+                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
 
-                if(m_ListGridHaveWater.Count == count)
-                {
-                    isChanged = false;
+                        if (listGridNear.Count > 0)
+                        {
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
+                            m_ListTempGridHaveWater.AddRange(listGridNear);
+                        }
+                    }
+
+                    totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+
+                    if (totalGridHaveWaterCount == count)
+                    {
+                        isChanged = false;
+                    }
                 }
             }
 
@@ -525,6 +533,51 @@ namespace IEC
                 EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
             }
         }
+
+        //private void CheckGameOver()
+        //{
+        //    Game.listGrids.ForEach(x => x.PrepareCheckConnect());
+        //    Game.listSource.ForEach(x => x.SetConnect(x.WaterColor));
+
+        //    m_ListGridHaveWater.Clear();
+        //    m_ListGridHaveWater.AddRange(Game.listSource);
+
+        //    var totalGrid = (Game.size * Game.size) - 4;
+        //    bool isChanged = true;
+
+        //    while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
+        //    {
+        //        var count = m_ListGridHaveWater.Count;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            var grid = m_ListGridHaveWater[i];
+        //            var listGridNear = grid.GetGridNearCanConnect(1);
+
+        //            if(listGridNear.Count > 0)
+        //            {
+        //                listGridNear.ForEach(x => x.SetConnect(grid.WaterColor));
+        //                m_ListGridHaveWater.AddRange(listGridNear);
+        //            }
+        //        }
+
+        //        if(m_ListGridHaveWater.Count == count)
+        //        {
+        //            isChanged = false;
+        //        }
+        //    }
+
+        //    Game.listGrids.ForEach(x => x.AfterCheckConnect());
+
+        //    if (IsWin())
+        //    {
+        //        Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
+        //        Services.PushEvent(new IEC.TrackingEvent.GameOver());
+        //        PlayerData.countPlayThisLevel = 0;
+        //        PlayerData.level += 1;
+        //        Game.isPlaying = false;
+        //        EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
+        //    }
+        //}
 
         private bool IsWin()
         {
