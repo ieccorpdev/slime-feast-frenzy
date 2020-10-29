@@ -34,10 +34,6 @@ namespace IEC
 
             var currentPos = transform.localPosition;
 
-            //var tempPos = currentPos;
-            //tempPos.y += .02f;
-            //transform.localPosition = tempPos;
-
             m_Tween = sequence.Join(transform.DOLocalRotateQuaternion(rot, time))
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
                 .OnComplete(() =>
@@ -47,14 +43,6 @@ namespace IEC
                     CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
                 });
-
-            //transform.DOLocalRotateQuaternion(rot, .3f).OnComplete(() => {
-            //    transform.localPosition = currentPos;
-
-            //    IsRotating = false;
-            //    CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
-            //    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-            //});
         }
     }
 }

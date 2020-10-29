@@ -119,10 +119,34 @@ namespace IEC
 
             Game.isMultiColor = IsMultiColor(strMode);
 
+            var tempList = new List<int>();
+
             for (int i = 0; i < 2; i++)
             {
-                var type = MathHelper.GetRandomIndexByList(Game.listTerrainType, 4);
+                var type = MathHelper.GetRandomIndexByList(tempList, 4);
                 Game.listTerrainType.Add(type);
+                tempList.Add(type);
+                var temp = 0;
+                if(i == 0)
+                {
+                    if(type == 0)
+                    {
+                        temp = 1;
+                    }
+                    else if(type == 1)
+                    {
+                        temp = 0;
+                    }
+                    else if (type == 2)
+                    {
+                        temp = 3;
+                    }
+                    else if (type == 3)
+                    {
+                        temp = 2;
+                    }
+                    tempList.Add(temp);
+                }
             }
 
             SpawnWalls(levelConfig);

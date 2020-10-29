@@ -73,6 +73,19 @@ namespace IEC
 
         }
 
+        public virtual void OnUpdate(float deltaTime)
+        {
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].OnUpdate(deltaTime);
+            }
+        }
+
+        protected virtual int[,] GetDefaultLine(int style)
+        {
+            return DefaultLine;
+        }
+
         private int GetTerrainType(int row, int col)
         {
             if(row % 2 == 0)
@@ -99,25 +112,12 @@ namespace IEC
             }
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-            for (int i = 0; i < m_WaterComponent.Length; i++)
-            {
-                m_WaterComponent[i].OnUpdate(deltaTime);
-            }
-        }
-
         protected void SetActiveWater(bool isActive)
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
                 m_WaterComponent[i].SetFading(isActive);
             }
-        }
-
-        protected virtual int[,] GetDefaultLine(int style)
-        {
-            return DefaultLine;
         }
 
         public virtual void PrepareCheckConnect()
@@ -197,8 +197,6 @@ namespace IEC
             if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
             SetActiveWater(IsHaveWater);
         }
-
-
 
         public bool IsAllowConnect(int color)
         {
