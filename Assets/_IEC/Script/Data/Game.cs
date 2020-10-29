@@ -29,6 +29,8 @@ namespace IEC
 
         public string[] levelDatas;
 
+        public bool isWaterConnection;
+
         public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;

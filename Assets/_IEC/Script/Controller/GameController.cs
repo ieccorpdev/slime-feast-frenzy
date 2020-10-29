@@ -507,6 +507,7 @@ namespace IEC
 
         private void CheckGameOver()
         {
+            Game.isWaterConnection = false;
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
 
             var sourceCount = Game.listSource.Count;
@@ -546,6 +547,11 @@ namespace IEC
             }
 
             Game.listGrids.ForEach(x => x.AfterCheckConnect());
+
+            if (Game.isWaterConnection)
+            {
+                EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
+            }
 
             if (IsWin())
             {

@@ -22,6 +22,7 @@ namespace IEC
         {
             if (!Game.isPlaying) return;
             if (IsRotating) return;
+            EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
             IsRotating = true;
             m_Tween?.Kill(true);
 

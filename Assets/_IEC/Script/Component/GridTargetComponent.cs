@@ -143,6 +143,7 @@ namespace IEC
                     if (IsDone)
                     {
                         m_PsWin.Play();
+                        EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
                     }
                 });
         }

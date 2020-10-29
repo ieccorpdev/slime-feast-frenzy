@@ -33,6 +33,7 @@ namespace IEC
                     UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
                     break;
                 case EventList.GamePlay.GAME_OVER:
+                    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
                     UI.groupGameOver.gameObject.SetActive(true);
                     UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
                     break;

@@ -195,6 +195,10 @@ namespace IEC
             if (GridType == GridType.GRID_SOURCE) return;
             SetColor();
             if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
+            if (IsHaveWater)
+            {
+                Game.isWaterConnection = true;
+            }
             SetActiveWater(IsHaveWater);
         }
 
