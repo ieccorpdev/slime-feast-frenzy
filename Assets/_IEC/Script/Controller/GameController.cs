@@ -176,7 +176,7 @@ namespace IEC
         }
 
         private void OnClearAll()
-        {
+        { 
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 
@@ -557,51 +557,6 @@ namespace IEC
                 EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
             }
         }
-
-        //private void CheckGameOver()
-        //{
-        //    Game.listGrids.ForEach(x => x.PrepareCheckConnect());
-        //    Game.listSource.ForEach(x => x.SetConnect(x.WaterColor));
-
-        //    m_ListGridHaveWater.Clear();
-        //    m_ListGridHaveWater.AddRange(Game.listSource);
-
-        //    var totalGrid = (Game.size * Game.size) - 4;
-        //    bool isChanged = true;
-
-        //    while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
-        //    {
-        //        var count = m_ListGridHaveWater.Count;
-        //        for (int i = 0; i < count; i++)
-        //        {
-        //            var grid = m_ListGridHaveWater[i];
-        //            var listGridNear = grid.GetGridNearCanConnect(1);
-
-        //            if(listGridNear.Count > 0)
-        //            {
-        //                listGridNear.ForEach(x => x.SetConnect(grid.WaterColor));
-        //                m_ListGridHaveWater.AddRange(listGridNear);
-        //            }
-        //        }
-
-        //        if(m_ListGridHaveWater.Count == count)
-        //        {
-        //            isChanged = false;
-        //        }
-        //    }
-
-        //    Game.listGrids.ForEach(x => x.AfterCheckConnect());
-
-        //    if (IsWin())
-        //    {
-        //        Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
-        //        Services.PushEvent(new IEC.TrackingEvent.GameOver());
-        //        PlayerData.countPlayThisLevel = 0;
-        //        PlayerData.level += 1;
-        //        Game.isPlaying = false;
-        //        EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
-        //    }
-        //}
 
         private bool IsWin()
         {
