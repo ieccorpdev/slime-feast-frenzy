@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using MoreMountains.NiceVibrations;
 
 namespace IEC
 {
@@ -143,6 +144,10 @@ namespace IEC
                     if (IsDone)
                     {
                         m_PsWin.Play();
+                        if (PlayerData.isVibrateOn)
+                        {
+                            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+                        }
                         EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
                     }
                 });

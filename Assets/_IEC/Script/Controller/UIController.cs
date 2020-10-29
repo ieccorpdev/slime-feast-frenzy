@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MoreMountains.NiceVibrations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -33,9 +34,7 @@ namespace IEC
                     UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
                     break;
                 case EventList.GamePlay.GAME_OVER:
-                    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-                    UI.groupGameOver.gameObject.SetActive(true);
-                    UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+                    GameOver();
                     break;
             }
         }
@@ -45,6 +44,10 @@ namespace IEC
             UI.btnRestart.onClick.AddListener(() => {
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
+                if (PlayerData.isVibrateOn)
+                {
+                    MMVibrationManager.Haptic(HapticTypes.Failure);
+                }
             });
 
             UI.btnSkip.onClick.AddListener(() => {
@@ -59,6 +62,17 @@ namespace IEC
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
             });
 
+        }
+
+        private void GameOver()
+        {
+            EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
+            UI.groupGameOver.gameObject.SetActive(true);
+            UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+            if (PlayerData.isVibrateOn)
+            {
+                MMVibrationManager.Haptic(HapticTypes.Success);
+            }
         }
     }
 }

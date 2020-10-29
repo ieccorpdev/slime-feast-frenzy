@@ -18,6 +18,6 @@ namespace IEC
         public int levelFirstTime = 1;
         public int countPlayThisLevel;
 
-        public bool isSoundOn, isVibateOn;
+        public bool isSoundOn, isVibrateOn;
     }
 }
