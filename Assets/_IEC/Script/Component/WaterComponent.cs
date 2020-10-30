@@ -86,19 +86,6 @@ namespace IEC
         
         public void OnUpdate(float deltaTime)
         {
-            if (Application.isEditor)
-            {
-                SetUpPropertyBlock(materialPropertyBlock);
-
-                if (waterRenderers != null)
-                {
-                    for (var i = 0; i < waterRenderers.Length; i++)
-                    {
-                        waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                    }
-                }
-            }
-
             if (m_IsFading)
             {
                 m_TempColorAlpha = m_TempColor.a;
@@ -122,7 +109,16 @@ namespace IEC
             if(waterColor != m_NewColor)
             {
                 waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
-                materialPropertyBlock.SetColor("_WaterColor", waterColor);
+
+                SetUpPropertyBlock(materialPropertyBlock);
+
+                if (waterRenderers != null)
+                {
+                    for (var i = 0; i < waterRenderers.Length; i++)
+                    {
+                        waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
+                    }
+                }
             }
         }
 
