@@ -68,6 +68,11 @@ namespace IEC
                     PlayerData.isVibrateOn = abValue == 2;
                 }
             }
+            else
+            {
+                PlayerData.isSoundOn = false;
+                PlayerData.isVibrateOn = false;
+            }
 
             UIController.SetupAbUI();
         }
