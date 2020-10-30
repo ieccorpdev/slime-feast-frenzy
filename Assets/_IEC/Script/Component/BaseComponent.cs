@@ -77,7 +77,10 @@ namespace IEC
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnUpdate(deltaTime);
+                if (m_WaterComponent[i].gameObject.activeSelf)
+                {
+                    m_WaterComponent[i].OnUpdate(deltaTime);
+                }
             }
         }
 
