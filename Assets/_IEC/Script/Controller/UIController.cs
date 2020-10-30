@@ -85,6 +85,8 @@ namespace IEC
         public void SetupAbUI()
         {
             UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
+            SetStatusSetting();
+            Sound.SetupAudio();
         }
 
         private void OnInitNewLevel()
