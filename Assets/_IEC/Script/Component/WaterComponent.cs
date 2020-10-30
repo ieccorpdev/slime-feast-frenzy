@@ -83,11 +83,15 @@ namespace IEC
             m_IsFading = true;
         }
 
-        
+        private bool isChanged;
         public void OnUpdate(float deltaTime)
         {
+            isChanged = false;
+
             if (m_IsFading)
             {
+                isChanged = true;
+
                 m_TempColorAlpha = m_TempColor.a;
                 m_TempColorAlpha = Mathf.Clamp(m_TempColorAlpha + (m_IsIncrease ? deltaTime : -deltaTime), 0f, 1f);
                 m_TempColor.a = m_TempColorAlpha;
@@ -95,23 +99,17 @@ namespace IEC
                 {
                     m_IsFading = false;
                 }
-                materialPropertyBlock.SetColor("_Tint", m_TempColor);
-
-                if (waterRenderers != null)
-                {
-                    for (var i = 0; i < waterRenderers.Length; i++)
-                    {
-                        waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                    }
-                }
             }
 
             if(waterColor != m_NewColor)
             {
+                isChanged = true;
                 waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
+            }
 
+            if (isChanged)
+            {
                 SetUpPropertyBlock(materialPropertyBlock);
-
                 if (waterRenderers != null)
                 {
                     for (var i = 0; i < waterRenderers.Length; i++)
@@ -120,6 +118,7 @@ namespace IEC
                     }
                 }
             }
+
         }
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
