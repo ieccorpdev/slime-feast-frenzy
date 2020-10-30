@@ -30,7 +30,7 @@ namespace IEC
         public void HideAllScreens()
         {
             var screens = transform.GetComponentsInChildren<ScreenUI>().ToList();
-            screens.ForEach(s => s.SetActive(false));
+            screens.ForEach(s => HideScreen(s, false));
         }
 
         [Button]
@@ -57,8 +57,28 @@ namespace IEC
 
         public void ShowScreen(ScreenUI screen)
         {
-            HideAllScreens();
+            if (screen.isHideAllOtherScreen)
+            {
+                HideAllScreens();
+            }
+            else
+            {
+                screen.listHideNoEffect.ForEach(s => HideScreen(s, false));
+                screen.listHideHaveEffect.ForEach(s => HideScreen(s, true));
+            }
             screen.Show();
+        }
+
+        public void HideScreen(ScreenUI screen, bool isUseEffect)
+        {
+            if (isUseEffect)
+            {
+                screen.Show();
+            }
+            else
+            {
+                screen.SetActive(false);
+            }
         }
 
     }

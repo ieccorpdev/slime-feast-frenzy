@@ -6,6 +6,10 @@ namespace IEC
 {
     public class ScreenUI : _BaseBehaviour
     {
+        public bool isHideAllOtherScreen;
+        public List<ScreenUI> listHideHaveEffect;
+        public List<ScreenUI> listHideNoEffect;
+
         public virtual void Show()
         {
             EffectUI.DoShowHide(gameObject, true);
