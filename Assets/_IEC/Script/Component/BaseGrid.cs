@@ -20,6 +20,7 @@ namespace IEC
 
         private void OnMouseDown()
         {
+            if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (IsRotating) return;
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));

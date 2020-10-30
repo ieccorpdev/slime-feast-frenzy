@@ -63,10 +63,12 @@ namespace IEC
 
             UI.btnSetting.onClick.AddListener(() => {
                 UI.popupSettings.gameObject.SetActive(true);
+                Game.isShowPopup = true;
             });
 
             UI.popupSettings.btnClose.onClick.AddListener(() => {
                 UI.popupSettings.gameObject.SetActive(false);
+                Game.isShowPopup = false;
             });
 
             UI.popupSettings.btnSound.onClick.AddListener(() => {
@@ -80,8 +82,14 @@ namespace IEC
             });
         }
 
+        public void SetupAbUI()
+        {
+            UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
+        }
+
         private void OnInitNewLevel()
         {
+            Game.isShowPopup = false;
             UI.popupSettings.gameObject.SetActive(false);
             UI.groupGameOver.gameObject.SetActive(false);
             UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);

@@ -44,7 +44,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            var strLevels = Resources.Load<TextAsset>("levelsList");
+            var strLevels = Resources.Load<TextAsset>("levelsList1");
 
             var file = strLevels.text;
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },

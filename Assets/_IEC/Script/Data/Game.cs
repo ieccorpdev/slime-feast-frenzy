@@ -15,7 +15,9 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isPlaying, isMultiColor;
+        public bool isShowPopup;
+
+        public bool isPlaying, isMultiColor, isWaterConnection;
 
         public int size, seed, timePlay;
 
@@ -28,8 +30,9 @@ namespace IEC
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
+        //AbTest
 
-        public bool isWaterConnection;
+        public bool isHaveSetting;
 
         public BaseComponent GetGrid(int row, int col, int color)
         {

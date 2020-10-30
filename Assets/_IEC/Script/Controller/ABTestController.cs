@@ -37,21 +37,39 @@ namespace IEC
 
             ResultAbFullAds();
 
-            //var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            //UpdateAbFullAds(abValue);
+            var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
+            UpdateAb20201030(abValue);
 
-            //ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
-            //    cheatCodeParam =>
-            //    {
-            //        abValue = cheatCodeParam.dropdownParam.value;
-            //        UpdateAbFullAds(abValue);
-            //        Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-            //        EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
-            //        // set new AB Test Value
-            //    }, 
-            //    abTestConfig.ListEventsAB.ToList(), 
-            //    abValue
-            //);
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
+                cheatCodeParam =>
+                {
+                    abValue = cheatCodeParam.dropdownParam.value;
+                    PlayerData.isFirstSetup = false;
+                    UpdateAb20201030(abValue);
+                    Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
+                    EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
+                    // set new AB Test Value
+                },
+                abTestConfig.ListEventsAB.ToList(),
+                abValue
+            );
+        }
+
+        public void UpdateAb20201030(int abValue)
+        {
+            Game.isHaveSetting = abValue != 0;
+
+            if(abValue == 1 || abValue == 2)
+            {
+                if (!PlayerData.isFirstSetup)
+                {
+                    PlayerData.isFirstSetup = true;
+                    PlayerData.isSoundOn = abValue == 1;
+                    PlayerData.isVibrateOn = abValue == 2;
+                }
+            }
+
+            UIController.SetupAbUI();
         }
 
         public void ResultAbFullAds()
