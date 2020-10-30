@@ -18,7 +18,9 @@ namespace IEC
 
         public GameObject groupGameOver;
 
-        public Button btnRestart, btnSkip, btnGONext;
+        public Button btnRestart, btnSkip, btnGONext, btnSetting;
+
+        public PopupSetting popupSettings;
 
         public void LocateGroup()
         {

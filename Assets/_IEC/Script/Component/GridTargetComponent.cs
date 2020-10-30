@@ -32,6 +32,8 @@ namespace IEC
 
         public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
 
+        private static float SCALE = .3f;
+
         protected override int[,] DefaultLine => new int[3, 3]
 {
             { 0, 0, 0},
@@ -101,7 +103,7 @@ namespace IEC
                 m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * .5f;
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SCALE;
 
             // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
@@ -139,7 +141,7 @@ namespace IEC
 
             if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .1f, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * SCALE, .4f)
                 .OnComplete(() => {
                     if (IsDone)
                     {

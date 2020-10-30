@@ -30,8 +30,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_INIT:
-                    UI.groupGameOver.gameObject.SetActive(false);
-                    UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+                    OnInitNewLevel();
                     break;
                 case EventList.GamePlay.GAME_OVER:
                     GameOver();
@@ -62,6 +61,37 @@ namespace IEC
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
             });
 
+            UI.btnSetting.onClick.AddListener(() => {
+                UI.popupSettings.gameObject.SetActive(true);
+            });
+
+            UI.popupSettings.btnClose.onClick.AddListener(() => {
+                UI.popupSettings.gameObject.SetActive(false);
+            });
+
+            UI.popupSettings.btnSound.onClick.AddListener(() => {
+                PlayerData.isSoundOn = !PlayerData.isSoundOn;
+                SetStatusSetting();
+            });
+
+            UI.popupSettings.btnVibrate.onClick.AddListener(() => {
+                PlayerData.isVibrateOn = !PlayerData.isVibrateOn;
+                SetStatusSetting();
+            });
+        }
+
+        private void OnInitNewLevel()
+        {
+            UI.popupSettings.gameObject.SetActive(false);
+            UI.groupGameOver.gameObject.SetActive(false);
+            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+            SetStatusSetting();
+        }
+
+        private void SetStatusSetting()
+        {
+            UI.popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            Sound.SetupAudio();
         }
 
         private void GameOver()

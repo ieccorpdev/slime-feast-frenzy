@@ -9,6 +9,7 @@ namespace IEC
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         protected static GameController GameController => Controllers.Get<GameController>();
         protected static UIController UIController => Controllers.Get<UIController>();
+        protected static SoundController Sound => Controllers.Get<SoundController>();
 
         protected static Game Game => Pool.Get<Game>();
         

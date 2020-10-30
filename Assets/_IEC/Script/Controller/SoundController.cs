@@ -42,15 +42,15 @@ namespace IEC
 
         private void PlaySound(SoundName soundName)
         {
+            if (!PlayerData.isSoundOn) return;
             if ((Time.time - m_DelayTimeSound) < m_TimePlaySound) return;
             m_TimePlaySound = Time.time;
             m_AudioSource.PlayOneShot(m_AudioClip[(int)soundName]);
         }
 
-        private void SetupAudio()
+        public void SetupAudio()
         {
             m_AudioSourceBG.mute = !PlayerData.isSoundOn;
-            m_AudioSource.mute = !PlayerData.isSoundOn;
         }
 
     }
