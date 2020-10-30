@@ -15,7 +15,9 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isPlaying, isMultiColor;
+        public bool isShowPopup;
+
+        public bool isPlaying, isMultiColor, isWaterConnection;
 
         public int size, seed, timePlay;
 
@@ -28,8 +30,11 @@ namespace IEC
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
+        //AbTest
 
-        public BaseComponent GetGrid(int row, int col)
+        public bool isHaveSetting;
+
+        public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
@@ -37,7 +42,7 @@ namespace IEC
             var grid = grids[row, col];
             if(grid != null)
             {
-                if (!grid.IsCheckedConnect)
+                if (grid.IsAllowConnect(color))
                 {
                     return grid;
                 }

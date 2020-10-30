@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using MoreMountains.NiceVibrations;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,12 +30,10 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_INIT:
-                    UI.groupGameOver.gameObject.SetActive(false);
-                    UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+                    OnInitNewLevel();
                     break;
                 case EventList.GamePlay.GAME_OVER:
-                    UI.groupGameOver.gameObject.SetActive(true);
-                    UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+                    GameOver();
                     break;
             }
         }
@@ -44,6 +43,10 @@ namespace IEC
             UI.btnRestart.onClick.AddListener(() => {
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
+                if (PlayerData.isVibrateOn)
+                {
+                    MMVibrationManager.Haptic(HapticTypes.Failure);
+                }
             });
 
             UI.btnSkip.onClick.AddListener(() => {
@@ -58,6 +61,56 @@ namespace IEC
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
             });
 
+            UI.btnSetting.onClick.AddListener(() => {
+                UI.popupSettings.gameObject.SetActive(true);
+                Game.isShowPopup = true;
+            });
+
+            UI.popupSettings.btnClose.onClick.AddListener(() => {
+                UI.popupSettings.gameObject.SetActive(false);
+                Game.isShowPopup = false;
+            });
+
+            UI.popupSettings.btnSound.onClick.AddListener(() => {
+                PlayerData.isSoundOn = !PlayerData.isSoundOn;
+                SetStatusSetting();
+            });
+
+            UI.popupSettings.btnVibrate.onClick.AddListener(() => {
+                PlayerData.isVibrateOn = !PlayerData.isVibrateOn;
+                SetStatusSetting();
+            });
+        }
+
+        public void SetupAbUI()
+        {
+            UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
+        }
+
+        private void OnInitNewLevel()
+        {
+            Game.isShowPopup = false;
+            UI.popupSettings.gameObject.SetActive(false);
+            UI.groupGameOver.gameObject.SetActive(false);
+            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+            SetStatusSetting();
+        }
+
+        private void SetStatusSetting()
+        {
+            UI.popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            Sound.SetupAudio();
+        }
+
+        private void GameOver()
+        {
+            EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
+            UI.groupGameOver.gameObject.SetActive(true);
+            UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+            if (PlayerData.isVibrateOn)
+            {
+                MMVibrationManager.Haptic(HapticTypes.Success);
+            }
         }
     }
 }

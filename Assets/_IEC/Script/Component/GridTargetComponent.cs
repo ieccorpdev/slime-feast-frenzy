@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using MoreMountains.NiceVibrations;
 
 namespace IEC
 {
@@ -30,6 +31,8 @@ namespace IEC
         private int m_TrueWaterColor, m_TargetStyle;
 
         public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
+
+        private static float SCALE = .3f;
 
         protected override int[,] DefaultLine => new int[3, 3]
 {
@@ -100,7 +103,7 @@ namespace IEC
                 m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * .5f;
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SCALE;
 
             // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
@@ -134,23 +137,20 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            if (IsHaveWater)
-            {
-                if(m_OldWaterColor != WaterColor)
-                {
-                    m_IsOldStatusWater = !IsHaveWater;
-                }
-            }
+            base.AfterCheckConnect();
 
-            if (m_IsOldStatusWater == IsHaveWater) return;
-            SetActiveWater(IsHaveWater);
-
+            if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * .5f, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * SCALE, .4f)
                 .OnComplete(() => {
                     if (IsDone)
                     {
                         m_PsWin.Play();
+                        if (PlayerData.isVibrateOn)
+                        {
+                            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+                        }
+                        EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
                     }
                 });
         }

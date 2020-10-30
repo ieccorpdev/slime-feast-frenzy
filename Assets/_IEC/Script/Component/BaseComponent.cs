@@ -16,7 +16,7 @@ namespace IEC
 
         public GridType GridType;
         [HideInInspector]
-        public bool IsRotating, IsCheckedConnect;
+        public bool IsRotating;
 
         public bool IsHaveWater;
 
@@ -45,6 +45,8 @@ namespace IEC
         public bool IsHaveLineLeft => CurerentLine[1, 0] == 1;
         public bool IsHaveLineRight => CurerentLine[1, 2] == 1;
 
+        public List<int> m_ListWaterColor = new List<int>();
+
         public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0, int style = 0)
         {
             GridType = gridType;
@@ -69,6 +71,19 @@ namespace IEC
         public virtual void AfterInit(bool isMultiColor)
         {
 
+        }
+
+        public virtual void OnUpdate(float deltaTime)
+        {
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].OnUpdate(deltaTime);
+            }
+        }
+
+        protected virtual int[,] GetDefaultLine(int style)
+        {
+            return DefaultLine;
         }
 
         private int GetTerrainType(int row, int col)
@@ -97,14 +112,6 @@ namespace IEC
             }
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-            for (int i = 0; i < m_WaterComponent.Length; i++)
-            {
-                m_WaterComponent[i].OnUpdate(deltaTime);
-            }
-        }
-
         protected void SetActiveWater(bool isActive)
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
@@ -113,77 +120,105 @@ namespace IEC
             }
         }
 
-        protected virtual int[,] GetDefaultLine(int style)
-        {
-            return DefaultLine;
-        }
-
         public virtual void PrepareCheckConnect()
         {
+            if (GridType == GridType.GRID_SOURCE) return;
             m_IsOldStatusWater = IsHaveWater;
             m_OldWaterColor = WaterColor;
-            IsCheckedConnect = false;
             IsHaveWater = false;
+
+            m_ListWaterColor.Clear();
         }
 
-        public virtual void SetConnect(int color)
+        public void SetConnect(int color)
         {
             IsHaveWater = true;
-            IsCheckedConnect = true;
-            //WaterColor = GetColor(color);
-            WaterColor = color;
-
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            if (!m_ListWaterColor.Contains(color))
             {
-                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor));
+                m_ListWaterColor.Add(color);
             }
         }
 
-        private int GetColor(int newColor)
+        private void SetColor()
         {
-            var resultColor = newColor;
-            if (m_IsOldStatusWater)
+            if (!IsHaveWater) return;
+            WaterColor = GetColor();
+            for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                if((m_OldWaterColor == 1 && newColor == 2) || (m_OldWaterColor == 2 && newColor == 1))
-                {
-                    resultColor = 4;
-                }
+                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor), !m_IsOldStatusWater);
+            }
+        }
 
-                if ((m_OldWaterColor == 2 && newColor == 3) || (m_OldWaterColor == 3&& newColor == 2))
-                {
-                    resultColor = 5;
-                }
-
-                if ((m_OldWaterColor == 1 && newColor == 3) || (m_OldWaterColor == 3 && newColor == 1))
-                {
-                    resultColor = 6;
-                }
-
-                if ((m_OldWaterColor == 1 && newColor == 5) || (m_OldWaterColor == 5 && newColor == 1))
+        private int GetColor()
+        {
+            var resultColor = m_ListWaterColor[0];
+            if(m_ListWaterColor.Count == 2)
+            {
+                resultColor = GetMix2Colors();
+            }
+            else if(m_ListWaterColor.Count == 3)
+            {
+                if (m_ListWaterColor.Contains(1) && m_ListWaterColor.Contains(2) && m_ListWaterColor.Contains(3))
                 {
                     resultColor = 7;
+                }
+                else 
+                {
+                    resultColor = GetMix2Colors();
                 }
             }
 
             return resultColor;
         }
 
+        private int GetMix2Colors()
+        {
+            var resultColor = 0;
+
+            if (m_ListWaterColor.Contains(1) && m_ListWaterColor.Contains(2))
+            {
+                resultColor = 4;
+            }
+            else if (m_ListWaterColor.Contains(2) && m_ListWaterColor.Contains(3))
+            {
+                resultColor = 5;
+            }
+            else if (m_ListWaterColor.Contains(1) && m_ListWaterColor.Contains(3))
+            {
+                resultColor = 6;
+            }
+            return resultColor;
+        }
+
         public virtual void AfterCheckConnect()
         {
-            if (m_IsOldStatusWater == IsHaveWater) return;
+            if (GridType == GridType.GRID_SOURCE) return;
+            SetColor();
+            if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
+            if (IsHaveWater)
+            {
+                Game.isWaterConnection = true;
+            }
             SetActiveWater(IsHaveWater);
+        }
+
+        public bool IsAllowConnect(int color)
+        {
+            return (GridType != GridType.GRID_SOURCE && !m_ListWaterColor.Contains(color));
         }
 
         private BaseComponent m_TempGrid;
         private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
 
-        public List<BaseComponent> GetGridNearCanConnect()
+        public List<BaseComponent> GetGridNearCanConnect(int color)
         {
             m_ListGridConnect.Clear();
 
+            if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
+
             if (IsHaveLineTop)
             {
-                m_TempGrid = Game.GetGrid(Row - 1, Col);
+                m_TempGrid = Game.GetGrid(Row - 1, Col, color);
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineBot)
@@ -195,7 +230,7 @@ namespace IEC
 
             if (IsHaveLineBot)
             {
-                m_TempGrid = Game.GetGrid(Row + 1, Col);
+                m_TempGrid = Game.GetGrid(Row + 1, Col, color);
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineTop)
@@ -207,7 +242,7 @@ namespace IEC
 
             if (IsHaveLineLeft)
             {
-                m_TempGrid = Game.GetGrid(Row, Col - 1);
+                m_TempGrid = Game.GetGrid(Row, Col - 1, color);
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineRight)
@@ -219,7 +254,7 @@ namespace IEC
 
             if (IsHaveLineRight)
             {
-                m_TempGrid = Game.GetGrid(Row, Col + 1);
+                m_TempGrid = Game.GetGrid(Row, Col + 1, color);
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineLeft)
@@ -231,7 +266,7 @@ namespace IEC
 
             if(GridType == GridType.WALL)
             {
-                var m_TempGrid = GetOppositeWall();
+                var m_TempGrid = GetOppositeWall(color);
                 if (m_TempGrid != null)
                 {
                     m_ListGridConnect.Add(m_TempGrid);
@@ -241,7 +276,7 @@ namespace IEC
             return m_ListGridConnect;
         }
 
-        private BaseComponent GetOppositeWall()
+        private BaseComponent GetOppositeWall(int color)
         {
             var maxIndex = Game.size - 1;
             var row = Row;
@@ -267,14 +302,13 @@ namespace IEC
                 col = 0;
             }
 
-            return Game.GetGrid(row, col);
+            return Game.GetGrid(row, col, color);
 
         }
 
         public virtual void OnDestroyMe()
         {
             IsRotating = false;
-            IsCheckedConnect = false;
             IsHaveWater = false;
             m_IsOldStatusWater = false;
             m_OldWaterColor = 0;

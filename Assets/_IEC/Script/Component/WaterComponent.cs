@@ -39,7 +39,7 @@ namespace IEC
         }
 
 
-        private Color m_TempColor;
+        private Color m_TempColor, m_NewColor;
 
         private bool m_IsFading, m_IsIncrease;
 
@@ -56,13 +56,17 @@ namespace IEC
             m_TempColorAlpha = isShowDefault ? 1 : 0;
             m_TempColor.a = m_TempColorAlpha;
 
-            SetColor(color);
+            SetColor(color, true);
         }
 
-        public void SetColor(Color color)
+        public void SetColor(Color color, bool isUpdateNow)
         {
-            waterColor = color;
-            SetUpPropertyBlock(materialPropertyBlock);
+            m_NewColor = color;
+            if(isUpdateNow)
+            {
+                waterColor = color;
+                SetUpPropertyBlock(materialPropertyBlock);
+            }
 
             if (waterRenderers != null)
             {
@@ -113,6 +117,12 @@ namespace IEC
                         waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
                     }
                 }
+            }
+
+            if(waterColor != m_NewColor)
+            {
+                waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
+                materialPropertyBlock.SetColor("_WaterColor", waterColor);
             }
         }
 

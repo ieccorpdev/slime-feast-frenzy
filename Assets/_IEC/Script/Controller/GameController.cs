@@ -119,10 +119,34 @@ namespace IEC
 
             Game.isMultiColor = IsMultiColor(strMode);
 
+            var tempList = new List<int>();
+
             for (int i = 0; i < 2; i++)
             {
-                var type = MathHelper.GetRandomIndexByList(Game.listTerrainType, 4);
+                var type = MathHelper.GetRandomIndexByList(tempList, 4);
                 Game.listTerrainType.Add(type);
+                tempList.Add(type);
+                var temp = 0;
+                if(i == 0)
+                {
+                    if(type == 0)
+                    {
+                        temp = 1;
+                    }
+                    else if(type == 1)
+                    {
+                        temp = 0;
+                    }
+                    else if (type == 2)
+                    {
+                        temp = 3;
+                    }
+                    else if (type == 3)
+                    {
+                        temp = 2;
+                    }
+                    tempList.Add(temp);
+                }
             }
 
             SpawnWalls(levelConfig);
@@ -152,7 +176,7 @@ namespace IEC
         }
 
         private void OnClearAll()
-        {
+        { 
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 
@@ -343,15 +367,15 @@ namespace IEC
 
         private int GetTargetStyle(int input)
         {
-            if (input == 11)
+            if (input == 12)
             {
                 return 1;
             }
-            else if (input == 21)
+            else if (input == 22)
             {
                 return 2;
             }
-            else if (input == 31)
+            else if (input == 32)
             {
                 return 3;
             }
@@ -479,41 +503,55 @@ namespace IEC
             }
         }
 
-        private List<BaseComponent> m_ListGridHaveWater = new List<BaseComponent>();
+        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
 
         private void CheckGameOver()
         {
+            Game.isWaterConnection = false;
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
-            Game.listSource.ForEach(x => x.SetConnect(x.WaterColor));
 
-            m_ListGridHaveWater.Clear();
-            m_ListGridHaveWater.AddRange(Game.listSource);
-
-            var totalGrid = (Game.size * Game.size) - 4;
-            bool isChanged = true;
-
-            while ((m_ListGridHaveWater.Count < totalGrid) && isChanged)
+            var sourceCount = Game.listSource.Count;
+            for (int i = 0; i < sourceCount; i++)
             {
-                var count = m_ListGridHaveWater.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    var grid = m_ListGridHaveWater[i];
-                    var listGridNear = grid.GetGridNearCanConnect();
+                var source = Game.listSource[i];
 
-                    if(listGridNear.Count > 0)
+                m_ListTempGridHaveWater.Clear();
+                m_ListTempGridHaveWater.Add(source);
+
+                var totalGrid = Game.size * Game.size;
+                bool isChanged = true;
+                var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+
+                while (totalGridHaveWaterCount < totalGrid && isChanged)
+                {
+                    var count = m_ListTempGridHaveWater.Count;
+                    for (int j = 0; j < count; j++)
                     {
-                        listGridNear.ForEach(x => x.SetConnect(grid.WaterColor));
-                        m_ListGridHaveWater.AddRange(listGridNear);
-                    }
-                }
+                        var grid = m_ListTempGridHaveWater[j];
+                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
 
-                if(m_ListGridHaveWater.Count == count)
-                {
-                    isChanged = false;
+                        if (listGridNear.Count > 0)
+                        {
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
+                            m_ListTempGridHaveWater.AddRange(listGridNear);
+                        }
+                    }
+
+                    totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+
+                    if (totalGridHaveWaterCount == count)
+                    {
+                        isChanged = false;
+                    }
                 }
             }
 
             Game.listGrids.ForEach(x => x.AfterCheckConnect());
+
+            if (Game.isWaterConnection)
+            {
+                EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
+            }
 
             if (IsWin())
             {
