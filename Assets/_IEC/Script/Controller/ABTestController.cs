@@ -38,14 +38,14 @@ namespace IEC
             ResultAbFullAds();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201030(abValue);
+            UpdateAb20201103(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     PlayerData.isFirstSetup = false;
-                    UpdateAb20201030(abValue);
+                    UpdateAb20201103(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     // set new AB Test Value
@@ -55,7 +55,7 @@ namespace IEC
             );
         }
 
-        public void UpdateAb20201030(int abValue)
+        public void UpdateAb20201103(int abValue)
         {
             Game.isHaveSetting = abValue != 0;
 
