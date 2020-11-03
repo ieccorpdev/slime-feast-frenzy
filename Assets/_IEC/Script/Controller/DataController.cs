@@ -56,6 +56,7 @@ namespace IEC
         public void SaveData()
         {
             if (Game.isDebugReset) return;
+            PlayerData.SaveLastPlayTime();
             Services.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
             Services.DataSecure().Save();
         }
