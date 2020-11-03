@@ -32,7 +32,11 @@ namespace IEC
         public string[] levelDatas;
         //AbTest
 
+        public bool isHaveMixColor;
+
+        //Prepare
         public bool isHaveSetting;
+
 
         public BaseComponent GetGrid(int row, int col, int color)
         {

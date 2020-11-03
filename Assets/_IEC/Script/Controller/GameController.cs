@@ -44,14 +44,18 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            var strLevels = Resources.Load<TextAsset>("levelsList");
+            m_CamOriginPos = GamePlay.mainCamera.transform.position;
+            m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
+        }
+
+        public void GetLevelsData()
+        {
+            var strLevelPath = Game.isHaveMixColor ? "levelsList" : "levelsList1";
+            var strLevels = Resources.Load<TextAsset>(strLevelPath);
 
             var file = strLevels.text;
             Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
-
-            m_CamOriginPos = GamePlay.mainCamera.transform.position;
-            m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
         }
 
         [NaughtyAttributes.Button]
