@@ -47,7 +47,8 @@ namespace IEC
                     PlayerData.isFirstSetup = false;
                     UpdateAb20201103(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                    EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
+                    // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
                     // set new AB Test Value
                 },
                 abTestConfig.ListEventsAB.ToList(),
@@ -55,11 +56,11 @@ namespace IEC
             );
         }
 
-        public void UpdateAb20201103(int abValue)
+        public void UpdateAb20201106(int abValue)
         {
             Game.isHaveSetting = abValue != 0;
 
-            if(abValue == 1 || abValue == 2)
+            if (abValue == 1 || abValue == 2)
             {
                 if (!PlayerData.isFirstSetup)
                 {
@@ -73,6 +74,19 @@ namespace IEC
                 PlayerData.isSoundOn = false;
                 PlayerData.isVibrateOn = false;
             }
+
+            UIController.SetupAbUI();
+        }
+
+        public void UpdateAb20201103(int abValue)
+        {
+            Game.isHaveMixColor = abValue == 1;
+            GameController.GetLevelsData();
+
+
+            Game.isHaveSetting = false;
+            PlayerData.isSoundOn = false;
+            PlayerData.isVibrateOn = false;
 
             UIController.SetupAbUI();
         }
