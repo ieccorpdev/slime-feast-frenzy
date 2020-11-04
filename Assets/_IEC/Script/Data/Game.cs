@@ -36,6 +36,7 @@ namespace IEC
 
         //Prepare
         public bool isHaveSetting;
+        public bool isRotateSpeedUp = true;
 
 
         public BaseComponent GetGrid(int row, int col, int color)
