@@ -12,11 +12,11 @@ namespace IEC
         public Transform[] m_WallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
-        private static float RATIO_DEFAULT = 16f / 9; //size 3 60 21:9 75
-        private static float RATIO_DISTANCE = 11f / 6; //size 3 60 21:9 75
-        private static float RATIO_SIZE = 3f / (21f / 9 - 16f / 9);
+        private static float RATIO_DEFAULT = 16f / 10;
+        private static float RATIO_CAMERA_SIZE_MIN = 1.45f / (21f / 9 - 16f / 10);
+        private static float RATIO_CAMERA_SIZE_MAX = 5.6f / (21f / 9 - 16f / 10);
 
-        private float m_ScreenRatio, m_DeltaRatio, m_AddDist;
+        private float m_ScreenRatio, m_DeltaScreenRatio, m_DeltaSizeMinCam, m_RatioCamSize;
 
         public Vector3 m_CamDirOrigin, m_CamOriginPos;
 
@@ -163,13 +163,17 @@ namespace IEC
             if (!m_IsInitCam)
             {
                 m_ScreenRatio = Screen.height / (float)Screen.width;
-                m_DeltaRatio = m_ScreenRatio - RATIO_DEFAULT;
-                m_AddDist = RATIO_SIZE * m_DeltaRatio;
+                m_DeltaScreenRatio = m_ScreenRatio - RATIO_DEFAULT;
 
+                m_DeltaSizeMinCam = RATIO_CAMERA_SIZE_MIN * m_DeltaScreenRatio;
                 m_IsInitCam = true;
+
+                var distMax = 9f + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
+
+                m_RatioCamSize = (distMax - m_DeltaSizeMinCam) / 6f;
             }
 
-            var delta = ((size - 5) * RATIO_DISTANCE) + m_AddDist;
+            var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam; 
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
             GamePlay.mainCamera.transform.position = cameraPos;
 
