@@ -36,16 +36,17 @@ namespace IEC
             var abTestConfig = Services.config.abTestConfigs.Last();
 
             ResultAbFullAds();
+            Result20201103();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201103(abValue);
+            UpdateAb20201106(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     PlayerData.isFirstSetup = false;
-                    UpdateAb20201103(abValue);
+                    UpdateAb20201106(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
@@ -56,7 +57,7 @@ namespace IEC
             );
         }
 
-        public void UpdateAb20201106(int abValue)
+        public void UpdateAb20201109(int abValue)
         {
             Game.isHaveSetting = abValue != 0;
 
@@ -74,6 +75,23 @@ namespace IEC
                 PlayerData.isSoundOn = false;
                 PlayerData.isVibrateOn = false;
             }
+
+            UIController.SetupAbUI();
+        }
+
+        public void UpdateAb20201106(int abValue)
+        {
+            Game.isFasterRotate = abValue == 1; 
+        }
+
+        public void Result20201103()
+        {
+            Game.isHaveMixColor = false;
+            GameController.GetLevelsData();
+
+            Game.isHaveSetting = false;
+            PlayerData.isSoundOn = false;
+            PlayerData.isVibrateOn = false;
 
             UIController.SetupAbUI();
         }

@@ -30,13 +30,14 @@ namespace IEC
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
-        //AbTest
 
+        //AbTest
         public bool isHaveMixColor;
+        public bool isFasterRotate;
 
         //Prepare
         public bool isHaveSetting;
-        public bool isRotateSpeedUp = true;
+        
 
 
         public BaseComponent GetGrid(int row, int col, int color)
