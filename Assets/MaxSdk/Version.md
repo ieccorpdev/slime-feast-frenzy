@@ -1,5 +1,13 @@
 ## Versions
 
+## 3.1.12
+    * Add support for user segments.
+    * Add minimum compatible adapter versions to the alert when incompatible adapter versions are detected.
+## 3.1.11
+    * Fix `MaxSdk.SetBannerExtraParameter()` method to allow extra parameters to be set before creating banners.
+## 3.1.10
+    * Update Integration Manager to show alert when incompatible network adapters are detected.
+    * Add HyprMX to networks that require `NSAppTransportSecurity` disabled.
 ## 3.1.9
     * Fix compile issue with .Net 3.5 (using `string.Join(string, IEnumerable)` not available in .Net 3.5).
 ## 3.1.8

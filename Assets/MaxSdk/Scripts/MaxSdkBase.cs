@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 public abstract class MaxSdkBase
 {
+    // Shared Properties
+    protected static readonly MaxUserSegment SharedUserSegment = new MaxUserSegment();
+    
     /// <summary>
     /// This enum represents whether or not the consent dialog should be shown for this user.
     /// The state where no such determination could be made is represented by <see cref="ConsentDialogState.Unknown"/>.

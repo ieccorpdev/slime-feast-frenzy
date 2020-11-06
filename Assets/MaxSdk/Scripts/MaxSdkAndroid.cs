@@ -57,7 +57,7 @@ public class MaxSdkAndroid : MaxSdkBase
 
     #endregion
 
-    #region User Identifier
+    #region User Info
 
     /// <summary>
     /// Set an identifier for the current user. This identifier will be tied to SDK events and our optional S2S postbacks.
@@ -72,6 +72,14 @@ public class MaxSdkAndroid : MaxSdkBase
         MaxUnityPluginClass.CallStatic("setUserId", userId);
     }
 
+    /// <summary>
+    /// User segments allow us to serve ads using custom-defined rules based on which segment the user is in. For now, we only support a custom string 32 alphanumeric characters or less as the user segment.
+    /// </summary>
+    public static MaxUserSegment UserSegment
+    {
+        get { return SharedUserSegment; }
+    }
+    
     #endregion
 
     #region Mediation Debugger
@@ -598,5 +606,14 @@ public class MaxSdkAndroid : MaxSdkBase
         MaxUnityPluginClass.CallStatic("setTestDeviceAdvertisingIds", arguments);
     }
 
+    #endregion
+    
+    #region Private
+    
+    internal static void SetUserSegmentField(string name, string value)
+    {
+        MaxUnityPluginClass.CallStatic("setUserSegmentField", name, value);
+    }
+    
     #endregion
 }

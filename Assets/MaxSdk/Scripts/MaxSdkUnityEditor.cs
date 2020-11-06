@@ -88,7 +88,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
 
     #endregion
 
-    #region User Identifier
+    #region User Info
 
     /// <summary>
     /// Set an identifier for the current user. This identifier will be tied to SDK events and our optional S2S postbacks.
@@ -98,8 +98,14 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// </summary>
     /// 
     /// <param name="userId">The user identifier to be set.</param>
-    public static void SetUserId(string userId)
+    public static void SetUserId(string userId) { }
+
+    /// <summary>
+    /// User segments allow us to serve ads using custom-defined rules based on which segment the user is in. For now, we only support a custom string 32 alphanumeric characters or less as the user segment.
+    /// </summary>
+    public static MaxUserSegment UserSegment
     {
+        get { return SharedUserSegment; }
     }
 
     #endregion
@@ -883,6 +889,8 @@ public class MaxSdkUnityEditor : MaxSdkBase
         action();
     }
 
+    internal static void SetUserSegmentField(string key, string value) { }
+    
     #endregion
 }
 
