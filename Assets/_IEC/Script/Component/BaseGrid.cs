@@ -30,7 +30,7 @@ namespace IEC
             m_RotY = (m_RotY + 1) % 4;
             var rot = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
 
-            var time = .3f;
+            var time = Game.isFasterRotate ? .15f : .3f;
 
             Sequence sequence = DOTween.Sequence();
 
