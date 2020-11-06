@@ -15,7 +15,7 @@ UIView* UnityGetGLView();
 // When native code plugin is implemented in .mm / .cpp file, then functions
 // should be surrounded with extern "C" block to conform C function naming rules
 extern "C"
-    {
+{
     static NSString *const TAG = @"MAUnityPlugin";
     
     static ALSdk *_sdk;
@@ -26,6 +26,7 @@ extern "C"
     
     // Store these values if pub attempts to set it before calling _MaxInitializeSdk()
     static NSString *_userIdentifierToSet;
+    static NSString *_userSegmentNameToSet;
     static NSArray<NSString *> *_testDeviceIdentifiersToSet;
     static NSNumber *_verboseLoggingToSet;
     static NSNumber *_adInfoButtonEnabledToSet;
@@ -69,14 +70,18 @@ extern "C"
             _isSdkInitialized = true;
         }];
         
-        // Set user id if needed
         if ( _userIdentifierToSet )
         {
             _sdk.userIdentifier = _userIdentifierToSet;
             _userIdentifierToSet = nil;
         }
         
-        // Set test device ids if needed
+        if ( _userSegmentNameToSet )
+        {
+            _sdk.userSegment.name = _userSegmentNameToSet;
+            _userSegmentNameToSet = nil;
+        }
+        
         if ( _testDeviceIdentifiersToSet )
         {
             _sdk.settings.testDeviceAdvertisingIdentifiers = _testDeviceIdentifiersToSet;
@@ -124,11 +129,25 @@ extern "C"
         if ( _sdk )
         {
             _sdk.userIdentifier = NSSTRING(userId);
-            _userIdentifierToSet = nil;
         }
         else
         {
             _userIdentifierToSet = NSSTRING(userId);
+        }
+    }
+    
+    void _MaxSetUserSegmentField(const char *serializedKey, const char *serializedValue)
+    {
+        // NSString *key = NSSTRING(serializedKey); // To be ignored until we add more properties
+        NSString *value = NSSTRING(serializedValue);
+        
+        if ( _sdk )
+        {
+            _sdk.userSegment.name = value;
+        }
+        else
+        {
+            _userSegmentNameToSet = value;
         }
     }
     

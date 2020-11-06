@@ -65,7 +65,7 @@ public class MaxSdkiOS : MaxSdkBase
 
     #endregion
 
-    #region User Identifier
+    #region User Info
 
     [DllImport("__Internal")]
     private static extern void _MaxSetUserId(string userId);
@@ -83,6 +83,14 @@ public class MaxSdkiOS : MaxSdkBase
         _MaxSetUserId(userId);
     }
 
+    /// <summary>
+    /// User segments allow us to serve ads using custom-defined rules based on which segment the user is in. For now, we only support a custom string 32 alphanumeric characters or less as the user segment.
+    /// </summary>
+    public static MaxUserSegment UserSegment
+    {
+        get { return SharedUserSegment; }
+    }
+    
     #endregion
 
     #region Mediation Debugger
@@ -730,5 +738,16 @@ public class MaxSdkiOS : MaxSdkBase
 
     #endregion
 
+    #region Private
+
+    [DllImport("__Internal")]
+    private static extern bool _MaxSetUserSegmentField(string name, string value);
+    
+    internal static void SetUserSegmentField(string name, string value)
+    {
+        _MaxSetUserSegmentField(name, value);
+    }
+    
+    #endregion
 #endif
 }

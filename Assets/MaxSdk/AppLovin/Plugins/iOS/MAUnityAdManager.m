@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"3.1.9"
+#define VERSION @"3.1.12"
 
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
 
@@ -29,12 +29,13 @@ extern "C" {
 @property (nonatomic, strong) NSMutableDictionary<NSString *, MARewardedAd *> *rewardedAds;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, MARewardedInterstitialAd *> *rewardedInterstitialAds;
 
-// Banner Fields
+// AdView Fields
 @property (nonatomic, strong) NSMutableDictionary<NSString *, MAAdView *> *adViews;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, MAAdFormat *> *adViewAdFormats;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *adViewPositions;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, MAAdFormat *> *verticalAdViewFormats;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSArray<NSLayoutConstraint *> *> *adViewConstraints;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSString *> *> *adViewExtraParametersToSetAfterCreate;
 @property (nonatomic, strong) NSMutableArray<NSString *> *adUnitIdentifiersToShowAfterCreate;
 @property (nonatomic, strong) UIView *safeAreaBackground;
 @property (nonatomic, strong, nullable) UIColor *publisherBannerBackgroundColor;
@@ -87,6 +88,7 @@ static NSString *ALSerializeKeyValuePairSeparator;
         self.adViewPositions = [NSMutableDictionary dictionaryWithCapacity: 2];
         self.verticalAdViewFormats = [NSMutableDictionary dictionaryWithCapacity: 2];
         self.adViewConstraints = [NSMutableDictionary dictionaryWithCapacity: 2];
+        self.adViewExtraParametersToSetAfterCreate = [NSMutableDictionary dictionaryWithCapacity: 1];
         self.adUnitIdentifiersToShowAfterCreate = [NSMutableArray arrayWithCapacity: 2];
         self.safeAreaBackground = [[UIView alloc] init];
         self.safeAreaBackground.hidden = YES;
@@ -598,6 +600,23 @@ static NSString *ALSerializeKeyValuePairSeparator;
     self.adViewAdFormats[adUnitIdentifier] = adFormat;
     [self positionAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
     
+    // Handle initial extra parameters if publisher sets it before creating ad view
+    if ( self.adViewExtraParametersToSetAfterCreate[adUnitIdentifier] )
+    {
+        NSDictionary<NSString *, NSString *> *extraParameters = self.adViewExtraParametersToSetAfterCreate[adUnitIdentifier];
+        for ( NSString *key in extraParameters )
+        {
+            [adView setExtraParameterForKey: key value: extraParameters[key]];
+            
+            [self handleExtraParameterChangesIfNeededForAdUnitIdentifier: adUnitIdentifier
+                                                                adFormat: adFormat
+                                                                     key: key
+                                                                   value: extraParameters[key]];
+        }
+        
+        [self.adViewExtraParametersToSetAfterCreate removeObjectForKey: adUnitIdentifier];
+    }
+    
     [adView loadAd];
     
     // The publisher may have requested to show the banner before it was created. Now that the banner is created, show it.
@@ -645,23 +664,40 @@ static NSString *ALSerializeKeyValuePairSeparator;
     [self log: @"Setting %@ extra with key: \"%@\" value: \"%@\"", adFormat, key, value];
     
     MAAdView *adView = [self retrieveAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
-    [adView setExtraParameterForKey: key value: value];
     
-    if (  [@"force_banner" isEqualToString: key] && MAAdFormat.mrec != adFormat )
+    if ( adView )
     {
-        // Handle local changes as needed
-        MAAdFormat *adFormat;
+        [adView setExtraParameterForKey: key value: value];
+    }
+    else
+    {
+        [self log: @"%@ does not exist for ad unit identifier %@. Saving extra parameter to be set when it is created.", adFormat, adUnitIdentifier];
         
+        // The adView has not yet been created. Store the extra parameters, so that they can be added once the banner has been created.
+        NSMutableDictionary<NSString *, NSString *> *extraParameters = self.adViewExtraParametersToSetAfterCreate[adUnitIdentifier];
+        if ( !extraParameters )
+        {
+            extraParameters = [NSMutableDictionary dictionaryWithCapacity: 1];
+            self.adViewExtraParametersToSetAfterCreate[adUnitIdentifier] = extraParameters;
+        }
+        
+        extraParameters[key] = value;
+    }
+    
+    [self handleExtraParameterChangesIfNeededForAdUnitIdentifier: adUnitIdentifier
+                                                        adFormat: adFormat
+                                                             key: key
+                                                           value: value];
+}
+
+- (void)handleExtraParameterChangesIfNeededForAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat key:(NSString *)key value:(nullable NSString *)value
+{
+    // Certain extra parameters need to be handled immediately
+    if ( [@"force_banner" isEqualToString: key] && MAAdFormat.mrec != adFormat )
+    {
         BOOL shouldForceBanner = [NSNumber al_numberWithString: value].boolValue;
-        if ( shouldForceBanner )
-        {
-            adFormat = MAAdFormat.banner;
-        }
-        else
-        {
-            adFormat = DEVICE_SPECIFIC_ADVIEW_AD_FORMAT;
-        }
-        
+        MAAdFormat *adFormat = shouldForceBanner ? MAAdFormat.banner : DEVICE_SPECIFIC_ADVIEW_AD_FORMAT;
+
         self.adViewAdFormats[adUnitIdentifier] = adFormat;
         [self positionAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
     }

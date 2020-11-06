@@ -35,6 +35,7 @@ namespace AppLovinMax
             "Fyber",
             "Google",
             "GoogleAdManager",
+            "HyprMX",
             "InMobi",
             "IronSource",
             "Smaato"
