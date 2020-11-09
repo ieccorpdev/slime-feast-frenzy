@@ -96,6 +96,7 @@ namespace _IECModules
                 var manifestAndMainTemplateDirectory = "Assets/Plugins/Android/";
                 var mainTemplateFileName = $"{manifestAndMainTemplateDirectory}mainTemplate.gradle";
                 var launcherTemplateFileName = $"{manifestAndMainTemplateDirectory}launcherTemplate.gradle";
+                var baseTemplateFileName = $"{manifestAndMainTemplateDirectory}baseProjectTemplate.gradle";
                 var androidManifestFileName = $"{manifestAndMainTemplateDirectory}AndroidManifest.xml";
 
                 var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
@@ -123,6 +124,17 @@ namespace _IECModules
                     LogEditorHelper.AddLog("launcherTemplate.gradle created");
                 }
 
+                if (File.Exists(baseTemplateFileName))
+                {
+                    LogEditorHelper.AddLogWarning("baseProjectTemplate.gradle already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(manifestAndMainTemplateDirectory);
+                    FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/baseProjectTemplate.gradle", baseTemplateFileName);
+                    LogEditorHelper.AddLog("baseProjectTemplate.gradle created");
+                }
+
                 if (File.Exists(networkSecurityConfigFileName))
                 {
                     LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
@@ -147,7 +159,17 @@ namespace _IECModules
 
                 var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
                 var launcherTemplateFileContent = File.ReadAllText(launcherTemplateFileName);
+                var baseTemplateFileContent = File.ReadAllText(baseTemplateFileName);
                 var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
+                
+                if (baseTemplateFileContent.Contains("com.android.tools.build:gradle:3.4.0"))
+                {
+                    baseTemplateFileContent = baseTemplateFileContent.Replace("com.android.tools.build:gradle:3.4.0",
+                        "com.android.tools.build:gradle:3.4.3");
+                    File.WriteAllText(baseTemplateFileName, baseTemplateFileContent);
+                    LogEditorHelper.AddLog("baseProjectTemplate.gradle Updated: com.android.tools.build:gradle:3.4.3");
+                }
+                
                 var multiDexAlreadyEnabled = true;
 
                 if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
