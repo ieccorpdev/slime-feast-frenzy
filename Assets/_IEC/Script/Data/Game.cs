@@ -17,7 +17,7 @@ namespace IEC
 
         public bool isShowPopup;
 
-        public bool isPlaying, isMultiColor, isWaterConnection;
+        public bool isPlaying, isMultiColor, isHaveWaterConnection;
 
         public int size, seed, timePlay;
 
@@ -31,13 +31,14 @@ namespace IEC
 
         public string[] levelDatas;
 
-        //AbTest
+        [Header("AB Test")]
         public bool isHaveMixColor;
         public bool isFasterRotate;
-
-        //Prepare
         public bool isHaveSetting;
-        
+
+        [Header("Prepare")]
+        public bool isHaveTut;
+        public bool isHaveHint;
 
 
         public BaseComponent GetGrid(int row, int col, int color)
