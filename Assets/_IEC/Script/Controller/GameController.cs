@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using System.Collections;
 
 namespace IEC
@@ -68,14 +67,14 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_INIT:
+                case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(SpawnLevel());
                     break;
 
@@ -178,6 +177,7 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Game.isPlaying = true;
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
             PushPlayLevelEvent();

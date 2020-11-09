@@ -22,6 +22,8 @@ namespace IEC
 
         public List<TextAsset> ListLevels;
 
+        public List<TutorialConfig> listTuts;
+
         public Color GetWaterColor(int color, bool isMultiColor)
         {
             if (isMultiColor)

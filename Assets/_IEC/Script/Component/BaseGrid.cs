@@ -20,6 +20,10 @@ namespace IEC
 
         private void OnMouseDown()
         {
+            if (Game.isTutorial)
+            {
+                if (ID != Game.gridTutId) return;
+            }
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (IsRotating) return;

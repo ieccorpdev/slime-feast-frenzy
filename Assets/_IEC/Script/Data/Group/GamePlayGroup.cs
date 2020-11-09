@@ -7,6 +7,7 @@ namespace IEC
     public class GamePlayGroup : _BaseBehaviour, IGroup
     {
         public Camera mainCamera;
+        public Transform transTutHand;
 
         public void LocateGroup()
         {

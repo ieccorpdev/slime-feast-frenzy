@@ -50,7 +50,7 @@ namespace IEC
                     UpdateAb20201109(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
-                    EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     // set new AB Test Value
                 },
                 abTestConfig.ListEventsAB.ToList(),
