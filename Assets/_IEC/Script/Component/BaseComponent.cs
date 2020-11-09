@@ -200,7 +200,7 @@ namespace IEC
             if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
             if (IsHaveWater)
             {
-                Game.isWaterConnection = true;
+                Game.isHaveWaterConnection = true;
             }
             SetActiveWater(IsHaveWater);
         }
