@@ -92,7 +92,7 @@ namespace IEC
 
         public void Result20201103()
         {
-            Game.isHaveMixColor = false;
+            Game.isHaveMixColor = true;
             GameController.GetLevelsData();
         }
 
