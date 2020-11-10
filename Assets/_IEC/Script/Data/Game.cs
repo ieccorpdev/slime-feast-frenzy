@@ -39,7 +39,7 @@ namespace IEC
         public bool isHaveSetting;
 
         [Header("Prepare")]
-        public bool isHaveTut = true;
+        public bool isHaveTut;
         public bool isHaveHint;
 
         public BaseComponent GetGrid(int row, int col, int color)

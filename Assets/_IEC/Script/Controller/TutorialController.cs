@@ -54,6 +54,13 @@ namespace IEC
             for (int i = 0; i < count; i++)
             {
                 var levelTut = Config.listTuts[i];
+                if (!Game.isHaveMixColor)
+                {
+                    if(PlayerData.level > 15)
+                    {
+                        return null;
+                    }
+                }
                 if(levelTut.level == PlayerData.level)
                 {
                     return levelTut;
@@ -66,7 +73,7 @@ namespace IEC
         private void StartTutotial()
         {
             rotTutConfig = null;
-            Game.gridRotCount = 0;
+            Game.tutCount = 0;
             Game.gridRotCount = 0;
 
             SetupTut();
@@ -124,3 +131,4 @@ namespace IEC
     }
 }
 // Level 1, 5, 15, 
+// Level 1, 5, 15, 22, 25, 43
