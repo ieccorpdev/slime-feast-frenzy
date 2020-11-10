@@ -193,6 +193,7 @@ namespace IEC
             Game.listTerrainType.Clear();
 
             Game.isMultiColor = false;
+            Game.isTutorial = false;
         }
 
         private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)

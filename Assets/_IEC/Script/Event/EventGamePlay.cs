@@ -13,6 +13,7 @@ namespace IEC
             public const string PLAY_SOUND = "GamePlay.PLAY_SOUND";
 
             public const string GAME_CHECK_TUTORIAL = "GamePlay.GAME_CHECK_TUTORIAL";
+            public const string GAME_GRID_CLICK_TUTORIAL = "GamePlay.GAME_GRID_CLICK_TUTORIAL";
         }
     }
 }

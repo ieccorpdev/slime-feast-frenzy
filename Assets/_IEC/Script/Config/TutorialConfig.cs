@@ -9,11 +9,11 @@ namespace IEC
     {
         public int level;
 
-        public List<MoveConfig> listMoveConfigs;
+        public List<RotTutorialConfig> listRotConfigs;
     }
 
     [System.Serializable]
-    public class MoveConfig 
+    public class RotTutorialConfig 
     {
         public int row, col;
         public int rotCount;

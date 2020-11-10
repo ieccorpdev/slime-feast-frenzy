@@ -5,11 +5,12 @@ using DG.Tweening;
 
 namespace IEC
 {
-    public class TutorialController : _BaseBehaviour, IController, IEventListener, IEventAwake
+    public class TutorialController : _BaseBehaviour, IController, IEventListener
     {
         private Tween m_TweenTut;
 
-        private int m_MoveCount;
+        public TutorialConfig tutorialConfig;
+        public RotTutorialConfig rotTutConfig;
 
         public void LocateController()
         {
@@ -21,25 +22,33 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void BehaviourAwake()
-        {
-            //ShowTut(2, 2);
-        }
-
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
             {
+                case EventList.GamePlay.GAME_SPAWN_LEVEL:
+                    DoneTutorial();
+                    break;
+
                 case EventList.GamePlay.GAME_CHECK_TUTORIAL:
                     if (Game.isHaveTut)
                     {
-                        Game.isTutorial = IsHaveLevelTut();
+                        tutorialConfig = IsHaveLevelTut();
+                        Game.isTutorial = tutorialConfig != null;
+
+                        if (Game.isTutorial)
+                        {
+                            StartTutotial();
+                        }
                     }
+                    break;
+                case EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL:
+                    SetupTut();
                     break;
             }
         }
 
-        private bool IsHaveLevelTut()
+        private TutorialConfig IsHaveLevelTut()
         {
             var count = Config.listTuts.Count;
             for (int i = 0; i < count; i++)
@@ -47,34 +56,71 @@ namespace IEC
                 var levelTut = Config.listTuts[i];
                 if(levelTut.level == PlayerData.level)
                 {
-                    return true;
+                    return levelTut;
                 }
             }
 
-            return false;
+            return null;
         }
 
-        public int Row, Col;
-
-        [NaughtyAttributes.Button]
-        private void TestTut()
+        private void StartTutotial()
         {
-            Game.isTutorial = true;
-            ShowTut(Row, Col);
+            rotTutConfig = null;
+            Game.gridRotCount = 0;
+            Game.gridRotCount = 0;
+
+            SetupTut();
+        }
+
+        private void SetupTut()
+        {
+            if (rotTutConfig != null)
+            {
+                Game.gridRotCount += 1;
+                if (Game.gridRotCount >= rotTutConfig.rotCount)
+                {
+                    Game.tutCount += 1;
+                    if (Game.tutCount >= tutorialConfig.listRotConfigs.Count)
+                    {
+                        DoneTutorial();
+                        return;
+                    }
+                    Game.gridRotCount = 0;
+                    rotTutConfig = tutorialConfig.listRotConfigs[Game.tutCount];
+                    ShowTut(rotTutConfig.row, rotTutConfig.col);
+                }
+            }
+            else
+            {
+                rotTutConfig = tutorialConfig.listRotConfigs[Game.tutCount];
+                ShowTut(rotTutConfig.row, rotTutConfig.col);
+            }
+        }
+
+        private void DoneTutorial()
+        {
+            m_TweenTut?.Kill(true);
+            GamePlay.transTutHand.gameObject.SetActive(false);
         }
 
         private void ShowTut(int row, int col)
         {
             m_TweenTut?.Kill(true);
+
             var grid = Game.grids[row + 1, col + 1];
             Game.gridTutId = grid.ID;
+
             var posOrigin = grid.CurrentPos;
-            var targetDir = (-Vector3.forward + Vector3.right).normalized * .5f;
-            posOrigin.y = targetDir.y = .5f;
-            var posSpawn = posOrigin + targetDir;
+            var targetDir = (-Vector3.forward + Vector3.right).normalized;
+
+            var posSpawn = posOrigin + targetDir * .75f;
+            var posTarget = posOrigin + targetDir * .25f;
+            posSpawn.y = posTarget.y = .4f;
+
             GamePlay.transTutHand.position = posSpawn;
-            GamePlay.transTutHand.DOMove(posOrigin, .5f).SetLoops(-1, LoopType.Yoyo);
+            GamePlay.transTutHand.gameObject.SetActive(true);
+            m_TweenTut = GamePlay.transTutHand.DOMove(posTarget, .5f).SetLoops(-1, LoopType.Yoyo);
         }
     }
 }
-// Level 1
+// Level 1, 

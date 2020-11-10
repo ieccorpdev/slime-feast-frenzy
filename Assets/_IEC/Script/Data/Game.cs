@@ -19,7 +19,9 @@ namespace IEC
 
         public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial;
 
-        public int size, seed, timePlay, gridTutId, gridRotCount;
+        public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
+
+        public RotTutorialConfig rotTutConfig;
 
         public BaseComponent[,] grids;
 

@@ -23,6 +23,7 @@ namespace IEC
             if (Game.isTutorial)
             {
                 if (ID != Game.gridTutId) return;
+                EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL);
             }
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
