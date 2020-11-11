@@ -20,14 +20,11 @@ namespace IEC
 
         protected override void OnMouseDown()
         {
-            if (Game.isTutorial)
-            {
-                if (ID != Game.gridTutId) return;
-                EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL);
-            }
+            if (Game.isTutorial && ID != Game.gridTutId) return;
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (IsRotating) return;
+
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
             IsRotating = true;
             m_Tween?.Kill(true);
@@ -49,6 +46,11 @@ namespace IEC
                     IsRotating = false;
                     CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+
+                    if (Game.isTutorial)
+                    {
+                        EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL);
+                    }
                 });
         }
     }
