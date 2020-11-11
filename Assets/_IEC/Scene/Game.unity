@@ -1521,8 +1521,6 @@ GameObject:
   - component: {fileID: 447287024}
   - component: {fileID: 447287028}
   - component: {fileID: 447287027}
-  - component: {fileID: 447287026}
-  - component: {fileID: 447287025}
   m_Layer: 9
   m_Name: UIGroup
   m_TagString: Untagged
@@ -1553,48 +1551,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &447287025
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 447287023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4468ea9e05a7cbc4b81c5d94aa3aedf7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  canvas: {fileID: 447287028}
-  canvasScaler: {fileID: 447287027}
-  eventSystem: {fileID: 156483455}
-  bottomAds: {fileID: 0}
-  textHello: {fileID: 0}
-  txtLevel: {fileID: 0}
-  txtGO: {fileID: 0}
-  groupGameOver: {fileID: 0}
-  btnRestart: {fileID: 0}
-  btnSkip: {fileID: 0}
-  btnGONext: {fileID: 0}
-  btnSetting: {fileID: 0}
-  popupSettings: {fileID: 0}
---- !u!114 &447287026
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 447287023}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &447287027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6072,6 +6028,7 @@ MonoBehaviour:
     gridTutId: 0
     gridRotCount: 0
     tutCount: 0
+    maxGrassOnWall: 0
     rotTutConfig:
       row: 0
       col: 0
@@ -6084,7 +6041,7 @@ MonoBehaviour:
     isHaveMixColor: 0
     isFasterRotate: 0
     isHaveSetting: 0
-    isHaveTut: 0
+    isHaveTutorital: 0
     isHaveHint: 0
   m_PlayerSecret:
     lastVersion: 
