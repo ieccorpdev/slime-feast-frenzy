@@ -11,6 +11,7 @@ namespace IEC
             public const string CHECK_GAME_OVER = "GamePlay.CHECK_GAME_OVER";
             public const string GAME_OVER = "GamePlay.GAME_OVER";
             public const string PLAY_SOUND = "GamePlay.PLAY_SOUND";
+            public const string GAME_WALL_CLICK = "GamePlay.GAME_WALL_CLICK";
 
             public const string GAME_CHECK_TUTORIAL = "GamePlay.GAME_CHECK_TUTORIAL";
             public const string GAME_GRID_CLICK_TUTORIAL = "GamePlay.GAME_GRID_CLICK_TUTORIAL";

@@ -18,7 +18,7 @@ namespace IEC
             }
         }
 
-        private void OnMouseDown()
+        protected override void OnMouseDown()
         {
             if (Game.isTutorial)
             {

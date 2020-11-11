@@ -2702,8 +2702,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75879e5ae8d51db4d83e6f79a1f72b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Row: 0
-  Col: 0
+  tutorialConfig: {fileID: 0}
+  rotTutConfig:
+    row: 0
+    col: 0
+    rotCount: 0
 --- !u!1 &866034676
 GameObject:
   m_ObjectHideFlags: 0
@@ -6062,9 +6065,17 @@ MonoBehaviour:
     isPlaying: 0
     isMultiColor: 0
     isHaveWaterConnection: 0
+    isTutorial: 0
     size: 0
     seed: 0
     timePlay: 0
+    gridTutId: 0
+    gridRotCount: 0
+    tutCount: 0
+    rotTutConfig:
+      row: 0
+      col: 0
+      rotCount: 0
     listSource: []
     listTarget: []
     listGrids: []

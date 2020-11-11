@@ -42,6 +42,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
+            PrefabHelper.SetUpPrefab(Config.effectWallObj);
 
             m_CamOriginPos = GamePlay.mainCamera.transform.position;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
@@ -80,6 +81,11 @@ namespace IEC
 
                 case EventList.GamePlay.CHECK_GAME_OVER:
                     CheckGameOver();
+                    break;
+                case EventList.GamePlay.GAME_WALL_CLICK:
+                    var pos = (Vector3)param.p0;
+                    pos.y = .35f;
+                    StartCoroutine(IEEffectWall(pos));
                     break;
             }
         }
@@ -599,6 +605,16 @@ namespace IEC
 
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
+        }
+
+        private IEnumerator IEEffectWall(Vector3 posSpawn)
+        {
+            var psObj = PrefabHelper.Clone(Config.effectWallObj);
+            psObj.transform.position = posSpawn;
+            psObj.GetComponent<ParticleSystem>().Play();
+            yield return new WaitForSeconds(1f);
+
+            PrefabHelper.Destroy(psObj);
         }
     }
 

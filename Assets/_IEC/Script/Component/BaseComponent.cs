@@ -72,6 +72,11 @@ namespace IEC
             }
         }
 
+        protected virtual void OnMouseDown()
+        {
+
+        }
+
         public virtual void AfterInit(bool isMultiColor)
         {
 
