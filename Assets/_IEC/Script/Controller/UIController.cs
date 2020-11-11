@@ -50,7 +50,6 @@ namespace IEC
             });
 
             UI.btnSkip.onClick.AddListener(() => {
-                if (Game.isTutorial) return;
                 Services.ShowRewardAds(() => {
                     Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
                     PlayerData.level += 1;
@@ -83,6 +82,13 @@ namespace IEC
             });
         }
 
+        public void SetActiveButtons(bool isActive)
+        {
+            UI.btnSetting.interactable = isActive;
+            UI.btnSkip.interactable = isActive;
+            UI.btnRestart.interactable = isActive;
+        }
+
         public void SetupAbUI()
         {
             UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
@@ -92,6 +98,7 @@ namespace IEC
 
         private void OnInitNewLevel()
         {
+            SetActiveButtons(true);
             Game.isShowPopup = false;
             UI.popupSettings.gameObject.SetActive(false);
             UI.groupGameOver.gameObject.SetActive(false);
