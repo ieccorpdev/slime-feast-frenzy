@@ -71,63 +71,52 @@ namespace IEC
             }
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Sort File"))
+            if (GUILayout.Button("Check File"))
             {
                 var obj = Selection.activeGameObject;
                 if (obj)
                 {
                     ClearLog();
+
                     LevelConfig levelConfig = new LevelConfig();
 
-                    string path = "Assets/_IEC/Config/levelsList.txt";
-                    var file = File.ReadAllText(path);
-                    string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
+                    var strLevels = Resources.Load<TextAsset>("levelsList");
+
+                    var file = strLevels.text;
+                    var levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
                                      System.StringSplitOptions.RemoveEmptyEntries);
 
+                    var leveText = levelDatas[1].Trim().Split(':');
+
+                    var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
+                    var strMode = leveText[1];
+                    var strGrid = leveText[3];
+
+                    var gridsData = strGrid.Trim().Split('_');
+
+                    string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
+
                     var str = "";
-                    var count = f.Length;
-                    for (int i = 0; i < count; i++)
+                    for (int i = 0; i < size; i++)
                     {
-                        var level = f[i];
-                        if (level.Contains("Mix")) continue;
-                        str += level + "\n";
+                        for (int j = 0; j < size; j++)
+                        {
+                            str += grids[i, j] + " ";
+                        }
+
+                        str += "\n";
                     }
 
-
-                    string path2 = "Assets/_IEC/Config/levelsList1.txt";
-                    //Write some text to the test.txt file
-                    StreamWriter writer = new StreamWriter(path2, true);
-                    writer.WriteLine(str);
-                    writer.Close();
-                    AssetDatabase.Refresh();
-
-                    //var leveText = f[36].Trim().Split(':');
-
-                    //var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
-                    //var strMode = leveText[1];
-                    //var strGrid = leveText[3];
-
-                    //var gridsData = strGrid.Trim().Split('_');
-
-
-                    //string[,] grids = GetGridValue(gridsData, size, true);
-
-                    //var str = "";
-                    //for (int i = 0; i < size; i++)
-                    //{
-                    //    for (int j = 0; j < size; j++)
-                    //    {
-                    //        str += grids[i, j] + " ";
-                    //    }
-
-                    //    str += "\n";
-                    //}
-
-                    //Debug.LogError(str);
+                    Debug.LogError(str);
                 }
             }
 
             EditorUtility.SetDirty(target);
+        }
+
+        private bool IsLoopLevel(string mode)
+        {
+            return (mode.IndexOf("Loop") > -1);
         }
 
         private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)
@@ -138,9 +127,9 @@ namespace IEC
             {
                 for (int j = 0; j < size; j++)
                 {
-                    if(i == 0 || j == 0 || i == size - 1 || j == size - 1)
+                    if (i == 0 || j == 0 || i == size - 1 || j == size - 1)
                     {
-                        if(grids[i, j] == null)
+                        if (grids[i, j] == null)
                         {
                             grids[i, j] = "1";
                         }
