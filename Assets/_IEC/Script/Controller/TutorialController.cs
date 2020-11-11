@@ -72,6 +72,7 @@ namespace IEC
 
         private void StartTutotial()
         {
+            UIController.SetActiveButtons(false);
             rotTutConfig = null;
             Game.tutCount = 0;
             Game.gridRotCount = 0;
