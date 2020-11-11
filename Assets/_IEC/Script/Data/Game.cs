@@ -17,9 +17,13 @@ namespace IEC
 
         public bool isShowPopup;
 
-        public bool isPlaying, isMultiColor, isHaveWaterConnection;
+        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial;
 
-        public int size, seed, timePlay;
+        public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
+
+        public int maxGrassOnWall;
+
+        public RotTutorialConfig rotTutConfig;
 
         public BaseComponent[,] grids;
 
@@ -37,9 +41,8 @@ namespace IEC
         public bool isHaveSetting;
 
         [Header("Prepare")]
-        public bool isHaveTut;
+        public bool isHaveTutorital;
         public bool isHaveHint;
-
 
         public BaseComponent GetGrid(int row, int col, int color)
         {

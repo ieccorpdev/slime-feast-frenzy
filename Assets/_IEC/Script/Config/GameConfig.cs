@@ -22,6 +22,10 @@ namespace IEC
 
         public List<TextAsset> ListLevels;
 
+        public List<TutorialConfig> listTuts;
+
+        public GameObject effectWallObj;
+
         public Color GetWaterColor(int color, bool isMultiColor)
         {
             if (isMultiColor)

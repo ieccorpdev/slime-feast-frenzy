@@ -14,6 +14,10 @@ namespace IEC
 
         public int ID => gameObject.GetInstanceID();
 
+        public Vector3 CurrentPos => transform.position;
+
+        public Transform Transform => transform;
+
         public GridType GridType;
         [HideInInspector]
         public bool IsRotating;
@@ -66,6 +70,11 @@ namespace IEC
             {
                 m_Terrain.SetupTerrain(GetTerrainType(row, col));
             }
+        }
+
+        protected virtual void OnMouseDown()
+        {
+
         }
 
         public virtual void AfterInit(bool isMultiColor)

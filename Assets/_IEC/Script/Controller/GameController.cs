@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
 using System.Collections;
 
 namespace IEC
@@ -43,6 +42,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
+            PrefabHelper.SetUpPrefab(Config.effectWallObj);
 
             m_CamOriginPos = GamePlay.mainCamera.transform.position;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
@@ -68,19 +68,24 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_INIT:
+                case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(SpawnLevel());
                     break;
 
                 case EventList.GamePlay.CHECK_GAME_OVER:
                     CheckGameOver();
+                    break;
+                case EventList.GamePlay.GAME_WALL_CLICK:
+                    var pos = (Vector3)param.p0;
+                    pos.y = .35f;
+                    StartCoroutine(IEEffectWall(pos));
                     break;
             }
         }
@@ -119,6 +124,7 @@ namespace IEC
             LevelConfig levelConfig = new LevelConfig();
             levelConfig.SetSize(size, grids);
             Game.size = size;
+            Game.maxGrassOnWall = 15 - size;
             Game.grids = new BaseComponent[size, size];
 
             Game.isMultiColor = IsMultiColor(strMode);
@@ -178,6 +184,7 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Game.isPlaying = true;
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
             PushPlayLevelEvent();
@@ -193,6 +200,7 @@ namespace IEC
             Game.listTerrainType.Clear();
 
             Game.isMultiColor = false;
+            Game.isTutorial = false;
         }
 
         private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)
@@ -598,6 +606,16 @@ namespace IEC
 
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
+        }
+
+        private IEnumerator IEEffectWall(Vector3 posSpawn)
+        {
+            var psObj = PrefabHelper.Clone(Config.effectWallObj);
+            psObj.transform.position = posSpawn;
+            psObj.GetComponent<ParticleSystem>().Play();
+            yield return new WaitForSeconds(1f);
+
+            PrefabHelper.Destroy(psObj);
         }
     }
 

@@ -22,7 +22,7 @@ namespace IEC
                 case EventList.GamePlay.GAME_RESTART:
                     Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                     {
-                        EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+                        EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:

@@ -29,7 +29,7 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_INIT:
+                case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     OnInitNewLevel();
                     break;
                 case EventList.GamePlay.GAME_OVER:
@@ -50,10 +50,11 @@ namespace IEC
             });
 
             UI.btnSkip.onClick.AddListener(() => {
+                if (Game.isTutorial) return;
                 Services.ShowRewardAds(() => {
                     Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
                     PlayerData.level += 1;
-                    EventController.RaiseEvent(EventList.GamePlay.GAME_INIT);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                 });
             });
 
