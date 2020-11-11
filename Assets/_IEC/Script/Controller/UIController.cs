@@ -116,6 +116,7 @@ namespace IEC
         {
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             UI.groupGameOver.gameObject.SetActive(true);
+            SetActiveButtons(true);
             UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
             if (PlayerData.isVibrateOn)
             {
