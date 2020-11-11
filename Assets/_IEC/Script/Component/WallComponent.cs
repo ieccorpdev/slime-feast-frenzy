@@ -10,7 +10,12 @@ namespace IEC
         [SerializeField]
         private GameObject m_WallObj, m_WallHoleObj;
 
+        [SerializeField]
+        private GameObject[] m_Grasses;
+
         private Tween m_Tween;
+
+        private List<int> m_ListUsed = new List<int>();
 
         protected override int[,] DefaultLine => new int[3, 3]
         {
@@ -54,6 +59,25 @@ namespace IEC
 
             m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
             CurerentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : DefaultLine;
+
+            m_ListUsed.Clear();
+
+            var total = m_Grasses.Length;
+
+            for (int i = 0; i < total; i++)
+            {
+                m_Grasses[i].SetActive(false);
+            }
+
+            var radCount = Random.Range(3, Game.maxGrassOnWall);
+
+            for (int i = 0; i < radCount; i++)
+            {
+                var index = MathHelper.GetRandomIndexByList(m_ListUsed, total);
+                m_ListUsed.Add(index);
+
+                m_Grasses[index].SetActive(true);
+            }
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)

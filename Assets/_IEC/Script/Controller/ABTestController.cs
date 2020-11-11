@@ -38,16 +38,17 @@ namespace IEC
             ResultAbFullAds();
             Result20201103();
             Result20201106();
+            Result20201109();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201109(abValue);
+            UpdateAb20201112(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     PlayerData.isFirstSetup = false;
-                    UpdateAb20201109(abValue);
+                    UpdateAb20201112(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -58,7 +59,29 @@ namespace IEC
             );
         }
 
-        public void UpdateAb20201109(int abValue)
+        private void UpdateAb20201112(int abValue)
+        {
+            Game.isHaveTutorital = abValue != 0;
+            Game.isHaveMixColor = abValue == 2;
+
+            GameController.GetLevelsData();
+        }
+
+        private void Result20201109()
+        {
+            Game.isHaveSetting = true;
+
+            if (!PlayerData.isFirstSetup)
+            {
+                PlayerData.isFirstSetup = true;
+                PlayerData.isSoundOn = true;
+                PlayerData.isVibrateOn = false;
+            }
+            UIController.SetupAbUI();
+
+        }
+
+        private void UpdateAb20201109(int abValue)
         {
             Game.isHaveSetting = abValue != 0;
 
@@ -80,34 +103,34 @@ namespace IEC
             UIController.SetupAbUI();
         }
 
-        public void Result20201106()
+        private void Result20201106()
         {
             Game.isFasterRotate = true;
         }
 
-        public void UpdateAb20201106(int abValue)
+        private void UpdateAb20201106(int abValue)
         {
             Game.isFasterRotate = abValue == 1; 
         }
 
-        public void Result20201103()
+        private void Result20201103()
         {
             Game.isHaveMixColor = false;
             GameController.GetLevelsData();
         }
 
-        public void UpdateAb20201103(int abValue)
+        private void UpdateAb20201103(int abValue)
         {
             Game.isHaveMixColor = abValue == 1;
             GameController.GetLevelsData();
         }
 
-        public void ResultAbFullAds()
+        private void ResultAbFullAds()
         {
             Game.timeDelayFullAds = 30f;
         }
 
-        public void UpdateAbFullAds(int abValue)
+        private void UpdateAbFullAds(int abValue)
         {
             Game.timeDelayFullAds = (abValue == 0) ? 30f : 60f;
         }

@@ -124,6 +124,7 @@ namespace IEC
             LevelConfig levelConfig = new LevelConfig();
             levelConfig.SetSize(size, grids);
             Game.size = size;
+            Game.maxGrassOnWall = 15 - size;
             Game.grids = new BaseComponent[size, size];
 
             Game.isMultiColor = IsMultiColor(strMode);

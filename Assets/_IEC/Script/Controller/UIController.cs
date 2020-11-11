@@ -50,6 +50,7 @@ namespace IEC
             });
 
             UI.btnSkip.onClick.AddListener(() => {
+                if (Game.isTutorial) return;
                 Services.ShowRewardAds(() => {
                     Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
                     PlayerData.level += 1;

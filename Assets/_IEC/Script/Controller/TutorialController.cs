@@ -31,7 +31,7 @@ namespace IEC
                     break;
 
                 case EventList.GamePlay.GAME_CHECK_TUTORIAL:
-                    if (Game.isHaveTut)
+                    if (Game.isHaveTutorital)
                     {
                         tutorialConfig = IsHaveLevelTut();
                         Game.isTutorial = tutorialConfig != null;
