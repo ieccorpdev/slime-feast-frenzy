@@ -33,6 +33,7 @@ Add Module Controller from menu `IEC/Create Module Controller` at first scene yo
 * `onCheatCodeOpen` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel open
 * `onCheatCodeClose` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel close
 * `onCheatCodeStateChange` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel State change (`Show`, `ShowPasswordInput`, `ShowCheatCode`)
+* `positionActivate` The screen corner position to click open CheatCode
 
 ##### Methods
 * AddCheatCodeButton(string `buttonText`, Action\<CheatCodeParam\> `onClick`)

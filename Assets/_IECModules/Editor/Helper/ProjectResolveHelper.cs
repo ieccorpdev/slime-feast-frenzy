@@ -1,20 +1,88 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEditor;
+using UnityEngine;
 
 namespace _IECModules
 {
     public static class ProjectResolveHelper
     {
+        public static List<string> listObsoleteResolver = new List<string>
+        {
+            "Assets/ExternalDependencyManager",
+            "Assets/PlayServicesResolver"
+        };
+        private static GUIStyle m_WarningTextStyle;
+        private static string m_WarningString;
+        
+        public static List<string> listTemplatePathCheck = new List<string>
+        {
+            $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates",
+            $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/GradleTemplates"
+        };
 
-        public static void UpdateMainTemplateAndResolve()
+        private static string m_TemplateFolderPath; 
+        public static string TemplateFolderPath => m_TemplateFolderPath ?? (m_TemplateFolderPath 
+                                                       = listTemplatePathCheck.FirstOrDefault(Directory.Exists)); 
+
+
+        public static void EditorOnGUI()
+        {
+            if (m_WarningTextStyle == null)
+            {
+                m_WarningTextStyle = new GUIStyle(GUI.skin.textArea);
+                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0.5f, 0f);   
+            }
+            
+            m_WarningString = "";
+            listObsoleteResolver.ForEach(path =>
+            {
+                if (Directory.Exists(path)) m_WarningString += $"\n{path} Exist! Please Install External Dependency Manager Above!";
+
+            });
+            if(!string.IsNullOrEmpty(m_WarningString)) EditorGUILayout.TextArea($"WARNING:{m_WarningString}", m_WarningTextStyle);
+        }
+        
+        public static void ResolveProject() 
         {
             //EnableJetifier();
+            RemoveUnityAdsPackage();
             EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
+            UpdateApplovinQualityService();
+        }
+
+        public static void DeleteObsoleteResolver()
+        {
+            listObsoleteResolver.ForEach(path =>
+            {
+                if (FileUtil.DeleteFileOrDirectory(path))
+                {
+                    LogEditorHelper.AddLog($"DELETED: {path}");
+                }
+            });
+            AssetDatabase.Refresh();
+        }
+
+        private static void RemoveUnityAdsPackage()
+        {
+            LogEditorHelper.AddLog($"Remove Package: com.unity.ads");
+            PackageManagerHelper.Remove("com.unity.ads", null, true);
+        }
+        
+        private static void UpdateApplovinQualityService()
+        {
+#if PluginApplovin
+            LogEditorHelper.AddLog("AppLovin Disable Quality Service");
+            AppLovinSettings.Instance.QualityServiceEnabled = false;
+            EditorUtility.SetDirty(AppLovinSettings.Instance);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
         }
 
         /// <summary>Update <c>mainTemplate.gradle</c> and <c>AndroidManifest.xml</c> </summary>
@@ -23,104 +91,172 @@ namespace _IECModules
 
         private static void UpdateMainTemplateAndAndroidManifest()
         {
-            var mainTemplateDirectory = "Assets/Plugins/Android/";
-            var mainTemplateFileName = $"{mainTemplateDirectory}mainTemplate.gradle";
+            try
+            {
+                var manifestAndMainTemplateDirectory = "Assets/Plugins/Android/";
+                var mainTemplateFileName = $"{manifestAndMainTemplateDirectory}mainTemplate.gradle";
+                var launcherTemplateFileName = $"{manifestAndMainTemplateDirectory}launcherTemplate.gradle";
+                var baseTemplateFileName = $"{manifestAndMainTemplateDirectory}baseProjectTemplate.gradle";
+                var androidManifestFileName = $"{manifestAndMainTemplateDirectory}AndroidManifest.xml";
 
-            var androidManifestDirectory = "Assets/Plugins/Android/";
-            var androidManifestFileName = $"{androidManifestDirectory}AndroidManifest.xml";
+                var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
+                var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
 
-            var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
-            var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
+                if (File.Exists(mainTemplateFileName))
+                {
+                    LogEditorHelper.AddLogWarning("mainTemplate.gradle already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(manifestAndMainTemplateDirectory);
+                    FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/mainTemplate.gradle", mainTemplateFileName);
+                    LogEditorHelper.AddLog("mainTemplate.gradle created");
+                }
+                
+                if (File.Exists(launcherTemplateFileName))
+                {
+                    LogEditorHelper.AddLogWarning("launcherTemplate.gradle already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(manifestAndMainTemplateDirectory);
+                    FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/launcherTemplate.gradle", launcherTemplateFileName);
+                    LogEditorHelper.AddLog("launcherTemplate.gradle created");
+                }
 
-            if (File.Exists(mainTemplateFileName))
-            {
-                LogEditorHelper.AddLogWarning("mainTemplate.gradle already exists");
-            }
-            else
-            {
-                Directory.CreateDirectory(mainTemplateDirectory);
-                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.mainTemplate.gradle", mainTemplateFileName);
-                LogEditorHelper.AddLog("mainTemplate.gradle created");
-            }
+                if (File.Exists(baseTemplateFileName))
+                {
+                    LogEditorHelper.AddLogWarning("baseProjectTemplate.gradle already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(manifestAndMainTemplateDirectory);
+                    FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/baseProjectTemplate.gradle", baseTemplateFileName);
+                    LogEditorHelper.AddLog("baseProjectTemplate.gradle created");
+                }
 
-            if (File.Exists(networkSecurityConfigFileName))
-            {
-                LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
-            }
-            else
-            {
-                Directory.CreateDirectory(networkSecurityConfigDirectory);
-                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
-                LogEditorHelper.AddLog("network_security_config created");
-            }
+                if (File.Exists(networkSecurityConfigFileName))
+                {
+                    LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(networkSecurityConfigDirectory);
+                    FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
+                    LogEditorHelper.AddLog("network_security_config created");
+                }
 
-            if (File.Exists(androidManifestFileName))
-            {
-                LogEditorHelper.AddLogWarning("AndroidManifest.xml already exists");
-            }
-            else
-            {
-                Directory.CreateDirectory(androidManifestDirectory);
-                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.AndroidManifest.xml", androidManifestFileName);
-                LogEditorHelper.AddLog("AndroidManifest.xml created");
-            }
+                if (File.Exists(androidManifestFileName))
+                {
+                    LogEditorHelper.AddLogWarning("AndroidManifest.xml already exists");
+                }
+                else
+                {
+                    Directory.CreateDirectory(manifestAndMainTemplateDirectory);
+                    FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.AndroidManifest.xml", androidManifestFileName);
+                    LogEditorHelper.AddLog("AndroidManifest.xml created");
+                }
 
-            var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
-            var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
-            var multiDexAlreadyEnabled = true;
+                var mainTemplateFileContent = File.ReadAllText(mainTemplateFileName);
+                var launcherTemplateFileContent = File.ReadAllText(launcherTemplateFileName);
+                var baseTemplateFileContent = File.ReadAllText(baseTemplateFileName);
+                var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
+                
+                if (baseTemplateFileContent.Contains("com.android.tools.build:gradle:3.4.0"))
+                {
+                    baseTemplateFileContent = baseTemplateFileContent.Replace("com.android.tools.build:gradle:3.4.0",
+                        "com.android.tools.build:gradle:3.4.3");
+                    File.WriteAllText(baseTemplateFileName, baseTemplateFileContent);
+                    LogEditorHelper.AddLog("baseProjectTemplate.gradle Updated: com.android.tools.build:gradle:3.4.3");
+                }
+                
+                var multiDexAlreadyEnabled = true;
 
-            if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
-            {
-                multiDexAlreadyEnabled = false;
-                mainTemplateFileContent = mainTemplateFileContent.Replace(
-                    "        versionName '**VERSIONNAME**'",
-                    "        versionName '**VERSIONNAME**'\n        multiDexEnabled true");
-                File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
-                LogEditorHelper.AddLog("mainTemplate.gradle Updated: multiDexEnabled true");
-            }
+                if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
+                {
+                    multiDexAlreadyEnabled = false;
+                    mainTemplateFileContent = mainTemplateFileContent.Replace(
+                        "        versionName '**VERSIONNAME**'",
+                        "        versionName '**VERSIONNAME**'\n        multiDexEnabled true");
+                    File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+                    LogEditorHelper.AddLog("mainTemplate.gradle Updated: multiDexEnabled true");
+                }
 
-            if (!mainTemplateFileContent.Contains("implementation 'androidx.multidex:multidex:2.0.1'"))
-            {
-                multiDexAlreadyEnabled = false;
-                mainTemplateFileContent = mainTemplateFileContent.Replace(
-                    "\ndependencies {",
-                    "\ndependencies {\n	implementation 'androidx.multidex:multidex:2.0.1'");
-                File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
-                LogEditorHelper.AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
-            }
+                if (!mainTemplateFileContent.Contains("implementation 'androidx.multidex:multidex:2.0.1'"))
+                {
+                    multiDexAlreadyEnabled = false;
+                    mainTemplateFileContent = mainTemplateFileContent.Replace(
+                        "\ndependencies {",
+                        "\ndependencies {\n	implementation 'androidx.multidex:multidex:2.0.1'");
+                    File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+                    LogEditorHelper.AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
+                }
+                
+                if (!launcherTemplateFileContent.Contains("multiDexEnabled true"))
+                {
+                    multiDexAlreadyEnabled = false;
+                    launcherTemplateFileContent = launcherTemplateFileContent.Replace(
+                        "        versionName '**VERSIONNAME**'",
+                        "        versionName '**VERSIONNAME**'\n        multiDexEnabled true");
+                    File.WriteAllText(launcherTemplateFileName, launcherTemplateFileContent);
+                    LogEditorHelper.AddLog("launcherTemplate.gradle Updated: multiDexEnabled true");
+                }
 
-            var androidManifestMultidexString = "android:name=\"androidx.multidex.MultiDexApplication\"";
-            if (!androidManifestFileContent.Contains(androidManifestMultidexString))
-            {
-                multiDexAlreadyEnabled = false;
-                var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
-                var applicationTagReplaced = applicationTag.Replace(
-                    ">",
-                    $" {androidManifestMultidexString}>");
-                androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
-                File.WriteAllText(androidManifestFileName, androidManifestFileContent);
-                LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestMultidexString}");
-            }
+                if (!launcherTemplateFileContent.Contains("implementation 'androidx.multidex:multidex:2.0.1'"))
+                {
+                    multiDexAlreadyEnabled = false;
+                    launcherTemplateFileContent = launcherTemplateFileContent.Replace(
+                        "\ndependencies {",
+                        "\ndependencies {\n	implementation 'androidx.multidex:multidex:2.0.1'");
+                    File.WriteAllText(launcherTemplateFileName, launcherTemplateFileContent);
+                    LogEditorHelper.AddLog("launcherTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
+                }
 
-            if (multiDexAlreadyEnabled)
-            {
-                LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
-            }
+                var androidManifestMultidexString = "android:name=\"androidx.multidex.MultiDexApplication\"";
+                if (!androidManifestFileContent.Contains(androidManifestMultidexString))
+                {
+                    multiDexAlreadyEnabled = false;
+                    var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
+                    var applicationTagReplaced = applicationTag.Replace(
+                        ">",
+                        $" {androidManifestMultidexString}>");
+                    androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                    File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestMultidexString}");
+                }
 
-            var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
-            if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
-            {
-                var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
-                var applicationTagReplaced = applicationTag.Replace(
-                    ">",
-                    $" {androidManifestNetworkSecurityConfigString}>");
-                androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
-                File.WriteAllText(androidManifestFileName, androidManifestFileContent);
-                LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestNetworkSecurityConfigString}");
+                if (multiDexAlreadyEnabled)
+                {
+                    LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
+                }
+                
+                var androidDebuggableStr = "android:debuggable=\"true\"";
+                if (androidManifestFileContent.Contains(androidDebuggableStr))
+                {
+                    androidManifestFileContent = androidManifestFileContent.Replace(androidDebuggableStr, androidDebuggableStr.Replace("true", "false"));
+                    File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: android:debuggable Set to False");
+                }
+
+                var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
+                if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
+                {
+                    var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
+                    var applicationTagReplaced = applicationTag.Replace(
+                        ">",
+                        $" {androidManifestNetworkSecurityConfigString}>");
+                    androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                    File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestNetworkSecurityConfigString}");
+                }
+                else
+                {
+                    LogEditorHelper.AddLog("network_security_config already enabled in AndroidManifest.xml");
+                }
             }
-            else
+            catch (Exception e)
             {
-                LogEditorHelper.AddLog("network_security_config already enabled in AndroidManifest.xml");
+                LogEditorHelper.AddLogError($"UpdateMainTemplateAndAndroidManifest\n{e.Message}\n{e.StackTrace}");
             }
         }
 
@@ -151,11 +287,20 @@ namespace _IECModules
                 return;
             }
 
-            mainTemplateFileContent = mainTemplateFileContent.Replace("// Android Resolver Repos Start\n", jetifierMainTemplateStr);
-            File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
-            LogEditorHelper.AddLog("Jetifier (androidx) added in mainTemplate.gradle");
+            if (mainTemplateFileContent.Contains("// Android Resolver Repos Start\n"))
+            {
+                mainTemplateFileContent = mainTemplateFileContent.Replace("// Android Resolver Repos Start\n", jetifierMainTemplateStr);
+                File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
+                LogEditorHelper.AddLog("Jetifier (androidx) added in mainTemplate.gradle");
+            }
+            else
+            {
+                LogEditorHelper.AddLogError("Jetifier (androidx) NOT added in mainTemplate.gradle");
+            }
         }
 
+        /// <summary>Obsolete in Unity 2019.4 LTS</summary>
+        [Obsolete]
         private static void EnableJetifier()
         {
             const string gvhProjectSettingFile = "ProjectSettings/GvhProjectSettings.xml";
@@ -190,17 +335,28 @@ namespace _IECModules
 
         private static void EnableJetifierNew()
         {
-            var gradleDirectoty = "Assets/Plugins/Android/";
-            const string gradleProperties = "Assets/Plugins/Android/gradleTemplate.properties";
-            if (!File.Exists(gradleProperties))
+            var gradleDirectory = "Assets/Plugins/Android";
+            var gradlePropertiesFile = $"{gradleDirectory}/gradleTemplate.properties";
+            if (!File.Exists(gradlePropertiesFile))
             {
-                Directory.CreateDirectory(gradleDirectoty);
-                FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.gradle.properties", gradleProperties);
+                Directory.CreateDirectory(gradleDirectory);
+                FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/gradleTemplate.properties", gradlePropertiesFile);
                 LogEditorHelper.AddLog("gradle.properties created");
             }
             else
             {
                 LogEditorHelper.AddLogWarning("gradle.properties already exist");
+            }
+
+            var gradlePropertiesFileContent = File.ReadAllText(gradlePropertiesFile);
+
+            if (!gradlePropertiesFileContent.Contains("android.useAndroidX=true")
+            || !gradlePropertiesFileContent.Contains("android.enableJetifier=true"))
+            {
+                gradlePropertiesFileContent += "\nandroid.useAndroidX=true";
+                gradlePropertiesFileContent += "\nandroid.enableJetifier=true";
+                File.WriteAllText(gradlePropertiesFile, gradlePropertiesFileContent);
+                LogEditorHelper.AddLog("android.useAndroidX=true & android.enableJetifier=true Added in gradle.properties");
             }
         }
 
