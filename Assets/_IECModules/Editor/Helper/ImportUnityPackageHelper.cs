@@ -116,14 +116,6 @@ namespace _IECModules
         {
             LogEditorHelper.AddLog($"Import Package Done: {packageName}");
             //Debug.Log("import package done");
-            if (FileUtil.DeleteFileOrDirectory("Assets/ExternalDependencyManager"))
-            {
-                LogEditorHelper.AddLog("Delete EDM");
-            }
-            if (FileUtil.DeleteFileOrDirectory("Assets/PlayServicesResolver"))
-            {
-                LogEditorHelper.AddLog("Delete Play Service Resolver");
-            }
             AssetDatabase.Refresh();
 
         }
