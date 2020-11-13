@@ -44,7 +44,7 @@ namespace IEC
         public bool isHaveTutorital;
         public bool isHaveHint;
 
-        public BaseComponent GetGrid(int row, int col, int color)
+        public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
@@ -52,14 +52,22 @@ namespace IEC
             var grid = grids[row, col];
             if(grid != null)
             {
-                if (grid.IsAllowConnect(color))
+                if (isRequireTrueColor)
                 {
-                    return grid;
+                    if (grid.IsAllowConnect(color))
+                    {
+                        return grid;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    return grid;
                 }
+
             }
             else
             {

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace IEC
 {
@@ -24,15 +25,25 @@ namespace IEC
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
-            switch (gameObject)
+            switch (gameEvent)
             {
 
             }
         }
 
-        private void CheckHint()
-        {
+        public BaseComponent target;
 
+        [Button]
+        private void FindLine()
+        {
+            target = Game.listTarget[0];
+            var listGridNear = target.GetGridNearCanConnect(target.ID, 0);
+
+            for (int i = 0; i < listGridNear.Count; i++)
+            {
+                Debug.LogError("Name: " + listGridNear[i].name);
+            }
         }
+
     }
 }
