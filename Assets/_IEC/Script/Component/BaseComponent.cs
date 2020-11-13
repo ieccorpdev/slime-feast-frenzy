@@ -29,25 +29,26 @@ namespace IEC
 
         public int WaterColor;
 
-        protected int m_RotY, m_OldWaterColor;
+        protected int m_Rot, m_OldWaterColor;
 
         protected bool m_IsOldStatusWater;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
 
-        protected virtual int[,] DefaultLine => new int[3, 3]
+        protected virtual int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
             { 0, 1, 0},
             { 0, 0, 0}
         };
 
-        protected int[,] CurerentLine = new int[3, 3];
+        protected int[,] CurrentLine = new int[3, 3];
+        protected int[,] DefaultLine = new int[3, 3];
 
-        public bool IsHaveLineTop => CurerentLine[0, 1] == 1;
-        public bool IsHaveLineBot => CurerentLine[2, 1] == 1;
-        public bool IsHaveLineLeft => CurerentLine[1, 0] == 1;
-        public bool IsHaveLineRight => CurerentLine[1, 2] == 1;
+        public bool IsHaveLineTop => CurrentLine[0, 1] == 1;
+        public bool IsHaveLineBot => CurrentLine[2, 1] == 1;
+        public bool IsHaveLineLeft => CurrentLine[1, 0] == 1;
+        public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         public List<int> m_ListWaterColor = new List<int>();
 
@@ -57,9 +58,10 @@ namespace IEC
             Row = row;
             Col = col;
             WaterColor = color;
-            m_RotY = rot;
-            CurerentLine = GetDefaultLine(style);
-            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
+            m_Rot = rot;
+            DefaultLine = GetDefaultLine(style);
+            CurrentLine = DefaultLine;
+            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_Rot], 0f);
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
@@ -95,7 +97,7 @@ namespace IEC
 
         protected virtual int[,] GetDefaultLine(int style)
         {
-            return DefaultLine;
+            return OriginLine;
         }
 
         private int GetTerrainType(int row, int col)
@@ -335,7 +337,7 @@ namespace IEC
                 var str = "";
                 for (int j = 0; j < 3; j++)
                 {
-                    str += CurerentLine[i, j];
+                    str += CurrentLine[i, j];
                 }
                 Debug.LogError(str);
             }

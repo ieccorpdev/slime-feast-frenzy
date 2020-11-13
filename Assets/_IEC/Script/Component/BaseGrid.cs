@@ -12,9 +12,16 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rot, color, style);
+
+            SetGridLine(m_Rot);
+        }
+
+        private void SetGridLine(int rot)
+        {
+            CurrentLine = DefaultLine;
             for (int i = 0; i < rot; i++)
             {
-                CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+                CurrentLine = MathHelper.RotateMatrix(CurrentLine, 3);
             }
         }
 
@@ -29,8 +36,8 @@ namespace IEC
             IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_RotY = (m_RotY + 1) % 4;
-            var rot = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
+            m_Rot = (m_Rot + 1) % 4;
+            var rot = Quaternion.Euler(0f, TotalRots[m_Rot], 0f);
 
             var time = Game.isFasterRotate ? .15f : .3f;
 
@@ -44,7 +51,11 @@ namespace IEC
                 {
                     transform.localPosition = currentPos;
                     IsRotating = false;
-                    CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+
+                    //CurrentLine = MathHelper.RotateMatrix(CurrentLine, 3);
+
+                    SetGridLine(m_Rot);
+
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
                     if (Game.isTutorial)
