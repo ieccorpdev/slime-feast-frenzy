@@ -34,6 +34,7 @@ namespace IEC
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
+        public string[] hintDatas;
 
         [Header("AB Test")]
         public bool isHaveMixColor;

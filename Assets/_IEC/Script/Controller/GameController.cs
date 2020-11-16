@@ -53,8 +53,15 @@ namespace IEC
             var strLevelPath = Game.isHaveMixColor ? "levelsList" : "levelsList1";
             var strLevels = Resources.Load<TextAsset>(strLevelPath);
 
-            var file = strLevels.text;
-            Game.levelDatas = file.Split(new string[] { "\n", "\r", "\r\n" },
+            var strHintPath = Game.isHaveMixColor ? "hintList" : "hintList1";
+            var strHints = Resources.Load<TextAsset>(strHintPath);
+
+            var levelDatas = strLevels.text;
+            Game.levelDatas = levelDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            var hintDatas = strHints.text;
+            Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -113,16 +120,24 @@ namespace IEC
             }
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+
             var strMode = leveText[1];
             var strGrid = leveText[3];
+
+            var hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
+
+            var strGridHints = hintText[3];
 
             int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
 
             var gridsData = strGrid.Trim().Split('_');
             string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
 
+            var gridHintDatas = strGridHints.Trim().Split('_');
+            string[,] gridHints = GetGridValue(gridsData, size, IsLoopLevel(strMode));
+
             LevelConfig levelConfig = new LevelConfig();
-            levelConfig.SetSize(size, grids);
+            levelConfig.SetSize(size, grids, gridHints);
             Game.size = size;
             Game.maxGrassOnWall = 15 - size;
             Game.grids = new BaseComponent[size, size];
@@ -625,8 +640,9 @@ namespace IEC
         public int size;
         public int[] topWall, botWall, leftWall, rightWall;
         public string[,] gridTypes;
+        public int[,] gridHints;
 
-        public void SetSize(int size, string[,] gridTypes)
+        public void SetSize(int size, string[,] gridTypes, string[,] gridHints)
         {
             this.size = size;
 
@@ -636,13 +652,22 @@ namespace IEC
             rightWall = new int[size];
 
             this.gridTypes = gridTypes;
+            this.gridHints = new int[size, size];
 
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
                 {
-                    var grid = gridTypes[i, j].Trim().Split('_');
-                    var tempValue = int.Parse(grid[0]);
+                    var gridData = gridTypes[i, j].Trim();
+                    var tempValue = int.Parse(gridData);
+
+                    var gridHint = gridHints[i, j].Trim();
+
+                    if (i != 0 && i != size - 1 && j != 0 && j != size - 1)
+                    {
+                        var rot = gridHint.Substring(2, 1);
+                        this.gridHints[i, j] = int.Parse(rot);
+                    }
 
                     if (i == 0)
                     {
