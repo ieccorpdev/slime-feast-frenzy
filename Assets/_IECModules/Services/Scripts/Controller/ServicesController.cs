@@ -395,6 +395,7 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
