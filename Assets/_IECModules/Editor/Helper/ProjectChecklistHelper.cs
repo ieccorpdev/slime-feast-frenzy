@@ -157,15 +157,18 @@ namespace _IECModules
                 googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
 
                 var lastAbString = "";
+                var lastVersionString = "";
                 foreach (var row in googleDocsData)
                 {
                     if (row.Count >= 5 
                         && !string.IsNullOrWhiteSpace(row[0]) 
                         && !string.IsNullOrWhiteSpace(row[1]))
                     {
+                        lastVersionString = row[0];
                         lastAbString = row[4];
                     }
                 }
+                PlayerSettings.bundleVersion = lastVersionString;
                 UpdateAbVersion(lastAbString);
             }
             else
