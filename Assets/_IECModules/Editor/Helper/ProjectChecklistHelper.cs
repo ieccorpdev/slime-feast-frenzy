@@ -50,7 +50,8 @@ namespace _IECModules
             ApplovinAndroidBannerID,
             ApplovinAndroidRewardID,
             IronSourceIOSID,
-            IronSourceAndroidID
+            IronSourceAndroidID,
+            AbTestList
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -92,6 +93,7 @@ namespace _IECModules
             {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
+            {"AB Test List", ChecklistItemName.AbTestList}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -136,12 +138,53 @@ namespace _IECModules
             ApplySdkSetting(googleDocsData);
         }
 
+        public static void UpdateAbVersionFromChecklist(string googleDocsUrl)
+        {
+            var checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(googleDocsUrl));
+            var googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
+
+            dictionaryCheckListValue = googleDocsData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
+                .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
+
+            if (dictionaryCheckListValue.TryGetValue(ChecklistItemName.AbTestList, out string abTestListUrl))
+            {
+                if (string.IsNullOrWhiteSpace(abTestListUrl))
+                {
+                    Debug.LogError("Project Checklist is missing URL link to AB Test List");
+                }
+
+                checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(abTestListUrl));
+                googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
+
+                var lastAbString = "";
+                foreach (var row in googleDocsData)
+                {
+                    if (row.Count >= 5 
+                        && !string.IsNullOrWhiteSpace(row[0]) 
+                        && !string.IsNullOrWhiteSpace(row[1]))
+                    {
+                        lastAbString = row[4];
+                    }
+                }
+                UpdateAbVersion(lastAbString);
+            }
+            else
+            {
+                Debug.LogError("Project Checklist is missing URL link to AB Test List");
+            }
+        }
+
         public static void UpdateAbVersion(string setAbString)
         {
             LoadServicesConfig();
 
             var listConfig = servicesConfig.abTestConfigs.ToList();
             var splits = setAbString.Split('_');
+            if (splits.Length != 3)
+            {
+                Debug.LogError("Wrong AB version string format");
+                return;
+            }
             var abName = splits[0] + "_" + splits[1];
             var verNumber = int.Parse(splits[2].Split('v')[1]);
             var verRootNumber = (verNumber / 10) * 10;
@@ -186,7 +229,7 @@ namespace _IECModules
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
-        
+
         private static void ApplySdkSetting(List<List<string>> sdkData)
         {
 

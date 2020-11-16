@@ -248,9 +248,9 @@ namespace _IECModules
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
 
             CreateGuiBreakLine();
-            if (GUILayout.Button("Update from Project Checklist (WIP)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
-                Debug.Log("Work in progress !!!");
+                ProjectChecklistHelper.UpdateAbVersionFromChecklist(m_GoogleSheetUrl);
             }
 
             EditorGUILayout.EndHorizontal();
