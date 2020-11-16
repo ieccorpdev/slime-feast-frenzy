@@ -11,6 +11,7 @@ namespace IEC
         public KochavaAnalyticModule(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
+            Debug.LogError("Kochava AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
             Kochava.Tracker.Config.SetAppGuid(appID);
             Kochava.Tracker.Config.SetLogLevel(Kochava.DebugLogLevel.info);
             Kochava.Tracker.Config.SetRetrieveAttribution(true);

@@ -54,6 +54,9 @@ namespace IEC
                         m_State = SdkState.NotInit;
                         Debug.LogError("Facebook init fail");
                     }
+
+                    var appID = FB.AppId;
+                    Debug.LogError("Facebook AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
                     
                     UnityToolbag.Dispatcher.InvokeAsync(() =>
                     {
