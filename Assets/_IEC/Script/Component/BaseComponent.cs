@@ -236,7 +236,7 @@ namespace IEC
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineBot)
-                    { 
+                    {  
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -279,75 +279,6 @@ namespace IEC
             }
 
             if(GridType == GridType.WALL)
-            {
-                var m_TempGrid = GetOppositeWall(color);
-                if (m_TempGrid != null)
-                {
-                    m_ListGridConnect.Add(m_TempGrid);
-                }
-            }
-
-            return m_ListGridConnect;
-        }
-
-        public List<BaseComponent> GetGridNearCanConnect(int id, int color)
-        {
-            m_ListGridConnect.Clear();
-
-            if (GridType == GridType.GRID_TARGET)
-            {
-                if (id != ID) return m_ListGridConnect;
-            }
-
-            if (IsHaveLineTop)
-            {
-                m_TempGrid = Game.GetGrid(Row - 1, Col, color);
-                if (m_TempGrid != null)
-                {
-                    if (m_TempGrid.IsHaveLineBot)
-                    {
-                        m_ListGridConnect.Add(m_TempGrid);
-                    }
-                }
-            }
-
-            if (IsHaveLineBot)
-            {
-                m_TempGrid = Game.GetGrid(Row + 1, Col, color);
-                if (m_TempGrid != null)
-                {
-                    if (m_TempGrid.IsHaveLineTop)
-                    {
-                        m_ListGridConnect.Add(m_TempGrid);
-                    }
-                }
-            }
-
-            if (IsHaveLineLeft)
-            {
-                m_TempGrid = Game.GetGrid(Row, Col - 1, color);
-                if (m_TempGrid != null)
-                {
-                    if (m_TempGrid.IsHaveLineRight)
-                    {
-                        m_ListGridConnect.Add(m_TempGrid);
-                    }
-                }
-            }
-
-            if (IsHaveLineRight)
-            {
-                m_TempGrid = Game.GetGrid(Row, Col + 1, color);
-                if (m_TempGrid != null)
-                {
-                    if (m_TempGrid.IsHaveLineLeft)
-                    {
-                        m_ListGridConnect.Add(m_TempGrid);
-                    }
-                }
-            }
-
-            if (GridType == GridType.WALL)
             {
                 var m_TempGrid = GetOppositeWall(color);
                 if (m_TempGrid != null)

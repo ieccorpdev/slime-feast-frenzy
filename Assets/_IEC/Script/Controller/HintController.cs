@@ -31,19 +31,5 @@ namespace IEC
             }
         }
 
-        public BaseComponent target;
-
-        [Button]
-        private void FindLine()
-        {
-            target = Game.listTarget[0];
-            var listGridNear = target.GetGridNearCanConnect(target.ID, 0);
-
-            for (int i = 0; i < listGridNear.Count; i++)
-            {
-                Debug.LogError("Name: " + listGridNear[i].name);
-            }
-        }
-
     }
 }

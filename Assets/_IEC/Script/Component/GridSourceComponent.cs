@@ -25,8 +25,8 @@ namespace IEC
 
         protected int[,] CrossLine => new int[3, 3]
         {
-            { 0, 1, 0},
-            { 1, 1, 0},
+            { 0, 0, 0},
+            { 1, 1, 1},
             { 0, 1, 0}
         };
 
