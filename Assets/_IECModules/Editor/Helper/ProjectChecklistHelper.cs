@@ -10,6 +10,7 @@ namespace _IECModules
     public static class ProjectChecklistHelper
     {
         public static ServicesConfig servicesConfig;
+        public static string configFolderPath;
 
         public enum ChecklistItemName
         {
@@ -102,6 +103,7 @@ namespace _IECModules
             {
                 var assets = AssetDatabase.FindAssets("t:ServicesConfig");
                 var servicesConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
+                configFolderPath = Path.GetDirectoryName(servicesConfigPath);
                 servicesConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(servicesConfigPath);
                 return servicesConfigPath;
             }
@@ -132,6 +134,57 @@ namespace _IECModules
             servicesConfig.projectChecklistUrl = googleDocsUrl;
             
             ApplySdkSetting(googleDocsData);
+        }
+
+        public static void UpdateAbVersion(string setAbString)
+        {
+            LoadServicesConfig();
+
+            var listConfig = servicesConfig.abTestConfigs.ToList();
+            var splits = setAbString.Split('_');
+            var abName = splits[0] + "_" + splits[1];
+            var verNumber = int.Parse(splits[2].Split('v')[1]);
+            var verRootNumber = (verNumber / 10) * 10;
+            var abCount = verNumber % 10 + 1;
+
+            listConfig.ForEach(x =>
+            {
+                x.IsActive = false;
+                EditorUtility.SetDirty(x);
+            });
+
+            var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
+            if (config == null)
+            {
+                Debug.Log("create new AB config " + abName);
+                config = ScriptableObject.CreateInstance<ABTestConfig>();
+                config.name = abName;
+                AssetDatabase.CreateAsset(config, configFolderPath + "/" + abName + ".asset");
+                listConfig.Add(config);
+                servicesConfig.abTestConfigs = listConfig.ToArray();
+                EditorUtility.SetDirty(servicesConfig);
+            }
+            else
+            {
+                Debug.Log("update exist AB config " + abName);
+            }
+
+            config.name = abName;
+            config.KeyName = abName;
+            config.IsActive = true;
+            config.IsOnlyNewInstall = true;
+            config.IsOverride = false;
+            var listAb = new List<string>();
+            for (int i = 0; i < abCount; i++)
+            {
+                listAb.Add(abName + "_v" + (verRootNumber + i).ToString());
+            }
+            config.ListEventsAB = listAb.ToArray();
+            config.SetDefaultRatioAndAB();
+
+            EditorUtility.SetDirty(config);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
         }
         
         private static void ApplySdkSetting(List<List<string>> sdkData)

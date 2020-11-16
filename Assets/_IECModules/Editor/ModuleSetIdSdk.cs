@@ -17,12 +17,17 @@ namespace _IECModules
             GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
         }
 
-        public const string VERSION = "1.2.0";
+        public const string VERSION = "1.3.0";
 
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
+
+        private const string m_AbVersionDefault =
+            "AB_20201029_v44";
+
+        private string m_AbVersionString = m_AbVersionDefault;
 
         private bool m_ShowDebugButton = false;
 
@@ -233,6 +238,21 @@ namespace _IECModules
                 OnClickSetSDKId();
             }
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+
+            CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
+
+            if (GUILayout.Button("Update string directly", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
+            }
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+
+            CreateGuiBreakLine();
+            if (GUILayout.Button("Update from Project Checklist (WIP)", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            {
+                Debug.Log("Work in progress !!!");
+            }
+
             EditorGUILayout.EndHorizontal();
 
             LogEditorHelper.EditorOnGUI();
