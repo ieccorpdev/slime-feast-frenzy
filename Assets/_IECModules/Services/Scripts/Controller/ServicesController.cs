@@ -189,6 +189,14 @@ namespace IEC
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal());
 
+#if (PluginKochava)
+            if (Application.isEditor)
+            {
+                Debug.LogError("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogError("Kochava iOS ID: " + config.kochavaConfig.iosID);
+            }
+#endif
+
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
                 m_ListAnalytics.Add(new AnalyticEventMock());
