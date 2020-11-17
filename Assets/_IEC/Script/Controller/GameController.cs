@@ -226,6 +226,8 @@ namespace IEC
 
             Game.isMultiColor = false;
             Game.isTutorial = false;
+            Game.isAllowHint = true;
+            Game.maxHintIndex = 0;
         }
 
         private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)

@@ -17,7 +17,8 @@ namespace IEC
             public const string GAME_CHECK_TUTORIAL = "GamePlay.GAME_CHECK_TUTORIAL";
             public const string GAME_GRID_CLICK_TUTORIAL = "GamePlay.GAME_GRID_CLICK_TUTORIAL";
 
-            public const string GAME_HINT = "GamePlay.GAME_HINT";
+            public const string GAME_START_HINT = "GamePlay.GAME_START_HINT";
+            public const string GAME_AFTER_HINT = "GamePlay.GAME_AFTER_HINT";
         }
     }
 }

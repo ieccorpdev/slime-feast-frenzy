@@ -80,6 +80,13 @@ namespace IEC
                 PlayerData.isVibrateOn = !PlayerData.isVibrateOn;
                 SetStatusSetting();
             });
+
+            UI.btnHint.onClick.AddListener(() => {
+                Services.ShowRewardAds(() => {
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_START_HINT);
+                });
+            });
+
         }
 
         public void SetActiveButtons(bool isActive)
@@ -92,6 +99,8 @@ namespace IEC
         public void SetupAbUI()
         {
             UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
+            UI.btnSkip.gameObject.SetActive(!Game.isHaveHint);
+            UI.btnHint.gameObject.SetActive(Game.isHaveHint);
             SetStatusSetting();
             Sound.SetupAudio();
         }

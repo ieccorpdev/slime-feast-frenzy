@@ -17,7 +17,7 @@ namespace IEC
 
         public bool isShowPopup;
 
-        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial;
+        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial, isAllowHint;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -32,6 +32,7 @@ namespace IEC
         public List<BaseComponent> listGrids = new List<BaseComponent>();
 
         public List<BaseComponent> listHints = new List<BaseComponent>();
+        public int maxHintIndex;
 
 
         public List<int> listTerrainType = new List<int>();
@@ -43,8 +44,6 @@ namespace IEC
         public bool isHaveMixColor;
         public bool isFasterRotate;
         public bool isHaveSetting;
-
-        [Header("Prepare")]
         public bool isHaveTutorital;
         public bool isHaveHint;
 

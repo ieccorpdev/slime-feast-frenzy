@@ -27,32 +27,32 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_HINT:
-                    Hint();
+                case EventList.GamePlay.GAME_START_HINT:
+                    StartHint();
+                    break;
+                case EventList.GamePlay.GAME_AFTER_HINT:
+                    Game.isAllowHint = true;
+                    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
                     break;
             }
         }
 
-        [NaughtyAttributes.Button]
-        public void Hint()
+        public void StartHint()
         {
-            var maxIndex = Game.listHints.Count - 1;
-            var size = Game.size - 2;
-
-            var step = 0;
-            var index = 0;
-
-            while (step < size && index < maxIndex)
+            if (!Game.isPlaying) return;
+            if (!Game.isAllowHint) return;
+            Game.isAllowHint = false;
+            Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + Game.size - 2, 0, Game.listHints.Count);
+            for (int i = 0; i < Game.maxHintIndex; i++)
             {
-                var grid = Game.listHints[index];
+                var grid = Game.listHints[i];
                 if (!grid.IsTrueRot)
                 {
                     grid.OnHint();
-                    step += 1;
                 }
-                index += 1;
             }
-            EventController.RaiseEventDelay(.3f, EventList.GamePlay.CHECK_GAME_OVER);
+
+            EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT);
         }
 
     }
