@@ -6,6 +6,7 @@ namespace IEC
         {
             public const string RESET_CONFIG = "GamePlay.RESET_CONFIG";
 
+            public const string GAME_START = "GamePlay.GAME_START";
             public const string GAME_RESTART = "GamePlay.GAME_RESTART";
             public const string GAME_SPAWN_LEVEL = "GamePlay.GAME_SPAWN_LEVEL";
             public const string CHECK_GAME_OVER = "GamePlay.CHECK_GAME_OVER";
@@ -15,6 +16,9 @@ namespace IEC
 
             public const string GAME_CHECK_TUTORIAL = "GamePlay.GAME_CHECK_TUTORIAL";
             public const string GAME_GRID_CLICK_TUTORIAL = "GamePlay.GAME_GRID_CLICK_TUTORIAL";
+
+            public const string GAME_START_HINT = "GamePlay.GAME_START_HINT";
+            public const string GAME_AFTER_HINT = "GamePlay.GAME_AFTER_HINT";
         }
     }
 }

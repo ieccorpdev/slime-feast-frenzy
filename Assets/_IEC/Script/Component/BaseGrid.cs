@@ -9,12 +9,24 @@ namespace IEC
     {
         protected Tween m_Tween;
 
-        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
-            base.OnInit(gridType, row, col, rot, color, style);
+            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
+            SetGridLine(m_TrueRot);
+        }
+
+        public override void AfterInit(bool isMultiColor)
+        {
+            base.AfterInit(isMultiColor);
+            SetGridLine(m_CurrentRot);
+        }
+
+        private void SetGridLine(int rot)
+        {
+            CurrentLine = DefaultLine;
             for (int i = 0; i < rot; i++)
             {
-                CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+                CurrentLine = MathHelper.RotateMatrix(CurrentLine, 3);
             }
         }
 
@@ -29,8 +41,8 @@ namespace IEC
             IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_RotY = (m_RotY + 1) % 4;
-            var rot = Quaternion.Euler(0f, TotalRots[m_RotY], 0f);
+            m_CurrentRot = (m_CurrentRot + 1) % 4;
+            var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             var time = Game.isFasterRotate ? .15f : .3f;
 
@@ -44,7 +56,8 @@ namespace IEC
                 {
                     transform.localPosition = currentPos;
                     IsRotating = false;
-                    CurerentLine = MathHelper.RotateMatrix(CurerentLine, 3);
+                    SetGridLine(m_CurrentRot);
+
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
 
                     if (Game.isTutorial)
@@ -52,6 +65,37 @@ namespace IEC
                         EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL);
                     }
                 });
+        }
+
+        public override void OnHint()
+        {
+            base.OnHint();
+
+            IsRotating = true;
+            m_Tween?.Kill(true);
+
+            m_CurrentRot = m_TrueRot;
+            var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+
+            var time = Game.isFasterRotate ? .15f : .3f;
+
+            Sequence sequence = DOTween.Sequence();
+
+            var currentPos = transform.localPosition;
+
+            m_Tween = sequence.Join(transform.DOLocalRotateQuaternion(rot, time))
+                .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
+                .OnComplete(() =>
+                {
+                    transform.localPosition = currentPos;
+                    IsRotating = false;
+                    SetGridLine(m_CurrentRot);
+                });
+        }
+        public override void OnDestroyMe()
+        {
+            base.OnDestroyMe();
+            m_Tween?.Kill(true);
         }
     }
 }

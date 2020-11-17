@@ -17,7 +17,7 @@ namespace IEC
 
         private List<int> m_ListUsed = new List<int>();
 
-        protected override int[,] DefaultLine => new int[3, 3]
+        protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
             { 0, 1, 0},
@@ -38,9 +38,9 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int type = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
-            base.OnInit(gridType, row, col, rot, color, type);
+            base.OnInit(gridType, row, col,rotTrue, rot, color, style);
             IsRotating = false;
         }
 
@@ -58,7 +58,7 @@ namespace IEC
             m_WallHoleObj.SetActive(isHaveHole);
 
             m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
-            CurerentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : DefaultLine;
+            CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
 
             m_ListUsed.Clear();
 

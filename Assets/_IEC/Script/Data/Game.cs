@@ -17,7 +17,7 @@ namespace IEC
 
         public bool isShowPopup;
 
-        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial;
+        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial, isAllowHint;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -31,20 +31,23 @@ namespace IEC
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
 
+        public List<BaseComponent> listHints = new List<BaseComponent>();
+        public int maxHintIndex;
+
+
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
+        public string[] hintDatas;
 
         [Header("AB Test")]
         public bool isHaveMixColor;
         public bool isFasterRotate;
         public bool isHaveSetting;
-
-        [Header("Prepare")]
         public bool isHaveTutorital;
         public bool isHaveHint;
 
-        public BaseComponent GetGrid(int row, int col, int color)
+        public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
@@ -52,14 +55,22 @@ namespace IEC
             var grid = grids[row, col];
             if(grid != null)
             {
-                if (grid.IsAllowConnect(color))
+                if (isRequireTrueColor)
                 {
-                    return grid;
+                    if (grid.IsAllowConnect(color))
+                    {
+                        return grid;
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
-                    return null;
+                    return grid;
                 }
+
             }
             else
             {
@@ -78,19 +89,4 @@ namespace IEC
         GRID_CROSS,
         GRID_CURVE
     }
-
-    // Wall 1
-    // Wall hole 2
-    // Grid source 5
-    // Grid target 10
-    // Grid straight 15
-    // Grid cross 16
-    // Grid curve 17
-
-    // Color [0, 5] // Blue - Red - Yellow
-    // Source [0 - 2] straight - cross - curve
-
-    // 10_0_0_0 GridType_Rot_Color_Style
-
-
 }

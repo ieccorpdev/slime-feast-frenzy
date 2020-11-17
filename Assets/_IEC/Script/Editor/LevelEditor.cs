@@ -79,7 +79,7 @@ namespace IEC
                     ClearLog();
                     LevelConfig levelConfig = new LevelConfig();
 
-                    string path = "Assets/_IEC/Config/levelsList.txt";
+                    string path = "Assets/_IEC/Resources/solucesList.txt";
                     var file = File.ReadAllText(path);
                     string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
                                      System.StringSplitOptions.RemoveEmptyEntries);
@@ -94,7 +94,7 @@ namespace IEC
                     }
 
 
-                    string path2 = "Assets/_IEC/Config/levelsList1.txt";
+                    string path2 = "Assets/_IEC/Resources/solucesList1.txt";
                     //Write some text to the test.txt file
                     StreamWriter writer = new StreamWriter(path2, true);
                     writer.WriteLine(str);

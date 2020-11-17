@@ -163228,6 +163228,8 @@ MonoBehaviour:
   btnRestart: {fileID: 0}
   btnSkip: {fileID: 0}
   btnGONext: {fileID: 0}
+  btnSetting: {fileID: 0}
+  popupSettings: {fileID: 0}
 --- !u!1 &1398597165
 GameObject:
   m_ObjectHideFlags: 0
@@ -202242,6 +202244,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
+  transTutHand: {fileID: 0}
 --- !u!1 &1766897737
 GameObject:
   m_ObjectHideFlags: 0
@@ -252521,16 +252524,33 @@ MonoBehaviour:
     isDebugReset: 0
     emptyData: 0
     timeDelayFullAds: 0
+    isShowPopup: 0
     isPlaying: 0
     isMultiColor: 0
+    isHaveWaterConnection: 0
+    isTutorial: 0
     size: 0
     seed: 0
     timePlay: 0
+    gridTutId: 0
+    gridRotCount: 0
+    tutCount: 0
+    maxGrassOnWall: 0
+    rotTutConfig:
+      row: 0
+      col: 0
+      rotCount: 0
     listSource: []
     listTarget: []
     listGrids: []
     listTerrainType: 
     levelDatas: []
+    hintDatas: []
+    isHaveMixColor: 0
+    isFasterRotate: 0
+    isHaveSetting: 0
+    isHaveTutorital: 0
+    isHaveHint: 0
   m_PlayerSecret:
     lastVersion: 
     isNoAds: 0
@@ -252538,6 +252558,9 @@ MonoBehaviour:
     level: 1
     levelFirstTime: 1
     countPlayThisLevel: 0
+    isSoundOn: 0
+    isVibrateOn: 0
+    isFirstSetup: 0
 --- !u!114 &8256777050489570891
 MonoBehaviour:
   m_ObjectHideFlags: 0
