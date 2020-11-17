@@ -53,6 +53,7 @@ namespace IEC
             }
 
             EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT);
+            Services.PushEvent(new IEC.TrackingEvent.HintLevel());
         }
 
     }

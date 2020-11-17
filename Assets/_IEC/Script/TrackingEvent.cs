@@ -66,6 +66,11 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_skip";
     }
 
+    public class HintLevel : Level
+    {
+        public override string Name => "click_btn_hint";
+    }
+
     public class GameOver : LevelResult
     {
         public override string Name => "game_over";
