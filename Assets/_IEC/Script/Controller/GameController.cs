@@ -65,13 +65,13 @@ namespace IEC
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
-        [NaughtyAttributes.Button]
-        private void GetDistance()
-        {
-            var currentPos = GamePlay.mainCamera.transform.position;
-            var dist = Vector3.Distance(m_CamOriginPos, currentPos);
-            Debug.LogError("Dist: " + dist);
-        }
+        //[NaughtyAttributes.Button]
+        //private void GetDistance()
+        //{
+        //    var currentPos = GamePlay.mainCamera.transform.position;
+        //    var dist = Vector3.Distance(m_CamOriginPos, currentPos);
+        //    Debug.LogError("Dist: " + dist);
+        //}
 
         public void BehaviourStart()
         {
@@ -94,13 +94,23 @@ namespace IEC
                     pos.y = .35f;
                     StartCoroutine(IEEffectWall(pos));
                     break;
+                case EventList.GamePlay.GAME_START:
+                    GameStart();
+                    break;
             }
         }
 
         public void BehaviourUpdate(float deltaTime)
         {
-            //if (!Game.isPlaying) return;
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
+        }
+
+        private void GameStart()
+        {
+            Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
+            Game.isPlaying = true;
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
+            EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
         }
 
         private IEnumerator SpawnLevel()
@@ -134,7 +144,7 @@ namespace IEC
             string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
 
             var gridHintDatas = strGridHints.Trim().Split('_');
-            string[,] gridHints = GetGridValue(gridsData, size, IsLoopLevel(strMode));
+            string[,] gridHints = GetGridValue(gridHintDatas, size, IsLoopLevel(strMode));
 
             LevelConfig levelConfig = new LevelConfig();
             levelConfig.SetSize(size, grids, gridHints);
@@ -179,7 +189,7 @@ namespace IEC
 
             yield return null;
             m_TimeStart = System.DateTime.Now;
-            Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
+            
 
             if (!m_IsInitCam)
             {
@@ -198,11 +208,10 @@ namespace IEC
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
             GamePlay.mainCamera.transform.position = cameraPos;
 
-            Game.isPlaying = true;
-            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
-            EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-
+            CheckSoulution(size - 2);
             PushPlayLevelEvent();
+
+           EventController.RaiseEvent(EventList.GamePlay.GAME_START);
         }
 
         private void OnClearAll()
@@ -213,6 +222,7 @@ namespace IEC
             Game.listSource.Clear();
             Game.listTarget.Clear();
             Game.listTerrainType.Clear();
+            Game.listHints.Clear();
 
             Game.isMultiColor = false;
             Game.isTutorial = false;
@@ -307,12 +317,12 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
                     var gridData = levelConfig.gridTypes[row, col].Trim();
-                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData);
+                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData, levelConfig.gridHints[row, col]);
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string gridData)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string gridData, int rotTrue)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
             var gridRot = int.Parse(gridData.Substring(2, 1));
@@ -351,7 +361,7 @@ namespace IEC
                 gridStyle = GetTargetStyle(gridType);
             }
 
-            gridComp.OnInit(GetType(gridType), row, col, gridRot, gridColor, gridStyle);
+            gridComp.OnInit(GetType(gridType), row, col, rotTrue, gridRot, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
@@ -535,6 +545,7 @@ namespace IEC
         }
 
         private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
+        private List<BaseComponent> m_ListTempGridSolution= new List<BaseComponent>();
 
         private void CheckGameOver()
         {
@@ -592,6 +603,57 @@ namespace IEC
                 PlayerData.level += 1;
                 Game.isPlaying = false;
                 EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
+            }
+        }
+
+        private void CheckSoulution(int size)
+        {
+            Game.listGrids.ForEach(x => x.PrepareCheckConnect());
+
+            var sourceCount = Game.listSource.Count;
+            for (int i = 0; i < sourceCount; i++)
+            {
+                var source = Game.listSource[i];
+
+                m_ListTempGridSolution.Clear();
+                m_ListTempGridSolution.Add(source);
+
+                var totalGrid = Game.size * Game.size;
+                bool isChanged = true;
+                var totalGridHaveWaterCount = m_ListTempGridSolution.Count;
+
+                while (totalGridHaveWaterCount < totalGrid && isChanged)
+                {
+                    var count = m_ListTempGridSolution.Count;
+                    for (int j = 0; j < count; j++)
+                    {
+                        var grid = m_ListTempGridSolution[j];
+                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
+
+                        var listGridNearCount = listGridNear.Count;
+                        if (listGridNear.Count > 0)
+                        {
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
+                            m_ListTempGridSolution.AddRange(listGridNear);
+                        }
+                    }
+
+                    totalGridHaveWaterCount = m_ListTempGridSolution.Count;
+
+                    if (totalGridHaveWaterCount == count)
+                    {
+                        isChanged = false;
+                        var gridSolutionCount = m_ListTempGridSolution.Count;
+                        for (int x = 0; x < gridSolutionCount; x++)
+                        {
+                            var gridNear = m_ListTempGridSolution[x];
+                            if (gridNear.GridType != GridType.WALL)
+                            {
+                                Game.listHints.Add(gridNear);
+                            }
+                        }
+                    }
+                }
             }
         }
 

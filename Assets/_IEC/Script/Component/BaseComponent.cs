@@ -29,11 +29,13 @@ namespace IEC
 
         public int WaterColor;
 
-        protected int m_Rot, m_OldWaterColor;
+        protected int m_CurrentRot, m_OldWaterColor, m_TrueRot;
 
         protected bool m_IsOldStatusWater;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
+
+        public bool IsTrueRot => m_CurrentRot == m_TrueRot;
 
         protected virtual int[,] OriginLine => new int[3, 3]
         {
@@ -52,25 +54,28 @@ namespace IEC
 
         public List<int> m_ListWaterColor = new List<int>();
 
-        public virtual void OnInit(GridType gridType , int row, int col, int rot = 0, int color = 0, int style = 0)
+        public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
         {
             GridType = gridType;
             Row = row;
             Col = col;
             WaterColor = color;
-            m_Rot = rot;
+            m_CurrentRot = rot;
+            m_TrueRot = trueRot;
+
             DefaultLine = GetDefaultLine(style);
             CurrentLine = DefaultLine;
-            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_Rot], 0f);
+
+            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].OnInit(Config.GetWaterColor(color, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
+                m_WaterComponent[i].OnInit(Config.GetWaterColor(WaterColor, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
             }
 
             if (GridType != GridType.WALL)
             {
-                m_Terrain.SetupTerrain(GetTerrainType(row, col));
+                m_Terrain.SetupTerrain(GetTerrainType(Row, Col));
             }
         }
 
@@ -81,7 +86,10 @@ namespace IEC
 
         public virtual void AfterInit(bool isMultiColor)
         {
-
+            IsRotating = false;
+            IsHaveWater = (GridType == GridType.GRID_SOURCE);
+            m_IsOldStatusWater = false;
+            m_OldWaterColor = 0;
         }
 
         public virtual void OnUpdate(float deltaTime)
@@ -317,6 +325,11 @@ namespace IEC
             }
 
             return Game.GetGrid(row, col, color);
+
+        }
+
+        public virtual void OnHint()
+        {
 
         }
 

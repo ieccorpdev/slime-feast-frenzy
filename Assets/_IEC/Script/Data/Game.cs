@@ -31,6 +31,9 @@ namespace IEC
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
 
+        public List<BaseComponent> listHints = new List<BaseComponent>();
+
+
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
@@ -87,19 +90,4 @@ namespace IEC
         GRID_CROSS,
         GRID_CURVE
     }
-
-    // Wall 1
-    // Wall hole 2
-    // Grid source 5
-    // Grid target 10
-    // Grid straight 15
-    // Grid cross 16
-    // Grid curve 17
-
-    // Color [0, 5] // Blue - Red - Yellow
-    // Source [0 - 2] straight - cross - curve
-
-    // 10_0_0_0 GridType_Rot_Color_Style
-
-
 }

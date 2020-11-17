@@ -89,9 +89,9 @@ namespace IEC
             }
         }
 
-        public override void OnInit(GridType gridType, int row, int col, int rot = 0, int color = 0, int style = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
-            base.OnInit(gridType, row, col, rot, color, style);
+            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
             m_TrueWaterColor = color;
 
             m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
