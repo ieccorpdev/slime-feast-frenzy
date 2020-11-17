@@ -118,9 +118,8 @@ namespace _IECModules
 
         public static void ApplySdkSetting(string googleDocsUrl)
         {
-            var checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(googleDocsUrl));
-            var googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
-            
+            var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
+
             var getServicesConfigResult = LoadServicesConfig();
             
             if (servicesConfig != null)
@@ -140,10 +139,9 @@ namespace _IECModules
 
         public static void UpdateAbVersionFromChecklist(string googleDocsUrl)
         {
-            var checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(googleDocsUrl));
-            var googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
+            var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
 
-            dictionaryCheckListValue = googleDocsData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
+            dictionaryCheckListValue = googleDocsData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
             if (dictionaryCheckListValue.TryGetValue(ChecklistItemName.AbTestList, out string abTestListUrl))
@@ -153,8 +151,7 @@ namespace _IECModules
                     Debug.LogError("Project Checklist is missing URL link to AB Test List");
                 }
 
-                checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(abTestListUrl));
-                googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
+                googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(abTestListUrl);
 
                 var lastAbString = "";
                 var lastVersionString = "";
@@ -236,7 +233,7 @@ namespace _IECModules
         private static void ApplySdkSetting(List<List<string>> sdkData)
         {
 
-            dictionaryCheckListValue = sdkData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
+            dictionaryCheckListValue = sdkData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
 #if !PluginFacebook
