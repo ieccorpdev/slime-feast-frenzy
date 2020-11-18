@@ -23,6 +23,8 @@ namespace IEC
 
         private System.DateTime m_TimeStart;
 
+        private int m_MoveCountSpawn, m_GridCondition, m_GridIndex;
+
         private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
 
         public void LocateController()
@@ -134,6 +136,10 @@ namespace IEC
 
             int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
 
+            m_MoveCountSpawn = PlayerData.level;
+            m_GridCondition = ((size - 2) * (size - 2)) / 2;
+            m_GridIndex = 0;
+
             var gridsData = strGrid.Trim().Split('_');
             string[,] grids = LevelHelper.GetGridValue(gridsData, size, LevelHelper.IsLoopLevel(strMode));
 
@@ -222,6 +228,7 @@ namespace IEC
             Game.isTutorial = false;
             Game.isAllowHint = true;
             Game.maxHintIndex = 0;
+            m_MoveCountSpawn = 0;
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -229,6 +236,8 @@ namespace IEC
             var size = levelConfig.size - 2;
             var startPosX = (size - 1) / -2f;
             var startPosZ = (size - 1) / 2f;
+
+            var seed = PlayerData.level;
 
             for (int i = 0; i < size; i++)
             {
@@ -238,15 +247,30 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
                     var gridData = levelConfig.gridTypes[row, col].Trim();
-                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData, levelConfig.gridHints[row, col]);
+                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData, levelConfig.gridHints[row, col], seed);
+                    seed += 1;
+                    m_GridIndex += 1;
                 }
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string gridData, int rotTrue)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, 
+            string gridData, int rotTrue, int seed)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
             var gridRot = int.Parse(gridData.Substring(2, 1));
+
+            if(PlayerData.level < 21)
+            {
+                if(m_MoveCountSpawn > 0)
+                {
+                    var maxReduce = Mathf.Min(m_MoveCountSpawn, 3) + 1;
+                    var minReduce = (m_GridIndex > m_GridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
+                    var reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
+                    m_MoveCountSpawn -= reduce;
+                    Debug.LogError("reduce: " + reduce + "| MoveCountSpawn: " + m_MoveCountSpawn);
+                }
+            }
 
             var gridColor = 0;
             var gridStyle = 0;

@@ -264,6 +264,11 @@ namespace IEC
             return obj;
         }
 
+        public static int CalculatorRot(int rotCurrent, int reduce)
+        {
+            return (rotCurrent - reduce + 4) % 4;
+        }
+
     }
 }
 

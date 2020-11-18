@@ -48,7 +48,7 @@ namespace IEC
         public bool isHaveHint;
 
         //Prepare
-        public bool isLevelDifficult;
+        public bool isLevelDifficulty = true;
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
         {
