@@ -19,6 +19,8 @@ namespace IEC
 
         public Transform Transform => transform;
 
+        public int TrueRot => m_TrueRot;
+
         public GridType GridType;
 
         protected bool IsRotating, IsHaveWater;
@@ -89,6 +91,11 @@ namespace IEC
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
             EventController.RaiseEvent(EventList.GamePlay.GAME_WALL_CLICK, new EventParam(this, CurrentPos));
+        }
+
+        public virtual void FixLevelData(int newCurrentRot)
+        {
+
         }
 
         public virtual void AfterInit(bool isMultiColor)

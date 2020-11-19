@@ -13,11 +13,23 @@ namespace IEC
             SetGridLine(m_TrueRot);
         }
 
+        public override void FixLevelData(int newCurrentRot)
+        {
+            base.FixLevelData(newCurrentRot);
+            m_CurrentRot = newCurrentRot;
+            //Debug.LogError("newCurrentRot: " + newCurrentRot);
+            //SetGridLine(m_CurrentRot);
+        }
+
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
             SetGridLine(m_CurrentRot);
+            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            //Debug.LogError("m_CurrentRot: " + m_CurrentRot);
         }
+
+
 
         private void SetGridLine(int rot)
         {

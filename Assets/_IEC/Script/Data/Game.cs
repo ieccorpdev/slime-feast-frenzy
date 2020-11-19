@@ -34,7 +34,6 @@ namespace IEC
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
 
-
         public List<int> listTerrainType = new List<int>();
 
         public string[] levelDatas;
@@ -48,7 +47,7 @@ namespace IEC
         public bool isHaveHint;
 
         //Prepare
-        public bool isLevelDifficulty = true;
+        public bool isFixLevelDifficulty;
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
         {
