@@ -23,6 +23,8 @@ namespace IEC
 
         private System.DateTime m_TimeStart;
 
+        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -65,14 +67,6 @@ namespace IEC
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
-        //[NaughtyAttributes.Button]
-        //private void GetDistance()
-        //{
-        //    var currentPos = GamePlay.mainCamera.transform.position;
-        //    var dist = Vector3.Distance(m_CamOriginPos, currentPos);
-        //    Debug.LogError("Dist: " + dist);
-        //}
-
         public void BehaviourStart()
         {
             EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -107,10 +101,45 @@ namespace IEC
 
         private void GameStart()
         {
+            if (Game.isFixLevelDifficulty)
+            {
+                if (PlayerData.level < 21)
+                {
+                    var count = Game.listHints.Count;
+                    var seed = PlayerData.level;
+                    var moveCountSpawn = seed;
+                    var gridCondition = moveCountSpawn / 2;
+
+                    BaseComponent grid = null;
+                    var gridRot = 0;
+                    var maxReduce = 0;
+                    var minReduce = 0;
+                    var reduce = 0;
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        grid = Game.listHints[i];
+                        gridRot = grid.TrueRot;
+
+                        if (moveCountSpawn > 0)
+                        {
+                            maxReduce = Mathf.Min(moveCountSpawn, 3) + 1;
+                            minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
+                            reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
+                            moveCountSpawn -= reduce;
+                            gridRot = LevelHelper.CalculatorRot(grid.TrueRot, reduce);
+                        }
+
+                        grid.FixLevelData(gridRot);
+                    }
+                }
+            }
+
             Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
             Game.isPlaying = true;
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+            PushPlayLevelEvent();
         }
 
         private IEnumerator SpawnLevel()
@@ -141,10 +170,10 @@ namespace IEC
             int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
 
             var gridsData = strGrid.Trim().Split('_');
-            string[,] grids = GetGridValue(gridsData, size, IsLoopLevel(strMode));
+            string[,] grids = LevelHelper.GetGridValue(gridsData, size, LevelHelper.IsLoopLevel(strMode));
 
             var gridHintDatas = strGridHints.Trim().Split('_');
-            string[,] gridHints = GetGridValue(gridHintDatas, size, IsLoopLevel(strMode));
+            string[,] gridHints = LevelHelper.GetGridValue(gridHintDatas, size, LevelHelper.IsLoopLevel(strMode));
 
             LevelConfig levelConfig = new LevelConfig();
             levelConfig.SetSize(size, grids, gridHints);
@@ -152,7 +181,7 @@ namespace IEC
             Game.maxGrassOnWall = 15 - size;
             Game.grids = new BaseComponent[size, size];
 
-            Game.isMultiColor = IsMultiColor(strMode);
+            Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
 
             var tempList = new List<int>();
 
@@ -184,12 +213,11 @@ namespace IEC
                 }
             }
 
-            SpawnWalls(levelConfig);
-            SpawnGrid(levelConfig);
+            SpawnWallAll(levelConfig);
+            SpawnGridAll(levelConfig);
 
             yield return null;
             m_TimeStart = System.DateTime.Now;
-            
 
             if (!m_IsInitCam)
             {
@@ -208,9 +236,7 @@ namespace IEC
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
             GamePlay.mainCamera.transform.position = cameraPos;
 
-            CheckSoulution(size - 2);
-            PushPlayLevelEvent();
-
+            Hint.CheckSoulution();
            EventController.RaiseEvent(EventList.GamePlay.GAME_START);
         }
 
@@ -230,82 +256,7 @@ namespace IEC
             Game.maxHintIndex = 0;
         }
 
-        private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)
-        {
-            var grids = new string[size, size];
-
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    if (i == 0 || j == 0 || i == size - 1 || j == size - 1)
-                    {
-                        if (grids[i, j] == null)
-                        {
-                            grids[i, j] = "1";
-                        }
-                    }
-                    else
-                    {
-                        var index = (i - 1) * (size - 2) + (j - 1);
-                        var gridData = strGrids[index];
-                        var gridType = "";
-
-                        if (isLoop)
-                        {
-                            var startIndex = gridData.IndexOf('(');
-                            var endIndex = gridData.IndexOf(')');
-                            gridType = gridData.Substring(0, startIndex);
-
-                            var edgeData = gridData.Substring(startIndex + 1, endIndex - startIndex - 1).Trim();
-                            var edges = edgeData.Split(',');
-
-                            if (i == 1)
-                            {
-                                if (edges[0] != "-1")
-                                {
-                                    grids[0, j] = "2";
-                                }
-                            }
-
-                            if (j == 1)
-                            {
-                                if (edges[1] != "-1")
-                                {
-                                    grids[i, 0] = "2";
-                                }
-                            }
-
-                            if (i == size - 2)
-                            {
-                                if (edges[2] != "-1")
-                                {
-                                    grids[size - 1, j] = "2";
-                                }
-                            }
-
-                            if (j == size - 2)
-                            {
-                                if (edges[3] != "-1")
-                                {
-                                    grids[i, size - 1] = "2";
-                                }
-                            }
-                        }
-                        else
-                        {
-                            gridType = gridData;
-                        }
-
-                        grids[i, j] = gridType;
-                    }
-                }
-            }
-
-            return grids;
-        }
-
-        private void SpawnGrid(LevelConfig levelConfig)
+        private void SpawnGridAll(LevelConfig levelConfig)
         {
             var size = levelConfig.size - 2;
             var startPosX = (size - 1) / -2f;
@@ -324,7 +275,8 @@ namespace IEC
             }
         }
 
-        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, string gridData, int rotTrue)
+        private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, 
+            string gridData, int rotTrue)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
             var gridRot = int.Parse(gridData.Substring(2, 1));
@@ -332,10 +284,10 @@ namespace IEC
             var gridColor = 0;
             var gridStyle = 0;
 
-            var grid = PrefabHelper.Clone(GetGridObj(gridType)).transform;
+            var grid = PrefabHelper.Clone(LevelHelper.GetGridObj(ComponentConfig, gridType)).transform;
             var gridComp = grid.GetComponent<BaseComponent>();
 
-            if (IsSourceGird(gridType) || IsTargetGrid(gridType))
+            if (LevelHelper.IsSourceGird(gridType) || LevelHelper.IsTargetGrid(gridType))
             {
                 if (Game.isMultiColor)
                 {
@@ -349,152 +301,27 @@ namespace IEC
             grid.localRotation = Quaternion.identity;
             grid.localScale = Vector3.one;
 
-            if (IsSourceGird(gridType))
+            if (LevelHelper.IsSourceGird(gridType))
             {
                 var sourceComp = grid.GetComponent<GridSourceComponent>();
                 Game.listSource.Add(sourceComp);
-                gridStyle = GetSourceStyle(gridType);
+                gridStyle = LevelHelper.GetSourceStyle(gridType);
             }
             
-            if (IsTargetGrid(gridType))
+            if (LevelHelper.IsTargetGrid(gridType))
             {
                 var targetComp = grid.GetComponent<GridTargetComponent>();
                 Game.listTarget.Add(targetComp);
-                gridStyle = GetTargetStyle(gridType);
+                gridStyle = LevelHelper.GetTargetStyle(gridType);
             }
 
-            gridComp.OnInit(GetType(gridType), row, col, rotTrue, gridRot, gridColor, gridStyle);
+            gridComp.OnInit(LevelHelper.GetType(gridType), row, col, rotTrue, gridRot, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
         }
 
-        private bool IsLoopLevel(string mode)
-        {
-            return (mode.IndexOf("Loop") > -1);
-        }
-
-        private bool IsMultiColor(string mode)
-        {
-            return (mode.IndexOf("colors") > -1);
-        }
-
-        private bool IsSourceGird(int gridType)
-        {
-            return (gridType == 51 || gridType == 11 || gridType == 21 || gridType == 31);
-        }
-
-        private bool IsTargetGrid(int gridType)
-        {
-            return (gridType == 52 || gridType == 12 || gridType == 22 || gridType == 32);
-        }
-
-        private int GetSourceStyle(int input)
-        {
-            if(input == 11)
-            {
-                return 1;
-            }else if(input == 21)
-            {
-                return 2;
-            }
-            else if(input == 31)
-            {
-                return 3;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        private int GetTargetStyle(int input)
-        {
-            if (input == 12)
-            {
-                return 1;
-            }
-            else if (input == 22)
-            {
-                return 2;
-            }
-            else if (input == 32)
-            {
-                return 3;
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
-        private GridType GetType(int gridType)
-        {
-            GridType type = GridType.NONE;
-            switch (gridType)
-            {
-                case 11:
-                case 21:
-                case 31:
-                case 51:
-                    type = GridType.GRID_SOURCE;
-                    break;
-                case 52:
-                case 22:
-                case 32:
-                case 12:
-                    type = GridType.GRID_TARGET;
-                    break;
-                case 10:
-                    type = GridType.GRID_STRAIGHT;
-                    break;
-                case 30:
-                    type = GridType.GRID_CROSS;
-                    break;
-                case 20:
-                    type = GridType.GRID_CURVE;
-                    break;
-            }
-
-            return type;
-        }
-
-        private GameObject GetGridObj(int gridType)
-        {
-            GameObject obj = null;
-            switch (gridType)
-            {
-                case 11:
-                case 21:
-                case 31:
-                case 51:
-                    obj = ComponentConfig.sourceObj;
-                    break;
-                case 52:
-                case 12:
-                case 22:
-                case 32:
-                    obj = ComponentConfig.targetObj;
-                    break;
-                case 10:
-                    obj = ComponentConfig.straightObj;
-                    break;
-                case 30:
-                    obj = ComponentConfig.crossObj;
-                    break;
-                case 20:
-                    obj = ComponentConfig.curveObj;
-                    break;
-                default:
-                    Debug.LogError("gridType: " + gridType);
-                    obj = ComponentConfig.straightObj;
-                    break;
-            }
-
-            return obj;
-        }
-
-        private void SpawnWalls(LevelConfig levelConfig)
+        private void SpawnWallAll(LevelConfig levelConfig)
         {
             var size = levelConfig.size - 2;
             var startPos = (size - 1) / -2f;
@@ -545,9 +372,6 @@ namespace IEC
                 Game.listGrids.Add(wallComp);
             }
         }
-
-        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
-        private List<BaseComponent> m_ListTempGridSolution= new List<BaseComponent>();
 
         private void CheckGameOver()
         {
@@ -608,57 +432,6 @@ namespace IEC
             }
         }
 
-        private void CheckSoulution(int size)
-        {
-            Game.listGrids.ForEach(x => x.PrepareCheckConnect());
-
-            var sourceCount = Game.listSource.Count;
-            for (int i = 0; i < sourceCount; i++)
-            {
-                var source = Game.listSource[i];
-
-                m_ListTempGridSolution.Clear();
-                m_ListTempGridSolution.Add(source);
-
-                var totalGrid = Game.size * Game.size;
-                bool isChanged = true;
-                var totalGridHaveWaterCount = m_ListTempGridSolution.Count;
-
-                while (totalGridHaveWaterCount < totalGrid && isChanged)
-                {
-                    var count = m_ListTempGridSolution.Count;
-                    for (int j = 0; j < count; j++)
-                    {
-                        var grid = m_ListTempGridSolution[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
-
-                        var listGridNearCount = listGridNear.Count;
-                        if (listGridNear.Count > 0)
-                        {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
-                            m_ListTempGridSolution.AddRange(listGridNear);
-                        }
-                    }
-
-                    totalGridHaveWaterCount = m_ListTempGridSolution.Count;
-
-                    if (totalGridHaveWaterCount == count)
-                    {
-                        isChanged = false;
-                        var gridSolutionCount = m_ListTempGridSolution.Count;
-                        for (int x = 0; x < gridSolutionCount; x++)
-                        {
-                            var gridNear = m_ListTempGridSolution[x];
-                            if (gridNear.GridType != GridType.WALL)
-                            {
-                                Game.listHints.Add(gridNear);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         private bool IsWin()
         {
             var count = Game.listTarget.Count;
@@ -695,64 +468,6 @@ namespace IEC
             yield return new WaitForSeconds(1f);
 
             PrefabHelper.Destroy(psObj);
-        }
-    }
-
-    [Serializable]
-    public class LevelConfig
-    {
-        public int size;
-        public int[] topWall, botWall, leftWall, rightWall;
-        public string[,] gridTypes;
-        public int[,] gridHints;
-
-        public void SetSize(int size, string[,] gridTypes, string[,] gridHints)
-        {
-            this.size = size;
-
-            topWall = new int[size];
-            botWall = new int[size];
-            leftWall = new int[size];
-            rightWall = new int[size];
-
-            this.gridTypes = gridTypes;
-            this.gridHints = new int[size, size];
-
-            for (int i = 0; i < size; i++)
-            {
-                for (int j = 0; j < size; j++)
-                {
-                    var gridData = gridTypes[i, j].Trim();
-                    var tempValue = int.Parse(gridData);
-
-                    var gridHint = gridHints[i, j].Trim();
-
-                    if (i != 0 && i != size - 1 && j != 0 && j != size - 1)
-                    {
-                        var rot = gridHint.Substring(2, 1);
-                        this.gridHints[i, j] = int.Parse(rot);
-                    }
-
-                    if (i == 0)
-                    {
-                        topWall[j] = tempValue;
-                    }
-                    if (i == size - 1)
-                    {
-                        botWall[j] = tempValue;
-                    }
-
-                    if (j == 0)
-                    {
-                        leftWall[i] = tempValue;
-                    }
-
-                    if (j == size - 1)
-                    {
-                        rightWall[i] = tempValue;
-                    }
-                }
-            }
         }
     }
 }

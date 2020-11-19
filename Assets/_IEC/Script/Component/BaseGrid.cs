@@ -7,19 +7,29 @@ namespace IEC
 {
     public class BaseGrid : BaseComponent
     {
-        protected Tween m_Tween;
-
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
             SetGridLine(m_TrueRot);
         }
 
+        public override void FixLevelData(int newCurrentRot)
+        {
+            base.FixLevelData(newCurrentRot);
+            m_CurrentRot = newCurrentRot;
+            //Debug.LogError("newCurrentRot: " + newCurrentRot);
+            //SetGridLine(m_CurrentRot);
+        }
+
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
             SetGridLine(m_CurrentRot);
+            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            //Debug.LogError("m_CurrentRot: " + m_CurrentRot);
         }
+
+
 
         private void SetGridLine(int rot)
         {

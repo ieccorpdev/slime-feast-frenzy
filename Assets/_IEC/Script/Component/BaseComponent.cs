@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using DG.Tweening;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,20 +19,20 @@ namespace IEC
 
         public Transform Transform => transform;
 
+        public int TrueRot => m_TrueRot;
+
         public GridType GridType;
+
+        protected bool IsRotating, IsHaveWater;
+
+        protected bool m_IsOldStatusWater;
+
         [HideInInspector]
-        public bool IsRotating;
-
-        public bool IsHaveWater;
-
-        [HideInInspector]
-        public int Row, Col;
-
-        public int WaterColor;
+        public int Row, Col, WaterColor;
 
         protected int m_CurrentRot, m_OldWaterColor, m_TrueRot;
 
-        protected bool m_IsOldStatusWater;
+        protected Tween m_Tween;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
 
@@ -80,6 +81,19 @@ namespace IEC
         }
 
         protected virtual void OnMouseDown()
+        {
+
+        }
+
+        protected void OnDOShakePosition()
+        {
+            m_Tween?.Kill(true);
+            Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
+            m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_WALL_CLICK, new EventParam(this, CurrentPos));
+        }
+
+        public virtual void FixLevelData(int newCurrentRot)
         {
 
         }
@@ -335,6 +349,7 @@ namespace IEC
 
         public virtual void OnDestroyMe()
         {
+            m_Tween?.Kill(true);
             IsRotating = false;
             IsHaveWater = false;
             m_IsOldStatusWater = false;
