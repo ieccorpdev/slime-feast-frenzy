@@ -7,6 +7,8 @@ namespace IEC
 {
     public class HintController : _BaseBehaviour, IController, IEventListener
     {
+        private List<HintEffect> m_ListTempHintEffect = new List<HintEffect>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -35,6 +37,7 @@ namespace IEC
         {
             if (!Game.isPlaying) return;
             if (!Game.isAllowHint) return;
+            m_ListTempHintEffect.Clear();
             Game.isAllowHint = false;
             var addIndex = Game.size - 2;
             if (Game.isReduceHintGrid)
@@ -49,9 +52,12 @@ namespace IEC
                 if (!grid.IsTrueRot)
                 {
                     grid.OnHint();
+                    var hintEffect = new HintEffect(grid.CurrentPos, grid.WaterColor);
+                    m_ListTempHintEffect.Add(hintEffect);
                 }
             }
 
+            EventController.RaiseEvent(EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, m_ListTempHintEffect));
             EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT);
             Services.PushEvent(new IEC.TrackingEvent.HintLevel());
         }
