@@ -32,6 +32,8 @@ namespace IEC
 
         protected int m_CurrentRot, m_OldWaterColor, m_TrueRot;
 
+        private int m_WaterCount;
+
         protected Tween m_Tween;
 
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
@@ -69,7 +71,9 @@ namespace IEC
 
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            m_WaterCount = m_WaterComponent.Length;
+
+            for (int i = 0; i < m_WaterCount; i++)
             {
                 m_WaterComponent[i].OnInit(Config.GetWaterColor(WaterColor, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
             }
@@ -108,9 +112,9 @@ namespace IEC
 
         public virtual void OnUpdate(float deltaTime)
         {
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            for (int i = 0; i < m_WaterCount; i++)
             {
-                if (m_WaterComponent[i].gameObject.activeSelf)
+                if (m_WaterComponent[i].gameObject.activeInHierarchy)
                 {
                     m_WaterComponent[i].OnUpdate(deltaTime);
                 }
