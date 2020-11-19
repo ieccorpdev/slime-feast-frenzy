@@ -39,16 +39,17 @@ namespace IEC
             Result20201103();
             Result20201106();
             Result20201109();
+            Result20201117();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201117(abValue);
+            UpdateAb20201120(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     PlayerData.isFirstSetup = false;
-                    UpdateAb20201117(abValue);
+                    UpdateAb20201120(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -57,6 +58,18 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20201120(int abValue)
+        {
+            Game.isReduceHintGrid = abValue == 1;
+            Game.isFixLevelDifficulty = abValue == 2;
+        }
+
+        private void Result20201117()
+        {
+            Game.isHaveHint = true;
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20201117(int abValue)

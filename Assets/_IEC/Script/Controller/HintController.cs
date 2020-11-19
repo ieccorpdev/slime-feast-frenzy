@@ -36,7 +36,13 @@ namespace IEC
             if (!Game.isPlaying) return;
             if (!Game.isAllowHint) return;
             Game.isAllowHint = false;
-            Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + Game.size - 2, 0, Game.listHints.Count);
+            var addIndex = Game.size - 2;
+            if (Game.isReduceHintGrid)
+            {
+                addIndex = Mathf.RoundToInt(addIndex * .7f);
+            }
+
+            Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
             for (int i = 0; i < Game.maxHintIndex; i++)
             {
                 var grid = Game.listHints[i];
