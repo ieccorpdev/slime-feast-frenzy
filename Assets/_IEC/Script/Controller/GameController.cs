@@ -241,7 +241,6 @@ namespace IEC
 
         private void OnClearAll()
         {
-            EffectController.OnRemoveAll();
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 

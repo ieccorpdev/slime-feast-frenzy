@@ -355,12 +355,8 @@ namespace IEC
 
         }
 
-        public void OnEnableHintEffect(bool isEnable, bool isDestroyNow = false)
+        public void OnEnableHintEffect(bool isEnable)
         {
-            if (isDestroyNow)
-            {
-                m_HintEffect.OnDestroyMe();
-            }
             if (isEnable)
             {
                 m_HintEffect.StartEffect(CurrentWaterColor);
@@ -374,6 +370,11 @@ namespace IEC
 
         public virtual void OnDestroyMe()
         {
+            if(m_HintEffect!= null)
+            {
+                m_HintEffect.OnDestroyMe();
+            }
+            
             m_Tween?.Kill(true);
             IsRotating = false;
             IsHaveWater = false;
