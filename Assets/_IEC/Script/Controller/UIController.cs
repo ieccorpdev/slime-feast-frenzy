@@ -41,6 +41,7 @@ namespace IEC
         private void InitButtonEvent()
         {
             UI.btnRestart.onClick.AddListener(() => {
+                if (!Game.isPlaying) return;
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
                 if (PlayerData.isVibrateOn)
@@ -50,6 +51,7 @@ namespace IEC
             });
 
             UI.btnSkip.onClick.AddListener(() => {
+                if (!Game.isPlaying) return;
                 Services.ShowRewardAds(() => {
                     Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
                     PlayerData.level += 1;
@@ -62,6 +64,7 @@ namespace IEC
             });
 
             UI.btnSetting.onClick.AddListener(() => {
+                if (!Game.isPlaying) return;
                 UI.popupSettings.gameObject.SetActive(true);
                 Game.isShowPopup = true;
             });
@@ -82,6 +85,7 @@ namespace IEC
             });
 
             UI.btnHint.onClick.AddListener(() => {
+                if (!Game.isPlaying) return;
                 Services.ShowRewardAds(() => {
                     EventController.RaiseEvent(EventList.GamePlay.GAME_START_HINT);
                 });

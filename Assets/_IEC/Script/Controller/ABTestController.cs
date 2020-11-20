@@ -39,7 +39,7 @@ namespace IEC
             Result20201103();
             Result20201106();
             Result20201109();
-            Result20201117();
+            //Result20201117();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAb20201120(abValue);
@@ -63,7 +63,11 @@ namespace IEC
         private void UpdateAb20201120(int abValue)
         {
             Game.isReduceHintGrid = abValue == 1;
-            Game.isFixLevelDifficulty = abValue == 2;
+            Game.isHaveHint = (abValue == 1) || (abValue == 2);
+            Game.isFixedHintGrid = abValue == 2;
+            Game.isFixLevelDifficulty = abValue == 3;
+
+            UIController.SetupAbUI();
         }
 
         private void Result20201117()
