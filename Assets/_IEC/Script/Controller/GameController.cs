@@ -252,6 +252,7 @@ namespace IEC
             Game.isMultiColor = false;
             Game.isTutorial = false;
             Game.isAllowHint = true;
+            Game.isWaitAfterRV = false;
             Game.maxHintIndex = 0;
         }
 

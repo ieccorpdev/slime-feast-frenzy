@@ -24,6 +24,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_START_HINT:
+                    Game.isWaitAfterRV = false;
                     StartHint();
                     break;
                 case EventList.GamePlay.GAME_AFTER_HINT:
