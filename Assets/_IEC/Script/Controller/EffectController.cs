@@ -36,13 +36,6 @@ namespace IEC
             }
         }
 
-        public void OnRemoveAll()
-        {
-            m_IsCounting = false;
-            m_ListHintEffect.ForEach(x => x.OnEnableHintEffect(false, true));
-            m_ListHintEffect.Clear();
-        }
-
         private void OnDisableAll()
         {
             m_IsCounting = false;
