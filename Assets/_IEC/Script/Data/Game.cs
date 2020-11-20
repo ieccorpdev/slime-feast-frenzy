@@ -46,6 +46,7 @@ namespace IEC
         public bool isHaveTutorital;
         public bool isHaveHint;
         public bool isReduceHintGrid;
+        public bool isFixedHintGrid;
         public bool isFixLevelDifficulty;
         
 

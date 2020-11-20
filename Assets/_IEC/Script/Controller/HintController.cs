@@ -29,7 +29,6 @@ namespace IEC
                 case EventList.GamePlay.GAME_AFTER_HINT:
                     Game.isAllowHint = true;
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-
                     EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, param.p0));
                     break;
             }
@@ -42,7 +41,10 @@ namespace IEC
             m_ListTempHint.Clear();
             Game.isAllowHint = false;
             var addIndex = Game.size - 2;
-            if (Game.isReduceHintGrid)
+            if (Game.isFixedHintGrid)
+            {
+                addIndex = 3;
+            }else if (Game.isReduceHintGrid)
             {
                 addIndex = Mathf.RoundToInt(addIndex * .7f);
             }
