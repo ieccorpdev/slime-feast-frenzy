@@ -102,7 +102,7 @@ namespace IEC
         {
             if (Game.isFixLevelDifficulty)
             {
-                if (PlayerData.level < 21)
+                if (PlayerData.level < 11)
                 {
                     var count = Game.listHints.Count;
                     var seed = PlayerData.level;
