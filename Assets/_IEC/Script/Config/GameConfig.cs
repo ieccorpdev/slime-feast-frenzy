@@ -25,7 +25,6 @@ namespace IEC
         public List<TutorialConfig> listTuts;
 
         public GameObject effectWallObj;
-        public GameObject effectGridAuraObj;
 
 
         public Color GetWaterColor(int color, bool isMultiColor)

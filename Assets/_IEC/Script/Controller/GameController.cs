@@ -79,7 +79,6 @@ namespace IEC
                 case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(SpawnLevel());
                     break;
-
                 case EventList.GamePlay.CHECK_GAME_OVER:
                     CheckGameOver();
                     break;
@@ -107,7 +106,7 @@ namespace IEC
                 {
                     var count = Game.listHints.Count;
                     var seed = PlayerData.level;
-                    var moveCountSpawn = seed;
+                    var moveCountSpawn = seed * 2;
                     var gridCondition = moveCountSpawn / 2;
 
                     BaseComponent grid = null;
@@ -241,7 +240,8 @@ namespace IEC
         }
 
         private void OnClearAll()
-        { 
+        {
+            EffectController.OnRemoveAll();
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 

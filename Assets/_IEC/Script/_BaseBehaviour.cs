@@ -11,6 +11,7 @@ namespace IEC
         protected static UIController UIController => Controllers.Get<UIController>();
         protected static SoundController Sound => Controllers.Get<SoundController>();
         protected static HintController Hint => Controllers.Get<HintController>();
+        protected static EffectController EffectController => Controllers.Get<EffectController>();
 
         protected static Game Game => Pool.Get<Game>();
         

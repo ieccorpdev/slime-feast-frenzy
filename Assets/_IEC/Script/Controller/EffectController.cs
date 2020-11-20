@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class EffectController : _BaseBehaviour, IController, IEventAwake, IEventListener, IEventUpdate
+    public class EffectController : _BaseBehaviour, IController, IEventListener, IEventUpdate
     {
-        private float m_TimeCountAfterHint;
-        private bool m_IsCounting;
+        public float m_TimeCountAfterHint;
+        public bool m_IsCounting;
 
-        private List<EffectGridAura> m_ListEffect = new List<EffectGridAura>();
+        private List<BaseComponent> m_ListHintEffect = new List<BaseComponent>();
 
         public void LocateController()
         {
@@ -21,57 +21,57 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void BehaviourAwake()
-        {
-            PrefabHelper.SetUpPrefab(Config.effectGridAuraObj);
-        }
-
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_EFFECT_HINT:
-                    var listPos = (List<HintEffect>)param.p0;
+                    OnDisableAll();
+                    var listPos = (List<BaseComponent>)param.p0;
                     SpawnEffectHint(listPos);
+                    break;
+                case EventList.GamePlay.GAME_GRID_CLICK:
+                    OnDisableAll();
                     break;
             }
         }
 
-        private void OnRemoveAll()
+        public void OnRemoveAll()
         {
-            m_ListEffect.ForEach(x => x.DestroyEffect());
+            m_IsCounting = false;
+            m_ListHintEffect.ForEach(x => x.OnEnableHintEffect(false, true));
+            m_ListHintEffect.Clear();
+        }
+
+        private void OnDisableAll()
+        {
+            m_IsCounting = false;
+            m_ListHintEffect.ForEach(x => x.OnEnableHintEffect(false));
+            m_ListHintEffect.Clear();
         }
 
         public void BehaviourUpdate(float deltaTime)
         {
             if (m_IsCounting)
             {
-
+                m_TimeCountAfterHint += deltaTime;
+                if(m_TimeCountAfterHint > 5f)
+                {
+                    OnDisableAll();
+                }
             }
         }
 
-        private void SpawnEffectHint(List<HintEffect> listHintEffect)
+        private void SpawnEffectHint(List<BaseComponent> listHintEffect)
         {
-            for (int i = 0; i < listHintEffect.Count; i++)
-            {
-                var effectObj = PrefabHelper.Clone(Config.effectGridAuraObj);
-                effectObj.transform.position = listHintEffect[i].pos;
+            listHintEffect.ForEach(x => x.OnEnableHintEffect(true));
 
-                var effect = effectObj.GetComponent<EffectGridAura>();
-                effect.StartEffect(Config.GetWaterColor(listHintEffect[i].color, Game.isMultiColor));
-            }
+            m_ListHintEffect.Clear();
+            m_ListHintEffect.AddRange(listHintEffect);
+
+            m_TimeCountAfterHint = 0f;
+            m_IsCounting = true;
         }
     }
 
-    public struct HintEffect
-    {
-        public Vector3 pos;
-        public int color;
-
-        public HintEffect(Vector3 pos, int color)
-        {
-            this.pos = pos;
-            this.color = color;
-        }
-    }
 }

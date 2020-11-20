@@ -20,6 +20,8 @@ namespace IEC
             public const string GAME_START_HINT = "GamePlay.GAME_START_HINT";
             public const string GAME_EFFECT_HINT = "GamePlay.GAME_EFFECT_HINT";
             public const string GAME_AFTER_HINT = "GamePlay.GAME_AFTER_HINT";
+
+            public const string GAME_GRID_CLICK = "GamePlay.GAME_GRID_CLICK";
         }
     }
 }

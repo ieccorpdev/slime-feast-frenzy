@@ -9,7 +9,7 @@ public class EffectGridAura : MonoBehaviour
 
     public void StartEffect(Color color)
     {
-        for (int i = 0; i < m_PsEffect.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
             var ps = m_PsEffect[i];
             var main = ps.main;
@@ -19,22 +19,22 @@ public class EffectGridAura : MonoBehaviour
         }
     }
 
-    public void DestroyEffect()
+    public void DisableEffect()
     {
-        for (int i = 0; i < m_PsEffect.Length; i++)
+        for (int i = 0; i < 3; i++)
         {
             var ps = m_PsEffect[i];
             var main = ps.main;
             main.loop = false;
         }
-
-        StartCoroutine(OnDestroyMe());
     }
 
-    private IEnumerator OnDestroyMe()
+    public void OnDestroyMe()
     {
-        yield return new WaitForSeconds(3f);
-        PrefabHelper.Destroy(gameObject);
+        for (int i = 0; i < 3; i++)
+        {
+            m_PsEffect[i].Stop();
+        }
     }
 
 }

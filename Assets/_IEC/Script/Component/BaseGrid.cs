@@ -48,6 +48,7 @@ namespace IEC
             if (IsRotating) return;
 
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
+            EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK);
             IsRotating = true;
             m_Tween?.Kill(true);
 
@@ -80,7 +81,6 @@ namespace IEC
         public override void OnHint()
         {
             base.OnHint();
-
             IsRotating = true;
             m_Tween?.Kill(true);
 
