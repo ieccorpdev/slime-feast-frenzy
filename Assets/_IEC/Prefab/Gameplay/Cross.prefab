@@ -111,6 +111,7 @@ Transform:
   - {fileID: 2674998682743074359}
   - {fileID: 73456530270572274}
   - {fileID: 3720933172923064878}
+  - {fileID: 5200237752491586478}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -142,9 +143,8 @@ MonoBehaviour:
   m_WaterComponent:
   - {fileID: 967956672049454958}
   m_Terrain: {fileID: 3772707759434767651}
+  m_HintEffect: {fileID: 1315092924066157946}
   GridType: 0
-  IsRotating: 0
-  IsHaveWater: 0
   Row: 0
   Col: 0
   WaterColor: 0
@@ -234,6 +234,93 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 737f1fbc2f4f7114e803bd58bbfc6466, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &2514383555313033699
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4246915434836711482}
+    m_Modifications:
+    - target: {fileID: 7696113185070404168, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_Name
+      value: Efect Hint
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d415e2082125bf0418943896d821be9e, type: 3}
+--- !u!4 &5200237752491586478 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7696113185070404173, guid: d415e2082125bf0418943896d821be9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2514383555313033699}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1315092924066157946 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3505142525945164953, guid: d415e2082125bf0418943896d821be9e,
+    type: 3}
+  m_PrefabInstance: {fileID: 2514383555313033699}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e5ce8e1c2a2db4ba307e2f074c21a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5423000372019982864

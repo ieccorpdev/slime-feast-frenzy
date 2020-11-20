@@ -13,6 +13,9 @@ namespace IEC
         [SerializeField]
         private TerrainComponent m_Terrain;
 
+        [SerializeField]
+        protected EffectGridAura m_HintEffect;
+
         public int ID => gameObject.GetInstanceID();
 
         public Vector3 CurrentPos => transform.position;
@@ -21,13 +24,14 @@ namespace IEC
 
         public int TrueRot => m_TrueRot;
 
+        protected Color CurrentWaterColor => Config.GetWaterColor(WaterColor, Game.isMultiColor);
+
         public GridType GridType;
 
         protected bool IsRotating, IsHaveWater;
 
         protected bool m_IsOldStatusWater;
 
-        [HideInInspector]
         public int Row, Col, WaterColor;
 
         protected int m_CurrentRot, m_OldWaterColor, m_TrueRot;
@@ -75,7 +79,7 @@ namespace IEC
 
             for (int i = 0; i < m_WaterCount; i++)
             {
-                m_WaterComponent[i].OnInit(Config.GetWaterColor(WaterColor, Game.isMultiColor), GridType == GridType.GRID_SOURCE);
+                m_WaterComponent[i].OnInit(CurrentWaterColor, GridType == GridType.GRID_SOURCE);
             }
 
             if (GridType != GridType.WALL)
@@ -185,7 +189,7 @@ namespace IEC
             WaterColor = GetColor();
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetColor(Config.GetWaterColor(WaterColor, Game.isMultiColor), !m_IsOldStatusWater);
+                m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldStatusWater);
             }
         }
 
@@ -350,6 +354,23 @@ namespace IEC
         {
 
         }
+
+        public void OnEnableHintEffect(bool isEnable, bool isDestroyNow = false)
+        {
+            if (isDestroyNow)
+            {
+                m_HintEffect.OnDestroyMe();
+            }
+            if (isEnable)
+            {
+                m_HintEffect.StartEffect(CurrentWaterColor);
+            }
+            else
+            {
+                m_HintEffect.DisableEffect();
+            }
+        }
+
 
         public virtual void OnDestroyMe()
         {

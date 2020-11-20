@@ -7,6 +7,8 @@ namespace IEC
 {
     public class HintController : _BaseBehaviour, IController, IEventListener
     {
+        private List<BaseComponent> m_ListTempHint = new List<BaseComponent>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -27,6 +29,8 @@ namespace IEC
                 case EventList.GamePlay.GAME_AFTER_HINT:
                     Game.isAllowHint = true;
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+
+                    EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, param.p0));
                     break;
             }
         }
@@ -35,6 +39,7 @@ namespace IEC
         {
             if (!Game.isPlaying) return;
             if (!Game.isAllowHint) return;
+            m_ListTempHint.Clear();
             Game.isAllowHint = false;
             var addIndex = Game.size - 2;
             if (Game.isReduceHintGrid)
@@ -49,10 +54,11 @@ namespace IEC
                 if (!grid.IsTrueRot)
                 {
                     grid.OnHint();
+                    m_ListTempHint.Add(grid);
                 }
             }
 
-            EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT);
+            EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT, new EventParam(this, m_ListTempHint));
             Services.PushEvent(new IEC.TrackingEvent.HintLevel());
         }
 
