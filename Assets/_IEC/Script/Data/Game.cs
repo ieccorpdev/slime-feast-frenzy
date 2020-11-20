@@ -17,6 +17,10 @@ namespace IEC
 
         public bool isShowPopup;
 
+        public bool isBlockButton => !isPlaying || isWaitAfterRV;
+
+        public bool isWaitAfterRV;
+
         public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial, isAllowHint;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;

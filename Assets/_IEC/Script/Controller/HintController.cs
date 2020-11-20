@@ -24,6 +24,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_START_HINT:
+                    Game.isWaitAfterRV = false;
                     StartHint();
                     break;
                 case EventList.GamePlay.GAME_AFTER_HINT:
@@ -50,13 +51,17 @@ namespace IEC
             }
 
             Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
+            var startIndexEffect = Game.maxHintIndex - addIndex;
             for (int i = 0; i < Game.maxHintIndex; i++)
             {
                 var grid = Game.listHints[i];
+                if(i >= startIndexEffect)
+                {
+                    m_ListTempHint.Add(grid);
+                }
                 if (!grid.IsTrueRot)
                 {
                     grid.OnHint();
-                    m_ListTempHint.Add(grid);
                 }
             }
 
