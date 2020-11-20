@@ -87,7 +87,7 @@ namespace IEC
             UI.btnHint.onClick.AddListener(() => {
                 if (!Game.isPlaying) return;
                 Services.ShowRewardAds(() => {
-                    EventController.RaiseEvent(EventList.GamePlay.GAME_START_HINT);
+                    EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_START_HINT);
                 });
             });
 
