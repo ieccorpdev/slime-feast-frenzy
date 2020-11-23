@@ -8,6 +8,8 @@ namespace IEC
     {
         public Camera mainCamera;
         public Transform transTutHand;
+        public Transform effectParent;
+        public Transform animalParent;
 
         public void LocateGroup()
         {

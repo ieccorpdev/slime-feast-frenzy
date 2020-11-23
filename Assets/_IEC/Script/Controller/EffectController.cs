@@ -8,8 +8,10 @@ namespace IEC
     {
         private float m_TimeCountAfterHint;
         private bool m_IsCounting;
-
         private List<BaseComponent> m_ListHintEffect = new List<BaseComponent>();
+
+        [SerializeField]
+        private List<AnimalComponent> m_ListAnimal;
 
         public void LocateController()
         {
@@ -24,6 +26,8 @@ namespace IEC
         public void BehaviourAwake()
         {
             PrefabHelper.SetUpPrefab(Config.effectLeavesObj);
+
+            m_ListAnimal.ForEach(x => x.OnInit());
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -56,6 +60,8 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
+            m_ListAnimal.ForEach(x => x.OnUpdate(deltaTime));
+
             if (m_IsCounting)
             {
                 m_TimeCountAfterHint += deltaTime;
@@ -80,6 +86,7 @@ namespace IEC
         private IEnumerator IEEffectLeaves(Vector3 posSpawn)
         {
             var psObj = PrefabHelper.Clone(Config.effectLeavesObj);
+            psObj.transform.SetParent(GamePlay.effectParent);
             psObj.transform.position = posSpawn;
             psObj.GetComponent<ParticleSystem>().Play();
             yield return new WaitForSeconds(1f);
