@@ -52,6 +52,9 @@ namespace IEC
         public bool isReduceHintGrid;
         public bool isFixedHintGrid;
         public bool isFixLevelDifficulty;
+
+        //Prepared
+        public bool isLeavesEffect;
         
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
