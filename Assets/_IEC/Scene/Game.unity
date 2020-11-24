@@ -5474,6 +5474,7 @@ Transform:
   - {fileID: 830752589}
   - {fileID: 258053074}
   - {fileID: 475634729}
+  - {fileID: 2118472987}
   m_Father: {fileID: 1075440694}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5491,7 +5492,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 519420031}
   transTutHand: {fileID: 258053074}
-  effectParent: {fileID: 0}
+  effectParent: {fileID: 2118472987}
   animalParent: {fileID: 0}
 --- !u!1 &1837035728
 GameObject:
@@ -6460,6 +6461,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2118472986
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2118472987}
+  m_Layer: 0
+  m_Name: Effect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2118472987
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118472986}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1766075654}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &38213300033038681
 Transform:
   m_ObjectHideFlags: 0
@@ -6816,6 +6847,7 @@ MonoBehaviour:
     gridRotCount: 0
     tutCount: 0
     maxGrassOnWall: 0
+    classicColor: 0
     rotTutConfig:
       row: 0
       col: 0
@@ -6828,6 +6860,7 @@ MonoBehaviour:
     listTerrainType: 
     levelDatas: []
     hintDatas: []
+    levelSort1: []
     isHaveMixColor: 0
     isFasterRotate: 0
     isHaveSetting: 0
@@ -6836,6 +6869,8 @@ MonoBehaviour:
     isReduceHintGrid: 0
     isFixedHintGrid: 0
     isFixLevelDifficulty: 1
+    isLevelDifficultyV2: 0
+    isRandomColorClassicMode: 0
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 

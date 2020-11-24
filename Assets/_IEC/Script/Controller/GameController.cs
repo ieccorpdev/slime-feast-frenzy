@@ -18,15 +18,13 @@ namespace IEC
 
         private float m_ScreenRatio, m_DeltaScreenRatio, m_DeltaSizeMinCam, m_RatioCamSize;
 
-        public Vector3 m_CamDirOrigin, m_CamOriginPos;
+        private Vector3 m_CamDirOrigin, m_CamOriginPos;
 
         private bool m_IsInitCam;
 
         private System.DateTime m_TimeStart;
 
         private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
-
-        private Tween m_TweenCam;
 
         public void LocateController()
         {
@@ -156,7 +154,7 @@ namespace IEC
             }
             else
             {
-                if (Game.isLevelSort1)
+                if (Game.isLevelDifficultyV2)
                 {
                     if (Game.seed > 2 && Game.seed <= 100)
                     {
@@ -199,7 +197,7 @@ namespace IEC
 
             Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
 
-            if (Game.isMultiClassicColor)
+            if (Game.isRandomColorClassicMode)
             {
                 if (!Game.isMultiColor)
                 {
@@ -259,9 +257,6 @@ namespace IEC
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam; 
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
 
-            //m_TweenCam?.Kill(true);
-
-            //m_TweenCam = GamePlay.mainCamera.transform.DOMove(cameraPos, 1f).SetEase(Ease.OutCirc);
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();

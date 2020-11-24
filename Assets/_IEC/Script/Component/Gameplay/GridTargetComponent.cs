@@ -44,7 +44,7 @@ namespace IEC
                 }
                 else
                 {
-                    return Config.GetWaterClassicMat(Game.isMultiClassicColor, Game.classicColor);
+                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.classicColor);
                 }
             }
         }
