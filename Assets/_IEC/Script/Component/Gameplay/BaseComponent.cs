@@ -24,7 +24,19 @@ namespace IEC
 
         public int TrueRot => m_TrueRot;
 
-        protected Color CurrentWaterColor => Config.GetWaterColor(WaterColor, Game.isMultiColor);
+        protected Color CurrentWaterColor
+        {
+            get {
+                if (Game.isMultiColor)
+                {
+                    return Config.GetWaterColor(WaterColor);
+                }
+                else
+                {
+                    return Config.GetWaterClassicColor(Game.isMultiClassicColor, Game.classicColor);
+                }
+            }
+        } 
 
         public GridType GridType;
 

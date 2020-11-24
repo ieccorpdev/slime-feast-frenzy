@@ -25,7 +25,7 @@ namespace IEC
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
-        public int maxGrassOnWall;
+        public int maxGrassOnWall, classicColor;
 
         public RotTutorialConfig rotTutConfig;
 
@@ -55,6 +55,7 @@ namespace IEC
 
         //Prepared
         public bool isLeavesEffect;
+        public bool isMultiClassicColor = true;
         
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)

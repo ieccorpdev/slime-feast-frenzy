@@ -47,7 +47,10 @@ namespace IEC
 
         public void OnInit(Color color, bool isShowDefault)
         {
-            materialPropertyBlock = new MaterialPropertyBlock();
+            if(materialPropertyBlock == null)
+            {
+                materialPropertyBlock = new MaterialPropertyBlock();
+            }
 
             m_TempColor = Color.white;
 

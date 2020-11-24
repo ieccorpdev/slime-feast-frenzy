@@ -34,6 +34,21 @@ namespace IEC
 
         private static float SCALE = .3f;
 
+        private Material CurrentMat
+        {
+            get
+            {
+                if (Game.isMultiColor)
+                {
+                    return Config.GetWaterMat(m_TrueWaterColor);
+                }
+                else
+                {
+                    return Config.GetWaterClassicMat(Game.isMultiClassicColor, Game.classicColor);
+                }
+            }
+        }
+
         protected override int[,] OriginLine => new int[3, 3]
 {
             { 0, 0, 0},
@@ -120,8 +135,7 @@ namespace IEC
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
-            var mat = Config.GetWaterColorMat(m_TrueWaterColor, isMultiColor);
-
+            var mat = CurrentMat;
             var color = mat.color;
 
             for (int i = 0; i < m_PsWins.Length; i++)

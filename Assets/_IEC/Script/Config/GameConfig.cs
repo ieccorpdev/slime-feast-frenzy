@@ -26,13 +26,15 @@ namespace IEC
 
         public GameObject effectLeavesObj;
 
+        public Color[] colorBSP;
 
-        public Color GetWaterColor(int color, bool isMultiColor)
+        public Material[] matBSP;
+
+        public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
-            if (isMultiColor)
+            if (isMultiClassicColor)
             {
-                var colorIndex = Mathf.Clamp(color - 1, 0, waterColor.Length - 1);
-                return waterColor[colorIndex];
+                return colorBSP[color];
             }
             else
             {
@@ -40,17 +42,30 @@ namespace IEC
             }
         }
 
-        public Material GetWaterColorMat(int color, bool isMulticolor)
+        public Color GetWaterColor(int color)
         {
-            if (isMulticolor)
+            var colorIndex = Mathf.Clamp(color - 1, 0, waterColor.Length - 1);
+            return waterColor[colorIndex];
+        }
+
+        public Material GetWaterClassicMat(bool isMultiClassicColor, int color)
+        {
+            if (isMultiClassicColor)
             {
-                var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
-                return targetMats[colorIndex];
+                return matBSP[color];
             }
             else
             {
                 return targetDefaultMat;
             }
         }
+
+        public Material GetWaterMat(int color)
+        {
+            var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
+            return targetMats[colorIndex];
+        }
+
+
     }
 }

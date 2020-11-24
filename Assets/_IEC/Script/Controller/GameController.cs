@@ -176,6 +176,14 @@ namespace IEC
 
             Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
 
+            if (Game.isMultiClassicColor)
+            {
+                if (!Game.isMultiColor)
+                {
+                    Game.classicColor = RandomHelper.Range(0, 12);
+                }
+            }
+
             var tempList = new List<int>();
 
             for (int i = 0; i < 2; i++)
