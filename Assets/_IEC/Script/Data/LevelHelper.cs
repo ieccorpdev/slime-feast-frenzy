@@ -269,6 +269,37 @@ namespace IEC
             return (rotCurrent - reduce + 4) % 4;
         }
 
+        public static int GetLevelSpawn(int matrix, int seed)
+        {
+            if(matrix == 3)
+            {
+                return RandomHelper.RangeWithSeed(seed, 2, 14);
+            }
+            else if (matrix == 4)
+            {
+                return RandomHelper.RangeWithSeed(seed, 14, 25);
+            }
+            else if (matrix == 5)
+            {
+                return RandomHelper.RangeWithSeed(seed, 25, 40);
+            }
+            else if (matrix == 6)
+            {
+                return RandomHelper.RangeWithSeed(seed, 40, 69);
+            }
+            else if (matrix == 7)
+            {
+                return RandomHelper.RangeWithSeed(seed, 69, 98);
+            }
+            else if (matrix == 7)
+            {
+                return RandomHelper.RangeWithSeed(seed, 98, 116);
+            }
+            else
+            {
+                return RandomHelper.RangeWithSeed(seed, 116, 1135);
+            }
+        }
     }
 }
 

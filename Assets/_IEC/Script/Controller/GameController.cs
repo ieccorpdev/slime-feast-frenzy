@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -24,6 +25,8 @@ namespace IEC
         private System.DateTime m_TimeStart;
 
         private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
+
+        private Tween m_TweenCam;
 
         public void LocateController()
         {
@@ -63,6 +66,11 @@ namespace IEC
 
             var hintDatas = strHints.text;
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            var strLevelSort1 = Resources.Load<TextAsset>("LevelSort1");
+            var levelSortText = strLevelSort1.text;
+            Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -148,7 +156,22 @@ namespace IEC
             }
             else
             {
-                levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                if (Game.isLevelSort1)
+                {
+                    if (Game.seed > 2 && Game.seed <= 100)
+                    {
+                        var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
+                        levelSpawn = LevelHelper.GetLevelSpawn(matrix, Game.seed);
+                    }
+                    else
+                    {
+                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                    }
+                }
+                else
+                {
+                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                }
             }
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
@@ -235,6 +258,10 @@ namespace IEC
 
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam; 
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
+
+            //m_TweenCam?.Kill(true);
+
+            //m_TweenCam = GamePlay.mainCamera.transform.DOMove(cameraPos, 1f).SetEase(Ease.OutCirc);
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();

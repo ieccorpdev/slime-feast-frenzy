@@ -43,6 +43,8 @@ namespace IEC
         public string[] levelDatas;
         public string[] hintDatas;
 
+        public string[] levelSort1;
+
         [Header("AB Test")]
         public bool isHaveMixColor;
         public bool isFasterRotate;
@@ -55,7 +57,8 @@ namespace IEC
 
         //Prepared
         public bool isLeavesEffect;
-        public bool isMultiClassicColor = true;
+        public bool isMultiClassicColor;
+        public bool isLevelSort1 = true;
         
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
