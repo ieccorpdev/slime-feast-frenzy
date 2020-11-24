@@ -19,6 +19,7 @@ namespace IEC
         public int ID => gameObject.GetInstanceID();
 
         public Vector3 CurrentPos => transform.position;
+        private Vector3 CurrentLocalPos => transform.localPosition;
 
         public Transform Transform => transform;
 
@@ -98,6 +99,8 @@ namespace IEC
             {
                 m_Terrain.SetupTerrain(GetTerrainType(Row, Col));
             }
+
+            OnTweenMove(false);
         }
 
         protected virtual void OnMouseDown()
@@ -386,13 +389,38 @@ namespace IEC
             {
                 m_HintEffect.OnDestroyMe();
             }
-            
-            m_Tween?.Kill(true);
+
             IsRotating = false;
             IsHaveWater = false;
             m_IsOldStatusWater = false;
             m_OldWaterColor = 0;
+
             PrefabHelper.Destroy(gameObject);
+        }
+
+
+        private void OnTweenMove(bool isDestroy)
+        {
+            m_Tween?.Kill(true);
+            var moveTime = Random.Range(.5f, .75f);
+            var delayTime = Random.Range(.25f, .5f);
+
+            if (isDestroy)
+            {
+                m_Tween = transform.DOLocalMoveY(15f, moveTime).SetEase(Ease.InCirc)
+                    .SetDelay(delayTime).OnComplete(() =>
+                    {
+                        PrefabHelper.Destroy(gameObject);
+                    });
+            }
+            else
+            {
+                var tempPos = CurrentLocalPos;
+                tempPos.y = 15f;
+                transform.localPosition = tempPos;
+
+                m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+            }
         }
 
         [NaughtyAttributes.Button]

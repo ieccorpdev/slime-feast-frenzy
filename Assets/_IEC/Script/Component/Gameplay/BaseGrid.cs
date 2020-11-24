@@ -102,10 +102,5 @@ namespace IEC
                     SetGridLine(m_CurrentRot);
                 });
         }
-        public override void OnDestroyMe()
-        {
-            base.OnDestroyMe();
-            m_Tween?.Kill(true);
-        }
     }
 }

@@ -9,7 +9,9 @@ namespace IEC
     public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake, IEventUpdate
     {
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
-        public Transform[] m_WallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
+
+        [SerializeField]
+        private List<CornerComponent> m_ListWallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
         private static float RATIO_DEFAULT = 16f / 10;
@@ -74,7 +76,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
+            StartCoroutine(SpawnLevel(false));
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -141,7 +143,7 @@ namespace IEC
             PushPlayLevelEvent();
         }
 
-        private IEnumerator SpawnLevel()
+        private IEnumerator SpawnLevel(bool isDelaySpawn = true)
         {
             OnClearAll();
             Game.seed = PlayerData.level;
@@ -260,11 +262,12 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();
-           EventController.RaiseEvent(EventList.GamePlay.GAME_START);
+           EventController.RaiseEventDelay(1.5f, EventList.GamePlay.GAME_START);
         }
 
         private void OnClearAll()
         {
+            m_ListWallCorners.ForEach(x => x.OnDestroyMe());
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 
@@ -278,6 +281,7 @@ namespace IEC
             Game.isAllowHint = true;
             Game.isWaitAfterRV = false;
             Game.maxHintIndex = 0;
+            Game.isPlaying = false;
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -351,10 +355,12 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            m_WallCorners[0].localPosition = new Vector3(-wallPos, 0f, wallPos);
-            m_WallCorners[1].localPosition = new Vector3(wallPos, 0f, wallPos);
-            m_WallCorners[2].localPosition = new Vector3(-wallPos, 0f, -wallPos);
-            m_WallCorners[3].localPosition = new Vector3(wallPos, 0f, -wallPos);
+            m_ListWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
+            m_ListWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
+            m_ListWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
+            m_ListWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
+
+            m_ListWallCorners.ForEach(x => x.OnTweenMove());
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
