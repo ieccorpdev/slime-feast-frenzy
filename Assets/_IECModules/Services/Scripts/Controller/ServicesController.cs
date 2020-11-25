@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -617,7 +617,7 @@ namespace IEC
         {
             if (config.remoteCustomEventFirebase != null && m_FirebaseAnalytic != null)
             {
-                m_FirebaseAnalytic.IsDisable = m_DataRemote.GetBool(config.remoteCustomEventFirebase.keyName, false);
+                m_FirebaseAnalytic.IsDisable = !m_DataRemote.GetBool(config.remoteCustomEventFirebase.keyName, false);
             }
         }
 
