@@ -44,11 +44,9 @@ namespace IEC
 
         private float m_FillAmount;
 
-        private Vector3 m_GrowingPos;
-
         public void OnInit()
         {
-            if(materialPropertyBlock == null)
+            if (materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
@@ -70,14 +68,26 @@ namespace IEC
             }
         }
 
-        public void SetGrowing(bool isGrowUp, Vector3 pos)
+        public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
-            m_GrowingPos = pos;
+            SetGrowingPos(MaterialPropertyBlock, pos);
+            m_FillAmount = isGrowUp ? (-delay * RATIO_TIME_UP) : m_FillAmount;
             m_IsGrowUp = isGrowUp;
             m_IsScale = true;
-
-            m_FillAmount = isGrowUp ? 0f : m_FillAmount;
         }
+
+        private void SetGrowingPos(MaterialPropertyBlock propertyBlock, Vector3 pos)
+        {
+            propertyBlock.SetVector("_GLOBALMaskPosition", pos);
+            ApplyData(propertyBlock);
+        }
+
+        float deltaAmount;
+        float ratioTime;
+
+        float RATIO_TIME_UP = .35f;
+        float RATIO_TIME_DOWN = 1f;
+        float MAX_AMOUNT = 1.05f;
 
         public void OnUpdate(float deltaTime)
         {
@@ -85,10 +95,24 @@ namespace IEC
             if (m_IsScale)
             {
                 isChanged = true;
-                m_FillAmount += m_IsGrowUp ? deltaTime : -deltaTime;
-                if (m_FillAmount <= 0 || m_FillAmount >= 1.5f)
+
+                deltaAmount = m_IsGrowUp ? deltaTime : - deltaTime;
+                ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
+                m_FillAmount += 1.0f / ratioTime * deltaAmount;
+
+                if (m_IsGrowUp)
                 {
-                    m_IsScale = false;
+                    if (m_FillAmount >= MAX_AMOUNT)
+                    {
+                        m_IsScale = false;
+                    }
+                }
+                else
+                {
+                    if (m_FillAmount <= 0)
+                    {
+                        m_IsScale = false;
+                    }
                 }
             }
 
@@ -137,7 +161,6 @@ namespace IEC
         private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
         {
             propertyBlock.SetColor("_WaterColor", waterColor);
-            propertyBlock.SetVector("_GLOBALMaskPosition", m_GrowingPos);
             propertyBlock.SetFloat("_GLOBALMaskRadius", m_FillAmount);
 
             ApplyData(propertyBlock);

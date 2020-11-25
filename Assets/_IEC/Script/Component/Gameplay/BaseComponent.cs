@@ -16,9 +16,6 @@ namespace IEC
         [SerializeField]
         protected EffectGridAura m_HintEffect;
 
-        [SerializeField]
-        private Transform m_TransWater;
-
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
 
@@ -26,11 +23,11 @@ namespace IEC
         private Vector3 CurrentLocalPos => Transform.localPosition;
 
         // Use set water pos
-        private Vector3 CenterPos => Vector3.zero;
-        private Vector3 TopPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.forward * .5f);
-        private Vector3 BotPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.back * .5f);
-        private Vector3 LeftPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.left * .5f);
-        private Vector3 RightPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.right * .5f);
+        private Vector3 CenterPos => CurrentWorldPos;
+        private Vector3 TopPos => CurrentWorldPos + Vector3.forward * .5f;
+        private Vector3 BotPos => CurrentWorldPos + Vector3.back * .5f;
+        private Vector3 LeftPos => CurrentWorldPos + Vector3.left * .5f;
+        private Vector3 RightPos => CurrentWorldPos + Vector3.right * .5f;
 
         //Angle
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
@@ -153,20 +150,32 @@ namespace IEC
                 m_HintEffect.OnDestroyMe();
             }
 
+            OnResetData();
+
+            PrefabHelper.Destroy(gameObject);
+        }
+
+        private void OnResetData()
+        {
             m_IsRotating = false;
             m_IsHaveWater = false;
             m_IsOldHaveWater = false;
             m_OldWaterIndexColor = 0;
 
-            PrefabHelper.Destroy(gameObject);
+            m_StartWater = WaterPoint.CENTER;
         }
 
         public virtual void AfterInit(bool isMultiColor)
         {
-            m_IsRotating = false;
-            m_IsHaveWater = (GridType == GridType.GRID_SOURCE);
-            m_IsOldHaveWater = false;
-            m_OldWaterIndexColor = 0;
+            OnResetData();
+
+            if(GridType == GridType.GRID_SOURCE)
+            {
+                m_IsHaveWater = true;
+                m_ListWaterColor.Add(WaterIndexColor);
+                SetColor();
+                SetSetGrowingWater(true, WaterPoint.CENTER);
+            }
         }
 
         protected virtual int[,] GetDefaultLine(int style)
@@ -179,22 +188,24 @@ namespace IEC
 
         }
 
-
+        public bool IsChecked;
 
         public virtual void PrepareCheckConnect()
         {
+            IsChecked = false;
             if (GridType == GridType.GRID_SOURCE) return;
             m_IsOldHaveWater = m_IsHaveWater;
             m_OldWaterIndexColor = WaterIndexColor;
             m_IsHaveWater = false;
+            
 
             m_ListWaterColor.Clear();
         }
 
         public List<BaseComponent> GetGridNearCanConnect(int color)
         {
+            IsChecked = true;
             m_ListGridConnect.Clear();
-
             if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
 
             if (IsHaveLineTop)
@@ -204,6 +215,7 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineBot)
                     {
+                        m_TempGrid.SetStartWater(WaterPoint.BOT);
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -216,6 +228,7 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineTop)
                     {
+                        m_TempGrid.SetStartWater(WaterPoint.TOP);
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -228,6 +241,7 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineRight)
                     {
+                        m_TempGrid.SetStartWater(WaterPoint.RIGHT);
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -240,6 +254,7 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineLeft)
                     {
+                        m_TempGrid.SetStartWater(WaterPoint.LEFT);
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -250,6 +265,7 @@ namespace IEC
                 var m_TempGrid = GridHelper.GetOppositeWall(Row, Col, color, Game);
                 if (m_TempGrid != null)
                 {
+                    m_TempGrid.SetStartWater(WaterPoint.LEFT);
                     m_ListGridConnect.Add(m_TempGrid);
                 }
             }
@@ -257,13 +273,30 @@ namespace IEC
             return m_ListGridConnect;
         }
 
+        private void OnWaterGrowUpDone()
+        {
+            //if (GridType == GridType.GRID_SOURCE) return;
+            //Debug.LogError("Count: " + m_ListGridConnect.Count);
+            m_ListGridConnect.ForEach(x => x.AfterCheckConnect());
+        }
+
+        private WaterPoint m_StartWater;
+        private int m_DelayStart;
+
+        public void SetStartWater(WaterPoint point)
+        {
+            if (!Game.isPlaying) return;
+            m_StartWater = point;
+        }
+
         public bool IsAllowConnect(int color)
         {
             return (GridType != GridType.GRID_SOURCE && !m_ListWaterColor.Contains(color));
         }
 
-        public void SetConnect(int color)
+        public void SetConnect(int color, int delayStart)
         {
+            m_DelayStart = delayStart;
             m_IsHaveWater = true;
             if (!m_ListWaterColor.Contains(color))
             {
@@ -280,15 +313,9 @@ namespace IEC
             {
                 Game.isHaveWaterConnection = true;
             }
-            SetSetGrowingWater(m_IsHaveWater);
-        }
 
-        private void SetSetGrowingWater(bool isGrowUp)
-        {
-            for (int i = 0; i < m_WaterCount; i++)
-            {
-                m_WaterComponent[i].SetGrowing(isGrowUp, TopPos);
-            }
+            WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
+            SetSetGrowingWater(m_IsHaveWater, point);
         }
 
         private void SetColor()
@@ -298,6 +325,14 @@ namespace IEC
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
                 m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldHaveWater);
+            }
+        }
+
+        private void SetSetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
+        {
+            for (int i = 0; i < m_WaterCount; i++)
+            {
+                m_WaterComponent[i].SetGrowing(isGrowUp, GetWaterPos(waterPoint), m_DelayStart);
             }
         }
 
@@ -342,11 +377,6 @@ namespace IEC
             }
         }
 
-        private void SetWaterPoint(Vector3 pos)
-        {
-
-        }
-
         private Vector3 GetWaterPos(WaterPoint waterPoint)
         {
             Vector3 pos = Vector3.zero;
@@ -368,6 +398,7 @@ namespace IEC
                     pos = CenterPos;
                     break;
             }
+            pos.y = .2f;
             return pos;
         }
 

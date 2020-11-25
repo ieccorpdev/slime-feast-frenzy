@@ -97,7 +97,7 @@ namespace IEC
                         var listGridNearCount = listGridNear.Count;
                         if (listGridNear.Count > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor));
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, 0));
                             m_ListTempGridSolution.AddRange(listGridNear);
                         }
                     }
