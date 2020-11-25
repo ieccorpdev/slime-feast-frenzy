@@ -35,7 +35,7 @@ namespace _IECModules
         private int m_PluginFirebaseVersionSelect;
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
-        private bool m_FirebaseRemoteCustomEvent;
+
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
 
@@ -59,7 +59,6 @@ namespace _IECModules
             PluginApplovin,
             PluginIronSource,
             PluginUnityIAP,
-            RemoteCustomEventFirebase
         }
 
         private void Awake()
@@ -75,8 +74,6 @@ namespace _IECModules
             {
                 pkg.LoadPKGVersionList();
             }
-
-            m_FirebaseRemoteCustomEvent = ScriptingDefineSymbolEditor.ContainDefineSymbol(PluginDefineSymbol.RemoteCustomEventFirebase.ToString());
         }
 
         private void InitGuiParams()
@@ -184,7 +181,6 @@ namespace _IECModules
 
             var firebaseRemotePkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBASE_REMOTE_CONFIG_PKG];
             var firebaseRemoteLoaded = firebaseRemotePkg.LoadPKGVersionFromCache();
-            //var firebaseRemoteCustomEvent = false;
             CreateGuiButton($"Firebase Remote Config {(firebaseRemoteLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
                 if (!firebaseRemoteLoaded)
@@ -200,21 +196,6 @@ namespace _IECModules
             firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
                firebaseRemotePkg.listVersion,
                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
-
-            var lastFirebaseRemoteCustomEvent = m_FirebaseRemoteCustomEvent;
-            m_FirebaseRemoteCustomEvent = GUILayout.Toggle(m_FirebaseRemoteCustomEvent, "Remote Custom Event");
-            if (lastFirebaseRemoteCustomEvent != m_FirebaseRemoteCustomEvent)
-            {
-                if (m_FirebaseRemoteCustomEvent)
-                {
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.RemoteCustomEventFirebase);
-                }
-                else
-                {
-                    ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.RemoteCustomEventFirebase);
-                }
-            }
-
 
             CreateGuiBreakLine();
 

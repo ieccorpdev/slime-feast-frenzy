@@ -79,18 +79,12 @@ public class ServicesConfig : ScriptableObject
 
     public List<RemoteConfigData> GetRemoteConfigs()
     {
-
-#if (RemoteCustomEventFirebase)
-        var isRemoteCustomEventFirebase = true;
-#else
-        var isRemoteCustomEventFirebase = false;
-#endif
         if (remoteConfigs == null)
         {
             remoteConfigs = new List<RemoteConfigData>();
         }
 
-        if(isRemoteCustomEventFirebase && remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
+        if(remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
         {
             remoteConfigs.Add(remoteCustomEventFirebase);
         }
