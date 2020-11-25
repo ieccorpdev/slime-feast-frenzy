@@ -86,7 +86,7 @@ namespace IEC
                 case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(SpawnLevel());
                     break;
-                case EventList.GamePlay.CHECK_GAME_OVER:
+                case EventList.GamePlay.GAME_CHECK_CONNECT:
                     CheckGameOver();
                     break;
                 case EventList.GamePlay.GAME_START:
@@ -97,6 +97,10 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Break();
+            }
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
@@ -142,7 +146,7 @@ namespace IEC
             PushPlayLevelEvent();
 
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
-            EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
         private IEnumerator SpawnLevel()
@@ -434,6 +438,10 @@ namespace IEC
 
                         if (listGridNear.Count > 0)
                         {
+                            if (grid.isHavingWater)
+                            {
+                                delayStart = 0;
+                            }
                             listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, delayStart));
                             m_ListTempGridHaveWater.AddRange(listGridNear);
                         }
@@ -449,8 +457,6 @@ namespace IEC
                 }
             }
 
-            //Game.listSource.ForEach(x => x.AfterCheckConnect());
-
             Game.listGrids.ForEach(x => x.AfterCheckConnect());
 
             //if (Game.isHaveWaterConnection)
@@ -458,15 +464,16 @@ namespace IEC
             //    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
             //}
 
-            //if (IsWin())
-            //{
-            //    Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
-            //    Services.PushEvent(new IEC.TrackingEvent.GameOver());
-            //    PlayerData.countPlayThisLevel = 0;
-            //    PlayerData.level += 1;
-            //    Game.isPlaying = false;
-            //    EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
-            //}
+
+            if (IsWin())
+            {
+                Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
+                Services.PushEvent(new IEC.TrackingEvent.GameOver());
+                PlayerData.countPlayThisLevel = 0;
+                PlayerData.level += 1;
+                Game.isPlaying = false;
+                EventController.RaiseEventDelay(3f, EventList.GamePlay.GAME_OVER);
+            }
         }
 
         private bool IsWin()

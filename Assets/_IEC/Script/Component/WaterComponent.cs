@@ -44,13 +44,17 @@ namespace IEC
 
         private float m_FillAmount;
 
-        public void OnInit()
+        private System.Action growUpCallBack;
+
+        public void OnInit(System.Action callBack)
         {
+            growUpCallBack = callBack;
             if (materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
-            
+
+            m_FillAmount = 0f;
             m_IsScale = false;
             m_IsGrowUp = false;
 
@@ -71,7 +75,7 @@ namespace IEC
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
             SetGrowingPos(MaterialPropertyBlock, pos);
-            m_FillAmount = isGrowUp ? (-delay * RATIO_TIME_UP) : m_FillAmount;
+            m_FillAmount = isGrowUp ? (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
             m_IsGrowUp = isGrowUp;
             m_IsScale = true;
         }
@@ -85,7 +89,7 @@ namespace IEC
         float deltaAmount;
         float ratioTime;
 
-        float RATIO_TIME_UP = .35f;
+        float RATIO_TIME_UP = .25f;
         float RATIO_TIME_DOWN = 1f;
         float MAX_AMOUNT = 1.05f;
 
@@ -96,7 +100,7 @@ namespace IEC
             {
                 isChanged = true;
 
-                deltaAmount = m_IsGrowUp ? deltaTime : - deltaTime;
+                deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
                 ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
                 m_FillAmount += 1.0f / ratioTime * deltaAmount;
 
@@ -105,6 +109,7 @@ namespace IEC
                     if (m_FillAmount >= MAX_AMOUNT)
                     {
                         m_IsScale = false;
+                        growUpCallBack?.Invoke();
                     }
                 }
                 else
@@ -154,6 +159,8 @@ namespace IEC
             propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
             propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
             propertyBlock.SetFloat("_BorderWidth", borderWidth);
+
+            OnUpdatePropertyBlock(propertyBlock);
 
             ApplyData(propertyBlock);
         }

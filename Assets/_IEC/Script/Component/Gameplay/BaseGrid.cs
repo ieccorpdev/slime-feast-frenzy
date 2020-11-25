@@ -65,7 +65,7 @@ namespace IEC
                     m_IsRotating = false;
                     SetGridLine(m_CurrentRot);
 
-                    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
 
                     if (Game.isTutorial)
                     {

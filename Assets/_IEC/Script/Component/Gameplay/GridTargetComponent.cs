@@ -135,14 +135,16 @@ namespace IEC
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
+            var mat = CurrentMat;
+            var color = mat.color;
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = CurrentWaterColor;
+                m_PsWins[i].startColor = color;
             }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
             {
-                m_MeshTargets[i].material = CurrentMat;
+                m_MeshTargets[i].material = mat;
             }
         }
 
@@ -151,18 +153,36 @@ namespace IEC
             base.AfterCheckConnect();
 
             if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+
+            if (!m_IsHaveWater)
+            {
+                TweenScale(false);
+            }
+
+            //if (!IsDone)
+            //{
+            //    TweenScale();
+            //}
+        }
+
+        protected override void OnWaterGrowUpDone()
+        {
+            TweenScale(true, () => {
+                m_PsWin.Play();
+                if (PlayerData.isVibrateOn)
+                {
+                    MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+                }
+                EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
+            });
+        }
+
+        private void TweenScale(bool isGrowUp, System.Action callBack = null)
+        {
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * SCALE, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one : Vector3.one * SCALE, .4f)
                 .OnComplete(() => {
-                    if (IsDone)
-                    {
-                        m_PsWin.Play();
-                        if (PlayerData.isVibrateOn)
-                        {
-                            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
-                        }
-                        EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
-                    }
+                    callBack?.Invoke();
                 });
         }
 
