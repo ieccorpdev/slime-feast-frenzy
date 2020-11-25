@@ -76,7 +76,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            StartCoroutine(SpawnLevel(false));
+            EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -143,7 +143,7 @@ namespace IEC
             PushPlayLevelEvent();
         }
 
-        private IEnumerator SpawnLevel(bool isDelaySpawn = true)
+        private IEnumerator SpawnLevel()
         {
             OnClearAll();
             Game.seed = PlayerData.level;
@@ -262,7 +262,8 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();
-           EventController.RaiseEventDelay(1.5f, EventList.GamePlay.GAME_START);
+            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
+            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 
         private void OnClearAll()

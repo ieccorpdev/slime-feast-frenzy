@@ -63,6 +63,7 @@ namespace IEC
         {
             Game.isLevelDifficultyV2 = abValue == 1;
             Game.isRandomColorClassicMode = abValue == 2;
+            Game.isStartLevelEffect = abValue == 3;
         }
 
         private void Result20201120()

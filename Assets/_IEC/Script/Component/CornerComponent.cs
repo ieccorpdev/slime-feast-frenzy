@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class CornerComponent : MonoBehaviour
+    public class CornerComponent : _BaseBehaviour
     {
         private Tween m_Tween;
         private Vector3 CurrentLocalPos => transform.localPosition;
@@ -22,6 +22,7 @@ namespace IEC
         {
             m_Tween?.Kill(true);
             gameObject.SetActive(true);
+            if (!Game.isStartLevelEffect) return;
 
             var moveTime = Random.Range(.5f, .75f);
             var delayTime = Random.Range(.25f, .5f);
@@ -35,6 +36,7 @@ namespace IEC
 
         public void OnDestroyMe()
         {
+            if (!Game.isStartLevelEffect) return;
             gameObject.SetActive(false);
         }
     }

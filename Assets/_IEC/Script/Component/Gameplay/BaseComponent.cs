@@ -100,7 +100,10 @@ namespace IEC
                 m_Terrain.SetupTerrain(GetTerrainType(Row, Col));
             }
 
-            OnTweenMove(false);
+            if (Game.isStartLevelEffect)
+            {
+                OnTweenMove(false);
+            }
         }
 
         protected virtual void OnMouseDown()

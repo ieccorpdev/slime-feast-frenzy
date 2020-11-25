@@ -56,6 +56,7 @@ namespace IEC
         public bool isFixLevelDifficulty;
         public bool isLevelDifficultyV2;
         public bool isRandomColorClassicMode;
+        public bool isStartLevelEffect;
 
         //Prepared
         public bool isLeavesEffect;
