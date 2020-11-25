@@ -7,9 +7,6 @@ namespace IEC
 {
     public class GridNoneComponent : BaseComponent
     {
-        protected override void OnMouseDown()
-        {
-            OnDOShakePosition();
-        }
+
     }
 }

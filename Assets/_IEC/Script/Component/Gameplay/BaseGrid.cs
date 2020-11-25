@@ -13,23 +13,18 @@ namespace IEC
             SetGridLine(TrueRot);
         }
 
-        public override void FixLevelData(int newCurrentRot)
+        public override void SetTempRot(int tempRot)
         {
-            base.FixLevelData(newCurrentRot);
-            m_CurrentRot = newCurrentRot;
-            //Debug.LogError("newCurrentRot: " + newCurrentRot);
-            //SetGridLine(m_CurrentRot);
+            base.SetTempRot(tempRot);
+            m_CurrentRot = tempRot;
         }
 
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
             SetGridLine(m_CurrentRot);
-            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-            //Debug.LogError("m_CurrentRot: " + m_CurrentRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
-
-
 
         private void SetGridLine(int rot)
         {
@@ -40,8 +35,9 @@ namespace IEC
             }
         }
 
-        protected override void OnMouseDown()
+        protected override void OnHandleMouseDown()
         {
+            base.OnHandleMouseDown();
             if (Game.isTutorial && ID != Game.gridTutId) return;
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;

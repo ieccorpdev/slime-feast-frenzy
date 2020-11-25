@@ -28,9 +28,9 @@ namespace IEC
 
         private Tween m_TweenScale;
 
-        private int m_TrueWaterColor, m_TargetStyle;
+        private int m_TargetStyle;
 
-        public bool IsDone => m_IsHaveWater && (m_TrueWaterColor == WaterColor);
+        public bool IsDone => m_IsHaveWater && (TrueColor == WaterColor);
 
         private static float SCALE = .3f;
 
@@ -40,7 +40,7 @@ namespace IEC
             {
                 if (Game.isMultiColor)
                 {
-                    return Config.GetWaterMat(m_TrueWaterColor);
+                    return Config.GetWaterMat(TrueColor);
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            m_TrueWaterColor = color;
+            TrueColor = color;
 
             m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
 
@@ -126,7 +126,7 @@ namespace IEC
                 m_StyleLineObj[i].SetActive(i == style);
             }
 
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            for (int i = 0; i < m_WaterCount; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
@@ -135,17 +135,14 @@ namespace IEC
         public override void AfterInit(bool isMultiColor)
         {
             base.AfterInit(isMultiColor);
-            var mat = CurrentMat;
-            var color = mat.color;
-
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = color;
+                m_PsWins[i].startColor = CurrentWaterColor;
             }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
             {
-                m_MeshTargets[i].material = mat;
+                m_MeshTargets[i].material = CurrentMat;
             }
         }
 

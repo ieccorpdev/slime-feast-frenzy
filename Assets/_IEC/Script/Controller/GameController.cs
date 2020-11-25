@@ -131,16 +131,18 @@ namespace IEC
                             gridRot = LevelHelper.CalculatorRot(grid.TrueRot, reduce);
                         }
 
-                        grid.FixLevelData(gridRot);
+                        grid.SetTempRot(gridRot);
                     }
                 }
             }
 
             Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
             Game.isPlaying = true;
+            m_TimeStart = System.DateTime.Now;
+            PushPlayLevelEvent();
+
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-            PushPlayLevelEvent();
         }
 
         private IEnumerator SpawnLevel()
@@ -241,7 +243,6 @@ namespace IEC
             SpawnGridAll(levelConfig);
 
             yield return null;
-            m_TimeStart = System.DateTime.Now;
 
             if (!m_IsInitCam)
             {
