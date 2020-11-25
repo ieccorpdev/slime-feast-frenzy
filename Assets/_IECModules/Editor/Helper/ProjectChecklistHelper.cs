@@ -339,38 +339,7 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.AdPosition:
                         break;
-                    case ChecklistItemName.ApplovinIOSID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Inter ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Banner ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Reward ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.rewardID = checklistItemValue;
-                        break;
+                    
                     case ChecklistItemName.IronSourceIOSID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Iron Source IOS ID: {checklistItemValue}");
                         servicesConfig.IronSourceConfig.ios.appID = checklistItemValue;
@@ -386,8 +355,46 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #endif
-                    
-#if PluginApplovin 
+
+#if PluginApplovin
+                    case ChecklistItemName.ApplovinIOSID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
+#if UNITY_IOS
+                        UpdateApplovinQualityService(checklistItemValue);
+#endif
+                        break;
+                    case ChecklistItemName.ApplovinAndroidID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.appID = checklistItemValue;
+#if UNITY_ANDROID
+                        UpdateApplovinQualityService(checklistItemValue);
+#endif
+                        break;
+                    case ChecklistItemName.ApplovinIOSInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Inter ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Banner ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Reward ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.rewardID = checklistItemValue;
+                        break;
                     case ChecklistItemName.AdmobIDIOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob IOS ID: {checklistItemValue}");
                         AppLovinSettings.Instance.AdMobIosAppId = checklistItemValue;
@@ -405,6 +412,18 @@ namespace _IECModules
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        private static void UpdateApplovinQualityService(string sdkKey)
+        {
+#if PluginApplovin
+            LogEditorHelper.AddLog("AppLovin Disable Quality Service");
+            AppLovinSettings.Instance.QualityServiceEnabled = true;
+            AppLovinSettings.Instance.SdkKey = sdkKey;
+            EditorUtility.SetDirty(AppLovinSettings.Instance);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
         }
     }
 }
