@@ -65,7 +65,7 @@ namespace IEC
             m_Speed = Random.Range(.5f, 1f);
             m_Anim.SetFloat(SPEED, m_Speed);
 
-            var size = Vector3.one * Random.Range(.4f, .8f);
+            var size = Vector3.one * Random.Range(.2f, .8f);
             transform.localScale = size;
             var targetDir = (m_TargetPos - transform.localPosition).normalized;
 
