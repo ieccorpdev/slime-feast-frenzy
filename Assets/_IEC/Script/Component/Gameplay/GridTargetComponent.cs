@@ -130,23 +130,25 @@ namespace IEC
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
-        }
 
-        public override void AfterInit(bool isMultiColor)
-        {
-            base.AfterInit(isMultiColor);
             var mat = CurrentMat;
-            var color = mat.color;
+            var colorMat = mat.color;
 
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = color;
+                m_PsWins[i].startColor = colorMat;
             }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
             {
                 m_MeshTargets[i].material = mat;
             }
+        }
+
+        public override void AfterInit(bool isMultiColor)
+        {
+            base.AfterInit(isMultiColor);
+
         }
 
         public override void AfterCheckConnect()
