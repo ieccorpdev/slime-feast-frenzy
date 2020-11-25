@@ -55,7 +55,7 @@ namespace _IECModules
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
-            UpdateApplovinQualityService();
+            //UpdateApplovinQualityService();
         }
 
         public static void DeleteObsoleteResolver()
@@ -80,7 +80,7 @@ namespace _IECModules
         {
 #if PluginApplovin
             LogEditorHelper.AddLog("AppLovin Disable Quality Service");
-            AppLovinSettings.Instance.QualityServiceEnabled = false;
+            AppLovinSettings.Instance.QualityServiceEnabled = true;
             EditorUtility.SetDirty(AppLovinSettings.Instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
