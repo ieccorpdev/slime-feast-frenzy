@@ -19,7 +19,7 @@ namespace IEC
         Dictionary<string, RemoteConfigData> m_DictData = new Dictionary<string, RemoteConfigData>();
         Dictionary<string, ConfigValue> m_DictValue = new Dictionary<string, ConfigValue>();
 
-        public FirebaseRemoteConfigModule(IJsonService jsonService, ISetUpSdkService firebaseSetUp, IDataService localData, bool isTest, RemoteConfigData[] data)
+        public FirebaseRemoteConfigModule(IJsonService jsonService, ISetUpSdkService firebaseSetUp, IDataService localData, bool isTest, List<RemoteConfigData> data)
         {
             m_JsonService = jsonService;
             m_FirebaseSetUp = firebaseSetUp;
@@ -54,6 +54,7 @@ namespace IEC
                         {
                             var value = FirebaseRemoteConfig.GetValue(key);
                             m_DictValue[key] = value;
+                            Debug.Log("Remote " + key + ":" + value);
                         }
 
                         foreach (var key in m_DictData.Keys)

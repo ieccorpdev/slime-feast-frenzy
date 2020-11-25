@@ -44,9 +44,13 @@ public class ServicesConfig : ScriptableObject
     [Header("Kochava")]
     public PlatformConfig kochavaConfig;
 
+    [Header("RemoteCustomEventFirebase")]
+    public RemoteConfigData remoteCustomEventFirebase;
+
+
     [Header("RemoteConfig")]
     public bool isTestRemoteConfig;
-    public RemoteConfigData[] remoteConfigs;
+    public List<RemoteConfigData> remoteConfigs;
 
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";
@@ -71,6 +75,26 @@ public class ServicesConfig : ScriptableObject
         }
 
         return EcpmAdsWaterfall;
+    }
+
+    public List<RemoteConfigData> GetRemoteConfigs()
+    {
+
+#if (RemoteCustomEventFirebase)
+        var isRemoteCustomEventFirebase = true;
+#else
+        var isRemoteCustomEventFirebase = false;
+#endif
+        if (remoteConfigs == null)
+        {
+            remoteConfigs = new List<RemoteConfigData>();
+        }
+
+        if(isRemoteCustomEventFirebase && remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
+        {
+            remoteConfigs.Add(remoteCustomEventFirebase);
+        }
+        return remoteConfigs;
     }
 
     [Serializable]
