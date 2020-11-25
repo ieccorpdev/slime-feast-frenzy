@@ -63,7 +63,7 @@ namespace IEC
         
         
 
-        public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
+        public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
@@ -71,38 +71,19 @@ namespace IEC
             var grid = grids[row, col];
             if(grid != null)
             {
-                if (isRequireTrueColor)
-                {
-                    if (grid.IsAllowConnect(color))
-                    {
-                        return grid;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
+                if (grid.IsAllowConnect(color))
                 {
                     return grid;
                 }
-
+                else
+                {
+                    return null;
+                }
             }
             else
             {
                 return null;
             }
         }
-    }
-
-    public enum GridType
-    {
-        NONE,
-        WALL,
-        GRID_SOURCE,
-        GRID_TARGET,
-        GRID_STRAIGHT,
-        GRID_CROSS,
-        GRID_CURVE
     }
 }

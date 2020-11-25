@@ -58,7 +58,7 @@ namespace IEC
         public GridType GridType;
 
         [HideInInspector]
-        public int WaterColor;
+        public int WaterIndexColor;
 
 
         // Dynamic data
@@ -67,7 +67,7 @@ namespace IEC
             get {
                 if (Game.isMultiColor)
                 {
-                    return Config.GetWaterColor(WaterColor);
+                    return Config.GetWaterColor(WaterIndexColor);
                 }
                 else
                 {
@@ -80,7 +80,7 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater, m_IsOldHaveWater;
 
-        protected int m_CurrentRot, m_OldWaterColor, m_WaterCount;
+        protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
         //Temp
         protected Tween m_Tween;
@@ -94,7 +94,7 @@ namespace IEC
             GridType = gridType;
             Row = row;
             Col = col;
-            WaterColor = color;
+            WaterIndexColor = color;
             m_CurrentRot = rot;
             TrueRot = trueRot;
 
@@ -156,7 +156,7 @@ namespace IEC
             m_IsRotating = false;
             m_IsHaveWater = false;
             m_IsOldHaveWater = false;
-            m_OldWaterColor = 0;
+            m_OldWaterIndexColor = 0;
 
             PrefabHelper.Destroy(gameObject);
         }
@@ -166,7 +166,7 @@ namespace IEC
             m_IsRotating = false;
             m_IsHaveWater = (GridType == GridType.GRID_SOURCE);
             m_IsOldHaveWater = false;
-            m_OldWaterColor = 0;
+            m_OldWaterIndexColor = 0;
         }
 
         protected virtual int[,] GetDefaultLine(int style)
@@ -181,58 +181,14 @@ namespace IEC
 
 
 
-        protected void SetActiveWater(bool isActive)
-        {
-            for (int i = 0; i < m_WaterCount; i++)
-            {
-                m_WaterComponent[i].SetGrowing(isActive, TopPos);
-            }
-        }
-
         public virtual void PrepareCheckConnect()
         {
             if (GridType == GridType.GRID_SOURCE) return;
             m_IsOldHaveWater = m_IsHaveWater;
-            m_OldWaterColor = WaterColor;
+            m_OldWaterIndexColor = WaterIndexColor;
             m_IsHaveWater = false;
 
             m_ListWaterColor.Clear();
-        }
-
-        public void SetConnect(int color)
-        {
-            m_IsHaveWater = true;
-            if (!m_ListWaterColor.Contains(color))
-            {
-                m_ListWaterColor.Add(color);
-            }
-        }
-
-        private void SetColor()
-        {
-            if (!m_IsHaveWater) return;
-            WaterColor = GridHelper.GetColor(m_ListWaterColor);
-            for (int i = 0; i < m_WaterComponent.Length; i++)
-            {
-                m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldHaveWater);
-            }
-        }
-
-        public virtual void AfterCheckConnect()
-        {
-            if (GridType == GridType.GRID_SOURCE) return;
-            SetColor();
-            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterColor == WaterColor) return;
-            if (m_IsHaveWater)
-            {
-                Game.isHaveWaterConnection = true;
-            }
-            SetActiveWater(m_IsHaveWater);
-        }
-
-        public bool IsAllowConnect(int color)
-        {
-            return (GridType != GridType.GRID_SOURCE && !m_ListWaterColor.Contains(color));
         }
 
         public List<BaseComponent> GetGridNearCanConnect(int color)
@@ -247,7 +203,7 @@ namespace IEC
                 if (m_TempGrid != null)
                 {
                     if (m_TempGrid.IsHaveLineBot)
-                    {  
+                    {
                         m_ListGridConnect.Add(m_TempGrid);
                     }
                 }
@@ -289,7 +245,7 @@ namespace IEC
                 }
             }
 
-            if(GridType == GridType.WALL)
+            if (GridType == GridType.WALL)
             {
                 var m_TempGrid = GridHelper.GetOppositeWall(Row, Col, color, Game);
                 if (m_TempGrid != null)
@@ -299,6 +255,50 @@ namespace IEC
             }
 
             return m_ListGridConnect;
+        }
+
+        public bool IsAllowConnect(int color)
+        {
+            return (GridType != GridType.GRID_SOURCE && !m_ListWaterColor.Contains(color));
+        }
+
+        public void SetConnect(int color)
+        {
+            m_IsHaveWater = true;
+            if (!m_ListWaterColor.Contains(color))
+            {
+                m_ListWaterColor.Add(color);
+            }
+        }
+
+        public virtual void AfterCheckConnect()
+        {
+            if (GridType == GridType.GRID_SOURCE) return;
+            SetColor();
+            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+            if (m_IsHaveWater)
+            {
+                Game.isHaveWaterConnection = true;
+            }
+            SetSetGrowingWater(m_IsHaveWater);
+        }
+
+        private void SetSetGrowingWater(bool isGrowUp)
+        {
+            for (int i = 0; i < m_WaterCount; i++)
+            {
+                m_WaterComponent[i].SetGrowing(isGrowUp, TopPos);
+            }
+        }
+
+        private void SetColor()
+        {
+            if (!m_IsHaveWater) return;
+            WaterIndexColor = GridHelper.GetColor(m_ListWaterColor);
+            for (int i = 0; i < m_WaterComponent.Length; i++)
+            {
+                m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldHaveWater);
+            }
         }
 
         public virtual void OnHint()
@@ -352,16 +352,16 @@ namespace IEC
             Vector3 pos = Vector3.zero;
             switch (waterPoint)
             {
-                case WaterPoint.Top:
+                case WaterPoint.TOP:
                     pos = TopPos;
                     break;
-                case WaterPoint.Bot:
+                case WaterPoint.BOT:
                     pos = BotPos;
                     break;
-                case WaterPoint.Left:
+                case WaterPoint.LEFT:
                     pos = LeftPos;
                     break;
-                case WaterPoint.Right:
+                case WaterPoint.RIGHT:
                     pos = RightPos;
                     break;
                 default:
@@ -370,7 +370,6 @@ namespace IEC
             }
             return pos;
         }
-
 
 
         [NaughtyAttributes.Button]
@@ -389,15 +388,6 @@ namespace IEC
             Debug.LogError("IsHaveLineTop: " + IsHaveLineTop + " | IsHaveLineBot: " + IsHaveLineBot
                 + " | IsHaveLineLeft: " + IsHaveLineLeft + " | IsHaveLineRight: " + IsHaveLineRight);
         }
-    }
-
-    public enum WaterPoint
-    {
-        Center,
-        Top,
-        Bot,
-        Left,
-        Right
     }
 
 }

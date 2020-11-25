@@ -428,11 +428,11 @@ namespace IEC
                     for (int j = 0; j < count; j++)
                     {
                         var grid = m_ListTempGridHaveWater[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
+                        var listGridNear = grid.GetGridNearCanConnect(source.WaterIndexColor);
 
                         if (listGridNear.Count > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor));
                             m_ListTempGridHaveWater.AddRange(listGridNear);
                         }
                     }
