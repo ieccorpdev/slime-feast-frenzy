@@ -88,7 +88,8 @@ namespace IEC
                 if (Game.isBlockButton) return;
                 Services.ShowRewardAds(() => {
                     Game.isWaitAfterRV = true;
-                    EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_START_HINT);
+                    var delayTime = (Application.isEditor || Services.IsConfigNoAds()) ? 0f : 1f;
+                    EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_HINT);
                 });
             });
 

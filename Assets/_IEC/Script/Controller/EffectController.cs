@@ -4,12 +4,14 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class EffectController : _BaseBehaviour, IController, IEventListener, IEventUpdate
+    public class EffectController : _BaseBehaviour, IController, IEventListener, IEventUpdate, IEventAwake
     {
-        public float m_TimeCountAfterHint;
-        public bool m_IsCounting;
-
+        private float m_TimeCountAfterHint;
+        private bool m_IsCounting;
         private List<BaseComponent> m_ListHintEffect = new List<BaseComponent>();
+
+        [SerializeField]
+        private List<AnimalComponent> m_ListAnimal;
 
         public void LocateController()
         {
@@ -19,6 +21,13 @@ namespace IEC
         public bool IsActive()
         {
             return gameObject.activeSelf;
+        }
+
+        public void BehaviourAwake()
+        {
+            PrefabHelper.SetUpPrefab(Config.effectLeavesObj);
+
+            m_ListAnimal.ForEach(x => x.OnInit());
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -33,6 +42,12 @@ namespace IEC
                 case EventList.GamePlay.GAME_GRID_CLICK:
                     OnDisableAll();
                     break;
+
+                case EventList.GamePlay.GAME_LEAVES_EFFECT:
+                    var pos = (Vector3)param.p0;
+                    pos.y = .35f;
+                    StartCoroutine(IEEffectLeaves(pos));
+                    break;
             }
         }
 
@@ -45,6 +60,8 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
+            m_ListAnimal.ForEach(x => x.OnUpdate(deltaTime));
+
             if (m_IsCounting)
             {
                 m_TimeCountAfterHint += deltaTime;
@@ -64,6 +81,17 @@ namespace IEC
 
             m_TimeCountAfterHint = 0f;
             m_IsCounting = true;
+        }
+
+        private IEnumerator IEEffectLeaves(Vector3 posSpawn)
+        {
+            var psObj = PrefabHelper.Clone(Config.effectLeavesObj);
+            psObj.transform.SetParent(GamePlay.effectParent);
+            psObj.transform.position = posSpawn;
+            psObj.GetComponent<ParticleSystem>().Play();
+            yield return new WaitForSeconds(1f);
+
+            PrefabHelper.Destroy(psObj);
         }
     }
 

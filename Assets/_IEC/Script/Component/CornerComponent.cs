@@ -5,16 +5,39 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class CornerComponent : MonoBehaviour
+    public class CornerComponent : _BaseBehaviour
     {
         private Tween m_Tween;
+        private Vector3 CurrentLocalPos => transform.localPosition;
 
         private void OnMouseDown()
         {
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
-            EventController.RaiseEvent(EventList.GamePlay.GAME_WALL_CLICK, new EventParam(this, transform.position));
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, transform.position));
+        }
+
+        public void OnTweenMove()
+        {
+            m_Tween?.Kill(true);
+            gameObject.SetActive(true);
+            if (!Game.isStartLevelEffect) return;
+
+            var moveTime = Random.Range(.5f, .75f);
+            var delayTime = Random.Range(.25f, .5f);
+
+            var tempPos = CurrentLocalPos;
+            tempPos.y = 15f;
+            transform.localPosition = tempPos;
+
+            m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+        }
+
+        public void OnDestroyMe()
+        {
+            if (!Game.isStartLevelEffect) return;
+            gameObject.SetActive(false);
         }
     }
 }

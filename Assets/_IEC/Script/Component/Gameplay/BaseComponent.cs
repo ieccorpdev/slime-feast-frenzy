@@ -19,12 +19,25 @@ namespace IEC
         public int ID => gameObject.GetInstanceID();
 
         public Vector3 CurrentPos => transform.position;
+        private Vector3 CurrentLocalPos => transform.localPosition;
 
         public Transform Transform => transform;
 
         public int TrueRot => m_TrueRot;
 
-        protected Color CurrentWaterColor => Config.GetWaterColor(WaterColor, Game.isMultiColor);
+        protected Color CurrentWaterColor
+        {
+            get {
+                if (Game.isMultiColor)
+                {
+                    return Config.GetWaterColor(WaterColor);
+                }
+                else
+                {
+                    return Config.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
+                }
+            }
+        } 
 
         public GridType GridType;
 
@@ -86,6 +99,11 @@ namespace IEC
             {
                 m_Terrain.SetupTerrain(GetTerrainType(Row, Col));
             }
+
+            if (Game.isStartLevelEffect)
+            {
+                OnTweenMove(false);
+            }
         }
 
         protected virtual void OnMouseDown()
@@ -98,7 +116,7 @@ namespace IEC
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
-            EventController.RaiseEvent(EventList.GamePlay.GAME_WALL_CLICK, new EventParam(this, CurrentPos));
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentPos));
         }
 
         public virtual void FixLevelData(int newCurrentRot)
@@ -374,13 +392,38 @@ namespace IEC
             {
                 m_HintEffect.OnDestroyMe();
             }
-            
-            m_Tween?.Kill(true);
+
             IsRotating = false;
             IsHaveWater = false;
             m_IsOldStatusWater = false;
             m_OldWaterColor = 0;
+
             PrefabHelper.Destroy(gameObject);
+        }
+
+
+        private void OnTweenMove(bool isDestroy)
+        {
+            m_Tween?.Kill(true);
+            var moveTime = Random.Range(.5f, .75f);
+            var delayTime = Random.Range(.25f, .5f);
+
+            if (isDestroy)
+            {
+                m_Tween = transform.DOLocalMoveY(15f, moveTime).SetEase(Ease.InCirc)
+                    .SetDelay(delayTime).OnComplete(() =>
+                    {
+                        PrefabHelper.Destroy(gameObject);
+                    });
+            }
+            else
+            {
+                var tempPos = CurrentLocalPos;
+                tempPos.y = 15f;
+                transform.localPosition = tempPos;
+
+                m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+            }
         }
 
         [NaughtyAttributes.Button]

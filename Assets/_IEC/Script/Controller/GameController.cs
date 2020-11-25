@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 namespace IEC
 {
     public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake, IEventUpdate
     {
         public Transform[] m_WallParents;   // TOP, BOT, LEFT, RIGHT
-        public Transform[] m_WallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
+
+        [SerializeField]
+        private List<CornerComponent> m_ListWallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
         private static float RATIO_DEFAULT = 16f / 10;
@@ -17,7 +20,7 @@ namespace IEC
 
         private float m_ScreenRatio, m_DeltaScreenRatio, m_DeltaSizeMinCam, m_RatioCamSize;
 
-        public Vector3 m_CamDirOrigin, m_CamOriginPos;
+        private Vector3 m_CamDirOrigin, m_CamOriginPos;
 
         private bool m_IsInitCam;
 
@@ -44,7 +47,6 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
-            PrefabHelper.SetUpPrefab(Config.effectWallObj);
 
             m_CamOriginPos = GamePlay.mainCamera.transform.position;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
@@ -65,6 +67,11 @@ namespace IEC
             var hintDatas = strHints.text;
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+
+            var strLevelSort1 = Resources.Load<TextAsset>("LevelSort1");
+            var levelSortText = strLevelSort1.text;
+            Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void BehaviourStart()
@@ -81,11 +88,6 @@ namespace IEC
                     break;
                 case EventList.GamePlay.CHECK_GAME_OVER:
                     CheckGameOver();
-                    break;
-                case EventList.GamePlay.GAME_WALL_CLICK:
-                    var pos = (Vector3)param.p0;
-                    pos.y = .35f;
-                    StartCoroutine(IEEffectWall(pos));
                     break;
                 case EventList.GamePlay.GAME_START:
                     GameStart();
@@ -154,7 +156,22 @@ namespace IEC
             }
             else
             {
-                levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                if (Game.isLevelDifficultyV2)
+                {
+                    if (Game.seed > 2 && Game.seed <= 100)
+                    {
+                        var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
+                        levelSpawn = LevelHelper.GetLevelSpawn(matrix, Game.seed);
+                    }
+                    else
+                    {
+                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                    }
+                }
+                else
+                {
+                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                }
             }
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
@@ -181,6 +198,14 @@ namespace IEC
             Game.grids = new BaseComponent[size, size];
 
             Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
+
+            if (Game.isRandomColorClassicMode)
+            {
+                if (!Game.isMultiColor)
+                {
+                    Game.classicColor = RandomHelper.Range(0, 12);
+                }
+            }
 
             var tempList = new List<int>();
 
@@ -233,14 +258,17 @@ namespace IEC
 
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam; 
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
+
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();
-           EventController.RaiseEvent(EventList.GamePlay.GAME_START);
+            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
+            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 
         private void OnClearAll()
         {
+            m_ListWallCorners.ForEach(x => x.OnDestroyMe());
             Game.listGrids.ForEach(x => x.OnDestroyMe());
             Game.listGrids.Clear();
 
@@ -254,6 +282,7 @@ namespace IEC
             Game.isAllowHint = true;
             Game.isWaitAfterRV = false;
             Game.maxHintIndex = 0;
+            Game.isPlaying = false;
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -327,10 +356,12 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            m_WallCorners[0].localPosition = new Vector3(-wallPos, 0f, wallPos);
-            m_WallCorners[1].localPosition = new Vector3(wallPos, 0f, wallPos);
-            m_WallCorners[2].localPosition = new Vector3(-wallPos, 0f, -wallPos);
-            m_WallCorners[3].localPosition = new Vector3(wallPos, 0f, -wallPos);
+            m_ListWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
+            m_ListWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
+            m_ListWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
+            m_ListWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
+
+            m_ListWallCorners.ForEach(x => x.OnTweenMove());
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
@@ -458,16 +489,6 @@ namespace IEC
 
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
-        }
-
-        private IEnumerator IEEffectWall(Vector3 posSpawn)
-        {
-            var psObj = PrefabHelper.Clone(Config.effectWallObj);
-            psObj.transform.position = posSpawn;
-            psObj.GetComponent<ParticleSystem>().Play();
-            yield return new WaitForSeconds(1f);
-
-            PrefabHelper.Destroy(psObj);
         }
     }
 }

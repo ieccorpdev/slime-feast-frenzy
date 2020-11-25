@@ -25,7 +25,7 @@ namespace IEC
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
-        public int maxGrassOnWall;
+        public int maxGrassOnWall, classicColor;
 
         public RotTutorialConfig rotTutConfig;
 
@@ -43,6 +43,8 @@ namespace IEC
         public string[] levelDatas;
         public string[] hintDatas;
 
+        public string[] levelSort1;
+
         [Header("AB Test")]
         public bool isHaveMixColor;
         public bool isFasterRotate;
@@ -52,6 +54,13 @@ namespace IEC
         public bool isReduceHintGrid;
         public bool isFixedHintGrid;
         public bool isFixLevelDifficulty;
+        public bool isLevelDifficultyV2;
+        public bool isRandomColorClassicMode;
+        public bool isStartLevelEffect;
+
+        //Prepared
+        public bool isLeavesEffect;
+        
         
 
         public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
