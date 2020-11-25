@@ -53,7 +53,6 @@ namespace IEC
             }
 
             m_TempColor = Color.white;
-
             m_IsFading = false;
             m_IsIncrease = false;
             m_TempColorAlpha = isShowDefault ? 1 : 0;
@@ -121,7 +120,6 @@ namespace IEC
                     }
                 }
             }
-
         }
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)

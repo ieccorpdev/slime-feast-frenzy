@@ -67,6 +67,12 @@
 
 			fixed3 _MoveDirection;
 
+			float4 _Plane;
+
+			float3 _GLOBALMaskPosition;
+			half _GLOBALMaskRadius;
+			half _GLOBALMaskSoftness;
+
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
 				fixed3 camToWorldRay = worldPos - _WorldSpaceCameraPos;
@@ -96,9 +102,27 @@
 
 				return o;
 			}
+
+			float random (float2 input) { 
+				return frac(sin(dot(input, float2(12.9898,78.233)))* 43758.5453123);
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
+				//half dist = distance(_GLOBALMaskPosition, i.worldPos);
+				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / _GLOBALMaskSoftness);
+				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
+				//clip(sphere - 0.1);
+				//clip(sphere);
+				//float squares = step(0.5, random(floor(i.uv_MainTex * _NoiseSize)));
+
+
+
+				//half dist = distance(_GLOBALMaskPosition, i.worldPos);
+				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
+				//clip(sphere - 0.1);
+
+
 				fixed2 water_uv = WaterPlaneUV(i.worldPos, i.camHeightOverWater);
 				fixed4 distortion = tex2D(_DistTex, water_uv * _DistTiling) * 2 - 1;
 				fixed2 distorted_uv = ((water_uv + distortion.rg) - _Time.y * _MoveDirection.xz) * _Tiling;
