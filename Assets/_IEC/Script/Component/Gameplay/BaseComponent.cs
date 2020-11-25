@@ -16,47 +16,26 @@ namespace IEC
         [SerializeField]
         protected EffectGridAura m_HintEffect;
 
+        [SerializeField]
+        private Transform m_TransWater;
+
         public int ID => gameObject.GetInstanceID();
+        protected Transform Transform => transform;
 
-        public Vector3 CurrentPos => transform.position;
-        private Vector3 CurrentLocalPos => transform.localPosition;
+        public Vector3 CurrentWorldPos => Transform.position;
+        private Vector3 CurrentLocalPos => Transform.localPosition;
 
-        public Transform Transform => transform;
+        // Use set water pos
+        private Vector3 CenterPos => Vector3.zero;
+        private Vector3 TopPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.forward * .5f);
+        private Vector3 BotPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.back * .5f);
+        private Vector3 LeftPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.left * .5f);
+        private Vector3 RightPos => Transform.InverseTransformPoint(CurrentWorldPos + Vector3.right * .5f);
 
-        public int TrueRot => m_TrueRot;
-
-        protected Color CurrentWaterColor
-        {
-            get {
-                if (Game.isMultiColor)
-                {
-                    return Config.GetWaterColor(WaterColor);
-                }
-                else
-                {
-                    return Config.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
-                }
-            }
-        } 
-
-        public GridType GridType;
-
-        protected bool IsRotating, IsHaveWater;
-
-        protected bool m_IsOldStatusWater;
-
-        public int Row, Col, WaterColor;
-
-        protected int m_CurrentRot, m_OldWaterColor, m_TrueRot;
-
-        private int m_WaterCount;
-
-        protected Tween m_Tween;
-
+        //Angle
         protected static int[] TotalRots = new int[] { 0, 90, 180, 270 };
 
-        public bool IsTrueRot => m_CurrentRot == m_TrueRot;
-
+        //Use line checker
         protected virtual int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -72,7 +51,46 @@ namespace IEC
         public bool IsHaveLineLeft => CurrentLine[1, 0] == 1;
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
-        public List<int> m_ListWaterColor = new List<int>();
+        // Grid static data
+        [HideInInspector]
+        public int Row, Col, TrueRot;
+
+        public GridType GridType;
+
+        [HideInInspector]
+        public int WaterColor;
+
+
+        // Dynamic data
+        protected Color CurrentWaterColor
+        {
+            get {
+                if (Game.isMultiColor)
+                {
+                    return Config.GetWaterColor(WaterColor);
+                }
+                else
+                {
+                    return Config.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
+                }
+            }
+        }
+
+        public bool IsTrueRot => m_CurrentRot == TrueRot;
+
+        protected bool m_IsRotating, m_IsHaveWater, m_IsOldHaveWater;
+
+        protected int m_CurrentRot, m_OldWaterColor;
+
+        private int m_WaterCount;
+
+
+        //Temp
+        protected Tween m_Tween;
+        private List<int> m_ListWaterColor = new List<int>();
+        private BaseComponent m_TempGrid;
+        private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
+
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
         {
@@ -81,7 +99,7 @@ namespace IEC
             Col = col;
             WaterColor = color;
             m_CurrentRot = rot;
-            m_TrueRot = trueRot;
+            TrueRot = trueRot;
 
             DefaultLine = GetDefaultLine(style);
             CurrentLine = DefaultLine;
@@ -92,7 +110,7 @@ namespace IEC
 
             for (int i = 0; i < m_WaterCount; i++)
             {
-                m_WaterComponent[i].OnInit(CurrentWaterColor, GridType == GridType.GRID_SOURCE);
+                m_WaterComponent[i].OnInit();
             }
 
             if (GridType != GridType.WALL)
@@ -116,7 +134,7 @@ namespace IEC
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
-            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentPos));
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
         }
 
         public virtual void FixLevelData(int newCurrentRot)
@@ -126,9 +144,9 @@ namespace IEC
 
         public virtual void AfterInit(bool isMultiColor)
         {
-            IsRotating = false;
-            IsHaveWater = (GridType == GridType.GRID_SOURCE);
-            m_IsOldStatusWater = false;
+            m_IsRotating = false;
+            m_IsHaveWater = (GridType == GridType.GRID_SOURCE);
+            m_IsOldHaveWater = false;
             m_OldWaterColor = 0;
         }
 
@@ -178,23 +196,23 @@ namespace IEC
         {
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetFading(isActive);
+                m_WaterComponent[i].SetGrowing(isActive, TopPos);
             }
         }
 
         public virtual void PrepareCheckConnect()
         {
             if (GridType == GridType.GRID_SOURCE) return;
-            m_IsOldStatusWater = IsHaveWater;
+            m_IsOldHaveWater = m_IsHaveWater;
             m_OldWaterColor = WaterColor;
-            IsHaveWater = false;
+            m_IsHaveWater = false;
 
             m_ListWaterColor.Clear();
         }
 
         public void SetConnect(int color)
         {
-            IsHaveWater = true;
+            m_IsHaveWater = true;
             if (!m_ListWaterColor.Contains(color))
             {
                 m_ListWaterColor.Add(color);
@@ -203,11 +221,11 @@ namespace IEC
 
         private void SetColor()
         {
-            if (!IsHaveWater) return;
+            if (!m_IsHaveWater) return;
             WaterColor = GetColor();
             for (int i = 0; i < m_WaterComponent.Length; i++)
             {
-                m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldStatusWater);
+                m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldHaveWater);
             }
         }
 
@@ -256,21 +274,18 @@ namespace IEC
         {
             if (GridType == GridType.GRID_SOURCE) return;
             SetColor();
-            if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
-            if (IsHaveWater)
+            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterColor == WaterColor) return;
+            if (m_IsHaveWater)
             {
                 Game.isHaveWaterConnection = true;
             }
-            SetActiveWater(IsHaveWater);
+            SetActiveWater(m_IsHaveWater);
         }
 
         public bool IsAllowConnect(int color)
         {
             return (GridType != GridType.GRID_SOURCE && !m_ListWaterColor.Contains(color));
         }
-
-        private BaseComponent m_TempGrid;
-        private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
 
         public List<BaseComponent> GetGridNearCanConnect(int color)
         {
@@ -385,7 +400,6 @@ namespace IEC
             }
         }
 
-
         public virtual void OnDestroyMe()
         {
             if(m_HintEffect!= null)
@@ -393,14 +407,13 @@ namespace IEC
                 m_HintEffect.OnDestroyMe();
             }
 
-            IsRotating = false;
-            IsHaveWater = false;
-            m_IsOldStatusWater = false;
+            m_IsRotating = false;
+            m_IsHaveWater = false;
+            m_IsOldHaveWater = false;
             m_OldWaterColor = 0;
 
             PrefabHelper.Destroy(gameObject);
         }
-
 
         private void OnTweenMove(bool isDestroy)
         {
@@ -442,5 +455,44 @@ namespace IEC
             Debug.LogError("IsHaveLineTop: " + IsHaveLineTop + " | IsHaveLineBot: " + IsHaveLineBot
                 + " | IsHaveLineLeft: " + IsHaveLineLeft + " | IsHaveLineRight: " + IsHaveLineRight);
         }
+
+        private void SetWaterPoint(Vector3 pos)
+        {
+
+        }
+
+        private Vector3 GetWaterPos(WaterPoint waterPoint)
+        {
+            Vector3 pos = Vector3.zero;
+            switch (waterPoint)
+            {
+                case WaterPoint.Top:
+                    pos = TopPos;
+                    break;
+                case WaterPoint.Bot:
+                    pos = BotPos;
+                    break;
+                case WaterPoint.Left:
+                    pos = LeftPos;
+                    break;
+                case WaterPoint.Right:
+                    pos = RightPos;
+                    break;
+                default:
+                    pos = CenterPos;
+                    break;
+            }
+            return pos;
+        }
     }
+
+    public enum WaterPoint
+    {
+        Center,
+        Top,
+        Bot,
+        Left,
+        Right
+    }
+
 }

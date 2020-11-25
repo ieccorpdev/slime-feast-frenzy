@@ -117,10 +117,9 @@
 				//float squares = step(0.5, random(floor(i.uv_MainTex * _NoiseSize)));
 
 
-
-				//half dist = distance(_GLOBALMaskPosition, i.worldPos);
-				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
-				//clip(sphere - 0.1);
+				half dist = distance(_GLOBALMaskPosition, i.worldPos);
+				half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
+				clip(sphere - 0.1);
 
 
 				fixed2 water_uv = WaterPlaneUV(i.worldPos, i.camHeightOverWater);
@@ -131,7 +130,7 @@
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
-				waterCol *= _Tint;
+				//waterCol *= _Tint;
 				return waterCol;
 			}
 			ENDCG

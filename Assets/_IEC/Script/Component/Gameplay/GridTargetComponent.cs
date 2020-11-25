@@ -30,7 +30,7 @@ namespace IEC
 
         private int m_TrueWaterColor, m_TargetStyle;
 
-        public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
+        public bool IsDone => m_IsHaveWater && (m_TrueWaterColor == WaterColor);
 
         private static float SCALE = .3f;
 
@@ -153,7 +153,7 @@ namespace IEC
         {
             base.AfterCheckConnect();
 
-            if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
+            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterColor == WaterColor) return;
             m_TweenScale?.Kill(true);
             m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * SCALE, .4f)
                 .OnComplete(() => {

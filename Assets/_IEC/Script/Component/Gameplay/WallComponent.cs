@@ -39,7 +39,7 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col,rotTrue, rot, color, style);
-            IsRotating = false;
+            m_IsRotating = false;
         }
 
         protected override void OnMouseDown()

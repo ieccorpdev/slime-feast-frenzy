@@ -118,7 +118,7 @@ namespace IEC
             var grid = Game.grids[row + 1, col + 1];
             Game.gridTutId = grid.ID;
 
-            var posOrigin = grid.CurrentPos;
+            var posOrigin = grid.CurrentWorldPos;
             var targetDir = (-Vector3.forward + Vector3.right).normalized;
 
             var posSpawn = posOrigin + targetDir * .75f;

@@ -38,94 +38,76 @@ namespace IEC
             get { return materialPropertyBlock; }
         }
 
+        private Color m_NewColor;
 
-        private Color m_TempColor, m_NewColor;
+        private bool m_IsScale, m_IsGrowUp, isChanged;
 
-        private bool m_IsFading, m_IsIncrease;
+        private float m_FillAmount;
 
-        private float m_TempColorAlpha;
+        private Vector3 m_GrowingPos;
 
-        public void OnInit(Color color, bool isShowDefault)
+        public void OnInit()
         {
             if(materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
+            
+            m_IsScale = false;
+            m_IsGrowUp = false;
 
-            m_TempColor = Color.white;
-            m_IsFading = false;
-            m_IsIncrease = false;
-            m_TempColorAlpha = isShowDefault ? 1 : 0;
-            m_TempColor.a = m_TempColorAlpha;
-
-            SetColor(color, true);
+            SetUpPropertyBlock(MaterialPropertyBlock);
         }
 
         public void SetColor(Color color, bool isUpdateNow)
         {
             m_NewColor = color;
-            if(isUpdateNow)
+            
+            if (isUpdateNow)
             {
                 waterColor = color;
-                SetUpPropertyBlock(materialPropertyBlock);
-            }
-
-            if (waterRenderers != null)
-            {
-                for (var i = 0; i < waterRenderers.Length; i++)
-                {
-                    waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                }
+                OnUpdatePropertyBlock(MaterialPropertyBlock);
             }
         }
 
-        public void SetFading(bool IsIncrease)
+        public void SetGrowing(bool isGrowUp, Vector3 pos)
         {
-            m_IsIncrease = IsIncrease;
-            m_IsFading = true;
+            m_GrowingPos = pos;
+            m_IsGrowUp = isGrowUp;
+            m_IsScale = true;
+
+            m_FillAmount = isGrowUp ? 0f : m_FillAmount;
         }
 
-        private bool isChanged;
         public void OnUpdate(float deltaTime)
         {
             isChanged = false;
-
-            if (m_IsFading)
+            if (m_IsScale)
             {
                 isChanged = true;
-
-                m_TempColorAlpha = m_TempColor.a;
-                m_TempColorAlpha = Mathf.Clamp(m_TempColorAlpha + (m_IsIncrease ? deltaTime : -deltaTime), 0f, 1f);
-                m_TempColor.a = m_TempColorAlpha;
-                if (m_TempColorAlpha <= 0 || m_TempColorAlpha >= 1)
+                m_FillAmount += m_IsGrowUp ? deltaTime : -deltaTime;
+                if (m_FillAmount <= 0 || m_FillAmount >= 1.5f)
                 {
-                    m_IsFading = false;
+                    m_IsScale = false;
                 }
             }
 
-            if(waterColor != m_NewColor)
+            if (waterColor != m_NewColor)
             {
                 isChanged = true;
                 waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
             }
 
-            if (isChanged)
-            {
-                SetUpPropertyBlock(materialPropertyBlock);
-                if (waterRenderers != null)
-                {
-                    for (var i = 0; i < waterRenderers.Length; i++)
-                    {
-                        waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                    }
-                }
-            }
+            //if (isChanged)
+            //{
+            //    OnUpdatePropertyBlock(materialPropertyBlock);
+            //}
+
+            OnUpdatePropertyBlock(materialPropertyBlock);
         }
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            propertyBlock.SetColor("_WaterColor", waterColor);
-            propertyBlock.SetColor("_Tint", m_TempColor);
             propertyBlock.SetColor("_BorderColor", borderColor);
 
             propertyBlock.SetVector("_Tiling", waterTile);
@@ -148,6 +130,22 @@ namespace IEC
             propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
             propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
             propertyBlock.SetFloat("_BorderWidth", borderWidth);
+
+            ApplyData(propertyBlock);
+        }
+
+        private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
+        {
+            propertyBlock.SetColor("_WaterColor", waterColor);
+            propertyBlock.SetVector("_GLOBALMaskPosition", m_GrowingPos);
+            propertyBlock.SetFloat("_GLOBALMaskRadius", m_FillAmount);
+
+            ApplyData(propertyBlock);
+        }
+
+        private void ApplyData(MaterialPropertyBlock propertyBlock)
+        {
+            waterRenderers[0].SetPropertyBlock(propertyBlock);
         }
     }
 }
