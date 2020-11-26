@@ -77,9 +77,13 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater;
 
-        public bool m_IsOldHaveWater, isHavingWater;
+        public bool m_IsOldHaveWater, isHavingWater, isChecked;
 
         protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
+
+        private int m_DelayStart;
+
+        private WaterPoint m_StartWater;
 
         //Temp
         protected Tween m_Tween;
@@ -163,11 +167,9 @@ namespace IEC
             m_IsHaveWater = false;
             m_IsOldHaveWater = false;
             m_OldWaterIndexColor = 0;
-
+            m_DelayStart = 0;
             isHavingWater = false;
-
             m_ListWaterColor.Clear();
-
             m_StartWater = WaterPoint.CENTER;
         }
 
@@ -198,11 +200,9 @@ namespace IEC
 
         }
 
-        public bool IsChecked;
-
         public virtual void PrepareCheckConnect()
         {
-            IsChecked = false;
+            isChecked = false;
             if (GridType == GridType.GRID_SOURCE) return;
             m_IsOldHaveWater = m_IsHaveWater;
             m_OldWaterIndexColor = WaterIndexColor;
@@ -213,7 +213,7 @@ namespace IEC
 
         public List<BaseComponent> GetGridNearCanConnect(int color)
         {
-            IsChecked = true;
+            isChecked = true;
             m_ListGridConnect.Clear();
             if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
 
@@ -287,8 +287,7 @@ namespace IEC
             isHavingWater = true;
         }
 
-        private WaterPoint m_StartWater;
-        private int m_DelayStart;
+        public int DelayStart => isHavingWater ? 0 : m_DelayStart + 1;
 
         public void SetStartWater(WaterPoint point)
         {

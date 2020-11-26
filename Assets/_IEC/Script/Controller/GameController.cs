@@ -426,29 +426,36 @@ namespace IEC
                 bool isChanged = true;
                 var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
 
-                var delayStart = 0;
+                //var delayStart = 0;
                 while (totalGridHaveWaterCount < totalGrid && isChanged)
                 {
                     var count = m_ListTempGridHaveWater.Count;
                     for (int j = 0; j < count; j++)
                     {
                         var grid = m_ListTempGridHaveWater[j];
-                        if (grid.IsChecked) continue;
+                        if (grid.isChecked) continue;
                         var listGridNear = grid.GetGridNearCanConnect(source.WaterIndexColor);
 
+                        var listGridNearCount = listGridNear.Count;
                         if (listGridNear.Count > 0)
                         {
-                            if (grid.isHavingWater)
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, grid.DelayStart));
+
+                            for (int x = 0; x < listGridNearCount; x++)
                             {
-                                delayStart = 0;
+                                var gridNear = listGridNear[x];
+
+                                if (!m_ListTempGridHaveWater.Contains(gridNear))
+                                {
+                                    m_ListTempGridHaveWater.Add(gridNear);
+                                }
                             }
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, delayStart));
-                            m_ListTempGridHaveWater.AddRange(listGridNear);
+                            //m_ListTempGridHaveWater.AddRange(listGridNear);
                         }
                     }
 
                     totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
-                    delayStart += 1;
+                    //delayStart += 1;
 
                     if (totalGridHaveWaterCount == count)
                     {
