@@ -160,10 +160,7 @@ namespace IEC
                 {
                     if (Game.seed > 2 && Game.seed <= 100)
                     {
-                        //var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
                         levelSpawn = int.Parse(Game.levelSort1[Game.seed - 1]);
-
-                        Debug.LogError("levelSpawn: " + levelSpawn);
                     }
                     else
                     {
