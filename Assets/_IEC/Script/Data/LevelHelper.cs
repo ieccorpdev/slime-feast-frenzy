@@ -291,7 +291,7 @@ namespace IEC
             {
                 return RandomHelper.RangeWithSeed(seed, 69, 98);
             }
-            else if (matrix == 7)
+            else if (matrix == 8)
             {
                 return RandomHelper.RangeWithSeed(seed, 98, 116);
             }
