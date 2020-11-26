@@ -26,7 +26,6 @@ namespace IEC
             base.AfterInit(isMultiColor);
             SetGridLine(m_CurrentRot);
             transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-            //Debug.LogError("m_CurrentRot: " + m_CurrentRot);
         }
 
 

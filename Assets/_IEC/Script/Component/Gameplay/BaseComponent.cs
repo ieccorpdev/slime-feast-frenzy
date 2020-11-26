@@ -86,7 +86,6 @@ namespace IEC
             DefaultLine = GetDefaultLine(style);
             CurrentLine = DefaultLine;
 
-            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             m_WaterCount = m_WaterComponent.Length;
 
@@ -98,6 +97,8 @@ namespace IEC
             if (GridType != GridType.WALL)
             {
                 m_Terrain.SetupTerrain(GetTerrainType(Row, Col));
+
+                transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
             }
 
             if (Game.isStartLevelEffect)
@@ -113,6 +114,7 @@ namespace IEC
 
         protected void OnDOShakePosition()
         {
+            if (!Game.isPlaying) return;
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);

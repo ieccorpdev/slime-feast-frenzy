@@ -145,11 +145,6 @@ namespace IEC
             }
         }
 
-        public override void AfterInit(bool isMultiColor)
-        {
-            base.AfterInit(isMultiColor);
-
-        }
 
         public override void AfterCheckConnect()
         {
