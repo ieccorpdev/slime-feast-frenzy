@@ -167,13 +167,16 @@ namespace IEC
 
         protected override void OnWaterGrowUpDone()
         {
-            TweenScale(true, () => {
-                m_PsWin.Play();
-                if (PlayerData.isVibrateOn)
+            TweenScale(IsDone, () => {
+                if (IsDone)
                 {
-                    MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+                    m_PsWin.Play();
+                    if (PlayerData.isVibrateOn)
+                    {
+                        MMVibrationManager.Haptic(HapticTypes.MediumImpact);
+                    }
+                    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
                 }
-                EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
             });
         }
 

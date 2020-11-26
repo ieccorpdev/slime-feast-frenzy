@@ -20,8 +20,9 @@
 	}
 	SubShader
 	{
-		Tags{ "RenderType"="Transparent" "Queue"="Transparent"}
-
+		Tags{ "RenderType"="Opaque" "Queue"="Transparent"}
+		Cull off
+        LOD 200
 		Blend SrcAlpha OneMinusSrcAlpha
 		ZWrite off
 
@@ -68,8 +69,8 @@
 			fixed3 _MoveDirection;
 
 			float3 _GLOBALMaskPosition;
-			half _GLOBALMaskRadius;
-			half _GLOBALMaskSoftness;
+			fixed _GLOBALMaskRadius;
+			fixed _GLOBALMaskSoftness;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
