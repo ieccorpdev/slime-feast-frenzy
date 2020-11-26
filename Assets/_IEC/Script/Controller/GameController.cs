@@ -68,7 +68,7 @@ namespace IEC
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
-            var strLevelSort1 = Resources.Load<TextAsset>("LevelSort1");
+            var strLevelSort1 = Resources.Load<TextAsset>("levelDifficutyV1");
             var levelSortText = strLevelSort1.text;
             Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
@@ -160,8 +160,8 @@ namespace IEC
                 {
                     if (Game.seed > 2 && Game.seed <= 100)
                     {
-                        var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
-                        levelSpawn = LevelHelper.GetLevelSpawn(matrix, Game.seed);
+                        //var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
+                        levelSpawn = int.Parse(Game.levelSort1[Game.seed - 1]);
                     }
                     else
                     {

@@ -30,7 +30,7 @@ namespace IEC
                 case EventList.GamePlay.GAME_AFTER_HINT:
                     Game.isAllowHint = true;
                     EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
-                    EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, param.p0));
+                    EventController.RaiseEventDelay(.1f, EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, param.p0));
                     break;
             }
         }
