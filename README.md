@@ -4,9 +4,9 @@
 
 > Project để khởi tạo code các dự án game
 
-[naming-convention] - Quy chuẩn đặt tên
-[folder-structure] - Cấu trúc thư mục
-[project-structure] - Cấu trúc mẫu project
+* [naming-convention] - Quy chuẩn đặt tên
+* [folder-structure] - Cấu trúc thư mục
+* [project-structure] - Cấu trúc mẫu project
 
 ## [Project IEC Module] - git subtree cho code chung
 
