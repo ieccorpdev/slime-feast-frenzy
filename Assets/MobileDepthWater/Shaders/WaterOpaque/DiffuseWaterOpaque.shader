@@ -3,7 +3,7 @@
 	Properties
 	{
 		_WaterColor ("Water color", Color) = (1, 1, 1, 1)
-		_Tint ("Tint", Color) = (1, 1, 1, 1)
+		_FoamColor ("Foam color", Color) = (1, 1, 1, 1)
 		_WaterTex ("Water texture", 2D) = "white" {}
 		_Tiling ("Water tiling", Vector) = (1, 1, 1, 1)
 		_TextureVisibility("Texture visibility", Range(0, 1)) = 1
@@ -57,7 +57,7 @@
 			sampler2D _WaterTex;
 			fixed2 _Tiling;
 			fixed4 _WaterColor;
-			fixed4 _Tint;
+			fixed4 _FoamColor;
 
 			sampler2D _DistTex;
 			fixed2 _DistTiling;
@@ -66,8 +66,6 @@
 			fixed _TextureVisibility;
 
 			fixed3 _MoveDirection;
-
-			float4 _Plane;
 
 			float3 _GLOBALMaskPosition;
 			half _GLOBALMaskRadius;
@@ -109,18 +107,9 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				//half dist = distance(_GLOBALMaskPosition, i.worldPos);
-				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / _GLOBALMaskSoftness);
-				//half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
-				//clip(sphere - 0.1);
-				//clip(sphere);
-				//float squares = step(0.5, random(floor(i.uv_MainTex * _NoiseSize)));
-
-
 				half dist = distance(_GLOBALMaskPosition, i.worldPos);
 				half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
 				clip(sphere - 0.1);
-
 
 				fixed2 water_uv = WaterPlaneUV(i.worldPos, i.camHeightOverWater);
 				fixed4 distortion = tex2D(_DistTex, water_uv * _DistTiling) * 2 - 1;
@@ -129,8 +118,9 @@
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
+				if(dist > (_GLOBALMaskRadius - .05)) waterCol = _FoamColor;
+
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
-				//waterCol *= _Tint;
 				return waterCol;
 			}
 			ENDCG

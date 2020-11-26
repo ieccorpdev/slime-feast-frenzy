@@ -89,9 +89,9 @@ namespace IEC
         float deltaAmount;
         float ratioTime;
 
-        float RATIO_TIME_UP = .25f;
+        float RATIO_TIME_UP = .5f;
         float RATIO_TIME_DOWN = 1f;
-        float MAX_AMOUNT = 1.05f;
+        float MAX_AMOUNT = 1.1f;
 
         public void OnUpdate(float deltaTime)
         {
@@ -127,18 +127,14 @@ namespace IEC
                 waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
             }
 
-            //if (isChanged)
-            //{
-            //    OnUpdatePropertyBlock(materialPropertyBlock);
-            //}
-
-            OnUpdatePropertyBlock(materialPropertyBlock);
+            if (isChanged)
+            {
+                OnUpdatePropertyBlock(materialPropertyBlock);
+            }
         }
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            propertyBlock.SetColor("_BorderColor", borderColor);
-
             propertyBlock.SetVector("_Tiling", waterTile);
             propertyBlock.SetVector("_DistTiling", distortionTile);
             propertyBlock.SetVector("_MoveDirection", new Vector4(moveDirection.x, 0f, moveDirection.y, 0f));
