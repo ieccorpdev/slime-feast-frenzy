@@ -68,12 +68,6 @@
 1. Block push thẳng với branch `release`
 2. Chỉnh sửa vào branch release phải qua merge request gửi tới dev phụ trách chính
 
-### Checklist bug hay gặp
-* Gameplay, UI bị sai khi ở tỉ lệ màn hình 16:9, 18:9,...
-* Safe area
-* Banner bottom Ads đè UI
-* Show inter bị delay vào gameplay khiến click nhầm
-
 ### Quy trình merge branch vào release
 1. Merge `develop` vào `master`
 2. Merge `master` vào `release/aab`
@@ -101,6 +95,12 @@
 1. Checkout branch `develop`
 2. Commit fix bug
 3. Cherry-pick commit vào cả `develop` và `release`
+
+### Checklist bug hay gặp
+* Gameplay, UI bị sai khi ở tỉ lệ màn hình 16:9, 18:9,...
+* Safe area
+* Banner bottom Ads đè UI
+* Show inter bị delay vào gameplay khiến click nhầm
 
 Xem thêm tại IEC Dev Workflow
 <https://docs.google.com/document/d/1ziseqnM_tzq4_2u9jZ8u17AQ83y8k_A9xG0E1CeOU_k/edit?usp=sharing>
