@@ -4,110 +4,103 @@
 
 > Project để khởi tạo code các dự án game
 
-[Quy chuẩn đặt tên](Wiki/naming-convention.md)
+* [naming-convention] - Quy chuẩn đặt tên
+* [folder-structure] - Cấu trúc thư mục
+* [project-structure] - Cấu trúc mẫu project
 
-[Thiết lập cho New Project](Wiki/setting-new-project.md)
+## [Project IEC Module] - git subtree cho code chung
 
-[Cấu trúc thư mục Assets](Wiki/assets-folder-structure.md)
+[Project IEC Module]: <https://gitlab.com/iecgames/iec-unity-modules>
+[naming-convention]: <Wiki/naming-convention.md>
+[folder-structure]: <Wiki/assets-folder-structure.md>
+[project-structure]: <Wiki/event-data-controller-template-project.md>
 
-### Một số phương pháp thiết kế code
+## Các giai đoạn sản xuất game
+* Test CPI
+* Tối ưu LTV
+* Đẩy Monetize
 
-* [Simple OOP](Wiki/pattern-simple-oop.md)
-* [Composite MonoBehaviour](Wiki/pattern-composite-monobehaviour.md)
-* [Dependency Injection](Wiki/pattern-dependency-injection.md)
-* [Model View Controller](Wiki/pattern-model-view-controller.md)
-* [Entity Component System](Wiki/pattern-entity-component-system.md)
-* [Event Data Controller](Wiki/pattern-event-data-controller.md)
+## Tổ chức git branch
+#### Các branch chính
+* `develop` : nơi commit chuẩn bị cho release kế tiếp
+* `master` : nơi commit chuẩn bị cho release hiện tại
+* `release/aab` , `release/ios` : nơi commit build các bản release
+#### Các nhóm branch phụ
+* `sdk/` : dành cho maintain sdk riêng với android, ios
+* `dev/` : dành cho riêng từng feature
+* `hotfix/` : branch fix bug cho bản release
+* `mkt/` : branch tính năng quay video ads
 
-### [Cấu trúc mẫu project EDC](Wiki/event-data-controller-template-project.md)
+### Tạo Gitlab project mới bằng Discord
+```
+!create-git <Name of the project>
+[Example] 
+!create-git Ball Sort Puzzle
+```
 
-[Project IEC Module](https://gitlab.com/iecgames/iec-unity-modules)
+### Tạo Unity Cloud Build bằng Discord
+```
+!create-ucb <link-to-google-sheet-checklist>
+[Example] 
+!create-ucb https://docs.google.com/spreadsheets/d/132-mvGPajWw38ZuNMS6uPHisaw0H8jZsmapIdup42zc/edit#gid=927018210
+```
 
-## Hướng dẫn tạo project advertising prototype
+### Quy trình giai đoạn Test CPI
+1. Tạo project `gitlab`
+2. Checkout branch `develop`
+3. Commit hoàn thiện tính năng yêu cầu cho bản test CPI
+4. Gắn `Facebook` SDK, gắn `Kochava` SDK, Dependency Resolver > Resolve project
+5. Dùng tool gắn ID từ `checklist`
+6. Config gắn `keystore` đã tạo bởi tool
+7. Merge branch vào `release`
+8. Tạo Unity cloud build trên branch `release/aab`
 
-1. Ghép với empty project
+### Quy trình giai đoạn Tối ưu LTV
+1. Checkout branch `develop`
+2. Gắn `Applovin` SDK
+4. Dùng tool gắn Applovin Ads ID, inter, banner, reward ID, Admob ID
+5. Commit hoàn thiện các tính năng AB test (xem thêm Quy trình bổ sung tính năng mới)
+6. Dùng tool update config AB test từ checklist AB Test
+7. Merge branch vào `release`
+8. Check Unity cloud build
 
-   * Clone Empty Project và đổi tên folder project sang tên Game prototype
+### Quy trình giai đoạn Đẩy Monetize
+1. Block push thẳng với branch `release`
+2. Chỉnh sửa vào branch release phải qua merge request gửi tới dev phụ trách chính
 
-   * Nếu viết code mới từ empty project
-     * Phát triển project từ thư mục `_IEC`
-   * Nếu ghép từ source ngoài
-     * Test riêng project source ngoài xem có lỗi không, phải sử dụng phiên bản Unity bao nhiêu
-     * Export source ngoài thành package và import vào empty project
-     * Có thể phải đồng bộ empty project cho cùng phiên bản Unity với source ngoài
-     * Gom resource, script, scene của source ngoài vào một folder có tên dạng `_IEC_[Tên game]`
-     * Thêm các Scene của source ngoài vào `Build Settings`, test thử game có thể chạy bình thường không
-   * Ghép Start Scene (với source ngoài)
-     * Mở Scene khởi chạy Game (Start Scene)
-     * Thêm prefab `_IEC/Prefab/_PrototypeControllers` vào scene
-     * Tùy chỉnh `_Controllers` cho phù hợp với game: bỏ Test, bổ sung CheatCode, thêm Controller kết nối với code source ngoài
-   * Xóa `Readme.md` và folder Wiki
-   * Tạo `first commit` lưu lại kết quả ghép project
+### Checklist bug hay gặp
+* Gameplay, UI bị sai khi ở tỉ lệ màn hình 16:9, 18:9,...
+* Safe area
+* Banner bottom Ads đè UI
+* Show inter bị delay vào gameplay khiến click nhầm
 
-2. Cập nhật IEC Modules
+### Quy trình merge branch vào release
+1. Merge `develop` vào `master`
+2. Merge `master` vào `release/aab`
+(hoặc push lên gitlab tạo merge request)
 
-   ```
-   git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
-   ```
+### Quy trình bổ sung tính năng mới
+1. Tạo branch `dev/feature-x`
+2. Tạo code bật/tắt cho tính năng logic mới
+3. Đặt test code bật tính năng trong `ABTestController`
+4. Đề xuất Review bổ sung tính năng mới
+5. Xóa test code bật tính năng trong `ABTestController`
+5. Merge branch vào `develop`
 
-3. Đẩy project lên gitlab
+### Quy trình review bổ sung tính năng mới
+1. Kiểm tra code mới có block toggle bật/tắt với code cũ
+2. Biến toggle có tên dạng `(bool) isHaveABC` hoặc `(int) versionABC`
+3. Test tắt feature không ảnh hưởng logic cũ
 
-   * Tạo git repo trên gitlab `iecgames/advertising-prototype`
-   * Đổi remote origin URL của Empty Project đã ghép sang SSH URL của git repo mới
-   * Tiến hành push lên repo
+### Quy trình fix bug release (Merge)
+1. Checkout branch `master`
+2. Commit fix bug
+3. Merge `master` vào cả `develop` và `release`
 
-4. Thêm các plugin SDK
+### Quy trình fix bug release (Cherry-pick)
+1. Checkout branch `develop`
+2. Commit fix bug
+3. Cherry-pick commit vào cả `develop` và `release`
 
-   * Facebook : [Mục 3 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Kochava : [Mục 7 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Applovin : [Mục 4 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Define Symbols : `PluginFacebook;PluginKochava;PluginApplovin`
-
-5. Thêm các event Analytic
-
-   Sử dụng `Controllers.Get<ServicesController>().PushEvent("event-name");`
-
-6. Hiển thị quảng cáo
-
-   Sử dụng và chỉnh sửa code từ `AdsController`
-
-7. Cập nhật ID từ File Checklist
-
-   * Tìm Menu `IEC -> Set ID SDK`
-   * Paste link google sheet Check List chứa các ID của project
-   * Ấn nút `Set SDK`
-   * Tiến hành Force Resolver của `Assets -> Play Services Resolver -> Android Resolver`
-
-8. Thiết lập AB Test
-
-   * Sử dụng và chỉnh sửa code từ `ABTestController`
-
-9. Tạo branch build AAB
-
-   * Branch master đặt thiết lập sau để build nhanh apk test
-     * Scripting Backend : Mono
-     * Target Architectures : ARMv7
-     * Publish Settings : debug key
-   * Tạo branch `release-aab` với các thiết lập sau
-     * Bỏ Unity open flash screen : mở `ProjectSettings/ProjectSettings.asset` lên bằng phần mềm text hoặc code, sửa `m_ShowUnitySplashScreen: 0` thành `m_ShowUnitySplashScreen: 1`
-     * Scripting Backend : IL2CPP
-     * Target Architectures : ARMv7 + ARM64
-     * Publish Settings : tạo keystore theo tên game. Ví dụ game tên "Cut Master" có keystore là `cutmaster.keystore` với password là `cutmaster`, nếu tên quá ngắn thì thêm `123456`
-
-10. Thiết lập Unity Cloud Build
-
-    * [Unity Cloud Build Documentation](https://docs.google.com/document/d/1S_Zg0yQF_j4PlHPyJLaGSL27jkoOpvxDYiwJ4fdwt5c/edit)
-    * Chỉ Setup vào Discord :
-      * Tạo một Integration Discord vào channel `build-advertising-prototypes` với các event build started, failure và success
-      * Tạo một Integration Discord vào channel `advertising-prototypes` với event build success
-    * Config build apk test
-      * Tên : `Dev Armv7`
-      * Branch: `master`
-      * Auto build: `Yes`
-    * Config build aab
-      * Tên: `Release AAB`
-      * Branch : `release-aab`
-      * Advanced : bật `Build App Bundles (.aab)`
-      * Auto build: `Yes`
-
-
+Xem thêm tại IEC Dev Workflow
+<https://docs.google.com/document/d/1ziseqnM_tzq4_2u9jZ8u17AQ83y8k_A9xG0E1CeOU_k/edit?usp=sharing>
