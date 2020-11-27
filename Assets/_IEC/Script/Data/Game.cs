@@ -27,6 +27,8 @@ namespace IEC
 
         public int maxGrassOnWall, classicColor;
 
+        public int totalRotStandard, totalRotRequired, currentRotCount;
+
         public RotTutorialConfig rotTutConfig;
 
         public BaseComponent[,] grids;
@@ -45,6 +47,8 @@ namespace IEC
 
         public string[] levelSort1;
 
+        public Stack<RotConfig> listUndo = new Stack<RotConfig>();
+
         [Header("AB Test")]
         public bool isHaveMixColor;
         public bool isFasterRotate;
@@ -61,6 +65,7 @@ namespace IEC
         //Prepared
         public bool isLeavesEffect;
         public bool isUIEffect;
+        public bool isHaveBossLevel;
 
 
         public BaseComponent GetGrid(int row, int col, int color)
@@ -84,6 +89,24 @@ namespace IEC
             {
                 return null;
             }
+        }
+
+        public void AddUndo(int row, int col)
+        {
+            listUndo.Push(new RotConfig(row, col));
+        }
+
+    }
+
+    [System.Serializable]
+    public struct RotConfig
+    {
+        public int Row, Col;
+
+        public RotConfig(int row, int col)
+        {
+            Row = row;
+            Col = col;
         }
     }
 }

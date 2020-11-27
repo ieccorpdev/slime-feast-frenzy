@@ -264,9 +264,14 @@ namespace IEC
             return obj;
         }
 
-        public static int CalculatorRot(int rotCurrent, int reduce)
+        public static int CalculatorNewRot(int rotCurrent, int reduce)
         {
             return (rotCurrent - reduce + 4) % 4;
+        }
+
+        public static int CalculatorRot(int rotCurrent, int rotTrue)
+        {
+            return (rotTrue - rotCurrent + 4) % 4;
         }
 
         public static int GetLevelSpawn(int matrix, int seed)

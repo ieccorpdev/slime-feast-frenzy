@@ -43,6 +43,8 @@ namespace IEC
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
 
+            Game.AddUndo(Row, Col);
+
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
             EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK);
             m_IsRotating = true;

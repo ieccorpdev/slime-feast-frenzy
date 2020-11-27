@@ -103,10 +103,6 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Break();
-            }
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
@@ -138,7 +134,7 @@ namespace IEC
                             minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
                             reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
                             moveCountSpawn -= reduce;
-                            gridRot = LevelHelper.CalculatorRot(grid.TrueRot, reduce);
+                            gridRot = LevelHelper.CalculatorNewRot(grid.TrueRot, reduce);
                         }
 
                         grid.SetTempRot(gridRot);
@@ -150,6 +146,8 @@ namespace IEC
             Game.isPlaying = true;
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
+
+            Game.totalRotRequired = Mathf.RoundToInt(Game.totalRotStandard * 1.1f);
 
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
@@ -293,6 +291,12 @@ namespace IEC
             Game.isWaitAfterRV = false;
             Game.maxHintIndex = 0;
             Game.isPlaying = false;
+
+            Game.totalRotStandard = 0;
+            Game.totalRotRequired = 0;
+            Game.currentRotCount = 0;
+
+            Game.listGrids.Clear();
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -315,10 +319,10 @@ namespace IEC
         }
 
         private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, 
-            string gridData, int rotTrue)
+            string gridData, int gridRotTrue)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
-            var gridRot = int.Parse(gridData.Substring(2, 1));
+            var gridRotCurrent = int.Parse(gridData.Substring(2, 1));
 
             var gridColor = 0;
             var gridStyle = 0;
@@ -353,10 +357,12 @@ namespace IEC
                 gridStyle = LevelHelper.GetTargetStyle(gridType);
             }
 
-            gridComp.OnInit(LevelHelper.GetType(gridType), row, col, rotTrue, gridRot, gridColor, gridStyle);
+            gridComp.OnInit(LevelHelper.GetType(gridType), row, col, gridRotTrue, gridRotCurrent, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
+
+            Game.totalRotStandard += LevelHelper.CalculatorRot(gridRotCurrent, gridRotTrue);
         }
 
         private void SpawnWallAll(LevelConfig levelConfig)
@@ -510,5 +516,6 @@ namespace IEC
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
         }
+
     }
 }
