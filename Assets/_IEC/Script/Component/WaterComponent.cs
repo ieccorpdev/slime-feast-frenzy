@@ -89,9 +89,9 @@ namespace IEC
         float deltaAmount;
         float ratioTime;
 
-        float RATIO_TIME_UP = .35f;
+        float RATIO_TIME_UP = .3f;
         float RATIO_TIME_DOWN = 1f;
-        float MAX_AMOUNT = 1.08f;
+        float MAX_AMOUNT = 1.1f;
 
         public void OnUpdate(float deltaTime)
         {

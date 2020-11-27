@@ -104,8 +104,6 @@ namespace IEC
             DefaultLine = GetDefaultLine(style);
             CurrentLine = DefaultLine;
 
-            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-
             m_WaterCount = m_WaterComponent.Length;
 
             if(m_WaterCount > 0)
@@ -119,6 +117,7 @@ namespace IEC
             if (GridType != GridType.WALL)
             {
                 m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
+                transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
             }
 
             if (Game.isStartLevelEffect)
@@ -133,7 +132,20 @@ namespace IEC
         }
 
         protected virtual void OnHandleMouseDown()
+        { 
+
+        }
+        protected void OnDOShakePosition()
         {
+            if (!Game.isPlaying) return;
+            m_Tween?.Kill(true);
+            Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
+            m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
+        }
+
+        public virtual void FixLevelData(int newCurrentRot)
+        { 
 
         }
 

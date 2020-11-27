@@ -68,7 +68,7 @@ namespace IEC
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
-            var strLevelSort1 = Resources.Load<TextAsset>("LevelSort1");
+            var strLevelSort1 = Resources.Load<TextAsset>("levelDifficutyV1");
             var levelSortText = strLevelSort1.text;
             Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
@@ -172,8 +172,8 @@ namespace IEC
                 {
                     if (Game.seed > 2 && Game.seed <= 100)
                     {
-                        var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
-                        levelSpawn = LevelHelper.GetLevelSpawn(matrix, Game.seed);
+                        //var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
+                        levelSpawn = int.Parse(Game.levelSort1[Game.seed - 1]);
                     }
                     else
                     {
@@ -251,7 +251,6 @@ namespace IEC
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
-
             yield return null;
 
             if (!m_IsInitCam)
@@ -324,7 +323,7 @@ namespace IEC
             var gridColor = 0;
             var gridStyle = 0;
 
-            var grid = PrefabHelper.Clone(LevelHelper.GetGridObj(ComponentConfig, gridType)).transform;
+            var grid = PrefabHelper.Clone(LevelHelper.GetGridObj(ComponentConfig, gridType), parent).transform;
             var gridComp = grid.GetComponent<BaseComponent>();
 
             if (LevelHelper.IsSourceGird(gridType) || LevelHelper.IsTargetGrid(gridType))
@@ -335,7 +334,6 @@ namespace IEC
                 }
             }
 
-            grid.SetParent(parent);
             grid.gameObject.name = "Row " + row + " | Col " + col;
             grid.localPosition = posSpawn;
             grid.localRotation = Quaternion.identity;
@@ -394,13 +392,11 @@ namespace IEC
                 var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
                 var wallValue = walls[i];
 
-                var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj).transform;
+                var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj, parent).transform;
                 var wallComp = wallTrans.GetComponent<WallComponent>();
-
-                wallTrans.SetParent(parent);
-                wallTrans.localPosition = posSpawn;
                 wallTrans.localRotation = Quaternion.identity;
                 wallTrans.localScale = Vector3.one;
+                wallTrans.localPosition = posSpawn;
 
                 var row = isBotTop ? index : i;
                 var col = isBotTop ? i : index;

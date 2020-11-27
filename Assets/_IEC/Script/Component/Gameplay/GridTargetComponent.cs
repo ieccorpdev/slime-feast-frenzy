@@ -34,7 +34,8 @@ namespace IEC
 
         public bool IsComplete;
 
-        private static float SCALE = .3f;
+        private static float SMALL = .3f;
+        private static float LARGE = 1.5f;
 
         private Material CurrentMat
         {
@@ -120,7 +121,7 @@ namespace IEC
                 m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SCALE;
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL;
 
             // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
@@ -145,6 +146,7 @@ namespace IEC
                 m_MeshTargets[i].material = mat;
             }
         }
+
 
         public override void AfterCheckConnect()
         {
@@ -175,7 +177,6 @@ namespace IEC
                         MMVibrationManager.Haptic(HapticTypes.MediumImpact);
                     }
                     EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
-
                     EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_COMPLETE);
                 });
             }
@@ -184,7 +185,7 @@ namespace IEC
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one : Vector3.one * SCALE, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one * LARGE : Vector3.one * SMALL, .4f)
                 .OnComplete(() => {
                     callBack?.Invoke();
                 });
