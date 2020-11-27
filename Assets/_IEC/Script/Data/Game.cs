@@ -60,6 +60,7 @@ namespace IEC
 
         //Prepared
         public bool isLeavesEffect;
+        public bool isUIEffect;
 
 
         public BaseComponent GetGrid(int row, int col, int color)

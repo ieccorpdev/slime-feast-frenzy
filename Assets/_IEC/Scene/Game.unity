@@ -736,7 +736,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 145950047}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3300,7 +3300,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 500}
   m_SizeDelta: {x: 0, y: 200}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!1 &996044377
@@ -3896,7 +3896,7 @@ GameObject:
   - component: {fileID: 1079569091}
   - component: {fileID: 1079569090}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ImgHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4737,6 +4737,8 @@ MonoBehaviour:
   btnSetting: {fileID: 1903007299}
   btnHint: {fileID: 74766062}
   popupSettings: {fileID: 267025210}
+  rectTopPannel: {fileID: 962977509}
+  rectPannelGO: {fileID: 585998825}
 --- !u!1 &1410286375
 GameObject:
   m_ObjectHideFlags: 0
@@ -6882,7 +6884,6 @@ MonoBehaviour:
     isWaitAfterRV: 0
     isPlaying: 0
     isMultiColor: 0
-    isHaveWaterConnection: 0
     isTutorial: 0
     isAllowHint: 0
     size: 0
@@ -6918,6 +6919,7 @@ MonoBehaviour:
     isRandomColorClassicMode: 0
     isStartLevelEffect: 0
     isLeavesEffect: 0
+    isUIEffect: 0
   m_PlayerSecret:
     lastVersion: 
     isNoAds: 0

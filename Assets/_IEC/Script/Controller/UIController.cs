@@ -5,8 +5,10 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake
+    public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventUpdate
     {
+        private float m_CountVibrateHint, m_NextTimeVibrate;
+
         private static readonly List<string> TextWinBonus = new List<string>
         {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
@@ -35,6 +37,23 @@ namespace IEC
                 case EventList.GamePlay.GAME_OVER:
                     GameOver();
                     break;
+                case EventList.GamePlay.GAME_START:
+                    if (Game.isUIEffect)
+                    {
+                        UI.TweenPannelTop(true);
+                    }
+                    break;
+            }
+        }
+
+        public void BehaviourUpdate(float deltaTime)
+        {
+            if (!Game.isUIEffect) return;
+            m_CountVibrateHint += deltaTime;
+            if(m_CountVibrateHint >= m_NextTimeVibrate)
+            {
+                UI.OnVibrateHint();
+                ResetVibrateHint();
             }
         }
 
@@ -113,12 +132,17 @@ namespace IEC
 
         private void OnInitNewLevel()
         {
+            if (!Game.isUIEffect)
+            {
+                UI.TweenPannelTop(true);
+            }
             SetActiveButtons(true);
             Game.isShowPopup = false;
             UI.popupSettings.gameObject.SetActive(false);
-            UI.groupGameOver.gameObject.SetActive(false);
+            UI.TweenGameOver(false);
             UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
             SetStatusSetting();
+            ResetVibrateHint();
         }
 
         private void SetStatusSetting()
@@ -130,13 +154,19 @@ namespace IEC
         private void GameOver()
         {
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-            UI.groupGameOver.gameObject.SetActive(true);
+            UI.TweenGameOver(true);
             SetActiveButtons(true);
             UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
             if (PlayerData.isVibrateOn)
             {
                 MMVibrationManager.Haptic(HapticTypes.Success);
             }
+        }
+
+        private void ResetVibrateHint()
+        {
+            m_CountVibrateHint = 0f;
+            m_NextTimeVibrate = Random.Range(5f, 10f);
         }
     }
 }
