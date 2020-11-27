@@ -32,6 +32,8 @@ namespace IEC
 
         public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
+        public bool IsComplete;
+
         private static float SCALE = .3f;
 
         private Material CurrentMat
@@ -130,16 +132,12 @@ namespace IEC
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
-        }
 
-        public override void AfterInit(bool isMultiColor)
-        {
-            base.AfterInit(isMultiColor);
             var mat = CurrentMat;
-            var color = mat.color;
+            var colorEffect = mat.color;
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = color;
+                m_PsWins[i].startColor = colorEffect;
             }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
@@ -151,33 +149,36 @@ namespace IEC
         public override void AfterCheckConnect()
         {
             base.AfterCheckConnect();
-
-            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-
             if (!m_IsHaveWater)
             {
-                TweenScale(false);
+                IsComplete = false;
             }
 
-            //if (!IsDone)
-            //{
-            //    TweenScale();
-            //}
+            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+            if (!m_IsHaveWater)
+            {
+                IsComplete = false;
+                TweenScale(false);
+            }
         }
 
         protected override void OnWaterGrowUpDone()
         {
-            TweenScale(IsDone, () => {
-                if (IsDone)
-                {
+            if (IsDone)
+            {
+                TweenScale(true, () => {
+                    IsComplete = true;
+
                     m_PsWin.Play();
                     if (PlayerData.isVibrateOn)
                     {
                         MMVibrationManager.Haptic(HapticTypes.MediumImpact);
                     }
                     EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
-                }
-            });
+
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_COMPLETE);
+                });
+            }
         }
 
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
@@ -193,6 +194,7 @@ namespace IEC
         {
             base.OnDestroyMe();
             m_TweenScale?.Kill(true);
+            IsComplete = false;
         }
     }
 }

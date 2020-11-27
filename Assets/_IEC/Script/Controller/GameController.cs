@@ -87,10 +87,16 @@ namespace IEC
                     StartCoroutine(SpawnLevel());
                     break;
                 case EventList.GamePlay.GAME_CHECK_CONNECT:
-                    CheckGameOver();
+                    CheckConnect();
                     break;
                 case EventList.GamePlay.GAME_START:
                     GameStart();
+                    break;
+                case EventList.GamePlay.GAME_CHECK_COMPLETE:
+                    if (IsComplete())
+                    {
+                        EventController.RaiseEventDelay(1.5f, EventList.GamePlay.GAME_OVER);
+                    }
                     break;
             }
         }
@@ -140,7 +146,7 @@ namespace IEC
                 }
             }
 
-            Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
+            Game.listGrids.ForEach(x => x.AfterInit());
             Game.isPlaying = true;
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
@@ -409,9 +415,8 @@ namespace IEC
             }
         }
 
-        private void CheckGameOver()
+        private void CheckConnect()
         {
-            Game.isHaveWaterConnection = false;
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
 
             var sourceCount = Game.listSource.Count;
@@ -426,7 +431,6 @@ namespace IEC
                 bool isChanged = true;
                 var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
 
-                //var delayStart = 0;
                 while (totalGridHaveWaterCount < totalGrid && isChanged)
                 {
                     var count = m_ListTempGridHaveWater.Count;
@@ -450,13 +454,10 @@ namespace IEC
                                     m_ListTempGridHaveWater.Add(gridNear);
                                 }
                             }
-                            //m_ListTempGridHaveWater.AddRange(listGridNear);
                         }
                     }
 
                     totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
-                    //delayStart += 1;
-
                     if (totalGridHaveWaterCount == count)
                     {
                         isChanged = false;
@@ -466,12 +467,6 @@ namespace IEC
 
             Game.listGrids.ForEach(x => x.AfterCheckConnect());
 
-            //if (Game.isHaveWaterConnection)
-            //{
-            //    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
-            //}
-
-
             if (IsWin())
             {
                 Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
@@ -479,7 +474,6 @@ namespace IEC
                 PlayerData.countPlayThisLevel = 0;
                 PlayerData.level += 1;
                 Game.isPlaying = false;
-                EventController.RaiseEventDelay(3f, EventList.GamePlay.GAME_OVER);
             }
         }
 
@@ -491,6 +485,16 @@ namespace IEC
                 if (!Game.listTarget[i].IsDone) return false;
             }
 
+            return true;
+        }
+
+        private bool IsComplete()
+        {
+            var count = Game.listTarget.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (!Game.listTarget[i].IsComplete) return false;
+            }
             return true;
         }
 

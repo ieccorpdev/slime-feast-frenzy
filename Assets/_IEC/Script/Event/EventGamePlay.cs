@@ -10,7 +10,7 @@ namespace IEC
             public const string GAME_RESTART = "GamePlay.GAME_RESTART";
             public const string GAME_SPAWN_LEVEL = "GamePlay.GAME_SPAWN_LEVEL";
             public const string GAME_CHECK_CONNECT = "GamePlay.GAME_CHECK_CONNECT";
-            public const string GAME_CHECK_GAME_OVER = "GamePlay.GAME_CHECK_GAME_OVER";
+            public const string GAME_CHECK_COMPLETE = "GamePlay.GAME_CHECK_COMPLETE";
             public const string GAME_OVER = "GamePlay.GAME_OVER";
             public const string PLAY_SOUND = "GamePlay.PLAY_SOUND";
             public const string GAME_LEAVES_EFFECT = "GamePlay.GAME_LEAVES_EFFECT";

@@ -19,9 +19,9 @@ namespace IEC
             m_CurrentRot = tempRot;
         }
 
-        public override void AfterInit(bool isMultiColor)
+        public override void AfterInit()
         {
-            base.AfterInit(isMultiColor);
+            base.AfterInit();
             SetGridLine(m_CurrentRot);
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }

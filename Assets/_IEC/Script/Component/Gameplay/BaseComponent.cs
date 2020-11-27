@@ -49,12 +49,12 @@ namespace IEC
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         // Grid static data
-        //[HideInInspector]
+        [HideInInspector]
         public int Row, Col, TrueRot, TrueColor;
 
         public GridType GridType;
 
-        //[HideInInspector]
+        [HideInInspector]
         public int WaterIndexColor;
 
 
@@ -173,7 +173,7 @@ namespace IEC
             m_StartWater = WaterPoint.CENTER;
         }
 
-        public virtual void AfterInit(bool isMultiColor)
+        public virtual void AfterInit()
         {
             OnResetData();
 
@@ -312,17 +312,12 @@ namespace IEC
 
         public virtual void AfterCheckConnect()
         {
-            if (GridType == GridType.GRID_SOURCE) return;
             if (!m_IsHaveWater)
             {
                 isHavingWater = false;
             }
             SetColor();
             if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-            if (m_IsHaveWater)
-            {
-                Game.isHaveWaterConnection = true;
-            }
 
             WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
             SetSetGrowingWater(m_IsHaveWater, point);

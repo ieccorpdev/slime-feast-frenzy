@@ -21,7 +21,7 @@ namespace IEC
 
         public bool isWaitAfterRV;
 
-        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial, isAllowHint;
+        public bool isPlaying, isMultiColor, isTutorial, isAllowHint;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -60,8 +60,7 @@ namespace IEC
 
         //Prepared
         public bool isLeavesEffect;
-        
-        
+
 
         public BaseComponent GetGrid(int row, int col, int color)
         {
