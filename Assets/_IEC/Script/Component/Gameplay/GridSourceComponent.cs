@@ -60,11 +60,6 @@ namespace IEC
             m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(true);
         }
 
-        public override void AfterCheckConnect()
-        {
-            
-        }
-
         protected override int[,] GetDefaultLine(int style)
         {
             if (style == 1)
@@ -83,6 +78,11 @@ namespace IEC
             {
                 return EndLine;
             }
+        }
+
+        public override void PrepareCheckConnect()
+        {
+            
         }
 
     }

@@ -40,9 +40,9 @@ namespace IEC
 
         private Color m_NewColor;
 
-        private bool m_IsScale, m_IsGrowUp, isChanged;
+        public bool m_IsScale, m_IsGrowUp, isChanged;
 
-        private float m_FillAmount;
+        public float m_FillAmount;
 
         private System.Action growUpCallBack;
 
@@ -50,17 +50,33 @@ namespace IEC
 
         private Game Game;
 
-        public void OnInit(System.Action callBack)
+        public void OnInit(Material mat, System.Action callBack)
         {
+            if (Game == null)
+            {
+                Game = Pool.Get<Game>();
+            }
+
             growUpCallBack = callBack;
-            if (materialPropertyBlock == null)
+
+            var oldMat = waterRenderers[0];
+
+            for (int i = 0; i < waterRenderers.Length; i++)
+            {
+                waterRenderers[i].material = mat;
+            }
+
+            
+            if (oldMat != mat)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
-
-            if(Game == null)
+            else
             {
-                Game = Pool.Get<Game>();
+                if(materialPropertyBlock == null)
+                {
+                    materialPropertyBlock = new MaterialPropertyBlock();
+                }
             }
 
             m_FillAmount = 0f;
@@ -145,6 +161,7 @@ namespace IEC
                         if (m_FillAmount >= 1f)
                         {
                             m_IsScale = false;
+                            growUpCallBack?.Invoke();
                         }
                     }
                     else

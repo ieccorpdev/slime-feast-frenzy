@@ -78,7 +78,7 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater;
 
-        public bool m_IsOldHaveWater, isHavingWater, isChecked;
+        protected bool m_IsOldHaveWater, isHavingWater;
 
         protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
@@ -86,9 +86,10 @@ namespace IEC
 
         private WaterPoint m_StartWater;
 
+
         //Temp
         protected Tween m_Tween;
-        private List<int> m_ListWaterColor = new List<int>();
+        public List<int> m_ListWaterColor = new List<int>();
         private BaseComponent m_TempGrid;
         private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
 
@@ -99,6 +100,7 @@ namespace IEC
             Row = row;
             Col = col;
             WaterIndexColor = color;
+            TrueColor = color;
             m_CurrentRot = rot;
             TrueRot = trueRot;
 
@@ -109,9 +111,10 @@ namespace IEC
 
             if(m_WaterCount > 0)
             {
+                Material waterMat = Game.isNewWaterEffect ? Config.newWaterMat : Config.waterMat;
                 for (int i = 0; i < m_WaterCount; i++)
                 {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone);
+                    m_WaterComponent[i].OnInit(waterMat, OnWaterGrowUpDone);
                 }
             }
 
@@ -196,7 +199,7 @@ namespace IEC
                 m_IsHaveWater = true;
                 if(m_ListWaterColor.Count == 0)
                 {
-                    m_ListWaterColor.Add(WaterIndexColor);
+                    m_ListWaterColor.Add(TrueColor);
                 }
                 SetColor();
                 SetSetGrowingWater(true, WaterPoint.CENTER);
@@ -215,18 +218,14 @@ namespace IEC
 
         public virtual void PrepareCheckConnect()
         {
-            isChecked = false;
-            if (GridType == GridType.GRID_SOURCE) return;
             m_IsOldHaveWater = m_IsHaveWater;
             m_OldWaterIndexColor = WaterIndexColor;
             m_IsHaveWater = false;
-
             m_ListWaterColor.Clear();
         }
 
         public List<BaseComponent> GetGridNearCanConnect(int color)
         {
-            isChecked = true;
             m_ListGridConnect.Clear();
             if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
 
@@ -320,6 +319,14 @@ namespace IEC
             if (!m_ListWaterColor.Contains(color))
             {
                 m_ListWaterColor.Add(color);
+            }
+        }
+
+        public void SetTotalColor(List<int> color)
+        {
+            if(GridType != GridType.GRID_SOURCE)
+            {
+                m_ListWaterColor.AddRange(color);
             }
         }
 

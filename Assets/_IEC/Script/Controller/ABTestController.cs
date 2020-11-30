@@ -63,7 +63,7 @@ namespace IEC
         private void UpdateAb20201201(int abValue)
         {
             Game.isLevelDifficultyV3 = abValue == 1;
-            Game.isUIEffect = abValue == 2;
+            Game.isNewWaterEffect = abValue == 2;
             Game.isHaveBossLevel = abValue == 3;
 
             GameController.GetLevelDifficulty();

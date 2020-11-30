@@ -30,6 +30,8 @@ namespace IEC
 
         public Material[] matBSP;
 
+        public Material waterMat, newWaterMat;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

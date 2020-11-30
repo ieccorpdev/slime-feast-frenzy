@@ -68,7 +68,7 @@
 
 			fixed3 _MoveDirection;
 
-			fixed _Alpha;
+			fixed _FillAmount;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
@@ -113,9 +113,8 @@
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
-				_FoamColor.a = 0;
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
-
+				waterCol.a = _FillAmount;
 				return waterCol;
 			}
 			ENDCG

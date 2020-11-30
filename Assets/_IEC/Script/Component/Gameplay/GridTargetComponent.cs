@@ -110,8 +110,7 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            TrueColor = color;
-
+            
             m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
 
             Game.seed += 1;
@@ -151,13 +150,13 @@ namespace IEC
         public override void AfterCheckConnect()
         {
             base.AfterCheckConnect();
+
             if (!m_IsHaveWater)
             {
                 IsComplete = false;
             }
-
             if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-            if (!m_IsHaveWater)
+            if (!m_IsHaveWater || !IsDone)
             {
                 IsComplete = false;
                 TweenScale(false);

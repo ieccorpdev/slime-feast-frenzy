@@ -481,14 +481,14 @@ namespace IEC
                 var totalGrid = Game.size * Game.size;
                 bool isChanged = true;
                 var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+                var startIndex = 0;
 
                 while (totalGridHaveWaterCount < totalGrid && isChanged)
                 {
                     var count = m_ListTempGridHaveWater.Count;
-                    for (int j = 0; j < count; j++)
+                    for (int j = startIndex; j < count; j++)
                     {
                         var grid = m_ListTempGridHaveWater[j];
-                        if (grid.isChecked) continue;
                         var listGridNear = grid.GetGridNearCanConnect(source.WaterIndexColor);
 
                         var listGridNearCount = listGridNear.Count;
@@ -503,6 +503,8 @@ namespace IEC
                                 if (!m_ListTempGridHaveWater.Contains(gridNear))
                                 {
                                     m_ListTempGridHaveWater.Add(gridNear);
+
+                                    startIndex += 1;
                                 }
                             }
                         }
