@@ -50,8 +50,7 @@ namespace IEC
 
             if (!isUndo)
             {
-                Game.AddUndoData(Row, Col);
-                Game.rotCount -= 1;
+                EventController.RaiseEvent(EventList.GamePlay.GAME_ADD_MOVE, new EventParam(this));
             }
 
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));

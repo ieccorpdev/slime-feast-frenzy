@@ -711,6 +711,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eba8053e9857644478c380f2bace3b9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_MoveColor:
+    serializedVersion: 2
+    key0: {r: 0.8867924, g: 0.12130654, b: 0.12130654, a: 1}
+    key1: {r: 1, g: 0.4716981, b: 0, a: 1}
+    key2: {r: 0.16862746, g: 0.5568628, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 32768
+    ctime2: 65535
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 3
+    m_NumAlphaKeys: 2
 --- !u!1 &145950047
 GameObject:
   m_ObjectHideFlags: 0
@@ -4507,7 +4536,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 22}
+  m_AnchoredPosition: {x: 0, y: -66}
   m_SizeDelta: {x: 500, y: 120}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1208011814
@@ -4546,10 +4575,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LEVEL 100
+  m_text: 'Moves: 1'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: d62a56232382a5f4db24697ecea8fd68, type: 2}
-  m_sharedMaterial: {fileID: 1130302776828893127, guid: d62a56232382a5f4db24697ecea8fd68,
+  m_fontAsset: {fileID: 11400000, guid: c4f5d72682d3dd645a6810e7d07397a2, type: 2}
+  m_sharedMaterial: {fileID: 1130302776828893127, guid: c4f5d72682d3dd645a6810e7d07397a2,
     type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -4575,8 +4604,8 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 90
-  m_fontSizeBase: 90
+  m_fontSize: 70
+  m_fontSizeBase: 70
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -4616,7 +4645,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 1208011815}
-    characterCount: 9
+    characterCount: 8
     spriteCount: 0
     spaceCount: 1
     wordCount: 2
@@ -4982,6 +5011,7 @@ MonoBehaviour:
   txtLevel: {fileID: 1195671697}
   txtGO: {fileID: 145950049}
   txtUndo: {fileID: 2126618719}
+  txtMove: {fileID: 1208011815}
   groupGameOver: {fileID: 739679283}
   btnRestart: {fileID: 1024598892}
   btnSkip: {fileID: 1978772229}
@@ -7590,8 +7620,8 @@ MonoBehaviour:
     levelDatas: []
     hintDatas: []
     levelDifficulty: []
-    totalRotStandard: 0
-    rotCount: 0
+    totalMove: 0
+    moveRemains: 0
     undoCount: 0
     isBossLevel: 0
     isHaveMixColor: 0

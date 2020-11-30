@@ -153,8 +153,6 @@ namespace IEC
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
 
-            Game.rotCount = Mathf.RoundToInt(Game.totalRotStandard * 1.3f);
-
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
@@ -169,8 +167,6 @@ namespace IEC
             {
                 Game.isBossLevel = (Game.seed % 5) == 0;
             }
-
-            UIController.SetupBossLevel(Game.isBossLevel);
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
 
@@ -230,6 +226,16 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();
+
+            Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
+            Game.moveRemains = Game.totalMove;
+            if (Game.isBossLevel)
+            {
+                UIController.UpdateMove();
+            }
+
+            UIController.SetupBossLevel(Game.isBossLevel);
+
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
@@ -327,8 +333,8 @@ namespace IEC
             Game.maxHintIndex = 0;
             Game.isPlaying = false;
 
-            Game.totalRotStandard = 0;
-            Game.rotCount = 0;
+            Game.totalMove = 0;
+            Game.moveRemains = 0;
 
             Game.listGrids.Clear();
             Game.listUndo.Clear();
@@ -404,7 +410,7 @@ namespace IEC
 
             if (Game.isBossLevel)
             {
-                Game.totalRotStandard += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
+                Game.totalMove += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
             }
         }
 
@@ -520,7 +526,7 @@ namespace IEC
             {
                 if (Game.isBossLevel)
                 {
-                    if(Game.rotCount <= 0)
+                    if(Game.moveRemains <= 0)
                     {
                         GameOver(false);
                     }
@@ -543,7 +549,7 @@ namespace IEC
             }
             else
             {
-                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, false));
+                EventController.RaiseEventDelay(.5f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, false));
             }
 
         }
@@ -572,7 +578,6 @@ namespace IEC
         private void OnUndo()
         {
             var rotConfig = Game.GetLastUndo();
-
             var grid = Game.grids[rotConfig.Row, rotConfig.Col];
             grid.OnUndo();
         }

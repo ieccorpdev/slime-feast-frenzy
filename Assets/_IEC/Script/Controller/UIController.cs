@@ -9,6 +9,9 @@ namespace IEC
     {
         private float m_CountVibrateHint, m_NextTimeVibrate;
 
+        [SerializeField]
+        private Gradient m_MoveColor;
+
         private static readonly List<string> TextWinBonus = new List<string>
         {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
@@ -39,6 +42,12 @@ namespace IEC
                     {
                         UI.TweenPannelTop(true);
                     }
+                    break;
+                case EventList.GamePlay.GAME_ADD_MOVE:
+                    var grid = (BaseComponent)param.sender;
+                    Game.AddUndoData(grid.Row, grid.Col);
+                    Game.moveRemains -= 1;
+                    UpdateMove();
                     break;
             }
         }
@@ -122,6 +131,9 @@ namespace IEC
                     EventController.RaiseEvent(EventList.GamePlay.GAME_UNDO);
                     Game.undoCount -= 1;
                     UpdateUndoText();
+
+                    Game.moveRemains += 1;
+                    UpdateMove();
                 }
             }
             else
@@ -136,9 +148,15 @@ namespace IEC
         private void UpdateUndoText()
         {
             UI.txtUndo.text = StringHelper.GetNumber(Game.undoCount);
-
             UI.undoAds.SetActive(Game.undoCount <= 0);
             UI.undoCount.SetActive(Game.undoCount > 0);
+        }
+
+        public void UpdateMove()
+        {
+            UI.txtMove.text = "Move: " + StringHelper.GetNumber(Game.moveRemains);
+            float valueColor = (float)Game.moveRemains / Game.totalMove;
+            UI.txtMove.color = m_MoveColor.Evaluate(valueColor);
         }
 
         public void SetActiveButtons(bool isActive)
@@ -166,7 +184,6 @@ namespace IEC
             Game.isShowPopup = false;
             UI.popupSettings.gameObject.SetActive(false);
             UI.TweenGameOver(false);
-            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
             SetStatusSetting();
             ResetVibrateHint();
 
@@ -177,6 +194,9 @@ namespace IEC
         {
             UI.btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
             UI.btnUndo.gameObject.SetActive(isBossLevel);
+            UI.txtMove.gameObject.SetActive(isBossLevel);
+
+            UI.txtLevel.text = isBossLevel ? "BOSS LEVEL" : ("LEVEL " + StringHelper.GetNumber(PlayerData.level));
         }
 
         private void SetStatusSetting()

@@ -15,7 +15,7 @@ namespace IEC
         public EventSystem eventSystem;
 
         public RectTransform bottomAds;
-        public TMP_Text textHello, txtLevel, txtGO, txtUndo;
+        public TMP_Text textHello, txtLevel, txtGO, txtUndo, txtMove;
 
         public GameObject groupGameOver;
 

@@ -46,7 +46,7 @@ namespace IEC
         public string[] levelDifficulty;
 
         //Boss level
-        public int totalRotStandard, rotCount;
+        public int totalMove, moveRemains;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
 
