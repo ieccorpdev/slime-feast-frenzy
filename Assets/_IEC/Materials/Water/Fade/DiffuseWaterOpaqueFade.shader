@@ -1,4 +1,4 @@
-﻿Shader "Custom/Water/DiffuseWaterOpaque"
+﻿Shader "Custom/WaterWCP/Fade"
 {
 	Properties
 	{
@@ -68,9 +68,7 @@
 
 			fixed3 _MoveDirection;
 
-			float3 _GLOBALMaskPosition;
-			fixed _GLOBALMaskRadius;
-			fixed _GLOBALMaskSoftness;
+			fixed _Alpha;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
@@ -108,10 +106,6 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				half dist = distance(_GLOBALMaskPosition, i.worldPos);
-				half sphere = 1 - saturate((dist - _GLOBALMaskRadius) / 0);
-				clip(sphere - 0.1);
-
 				fixed2 water_uv = WaterPlaneUV(i.worldPos, i.camHeightOverWater);
 				fixed4 distortion = tex2D(_DistTex, water_uv * _DistTiling) * 2 - 1;
 				fixed2 distorted_uv = ((water_uv + distortion.rg) - _Time.y * _MoveDirection.xz) * _Tiling;
@@ -119,9 +113,9 @@
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
-				if(dist > (_GLOBALMaskRadius - .05)) waterCol = _FoamColor;
-
+				_FoamColor.a = 0;
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
+
 				return waterCol;
 			}
 			ENDCG

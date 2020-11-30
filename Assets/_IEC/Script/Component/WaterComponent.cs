@@ -46,12 +46,21 @@ namespace IEC
 
         private System.Action growUpCallBack;
 
+        private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
+
+        private Game Game;
+
         public void OnInit(System.Action callBack)
         {
             growUpCallBack = callBack;
             if (materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
+            }
+
+            if(Game == null)
+            {
+                Game = Pool.Get<Game>();
             }
 
             m_FillAmount = 0f;
@@ -75,7 +84,11 @@ namespace IEC
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
             SetGrowingPos(MaterialPropertyBlock, pos);
-            m_FillAmount = isGrowUp ? (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
+            if (Game.isNewWaterEffect)
+            {
+                m_FillAmount = isGrowUp ? (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
+            }
+
             m_IsGrowUp = isGrowUp;
             m_IsScale = true;
         }
@@ -96,27 +109,50 @@ namespace IEC
         public void OnUpdate(float deltaTime)
         {
             isChanged = false;
+
             if (m_IsScale)
             {
                 isChanged = true;
 
-                deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
-                ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
-                m_FillAmount += 1.0f / ratioTime * deltaAmount;
-
-                if (m_IsGrowUp)
+                if (Game.isNewWaterEffect)
                 {
-                    if (m_FillAmount >= MAX_AMOUNT)
+                    deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
+                    ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
+                    m_FillAmount += 1.0f / ratioTime * deltaAmount;
+
+                    if (m_IsGrowUp)
                     {
-                        m_IsScale = false;
-                        growUpCallBack?.Invoke();
+                        if (m_FillAmount >= MAX_AMOUNT)
+                        {
+                            m_IsScale = false;
+                            growUpCallBack?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        if (m_FillAmount <= 0)
+                        {
+                            m_IsScale = false;
+                        }
                     }
                 }
                 else
                 {
-                    if (m_FillAmount <= 0)
+                    m_FillAmount += m_IsGrowUp ? deltaTime : -deltaTime;
+
+                    if (m_IsGrowUp)
                     {
-                        m_IsScale = false;
+                        if (m_FillAmount >= 1f)
+                        {
+                            m_IsScale = false;
+                        }
+                    }
+                    else
+                    {
+                        if (m_FillAmount <= 0)
+                        {
+                            m_IsScale = false;
+                        }
                     }
                 }
             }
@@ -164,7 +200,7 @@ namespace IEC
         private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
         {
             propertyBlock.SetColor("_WaterColor", waterColor);
-            propertyBlock.SetFloat("_GLOBALMaskRadius", m_FillAmount);
+            propertyBlock.SetFloat(Shader_FillAmount, m_FillAmount);
 
             ApplyData(propertyBlock);
         }
