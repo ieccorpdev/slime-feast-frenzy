@@ -4,6 +4,8 @@ Shader "Custom/Warm-Diffuse" {
 Properties {
     _Color ("Main Color", Color) = (1,1,1,1)
     _MainTex ("Base (RGB)", 2D) = "white" {}
+	_ParamA ("Param A", Range (0.0,1.0)) = 0.2
+	_ParamB ("Param B", Range (0.0,1.0)) = 0
 }
 SubShader {
     Tags { "RenderType"="Opaque" }
@@ -13,6 +15,8 @@ CGPROGRAM
 
 sampler2D _MainTex;
 fixed4 _Color;
+fixed _ParamA;
+fixed _ParamB;
 
 struct Input {
     float2 uv_MainTex;
@@ -22,8 +26,7 @@ struct Input {
   
 half4 LightingSimpleLambert (SurfaceOutput s, half3 lightDir, half atten) {
     half NdotL = dot (s.Normal, lightDir);
-	half diff = NdotL * 0.2 + 0.8;
-	atten = atten * 0.5 + 0.5;
+	half diff = NdotL * _ParamA + (1 - _ParamA) + _ParamB;
 	half4 c;
 	c.rgb = s.Albedo * _LightColor0.rgb * (diff * atten);
 	c.a = s.Alpha;
