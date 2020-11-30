@@ -54,10 +54,10 @@ namespace IEC
 
         public void GetLevelsData()
         {
-            var strLevelPath = Game.isHaveMixColor ? "levelsList" : "levelsList1";
+            var strLevelPath = Game.isHaveMixColor ? "ListLevelFull" : "ListLevelRemoveMixColor";
             var strLevels = Resources.Load<TextAsset>(strLevelPath);
 
-            var strHintPath = Game.isHaveMixColor ? "hintList" : "hintList1";
+            var strHintPath = Game.isHaveMixColor ? "ListSolutionFull" : "ListSolutionRemoveMixColor";
             var strHints = Resources.Load<TextAsset>(strHintPath);
 
             var levelDatas = strLevels.text;
@@ -67,10 +67,13 @@ namespace IEC
             var hintDatas = strHints.text;
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+        }
 
-            var strLevelSort1 = Resources.Load<TextAsset>("levelDifficutyV1");
-            var levelSortText = strLevelSort1.text;
-            Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+        public void GetLevelDifficulty()
+        {
+            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "LevelDifficutyV3" : "LevelDifficutyV2");
+            var levelDifficultyText = levelDifficulty.text;
+            Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -157,32 +160,7 @@ namespace IEC
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-
-            var levelSpawn = 0;
-
-            if(Game.seed > Game.levelDatas.Length)
-            {
-                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
-            }
-            else
-            {
-                if (Game.isLevelDifficultyV2)
-                {
-                    if (Game.seed > 2 && Game.seed <= 100)
-                    {
-                        //var matrix = int.Parse(Game.levelSort1[Game.seed - 1]);
-                        levelSpawn = int.Parse(Game.levelSort1[Game.seed - 1]);
-                    }
-                    else
-                    {
-                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
-                    }
-                }
-                else
-                {
-                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
-                }
-            }
+            var levelSpawn = GetLevelSpawn(Game.seed);
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
 
@@ -217,35 +195,7 @@ namespace IEC
                 }
             }
 
-            var tempList = new List<int>();
-
-            for (int i = 0; i < 2; i++)
-            {
-                var type = MathHelper.GetRandomIndexByList(tempList, 4);
-                Game.listTerrainType.Add(type);
-                tempList.Add(type);
-                var temp = 0;
-                if(i == 0)
-                {
-                    if(type == 0)
-                    {
-                        temp = 1;
-                    }
-                    else if(type == 1)
-                    {
-                        temp = 0;
-                    }
-                    else if (type == 2)
-                    {
-                        temp = 3;
-                    }
-                    else if (type == 3)
-                    {
-                        temp = 2;
-                    }
-                    tempList.Add(temp);
-                }
-            }
+            SetTerrain();
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
@@ -272,6 +222,81 @@ namespace IEC
             Hint.CheckSoulution();
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
+        }
+
+        private int GetLevelSpawn(int playerLevel)
+        {
+            var levelSpawn = 0;
+
+            if (Game.seed > Game.levelDatas.Length)
+            {
+                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
+            }
+            else
+            {
+                if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3)
+                {
+                    if (Game.seed > 2 && Game.seed <= GetConditionLevelDifficulty())
+                    {
+                        levelSpawn = int.Parse(Game.levelDifficulty[Game.seed - 1]);
+                    }
+                    else
+                    {
+                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                    }
+                }
+                else
+                {
+                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                }
+            }
+
+            return levelSpawn;
+        }
+
+        private int GetConditionLevelDifficulty()
+        {
+            if (Game.isLevelDifficultyV3)
+            {
+                return 110;
+            }
+            else
+            {
+                return 100;
+            }
+        }
+
+        private void SetTerrain()
+        {
+            var tempList = new List<int>();
+
+            for (int i = 0; i < 2; i++)
+            {
+                var type = MathHelper.GetRandomIndexByList(tempList, 4);
+                Game.listTerrainType.Add(type);
+                tempList.Add(type);
+                var temp = 0;
+                if (i == 0)
+                {
+                    if (type == 0)
+                    {
+                        temp = 1;
+                    }
+                    else if (type == 1)
+                    {
+                        temp = 0;
+                    }
+                    else if (type == 2)
+                    {
+                        temp = 3;
+                    }
+                    else if (type == 3)
+                    {
+                        temp = 2;
+                    }
+                    tempList.Add(temp);
+                }
+            }
         }
 
         private void OnClearAll()

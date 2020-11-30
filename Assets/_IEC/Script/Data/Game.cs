@@ -45,7 +45,7 @@ namespace IEC
         public string[] levelDatas;
         public string[] hintDatas;
 
-        public string[] levelSort1;
+        public string[] levelDifficulty;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
 
@@ -62,11 +62,12 @@ namespace IEC
         public bool isRandomColorClassicMode;
         public bool isStartLevelEffect;
 
-        //Prepared
-        public bool isLeavesEffect;
+        public bool isLevelDifficultyV3;
         public bool isUIEffect;
         public bool isHaveBossLevel;
 
+        //Prepared
+        public bool isLeavesEffect;
 
         public BaseComponent GetGrid(int row, int col, int color)
         {
