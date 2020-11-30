@@ -15,11 +15,11 @@ namespace IEC
         public EventSystem eventSystem;
 
         public RectTransform bottomAds;
-        public TMP_Text textHello, txtLevel, txtGO;
+        public TMP_Text textHello, txtLevel, txtGO, txtUndo;
 
         public GameObject groupGameOver;
 
-        public Button btnRestart, btnSkip, btnGONext, btnSetting, btnHint;
+        public Button btnRestart, btnSkip, btnGONext, btnSetting, btnHint, btnUndo;
 
         public PopupSetting popupSettings;
 
@@ -30,6 +30,8 @@ namespace IEC
         private Tween m_GameOver;
 
         private float effectDuration = 0.3f;
+
+        public GameObject undoAds, undoCount;
 
         public void OnVibrateHint()
         {

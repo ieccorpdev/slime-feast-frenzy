@@ -98,8 +98,11 @@ namespace IEC
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
                     if (IsComplete())
                     {
-                        EventController.RaiseEventDelay(1.5f, EventList.GamePlay.GAME_OVER);
+                        EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
                     }
+                    break;
+                case EventList.GamePlay.GAME_UNDO:
+                    OnUndo();
                     break;
             }
         }
@@ -137,20 +140,20 @@ namespace IEC
                             minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
                             reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
                             moveCountSpawn -= reduce;
-                            gridRot = LevelHelper.CalculatorNewRot(grid.TrueRot, reduce);
+                            gridRot = LevelHelper.CalculatorAddRot(grid.TrueRot, reduce);
                         }
 
                         grid.SetTempRot(gridRot);
                     }
                 }
             }
-
+             
             Game.listGrids.ForEach(x => x.AfterInit());
             Game.isPlaying = true;
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
 
-            Game.totalRotRequired = Mathf.RoundToInt(Game.totalRotStandard * 1.1f);
+            Game.rotCount = Mathf.RoundToInt(Game.totalRotStandard * 1.3f);
 
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
@@ -160,7 +163,14 @@ namespace IEC
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-            var levelSpawn = GetLevelSpawn(Game.seed);
+            var levelSpawn = GetLevelSpawn();
+
+            if (Game.isHaveBossLevel)
+            {
+                Game.isBossLevel = (Game.seed % 5) == 0;
+            }
+
+            UIController.SetupBossLevel(Game.isBossLevel);
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
 
@@ -224,7 +234,7 @@ namespace IEC
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 
-        private int GetLevelSpawn(int playerLevel)
+        private int GetLevelSpawn()
         {
             var levelSpawn = 0;
 
@@ -318,10 +328,15 @@ namespace IEC
             Game.isPlaying = false;
 
             Game.totalRotStandard = 0;
-            Game.totalRotRequired = 0;
-            Game.currentRotCount = 0;
+            Game.rotCount = 0;
 
             Game.listGrids.Clear();
+            Game.listUndo.Clear();
+
+            Game.isBossLevel = false;
+            Game.undoCount = 2;
+
+            UIController.OnResetAll();
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -387,7 +402,10 @@ namespace IEC
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
 
-            Game.totalRotStandard += LevelHelper.CalculatorRot(gridRotCurrent, gridRotTrue);
+            if (Game.isBossLevel)
+            {
+                Game.totalRotStandard += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
+            }
         }
 
         private void SpawnWallAll(LevelConfig levelConfig)
@@ -496,12 +514,38 @@ namespace IEC
 
             if (IsWin())
             {
-                Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
-                Services.PushEvent(new IEC.TrackingEvent.GameOver());
+                GameOver(true);
+            }
+            else
+            {
+                if (Game.isBossLevel)
+                {
+                    if(Game.rotCount <= 0)
+                    {
+                        GameOver(false);
+                    }
+                }
+            }
+        }
+
+        private void GameOver(bool isWin)
+        {
+            Game.isGameWin = isWin;
+            Game.isPlaying = false;
+
+            Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
+            Services.PushEvent(new IEC.TrackingEvent.GameOver());
+
+            if (isWin)
+            {
                 PlayerData.countPlayThisLevel = 0;
                 PlayerData.level += 1;
-                Game.isPlaying = false;
             }
+            else
+            {
+                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, false));
+            }
+
         }
 
         private bool IsWin()
@@ -523,6 +567,14 @@ namespace IEC
                 if (!Game.listTarget[i].IsComplete) return false;
             }
             return true;
+        }
+
+        private void OnUndo()
+        {
+            var rotConfig = Game.GetLastUndo();
+
+            var grid = Game.grids[rotConfig.Row, rotConfig.Col];
+            grid.OnUndo();
         }
 
         public static void PushPlayLevelEvent()

@@ -38,19 +38,29 @@ namespace IEC
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
+            OnRotation(false);
+        }
+
+        private void OnRotation(bool isUndo)
+        {
             if (Game.isTutorial && ID != Game.gridTutId) return;
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
 
-            Game.AddUndo(Row, Col);
+            if (!isUndo)
+            {
+                Game.AddUndoData(Row, Col);
+                Game.rotCount -= 1;
+            }
 
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
             EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK);
+
             m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_CurrentRot = (m_CurrentRot + 1) % 4;
+            m_CurrentRot = isUndo ? LevelHelper.CalculatorAddRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
             var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             var time = Game.isFasterRotate ? .15f : .3f;
@@ -100,5 +110,12 @@ namespace IEC
                     SetGridLine(m_CurrentRot);
                 });
         }
+
+        public override void OnUndo()
+        {
+            base.OnUndo();
+            OnRotation(true);
+        }
+
     }
 }

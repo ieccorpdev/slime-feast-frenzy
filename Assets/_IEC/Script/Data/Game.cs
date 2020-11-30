@@ -21,13 +21,11 @@ namespace IEC
 
         public bool isWaitAfterRV;
 
-        public bool isPlaying, isMultiColor, isTutorial, isAllowHint;
+        public bool isPlaying, isMultiColor, isTutorial, isAllowHint, isGameWin;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
         public int maxGrassOnWall, classicColor;
-
-        public int totalRotStandard, totalRotRequired, currentRotCount;
 
         public RotTutorialConfig rotTutConfig;
 
@@ -47,7 +45,25 @@ namespace IEC
 
         public string[] levelDifficulty;
 
+        //Boss level
+        public int totalRotStandard, rotCount;
+
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
+
+        public int undoCount;
+
+        public bool isBossLevel;
+
+        public bool IsAllowUndo()
+        {
+            var count = listGrids.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var grid = listGrids[i];
+                if (!grid.IsAllowRotation) return false;
+            }
+            return true;
+        }
 
         [Header("AB Test")]
         public bool isHaveMixColor;
@@ -92,9 +108,14 @@ namespace IEC
             }
         }
 
-        public void AddUndo(int row, int col)
+        public void AddUndoData(int row, int col)
         {
             listUndo.Push(new RotConfig(row, col));
+        }
+
+        public RotConfig GetLastUndo()
+        {
+            return listUndo.Pop();
         }
 
     }

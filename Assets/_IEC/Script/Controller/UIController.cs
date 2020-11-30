@@ -31,11 +31,8 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_SPAWN_LEVEL:
-                    OnInitNewLevel();
-                    break;
-                case EventList.GamePlay.GAME_OVER:
-                    GameOver();
+                case EventList.GamePlay.GAME_OVER_UI:
+                    GameOver((bool)param.p0);
                     break;
                 case EventList.GamePlay.GAME_START:
                     if (Game.isUIEffect)
@@ -112,6 +109,36 @@ namespace IEC
                 });
             });
 
+            UI.btnUndo.onClick.AddListener(OnHandleUndo);
+        }
+
+        private void OnHandleUndo()
+        {
+            if (Game.listUndo.Count < 1) return;
+            if(Game.undoCount > 0)
+            {
+                if (Game.IsAllowUndo())
+                {
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_UNDO);
+                    Game.undoCount -= 1;
+                    UpdateUndoText();
+                }
+            }
+            else
+            {
+                Services.ShowRewardAds(() => {
+                    Game.undoCount = 3;
+                    UpdateUndoText();
+                });
+            }
+        }
+
+        private void UpdateUndoText()
+        {
+            UI.txtUndo.text = StringHelper.GetNumber(Game.undoCount);
+
+            UI.undoAds.SetActive(Game.undoCount <= 0);
+            UI.undoCount.SetActive(Game.undoCount > 0);
         }
 
         public void SetActiveButtons(bool isActive)
@@ -125,12 +152,11 @@ namespace IEC
         {
             UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
             UI.btnSkip.gameObject.SetActive(!Game.isHaveHint);
-            UI.btnHint.gameObject.SetActive(Game.isHaveHint);
             SetStatusSetting();
             Sound.SetupAudio();
         }
 
-        private void OnInitNewLevel()
+        public void OnResetAll()
         {
             if (!Game.isUIEffect)
             {
@@ -143,6 +169,14 @@ namespace IEC
             UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
             SetStatusSetting();
             ResetVibrateHint();
+
+            UpdateUndoText();
+        }
+
+        public void SetupBossLevel(bool isBossLevel)
+        {
+            UI.btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
+            UI.btnUndo.gameObject.SetActive(isBossLevel);
         }
 
         private void SetStatusSetting()
@@ -151,12 +185,12 @@ namespace IEC
             Sound.SetupAudio();
         }
 
-        private void GameOver()
+        private void GameOver(bool isWin)
         {
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             UI.TweenGameOver(true);
             SetActiveButtons(true);
-            UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+            UI.txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
             if (PlayerData.isVibrateOn)
             {
                 MMVibrationManager.Haptic(HapticTypes.Success);

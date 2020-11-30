@@ -74,6 +74,7 @@ namespace IEC
         }
 
         public bool IsTrueRot => m_CurrentRot == TrueRot;
+        public bool IsAllowRotation => !m_IsRotating;
 
         protected bool m_IsRotating, m_IsHaveWater;
 
@@ -422,6 +423,11 @@ namespace IEC
             }
             pos.y = .2f;
             return pos;
+        }
+
+        public virtual void OnUndo()
+        {
+
         }
 
 

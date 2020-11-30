@@ -264,12 +264,12 @@ namespace IEC
             return obj;
         }
 
-        public static int CalculatorNewRot(int rotCurrent, int reduce)
+        public static int CalculatorAddRot(int rotCurrent, int numberSub)
         {
-            return (rotCurrent - reduce + 4) % 4;
+            return (rotCurrent - numberSub + 4) % 4;
         }
 
-        public static int CalculatorRot(int rotCurrent, int rotTrue)
+        public static int CalculatorMissingRot(int rotCurrent, int rotTrue)
         {
             return (rotTrue - rotCurrent + 4) % 4;
         }
