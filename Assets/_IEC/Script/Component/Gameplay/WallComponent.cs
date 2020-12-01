@@ -36,14 +36,9 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
+        protected override void OnHandleMouseDown()
         {
-            base.OnInit(gridType, row, col,rotTrue, rot, color, style);
-            IsRotating = false;
-        }
-
-        protected override void OnMouseDown()
-        {
+            base.OnHandleMouseDown();
             OnDOShakePosition();
         }
 

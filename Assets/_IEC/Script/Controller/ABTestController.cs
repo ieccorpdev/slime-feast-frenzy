@@ -40,15 +40,16 @@ namespace IEC
             Result20201106();
             Result20201109();
             Result20201120();
+            Result20201125();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201125(abValue);
+            UpdateAb20201201(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201125(abValue);
+                    UpdateAb20201201(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -57,6 +58,23 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20201201(int abValue)
+        {
+            Game.isRandomColorClassicMode = abValue == 1;
+            Game.isStartLevelEffect = abValue == 1;
+
+            Game.isLevelDifficultyV3 = abValue == 2;
+            Game.isNewWaterEffect = abValue == 3;
+            Game.isHaveBossLevel = abValue == 4;
+
+            GameController.GetLevelDifficulty();
+        }
+
+        private void Result20201125()
+        {
+            Game.isLevelDifficultyV2 = true;
         }
 
         private void UpdateAb20201125(int abValue)
@@ -95,7 +113,7 @@ namespace IEC
             Game.isHaveTutorital = abValue == 2;
             Game.isHaveMixColor = abValue == 2;
 
-            GameController.GetLevelsData();
+            //GameController.GetLevelsData();
             UIController.SetupAbUI();
         }
 
@@ -104,7 +122,7 @@ namespace IEC
             Game.isHaveTutorital = abValue != 0;
             Game.isHaveMixColor = abValue == 2;
 
-            GameController.GetLevelsData();
+            //GameController.GetLevelsData();
         }
 
         private void Result20201109()
@@ -161,7 +179,7 @@ namespace IEC
         private void UpdateAb20201103(int abValue)
         {
             Game.isHaveMixColor = abValue == 1;
-            GameController.GetLevelsData();
+            //GameController.GetLevelsData();
         }
 
         private void ResultAbFullAds()

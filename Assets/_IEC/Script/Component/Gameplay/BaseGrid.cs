@@ -10,25 +10,21 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            SetGridLine(m_TrueRot);
+            SetGridLine(TrueRot);
         }
 
-        public override void FixLevelData(int newCurrentRot)
+        public override void SetTempRot(int tempRot)
         {
-            base.FixLevelData(newCurrentRot);
-            m_CurrentRot = newCurrentRot;
-            //Debug.LogError("newCurrentRot: " + newCurrentRot);
-            //SetGridLine(m_CurrentRot);
+            base.SetTempRot(tempRot);
+            m_CurrentRot = tempRot;
         }
 
-        public override void AfterInit(bool isMultiColor)
+        public override void AfterInit()
         {
-            base.AfterInit(isMultiColor);
+            base.AfterInit();
             SetGridLine(m_CurrentRot);
-            transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
-
-
 
         private void SetGridLine(int rot)
         {
@@ -39,19 +35,31 @@ namespace IEC
             }
         }
 
-        protected override void OnMouseDown()
+        protected override void OnHandleMouseDown()
+        {
+            base.OnHandleMouseDown();
+            OnRotation(false);
+        }
+
+        private void OnRotation(bool isUndo)
         {
             if (Game.isTutorial && ID != Game.gridTutId) return;
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
-            if (IsRotating) return;
+            if (m_IsRotating) return;
+
+            if (!isUndo)
+            {
+                EventController.RaiseEvent(EventList.GamePlay.GAME_ADD_MOVE, new EventParam(this));
+            }
 
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.GRID_CLICK));
             EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK);
-            IsRotating = true;
+
+            m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_CurrentRot = (m_CurrentRot + 1) % 4;
+            m_CurrentRot = isUndo ? LevelHelper.CalculatorAddRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
             var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             var time = Game.isFasterRotate ? .15f : .3f;
@@ -65,10 +73,10 @@ namespace IEC
                 .OnComplete(() =>
                 {
                     transform.localPosition = currentPos;
-                    IsRotating = false;
+                    m_IsRotating = false;
                     SetGridLine(m_CurrentRot);
 
-                    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
 
                     if (Game.isTutorial)
                     {
@@ -80,10 +88,10 @@ namespace IEC
         public override void OnHint()
         {
             base.OnHint();
-            IsRotating = true;
+            m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_CurrentRot = m_TrueRot;
+            m_CurrentRot = TrueRot;
             var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
             var time = Game.isFasterRotate ? .15f : .3f;
@@ -97,9 +105,16 @@ namespace IEC
                 .OnComplete(() =>
                 {
                     transform.localPosition = currentPos;
-                    IsRotating = false;
+                    m_IsRotating = false;
                     SetGridLine(m_CurrentRot);
                 });
         }
+
+        public override void OnUndo()
+        {
+            base.OnUndo();
+            OnRotation(true);
+        }
+
     }
 }

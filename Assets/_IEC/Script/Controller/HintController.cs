@@ -29,7 +29,7 @@ namespace IEC
                     break;
                 case EventList.GamePlay.GAME_AFTER_HINT:
                     Game.isAllowHint = true;
-                    EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
                     EventController.RaiseEventDelay(.1f, EventList.GamePlay.GAME_EFFECT_HINT, new EventParam(this, param.p0));
                     break;
             }
@@ -92,12 +92,12 @@ namespace IEC
                     for (int j = 0; j < count; j++)
                     {
                         var grid = m_ListTempGridSolution[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
+                        var listGridNear = grid.GetGridsCanConnect(source.WaterIndexColor);
 
                         var listGridNearCount = listGridNear.Count;
                         if (listGridNear.Count > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
+                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, 0));
                             m_ListTempGridSolution.AddRange(listGridNear);
                         }
                     }

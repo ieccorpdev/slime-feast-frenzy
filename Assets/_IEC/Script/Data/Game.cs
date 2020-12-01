@@ -21,7 +21,7 @@ namespace IEC
 
         public bool isWaitAfterRV;
 
-        public bool isPlaying, isMultiColor, isHaveWaterConnection, isTutorial, isAllowHint;
+        public bool isPlaying, isMultiColor, isTutorial, isAllowHint, isGameWin;
 
         public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -43,7 +43,27 @@ namespace IEC
         public string[] levelDatas;
         public string[] hintDatas;
 
-        public string[] levelSort1;
+        public string[] levelDifficulty;
+
+        //Boss level
+        public int totalMove, moveRemains;
+
+        public Stack<RotConfig> listUndo = new Stack<RotConfig>();
+
+        public int undoCount;
+
+        public bool isBossLevel;
+
+        public bool IsAllowUndo()
+        {
+            var count = listGrids.Count;
+            for (int i = 0; i < count; i++)
+            {
+                var grid = listGrids[i];
+                if (!grid.IsAllowRotation) return false;
+            }
+            return true;
+        }
 
         [Header("AB Test")]
         public bool isHaveMixColor;
@@ -58,12 +78,15 @@ namespace IEC
         public bool isRandomColorClassicMode;
         public bool isStartLevelEffect;
 
-        //Prepared
-        public bool isLeavesEffect;
-        
-        
+        public bool isLevelDifficultyV3;
+        public bool isNewWaterEffect;
+        public bool isHaveBossLevel;
 
-        public BaseComponent GetGrid(int row, int col, int color, bool isRequireTrueColor = true)
+        //Prepared
+        public bool isUIEffect;
+        public bool isLeavesEffect;
+
+        public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;
             if (col < 0 || col > size - 1) return null;
@@ -71,38 +94,42 @@ namespace IEC
             var grid = grids[row, col];
             if(grid != null)
             {
-                if (isRequireTrueColor)
-                {
-                    if (grid.IsAllowConnect(color))
-                    {
-                        return grid;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-                else
+                if (grid.IsAllowConnect(color))
                 {
                     return grid;
                 }
-
+                else
+                {
+                    return null;
+                }
             }
             else
             {
                 return null;
             }
         }
+
+        public void AddUndoData(int row, int col)
+        {
+            listUndo.Push(new RotConfig(row, col));
+        }
+
+        public RotConfig GetLastUndo()
+        {
+            return listUndo.Pop();
+        }
+
     }
 
-    public enum GridType
+    [System.Serializable]
+    public struct RotConfig
     {
-        NONE,
-        WALL,
-        GRID_SOURCE,
-        GRID_TARGET,
-        GRID_STRAIGHT,
-        GRID_CROSS,
-        GRID_CURVE
+        public int Row, Col;
+
+        public RotConfig(int row, int col)
+        {
+            Row = row;
+            Col = col;
+        }
     }
 }

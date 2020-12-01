@@ -47,19 +47,17 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            IsHaveWater = true;
-
             for (int i = 0; i < m_StyleObj.Length; i++)
             {
                 m_StyleObj[i].SetActive(i == style);
             }
 
-            for (int i = 0; i < m_WaterComponent.Length - 1; i++)
+            for (int i = 0; i < m_WaterCount - 1; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
 
-            m_WaterComponent[m_WaterComponent.Length - 1].gameObject.SetActive(true);
+            m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(true);
         }
 
         protected override int[,] GetDefaultLine(int style)
@@ -81,6 +79,29 @@ namespace IEC
                 return EndLine;
             }
         }
+
+        public override void AfterInit()
+        {
+            base.AfterInit();
+
+            isHavingWater = true;
+            m_IsHaveWater = true;
+            m_IsOldHaveWater = true;
+            m_OldWaterIndexColor = TrueColor;
+            if (m_ListWaterColor.Count == 0)
+            {
+                m_ListWaterColor.Add(TrueColor);
+            }
+            SetColor();
+            SetSetGrowingWater(true, WaterPoint.CENTER);
+        }
+
+        public override void PrepareCheckConnect()
+        {
+            
+        }
+
+
 
     }
 }

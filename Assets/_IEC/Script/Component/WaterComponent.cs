@@ -38,73 +38,143 @@ namespace IEC
             get { return materialPropertyBlock; }
         }
 
+        private Color m_NewColor;
 
-        private Color m_TempColor, m_NewColor;
+        public bool m_IsScale, m_IsGrowUp, isChanged;
 
-        private bool m_IsFading, m_IsIncrease;
+        public float m_FillAmount;
 
-        private float m_TempColorAlpha;
+        private System.Action growUpCallBack;
 
-        public void OnInit(Color color, bool isShowDefault)
+        private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
+
+        private Game Game;
+
+        public void OnInit(Material mat, System.Action callBack)
         {
-            if(materialPropertyBlock == null)
+            if (Game == null)
+            {
+                Game = Pool.Get<Game>();
+            }
+
+            growUpCallBack = callBack;
+
+            var oldMat = waterRenderers[0];
+
+            for (int i = 0; i < waterRenderers.Length; i++)
+            {
+                waterRenderers[i].material = mat;
+            }
+
+            
+            if (oldMat != mat)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
+            else
+            {
+                if(materialPropertyBlock == null)
+                {
+                    materialPropertyBlock = new MaterialPropertyBlock();
+                }
+            }
 
-            m_TempColor = Color.white;
+            m_FillAmount = 0f;
+            m_IsScale = false;
+            m_IsGrowUp = false;
 
-            m_IsFading = false;
-            m_IsIncrease = false;
-            m_TempColorAlpha = isShowDefault ? 1 : 0;
-            m_TempColor.a = m_TempColorAlpha;
-
-            SetColor(color, true);
+            SetUpPropertyBlock(MaterialPropertyBlock);
         }
 
         public void SetColor(Color color, bool isUpdateNow)
         {
             m_NewColor = color;
-            if(isUpdateNow)
+            
+            if (isUpdateNow)
             {
                 waterColor = color;
-                SetUpPropertyBlock(materialPropertyBlock);
-            }
-
-            if (waterRenderers != null)
-            {
-                for (var i = 0; i < waterRenderers.Length; i++)
-                {
-                    waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                }
+                OnUpdatePropertyBlock(MaterialPropertyBlock);
             }
         }
 
-        public void SetFading(bool IsIncrease)
+        public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
-            m_IsIncrease = IsIncrease;
-            m_IsFading = true;
+            SetGrowingPos(MaterialPropertyBlock, pos);
+            if (Game.isNewWaterEffect)
+            {
+                m_FillAmount = isGrowUp ? (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
+            }
+
+            m_IsGrowUp = isGrowUp;
+            m_IsScale = true;
         }
 
-        private bool isChanged;
+        private void SetGrowingPos(MaterialPropertyBlock propertyBlock, Vector3 pos)
+        {
+            propertyBlock.SetVector("_GLOBALMaskPosition", pos);
+            ApplyData(propertyBlock);
+        }
+
+        float deltaAmount;
+        float ratioTime;
+
+        float RATIO_TIME_UP = .3f;
+        float RATIO_TIME_DOWN = 1f;
+        float MAX_AMOUNT = 1.1f;
+
         public void OnUpdate(float deltaTime)
         {
             isChanged = false;
 
-            if (m_IsFading)
+            if (m_IsScale)
             {
                 isChanged = true;
 
-                m_TempColorAlpha = m_TempColor.a;
-                m_TempColorAlpha = Mathf.Clamp(m_TempColorAlpha + (m_IsIncrease ? deltaTime : -deltaTime), 0f, 1f);
-                m_TempColor.a = m_TempColorAlpha;
-                if (m_TempColorAlpha <= 0 || m_TempColorAlpha >= 1)
+                if (Game.isNewWaterEffect)
                 {
-                    m_IsFading = false;
+                    deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
+                    ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
+                    m_FillAmount += 1.0f / ratioTime * deltaAmount;
+
+                    if (m_IsGrowUp)
+                    {
+                        if (m_FillAmount >= MAX_AMOUNT)
+                        {
+                            m_IsScale = false;
+                            growUpCallBack?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        if (m_FillAmount <= 0)
+                        {
+                            m_IsScale = false;
+                        }
+                    }
+                }
+                else
+                {
+                    m_FillAmount += m_IsGrowUp ? deltaTime : -deltaTime;
+
+                    if (m_IsGrowUp)
+                    {
+                        if (m_FillAmount >= 1f)
+                        {
+                            m_IsScale = false;
+                            growUpCallBack?.Invoke();
+                        }
+                    }
+                    else
+                    {
+                        if (m_FillAmount <= 0)
+                        {
+                            m_IsScale = false;
+                        }
+                    }
                 }
             }
 
-            if(waterColor != m_NewColor)
+            if (waterColor != m_NewColor)
             {
                 isChanged = true;
                 waterColor = Color.Lerp(waterColor, m_NewColor, deltaTime * 2f);
@@ -112,24 +182,12 @@ namespace IEC
 
             if (isChanged)
             {
-                SetUpPropertyBlock(materialPropertyBlock);
-                if (waterRenderers != null)
-                {
-                    for (var i = 0; i < waterRenderers.Length; i++)
-                    {
-                        waterRenderers[i].SetPropertyBlock(materialPropertyBlock);
-                    }
-                }
+                OnUpdatePropertyBlock(materialPropertyBlock);
             }
-
         }
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            propertyBlock.SetColor("_WaterColor", waterColor);
-            propertyBlock.SetColor("_Tint", m_TempColor);
-            propertyBlock.SetColor("_BorderColor", borderColor);
-
             propertyBlock.SetVector("_Tiling", waterTile);
             propertyBlock.SetVector("_DistTiling", distortionTile);
             propertyBlock.SetVector("_MoveDirection", new Vector4(moveDirection.x, 0f, moveDirection.y, 0f));
@@ -150,6 +208,23 @@ namespace IEC
             propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
             propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
             propertyBlock.SetFloat("_BorderWidth", borderWidth);
+
+            OnUpdatePropertyBlock(propertyBlock);
+
+            ApplyData(propertyBlock);
+        }
+
+        private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
+        {
+            propertyBlock.SetColor("_WaterColor", waterColor);
+            propertyBlock.SetFloat(Shader_FillAmount, m_FillAmount);
+
+            ApplyData(propertyBlock);
+        }
+
+        private void ApplyData(MaterialPropertyBlock propertyBlock)
+        {
+            waterRenderers[0].SetPropertyBlock(propertyBlock);
         }
     }
 }

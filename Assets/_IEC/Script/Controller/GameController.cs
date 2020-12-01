@@ -26,7 +26,7 @@ namespace IEC
 
         private System.DateTime m_TimeStart;
 
-        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
+        private List<BaseComponent> m_ListGridHaveWater = new List<BaseComponent>();
 
         public void LocateController()
         {
@@ -54,10 +54,10 @@ namespace IEC
 
         public void GetLevelsData()
         {
-            var strLevelPath = Game.isHaveMixColor ? "levelsList" : "levelsList1";
+            var strLevelPath = Game.isHaveMixColor ? "ListLevelFull" : "ListLevelRemoveMixColor";
             var strLevels = Resources.Load<TextAsset>(strLevelPath);
 
-            var strHintPath = Game.isHaveMixColor ? "hintList" : "hintList1";
+            var strHintPath = Game.isHaveMixColor ? "ListSolutionFull" : "ListSolutionRemoveMixColor";
             var strHints = Resources.Load<TextAsset>(strHintPath);
 
             var levelDatas = strLevels.text;
@@ -67,10 +67,13 @@ namespace IEC
             var hintDatas = strHints.text;
             Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+        }
 
-            var strLevelSort1 = Resources.Load<TextAsset>("levelDifficutyV1");
-            var levelSortText = strLevelSort1.text;
-            Game.levelSort1 = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+        public void GetLevelDifficulty()
+        {
+            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "LevelDifficutyV3" : "LevelDifficutyV2");
+            var levelDifficultyText = levelDifficulty.text;
+            Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -86,11 +89,21 @@ namespace IEC
                 case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(SpawnLevel());
                     break;
-                case EventList.GamePlay.CHECK_GAME_OVER:
-                    CheckGameOver();
+                case EventList.GamePlay.GAME_CHECK_CONNECT:
+                    if (!Game.isPlaying) return;
+                    CheckConnect();
                     break;
                 case EventList.GamePlay.GAME_START:
                     GameStart();
+                    break;
+                case EventList.GamePlay.GAME_CHECK_COMPLETE:
+                    if (IsComplete())
+                    {
+                        EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
+                    }
+                    break;
+                case EventList.GamePlay.GAME_UNDO:
+                    OnUndo();
                     break;
             }
         }
@@ -98,6 +111,11 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Break();
+            }
         }
 
         private void GameStart()
@@ -128,49 +146,32 @@ namespace IEC
                             minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
                             reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
                             moveCountSpawn -= reduce;
-                            gridRot = LevelHelper.CalculatorRot(grid.TrueRot, reduce);
+                            gridRot = LevelHelper.CalculatorAddRot(grid.TrueRot, reduce);
                         }
 
-                        grid.FixLevelData(gridRot);
+                        grid.SetTempRot(gridRot);
                     }
                 }
             }
-
-            Game.listGrids.ForEach(x => x.AfterInit(Game.isMultiColor));
+             
+            Game.listGrids.ForEach(x => x.AfterInit());
             Game.isPlaying = true;
-            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
-            EventController.RaiseEvent(EventList.GamePlay.CHECK_GAME_OVER);
+            m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
+
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
         private IEnumerator SpawnLevel()
         {
             OnClearAll();
             Game.seed = PlayerData.level;
+            var levelSpawn = GetLevelSpawn();
 
-            var levelSpawn = 0;
-
-            if(Game.seed > Game.levelDatas.Length)
+            if (Game.isHaveBossLevel)
             {
-                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
-            }
-            else
-            {
-                if (Game.isLevelDifficultyV2)
-                {
-                    if (Game.seed > 2 && Game.seed <= 100)
-                    {
-                        levelSpawn = int.Parse(Game.levelSort1[Game.seed - 1]);
-                    }
-                    else
-                    {
-                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
-                    }
-                }
-                else
-                {
-                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
-                }
+                Game.isBossLevel = (Game.seed % 5) == 0;
             }
 
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
@@ -206,40 +207,11 @@ namespace IEC
                 }
             }
 
-            var tempList = new List<int>();
-
-            for (int i = 0; i < 2; i++)
-            {
-                var type = MathHelper.GetRandomIndexByList(tempList, 4);
-                Game.listTerrainType.Add(type);
-                tempList.Add(type);
-                var temp = 0;
-                if(i == 0)
-                {
-                    if(type == 0)
-                    {
-                        temp = 1;
-                    }
-                    else if(type == 1)
-                    {
-                        temp = 0;
-                    }
-                    else if (type == 2)
-                    {
-                        temp = 3;
-                    }
-                    else if (type == 3)
-                    {
-                        temp = 2;
-                    }
-                    tempList.Add(temp);
-                }
-            }
+            SetTerrain();
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
             yield return null;
-            m_TimeStart = System.DateTime.Now;
 
             if (!m_IsInitCam)
             {
@@ -260,8 +232,93 @@ namespace IEC
             GamePlay.mainCamera.transform.position = cameraPos;
 
             Hint.CheckSoulution();
+
+            Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
+            Game.moveRemains = Game.totalMove;
+            if (Game.isBossLevel)
+            {
+                UIController.UpdateMove();
+            }
+
+            UIController.SetupBossLevel(Game.isBossLevel);
+
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
+        }
+
+        private int GetLevelSpawn()
+        {
+            var levelSpawn = 0;
+
+            if (Game.seed > Game.levelDatas.Length)
+            {
+                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
+            }
+            else
+            {
+                if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3)
+                {
+                    if (Game.seed > 2 && Game.seed <= GetConditionLevelDifficulty())
+                    {
+                        levelSpawn = int.Parse(Game.levelDifficulty[Game.seed - 1]);
+                    }
+                    else
+                    {
+                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                    }
+                }
+                else
+                {
+                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                }
+            }
+
+            return levelSpawn;
+        }
+
+        private int GetConditionLevelDifficulty()
+        {
+            if (Game.isLevelDifficultyV3)
+            {
+                return 110;
+            }
+            else
+            {
+                return 100;
+            }
+        }
+
+        private void SetTerrain()
+        {
+            var tempList = new List<int>();
+
+            for (int i = 0; i < 2; i++)
+            {
+                var type = MathHelper.GetRandomIndexByList(tempList, 4);
+                Game.listTerrainType.Add(type);
+                tempList.Add(type);
+                var temp = 0;
+                if (i == 0)
+                {
+                    if (type == 0)
+                    {
+                        temp = 1;
+                    }
+                    else if (type == 1)
+                    {
+                        temp = 0;
+                    }
+                    else if (type == 2)
+                    {
+                        temp = 3;
+                    }
+                    else if (type == 3)
+                    {
+                        temp = 2;
+                    }
+                    tempList.Add(temp);
+                }
+            }
         }
 
         private void OnClearAll()
@@ -281,6 +338,17 @@ namespace IEC
             Game.isWaitAfterRV = false;
             Game.maxHintIndex = 0;
             Game.isPlaying = false;
+
+            Game.totalMove = 0;
+            Game.moveRemains = 0;
+
+            Game.listGrids.Clear();
+            Game.listUndo.Clear();
+
+            Game.isBossLevel = false;
+            Game.undoCount = 2;
+
+            UIController.OnResetAll();
         }
 
         private void SpawnGridAll(LevelConfig levelConfig)
@@ -303,10 +371,10 @@ namespace IEC
         }
 
         private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, 
-            string gridData, int rotTrue)
+            string gridData, int gridRotTrue)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
-            var gridRot = int.Parse(gridData.Substring(2, 1));
+            var gridRotCurrent = int.Parse(gridData.Substring(2, 1));
 
             var gridColor = 0;
             var gridStyle = 0;
@@ -341,10 +409,15 @@ namespace IEC
                 gridStyle = LevelHelper.GetTargetStyle(gridType);
             }
 
-            gridComp.OnInit(LevelHelper.GetType(gridType), row, col, rotTrue, gridRot, gridColor, gridStyle);
+            gridComp.OnInit(LevelHelper.GetType(gridType), row, col, gridRotTrue, gridRotCurrent, gridColor, gridStyle);
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
+
+            if (Game.isBossLevel)
+            {
+                Game.totalMove += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
+            }
         }
 
         private void SpawnWallAll(LevelConfig levelConfig)
@@ -399,41 +472,51 @@ namespace IEC
             }
         }
 
-        private void CheckGameOver()
+        private void CheckConnect()
         {
-            Game.isHaveWaterConnection = false;
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
 
             var sourceCount = Game.listSource.Count;
+            var totalGrid = Game.size * Game.size;
+
             for (int i = 0; i < sourceCount; i++)
             {
                 var source = Game.listSource[i];
 
-                m_ListTempGridHaveWater.Clear();
-                m_ListTempGridHaveWater.Add(source);
+                m_ListGridHaveWater.Clear();
+                m_ListGridHaveWater.Add(source);
 
-                var totalGrid = Game.size * Game.size;
                 bool isChanged = true;
-                var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
 
-                while (totalGridHaveWaterCount < totalGrid && isChanged)
+                var totalGridHaveWater = m_ListGridHaveWater.Count;
+                var startIndex = 0;
+
+                while (totalGridHaveWater < totalGrid && isChanged)
                 {
-                    var count = m_ListTempGridHaveWater.Count;
-                    for (int j = 0; j < count; j++)
+                    var count = m_ListGridHaveWater.Count;
+                    for (int j = startIndex; j < count; j++)
                     {
-                        var grid = m_ListTempGridHaveWater[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterColor);
-
-                        if (listGridNear.Count > 0)
+                        var grid = m_ListGridHaveWater[j];
+                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        startIndex += 1;
+                        var listGridNearCount = listGrids.Count;
+                        if (listGrids.Count > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterColor));
-                            m_ListTempGridHaveWater.AddRange(listGridNear);
+                            for (int x = 0; x < listGridNearCount; x++)
+                            {
+                                var gridNearConnect = listGrids[x];
+
+                                if (!m_ListGridHaveWater.Contains(gridNearConnect))
+                                {
+                                    m_ListGridHaveWater.Add(gridNearConnect);
+                                    gridNearConnect.SetConnect(source.WaterIndexColor, grid.DelayStart);
+                                }
+                            }
                         }
                     }
 
-                    totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
-
-                    if (totalGridHaveWaterCount == count)
+                    totalGridHaveWater = m_ListGridHaveWater.Count;
+                    if (totalGridHaveWater == count)
                     {
                         isChanged = false;
                     }
@@ -442,20 +525,40 @@ namespace IEC
 
             Game.listGrids.ForEach(x => x.AfterCheckConnect());
 
-            if (Game.isHaveWaterConnection)
-            {
-                EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
-            }
-
             if (IsWin())
             {
-                Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
-                Services.PushEvent(new IEC.TrackingEvent.GameOver());
+                GameOver(true);
+            }
+            else
+            {
+                if (Game.isBossLevel)
+                {
+                    if(Game.moveRemains <= 0)
+                    {
+                        GameOver(false);
+                    }
+                }
+            }
+        }
+
+        private void GameOver(bool isWin)
+        {
+            Game.isGameWin = isWin;
+            Game.isPlaying = false;
+
+            Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
+            Services.PushEvent(new IEC.TrackingEvent.GameOver());
+
+            if (isWin)
+            {
                 PlayerData.countPlayThisLevel = 0;
                 PlayerData.level += 1;
-                Game.isPlaying = false;
-                EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER);
             }
+            else
+            {
+                EventController.RaiseEventDelay(.5f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, false));
+            }
+
         }
 
         private bool IsWin()
@@ -467,6 +570,23 @@ namespace IEC
             }
 
             return true;
+        }
+
+        private bool IsComplete()
+        {
+            var count = Game.listTarget.Count;
+            for (int i = 0; i < count; i++)
+            {
+                if (!Game.listTarget[i].IsComplete) return false;
+            }
+            return true;
+        }
+
+        private void OnUndo()
+        {
+            var rotConfig = Game.GetLastUndo();
+            var grid = Game.grids[rotConfig.Row, rotConfig.Col];
+            grid.OnUndo();
         }
 
         public static void PushPlayLevelEvent()
@@ -485,5 +605,6 @@ namespace IEC
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
         }
+
     }
 }

@@ -1,9 +1,9 @@
-﻿Shader "Custom/Water/DiffuseWaterOpaque"
+﻿Shader "Custom/WaterWCP/Fade"
 {
 	Properties
 	{
 		_WaterColor ("Water color", Color) = (1, 1, 1, 1)
-		_Tint ("Tint", Color) = (1, 1, 1, 1)
+		_FoamColor ("Foam color", Color) = (1, 1, 1, 1)
 		_WaterTex ("Water texture", 2D) = "white" {}
 		_Tiling ("Water tiling", Vector) = (1, 1, 1, 1)
 		_TextureVisibility("Texture visibility", Range(0, 1)) = 1
@@ -20,8 +20,9 @@
 	}
 	SubShader
 	{
-		Tags{ "RenderType"="Transparent" "Queue"="Transparent"}
-
+		Tags{ "RenderType"="Opaque" "Queue"="Transparent"}
+		Cull off
+        LOD 200
 		Blend SrcAlpha OneMinusSrcAlpha
 		ZWrite off
 
@@ -57,7 +58,7 @@
 			sampler2D _WaterTex;
 			fixed2 _Tiling;
 			fixed4 _WaterColor;
-			fixed4 _Tint;
+			fixed4 _FoamColor;
 
 			sampler2D _DistTex;
 			fixed2 _DistTiling;
@@ -66,6 +67,8 @@
 			fixed _TextureVisibility;
 
 			fixed3 _MoveDirection;
+
+			fixed _FillAmount;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
@@ -96,6 +99,10 @@
 
 				return o;
 			}
+
+			float random (float2 input) { 
+				return frac(sin(dot(input, float2(12.9898,78.233)))* 43758.5453123);
+			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
@@ -107,7 +114,7 @@
 				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
 
 				UNITY_APPLY_FOG(i.fogCoord, waterCol);
-				waterCol *= _Tint;
+				waterCol.a = _FillAmount;
 				return waterCol;
 			}
 			ENDCG

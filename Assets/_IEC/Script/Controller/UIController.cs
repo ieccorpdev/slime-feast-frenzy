@@ -5,8 +5,13 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake
+    public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventUpdate
     {
+        private float m_CountVibrateHint, m_NextTimeVibrate;
+
+        [SerializeField]
+        private Gradient m_MoveColor;
+
         private static readonly List<string> TextWinBonus = new List<string>
         {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
@@ -29,12 +34,37 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.GamePlay.GAME_SPAWN_LEVEL:
-                    OnInitNewLevel();
+                case EventList.GamePlay.GAME_OVER_UI:
+                    GameOver((bool)param.p0);
                     break;
-                case EventList.GamePlay.GAME_OVER:
-                    GameOver();
+                case EventList.GamePlay.GAME_START:
+                    if (Game.isUIEffect)
+                    {
+                        UI.TweenPannelTop(true);
+                    }
+
+                    if (Game.isBossLevel)
+                    {
+                        UI.TweenBossLevel();
+                    }
                     break;
+                case EventList.GamePlay.GAME_ADD_MOVE:
+                    var grid = (BaseComponent)param.sender;
+                    Game.AddUndoData(grid.Row, grid.Col);
+                    Game.moveRemains -= 1;
+                    UpdateMove();
+                    break;
+            }
+        }
+
+        public void BehaviourUpdate(float deltaTime)
+        {
+            if (!Game.isUIEffect) return;
+            m_CountVibrateHint += deltaTime;
+            if(m_CountVibrateHint >= m_NextTimeVibrate)
+            {
+                UI.OnVibrateHint();
+                ResetVibrateHint();
             }
         }
 
@@ -42,6 +72,7 @@ namespace IEC
         {
             UI.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
+                Game.isPlaying = false;
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
                 if (PlayerData.isVibrateOn)
@@ -93,6 +124,45 @@ namespace IEC
                 });
             });
 
+            UI.btnUndo.onClick.AddListener(OnHandleUndo);
+        }
+
+        private void OnHandleUndo()
+        {
+            if (Game.listUndo.Count < 1) return;
+            if(Game.undoCount > 0)
+            {
+                if (Game.IsAllowUndo())
+                {
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_UNDO);
+                    Game.undoCount -= 1;
+                    UpdateUndoText();
+
+                    Game.moveRemains += 1;
+                    UpdateMove();
+                }
+            }
+            else
+            {
+                Services.ShowRewardAds(() => {
+                    Game.undoCount = 3;
+                    UpdateUndoText();
+                });
+            }
+        }
+
+        private void UpdateUndoText()
+        {
+            UI.txtUndo.text = StringHelper.GetNumber(Game.undoCount);
+            UI.undoAds.SetActive(Game.undoCount <= 0);
+            UI.undoCount.SetActive(Game.undoCount > 0);
+        }
+
+        public void UpdateMove()
+        {
+            UI.txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
+            float valueColor = (float)Game.moveRemains / Game.totalMove;
+            UI.txtMove.color = m_MoveColor.Evaluate(valueColor);
         }
 
         public void SetActiveButtons(bool isActive)
@@ -106,19 +176,33 @@ namespace IEC
         {
             UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
             UI.btnSkip.gameObject.SetActive(!Game.isHaveHint);
-            UI.btnHint.gameObject.SetActive(Game.isHaveHint);
             SetStatusSetting();
             Sound.SetupAudio();
         }
 
-        private void OnInitNewLevel()
+        public void OnResetAll()
         {
+            if (!Game.isUIEffect)
+            {
+                UI.TweenPannelTop(true);
+            }
             SetActiveButtons(true);
             Game.isShowPopup = false;
             UI.popupSettings.gameObject.SetActive(false);
-            UI.groupGameOver.gameObject.SetActive(false);
-            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
+            UI.TweenGameOver(false);
             SetStatusSetting();
+            ResetVibrateHint();
+
+            UpdateUndoText();
+        }
+
+        public void SetupBossLevel(bool isBossLevel)
+        {
+            UI.btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
+            UI.btnUndo.gameObject.SetActive(isBossLevel);
+            UI.txtMove.gameObject.SetActive(isBossLevel);
+
+            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
         }
 
         private void SetStatusSetting()
@@ -127,16 +211,23 @@ namespace IEC
             Sound.SetupAudio();
         }
 
-        private void GameOver()
+        private void GameOver(bool isWin)
         {
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-            UI.groupGameOver.gameObject.SetActive(true);
+            UI.TweenGameOver(true);
             SetActiveButtons(true);
-            UI.txtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+            UI.txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
+
             if (PlayerData.isVibrateOn)
             {
-                MMVibrationManager.Haptic(HapticTypes.Success);
+                MMVibrationManager.Haptic(isWin ? HapticTypes.Success : HapticTypes.Failure);
             }
+        }
+
+        private void ResetVibrateHint()
+        {
+            m_CountVibrateHint = 0f;
+            m_NextTimeVibrate = Random.Range(5f, 10f);
         }
     }
 }

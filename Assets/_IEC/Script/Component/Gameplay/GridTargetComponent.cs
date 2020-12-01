@@ -28,11 +28,14 @@ namespace IEC
 
         private Tween m_TweenScale;
 
-        private int m_TrueWaterColor, m_TargetStyle;
+        private int m_TargetStyle;
 
-        public bool IsDone => IsHaveWater && (m_TrueWaterColor == WaterColor);
+        public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
-        private static float SCALE = .3f;
+        public bool IsComplete;
+
+        private static float SMALL = .3f;
+        private static float LARGE = 1.5f;
 
         private Material CurrentMat
         {
@@ -40,7 +43,7 @@ namespace IEC
             {
                 if (Game.isMultiColor)
                 {
-                    return Config.GetWaterMat(m_TrueWaterColor);
+                    return Config.GetWaterMat(TrueColor);
                 }
                 else
                 {
@@ -107,8 +110,7 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            m_TrueWaterColor = color;
-
+            
             m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
 
             Game.seed += 1;
@@ -118,7 +120,7 @@ namespace IEC
                 m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SCALE;
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL;
 
             // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
@@ -126,17 +128,16 @@ namespace IEC
                 m_StyleLineObj[i].SetActive(i == style);
             }
 
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            for (int i = 0; i < m_WaterCount; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
 
             var mat = CurrentMat;
-            var colorMat = mat.color;
-
+            var colorEffect = mat.color;
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = colorMat;
+                m_PsWins[i].startColor = colorEffect;
             }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
@@ -150,19 +151,42 @@ namespace IEC
         {
             base.AfterCheckConnect();
 
-            if (m_IsOldStatusWater == IsHaveWater && m_OldWaterColor == WaterColor) return;
-            m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(IsDone ? Vector3.one : Vector3.one * SCALE, .4f)
-                .OnComplete(() => {
-                    if (IsDone)
+            if (!m_IsHaveWater)
+            {
+                IsComplete = false;
+            }
+            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+            if (!m_IsHaveWater || !IsDone)
+            {
+                IsComplete = false;
+                TweenScale(false);
+            }
+        }
+
+        protected override void OnWaterGrowUpDone()
+        {
+            if (IsDone)
+            {
+                TweenScale(true, () => {
+                    IsComplete = true;
+
+                    m_PsWin.Play();
+                    if (PlayerData.isVibrateOn)
                     {
-                        m_PsWin.Play();
-                        if (PlayerData.isVibrateOn)
-                        {
-                            MMVibrationManager.Haptic(HapticTypes.MediumImpact);
-                        }
-                        EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
+                        MMVibrationManager.Haptic(HapticTypes.MediumImpact);
                     }
+                    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.TARGET_DONE));
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_COMPLETE);
+                });
+            }
+        }
+
+        private void TweenScale(bool isGrowUp, System.Action callBack = null)
+        {
+            m_TweenScale?.Kill(true);
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one * LARGE : Vector3.one * SMALL, .4f)
+                .OnComplete(() => {
+                    callBack?.Invoke();
                 });
         }
 
@@ -170,6 +194,7 @@ namespace IEC
         {
             base.OnDestroyMe();
             m_TweenScale?.Kill(true);
+            IsComplete = false;
         }
     }
 }

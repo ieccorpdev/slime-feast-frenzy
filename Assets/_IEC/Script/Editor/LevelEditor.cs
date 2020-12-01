@@ -16,116 +16,107 @@ namespace IEC
             DrawDefaultInspector();
             GUILayout.Space(30);
 
-            if (GUILayout.Button("Spawn Board"))
-            {
-                var obj = Selection.activeGameObject;
-                if (obj)
-                {
-                    var levelConfig = obj.GetComponent<LevelConfigData>();
-                    levelConfig.DestroyAll();
-                    SpawnWalls(levelConfig);
-                    SpawnGrids(levelConfig);
-                }
-            }
-            GUILayout.Space(10);
-            if (GUILayout.Button("Reset All"))
-            {
-                var obj = Selection.activeGameObject;
-                if (obj)
-                {
-                    var levelConfig = obj.GetComponent<LevelConfigData>();
-                    levelConfig.OnResetAll(true);
-                }
-            }
-
-            GUILayout.Space(30);
-            if (GUILayout.Button("Check"))
-            {
-                var obj = Selection.activeGameObject;
-                if (obj)
-                {
-                    var levelConfig = obj.GetComponent<LevelConfigData>();
-                    levelConfig.OnResetAll(false);
-                }
-            }
-
-            GUILayout.Space(10);
-            if (GUILayout.Button("Spawn Level"))
-            {
-                var obj = Selection.activeGameObject;
-                if (obj)
-                {
-                    var levelConfig = obj.GetComponent<LevelConfigData>();
-                    var data = levelConfig.GetData();
-                    var count = TotalLevel();
-                    count += 1;
-                    string name = "Level_" + count;
-                    string path = "Assets/_IEC/Config/Levels/" + name + ".txt";
-
-                    //Write some text to the test.txt file
-                    StreamWriter writer = new StreamWriter(path, true);
-                    writer.WriteLine(data);
-                    writer.Close();
-                    AssetDatabase.Refresh();
-                }
-            }
-
             GUILayout.Space(10);
             if (GUILayout.Button("Sort File"))
             {
-                var obj = Selection.activeGameObject;
-                if (obj)
+                var strLevelSort1 = Resources.Load<TextAsset>("LevelSort2");
+                var levelSortText = strLevelSort1.text;
+                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                                 System.StringSplitOptions.RemoveEmptyEntries);
+
+                var str = "";
+                List<int> listLevel = new List<int>();
+
+                for (int i = 0; i < 100; i++)
                 {
-                    ClearLog();
-                    LevelConfig levelConfig = new LevelConfig();
+                    var level = 0;
+                    bool isHaveResult = false;
+                    var count = 0;
+                    var seed = i;
 
-                    string path = "Assets/_IEC/Resources/solucesList.txt";
-                    var file = File.ReadAllText(path);
-                    string[] f = file.Split(new string[] { "\n", "\r", "\r\n" },
-                                     System.StringSplitOptions.RemoveEmptyEntries);
+                    var size = int.Parse(levelDifficuty[i]);
 
-                    var str = "";
-                    var count = f.Length;
-                    for (int i = 0; i < count; i++)
+                    while (!isHaveResult && count <= 50)
                     {
-                        var level = f[i];
-                        if (level.Contains("Mix")) continue;
-                        str += level + "\n";
+                        level = LevelHelper.GetLevelSpawn(size, seed);
+                        seed += 1;
+
+                        if (!listLevel.Contains(level))
+                        {
+                            listLevel.Add(level);
+                            isHaveResult = true;
+
+                            str += level + "\n";
+                        }
                     }
-
-
-                    string path2 = "Assets/_IEC/Resources/solucesList1.txt";
-                    //Write some text to the test.txt file
-                    StreamWriter writer = new StreamWriter(path2, true);
-                    writer.WriteLine(str);
-                    writer.Close();
-                    AssetDatabase.Refresh();
-
-                    //var leveText = f[36].Trim().Split(':');
-
-                    //var size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
-                    //var strMode = leveText[1];
-                    //var strGrid = leveText[3];
-
-                    //var gridsData = strGrid.Trim().Split('_');
-
-
-                    //string[,] grids = GetGridValue(gridsData, size, true);
-
-                    //var str = "";
-                    //for (int i = 0; i < size; i++)
-                    //{
-                    //    for (int j = 0; j < size; j++)
-                    //    {
-                    //        str += grids[i, j] + " ";
-                    //    }
-
-                    //    str += "\n";
-                    //}
-
-                    //Debug.LogError(str);
                 }
+
+
+
+                string path2 = "Assets/_IEC/Resources/levelDifficutyV2.txt";
+                //Write some text to the test.txt file
+                StreamWriter writer = new StreamWriter(path2, true);
+                writer.WriteLine(str);
+                writer.Close();
+                AssetDatabase.Refresh();
             }
+
+            #region Old
+            //if (GUILayout.Button("Spawn Board"))
+            //{
+            //    var obj = Selection.activeGameObject;
+            //    if (obj)
+            //    {
+            //        var levelConfig = obj.GetComponent<LevelConfigData>();
+            //        levelConfig.DestroyAll();
+            //        SpawnWalls(levelConfig);
+            //        SpawnGrids(levelConfig);
+            //    }
+            //}
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Reset All"))
+            //{
+            //    var obj = Selection.activeGameObject;
+            //    if (obj)
+            //    {
+            //        var levelConfig = obj.GetComponent<LevelConfigData>();
+            //        levelConfig.OnResetAll(true);
+            //    }
+            //}
+
+            //GUILayout.Space(30);
+            //if (GUILayout.Button("Check"))
+            //{
+            //    var obj = Selection.activeGameObject;
+            //    if (obj)
+            //    {
+            //        var levelConfig = obj.GetComponent<LevelConfigData>();
+            //        levelConfig.OnResetAll(false);
+            //    }
+            //}
+
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Spawn Level"))
+            //{
+            //    var obj = Selection.activeGameObject;
+            //    if (obj)
+            //    {
+            //        var levelConfig = obj.GetComponent<LevelConfigData>();
+            //        var data = levelConfig.GetData();
+            //        var count = TotalLevel();
+            //        count += 1;
+            //        string name = "Level_" + count;
+            //        string path = "Assets/_IEC/Config/Levels/" + name + ".txt";
+
+            //        //Write some text to the test.txt file
+            //        StreamWriter writer = new StreamWriter(path, true);
+            //        writer.WriteLine(data);
+            //        writer.Close();
+            //        AssetDatabase.Refresh();
+            //    }
+            //}
+
+            #endregion
 
             EditorUtility.SetDirty(target);
         }
