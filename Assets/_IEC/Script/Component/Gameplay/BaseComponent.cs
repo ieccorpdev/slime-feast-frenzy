@@ -224,7 +224,7 @@ namespace IEC
             m_ListWaterColor.Clear();
         }
 
-        public List<BaseComponent> GetGridNearCanConnect(int color)
+        public List<BaseComponent> GetGridsCanConnect(int color)
         {
             m_ListGridConnect.Clear();
             if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;

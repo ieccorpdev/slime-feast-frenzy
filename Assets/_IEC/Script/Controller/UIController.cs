@@ -67,6 +67,7 @@ namespace IEC
         {
             UI.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
+                Game.isPlaying = false;
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
                 if (PlayerData.isVibrateOn)
@@ -211,9 +212,10 @@ namespace IEC
             UI.TweenGameOver(true);
             SetActiveButtons(true);
             UI.txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
+
             if (PlayerData.isVibrateOn)
             {
-                MMVibrationManager.Haptic(HapticTypes.Success);
+                MMVibrationManager.Haptic(isWin ? HapticTypes.Success : HapticTypes.Failure);
             }
         }
 

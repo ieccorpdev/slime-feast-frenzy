@@ -92,7 +92,7 @@ namespace IEC
                     for (int j = 0; j < count; j++)
                     {
                         var grid = m_ListTempGridSolution[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterIndexColor);
+                        var listGridNear = grid.GetGridsCanConnect(source.WaterIndexColor);
 
                         var listGridNearCount = listGridNear.Count;
                         if (listGridNear.Count > 0)

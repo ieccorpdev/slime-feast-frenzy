@@ -26,7 +26,7 @@ namespace IEC
 
         private System.DateTime m_TimeStart;
 
-        private List<BaseComponent> m_ListTempGridHaveWater = new List<BaseComponent>();
+        private List<BaseComponent> m_ListGridHaveWater = new List<BaseComponent>();
 
         public void LocateController()
         {
@@ -90,12 +90,14 @@ namespace IEC
                     StartCoroutine(SpawnLevel());
                     break;
                 case EventList.GamePlay.GAME_CHECK_CONNECT:
+                    if (!Game.isPlaying) return;
                     CheckConnect();
                     break;
                 case EventList.GamePlay.GAME_START:
                     GameStart();
                     break;
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
+                    if (!Game.isPlaying) return;
                     if (IsComplete())
                     {
                         EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
@@ -236,7 +238,7 @@ namespace IEC
 
             UIController.SetupBossLevel(Game.isBossLevel);
 
-            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
+            var delayTime = Game.isStartLevelEffect ? 1.5f : .5f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 
@@ -471,47 +473,46 @@ namespace IEC
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
 
             var sourceCount = Game.listSource.Count;
+            var totalGrid = Game.size * Game.size;
+
             for (int i = 0; i < sourceCount; i++)
             {
                 var source = Game.listSource[i];
 
-                m_ListTempGridHaveWater.Clear();
-                m_ListTempGridHaveWater.Add(source);
+                m_ListGridHaveWater.Clear();
+                m_ListGridHaveWater.Add(source);
 
-                var totalGrid = Game.size * Game.size;
                 bool isChanged = true;
-                var totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
+
+                var totalGridHaveWater = m_ListGridHaveWater.Count;
                 var startIndex = 0;
 
-                while (totalGridHaveWaterCount < totalGrid && isChanged)
+                while (totalGridHaveWater < totalGrid && isChanged)
                 {
-                    var count = m_ListTempGridHaveWater.Count;
+                    var count = m_ListGridHaveWater.Count;
                     for (int j = startIndex; j < count; j++)
                     {
-                        var grid = m_ListTempGridHaveWater[j];
-                        var listGridNear = grid.GetGridNearCanConnect(source.WaterIndexColor);
-
-                        var listGridNearCount = listGridNear.Count;
-                        if (listGridNear.Count > 0)
+                        var grid = m_ListGridHaveWater[j];
+                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        startIndex += 1;
+                        var listGridNearCount = listGrids.Count;
+                        if (listGrids.Count > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, grid.DelayStart));
-
                             for (int x = 0; x < listGridNearCount; x++)
                             {
-                                var gridNear = listGridNear[x];
+                                var gridNearConnect = listGrids[x];
 
-                                if (!m_ListTempGridHaveWater.Contains(gridNear))
+                                if (!m_ListGridHaveWater.Contains(gridNearConnect))
                                 {
-                                    m_ListTempGridHaveWater.Add(gridNear);
-
-                                    startIndex += 1;
+                                    m_ListGridHaveWater.Add(gridNearConnect);
+                                    gridNearConnect.SetConnect(source.WaterIndexColor, grid.DelayStart);
                                 }
                             }
                         }
                     }
 
-                    totalGridHaveWaterCount = m_ListTempGridHaveWater.Count;
-                    if (totalGridHaveWaterCount == count)
+                    totalGridHaveWater = m_ListGridHaveWater.Count;
+                    if (totalGridHaveWater == count)
                     {
                         isChanged = false;
                     }
