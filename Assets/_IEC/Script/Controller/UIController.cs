@@ -147,6 +147,7 @@ namespace IEC
                 Services.ShowRewardAds(() => {
                     Game.undoRemains = 3;
                     UpdateUndoText();
+                    Services.PushEvent(new IEC.TrackingEvent.ShowRewardUndo());
                 });
             }
         }
