@@ -111,7 +111,7 @@ namespace IEC
 
             if(m_WaterCount > 0)
             {
-                Material waterMat = Game.isNewWaterEffect ? Config.newWaterMat : Config.waterMat;
+                Material waterMat = Game.isHaveNewWaterEffect ? Config.newWaterMat : Config.waterMat;
 
                 for (int i = 0; i < m_WaterCount; i++)
                 {

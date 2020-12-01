@@ -79,11 +79,11 @@ namespace IEC
         public bool isStartLevelEffect;
 
         public bool isLevelDifficultyV3;
-        public bool isNewWaterEffect;
+        public bool isHaveNewWaterEffect;
         public bool isHaveBossLevel;
+        public bool isHaveUIAnimation;
 
         //Prepared
-        public bool isUIEffect;
         public bool isLeavesEffect;
 
         public BaseComponent GetGrid(int row, int col, int color)
