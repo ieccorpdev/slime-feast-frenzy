@@ -155,7 +155,7 @@ namespace IEC
                 else
                 {
                     deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
-                    m_FillAmount += deltaAmount * 2f;
+                    m_FillAmount += deltaAmount * 3f;
 
                     if (m_IsGrowUp)
                     {
