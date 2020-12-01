@@ -341,7 +341,7 @@ namespace IEC
             Game.listUndo.Clear();
 
             Game.isBossLevel = false;
-            Game.undoCount = 2;
+            Game.undoRemains = 2;
 
             UIController.OnResetAll();
         }
