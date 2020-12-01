@@ -130,14 +130,13 @@ namespace IEC
         private void OnHandleUndo()
         {
             if (Game.listUndo.Count < 1) return;
-            if(Game.undoCount > 0)
+            if(Game.undoRemains > 0)
             {
                 if (Game.IsAllowUndo())
                 {
                     EventController.RaiseEvent(EventList.GamePlay.GAME_UNDO);
-                    Game.undoCount -= 1;
+                    Game.undoRemains -= 1;
                     UpdateUndoText();
-
                     Game.moveRemains += 1;
                     UpdateMove();
                     Services.PushEvent(new IEC.TrackingEvent.UndoLevel());
@@ -146,7 +145,7 @@ namespace IEC
             else
             {
                 Services.ShowRewardAds(() => {
-                    Game.undoCount = 3;
+                    Game.undoRemains = 3;
                     UpdateUndoText();
                 });
             }
@@ -154,9 +153,9 @@ namespace IEC
 
         private void UpdateUndoText()
         {
-            UI.txtUndo.text = StringHelper.GetNumber(Game.undoCount);
-            UI.undoAds.SetActive(Game.undoCount <= 0);
-            UI.undoCount.SetActive(Game.undoCount > 0);
+            UI.txtUndo.text = StringHelper.GetNumber(Game.undoRemains);
+            UI.undoAds.SetActive(Game.undoRemains <= 0);
+            UI.undoCount.SetActive(Game.undoRemains > 0);
         }
 
         public void UpdateMove()
