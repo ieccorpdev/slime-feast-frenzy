@@ -71,6 +71,16 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_hint";
     }
 
+    public class UndoLevel : Level
+    {
+        public override string Name => "click_btn_undo";
+    }
+
+    public class ShowRewardUndo : Level
+    {
+        public override string Name => "click_btn_ads_undo";
+    }
+
     public class GameOver : LevelResult
     {
         public override string Name => "game_over";

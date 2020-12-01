@@ -50,7 +50,7 @@ namespace IEC
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
 
-        public int undoCount;
+        public int undoRemains;
 
         public bool isBossLevel;
 
