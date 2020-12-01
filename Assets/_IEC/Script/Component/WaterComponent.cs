@@ -154,7 +154,8 @@ namespace IEC
                 }
                 else
                 {
-                    m_FillAmount += m_IsGrowUp ? deltaTime : -deltaTime;
+                    deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
+                    m_FillAmount += deltaAmount * 2f;
 
                     if (m_IsGrowUp)
                     {
