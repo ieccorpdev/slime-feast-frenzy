@@ -32,10 +32,12 @@ namespace IEC
 
         public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
-        public bool IsComplete;
+        public bool IsGrowUpComplete;
 
-        private static float SMALL = .3f;
-        private static float LARGE = 1.5f;
+        public bool IsComplete => IsDone && IsGrowUpComplete;
+
+        private static float SMALL_SCALE = .3f;
+        private static float LARGE_SCALE = 1.5f;
 
         private Material CurrentMat
         {
@@ -120,7 +122,7 @@ namespace IEC
                 m_TargetStyles[i].SetActive(i == m_TargetStyle);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL;
+            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL_SCALE;
 
             // Line
             for (int i = 0; i < m_StyleLineObj.Length; i++)
@@ -153,12 +155,12 @@ namespace IEC
 
             if (!m_IsHaveWater)
             {
-                IsComplete = false;
+                IsGrowUpComplete = false;
             }
             if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
             if (!m_IsHaveWater || !IsDone)
             {
-                IsComplete = false;
+                IsGrowUpComplete = false;
                 TweenScale(false);
             }
         }
@@ -168,7 +170,7 @@ namespace IEC
             if (IsDone)
             {
                 TweenScale(true, () => {
-                    IsComplete = true;
+                    IsGrowUpComplete = true;
 
                     m_PsWin.Play();
                     if (PlayerData.isVibrateOn)
@@ -184,7 +186,7 @@ namespace IEC
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one * LARGE : Vector3.one * SMALL, .4f)
+            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .4f)
                 .OnComplete(() => {
                     callBack?.Invoke();
                 });
@@ -194,7 +196,7 @@ namespace IEC
         {
             base.OnDestroyMe();
             m_TweenScale?.Kill(true);
-            IsComplete = false;
+            IsGrowUpComplete = false;
         }
     }
 }
