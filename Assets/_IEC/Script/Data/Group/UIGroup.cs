@@ -29,7 +29,7 @@ namespace IEC
         private Tween m_Tween;
         private Tween m_GameOver;
 
-        private float effectDuration = 0.3f;
+        private float effectDuration = 0.25f;
 
         public GameObject undoAds, undoCount;
 
@@ -77,7 +77,7 @@ namespace IEC
             }
         }
 
-        private float effectBossDuration = .4f;
+        private float effectBossDuration = .35f;
         public void TweenBossLevel()
         {
             m_GameOver?.Kill(true);
