@@ -42,6 +42,11 @@ namespace IEC
                     {
                         UI.TweenPannelTop(true);
                     }
+
+                    if (Game.isBossLevel)
+                    {
+                        UI.TweenBossLevel();
+                    }
                     break;
                 case EventList.GamePlay.GAME_ADD_MOVE:
                     var grid = (BaseComponent)param.sender;
@@ -155,7 +160,7 @@ namespace IEC
 
         public void UpdateMove()
         {
-            UI.txtMove.text = "Move: " + StringHelper.GetNumber(Game.moveRemains);
+            UI.txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
             float valueColor = (float)Game.moveRemains / Game.totalMove;
             UI.txtMove.color = m_MoveColor.Evaluate(valueColor);
         }
@@ -197,7 +202,7 @@ namespace IEC
             UI.btnUndo.gameObject.SetActive(isBossLevel);
             UI.txtMove.gameObject.SetActive(isBossLevel);
 
-            UI.txtLevel.text = isBossLevel ? "BOSS LEVEL" : ("LEVEL " + StringHelper.GetNumber(PlayerData.level));
+            UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
         }
 
         private void SetStatusSetting()

@@ -24,7 +24,7 @@ namespace IEC
         public PopupSetting popupSettings;
 
         [SerializeField]
-        private RectTransform rectTopPannel, rectPannelGO;
+        private RectTransform rectTopPanel, rectPanelGO, rectPanelBossLevel, rectTextBossLevel;
 
         private Tween m_Tween;
         private Tween m_GameOver;
@@ -44,9 +44,9 @@ namespace IEC
             if (Game.isUIEffect)
             {
                 m_Tween?.Kill(true);
-                rectTopPannel.anchoredPosition = new Vector2(0f, isActive ? 500f : 0f);
+                rectTopPanel.anchoredPosition = new Vector2(0f, isActive ? 500f : 0f);
                 Ease ease = isActive ? Ease.OutBack : Ease.InBack;
-                m_Tween = rectTopPannel.DOAnchorPosY(isActive ? 0f : 500f, .5f).SetEase(Ease.OutBack)
+                m_Tween = rectTopPanel.DOAnchorPosY(isActive ? 0f : 500f, .5f).SetEase(Ease.OutBack)
                     .OnComplete(() =>
                     {
                         callBack?.Invoke();
@@ -54,7 +54,7 @@ namespace IEC
             }
             else
             {
-                rectTopPannel.anchoredPosition = new Vector2(0f, 0f);
+                rectTopPanel.anchoredPosition = new Vector2(0f, 0f);
             }
         }
 
@@ -62,7 +62,7 @@ namespace IEC
         {
             groupGameOver.SetActive(isActive);
             txtGO.transform.localScale = Game.isUIEffect ? Vector3.one * .1f : Vector3.one;
-            rectPannelGO.anchoredPosition = new Vector2(Game.isUIEffect ? -1500f : 0f, 80f);
+            rectPanelGO.anchoredPosition = new Vector2(Game.isUIEffect ? -1500f : 0f, 80f);
             btnGONext.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, Game.isUIEffect ? -1500f: -450f);
 
             if (Game.isUIEffect && isActive)
@@ -70,11 +70,32 @@ namespace IEC
                 m_GameOver?.Kill(true);
                 TweenPannelTop(false, () => {
                     Sequence sequence = DOTween.Sequence();
-                    m_GameOver = sequence.Append(rectPannelGO.DOAnchorPosX(0f, effectDuration))
+                    m_GameOver = sequence.Append(rectPanelGO.DOAnchorPosX(0f, effectDuration))
                         .Append(txtGO.transform.DOScale(Vector3.one, effectDuration))
                         .Append(btnGONext.GetComponent<RectTransform>().DOAnchorPosY(-450f, effectDuration));
                 });
             }
+        }
+
+        private float effectBossDuration = .4f;
+        public void TweenBossLevel()
+        {
+            m_GameOver?.Kill(true);
+            Sequence sequence = DOTween.Sequence();
+            rectTextBossLevel.anchoredPosition = new Vector2(-1500f, 85f);
+            rectPanelBossLevel.localScale = new Vector3(1f, 0f);
+
+            rectTextBossLevel.gameObject.SetActive(true);
+            rectPanelBossLevel.gameObject.SetActive(true);
+
+            sequence.Insert(0f, rectPanelBossLevel.DOScaleY(1f, effectDuration))
+                .Insert(.5f, rectTextBossLevel.DOAnchorPosX(0f, effectBossDuration).SetEase(Ease.OutBack))
+                .Insert(1.5f, rectTextBossLevel.DOAnchorPosX(1500f, effectBossDuration).SetEase(Ease.InBack))
+                .Insert(2f, rectPanelBossLevel.DOScaleY(0f, effectDuration))
+                .OnComplete(() => {
+                    rectTextBossLevel.gameObject.SetActive(false);
+                    rectPanelBossLevel.gameObject.SetActive(false);
+                });
         }
 
         public void LocateGroup()
