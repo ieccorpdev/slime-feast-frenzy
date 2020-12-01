@@ -62,11 +62,9 @@ namespace IEC
 
         private void UpdateAb20201201(int abValue)
         {
-            Game.isRandomColorClassicMode = abValue == 1;
-            Game.isStartLevelEffect = abValue == 1;
-
+            Game.isHaveUIAnimation = abValue == 1;
             Game.isLevelDifficultyV3 = abValue == 2;
-            Game.isNewWaterEffect = abValue == 3;
+            Game.isHaveNewWaterEffect = abValue == 3;
             Game.isHaveBossLevel = abValue == 4;
 
             GameController.GetLevelDifficulty();
@@ -75,6 +73,8 @@ namespace IEC
         private void Result20201125()
         {
             Game.isLevelDifficultyV2 = true;
+            Game.isRandomColorClassicMode = true;
+            Game.isStartLevelEffect = false;
         }
 
         private void UpdateAb20201125(int abValue)
