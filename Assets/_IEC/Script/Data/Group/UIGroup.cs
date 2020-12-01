@@ -41,7 +41,7 @@ namespace IEC
 
         public void TweenPannelTop(bool isActive, System.Action callBack = null)
         {
-            if (Game.isUIEffect)
+            if (Game.isHaveUIAnimation)
             {
                 m_Tween?.Kill(true);
                 rectTopPanel.anchoredPosition = new Vector2(0f, isActive ? 500f : 0f);
@@ -61,11 +61,11 @@ namespace IEC
         public void TweenGameOver(bool isActive)
         {
             groupGameOver.SetActive(isActive);
-            txtGO.transform.localScale = Game.isUIEffect ? Vector3.one * .1f : Vector3.one;
-            rectPanelGO.anchoredPosition = new Vector2(Game.isUIEffect ? -1500f : 0f, 80f);
-            btnGONext.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, Game.isUIEffect ? -1500f: -450f);
+            txtGO.transform.localScale = Game.isHaveUIAnimation ? Vector3.one * .1f : Vector3.one;
+            rectPanelGO.anchoredPosition = new Vector2(Game.isHaveUIAnimation ? -1500f : 0f, 80f);
+            btnGONext.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, Game.isHaveUIAnimation ? -1500f: -450f);
 
-            if (Game.isUIEffect && isActive)
+            if (Game.isHaveUIAnimation && isActive)
             {
                 m_GameOver?.Kill(true);
                 TweenPannelTop(false, () => {
