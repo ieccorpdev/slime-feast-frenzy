@@ -38,7 +38,7 @@ namespace IEC
                     GameOver((bool)param.p0);
                     break;
                 case EventList.GamePlay.GAME_START:
-                    if (Game.isUIEffect)
+                    if (Game.isHaveUIAnimation)
                     {
                         UI.TweenPannelTop(true);
                     }
@@ -59,7 +59,7 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
-            if (!Game.isUIEffect) return;
+            if (!Game.isHaveUIAnimation) return;
             m_CountVibrateHint += deltaTime;
             if(m_CountVibrateHint >= m_NextTimeVibrate)
             {
@@ -182,7 +182,7 @@ namespace IEC
 
         public void OnResetAll()
         {
-            if (!Game.isUIEffect)
+            if (!Game.isHaveUIAnimation)
             {
                 UI.TweenPannelTop(true);
             }

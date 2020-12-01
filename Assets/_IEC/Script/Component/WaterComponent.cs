@@ -100,7 +100,7 @@ namespace IEC
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
             SetGrowingPos(MaterialPropertyBlock, pos);
-            if (Game.isNewWaterEffect)
+            if (Game.isHaveNewWaterEffect)
             {
                 m_FillAmount = isGrowUp ? (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
             }
@@ -130,7 +130,7 @@ namespace IEC
             {
                 isChanged = true;
 
-                if (Game.isNewWaterEffect)
+                if (Game.isHaveNewWaterEffect)
                 {
                     deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
                     ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
