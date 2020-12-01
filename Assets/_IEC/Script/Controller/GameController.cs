@@ -97,7 +97,6 @@ namespace IEC
                     GameStart();
                     break;
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
-                    if (!Game.isPlaying) return;
                     if (IsComplete())
                     {
                         EventController.RaiseEventDelay(2f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
@@ -112,6 +111,11 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                Debug.Break();
+            }
         }
 
         private void GameStart()
@@ -238,7 +242,7 @@ namespace IEC
 
             UIController.SetupBossLevel(Game.isBossLevel);
 
-            var delayTime = Game.isStartLevelEffect ? 1.5f : .5f;
+            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 

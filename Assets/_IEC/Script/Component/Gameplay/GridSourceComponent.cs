@@ -80,10 +80,28 @@ namespace IEC
             }
         }
 
+        public override void AfterInit()
+        {
+            base.AfterInit();
+
+            isHavingWater = true;
+            m_IsHaveWater = true;
+            m_IsOldHaveWater = true;
+            m_OldWaterIndexColor = TrueColor;
+            if (m_ListWaterColor.Count == 0)
+            {
+                m_ListWaterColor.Add(TrueColor);
+            }
+            SetColor();
+            SetSetGrowingWater(true, WaterPoint.CENTER);
+        }
+
         public override void PrepareCheckConnect()
         {
             
         }
+
+
 
     }
 }

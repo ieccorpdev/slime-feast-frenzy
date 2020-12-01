@@ -78,9 +78,9 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater;
 
-        protected bool m_IsOldHaveWater, isHavingWater;
+        public bool m_IsOldHaveWater, isHavingWater;
 
-        protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
+        public int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
         private int m_DelayStart;
 
@@ -112,6 +112,7 @@ namespace IEC
             if(m_WaterCount > 0)
             {
                 Material waterMat = Game.isNewWaterEffect ? Config.newWaterMat : Config.waterMat;
+
                 for (int i = 0; i < m_WaterCount; i++)
                 {
                     m_WaterComponent[i].OnInit(waterMat, OnWaterGrowUpDone);
@@ -195,14 +196,7 @@ namespace IEC
 
             if(GridType == GridType.GRID_SOURCE)
             {
-                isHavingWater = true;
-                m_IsHaveWater = true;
-                if(m_ListWaterColor.Count == 0)
-                {
-                    m_ListWaterColor.Add(TrueColor);
-                }
-                SetColor();
-                SetSetGrowingWater(true, WaterPoint.CENTER);
+
             }
         }
 
@@ -348,7 +342,7 @@ namespace IEC
             }
         }
 
-        private void SetColor()
+        protected void SetColor()
         {
             if (!m_IsHaveWater) return;
             WaterIndexColor = GridHelper.GetColor(m_ListWaterColor);
@@ -358,7 +352,7 @@ namespace IEC
             }
         }
 
-        private void SetSetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
+        protected void SetSetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
         {
             for (int i = 0; i < m_WaterCount; i++)
             {
