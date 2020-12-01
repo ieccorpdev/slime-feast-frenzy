@@ -140,6 +140,7 @@ namespace IEC
 
                     Game.moveRemains += 1;
                     UpdateMove();
+                    Services.PushEvent(new IEC.TrackingEvent.UndoLevel());
                 }
             }
             else
