@@ -7869,14 +7869,19 @@ MonoBehaviour:
     listGrids: []
     listHints: []
     maxHintIndex: 0
-    listTerrainType: 
+    listTerrainType: []
     levelDatas: []
     hintDatas: []
     levelDifficulty: []
     totalMove: 0
     moveRemains: 0
-    undoCount: 0
+    undoRemains: 0
     isBossLevel: 0
+    enviromentConfig:
+      listTerrains: []
+      wallMat: {fileID: 0}
+      holeMat: {fileID: 0}
+      cornerMat: {fileID: 0}
     isHaveMixColor: 0
     isFasterRotate: 0
     isHaveSetting: 0
@@ -7889,9 +7894,9 @@ MonoBehaviour:
     isRandomColorClassicMode: 0
     isStartLevelEffect: 0
     isLevelDifficultyV3: 0
-    isNewWaterEffect: 0
+    isHaveNewWaterEffect: 0
     isHaveBossLevel: 0
-    isUIEffect: 0
+    isHaveUIAnimation: 0
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 

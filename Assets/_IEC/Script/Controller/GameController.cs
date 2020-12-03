@@ -169,6 +169,8 @@ namespace IEC
                 Game.isBossLevel = (Game.seed % 5) == 0;
             }
 
+            SetupEnviroment();
+
             var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
 
             var strMode = leveText[1];
@@ -202,7 +204,7 @@ namespace IEC
                 }
             }
 
-            SetTerrain();
+            
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
@@ -283,36 +285,21 @@ namespace IEC
             }
         }
 
-        private void SetTerrain()
+        private void SetupEnviroment()
         {
-            var tempList = new List<int>();
+            Game.enviromentConfig = Config.listEnviromentConfigs[2];
 
-            for (int i = 0; i < 2; i++)
+            var type0 = RandomHelper.Range(0, 2);
+
+            if(type0 == 0)
             {
-                var type = MathHelper.GetRandomIndexByList(tempList, 4);
-                Game.listTerrainType.Add(type);
-                tempList.Add(type);
-                var temp = 0;
-                if (i == 0)
-                {
-                    if (type == 0)
-                    {
-                        temp = 1;
-                    }
-                    else if (type == 1)
-                    {
-                        temp = 0;
-                    }
-                    else if (type == 2)
-                    {
-                        temp = 3;
-                    }
-                    else if (type == 3)
-                    {
-                        temp = 2;
-                    }
-                    tempList.Add(temp);
-                }
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+            }
+            else
+            {
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
         }
 
@@ -421,12 +408,15 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
+            m_ListWallCorners.ForEach(x => x.OnInit(Game.enviromentConfig.cornerMat));
+
             m_ListWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
             m_ListWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
             m_ListWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
             m_ListWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
 
             m_ListWallCorners.ForEach(x => x.OnTweenMove());
+
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);

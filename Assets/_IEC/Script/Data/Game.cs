@@ -38,7 +38,7 @@ namespace IEC
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
 
-        public List<int> listTerrainType = new List<int>();
+        public List<Material> listTerrainType = new List<Material>();
 
         public string[] levelDatas;
         public string[] hintDatas;
@@ -53,6 +53,8 @@ namespace IEC
         public int undoRemains;
 
         public bool isBossLevel;
+
+        public ThemeConfig enviromentConfig;
 
         public bool IsAllowUndo()
         {

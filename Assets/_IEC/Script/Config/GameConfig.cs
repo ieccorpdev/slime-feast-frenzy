@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using System;
 
 namespace IEC
 {
@@ -31,6 +32,8 @@ namespace IEC
         public Material[] matBSP;
 
         public Material waterMat, newWaterMat;
+
+        public List<ThemeConfig> listEnviromentConfigs;
 
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
@@ -67,7 +70,12 @@ namespace IEC
             var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
             return targetMats[colorIndex];
         }
+    }
 
-
+    [Serializable]
+    public struct ThemeConfig
+    {
+        public List<Material> listTerrains;
+        public Material wallMat, holeMat, cornerMat;
     }
 }

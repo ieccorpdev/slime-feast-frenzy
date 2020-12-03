@@ -15,6 +15,12 @@ namespace IEC
 
         private List<int> m_ListUsed = new List<int>();
 
+        [SerializeField]
+        private MeshRenderer[] m_WallMesh;
+
+        [SerializeField]
+        private MeshRenderer m_HoleMesh;
+
         protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -68,6 +74,13 @@ namespace IEC
 
                 m_Grasses[index].SetActive(true);
             }
+
+            for (int i = 0; i < m_WallMesh.Length; i++)
+            {
+                m_WallMesh[i].material = Game.enviromentConfig.wallMat;
+            }
+
+            m_HoleMesh.material = Game.enviromentConfig.holeMat;
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)
