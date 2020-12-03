@@ -84,10 +84,14 @@ namespace IEC
         public bool isHaveNewWaterEffect;
         public bool isHaveBossLevel;
         public bool isHaveUIAnimation;
-        public int abTheme = 3;
+
+        
 
         //Prepared
         public bool isLeavesEffect;
+        public int abTheme = 0;
+        public bool isHaveNotification = true;
+
 
         public BaseComponent GetGrid(int row, int col, int color)
         {
