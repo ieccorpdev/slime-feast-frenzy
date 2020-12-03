@@ -9,6 +9,12 @@ namespace IEC
         [SerializeField]
         private GameObject[] m_StyleObj;
 
+        [SerializeField]
+        private GameObject m_DefaultSourceObj, m_NewSourceObj;
+
+        [SerializeField]
+        private Transform m_TransWaterFall;
+
         protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -52,12 +58,26 @@ namespace IEC
                 m_StyleObj[i].SetActive(i == style);
             }
 
-            for (int i = 0; i < m_WaterCount - 1; i++)
+            for (int i = 0; i < m_WaterCount - 3; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
             }
 
-            m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(true);
+            m_WaterComponent[m_WaterCount - 4].gameObject.SetActive(true);
+
+            bool isNewTheme = Game.abTheme > 0;
+
+            for (int i = m_WaterCount - 3; i < m_WaterCount; i++)
+            {
+                m_WaterComponent[i].gameObject.SetActive(isNewTheme);
+            }
+
+            m_TransWaterFall.localPosition = new Vector3(isNewTheme ? -.1f : 0f, .2f, 0f);
+
+            m_DefaultSourceObj.SetActive(!isNewTheme);
+            m_NewSourceObj.SetActive(!isNewTheme);
+
+            ConfigWater();
         }
 
         protected override int[,] GetDefaultLine(int style)
@@ -84,6 +104,11 @@ namespace IEC
         {
             base.AfterInit();
 
+            SetSetGrowingWater(true, WaterPoint.CENTER);
+        }
+
+        private void ConfigWater()
+        {
             isHavingWater = true;
             m_IsHaveWater = true;
             m_IsOldHaveWater = true;
@@ -92,8 +117,10 @@ namespace IEC
             {
                 m_ListWaterColor.Add(TrueColor);
             }
-            SetColor();
-            SetSetGrowingWater(true, WaterPoint.CENTER);
+            for (int i = 0; i < m_WaterCount; i++)
+            {
+                m_WaterComponent[i].SetColor(CurrentWaterColor, true);
+            }
         }
 
         public override void PrepareCheckConnect()

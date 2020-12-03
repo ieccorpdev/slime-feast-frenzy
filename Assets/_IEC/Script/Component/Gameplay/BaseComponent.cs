@@ -193,11 +193,6 @@ namespace IEC
         public virtual void AfterInit()
         {
             OnResetData();
-
-            if(GridType == GridType.GRID_SOURCE)
-            {
-
-            }
         }
 
         protected virtual int[,] GetDefaultLine(int style)
