@@ -16,6 +16,9 @@ namespace IEC
         [SerializeField]
         protected EffectGridAura m_HintEffect;
 
+        [SerializeField]
+        protected MeshRenderer[] m_LineMeshs;
+
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
 
@@ -57,7 +60,6 @@ namespace IEC
         [HideInInspector]
         public int WaterIndexColor;
 
-
         // Dynamic data
         protected Color CurrentWaterColor
         {
@@ -92,6 +94,8 @@ namespace IEC
         public List<int> m_ListWaterColor = new List<int>();
         private BaseComponent m_TempGrid;
         private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
+
+        protected Material[] m_LineMats;
 
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
@@ -128,6 +132,11 @@ namespace IEC
             if (Game.isStartLevelEffect)
             {
                 OnTweenMove(false);
+            }
+
+            if (m_LineMats == null) 
+            {
+                m_LineMats = Game.abTheme > 0 ? Config.lineNewMats : Config.lineMatDefaultMats;
             }
         }
 

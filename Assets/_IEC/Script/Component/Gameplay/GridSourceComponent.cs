@@ -75,9 +75,14 @@ namespace IEC
             m_TransWaterFall.localPosition = new Vector3(isNewTheme ? -.1f : 0f, .2f, 0f);
 
             m_DefaultSourceObj.SetActive(!isNewTheme);
-            m_NewSourceObj.SetActive(!isNewTheme);
+            m_NewSourceObj.SetActive(isNewTheme);
 
             ConfigWater();
+
+            for (int i = 0; i < m_LineMeshs.Length; i++)
+            {
+                m_LineMeshs[i].material = m_LineMats[i];
+            }
         }
 
         protected override int[,] GetDefaultLine(int style)

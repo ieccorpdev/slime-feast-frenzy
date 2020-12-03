@@ -37,6 +37,8 @@ namespace IEC
 
         public List<Sprite> listSpriteBackgrounds;
 
+        public Material[] lineMatDefaultMats, lineNewMats;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

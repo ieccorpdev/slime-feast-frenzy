@@ -146,6 +146,11 @@ namespace IEC
             {
                 m_MeshTargets[i].material = mat;
             }
+
+            for (int i = 0; i < m_LineMeshs.Length; i++)
+            {
+                m_LineMeshs[i].material = m_LineMats[i];
+            }
         }
 
 
