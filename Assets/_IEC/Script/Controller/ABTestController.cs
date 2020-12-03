@@ -41,15 +41,16 @@ namespace IEC
             Result20201109();
             Result20201120();
             Result20201125();
+            Result20201201();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201201(abValue);
+            UpdateAb20201204(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201201(abValue);
+                    UpdateAb20201204(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -58,6 +59,20 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20201204(int abValue)
+        {
+            Game.isHaveNotification = abValue == 1;
+            Game.abTheme = (abValue == 2) ? 1 : 0;
+            Game.abTheme = (abValue == 3) ? 3 : 0;
+            Game.isHaveBossLevelsMixColor = abValue == 4;
+        }
+
+        private void Result20201201()
+        {
+            Game.isHaveNewWaterEffect = true;
+            GameController.GetLevelDifficulty();
         }
 
         private void UpdateAb20201201(int abValue)

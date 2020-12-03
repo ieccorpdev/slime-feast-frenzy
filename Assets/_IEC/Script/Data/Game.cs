@@ -85,12 +85,13 @@ namespace IEC
         public bool isHaveBossLevel;
         public bool isHaveUIAnimation;
 
-        
+        public bool isHaveNotification;
+        public int abTheme;
+        public bool isHaveBossLevelsMixColor;
 
         //Prepared
         public bool isLeavesEffect;
-        public int abTheme = 0;
-        public bool isHaveNotification = true;
+        
 
 
         public BaseComponent GetGrid(int row, int col, int color)
