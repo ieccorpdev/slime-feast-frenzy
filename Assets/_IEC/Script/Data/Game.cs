@@ -84,6 +84,7 @@ namespace IEC
         public bool isHaveNewWaterEffect;
         public bool isHaveBossLevel;
         public bool isHaveUIAnimation;
+        public int abTheme;
 
         //Prepared
         public bool isLeavesEffect;

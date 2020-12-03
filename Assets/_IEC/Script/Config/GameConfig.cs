@@ -35,6 +35,8 @@ namespace IEC
 
         public List<ThemeConfig> listEnviromentConfigs;
 
+        public List<Sprite> listSpriteBackgrounds;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

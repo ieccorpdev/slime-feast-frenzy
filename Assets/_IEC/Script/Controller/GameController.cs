@@ -287,7 +287,7 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            Game.enviromentConfig = Config.listEnviromentConfigs[2];
+            Game.enviromentConfig = Config.listEnviromentConfigs[Game.abTheme];
 
             var type0 = RandomHelper.Range(0, 2);
 
@@ -301,6 +301,8 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
+
+            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.abTheme]);
         }
 
         private void OnClearAll()

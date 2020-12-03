@@ -9,6 +9,7 @@ namespace IEC
         public Camera mainCamera;
         public Transform transTutHand;
         public Transform effectParent;
+        public BackgroundGroup backgroundGroup;
 
         public void LocateGroup()
         {
