@@ -89,6 +89,7 @@ namespace IEC.TrackingEvent
         {
             var dict = base.GetParams();
             dict["time_play"] = DataGame.timePlay;
+            dict["moves"] = DataGame.moveCount;
             return dict;
         }
     }

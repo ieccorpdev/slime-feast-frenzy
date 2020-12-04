@@ -388,6 +388,7 @@ namespace IEC
 
             Game.isBossLevel = false;
             Game.undoRemains = 2;
+            Game.moveCount = 0;
 
             UIController.OnResetAll();
         }

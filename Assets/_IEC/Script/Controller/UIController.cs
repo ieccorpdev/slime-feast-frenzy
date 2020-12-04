@@ -53,6 +53,7 @@ namespace IEC
                     Game.AddUndoData(grid.Row, grid.Col);
                     Game.moveRemains -= 1;
                     UpdateMove();
+                    Game.moveCount += 1;
                     break;
             }
         }
