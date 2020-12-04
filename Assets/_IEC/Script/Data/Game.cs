@@ -38,12 +38,15 @@ namespace IEC
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
 
-        public List<int> listTerrainType = new List<int>();
+        public List<Material> listTerrainType = new List<Material>();
 
         public string[] levelDatas;
         public string[] hintDatas;
-
         public string[] levelDifficulty;
+
+        public string[] dataLevelDifficulty;
+        public string[] levelMixColorDatas;
+        public string[] hintMixColorDatas;
 
         //Boss level
         public int totalMove, moveRemains;
@@ -53,6 +56,8 @@ namespace IEC
         public int undoRemains;
 
         public bool isBossLevel;
+
+        public ThemeConfig enviromentConfig;
 
         public bool IsAllowUndo()
         {
@@ -83,8 +88,14 @@ namespace IEC
         public bool isHaveBossLevel;
         public bool isHaveUIAnimation;
 
+        public bool isHaveNotification;
+        public int abTheme;
+        public bool isHaveBossLevelsMixColor;
+
         //Prepared
         public bool isLeavesEffect;
+        
+
 
         public BaseComponent GetGrid(int row, int col, int color)
         {

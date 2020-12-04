@@ -10,6 +10,19 @@ namespace IEC
         private Tween m_Tween;
         private Vector3 CurrentLocalPos => transform.localPosition;
 
+        [SerializeField]
+        private MeshRenderer m_Mesh;
+
+        [SerializeField]
+        private GameObject m_GrassObj;
+
+        public void OnInit(Material mat)
+        {
+            m_Mesh.material = mat;
+
+            m_GrassObj.SetActive(Game.abTheme == 0);
+        }
+
         private void OnMouseDown()
         {
             m_Tween?.Kill(true);

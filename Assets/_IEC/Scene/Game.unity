@@ -1823,7 +1823,7 @@ Camera:
   m_GameObject: {fileID: 408779023}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 2
+  m_ClearFlags: 3
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -1842,7 +1842,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: -1
+  m_Depth: -10
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 512
@@ -1883,8 +1883,9 @@ GameObject:
   - component: {fileID: 447287024}
   - component: {fileID: 447287028}
   - component: {fileID: 447287027}
+  - component: {fileID: 447287025}
   m_Layer: 9
-  m_Name: UIGroup
+  m_Name: BackgroundGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1913,6 +1914,21 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &447287025
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 447287023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d77dd313697565489d27729bcc685f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ImgBackground: {fileID: 1039318479}
+  m_TopBgObj: {fileID: 1961181942}
+  m_BotBgObj: {fileID: 996044377}
 --- !u!114 &447287027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3398,6 +3414,49 @@ MonoBehaviour:
   m_IsScaleScrollGrid: 0
   m_CellSizeOrigin: {x: 0, y: 0}
   m_CellSpaceOrigin: {x: 0, y: 0}
+--- !u!1 &909864462
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 909864463}
+  - component: {fileID: 909864464}
+  m_Layer: 0
+  m_Name: Notification
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &909864463
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909864462}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2789909389504668074}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &909864464
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 909864462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 34620468748139b45a3b136139f4fffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &926301086
 GameObject:
   m_ObjectHideFlags: 0
@@ -5993,6 +6052,7 @@ MonoBehaviour:
   mainCamera: {fileID: 519420031}
   transTutHand: {fileID: 258053074}
   effectParent: {fileID: 2118472987}
+  backgroundGroup: {fileID: 447287025}
 --- !u!1 &1833824365
 GameObject:
   m_ObjectHideFlags: 0
@@ -7213,7 +7273,7 @@ Camera:
   field of view: 60
   orthographic: 1
   orthographic size: 5
-  m_Depth: 1
+  m_Depth: 10
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 32
@@ -7638,6 +7698,7 @@ Transform:
   - {fileID: 7699852231881381982}
   - {fileID: 1047202882}
   - {fileID: 143113481}
+  - {fileID: 909864463}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7869,14 +7930,22 @@ MonoBehaviour:
     listGrids: []
     listHints: []
     maxHintIndex: 0
-    listTerrainType: 
+    listTerrainType: []
     levelDatas: []
     hintDatas: []
     levelDifficulty: []
+    dataLevelDifficulty: []
+    levelMixColorDatas: []
+    hintMixColorDatas: []
     totalMove: 0
     moveRemains: 0
-    undoCount: 0
+    undoRemains: 0
     isBossLevel: 0
+    enviromentConfig:
+      listTerrains: []
+      wallMat: {fileID: 0}
+      holeMat: {fileID: 0}
+      cornerMat: {fileID: 0}
     isHaveMixColor: 0
     isFasterRotate: 0
     isHaveSetting: 0
@@ -7889,9 +7958,12 @@ MonoBehaviour:
     isRandomColorClassicMode: 0
     isStartLevelEffect: 0
     isLevelDifficultyV3: 0
-    isNewWaterEffect: 0
+    isHaveNewWaterEffect: 0
     isHaveBossLevel: 0
-    isUIEffect: 0
+    isHaveUIAnimation: 0
+    isHaveNotification: 0
+    abTheme: 0
+    isHaveBossLevelsMixColor: 0
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 

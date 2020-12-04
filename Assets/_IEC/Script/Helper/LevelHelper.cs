@@ -305,6 +305,34 @@ namespace IEC
                 return RandomHelper.RangeWithSeed(seed, 116, 1135);
             }
         }
+
+        public static int GetMixLevelSpawn(int matrix, int seed)
+        {
+            if (matrix == 4)
+            {
+                return RandomHelper.RangeWithSeed(seed, 0, 2);
+            }
+            else if (matrix == 5)
+            {
+                return RandomHelper.RangeWithSeed(seed, 2, 12);
+            }
+            else if (matrix == 6)
+            {
+                return RandomHelper.RangeWithSeed(seed, 12, 18);
+            }
+            else if (matrix == 7)
+            {
+                return RandomHelper.RangeWithSeed(seed, 18, 34);
+            }
+            else if (matrix == 8)
+            {
+                return RandomHelper.RangeWithSeed(seed, 34, 41);
+            }
+            else
+            {
+                return RandomHelper.RangeWithSeed(seed, 41, 658);
+            }
+        }
     }
 }
 

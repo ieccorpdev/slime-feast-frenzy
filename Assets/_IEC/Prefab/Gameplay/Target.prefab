@@ -1816,10 +1816,23 @@ MonoBehaviour:
   - {fileID: 6219608016091796644}
   m_Terrain: {fileID: 8094055019442812118}
   m_HintEffect: {fileID: 2290218623555759442}
-  GridType: 0
+  m_LineMeshs:
+  - {fileID: 4538102943977776527}
+  - {fileID: 444833622961450625}
+  - {fileID: 2407363716374891505}
+  - {fileID: 2870580154885175620}
+  - {fileID: 7505922675352986477}
   Row: 0
   Col: 0
-  WaterColor: 0
+  TrueRot: 0
+  TrueColor: 0
+  GridType: 0
+  WaterIndexColor: 0
+  m_IsOldHaveWater: 0
+  isHavingWater: 0
+  m_CurrentRot: 0
+  m_OldWaterIndexColor: 0
+  m_WaterCount: 0
   m_ListWaterColor: 
   m_PsWin: {fileID: 3992435393810575714}
   m_PsWins:
@@ -1851,6 +1864,7 @@ MonoBehaviour:
   - {fileID: 444833622961442986}
   - {fileID: 2407363716374891506}
   - {fileID: 2870580154885176152}
+  IsGrowUpComplete: 0
 --- !u!1001 &1188103559378844122
 PrefabInstance:
   m_ObjectHideFlags: 0

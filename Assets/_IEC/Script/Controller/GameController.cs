@@ -75,6 +75,27 @@ namespace IEC
             var levelDifficultyText = levelDifficulty.text;
             Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+
+        }
+
+        public void GetLevelsMixColor()
+        {
+            var strLevels = Resources.Load<TextAsset>("LevelsMixColors");
+            var strHints = Resources.Load<TextAsset>("ListSolutionMixColors");
+
+            var levelDatas = strLevels.text;
+            Game.levelMixColorDatas = levelDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            var hintDatas = strHints.text;
+            Game.hintMixColorDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+
+            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "DataDifficutyV3" : "DataDifficutyV2");
+            var dataLevelDifficultyText = dataLevelDifficulty.text;
+            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void BehaviourStart()
@@ -99,7 +120,7 @@ namespace IEC
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
                     if (IsComplete())
                     {
-                        EventController.RaiseEventDelay(.5f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
+                        EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
                     }
                     break;
                 case EventList.GamePlay.GAME_UNDO:
@@ -162,21 +183,61 @@ namespace IEC
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-            var levelSpawn = GetLevelSpawn();
+            
 
             if (Game.isHaveBossLevel)
             {
                 Game.isBossLevel = (Game.seed % 5) == 0;
             }
 
-            var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+            bool isBossMixColor = false;
+
+            if (Game.isHaveBossLevelsMixColor)
+            {
+                if(Game.seed >= 15)
+                {
+                    isBossMixColor = (Game.seed % 5) == 0;
+                }
+            }
+
+            var levelSpawn = GetLevelSpawn();
+
+            SetupEnviroment();
+
+            string[] leveText;
+            int levelBoss = 0;
+            if (isBossMixColor)
+            {
+                //if(Game.seed < Game.dataLevelDifficulty.Length)
+                //{
+                //    matrix = int.Parse(Game.dataLevelDifficulty[Game.seed]);
+                //}
+
+                var matrix = Mathf.Clamp(4 + Game.seed / 20, 4, 9);
+
+                levelBoss = LevelHelper.GetMixLevelSpawn(matrix, Game.seed);
+                leveText = Game.levelMixColorDatas[levelBoss].Trim().Split(':');
+
+            }
+            else
+            {
+                leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+            }
+
+            string[] hintText;
+            if (isBossMixColor)
+            {
+                hintText = Game.hintMixColorDatas[levelBoss].Trim().Split(':');
+            }
+            else
+            {
+                hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
+            }
+
+            var strGridHints = hintText[3];
 
             var strMode = leveText[1];
             var strGrid = leveText[3];
-
-            var hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
-
-            var strGridHints = hintText[3];
 
             int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
 
@@ -201,8 +262,6 @@ namespace IEC
                     Game.classicColor = RandomHelper.Range(0, 12);
                 }
             }
-
-            SetTerrain();
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
@@ -283,37 +342,24 @@ namespace IEC
             }
         }
 
-        private void SetTerrain()
+        private void SetupEnviroment()
         {
-            var tempList = new List<int>();
+            Game.enviromentConfig = Config.listEnviromentConfigs[Game.abTheme];
 
-            for (int i = 0; i < 2; i++)
+            var type0 = RandomHelper.Range(0, 2);
+
+            if(type0 == 0)
             {
-                var type = MathHelper.GetRandomIndexByList(tempList, 4);
-                Game.listTerrainType.Add(type);
-                tempList.Add(type);
-                var temp = 0;
-                if (i == 0)
-                {
-                    if (type == 0)
-                    {
-                        temp = 1;
-                    }
-                    else if (type == 1)
-                    {
-                        temp = 0;
-                    }
-                    else if (type == 2)
-                    {
-                        temp = 3;
-                    }
-                    else if (type == 3)
-                    {
-                        temp = 2;
-                    }
-                    tempList.Add(temp);
-                }
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
             }
+            else
+            {
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+            }
+
+            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.abTheme], Game.abTheme == 0);
         }
 
         private void OnClearAll()
@@ -421,12 +467,15 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
+            m_ListWallCorners.ForEach(x => x.OnInit(Game.enviromentConfig.cornerMat));
+
             m_ListWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
             m_ListWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
             m_ListWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
             m_ListWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
 
             m_ListWallCorners.ForEach(x => x.OnTweenMove());
+
 
             m_WallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(m_WallParents[0], size, startPos, levelConfig.topWall, true, 0, false);

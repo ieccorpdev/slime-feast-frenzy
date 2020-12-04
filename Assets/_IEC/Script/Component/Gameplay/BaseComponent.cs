@@ -16,6 +16,9 @@ namespace IEC
         [SerializeField]
         protected EffectGridAura m_HintEffect;
 
+        [SerializeField]
+        protected MeshRenderer[] m_LineMeshs;
+
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
 
@@ -49,14 +52,13 @@ namespace IEC
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         // Grid static data
-        [HideInInspector]
+        //[HideInInspector]
         public int Row, Col, TrueRot, TrueColor;
 
         public GridType GridType;
 
-        [HideInInspector]
+        //[HideInInspector]
         public int WaterIndexColor;
-
 
         // Dynamic data
         protected Color CurrentWaterColor
@@ -84,7 +86,7 @@ namespace IEC
 
         private int m_DelayStart;
 
-        private WaterPoint m_StartWater;
+        protected WaterPoint m_StartWater;
 
 
         //Temp
@@ -92,6 +94,8 @@ namespace IEC
         public List<int> m_ListWaterColor = new List<int>();
         private BaseComponent m_TempGrid;
         private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
+
+        protected Material[] m_LineMats;
 
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
@@ -129,6 +133,8 @@ namespace IEC
             {
                 OnTweenMove(false);
             }
+
+            m_LineMats = Game.abTheme > 0 ? Config.lineNewMats : Config.lineMatDefaultMats;
         }
 
         private void OnMouseDown()
@@ -192,11 +198,9 @@ namespace IEC
 
         public virtual void AfterInit()
         {
-            OnResetData();
-
-            if(GridType == GridType.GRID_SOURCE)
+            if (GridType != GridType.GRID_SOURCE)
             {
-
+                OnResetData();
             }
         }
 
@@ -212,10 +216,13 @@ namespace IEC
 
         public virtual void PrepareCheckConnect()
         {
-            m_IsOldHaveWater = m_IsHaveWater;
-            m_OldWaterIndexColor = WaterIndexColor;
-            m_IsHaveWater = false;
-            m_ListWaterColor.Clear();
+            if(GridType != GridType.GRID_SOURCE)
+            {
+                m_IsOldHaveWater = m_IsHaveWater;
+                m_OldWaterIndexColor = WaterIndexColor;
+                m_IsHaveWater = false;
+                m_ListWaterColor.Clear();
+            }
         }
 
         public List<BaseComponent> GetGridsCanConnect(int color)
@@ -331,8 +338,8 @@ namespace IEC
                 isHavingWater = false;
             }
             SetColor();
-            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-
+            //if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+            if (m_IsOldHaveWater == m_IsHaveWater) return;
             WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
             SetSetGrowingWater(m_IsHaveWater, point);
 

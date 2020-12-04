@@ -5,13 +5,10 @@ using UnityEngine;
 public class TerrainComponent : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] m_Terrains;
+    private MeshRenderer m_Mesh;
 
-    public void SetupTerrain(int type)
+    public void SetupTerrain(Material mat)
     {
-        for (int i = 0; i < m_Terrains.Length; i++)
-        {
-            m_Terrains[i].SetActive(i == type);
-        }
+        m_Mesh.material = mat;
     }
 }

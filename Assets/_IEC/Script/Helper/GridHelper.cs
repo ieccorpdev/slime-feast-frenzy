@@ -6,7 +6,7 @@ namespace IEC
 {
     public static class GridHelper
     {
-        public static int GetTerrainType(int row, int col, List<int> listTerrainType)
+        public static Material GetTerrainType(int row, int col, List<Material> listTerrainType)
         {
             if (row % 2 == 0)
             {
