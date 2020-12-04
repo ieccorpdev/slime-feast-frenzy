@@ -17,6 +17,39 @@ namespace IEC
             GUILayout.Space(30);
 
             GUILayout.Space(10);
+            if (GUILayout.Button("Get Levels Mix Color"))
+            {
+                var strLevelSort1 = Resources.Load<TextAsset>("ListSolutionFull");
+                var levelSortText = strLevelSort1.text;
+                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                                 System.StringSplitOptions.RemoveEmptyEntries);
+
+                var str = "";
+                var count = levelDifficuty.Length;
+                for (int i = 0; i < count; i++)
+                {
+                    var leveText = levelDifficuty[i].Trim();
+                    var levelData = leveText.Split(':');
+                    var strMode = levelData[1];
+                    if (strMode.IndexOf("Mix") < 0) continue;
+
+                    var strGrid = levelData[3];
+                    var gridsDatas = strGrid.Trim().Split('_');
+                    if (IsMixColorLevel(gridsDatas))
+                    {
+                        str += leveText + "\n";
+                    }
+                }
+
+                string path2 = "Assets/_IEC/Resources/ListSolutionMixColors.txt";
+                //Write some text to the test.txt file
+                StreamWriter writer = new StreamWriter(path2, true);
+                writer.WriteLine(str);
+                writer.Close();
+                AssetDatabase.Refresh();
+            }
+
+            GUILayout.Space(10);
             if (GUILayout.Button("Sort File"))
             {
                 var strLevelSort1 = Resources.Load<TextAsset>("LevelSort2");
@@ -119,6 +152,24 @@ namespace IEC
             #endregion
 
             EditorUtility.SetDirty(target);
+        }
+
+        //658
+
+        private bool IsMixColorLevel(string[] gridDatas)
+        {
+            var count = gridDatas.Length;
+            for (int i = 0; i < count; i++)
+            {
+                var grid = gridDatas[i];
+                var color = int.Parse(grid.Substring(3, 1));
+                if(color > 3)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private string[,] GetGridValue(string[] strGrids, int size, bool isLoop)

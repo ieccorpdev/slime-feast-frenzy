@@ -52,12 +52,12 @@ namespace IEC
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         // Grid static data
-        [HideInInspector]
+        //[HideInInspector]
         public int Row, Col, TrueRot, TrueColor;
 
         public GridType GridType;
 
-        [HideInInspector]
+        //[HideInInspector]
         public int WaterIndexColor;
 
         // Dynamic data
@@ -86,7 +86,7 @@ namespace IEC
 
         private int m_DelayStart;
 
-        private WaterPoint m_StartWater;
+        protected WaterPoint m_StartWater;
 
 
         //Temp
@@ -201,7 +201,10 @@ namespace IEC
 
         public virtual void AfterInit()
         {
-            OnResetData();
+            if (GridType != GridType.GRID_SOURCE)
+            {
+                OnResetData();
+            }
         }
 
         protected virtual int[,] GetDefaultLine(int style)
@@ -216,10 +219,13 @@ namespace IEC
 
         public virtual void PrepareCheckConnect()
         {
-            m_IsOldHaveWater = m_IsHaveWater;
-            m_OldWaterIndexColor = WaterIndexColor;
-            m_IsHaveWater = false;
-            m_ListWaterColor.Clear();
+            if(GridType != GridType.GRID_SOURCE)
+            {
+                m_IsOldHaveWater = m_IsHaveWater;
+                m_OldWaterIndexColor = WaterIndexColor;
+                m_IsHaveWater = false;
+                m_ListWaterColor.Clear();
+            }
         }
 
         public List<BaseComponent> GetGridsCanConnect(int color)
@@ -335,8 +341,8 @@ namespace IEC
                 isHavingWater = false;
             }
             SetColor();
-            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-
+            //if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+            if (m_IsOldHaveWater == m_IsHaveWater) return;
             WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
             SetSetGrowingWater(m_IsHaveWater, point);
 

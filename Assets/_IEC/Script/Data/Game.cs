@@ -42,8 +42,11 @@ namespace IEC
 
         public string[] levelDatas;
         public string[] hintDatas;
-
         public string[] levelDifficulty;
+
+        public string[] dataLevelDifficulty;
+        public string[] levelMixColorDatas;
+        public string[] hintMixColorDatas;
 
         //Boss level
         public int totalMove, moveRemains;

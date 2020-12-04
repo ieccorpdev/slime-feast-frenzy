@@ -64,9 +64,25 @@ namespace IEC
         private void UpdateAb20201204(int abValue)
         {
             Game.isHaveNotification = abValue == 1;
-            Game.abTheme = (abValue == 2) ? 1 : 0;
-            Game.abTheme = (abValue == 3) ? 3 : 0;
+            if(abValue == 2)
+            {
+                Game.abTheme = 1;
+            }
+            else if(abValue == 3)
+            {
+                Game.abTheme = 3;
+            }
+            else
+            {
+                Game.abTheme = 0;
+            }
+
             Game.isHaveBossLevelsMixColor = abValue == 4;
+
+            if (Game.isHaveBossLevelsMixColor)
+            {
+                GameController.GetLevelsMixColor();
+            }
         }
 
         private void Result20201201()

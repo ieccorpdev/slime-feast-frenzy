@@ -65,14 +65,17 @@ namespace IEC
                 m_Grasses[i].SetActive(false);
             }
 
-            var radCount = Random.Range(3, Game.maxGrassOnWall);
-
-            for (int i = 0; i < radCount; i++)
+            if(Game.abTheme == 0)
             {
-                var index = MathHelper.GetRandomIndexByList(m_ListUsed, total);
-                m_ListUsed.Add(index);
+                var radCount = Random.Range(3, Game.maxGrassOnWall);
 
-                m_Grasses[index].SetActive(true);
+                for (int i = 0; i < radCount; i++)
+                {
+                    var index = MathHelper.GetRandomIndexByList(m_ListUsed, total);
+                    m_ListUsed.Add(index);
+
+                    m_Grasses[index].SetActive(true);
+                }
             }
 
             for (int i = 0; i < m_WallMesh.Length; i++)

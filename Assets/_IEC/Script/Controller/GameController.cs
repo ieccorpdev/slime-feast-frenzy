@@ -75,6 +75,27 @@ namespace IEC
             var levelDifficultyText = levelDifficulty.text;
             Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
+
+        }
+
+        public void GetLevelsMixColor()
+        {
+            var strLevels = Resources.Load<TextAsset>("LevelsMixColors");
+            var strHints = Resources.Load<TextAsset>("ListSolutionMixColors");
+
+            var levelDatas = strLevels.text;
+            Game.levelMixColorDatas = levelDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            var hintDatas = strHints.text;
+            Game.hintMixColorDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+
+            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "DataDifficutyV3" : "DataDifficutyV2");
+            var dataLevelDifficultyText = dataLevelDifficulty.text;
+            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void BehaviourStart()
@@ -162,23 +183,61 @@ namespace IEC
         {
             OnClearAll();
             Game.seed = PlayerData.level;
-            var levelSpawn = GetLevelSpawn();
+            
 
             if (Game.isHaveBossLevel)
             {
                 Game.isBossLevel = (Game.seed % 5) == 0;
             }
 
+            bool isBossMixColor = false;
+
+            if (Game.isHaveBossLevelsMixColor)
+            {
+                if(Game.seed >= 15)
+                {
+                    isBossMixColor = (Game.seed % 5) == 0;
+                }
+            }
+
+            var levelSpawn = GetLevelSpawn();
+
             SetupEnviroment();
 
-            var leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+            string[] leveText;
+            int levelBoss = 0;
+            if (isBossMixColor)
+            {
+                //if(Game.seed < Game.dataLevelDifficulty.Length)
+                //{
+                //    matrix = int.Parse(Game.dataLevelDifficulty[Game.seed]);
+                //}
+
+                var matrix = Mathf.Clamp(4 + Game.seed / 20, 4, 9);
+
+                levelBoss = LevelHelper.GetMixLevelSpawn(matrix, Game.seed);
+                leveText = Game.levelMixColorDatas[levelBoss].Trim().Split(':');
+
+            }
+            else
+            {
+                leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+            }
+
+            string[] hintText;
+            if (isBossMixColor)
+            {
+                hintText = Game.hintMixColorDatas[levelBoss].Trim().Split(':');
+            }
+            else
+            {
+                hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
+            }
+
+            var strGridHints = hintText[3];
 
             var strMode = leveText[1];
             var strGrid = leveText[3];
-
-            var hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
-
-            var strGridHints = hintText[3];
 
             int size = int.Parse(leveText[0].Substring(leveText[0].Length - 1)) + 2;
 

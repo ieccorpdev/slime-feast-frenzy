@@ -156,18 +156,39 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            base.AfterCheckConnect();
-
             if (!m_IsHaveWater)
             {
+                isHavingWater = false;
                 IsGrowUpComplete = false;
             }
-            if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
-            if (!m_IsHaveWater || !IsDone)
+            SetColor();
+
+            if (m_IsOldHaveWater == m_IsHaveWater)
             {
-                IsGrowUpComplete = false;
-                TweenScale(false);
+                if (IsDone)
+                {
+                    if (!IsGrowUpComplete)
+                    {
+                        OnWaterGrowUpDone();
+                    }
+                }
             }
+            else
+            {
+                if (!m_IsHaveWater || !IsDone)
+                {
+                    IsGrowUpComplete = false;
+                    TweenScale(false);
+                }
+                WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
+                SetSetGrowingWater(m_IsHaveWater, point);
+
+                if (m_IsHaveWater)
+                {
+                    EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.WATER_CONNECT));
+                }
+            }
+
         }
 
         protected override void OnWaterGrowUpDone()

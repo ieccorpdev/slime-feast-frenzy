@@ -77,12 +77,12 @@ namespace IEC
             m_DefaultSourceObj.SetActive(!isNewTheme);
             m_NewSourceObj.SetActive(isNewTheme);
 
-            ConfigWater();
-
             for (int i = 0; i < m_LineMeshs.Length; i++)
             {
                 m_LineMeshs[i].material = m_LineMats[i];
             }
+
+            ConfigWater();
         }
 
         protected override int[,] GetDefaultLine(int style)
@@ -118,22 +118,16 @@ namespace IEC
             m_IsHaveWater = true;
             m_IsOldHaveWater = true;
             m_OldWaterIndexColor = TrueColor;
+
             if (m_ListWaterColor.Count == 0)
             {
                 m_ListWaterColor.Add(TrueColor);
             }
+
             for (int i = 0; i < m_WaterCount; i++)
             {
                 m_WaterComponent[i].SetColor(CurrentWaterColor, true);
             }
         }
-
-        public override void PrepareCheckConnect()
-        {
-            
-        }
-
-
-
     }
 }
