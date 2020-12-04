@@ -51,6 +51,8 @@ namespace IEC
         //Boss level
         public int totalMove, moveRemains;
 
+        public int moveCount;
+
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
 
         public int undoRemains;
