@@ -263,8 +263,6 @@ namespace IEC
                 }
             }
 
-            
-
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig);
             yield return null;

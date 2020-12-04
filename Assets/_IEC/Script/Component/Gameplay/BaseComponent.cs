@@ -134,10 +134,7 @@ namespace IEC
                 OnTweenMove(false);
             }
 
-            if (m_LineMats == null) 
-            {
-                m_LineMats = Game.abTheme > 0 ? Config.lineNewMats : Config.lineMatDefaultMats;
-            }
+            m_LineMats = Game.abTheme > 0 ? Config.lineNewMats : Config.lineMatDefaultMats;
         }
 
         private void OnMouseDown()
