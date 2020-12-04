@@ -52,8 +52,8 @@ namespace IEC
 
         public void OnInit(Material mat, System.Action callBack)
         {
-            waterTile = new Vector2(.1f, .1f);
-            distortionTile = new Vector2(.4f, .4f);
+            //waterTile = new Vector2(.1f, .1f);
+            //distortionTile = new Vector2(.4f, .4f);
 
             if (Game == null)
             {
