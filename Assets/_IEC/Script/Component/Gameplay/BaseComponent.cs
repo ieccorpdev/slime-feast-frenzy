@@ -100,6 +100,7 @@ namespace IEC
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
         {
+            OnResetData();
             GridType = gridType;
             Row = row;
             Col = col;
@@ -125,7 +126,15 @@ namespace IEC
 
             if (GridType != GridType.WALL)
             {
-                m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
+                if (Game.isChangeGridStatus)
+                {
+                    SetTerrainMat();
+                }
+                else
+                {
+                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
+                }
+
                 transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
             }
 
@@ -333,6 +342,11 @@ namespace IEC
 
         public virtual void AfterCheckConnect()
         {
+            if (Game.isChangeGridStatus && Game.isPlaying)
+            {
+                SetTerrainMat();
+            }
+
             if (!m_IsHaveWater)
             {
                 isHavingWater = false;
@@ -436,6 +450,14 @@ namespace IEC
         public virtual void OnUndo()
         {
 
+        }
+
+        public virtual void SetTerrainMat()
+        {
+            if (m_Terrain == null) return;
+            var listMats = Config.listEnviromentConfigs[Game.abTheme].listTerrains;
+            var mat = m_IsHaveWater ? listMats[0] : listMats[1];
+            m_Terrain.SetupTerrain(mat);
         }
 
 

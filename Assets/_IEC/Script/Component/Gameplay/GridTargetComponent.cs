@@ -36,7 +36,7 @@ namespace IEC
 
         public bool IsComplete => IsDone && IsGrowUpComplete;
 
-        private static float SMALL_SCALE = .3f;
+        private static float SMALL_SCALE = .4f;
         private static float LARGE_SCALE = 1.5f;
 
         private Material CurrentMat
@@ -156,6 +156,11 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
+            if (Game.isChangeGridStatus && Game.isPlaying)
+            {
+                SetTerrainMat();
+            }
+
             if (!m_IsHaveWater)
             {
                 isHavingWater = false;
@@ -195,10 +200,9 @@ namespace IEC
         {
             if (IsDone)
             {
+                m_PsWin.Play();
                 TweenScale(true, () => {
                     IsGrowUpComplete = true;
-
-                    m_PsWin.Play();
                     if (PlayerData.isVibrateOn)
                     {
                         MMVibrationManager.Haptic(HapticTypes.MediumImpact);
@@ -212,7 +216,10 @@ namespace IEC
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
             m_TweenScale?.Kill(true);
-            m_TweenScale = m_TranTargets[m_TargetStyle].DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .4f)
+            var ease = isGrowUp ? Ease.OutBounce : Ease.Unset;
+            m_TweenScale = m_TranTargets[m_TargetStyle].
+                DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
+                .SetEase(ease)
                 .OnComplete(() => {
                     callBack?.Invoke();
                 });

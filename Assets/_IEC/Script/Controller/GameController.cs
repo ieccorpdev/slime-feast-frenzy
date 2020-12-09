@@ -14,6 +14,9 @@ namespace IEC
         private List<CornerComponent> m_ListWallCorners;   // TOP_LEFT, TOP_RIGHT, BOT_LEFT, BOT_RIGHT
         public Transform m_GridParent;
 
+        [SerializeField]
+        private Transform m_TransMainCam;
+
         private static float RATIO_DEFAULT = 16f / 10;
         private static float RATIO_CAMERA_SIZE_MIN = 1.45f / (21f / 9 - 16f / 10);
         private static float RATIO_CAMERA_SIZE_MAX = 5.6f / (21f / 9 - 16f / 10);
@@ -48,7 +51,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
-            m_CamOriginPos = GamePlay.mainCamera.transform.position;
+            m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
         }
 
@@ -71,11 +74,15 @@ namespace IEC
 
         public void GetLevelDifficulty()
         {
-            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "LevelDifficutyV3" : "LevelDifficutyV2");
+            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "LevelDifficutyV4" : "LevelDifficutyV3");
             var levelDifficultyText = levelDifficulty.text;
             Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
+            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "DataDifficutyV4" : "DataDifficutyV4");
+            var dataLevelDifficultyText = dataLevelDifficulty.text;
+            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void GetLevelsMixColor()
@@ -89,12 +96,6 @@ namespace IEC
 
             var hintDatas = strHints.text;
             Game.hintMixColorDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
-
-
-            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV3 ? "DataDifficutyV3" : "DataDifficutyV2");
-            var dataLevelDifficultyText = dataLevelDifficulty.text;
-            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -184,7 +185,6 @@ namespace IEC
             OnClearAll();
             Game.seed = PlayerData.level;
             
-
             if (Game.isHaveBossLevel)
             {
                 Game.isBossLevel = (Game.seed % 5) == 0;
@@ -200,7 +200,7 @@ namespace IEC
                 }
             }
 
-            var levelSpawn = GetLevelSpawn();
+            var levelSpawn = GetLevelSpawn(Game.seed);
 
             SetupEnviroment();
 
@@ -208,20 +208,14 @@ namespace IEC
             int levelBoss = 0;
             if (isBossMixColor)
             {
-                //if(Game.seed < Game.dataLevelDifficulty.Length)
-                //{
-                //    matrix = int.Parse(Game.dataLevelDifficulty[Game.seed]);
-                //}
-
                 var matrix = Mathf.Clamp(4 + Game.seed / 20, 4, 9);
 
                 levelBoss = LevelHelper.GetMixLevelSpawn(matrix, Game.seed);
                 leveText = Game.levelMixColorDatas[levelBoss].Trim().Split(':');
-
             }
             else
             {
-                leveText = Game.levelDatas[levelSpawn].Trim().Split(':');
+                leveText = Game.levelDatas[levelSpawn.level].Trim().Split(':');
             }
 
             string[] hintText;
@@ -231,7 +225,7 @@ namespace IEC
             }
             else
             {
-                hintText = Game.hintDatas[levelSpawn].Trim().Split(':');
+                hintText = Game.hintDatas[levelSpawn.level].Trim().Split(':');
             }
 
             var strGridHints = hintText[3];
@@ -264,7 +258,7 @@ namespace IEC
             }
 
             SpawnWallAll(levelConfig);
-            SpawnGridAll(levelConfig);
+            SpawnGridAll(levelConfig, levelSpawn.isRandomRotate);
             yield return null;
 
             if (!m_IsInitCam)
@@ -283,7 +277,11 @@ namespace IEC
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam; 
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
 
-            GamePlay.mainCamera.transform.position = cameraPos;
+            GamePlay.mainCamera.transform.localPosition = cameraPos;
+
+            var rotY = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.seed, 1, 4) * 90f : 0f;
+
+            m_TransMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
 
             Hint.CheckSoulution();
 
@@ -300,34 +298,44 @@ namespace IEC
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START);
         }
 
-        private int GetLevelSpawn()
+        private struct LevelSpawn
         {
-            var levelSpawn = 0;
+            public int level;
+            public bool isRandomRotate;
 
-            if (Game.seed > Game.levelDatas.Length)
+            public LevelSpawn(int level, bool isRotate)
             {
-                levelSpawn = (Game.seed + 99) % Game.levelDatas.Length;
+                this.level = level;
+                this.isRandomRotate = isRotate;
+            }
+        }
+
+        private LevelSpawn GetLevelSpawn(int level)
+        {
+            if (level > Game.levelDatas.Length)
+            {
+                return new LevelSpawn((level + 99) % Game.levelDatas.Length, false);
             }
             else
             {
-                if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3)
+                if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3 || Game.isLevelDifficultyV4)
                 {
-                    if (Game.seed > 2 && Game.seed <= GetConditionLevelDifficulty())
+                    if (level > 2 && level <= GetConditionLevelDifficulty())
                     {
-                        levelSpawn = int.Parse(Game.levelDifficulty[Game.seed - 1]);
-                    }
-                    else
-                    {
-                        levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
+                        var levelSpawn = int.Parse(Game.levelDifficulty[level - 1]);
+                        bool isRotate = false;
+                        if(levelSpawn < 0)
+                        {
+                            isRotate = true;
+                            var matrix = int.Parse(Game.dataLevelDifficulty[level]);
+                            
+                            levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
+                        }
+                        return new LevelSpawn(levelSpawn, isRotate);
                     }
                 }
-                else
-                {
-                    levelSpawn = (Game.seed - 1) % Game.levelDatas.Length;
-                }
+                return new LevelSpawn((level - 1) % Game.levelDatas.Length, false);
             }
-
-            return levelSpawn;
         }
 
         private int GetConditionLevelDifficulty()
@@ -335,6 +343,10 @@ namespace IEC
             if (Game.isLevelDifficultyV3)
             {
                 return 110;
+            } 
+            else if (Game.isLevelDifficultyV4)
+            {
+                return 115;
             }
             else
             {
@@ -393,11 +405,13 @@ namespace IEC
             UIController.OnResetAll();
         }
 
-        private void SpawnGridAll(LevelConfig levelConfig)
+        private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot)
         {
             var size = levelConfig.size - 2;
             var startPosX = (size - 1) / -2f;
             var startPosZ = (size - 1) / 2f;
+
+            int gridSeed = Game.seed;
 
             for (int i = 0; i < size; i++)
             {
@@ -407,16 +421,22 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
                     var gridData = levelConfig.gridTypes[row, col].Trim();
-                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData, levelConfig.gridHints[row, col]);
+                    SpawnGrid(m_GridParent, posSpawn, row, col, gridData, levelConfig.gridHints[row, col], isRandomRot, gridSeed);
+                    gridSeed += 1;
                 }
             }
         }
 
         private void SpawnGrid(Transform parent, Vector3 posSpawn, int row, int col, 
-            string gridData, int gridRotTrue)
+            string gridData, int gridRotTrue, bool isRandomRot, int seed)
         {
             var gridType = int.Parse(gridData.Substring(0, 2));
             var gridRotCurrent = int.Parse(gridData.Substring(2, 1));
+
+            if (isRandomRot)
+            {
+                gridRotCurrent = RandomHelper.RangeWithSeed(seed, 0, 4);
+            }
 
             var gridColor = 0;
             var gridStyle = 0;

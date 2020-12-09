@@ -94,6 +94,9 @@ namespace IEC
         public int abTheme;
         public bool isHaveBossLevelsMixColor;
 
+        public bool isLevelDifficultyV4 = true;
+        public bool isChangeGridStatus;
+
         //Prepared
         public bool isLeavesEffect;
         

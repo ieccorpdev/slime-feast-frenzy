@@ -17,6 +17,61 @@ namespace IEC
             GUILayout.Space(30);
 
             GUILayout.Space(10);
+            if (GUILayout.Button("Sort File"))
+            {
+                var strLevelData = Resources.Load<TextAsset>("DataDifficutyV4");
+                var levelSortText = strLevelData.text;
+                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                                 System.StringSplitOptions.RemoveEmptyEntries);
+
+                var str = "";
+                List<int> listLevel = new List<int>();
+
+                var count = levelDifficuty.Length;
+                for (int i = 0; i < count; i++)
+                {
+                    bool isHaveResult = false;
+                    var countRequest = 0;
+                    var seed = i;
+
+                    var size = int.Parse(levelDifficuty[i]);
+                    int level = 0;
+
+                    while (!isHaveResult && countRequest <= 50)
+                    {
+                        level = LevelHelper.GetLevelSpawn(size, seed);
+                        seed += 1;
+                        countRequest += 1;
+
+                        if (!listLevel.Contains(level))
+                        {
+                            listLevel.Add(level);
+                            isHaveResult = true;
+
+                            str += level + "\n";
+                        }
+                        else
+                        {
+                            if(countRequest == 50)
+                            {
+                                level = -1;
+                                str += level + "\n";
+                            }
+                        }
+                    }
+                }
+
+
+
+                string path2 = "Assets/_IEC/Resources/levelDifficutyV4.txt";
+                //Write some text to the test.txt file
+                StreamWriter writer = new StreamWriter(path2, true);
+                writer.WriteLine(str);
+                writer.Close();
+                AssetDatabase.Refresh();
+            }
+
+            GUILayout.Space(10);
             if (GUILayout.Button("Get Levels Mix Color"))
             {
                 var strLevelSort1 = Resources.Load<TextAsset>("ListSolutionFull");
@@ -42,51 +97,6 @@ namespace IEC
                 }
 
                 string path2 = "Assets/_IEC/Resources/ListSolutionMixColors.txt";
-                //Write some text to the test.txt file
-                StreamWriter writer = new StreamWriter(path2, true);
-                writer.WriteLine(str);
-                writer.Close();
-                AssetDatabase.Refresh();
-            }
-
-            GUILayout.Space(10);
-            if (GUILayout.Button("Sort File"))
-            {
-                var strLevelSort1 = Resources.Load<TextAsset>("LevelSort2");
-                var levelSortText = strLevelSort1.text;
-                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
-                                 System.StringSplitOptions.RemoveEmptyEntries);
-
-                var str = "";
-                List<int> listLevel = new List<int>();
-
-                for (int i = 0; i < 100; i++)
-                {
-                    var level = 0;
-                    bool isHaveResult = false;
-                    var count = 0;
-                    var seed = i;
-
-                    var size = int.Parse(levelDifficuty[i]);
-
-                    while (!isHaveResult && count <= 50)
-                    {
-                        level = LevelHelper.GetLevelSpawn(size, seed);
-                        seed += 1;
-
-                        if (!listLevel.Contains(level))
-                        {
-                            listLevel.Add(level);
-                            isHaveResult = true;
-
-                            str += level + "\n";
-                        }
-                    }
-                }
-
-
-
-                string path2 = "Assets/_IEC/Resources/levelDifficutyV2.txt";
                 //Write some text to the test.txt file
                 StreamWriter writer = new StreamWriter(path2, true);
                 writer.WriteLine(str);

@@ -2422,14 +2422,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_LocalRotation: {x: 0.5735764, y: 0, z: 0, w: 0.8191521}
+  m_LocalRotation: {x: 0.5735764, y: -0, z: -0, w: 0.8191521}
   m_LocalPosition: {x: 0, y: 4.56, z: -1.92}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 192046436}
   - {fileID: 1173041185}
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_Father: {fileID: 1942934349}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 70, y: 0, z: 0}
 --- !u!1 &554354822
 GameObject:
@@ -3999,6 +3999,7 @@ MonoBehaviour:
   - {fileID: 1909839670}
   - {fileID: 227157323}
   m_GridParent: {fileID: 1208688249}
+  m_TransMainCam: {fileID: 1942934349}
 --- !u!1 &1064845465
 GameObject:
   m_ObjectHideFlags: 0
@@ -6624,6 +6625,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8990cb2091d7b734d81615b049d69861, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1942934348
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1942934349}
+  m_Layer: 0
+  m_Name: TransCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1942934349
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942934348}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 519420032}
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1943417956
 GameObject:
   m_ObjectHideFlags: 0
@@ -7939,6 +7971,7 @@ MonoBehaviour:
     hintMixColorDatas: []
     totalMove: 0
     moveRemains: 0
+    moveCount: 0
     undoRemains: 0
     isBossLevel: 0
     enviromentConfig:
@@ -7964,6 +7997,8 @@ MonoBehaviour:
     isHaveNotification: 0
     abTheme: 0
     isHaveBossLevelsMixColor: 0
+    isLevelDifficultyV4: 1
+    isChangeGridStatus: 0
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 

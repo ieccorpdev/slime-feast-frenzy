@@ -115,6 +115,5 @@ namespace IEC
             base.OnUndo();
             OnRotation(true);
         }
-
     }
 }
