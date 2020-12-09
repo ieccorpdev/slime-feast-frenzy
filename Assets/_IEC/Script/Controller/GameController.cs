@@ -279,10 +279,9 @@ namespace IEC
 
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
-            if (levelSpawn.isRandomRotate)
-            {
-                m_TransMainCam.localRotation = Quaternion.Euler(0f, RandomHelper.RangeWithSeed(Game.seed, 1, 4) * 90f, 0f);
-            }
+            var rotY = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.seed, 1, 4) * 90f : 0f;
+
+            m_TransMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
 
             Hint.CheckSoulution();
 

@@ -156,6 +156,11 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
+            if (Game.isChangeGridStatus && Game.isPlaying)
+            {
+                SetTerrainMat();
+            }
+
             if (!m_IsHaveWater)
             {
                 isHavingWater = false;
