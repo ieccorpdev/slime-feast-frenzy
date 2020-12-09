@@ -42,15 +42,16 @@ namespace IEC
             Result20201120();
             Result20201125();
             Result20201201();
+            Result20201204();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201204(abValue);
+            UpdateAb20201209(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201204(abValue);
+                    UpdateAb20201209(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -59,6 +60,20 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20201209(int abValue)
+        {
+            //Game.isLevelDifficultyV4 = abValue == 2;
+            //Game.isChangeGridStatus = abValue == 3;
+
+            GameController.GetLevelDifficulty();
+        }
+
+        private void Result20201204()
+        {
+            Game.abTheme = 0;
+            Game.isHaveBossLevelsMixColor = false;
         }
 
         private void UpdateAb20201204(int abValue)
@@ -88,7 +103,6 @@ namespace IEC
         private void Result20201201()
         {
             Game.isHaveNewWaterEffect = true;
-            GameController.GetLevelDifficulty();
         }
 
         private void UpdateAb20201201(int abValue)
@@ -98,7 +112,7 @@ namespace IEC
             Game.isHaveNewWaterEffect = abValue == 3;
             Game.isHaveBossLevel = abValue == 4;
 
-            GameController.GetLevelDifficulty();
+            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201125()
