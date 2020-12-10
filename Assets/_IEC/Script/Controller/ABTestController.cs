@@ -72,11 +72,8 @@ namespace IEC
 
         private void Result20201204()
         {
-            Game.isHaveNotification = true;
-            Game.abTheme = 3;
-            Game.isHaveBossLevelsMixColor = true;
-
-            GameController.GetLevelsMixColor();
+            Game.abTheme = 0;
+            Game.isHaveBossLevelsMixColor = false;
         }
 
         private void UpdateAb20201204(int abValue)
