@@ -177,6 +177,11 @@ namespace IEC
                         OnWaterGrowUpDone();
                     }
                 }
+                else
+                {
+                    IsGrowUpComplete = false;
+                    TweenScale(false);
+                }
             }
             else
             {
