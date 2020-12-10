@@ -22,6 +22,7 @@ namespace IEC
         public Button btnRestart, btnSkip, btnGONext, btnSetting, btnHint, btnUndo;
 
         public PopupSetting popupSettings;
+        public PopupRating popUpRating;
 
         [SerializeField]
         private RectTransform rectTopPanel, rectPanelGO, rectPanelBossLevel, rectTextBossLevel;
