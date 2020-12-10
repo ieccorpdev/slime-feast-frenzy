@@ -65,8 +65,7 @@ namespace IEC
         private void UpdateAb20201209(int abValue)
         {
             Game.isLevelDifficultyV4 = abValue == 2;
-            Game.isChangeGridStatus = abValue == 3;
-
+            Game.abTheme = abValue == 3 ? 5 : 3;
             GameController.GetLevelDifficulty();
         }
 

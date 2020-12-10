@@ -371,7 +371,7 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.abTheme], Game.abTheme == 0);
+            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[3], false);
         }
 
         private void OnClearAll()
