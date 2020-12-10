@@ -86,7 +86,7 @@ namespace IEC.TrackingEvent
         public override string Name => "popup_rating_show";
     }
 
-    public class PopupRatingNoThanks : Level
+    public class PopupRatingNoThank : Level
     {
         public override string Name => "popup_rating_click_no_thank";
     }

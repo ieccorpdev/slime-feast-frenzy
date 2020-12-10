@@ -8,12 +8,12 @@ namespace IEC
     public class PopupRating : MonoBehaviour
     {
         [SerializeField]
-        private Button m_BtnClose, m_BtnNoThanks, m_BtnLoveIt;
+        private Button m_BtnClose, m_BtnNoThank, m_BtnLoveIt;
 
         public void OnInit()
         {
             m_BtnClose.onClick.AddListener(Hide);
-            m_BtnNoThanks.onClick.AddListener(OnClickNoThank);
+            m_BtnNoThank.onClick.AddListener(OnClickNoThank);
             m_BtnLoveIt.onClick.AddListener(OnClickRate);
 
             Hide();
@@ -21,7 +21,7 @@ namespace IEC
 
         private void OnClickNoThank()
         {
-            Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.PopupRatingNoThanks());
+            Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.PopupRatingNoThank());
             Pool.Get<PlayerSecret>().haveAlreadyRate = true;
             Hide();
         }
