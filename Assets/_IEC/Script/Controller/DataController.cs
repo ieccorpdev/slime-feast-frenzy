@@ -66,7 +66,7 @@ namespace IEC
             Pool.Set(playerData);
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();
-
+            m_PlayerSecret.AfterInit();
             // check update version
             m_PlayerSecret.lastVersion = Application.version;
             Debug.Log("Application.version " + Application.version);

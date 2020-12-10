@@ -81,6 +81,21 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_ads_undo";
     }
 
+    public class ShowPopupRating : Level
+    {
+        public override string Name => "popup_rating_show";
+    }
+
+    public class PopupRatingNoThanks : Level
+    {
+        public override string Name => "popup_rating_click_no_thank";
+    }
+
+    public class PopupRatingLoveIt : Level
+    {
+        public override string Name => "popup_rating_click_love_it";
+    }
+
     public class GameOver : LevelResult
     {
         public override string Name => "game_over";

@@ -28,6 +28,7 @@ namespace IEC
         public void BehaviourAwake()
         {
             InitButtonEvent();
+            UI.popUpRating.OnInit();
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -46,6 +47,18 @@ namespace IEC
                     if (Game.isBossLevel)
                     {
                         UI.TweenBossLevel();
+                    }
+
+                    if (!PlayerData.haveAlreadyRate)
+                    {
+                        var level = PlayerData.level;
+                        if (level <= 60 && level % 20 == 0 &&
+                            !PlayerData.levelShowRate.Contains(level))
+                        {
+                            PlayerData.levelShowRate.Add(level);
+                            Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
+                            UI.popUpRating.gameObject.SetActive(true);
+                        }
                     }
                     break;
                 case EventList.GamePlay.GAME_ADD_MOVE:

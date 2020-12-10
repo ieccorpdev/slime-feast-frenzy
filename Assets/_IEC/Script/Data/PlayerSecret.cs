@@ -19,5 +19,13 @@ namespace IEC
         public int countPlayThisLevel;
 
         public bool isSoundOn, isVibrateOn, isFirstSetup;
+
+        public bool haveAlreadyRate;
+        public List<int> levelShowRate;
+
+        public void AfterInit()
+        {
+            if (levelShowRate == null) levelShowRate = new List<int>();
+        }
     }
 }
