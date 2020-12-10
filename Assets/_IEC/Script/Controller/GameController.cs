@@ -74,12 +74,12 @@ namespace IEC
 
         public void GetLevelDifficulty()
         {
-            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "LevelDifficutyV4" : "LevelDifficutyV3");
+            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "LevelDifficutyV4" : "LevelDifficutyV2");
             var levelDifficultyText = levelDifficulty.text;
             Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
-            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "DataDifficutyV4" : "DataDifficutyV4");
+            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "DataDifficutyV4" : "DataDifficutyV2");
             var dataLevelDifficultyText = dataLevelDifficulty.text;
             Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
