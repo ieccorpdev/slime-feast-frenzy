@@ -13,7 +13,7 @@ namespace IEC
     /// object contain game session data (no save)
     /// </summary>
     [System.Serializable]
-    public class Game
+    public class Game : IData
     {
         public bool isDebugReset;
         public int emptyData;
