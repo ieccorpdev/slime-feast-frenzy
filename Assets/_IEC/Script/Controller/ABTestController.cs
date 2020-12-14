@@ -43,15 +43,16 @@ namespace IEC
             Result20201125();
             Result20201201();
             Result20201204();
+            Result20201209();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201209(abValue);
+            UpdateAb20201215(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201209(abValue);
+                    UpdateAb20201215(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -60,6 +61,17 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20201215(int abValue)
+        {
+
+        }
+
+        private void Result20201209()
+        {
+            Game.isLevelDifficultyV4 = false;
+            GameController.GetLevelDifficulty();
         }
 
         private void UpdateAb20201209(int abValue)
