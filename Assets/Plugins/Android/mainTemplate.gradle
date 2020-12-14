@@ -35,6 +35,9 @@ allprojects {
             url "https://dl.bintray.com/ironsource-mobile/android-sdk" // Assets/MaxSdk/Mediation/IronSource/Editor/Dependencies.xml:8
         }
         maven {
+            url "https://dl.bintray.com/mintegral-official/mintegral_ad_sdk_android_for_oversea" // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:8
+        }
+        maven {
             url "https://maven.ogury.co" // Assets/MaxSdk/Mediation/OguryPresage/Editor/Dependencies.xml:8
         }
         maven {
@@ -67,6 +70,7 @@ dependencies {
     implementation 'com.applovin.mediation:google-adapter:[19.5.0.2]' // Assets/MaxSdk/Mediation/Google/Editor/Dependencies.xml:5
     implementation 'com.applovin.mediation:inmobi-adapter:9.1.1.1' // Assets/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:ironsource-adapter:7.0.3.1.1' // Assets/MaxSdk/Mediation/IronSource/Editor/Dependencies.xml:8
+    implementation 'com.applovin.mediation:mintegral-adapter:15.3.11.0' // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:ogury-presage-adapter:4.7.7.1' // Assets/MaxSdk/Mediation/OguryPresage/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:unityads-adapter:3.5.0.1' // Assets/MaxSdk/Mediation/UnityAds/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:vungle-adapter:6.8.1.0' // Assets/MaxSdk/Mediation/Vungle/Editor/Dependencies.xml:4
