@@ -89,18 +89,18 @@ public class AppLovinAutoUpdater
 
         if (option == 0) // Download
         {
-            Debug.Log("[AppLovin MAX] Downloading plugin...");
+            MaxSdkLogger.UserDebug("Downloading plugin...");
             AppLovinIntegrationManager.downloadPluginProgressCallback = AppLovinIntegrationManagerWindow.OnDownloadPluginProgress;
             AppLovinEditorCoroutine.StartCoroutine(AppLovinIntegrationManager.Instance.DownloadPlugin(data.AppLovinMax));
         }
         else if (option == 1) // Not Now
         {
             // Do nothing
-            Debug.Log("[AppLovin MAX] Update postponed.");
+            MaxSdkLogger.UserDebug("Update postponed.");
         }
         else if (option == 2) // Don't Ask Again
         {
-            Debug.Log("[AppLovin MAX] Auto Update disabled. You can enable it again from the AppLovin Integration Manager");
+            MaxSdkLogger.UserDebug("Auto Update disabled. You can enable it again from the AppLovin Integration Manager");
             EditorPrefs.SetBool(KeyAutoUpdateEnabled, false);
         }
     }
