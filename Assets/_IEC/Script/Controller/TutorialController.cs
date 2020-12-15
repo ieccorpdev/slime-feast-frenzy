@@ -54,7 +54,7 @@ namespace IEC
             for (int i = 0; i < count; i++)
             {
                 var levelTut = Config.listTuts[i];
-                if (!Game.isHaveMixColor)
+                if (!Game.isHaveNomalLevelsMixColor)
                 {
                     if(PlayerData.level > 15)
                     {

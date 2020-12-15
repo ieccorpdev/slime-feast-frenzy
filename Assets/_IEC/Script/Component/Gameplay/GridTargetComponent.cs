@@ -23,16 +23,13 @@ namespace IEC
         [SerializeField]
         private GameObject[] m_TargetStyles;
 
-        [SerializeField]
-        private GameObject[] m_StyleLineObj;
-
         private Tween m_TweenScale;
 
-        private int m_TargetStyle;
+        private int m_TargetIndex;
 
         public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
-        public bool IsGrowUpComplete;
+        private bool IsGrowUpComplete;
 
         public bool IsComplete => IsDone && IsGrowUpComplete;
 
@@ -112,23 +109,22 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            
-            m_TargetStyle = RandomHelper.RangeWithSeed(Game.levelSeed, 0, m_TargetStyles.Length);
 
+            // Line
+            for (int i = 0; i < m_LineTyleObjs.Length; i++)
+            {
+                m_LineTyleObjs[i].SetActive(i == style);
+            }
+
+            m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, 0, m_TargetStyles.Length);
             Game.levelSeed += 1;
 
             for (int i = 0; i < m_TargetStyles.Length; i++)
             {
-                m_TargetStyles[i].SetActive(i == m_TargetStyle);
+                m_TargetStyles[i].SetActive(i == m_TargetIndex);
             }
 
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL_SCALE;
-
-            // Line
-            for (int i = 0; i < m_StyleLineObj.Length; i++)
-            {
-                m_StyleLineObj[i].SetActive(i == style);
-            }
+            m_TranTargets[m_TargetIndex].localScale = Vector3.one * SMALL_SCALE;
 
             for (int i = 0; i < m_WaterCount; i++)
             {
@@ -137,19 +133,15 @@ namespace IEC
 
             var mat = CurrentMat;
             var colorEffect = mat.color;
-            for (int i = 0; i < m_PsWins.Length; i++)
-            {
-                m_PsWins[i].startColor = colorEffect;
-            }
 
             for (int i = 0; i < m_MeshTargets.Length; i++)
             {
                 m_MeshTargets[i].material = mat;
             }
 
-            for (int i = 0; i < m_LineMeshs.Length; i++)
+            for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_LineMeshs[i].material = m_LineMats[i];
+                m_PsWins[i].startColor = colorEffect;
             }
         }
 
@@ -163,7 +155,7 @@ namespace IEC
 
             if (!m_IsHaveWater)
             {
-                isHavingWater = false;
+                m_IsHavingWater = false;
                 IsGrowUpComplete = false;
             }
             SetColor();
@@ -222,7 +214,7 @@ namespace IEC
         {
             m_TweenScale?.Kill(true);
             var ease = isGrowUp ? Ease.OutBounce : Ease.Unset;
-            m_TweenScale = m_TranTargets[m_TargetStyle].
+            m_TweenScale = m_TranTargets[m_TargetIndex].
                 DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
                 .SetEase(ease)
                 .OnComplete(() => {

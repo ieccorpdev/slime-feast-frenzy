@@ -77,15 +77,17 @@ namespace IEC
         private void UpdateAb20201209(int abValue)
         {
             Game.isLevelDifficultyV4 = abValue == 2;
-            Game.abTheme = abValue == 3 ? 5 : 3;
+            Game.themeIndex = abValue == 3 ? 5 : 3;
+            Game.backGroundIndex = abValue == 3 ? 5 : 3;
             //GameController.GetLevelDifficulty();
         }
 
         private void Result20201204()
         {
             Game.isHaveNotification = true;
-            Game.abTheme = 3;
-            Game.isHaveBossLevelsMixColor = true;
+            Game.themeIndex = 3;
+            Game.backGroundIndex = 3;
+            Game.isHaveBossMixColorLevels = true;
 
             GameController.GetLevelsMixColor();
         }
@@ -95,20 +97,23 @@ namespace IEC
             Game.isHaveNotification = abValue == 1;
             if(abValue == 2)
             {
-                Game.abTheme = 1;
+                Game.themeIndex = 1;
+                Game.backGroundIndex = 1;
             }
             else if(abValue == 3)
             {
-                Game.abTheme = 3;
+                Game.themeIndex = 3;
+                Game.backGroundIndex = 3;
             }
             else
             {
-                Game.abTheme = 0;
+                Game.themeIndex = 0;
+                Game.backGroundIndex = 0;
             }
 
-            Game.isHaveBossLevelsMixColor = abValue == 4;
+            Game.isHaveBossMixColorLevels = abValue == 4;
 
-            if (Game.isHaveBossLevelsMixColor)
+            if (Game.isHaveBossMixColorLevels)
             {
                 GameController.GetLevelsMixColor();
             }
@@ -124,7 +129,7 @@ namespace IEC
             Game.isHaveUIAnimation = abValue == 1;
             Game.isLevelDifficultyV3 = abValue == 2;
             Game.isHaveNewWaterEffect = abValue == 3;
-            Game.isHaveBossLevel = abValue == 4;
+            Game.isHaveBossLimitMoveLevels = abValue == 4;
 
             //GameController.GetLevelDifficulty();
         }
@@ -170,7 +175,7 @@ namespace IEC
         {
             Game.isHaveHint = abValue == 1;
             Game.isHaveTutorital = abValue == 2;
-            Game.isHaveMixColor = abValue == 2;
+            Game.isHaveNomalLevelsMixColor = abValue == 2;
 
             UIController.SetupAbUI();
         }
@@ -178,7 +183,7 @@ namespace IEC
         private void UpdateAb20201112(int abValue)
         {
             Game.isHaveTutorital = abValue != 0;
-            Game.isHaveMixColor = abValue == 2;
+            Game.isHaveNomalLevelsMixColor = abValue == 2;
         }
 
         private void Result20201109()
@@ -225,13 +230,13 @@ namespace IEC
 
         private void Result20201103()
         {
-            Game.isHaveMixColor = false;
+            Game.isHaveNomalLevelsMixColor = false;
             GameController.GetLevelsData();
         }
 
         private void UpdateAb20201103(int abValue)
         {
-            Game.isHaveMixColor = abValue == 1;
+            Game.isHaveNomalLevelsMixColor = abValue == 1;
         }
 
         private void ResultAbFullAds()

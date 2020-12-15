@@ -49,13 +49,13 @@ namespace IEC
         {
             OnResetAll();
             Game.levelSeed = PlayerData.level;
-            if (Game.isHaveBossLevel)
+            if (Game.isHaveBossLimitMoveLevels)
             {
                 Game.isBossLevelLimitMoves = (Game.levelSeed % 5) == 0;
             }
             bool isBossMixColor = false;
 
-            if (Game.isHaveBossLevelsMixColor)
+            if (Game.isHaveBossMixColorLevels)
             {
                 if (Game.levelSeed >= 15)
                 {
@@ -143,7 +143,7 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            Game.enviromentConfig = Config.listEnviromentConfigs[Game.abTheme];
+            Game.enviromentConfig = Config.listEnviromentConfigs[Game.themeIndex];
 
             var type0 = RandomHelper.Range(0, 2);
 
@@ -158,7 +158,7 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[3], false);
+            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.backGroundIndex], false);
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot)

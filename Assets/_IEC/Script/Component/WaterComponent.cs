@@ -47,40 +47,19 @@ namespace IEC
         private System.Action growUpCallBack;
 
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
+        private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
 
-        private Game Game;
-
-        public void OnInit(Material mat, System.Action callBack)
+        public void OnInit(System.Action callBack)
         {
             //waterTile = new Vector2(.1f, .1f);
             //distortionTile = new Vector2(.4f, .4f);
 
-            if (Game == null)
-            {
-                Game = Pool.Get<Game>();
-            }
-
-            growUpCallBack = callBack;
-
-            var oldMat = waterRenderers[0];
-
-            for (int i = 0; i < waterRenderers.Length; i++)
-            {
-                waterRenderers[i].material = mat;
-            }
-
-            
-            if (oldMat != mat)
+            if (materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
-            else
-            {
-                if(materialPropertyBlock == null)
-                {
-                    materialPropertyBlock = new MaterialPropertyBlock();
-                }
-            }
+
+            growUpCallBack = callBack;
 
             m_FillAmount = 0f;
             m_IsScale = false;
@@ -103,10 +82,7 @@ namespace IEC
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
             SetGrowingPos(MaterialPropertyBlock, pos);
-            if (Game.isHaveNewWaterEffect)
-            {
-                m_FillAmount = isGrowUp ?  (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
-            }
+            m_FillAmount = isGrowUp ?  (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
 
             m_IsGrowUp = isGrowUp;
             m_IsScale = true;
@@ -153,53 +129,6 @@ namespace IEC
                         m_IsScale = false;
                     }
                 }
-
-                #region old
-                //if (Game.isHaveNewWaterEffect)
-                //{
-                //    deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
-                //    ratioTime = m_IsGrowUp ? RATIO_TIME_UP : RATIO_TIME_DOWN;
-                //    m_FillAmount += 1.0f / ratioTime * deltaAmount;
-
-                //    if (m_IsGrowUp)
-                //    {
-                //        if (m_FillAmount >= MAX_AMOUNT)
-                //        {
-                //            m_IsScale = false;
-                //            growUpCallBack?.Invoke();
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (m_FillAmount <= 0)
-                //        {
-                //            m_IsScale = false;
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    deltaAmount = m_IsGrowUp ? deltaTime : -deltaTime;
-                //    m_FillAmount += deltaAmount * 3f;
-
-                //    if (m_IsGrowUp)
-                //    {
-                //        if (m_FillAmount >= 1f)
-                //        {
-                //            m_IsScale = false;
-                //            growUpCallBack?.Invoke();
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (m_FillAmount <= 0)
-                //        {
-                //            m_IsScale = false;
-                //        }
-                //    }
-                //}
-
-                #endregion
             }
 
             if (waterColor != m_NewColor)
@@ -244,7 +173,7 @@ namespace IEC
 
         private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            propertyBlock.SetColor("_WaterColor", waterColor);
+            propertyBlock.SetColor(Shader_WaterColor, waterColor);
             propertyBlock.SetFloat(Shader_FillAmount, m_FillAmount);
 
             ApplyData(propertyBlock);

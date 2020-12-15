@@ -73,7 +73,7 @@ namespace IEC
         }
 
         [Header("AB Test")]
-        public bool isHaveMixColor;
+        public bool isHaveNomalLevelsMixColor;
         public bool isFasterRotate;
         public bool isHaveSetting;
         public bool isHaveTutorital;
@@ -87,12 +87,13 @@ namespace IEC
 
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterEffect;
-        public bool isHaveBossLevel;
+        public bool isHaveBossLimitMoveLevels;
         public bool isHaveUIAnimation;
 
         public bool isHaveNotification;
-        public int abTheme;
-        public bool isHaveBossLevelsMixColor;
+        public int themeIndex;
+        public int backGroundIndex;
+        public bool isHaveBossMixColorLevels;
 
         public bool isLevelDifficultyV4;
         public bool isChangeGridStatus;
@@ -128,8 +129,6 @@ namespace IEC
             moveCount = 0;
         }
         
-
-
         public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;
@@ -182,10 +181,10 @@ namespace IEC
         public int level;
         public bool isRandomRotate;
 
-        public LevelSpawn(int level, bool isRotate)
+        public LevelSpawn(int level, bool isRandomRotate)
         {
             this.level = level;
-            this.isRandomRotate = isRotate;
+            this.isRandomRotate = isRandomRotate;
         }
     }
 }
