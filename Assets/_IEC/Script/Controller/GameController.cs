@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
-using DG.Tweening;
 
 namespace IEC
 {
@@ -39,45 +36,41 @@ namespace IEC
 
         public void GetLevelsData()
         {
-            var strLevelPath = Game.isHaveMixColor ? "ListLevelFull" : "ListLevelRemoveMixColor";
-            var strLevels = Resources.Load<TextAsset>(strLevelPath);
+            var strLevels = Resources.Load<TextAsset>("ListLevelRemoveMixColor");
 
-            var strHintPath = Game.isHaveMixColor ? "ListSolutionFull" : "ListSolutionRemoveMixColor";
-            var strHints = Resources.Load<TextAsset>(strHintPath);
-
-            var levelDatas = strLevels.text;
-            Game.levelDatas = levelDatas.Split(new string[] { "\n", "\r", "\r\n" },
+            Game.levelDatas = strLevels.text.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
-            var hintDatas = strHints.text;
-            Game.hintDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        public void GetLevelDifficulty()
-        {
-            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "LevelDifficutyV4" : "LevelDifficutyV2");
-            var levelDifficultyText = levelDifficulty.text;
-            Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
-
-            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "DataDifficutyV4" : "DataDifficutyV2");
-            var dataLevelDifficultyText = dataLevelDifficulty.text;
-            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
+            var strHints = Resources.Load<TextAsset>("ListSolutionRemoveMixColor");
+            Game.hintDatas = strHints.text.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void GetLevelsMixColor()
         {
             var strLevels = Resources.Load<TextAsset>("LevelsMixColors");
-            var strHints = Resources.Load<TextAsset>("ListSolutionMixColors");
-
-            var levelDatas = strLevels.text;
-            Game.levelMixColorDatas = levelDatas.Split(new string[] { "\n", "\r", "\r\n" },
+            Game.levelMixColorDatas = strLevels.text.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
 
-            var hintDatas = strHints.text;
-            Game.hintMixColorDatas = hintDatas.Split(new string[] { "\n", "\r", "\r\n" },
+            var strHints = Resources.Load<TextAsset>("ListSolutionMixColors");
+            Game.hintMixColorDatas = strHints.text.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        public void GetLevelDifficulty()
+        {
+            var levelDifficultyDefault = "LevelDifficutyV2";
+
+            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "ABTest/LevelDifficutyV4" : levelDifficultyDefault);
+            var levelDifficultyText = levelDifficulty.text;
+            Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
+                             System.StringSplitOptions.RemoveEmptyEntries);
+
+            var dataLevelDifficultyDefault = "DataDifficutyV2";
+
+            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "ABTest/DataDifficutyV4" : dataLevelDifficultyDefault);
+            var dataLevelDifficultyText = dataLevelDifficulty.text;
+            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
                              System.StringSplitOptions.RemoveEmptyEntries);
         }
 

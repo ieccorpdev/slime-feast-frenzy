@@ -78,7 +78,7 @@ namespace IEC
         {
             Game.isLevelDifficultyV4 = abValue == 2;
             Game.abTheme = abValue == 3 ? 5 : 3;
-            GameController.GetLevelDifficulty();
+            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201204()
@@ -172,7 +172,6 @@ namespace IEC
             Game.isHaveTutorital = abValue == 2;
             Game.isHaveMixColor = abValue == 2;
 
-            //GameController.GetLevelsData();
             UIController.SetupAbUI();
         }
 
@@ -180,8 +179,6 @@ namespace IEC
         {
             Game.isHaveTutorital = abValue != 0;
             Game.isHaveMixColor = abValue == 2;
-
-            //GameController.GetLevelsData();
         }
 
         private void Result20201109()
@@ -194,7 +191,6 @@ namespace IEC
                 PlayerData.isSoundOn = true;
                 PlayerData.isVibrateOn = false;
             }
-            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20201109(int abValue)
@@ -215,8 +211,6 @@ namespace IEC
                 PlayerData.isSoundOn = false;
                 PlayerData.isVibrateOn = false;
             }
-
-            //UIController.SetupAbUI();
         }
 
         private void Result20201106()
@@ -238,7 +232,6 @@ namespace IEC
         private void UpdateAb20201103(int abValue)
         {
             Game.isHaveMixColor = abValue == 1;
-            //GameController.GetLevelsData();
         }
 
         private void ResultAbFullAds()

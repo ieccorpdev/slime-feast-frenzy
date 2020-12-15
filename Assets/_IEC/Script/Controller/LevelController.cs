@@ -126,8 +126,6 @@ namespace IEC
 
             GameController.SetupCamera(levelSpawn, size);
 
-
-
             Hint.CheckSoulution();
 
             Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
