@@ -108,7 +108,7 @@ public abstract class MaxSdkBase
     {
         if (string.IsNullOrEmpty(adUnitIdentifier))
         {
-            Debug.LogError("[AppLovin MAX] No MAX Ads Ad Unit ID specified for: " + debugPurpose);
+            MaxSdkLogger.UserError("No MAX Ads Ad Unit ID specified for: " + debugPurpose);
         }
     }
 
@@ -120,7 +120,7 @@ public abstract class MaxSdkBase
             .GetComponent<MaxSdkCallbacks>(); // Its Awake() method sets Instance.
         if (MaxSdkCallbacks.Instance != mgr)
         {
-            Debug.LogWarning("[AppLovin MAX] It looks like you have the " + type.Name +
+            MaxSdkLogger.UserWarning("It looks like you have the " + type.Name +
                              " on a GameObject in your scene. Please remove the script from your scene.");
         }
     }

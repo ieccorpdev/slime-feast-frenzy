@@ -163,9 +163,14 @@ public class AppLovinIntegrationManagerWindow : EditorWindow
             GUILayout.BeginHorizontal();
             EditorGUILayout.LabelField("AppLovin MAX Plugin Details", titleLabelStyle, GUILayout.Width(220f)); // Seems like LabelField has an arbitrarily fixed width set by default. Need to set it to the preferred width (arrived at by trail & error) for the text to not be cut off (https://docs.unity3d.com/ScriptReference/EditorGUIUtility-labelWidth.html)
             GUILayout.FlexibleSpace();
+            
             var autoUpdateEnabled = GUILayout.Toggle(EditorPrefs.GetBool(AppLovinAutoUpdater.KeyAutoUpdateEnabled, true), "  Enable Auto Update");
             EditorPrefs.SetBool(AppLovinAutoUpdater.KeyAutoUpdateEnabled, autoUpdateEnabled);
-            GUILayout.Space(5);
+            GUILayout.Space(10);
+            
+            var verboseLoggingEnabled = GUILayout.Toggle(EditorPrefs.GetBool(MaxSdkLogger.KeyVerboseLoggingEnabled, false), "  Enable Verbose Logging");
+            EditorPrefs.SetBool(MaxSdkLogger.KeyVerboseLoggingEnabled, verboseLoggingEnabled);
+            GUILayout.Space(10);
             GUILayout.EndHorizontal();
             DrawPluginDetails();
 
@@ -242,6 +247,7 @@ public class AppLovinIntegrationManagerWindow : EditorWindow
             DrawPluginDetailRow("Unity 3D", appLovinMax.CurrentVersions.Unity, appLovinMax.LatestVersions.Unity);
             DrawPluginDetailRow("Android", appLovinMax.CurrentVersions.Android, appLovinMax.LatestVersions.Android);
             DrawPluginDetailRow("iOS", appLovinMax.CurrentVersions.Ios, appLovinMax.LatestVersions.Ios);
+            
             // BeginHorizontal combined with FlexibleSpace makes sure that the button is centered horizontally.
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();

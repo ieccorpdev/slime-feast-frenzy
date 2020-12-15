@@ -22,6 +22,12 @@ allprojects {
 }
 
 // Android Resolver Repos Start
+([rootProject] + (rootProject.subprojects as List)).each {
+    ext {
+        it.setProperty("android.useAndroidX", true)
+        it.setProperty("android.enableJetifier", true)
+    }
+}
 ([rootProject] + (rootProject.subprojects as List)).each { project ->
     project.repositories {
         def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("\\", "/")
@@ -74,12 +80,13 @@ dependencies {
     implementation 'com.applovin.mediation:ogury-presage-adapter:5.0.5.0' // Assets/MaxSdk/Mediation/OguryPresage/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:unityads-adapter:3.5.0.1' // Assets/MaxSdk/Mediation/UnityAds/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:vungle-adapter:6.8.1.0' // Assets/MaxSdk/Mediation/Vungle/Editor/Dependencies.xml:4
-    implementation 'com.applovin:applovin-sdk:9.14.7' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:4
+    implementation 'com.applovin:applovin-sdk:9.14.10' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:4
     implementation 'com.facebook.android:facebook-applinks:[8.0, 9)' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:6
     implementation 'com.facebook.android:facebook-core:[8.0, 9)' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:5
     implementation 'com.facebook.android:facebook-gamingservices:[8.0, 9)' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:9
     implementation 'com.facebook.android:facebook-login:[8.0, 9)' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:7
     implementation 'com.facebook.android:facebook-share:[8.0, 9)' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:8
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.1' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:6
     implementation 'com.google.android.gms:play-services-ads-identifier:16.0.0' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:5
     implementation 'com.google.android.gms:play-services-base:17.4.0' // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:17
     implementation 'com.google.firebase:firebase-analytics:17.5.0' // Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:13

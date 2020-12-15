@@ -46,7 +46,6 @@ public class MaxInitialize
 
     private static readonly List<string> ObsoleteNetworks = new List<string>
     {
-        "Mintegral",
         "VoodooAds"
     };
 
@@ -58,7 +57,7 @@ public class MaxInitialize
         // Check that the publisher is targeting iOS 9.0+
         if (!PlayerSettings.iOS.targetOSVersionString.StartsWith("9.") && !PlayerSettings.iOS.targetOSVersionString.StartsWith("1"))
         {
-            Debug.LogError("Detected iOS project version less than iOS 9 - The AppLovin MAX SDK WILL NOT WORK ON < iOS9!!!");
+            MaxSdkLogger.UserError("Detected iOS project version less than iOS 9 - The AppLovin MAX SDK WILL NOT WORK ON < iOS9!!!");
         }
 #endif
 
@@ -68,12 +67,12 @@ public class MaxInitialize
         // Check for if directory from older versions of the AppLovin MAX Unity Plugin exists
         if (CheckExistence(legacyDir))
         {
-            Debug.Log("Legacy directories from AppLovin MAX Unity Plugin found. Running migration...");
+            MaxSdkLogger.UserDebug("Legacy directories from AppLovin MAX Unity Plugin found. Running migration...");
 
             var androidDir = Path.Combine("Assets", "MaxSdk/Plugins/Android/AppLovin");
             if (CheckExistence(androidDir))
             {
-                Debug.Log("Deleting " + androidDir + "...");
+                MaxSdkLogger.UserDebug("Deleting " + androidDir + "...");
                 EditorUtility.DisplayProgressBar(MigrationProgressBarTitle, "Deleting " + androidDir + "...", 0.33f);
                 FileUtil.DeleteFileOrDirectory(androidDir);
                 changesMade = true;
@@ -82,7 +81,7 @@ public class MaxInitialize
             var iOSDir = Path.Combine("Assets", "MaxSdk/Plugins/iOS/AppLovin");
             if (CheckExistence(iOSDir))
             {
-                Debug.Log("Deleting " + iOSDir + "...");
+                MaxSdkLogger.UserDebug("Deleting " + iOSDir + "...");
                 EditorUtility.DisplayProgressBar(MigrationProgressBarTitle, "Deleting " + iOSDir + "...", 0.66f);
                 FileUtil.DeleteFileOrDirectory(iOSDir);
                 changesMade = true;
@@ -103,7 +102,7 @@ public class MaxInitialize
                 // Delete legacy iOS directory if exists
                 if (CheckExistence(legacyIOSDir))
                 {
-                    Debug.Log("Deleting " + legacyIOSDir + "...");
+                    MaxSdkLogger.UserDebug("Deleting " + legacyIOSDir + "...");
                     FileUtil.DeleteFileOrDirectory(legacyIOSDir);
                     changesMade = true;
                 }
@@ -111,7 +110,7 @@ public class MaxInitialize
                 // Delete legacy Android director(ies) if exists
                 if (CheckExistence(legacyAndroidDir))
                 {
-                    Debug.Log("Deleting " + legacyAndroidDir + "...");
+                    MaxSdkLogger.UserDebug("Deleting " + legacyAndroidDir + "...");
                     FileUtil.DeleteFileOrDirectory(legacyAndroidDir);
 
                     // Check if it contains shared dependencies
@@ -148,7 +147,7 @@ public class MaxInitialize
 
                     if (deletedSharedDependencies)
                     {
-                        Debug.Log("Deleting " + network + " shared dependencies...");
+                        MaxSdkLogger.UserDebug("Deleting " + network + " shared dependencies...");
                     }
 
                     changesMade = true;
@@ -176,7 +175,7 @@ public class MaxInitialize
             var networkDir = Path.Combine("Assets", "MaxSdk/Mediation/" + obsoleteNetwork);
             if (CheckExistence(networkDir))
             {
-                Debug.Log("Deleting obsolete network " + obsoleteNetwork + " from path " + networkDir + "...");
+                MaxSdkLogger.UserDebug("Deleting obsolete network " + obsoleteNetwork + " from path " + networkDir + "...");
                 FileUtil.DeleteFileOrDirectory(networkDir);
                 changesMade = true;
             }
@@ -186,7 +185,7 @@ public class MaxInitialize
         if (changesMade)
         {
             AssetDatabase.Refresh();
-            Debug.Log("AppLovin MAX Migration completed");
+            MaxSdkLogger.UserDebug("AppLovin MAX Migration completed");
         }
 
         EditorUtility.ClearProgressBar();
