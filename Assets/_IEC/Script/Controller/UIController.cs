@@ -38,13 +38,13 @@ namespace IEC
                 case EventList.GamePlay.GAME_OVER_UI:
                     GameOver((bool)param.p0);
                     break;
-                case EventList.GamePlay.GAME_START:
+                case EventList.GamePlay.GAME_START_PLAY:
                     if (Game.isHaveUIAnimation)
                     {
                         UI.TweenPannelTop(true);
                     }
 
-                    if (Game.isBossLevel)
+                    if (Game.isBossLevelLimitMoves)
                     {
                         UI.TweenBossLevel();
                     }

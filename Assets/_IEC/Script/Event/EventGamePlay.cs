@@ -6,9 +6,10 @@ namespace IEC
         {
             public const string RESET_CONFIG = "GamePlay.RESET_CONFIG";
 
-            public const string GAME_START = "GamePlay.GAME_START";
+            public const string GAME_START_PLAY = "GamePlay.GAME_START_PLAY";
             public const string GAME_RESTART = "GamePlay.GAME_RESTART";
             public const string GAME_SPAWN_LEVEL = "GamePlay.GAME_SPAWN_LEVEL";
+
             public const string GAME_CHECK_CONNECT = "GamePlay.GAME_CHECK_CONNECT";
             public const string GAME_CHECK_COMPLETE = "GamePlay.GAME_CHECK_COMPLETE";
             public const string GAME_OVER_UI = "GamePlay.GAME_OVER_UI";

@@ -113,9 +113,9 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
             
-            m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
+            m_TargetStyle = RandomHelper.RangeWithSeed(Game.levelSeed, 0, m_TargetStyles.Length);
 
-            Game.seed += 1;
+            Game.levelSeed += 1;
 
             for (int i = 0; i < m_TargetStyles.Length; i++)
             {
