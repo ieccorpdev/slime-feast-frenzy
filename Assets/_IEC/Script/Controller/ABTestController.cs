@@ -70,7 +70,7 @@ namespace IEC
 
         private void Result20201209()
         {
-            Game.isLevelDifficultyV4 = false;
+            Game.isLevelDifficultyV4 = true;
             GameController.GetLevelDifficulty();
         }
 
