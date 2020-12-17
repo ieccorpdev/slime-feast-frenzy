@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class PopupRating : MonoBehaviour
+    public class PopupRating : MonoBehaviour, IUIGroup
     {
         [SerializeField]
         private Button m_BtnClose, m_BtnNoThank, m_BtnLoveIt;

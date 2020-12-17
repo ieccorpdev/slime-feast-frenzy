@@ -43,6 +43,7 @@ namespace IEC
             GamePlay.listWallCorners.ForEach(x => x.OnDestroyMe());
             Game.OnResetAll();
             UIController.OnResetAll();
+            Sound.SetupAudio();
         }
 
         private IEnumerator IESpawnLevel()
@@ -132,10 +133,10 @@ namespace IEC
             Game.moveRemains = Game.totalMove;
             if (Game.isBossLevelLimitMoves)
             {
-                UIController.UpdateMove();
+                UI.mainUIGroup.UpdateMove();
             }
 
-            UIController.SetupBossLevel(Game.isBossLevelLimitMoves);
+            UIController.SetLevel(Game.isBossLevelLimitMoves);
 
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
