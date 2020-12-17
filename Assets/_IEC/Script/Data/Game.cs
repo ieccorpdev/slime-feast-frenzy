@@ -100,6 +100,7 @@ namespace IEC
 
         //Prepared
         public bool isLeavesEffect;
+        public bool isNewUI;
 
         public void OnResetAll()
         {

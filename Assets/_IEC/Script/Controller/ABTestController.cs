@@ -6,6 +6,9 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
+        [SerializeField]
+        private GameObject m_OldUI, m_NewUI;
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -27,10 +30,6 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-        }
-
-        public void BehaviourStart()
-        {
             var abTestConfigs = Services.config.abTestConfigs;
             if (abTestConfigs.Length == 0) return;
             var abTestConfig = Services.config.abTestConfigs.Last();
@@ -45,14 +44,15 @@ namespace IEC
             Result20201204();
             Result20201209();
 
+
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201215(abValue);
+            UpdateAb20201218(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201215(abValue);
+                    UpdateAb20201218(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -61,6 +61,22 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        public void BehaviourStart()
+        {
+
+        }
+
+        private void UpdateAb20201218(int abValue)
+        {
+            Game.isNewUI = false;
+            m_OldUI.SetActive(!Game.isNewUI);
+            m_NewUI.SetActive(Game.isNewUI);
+
+            Controllers.Get<EventController>().AbUIGroup();
+
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20201215(int abValue)
@@ -152,7 +168,7 @@ namespace IEC
         {
             Game.isHaveHint = true;
             Game.isReduceHintGrid = true;
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20201120(int abValue)
@@ -162,13 +178,13 @@ namespace IEC
             Game.isFixedHintGrid = abValue == 2;
             Game.isFixLevelDifficulty = abValue == 3;
 
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void Result20201117()
         {
             Game.isHaveHint = true;
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20201117(int abValue)
@@ -177,7 +193,7 @@ namespace IEC
             Game.isHaveTutorital = abValue == 2;
             Game.isHaveNomalLevelsMixColor = abValue == 2;
 
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20201112(int abValue)
