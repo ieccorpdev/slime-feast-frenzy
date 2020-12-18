@@ -154,7 +154,7 @@ namespace IEC
         {
             Game.isLevelDifficultyV2 = true;
             Game.isRandomColorClassicMode = true;
-            Game.isStartLevelEffect = false;
+            //Game.isStartLevelEffect = false;
         }
 
         private void UpdateAb20201125(int abValue)

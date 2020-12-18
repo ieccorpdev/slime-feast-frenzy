@@ -399,8 +399,11 @@ namespace IEC
         private void OnTweenMove(bool isDestroy)
         {
             m_Tween?.Kill(true);
-            var moveTime = Random.Range(.5f, .75f);
-            var delayTime = Random.Range(.25f, .5f);
+            //var moveTime = Random.Range(.5f, .75f);
+            //var delayTime = Random.Range(.25f, .5f);
+
+            var moveTime = Config.startEffectMoveTime;
+            var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
 
             if (isDestroy)
             {
@@ -417,6 +420,18 @@ namespace IEC
                 transform.localPosition = tempPos;
 
                 m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+            }
+        }
+
+        private int GetIndexSpawn()
+        {
+            if (Game.isStartLevelEffectType == 0)
+            {
+                return Col - 1;
+            }
+            else
+            {
+                return (Game.size - Col - 2);
             }
         }
 

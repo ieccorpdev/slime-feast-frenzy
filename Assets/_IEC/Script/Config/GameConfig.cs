@@ -33,6 +33,9 @@ namespace IEC
         public List<ThemeConfig> listEnviromentConfigs;
         public List<Sprite> listSpriteBackgrounds;
 
+        //Effect config
+        public float startEffectMoveTime;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

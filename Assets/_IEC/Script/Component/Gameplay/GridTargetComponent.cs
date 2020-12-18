@@ -125,7 +125,10 @@ namespace IEC
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, 0, m_TreesStyles.Length);
+            var minIndex = Game.isHaveNewTrees ? 4 : 0;
+            var maxIndex = Game.isHaveNewTrees ? 15 : 5;
+
+            m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
             Game.levelSeed += 1;
 
             for (int i = 0; i < m_TreesStyles.Length; i++)

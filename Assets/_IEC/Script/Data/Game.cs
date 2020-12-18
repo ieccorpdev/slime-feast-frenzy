@@ -61,6 +61,8 @@ namespace IEC
 
         public ThemeConfig enviromentConfig;
 
+        public int isStartLevelEffectType;
+
         public bool IsAllowUndo()
         {
             var count = listGrids.Count;
@@ -83,7 +85,7 @@ namespace IEC
         public bool isFixLevelDifficulty;
         public bool isLevelDifficultyV2;
         public bool isRandomColorClassicMode;
-        public bool isStartLevelEffect;
+        
 
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterEffect;
@@ -96,11 +98,16 @@ namespace IEC
         public bool isHaveBossMixColorLevels;
 
         public bool isLevelDifficultyV4;
-        public bool isChangeGridStatus;
+
+        public bool isNewUI;
+        public bool isHaveNewTrees;
+        public bool isStartLevelEffect;
+        
 
         //Prepared
         public bool isLeavesEffect;
-        public bool isNewUI;
+        public bool isChangeGridStatus;
+
 
         public void OnResetAll()
         {

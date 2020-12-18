@@ -32,9 +32,12 @@ namespace IEC
             gameObject.SetActive(true);
             if (!Game.isStartLevelEffect) return;
 
-            var moveTime = Random.Range(.5f, .75f);
-            var delayTime = Random.Range(.25f, .5f);
+            //var moveTime = Random.Range(.5f, .75f);
+            //var delayTime = Random.Range(.25f, .5f);
 
+            var moveTime = Config.startEffectMoveTime;
+            var delayTime = 0f;
+             
             var tempPos = CurrentLocalPos;
             tempPos.y = 15f;
             transform.localPosition = tempPos;

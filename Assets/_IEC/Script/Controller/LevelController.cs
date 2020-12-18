@@ -50,6 +50,9 @@ namespace IEC
         {
             OnResetAll();
             Game.levelSeed = PlayerData.level;
+
+            Game.isStartLevelEffectType = Random.Range(0, 2);
+
             if (Game.isHaveBossLimitMoveLevels)
             {
                 Game.isBossLevelLimitMoves = (Game.levelSeed % 5) == 0;
