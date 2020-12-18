@@ -227,13 +227,6 @@ namespace IEC
             }
 
             sequence.Play();
-
-            //m_TweenScale = m_TranTargets[m_TargetIndex].
-            //    DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
-            //    .SetEase(ease)
-            //    .OnComplete(() => {
-            //        callBack?.Invoke();
-            //    });
         }
 
         public override void OnDestroyMe()
