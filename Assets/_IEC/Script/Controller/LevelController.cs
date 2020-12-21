@@ -67,7 +67,11 @@ namespace IEC
                 }
             }
 
-            var levelSpawn = GetLevelSpawn(Game.levelSeed);
+            var levelSpawn = Game.isCheatLevel ? new LevelSpawn(Game.levelSeed, false) : GetLevelSpawn(Game.levelSeed);
+            if (Game.isCheatLevel)
+            {
+                isBossMixColor = false;
+            }
 
             SetupEnviroment();
 

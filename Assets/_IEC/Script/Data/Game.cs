@@ -63,6 +63,8 @@ namespace IEC
 
         public int isStartLevelEffectType;
 
+        public bool isCheatLevel;
+
         public bool IsAllowUndo()
         {
             var count = listGrids.Count;
