@@ -102,7 +102,7 @@ namespace IEC
         public bool isNewUI;
         public bool isHaveNewTrees;
         public bool isStartLevelEffect;
-        
+        public bool isHintV2;
 
         //Prepared
         public bool isLeavesEffect;
