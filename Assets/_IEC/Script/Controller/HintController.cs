@@ -50,67 +50,103 @@ namespace IEC
                 addIndex = Mathf.RoundToInt(addIndex * .7f);
             }
 
-            Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
-            var startIndexEffect = Game.maxHintIndex - addIndex;
-            for (int i = 0; i < Game.maxHintIndex; i++)
+            if (Game.isHintV2)
             {
-                var grid = Game.listHints[i];
-                if(i >= startIndexEffect)
+                var moveCount = 0;
+                var listHintsCount = Game.listHints.Count;
+                for (int i = 0; i < listHintsCount; i++)
                 {
-                    m_ListTempHint.Add(grid);
-                }
-                if (!grid.IsTrueRot)
-                {
-                    grid.OnHint();
+                    var grid = Game.listHints[i];
+                    if (!grid.IsTrueRot)
+                    {
+                        grid.OnHint();
+                        m_ListTempHint.Add(grid);
+                        moveCount += 1;
+                    }
+
+                    if(moveCount >= addIndex)
+                    {
+                        break;
+                    }
                 }
             }
+            else
+            {
+                Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
+                var startIndexEffect = Game.maxHintIndex - addIndex;
+                for (int i = 0; i < Game.maxHintIndex; i++)
+                {
+                    var grid = Game.listHints[i];
+                    if (i >= startIndexEffect)
+                    {
+                        m_ListTempHint.Add(grid);
+                    }
+                    if (!grid.IsTrueRot)
+                    {
+                        grid.OnHint();
+                    }
+                }
+            }
+
 
             EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT, new EventParam(this, m_ListTempHint));
             Services.PushEvent(new IEC.TrackingEvent.HintLevel());
         }
 
-        private List<BaseComponent> m_ListTempGridSolution = new List<BaseComponent>();
+        private List<BaseComponent> m_ListGridSolution = new List<BaseComponent>();
         public void CheckSoulution()
         {
             Game.listGrids.ForEach(x => x.PrepareCheckConnect());
 
             var sourceCount = Game.listSource.Count;
+            var totalGrid = Game.size * Game.size;
+
             for (int i = 0; i < sourceCount; i++)
             {
                 var source = Game.listSource[i];
 
-                m_ListTempGridSolution.Clear();
-                m_ListTempGridSolution.Add(source);
+                m_ListGridSolution.Clear();
+                m_ListGridSolution.Add(source);
 
-                var totalGrid = Game.size * Game.size;
+                
                 bool isChanged = true;
-                var totalGridHaveWaterCount = m_ListTempGridSolution.Count;
+                var totalGridHaveWaterCount = m_ListGridSolution.Count;
+
+                var startIndex = 0;
 
                 while (totalGridHaveWaterCount < totalGrid && isChanged)
                 {
-                    var count = m_ListTempGridSolution.Count;
-                    for (int j = 0; j < count; j++)
+                    var count = m_ListGridSolution.Count;
+                    for (int j = startIndex; j < count; j++)
                     {
-                        var grid = m_ListTempGridSolution[j];
-                        var listGridNear = grid.GetGridsCanConnect(source.WaterIndexColor);
-
-                        var listGridNearCount = listGridNear.Count;
-                        if (listGridNear.Count > 0)
+                        var grid = m_ListGridSolution[j];
+                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        startIndex += 1;
+                        var listGridNearCount = listGrids.Count;
+                        if (listGridNearCount > 0)
                         {
-                            listGridNear.ForEach(x => x.SetConnect(source.WaterIndexColor, 0));
-                            m_ListTempGridSolution.AddRange(listGridNear);
+                            for (int x = 0; x < listGridNearCount; x++)
+                            {
+                                var gridNearConnect = listGrids[x];
+
+                                if (!m_ListGridSolution.Contains(gridNearConnect))
+                                {
+                                    m_ListGridSolution.Add(gridNearConnect);
+                                    gridNearConnect.SetConnect(source.WaterIndexColor, 0);
+                                }
+                            }
                         }
                     }
 
-                    totalGridHaveWaterCount = m_ListTempGridSolution.Count;
+                    totalGridHaveWaterCount = m_ListGridSolution.Count;
 
                     if (totalGridHaveWaterCount == count)
                     {
                         isChanged = false;
-                        var gridSolutionCount = m_ListTempGridSolution.Count;
+                        var gridSolutionCount = m_ListGridSolution.Count;
                         for (int x = 0; x < gridSolutionCount; x++)
                         {
-                            var gridNear = m_ListTempGridSolution[x];
+                            var gridNear = m_ListGridSolution[x];
                             if (gridNear.GridType != GridType.WALL)
                             {
                                 Game.listHints.Add(gridNear);

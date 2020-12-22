@@ -13,14 +13,9 @@ namespace IEC
         [SerializeField]
         private MeshRenderer m_Mesh;
 
-        [SerializeField]
-        private GameObject m_GrassObj;
-
         public void OnInit(Material mat)
         {
             m_Mesh.material = mat;
-
-            m_GrassObj.SetActive(Game.abTheme == 0);
         }
 
         private void OnMouseDown()
@@ -37,9 +32,12 @@ namespace IEC
             gameObject.SetActive(true);
             if (!Game.isStartLevelEffect) return;
 
-            var moveTime = Random.Range(.5f, .75f);
-            var delayTime = Random.Range(.25f, .5f);
+            //var moveTime = Random.Range(.5f, .75f);
+            //var delayTime = Random.Range(.25f, .5f);
 
+            var moveTime = Config.startEffectMoveTime;
+            var delayTime = 0f;
+             
             var tempPos = CurrentLocalPos;
             tempPos.y = 15f;
             transform.localPosition = tempPos;

@@ -15,24 +15,17 @@ namespace IEC
         private ParticleSystem[] m_PsWins;
 
         [SerializeField]
-        private MeshRenderer[] m_MeshTargets;
-
-        [SerializeField]
-        private Transform[] m_TranTargets;
-
-        [SerializeField]
-        private GameObject[] m_TargetStyles;
-
-        [SerializeField]
-        private GameObject[] m_StyleLineObj;
+        private GameObject[] m_TreesStyles;
 
         private Tween m_TweenScale;
 
-        private int m_TargetStyle;
+        private int m_TargetIndex;
+
+        private List<Transform> m_ListTransTrees = new List<Transform>();
 
         public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
-        public bool IsGrowUpComplete;
+        private bool IsGrowUpComplete;
 
         public bool IsComplete => IsDone && IsGrowUpComplete;
 
@@ -112,22 +105,11 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            
-            m_TargetStyle = RandomHelper.RangeWithSeed(Game.seed, 0, m_TargetStyles.Length);
-
-            Game.seed += 1;
-
-            for (int i = 0; i < m_TargetStyles.Length; i++)
-            {
-                m_TargetStyles[i].SetActive(i == m_TargetStyle);
-            }
-
-            m_TranTargets[m_TargetStyle].localScale = Vector3.one * SMALL_SCALE;
 
             // Line
-            for (int i = 0; i < m_StyleLineObj.Length; i++)
+            for (int i = 0; i < m_LineTyleObjs.Length; i++)
             {
-                m_StyleLineObj[i].SetActive(i == style);
+                m_LineTyleObjs[i].SetActive(i == style);
             }
 
             for (int i = 0; i < m_WaterCount; i++)
@@ -137,19 +119,32 @@ namespace IEC
 
             var mat = CurrentMat;
             var colorEffect = mat.color;
+
             for (int i = 0; i < m_PsWins.Length; i++)
             {
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            for (int i = 0; i < m_MeshTargets.Length; i++)
+            var minIndex = Game.isHaveNewTrees ? 4 : 0;
+            var maxIndex = Game.isHaveNewTrees ? 15 : 5;
+
+            m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
+            Game.levelSeed += 1;
+
+            for (int i = 0; i < m_TreesStyles.Length; i++)
             {
-                m_MeshTargets[i].material = mat;
+                m_TreesStyles[i].SetActive(i == m_TargetIndex);
             }
 
-            for (int i = 0; i < m_LineMeshs.Length; i++)
+            var tree = m_TreesStyles[m_TargetIndex].transform.GetChild(0);
+
+            for (int i = 0; i < tree.childCount; i++)
             {
-                m_LineMeshs[i].material = m_LineMats[i];
+                var itemTree = tree.GetChild(i);
+                itemTree.localScale = Vector3.one * SMALL_SCALE;
+                itemTree.GetComponent<MeshRenderer>().material = mat;
+
+                m_ListTransTrees.Add(itemTree);
             }
         }
 
@@ -163,7 +158,7 @@ namespace IEC
 
             if (!m_IsHaveWater)
             {
-                isHavingWater = false;
+                m_IsHavingWater = false;
                 IsGrowUpComplete = false;
             }
             SetColor();
@@ -221,13 +216,20 @@ namespace IEC
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
             m_TweenScale?.Kill(true);
+            Sequence sequence = DOTween.Sequence();
+
             var ease = isGrowUp ? Ease.OutBounce : Ease.Unset;
-            m_TweenScale = m_TranTargets[m_TargetStyle].
-                DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
-                .SetEase(ease)
-                .OnComplete(() => {
-                    callBack?.Invoke();
-                });
+
+            m_TweenScale = sequence.OnComplete(() => {
+                callBack?.Invoke();
+            });
+            for (int i = 0; i < m_ListTransTrees.Count; i++)
+            {
+                sequence.Join(m_ListTransTrees[i].DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
+                .SetEase(ease));
+            }
+
+            sequence.Play();
         }
 
         public override void OnDestroyMe()

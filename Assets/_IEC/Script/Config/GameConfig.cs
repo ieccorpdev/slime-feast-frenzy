@@ -15,29 +15,26 @@ namespace IEC
         public _EmptyConfig emptyConfig;
         public ComponentConfig componentConfig;
 
+        public GameObject effectLeavesObj;
+
+        public List<TutorialConfig> listTuts;
+
+
+        //Water
         public Color[] waterColor;
         public Color targetColorDefault;
 
         public Material[] targetMats;
         public Material targetDefaultMat;
 
-        public List<TextAsset> ListLevels;
-
-        public List<TutorialConfig> listTuts;
-
-        public GameObject effectLeavesObj;
-
         public Color[] colorBSP;
-
         public Material[] matBSP;
 
-        public Material waterMat, newWaterMat;
-
         public List<ThemeConfig> listEnviromentConfigs;
-
         public List<Sprite> listSpriteBackgrounds;
 
-        public Material[] lineMatDefaultMats, lineNewMats;
+        //Effect config
+        public float startEffectMoveTime;
 
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {

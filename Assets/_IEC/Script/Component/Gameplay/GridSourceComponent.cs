@@ -6,15 +6,6 @@ namespace IEC
 {
     public class GridSourceComponent : BaseGrid
     {
-        [SerializeField]
-        private GameObject[] m_StyleObj;
-
-        [SerializeField]
-        private GameObject m_DefaultSourceObj, m_NewSourceObj;
-
-        [SerializeField]
-        private Transform m_TransWaterFall;
-
         protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -53,33 +44,15 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
-            for (int i = 0; i < m_StyleObj.Length; i++)
+
+            for (int i = 0; i < m_LineTyleObjs.Length; i++)
             {
-                m_StyleObj[i].SetActive(i == style);
+                m_LineTyleObjs[i].SetActive(i == style);
             }
 
-            for (int i = 0; i < m_WaterCount - 3; i++)
+            for (int i = 0; i < m_WaterCount - 4; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == style);
-            }
-
-            m_WaterComponent[m_WaterCount - 4].gameObject.SetActive(true);
-
-            bool isNewTheme = Game.abTheme > 0;
-
-            for (int i = m_WaterCount - 3; i < m_WaterCount; i++)
-            {
-                m_WaterComponent[i].gameObject.SetActive(isNewTheme);
-            }
-
-            m_TransWaterFall.localPosition = new Vector3(isNewTheme ? -.1f : 0f, .2f, 0f);
-
-            m_DefaultSourceObj.SetActive(!isNewTheme);
-            m_NewSourceObj.SetActive(isNewTheme);
-
-            for (int i = 0; i < m_LineMeshs.Length; i++)
-            {
-                m_LineMeshs[i].material = m_LineMats[i];
             }
 
             ConfigWater();
@@ -108,13 +81,12 @@ namespace IEC
         public override void AfterInit()
         {
             base.AfterInit();
-
             SetSetGrowingWater(true, WaterPoint.CENTER);
         }
 
         private void ConfigWater()
         {
-            isHavingWater = true;
+            m_IsHavingWater = true;
             m_IsHaveWater = true;
             m_IsOldHaveWater = true;
             m_OldWaterIndexColor = TrueColor;

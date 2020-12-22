@@ -8,22 +8,25 @@ namespace IEC
     public class BaseComponent : _BaseBehaviour
     {
         [SerializeField]
-        protected WaterComponent[] m_WaterComponent;
-
-        [SerializeField]
         private TerrainComponent m_Terrain;
 
         [SerializeField]
         protected EffectGridAura m_HintEffect;
 
         [SerializeField]
+        protected WaterComponent[] m_WaterComponent;
+
+        [SerializeField]
         protected MeshRenderer[] m_LineMeshs;
+
+        [SerializeField]
+        protected GameObject[] m_LineTyleObjs;
 
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
 
-        public Vector3 CurrentWorldPos => Transform.position;
-        private Vector3 CurrentLocalPos => Transform.localPosition;
+        public Vector3 CurrentWorldPos => transform.position;
+        private Vector3 CurrentLocalPos => transform.localPosition;
 
         // Use set water pos
         private Vector3 CenterPos => CurrentWorldPos;
@@ -52,12 +55,12 @@ namespace IEC
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         // Grid static data
-        //[HideInInspector]
+        [HideInInspector]
         public int Row, Col, TrueRot, TrueColor;
 
         public GridType GridType;
 
-        //[HideInInspector]
+        [HideInInspector]
         public int WaterIndexColor;
 
         // Dynamic data
@@ -80,9 +83,9 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater;
 
-        public bool m_IsOldHaveWater, isHavingWater;
+        protected bool m_IsOldHaveWater, m_IsHavingWater;
 
-        public int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
+        protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
         private int m_DelayStart;
 
@@ -91,11 +94,9 @@ namespace IEC
 
         //Temp
         protected Tween m_Tween;
-        public List<int> m_ListWaterColor = new List<int>();
+        protected List<int> m_ListWaterColor = new List<int>();
         private BaseComponent m_TempGrid;
         private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
-
-        protected Material[] m_LineMats;
 
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
@@ -116,11 +117,9 @@ namespace IEC
 
             if(m_WaterCount > 0)
             {
-                Material waterMat = Game.isHaveNewWaterEffect ? Config.newWaterMat : Config.waterMat;
-
                 for (int i = 0; i < m_WaterCount; i++)
                 {
-                    m_WaterComponent[i].OnInit(waterMat, OnWaterGrowUpDone);
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone);
                 }
             }
 
@@ -143,7 +142,6 @@ namespace IEC
                 OnTweenMove(false);
             }
 
-            m_LineMats = Game.abTheme > 0 ? Config.lineNewMats : Config.lineMatDefaultMats;
         }
 
         private void OnMouseDown()
@@ -200,7 +198,7 @@ namespace IEC
             m_IsOldHaveWater = false;
             m_OldWaterIndexColor = 0;
             m_DelayStart = 0;
-            isHavingWater = false;
+            m_IsHavingWater = false;
             m_ListWaterColor.Clear();
             m_StartWater = WaterPoint.CENTER;
         }
@@ -306,10 +304,10 @@ namespace IEC
 
         protected virtual void OnWaterGrowUpDone()
         {
-            isHavingWater = true;
+            m_IsHavingWater = true;
         }
 
-        public int DelayStart => isHavingWater ? 0 : m_DelayStart + 1;
+        public int DelayStart => m_IsHavingWater ? 0 : m_DelayStart + 1;
 
         public void SetStartWater(WaterPoint point)
         {
@@ -349,7 +347,7 @@ namespace IEC
 
             if (!m_IsHaveWater)
             {
-                isHavingWater = false;
+                m_IsHavingWater = false;
             }
             SetColor();
             //if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
@@ -401,8 +399,11 @@ namespace IEC
         private void OnTweenMove(bool isDestroy)
         {
             m_Tween?.Kill(true);
-            var moveTime = Random.Range(.5f, .75f);
-            var delayTime = Random.Range(.25f, .5f);
+            //var moveTime = Random.Range(.5f, .75f);
+            //var delayTime = Random.Range(.25f, .5f);
+
+            var moveTime = Config.startEffectMoveTime;
+            var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
 
             if (isDestroy)
             {
@@ -419,6 +420,18 @@ namespace IEC
                 transform.localPosition = tempPos;
 
                 m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+            }
+        }
+
+        private int GetIndexSpawn()
+        {
+            if (Game.isStartLevelEffectType == 0)
+            {
+                return Col - 1;
+            }
+            else
+            {
+                return (Game.size - Col - 2);
             }
         }
 
@@ -455,7 +468,7 @@ namespace IEC
         public virtual void SetTerrainMat()
         {
             if (m_Terrain == null) return;
-            var listMats = Config.listEnviromentConfigs[Game.abTheme].listTerrains;
+            var listMats = Config.listEnviromentConfigs[Game.themeIndex].listTerrains;
             var mat = m_IsHaveWater ? listMats[0] : listMats[1];
             m_Terrain.SetupTerrain(mat);
         }

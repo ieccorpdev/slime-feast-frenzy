@@ -23,7 +23,7 @@ namespace IEC
 
         public bool isPlaying, isMultiColor, isTutorial, isAllowHint, isGameWin;
 
-        public int size, seed, timePlay, gridTutId, gridRotCount, tutCount;
+        public int size, levelSeed, timePlay, gridTutId, gridRotCount, tutCount;
 
         public int maxGrassOnWall, classicColor;
 
@@ -57,9 +57,13 @@ namespace IEC
 
         public int undoRemains;
 
-        public bool isBossLevel;
+        public bool isBossLevelLimitMoves;
 
         public ThemeConfig enviromentConfig;
+
+        public int isStartLevelEffectType;
+
+        public bool isCheatLevel;
 
         public bool IsAllowUndo()
         {
@@ -73,7 +77,7 @@ namespace IEC
         }
 
         [Header("AB Test")]
-        public bool isHaveMixColor;
+        public bool isHaveNomalLevelsMixColor;
         public bool isFasterRotate;
         public bool isHaveSetting;
         public bool isHaveTutorital;
@@ -83,25 +87,58 @@ namespace IEC
         public bool isFixLevelDifficulty;
         public bool isLevelDifficultyV2;
         public bool isRandomColorClassicMode;
-        public bool isStartLevelEffect;
+        
 
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterEffect;
-        public bool isHaveBossLevel;
+        public bool isHaveBossLimitMoveLevels;
         public bool isHaveUIAnimation;
 
         public bool isHaveNotification;
-        public int abTheme;
-        public bool isHaveBossLevelsMixColor;
+        public int themeIndex;
+        public int backGroundIndex;
+        public bool isHaveBossMixColorLevels;
 
         public bool isLevelDifficultyV4;
-        public bool isChangeGridStatus;
+
+        public bool isNewUI;
+        public bool isHaveNewTrees;
+        public bool isStartLevelEffect;
+        public bool isHintV2;
 
         //Prepared
         public bool isLeavesEffect;
+        public bool isChangeGridStatus;
+
+
+        public void OnResetAll()
+        {
+            listGrids.ForEach(x => x.OnDestroyMe());
+            listGrids.Clear();
+
+            listSource.Clear();
+            listTarget.Clear();
+            listTerrainType.Clear();
+            listHints.Clear();
+
+            isMultiColor = false;
+            isTutorial = false;
+            isAllowHint = true;
+            isWaitAfterRV = false;
+            maxHintIndex = 0;
+            isPlaying = false;
+
+            totalMove = 0;
+            moveRemains = 0;
+
+            listGrids.Clear();
+            listUndo.Clear();
+
+            isBossLevelLimitMoves = false;
+            undoRemains = 2;
+            moveCount = 0;
+        }
         
-
-
         public BaseComponent GetGrid(int row, int col, int color)
         {
             if (row < 0 || row > size - 1) return null;
@@ -146,6 +183,18 @@ namespace IEC
         {
             Row = row;
             Col = col;
+        }
+    }
+
+    public struct LevelSpawn
+    {
+        public int level;
+        public bool isRandomRotate;
+
+        public LevelSpawn(int level, bool isRandomRotate)
+        {
+            this.level = level;
+            this.isRandomRotate = isRandomRotate;
         }
     }
 }

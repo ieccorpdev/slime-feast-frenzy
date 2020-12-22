@@ -1,6 +1,4 @@
 ﻿using MoreMountains.NiceVibrations;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -8,12 +6,6 @@ namespace IEC
     public class UIController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventUpdate
     {
         private float m_CountVibrateHint, m_NextTimeVibrate;
-
-        [SerializeField]
-        private Gradient m_MoveColor;
-
-        private static readonly List<string> TextWinBonus = new List<string>
-        {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
         public void LocateController()
         {
@@ -27,8 +19,8 @@ namespace IEC
 
         public void BehaviourAwake()
         {
+            UI.OnInit();
             InitButtonEvent();
-            UI.popUpRating.OnInit();
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -38,15 +30,15 @@ namespace IEC
                 case EventList.GamePlay.GAME_OVER_UI:
                     GameOver((bool)param.p0);
                     break;
-                case EventList.GamePlay.GAME_START:
+                case EventList.GamePlay.GAME_START_PLAY:
                     if (Game.isHaveUIAnimation)
                     {
-                        UI.TweenPannelTop(true);
+                        UI.mainUIGroup.TweenPannelTop(true);
                     }
 
-                    if (Game.isBossLevel)
+                    if (Game.isBossLevelLimitMoves)
                     {
-                        UI.TweenBossLevel();
+                        UI.mainUIGroup.TweenBossLevel();
                     }
 
                     if (!PlayerData.haveAlreadyRate)
@@ -65,7 +57,7 @@ namespace IEC
                     var grid = (BaseComponent)param.sender;
                     Game.AddUndoData(grid.Row, grid.Col);
                     Game.moveRemains -= 1;
-                    UpdateMove();
+                    UI.mainUIGroup.UpdateMove();
                     Game.moveCount += 1;
                     break;
             }
@@ -77,14 +69,15 @@ namespace IEC
             m_CountVibrateHint += deltaTime;
             if(m_CountVibrateHint >= m_NextTimeVibrate)
             {
-                UI.OnVibrateHint();
+                UI.mainUIGroup.OnVibrateHint();
                 ResetVibrateHint();
             }
         }
 
         private void InitButtonEvent()
         {
-            UI.btnRestart.onClick.AddListener(() => {
+
+            UI.mainUIGroup.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
                 Game.isPlaying = false;
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
@@ -95,7 +88,7 @@ namespace IEC
                 }
             });
 
-            UI.btnSkip.onClick.AddListener(() => {
+            UI.mainUIGroup.btnSkip.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
                 Services.ShowRewardAds(() => {
                     Services.PushEvent(new IEC.TrackingEvent.SkipLevel());
@@ -104,32 +97,14 @@ namespace IEC
                 });
             });
 
-            UI.btnGONext.onClick.AddListener(() => {
-                EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
-            });
 
-            UI.btnSetting.onClick.AddListener(() => {
+            UI.mainUIGroup.btnSetting.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
                 UI.popupSettings.gameObject.SetActive(true);
                 Game.isShowPopup = true;
             });
 
-            UI.popupSettings.btnClose.onClick.AddListener(() => {
-                UI.popupSettings.gameObject.SetActive(false);
-                Game.isShowPopup = false;
-            });
-
-            UI.popupSettings.btnSound.onClick.AddListener(() => {
-                PlayerData.isSoundOn = !PlayerData.isSoundOn;
-                SetStatusSetting();
-            });
-
-            UI.popupSettings.btnVibrate.onClick.AddListener(() => {
-                PlayerData.isVibrateOn = !PlayerData.isVibrateOn;
-                SetStatusSetting();
-            });
-
-            UI.btnHint.onClick.AddListener(() => {
+            UI.mainUIGroup.btnHint.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
                 Services.ShowRewardAds(() => {
                     Game.isWaitAfterRV = true;
@@ -138,7 +113,7 @@ namespace IEC
                 });
             });
 
-            UI.btnUndo.onClick.AddListener(OnHandleUndo);
+            UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
         }
 
         private void OnHandleUndo()
@@ -150,9 +125,9 @@ namespace IEC
                 {
                     EventController.RaiseEvent(EventList.GamePlay.GAME_UNDO);
                     Game.undoRemains -= 1;
-                    UpdateUndoText();
+                    UI.mainUIGroup.UpdateUndoText();
                     Game.moveRemains += 1;
-                    UpdateMove();
+                    UI.mainUIGroup.UpdateMove();
                     Services.PushEvent(new IEC.TrackingEvent.UndoLevel());
                 }
             }
@@ -160,78 +135,49 @@ namespace IEC
             {
                 Services.ShowRewardAds(() => {
                     Game.undoRemains = 3;
-                    UpdateUndoText();
+                    UI.mainUIGroup.UpdateUndoText();
                     Services.PushEvent(new IEC.TrackingEvent.ShowRewardUndo());
                 });
             }
         }
 
-        private void UpdateUndoText()
-        {
-            UI.txtUndo.text = StringHelper.GetNumber(Game.undoRemains);
-            UI.undoAds.SetActive(Game.undoRemains <= 0);
-            UI.undoCount.SetActive(Game.undoRemains > 0);
-        }
-
-        public void UpdateMove()
-        {
-            UI.txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
-            float valueColor = (float)Game.moveRemains / Game.totalMove;
-            UI.txtMove.color = m_MoveColor.Evaluate(valueColor);
-        }
 
         public void SetActiveButtons(bool isActive)
         {
-            UI.btnSetting.interactable = isActive;
-            UI.btnSkip.interactable = isActive;
-            UI.btnRestart.interactable = isActive;
+            UI.mainUIGroup.SetActiveTopButtons(isActive);
         }
 
         public void SetupAbUI()
         {
-            UI.btnSetting.gameObject.SetActive(Game.isHaveSetting);
-            UI.btnSkip.gameObject.SetActive(!Game.isHaveHint);
-            SetStatusSetting();
-            Sound.SetupAudio();
+            UI.mainUIGroup.SetupAbUI();
         }
 
         public void OnResetAll()
         {
             if (!Game.isHaveUIAnimation)
             {
-                UI.TweenPannelTop(true);
+                UI.mainUIGroup.TweenPannelTop(true);
             }
-            SetActiveButtons(true);
+
+            UI.OnResetAll();
+            UI.mainUIGroup.UpdateUndoText();
             Game.isShowPopup = false;
-            UI.popupSettings.gameObject.SetActive(false);
-            UI.TweenGameOver(false);
-            SetStatusSetting();
+            SetActiveButtons(true);
+
             ResetVibrateHint();
-
-            UpdateUndoText();
         }
 
-        public void SetupBossLevel(bool isBossLevel)
+        public void SetLevel(bool isBossLevel)
         {
-            UI.btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
-            UI.btnUndo.gameObject.SetActive(isBossLevel);
-            UI.txtMove.gameObject.SetActive(isBossLevel);
-
+            UI.mainUIGroup.SetupBossLevel(isBossLevel);
             UI.txtLevel.text = "LEVEL " + StringHelper.GetNumber(PlayerData.level);
-        }
-
-        private void SetStatusSetting()
-        {
-            UI.popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
-            Sound.SetupAudio();
         }
 
         private void GameOver(bool isWin)
         {
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-            UI.TweenGameOver(true);
+            UI.OnGameOver(true);
             SetActiveButtons(true);
-            UI.txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
 
             if (PlayerData.isVibrateOn)
             {
