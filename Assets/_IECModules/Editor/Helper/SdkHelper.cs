@@ -18,7 +18,7 @@ namespace _IECModules
         public const string KOCHAVA_CURRENT_VERSION = "4.1.1";
 
         public const string FACEBOOK_SDK_BASE_URL =
-            "https://origincache.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
+            "https://lookaside.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
 
         public const string KOCHAVA_SDK_BASE_URL =
             "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
@@ -34,8 +34,8 @@ namespace _IECModules
             "https://dl.bintray.com/ironsource-mobile/unity-sdk/IronSource_v{0}.unitypackage";
 
         public const string FACEBOOK_SDK_CURRENT_VERSION_URL =
-            "https://origincache.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
-
+            "https://lookaside.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
+            
         public const string EXTERNAL_PACKAGE_MANAGER_URL =
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
 
