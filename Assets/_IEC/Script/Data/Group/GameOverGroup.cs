@@ -33,13 +33,13 @@ namespace IEC
             });
         }
 
+        public void SetTextGameOver()
+        {
+            m_TxtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+        }
+
         public void TweenGameOver(bool isActive)
         {
-            if (isActive)
-            {
-                m_TxtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
-            }
-
             //txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
             //txtGO.transform.localScale = Game.isHaveUIAnimation ? Vector3.one * .1f : Vector3.one;
             //rectPanelGO.anchoredPosition = new Vector2(Game.isHaveUIAnimation ? -1500f : 0f, 80f);
