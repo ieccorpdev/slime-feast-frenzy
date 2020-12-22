@@ -7,6 +7,7 @@ namespace IEC
         void PushCachedEvents();
         void PushEvent(string eventName, float value = 1f, Dictionary<string, object> param = null);
         void SetUserProperty(string name, string property);
+        bool IsDisable { get; set; }
     }
 
     public class AnalyticEventData

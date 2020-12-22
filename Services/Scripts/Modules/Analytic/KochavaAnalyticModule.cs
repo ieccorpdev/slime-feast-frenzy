@@ -8,6 +8,8 @@ namespace IEC
 {
     public class KochavaAnalyticModule : IAnalyticEvent
     {
+        public bool IsDisable { get; set; }
+
         public KochavaAnalyticModule(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
@@ -25,18 +27,22 @@ namespace IEC
 
         public void PushCachedEvents()
         {
+            if(IsDisable) return;
         }
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            if(IsDisable) return;
         }
 
         public void SetUserProperty(string name, string property)
         {
+            if(IsDisable) return;
         }
 
         public void PushEventFullAd()
         {
+            if(IsDisable) return;
             if (Kochava.IsInitialized())
             {
                 Debug.Log("kochava show full ad");
@@ -47,6 +53,7 @@ namespace IEC
 
         public void PushEventRewardAd()
         {
+            if(IsDisable) return;
             if (Kochava.IsInitialized())
             {
                 Debug.Log("kochava show reward ad");

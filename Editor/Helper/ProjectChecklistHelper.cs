@@ -10,6 +10,7 @@ namespace _IECModules
     public static class ProjectChecklistHelper
     {
         public static ServicesConfig servicesConfig;
+        public static string configFolderPath;
 
         public enum ChecklistItemName
         {
@@ -49,7 +50,8 @@ namespace _IECModules
             ApplovinAndroidBannerID,
             ApplovinAndroidRewardID,
             IronSourceIOSID,
-            IronSourceAndroidID
+            IronSourceAndroidID,
+            AbTestList
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -91,6 +93,7 @@ namespace _IECModules
             {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
+            {"AB Test List", ChecklistItemName.AbTestList}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -102,6 +105,7 @@ namespace _IECModules
             {
                 var assets = AssetDatabase.FindAssets("t:ServicesConfig");
                 var servicesConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
+                configFolderPath = Path.GetDirectoryName(servicesConfigPath);
                 servicesConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(servicesConfigPath);
                 return servicesConfigPath;
             }
@@ -114,9 +118,8 @@ namespace _IECModules
 
         public static void ApplySdkSetting(string googleDocsUrl)
         {
-            var checklistData = UnityWebRequestDownloadHelper.DownloadTextFromUrl(GoogleSheetToCSV.ParseGoogleSheetUrl(googleDocsUrl));
-            var googleDocsData = GoogleSheetToCSV.ParseCSV(checklistData, false);
-            
+            var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
+
             var getServicesConfigResult = LoadServicesConfig();
             
             if (servicesConfig != null)
@@ -133,11 +136,104 @@ namespace _IECModules
             
             ApplySdkSetting(googleDocsData);
         }
-        
+
+        public static void UpdateAbVersionFromChecklist(string googleDocsUrl)
+        {
+            var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
+
+            dictionaryCheckListValue = googleDocsData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
+                .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
+
+            if (dictionaryCheckListValue.TryGetValue(ChecklistItemName.AbTestList, out string abTestListUrl))
+            {
+                if (string.IsNullOrWhiteSpace(abTestListUrl))
+                {
+                    Debug.LogError("Project Checklist is missing URL link to AB Test List");
+                }
+
+                googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(abTestListUrl);
+
+                var lastAbString = "";
+                var lastVersionString = "";
+                foreach (var row in googleDocsData)
+                {
+                    if (row.Count >= 5 
+                        && !string.IsNullOrWhiteSpace(row[0]) 
+                        && !string.IsNullOrWhiteSpace(row[1]))
+                    {
+                        lastVersionString = row[0];
+                        lastAbString = row[4];
+                    }
+                }
+                PlayerSettings.bundleVersion = lastVersionString;
+                UpdateAbVersion(lastAbString);
+            }
+            else
+            {
+                Debug.LogError("Project Checklist is missing URL link to AB Test List");
+            }
+        }
+
+        public static void UpdateAbVersion(string setAbString)
+        {
+            LoadServicesConfig();
+
+            var listConfig = servicesConfig.abTestConfigs.ToList();
+            var splits = setAbString.Split('_');
+            if (splits.Length != 3)
+            {
+                Debug.LogError("Wrong AB version string format");
+                return;
+            }
+            var abName = splits[0] + "_" + splits[1];
+            var verNumber = int.Parse(splits[2].Split('v')[1]);
+            var verRootNumber = (verNumber / 10) * 10;
+            var abCount = verNumber % 10 + 1;
+
+            listConfig.ForEach(x =>
+            {
+                x.IsActive = false;
+                EditorUtility.SetDirty(x);
+            });
+
+            var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
+            if (config == null)
+            {
+                Debug.Log("create new AB config " + abName);
+                config = ScriptableObject.CreateInstance<ABTestConfig>();
+                config.name = abName;
+                AssetDatabase.CreateAsset(config, configFolderPath + "/" + abName + ".asset");
+                listConfig.Add(config);
+                servicesConfig.abTestConfigs = listConfig.ToArray();
+                EditorUtility.SetDirty(servicesConfig);
+            }
+            else
+            {
+                Debug.Log("update exist AB config " + abName);
+            }
+
+            config.name = abName;
+            config.KeyName = abName;
+            config.IsActive = true;
+            config.IsOnlyNewInstall = true;
+            config.IsOverride = false;
+            var listAb = new List<string>();
+            for (int i = 0; i < abCount; i++)
+            {
+                listAb.Add(abName + "_v" + (verRootNumber + i).ToString());
+            }
+            config.ListEventsAB = listAb.ToArray();
+            config.SetDefaultRatioAndAB();
+
+            EditorUtility.SetDirty(config);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
         private static void ApplySdkSetting(List<List<string>> sdkData)
         {
 
-            dictionaryCheckListValue = sdkData.Where(checklistKey => _checklistKey.ContainsKey(checklistKey[0]))
+            dictionaryCheckListValue = sdkData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
 #if !PluginFacebook
@@ -243,38 +339,7 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.AdPosition:
                         break;
-                    case ChecklistItemName.ApplovinIOSID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.appID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinIOSRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidInterID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Inter ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidBannerID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Banner ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.ApplovinAndroidRewardID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Reward ID: {checklistItemValue}");
-                        servicesConfig.ApplovinConfig.android.rewardID = checklistItemValue;
-                        break;
+                    
                     case ChecklistItemName.IronSourceIOSID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Iron Source IOS ID: {checklistItemValue}");
                         servicesConfig.IronSourceConfig.ios.appID = checklistItemValue;
@@ -290,8 +355,46 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #endif
-                    
-#if PluginApplovin 
+
+#if PluginApplovin
+                    case ChecklistItemName.ApplovinIOSID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
+#if UNITY_IOS
+                        UpdateApplovinQualityService(checklistItemValue);
+#endif
+                        break;
+                    case ChecklistItemName.ApplovinAndroidID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.appID = checklistItemValue;
+#if UNITY_ANDROID
+                        UpdateApplovinQualityService(checklistItemValue);
+#endif
+                        break;
+                    case ChecklistItemName.ApplovinIOSInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Inter ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Banner ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinIOSRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS Reward ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Inter ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Banner ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.ApplovinAndroidRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android Reward ID: {checklistItemValue}");
+                        servicesConfig.ApplovinConfig.android.rewardID = checklistItemValue;
+                        break;
                     case ChecklistItemName.AdmobIDIOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob IOS ID: {checklistItemValue}");
                         AppLovinSettings.Instance.AdMobIosAppId = checklistItemValue;
@@ -309,6 +412,18 @@ namespace _IECModules
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        private static void UpdateApplovinQualityService(string sdkKey)
+        {
+#if PluginApplovin
+            LogEditorHelper.AddLog("AppLovin Disable Quality Service");
+            AppLovinSettings.Instance.QualityServiceEnabled = true;
+            AppLovinSettings.Instance.SdkKey = sdkKey;
+            EditorUtility.SetDirty(AppLovinSettings.Instance);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
         }
     }
 }
