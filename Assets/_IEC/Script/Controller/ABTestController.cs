@@ -70,11 +70,12 @@ namespace IEC
 
         private void UpdateAb20201222(int abValue)
         {
+            abValue += 1;
+
             Game.isNewUI = abValue == 2;
             Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
             Game.isHintV2 = abValue == 5;
-
 
             m_OldUI.SetActive(!Game.isNewUI);
             m_NewUI.SetActive(Game.isNewUI);
