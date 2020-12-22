@@ -46,12 +46,13 @@ namespace IEC
             popupSettings.gameObject.SetActive(false);
             popUpRating.gameObject.SetActive(false);
 
+            gameOverUIGroup.SetTextGameOver();
+
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
         }
 
         public void OnGameOver(bool isActive)
         {
-            gameOverUIGroup.TweenGameOver(isActive);
             gameOverUIGroup.gameObject.SetActive(isActive);
         }
 
