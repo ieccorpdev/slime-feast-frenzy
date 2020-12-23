@@ -53,13 +53,18 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
-                Game.isCheatLevel = true;
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 Pool.Get<PlayerSecret>().level = level;
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
                 value = 1
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Level: " + Game.isCheatLevel, cheatCodeParam =>
+            {
+                Game.isCheatLevel = !Game.isCheatLevel;
+                cheatCodeParam.buttonText = "Is Cheat Level: " + Game.isCheatLevel;
             });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-5)", param =>
