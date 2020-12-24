@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -166,7 +165,7 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.backGroundIndex], false);
+            GamePlay.sprBackground.sprite = Config.shopConfig.listSpriteBackgrounds[Game.backGroundIndex];
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot)
@@ -304,6 +303,7 @@ namespace IEC
 
         private LevelSpawn GetLevelSpawn(int level)
         {
+            var levelIndex = level - 1;
             if (level > Game.levelDatas.Length)
             {
                 return new LevelSpawn((level + 99) % Game.levelDatas.Length, false);
@@ -314,12 +314,12 @@ namespace IEC
                 {
                     if (level > 2 && level <= GetConditionLevelDifficulty())
                     {
-                        var levelSpawn = int.Parse(Game.levelDifficulty[level - 1]);
+                        var levelSpawn = int.Parse(Game.levelDifficulty[levelIndex]);
                         bool isRotate = false;
                         if (levelSpawn < 0)
                         {
                             isRotate = true;
-                            var matrix = int.Parse(Game.dataLevelDifficulty[level]);
+                            var matrix = int.Parse(Game.dataLevelDifficulty[levelIndex]);
 
                             levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
                         }

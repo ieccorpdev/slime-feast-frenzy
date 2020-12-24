@@ -19,7 +19,6 @@ namespace IEC
 
         public List<TutorialConfig> listTuts;
 
-
         //Water
         public Color[] waterColor;
         public Color targetColorDefault;
@@ -32,6 +31,8 @@ namespace IEC
 
         public List<ThemeConfig> listEnviromentConfigs;
         public List<Sprite> listSpriteBackgrounds;
+
+        public ShopConfig shopConfig;
 
         //Effect config
         public float startEffectMoveTime;
