@@ -165,7 +165,8 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            GamePlay.sprBackground.sprite = Config.shopConfig.listSpriteBackgrounds[Game.backGroundIndex];
+            var bgConfig = Config.shopConfig.listSpriteBackgrounds[Game.backGroundIndex];
+            GamePlay.SetBackground(bgConfig);
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot)

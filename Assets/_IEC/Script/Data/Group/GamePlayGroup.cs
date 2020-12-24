@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IEC
 {
@@ -18,9 +19,18 @@ namespace IEC
 
         public SpriteRenderer sprBackground;
 
+        public Image sprBGTop, sprBGBot;
+
         public void LocateGroup()
         {
             Pool.Set(this);
+        }
+
+        public void SetBackground(BackgroundConfig config)
+        {
+            sprBackground.sprite = config.sprMain;
+            sprBGTop.sprite = config.sprTop;
+            sprBGBot.sprite = config.sprBot;
         }
     }
 }

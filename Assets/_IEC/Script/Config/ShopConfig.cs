@@ -8,6 +8,12 @@ namespace IEC
     public class ShopConfig : ScriptableObject
     {
         public List<ThemeConfig> listEnviromentConfigs;
-        public List<Sprite> listSpriteBackgrounds;
+        public List<BackgroundConfig> listSpriteBackgrounds;
+    }
+
+    [System.Serializable]
+    public struct BackgroundConfig
+    {
+        public Sprite sprMain, sprTop, sprBot;
     }
 }
