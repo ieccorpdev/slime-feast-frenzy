@@ -29,9 +29,6 @@ namespace IEC
         public Color[] colorBSP;
         public Material[] matBSP;
 
-        public List<ThemeConfig> listEnviromentConfigs;
-        public List<Sprite> listSpriteBackgrounds;
-
         public ShopConfig shopConfig;
 
         //Effect config

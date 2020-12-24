@@ -150,7 +150,9 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            Game.enviromentConfig = Config.listEnviromentConfigs[Game.themeIndex];
+            var listTheme = Config.shopConfig.listEnviromentConfigs;
+            var index = Game.themeIndex % listTheme.Count;
+            Game.enviromentConfig = Config.shopConfig.listEnviromentConfigs[index];
 
             var type0 = RandomHelper.Range(0, 2);
 

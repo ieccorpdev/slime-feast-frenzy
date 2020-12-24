@@ -95,10 +95,11 @@ namespace IEC
         public bool isHaveUIAnimation;
 
         public bool isHaveNotification;
+
         public int themeIndex;
         public int backGroundIndex;
-        public bool isHaveBossMixColorLevels;
 
+        public bool isHaveBossMixColorLevels;
         public bool isLevelDifficultyV4;
 
         public bool isNewUI;

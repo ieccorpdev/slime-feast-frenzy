@@ -67,20 +67,20 @@ namespace IEC
                 cheatCodeParam.buttonText = "Is Cheat Level: " + Game.isCheatLevel;
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-5)", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-3)", param =>
             {
                 int bgIndex = int.Parse(param.inputParams[0].value.ToString());
-                Game.backGroundIndex = bgIndex % 6;
+                Game.backGroundIndex = bgIndex % Config.shopConfig.listSpriteBackgrounds.Count;
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
                 value = Game.backGroundIndex
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-5)", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-3)", param =>
             {
                 int themeIndex = int.Parse(param.inputParams[0].value.ToString());
-                Game.themeIndex = themeIndex % 6;
+                Game.themeIndex = themeIndex % Config.shopConfig.listEnviromentConfigs.Count;
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {

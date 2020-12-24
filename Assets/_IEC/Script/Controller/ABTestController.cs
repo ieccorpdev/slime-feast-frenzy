@@ -98,16 +98,16 @@ namespace IEC
         private void UpdateAb20201209(int abValue)
         {
             Game.isLevelDifficultyV4 = abValue == 2;
-            Game.themeIndex = abValue == 3 ? 5 : 3;
-            Game.backGroundIndex = abValue == 3 ? 5 : 3;
+            //Game.themeIndex = abValue == 3 ? 5 : 3;
+            //Game.backGroundIndex = abValue == 3 ? 5 : 3;
             //GameController.GetLevelDifficulty();
         }
 
         private void Result20201204()
         {
             Game.isHaveNotification = true;
-            Game.themeIndex = 3;
-            Game.backGroundIndex = 3;
+            Game.themeIndex = 2;
+            Game.backGroundIndex = 2;
             Game.isHaveBossMixColorLevels = true;
 
             GameController.GetLevelsMixColor();
@@ -116,21 +116,21 @@ namespace IEC
         private void UpdateAb20201204(int abValue)
         {
             Game.isHaveNotification = abValue == 1;
-            if(abValue == 2)
-            {
-                Game.themeIndex = 1;
-                Game.backGroundIndex = 1;
-            }
-            else if(abValue == 3)
-            {
-                Game.themeIndex = 3;
-                Game.backGroundIndex = 3;
-            }
-            else
-            {
-                Game.themeIndex = 0;
-                Game.backGroundIndex = 0;
-            }
+            //if(abValue == 2)
+            //{
+            //    Game.themeIndex = 1;
+            //    Game.backGroundIndex = 1;
+            //}
+            //else if(abValue == 3)
+            //{
+            //    Game.themeIndex = 3;
+            //    Game.backGroundIndex = 3;
+            //}
+            //else
+            //{
+            //    Game.themeIndex = 0;
+            //    Game.backGroundIndex = 0;
+            //}
 
             Game.isHaveBossMixColorLevels = abValue == 4;
 

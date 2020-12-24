@@ -468,7 +468,8 @@ namespace IEC
         public virtual void SetTerrainMat()
         {
             if (m_Terrain == null) return;
-            var listMats = Config.listEnviromentConfigs[Game.themeIndex].listTerrains;
+            var index = Game.themeIndex % Config.shopConfig.listEnviromentConfigs.Count;
+            var listMats = Config.shopConfig.listEnviromentConfigs[index].listTerrains;
             var mat = m_IsHaveWater ? listMats[0] : listMats[1];
             m_Terrain.SetupTerrain(mat);
         }
