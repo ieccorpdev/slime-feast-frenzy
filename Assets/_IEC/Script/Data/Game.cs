@@ -55,7 +55,7 @@ namespace IEC
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
 
-        public int undoRemains;
+        public int undoRemains, hintRemains;
 
         public bool isBossLevelLimitMoves;
 
@@ -102,12 +102,15 @@ namespace IEC
         public bool isHaveBossMixColorLevels;
         public bool isLevelDifficultyV4;
 
+        //AB test
         public bool isNewUI;
         public bool isHaveNewTrees;
         public bool isStartLevelEffect;
-        public bool isHintV2;
+        public bool isHintStyleV2;
 
         //Prepared
+        public bool isHintStyleV3;
+
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
 
@@ -137,6 +140,7 @@ namespace IEC
 
             isBossLevelLimitMoves = false;
             undoRemains = 2;
+            hintRemains = 1;
             moveCount = 0;
         }
         

@@ -18,13 +18,15 @@ namespace IEC
         private RectTransform rectTopPanel, rectPanelBossLevel, rectTextBossLevel;
 
         [SerializeField]
-        private TMP_Text txtUndo, txtMove;
+        private TMP_Text txtUndo, txtMove, txtHintCount;
 
         private Tween m_Tween;
 
         private float effectDuration = 0.25f;
 
         public GameObject undoAds, undoCount;
+
+        public GameObject hintAds, hintCount;
 
         [SerializeField]
         private Gradient m_MoveColor;
@@ -105,6 +107,13 @@ namespace IEC
             txtUndo.text = StringHelper.GetNumber(Game.undoRemains);
             undoAds.SetActive(Game.undoRemains <= 0);
             undoCount.SetActive(Game.undoRemains > 0);
+        }
+
+        public void UpdateHintText()
+        {
+            txtHintCount.text = StringHelper.GetNumber(Game.hintRemains);
+            hintAds.SetActive(Game.hintRemains <= 0 || !Game.isHintStyleV3);
+            hintCount.SetActive(Game.isHintStyleV3 && Game.hintRemains > 0);
         }
 
         public void UpdateMove()

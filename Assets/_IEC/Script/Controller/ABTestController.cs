@@ -43,15 +43,16 @@ namespace IEC
             Result20201201();
             Result20201204();
             Result20201209();
+            Result20201222();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201222(abValue);
+            UpdateAb20201228(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201222(abValue);
+                    UpdateAb20201228(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -67,6 +68,20 @@ namespace IEC
 
         }
 
+        private void UpdateAb20201228(int abValue)
+        {
+
+        }
+
+        private void Result20201222()
+        {
+            m_OldUI.SetActive(!Game.isNewUI);
+            m_NewUI.SetActive(Game.isNewUI);
+
+            Controllers.Get<EventController>().AbUIGroup();
+            UIController.SetupAbUI();
+        }
+
         private void UpdateAb20201222(int abValue)
         {
             abValue += 1;
@@ -74,7 +89,7 @@ namespace IEC
             Game.isNewUI = abValue == 2;
             Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
-            Game.isHintV2 = abValue == 5;
+            Game.isHintStyleV2 = abValue == 5;
 
             m_OldUI.SetActive(!Game.isNewUI);
             m_NewUI.SetActive(Game.isNewUI);

@@ -106,11 +106,7 @@ namespace IEC
 
             UI.mainUIGroup.btnHint.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
-                Services.ShowRewardAds(() => {
-                    Game.isWaitAfterRV = true;
-                    var delayTime = (Application.isEditor || Services.IsConfigNoAds()) ? 0f : 1f;
-                    EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_HINT);
-                });
+                OnHandleButtonHint();
             });
 
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
@@ -142,6 +138,44 @@ namespace IEC
             }
         }
 
+        private void OnHandleButtonHint()
+        {
+            if (Game.isHintStyleV3)
+            {
+                if (Game.hintRemains > 0)
+                {
+                    Game.hintRemains -= 1;
+                    UI.mainUIGroup.UpdateHintText();
+                    OnHandleHint(false);
+                }
+                else
+                {
+                    Services.ShowRewardAds(() => {
+                        Game.hintRemains = 3;
+                        UI.mainUIGroup.UpdateHintText();
+                        Services.PushEvent(new IEC.TrackingEvent.HintLevel());
+                    });
+                }
+            }
+            else
+            {
+                Services.ShowRewardAds(() => {
+                    Game.isWaitAfterRV = true;
+                    OnHandleHint(true);
+                    Services.PushEvent(new IEC.TrackingEvent.HintLevel());
+                });
+            }
+        }
+
+        private void OnHandleHint(bool isDelay)
+        {
+            var delayTime = (Application.isEditor || Services.IsConfigNoAds()) ? 0f : 1f;
+            if (!isDelay)
+            {
+                delayTime = 0f;
+            }
+            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_HINT);
+        }
 
         public void SetActiveButtons(bool isActive)
         {
@@ -162,6 +196,7 @@ namespace IEC
 
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
+            UI.mainUIGroup.UpdateHintText();
             Game.isShowPopup = false;
             SetActiveButtons(true);
 
