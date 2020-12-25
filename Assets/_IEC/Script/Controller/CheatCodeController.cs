@@ -69,8 +69,9 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-3)", param =>
             {
-                int bgIndex = int.Parse(param.inputParams[0].value.ToString());
-                PlayerData.backgroundSelected = bgIndex % Config.shopConfig.listSpriteBackgrounds.Count;
+                int valueInput = int.Parse(param.inputParams[0].value.ToString());
+                var bgIndex = valueInput % Config.shopConfig.listSpriteBackgrounds.Count;
+                PlayerData.UnlockBackground(bgIndex);
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
@@ -79,12 +80,13 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-3)", param =>
             {
-                int themeIndex = int.Parse(param.inputParams[0].value.ToString());
-                PlayerData.themeSelected = themeIndex % Config.shopConfig.listEnviromentConfigs.Count;
+                int valueInput = int.Parse(param.inputParams[0].value.ToString());
+                var themeIndex = valueInput % Config.shopConfig.listEnviromentConfigs.Count;
+                PlayerData.UnlockTheme(themeIndex);
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
-                value = PlayerData.backgroundSelected
+                value = PlayerData.themeSelected
             });
         }
 
