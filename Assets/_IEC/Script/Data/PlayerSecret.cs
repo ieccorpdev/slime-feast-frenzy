@@ -35,14 +35,25 @@ namespace IEC
             if (listThemeUnlocked == null) 
             {
                 listThemeUnlocked = new List<int>();
-                UnlockTheme(2);
             }
 
             if (listBbackgroundUnlocked == null) 
             {
                 listBbackgroundUnlocked = new List<int>();
-                UnlockBackground(2);
             } 
+        }
+
+        public void InitTheme(int themeDefault, int bgDefault)
+        {
+            if(listThemeUnlocked.Count == 0)
+            {
+                UnlockTheme(themeDefault);
+            }
+
+            if(listBbackgroundUnlocked.Count == 0)
+            {
+                UnlockBackground(bgDefault);
+            }
         }
 
         public void UnlockTheme(int index)

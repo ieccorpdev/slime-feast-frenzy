@@ -44,7 +44,6 @@ namespace IEC
             Result20201204();
             Result20201209();
 
-
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAb20201222(abValue);
 
@@ -106,8 +105,8 @@ namespace IEC
         private void Result20201204()
         {
             Game.isHaveNotification = true;
-            Game.themeIndex = 2;
-            Game.backGroundIndex = 2;
+            Game.themeDefault = 2;
+            Game.backGroundDefault = 2;
             Game.isHaveBossMixColorLevels = true;
 
             GameController.GetLevelsMixColor();

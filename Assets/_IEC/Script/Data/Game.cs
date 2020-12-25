@@ -96,8 +96,8 @@ namespace IEC
 
         public bool isHaveNotification;
 
-        public int themeIndex;
-        public int backGroundIndex;
+        public int themeDefault;
+        public int backGroundDefault;
 
         public bool isHaveBossMixColorLevels;
         public bool isLevelDifficultyV4;
