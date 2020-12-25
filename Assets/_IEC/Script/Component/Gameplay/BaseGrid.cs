@@ -48,7 +48,7 @@ namespace IEC
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
 
-            if (!isUndo)
+            if (!isUndo && Game.isHaveBossLimitMoveLevels)
             {
                 EventController.RaiseEvent(EventList.GamePlay.GAME_ADD_MOVE, new EventParam(this));
             }

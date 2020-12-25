@@ -238,7 +238,7 @@ namespace IEC
             }
             else
             {
-                if (Game.isBossLevelLimitMoves)
+                if (Game.isBossLevels)
                 {
                     if(Game.moveRemains <= 0)
                     {
@@ -248,7 +248,7 @@ namespace IEC
             }
         }
 
-        private void GameOver(bool isWin)
+        public void GameOver(bool isWin)
         {
             Game.isGameWin = isWin;
             Game.isPlaying = false;

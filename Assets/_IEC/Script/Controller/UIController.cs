@@ -7,6 +7,8 @@ namespace IEC
     {
         private float m_CountVibrateHint, m_NextTimeVibrate;
 
+        private int m_TimeLeft, m_TimeLeftUI;
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -36,7 +38,7 @@ namespace IEC
                         UI.mainUIGroup.TweenPannelTop(true);
                     }
 
-                    if (Game.isBossLevelLimitMoves)
+                    if (Game.isBossLevels)
                     {
                         UI.mainUIGroup.TweenBossLevel();
                     }
@@ -65,12 +67,27 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
-            if (!Game.isHaveUIAnimation) return;
-            m_CountVibrateHint += deltaTime;
-            if(m_CountVibrateHint >= m_NextTimeVibrate)
+            if (!Game.isPlaying) return;
+            if (Game.isHaveUIAnimation)
             {
-                UI.mainUIGroup.OnVibrateHint();
-                ResetVibrateHint();
+                m_CountVibrateHint += deltaTime;
+                if (m_CountVibrateHint >= m_NextTimeVibrate)
+                {
+                    UI.mainUIGroup.OnVibrateHint();
+                    ResetVibrateHint();
+                }
+            }
+
+            if(Game.isHaveBossTimerLevels && Game.isBossLevels)
+            {
+                Game.timeLeftBossLevel -= deltaTime;
+
+                UpdateTimerLevel();
+
+                if (Game.timeLeftBossLevel <= 0f)
+                {
+                    GameController.GameOver(false);
+                }
             }
         }
 
@@ -199,7 +216,6 @@ namespace IEC
             UI.mainUIGroup.UpdateHintText();
             Game.isShowPopup = false;
             SetActiveButtons(true);
-
             ResetVibrateHint();
         }
 
@@ -225,6 +241,17 @@ namespace IEC
         {
             m_CountVibrateHint = 0f;
             m_NextTimeVibrate = Random.Range(5f, 10f);
+        }
+
+        public void UpdateTimerLevel()
+        {
+            m_TimeLeft = (int)Game.timeLeftBossLevel;
+
+            if (m_TimeLeft != m_TimeLeftUI)
+            {
+                m_TimeLeftUI = m_TimeLeft;
+                UI.mainUIGroup.SetTextTimer(m_TimeLeftUI);
+            }
         }
     }
 }

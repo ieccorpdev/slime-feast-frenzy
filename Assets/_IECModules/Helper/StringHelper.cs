@@ -40,4 +40,11 @@ public static class StringHelper
         return original.Substring(pFrom, pTo - pFrom + end.Length);
     }
 
+    public static string GetTime(int totalSeconds)
+    {
+        int seconds = totalSeconds % 60;
+        int minutes = totalSeconds / 60;
+        return GetNumber(minutes) + ":" + ((seconds < 10) ? "0" + GetNumber(seconds) : GetNumber(seconds));
+    }
+
 }

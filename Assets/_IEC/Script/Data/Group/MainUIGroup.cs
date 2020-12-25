@@ -118,9 +118,15 @@ namespace IEC
 
         public void UpdateMove()
         {
+            return;
             txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
             float valueColor = (float)Game.moveRemains / Game.totalMove;
             txtMove.color = m_MoveColor.Evaluate(valueColor);
+        }
+
+        public void SetTextTimer(int time)
+        {
+            txtMove.text = StringHelper.GetTime(time);
         }
     }
 }

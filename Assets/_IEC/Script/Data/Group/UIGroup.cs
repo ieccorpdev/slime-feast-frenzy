@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
+using System;
 
 namespace IEC
 {
@@ -55,7 +56,6 @@ namespace IEC
         {
             gameOverUIGroup.gameObject.SetActive(isActive);
         }
-
     }
 
     public interface IUIGroup

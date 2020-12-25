@@ -15,6 +15,8 @@ namespace IEC
 
         public float timeDelayFullAds;
 
+        public bool isCheatLevel;
+
         public bool isShowPopup;
 
         public bool isBlockButton => !isPlaying || isWaitAfterRV;
@@ -49,21 +51,19 @@ namespace IEC
         public string[] hintMixColorDatas;
 
         //Boss level
+        public bool isBossLevels;
         public int totalMove, moveRemains;
-
         public int moveCount;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
-
         public int undoRemains, hintRemains;
 
-        public bool isBossLevelLimitMoves;
+        public float timeLeftBossLevel;
+        
 
         public ThemeConfig enviromentConfig;
 
         public int isStartLevelEffectType;
-
-        public bool isCheatLevel;
 
         public bool IsAllowUndo()
         {
@@ -88,7 +88,6 @@ namespace IEC
         public bool isLevelDifficultyV2;
         public bool isRandomColorClassicMode;
         
-
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterEffect;
         public bool isHaveBossLimitMoveLevels;
@@ -110,6 +109,7 @@ namespace IEC
 
         //Prepared
         public bool isHintStyleV3;
+        public bool isHaveBossTimerLevels = true;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
@@ -138,10 +138,11 @@ namespace IEC
             listGrids.Clear();
             listUndo.Clear();
 
-            isBossLevelLimitMoves = false;
+            isBossLevels = false;
             undoRemains = 2;
             hintRemains = 1;
             moveCount = 0;
+            timeLeftBossLevel = 90;
         }
         
         public BaseComponent GetGrid(int row, int col, int color)
@@ -175,6 +176,18 @@ namespace IEC
         public RotConfig GetLastUndo()
         {
             return listUndo.Pop();
+        }
+
+        public int GetTimerLevel(int matrix)
+        {
+            var count = matrix - 3;
+            var time = 30;
+            for (int i = 0; i < count; i++)
+            {
+                time = (int)(time * 1.5f);
+            }
+
+            return time;
         }
 
     }
