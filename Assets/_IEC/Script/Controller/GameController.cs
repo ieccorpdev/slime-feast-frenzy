@@ -30,8 +30,6 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            PlayerData.InitTheme(Game.themeDefault, Game.backGroundDefault);
-
             m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
         }

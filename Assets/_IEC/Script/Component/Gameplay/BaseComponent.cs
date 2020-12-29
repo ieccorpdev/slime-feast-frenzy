@@ -119,7 +119,7 @@ namespace IEC
             {
                 for (int i = 0; i < m_WaterCount; i++)
                 {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone);
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, Game.isNewWaterEffect);
                 }
             }
 

@@ -49,10 +49,18 @@ namespace IEC
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
         private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
 
-        public void OnInit(System.Action callBack)
+        public void OnInit(System.Action callBack, bool isNewEffect)
         {
-            //waterTile = new Vector2(.1f, .1f);
-            //distortionTile = new Vector2(.4f, .4f);
+            if (isNewEffect)
+            {
+                waterTile = new Vector2(.1f, .1f);
+                distortionTile = new Vector2(.4f, .4f);
+            }
+            else
+            {
+                waterTile = new Vector2(.2f, .2f);
+                distortionTile = new Vector2(.06f, .06f);
+            }
 
             if (materialPropertyBlock == null)
             {

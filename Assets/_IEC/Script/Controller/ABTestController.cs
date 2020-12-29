@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventStart
+    public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake
     {
 
         public void LocateController()
@@ -26,7 +26,7 @@ namespace IEC
             }
         }
 
-        public void BehaviourStart()
+        public void BehaviourAwake()
         {
             var abTestConfigs = Services.config.abTestConfigs;
             if (abTestConfigs.Length == 0) return;
@@ -44,13 +44,13 @@ namespace IEC
             Result20201222();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201228(abValue);
+            UpdateAb20201230(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201228(abValue);
+                    UpdateAb20201230(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -61,9 +61,34 @@ namespace IEC
             );
         }
 
-        private void UpdateAb20201228(int abValue)
+        private void UpdateAb20201230(int abValue)
         {
+            Game.themeDefault = 2;
+            Game.backGroundDefault = 2;
 
+            if (abValue == 1)
+            {
+                Game.themeDefault = 0;
+                Game.backGroundDefault = 2;
+            }
+            else if(abValue == 2)
+            {
+                Game.themeDefault = 2;
+                Game.backGroundDefault = 0;
+            }
+            else if(abValue == 3)
+            {
+                Game.themeDefault = 2;
+                Game.backGroundDefault = 3;
+            }
+
+            Game.isHintStyleV3 = abValue == 4;
+            Game.isHaveBossTimerLevels = (abValue == 5) || (abValue == 6);
+            Game.isHaveBossTimerLevelsV2 = abValue == 6;
+
+            Game.isNewWaterEffect = abValue == 7;
+
+            PlayerData.InitTheme(Game.themeDefault, Game.backGroundDefault);
         }
 
         private void Result20201222()
@@ -143,14 +168,14 @@ namespace IEC
 
         private void Result20201201()
         {
-            Game.isHaveNewWaterEffect = true;
+            Game.isHaveNewWaterSkin = true;
         }
 
         private void UpdateAb20201201(int abValue)
         {
             Game.isHaveUIAnimation = abValue == 1;
             Game.isLevelDifficultyV3 = abValue == 2;
-            Game.isHaveNewWaterEffect = abValue == 3;
+            Game.isHaveNewWaterSkin = abValue == 3;
             Game.isHaveBossLimitMoveLevels = abValue == 4;
 
             //GameController.GetLevelDifficulty();

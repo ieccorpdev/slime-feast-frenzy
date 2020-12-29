@@ -45,15 +45,9 @@ namespace IEC
 
         public void InitTheme(int themeDefault, int bgDefault)
         {
-            if(listThemeUnlocked.Count == 0)
-            {
-                UnlockTheme(themeDefault);
-            }
+            UnlockTheme(themeDefault);
 
-            if(listBbackgroundUnlocked.Count == 0)
-            {
-                UnlockBackground(bgDefault);
-            }
+            UnlockBackground(bgDefault);
         }
 
         public void UnlockTheme(int index)
@@ -61,8 +55,8 @@ namespace IEC
             if (!listThemeUnlocked.Contains(index))
             {
                 listThemeUnlocked.Add(index);
-                themeSelected = index;
             }
+            themeSelected = index;
         }
 
         public void UnlockBackground(int index)
@@ -70,8 +64,8 @@ namespace IEC
             if (!listBbackgroundUnlocked.Contains(index))
             {
                 listBbackgroundUnlocked.Add(index);
-                backgroundSelected = index;
             }
+            backgroundSelected = index;
         }
     }
 }

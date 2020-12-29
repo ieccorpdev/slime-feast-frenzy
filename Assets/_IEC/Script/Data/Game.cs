@@ -89,7 +89,7 @@ namespace IEC
         public bool isRandomColorClassicMode;
         
         public bool isLevelDifficultyV3;
-        public bool isHaveNewWaterEffect;
+        public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
         public bool isHaveUIAnimation;
 
@@ -107,10 +107,10 @@ namespace IEC
         public bool isStartLevelEffect;
         public bool isHintStyleV2;
 
-        //Prepared
         public bool isHintStyleV3;
-        public bool isHaveBossTimerLevels = true;
+        public bool isHaveBossTimerLevels;
         public bool isHaveBossTimerLevelsV2;
+        public bool isNewWaterEffect;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
