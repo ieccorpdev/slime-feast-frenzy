@@ -42,6 +42,7 @@ namespace IEC
 
         public void PushEventFullAd()
         {
+            return;
             if(IsDisable) return;
             if (Kochava.IsInitialized())
             {
@@ -53,6 +54,7 @@ namespace IEC
 
         public void PushEventRewardAd()
         {
+            return;
             if(IsDisable) return;
             if (Kochava.IsInitialized())
             {
