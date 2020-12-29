@@ -68,7 +68,7 @@ namespace IEC
                 {
                     if((Game.levelSeed % 10) == 0)
                     {
-                        Game.isBossLevels = true;
+                        Game.isBossLevel = true;
                         isBossMixColor = false;
                     }
                 }
@@ -145,13 +145,15 @@ namespace IEC
 
             Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
             Game.moveRemains = Game.totalMove;
-            if (Game.isBossLevels)
+            if (Game.isBossLevel)
             {
                 UI.mainUIGroup.UpdateMove();
-                Game.timeLeftBossLevel = Game.GetTimerLevel(size - 2);
+                Game.timeMaxBossLevel = Game.isHaveBossTimerLevelsV2 ? Game.GetTimerLevel(size - 2) : 90;
+                Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
+                Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
 
-            UIController.SetLevel(Game.isBossLevels);
+            UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
@@ -252,7 +254,7 @@ namespace IEC
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
 
-            if (Game.isBossLevels)
+            if (Game.isBossLevel)
             {
                 Game.totalMove += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
             }

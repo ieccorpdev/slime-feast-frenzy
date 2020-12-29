@@ -44,7 +44,7 @@ public static class StringHelper
     {
         int seconds = totalSeconds % 60;
         int minutes = totalSeconds / 60;
-        return GetNumber(minutes) + ":" + ((seconds < 10) ? "0" + GetNumber(seconds) : GetNumber(seconds));
+        return ((minutes < 10) ? "0" + GetNumber(minutes) : GetNumber(minutes)) + ":" + ((seconds < 10) ? "0" + GetNumber(seconds) : GetNumber(seconds));
     }
 
 }

@@ -238,7 +238,7 @@ namespace IEC
             }
             else
             {
-                if (Game.isBossLevels)
+                if (Game.isBossLevel)
                 {
                     if(Game.moveRemains <= 0)
                     {

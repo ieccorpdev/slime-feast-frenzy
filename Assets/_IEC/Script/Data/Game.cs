@@ -51,14 +51,14 @@ namespace IEC
         public string[] hintMixColorDatas;
 
         //Boss level
-        public bool isBossLevels;
+        public bool isBossLevel;
         public int totalMove, moveRemains;
         public int moveCount;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
         public int undoRemains, hintRemains;
 
-        public float timeLeftBossLevel;
+        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime;
         
 
         public ThemeConfig enviromentConfig;
@@ -110,6 +110,7 @@ namespace IEC
         //Prepared
         public bool isHintStyleV3;
         public bool isHaveBossTimerLevels = true;
+        public bool isHaveBossTimerLevelsV2;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
@@ -138,11 +139,10 @@ namespace IEC
             listGrids.Clear();
             listUndo.Clear();
 
-            isBossLevels = false;
+            isBossLevel = false;
             undoRemains = 2;
             hintRemains = 1;
             moveCount = 0;
-            timeLeftBossLevel = 90;
         }
         
         public BaseComponent GetGrid(int row, int col, int color)

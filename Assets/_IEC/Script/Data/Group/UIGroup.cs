@@ -50,6 +50,7 @@ namespace IEC
             gameOverUIGroup.SetTextGameOver();
 
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            mainUIGroup.OnEffectTime(false);
         }
 
         public void OnGameOver(bool isActive)

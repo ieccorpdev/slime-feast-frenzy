@@ -89,10 +89,10 @@ namespace IEC
             }
 
             LocateController();
-            //if (m_SceneRootObj != null)
-            //{
-            //    LocateGroup(m_SceneRootObj.transform);
-            //}
+            if (m_SceneRootObj != null)
+            {
+                LocateGroup(m_SceneRootObj.transform);
+            }
 
             var consentController = FindObjectOfType<ConsentController>();
             if (consentController != null)
@@ -340,15 +340,6 @@ namespace IEC
                 g.LocateGroup();
             }
         }
-
-        public void AbUIGroup()
-        {
-            if (m_SceneRootObj != null)
-            {
-                LocateGroup(m_SceneRootObj.transform);
-            }
-        }
-
     }
 
     [Serializable]

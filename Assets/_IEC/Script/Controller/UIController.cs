@@ -38,7 +38,7 @@ namespace IEC
                         UI.mainUIGroup.TweenPannelTop(true);
                     }
 
-                    if (Game.isBossLevels)
+                    if (Game.isBossLevel)
                     {
                         UI.mainUIGroup.TweenBossLevel();
                     }
@@ -78,7 +78,7 @@ namespace IEC
                 }
             }
 
-            if(Game.isHaveBossTimerLevels && Game.isBossLevels)
+            if(Game.isHaveBossTimerLevels && Game.isBossLevel)
             {
                 Game.timeLeftBossLevel -= deltaTime;
 
@@ -87,6 +87,9 @@ namespace IEC
                 if (Game.timeLeftBossLevel <= 0f)
                 {
                     GameController.GameOver(false);
+                }else if(Game.timeLeftBossLevel <= Game.timeShowRVAddTime)
+                {
+                    UI.mainUIGroup.OnEffectTime(true);
                 }
             }
         }
@@ -127,10 +130,23 @@ namespace IEC
             });
 
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
+
+            UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
+        }
+
+        private void OnHandleAddTime()
+        {
+            if (Game.isBlockButton) return;
+            Services.ShowRewardAds(() =>
+            {
+                Game.timeLeftBossLevel = Mathf.Clamp(Game.timeLeftBossLevel + 20, 20, Game.timeMaxBossLevel);
+                UI.mainUIGroup.OnEffectTime(Game.timeLeftBossLevel <= Game.timeShowRVAddTime);
+            });
         }
 
         private void OnHandleUndo()
         {
+            if (Game.isBlockButton) return;
             if (Game.listUndo.Count < 1) return;
             if(Game.undoRemains > 0)
             {

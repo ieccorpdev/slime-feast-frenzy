@@ -4,10 +4,8 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventStart
     {
-        [SerializeField]
-        private GameObject m_OldUI, m_NewUI;
 
         public void LocateController()
         {
@@ -28,7 +26,7 @@ namespace IEC
             }
         }
 
-        public void BehaviourAwake()
+        public void BehaviourStart()
         {
             var abTestConfigs = Services.config.abTestConfigs;
             if (abTestConfigs.Length == 0) return;
@@ -63,11 +61,6 @@ namespace IEC
             );
         }
 
-        public void BehaviourStart()
-        {
-
-        }
-
         private void UpdateAb20201228(int abValue)
         {
 
@@ -75,10 +68,10 @@ namespace IEC
 
         private void Result20201222()
         {
-            m_OldUI.SetActive(!Game.isNewUI);
-            m_NewUI.SetActive(Game.isNewUI);
-
-            Controllers.Get<EventController>().AbUIGroup();
+            Game.isNewUI = true;
+            Game.isHaveNewTrees = true;
+            Game.isStartLevelEffect = true;
+            Game.isHintStyleV2 = true;
             UIController.SetupAbUI();
         }
 
@@ -90,12 +83,6 @@ namespace IEC
             Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
             Game.isHintStyleV2 = abValue == 5;
-
-            m_OldUI.SetActive(!Game.isNewUI);
-            m_NewUI.SetActive(Game.isNewUI);
-
-            Controllers.Get<EventController>().AbUIGroup();
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20201215(int abValue)
