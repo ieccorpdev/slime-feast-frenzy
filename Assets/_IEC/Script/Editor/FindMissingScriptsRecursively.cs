@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 public static class FindMissingScriptsRecursively
 {
-    [MenuItem("Auto/Remove Missing Scripts Recursively Visit Prefabs")]
+    [MenuItem("IEC/Remove Missing Scripts Recursively Visit Prefabs")]
     private static void FindAndRemoveMissingInSelected()
     {
         // EditorUtility.CollectDeepHierarchy does not include inactive children

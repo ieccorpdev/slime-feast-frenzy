@@ -9,7 +9,7 @@ namespace IEC
     /// object contain player secret data (need save and secure)
     /// </summary>
     [System.Serializable]
-    public class PlayerSecret
+    public class PlayerSecret : IData
     {
         public const string DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
 
