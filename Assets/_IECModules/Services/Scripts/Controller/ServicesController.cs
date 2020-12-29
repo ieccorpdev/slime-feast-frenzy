@@ -392,6 +392,7 @@ namespace IEC
 
         public void PushEventIapKochava(string packName, float price)
         {
+            return;
 #if (PluginKochava)
             Kochava.Event myEvent = new Kochava.Event(Kochava.EventType.Purchase);
             myEvent.name = packName;
