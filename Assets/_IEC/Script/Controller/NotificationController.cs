@@ -11,7 +11,7 @@ using Unity.Notifications.Android;
 
 namespace IEC
 {
-    public class NotificationController : MonoBehaviour, IController, IEventListener, IEventStart
+    public class NotificationController : MonoBehaviour, IController, IEventListener, IEventStart, IEventPauseApp, IEventQuitApp
     {
         private string[] notiMsg =
         {
@@ -145,16 +145,15 @@ namespace IEC
 #endif
         }
 
-
-        private void OnApplicationPause(bool pauseStatus)
+        public void BehaviourPauseApp(bool isPause)
         {
-            if (pauseStatus)
+            if (isPause)
             {
                 RegisterNotification();
             }
         }
 
-        private void OnApplicationQuit()
+        public void BehaviourQuitApp()
         {
             RegisterNotification();
         }

@@ -22,6 +22,7 @@ namespace IEC
         protected static UIGroup UI => Pool.Get<UIGroup>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();
+        protected static ShopConfig ShopConfig => Pool.Get<ShopConfig>();
 
         protected static ComponentConfig ComponentConfig => Config.componentConfig;
     }

@@ -12,7 +12,14 @@ namespace IEC
     }
 
     [System.Serializable]
-    public struct BackgroundConfig
+    public class ThemeConfig
+    {
+        public List<Material> listTerrains;
+        public Material wallMat, holeMat, cornerMat;
+    }
+
+    [System.Serializable]
+    public class BackgroundConfig
     {
         public Sprite sprMain, sprTop, sprBot;
     }

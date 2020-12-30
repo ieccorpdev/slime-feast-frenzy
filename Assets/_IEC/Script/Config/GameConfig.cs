@@ -29,8 +29,6 @@ namespace IEC
         public Color[] colorBSP;
         public Material[] matBSP;
 
-        public ShopConfig shopConfig;
-
         //Effect config
         public float startEffectMoveTime;
 
@@ -69,12 +67,5 @@ namespace IEC
             var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
             return targetMats[colorIndex];
         }
-    }
-
-    [Serializable]
-    public struct ThemeConfig
-    {
-        public List<Material> listTerrains;
-        public Material wallMat, holeMat, cornerMat;
     }
 }
