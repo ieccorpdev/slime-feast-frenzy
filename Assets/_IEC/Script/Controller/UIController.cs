@@ -243,6 +243,8 @@ namespace IEC
 
         private void GameOver(bool isWin)
         {
+            UI.mainUIGroup.OnEffectTime(false);
+            UI.gameOverUIGroup.SetTextGameOver(isWin);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             UI.OnGameOver(true);
             SetActiveButtons(true);
