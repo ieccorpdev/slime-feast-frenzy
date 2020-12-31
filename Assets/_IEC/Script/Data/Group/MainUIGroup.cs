@@ -52,7 +52,6 @@ namespace IEC
 
         public void SetupBossLevel(bool isBossLevel)
         {
-            btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
             btnTime.gameObject.SetActive(Game.isHaveBossTimerLevels && isBossLevel);
         }
 
@@ -82,7 +81,7 @@ namespace IEC
         }
 
         private float effectBossDuration = .35f;
-        public void TweenBossLevel()
+        public void TweenBossLevel(System.Action callback)
         {
             Sequence sequence = DOTween.Sequence();
             rectTextBossLevel.anchoredPosition = new Vector2(-1500f, 85f);
@@ -98,6 +97,8 @@ namespace IEC
                 .OnComplete(() => {
                     rectTextBossLevel.gameObject.SetActive(false);
                     rectPanelBossLevel.gameObject.SetActive(false);
+
+                    callback?.Invoke();
                 });
         }
 

@@ -11,6 +11,8 @@ namespace IEC
         private bool m_IsWatchedAdsAddTime;
         private bool m_IsShowGOPanel;
 
+        private bool m_IsAllowCountDown;
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -37,6 +39,20 @@ namespace IEC
                     GameOver((bool)param.p0);
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
+                    if (!PlayerData.haveAlreadyRate)
+                    {
+                        var level = PlayerData.level;
+                        if (level <= 60 && level % 20 == 0 &&
+                            !PlayerData.levelShowRate.Contains(level))
+                        {
+                            Game.isShowPopup = true;
+                            PlayerData.levelShowRate.Add(level);
+                            Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
+                            UI.popUpRating.gameObject.SetActive(true);
+                            Game.SetGameState(GameState.Pause);
+                        }
+                    }
+
                     if (Game.isHaveUIAnimation)
                     {
                         UI.mainUIGroup.TweenPannelTop(true);
@@ -44,19 +60,9 @@ namespace IEC
 
                     if (Game.isBossLevel)
                     {
-                        UI.mainUIGroup.TweenBossLevel();
-                    }
-
-                    if (!PlayerData.haveAlreadyRate)
-                    {
-                        var level = PlayerData.level;
-                        if (level <= 60 && level % 20 == 0 &&
-                            !PlayerData.levelShowRate.Contains(level))
+                        if (!Game.isShowPopup)
                         {
-                            PlayerData.levelShowRate.Add(level);
-                            Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
-                            UI.popUpRating.gameObject.SetActive(true);
-                            Game.SetGameState(GameState.Pause);
+                            TweenBossLevel();
                         }
                     }
                     break;
@@ -73,6 +79,7 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             if (!Game.isPlaying) return;
+            if (!m_IsAllowCountDown) return;
             if (Game.isHaveUIAnimation)
             {
                 m_CountVibrateHint += deltaTime;
@@ -83,7 +90,7 @@ namespace IEC
                 }
             }
 
-            if(Game.isHaveBossTimerLevels && Game.isBossLevel)
+            if (Game.isHaveBossTimerLevels && Game.isBossLevel)
             {
                 Game.timeLeftBossLevel -= deltaTime;
 
@@ -137,6 +144,13 @@ namespace IEC
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
 
             UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
+        }
+
+        public void TweenBossLevel()
+        {
+            UI.mainUIGroup.TweenBossLevel(() => {
+                m_IsAllowCountDown = true;
+            });
         }
 
         private void OnHandleAddTime()
@@ -241,8 +255,10 @@ namespace IEC
             Game.isShowPopup = false;
             SetActiveButtons(true);
             ResetVibrateHint();
+
             m_IsWatchedAdsAddTime = false;
             m_IsShowGOPanel = false;
+            m_IsAllowCountDown = false;
         }
 
         public void SetLevel(bool isBossLevel)

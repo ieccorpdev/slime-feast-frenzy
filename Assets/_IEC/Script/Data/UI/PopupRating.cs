@@ -12,18 +12,20 @@ namespace IEC
 
         public void OnInit()
         {
-            m_BtnClose.onClick.AddListener(Hide);
+            m_BtnClose.onClick.AddListener(() => {
+                Hide(true);
+            });
             m_BtnNoThank.onClick.AddListener(OnClickNoThank);
             m_BtnLoveIt.onClick.AddListener(OnClickRate);
 
-            Hide();
+            Hide(false);
         }
 
         private void OnClickNoThank()
         {
             Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.PopupRatingNoThank());
             Pool.Get<PlayerSecret>().haveAlreadyRate = true;
-            Hide();
+            Hide(true);
         }
 
         private void OnClickRate()
@@ -37,13 +39,19 @@ namespace IEC
 #else
             Application.OpenURL("market://details?id=" + Application.identifier);
 #endif
-            Hide();
+            Hide(true);
         }
 
-        private void Hide()
+        private void Hide(bool isAction)
         {
             gameObject.SetActive(false);
-            Pool.Get<Game>().SetGameState(GameState.Playing);
+
+            if (isAction)
+            {
+                var Game = Pool.Get<Game>();
+                Game.SetGameState(GameState.Playing);
+                Controllers.Get<UIController>().TweenBossLevel();
+            }
         }
     }
 

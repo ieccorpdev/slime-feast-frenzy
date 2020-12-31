@@ -88,7 +88,7 @@ namespace IEC
                     CheckConnect();
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
-                    GameStart();
+                    PrepareGameStart();
                     break;
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
                     if (IsCompleteAll())
@@ -107,42 +107,8 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        private void GameStart()
-        {
-            if (Game.isFixLevelDifficulty)
-            {
-                if (PlayerData.level < 11)
-                {
-                    var count = Game.listHints.Count;
-                    var seed = PlayerData.level;
-                    var moveCountSpawn = seed * 2;
-                    var gridCondition = moveCountSpawn / 2;
-
-                    BaseComponent grid = null;
-                    var gridRot = 0;
-                    var maxReduce = 0;
-                    var minReduce = 0;
-                    var reduce = 0;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        grid = Game.listHints[i];
-                        gridRot = grid.TrueRot;
-
-                        if (moveCountSpawn > 0)
-                        {
-                            maxReduce = Mathf.Min(moveCountSpawn, 3) + 1;
-                            minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
-                            reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
-                            moveCountSpawn -= reduce;
-                            gridRot = LevelHelper.CalculatorAddRot(grid.TrueRot, reduce);
-                        }
-
-                        grid.SetTempRot(gridRot);
-                    }
-                }
-            }
-             
+        private void PrepareGameStart()
+        {             
             Game.listGrids.ForEach(x => x.AfterInit());
             Game.SetGameState(GameState.Playing);
             m_TimeStart = System.DateTime.Now;

@@ -145,8 +145,6 @@ namespace IEC
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate);
             yield return null;
 
-            
-
             Hint.CheckSoulution();
 
             Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
