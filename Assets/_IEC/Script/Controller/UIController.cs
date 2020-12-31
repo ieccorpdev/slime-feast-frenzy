@@ -148,9 +148,19 @@ namespace IEC
 
         public void TweenBossLevel()
         {
-            UI.mainUIGroup.TweenBossLevel(() => {
-                m_IsAllowCountDown = true;
-            });
+            if (Game.isBossLevel)
+            {
+                Game.isShowPopup = true;
+                UI.mainUIGroup.TweenBossLevel(() => {
+                    m_IsAllowCountDown = true;
+                    Game.isShowPopup = false;
+                });
+            }
+            else
+            {
+                Game.isShowPopup = false;
+            }
+            
         }
 
         private void OnHandleAddTime()
