@@ -43,6 +43,7 @@ namespace IEC
         private void Hide()
         {
             gameObject.SetActive(false);
+            Pool.Get<Game>().SetGameState(GameState.Playing);
         }
     }
 

@@ -91,8 +91,10 @@ namespace IEC
                     GameStart();
                     break;
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
-                    if (IsComplete())
+                    if (IsCompleteAll())
                     {
+                        if (Game.isShowGameOverUI) return;
+                        Game.isShowGameOverUI = true;
                         EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
                     }
                     break;
@@ -144,7 +146,7 @@ namespace IEC
             }
              
             Game.listGrids.ForEach(x => x.AfterInit());
-            Game.isPlaying = true;
+            Game.SetGameState(GameState.Playing);
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
 
@@ -152,7 +154,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
-        public void SetupCamera(LevelSpawn levelSpawn, int size)
+        public void SetupCamera(int size, int rotIndex)
         {
             if (!m_IsInitCam)
             {
@@ -172,7 +174,7 @@ namespace IEC
 
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
-            var rotY = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) * 90f : 0f;
+            var rotY = rotIndex * 90f;
 
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }
@@ -234,22 +236,12 @@ namespace IEC
             {
                 GameOver(true);
             }
-            else
-            {
-                if (Game.isBossLevel)
-                {
-                    if(Game.moveRemains <= 0)
-                    {
-                        GameOver(false);
-                    }
-                }
-            }
         }
 
         public void GameOver(bool isWin)
         {
             Game.isGameWin = isWin;
-            Game.isPlaying = false;
+            Game.SetGameState(GameState.GameOver);
 
             Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
             Services.PushEvent(new IEC.TrackingEvent.GameOver());
@@ -277,7 +269,7 @@ namespace IEC
             return true;
         }
 
-        private bool IsComplete()
+        private bool IsCompleteAll()
         {
             var count = Game.listTarget.Count;
             for (int i = 0; i < count; i++)

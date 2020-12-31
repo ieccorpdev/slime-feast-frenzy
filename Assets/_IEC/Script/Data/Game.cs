@@ -17,13 +17,22 @@ namespace IEC
 
         public bool isCheatLevel;
 
-        public bool isShowPopup;
+        public bool isShowPopup, isShowGameOverUI;
 
-        public bool isBlockButton => !isPlaying || isWaitAfterRV;
+        public GameState GameState;
+
+        public void SetGameState(GameState state)
+        {
+            GameState = state;
+        }
+
+        public bool isPlaying => GameState == GameState.Playing;
+
+        public bool isBlockButton => GameState != GameState.Playing || isWaitAfterRV;
 
         public bool isWaitAfterRV;
 
-        public bool isPlaying, isMultiColor, isTutorial, isAllowHint, isGameWin;
+        public bool isMultiColor, isTutorial, isAllowHint, isGameWin;
 
         public int size, levelSeed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -64,6 +73,8 @@ namespace IEC
         public ThemeConfig enviromentConfig;
 
         public int isStartLevelEffectType;
+
+        public bool isCamRotated;
 
         public bool IsAllowUndo()
         {
@@ -126,12 +137,13 @@ namespace IEC
             listTerrainType.Clear();
             listHints.Clear();
 
+            isShowGameOverUI = false;
             isMultiColor = false;
             isTutorial = false;
             isAllowHint = true;
             isWaitAfterRV = false;
             maxHintIndex = 0;
-            isPlaying = false;
+            SetGameState(GameState.Init);
 
             totalMove = 0;
             moveRemains = 0;
@@ -214,5 +226,13 @@ namespace IEC
             this.level = level;
             this.isRandomRotate = isRandomRotate;
         }
+    }
+
+    public enum GameState
+    {
+        Init,
+        Pause,
+        Playing,
+        GameOver
     }
 }

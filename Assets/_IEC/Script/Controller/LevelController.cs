@@ -135,11 +135,17 @@ namespace IEC
                 }
             }
 
+            var rotIndex = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) : 0;
+
+            Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
+
+            GameController.SetupCamera(size, rotIndex);
+
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate);
             yield return null;
 
-            GameController.SetupCamera(levelSpawn, size);
+            
 
             Hint.CheckSoulution();
 

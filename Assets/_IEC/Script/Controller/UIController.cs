@@ -8,6 +8,7 @@ namespace IEC
         private float m_CountVibrateHint, m_NextTimeVibrate;
 
         private int m_TimeLeft, m_TimeLeftUI;
+        private bool m_IsWatchedAdsAddTime;
 
         public void LocateController()
         {
@@ -52,6 +53,7 @@ namespace IEC
                             PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
                             UI.popUpRating.gameObject.SetActive(true);
+                            Game.SetGameState(GameState.Pause);
                         }
                     }
                     break;
@@ -87,7 +89,7 @@ namespace IEC
                 if (Game.timeLeftBossLevel <= 0f)
                 {
                     GameController.GameOver(false);
-                }else if(Game.timeLeftBossLevel <= Game.timeShowRVAddTime)
+                }else if((Game.timeLeftBossLevel <= Game.timeShowRVAddTime) && !m_IsWatchedAdsAddTime)
                 {
                     UI.mainUIGroup.OnEffectTime(true);
                 }
@@ -99,7 +101,7 @@ namespace IEC
 
             UI.mainUIGroup.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
-                Game.isPlaying = false;
+                Game.SetGameState(GameState.Init);
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
                 if (PlayerData.isVibrateOn)
@@ -137,6 +139,9 @@ namespace IEC
         private void OnHandleAddTime()
         {
             if (Game.isBlockButton) return;
+            if (m_IsWatchedAdsAddTime) return;
+            m_IsWatchedAdsAddTime = true;
+
             Services.ShowRewardAds(() =>
             {
                 Game.timeLeftBossLevel = Mathf.Clamp(Game.timeLeftBossLevel + 20, 20, Game.timeMaxBossLevel);
@@ -233,6 +238,7 @@ namespace IEC
             Game.isShowPopup = false;
             SetActiveButtons(true);
             ResetVibrateHint();
+            m_IsWatchedAdsAddTime = false;
         }
 
         public void SetLevel(bool isBossLevel)

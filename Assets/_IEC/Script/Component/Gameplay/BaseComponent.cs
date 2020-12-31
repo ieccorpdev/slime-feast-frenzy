@@ -427,11 +427,25 @@ namespace IEC
         {
             if (Game.isStartLevelEffectType == 0)
             {
-                return Col - 1;
+                if (Game.isCamRotated)
+                {
+                    return Row - 1;
+                }
+                else
+                {
+                    return Col - 1;
+                }
             }
             else
             {
-                return (Game.size - Col - 2);
+                if (Game.isCamRotated)
+                {
+                    return (Game.size - Row - 2);
+                }
+                else
+                {
+                    return (Game.size - Col - 2);
+                }
             }
         }
 
