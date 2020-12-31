@@ -9,6 +9,7 @@ namespace IEC
 
         private int m_TimeLeft, m_TimeLeftUI;
         private bool m_IsWatchedAdsAddTime;
+        private bool m_IsShowGOPanel;
 
         public void LocateController()
         {
@@ -31,6 +32,8 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_OVER_UI:
+                    if (m_IsShowGOPanel) return;
+                    m_IsShowGOPanel = true;
                     GameOver((bool)param.p0);
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
@@ -252,13 +255,20 @@ namespace IEC
             UI.mainUIGroup.OnEffectTime(false);
             UI.gameOverUIGroup.SetTextGameOver(isWin);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-            UI.OnGameOver(true);
+            
             SetActiveButtons(true);
 
             if (PlayerData.isVibrateOn)
             {
                 MMVibrationManager.Haptic(isWin ? HapticTypes.Success : HapticTypes.Failure);
             }
+
+            Invoke(nameof(ShowGameOver), .2f);
+        }
+
+        private void ShowGameOver()
+        {
+            UI.OnGameOver(true);
         }
 
         private void ResetVibrateHint()

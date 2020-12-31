@@ -17,7 +17,7 @@ namespace IEC
 
         public bool isCheatLevel;
 
-        public bool isShowPopup, isShowGameOverUI;
+        public bool isShowPopup;
 
         public GameState GameState;
 
@@ -137,7 +137,6 @@ namespace IEC
             listTerrainType.Clear();
             listHints.Clear();
 
-            isShowGameOverUI = false;
             isMultiColor = false;
             isTutorial = false;
             isAllowHint = true;

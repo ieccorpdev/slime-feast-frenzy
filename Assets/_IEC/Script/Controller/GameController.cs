@@ -93,9 +93,7 @@ namespace IEC
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
                     if (IsCompleteAll())
                     {
-                        if (Game.isShowGameOverUI) return;
-                        Game.isShowGameOverUI = true;
-                        EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
+                        EventController.RaiseEventDelay(.5f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
                     }
                     break;
                 case EventList.GamePlay.GAME_UNDO:
