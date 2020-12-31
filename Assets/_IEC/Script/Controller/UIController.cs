@@ -242,6 +242,7 @@ namespace IEC
             SetActiveButtons(true);
             ResetVibrateHint();
             m_IsWatchedAdsAddTime = false;
+            m_IsShowGOPanel = false;
         }
 
         public void SetLevel(bool isBossLevel)

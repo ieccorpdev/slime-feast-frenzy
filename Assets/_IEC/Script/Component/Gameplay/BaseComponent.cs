@@ -17,9 +17,6 @@ namespace IEC
         protected WaterComponent[] m_WaterComponent;
 
         [SerializeField]
-        protected MeshRenderer[] m_LineMeshs;
-
-        [SerializeField]
         protected GameObject[] m_LineTyleObjs;
 
         public int ID => gameObject.GetInstanceID();
