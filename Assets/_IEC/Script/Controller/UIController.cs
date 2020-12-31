@@ -7,6 +7,12 @@ namespace IEC
     {
         private float m_CountVibrateHint, m_NextTimeVibrate;
 
+        private int m_TimeLeft, m_TimeLeftUI;
+        private bool m_IsWatchedAdsAddTime;
+        private bool m_IsShowGOPanel;
+
+        private bool m_IsAllowCountDown;
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -28,28 +34,35 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_OVER_UI:
+                    if (m_IsShowGOPanel) return;
+                    m_IsShowGOPanel = true;
                     GameOver((bool)param.p0);
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
-                    if (Game.isHaveUIAnimation)
-                    {
-                        UI.mainUIGroup.TweenPannelTop(true);
-                    }
-
-                    if (Game.isBossLevelLimitMoves)
-                    {
-                        UI.mainUIGroup.TweenBossLevel();
-                    }
-
                     if (!PlayerData.haveAlreadyRate)
                     {
                         var level = PlayerData.level;
                         if (level <= 60 && level % 20 == 0 &&
                             !PlayerData.levelShowRate.Contains(level))
                         {
+                            Game.isShowPopup = true;
                             PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
                             UI.popUpRating.gameObject.SetActive(true);
+                            Game.SetGameState(GameState.Pause);
+                        }
+                    }
+
+                    if (Game.isHaveUIAnimation)
+                    {
+                        UI.mainUIGroup.TweenPannelTop(true);
+                    }
+
+                    if (Game.isBossLevel)
+                    {
+                        if (!Game.isShowPopup)
+                        {
+                            TweenBossLevel();
                         }
                     }
                     break;
@@ -65,12 +78,31 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
-            if (!Game.isHaveUIAnimation) return;
-            m_CountVibrateHint += deltaTime;
-            if(m_CountVibrateHint >= m_NextTimeVibrate)
+            if (!Game.isPlaying) return;
+            if (!m_IsAllowCountDown) return;
+            if (Game.isHaveUIAnimation)
             {
-                UI.mainUIGroup.OnVibrateHint();
-                ResetVibrateHint();
+                m_CountVibrateHint += deltaTime;
+                if (m_CountVibrateHint >= m_NextTimeVibrate)
+                {
+                    UI.mainUIGroup.OnVibrateHint();
+                    ResetVibrateHint();
+                }
+            }
+
+            if (Game.isHaveBossTimerLevels && Game.isBossLevel)
+            {
+                Game.timeLeftBossLevel -= deltaTime;
+
+                UpdateTimerLevel();
+
+                if (Game.timeLeftBossLevel <= 0f)
+                {
+                    GameController.GameOver(false);
+                }else if((Game.timeLeftBossLevel <= Game.timeShowRVAddTime) && !m_IsWatchedAdsAddTime)
+                {
+                    UI.mainUIGroup.OnEffectTime(true);
+                }
             }
         }
 
@@ -79,7 +111,7 @@ namespace IEC
 
             UI.mainUIGroup.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
-                Game.isPlaying = false;
+                Game.SetGameState(GameState.Init);
                 Services.PushEvent(new IEC.TrackingEvent.ReplayLevel());
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
                 if (PlayerData.isVibrateOn)
@@ -106,18 +138,37 @@ namespace IEC
 
             UI.mainUIGroup.btnHint.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
-                Services.ShowRewardAds(() => {
-                    Game.isWaitAfterRV = true;
-                    var delayTime = (Application.isEditor || Services.IsConfigNoAds()) ? 0f : 1f;
-                    EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_HINT);
-                });
+                OnHandleButtonHint();
             });
 
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
+
+            UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
+        }
+
+        public void TweenBossLevel()
+        {
+            UI.mainUIGroup.TweenBossLevel(() => {
+                m_IsAllowCountDown = true;
+            });
+        }
+
+        private void OnHandleAddTime()
+        {
+            if (Game.isBlockButton) return;
+            if (m_IsWatchedAdsAddTime) return;
+            m_IsWatchedAdsAddTime = true;
+
+            Services.ShowRewardAds(() =>
+            {
+                Game.timeLeftBossLevel = Mathf.Clamp(Game.timeLeftBossLevel + 20, 20, Game.timeMaxBossLevel);
+                UI.mainUIGroup.OnEffectTime(Game.timeLeftBossLevel <= Game.timeShowRVAddTime);
+            });
         }
 
         private void OnHandleUndo()
         {
+            if (Game.isBlockButton) return;
             if (Game.listUndo.Count < 1) return;
             if(Game.undoRemains > 0)
             {
@@ -141,6 +192,44 @@ namespace IEC
             }
         }
 
+        private void OnHandleButtonHint()
+        {
+            if (Game.isHintStyleV3)
+            {
+                if (Game.hintRemains > 0)
+                {
+                    Game.hintRemains -= 1;
+                    UI.mainUIGroup.UpdateHintText();
+                    OnHandleHint(false);
+                }
+                else
+                {
+                    Services.ShowRewardAds(() => {
+                        Game.hintRemains = 3;
+                        UI.mainUIGroup.UpdateHintText();
+                        Services.PushEvent(new IEC.TrackingEvent.HintLevel());
+                    });
+                }
+            }
+            else
+            {
+                Services.ShowRewardAds(() => {
+                    Game.isWaitAfterRV = true;
+                    OnHandleHint(true);
+                    Services.PushEvent(new IEC.TrackingEvent.HintLevel());
+                });
+            }
+        }
+
+        private void OnHandleHint(bool isDelay)
+        {
+            var delayTime = (Application.isEditor || Services.IsConfigNoAds()) ? 0f : 1f;
+            if (!isDelay)
+            {
+                delayTime = 0f;
+            }
+            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_HINT);
+        }
 
         public void SetActiveButtons(bool isActive)
         {
@@ -161,10 +250,14 @@ namespace IEC
 
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
+            UI.mainUIGroup.UpdateHintText();
             Game.isShowPopup = false;
             SetActiveButtons(true);
-
             ResetVibrateHint();
+
+            m_IsWatchedAdsAddTime = false;
+            m_IsShowGOPanel = false;
+            m_IsAllowCountDown = false;
         }
 
         public void SetLevel(bool isBossLevel)
@@ -175,20 +268,40 @@ namespace IEC
 
         private void GameOver(bool isWin)
         {
+            UI.mainUIGroup.OnEffectTime(false);
+            UI.gameOverUIGroup.SetTextGameOver(isWin);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
-            UI.OnGameOver(true);
+            
             SetActiveButtons(true);
 
             if (PlayerData.isVibrateOn)
             {
                 MMVibrationManager.Haptic(isWin ? HapticTypes.Success : HapticTypes.Failure);
             }
+
+            Invoke(nameof(ShowGameOver), .2f);
+        }
+
+        private void ShowGameOver()
+        {
+            UI.OnGameOver(true);
         }
 
         private void ResetVibrateHint()
         {
             m_CountVibrateHint = 0f;
             m_NextTimeVibrate = Random.Range(5f, 10f);
+        }
+
+        public void UpdateTimerLevel()
+        {
+            m_TimeLeft = (int)Game.timeLeftBossLevel;
+
+            if (m_TimeLeft != m_TimeLeftUI)
+            {
+                m_TimeLeftUI = m_TimeLeft;
+                UI.mainUIGroup.SetTextTimer(m_TimeLeftUI);
+            }
         }
     }
 }

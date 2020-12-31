@@ -81,6 +81,11 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_ads_undo";
     }
 
+    public class ShowRewardAddTime : Level
+    {
+        public override string Name => "click_btn_ads_add_time";
+    }
+
     public class ShowPopupRating : Level
     {
         public override string Name => "popup_rating_show";
@@ -108,4 +113,5 @@ namespace IEC.TrackingEvent
             return dict;
         }
     }
+
 }

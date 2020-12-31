@@ -17,9 +17,6 @@ namespace IEC
         protected WaterComponent[] m_WaterComponent;
 
         [SerializeField]
-        protected MeshRenderer[] m_LineMeshs;
-
-        [SerializeField]
         protected GameObject[] m_LineTyleObjs;
 
         public int ID => gameObject.GetInstanceID();
@@ -119,7 +116,7 @@ namespace IEC
             {
                 for (int i = 0; i < m_WaterCount; i++)
                 {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone);
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, Game.isNewWaterEffect);
                 }
             }
 
@@ -427,11 +424,25 @@ namespace IEC
         {
             if (Game.isStartLevelEffectType == 0)
             {
-                return Col - 1;
+                if (Game.isCamRotated)
+                {
+                    return Row - 1;
+                }
+                else
+                {
+                    return Col - 1;
+                }
             }
             else
             {
-                return (Game.size - Col - 2);
+                if (Game.isCamRotated)
+                {
+                    return (Game.size - Row - 2);
+                }
+                else
+                {
+                    return (Game.size - Col - 2);
+                }
             }
         }
 
@@ -468,7 +479,8 @@ namespace IEC
         public virtual void SetTerrainMat()
         {
             if (m_Terrain == null) return;
-            var listMats = Config.listEnviromentConfigs[Game.themeIndex].listTerrains;
+            var index = PlayerData.themeSelected % ShopConfig.listEnviromentConfigs.Count;
+            var listMats = ShopConfig.listEnviromentConfigs[index].listTerrains;
             var mat = m_IsHaveWater ? listMats[0] : listMats[1];
             m_Terrain.SetupTerrain(mat);
         }

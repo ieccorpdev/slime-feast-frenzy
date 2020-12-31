@@ -88,12 +88,12 @@ namespace IEC
                     CheckConnect();
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
-                    GameStart();
+                    PrepareGameStart();
                     break;
                 case EventList.GamePlay.GAME_CHECK_COMPLETE:
-                    if (IsComplete())
+                    if (IsCompleteAll())
                     {
-                        EventController.RaiseEventDelay(1f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
+                        EventController.RaiseEventDelay(.5f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
                     }
                     break;
                 case EventList.GamePlay.GAME_UNDO:
@@ -107,44 +107,10 @@ namespace IEC
             Game.listGrids.ForEach(x => x.OnUpdate(deltaTime));
         }
 
-        private void GameStart()
-        {
-            if (Game.isFixLevelDifficulty)
-            {
-                if (PlayerData.level < 11)
-                {
-                    var count = Game.listHints.Count;
-                    var seed = PlayerData.level;
-                    var moveCountSpawn = seed * 2;
-                    var gridCondition = moveCountSpawn / 2;
-
-                    BaseComponent grid = null;
-                    var gridRot = 0;
-                    var maxReduce = 0;
-                    var minReduce = 0;
-                    var reduce = 0;
-
-                    for (int i = 0; i < count; i++)
-                    {
-                        grid = Game.listHints[i];
-                        gridRot = grid.TrueRot;
-
-                        if (moveCountSpawn > 0)
-                        {
-                            maxReduce = Mathf.Min(moveCountSpawn, 3) + 1;
-                            minReduce = (i > gridCondition) ? (Mathf.Max(maxReduce, 1) - 1) : 1;
-                            reduce = RandomHelper.RangeWithSeed(seed, minReduce, maxReduce);
-                            moveCountSpawn -= reduce;
-                            gridRot = LevelHelper.CalculatorAddRot(grid.TrueRot, reduce);
-                        }
-
-                        grid.SetTempRot(gridRot);
-                    }
-                }
-            }
-             
+        private void PrepareGameStart()
+        {             
             Game.listGrids.ForEach(x => x.AfterInit());
-            Game.isPlaying = true;
+            Game.SetGameState(GameState.Playing);
             m_TimeStart = System.DateTime.Now;
             PushPlayLevelEvent();
 
@@ -152,7 +118,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
-        public void SetupCamera(LevelSpawn levelSpawn, int size)
+        public void SetupCamera(int size, int rotIndex)
         {
             if (!m_IsInitCam)
             {
@@ -172,7 +138,7 @@ namespace IEC
 
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
-            var rotY = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) * 90f : 0f;
+            var rotY = rotIndex * 90f;
 
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }
@@ -234,22 +200,12 @@ namespace IEC
             {
                 GameOver(true);
             }
-            else
-            {
-                if (Game.isBossLevelLimitMoves)
-                {
-                    if(Game.moveRemains <= 0)
-                    {
-                        GameOver(false);
-                    }
-                }
-            }
         }
 
-        private void GameOver(bool isWin)
+        public void GameOver(bool isWin)
         {
             Game.isGameWin = isWin;
-            Game.isPlaying = false;
+            Game.SetGameState(GameState.GameOver);
 
             Game.timePlay = (int)(System.DateTime.Now - m_TimeStart).TotalSeconds;
             Services.PushEvent(new IEC.TrackingEvent.GameOver());
@@ -277,7 +233,7 @@ namespace IEC
             return true;
         }
 
-        private bool IsComplete()
+        private bool IsCompleteAll()
         {
             var count = Game.listTarget.Count;
             for (int i = 0; i < count; i++)

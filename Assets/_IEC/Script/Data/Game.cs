@@ -15,13 +15,24 @@ namespace IEC
 
         public float timeDelayFullAds;
 
+        public bool isCheatLevel;
+
         public bool isShowPopup;
 
-        public bool isBlockButton => !isPlaying || isWaitAfterRV;
+        public GameState GameState;
+
+        public void SetGameState(GameState state)
+        {
+            GameState = state;
+        }
+
+        public bool isPlaying => GameState == GameState.Playing;
+
+        public bool isBlockButton => GameState != GameState.Playing || isWaitAfterRV;
 
         public bool isWaitAfterRV;
 
-        public bool isPlaying, isMultiColor, isTutorial, isAllowHint, isGameWin;
+        public bool isMultiColor, isTutorial, isAllowHint, isGameWin;
 
         public int size, levelSeed, timePlay, gridTutId, gridRotCount, tutCount;
 
@@ -49,21 +60,21 @@ namespace IEC
         public string[] hintMixColorDatas;
 
         //Boss level
+        public bool isBossLevel;
         public int totalMove, moveRemains;
-
         public int moveCount;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
+        public int undoRemains, hintRemains;
 
-        public int undoRemains;
-
-        public bool isBossLevelLimitMoves;
+        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime;
+        
 
         public ThemeConfig enviromentConfig;
 
         public int isStartLevelEffectType;
 
-        public bool isCheatLevel;
+        public bool isCamRotated;
 
         public bool IsAllowUndo()
         {
@@ -88,25 +99,30 @@ namespace IEC
         public bool isLevelDifficultyV2;
         public bool isRandomColorClassicMode;
         
-
         public bool isLevelDifficultyV3;
-        public bool isHaveNewWaterEffect;
+        public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
         public bool isHaveUIAnimation;
 
         public bool isHaveNotification;
-        public int themeIndex;
-        public int backGroundIndex;
-        public bool isHaveBossMixColorLevels;
 
+        public int themeDefault;
+        public int backGroundDefault;
+
+        public bool isHaveBossMixColorLevels;
         public bool isLevelDifficultyV4;
 
+        //AB test
         public bool isNewUI;
         public bool isHaveNewTrees;
         public bool isStartLevelEffect;
-        public bool isHintV2;
+        public bool isHintStyleV2;
 
-        //Prepared
+        public bool isHintStyleV3;
+        public bool isHaveBossTimerLevels;
+        public bool isHaveBossTimerLevelsV2;
+        public bool isNewWaterEffect;
+
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
 
@@ -126,7 +142,7 @@ namespace IEC
             isAllowHint = true;
             isWaitAfterRV = false;
             maxHintIndex = 0;
-            isPlaying = false;
+            SetGameState(GameState.Init);
 
             totalMove = 0;
             moveRemains = 0;
@@ -134,8 +150,9 @@ namespace IEC
             listGrids.Clear();
             listUndo.Clear();
 
-            isBossLevelLimitMoves = false;
+            isBossLevel = false;
             undoRemains = 2;
+            hintRemains = 1;
             moveCount = 0;
         }
         
@@ -172,6 +189,18 @@ namespace IEC
             return listUndo.Pop();
         }
 
+        public int GetTimerLevel(int matrix)
+        {
+            var count = matrix - 3;
+            var time = 30;
+            for (int i = 0; i < count; i++)
+            {
+                time = (int)(time * 1.5f);
+            }
+
+            return time;
+        }
+
     }
 
     [System.Serializable]
@@ -196,5 +225,13 @@ namespace IEC
             this.level = level;
             this.isRandomRotate = isRandomRotate;
         }
+    }
+
+    public enum GameState
+    {
+        Init,
+        Pause,
+        Playing,
+        GameOver
     }
 }

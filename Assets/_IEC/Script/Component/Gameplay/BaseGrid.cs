@@ -48,7 +48,7 @@ namespace IEC
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
 
-            if (!isUndo)
+            if (!isUndo && Game.isHaveBossLimitMoveLevels)
             {
                 EventController.RaiseEvent(EventList.GamePlay.GAME_ADD_MOVE, new EventParam(this));
             }
@@ -59,16 +59,16 @@ namespace IEC
             m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_CurrentRot = isUndo ? LevelHelper.CalculatorAddRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
-            var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
 
+            var rot = new Vector3(0f, 90, 0f);
             var time = Game.isFasterRotate ? .15f : .3f;
-
             Sequence sequence = DOTween.Sequence();
 
             var currentPos = transform.localPosition;
 
-            m_Tween = sequence.Join(transform.DOLocalRotateQuaternion(rot, time))
+            m_CurrentRot = isUndo ? LevelHelper.CalculatorAddRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
+
+            m_Tween = sequence.Join(transform.DOLocalRotate(rot, time, RotateMode.FastBeyond360).SetRelative())
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
                 .OnComplete(() =>
                 {
@@ -91,16 +91,17 @@ namespace IEC
             m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            m_CurrentRot = TrueRot;
-            var rot = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-
+            var rotRemains = LevelHelper.CalculatorMissingRot(m_CurrentRot, TrueRot);
+            var newRot = rotRemains * 90;
+            var rot = new Vector3(0f, newRot, 0f);
             var time = Game.isFasterRotate ? .15f : .3f;
 
             Sequence sequence = DOTween.Sequence();
-
             var currentPos = transform.localPosition;
 
-            m_Tween = sequence.Join(transform.DOLocalRotateQuaternion(rot, time))
+            m_CurrentRot = TrueRot;
+
+            m_Tween = sequence.Join(transform.DOLocalRotate(rot, time, RotateMode.FastBeyond360).SetRelative())
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
                 .OnComplete(() =>
                 {

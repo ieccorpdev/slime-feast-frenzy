@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -53,10 +52,6 @@ namespace IEC
 
             Game.isStartLevelEffectType = Random.Range(0, 2);
 
-            if (Game.isHaveBossLimitMoveLevels)
-            {
-                Game.isBossLevelLimitMoves = (Game.levelSeed % 5) == 0;
-            }
             bool isBossMixColor = false;
 
             if (Game.isHaveBossMixColorLevels)
@@ -64,6 +59,18 @@ namespace IEC
                 if (Game.levelSeed >= 15)
                 {
                     isBossMixColor = (Game.levelSeed % 5) == 0;
+                }
+            }
+
+            if (Game.isHaveBossLimitMoveLevels || Game.isHaveBossTimerLevels)
+            {
+                if (Game.levelSeed >= 20)
+                {
+                    if((Game.levelSeed % 10) == 0)
+                    {
+                        Game.isBossLevel = true;
+                        isBossMixColor = false;
+                    }
                 }
             }
 
@@ -128,22 +135,30 @@ namespace IEC
                 }
             }
 
+            var rotIndex = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) : 0;
+
+            Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
+
+            GameController.SetupCamera(size, rotIndex);
+
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate);
             yield return null;
-
-            GameController.SetupCamera(levelSpawn, size);
 
             Hint.CheckSoulution();
 
             Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
             Game.moveRemains = Game.totalMove;
-            if (Game.isBossLevelLimitMoves)
+            if (Game.isBossLevel)
             {
                 UI.mainUIGroup.UpdateMove();
+                Game.timeMaxBossLevel = Game.isHaveBossTimerLevelsV2 ? Game.GetTimerLevel(size - 2) : 90;
+                Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
+                Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
 
-            UIController.SetLevel(Game.isBossLevelLimitMoves);
+            UIController.SetLevel(Game.isBossLevel);
+            UIController.UpdateTimerLevel();
 
             var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
@@ -151,7 +166,9 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            Game.enviromentConfig = Config.listEnviromentConfigs[Game.themeIndex];
+            var listTheme = ShopConfig.listEnviromentConfigs;
+            var index = PlayerData.themeSelected % listTheme.Count;
+            Game.enviromentConfig = ShopConfig.listEnviromentConfigs[index];
 
             var type0 = RandomHelper.Range(0, 2);
 
@@ -166,7 +183,8 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            GamePlay.backgroundGroup.SetBackground(Config.listSpriteBackgrounds[Game.backGroundIndex], false);
+            var bgConfig = ShopConfig.listSpriteBackgrounds[PlayerData.backgroundSelected];
+            GamePlay.SetBackground(bgConfig);
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot)
@@ -240,7 +258,7 @@ namespace IEC
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
 
-            if (Game.isBossLevelLimitMoves)
+            if (Game.isBossLevel)
             {
                 Game.totalMove += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
             }
@@ -304,6 +322,7 @@ namespace IEC
 
         private LevelSpawn GetLevelSpawn(int level)
         {
+            var levelIndex = level - 1;
             if (level > Game.levelDatas.Length)
             {
                 return new LevelSpawn((level + 99) % Game.levelDatas.Length, false);
@@ -314,12 +333,12 @@ namespace IEC
                 {
                     if (level > 2 && level <= GetConditionLevelDifficulty())
                     {
-                        var levelSpawn = int.Parse(Game.levelDifficulty[level - 1]);
+                        var levelSpawn = int.Parse(Game.levelDifficulty[levelIndex]);
                         bool isRotate = false;
                         if (levelSpawn < 0)
                         {
                             isRotate = true;
-                            var matrix = int.Parse(Game.dataLevelDifficulty[level]);
+                            var matrix = int.Parse(Game.dataLevelDifficulty[levelIndex]);
 
                             levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
                         }

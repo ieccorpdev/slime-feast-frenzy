@@ -50,8 +50,13 @@ namespace IEC
                 addIndex = Mathf.RoundToInt(addIndex * .7f);
             }
 
-            if (Game.isHintV2)
+            if (Game.isHintStyleV2 || Game.isHintStyleV3)
             {
+                if (Game.isHintStyleV3)
+                {
+                    addIndex = 1;
+                }
+
                 var moveCount = 0;
                 var listHintsCount = Game.listHints.Count;
                 for (int i = 0; i < listHintsCount; i++)
@@ -88,9 +93,7 @@ namespace IEC
                 }
             }
 
-
             EventController.RaiseEventDelay(.3f, EventList.GamePlay.GAME_AFTER_HINT, new EventParam(this, m_ListTempHint));
-            Services.PushEvent(new IEC.TrackingEvent.HintLevel());
         }
 
         private List<BaseComponent> m_ListGridSolution = new List<BaseComponent>();

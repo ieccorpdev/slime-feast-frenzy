@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
 using DG.Tweening;
+using System;
 
 namespace IEC
 {
@@ -46,16 +47,14 @@ namespace IEC
             popupSettings.gameObject.SetActive(false);
             popUpRating.gameObject.SetActive(false);
 
-            gameOverUIGroup.SetTextGameOver();
-
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            mainUIGroup.OnEffectTime(false);
         }
 
         public void OnGameOver(bool isActive)
         {
             gameOverUIGroup.gameObject.SetActive(isActive);
         }
-
     }
 
     public interface IUIGroup

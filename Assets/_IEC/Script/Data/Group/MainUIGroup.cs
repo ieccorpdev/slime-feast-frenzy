@@ -12,19 +12,21 @@ namespace IEC
         private Game m_Game;
         private Game Game => m_Game ?? Pool.Get<Game>();
 
-        public Button btnRestart, btnSkip, btnSetting, btnHint, btnUndo;
+        public Button btnRestart, btnSkip, btnSetting, btnHint, btnUndo, btnTime;
 
         [SerializeField]
-        private RectTransform rectTopPanel, rectPanelBossLevel, rectTextBossLevel;
+        private RectTransform rectTopPanel, rectPanelBossLevel, rectTextBossLevel, rectAddTime;
 
         [SerializeField]
-        private TMP_Text txtUndo, txtMove;
+        private TMP_Text txtUndo, txtHintCount, txtTimer;
 
         private Tween m_Tween;
 
         private float effectDuration = 0.25f;
 
         public GameObject undoAds, undoCount;
+
+        public GameObject hintAds, hintCount;
 
         [SerializeField]
         private Gradient m_MoveColor;
@@ -50,9 +52,7 @@ namespace IEC
 
         public void SetupBossLevel(bool isBossLevel)
         {
-            btnHint.gameObject.SetActive(Game.isHaveHint && !isBossLevel);
-            btnUndo.gameObject.SetActive(isBossLevel);
-            txtMove.gameObject.SetActive(isBossLevel);
+            btnTime.gameObject.SetActive(Game.isHaveBossTimerLevels && isBossLevel);
         }
 
         public void OnVibrateHint()
@@ -81,7 +81,7 @@ namespace IEC
         }
 
         private float effectBossDuration = .35f;
-        public void TweenBossLevel()
+        public void TweenBossLevel(System.Action callback)
         {
             Sequence sequence = DOTween.Sequence();
             rectTextBossLevel.anchoredPosition = new Vector2(-1500f, 85f);
@@ -97,6 +97,8 @@ namespace IEC
                 .OnComplete(() => {
                     rectTextBossLevel.gameObject.SetActive(false);
                     rectPanelBossLevel.gameObject.SetActive(false);
+
+                    callback?.Invoke();
                 });
         }
 
@@ -107,11 +109,40 @@ namespace IEC
             undoCount.SetActive(Game.undoRemains > 0);
         }
 
+        public void UpdateHintText()
+        {
+            txtHintCount.text = StringHelper.GetNumber(Game.hintRemains);
+            hintAds.SetActive(Game.hintRemains <= 0 || !Game.isHintStyleV3);
+            hintCount.SetActive(Game.isHintStyleV3 && Game.hintRemains > 0);
+        }
+
+        public void OnEffectTime(bool isActive)
+        {
+            if (rectAddTime.gameObject.activeSelf == isActive) return;
+            rectAddTime.gameObject.SetActive(isActive);
+            
+            btnTime.GetComponent<Image>().raycastTarget = isActive;
+            rectAddTime.localRotation = Quaternion.Euler(0f, 0f, 10f);
+
+            m_Tween?.Kill(true);
+            if (isActive)
+            {
+                Quaternion quaternion = Quaternion.Euler(0f, 0f, -10f);
+                m_Tween = rectAddTime.DOLocalRotateQuaternion(quaternion, .4f).SetLoops(-1, LoopType.Yoyo);
+            }
+        }
+
         public void UpdateMove()
         {
-            txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
-            float valueColor = (float)Game.moveRemains / Game.totalMove;
-            txtMove.color = m_MoveColor.Evaluate(valueColor);
+            return;
+            //txtMove.text = "Moves: " + StringHelper.GetNumber(Game.moveRemains);
+            //float valueColor = (float)Game.moveRemains / Game.totalMove;
+            //txtMove.color = m_MoveColor.Evaluate(valueColor);
+        }
+
+        public void SetTextTimer(int time)
+        {
+            txtTimer.text = StringHelper.GetTime(time);
         }
     }
 }

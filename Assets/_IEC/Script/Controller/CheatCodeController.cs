@@ -53,7 +53,6 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
-                Game.isCheatLevel = true;
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 Pool.Get<PlayerSecret>().level = level;
                 OnRestartLevel();
@@ -62,24 +61,32 @@ namespace IEC
                 value = 1
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-5)", param =>
+            ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Level: " + Game.isCheatLevel, cheatCodeParam =>
             {
-                int bgIndex = int.Parse(param.inputParams[0].value.ToString());
-                Game.backGroundIndex = bgIndex % 6;
-                OnRestartLevel();
-            }, new CheatCode.InputParam
-            {
-                value = Game.backGroundIndex
+                Game.isCheatLevel = !Game.isCheatLevel;
+                cheatCodeParam.buttonText = "Is Cheat Level: " + Game.isCheatLevel;
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-5)", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-3)", param =>
             {
-                int themeIndex = int.Parse(param.inputParams[0].value.ToString());
-                Game.themeIndex = themeIndex % 6;
+                int valueInput = int.Parse(param.inputParams[0].value.ToString());
+                var bgIndex = valueInput % ShopConfig.listSpriteBackgrounds.Count;
+                PlayerData.UnlockBackground(bgIndex);
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
-                value = Game.themeIndex
+                value = PlayerData.backgroundSelected
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-3)", param =>
+            {
+                int valueInput = int.Parse(param.inputParams[0].value.ToString());
+                var themeIndex = valueInput % ShopConfig.listEnviromentConfigs.Count;
+                PlayerData.UnlockTheme(themeIndex);
+                OnRestartLevel();
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.themeSelected
             });
         }
 

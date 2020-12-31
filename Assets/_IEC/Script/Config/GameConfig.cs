@@ -19,7 +19,6 @@ namespace IEC
 
         public List<TutorialConfig> listTuts;
 
-
         //Water
         public Color[] waterColor;
         public Color targetColorDefault;
@@ -29,9 +28,6 @@ namespace IEC
 
         public Color[] colorBSP;
         public Material[] matBSP;
-
-        public List<ThemeConfig> listEnviromentConfigs;
-        public List<Sprite> listSpriteBackgrounds;
 
         //Effect config
         public float startEffectMoveTime;
@@ -71,12 +67,5 @@ namespace IEC
             var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
             return targetMats[colorIndex];
         }
-    }
-
-    [Serializable]
-    public struct ThemeConfig
-    {
-        public List<Material> listTerrains;
-        public Material wallMat, holeMat, cornerMat;
     }
 }

@@ -10,15 +10,9 @@ namespace IEC
         [SerializeField]
         private Image m_ImgBackground;
 
-        [SerializeField]
-        private GameObject m_TopBgObj, m_BotBgObj;
-
-        public void SetBackground(Sprite sprite, bool isDefault)
+        public void SetBackground(Sprite sprite)
         {
             m_ImgBackground.sprite = sprite;
-
-            m_TopBgObj.SetActive(isDefault);
-            m_BotBgObj.SetActive(isDefault);
         }
     }
 }

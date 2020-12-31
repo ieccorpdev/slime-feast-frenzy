@@ -33,9 +33,9 @@ namespace IEC
             });
         }
 
-        public void SetTextGameOver()
+        public void SetTextGameOver(bool isWin)
         {
-            m_TxtGO.text = TextWinBonus[Random.Range(0, TextWinBonus.Count)];
+            m_TxtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
         }
 
         public void TweenGameOver(bool isActive)
