@@ -171,6 +171,7 @@ namespace IEC
 
             Services.ShowRewardAds(() =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ShowRewardAddTime());
                 Game.timeLeftBossLevel = Mathf.Clamp(Game.timeLeftBossLevel + 20, 20, Game.timeMaxBossLevel);
                 UI.mainUIGroup.OnEffectTime(Game.timeLeftBossLevel <= Game.timeShowRVAddTime);
             });
