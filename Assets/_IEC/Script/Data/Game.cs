@@ -123,6 +123,9 @@ namespace IEC
         public bool isHaveBossTimerLevelsV2;
         public bool isNewWaterEffect;
 
+        //Prepare 
+        public bool isNewTreeColor;
+
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
 

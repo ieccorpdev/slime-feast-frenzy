@@ -24,10 +24,12 @@ namespace IEC
         public Color targetColorDefault;
 
         public Material[] targetMats;
+        public Material[] targetGradientMats;
         public Material targetDefaultMat;
 
         public Color[] colorBSP;
         public Material[] matBSP;
+        public Material[] matBSPGradient;
 
         //Effect config
         public float startEffectMoveTime;
@@ -50,11 +52,18 @@ namespace IEC
             return waterColor[colorIndex];
         }
 
-        public Material GetWaterClassicMat(bool isMultiClassicColor, int color)
+        public Material GetWaterClassicMat(bool isMultiClassicColor, bool isGradient, int color)
         {
             if (isMultiClassicColor)
             {
-                return matBSP[color];
+                if (isGradient)
+                {
+                    return matBSPGradient[color];
+                }
+                else
+                {
+                    return matBSP[color];
+                }
             }
             else
             {
@@ -62,10 +71,19 @@ namespace IEC
             }
         }
 
-        public Material GetWaterMat(int color)
+        public Material GetWaterMat(bool isGradient, int color)
         {
             var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
-            return targetMats[colorIndex];
+
+            if (isGradient)
+            {
+                return targetGradientMats[colorIndex];
+            }
+            else
+            {
+                return targetMats[colorIndex];
+            }
+            
         }
     }
 }

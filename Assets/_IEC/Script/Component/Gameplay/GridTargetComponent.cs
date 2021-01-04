@@ -38,11 +38,11 @@ namespace IEC
             {
                 if (Game.isMultiColor)
                 {
-                    return Config.GetWaterMat(TrueColor);
+                    return Config.GetWaterMat(Game.isNewTreeColor, TrueColor);
                 }
                 else
                 {
-                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.classicColor);
+                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isNewTreeColor, Game.classicColor);
                 }
             }
         }
