@@ -58,26 +58,12 @@ namespace IEC
         public void OnVibrateHint()
         {
             m_Tween?.Kill(true);
-            m_Tween = btnHint.GetComponent<RectTransform>().DOShakeRotation(1f, new Vector3(0, 0, Random.Range(8f, 12f)), Random.Range(15, 20)).SetLoops(Random.Range(1, 3));
+            m_Tween = btnHint.GetComponent<RectTransform>().DOShakeRotation(1f, new Vector3(0, 0, 10f), 16).SetLoops(2);
         }
 
         public void TweenPannelTop(bool isActive, System.Action callBack = null)
         {
-            if (Game.isHaveUIAnimation)
-            {
-                m_Tween?.Kill(true);
-                rectTopPanel.anchoredPosition = new Vector2(0f, isActive ? 500f : 0f);
-                Ease ease = isActive ? Ease.OutBack : Ease.InBack;
-                m_Tween = rectTopPanel.DOAnchorPosY(isActive ? 0f : 500f, .5f).SetEase(Ease.OutBack)
-                    .OnComplete(() =>
-                    {
-                        callBack?.Invoke();
-                    });
-            }
-            else
-            {
-                rectTopPanel.anchoredPosition = new Vector2(0f, 0f);
-            }
+            rectTopPanel.anchoredPosition = new Vector2(0f, 0f);
         }
 
         private float effectBossDuration = .35f;

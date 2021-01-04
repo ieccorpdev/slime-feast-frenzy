@@ -102,7 +102,7 @@ namespace IEC
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
-        public bool isHaveUIAnimation;
+        
 
         public bool isHaveNotification;
 
@@ -125,6 +125,7 @@ namespace IEC
 
         //Prepare 
         public bool isNewTreeColor;
+        public bool isHaveUIAnimation;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;

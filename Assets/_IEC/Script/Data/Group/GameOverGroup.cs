@@ -21,16 +21,33 @@ namespace IEC
         [SerializeField]
         private Button m_BtnNext;
 
+        [SerializeField]
+        private Image m_ImgBlur;
+
         private Tween m_GameOver;
 
         private static readonly List<string> TextWinBonus = new List<string>
         {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
+        private float timeEffect = .4f;
+
         public void OnInit()
         {
-            m_BtnNext.onClick.AddListener(() => {
+            m_BtnNext.onClick.AddListener(ButtonRestart);
+        }
+
+        private void ButtonRestart()
+        {
+            if (Game.isHaveUIAnimation)
+            {
+                TweenGameOver(false, () => {
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
+                });
+            }
+            else
+            {
                 EventController.RaiseEvent(EventList.GamePlay.GAME_RESTART);
-            });
+            }
         }
 
         public void SetTextGameOver(bool isWin)
@@ -38,24 +55,19 @@ namespace IEC
             m_TxtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
         }
 
-        public void TweenGameOver(bool isActive)
+        public void TweenGameOver(bool isActive, System.Action callback = null)
         {
-            //txtGO.text = isWin ? TextWinBonus[Random.Range(0, TextWinBonus.Count)] : "Mission Fail!";
-            //txtGO.transform.localScale = Game.isHaveUIAnimation ? Vector3.one * .1f : Vector3.one;
-            //rectPanelGO.anchoredPosition = new Vector2(Game.isHaveUIAnimation ? -1500f : 0f, 80f);
-            //btnNext.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, Game.isHaveUIAnimation ? -1500f : -450f);
+            m_RectPanelGO.anchoredPosition = new Vector2(0f, isActive ? 2000f : 300f);
 
-            //if (Game.isHaveUIAnimation && isActive)
-            //{
-            //    m_GameOver?.Kill(true);
-            //    TweenPannelTop(false, () =>
-            //    {
-            //        Sequence sequence = DOTween.Sequence();
-            //        m_GameOver = sequence.Append(rectPanelGO.DOAnchorPosX(0f, effectDuration))
-            //            .Append(txtGO.transform.DOScale(Vector3.one, effectDuration))
-            //            .Append(btnGONext.GetComponent<RectTransform>().DOAnchorPosY(-450f, effectDuration));
-            //    });
-            //}
+            var ease = isActive ? Ease.OutBack : Ease.InBack;
+            m_GameOver?.Kill(true);
+            Sequence sequence = DOTween.Sequence();
+            m_GameOver = sequence.Join(m_ImgBlur.DOFade(isActive ? .3f : 0f, timeEffect))
+                .Join(m_RectPanelGO.DOAnchorPosY(isActive ? 300f : 2000f, timeEffect).SetEase(ease));
+
+            sequence.OnComplete(() => {
+                callback?.Invoke();
+            });
         }
     }
 }
