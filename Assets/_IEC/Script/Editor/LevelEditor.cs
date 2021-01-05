@@ -19,25 +19,34 @@ namespace IEC
             GUILayout.Space(10);
             if (GUILayout.Button("Get Data"))
             {
-                string strName = "ListSolutionRemoveMixColor";
-                string fileName = "ListSolutionRemoveMixColorConfig";
+                string strName = "ListLevelRemoveMixColor";
+                string fileName = "LevelMatrix3";
 
                 var strLevelData = Resources.Load<TextAsset>(strName);
-                var levelSortText = strLevelData.text;
-                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
                                  System.StringSplitOptions.RemoveEmptyEntries);
 
                 DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
 
-                var count = levelDifficuty.Length;
+                var count = levelDatas.Length;
                 dataTextConfig.totalItem = count;
 
-                for (int i = 0; i < count; i++)
+                int min = 0;
+                int max = 0;
+
+                for (int i = min; i < max; i++)
                 {
-                    dataTextConfig.listText.Add(levelDifficuty[i]);
+                    var leveText = levelDatas[i].Trim();
+                    var levelData = leveText.Split(':');
+                    var strMode = levelData[1];
+
+                    if (!LevelHelper.IsLoopLevel(strMode))
+                    {
+                        dataTextConfig.listText.Add(i.ToString());
+                    }
                 }
 
-                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/" + fileName + ".asset");
+                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs" + fileName + ".asset");
                 SetDirty(dataTextConfig);
             }
 

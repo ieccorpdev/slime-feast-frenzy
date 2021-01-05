@@ -278,31 +278,31 @@ namespace IEC
         {
             if(matrix == 3)
             {
-                return RandomHelper.RangeWithSeed(seed, 2, 14);
+                return RandomHelper.RangeWithSeed(seed, 2, 13);
             }
             else if (matrix == 4)
             {
-                return RandomHelper.RangeWithSeed(seed, 14, 25);
+                return RandomHelper.RangeWithSeed(seed, 13, 24);
             }
             else if (matrix == 5)
             {
-                return RandomHelper.RangeWithSeed(seed, 25, 40);
+                return RandomHelper.RangeWithSeed(seed, 24, 39);
             }
             else if (matrix == 6)
             {
-                return RandomHelper.RangeWithSeed(seed, 40, 69);
+                return RandomHelper.RangeWithSeed(seed, 39, 68);
             }
             else if (matrix == 7)
             {
-                return RandomHelper.RangeWithSeed(seed, 69, 98);
+                return RandomHelper.RangeWithSeed(seed, 68, 97);
             }
             else if (matrix == 8)
             {
-                return RandomHelper.RangeWithSeed(seed, 98, 116);
+                return RandomHelper.RangeWithSeed(seed, 97, 115);
             }
             else
             {
-                return RandomHelper.RangeWithSeed(seed, 116, 1135);
+                return RandomHelper.RangeWithSeed(seed, 115, 1134);
             }
         }
 
