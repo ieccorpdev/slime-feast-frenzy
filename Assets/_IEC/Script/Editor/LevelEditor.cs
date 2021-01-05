@@ -10,17 +10,19 @@ namespace IEC
     [CustomEditor(typeof(LevelConfigData))]
     public class LevelEditor : Editor
     {
-        
+        private int[] matrix3 = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        private int[] matrix4 = new int[] { 13, 16, 17, 20, 21, 23 };
+
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
             GUILayout.Space(30);
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Get Data"))
+            if (GUILayout.Button("Merge level"))
             {
                 string strName = "ListLevelRemoveMixColor";
-                string fileName = "LevelMatrix3";
+                string fileName = "LevelMatrix4";
 
                 var strLevelData = Resources.Load<TextAsset>(strName);
                 var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
@@ -28,11 +30,8 @@ namespace IEC
 
                 DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
 
-                var count = levelDatas.Length;
-                dataTextConfig.totalItem = count;
-
-                int min = 0;
-                int max = 0;
+                int min = 13;
+                int max = 24;
 
                 for (int i = min; i < max; i++)
                 {
@@ -46,9 +45,47 @@ namespace IEC
                     }
                 }
 
-                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs" + fileName + ".asset");
+                var count = dataTextConfig.listText.Count;
+                dataTextConfig.totalItem = count;
+
+                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
                 SetDirty(dataTextConfig);
             }
+
+
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Get Data"))
+            //{
+            //    string strName = "ListLevelRemoveMixColor";
+            //    string fileName = "LevelMatrix4";
+
+            //    var strLevelData = Resources.Load<TextAsset>(strName);
+            //    var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
+            //                     System.StringSplitOptions.RemoveEmptyEntries);
+
+            //    DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
+
+            //    int min = 13;
+            //    int max = 24;
+
+            //    for (int i = min; i < max; i++)
+            //    {
+            //        var leveText = levelDatas[i].Trim();
+            //        var levelData = leveText.Split(':');
+            //        var strMode = levelData[1];
+
+            //        if (!LevelHelper.IsLoopLevel(strMode))
+            //        {
+            //            dataTextConfig.listText.Add(i.ToString());
+            //        }
+            //    }
+
+            //    var count = dataTextConfig.listText.Count;
+            //    dataTextConfig.totalItem = count;
+
+            //    AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
+            //    SetDirty(dataTextConfig);
+            //}
 
 
             //GUILayout.Space(10);
