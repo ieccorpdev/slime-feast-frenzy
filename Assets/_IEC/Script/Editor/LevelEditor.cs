@@ -17,92 +17,118 @@ namespace IEC
             GUILayout.Space(30);
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Sort File"))
+            if (GUILayout.Button("Get Data"))
             {
-                var strLevelData = Resources.Load<TextAsset>("DataDifficutyV4");
+                string strName = "ListSolutionRemoveMixColor";
+                string fileName = "ListSolutionRemoveMixColorConfig";
+
+                var strLevelData = Resources.Load<TextAsset>(strName);
                 var levelSortText = strLevelData.text;
                 var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
                                  System.StringSplitOptions.RemoveEmptyEntries);
 
-                var str = "";
-                List<int> listLevel = new List<int>();
+                DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
 
                 var count = levelDifficuty.Length;
+                dataTextConfig.totalItem = count;
+
                 for (int i = 0; i < count; i++)
                 {
-                    bool isHaveResult = false;
-                    var countRequest = 0;
-                    var seed = i;
-
-                    var size = int.Parse(levelDifficuty[i]);
-                    int level = 0;
-
-                    while (!isHaveResult && countRequest <= 50)
-                    {
-                        level = LevelHelper.GetLevelSpawn(size, seed);
-                        seed += 1;
-                        countRequest += 1;
-
-                        if (!listLevel.Contains(level))
-                        {
-                            listLevel.Add(level);
-                            isHaveResult = true;
-
-                            str += level + "\n";
-                        }
-                        else
-                        {
-                            if(countRequest == 50)
-                            {
-                                level = -1;
-                                str += level + "\n";
-                            }
-                        }
-                    }
+                    dataTextConfig.listText.Add(levelDifficuty[i]);
                 }
 
-
-
-                string path2 = "Assets/_IEC/Resources/levelDifficutyV4.txt";
-                //Write some text to the test.txt file
-                StreamWriter writer = new StreamWriter(path2, true);
-                writer.WriteLine(str);
-                writer.Close();
-                AssetDatabase.Refresh();
+                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/" + fileName + ".asset");
+                SetDirty(dataTextConfig);
             }
 
-            GUILayout.Space(10);
-            if (GUILayout.Button("Get Levels Mix Color"))
-            {
-                var strLevelSort1 = Resources.Load<TextAsset>("ListSolutionFull");
-                var levelSortText = strLevelSort1.text;
-                var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
-                                 System.StringSplitOptions.RemoveEmptyEntries);
 
-                var str = "";
-                var count = levelDifficuty.Length;
-                for (int i = 0; i < count; i++)
-                {
-                    var leveText = levelDifficuty[i].Trim();
-                    var levelData = leveText.Split(':');
-                    var strMode = levelData[1];
-                    if (strMode.IndexOf("Mix") < 0) continue;
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Sort File"))
+            //{
+            //    var strLevelData = Resources.Load<TextAsset>("DataDifficutyV4");
+            //    var levelSortText = strLevelData.text;
+            //    var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+            //                     System.StringSplitOptions.RemoveEmptyEntries);
 
-                    var strGrid = levelData[3];
-                    var gridsDatas = strGrid.Trim().Split('_');
-                    if (IsMixColorLevel(gridsDatas))
-                    {
-                        str += leveText + "\n";
-                    }
-                }
+            //    var str = "";
+            //    List<int> listLevel = new List<int>();
 
-                string path2 = "Assets/_IEC/Resources/ListSolutionMixColors.txt";
-                //Write some text to the test.txt file
-                StreamWriter writer = new StreamWriter(path2, true);
-                writer.WriteLine(str);
-                writer.Close();
-                AssetDatabase.Refresh();
-            }
+            //    var count = levelDifficuty.Length;
+            //    for (int i = 0; i < count; i++)
+            //    {
+            //        bool isHaveResult = false;
+            //        var countRequest = 0;
+            //        var seed = i;
+
+            //        var size = int.Parse(levelDifficuty[i]);
+            //        int level = 0;
+
+            //        while (!isHaveResult && countRequest <= 50)
+            //        {
+            //            level = LevelHelper.GetLevelSpawn(size, seed);
+            //            seed += 1;
+            //            countRequest += 1;
+
+            //            if (!listLevel.Contains(level))
+            //            {
+            //                listLevel.Add(level);
+            //                isHaveResult = true;
+
+            //                str += level + "\n";
+            //            }
+            //            else
+            //            {
+            //                if(countRequest == 50)
+            //                {
+            //                    level = -1;
+            //                    str += level + "\n";
+            //                }
+            //            }
+            //        }
+            //    }
+
+
+
+            //    string path2 = "Assets/_IEC/Resources/levelDifficutyV4.txt";
+            //    //Write some text to the test.txt file
+            //    StreamWriter writer = new StreamWriter(path2, true);
+            //    writer.WriteLine(str);
+            //    writer.Close();
+            //    AssetDatabase.Refresh();
+            //}
+
+            //GUILayout.Space(10);
+            //if (GUILayout.Button("Get Levels Mix Color"))
+            //{
+            //    var strLevelSort1 = Resources.Load<TextAsset>("ListSolutionFull");
+            //    var levelSortText = strLevelSort1.text;
+            //    var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+            //                     System.StringSplitOptions.RemoveEmptyEntries);
+
+            //    var str = "";
+            //    var count = levelDifficuty.Length;
+            //    for (int i = 0; i < count; i++)
+            //    {
+            //        var leveText = levelDifficuty[i].Trim();
+            //        var levelData = leveText.Split(':');
+            //        var strMode = levelData[1];
+            //        if (strMode.IndexOf("Mix") < 0) continue;
+
+            //        var strGrid = levelData[3];
+            //        var gridsDatas = strGrid.Trim().Split('_');
+            //        if (IsMixColorLevel(gridsDatas))
+            //        {
+            //            str += leveText + "\n";
+            //        }
+            //    }
+
+            //    string path2 = "Assets/_IEC/Resources/ListSolutionMixColors.txt";
+            //    //Write some text to the test.txt file
+            //    StreamWriter writer = new StreamWriter(path2, true);
+            //    writer.WriteLine(str);
+            //    writer.Close();
+            //    AssetDatabase.Refresh();
+            //}
 
             #region Old
             //if (GUILayout.Button("Spawn Board"))
@@ -162,6 +188,15 @@ namespace IEC
             #endregion
 
             EditorUtility.SetDirty(target);
+        }
+
+        private static void SetDirty(ScriptableObject scriptableObject)
+        {
+#if UNITY_EDITOR
+            EditorUtility.SetDirty(scriptableObject);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+#endif
         }
 
         //658

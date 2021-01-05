@@ -89,21 +89,21 @@ namespace IEC
                 var matrix = Mathf.Clamp(4 + Game.levelSeed / 20, 4, 9);
 
                 levelBoss = LevelHelper.GetMixLevelSpawn(matrix, Game.levelSeed);
-                leveText = Game.levelMixColorDatas[levelBoss].Trim().Split(':');
+                leveText = Config.ListLevelsMixColorsConfig.listText[levelBoss].Trim().Split(':');
             }
             else
             {
-                leveText = Game.levelDatas[levelSpawn.level].Trim().Split(':');
+                leveText = Config.ListLevelRemoveMixColorConfig.listText[levelSpawn.level].Trim().Split(':');
             }
 
             string[] hintText;
             if (isBossMixColor)
             {
-                hintText = Game.hintMixColorDatas[levelBoss].Trim().Split(':');
+                hintText = Config.ListSolutionMixColorsConfig.listText[levelBoss].Trim().Split(':');
             }
             else
             {
-                hintText = Game.hintDatas[levelSpawn.level].Trim().Split(':');
+                hintText = Config.ListSolutionRemoveMixColorConfig.listText[levelSpawn.level].Trim().Split(':');
             }
 
             var strGridHints = hintText[3];
@@ -323,9 +323,10 @@ namespace IEC
         private LevelSpawn GetLevelSpawn(int level)
         {
             var levelIndex = level - 1;
-            if (level > Game.levelDatas.Length)
+            var count = Config.ListLevelRemoveMixColorConfig.totalItem;
+            if (level > count)
             {
-                return new LevelSpawn((level + 99) % Game.levelDatas.Length, false);
+                return new LevelSpawn((level + 99) % count, true);
             }
             else
             {
@@ -333,19 +334,19 @@ namespace IEC
                 {
                     if (level > 2 && level <= GetConditionLevelDifficulty())
                     {
-                        var levelSpawn = int.Parse(Game.levelDifficulty[levelIndex]);
+                        var levelSpawn = int.Parse(Config.LevelDifficutyV4Config.listText[levelIndex]);
                         bool isRotate = false;
                         if (levelSpawn < 0)
                         {
                             isRotate = true;
-                            var matrix = int.Parse(Game.dataLevelDifficulty[levelIndex]);
+                            var matrix = int.Parse(Config.DataDifficutyV4Config.listText[levelIndex]);
 
                             levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
                         }
                         return new LevelSpawn(levelSpawn, isRotate);
                     }
                 }
-                return new LevelSpawn((level - 1) % Game.levelDatas.Length, false);
+                return new LevelSpawn((level - 1) % count, false);
             }
         }
 

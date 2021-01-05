@@ -87,5 +87,14 @@ namespace IEC
             }
             
         }
+
+        public DataTextConfig DataDifficutyV4Config;
+        public DataTextConfig LevelDifficutyV4Config;
+
+        public DataTextConfig ListLevelRemoveMixColorConfig;
+        public DataTextConfig ListLevelsMixColorsConfig;
+
+        public DataTextConfig ListSolutionMixColorsConfig;
+        public DataTextConfig ListSolutionRemoveMixColorConfig;
     }
 }

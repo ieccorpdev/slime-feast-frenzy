@@ -51,14 +51,6 @@ namespace IEC
 
         public List<Material> listTerrainType = new List<Material>();
 
-        public string[] levelDatas;
-        public string[] hintDatas;
-        public string[] levelDifficulty;
-
-        public string[] dataLevelDifficulty;
-        public string[] levelMixColorDatas;
-        public string[] hintMixColorDatas;
-
         //Boss level
         public bool isBossLevel;
         public int totalMove, moveRemains;
