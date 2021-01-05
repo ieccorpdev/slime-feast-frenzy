@@ -20,8 +20,12 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_RESTART:
-                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                    Services.ShowFullAdsWithTime(Game.DelayInterstitial, () =>
                     {
+                        if (Game.isHaveDynamicInter)
+                        {
+                            PlayerData.IncreaseNumberInterShow();
+                        }
                         EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     });
                     break;

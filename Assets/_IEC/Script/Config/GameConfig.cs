@@ -34,6 +34,8 @@ namespace IEC
         //Effect config
         public float startEffectMoveTime;
 
+        public InterDelayConfig interDelayConfig;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

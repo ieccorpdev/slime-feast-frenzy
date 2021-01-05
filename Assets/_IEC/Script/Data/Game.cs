@@ -76,6 +76,22 @@ namespace IEC
 
         public bool isCamRotated;
 
+        public InterDelayConfig interDelayConfig;
+
+        public float DelayInterstitial
+        {
+            get
+            {
+                if (!isHaveDynamicInter) return timeDelayFullAds;
+                var showInterCount = Pool.Get<PlayerSecret>().GetNumberInterShow();
+                if (interDelayConfig.inter120CountRequire != 0 && showInterCount >= interDelayConfig.inter120CountRequire) return 120f;
+                if (interDelayConfig.inter90CountRequire != 0 && showInterCount >= interDelayConfig.inter90CountRequire) return 90f;
+                if (interDelayConfig.inter60CountRequire != 0 && showInterCount >= interDelayConfig.inter60CountRequire) return 60f;
+                if (interDelayConfig.inter45CountRequire != 0 && showInterCount >= interDelayConfig.inter45CountRequire) return 45f;
+                return 30f;
+            }
+        }
+
         public bool IsAllowUndo()
         {
             var count = listGrids.Count;
@@ -126,6 +142,7 @@ namespace IEC
         //Prepare 
         public bool isNewTreeColor;
         public bool isHaveUIAnimation;
+        public bool isHaveDynamicInter = true;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;

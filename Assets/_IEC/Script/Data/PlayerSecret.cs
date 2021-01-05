@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -66,6 +67,28 @@ namespace IEC
                 listBbackgroundUnlocked.Add(index);
             }
             backgroundSelected = index;
+        }
+
+        public int numberInterShow;
+        public DateTime currentInterShowDate;
+
+        public void IncreaseNumberInterShow(int value = 1)
+        {
+            CheckResetNumberInterShow();
+            numberInterShow += value;
+        }
+
+        public int GetNumberInterShow()
+        {
+            CheckResetNumberInterShow();
+            return numberInterShow;
+        }
+
+        public void CheckResetNumberInterShow()
+        {
+            if (currentInterShowDate == DateTime.Now.Date) return;
+            currentInterShowDate = DateTime.Now.Date;
+            numberInterShow = 0;
         }
     }
 }
