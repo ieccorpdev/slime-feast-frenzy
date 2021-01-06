@@ -56,17 +56,20 @@ namespace IEC
 
                 var gridsNewLevel = LevelHelper.MergeLevel(listLevel, 6);
 
-                var str = "";
-                for (int i = 0; i < 6; i++)
-                {
-                    for (int j = 0; j < 6; j++)
-                    {
-                        str += gridsNewLevel[i, j] + " ";
-                    }
-                    str += "\n";
-                }
+                //var newLevel = LevelHelper.GetNewlevel(6, gridsNewLevel);
+                //Debug.LogError("newLevel: " + newLevel);
 
-                Debug.LogError(str);
+                //var str = "";
+                //for (int i = 0; i < 6; i++)
+                //{
+                //    for (int j = 0; j < 6; j++)
+                //    {
+                //        str += gridsNewLevel[i, j] + " ";
+                //    }
+                //    str += "\n";
+                //}
+
+                //Debug.LogError(str);
 
 
                 //DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();

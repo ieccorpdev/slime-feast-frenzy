@@ -61,20 +61,6 @@ namespace IEC
         public int WaterIndexColor;
 
         // Dynamic data
-        //protected Color CurrentWaterColor
-        //{
-        //    get {
-        //        if (Game.isMultiColor)
-        //        {
-        //            return Config.GetWaterColor(WaterIndexColor);
-        //        }
-        //        else
-        //        {
-        //            return Config.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
-        //        }
-        //    }
-        //}
-
         protected Color CurrentWaterColor
         {
             get

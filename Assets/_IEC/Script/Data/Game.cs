@@ -135,6 +135,7 @@ namespace IEC
         public bool isNewTreeColor;
         public bool isHaveUIAnimation;
         public bool isHaveDynamicInter;
+        public bool isLevelDifficultyV5;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
@@ -246,5 +247,14 @@ namespace IEC
         Pause,
         Playing,
         GameOver
+    }
+
+    public enum HolePos
+    {
+        None,
+        TopLeft,
+        TopRight,
+        BotLeft,
+        BotRight
     }
 }

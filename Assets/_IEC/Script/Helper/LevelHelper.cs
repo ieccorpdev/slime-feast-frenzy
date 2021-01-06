@@ -159,7 +159,7 @@ namespace IEC
             var halfSize = size / 2;
 
             var data = "";
-            
+
             for (int i = 0; i < size; i++)
             {
                 for (int j = 0; j < size; j++)
@@ -192,6 +192,31 @@ namespace IEC
             }
 
             return grids;
+        }
+
+        public static string[] GetNewlevel(int size, string[,] gridsData)
+        {
+            string[] levelText = new string[4];
+            string strSize = "Size0" + size + "x0" + size;
+
+            var strGrids = "";
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    strGrids += gridsData[i, j] + "_";
+                }
+            }
+
+            strGrids = strGrids.Substring(0, strGrids.Length - 1);
+
+
+            levelText[0] = strSize;
+            levelText[1] = "colors";
+            levelText[2] = "01";
+            levelText[3] = strGrids;
+
+            return levelText;
         }
 
         public static bool IsLoopLevel(string mode)
