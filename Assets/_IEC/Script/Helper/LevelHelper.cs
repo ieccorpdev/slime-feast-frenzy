@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -132,6 +133,61 @@ namespace IEC
 
                         grids[i, j] = gridType;
                     }
+                }
+            }
+
+            return grids;
+        }
+
+        public static string[,] SplitLevel(string[] strGrids, int size)
+        {
+            var grids = new string[size, size];
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    var index = (i  * size) + j;
+                    grids[i,j] = strGrids[index];
+                }
+            }
+            return grids;
+        }
+
+        public static string[,] MergeLevel(List<string[,]> listLevel, int size)
+        {
+            var grids = new string[size, size];
+            var halfSize = size / 2;
+
+            var data = "";
+            
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    if(i < halfSize)
+                    {
+                        if(j < halfSize)
+                        {
+                            data = listLevel[0][i, j];
+                        }
+                        else
+                        {
+                            data = listLevel[1][i, j - halfSize];
+                        }
+                    }
+                    else
+                    {
+                        if (j < halfSize)
+                        {
+                            data = listLevel[2][i - halfSize, j];
+                        }
+                        else
+                        {
+                            data = listLevel[3][i - halfSize, j - halfSize];
+                        }
+                    }
+
+                    grids[i, j] = data;
                 }
             }
 

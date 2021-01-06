@@ -10,7 +10,7 @@ namespace IEC
     [CustomEditor(typeof(LevelConfigData))]
     public class LevelEditor : Editor
     {
-        private int[] matrix3 = new int[] { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        private int[] matrix3 = new int[] { 0, 1, 2, 3, 5, 6, 8, 9, 10, 12 };
         private int[] matrix4 = new int[] { 13, 16, 17, 20, 21, 23 };
 
         public override void OnInspectorGUI()
@@ -21,38 +21,79 @@ namespace IEC
             GUILayout.Space(10);
             if (GUILayout.Button("Merge level"))
             {
+                ClearLog();
+
+                List<int> listLevelIndex = new List<int>();
+
+                int seed = 0;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    var index = MathHelper.GetRandomIndexByList(listLevelIndex, matrix3.Length, seed);
+                    listLevelIndex.Add(index);
+                    seed += 1;
+                }
+
                 string strName = "ListLevelRemoveMixColor";
-                string fileName = "LevelMatrix4";
 
                 var strLevelData = Resources.Load<TextAsset>(strName);
                 var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
                                  System.StringSplitOptions.RemoveEmptyEntries);
 
-                DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
+                List<string[,]> listLevel = new List<string[,]>();
 
-                int min = 13;
-                int max = 24;
-
-                for (int i = min; i < max; i++)
+                for (int i = 0; i < 4; i++)
                 {
-                    var leveText = levelDatas[i].Trim();
-                    var levelData = leveText.Split(':');
-                    var strMode = levelData[1];
+                    var levelIndex = listLevelIndex[i];
 
-                    if (!LevelHelper.IsLoopLevel(strMode))
-                    {
-                        dataTextConfig.listText.Add(i.ToString());
-                    }
+                    var leveText = levelDatas[levelIndex].Trim();
+                    var levelData = leveText.Split(':');
+                    var gridDatas = levelData[3].Trim().Split('_');
+
+                    var grids = LevelHelper.SplitLevel(gridDatas, 3);
+                    listLevel.Add(grids);
                 }
 
-                var count = dataTextConfig.listText.Count;
-                dataTextConfig.totalItem = count;
+                var gridsNewLevel = LevelHelper.MergeLevel(listLevel, 6);
 
-                AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
-                SetDirty(dataTextConfig);
+                var str = "";
+                for (int i = 0; i < 6; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        str += gridsNewLevel[i, j] + " ";
+                    }
+                    str += "\n";
+                }
+
+                Debug.LogError(str);
+
+
+                //DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
+
+                //int min = 13;
+                //int max = 24;
+
+                //for (int i = min; i < max; i++)
+                //{
+                //    var leveText = levelDatas[i].Trim();
+                //    var levelData = leveText.Split(':');
+                //    var strMode = levelData[1];
+
+                //    if (!LevelHelper.IsLoopLevel(strMode))
+                //    {
+                //        dataTextConfig.listText.Add(i.ToString());
+                //    }
+                //}
+
+                //var count = dataTextConfig.listText.Count;
+                //dataTextConfig.totalItem = count;
+
+                //AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
+                //SetDirty(dataTextConfig);
             }
 
-
+            #region Old
             //GUILayout.Space(10);
             //if (GUILayout.Button("Get Data"))
             //{
@@ -176,7 +217,7 @@ namespace IEC
             //    AssetDatabase.Refresh();
             //}
 
-            #region Old
+
             //if (GUILayout.Button("Spawn Board"))
             //{
             //    var obj = Selection.activeGameObject;
