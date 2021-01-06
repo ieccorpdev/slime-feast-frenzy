@@ -16,6 +16,8 @@ namespace IEC
         public GameObject curveObj;
 
         public GameObject noneObj;
+
+        public GameObject islandObj;
     }
 }
 //-90 0 180 90

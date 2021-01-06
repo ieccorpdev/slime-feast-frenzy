@@ -13,6 +13,8 @@ namespace IEC
 
         private List<string[,]> m_ListLevel = new List<string[,]>();
 
+        private List<IslandComponent> m_ListIsland = new List<IslandComponent>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -33,6 +35,8 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.crossObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.curveObj);
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
+
+            PrefabHelper.SetUpPrefab(ComponentConfig.islandObj);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -53,6 +57,9 @@ namespace IEC
             Sound.SetupAudio();
 
             m_ListLevelIndex.Clear();
+
+            m_ListIsland.ForEach(x => x.OnDestroyMe());
+            m_ListIsland.Clear();
         }
 
         private IEnumerator IESpawnLevel()
@@ -188,6 +195,18 @@ namespace IEC
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holePos);
+
+            if (isMergeLevelV5)
+            {
+                var isLandSize = sizeLevelMerge / 2;
+                var islandObj = PrefabHelper.Clone(ComponentConfig.islandObj);
+                var isLandComp = islandObj.GetComponent<IslandComponent>();
+
+                var pos = GetPosIsland(holePos, isLandSize);
+                isLandComp.OnInit(pos, isLandSize);
+                m_ListIsland.Add(isLandComp);
+            }
+
             yield return null;
 
             Hint.CheckSoulution();
@@ -312,6 +331,32 @@ namespace IEC
                 {
                     return (row >= halfSize && col >= halfSize);
                 }
+            }
+        }
+
+        private Vector3 GetPosIsland(HolePos holePos, int halfSize)
+        {
+            var pos = halfSize / 2f;
+
+            if (holePos == HolePos.TopLeft)
+            {
+                return new Vector3(-pos, 0f, pos);
+            }
+            else if (holePos == HolePos.TopRight)
+            {
+                return new Vector3(pos, 0f, pos);
+            }
+            else if (holePos == HolePos.BotLeft)
+            {
+                return new Vector3(-pos, 0f, -pos);
+            }
+            if (holePos == HolePos.BotRight)
+            {
+                return new Vector3(pos, 0f, -pos);
+            }
+            else
+            {
+                return Vector3.zero;
             }
         }
 
