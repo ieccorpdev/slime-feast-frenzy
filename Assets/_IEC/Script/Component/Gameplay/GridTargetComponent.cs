@@ -32,11 +32,26 @@ namespace IEC
         private static float SMALL_SCALE = .4f;
         private static float LARGE_SCALE = 1.5f;
 
+        //private Material CurrentMat
+        //{
+        //    get
+        //    {
+        //        if (Game.isMultiColor)
+        //        {
+        //            return Config.GetWaterMat(Game.isNewTreeColor, TrueColor);
+        //        }
+        //        else
+        //        {
+        //            return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isNewTreeColor, Game.classicColor);
+        //        }
+        //    }
+        //}
+
         private Material CurrentMat
         {
             get
             {
-                if (Game.isMultiColor)
+                if (TrueColor > 0)
                 {
                     return Config.GetWaterMat(Game.isNewTreeColor, TrueColor);
                 }

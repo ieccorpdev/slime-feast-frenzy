@@ -230,7 +230,10 @@ namespace IEC
             {
                 if (Game.isMultiColor)
                 {
-                    gridColor = int.Parse(gridData.Substring(3, 1));
+                    if(gridData.Length > 3)
+                    {
+                        gridColor = int.Parse(gridData.Substring(3, 1));
+                    }
                 }
             }
 
