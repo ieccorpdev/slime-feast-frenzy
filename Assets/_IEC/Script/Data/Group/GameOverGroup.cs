@@ -57,17 +57,23 @@ namespace IEC
 
         public void TweenGameOver(bool isActive, System.Action callback = null)
         {
-            m_RectPanelGO.anchoredPosition = new Vector2(0f, isActive ? 2000f : 300f);
+            var posY = Game.isHaveUIAnimation ? (isActive ? 2000f : 300f) : 300f;
+            m_RectPanelGO.anchoredPosition = new Vector2(0f, posY);
 
-            var ease = isActive ? Ease.OutBack : Ease.InBack;
             m_GameOver?.Kill(true);
-            Sequence sequence = DOTween.Sequence();
-            m_GameOver = sequence.Join(m_ImgBlur.DOFade(isActive ? .3f : 0f, timeEffect))
-                .Join(m_RectPanelGO.DOAnchorPosY(isActive ? 300f : 2000f, timeEffect).SetEase(ease));
 
-            sequence.OnComplete(() => {
-                callback?.Invoke();
-            });
+            if (Game.isHaveUIAnimation)
+            {
+                var ease = isActive ? Ease.OutBack : Ease.InBack;
+                Sequence sequence = DOTween.Sequence();
+                m_GameOver = sequence.Join(m_ImgBlur.DOFade(isActive ? .3f : 0f, timeEffect))
+                    .Join(m_RectPanelGO.DOAnchorPosY(isActive ? 300f : 2000f, timeEffect).SetEase(ease));
+
+                sequence.OnComplete(() => {
+                    callback?.Invoke();
+                });
+            }
+
         }
     }
 }

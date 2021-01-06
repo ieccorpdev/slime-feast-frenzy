@@ -134,7 +134,7 @@ namespace IEC
         //Prepare 
         public bool isNewTreeColor;
         public bool isHaveUIAnimation;
-        public bool isHaveDynamicInter = true;
+        public bool isHaveDynamicInter;
 
         public bool isLeavesEffect;
         public bool isChangeGridStatus;
