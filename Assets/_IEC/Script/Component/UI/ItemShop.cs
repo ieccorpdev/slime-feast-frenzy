@@ -18,7 +18,7 @@ namespace IEC
         private Image m_ImgIcon;
 
         [SerializeField]
-        private GameObject m_SelectedObj;
+        private GameObject m_SelectedObj, m_BlockObj;
 
         private ItemShopType m_ItemShopType;
 
@@ -38,12 +38,13 @@ namespace IEC
 
         private void OnSelected()
         {
-            EventController.RaiseEvent(EventList.GamePlay.SHOP_BUY_ITEM, new EventParam(this, m_Index, m_ItemShopType));
+            EventController.RaiseEvent(EventList.GamePlay.SHOP_SELECT_ITEM, new EventParam(this, m_Index, m_ItemShopType));
         }
 
-        public void OnUpdateData(bool isSelected, bool isUnlocked)
+        public void OnUpdateData(bool isUnlocked, bool isSelected)
         {
-
+            m_SelectedObj.SetActive(isSelected);
+            m_BlockObj.SetActive(!isUnlocked);
         }
     }
 }
