@@ -46,9 +46,15 @@ namespace IEC
 
         public void InitTheme(int themeDefault, int bgDefault)
         {
-            UnlockTheme(themeDefault);
-
-            UnlockBackground(bgDefault);
+            if(listThemeUnlocked.Count == 0)
+            {
+                UnlockTheme(themeDefault);
+            }
+            
+            if(listBbackgroundUnlocked.Count == 0)
+            {
+                UnlockBackground(bgDefault);
+            }
         }
 
         public void UnlockTheme(int index)

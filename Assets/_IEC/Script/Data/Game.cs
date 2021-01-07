@@ -132,13 +132,15 @@ namespace IEC
         public bool isNewWaterEffect;
 
         //Prepare 
-        public bool isNewTreeColor;
-        public bool isHaveUIAnimation;
-        public bool isHaveDynamicInter;
         public bool isLevelDifficultyV5;
+        public bool isNewTreeColorV1;
+        public bool isHaveUIAnimation;
+        public bool isChangeGridStatus;
+        public bool isHaveDynamicInter;
+        
 
         public bool isLeavesEffect;
-        public bool isChangeGridStatus;
+        
 
 
         public void OnResetAll()
