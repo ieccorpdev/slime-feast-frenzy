@@ -7,6 +7,10 @@ namespace IEC
 {
     public class IslandComponent : MonoBehaviour
     {
+        private Game m_Game;
+
+        private Game Game => m_Game ?? Pool.Get<Game>();
+
         private Transform Transform => transform;
 
         private Tween m_Tween;
@@ -19,9 +23,27 @@ namespace IEC
         [SerializeField]
         private Transform m_TransGrass3, m_TransGrass4;
 
+        [SerializeField]
+        private Transform m_TransRockMain;
+
+        [SerializeField]
+        private Transform[] m_TransRocks;
+
+        [SerializeField]
+        private MeshRenderer m_TerrainMesh;
+
+        [SerializeField]
+        private Material[] m_GrassMats, m_RockMats;
+
+        [SerializeField]
+        private MeshRenderer[] m_GrassesMeshs;
+
         public void OnInit(HolePos holePos, int size)
         {
             var halfSize = size / 2f;
+
+            var mat = Game.listTerrainType[Random.Range(0, 2)];
+            m_TerrainMesh.material = mat;
 
             var posSpawn = GetPosIsland(holePos, size);
             posSpawn.y = 15f;
@@ -46,12 +68,59 @@ namespace IEC
 
             var count = transGroupGrass.childCount;
 
+            var totalGrassMat = m_GrassMats.Length;
             for (int i = 0; i < count; i++)
             {
                 var transGrass = transGroupGrass.GetChild(i);
                 transGrass.localRotation = Quaternion.Euler(0f, Random.Range(-25f, 25f), 0f);
                 var radSize = Random.Range(.5f, 1f);
                 transGrass.localScale = new Vector3(radSize, radSize, radSize);
+            }
+
+            var grassCount = m_GrassesMeshs.Length;
+
+            for (int i = 0; i < grassCount; i++)
+            {
+                var grassMat = m_GrassMats[Random.Range(0, totalGrassMat)];
+                m_GrassesMeshs[i].material = grassMat;
+            }
+
+
+            m_TransRockMain.localRotation = Quaternion.Euler(0f, Random.Range(-180f, 180f), 0f);
+
+            var rockActiveCount = 0;
+            var rockCount = m_TransRocks.Length;
+
+            var totalRockMat = m_RockMats.Length;
+
+            var minPos = -halfSize + .25f;
+            var maxPos = halfSize - .25f;
+            for (int i = 0; i < rockCount; i++)
+            {
+                var isActive = Random.Range(0, 2) == 1;
+                if(rockActiveCount >= 5)
+                {
+                    isActive = false;
+                }
+                m_TransRocks[i].gameObject.SetActive(isActive);
+                if (!isActive) continue;
+                rockActiveCount += 1;
+
+                var radPosX = Random.Range(minPos, maxPos);
+                var radPosZ = Random.Range(minPos, maxPos);
+                m_TransRocks[i].localPosition = new Vector3(radPosX, 0f, radPosZ);
+
+                var radSize = Random.Range(.3f, .5f);
+                m_TransRocks[i].localScale = new Vector3(radSize, radSize, radSize);
+
+                var radRotX = Random.Range(-25f, 25f);
+                var radRotY = Random.Range(-25f, 25f);
+                var radRotZ = Random.Range(-25f, 25f);
+
+                m_TransRocks[i].localRotation = Quaternion.Euler(radRotX, radRotY, radRotZ);
+
+                var rockMat = m_RockMats[Random.Range(0, totalRockMat)];
+                m_TransRocks[i].GetComponent<MeshRenderer>().material = rockMat;
             }
         }
 
