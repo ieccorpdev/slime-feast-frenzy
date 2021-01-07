@@ -202,8 +202,7 @@ namespace IEC
                 var islandObj = PrefabHelper.Clone(ComponentConfig.islandObj);
                 var isLandComp = islandObj.GetComponent<IslandComponent>();
 
-                var pos = GetPosIsland(holePos, isLandSize);
-                isLandComp.OnInit(pos, isLandSize);
+                isLandComp.OnInit(holePos, isLandSize);
                 m_ListIsland.Add(isLandComp);
             }
 
@@ -232,7 +231,6 @@ namespace IEC
         {
             var matrix = (size == 6) ? matrix3 : matrix4;
             var halfSize = size / 2;
-
             for (int i = 0; i < 4; i++)
             {
                 var index = MathHelper.GetRandomIndexByList(m_ListLevelIndex, matrix.Length, seed);
@@ -331,32 +329,6 @@ namespace IEC
                 {
                     return (row >= halfSize && col >= halfSize);
                 }
-            }
-        }
-
-        private Vector3 GetPosIsland(HolePos holePos, int halfSize)
-        {
-            var pos = halfSize / 2f;
-
-            if (holePos == HolePos.TopLeft)
-            {
-                return new Vector3(-pos, 0f, pos);
-            }
-            else if (holePos == HolePos.TopRight)
-            {
-                return new Vector3(pos, 0f, pos);
-            }
-            else if (holePos == HolePos.BotLeft)
-            {
-                return new Vector3(-pos, 0f, -pos);
-            }
-            if (holePos == HolePos.BotRight)
-            {
-                return new Vector3(pos, 0f, -pos);
-            }
-            else
-            {
-                return Vector3.zero;
             }
         }
 
