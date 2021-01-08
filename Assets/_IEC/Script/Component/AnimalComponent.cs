@@ -10,7 +10,7 @@ namespace IEC
         private Animator m_Anim;
 
         private Vector3 m_SpawnPos, m_TargetPos;
-        public float m_Speed, m_Delta, m_TimeCountDelay, m_NextTimeStart;
+        private float m_Speed, m_Delta, m_TimeCountDelay, m_NextTimeStart;
         private bool m_IsMoving;
 
         private static int SPEED = Animator.StringToHash("Speed");
@@ -70,7 +70,7 @@ namespace IEC
             var targetDir = (m_TargetPos - transform.localPosition).normalized;
 
             var angleX = isSpawnLeft ? 0f : 180f;
-            var angleZ = Vector3.SignedAngle(targetDir, transform.parent.right, isSpawnLeft ? Vector3.back : Vector3.forward);
+            var angleZ = Vector3.SignedAngle(targetDir, Vector3.right, isSpawnLeft ? Vector3.back : Vector3.forward);
 
 
             transform.localRotation = Quaternion.Euler(angleX, 0f, angleZ);
