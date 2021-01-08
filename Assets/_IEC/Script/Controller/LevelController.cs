@@ -56,8 +56,6 @@ namespace IEC
             UIController.OnResetAll();
             Sound.SetupAudio();
 
-            m_ListLevelIndex.Clear();
-
             m_ListIsland.ForEach(x => x.OnDestroyMe());
             m_ListIsland.Clear();
         }
@@ -229,6 +227,9 @@ namespace IEC
 
         private string[] GetMergeLevel(int size, int seed)
         {
+            m_ListLevelIndex.Clear();
+            m_ListLevel.Clear();
+
             var matrix = (size == 6) ? matrix3 : matrix4;
             var halfSize = size / 2;
             for (int i = 0; i < 4; i++)
