@@ -191,7 +191,7 @@ namespace IEC
 
             Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
 
-            GameController.SetupCamera(size, 0);
+            GameController.SetupCamera(size, rotIndex);
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holePos);
