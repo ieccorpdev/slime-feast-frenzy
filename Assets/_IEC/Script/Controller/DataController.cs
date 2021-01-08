@@ -47,6 +47,7 @@ namespace IEC
             Pool.Set(m_ShopConfig);
 
             m_GameData = Pool.Get<Game>();
+            m_GameData.interDelayConfig = m_GameConfig.interDelayConfig;
             LoadData();
         }
 

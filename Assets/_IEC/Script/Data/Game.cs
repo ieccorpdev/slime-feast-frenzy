@@ -51,14 +51,6 @@ namespace IEC
 
         public List<Material> listTerrainType = new List<Material>();
 
-        public string[] levelDatas;
-        public string[] hintDatas;
-        public string[] levelDifficulty;
-
-        public string[] dataLevelDifficulty;
-        public string[] levelMixColorDatas;
-        public string[] hintMixColorDatas;
-
         //Boss level
         public bool isBossLevel;
         public int totalMove, moveRemains;
@@ -75,6 +67,22 @@ namespace IEC
         public int isStartLevelEffectType;
 
         public bool isCamRotated;
+
+        public InterDelayConfig interDelayConfig;
+
+        public float DelayInterstitial
+        {
+            get
+            {
+                if (!isHaveDynamicInter) return timeDelayFullAds;
+                var showInterCount = Pool.Get<PlayerSecret>().GetNumberInterShow();
+                if (interDelayConfig.inter120CountRequire != 0 && showInterCount >= interDelayConfig.inter120CountRequire) return 120f;
+                if (interDelayConfig.inter90CountRequire != 0 && showInterCount >= interDelayConfig.inter90CountRequire) return 90f;
+                if (interDelayConfig.inter60CountRequire != 0 && showInterCount >= interDelayConfig.inter60CountRequire) return 60f;
+                if (interDelayConfig.inter45CountRequire != 0 && showInterCount >= interDelayConfig.inter45CountRequire) return 45f;
+                return 30f;
+            }
+        }
 
         public bool IsAllowUndo()
         {
@@ -102,7 +110,7 @@ namespace IEC
         public bool isLevelDifficultyV3;
         public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
-        public bool isHaveUIAnimation;
+        
 
         public bool isHaveNotification;
 
@@ -123,8 +131,16 @@ namespace IEC
         public bool isHaveBossTimerLevelsV2;
         public bool isNewWaterEffect;
 
-        public bool isLeavesEffect;
+        //Prepare 
+        public bool isLevelDifficultyV5;
+        public bool isNewTreeColorV1;
+        public bool isHaveUIAnimation;
         public bool isChangeGridStatus;
+        public bool isHaveDynamicInter;
+        
+
+        public bool isLeavesEffect;
+        
 
 
         public void OnResetAll()
@@ -233,5 +249,14 @@ namespace IEC
         Pause,
         Playing,
         GameOver
+    }
+
+    public enum HolePos
+    {
+        None,
+        TopLeft,
+        TopRight,
+        BotLeft,
+        BotRight
     }
 }

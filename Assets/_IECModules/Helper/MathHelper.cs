@@ -97,6 +97,20 @@ public class MathHelper
         return listTemp[UnityEngine.Random.Range(0, listTemp.Count)];
     }
 
+    public static int GetRandomIndexByList(List<int> listUsed, int itemCount, int seed)
+    {
+        listTemp.Clear();
+        for (int i = 0; i < itemCount; i++)
+        {
+            if (!listUsed.Contains(i))
+            {
+                listTemp.Add(i);
+            }
+        }
+
+        return listTemp[RandomHelper.RangeWithSeed(seed, 0, listTemp.Count)];
+    }
+
     public static int[,] RotateMatrix(int[,] matrix, int n)
     {
         int[,] ret = new int[n, n];

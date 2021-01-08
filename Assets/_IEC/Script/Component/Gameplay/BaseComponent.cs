@@ -63,8 +63,9 @@ namespace IEC
         // Dynamic data
         protected Color CurrentWaterColor
         {
-            get {
-                if (Game.isMultiColor)
+            get
+            {
+                if (WaterIndexColor > 0)
                 {
                     return Config.GetWaterColor(WaterIndexColor);
                 }

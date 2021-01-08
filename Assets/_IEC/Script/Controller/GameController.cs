@@ -36,42 +36,17 @@ namespace IEC
 
         public void GetLevelsData()
         {
-            var strLevels = Resources.Load<TextAsset>("ListLevelRemoveMixColor");
 
-            Game.levelDatas = strLevels.text.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
-
-            var strHints = Resources.Load<TextAsset>("ListSolutionRemoveMixColor");
-            Game.hintDatas = strHints.text.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void GetLevelsMixColor()
         {
-            var strLevels = Resources.Load<TextAsset>("LevelsMixColors");
-            Game.levelMixColorDatas = strLevels.text.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
 
-            var strHints = Resources.Load<TextAsset>("ListSolutionMixColors");
-            Game.hintMixColorDatas = strHints.text.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void GetLevelDifficulty()
         {
-            var levelDifficultyDefault = "LevelDifficutyV2";
 
-            var levelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "ABTest/LevelDifficutyV4" : levelDifficultyDefault);
-            var levelDifficultyText = levelDifficulty.text;
-            Game.levelDifficulty = levelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
-
-            var dataLevelDifficultyDefault = "DataDifficutyV2";
-
-            var dataLevelDifficulty = Resources.Load<TextAsset>(Game.isLevelDifficultyV4 ? "ABTest/DataDifficutyV4" : dataLevelDifficultyDefault);
-            var dataLevelDifficultyText = dataLevelDifficulty.text;
-            Game.dataLevelDifficulty = dataLevelDifficultyText.Split(new string[] { "\n", "\r", "\r\n" },
-                             System.StringSplitOptions.RemoveEmptyEntries);
         }
 
         public void BehaviourStart()

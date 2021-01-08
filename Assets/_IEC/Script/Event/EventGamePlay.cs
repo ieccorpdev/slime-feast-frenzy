@@ -28,6 +28,8 @@ namespace IEC
             public const string GAME_UNDO = "GamePlay.GAME_UNDO";
             public const string GAME_ADD_MOVE = "GamePlay.GAME_ADD_MOVE";
 
+            public const string SHOP_SELECT_ITEM = "GamePlay.SHOP_SELECT_ITEM";
+            public const string SHOP_BUY_ITEM = "GamePlay.SHOP_BUY_ITEM";
         }
     }
 }

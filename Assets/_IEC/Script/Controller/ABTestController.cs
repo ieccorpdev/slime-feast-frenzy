@@ -42,23 +42,49 @@ namespace IEC
             Result20201204();
             Result20201209();
             Result20201222();
+            Result20201230();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20201230(abValue);
+            UpdateAb20210108(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20201230(abValue);
+                    UpdateAb20210108(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     // set new AB Test Value
+
+                    PlayerData.numberInterShow = 0;
                 },
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20210108(int abValue)
+        {
+            Game.isLevelDifficultyV5 = abValue == 1;
+            Game.isNewTreeColorV1 = abValue == 2;
+            Game.isHaveUIAnimation = abValue == 3;
+            Game.isChangeGridStatus = abValue == 4;
+            Game.isHaveDynamicInter = abValue == 5;
+        }
+
+        private void Result20201230()
+        {
+            Game.isHintStyleV3 = false;
+            Game.isHaveBossTimerLevels = false;
+            Game.isHaveBossTimerLevelsV2 = false;
+            Game.isNewWaterEffect = false;
+
+            //Default
+            Game.themeDefault = 2;
+            Game.backGroundDefault = 2;
+
+            PlayerData.InitTheme(Game.themeDefault, Game.backGroundDefault);
         }
 
         private void UpdateAb20201230(int abValue)

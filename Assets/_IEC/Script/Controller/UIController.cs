@@ -53,11 +53,6 @@ namespace IEC
                         }
                     }
 
-                    if (Game.isHaveUIAnimation)
-                    {
-                        UI.mainUIGroup.TweenPannelTop(true);
-                    }
-
                     if (Game.isBossLevel)
                     {
                         if (!Game.isShowPopup)
@@ -79,7 +74,6 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             if (!Game.isPlaying) return;
-            if (!m_IsAllowCountDown) return;
             if (Game.isHaveUIAnimation)
             {
                 m_CountVibrateHint += deltaTime;
@@ -90,6 +84,7 @@ namespace IEC
                 }
             }
 
+            if (!m_IsAllowCountDown) return;
             if (Game.isHaveBossTimerLevels && Game.isBossLevel)
             {
                 Game.timeLeftBossLevel -= deltaTime;
@@ -254,11 +249,6 @@ namespace IEC
 
         public void OnResetAll()
         {
-            if (!Game.isHaveUIAnimation)
-            {
-                UI.mainUIGroup.TweenPannelTop(true);
-            }
-
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
             UI.mainUIGroup.UpdateHintText();

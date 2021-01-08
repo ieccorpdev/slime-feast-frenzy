@@ -17,7 +17,7 @@ namespace IEC
 
         public RectTransform bottomAds;
 
-        public TMP_Text textHello, txtLevel;
+        public TMP_Text txtLevel;
 
         public MainUIGroup mainUIGroup;
         public GameOverGroup gameOverUIGroup;
@@ -51,9 +51,10 @@ namespace IEC
             mainUIGroup.OnEffectTime(false);
         }
 
-        public void OnGameOver(bool isActive)
+        public void OnGameOver(bool isActive, Action callback = null)
         {
             gameOverUIGroup.gameObject.SetActive(isActive);
+            gameOverUIGroup.TweenGameOver(isActive, callback);
         }
     }
 

@@ -32,11 +32,11 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            var textHello = UI.textHello;
-            Debug.Log("textHello", textHello.gameObject);
-            var rectT = textHello.gameObject.GetComponent<RectTransform>();
-            var curPosY = rectT.anchoredPosition.y;
-            rectT.DOAnchorPosY(curPosY - 200, 2f).SetLoops(-1, LoopType.Yoyo);
+            //var textHello = UI.textHello;
+            //Debug.Log("textHello", textHello.gameObject);
+            //var rectT = textHello.gameObject.GetComponent<RectTransform>();
+            //var curPosY = rectT.anchoredPosition.y;
+            //rectT.DOAnchorPosY(curPosY - 200, 2f).SetLoops(-1, LoopType.Yoyo);
         }
 
         public void BehaviourUpdate(float deltaTime)

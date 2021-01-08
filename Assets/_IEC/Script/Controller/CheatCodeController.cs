@@ -54,11 +54,11 @@ namespace IEC
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
-                Pool.Get<PlayerSecret>().level = level;
+                PlayerData.level = level;
                 OnRestartLevel();
             }, new CheatCode.InputParam
             {
-                value = 1
+                value = PlayerData.level
             });
 
             ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Level: " + Game.isCheatLevel, cheatCodeParam =>
