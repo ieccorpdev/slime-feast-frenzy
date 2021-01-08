@@ -179,6 +179,7 @@ namespace IEC
 
         public virtual void OnDestroyMe()
         {
+            m_Tween?.Kill(true);
             if (m_HintEffect != null)
             {
                 m_HintEffect.OnDestroyMe();
@@ -414,7 +415,7 @@ namespace IEC
             else
             {
                 var tempPos = CurrentLocalPos;
-                tempPos.y = 15f;
+                tempPos.y = 20f;
                 transform.localPosition = tempPos;
 
                 m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
