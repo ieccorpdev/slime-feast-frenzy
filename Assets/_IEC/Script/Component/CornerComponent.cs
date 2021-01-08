@@ -39,7 +39,7 @@ namespace IEC
             var delayTime = 0f;
              
             var tempPos = CurrentLocalPos;
-            tempPos.y = 15f;
+            tempPos.y = 20f;
             transform.localPosition = tempPos;
 
             m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
