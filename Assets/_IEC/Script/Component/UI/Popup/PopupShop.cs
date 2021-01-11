@@ -18,15 +18,46 @@ namespace IEC
 
         private ItemShopType TabSelected;
 
-        public void OnInit()
+        private List<ItemShop> m_ListItemTheme = new List<ItemShop>();
+        private List<ItemShop> m_ListItemBG = new List<ItemShop>();
+
+        private int m_BGCount, m_ThemeCount;
+
+        [SerializeField]
+        private Transform[] m_TransGroupTheme;
+
+        [SerializeField]
+        private Transform m_TransGroupBG;
+
+        public void OnInit(ShopConfig shopConfig)
         {
             InitButtonEvent();
+
+            var listThemeConfig = shopConfig.listThemeConfigs;
+            m_ThemeCount = listThemeConfig.Count;
+            for (int i = 0; i < m_ThemeCount; i++)
+            {
+                var itemConfig = listThemeConfig[i];
+                var itemObj = Instantiate(shopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
+                var item = itemObj.GetComponent<ItemShop>();
+                item.OnInit(i, itemConfig.itemShopConfig);
+                m_ListItemTheme.Add(item);
+            }
+
             OnSelectTab(0);
         }
 
-        public void OnUpdateData(List<int> listBGUnlocked, List<int> listThemeUnlocked)
+        public void OnUpdateData(List<int> listThemeUnlocked, int themeSelected, List<int> listBGUnlocked, int bgSelected)
         {
+            for (int i = 0; i < m_ThemeCount; i++)
+            {
+                m_ListItemTheme[i].OnUpdateData(listThemeUnlocked.Contains(i), i == themeSelected);
+            }
 
+            for (int i = 0; i < m_BGCount; i++)
+            {
+                m_ListItemBG[i].OnUpdateData(listBGUnlocked.Contains(i), i == bgSelected);
+            }
         }
 
         private void InitButtonEvent()

@@ -48,7 +48,7 @@ namespace IEC
                             Game.isShowPopup = true;
                             PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
-                            UI.popUpRating.gameObject.SetActive(true);
+                            UI.popupRating.gameObject.SetActive(true);
                             Game.SetGameState(GameState.Pause);
                         }
                     }

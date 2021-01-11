@@ -208,13 +208,13 @@ namespace IEC
         public int GetTimerLevel(int matrix)
         {
             var count = matrix - 3;
-            var time = 30;
+            var time = 30f;
             for (int i = 0; i < count; i++)
             {
-                time = (int)(time * 1.5f);
+                time *= 1.5f;
             }
 
-            return time;
+            return (int)time;
         }
 
     }

@@ -257,9 +257,9 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            var listTheme = ShopConfig.listEnviromentConfigs;
+            var listTheme = ShopConfig.listThemeConfigs;
             var index = PlayerData.themeSelected % listTheme.Count;
-            Game.enviromentConfig = ShopConfig.listEnviromentConfigs[index];
+            Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
 
             var type0 = RandomHelper.Range(0, 2);
 
@@ -274,7 +274,7 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            var bgConfig = ShopConfig.listSpriteBackgrounds[PlayerData.backgroundSelected];
+            var bgConfig = ShopConfig.listBGConfig[PlayerData.backgroundSelected];
             GamePlay.SetBackground(bgConfig);
         }
 
