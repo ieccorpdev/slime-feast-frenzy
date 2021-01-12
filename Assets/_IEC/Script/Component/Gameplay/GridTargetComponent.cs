@@ -122,9 +122,9 @@ namespace IEC
             base.OnInit(gridType, row, col, rotTrue, rot, color, style);
 
             // Line
-            for (int i = 0; i < m_LineTyleObjs.Length; i++)
+            for (int i = 0; i < 4; i++)
             {
-                m_LineTyleObjs[i].SetActive(i == style);
+                m_LineStyleObjs[i].SetActive(i == style);
             }
 
             for (int i = 0; i < m_WaterCount; i++)

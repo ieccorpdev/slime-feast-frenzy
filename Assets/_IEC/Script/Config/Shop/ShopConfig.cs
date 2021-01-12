@@ -11,6 +11,8 @@ namespace IEC
         public List<BackgroundConfig> listBGConfig;
 
         public GameObject itemShopObj;
+
+        public Material[] waterLineMat1, waterLineMat2;
     }
 
     [System.Serializable]

@@ -17,7 +17,7 @@ namespace IEC
         protected WaterComponent[] m_WaterComponent;
 
         [SerializeField]
-        protected GameObject[] m_LineTyleObjs;
+        protected GameObject[] m_LineStyleObjs;
 
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
@@ -146,6 +146,16 @@ namespace IEC
                 else
                 {
                     m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
+                }
+
+
+                var waterLineMats = (PlayerData.themeSelected == 4) ? ShopConfig.waterLineMat2 : ShopConfig.waterLineMat1;
+                for (int i = 0; i < 5; i++)
+                {
+                    if(m_LineStyleObjs[i] != null)
+                    {
+                        m_LineStyleObjs[i].GetComponent<MeshRenderer>().material = waterLineMats[i];
+                    }
                 }
             }
         }
