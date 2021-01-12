@@ -121,7 +121,12 @@ namespace IEC
                 }
             }
 
-            SetTerrain();
+            if (GridType != GridType.WALL)
+            {
+                transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            }
+
+            OnUpdateSetTerrain();
 
             if (Game.isStartLevelEffect)
             {
@@ -130,7 +135,7 @@ namespace IEC
 
         }
 
-        public void SetTerrain()
+        public virtual void OnUpdateSetTerrain()
         {
             if (GridType != GridType.WALL)
             {
@@ -142,8 +147,6 @@ namespace IEC
                 {
                     m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
                 }
-
-                transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
             }
         }
 

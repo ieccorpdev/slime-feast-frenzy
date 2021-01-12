@@ -150,7 +150,6 @@ namespace IEC
 
             listSource.Clear();
             listTarget.Clear();
-            listTerrainType.Clear();
             listHints.Clear();
 
             isMultiColor = false;

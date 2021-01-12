@@ -263,6 +263,7 @@ namespace IEC
 
         public void SetupTheme(bool isUpdateNow)
         {
+            Game.listTerrainType.Clear();
             var listTheme = ShopConfig.listThemeConfigs;
             var index = PlayerData.themeSelected % listTheme.Count;
             Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
@@ -283,12 +284,13 @@ namespace IEC
             if (isUpdateNow)
             {
                 OnUpdateTheme();
+                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
             }
         }
 
         private void OnUpdateTheme()
         {
-            Game.listGrids.ForEach(x => x.SetTerrain());
+            Game.listGrids.ForEach(x => x.OnUpdateSetTerrain());
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot, HolePos holePos)
@@ -410,7 +412,7 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnInit(Game.enviromentConfig.cornerMat));
+            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
 
             GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
             GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);

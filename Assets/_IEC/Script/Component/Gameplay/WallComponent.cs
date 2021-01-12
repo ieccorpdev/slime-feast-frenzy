@@ -51,6 +51,11 @@ namespace IEC
             m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
             CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
 
+            OnUpdateSetTerrain();
+        }
+
+        public override void OnUpdateSetTerrain()
+        {
             for (int i = 0; i < m_WallMesh.Length; i++)
             {
                 m_WallMesh[i].material = Game.enviromentConfig.wallMat;
