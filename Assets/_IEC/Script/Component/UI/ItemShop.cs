@@ -38,7 +38,7 @@ namespace IEC
 
         private void OnSelected()
         {
-            EventController.RaiseEvent(EventList.GamePlay.SHOP_SELECT_ITEM, new EventParam(this, m_Index, m_ItemShopType));
+            EventController.RaiseEvent(EventList.GamePlay.SHOP_SELECT_ITEM, new EventParam(this, m_ItemShopType, m_Index));
         }
 
         public void OnUpdateData(bool isUnlocked, bool isSelected)

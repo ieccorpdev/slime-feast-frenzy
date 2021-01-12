@@ -47,15 +47,24 @@ namespace IEC
             gameOverUIGroup.gameObject.SetActive(false);
             popupSettings.gameObject.SetActive(false);
             popupRating.gameObject.SetActive(false);
+            popupShop.gameObject.SetActive(false);
 
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
             mainUIGroup.OnEffectTime(false);
+
+            OnUpdateShopData();
         }
 
         public void OnGameOver(bool isActive, Action callback = null)
         {
             gameOverUIGroup.gameObject.SetActive(isActive);
             gameOverUIGroup.TweenGameOver(isActive, callback);
+        }
+
+        public void OnUpdateShopData()
+        {
+            popupShop.OnUpdateData(PlayerData.listThemeUnlocked, PlayerData.themeSelected, 
+                PlayerData.listBackgroundUnlocked, PlayerData.backgroundSelected);
         }
     }
 

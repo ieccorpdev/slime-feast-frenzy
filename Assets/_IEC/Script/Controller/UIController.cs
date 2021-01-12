@@ -137,8 +137,14 @@ namespace IEC
             });
 
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
-
             UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
+            UI.mainUIGroup.btnShop.onClick.AddListener(OnHandleButtonShop);
+        }
+
+        private void OnHandleButtonShop()
+        {
+            UI.OnUpdateShopData();
+            UI.popupShop.gameObject.SetActive(true);
         }
 
         public void TweenBossLevel()

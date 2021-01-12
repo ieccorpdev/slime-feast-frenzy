@@ -29,6 +29,7 @@ namespace IEC
 
         public int backgroundSelected;
         public List<int> listBbackgroundUnlocked;
+        public List<int> listBackgroundUnlocked;
 
         public void AfterInit()
         {
@@ -38,10 +39,10 @@ namespace IEC
                 listThemeUnlocked = new List<int>();
             }
 
-            if (listBbackgroundUnlocked == null) 
+            if (listBackgroundUnlocked == null)
             {
-                listBbackgroundUnlocked = new List<int>();
-            } 
+                listBackgroundUnlocked = new List<int>();
+            }
         }
 
         public void InitTheme(int themeDefault, int bgDefault)
@@ -50,10 +51,17 @@ namespace IEC
             {
                 UnlockTheme(themeDefault);
             }
-            
-            if(listBbackgroundUnlocked.Count == 0)
+
+            if (listBackgroundUnlocked.Count == 0)
             {
-                UnlockBackground(bgDefault);
+                if(listBbackgroundUnlocked.Count > 0)
+                {
+                    UnlockBackground(listBbackgroundUnlocked[0]);
+                }
+                else
+                {
+                    UnlockBackground(bgDefault);
+                }
             }
         }
 
@@ -68,11 +76,29 @@ namespace IEC
 
         public void UnlockBackground(int index)
         {
-            if (!listBbackgroundUnlocked.Contains(index))
+            if (!listBackgroundUnlocked.Contains(index))
             {
-                listBbackgroundUnlocked.Add(index);
+                listBackgroundUnlocked.Add(index);
             }
             backgroundSelected = index;
+        }
+
+        public void SelectShopItem(ItemShopType type, int index)
+        {
+            if(type == ItemShopType.Theme)
+            {
+                if (listThemeUnlocked.Contains(index))
+                {
+                    themeSelected = index;
+                }
+            }
+            else if(type == ItemShopType.Background)
+            {
+                if (listThemeUnlocked.Contains(index))
+                {
+                    backgroundSelected = index;
+                }
+            }
         }
 
         public int numberInterShow;

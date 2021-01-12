@@ -27,9 +27,42 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.SHOP_SELECT_ITEM:
-
+                    var type = (ItemShopType)param.p0;
+                    var index = (int)param.p1;
+                    OnSelectItem(type, index);
+                    break;
+                case EventList.GamePlay.SHOP_BUY_ITEM:
+                    var shopTab = (ItemShopType)param.p0;
+                    var totalItem = (int)param.p1;
+                    OnHandleBuyItem(shopTab, totalItem);
                     break;
             }
+        }
+
+        private void OnSelectItem(ItemShopType type, int index)
+        {
+            PlayerData.SelectShopItem(type, index);
+            OnApplyItemShop();
+        }
+
+        private void OnHandleBuyItem(ItemShopType type, int totalItem)
+        {
+            if(type == ItemShopType.Theme)
+            {
+                var index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
+                PlayerData.UnlockTheme(index);
+            }else if(type == ItemShopType.Background)
+            {
+                var index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
+                PlayerData.UnlockBackground(index);
+            }
+
+            OnApplyItemShop();
+        }
+
+        public void OnApplyItemShop()
+        {
+            UI.OnUpdateShopData();
         }
     }
 }
