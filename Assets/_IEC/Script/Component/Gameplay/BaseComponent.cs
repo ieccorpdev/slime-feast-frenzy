@@ -121,6 +121,17 @@ namespace IEC
                 }
             }
 
+            SetTerrain();
+
+            if (Game.isStartLevelEffect)
+            {
+                OnTweenMove(false);
+            }
+
+        }
+
+        public void SetTerrain()
+        {
             if (GridType != GridType.WALL)
             {
                 if (Game.isChangeGridStatus)
@@ -134,12 +145,6 @@ namespace IEC
 
                 transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
             }
-
-            if (Game.isStartLevelEffect)
-            {
-                OnTweenMove(false);
-            }
-
         }
 
         private void OnMouseDown()

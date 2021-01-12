@@ -52,6 +52,8 @@ namespace IEC
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
             mainUIGroup.OnEffectTime(false);
 
+            popupShop.OnResetAll();
+
             OnUpdateShopData();
         }
 
@@ -63,8 +65,7 @@ namespace IEC
 
         public void OnUpdateShopData()
         {
-            popupShop.OnUpdateData(PlayerData.listThemeUnlocked, PlayerData.themeSelected, 
-                PlayerData.listBackgroundUnlocked, PlayerData.backgroundSelected);
+            popupShop.OnUpdateData();
         }
     }
 

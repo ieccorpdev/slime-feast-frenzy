@@ -257,6 +257,12 @@ namespace IEC
 
         private void SetupEnviroment()
         {
+            SetupTheme(false);
+            GamePlay.SetBackground();
+        }
+
+        public void SetupTheme(bool isUpdateNow)
+        {
             var listTheme = ShopConfig.listThemeConfigs;
             var index = PlayerData.themeSelected % listTheme.Count;
             Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
@@ -274,8 +280,15 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            var bgConfig = ShopConfig.listBGConfig[PlayerData.backgroundSelected];
-            GamePlay.SetBackground(bgConfig);
+            if (isUpdateNow)
+            {
+                OnUpdateTheme();
+            }
+        }
+
+        private void OnUpdateTheme()
+        {
+            Game.listGrids.ForEach(x => x.SetTerrain());
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot, HolePos holePos)

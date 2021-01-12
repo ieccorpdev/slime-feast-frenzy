@@ -143,6 +143,7 @@ namespace IEC
 
         private void OnHandleButtonShop()
         {
+            Game.isShowPopup = true;
             UI.OnUpdateShopData();
             UI.popupShop.gameObject.SetActive(true);
         }

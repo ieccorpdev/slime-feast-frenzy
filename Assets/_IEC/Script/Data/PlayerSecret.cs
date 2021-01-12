@@ -54,13 +54,13 @@ namespace IEC
 
             if (listBackgroundUnlocked.Count == 0)
             {
-                if(listBbackgroundUnlocked.Count > 0)
+                if(listBbackgroundUnlocked == null)
                 {
-                    UnlockBackground(listBbackgroundUnlocked[0]);
+                    UnlockBackground(bgDefault);
                 }
                 else
                 {
-                    UnlockBackground(bgDefault);
+                    UnlockBackground(listBbackgroundUnlocked[0]);
                 }
             }
         }
@@ -83,22 +83,31 @@ namespace IEC
             backgroundSelected = index;
         }
 
-        public void SelectShopItem(ItemShopType type, int index)
+        public bool SelectShopItem(ItemShopType type, int index)
         {
             if(type == ItemShopType.Theme)
             {
+                if (index == themeSelected) return false;
+
                 if (listThemeUnlocked.Contains(index))
                 {
                     themeSelected = index;
+
+                    return true;
                 }
             }
             else if(type == ItemShopType.Background)
             {
-                if (listThemeUnlocked.Contains(index))
+                if (index == backgroundSelected) return false;
+                if (listBackgroundUnlocked.Contains(index))
                 {
                     backgroundSelected = index;
+
+                    return true;
                 }
             }
+
+            return false;
         }
 
         public int numberInterShow;

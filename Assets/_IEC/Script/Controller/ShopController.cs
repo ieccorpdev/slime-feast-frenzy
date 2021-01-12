@@ -41,28 +41,42 @@ namespace IEC
 
         private void OnSelectItem(ItemShopType type, int index)
         {
-            PlayerData.SelectShopItem(type, index);
-            OnApplyItemShop();
+            if(PlayerData.SelectShopItem(type, index))
+            {
+                OnApplyItemShop(type);
+            }
         }
 
         private void OnHandleBuyItem(ItemShopType type, int totalItem)
         {
+            var index = 0;
             if(type == ItemShopType.Theme)
             {
-                var index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
+                index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
                 PlayerData.UnlockTheme(index);
-            }else if(type == ItemShopType.Background)
+            }
+            else if(type == ItemShopType.Background)
             {
-                var index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
+                index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
                 PlayerData.UnlockBackground(index);
             }
 
-            OnApplyItemShop();
+            OnApplyItemShop(type);
+            UI.popupShop.EffectBuyItem(type, index);
         }
 
-        public void OnApplyItemShop()
+        public void OnApplyItemShop(ItemShopType type)
         {
             UI.OnUpdateShopData();
+
+            if(type == ItemShopType.Theme)
+            {
+                LevelController.SetupTheme(true);
+            }
+            else if(type == ItemShopType.Background)
+            {
+                GamePlay.SetBackground();
+            }
         }
     }
 }
