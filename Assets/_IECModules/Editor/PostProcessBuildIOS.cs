@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
 #if UNITY_IOS
-    using UnityEditor.iOS.Xcode;
+using UnityEditor.iOS.Xcode;
 #endif
 using System.IO;
 using System.Collections.Generic;
@@ -34,6 +34,37 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         // Write plist
         File.WriteAllText(plistPath, plist.WriteToString());
+
+        var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
+
+        EditPBX();
+        // EditCapability();
+
+        void EditCapability()
+        {
+            PBXProject pbxProject = new PBXProject();
+            pbxProject.ReadFromFile(projectPath);
+            var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
+            var entitlementsFileName = pbxProject.GetBuildPropertyForAnyConfig(mainTargetGuid, "CODE_SIGN_ENTITLEMENTS") ?? Application.productName + ".entitlements";
+            ProjectCapabilityManager projectCapabilityManager = new ProjectCapabilityManager(projectPath,
+              entitlementsFileName, "Unity-iPhone", mainTargetGuid);
+            projectCapabilityManager.AddiCloud(false, true, true, false, new string[] { $"iCloud.{Application.identifier}.cloud.save" });
+            projectCapabilityManager.WriteToFile();
+
+            var entitleRead = File.ReadAllText(path + "/" + entitlementsFileName);
+            entitleRead = entitleRead.Replace("<string>iCloud.$(CFBundleIdentifier)</string>", "");
+            Debug.LogWarning(entitleRead);
+            File.WriteAllText(path + "/" + entitlementsFileName, entitleRead);
+        }
+
+        void EditPBX()
+        {
+            PBXProject pbxProject = new PBXProject();
+            pbxProject.ReadFromFile(projectPath);
+            var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
+            pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
+            pbxProject.WriteToFile(projectPath);
+        }
     }
 #endif
 }
