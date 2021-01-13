@@ -17,6 +17,9 @@ namespace IEC
         [SerializeField]
         private GameObject[] m_TreesStyles;
 
+        [SerializeField]
+        private MeshRenderer m_TreeOriginMesh;
+
         private Tween m_TweenScale;
 
         private int m_TargetIndex;
@@ -31,21 +34,6 @@ namespace IEC
 
         private static float SMALL_SCALE = .4f;
         private static float LARGE_SCALE = 1.5f;
-
-        //private Material CurrentMat
-        //{
-        //    get
-        //    {
-        //        if (Game.isMultiColor)
-        //        {
-        //            return Config.GetWaterMat(Game.isNewTreeColor, TrueColor);
-        //        }
-        //        else
-        //        {
-        //            return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isNewTreeColor, Game.classicColor);
-        //        }
-        //    }
-        //}
 
         private Material CurrentMat
         {
@@ -161,6 +149,8 @@ namespace IEC
 
                 m_ListTransTrees.Add(itemTree);
             }
+
+            m_TreeOriginMesh.material = mat;
         }
 
 
