@@ -11,9 +11,6 @@ namespace IEC
         private GameConfig m_GameConfig;
 
         [SerializeField]
-        private ShopConfig m_ShopConfig;
-
-        [SerializeField]
         private Game m_GameData;
 
         [SerializeField]
@@ -44,8 +41,6 @@ namespace IEC
         public void BehaviourAwake()
         {
             Pool.Set(m_GameConfig);
-            Pool.Set(m_ShopConfig);
-
             m_GameData = Pool.Get<Game>();
             m_GameData.interDelayConfig = m_GameConfig.interDelayConfig;
             LoadData();

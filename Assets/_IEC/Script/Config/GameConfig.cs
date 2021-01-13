@@ -14,6 +14,7 @@ namespace IEC
     {
         public _EmptyConfig emptyConfig;
         public ComponentConfig componentConfig;
+        public ShopConfig shopConfig;
 
         public GameObject effectLeavesObj;
 
