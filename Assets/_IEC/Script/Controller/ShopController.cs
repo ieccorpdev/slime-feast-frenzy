@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class ShopController : _BaseBehaviour, IController, IEventAwake, IEventListener
+    public class ShopController : _BaseBehaviour, IController, IEventListener, IEventStart
     {
         public void LocateController()
         {
@@ -17,9 +17,9 @@ namespace IEC
             return gameObject.activeSelf;
         }
 
-        public void BehaviourAwake()
+        public void BehaviourStart()
         {
-            
+            GamePlay.SetBackground();
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)

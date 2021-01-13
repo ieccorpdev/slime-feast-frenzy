@@ -16,8 +16,6 @@ namespace IEC
         [SerializeField]
         private PlayerSecret m_PlayerSecret;
 
-        ServicesController m_ServicesController;
-
         public void LocateController()
         {
             Controllers.Add(this);

@@ -52,7 +52,7 @@ namespace IEC
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
         // Grid static data
-        [HideInInspector]
+        //[HideInInspector]
         public int Row, Col, TrueRot, TrueColor;
 
         public GridType GridType;
@@ -76,7 +76,7 @@ namespace IEC
             }
         }
 
-        public bool IsTrueRot => m_CurrentRot == TrueRot;
+        public virtual bool IsTrueRot() => m_CurrentRot == TrueRot;
         public bool IsAllowRotation => !m_IsRotating;
 
         protected bool m_IsRotating, m_IsHaveWater;
@@ -416,8 +416,6 @@ namespace IEC
         private void OnTweenMove(bool isDestroy)
         {
             m_Tween?.Kill(true);
-            //var moveTime = Random.Range(.5f, .75f);
-            //var delayTime = Random.Range(.25f, .5f);
 
             var moveTime = Config.startEffectMoveTime;
             var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
@@ -503,6 +501,11 @@ namespace IEC
             var listMats = ShopConfig.listThemeConfigs[index].listTerrains;
             var mat = m_IsHaveWater ? listMats[0] : listMats[1];
             m_Terrain.SetupTerrain(mat);
+        }
+
+        protected virtual int GetTrueRotHint()
+        {
+            return TrueRot;
         }
 
 

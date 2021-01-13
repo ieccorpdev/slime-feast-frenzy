@@ -62,7 +62,7 @@ namespace IEC
                 for (int i = 0; i < listHintsCount; i++)
                 {
                     var grid = Game.listHints[i];
-                    if (!grid.IsTrueRot)
+                    if (!grid.IsTrueRot())
                     {
                         grid.OnHint();
                         m_ListTempHint.Add(grid);
@@ -78,13 +78,17 @@ namespace IEC
             else
             {
                 Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
+                var startIndexEffect = Game.maxHintIndex - addIndex;
                 for (int i = 0; i < Game.maxHintIndex; i++)
                 {
                     var grid = Game.listHints[i];
-                    if (!grid.IsTrueRot)
+                    if (i >= startIndexEffect)
+                    {
+                        m_ListTempHint.Add(grid);
+                    }
+                    if (!grid.IsTrueRot())
                     {
                         grid.OnHint();
-                        m_ListTempHint.Add(grid);
                     }
                 }
             }

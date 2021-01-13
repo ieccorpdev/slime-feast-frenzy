@@ -6,9 +6,21 @@ namespace IEC
 {
     public class GridStraightComponent : BaseGrid
     {
-        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
+        public override bool IsTrueRot()
         {
-            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
+            if(TrueRot == 0 || TrueRot == 2)
+            {
+                return (m_CurrentRot == 0 || m_CurrentRot == 2);
+            }
+            else
+            {
+                return (m_CurrentRot == 1 || m_CurrentRot == 3);
+            }
+        }
+
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int lineType = 0)
+        {
+            base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
         }
 
         protected override int[,] OriginLine => new int[3, 3]
@@ -17,6 +29,11 @@ namespace IEC
             { 1, 1, 1},
             { 0, 0, 0}
         };
+
+        protected override int GetTrueRotHint()
+        {
+            return (m_CurrentRot + 1) % 4;
+        }
     }
 }
 

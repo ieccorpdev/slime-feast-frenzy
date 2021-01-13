@@ -221,7 +221,7 @@ namespace IEC
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
-            var delayTime = Game.isStartLevelEffect ? 2f : 0f;
+            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
@@ -258,7 +258,6 @@ namespace IEC
         private void SetupEnviroment()
         {
             SetupTheme(false);
-            GamePlay.SetBackground();
         }
 
         public void SetupTheme(bool isUpdateNow)

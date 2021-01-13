@@ -6,9 +6,9 @@ namespace IEC
 {
     public class GridCurveComponent : BaseGrid
     {
-        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int lineType = 0)
         {
-            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
+            base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
         }
 
         protected override int[,] OriginLine => new int[3, 3]

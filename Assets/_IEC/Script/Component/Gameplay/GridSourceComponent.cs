@@ -41,34 +41,57 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
+        private int m_LineType;
+
+        public override bool IsTrueRot()
         {
-            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
+            if(m_LineType == 1)
+            {
+                if (TrueRot == 0 || TrueRot == 2)
+                {
+                    return (m_CurrentRot == 0 || m_CurrentRot == 2);
+                }
+                else
+                {
+                    return (m_CurrentRot == 1 || m_CurrentRot == 3);
+                }
+            }
+            else
+            {
+                return m_CurrentRot == TrueRot;
+            }
+        }
+
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int lineType = 0)
+        {
+            base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
+
+            m_LineType = lineType;
 
             for (int i = 0; i < 4; i++)
             {
-                m_LineStyleObjs[i].SetActive(i == style);
+                m_LineStyleObjs[i].SetActive(i == lineType);
             }
 
             for (int i = 0; i < m_WaterCount - 4; i++)
             {
-                m_WaterComponent[i].gameObject.SetActive(i == style);
+                m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
             ConfigWater();
         }
 
-        protected override int[,] GetDefaultLine(int style)
+        protected override int[,] GetDefaultLine(int lineTyle)
         {
-            if (style == 1)
+            if (lineTyle == 1)
             {
                 return StraightLine;
             }
-            else if (style == 2)
+            else if (lineTyle == 2)
             {
                 return CurveLine;
             }
-            else if(style == 3)
+            else if(lineTyle == 3)
             {
                 return CrossLine;
             }
@@ -100,6 +123,19 @@ namespace IEC
             {
                 m_WaterComponent[i].SetColor(CurrentWaterColor, true);
             }
+        }
+
+        protected override int GetTrueRotHint()
+        {
+            if (m_LineType == 1)
+            {
+                return (m_CurrentRot + 1) % 4;
+            }
+            else
+            {
+                return TrueRot;
+            }
+                
         }
     }
 }
