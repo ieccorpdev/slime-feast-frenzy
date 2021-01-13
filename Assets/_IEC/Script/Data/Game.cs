@@ -131,17 +131,20 @@ namespace IEC
         public bool isHaveBossTimerLevelsV2;
         public bool isNewWaterEffect;
 
-        //Prepare 
         public bool isLevelDifficultyV5;
         public bool isNewTreeColorV1;
         public bool isHaveUIAnimation;
         public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
-        
+
+        //Prepare
+        public bool isHaveShop;
+        public bool isRootTreeOnlyGreenColor;
+        public bool isRootTreeChangeColorFollowWater;
+        public bool isHaveBossTimerLevelsV3;
+        public bool isNoShadow;
 
         public bool isLeavesEffect;
-        
-
 
         public void OnResetAll()
         {

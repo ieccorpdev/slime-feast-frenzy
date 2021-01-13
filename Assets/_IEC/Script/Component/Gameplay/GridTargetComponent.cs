@@ -18,7 +18,7 @@ namespace IEC
         private GameObject[] m_TreesStyles;
 
         [SerializeField]
-        private MeshRenderer m_TreeOriginMesh;
+        private MeshRenderer m_RootTreeMesh;
 
         private Tween m_TweenScale;
 
@@ -150,7 +150,7 @@ namespace IEC
                 m_ListTransTrees.Add(itemTree);
             }
 
-            m_TreeOriginMesh.material = mat;
+            m_RootTreeMesh.material = mat;
         }
 
 
