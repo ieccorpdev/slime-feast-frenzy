@@ -122,7 +122,7 @@ namespace IEC
             Game.isNewUI = true;
             Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
-            Game.isHintStyleV2 = true;
+            Game.isHintStyleV2 = false;
             UIController.SetupAbUI();
         }
 
