@@ -29,10 +29,14 @@ public class ItemClaimShop : MonoBehaviour
 
     private float m_TimeEffect = .3f;
 
-    public void OnInit()
+    private System.Action m_Callback;
+
+    public void OnInit(System.Action callback)
     {
+        m_Callback = callback;
         m_BtnClaim.onClick.RemoveAllListeners();
         m_BtnClaim.onClick.AddListener(() => {
+            m_Callback?.Invoke();
             gameObject.SetActive(false);
         });
     }

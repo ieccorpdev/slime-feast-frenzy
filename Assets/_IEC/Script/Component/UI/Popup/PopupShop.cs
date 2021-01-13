@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using DanielLochner.Assets.SimpleScrollSnap;
 
 namespace IEC
 {
@@ -48,10 +49,13 @@ namespace IEC
         [SerializeField]
         private ItemClaimShop m_ItemClaim;
 
+        [SerializeField]
+        private SimpleScrollSnap[] m_ScrollSnap;
+
         public void OnInit(ShopConfig shopConfig)
         {
             ShopConfig = shopConfig;
-            m_ItemClaim.OnInit();
+            m_ItemClaim.OnInit(GotoPanel);
 
             InitButtonEvent();
 
@@ -136,6 +140,24 @@ namespace IEC
 
             m_ItemClaim.gameObject.SetActive(true);
             m_ItemClaim.ShowEffect(itemShopConfig.spriteIcon, itemShopConfig.name);
+        }
+
+        private void GotoPanel()
+        {
+            var index = GetIndex(TabSelected);
+            m_ScrollSnap[(int)TabSelected].GoToPanel(index);
+        }
+
+        private int GetIndex(ItemShopType type)
+        {
+            if(type == ItemShopType.Theme)
+            {
+                return PlayerData.themeSelected / 4;
+            }
+            else
+            {
+                return PlayerData.backgroundSelected / 4;
+            }
         }
 
         private void InitButtonEvent()
