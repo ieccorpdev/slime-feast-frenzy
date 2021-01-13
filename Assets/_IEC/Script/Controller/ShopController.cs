@@ -49,20 +49,23 @@ namespace IEC
 
         private void OnHandleBuyItem(ItemShopType type, int totalItem)
         {
-            var index = 0;
-            if(type == ItemShopType.Theme)
-            {
-                index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
-                PlayerData.UnlockTheme(index);
-            }
-            else if(type == ItemShopType.Background)
-            {
-                index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
-                PlayerData.UnlockBackground(index);
-            }
+            Services.ShowRewardAds(() => {
+                Services.PushEvent(new IEC.TrackingEvent.ShowRewardBuyShopItem());
+                var index = 0;
+                if (type == ItemShopType.Theme)
+                {
+                    index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
+                    PlayerData.UnlockTheme(index);
+                }
+                else if (type == ItemShopType.Background)
+                {
+                    index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
+                    PlayerData.UnlockBackground(index);
+                }
 
-            OnApplyItemShop(type);
-            UI.popupShop.EffectBuyItem(type, index);
+                OnApplyItemShop(type);
+                UI.popupShop.EffectBuyItem(type, index);
+            });
         }
 
         public void OnApplyItemShop(ItemShopType type)
