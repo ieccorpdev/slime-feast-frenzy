@@ -3630,7 +3630,7 @@ MonoBehaviour:
     isHaveNewTrees: 0
     isStartLevelEffect: 0
     isHintStyleV2: 0
-    isHintStyleV3: 0
+    isHintStyleBSP: 0
     isHaveBossTimerLevels: 0
     isHaveBossTimerLevelsV2: 0
     isNewWaterEffect: 0
@@ -3639,6 +3639,12 @@ MonoBehaviour:
     isHaveUIAnimation: 0
     isChangeGridStatus: 0
     isHaveDynamicInter: 0
+    isHaveShop: 0
+    isRootTreeOnlyGreenColor: 0
+    isHaveBossTimerLevelsV3: 0
+    isHaveBossTimerLevelsV4: 0
+    isNoShadow: 0
+    isHintStyleV3: 0
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 
@@ -3746,11 +3752,6 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1348461126256781512, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1942111343331157745, guid: 7372155d17e68cf47b623c7c41a88cdc,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -3776,46 +3777,6 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2994620340893791560, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2994620340893791560, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2994620340893791560, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3691154747516165595, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_ParentOriginSize.x
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 3691154747516165595, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_ParentOriginSize.y
-      value: 1920
-      objectReference: {fileID: 0}
-    - target: {fileID: 3739382787012183995, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3739382787012183995, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3739382787012183995, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3749145723508580338, guid: 7372155d17e68cf47b623c7c41a88cdc,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -3836,11 +3797,6 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 4516866739267610060, guid: 7372155d17e68cf47b623c7c41a88cdc,
-        type: 3}
-      propertyPath: m_ParentOriginSize.x
-      value: 2189.6514
-      objectReference: {fileID: 0}
     - target: {fileID: 5340833405866107733, guid: 7372155d17e68cf47b623c7c41a88cdc,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -3881,10 +3837,15 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7177862172864841963, guid: 7372155d17e68cf47b623c7c41a88cdc,
+    - target: {fileID: 7776203685451640202, guid: 7372155d17e68cf47b623c7c41a88cdc,
         type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8060775440963222821, guid: 7372155d17e68cf47b623c7c41a88cdc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -60
       objectReference: {fileID: 0}
     - target: {fileID: 8737656906301147268, guid: 7372155d17e68cf47b623c7c41a88cdc,
         type: 3}

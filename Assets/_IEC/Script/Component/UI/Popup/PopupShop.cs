@@ -9,13 +9,9 @@ namespace IEC
 {
     public class PopupShop : MonoBehaviour
     {
-        private PlayerSecret m_PlayerData;
+        private PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
 
-        private PlayerSecret PlayerData => m_PlayerData ?? Pool.Get<PlayerSecret>();
-
-        private Game m_Game;
-
-        private Game Game => m_Game ?? Pool.Get<Game>();
+        private Game Game => Pool.Get<Game>();
 
         [SerializeField]
         private Button m_BtnTabBackground, m_BtnTabTheme;
@@ -80,7 +76,6 @@ namespace IEC
                 item.OnInit(i, itemConfig.itemShopConfig);
                 m_ListItemBG.Add(item);
             }
-
 
             OnSelectTab(0);
         }
@@ -158,6 +153,16 @@ namespace IEC
             {
                 return PlayerData.backgroundSelected / 4;
             }
+        }
+
+        public void SetupPositionBtnBuy(float bannerHeight)
+        {
+            var scale = Screen.height / 1920f;
+            var sizeY = (1282f * scale) + 295f;
+            
+            var totalLengthPopup = Screen.height - sizeY;
+            var posY = (totalLengthPopup + bannerHeight) / 2f;
+            m_BtnBuyItemWatchAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
         }
 
         private void InitButtonEvent()
