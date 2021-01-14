@@ -1,112 +1,89 @@
-# IEC Game
+## IEC Module
+Common Modules for all IEC Unity Projects! 
 
-## Empty Project
+### Installation
+```
+# First Time Install: add the Project to `Assets/_IECModules` folder.
+git subtree add -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
 
-> Project để khởi tạo code các dự án game
+# Pull new update to module in the same folder.
+git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
 
-[Quy chuẩn đặt tên](Wiki/naming-convention.md)
+# Push all the commit with changes back.
+git subtree push -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master
+```
+*Add or pull a new project should use `--squash`, which merge all changes into 1 commit only*
 
-[Thiết lập cho New Project](Wiki/setting-new-project.md)
+### Usage
+Add Module Controller from menu `IEC/Create Module Controller` at first scene your game start, similar to Unity Reporter
 
-[Cấu trúc thư mục Assets](Wiki/assets-folder-structure.md)
+#### 1. Unity Package Included:
+* [Unity Log Viewer (Reporter)](https://assetstore.unity.com/packages/tools/log-viewer-12047)
+* [Player Prefs Editor](https://assetstore.unity.com/packages/tools/playersprefs-editor-and-utilities-26656)
 
-### Một số phương pháp thiết kế code
+#### 2. Unity Helper Script:
+* [Show FPS](http://wiki.unity3d.com/index.php?title=FramesPerSecond)
+* [Play From First Scene](https://answers.unity.com/questions/441246/editor-script-to-make-play-always-jump-to-a-start.html)
 
-* [Simple OOP](Wiki/pattern-simple-oop.md)
-* [Composite MonoBehaviour](Wiki/pattern-composite-monobehaviour.md)
-* [Dependency Injection](Wiki/pattern-dependency-injection.md)
-* [Model View Controller](Wiki/pattern-model-view-controller.md)
-* [Entity Component System](Wiki/pattern-entity-component-system.md)
-* [Event Data Controller](Wiki/pattern-event-data-controller.md)
+#### 3. Cheat Code Modules
 
-### [Cấu trúc mẫu project EDC](Wiki/event-data-controller-template-project.md)
+##### Public Params
+* `haveOpenedCheatCode` `bool`: `true` when the Cheat Code have been opened at least once. 
+* `showCheatCodeState` The current State of CheatCode (`Show`, `ShowPasswordInput`, `ShowCheatCode`)
+* `onCheatCodeOpen` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel open
+* `onCheatCodeClose` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel close
+* `onCheatCodeStateChange` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel State change (`Show`, `ShowPasswordInput`, `ShowCheatCode`)
+* `positionActivate` The screen corner position to click open CheatCode
 
-[Project IEC Module](https://gitlab.com/iecgames/iec-unity-modules)
+##### Methods
+* AddCheatCodeButton(string `buttonText`, Action\<CheatCodeParam\> `onClick`)
+```
+ModuleController.cheatCode.AddCheatCodeButton("Test Button", cheatCodeParam => {
+    cheatCodeParam.buttonText = "Clicked!!";
+});
+```
+* AddCheatCodeButtonWithInput(string `buttonText`, Action\<CheatCodeParam\> `onClick`, params InputParam[] `inputParams`)
+```
+ModuleController.cheatCode.AddCheatCodeButtonWithInput("Mouse Rotation",
+    param => { print(param.inputParams.Count); },
+    new CheatCode.InputParam {label = "x"}
+    , new CheatCode.InputParam {label = "y"}
+    , new CheatCode.InputParam {label = "z"}
+);
+```
+* AddCheatCodeButtonWithDropdown(string `buttonText`, Action\<CheatCodeParam\> `onClick`, List\<string\> `options`, int `defaultValue = 0`)
+```
+ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("AB Test",
+    cheatCodeParam =>
+    {
+        print(cheatCodeParam.dropdownParam.value);
+        // set new AB Test Value
+    }, new List<string>
+    {
+        "AB-FullAds-30",
+        "AB-FullAds-60"
+    }
+    , Controllers.Get<ServicesController>().ABTest().GetValue("AB-FullAds")
+);
+```
+* Others
+```
+# Get Cheat Code Param From Button Text
+ModuleController.cheatCode.GetCheatCodeParam(buttonText);
 
-## Hướng dẫn tạo project advertising prototype
+# Remove Cheat Code by Button Text
+ModuleController.cheatCode.RemoveCheatCodeButtonByName(buttonText);
 
-1. Ghép với empty project
+```
 
-   * Clone Empty Project và đổi tên folder project sang tên Game prototype
-
-   * Nếu viết code mới từ empty project
-     * Phát triển project từ thư mục `_IEC`
-   * Nếu ghép từ source ngoài
-     * Test riêng project source ngoài xem có lỗi không, phải sử dụng phiên bản Unity bao nhiêu
-     * Export source ngoài thành package và import vào empty project
-     * Có thể phải đồng bộ empty project cho cùng phiên bản Unity với source ngoài
-     * Gom resource, script, scene của source ngoài vào một folder có tên dạng `_IEC_[Tên game]`
-     * Thêm các Scene của source ngoài vào `Build Settings`, test thử game có thể chạy bình thường không
-   * Ghép Start Scene (với source ngoài)
-     * Mở Scene khởi chạy Game (Start Scene)
-     * Thêm prefab `_IEC/Prefab/_PrototypeControllers` vào scene
-     * Tùy chỉnh `_Controllers` cho phù hợp với game: bỏ Test, bổ sung CheatCode, thêm Controller kết nối với code source ngoài
-   * Xóa `Readme.md` và folder Wiki
-   * Tạo `first commit` lưu lại kết quả ghép project
-
-2. Cập nhật IEC Modules
-
-   ```
-   git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
-   ```
-
-3. Đẩy project lên gitlab
-
-   * Tạo git repo trên gitlab `iecgames/advertising-prototype`
-   * Đổi remote origin URL của Empty Project đã ghép sang SSH URL của git repo mới
-   * Tiến hành push lên repo
-
-4. Thêm các plugin SDK
-
-   * Facebook : [Mục 3 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Kochava : [Mục 7 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Applovin : [Mục 4 SDK Documentation](Wiki/SdkDocumentation.md)
-   * Define Symbols : `PluginFacebook;PluginKochava;PluginApplovin`
-
-5. Thêm các event Analytic
-
-   Sử dụng `Controllers.Get<ServicesController>().PushEvent("event-name");`
-
-6. Hiển thị quảng cáo
-
-   Sử dụng và chỉnh sửa code từ `AdsController`
-
-7. Cập nhật ID từ File Checklist
-
-   * Tìm Menu `IEC -> Set ID SDK`
-   * Paste link google sheet Check List chứa các ID của project
-   * Ấn nút `Set SDK`
-   * Tiến hành Force Resolver của `Assets -> Play Services Resolver -> Android Resolver`
-
-8. Thiết lập AB Test
-
-   * Sử dụng và chỉnh sửa code từ `ABTestController`
-
-9. Tạo branch build AAB
-
-   * Branch master đặt thiết lập sau để build nhanh apk test
-     * Scripting Backend : Mono
-     * Target Architectures : ARMv7
-     * Publish Settings : debug key
-   * Tạo branch `release-aab` với các thiết lập sau
-     * Bỏ Unity open flash screen : mở `ProjectSettings/ProjectSettings.asset` lên bằng phần mềm text hoặc code, sửa `m_ShowUnitySplashScreen: 0` thành `m_ShowUnitySplashScreen: 1`
-     * Scripting Backend : IL2CPP
-     * Target Architectures : ARMv7 + ARM64
-     * Publish Settings : tạo keystore theo tên game. Ví dụ game tên "Cut Master" có keystore là `cutmaster.keystore` với password là `cutmaster`, nếu tên quá ngắn thì thêm `123456`
-
-10. Thiết lập Unity Cloud Build
-
-    * [Unity Cloud Build Documentation](https://docs.google.com/document/d/1S_Zg0yQF_j4PlHPyJLaGSL27jkoOpvxDYiwJ4fdwt5c/edit)
-    * Chỉ Setup vào Discord :
-      * Tạo một Integration Discord vào channel `build-advertising-prototypes` với các event build started, failure và success
-      * Tạo một Integration Discord vào channel `advertising-prototypes` với event build success
-    * Config build apk test
-      * Tên : `Dev Armv7`
-      * Branch: `master`
-      * Auto build: `Yes`
-    * Config build aab
-      * Tên: `Release AAB`
-      * Branch : `release-aab`
-      * Advanced : bật `Build App Bundles (.aab)`
-      * Auto build: `Yes`
-
+#### 4. Plugin Define Symbols
+* `PluginFacebook` : add after import Facebook SDK to use `FBAnalyticEvent`
+* `PluginFirebase` : add after import any Firebase SDK
+* `PluginFirebaseAnalytic` : add after import Firebase Analytic SDK to use `FirebaseAnalyticModule`
+* `PluginFirebaseRemote` : add after import Firebase Remote SDK to use `FirebaseRemoteConfigModule`
+* `PluginAppodeal` : add after import Appodeal SDK to use `AppodealModule`
+* `PluginGoogleAds` : add after import Admob SDK to use `AdmobModule` with `EcpmAdsModule`
+* `PluginApplovin` : add after import Applovin SDK to use `ApplovinModule`
+* `PluginKochava` : add after import Kochava SDK to use `KochavaAnalyticModule`
+* `PluginUnityIAP` : add after add Unity IAP SDK to use `IapUnityModule`
+* `PluginReceiptVerify` : add after create `GooglePlayTangle` and `AppleTangle` to verify IAP offline
