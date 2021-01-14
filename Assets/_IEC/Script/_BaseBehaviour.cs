@@ -14,18 +14,14 @@ namespace IEC
         protected static HintController Hint => Controllers.Get<HintController>();
         protected static EffectController EffectController => Controllers.Get<EffectController>();
 
-        private static Game m_Game;
-        protected static Game Game => m_Game ?? Pool.Get<Game>();
+        protected static Game Game => Pool.Get<Game>();
         
         protected static GamePlayGroup GamePlay => Pool.Get<GamePlayGroup>();
         
         protected static PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
 
-        private static UIGroup m_UI;
-        protected static UIGroup UI => m_UI ?? Pool.Get<UIGroup>();
-
-        private static GameConfig m_GameConfig;
-        protected static GameConfig Config => m_GameConfig ?? Pool.Get<GameConfig>();
+        protected static UIGroup UI => Pool.Get<UIGroup>();
+        protected static GameConfig Config => Pool.Get<GameConfig>();
         protected static ShopConfig ShopConfig => Config.shopConfig;
         protected static ComponentConfig ComponentConfig => Config.componentConfig;
     }

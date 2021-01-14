@@ -221,7 +221,8 @@ namespace IEC
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
-            var delayTime = Game.isStartLevelEffect ? 1.5f : 0f;
+            var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
+            var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
