@@ -126,7 +126,7 @@ namespace IEC
         public bool isStartLevelEffect;
         public bool isHintStyleV2;
 
-        public bool isHintStyleV3;
+        public bool isHintStyleBSP;
         public bool isHaveBossTimerLevels;
         public bool isHaveBossTimerLevelsV2;
         public bool isNewWaterEffect;
@@ -143,6 +143,7 @@ namespace IEC
         public bool isHaveBossTimerLevelsV3;
         public bool isHaveBossTimerLevelsV4;
         public bool isNoShadow;
+        public bool isHintStyleV3;
 
         public bool isLeavesEffect;
 

@@ -74,6 +74,9 @@ namespace IEC
             Game.isHaveBossTimerLevelsV4 = abValue == 4;
             Game.isNoShadow = abValue == 5;
 
+            Game.isHintStyleV3 = abValue == 6;
+            Game.isHintStyleV2 = abValue != 6;
+
             QualitySettings.shadows = Game.isNoShadow ? ShadowQuality.Disable : ShadowQuality.HardOnly;
             UIController.SetupAbUI();
         }
@@ -98,7 +101,7 @@ namespace IEC
 
         private void Result20201230()
         {
-            Game.isHintStyleV3 = false;
+            Game.isHintStyleBSP = false;
             Game.isHaveBossTimerLevels = false;
             Game.isHaveBossTimerLevelsV2 = false;
             Game.isNewWaterEffect = false;
@@ -131,7 +134,7 @@ namespace IEC
                 Game.backGroundDefault = 3;
             }
 
-            Game.isHintStyleV3 = abValue == 4;
+            Game.isHintStyleBSP = abValue == 4;
             Game.isHaveBossTimerLevels = (abValue == 5) || (abValue == 6);
             Game.isHaveBossTimerLevelsV2 = abValue == 6;
 
@@ -145,7 +148,7 @@ namespace IEC
             Game.isNewUI = true;
             Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
-            Game.isHintStyleV2 = false;
+            Game.isHintStyleV2 = true;
             UIController.SetupAbUI();
         }
 
