@@ -345,9 +345,9 @@ namespace IEC
             return obj;
         }
 
-        public static int CalculatorAddRot(int rotCurrent, int numberSub)
+        public static int CalculatorUndoRot(int rotCurrent, int numberAdd)
         {
-            return (rotCurrent - numberSub + 4) % 4;
+            return (rotCurrent - numberAdd + 4) % 4;
         }
 
         public static int CalculatorMissingRot(int rotCurrent, int rotTrue)

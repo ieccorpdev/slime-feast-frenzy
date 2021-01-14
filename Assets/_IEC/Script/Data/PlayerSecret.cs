@@ -29,6 +29,7 @@ namespace IEC
 
         public int backgroundSelected;
         public List<int> listBbackgroundUnlocked;
+        public List<int> listBackgroundUnlocked;
 
         public void AfterInit()
         {
@@ -38,10 +39,10 @@ namespace IEC
                 listThemeUnlocked = new List<int>();
             }
 
-            if (listBbackgroundUnlocked == null) 
+            if (listBackgroundUnlocked == null)
             {
-                listBbackgroundUnlocked = new List<int>();
-            } 
+                listBackgroundUnlocked = new List<int>();
+            }
         }
 
         public void InitTheme(int themeDefault, int bgDefault)
@@ -50,10 +51,17 @@ namespace IEC
             {
                 UnlockTheme(themeDefault);
             }
-            
-            if(listBbackgroundUnlocked.Count == 0)
+
+            if (listBackgroundUnlocked.Count == 0)
             {
-                UnlockBackground(bgDefault);
+                if(listBbackgroundUnlocked == null)
+                {
+                    UnlockBackground(bgDefault);
+                }
+                else
+                {
+                    UnlockBackground(listBbackgroundUnlocked[0]);
+                }
             }
         }
 
@@ -68,11 +76,38 @@ namespace IEC
 
         public void UnlockBackground(int index)
         {
-            if (!listBbackgroundUnlocked.Contains(index))
+            if (!listBackgroundUnlocked.Contains(index))
             {
-                listBbackgroundUnlocked.Add(index);
+                listBackgroundUnlocked.Add(index);
             }
             backgroundSelected = index;
+        }
+
+        public bool SelectShopItem(ItemShopType type, int index)
+        {
+            if(type == ItemShopType.Theme)
+            {
+                if (index == themeSelected) return false;
+
+                if (listThemeUnlocked.Contains(index))
+                {
+                    themeSelected = index;
+
+                    return true;
+                }
+            }
+            else if(type == ItemShopType.Background)
+            {
+                if (index == backgroundSelected) return false;
+                if (listBackgroundUnlocked.Contains(index))
+                {
+                    backgroundSelected = index;
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public int numberInterShow;

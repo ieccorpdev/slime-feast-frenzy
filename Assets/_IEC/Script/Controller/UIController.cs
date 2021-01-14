@@ -48,7 +48,7 @@ namespace IEC
                             Game.isShowPopup = true;
                             PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
-                            UI.popUpRating.gameObject.SetActive(true);
+                            UI.popupRating.gameObject.SetActive(true);
                             Game.SetGameState(GameState.Pause);
                         }
                     }
@@ -137,8 +137,15 @@ namespace IEC
             });
 
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
-
             UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
+            UI.mainUIGroup.btnShop.onClick.AddListener(OnHandleButtonShop);
+        }
+
+        private void OnHandleButtonShop()
+        {
+            Game.isShowPopup = true;
+            UI.OnUpdateShopData();
+            UI.popupShop.gameObject.SetActive(true);
         }
 
         public void TweenBossLevel()

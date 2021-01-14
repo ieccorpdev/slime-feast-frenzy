@@ -1,0 +1,108 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d558f316696d91a45b5d99891aa4ca14, type: 3}
+  m_Name: Shop Config 1
+  m_EditorClassIdentifier: 
+  listThemeConfigs:
+  - listTerrains:
+    - {fileID: 2100000, guid: 7aa0a6c45e0887b4cac6d3a492c949f3, type: 2}
+    - {fileID: 2100000, guid: 09ff0880e379109469af3a331043a55e, type: 2}
+    wallMat: {fileID: 2100000, guid: 91c8d1ebd38cf1f428a7681a051cf835, type: 2}
+    holeMat: {fileID: 2100000, guid: a6be5e0443c15d24cb895c275a601f4e, type: 2}
+    cornerMat: {fileID: 2100000, guid: 91c8d1ebd38cf1f428a7681a051cf835, type: 2}
+    itemShopConfig:
+      itemShopType: 0
+      name: FOREST
+      spriteIcon: {fileID: 21300000, guid: 01812a495d5edfa489ad946c1f4168cb, type: 3}
+  - listTerrains:
+    - {fileID: 2100000, guid: 14a2989de2ed4f24da2c721ab24cc4cd, type: 2}
+    - {fileID: 2100000, guid: ada20896e46f3dc418fc43fb85c1f679, type: 2}
+    wallMat: {fileID: 2100000, guid: 23f38d6bb38562c43bd55723032adf9a, type: 2}
+    holeMat: {fileID: 2100000, guid: a6be5e0443c15d24cb895c275a601f4e, type: 2}
+    cornerMat: {fileID: 2100000, guid: 23f38d6bb38562c43bd55723032adf9a, type: 2}
+    itemShopConfig:
+      itemShopType: 0
+      name: DELTA
+      spriteIcon: {fileID: 21300000, guid: a1e92934bd74a8a4c88eaa503cad864e, type: 3}
+  - listTerrains:
+    - {fileID: 2100000, guid: c4136c05a7433d247acb191bd474262a, type: 2}
+    - {fileID: 2100000, guid: 6caf43f8d1f08af4a88de32176b6a361, type: 2}
+    wallMat: {fileID: 2100000, guid: aaacc1260be6fd04ea69d987f5413368, type: 2}
+    holeMat: {fileID: 2100000, guid: b38c11b3c7d66a946beb27b11899310b, type: 2}
+    cornerMat: {fileID: 2100000, guid: 644f4fd9f2d00e246a7b43300255cb84, type: 2}
+    itemShopConfig:
+      itemShopType: 0
+      name: DESERT
+      spriteIcon: {fileID: 21300000, guid: 499b181789012294fbea2dad3234d807, type: 3}
+  - listTerrains:
+    - {fileID: 2100000, guid: c94ee96e1d2ae304987cf455bdd79997, type: 2}
+    - {fileID: 2100000, guid: 74ca473c61427f946b1c34c981dbe0b6, type: 2}
+    wallMat: {fileID: 2100000, guid: c32cf8ce07394262836d1638b9d13f08, type: 2}
+    holeMat: {fileID: 2100000, guid: a6be5e0443c15d24cb895c275a601f4e, type: 2}
+    cornerMat: {fileID: 2100000, guid: c32cf8ce07394262836d1638b9d13f08, type: 2}
+    itemShopConfig:
+      itemShopType: 0
+      name: ROCK
+      spriteIcon: {fileID: 21300000, guid: b1b311e284eecba4290fdd310b4231b6, type: 3}
+  - listTerrains:
+    - {fileID: 2100000, guid: d155849d3f27d5747ac2992a656e1f92, type: 2}
+    - {fileID: 2100000, guid: e03ea14c1f5677e419aa2a826de006cd, type: 2}
+    wallMat: {fileID: 2100000, guid: 9ab51ed81b0c5dc419643e0afed8254a, type: 2}
+    holeMat: {fileID: 2100000, guid: b38c11b3c7d66a946beb27b11899310b, type: 2}
+    cornerMat: {fileID: 2100000, guid: 3becfdb0736c2434f807e1f39982d763, type: 2}
+    itemShopConfig:
+      itemShopType: 0
+      name: SNOW
+      spriteIcon: {fileID: 21300000, guid: 6a7e09ded0bf51b45b9574681e79fcd2, type: 3}
+  listBGConfig:
+  - sprMain: {fileID: 21300000, guid: 951b80fdfc482e440a79713885d75322, type: 3}
+    sprTop: {fileID: 21300000, guid: 773bb74216fd01249af8999771471841, type: 3}
+    sprBot: {fileID: 21300000, guid: 73fe4ba27227285499c0ac4838cc0147, type: 3}
+    itemShopConfig:
+      itemShopType: 1
+      name: FALL
+      spriteIcon: {fileID: 21300000, guid: c22ce920913d1574094b1a53d0dee63b, type: 3}
+  - sprMain: {fileID: 21300000, guid: 2f19d5bafc70172409d8ea6176c317af, type: 3}
+    sprTop: {fileID: 21300000, guid: c6e3edd316972af49be1a0c28592f95f, type: 3}
+    sprBot: {fileID: 21300000, guid: b4c9b8e26876efd40bbc94284ae29978, type: 3}
+    itemShopConfig:
+      itemShopType: 1
+      name: WINTER
+      spriteIcon: {fileID: 21300000, guid: fd11fc26c465d1344b126b10576eef1c, type: 3}
+  - sprMain: {fileID: 21300000, guid: cd581c8b701cda849914d5b2774b3245, type: 3}
+    sprTop: {fileID: 21300000, guid: b93de89c06cd5ab4fb918d9a77dd2cef, type: 3}
+    sprBot: {fileID: 21300000, guid: c9781093612f5a34f8a31fa2a33aef02, type: 3}
+    itemShopConfig:
+      itemShopType: 1
+      name: SUMMER
+      spriteIcon: {fileID: 21300000, guid: eaabe5f332c7e77459f8254e654d5336, type: 3}
+  - sprMain: {fileID: 21300000, guid: 659c1b3e5628c8b4fb1a297d90a327fb, type: 3}
+    sprTop: {fileID: 21300000, guid: 408f89383b29d2e4da637ba051df9fd3, type: 3}
+    sprBot: {fileID: 21300000, guid: 3576c13853e67de42b03f7b1c95ec89d, type: 3}
+    itemShopConfig:
+      itemShopType: 1
+      name: SPRING
+      spriteIcon: {fileID: 21300000, guid: fb1e0646f56ef9947a451669d9d53017, type: 3}
+  itemShopObj: {fileID: 2420602979647134499, guid: 8e91f6101c89b8d41aeb9d9b0d8e8489,
+    type: 3}
+  waterLineMat1:
+  - {fileID: 2100000, guid: bc27a4ffd6d64734e87cb9274b4e9d8a, type: 2}
+  - {fileID: 2100000, guid: f75d78cf67edde947a3a06fe3fe23b1d, type: 2}
+  - {fileID: 2100000, guid: e844f58cb37b709498775f70ab20824a, type: 2}
+  - {fileID: 2100000, guid: 32fd8f741c88deb43b524bf66554be00, type: 2}
+  - {fileID: 2100000, guid: 42c4b0dc2f06adc4792cd0ea259ab8c6, type: 2}
+  waterLineMat2:
+  - {fileID: 2100000, guid: 0a103d5c0c63b1e43bbad8a725f5dc35, type: 2}
+  - {fileID: 2100000, guid: 70c956eb46380d34ebed1e986c4c70e1, type: 2}
+  - {fileID: 2100000, guid: 14604ff25d781d9459a733dc89f0ae33, type: 2}
+  - {fileID: 2100000, guid: f575810c32c2c7d459c2ca776195b7a0, type: 2}
+  - {fileID: 2100000, guid: e95e271037e3c1243b8b496f54b17acf, type: 2}

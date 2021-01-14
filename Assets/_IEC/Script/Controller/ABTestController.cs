@@ -43,15 +43,16 @@ namespace IEC
             Result20201209();
             Result20201222();
             Result20201230();
+            Result20210108();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210108(abValue);
+            UpdateAb20210114(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210108(abValue);
+                    UpdateAb20210114(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -62,6 +63,28 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20210114(int abValue)
+        {
+            Game.isHaveShop = abValue == 1;
+            Game.isRootTreeOnlyGreenColor = abValue == 2;
+            Game.isHaveBossTimerLevels = (abValue == 3 || abValue == 4);
+            Game.isHaveBossTimerLevelsV3 = abValue == 3;
+            Game.isHaveBossTimerLevelsV4 = abValue == 4;
+            Game.isNoShadow = abValue == 5;
+
+            QualitySettings.shadows = Game.isNoShadow ? ShadowQuality.Disable : ShadowQuality.HardOnly;
+            UIController.SetupAbUI();
+        }
+
+        private void Result20210108()
+        {
+            Game.isLevelDifficultyV5 = false;
+            Game.isNewTreeColorV1 = false;
+            Game.isHaveUIAnimation = false;
+            Game.isChangeGridStatus = false;
+            Game.isHaveDynamicInter = false;
         }
 
         private void UpdateAb20210108(int abValue)
@@ -122,7 +145,7 @@ namespace IEC
             Game.isNewUI = true;
             Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
-            Game.isHintStyleV2 = true;
+            Game.isHintStyleV2 = false;
             UIController.SetupAbUI();
         }
 

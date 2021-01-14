@@ -12,7 +12,7 @@ namespace IEC
         private Game m_Game;
         private Game Game => m_Game ?? Pool.Get<Game>();
 
-        public Button btnRestart, btnSkip, btnSetting, btnHint, btnUndo, btnTime;
+        public Button btnRestart, btnSkip, btnSetting, btnHint, btnUndo, btnTime, btnShop;
 
         [SerializeField]
         private RectTransform rectTopPanel, rectPanelBossLevel, rectTextBossLevel, rectAddTime;
@@ -48,6 +48,7 @@ namespace IEC
         {
             btnSetting.gameObject.SetActive(Game.isHaveSetting);
             btnSkip.gameObject.SetActive(!Game.isHaveHint);
+            btnShop.gameObject.SetActive(Game.isHaveShop);
         }
 
         public void SetupBossLevel(bool isBossLevel)

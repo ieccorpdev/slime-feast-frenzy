@@ -13,7 +13,6 @@ namespace IEC
     {
         public Canvas canvas;
         public CanvasScaler canvasScaler;
-        public EventSystem eventSystem;
 
         public RectTransform bottomAds;
 
@@ -23,7 +22,8 @@ namespace IEC
         public GameOverGroup gameOverUIGroup;
 
         public PopupSetting popupSettings;
-        public PopupRating popUpRating;
+        public PopupRating popupRating;
+        public PopupShop popupShop;
 
         public void LocateGroup()
         {
@@ -36,7 +36,8 @@ namespace IEC
             gameOverUIGroup.OnInit();
 
             popupSettings.OnInit();
-            popUpRating.OnInit();
+            popupRating.OnInit();
+            popupShop.OnInit(ShopConfig);
 
             OnResetAll();
         }
@@ -45,16 +46,26 @@ namespace IEC
         {
             gameOverUIGroup.gameObject.SetActive(false);
             popupSettings.gameObject.SetActive(false);
-            popUpRating.gameObject.SetActive(false);
+            popupRating.gameObject.SetActive(false);
+            popupShop.gameObject.SetActive(false);
 
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
             mainUIGroup.OnEffectTime(false);
+
+            popupShop.OnResetAll();
+
+            OnUpdateShopData();
         }
 
         public void OnGameOver(bool isActive, Action callback = null)
         {
             gameOverUIGroup.gameObject.SetActive(isActive);
             gameOverUIGroup.TweenGameOver(isActive, callback);
+        }
+
+        public void OnUpdateShopData()
+        {
+            popupShop.OnUpdateData();
         }
     }
 

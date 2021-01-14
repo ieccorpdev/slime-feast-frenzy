@@ -131,17 +131,20 @@ namespace IEC
         public bool isHaveBossTimerLevelsV2;
         public bool isNewWaterEffect;
 
-        //Prepare 
         public bool isLevelDifficultyV5;
         public bool isNewTreeColorV1;
         public bool isHaveUIAnimation;
         public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
-        
+
+        //Prepare
+        public bool isHaveShop;
+        public bool isRootTreeOnlyGreenColor;
+        public bool isHaveBossTimerLevelsV3;
+        public bool isHaveBossTimerLevelsV4;
+        public bool isNoShadow;
 
         public bool isLeavesEffect;
-        
-
 
         public void OnResetAll()
         {
@@ -150,7 +153,6 @@ namespace IEC
 
             listSource.Clear();
             listTarget.Clear();
-            listTerrainType.Clear();
             listHints.Clear();
 
             isMultiColor = false;
@@ -207,14 +209,26 @@ namespace IEC
 
         public int GetTimerLevel(int matrix)
         {
+            var time = 30f;
             var count = matrix - 3;
-            var time = 30;
-            for (int i = 0; i < count; i++)
+            if (isHaveBossTimerLevelsV3)
             {
-                time = (int)(time * 1.5f);
+                for (int i = 0; i < count; i++)
+                {
+                    time *= 1.5f;
+                }
+            }else if (isHaveBossTimerLevelsV4)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    time += 15f;
+                }
             }
-
-            return time;
+            else
+            {
+                time = 90f;
+            }
+            return Mathf.RoundToInt(time);
         }
 
     }

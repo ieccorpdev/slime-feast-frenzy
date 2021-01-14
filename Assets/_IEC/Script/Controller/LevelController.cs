@@ -213,7 +213,7 @@ namespace IEC
             if (Game.isBossLevel)
             {
                 UI.mainUIGroup.UpdateMove();
-                Game.timeMaxBossLevel = Game.isHaveBossTimerLevelsV2 ? Game.GetTimerLevel(size - 2) : 90;
+                Game.timeMaxBossLevel = Game.GetTimerLevel(size - 2);
                 Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
@@ -221,7 +221,8 @@ namespace IEC
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
-            var delayTime = Game.isStartLevelEffect ? 2f : 0f;
+            var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
+            var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
@@ -257,9 +258,15 @@ namespace IEC
 
         private void SetupEnviroment()
         {
-            var listTheme = ShopConfig.listEnviromentConfigs;
+            SetupTheme(false);
+        }
+
+        public void SetupTheme(bool isUpdateNow)
+        {
+            Game.listTerrainType.Clear();
+            var listTheme = ShopConfig.listThemeConfigs;
             var index = PlayerData.themeSelected % listTheme.Count;
-            Game.enviromentConfig = ShopConfig.listEnviromentConfigs[index];
+            Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
 
             var type0 = RandomHelper.Range(0, 2);
 
@@ -274,8 +281,16 @@ namespace IEC
                 Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
             }
 
-            var bgConfig = ShopConfig.listSpriteBackgrounds[PlayerData.backgroundSelected];
-            GamePlay.SetBackground(bgConfig);
+            if (isUpdateNow)
+            {
+                OnUpdateTheme();
+                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
+            }
+        }
+
+        private void OnUpdateTheme()
+        {
+            Game.listGrids.ForEach(x => x.OnUpdateSetTerrain());
         }
 
         private void SpawnGridAll(LevelConfig levelConfig, bool isRandomRot, HolePos holePos)
@@ -397,7 +412,7 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnInit(Game.enviromentConfig.cornerMat));
+            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
 
             GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
             GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);

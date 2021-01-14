@@ -62,7 +62,7 @@ namespace IEC
                 for (int i = 0; i < listHintsCount; i++)
                 {
                     var grid = Game.listHints[i];
-                    if (!grid.IsTrueRot)
+                    if (!grid.IsTrueRot())
                     {
                         grid.OnHint();
                         m_ListTempHint.Add(grid);
@@ -86,7 +86,7 @@ namespace IEC
                     {
                         m_ListTempHint.Add(grid);
                     }
-                    if (!grid.IsTrueRot)
+                    if (!grid.IsTrueRot())
                     {
                         grid.OnHint();
                     }

@@ -7,9 +7,9 @@ namespace IEC
 {
     public class BaseGrid : BaseComponent
     {
-        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int style = 0)
+        public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int lineType = 0)
         {
-            base.OnInit(gridType, row, col, rotTrue, rot, color, style);
+            base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
             SetGridLine(TrueRot);
         }
 
@@ -66,7 +66,7 @@ namespace IEC
 
             var currentPos = transform.localPosition;
 
-            m_CurrentRot = isUndo ? LevelHelper.CalculatorAddRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
+            m_CurrentRot = isUndo ? LevelHelper.CalculatorUndoRot(m_CurrentRot, 1) : (m_CurrentRot + 1) % 4;
 
             m_Tween = sequence.Join(transform.DOLocalRotate(rot, time, RotateMode.FastBeyond360).SetRelative())
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))
@@ -91,7 +91,7 @@ namespace IEC
             m_IsRotating = true;
             m_Tween?.Kill(true);
 
-            var rotRemains = LevelHelper.CalculatorMissingRot(m_CurrentRot, TrueRot);
+            var rotRemains = LevelHelper.CalculatorMissingRot(m_CurrentRot, GetTrueRotHint());
             var newRot = rotRemains * 90;
             var rot = new Vector3(0f, newRot, 0f);
             var time = Game.isFasterRotate ? .15f : .3f;

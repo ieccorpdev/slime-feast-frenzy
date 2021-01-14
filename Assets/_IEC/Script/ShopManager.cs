@@ -6,7 +6,7 @@ namespace IEC
 {
     public enum ItemShopType
     {
-        Background,
-        Theme
+        Theme,
+        Background
     }
 }
