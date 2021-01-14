@@ -99,8 +99,8 @@ namespace IEC
         public void UpdateHintText()
         {
             txtHintCount.text = StringHelper.GetNumber(Game.hintRemains);
-            hintAds.SetActive(Game.hintRemains <= 0 || !Game.isHintStyleV3);
-            hintCount.SetActive(Game.isHintStyleV3 && Game.hintRemains > 0);
+            hintAds.SetActive(Game.hintRemains <= 0 || !Game.isHintStyleBSP);
+            hintCount.SetActive(Game.isHintStyleBSP && Game.hintRemains > 0);
         }
 
         public void OnEffectTime(bool isActive)

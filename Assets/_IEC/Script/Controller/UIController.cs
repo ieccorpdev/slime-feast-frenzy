@@ -208,7 +208,7 @@ namespace IEC
 
         private void OnHandleButtonHint()
         {
-            if (Game.isHintStyleV3)
+            if (Game.isHintStyleBSP)
             {
                 if (Game.hintRemains > 0)
                 {

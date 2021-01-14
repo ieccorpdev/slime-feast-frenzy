@@ -50,9 +50,9 @@ namespace IEC
                 addIndex = Mathf.RoundToInt(addIndex * .7f);
             }
 
-            if (Game.isHintStyleV2 || Game.isHintStyleV3)
+            if (Game.isHintStyleV2 || Game.isHintStyleBSP)
             {
-                if (Game.isHintStyleV3)
+                if (Game.isHintStyleBSP)
                 {
                     addIndex = 1;
                 }
