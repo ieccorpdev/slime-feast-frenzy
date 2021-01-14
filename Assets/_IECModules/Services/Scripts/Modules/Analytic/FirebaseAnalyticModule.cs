@@ -14,6 +14,8 @@ namespace IEC
 
         Dictionary<string, string> m_CacheSetProperty = new Dictionary<string, string>();
 
+        public bool IsDisable { get ; set; }
+
         public FirebaseAnalyticModule(ISetUpSdkService firebaseSDK)
         {
             m_FirebaseSDK = firebaseSDK;
@@ -21,10 +23,18 @@ namespace IEC
 
         public void Init()
         {
+            if (IsDisable)
+            {
+                return;
+            }
         }
 
         public void PushCachedEvents()
         {
+            if (IsDisable)
+            {
+                return;
+            }
             if (m_ListCachedEvents.Count != 0)
             {
                 Debug.Log("Push Firebase Cached Events: " + m_ListCachedEvents.Count);
@@ -47,6 +57,11 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            if(IsDisable)
+            {
+                return;
+            }
+
             if (!IsFirebaseReady())
             {
                 Debug.Log("Push Firebase Event Failed: " + eventName);
@@ -112,6 +127,11 @@ namespace IEC
 
         public void SetUserProperty(string name, string property)
         {
+            if (IsDisable)
+            {
+                return;
+            }
+
             if (IsFirebaseReady())
             {
                 FirebaseAnalytics.SetUserProperty(name, property);

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using _IECModules;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -17,14 +18,21 @@ public class GoogleSheetUtility : MonoBehaviour
         ParseCSVToScriptableObject(GoogleSheetToCSV.ParseCSV(textAsset.text, false), scriptableObject);
 #endif  
     }
-    public static void ParseGoogleDocToScriptableObject(string docUrl, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null)
+    public static void ParseGoogleDocToScriptableObject(string docUrl, ScriptableObject scriptableObject, IList listToParse)
     {
-        DownLoadCsvEditor(docUrl, false, data => { ParseCSVToScriptableObject(data, scriptableObject, onLoadComplete); });
+        ParseGoogleDocToScriptableObject(docUrl, scriptableObject, null, listToParse);
+    }
+    public static void ParseGoogleDocToScriptableObject(string docUrl, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null, IList listToParse = null)
+    {
+        DownLoadCsvEditor(docUrl, false, data => { ParseCSVToScriptableObject(data, scriptableObject, onLoadComplete, listToParse); });
     }
 
-    public static void ParseCSVToScriptableObject(List<List<string>> csvData, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null)
+    public static void ParseCSVToScriptableObject(List<List<string>> csvData, ScriptableObject scriptableObject, Action<bool> onLoadComplete = null, IList listToParse = null)
     {
-        var fieldList = scriptableObject.GetType().GetFields().FirstOrDefault(f =>
+        FieldInfo fieldList = null;
+        if (listToParse != null) fieldList = scriptableObject.GetType().GetFields()
+            .FirstOrDefault(f => Equals(f.GetValue(scriptableObject), listToParse));
+        else fieldList = scriptableObject.GetType().GetFields().FirstOrDefault(f =>
             f.FieldType.IsGenericType && f.FieldType.GetGenericTypeDefinition() == typeof(List<>));
         if (fieldList == null) return;
 
@@ -40,7 +48,7 @@ public class GoogleSheetUtility : MonoBehaviour
         var fieldParamListSorted = firstRow
             .Select(column => column.RemoveBetweenParenthesis().Replace(" ", "").Trim().ToLower())
             // remove same name column
-            .Distinct()
+            // .Distinct()
             .Select(lower => fieldParamList.FirstOrDefault(f => f.Name.ToLower() == lower))
             .ToList();
 
@@ -56,27 +64,21 @@ public class GoogleSheetUtility : MonoBehaviour
                 if (fieldInfo == null) continue;
 
                 var cell = row[i];
-                object value = cell;
                 if (!string.IsNullOrWhiteSpace(cell)) rowIsEmpty = false;
-
-                if (fieldInfo.FieldType == typeof(float))
-                    value = string.IsNullOrEmpty(cell) ? 0 : float.Parse(cell);
-                else if (fieldInfo.FieldType == typeof(int))
-                    value = string.IsNullOrEmpty(cell) ? 0 : int.Parse(cell);
-                else if (fieldInfo.FieldType == typeof(bool))
-                    value = !string.IsNullOrEmpty(cell);
-                else if (fieldInfo.FieldType == typeof(string))
-                    value = string.IsNullOrEmpty(cell) ? "" : cell;
-                else if (fieldInfo.FieldType.IsEnum)
+                
+                if (fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
                 {
-                    var cellTrim = cell?.Replace(" ", "").Trim();
-                    value = string.IsNullOrEmpty(cellTrim) ? null : Enum.Parse(fieldInfo.FieldType, cellTrim, true);
-                    if(value == null) continue;
+                    var childListType = fieldInfo.FieldType.GetGenericArguments()[0];
+                    var childListValue =  (IList) fieldInfo.GetValue(rowObject) ?? (IList) Activator.CreateInstance(fieldInfo.FieldType);
+                    SetFieldValue(childListType, cell, out var childValue);
+                    childListValue.Add(childValue);
+                    fieldInfo.SetValue(rowObject, childListValue);
+                    continue;
                 }
-                else
-                    value = null;
 
-                fieldInfo.SetValue(rowObject, value);
+                var isNeedSetValue = SetFieldValue(fieldInfo.FieldType, cell, out var value);
+
+                if(isNeedSetValue) fieldInfo.SetValue(rowObject, value);
             }
             
             if (rowIsEmpty)
@@ -104,6 +106,27 @@ public class GoogleSheetUtility : MonoBehaviour
         return changeCount;
     }
 
+    private static bool SetFieldValue(Type fieldType, string cell, out object value)
+    {
+        if (fieldType == typeof(float))
+            value = string.IsNullOrEmpty(cell) ? 0 : float.Parse(cell);
+        else if (fieldType == typeof(int))
+            value = string.IsNullOrEmpty(cell) ? 0 : int.Parse(cell);
+        else if (fieldType == typeof(bool))
+            value = !string.IsNullOrEmpty(cell);
+        else if (fieldType == typeof(string))
+            value = string.IsNullOrEmpty(cell) ? "" : cell;
+        else if (fieldType.IsEnum)
+        {
+            var cellTrim = cell?.Replace(" ", "").Trim();
+            value = string.IsNullOrEmpty(cellTrim) ? null : Enum.Parse(fieldType, cellTrim, true);
+            if (value == null) return false;
+        }
+        else
+            value = null;
+
+        return true;
+    }
 
     public static void SetDirty(ScriptableObject scriptableObject)
     {
