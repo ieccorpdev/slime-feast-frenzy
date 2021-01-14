@@ -30,6 +30,7 @@ extern "C"
     static NSArray<NSString *> *_testDeviceIdentifiersToSet;
     static NSNumber *_verboseLoggingToSet;
     static NSNumber *_adInfoButtonEnabledToSet;
+    static NSNumber *_exceptionHandlerEnabledToSet;
     
     // Helper method to create C string copy
     static const char * cStringCopy(NSString *string);
@@ -99,6 +100,12 @@ extern "C"
             _sdk.settings.adInfoButtonEnabled = _adInfoButtonEnabledToSet.boolValue;
             _adInfoButtonEnabledToSet = nil;
         }
+
+        if ( _exceptionHandlerEnabledToSet )
+        {
+            _sdk.settings.exceptionHandlerEnabled = _exceptionHandlerEnabledToSet.boolValue;
+            _exceptionHandlerEnabledToSet = nil;
+        }
     }
     
     bool _MaxIsInitialized()
@@ -115,6 +122,19 @@ extern "C"
         }
         
         [_sdk showMediationDebugger];
+    }
+
+    void _MaxShowConsentDialog()
+    {
+        if ( !_sdk )
+        {
+            NSLog(@"[%@] Failed to show consent dialog - please ensure the AppLovin MAX Unity Plugin has been initialized by calling 'MaxSdk.InitializeSdk();'!", TAG);
+            return;
+        }
+
+        [_sdk.userService showConsentDialogWithCompletionHandler:^{
+            [_adManager didDismissUserConsentDialog];
+        }];
     }
     
     int _MaxConsentDialogState()
@@ -187,6 +207,13 @@ extern "C"
         
         [_adManager createBannerWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) atPosition: NSSTRING(bannerPosition)];
     }
+
+    void _MaxCreateBannerXY(const char *adUnitIdentifier, const float x, const float y)
+    {
+        if (!isPluginInitialized()) return;
+        
+        [_adManager createBannerWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) x: x y: y];
+    }
     
     void _MaxSetBannerBackgroundColor(const char *adUnitIdentifier, const char *hexColorCode)
     {
@@ -206,10 +233,20 @@ extern "C"
                                                            key: NSSTRING(key)
                                                          value: NSSTRING(value)];
     }
+
+    void _MaxSetBannerWidth(const char *adUnitIdentifier, const float width)
+    {
+        [_adManager setBannerWidth: width forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
     
     void _MaxUpdateBannerPosition(const char *adUnitIdentifier, const char *bannerPosition)
     {
         [_adManager updateBannerPosition: NSSTRING(bannerPosition) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
+
+    void _MaxUpdateBannerPositionXY(const char *adUnitIdentifier, const float x, const float y)
+    {
+        [_adManager updateBannerPosition: x y: y forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
     void _MaxShowBanner(const char *adUnitIdentifier)
@@ -233,11 +270,25 @@ extern "C"
         [_adManager hideBannerWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
+    const char * _MaxGetBannerLayout(const char *adUnitIdentifier)
+    {
+        if (!isPluginInitialized()) return cStringCopy(@"");
+        
+        return cStringCopy([_adManager bannerLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
+    }
+    
     void _MaxCreateMRec(const char *adUnitIdentifier, const char *mrecPosition)
     {
         if (!isPluginInitialized()) return;
         
         [_adManager createMRecWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) atPosition: NSSTRING(mrecPosition)];
+    }
+    
+    void _MaxCreateMRecXY(const char *adUnitIdentifier, const float x, const float y)
+    {
+        if (!isPluginInitialized()) return;
+        
+        [_adManager createMRecWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) x: x y: y];
     }
     
     void _MaxSetMRecPlacement(const char *adUnitIdentifier, const char *placement)
@@ -248,6 +299,11 @@ extern "C"
     void _MaxUpdateMRecPosition(const char *adUnitIdentifier, const char *mrecPosition)
     {
         [_adManager updateMRecPosition: NSSTRING(mrecPosition) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
+    
+    void _MaxUpdateMRecPositionXY(const char *adUnitIdentifier, const float x, const float y)
+    {
+        [_adManager updateMRecPosition: x y: y forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
     void _MaxShowMRec(const char *adUnitIdentifier)
@@ -269,6 +325,13 @@ extern "C"
         if (!isPluginInitialized()) return;
         
         [_adManager hideMRecWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
+    
+    const char * _MaxGetMRecLayout(const char *adUnitIdentifier)
+    {
+        if (!isPluginInitialized()) return cStringCopy(@"");
+        
+        return cStringCopy([_adManager mrecLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
     }
     
     void _MaxLoadInterstitial(const char *adUnitIdentifier)
@@ -410,7 +473,7 @@ extern "C"
     {
         return cStringCopy([_adManager adInfoForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
     }
-    
+
     void _MaxSetVerboseLogging(bool enabled)
     {
         if ( _sdk )
@@ -423,20 +486,21 @@ extern "C"
             _verboseLoggingToSet = [NSNumber numberWithBool: enabled];
         }
     }
-
-    void _MaxSetAdInfoButtonEnabled(bool enabled)
+    
+    bool _MaxIsVerboseLoggingEnabled()
     {
         if ( _sdk )
         {
-            _sdk.settings.adInfoButtonEnabled = enabled;
-            _adInfoButtonEnabledToSet = nil;
+            return _sdk.settings.isVerboseLogging;
         }
-        else
+        else if ( _verboseLoggingToSet )
         {
-            _adInfoButtonEnabledToSet = [NSNumber numberWithBool: enabled];
+            return _verboseLoggingToSet;
         }
+
+        return false;
     }
-    
+
     void _MaxSetTestDeviceAdvertisingIdentifiers(char **advertisingIdentifiers, int size)
     {
         NSMutableArray<NSString *> *advertisingIdentifiersArray = [NSMutableArray arrayWithCapacity: size];
@@ -455,7 +519,38 @@ extern "C"
             _testDeviceIdentifiersToSet = advertisingIdentifiersArray;
         }
     }
+
+    void _MaxSetAdInfoButtonEnabled(bool enabled)
+    {
+        if ( _sdk )
+        {
+            _sdk.settings.adInfoButtonEnabled = enabled;
+            _adInfoButtonEnabledToSet = nil;
+        }
+        else
+        {
+            _adInfoButtonEnabledToSet = [NSNumber numberWithBool: enabled];
+        }
+    }
     
+    void _MaxSetExceptionHandlerEnabled(bool enabled)
+    {
+        if ( _sdk )
+        {
+            _sdk.settings.exceptionHandlerEnabled = enabled;
+            _exceptionHandlerEnabledToSet = nil;
+        }
+        else
+        {
+            _exceptionHandlerEnabledToSet = [NSNumber numberWithBool: enabled];
+        }
+    }
+
+    float _MaxGetAdaptiveBannerHeight(const float width)
+    {
+        return [MAUnityAdManager adaptiveBannerHeightForWidth: width];
+    }
+
     [[deprecated("This API has been deprecated. Please use our SDK's initialization callback to retrieve variables instead.")]]
     void _MaxLoadVariables()
     {

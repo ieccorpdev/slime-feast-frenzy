@@ -29,6 +29,33 @@ public class MaxSdkUtils
     private static readonly AndroidJavaClass MaxUnityPluginClass = new AndroidJavaClass("com.applovin.mediation.unity.MaxUnityPlugin");
 #endif
 
+#if UNITY_IOS
+    [DllImport("__Internal")]
+    private static extern float _MaxGetAdaptiveBannerHeight(float width);
+#endif
+
+    /// <summary>
+    /// Get the adaptive banner size for the provided width.
+    /// If the width is not provided, will assume full screen width for the current orientation.
+    ///
+    /// NOTE: Only AdMob / Google Ad Manager currently has support for adaptive banners and the maximum height is 15% the height of the screen.
+    /// </summary>
+    ///
+    /// <param name="width">The width to retrieve the adaptive banner height for.</param>
+    /// <returns>The adaptive banner height for the current orientation and width.</returns>
+    public static float GetAdaptiveBannerHeight(float width = -1.0f)
+    {
+#if UNITY_EDITOR
+        return 50.0f;
+#elif UNITY_IOS
+        return _MaxGetAdaptiveBannerHeight(width);
+#elif UNITY_ANDROID
+        return MaxUnityPluginClass.CallStatic<float>("getAdaptiveBannerHeight", width);
+#else
+        return -1.0f;
+#endif
+    }
+
     /// <summary>
     /// The native iOS and Android plugins forward dictionaries as a string such as:
     ///
@@ -117,9 +144,11 @@ public class MaxSdkUtils
     /// </summary>
     public static bool IsTablet()
     {
-#if UNITY_IOS
+#if UNITY_EDITOR
+        return false;
+#elif UNITY_IOS
         return _MaxIsTablet();
-#elif UNITY_ANDROID && !UNITY_EDITOR
+#elif UNITY_ANDROID
         return MaxUnityPluginClass.CallStatic<bool>("isTablet");
 #else
         return false;

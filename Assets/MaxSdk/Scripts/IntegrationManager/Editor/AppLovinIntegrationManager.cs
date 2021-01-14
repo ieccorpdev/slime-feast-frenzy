@@ -186,7 +186,7 @@ public class AppLovinIntegrationManager
         {
             if (!IsImportingNetwork(packageName)) return;
 
-            Debug.Log("Package import cancelled.");
+            MaxSdkLogger.UserDebug("Package import cancelled.");
             importingNetwork = null;
         };
 
@@ -194,7 +194,7 @@ public class AppLovinIntegrationManager
         {
             if (!IsImportingNetwork(packageName)) return;
 
-            Debug.LogError(errorMessage);
+            MaxSdkLogger.UserError(errorMessage);
             importingNetwork = null;
         };
     }
@@ -358,7 +358,7 @@ public class AppLovinIntegrationManager
         if (webRequest.isError)
 #endif
         {
-            Debug.LogError(webRequest.error);
+            MaxSdkLogger.UserError(webRequest.error);
         }
         else
         {
@@ -391,7 +391,7 @@ public class AppLovinIntegrationManager
             AppLovinIntegrationManagerWindow.ShowManager();
         }
 
-        Debug.LogError("[AppLovin MAX] " + message);
+        MaxSdkLogger.UserError(message);
     }
 
     #region Utility Methods

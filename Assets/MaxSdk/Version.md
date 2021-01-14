@@ -1,5 +1,30 @@
 ## Versions
 
+## 3.1.18
+    * Add `GetBannerLayout` and `GetMRecLayout` APIs to get the ad view absolute position on screen.
+## 3.1.17
+    * Fix crash when setting the banner width.
+## 3.1.16
+    * Remove unused import `UnityEditor` from MaxSdkLogger.cs.
+    * Update `MaxPostProcessEmbedDynamicLibraries` to set runpathSearchPaths with `GetBuildPropertyForAnyConfig` on UNITY_2018_2_OR_NEWER, else use `$(inherited)`.
+## 3.1.15
+    * Add support for adaptive banner ad size.
+    * Add support for setting banner width.
+    * Add support for setting custom banner position as (x,y) coordinates.
+    * Add support for linking dynamic libraries (like HyprMX SDK).
+    * Add support for logging `MaxSdkCallbacks` subscriptions and removals.
+    * Fix `KeyNotFoundException` in `MaxPostProcessBuildiOS` when looking up property list elements.
+    * Video player optimizations.
+## 3.1.14
+    * Add support for `MaxUserService` and the SDK consent dialog.
+    * Update to make the plugin compilable when platforms other than Android or iOS are selected.
+    * Remove Mintegral from obsolete networks.
+## 3.1.13
+    * Add dedicated logger class, `MaxSdkLogger`, may be controlled via SDK's verbose logging setting.
+    * Add support for disabling attachment of an exception handler in the SDK.
+    * Fix banner ad format not being respected in some cases.
+    * Fix vertical smart banners spanning too tall in landscape mode.
+    * Fix banner safe area background shown on iOS before `MaxSdk.ShowBanner` is called. 
 ## 3.1.12
     * Add support for user segments.
     * Add minimum compatible adapter versions to the alert when incompatible adapter versions are detected.

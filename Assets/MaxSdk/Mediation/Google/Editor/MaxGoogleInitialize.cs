@@ -22,7 +22,7 @@ namespace AppLovinMax.Google
             // Check if the MaxMediationGoogle directory exists and append .androidlib to it.
             if (Directory.Exists(LegacyMaxMediationGoogleDir))
             {
-                Debug.Log("Updating Google Android library directory name to make it compatible with Unity 2020+ versions.");
+                Debug.Log("[AppLovin MAX] Updating Google Android library directory name to make it compatible with Unity 2020+ versions.");
 
                 FileUtil.MoveFileOrDirectory(LegacyMaxMediationGoogleDir, LegacyMaxMediationGoogleDir + ".androidlib");
                 FileUtil.MoveFileOrDirectory(LegacyMaxMediationGoogleDir + ".meta", LegacyMaxMediationGoogleDir + ".androidlib" + ".meta");
