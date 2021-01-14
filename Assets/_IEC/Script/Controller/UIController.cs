@@ -103,7 +103,6 @@ namespace IEC
 
         private void InitButtonEvent()
         {
-
             UI.mainUIGroup.btnRestart.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
                 Game.SetGameState(GameState.Init);

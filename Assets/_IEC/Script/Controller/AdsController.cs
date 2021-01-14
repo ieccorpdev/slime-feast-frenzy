@@ -75,6 +75,8 @@ namespace IEC
             sizeDelta.y = bannerHeight;
             sizeDelta.y = Mathf.Clamp(sizeDelta.y, 100, 200);
             UI.bottomAds.sizeDelta = sizeDelta;
+
+            UI.popupShop.SetupPositionBtnBuy(bannerHeight);
         }
     }
 }
