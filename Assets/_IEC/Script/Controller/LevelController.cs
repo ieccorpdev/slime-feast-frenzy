@@ -213,7 +213,7 @@ namespace IEC
             if (Game.isBossLevel)
             {
                 UI.mainUIGroup.UpdateMove();
-                Game.timeMaxBossLevel = Game.isHaveBossTimerLevelsV2 ? Game.GetTimerLevel(size - 2) : 90;
+                Game.timeMaxBossLevel = Game.GetTimerLevel(size - 2);
                 Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }

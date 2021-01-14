@@ -48,6 +48,7 @@ namespace IEC
         {
             btnSetting.gameObject.SetActive(Game.isHaveSetting);
             btnSkip.gameObject.SetActive(!Game.isHaveHint);
+            btnShop.gameObject.SetActive(Game.isHaveShop);
         }
 
         public void SetupBossLevel(bool isBossLevel)

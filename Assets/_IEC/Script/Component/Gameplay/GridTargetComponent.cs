@@ -185,7 +185,14 @@ namespace IEC
                 m_ListTransTrees.Add(itemTree);
             }
 
-            m_RootTreeMesh.material = mat;
+            if (Game.isRootTreeOnlyGreenColor)
+            {
+                m_RootTreeMesh.material = Config.targetDefaultMat;
+            }
+            else
+            {
+                m_RootTreeMesh.material = mat;
+            }
         }
 
 
