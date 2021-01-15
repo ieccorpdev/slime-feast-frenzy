@@ -64,6 +64,11 @@ namespace IEC
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig.itemShopConfig);
                 m_ListItemTheme.Add(item);
+                
+                if(i == m_ThemeCount - 1)
+                {
+                    item.GetComponent<RectTransform>().SetAsFirstSibling();
+                }
             }
 
             var listBGConfig = ShopConfig.listBGConfig;
@@ -157,11 +162,11 @@ namespace IEC
 
         public void SetupPositionBtnBuy(float bannerHeight)
         {
-            var scale = Screen.height / 1920f;
-            var sizeY = (1282f * scale) + 295f;
-            
-            var totalLengthPopup = Screen.height - sizeY;
-            var posY = (totalLengthPopup + bannerHeight) / 2f;
+            var ratio = Screen.height / (float)Screen.width;
+            var scale = (1920f / 1080) / ratio;
+            var sizeY = (1282f * scale) + 315f;
+            var minPosY = 1920 - sizeY;
+            var posY = (minPosY + bannerHeight) / 2f;
             m_BtnBuyItemWatchAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
         }
 
