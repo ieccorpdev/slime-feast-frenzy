@@ -22,17 +22,14 @@ allprojects {
 }
 
 // Android Resolver Repos Start
-([rootProject] + (rootProject.subprojects as List)).each {
-    ext {
-        it.setProperty("android.useAndroidX", true)
-        it.setProperty("android.enableJetifier", true)
-    }
-}
 ([rootProject] + (rootProject.subprojects as List)).each { project ->
     project.repositories {
         def unityProjectPath = $/file:///**DIR_UNITYPROJECT**/$.replace("\\", "/")
         maven {
             url "https://maven.google.com"
+        }
+        maven {
+            url "https://adcolony.bintray.com/AdColony" // Assets/MaxSdk/Mediation/AdColony/Editor/Dependencies.xml:8
         }
         maven {
             url "https://fyber.bintray.com/marketplace" // Assets/MaxSdk/Mediation/Fyber/Editor/Dependencies.xml:8
@@ -48,6 +45,9 @@ allprojects {
         }
         maven {
             url "https://maven.ogury.co" // Assets/MaxSdk/Mediation/OguryPresage/Editor/Dependencies.xml:8
+        }
+        maven {
+            url "https://s3.amazonaws.com/smaato-sdk-releases/" // Assets/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml:8
         }
         maven {
             url (unityProjectPath + "/Assets/GeneratedLocalRepo/Firebase/m2repository") // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:22, Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:18
@@ -72,6 +72,7 @@ dependencies {
     implementation 'com.android.support:customtabs:28.+' // Assets/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml:7
     implementation 'com.android.support:recyclerview-v7:28.+' // Assets/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml:6
     implementation 'com.android.support:support-v4:25.3.1' // Facebook.Unity.Editor.AndroidSupportLibraryResolver.addSupportLibraryDependency
+    implementation 'com.applovin.mediation:adcolony-adapter:4.4.0.0' // Assets/MaxSdk/Mediation/AdColony/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:amazon-adapter:6.0.0.0.0' // Assets/MaxSdk/Mediation/Amazon/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:bytedance-adapter:3.4.1.1.0' // Assets/MaxSdk/Mediation/ByteDance/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:facebook-adapter:[6.2.0.1]' // Assets/MaxSdk/Mediation/Facebook/Editor/Dependencies.xml:8
@@ -82,6 +83,7 @@ dependencies {
     implementation 'com.applovin.mediation:ironsource-adapter:7.0.4.1.0' // Assets/MaxSdk/Mediation/IronSource/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:mintegral-adapter:15.4.21.0' // Assets/MaxSdk/Mediation/Mintegral/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:ogury-presage-adapter:5.0.5.0' // Assets/MaxSdk/Mediation/OguryPresage/Editor/Dependencies.xml:8
+    implementation 'com.applovin.mediation:smaato-adapter:21.5.7.1' // Assets/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml:8
     implementation 'com.applovin.mediation:unityads-adapter:3.5.1.1' // Assets/MaxSdk/Mediation/UnityAds/Editor/Dependencies.xml:4
     implementation 'com.applovin.mediation:vungle-adapter:6.8.1.1' // Assets/MaxSdk/Mediation/Vungle/Editor/Dependencies.xml:4
     implementation 'com.applovin:applovin-sdk:9.14.12' // Assets/MaxSdk/AppLovin/Editor/Dependencies.xml:4
