@@ -6,6 +6,7 @@ using UnityEditor.iOS.Xcode;
 #endif
 using System.IO;
 using System.Collections.Generic;
+using System;
 
 public class PostProcessBuildIOS : MonoBehaviour
 {
@@ -37,6 +38,8 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
+        EditGoogleInfoPlistAddTargetMembership();
+        CopyFastlaneConfig();
         EditPBX();
         // EditCapability();
 
@@ -64,6 +67,49 @@ public class PostProcessBuildIOS : MonoBehaviour
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
             pbxProject.WriteToFile(projectPath);
+        }
+
+        void CopyFastlaneConfig()
+        {
+            var fastlaneFolderPath = (Application.dataPath + "/_IEC/Editor/fastlane");
+            if (Directory.Exists(fastlaneFolderPath))
+            {
+                Debug.Log("Fastlane config folder found");
+                FileUtil.CopyFileOrDirectory(fastlaneFolderPath, Path.Combine(path, "fastlane"));
+            }
+        }
+
+        void EditGoogleInfoPlistAddTargetMembership()
+        {
+            var googleServiceFiles = path + "/GoogleService-Info.plist";
+
+            PBXProject pbxProject = new PBXProject();
+            pbxProject.ReadFromFile(projectPath);
+
+            if (File.Exists(googleServiceFiles))
+            {
+                var pbxProjectStr = File.ReadAllText(projectPath);
+
+                // get first Resources only
+                var stringPBXResourcesBuildPhase = pbxProjectStr.GetBetweenString("/* Begin PBXResourcesBuildPhase section */", "}");
+                if (!stringPBXResourcesBuildPhase.Contains("GoogleService-Info.plist in Resources"))
+                {
+                    var googlePlistFileGuid = pbxProject.FindFileGuidByProjectPath("GoogleService-Info.plist");
+
+                    var randomGenerateGuid = Guid.NewGuid().ToString().Replace("-", "").ToUpper().Substring(0, 24);
+
+                    var newStringPBXResourcesBuildPhase = stringPBXResourcesBuildPhase.Replace("/* Data in Resources */,",
+                        $"/* Data in Resources */,\n\t\t\t\t{randomGenerateGuid} /* GoogleService-Info.plist in Resources */,");
+
+                    pbxProjectStr = pbxProjectStr.Replace(stringPBXResourcesBuildPhase, newStringPBXResourcesBuildPhase);
+                    pbxProjectStr = pbxProjectStr.Replace(" /* Il2CppGenericClassTable.c */; };",
+                        $" /* Il2CppGenericClassTable.c */; }};\n\t\t{randomGenerateGuid} /* GoogleService-Info.plist in Resources */ = {{isa = PBXBuildFile; fileRef = {googlePlistFileGuid} /* GoogleService-Info.plist */; }};");
+                    File.WriteAllText(projectPath, pbxProjectStr);
+
+                    Debug.Log("GoogleService-Info.plist Target Memeber ship enabled");
+                }
+
+            }
         }
     }
 #endif
