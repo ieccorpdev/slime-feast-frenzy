@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -39,6 +41,37 @@ namespace _IECModules
                 LogEditorHelper.AddLogError($"Downloading: {url}");
             }
             return uwr;
+        }
+        public static List<List<string>> DownloadCsvFromAuthUrl(string url)
+        {
+            var jsoner = new IEC.JsonDotNetModule();
+            var hostUrl = "passive.discordbot.game.ieccorp.vn:3002/sheet";
+            var dictContent = new Dictionary<string, string>
+            {
+                ["token"] = "WinterWolf2020",
+                ["sheetUrl"] = url,
+                ["format"] = "jsonarray"
+            };
+
+            var uwr = new UnityWebRequest(hostUrl, "POST");
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsoner.ToJson(dictContent));
+            uwr.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            uwr.downloadHandler = new DownloadHandlerBuffer();
+            uwr.SetRequestHeader("Content-Type", "application/json");
+
+            uwr.SendWebRequest();
+            while (!uwr.isDone)
+            {
+                //Debug.Log(uwr.downloadProgress);
+            }
+
+            if (uwr.isNetworkError)
+            {
+                Debug.LogError("Download Error");
+                LogEditorHelper.AddLogError($"Downloading: {url}");
+            }
+
+            return jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
         }
     }
 }

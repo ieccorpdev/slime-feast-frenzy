@@ -6,53 +6,53 @@
 //  Copyright © 2019 AppLovin. All rights reserved.
 //
 
+using AppLovinMax.Scripts.IntegrationManager.Editor;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
-using UnityEngine;
 
-[InitializeOnLoad]
-public class MaxInitialize
+namespace AppLovinMax.Scripts.Editor
 {
-    private const string MigrationProgressBarTitle = "AppLovin MAX Migration";
-    private const string AndroidChangelog = "ANDROID_CHANGELOG.md";
-    private const string IosChangelog = "IOS_CHANGELOG.md";
-
-    private static readonly List<string> Networks = new List<string>
+    [InitializeOnLoad]
+    public class MaxInitialize
     {
-        "AdColony",
-        "Amazon",
-        "ByteDance",
-        "Chartboost",
-        "Facebook",
-        "Fyber",
-        "Google",
-        "InMobi",
-        "IronSource",
-        "Maio",
-        "Mintegral",
-        "MyTarget",
-        "MoPub",
-        "Nend",
-        "Ogury",
-        "Smaato",
-        "Tapjoy",
-        "TencentGDT",
-        "UnityAds",
-        "VerizonAds",
-        "Vungle",
-        "Yandex"
-    };
+        private const string AndroidChangelog = "ANDROID_CHANGELOG.md";
+        private const string IosChangelog = "IOS_CHANGELOG.md";
 
-    private static readonly List<string> ObsoleteNetworks = new List<string>
-    {
-        "VoodooAds"
-    };
+        private static readonly List<string> Networks = new List<string>
+        {
+            "AdColony",
+            "Amazon",
+            "ByteDance",
+            "Chartboost",
+            "Facebook",
+            "Fyber",
+            "Google",
+            "InMobi",
+            "IronSource",
+            "Maio",
+            "Mintegral",
+            "MyTarget",
+            "MoPub",
+            "Nend",
+            "Ogury",
+            "Smaato",
+            "Tapjoy",
+            "TencentGDT",
+            "UnityAds",
+            "VerizonAds",
+            "Vungle",
+            "Yandex"
+        };
 
-    static MaxInitialize()
-    {
-        AppLovinAutoUpdater.Update();
+        private static readonly List<string> ObsoleteNetworks = new List<string>
+        {
+            "VoodooAds"
+        };
 
+        static MaxInitialize()
+        {
 #if UNITY_IOS
         // Check that the publisher is targeting iOS 9.0+
         if (!PlayerSettings.iOS.targetOSVersionString.StartsWith("9.") && !PlayerSettings.iOS.targetOSVersionString.StartsWith("1"))
@@ -61,140 +61,104 @@ public class MaxInitialize
         }
 #endif
 
-        var legacyDir = Path.Combine("Assets", "MaxSdk/Plugins");
-        var changesMade = false;
+            var changesMade = AppLovinIntegrationManager.MovePluginFilesIfNeeded();
+            var pluginParentDir = AppLovinIntegrationManager.PluginParentDirectory;
 
-        // Check for if directory from older versions of the AppLovin MAX Unity Plugin exists
-        if (CheckExistence(legacyDir))
-        {
-            MaxSdkLogger.UserDebug("Legacy directories from AppLovin MAX Unity Plugin found. Running migration...");
+            var pluginDir = Path.Combine(pluginParentDir, "MaxSdk");
+            AddLabelsToAssets(pluginDir, pluginParentDir);
 
-            var androidDir = Path.Combine("Assets", "MaxSdk/Plugins/Android/AppLovin");
-            if (CheckExistence(androidDir))
+            // Check if we have legacy adapter CHANGELOGs.
+            foreach (var network in Networks)
             {
-                MaxSdkLogger.UserDebug("Deleting " + androidDir + "...");
-                EditorUtility.DisplayProgressBar(MigrationProgressBarTitle, "Deleting " + androidDir + "...", 0.33f);
-                FileUtil.DeleteFileOrDirectory(androidDir);
-                changesMade = true;
+                var mediationAdapterDir = Path.Combine(pluginParentDir, "MaxSdk/Mediation/" + network);
+
+                // If new directory exists
+                if (CheckExistence(mediationAdapterDir))
+                {
+                    var androidChangelogFile = Path.Combine(mediationAdapterDir, AndroidChangelog);
+                    if (CheckExistence(androidChangelogFile))
+                    {
+                        FileUtil.DeleteFileOrDirectory(androidChangelogFile);
+                        changesMade = true;
+                    }
+
+                    var iosChangelogFile = Path.Combine(mediationAdapterDir, IosChangelog);
+                    if (CheckExistence(iosChangelogFile))
+                    {
+                        FileUtil.DeleteFileOrDirectory(iosChangelogFile);
+                        changesMade = true;
+                    }
+                }
             }
 
-            var iOSDir = Path.Combine("Assets", "MaxSdk/Plugins/iOS/AppLovin");
-            if (CheckExistence(iOSDir))
+            // Check if any obsolete networks are installed
+            foreach (var obsoleteNetwork in ObsoleteNetworks)
             {
-                MaxSdkLogger.UserDebug("Deleting " + iOSDir + "...");
-                EditorUtility.DisplayProgressBar(MigrationProgressBarTitle, "Deleting " + iOSDir + "...", 0.66f);
-                FileUtil.DeleteFileOrDirectory(iOSDir);
-                changesMade = true;
-            }
-        }
-
-        // Check if we have legacy adapter directories
-        foreach (var network in Networks)
-        {
-            var newDir = Path.Combine("Assets", "MaxSdk/Mediation/" + network);
-
-            // If new directory exists
-            if (CheckExistence(newDir))
-            {
-                var legacyAndroidDir = Path.Combine("Assets", "MaxSdk/Plugins/Android/" + network);
-                var legacyIOSDir = Path.Combine("Assets", "MaxSdk/Plugins/iOS/" + network);
-
-                // Delete legacy iOS directory if exists
-                if (CheckExistence(legacyIOSDir))
+                var networkDir = Path.Combine(pluginParentDir, "MaxSdk/Mediation/" + obsoleteNetwork);
+                if (CheckExistence(networkDir))
                 {
-                    MaxSdkLogger.UserDebug("Deleting " + legacyIOSDir + "...");
-                    FileUtil.DeleteFileOrDirectory(legacyIOSDir);
-                    changesMade = true;
-                }
-
-                // Delete legacy Android director(ies) if exists
-                if (CheckExistence(legacyAndroidDir))
-                {
-                    MaxSdkLogger.UserDebug("Deleting " + legacyAndroidDir + "...");
-                    FileUtil.DeleteFileOrDirectory(legacyAndroidDir);
-
-                    // Check if it contains shared dependencies
-                    var deletedSharedDependencies = false;
-                    if (network.Equals("Facebook"))
-                    {
-                        deletedSharedDependencies = true;
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/exoplayer-core.aar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/exoplayer-dash.aar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/recyclerview-v7.aar"));
-                    }
-                    else if (network.Equals("Fyber"))
-                    {
-                        deletedSharedDependencies = true;
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/gson.jar"));
-                    }
-                    else if (network.Equals("InMobi"))
-                    {
-                        deletedSharedDependencies = true;
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/picasso.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/recyclerview-v7.aar"));
-                    }
-                    else if (network.Equals("Vungle"))
-                    {
-                        deletedSharedDependencies = true;
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/common.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/converter-gson.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/fetch.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/gson.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/okhttp.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/okio.jar"));
-                        FileUtil.DeleteFileOrDirectory(Path.Combine("Assets", "MaxSdk/Plugins/Android/Shared Dependencies/retrofit.jar"));
-                    }
-
-                    if (deletedSharedDependencies)
-                    {
-                        MaxSdkLogger.UserDebug("Deleting " + network + " shared dependencies...");
-                    }
-
-                    changesMade = true;
-                }
-
-                var androidChangelogFile = Path.Combine(newDir, AndroidChangelog);
-                if (CheckExistence(androidChangelogFile))
-                {
-                    FileUtil.DeleteFileOrDirectory(androidChangelogFile);
-                    changesMade = true;
-                }
-
-                var iosChangelogFile = Path.Combine(newDir, IosChangelog);
-                if (CheckExistence(iosChangelogFile))
-                {
-                    FileUtil.DeleteFileOrDirectory(iosChangelogFile);
+                    MaxSdkLogger.UserDebug("Deleting obsolete network " + obsoleteNetwork + " from path " + networkDir + "...");
+                    FileUtil.DeleteFileOrDirectory(networkDir);
                     changesMade = true;
                 }
             }
+
+            // Refresh UI
+            if (changesMade)
+            {
+                AssetDatabase.Refresh();
+                MaxSdkLogger.UserDebug("AppLovin MAX Migration completed");
+            }
+
+            AppLovinAutoUpdater.Update();
         }
 
-        // Check if any obsolete networks are installed
-        foreach (var obsoleteNetwork in ObsoleteNetworks)
+        /// <summary>
+        /// Adds labels to assets so that they can be easily found.
+        /// </summary>
+        /// <param name="directoryPath">The directory containing the assets for which to add labels. Recursively adds labels to all files and folders under this directory.</param>
+        /// <param name="pluginParentDir">The MAX Unity plugin's parent directory.</param>
+        private static void AddLabelsToAssets(string directoryPath, string pluginParentDir)
         {
-            var networkDir = Path.Combine("Assets", "MaxSdk/Mediation/" + obsoleteNetwork);
-            if (CheckExistence(networkDir))
+            var files = Directory.GetFiles(directoryPath);
+            foreach (var file in files)
             {
-                MaxSdkLogger.UserDebug("Deleting obsolete network " + obsoleteNetwork + " from path " + networkDir + "...");
-                FileUtil.DeleteFileOrDirectory(networkDir);
-                changesMade = true;
+                if (!file.EndsWith(".meta")) continue;
+
+                var lines = File.ReadAllLines(file);
+                var hasLabels = lines.Any(line => line.Contains("labels:"));
+                if (hasLabels) continue;
+
+                var output = new List<string>();
+
+                foreach (var line in lines)
+                {
+                    output.Add(line);
+                    if (line.Contains("guid"))
+                    {
+                        output.Add("labels:");
+                        output.Add("- al_max");
+
+                        var exportPath = file.Replace(pluginParentDir, "").Replace(".meta", "");
+                        output.Add("- al_max_export_path-" + exportPath);
+                    }
+                }
+
+                File.WriteAllLines(file, output);
+            }
+
+            var directories = Directory.GetDirectories(directoryPath);
+            foreach (var directory in directories)
+            {
+                AddLabelsToAssets(directory, pluginParentDir);
             }
         }
 
-        // Refresh UI
-        if (changesMade)
+        private static bool CheckExistence(string location)
         {
-            AssetDatabase.Refresh();
-            MaxSdkLogger.UserDebug("AppLovin MAX Migration completed");
+            return File.Exists(location) ||
+                   Directory.Exists(location) ||
+                   (location.EndsWith("/*") && Directory.Exists(Path.GetDirectoryName(location)));
         }
-
-        EditorUtility.ClearProgressBar();
-    }
-
-    private static bool CheckExistence(string location)
-    {
-        return File.Exists(location) ||
-               Directory.Exists(location) ||
-               (location.EndsWith("/*") && Directory.Exists(Path.GetDirectoryName(location)));
     }
 }

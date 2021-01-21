@@ -44,6 +44,7 @@ namespace IEC
             Result20201222();
             Result20201230();
             Result20210108();
+            Result20210114();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAb20210114(abValue);
@@ -63,6 +64,13 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void Result20210114()
+        {
+            Game.isRootTreeOnlyGreenColor = true;
+            Game.isHaveShop = false;
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210114(int abValue)

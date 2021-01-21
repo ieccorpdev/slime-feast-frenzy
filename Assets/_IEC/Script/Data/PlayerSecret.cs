@@ -28,7 +28,6 @@ namespace IEC
         public List<int> listThemeUnlocked;
 
         public int backgroundSelected;
-        public List<int> listBbackgroundUnlocked;
         public List<int> listBackgroundUnlocked;
 
         public void AfterInit()
@@ -54,14 +53,7 @@ namespace IEC
 
             if (listBackgroundUnlocked.Count == 0)
             {
-                if(listBbackgroundUnlocked == null)
-                {
-                    UnlockBackground(bgDefault);
-                }
-                else
-                {
-                    UnlockBackground(listBbackgroundUnlocked[0]);
-                }
+                UnlockBackground(bgDefault);
             }
         }
 

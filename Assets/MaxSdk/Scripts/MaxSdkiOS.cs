@@ -250,6 +250,9 @@ public class MaxSdkiOS : MaxSdkBase
     /// <param name="adUnitIdentifier">Ad unit identifier of the banner to create</param>
     /// <param name="x">The X coordinate (horizontal position) of the banner relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the banner relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetBannerLayout">
+    /// The banner is placed within the safe area of the screen. You can use this to get the absolute position of the banner on screen.
+    /// </seealso>
     public static void CreateBanner(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "create banner");
@@ -293,6 +296,9 @@ public class MaxSdkiOS : MaxSdkBase
     /// <param name="adUnitIdentifier">The ad unit identifier of the banner for which to update the position</param>
     /// <param name="x">The X coordinate (horizontal position) of the banner relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the banner relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetBannerLayout">
+    /// The banner is placed within the safe area of the screen. You can use this to get the absolute position of the banner on screen.
+    /// </seealso>
     public static void UpdateBannerPosition(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "update banner position");
@@ -381,6 +387,22 @@ public class MaxSdkiOS : MaxSdkBase
         _MaxSetBannerExtraParameter(adUnitIdentifier, key, value);
     }
 
+    [DllImport("__Internal")]
+    private static extern string _MaxGetBannerLayout(string adUnitIdentifier);
+
+    /// <summary>
+    /// The banner position on the screen. When setting the banner position via <see cref="CreateBanner(string, float, float)"/> or <see cref="UpdateBannerPosition(string, float, float)"/>,
+    /// the banner is placed within the safe area of the screen. This returns the absolute position of the banner on screen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the banner for which to get the position on screen.</param>
+    /// <returns>A <see cref="Rect"/> representing the banner position on screen.</returns>
+    public static Rect GetBannerLayout(string adUnitIdentifier)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "get banner layout");
+        var positionRect = _MaxGetBannerLayout(adUnitIdentifier);
+        return GetRectFromString(positionRect);
+    }
+
     #endregion
 
     #region MRECs
@@ -408,6 +430,9 @@ public class MaxSdkiOS : MaxSdkBase
     /// <param name="adUnitIdentifier">Ad unit identifier of the MREC to create</param>
     /// <param name="x">The X coordinate (horizontal position) of the MREC relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the MREC relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetMRecLayout">
+    /// The MREC is placed within the safe area of the screen. You can use this to get the absolute position Rect of the MREC on screen.
+    /// </seealso>
     public static void CreateMRec(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "create MREC");
@@ -451,6 +476,9 @@ public class MaxSdkiOS : MaxSdkBase
     /// <param name="adUnitIdentifier">The ad unit identifier of the MREC for which to update the position</param>
     /// <param name="x">The X coordinate (horizontal position) of the MREC relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the MREC relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetMRecLayout">
+    /// The MREC is placed within the safe area of the screen. You can use this to get the absolute position Rect of the MREC on screen.
+    /// </seealso>
     public static void UpdateMRecPosition(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "update MREC position");
@@ -494,6 +522,22 @@ public class MaxSdkiOS : MaxSdkBase
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "hide MREC");
         _MaxHideMRec(adUnitIdentifier);
+    }
+
+    [DllImport("__Internal")]
+    private static extern string _MaxGetMRecLayout(string adUnitIdentifier);
+
+    /// <summary>
+    /// The MREC position on the screen. When setting the banner position via <see cref="CreateMRec(string, float, float)"/> or <see cref="UpdateMRecPosition(string, float, float)"/>,
+    /// the banner is placed within the safe area of the screen. This returns the absolute position of the MREC on screen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the MREC for which to get the position on screen.</param>
+    /// <returns>A <see cref="Rect"/> representing the banner position on screen.</returns>
+    public static Rect GetMRecLayout(string adUnitIdentifier)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "get MREC layout");
+        var positionRect = _MaxGetMRecLayout(adUnitIdentifier);
+        return GetRectFromString(positionRect);
     }
 
     #endregion

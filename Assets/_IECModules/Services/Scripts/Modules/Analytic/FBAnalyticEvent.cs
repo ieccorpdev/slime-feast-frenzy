@@ -10,6 +10,8 @@ namespace IEC
     {
         List<AnalyticEventData> m_ListCachedEvents = new List<AnalyticEventData>();
 
+        public bool IsDisable { get ; set ; }
+
         public void Init()
         {
 
@@ -17,6 +19,11 @@ namespace IEC
 
         public void PushCachedEvents()
         {
+            if(IsDisable)
+            {
+                return;
+            }
+
             if (FB.IsInitialized)
             {
                 if (m_ListCachedEvents.Count == 0) return;
@@ -28,6 +35,11 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            if(IsDisable)
+            {
+                return;
+            }
+
             if (FB.IsInitialized)
             {
                 Debug.Log("Push Facebook Event: " + eventName + ", " + value);
@@ -42,6 +54,10 @@ namespace IEC
 
         public void SetUserProperty(string name, string property)
         {
+            if(IsDisable)
+            {
+                return;
+            }
         }
     }
 }

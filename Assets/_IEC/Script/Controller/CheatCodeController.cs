@@ -72,7 +72,7 @@ namespace IEC
                 int valueInput = int.Parse(param.inputParams[0].value.ToString());
                 var bgIndex = valueInput % ShopConfig.listBGConfig.Count;
                 PlayerData.UnlockBackground(bgIndex);
-                OnRestartLevel();
+                GamePlay.SetBackground();
             }, new CheatCode.InputParam
             {
                 value = PlayerData.backgroundSelected
@@ -83,7 +83,7 @@ namespace IEC
                 int valueInput = int.Parse(param.inputParams[0].value.ToString());
                 var themeIndex = valueInput % ShopConfig.listThemeConfigs.Count;
                 PlayerData.UnlockTheme(themeIndex);
-                OnRestartLevel();
+                LevelController.SetupTheme(true);
             }, new CheatCode.InputParam
             {
                 value = PlayerData.themeSelected

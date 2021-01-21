@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +33,7 @@ namespace IEC
         EventCountModule m_EventCount;
         RetentionModule m_Retention;
 
+        IAnalyticEvent m_FirebaseAnalytic;
         #endregion
 
         public void LocateController()
@@ -59,6 +60,8 @@ namespace IEC
                     m_DataRemote.Load(() =>
                     {
                         RaiseInitEvent(EventList.Service.REMOTE_CONFIG_LOADED);
+                        SetPushCustomEventFirebase();
+
                     });
                     break;
             }
@@ -189,6 +192,14 @@ namespace IEC
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal());
 
+#if (PluginKochava)
+            if (Application.isEditor)
+            {
+                Debug.LogError("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogError("Kochava iOS ID: " + config.kochavaConfig.iosID);
+            }
+#endif
+
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
                 m_ListAnalytics.Add(new AnalyticEventMock());
@@ -200,7 +211,8 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                m_ListAnalytics.Add(new FirebaseAnalyticModule(m_SetUpFirebase));
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
+                m_ListAnalytics.Add(m_FirebaseAnalytic);
 #endif
 
 #if (PluginKochava)
@@ -211,9 +223,9 @@ namespace IEC
 
             m_DataRemote = m_DataNormal;
 #if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.remoteConfigs);
+            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+            SetPushCustomEventFirebase();
 #endif
-
             InitAdsAfterGDPR(true);
 
             foreach (var analytic in m_ListAnalytics)
@@ -380,6 +392,7 @@ namespace IEC
 
         public void PushEventIapKochava(string packName, float price)
         {
+            return;
 #if (PluginKochava)
             Kochava.Event myEvent = new Kochava.Event(Kochava.EventType.Purchase);
             myEvent.name = packName;
@@ -395,6 +408,7 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
@@ -600,6 +614,14 @@ namespace IEC
             });
         }
 
+        void SetPushCustomEventFirebase()
+        {
+            if (config.remoteCustomEventFirebase != null && m_FirebaseAnalytic != null)
+            {
+                m_FirebaseAnalytic.IsDisable = !m_DataRemote.GetBool(config.remoteCustomEventFirebase.keyName, true);
+            }
+        }
+
         IEnumerator IE_CountOneSec()
         {
             while (true)
@@ -609,7 +631,7 @@ namespace IEC
             }
         }
 
-        #region services
+#region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
@@ -729,6 +751,6 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-        #endregion
+#endregion
     }
 }

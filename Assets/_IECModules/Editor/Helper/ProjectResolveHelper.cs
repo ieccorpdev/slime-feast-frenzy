@@ -16,36 +16,38 @@ namespace _IECModules
         };
         private static GUIStyle m_WarningTextStyle;
         private static string m_WarningString;
-        
+        private static DirectoryInfo m_DirectoryInfo = new FileInfo(EditorApplication.applicationPath).Directory;
         public static List<string> listTemplatePathCheck = new List<string>
         {
             $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates",
-            $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/GradleTemplates"
+            $"{EditorApplication.applicationContentsPath}/PlaybackEngines/AndroidPlayer/GradleTemplates",
+            $"{m_DirectoryInfo}/PlaybackEngines/AndroidPlayer/Tools/GradleTemplates",
+            $"{m_DirectoryInfo}/PlaybackEngines/AndroidPlayer/GradleTemplates",
+
         };
 
-        private static string m_TemplateFolderPath; 
-        public static string TemplateFolderPath => m_TemplateFolderPath ?? (m_TemplateFolderPath 
-                                                       = listTemplatePathCheck.FirstOrDefault(Directory.Exists)); 
-
+        private static string m_TemplateFolderPath;
+        public static string TemplateFolderPath => m_TemplateFolderPath ?? (m_TemplateFolderPath
+                                                       = listTemplatePathCheck.FirstOrDefault(Directory.Exists));
 
         public static void EditorOnGUI()
         {
             if (m_WarningTextStyle == null)
             {
                 m_WarningTextStyle = new GUIStyle(GUI.skin.textArea);
-                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0.5f, 0f);   
+                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0.5f, 0f);
             }
-            
+
             m_WarningString = "";
             listObsoleteResolver.ForEach(path =>
             {
                 if (Directory.Exists(path)) m_WarningString += $"\n{path} Exist! Please Install External Dependency Manager Above!";
 
             });
-            if(!string.IsNullOrEmpty(m_WarningString)) EditorGUILayout.TextArea($"WARNING:{m_WarningString}", m_WarningTextStyle);
+            if (!string.IsNullOrEmpty(m_WarningString)) EditorGUILayout.TextArea($"WARNING:{m_WarningString}", m_WarningTextStyle);
         }
-        
-        public static void ResolveProject() 
+
+        public static void ResolveProject()
         {
             //EnableJetifier();
             RemoveUnityAdsPackage();
@@ -53,7 +55,7 @@ namespace _IECModules
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
-            UpdateApplovinQualityService();
+            //UpdateApplovinQualityService();
         }
 
         public static void DeleteObsoleteResolver()
@@ -73,12 +75,12 @@ namespace _IECModules
             LogEditorHelper.AddLog($"Remove Package: com.unity.ads");
             PackageManagerHelper.Remove("com.unity.ads", null, true);
         }
-        
+
         private static void UpdateApplovinQualityService()
         {
 #if PluginApplovin
             LogEditorHelper.AddLog("AppLovin Disable Quality Service");
-            AppLovinSettings.Instance.QualityServiceEnabled = false;
+            AppLovinSettings.Instance.QualityServiceEnabled = true;
             EditorUtility.SetDirty(AppLovinSettings.Instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -112,7 +114,7 @@ namespace _IECModules
                     FileUtil.CopyFileOrDirectory($"{TemplateFolderPath}/mainTemplate.gradle", mainTemplateFileName);
                     LogEditorHelper.AddLog("mainTemplate.gradle created");
                 }
-                
+
                 if (File.Exists(launcherTemplateFileName))
                 {
                     LogEditorHelper.AddLogWarning("launcherTemplate.gradle already exists");
@@ -161,7 +163,7 @@ namespace _IECModules
                 var launcherTemplateFileContent = File.ReadAllText(launcherTemplateFileName);
                 var baseTemplateFileContent = File.ReadAllText(baseTemplateFileName);
                 var androidManifestFileContent = File.ReadAllText(androidManifestFileName);
-                
+
                 if (baseTemplateFileContent.Contains("com.android.tools.build:gradle:3.4.0"))
                 {
                     baseTemplateFileContent = baseTemplateFileContent.Replace("com.android.tools.build:gradle:3.4.0",
@@ -169,7 +171,7 @@ namespace _IECModules
                     File.WriteAllText(baseTemplateFileName, baseTemplateFileContent);
                     LogEditorHelper.AddLog("baseProjectTemplate.gradle Updated: com.android.tools.build:gradle:3.4.3");
                 }
-                
+
                 var multiDexAlreadyEnabled = true;
 
                 if (!mainTemplateFileContent.Contains("multiDexEnabled true"))
@@ -191,7 +193,7 @@ namespace _IECModules
                     File.WriteAllText(mainTemplateFileName, mainTemplateFileContent);
                     LogEditorHelper.AddLog("mainTemplate.gradle Updated: implementation 'androidx.multidex:multidex:2.0.1'");
                 }
-                
+
                 if (!launcherTemplateFileContent.Contains("multiDexEnabled true"))
                 {
                     multiDexAlreadyEnabled = false;
@@ -229,7 +231,7 @@ namespace _IECModules
                 {
                     LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
                 }
-                
+
                 var androidDebuggableStr = "android:debuggable=\"true\"";
                 if (androidManifestFileContent.Contains(androidDebuggableStr))
                 {
@@ -335,6 +337,12 @@ namespace _IECModules
 
         private static void EnableJetifierNew()
         {
+            //Debug.LogError("TemplateFolderPath:" + TemplateFolderPath);
+            //foreach (var path in listTemplatePathCheck)
+            //{
+            //    Debug.LogError("link " + path + " exist:" + Directory.Exists(path));
+            //}
+
             var gradleDirectory = "Assets/Plugins/Android";
             var gradlePropertiesFile = $"{gradleDirectory}/gradleTemplate.properties";
             if (!File.Exists(gradlePropertiesFile))
