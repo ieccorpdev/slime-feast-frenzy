@@ -20,10 +20,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setBannerWidth:(CGFloat)width forAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)updateBannerPosition:(NSString *)bannerPosition forAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)updateBannerPosition:(CGFloat)xOffset y:(CGFloat)yOffset forAdUnitIdentifier:(NSString *)adUnitIdentifier;
-
 - (void)showBannerWithAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)destroyBannerWithAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)hideBannerWithAdUnitIdentifier:(NSString *)adUnitIdentifier;
+- (NSString *)bannerLayoutForAdUnitIdentifier:(NSString *)adUnitIdentifier;
 + (CGFloat)adaptiveBannerHeightForWidth:(CGFloat)width;
 
 - (void)createMRecWithAdUnitIdentifier:(NSString *)adUnitIdentifier atPosition:(NSString *)mrecPosition;
@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)hideMRecWithAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)updateMRecPosition:(NSString *)mrecPosition forAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (void)updateMRecPosition:(CGFloat)xOffset y:(CGFloat)yOffset forAdUnitIdentifier:(NSString *)adUnitIdentifier;
+- (NSString *)mrecLayoutForAdUnitIdentifier:(NSString *)adUnitIdentifier;
 
 - (void)loadInterstitialWithAdUnitIdentifier:(NSString *)adUnitIdentifier;
 - (BOOL)isInterstitialReadyWithAdUnitIdentifier:(NSString *)adUnitIdentifier;

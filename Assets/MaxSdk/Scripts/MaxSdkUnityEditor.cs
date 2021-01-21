@@ -247,6 +247,9 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="adUnitIdentifier">Ad unit identifier of the banner to create</param>
     /// <param name="x">The X coordinate (horizontal position) of the banner relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the banner relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetBannerLayout">
+    /// The banner is placed within the safe area of the screen. You can use this to get the absolute position of the banner on screen.
+    /// </seealso>
     public static void CreateBanner(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "create banner");
@@ -259,13 +262,14 @@ public class MaxSdkUnityEditor : MaxSdkBase
     {
 #if UNITY_EDITOR
         // Only support BottomCenter and TopCenter for now
-        string bannerPrefabName = bannerPosition == BannerPosition.BottomCenter ? "BannerBottom" : "BannerTop";
-        GameObject bannerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/MaxSdk/Prefabs/" + bannerPrefabName + ".prefab");
-        GameObject stubBanner = Object.Instantiate(bannerPrefab, Vector3.zero, Quaternion.identity);
+        var bannerPrefabName = bannerPosition == BannerPosition.BottomCenter ? "BannerBottom" : "BannerTop";
+        var prefabPath = MaxSdkUtils.GetAssetPathForExportPath("MaxSdk/Prefabs/" + bannerPrefabName + ".prefab");
+        var bannerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        var stubBanner = Object.Instantiate(bannerPrefab, Vector3.zero, Quaternion.identity);
         stubBanner.SetActive(false); // Hidden by default
         Object.DontDestroyOnLoad(stubBanner);
 
-        Text bannerText = stubBanner.GetComponentInChildren<Text>();
+        var bannerText = stubBanner.GetComponentInChildren<Text>();
         bannerText.text += ":\n" + adUnitIdentifier;
 
         StubBanners.Add(adUnitIdentifier, stubBanner);
@@ -279,8 +283,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="placement">Placement to set</param>
     public static void SetBannerPlacement(string adUnitIdentifier, string placement)
     {
-        MaxSdkLogger.UserDebug("Setting banner placement to '" + placement + "' for ad unit id '" + adUnitIdentifier +
-                               "'");
+        MaxSdkLogger.UserDebug("Setting banner placement to '" + placement + "' for ad unit id '" + adUnitIdentifier + "'");
     }
 
     /// <summary>
@@ -299,6 +302,9 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="adUnitIdentifier">The ad unit identifier of the banner for which to update the position</param>
     /// <param name="x">The X coordinate (horizontal position) of the banner relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the banner relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetBannerLayout">
+    /// The banner is placed within the safe area of the screen. You can use this to get the absolute position of the banner on screen.
+    /// </seealso>
     public static void UpdateBannerPosition(string adUnitIdentifier, float x, float y)
     {
         MaxSdkLogger.UserDebug("Updating banner position to '(" + x + "," + y + ")");
@@ -397,6 +403,18 @@ public class MaxSdkUnityEditor : MaxSdkBase
         ValidateAdUnitIdentifier(adUnitIdentifier, "set banner extra parameter");
     }
 
+    /// <summary>
+    /// The banner position on the screen. When setting the banner position via <see cref="CreateBanner(string, float, float)"/> or <see cref="UpdateBannerPosition(string, float, float)"/>,
+    /// the banner is placed within the safe area of the screen. This returns the absolute position of the banner on screen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the banner for which to get the position on screen.</param>
+    /// <returns>A <see cref="Rect"/> representing the banner position on screen.</returns>
+    public static Rect GetBannerLayout(string adUnitIdentifier)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "get banner layout");
+        return Rect.zero;
+    }
+
     #endregion
 
     #region MRECs
@@ -418,6 +436,9 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="adUnitIdentifier">Ad unit identifier of the MREC to create</param>
     /// <param name="x">The X coordinate (horizontal position) of the MREC relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the MREC relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetMRecLayout">
+    /// The MREC is placed within the safe area of the screen. You can use this to get the absolute position Rect of the MREC on screen.
+    /// </seealso>
     public static void CreateMRec(string adUnitIdentifier, float x, float y)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "create MREC");
@@ -431,8 +452,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="placement">Placement to set</param>
     public static void SetMRecPlacement(string adUnitIdentifier, string placement)
     {
-        MaxSdkLogger.UserDebug("Setting MREC placement to '" + placement + "' for ad unit id '" + adUnitIdentifier +
-                               "'");
+        MaxSdkLogger.UserDebug("Setting MREC placement to '" + placement + "' for ad unit id '" + adUnitIdentifier + "'");
     }
 
     /// <summary>
@@ -442,8 +462,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="mrecPosition">A new position for the MREC</param>
     public static void UpdateMRecPosition(string adUnitIdentifier, AdViewPosition mrecPosition)
     {
-        MaxSdkLogger.UserDebug("Updating MREC position to '" + mrecPosition + "' for ad unit id '" +
-                               adUnitIdentifier + "'");
+        MaxSdkLogger.UserDebug("Updating MREC position to '" + mrecPosition + "' for ad unit id '" + adUnitIdentifier + "'");
     }
 
     /// <summary>
@@ -452,6 +471,9 @@ public class MaxSdkUnityEditor : MaxSdkBase
     /// <param name="adUnitIdentifier">The ad unit identifier of the MREC for which to update the position</param>
     /// <param name="x">The X coordinate (horizontal position) of the MREC relative to the top left corner of the screen.</param>
     /// <param name="y">The Y coordinate (vertical position) of the MREC relative to the top left corner of the screen.</param>
+    /// <seealso cref="GetMRecLayout">
+    /// The MREC is placed within the safe area of the screen. You can use this to get the absolute position Rect of the MREC on screen.
+    /// </seealso>
     public static void UpdateMRecPosition(string adUnitIdentifier, float x, float y)
     {
         MaxSdkLogger.UserDebug("Updating MREC position to '(" + x + "," + y + ")");
@@ -487,6 +509,18 @@ public class MaxSdkUnityEditor : MaxSdkBase
     public static void HideMRec(string adUnitIdentifier)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "hide MREC");
+    }
+
+    /// <summary>
+    /// The MREC position on the screen. When setting the banner position via <see cref="CreateMRec(string, float, float)"/> or <see cref="UpdateMRecPosition(string, float, float)"/>,
+    /// the banner is placed within the safe area of the screen. This returns the absolute position of the MREC on screen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the MREC for which to get the position on screen.</param>
+    /// <returns>A <see cref="Rect"/> representing the banner position on screen.</returns>
+    public static Rect GetMRecLayout(string adUnitIdentifier)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "get MREC layout");
+        return Rect.zero;
     }
 
     #endregion
@@ -570,10 +604,11 @@ public class MaxSdkUnityEditor : MaxSdkBase
     private static void ShowStubInterstitial(string adUnitIdentifier)
     {
 #if UNITY_EDITOR
-        GameObject interstitialPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/MaxSdk/Prefabs/Interstitial.prefab");
-        GameObject stubInterstitial = Object.Instantiate(interstitialPrefab, Vector3.zero, Quaternion.identity);
-        Text interstitialText = GameObject.Find("MaxInterstitialTitle").GetComponent<Text>();
-        Button closeButton = GameObject.Find("MaxInterstitialCloseButton").GetComponent<Button>();
+        var prefabPath = MaxSdkUtils.GetAssetPathForExportPath("MaxSdk/Prefabs/Interstitial.prefab");
+        var interstitialPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        var stubInterstitial = Object.Instantiate(interstitialPrefab, Vector3.zero, Quaternion.identity);
+        var interstitialText = GameObject.Find("MaxInterstitialTitle").GetComponent<Text>();
+        var closeButton = GameObject.Find("MaxInterstitialCloseButton").GetComponent<Button>();
 
         interstitialText.text += ":\n" + adUnitIdentifier;
         closeButton.onClick.AddListener(() =>
@@ -678,13 +713,14 @@ public class MaxSdkUnityEditor : MaxSdkBase
     private static void ShowStubRewardedAd(string adUnitIdentifier)
     {
 #if UNITY_EDITOR
-        GameObject rewardedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/MaxSdk/Prefabs/Rewarded.prefab");
-        GameObject stubRewardedAd = Object.Instantiate(rewardedPrefab, Vector3.zero, Quaternion.identity);
-        bool grantedReward = false;
-        Text rewardedTitle = GameObject.Find("MaxRewardTitle").GetComponent<Text>();
-        Text rewardStatus = GameObject.Find("MaxRewardStatus").GetComponent<Text>();
-        Button closeButton = GameObject.Find("MaxRewardedCloseButton").GetComponent<Button>();
-        Button rewardButton = GameObject.Find("MaxRewardButton").GetComponent<Button>();
+        var prefabPath = MaxSdkUtils.GetAssetPathForExportPath("MaxSdk/Prefabs/Rewarded.prefab");
+        var rewardedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        var stubRewardedAd = Object.Instantiate(rewardedPrefab, Vector3.zero, Quaternion.identity);
+        var grantedReward = false;
+        var rewardedTitle = GameObject.Find("MaxRewardTitle").GetComponent<Text>();
+        var rewardStatus = GameObject.Find("MaxRewardStatus").GetComponent<Text>();
+        var closeButton = GameObject.Find("MaxRewardedCloseButton").GetComponent<Button>();
+        var rewardButton = GameObject.Find("MaxRewardButton").GetComponent<Button>();
 
         rewardedTitle.text += ":\n" + adUnitIdentifier;
         closeButton.onClick.AddListener(() =>
@@ -799,13 +835,14 @@ public class MaxSdkUnityEditor : MaxSdkBase
     private static void ShowStubRewardedInterstitialAd(string adUnitIdentifier)
     {
 #if UNITY_EDITOR
-        GameObject rewardedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/MaxSdk/Prefabs/Rewarded.prefab");
-        GameObject stubRewardedAd = Object.Instantiate(rewardedPrefab, Vector3.zero, Quaternion.identity);
-        bool grantedReward = false;
-        Text rewardedTitle = GameObject.Find("MaxRewardTitle").GetComponent<Text>();
-        Text rewardStatus = GameObject.Find("MaxRewardStatus").GetComponent<Text>();
-        Button closeButton = GameObject.Find("MaxRewardedCloseButton").GetComponent<Button>();
-        Button rewardButton = GameObject.Find("MaxRewardButton").GetComponent<Button>();
+        var prefabPath = MaxSdkUtils.GetAssetPathForExportPath("MaxSdk/Prefabs/Rewarded.prefab");
+        var rewardedPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        var stubRewardedAd = Object.Instantiate(rewardedPrefab, Vector3.zero, Quaternion.identity);
+        var grantedReward = false;
+        var rewardedTitle = GameObject.Find("MaxRewardTitle").GetComponent<Text>();
+        var rewardStatus = GameObject.Find("MaxRewardStatus").GetComponent<Text>();
+        var closeButton = GameObject.Find("MaxRewardedCloseButton").GetComponent<Button>();
+        var rewardButton = GameObject.Find("MaxRewardButton").GetComponent<Button>();
 
         rewardedTitle.text = "MAX Rewarded Interstitial Ad:\n" + adUnitIdentifier;
         closeButton.onClick.AddListener(() =>

@@ -131,6 +131,7 @@ namespace IEC
                 Debug.unityLogger.filterLogType = LogType.Warning;
             }
 
+            CameraHelper.SetMainCam(Camera.main);
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
 

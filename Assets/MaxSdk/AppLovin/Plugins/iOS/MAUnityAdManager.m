@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"3.1.17"
+#define VERSION @"3.2.1"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
@@ -57,6 +57,10 @@ extern "C" {
 
 @interface NSNumber (ALUtils)
 + (NSNumber *)al_numberWithString:(NSString *)string;
+@end
+
+@interface NSString (ALUtils)
+@property (assign, readonly, getter=al_isValidString) BOOL al_validString;
 @end
 
 @interface MAAdFormat (ALUtils)
@@ -212,6 +216,11 @@ static NSString *ALSerializeKeyValuePairSeparator;
     [self hideAdViewWithAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier]];
 }
 
+- (NSString *)bannerLayoutForAdUnitIdentifier:(NSString *)adUnitIdentifier
+{
+    return [self adViewLayoutForAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier]];
+}
+
 - (void)destroyBannerWithAdUnitIdentifier:(NSString *)adUnitIdentifier
 {
     [self destroyAdViewWithAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier]];
@@ -262,6 +271,11 @@ static NSString *ALSerializeKeyValuePairSeparator;
 - (void)hideMRecWithAdUnitIdentifier:(NSString *)adUnitIdentifier
 {
     [self hideAdViewWithAdUnitIdentifier: adUnitIdentifier adFormat: MAAdFormat.mrec];
+}
+
+- (NSString *)mrecLayoutForAdUnitIdentifier:(NSString *)adUnitIdentifier
+{
+    return [self adViewLayoutForAdUnitIdentifier: adUnitIdentifier adFormat: MAAdFormat.mrec];
 }
 
 #pragma mark - Interstitials
@@ -365,7 +379,9 @@ static NSString *ALSerializeKeyValuePairSeparator;
     if ( !ad ) return @"";
     
     return [MAUnityAdManager propsStrFromDictionary: @{@"adUnitId" : adUnitIdentifier,
-                                                       @"networkName" : ad.networkName}];
+                                                       @"networkName" : ad.networkName,
+                                                       @"creativeId" : [ad.creativeIdentifier al_isValidString] ? ad.creativeIdentifier : @"",
+                                                       @"placement" : [ad.placement al_isValidString] ? ad.placement : @""}];
 }
 
 #pragma mark - Ad Callbacks
@@ -678,6 +694,9 @@ static NSString *ALSerializeKeyValuePairSeparator;
     MAAdView *view = [self retrieveAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
     self.publisherBannerBackgroundColor = convertedColor;
     self.safeAreaBackground.backgroundColor = view.backgroundColor = convertedColor;
+    
+    // Position adView to ensure logic that depends on background color is properly run
+    [self positionAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
 }
 
 - (void)setAdViewPlacement:(nullable NSString *)placement forAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat
@@ -779,6 +798,19 @@ static NSString *ALSerializeKeyValuePairSeparator;
         // The adView has not yet been created. Store the ad unit ID, so that it can be displayed once the banner has been created.
         [self.adUnitIdentifiersToShowAfterCreate addObject: adUnitIdentifier];
     }
+    else
+    {
+        // Check edge case where ad may be detatched from view controller
+        if ( !view.window.rootViewController )
+        {
+            [self log: @"%@ missing view controller - re-attaching to %@...", adFormat, [MAUnityAdManager unityViewController]];
+            
+            UIViewController *rootViewController = [MAUnityAdManager unityViewController];
+            [rootViewController.view addSubview: view];
+            
+            [self positionAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
+        }
+    }
     
     self.safeAreaBackground.hidden = NO;
     view.hidden = NO;
@@ -796,6 +828,25 @@ static NSString *ALSerializeKeyValuePairSeparator;
     self.safeAreaBackground.hidden = YES;
     
     [view stopAutoRefresh];
+}
+
+- (NSString *)adViewLayoutForAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat
+{
+    [self log: @"Getting %@ position with ad unit identifier \"%@\"", adFormat, adUnitIdentifier];
+    
+    MAAdView *view = [self retrieveAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
+    if ( !view )
+    {
+        [self log: @"%@ does not exist for ad unit identifier %@", adFormat, adUnitIdentifier];
+        
+        return @"";
+    }
+    
+    CGRect adViewFrame = view.frame;
+    return [MAUnityAdManager propsStrFromDictionary: @{@"origin_x" : [NSString stringWithFormat: @"%f", adViewFrame.origin.x],
+                                                       @"origin_y" : [NSString stringWithFormat: @"%f", adViewFrame.origin.y],
+                                                       @"width" : [NSString stringWithFormat: @"%f", CGRectGetWidth(adViewFrame)],
+                                                       @"height" : [NSString stringWithFormat: @"%f", CGRectGetHeight(adViewFrame)]}];
 }
 
 - (void)destroyAdViewWithAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat

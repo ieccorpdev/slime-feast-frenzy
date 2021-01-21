@@ -1,96 +1,133 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
-using System;
+using System.Reflection;
 
 namespace NaughtyAttributes.Editor
 {
-    [PropertyDrawer(typeof(ProgressBarAttribute))]
-    public class ProgressBarPropertyDrawer : PropertyDrawer
-    {
-        public override void DrawProperty(SerializedProperty property)
-        {
-            EditorDrawUtility.DrawHeader(property);
+	[CustomPropertyDrawer(typeof(ProgressBarAttribute))]
+	public class ProgressBarPropertyDrawer : PropertyDrawerBase
+	{
+		protected override float GetPropertyHeight_Internal(SerializedProperty property, GUIContent label)
+		{
+			ProgressBarAttribute progressBarAttribute = PropertyUtility.GetAttribute<ProgressBarAttribute>(property);
+			var maxValue = GetMaxValue(property, progressBarAttribute);
 
-            if (property.propertyType != SerializedPropertyType.Float && property.propertyType != SerializedPropertyType.Integer)
-            {
-                EditorGUILayout.HelpBox("Field " + property.name + " is not a number", MessageType.Warning);
-                return;
-            }
+			return IsNumber(property) && maxValue is float
+				? GetPropertyHeight(property)
+				: GetPropertyHeight(property) + GetHelpBoxHeight();
+		}
 
-            var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
-            var valueFormatted = property.propertyType == SerializedPropertyType.Integer ? value.ToString() : String.Format("{0:0.00}", value);
+		protected override void OnGUI_Internal(Rect rect, SerializedProperty property, GUIContent label)
+		{
+			if (!IsNumber(property))
+			{
+				string message = string.Format("Field {0} is not a number", property.name);
+				DrawDefaultPropertyAndHelpBox(rect, property, message, MessageType.Warning);
+				return;
+			}
 
-            ProgressBarAttribute progressBarAttribute = PropertyUtility.GetAttribute<ProgressBarAttribute>(property);
-            var position = EditorGUILayout.GetControlRect();
-            var maxValue = progressBarAttribute.MaxValue;
-            float lineHight = EditorGUIUtility.singleLineHeight;
-            float padding = EditorGUIUtility.standardVerticalSpacing;
-            var barPosition = new Rect(position.position.x, position.position.y, position.size.x, lineHight);
+			ProgressBarAttribute progressBarAttribute = PropertyUtility.GetAttribute<ProgressBarAttribute>(property);
+			var value = property.propertyType == SerializedPropertyType.Integer ? property.intValue : property.floatValue;
+			var valueFormatted = property.propertyType == SerializedPropertyType.Integer ? value.ToString() : string.Format("{0:0.00}", value);
+			var maxValue = GetMaxValue(property, progressBarAttribute);
 
-            var fillPercentage = value / maxValue;
-            var barLabel = (!string.IsNullOrEmpty(progressBarAttribute.Name) ? "[" + progressBarAttribute.Name + "] " : "") + valueFormatted + "/" + maxValue;
+			if (maxValue != null && maxValue is float)
+			{
+				var fillPercentage = value / (float)maxValue;
+				var barLabel = (!string.IsNullOrEmpty(progressBarAttribute.Name) ? "[" + progressBarAttribute.Name + "] " : "") + valueFormatted + "/" + maxValue;
+				var barColor = progressBarAttribute.Color.GetColor();
+				var labelColor = Color.white;
 
-            var color = GetColor(progressBarAttribute.Color);
-            var color2 = Color.white;
-            DrawBar(barPosition, Mathf.Clamp01(fillPercentage), barLabel, color, color2);
-        }
+				var indentLength = NaughtyEditorGUI.GetIndentLength(rect);
+				Rect barRect = new Rect()
+				{
+					x = rect.x + indentLength,
+					y = rect.y,
+					width = rect.width - indentLength,
+					height = EditorGUIUtility.singleLineHeight
+				};
 
-        private void DrawBar(Rect position, float fillPercent, string label, Color barColor, Color labelColor)
-        {
-            if (Event.current.type != EventType.Repaint)
-            {
-                return;
-            }
+				DrawBar(barRect, Mathf.Clamp01(fillPercentage), barLabel, barColor, labelColor);
+			}
+			else
+			{
+				string message = string.Format(
+					"The provided dynamic max value for the progress bar is not correct. Please check if the '{0}' is correct, or the return type is float",
+					nameof(progressBarAttribute.MaxValueName));
 
-            Color savedColor = GUI.color;
+				DrawDefaultPropertyAndHelpBox(rect, property, message, MessageType.Warning);
+			}
+		}
 
-            var fillRect = new Rect(position.x, position.y, position.width * fillPercent, position.height);
+		private object GetMaxValue(SerializedProperty property, ProgressBarAttribute progressBarAttribute)
+		{
+			if (string.IsNullOrEmpty(progressBarAttribute.MaxValueName))
+			{
+				return progressBarAttribute.MaxValue;
+			}
+			else
+			{
+				object target = PropertyUtility.GetTargetObjectWithProperty(property);
 
-            EditorGUI.DrawRect(position, new Color(0.13f, 0.13f, 0.13f));
-            EditorGUI.DrawRect(fillRect, barColor);
+				FieldInfo valuesFieldInfo = ReflectionUtility.GetField(target, progressBarAttribute.MaxValueName);
+				if (valuesFieldInfo != null)
+				{
+					return valuesFieldInfo.GetValue(target);
+				}
 
-            // set alignment and cache the default
-            var align = GUI.skin.label.alignment;
-            GUI.skin.label.alignment = TextAnchor.UpperCenter;
+				PropertyInfo valuesPropertyInfo = ReflectionUtility.GetProperty(target, progressBarAttribute.MaxValueName);
+				if (valuesPropertyInfo != null)
+				{
+					return valuesPropertyInfo.GetValue(target);
+				}
 
-            // set the color and cache the default
-            var c = GUI.contentColor;
-            GUI.contentColor = labelColor;
+				MethodInfo methodValuesInfo = ReflectionUtility.GetMethod(target, progressBarAttribute.MaxValueName);
+				if (methodValuesInfo != null &&
+					methodValuesInfo.ReturnType == typeof(float) &&
+					methodValuesInfo.GetParameters().Length == 0)
+				{
+					return methodValuesInfo.Invoke(target, null);
+				}
 
-            // calculate the position
-            var labelRect = new Rect(position.x, position.y - 2, position.width, position.height);
+				return null;
+			}
+		}
 
-            // draw~
-            EditorGUI.DropShadowLabel(labelRect, label);
+		private void DrawBar(Rect rect, float fillPercent, string label, Color barColor, Color labelColor)
+		{
+			if (Event.current.type != EventType.Repaint)
+			{
+				return;
+			}
 
-            // reset color and alignment
-            GUI.contentColor = c;
-            GUI.skin.label.alignment = align;
-        }
+			var fillRect = new Rect(rect.x, rect.y, rect.width * fillPercent, rect.height);
 
-        private Color GetColor(ProgressBarColor color)
-        {
-            switch (color)
-            {
-                case ProgressBarColor.Red:
-                    return new Color32(255, 0, 63, 255);
-                case ProgressBarColor.Pink:
-                    return new Color32(255, 152, 203, 255);
-                case ProgressBarColor.Orange:
-                    return new Color32(255, 128, 0, 255);
-                case ProgressBarColor.Yellow:
-                    return new Color32(255, 211, 0, 255);
-                case ProgressBarColor.Green:
-                    return new Color32(102, 255, 0, 255);
-                case ProgressBarColor.Blue:
-                    return new Color32(0, 135, 189, 255);
-                case ProgressBarColor.Indigo:
-                    return new Color32(75, 0, 130, 255);
-                case ProgressBarColor.Violet:
-                    return new Color32(127, 0, 255, 255);
-                default:
-                    return Color.white;
-            }
-        }
-    }
+			EditorGUI.DrawRect(rect, new Color(0.13f, 0.13f, 0.13f));
+			EditorGUI.DrawRect(fillRect, barColor);
+
+			// set alignment and cache the default
+			var align = GUI.skin.label.alignment;
+			GUI.skin.label.alignment = TextAnchor.UpperCenter;
+
+			// set the color and cache the default
+			var c = GUI.contentColor;
+			GUI.contentColor = labelColor;
+
+			// calculate the position
+			var labelRect = new Rect(rect.x, rect.y - 2, rect.width, rect.height);
+
+			// draw~
+			EditorGUI.DropShadowLabel(labelRect, label);
+
+			// reset color and alignment
+			GUI.contentColor = c;
+			GUI.skin.label.alignment = align;
+		}
+
+		private bool IsNumber(SerializedProperty property)
+		{
+			bool isNumber = property.propertyType == SerializedPropertyType.Float || property.propertyType == SerializedPropertyType.Integer;
+			return isNumber;
+		}
+	}
 }

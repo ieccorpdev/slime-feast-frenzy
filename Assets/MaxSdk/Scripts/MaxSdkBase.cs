@@ -5,7 +5,7 @@ public abstract class MaxSdkBase
 {
     // Shared Properties
     protected static readonly MaxUserSegment SharedUserSegment = new MaxUserSegment();
-    
+
     /// <summary>
     /// This enum represents whether or not the consent dialog should be shown for this user.
     /// The state where no such determination could be made is represented by <see cref="ConsentDialogState.Unknown"/>.
@@ -83,24 +83,32 @@ public abstract class MaxSdkBase
     {
         public string AdUnitIdentifier { get; private set; }
         public string NetworkName { get; private set; }
+        public string Placement { get; private set; }
+        public string CreativeIdentifier { get; private set; }
 
         public AdInfo(string adInfoString)
         {
             string adUnitIdentifier = "";
             string networkName = "";
-
+            string creativeIdentifier = "";
+            string placement = "";
+            
             // NOTE: Unity Editor creates empty string
             IDictionary<string, string> adInfoObject = MaxSdkUtils.PropsStringToDict(adInfoString);
             adInfoObject.TryGetValue("adUnitId", out adUnitIdentifier);
             adInfoObject.TryGetValue("networkName", out networkName);
-
-            AdUnitIdentifier = adUnitIdentifier;
+            adInfoObject.TryGetValue("creativeId", out creativeIdentifier);
+            adInfoObject.TryGetValue("placement", out placement);
+         
+            AdUnitIdentifier = adUnitIdentifier;	
             NetworkName = networkName;
+            CreativeIdentifier = creativeIdentifier;
+            Placement = placement;
         }
 
         public override string ToString()
         {
-            return "[AdInfo adUnitIdentifier: " + AdUnitIdentifier + ", networkName: " + NetworkName + "]";
+            return "[AdInfo adUnitIdentifier: " + AdUnitIdentifier + ", networkName: " + NetworkName  + ", creativeIdentifier: " + CreativeIdentifier + ", placement: " + Placement + "]";
         }
     }
 
@@ -120,8 +128,7 @@ public abstract class MaxSdkBase
             .GetComponent<MaxSdkCallbacks>(); // Its Awake() method sets Instance.
         if (MaxSdkCallbacks.Instance != mgr)
         {
-            MaxSdkLogger.UserWarning("It looks like you have the " + type.Name +
-                             " on a GameObject in your scene. Please remove the script from your scene.");
+            MaxSdkLogger.UserWarning("It looks like you have the " + type.Name + " on a GameObject in your scene. Please remove the script from your scene.");
         }
     }
 
@@ -134,7 +141,39 @@ public abstract class MaxSdkBase
         var metaData = new Dictionary<string, string>();
         metaData.Add("UnityVersion", Application.unityVersion);
 
+        var graphicsMemorySize = SystemInfo.graphicsMemorySize;
+        metaData.Add("GraphicsMemorySizeMegabytes", graphicsMemorySize.ToString());
+
         return MaxSdkUtils.DictToPropsString(metaData);
+    }
+
+    /// <summary>
+    /// Parses the prop string provided to a <see cref="Rect"/>.
+    /// </summary>
+    /// <param name="rectPropString">A prop string representing a Rect</param>
+    /// <returns>A <see cref="Rect"/> the prop string represents.</returns>
+    protected static Rect GetRectFromString(string rectPropString)
+    {
+        var rectDict = MaxSdkUtils.PropsStringToDict(rectPropString);
+        float originX;
+        float originY;
+        float width;
+        float height;
+
+        string output;
+        rectDict.TryGetValue("origin_x", out output);
+        float.TryParse(output, out originX);
+
+        rectDict.TryGetValue("origin_y", out output);
+        float.TryParse(output, out originY);
+
+        rectDict.TryGetValue("width", out output);
+        float.TryParse(output, out width);
+
+        rectDict.TryGetValue("height", out output);
+        float.TryParse(output, out height);
+
+        return new Rect(originX, originY, width, height);
     }
 }
 

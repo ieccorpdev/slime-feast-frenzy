@@ -269,7 +269,14 @@ extern "C"
         
         [_adManager hideBannerWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
-
+    
+    const char * _MaxGetBannerLayout(const char *adUnitIdentifier)
+    {
+        if (!isPluginInitialized()) return cStringCopy(@"");
+        
+        return cStringCopy([_adManager bannerLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
+    }
+    
     void _MaxCreateMRec(const char *adUnitIdentifier, const char *mrecPosition)
     {
         if (!isPluginInitialized()) return;
@@ -318,6 +325,13 @@ extern "C"
         if (!isPluginInitialized()) return;
         
         [_adManager hideMRecWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
+    
+    const char * _MaxGetMRecLayout(const char *adUnitIdentifier)
+    {
+        if (!isPluginInitialized()) return cStringCopy(@"");
+        
+        return cStringCopy([_adManager mrecLayoutForAdUnitIdentifier: NSSTRING(adUnitIdentifier)]);
     }
     
     void _MaxLoadInterstitial(const char *adUnitIdentifier)
