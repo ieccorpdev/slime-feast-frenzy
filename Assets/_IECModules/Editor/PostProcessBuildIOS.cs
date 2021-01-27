@@ -51,7 +51,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             var entitlementsFileName = pbxProject.GetBuildPropertyForAnyConfig(mainTargetGuid, "CODE_SIGN_ENTITLEMENTS") ?? Application.productName + ".entitlements";
             ProjectCapabilityManager projectCapabilityManager = new ProjectCapabilityManager(projectPath,
               entitlementsFileName, "Unity-iPhone", mainTargetGuid);
-            projectCapabilityManager.AddiCloud(false, true, true, false, new string[] { $"iCloud.{Application.identifier}.cloud.save" });
+            projectCapabilityManager.AddiCloud(true, true, true, false, new string[] { $"iCloud.{Application.identifier}.cloud.save" });
             projectCapabilityManager.WriteToFile();
 
             var entitleRead = File.ReadAllText(path + "/" + entitlementsFileName);

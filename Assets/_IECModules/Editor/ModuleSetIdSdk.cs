@@ -59,6 +59,7 @@ namespace _IECModules
             PluginApplovin,
             PluginIronSource,
             PluginUnityIAP,
+            PluginFacebookAudienceNetwork,
         }
 
         private void Awake()
@@ -148,6 +149,14 @@ namespace _IECModules
             m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
                 SdkHelper.ListApplovinVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            CreateGuiBreakLine();
+            
+            CreateGuiButton($"Facebook Audience Network v6.2.1", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FacebookAudienceNetworkSdkUrlByVersion());
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
+            });
 
             CreateGuiBreakLine();
 
