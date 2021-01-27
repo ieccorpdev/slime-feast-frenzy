@@ -295,6 +295,11 @@ namespace IEC
             }
             else
             {
+#if (PluginFacebookAudienceNetwork)
+    #if UNITY_IOS
+                AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(true);
+    #endif
+#endif
 #if (PluginAppodeal)
                 var disableNetworks = new string[] {
                     AppodealAds.Unity.Api.AppodealNetworks.CHARTBOOST,
