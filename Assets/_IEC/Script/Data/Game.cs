@@ -38,6 +38,8 @@ namespace IEC
 
         public int maxGrassOnWall, classicColor;
 
+        public int goldReward;
+
         public RotTutorialConfig rotTutConfig;
 
         public BaseComponent[,] grids;

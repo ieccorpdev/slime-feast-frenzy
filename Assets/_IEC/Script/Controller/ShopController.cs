@@ -32,9 +32,17 @@ namespace IEC
                     OnSelectItem(type, index);
                     break;
                 case EventList.GamePlay.SHOP_BUY_ITEM:
-                    var shopTab = (ItemShopType)param.p0;
-                    var totalItem = (int)param.p1;
-                    OnHandleBuyItem(shopTab, totalItem);
+                    var isByAds = (bool)param.p0;
+                    var shopTab = (ItemShopType)param.p1;
+                    var totalItem = (int)param.p2;
+                    OnHandleBuyItem(isByAds, shopTab, totalItem);
+                    break;
+                case EventList.GamePlay.SHOP_ADD_GOLD:
+                    Services.ShowRewardAds(() => {
+                        Services.PushEvent(new IEC.TrackingEvent.ShowRewardAddGoldInShop());
+                        PlayerData.AddGold(200);
+                        UI.OnUpdateShopData();
+                    });
                     break;
             }
         }
@@ -47,25 +55,55 @@ namespace IEC
             }
         }
 
-        private void OnHandleBuyItem(ItemShopType type, int totalItem)
+        private void OnHandleBuyItem(bool isByAds, ItemShopType type, int totalItem)
         {
-            Services.ShowRewardAds(() => {
-                Services.PushEvent(new IEC.TrackingEvent.ShowRewardBuyShopItem());
-                var index = 0;
-                if (type == ItemShopType.Theme)
+            if (isByAds)
+            {
+                Services.ShowRewardAds(() => {
+                    Services.PushEvent(new IEC.TrackingEvent.ShowRewardBuyShopItem());
+                    OnBuyItem(type, totalItem);
+                });
+            }
+            else
+            {
+                var gold = GetGoldItem(type);
+                if (PlayerData.gold >= gold)
                 {
-                    index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
-                    PlayerData.UnlockTheme(index);
+                    PlayerData.AddGold(gold);
+                    Services.PushEvent(new IEC.TrackingEvent.BuyShopItemByGold());
+                    OnBuyItem(type, totalItem);
                 }
-                else if (type == ItemShopType.Background)
-                {
-                    index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
-                    PlayerData.UnlockBackground(index);
-                }
+            }
+        }
 
-                OnApplyItemShop(type);
-                UI.popupShop.EffectBuyItem(type, index);
-            });
+        private int GetGoldItem(ItemShopType type)
+        {
+            if(type == ItemShopType.Theme)
+            {
+                return 1000;
+            }
+            else
+            {
+                return 500;
+            }
+        }
+
+        private void OnBuyItem(ItemShopType type, int totalItem)
+        {
+            var index = 0;
+            if (type == ItemShopType.Theme)
+            {
+                index = MathHelper.GetRandomIndexByList(PlayerData.listThemeUnlocked, totalItem);
+                PlayerData.UnlockTheme(index);
+            }
+            else if (type == ItemShopType.Background)
+            {
+                index = MathHelper.GetRandomIndexByList(PlayerData.listBackgroundUnlocked, totalItem);
+                PlayerData.UnlockBackground(index);
+            }
+
+            OnApplyItemShop(type);
+            UI.popupShop.EffectBuyItem(type, index);
         }
 
         public void OnApplyItemShop(ItemShopType type)

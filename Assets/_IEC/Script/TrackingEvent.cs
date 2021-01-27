@@ -106,6 +106,16 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_ads_buy_shop_item";
     }
 
+    public class ShowRewardAddGoldInShop : Level
+    {
+        public override string Name => "click_btn_ads_add_gold";
+    }
+
+    public class BuyShopItemByGold : Level
+    {
+        public override string Name => "click_btn_buy_shop_item_by_gold";
+    }
+
     public class GameOver : LevelResult
     {
         public override string Name => "game_over";

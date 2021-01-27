@@ -30,6 +30,11 @@ namespace IEC
         public int backgroundSelected;
         public List<int> listBackgroundUnlocked;
 
+        public void AddGold(int goldAdd)
+        {
+            gold += goldAdd;
+        }
+
         public void AfterInit()
         {
             if (levelShowRate == null) levelShowRate = new List<int>();
