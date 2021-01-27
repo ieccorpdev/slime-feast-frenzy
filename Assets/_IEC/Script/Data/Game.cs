@@ -139,13 +139,15 @@ namespace IEC
         public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
 
-        //Prepare
         public bool isHaveShop;
         public bool isRootTreeOnlyGreenColor;
         public bool isHaveBossTimerLevelsV3;
         public bool isHaveBossTimerLevelsV4;
         public bool isNoShadow;
         public bool isHintStyleV3;
+
+        //Prepare
+        public bool isRootTreeChangeColorByWater;
 
         public bool isLeavesEffect;
 

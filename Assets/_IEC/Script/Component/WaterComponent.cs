@@ -49,6 +49,8 @@ namespace IEC
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
         private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
 
+        public bool isMainWater = true;
+
         public void OnInit(System.Action callBack, bool isNewEffect)
         {
             if (isNewEffect)
@@ -127,7 +129,11 @@ namespace IEC
                     if (m_FillAmount >= MAX_AMOUNT)
                     {
                         m_IsScale = false;
-                        growUpCallBack?.Invoke();
+
+                        if (isMainWater)
+                        {
+                            growUpCallBack?.Invoke();
+                        }
                     }
                 }
                 else

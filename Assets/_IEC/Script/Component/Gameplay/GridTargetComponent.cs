@@ -18,7 +18,10 @@ namespace IEC
         private GameObject[] m_TreesStyles;
 
         [SerializeField]
-        private MeshRenderer m_RootTreeMesh;
+        private MeshRenderer m_RootTreeMesh, m_TreeBaseMesh;
+
+        [SerializeField]
+        private GameObject m_TreeBaseOldObj, m_TreeBaseNewObj;
 
         private Tween m_TweenScale;
 
@@ -150,10 +153,20 @@ namespace IEC
                 m_LineStyleObjs[i].SetActive(i == lineType);
             }
 
-            for (int i = 0; i < m_WaterCount; i++)
+            for (int i = 0; i < m_WaterCount - 1; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
+
+            bool isNewBaseTree = Game.isRootTreeChangeColorByWater;
+
+            m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(isNewBaseTree);
+            m_WaterComponent[m_WaterCount - 1].isMainWater = false;
+
+            m_TreeBaseMesh.material = ShopConfig.treebaseMats[lineType];
+
+            m_TreeBaseOldObj.SetActive(!isNewBaseTree);
+            m_TreeBaseNewObj.SetActive(isNewBaseTree);
 
             var mat = CurrentMat;
             var colorEffect = mat.color;
@@ -262,7 +275,7 @@ namespace IEC
 
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
-            m_TweenScale?.Kill(true);
+            m_TweenScale?.Kill(false);
             Sequence sequence = DOTween.Sequence();
 
             var ease = isGrowUp ? Ease.OutBounce : Ease.Unset;
@@ -281,9 +294,9 @@ namespace IEC
 
         public override void OnDestroyMe()
         {
-            base.OnDestroyMe();
             m_TweenScale?.Kill(true);
             IsGrowUpComplete = false;
+            base.OnDestroyMe();
         }
     }
 }
