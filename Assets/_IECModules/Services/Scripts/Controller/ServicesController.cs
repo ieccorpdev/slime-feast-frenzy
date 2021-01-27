@@ -297,6 +297,7 @@ namespace IEC
             {
 #if (PluginFacebookAudienceNetwork)
     #if UNITY_IOS
+                Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled true");
                 AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(true);
     #endif
 #endif
