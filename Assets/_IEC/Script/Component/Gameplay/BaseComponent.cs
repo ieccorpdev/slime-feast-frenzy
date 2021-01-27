@@ -139,7 +139,7 @@ namespace IEC
         {
             if (GridType != GridType.WALL)
             {
-                if (Game.isChangeGridStatus)
+                if (Game.isChangeGridStatus || Game.isGreenifyHydrated)
                 {
                     SetTerrainMat();
                 }
@@ -357,7 +357,7 @@ namespace IEC
 
         public virtual void AfterCheckConnect()
         {
-            if (Game.isChangeGridStatus && Game.isPlaying)
+            if ((Game.isChangeGridStatus || Game.isGreenifyHydrated) && Game.isPlaying)
             {
                 SetTerrainMat();
             }
@@ -497,9 +497,7 @@ namespace IEC
         public virtual void SetTerrainMat()
         {
             if (m_Terrain == null) return;
-            var index = PlayerData.themeSelected % ShopConfig.listThemeConfigs.Count;
-            var listMats = ShopConfig.listThemeConfigs[index].listTerrains;
-            var mat = m_IsHaveWater ? listMats[0] : listMats[1];
+            var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
             m_Terrain.SetupTerrain(mat);
         }
 

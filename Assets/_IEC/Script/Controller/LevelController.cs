@@ -268,18 +268,34 @@ namespace IEC
             var index = PlayerData.themeSelected % listTheme.Count;
             Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
 
-            var type0 = RandomHelper.Range(0, 2);
-
-            if (type0 == 0)
+            if(Game.isChangeGridStatus || Game.isGreenifyHydrated)
             {
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                if (Game.isChangeGridStatus)
+                {
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                }
+                else
+                {
+                    Game.listTerrainType.Add(ShopConfig.listThemeConfigs[0].listTerrains[0]);
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                }
             }
             else
             {
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                var type0 = RandomHelper.Range(0, 2);
+                if (type0 == 0)
+                {
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                }
+                else
+                {
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                }
             }
+
 
             if (isUpdateNow)
             {

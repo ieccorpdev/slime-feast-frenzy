@@ -211,7 +211,7 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            if (Game.isChangeGridStatus && Game.isPlaying)
+            if ((Game.isChangeGridStatus || Game.isGreenifyHydrated) && Game.isPlaying)
             {
                 SetTerrainMat();
             }

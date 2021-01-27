@@ -147,6 +147,9 @@ namespace IEC
         public bool isHintStyleV3;
 
         //Prepare
+        public bool isHaveNoAds;
+        public bool isHaveRewardEndGame;
+        public bool isGreenifyHydrated;
         public bool isRootTreeChangeColorByWater;
 
         public bool isLeavesEffect;
