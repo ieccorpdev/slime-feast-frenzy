@@ -80,7 +80,7 @@ namespace IEC
 
             for (int i = 4; i < m_WaterCount; i++)
             {
-                m_WaterComponent[i].isMainWater = false;
+                m_WaterComponent[i].SetMainWater(false);
             }
 
             ConfigWater();

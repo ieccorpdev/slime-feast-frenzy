@@ -150,7 +150,7 @@ namespace IEC
         public bool isHaveNoAds;
         public bool isHaveRewardEndGame;
         public bool isGreenifyHydrated;
-        public bool isRootTreeChangeColorByWater;
+        public bool isRootTreeChangeColorByWater = true;
 
         public bool isLeavesEffect;
 

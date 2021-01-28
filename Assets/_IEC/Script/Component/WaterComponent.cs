@@ -49,7 +49,7 @@ namespace IEC
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
         private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
 
-        public bool isMainWater = true;
+        private bool isMainWater = true;
 
         public void OnInit(System.Action callBack, bool isNewEffect)
         {
@@ -76,6 +76,23 @@ namespace IEC
             m_IsGrowUp = false;
 
             SetUpPropertyBlock(MaterialPropertyBlock);
+        }
+
+        public void SetMainWater(bool isMainWater)
+        {
+            this.isMainWater = isMainWater;
+
+            //if (isMainWater)
+            //{
+            //    waterTile = new Vector2(.2f, .2f);
+            //    distortionTile = new Vector2(.06f, .06f);
+            //}
+            //else
+            //{
+            //    waterTile = new Vector2(.1f, .1f);
+            //    distortionTile = new Vector2(.4f, .4f);
+            //}
+            //SetUpPropertyBlock(MaterialPropertyBlock);
         }
 
         public void SetColor(Color color, bool isUpdateNow)

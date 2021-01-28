@@ -161,7 +161,7 @@ namespace IEC
             bool isNewBaseTree = Game.isRootTreeChangeColorByWater;
 
             m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(isNewBaseTree);
-            m_WaterComponent[m_WaterCount - 1].isMainWater = false;
+            m_WaterComponent[m_WaterCount - 1].SetMainWater(false);
 
             m_TreeBaseMesh.material = ShopConfig.treebaseMats[lineType];
 
