@@ -25,6 +25,8 @@ namespace IEC
         public PopupRating popupRating;
         public PopupShop popupShop;
 
+        public GameObject loadingObj;
+
         public void LocateGroup()
         {
             Pool.Set(this);

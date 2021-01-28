@@ -281,4 +281,10 @@ namespace IEC
         BotLeft,
         BotRight
     }
+
+    public enum IapPackages
+    {
+        None,
+        NoAds
+    }
 }
