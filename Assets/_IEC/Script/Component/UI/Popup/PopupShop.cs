@@ -38,7 +38,7 @@ namespace IEC
         private Transform m_TransGroupBG;
 
         [SerializeField]
-        private TextMeshProUGUI m_TxtTitle, m_TxtGold;
+        private TextMeshProUGUI m_TxtTitle;
 
         private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND" };
 
@@ -138,12 +138,6 @@ namespace IEC
             }
 
             OnUpdateButtonBuy();
-            UpdateGold();
-        }
-
-        public void UpdateGold()
-        {
-            m_TxtGold.text = StringHelper.GetNumber(PlayerData.gold);
         }
 
         private void OnUpdateButtonBuy()

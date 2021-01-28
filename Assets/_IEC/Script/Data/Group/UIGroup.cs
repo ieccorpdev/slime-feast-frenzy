@@ -16,7 +16,7 @@ namespace IEC
 
         public RectTransform bottomAds;
 
-        public TMP_Text txtLevel;
+        public TMP_Text txtLevel, txtGold;
 
         public MainUIGroup mainUIGroup;
         public GameOverGroup gameOverUIGroup;
@@ -26,6 +26,8 @@ namespace IEC
         public PopupShop popupShop;
 
         public GameObject loadingObj;
+        [SerializeField]
+        private GameObject m_PanelGoldObj;
 
         public void LocateGroup()
         {
@@ -69,6 +71,12 @@ namespace IEC
         public void OnUpdateShopData()
         {
             popupShop.OnUpdateData();
+            UpdateGold();
+        }
+
+        public void UpdateGold()
+        {
+            txtGold.text = StringHelper.GetNumber(PlayerData.gold);
         }
     }
 
