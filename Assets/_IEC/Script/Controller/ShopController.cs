@@ -44,6 +44,25 @@ namespace IEC
                         UI.OnUpdateShopData();
                     });
                     break;
+                case EventList.GamePlay.END_GAME_GET_REWARD:
+                    var isX5 = (bool)param.p0;
+                    if (isX5)
+                    {
+                        Services.ShowRewardAds(() => {
+                            Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
+                            PlayerData.AddGold(Game.goldReward * 5);
+                            UI.OnUpdateShopData();
+
+                            EventController.RaiseEventDelay(.1f, EventList.GamePlay.GAME_RESTART);
+                        });
+                    }
+                    else
+                    {
+                        PlayerData.AddGold(Game.goldReward);
+                        UI.OnUpdateShopData();
+                        EventController.RaiseEventDelay(.1f, EventList.GamePlay.GAME_RESTART);
+                    }
+                    break;
             }
         }
 

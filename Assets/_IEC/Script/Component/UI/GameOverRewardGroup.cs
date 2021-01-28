@@ -1,18 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.UI;
 
-public class GameOverReward : MonoBehaviour
+namespace IEC
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GameOverRewardGroup : MonoBehaviour
     {
-        
-    }
+        [SerializeField]
+        private TextMeshProUGUI m_TxtGO, m_TxtGold;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        [SerializeField]
+        private Button m_BtnGetx5, m_BtnNoThanks;
+
+        private const string COIN = "<sprite=\"coin\" index=0>";
+
+        public void OnInit()
+        {
+            m_BtnGetx5.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+            });
+
+            m_BtnNoThanks.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, false));
+            });
+        }
+
+        public void SetGoldReward(int gold)
+        {
+            m_TxtGold.text = $"{StringHelper.GetNumber(gold)} {COIN}";
+            m_TxtGO.text = GameOverGroup.TextWinBonus[Random.Range(0, GameOverGroup.TextWinBonus.Count)];
+        }
     }
 }

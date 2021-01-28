@@ -146,8 +146,7 @@ namespace IEC
         private void OnHandleButtonShop()
         {
             Game.isShowPopup = true;
-            UI.OnUpdateShopData();
-            UI.popupShop.gameObject.SetActive(true);
+            UI.OpenShop();
         }
 
         public void TweenBossLevel()
@@ -249,7 +248,7 @@ namespace IEC
 
         public void SetActiveButtons(bool isActive)
         {
-            UI.mainUIGroup.SetActiveTopButtons(isActive);
+            UI.mainUIGroup.SetEnableTopButtons(isActive);
         }
 
         public void SetupAbUI()
@@ -282,6 +281,7 @@ namespace IEC
         {
             UI.mainUIGroup.OnEffectTime(false);
             UI.gameOverUIGroup.SetTextGameOver(isWin);
+            UI.gameOverReward.SetGoldReward(Game.goldReward);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             
             SetActiveButtons(true);
@@ -296,7 +296,7 @@ namespace IEC
 
         private void ShowGameOver()
         {
-            UI.OnGameOver(true);
+            UI.OnGameOver(true, Game.isHaveEndGameReward);
         }
 
         private void ResetVibrateHint()

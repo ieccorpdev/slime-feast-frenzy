@@ -134,4 +134,9 @@ namespace IEC.TrackingEvent
         }
     }
 
+    public class ShowRewardX5Gold : Level
+    {
+        public override string Name => "click_btn_ads_x5_gold";
+    }
+
 }

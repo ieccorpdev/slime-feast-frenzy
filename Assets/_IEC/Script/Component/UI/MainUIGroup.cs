@@ -29,6 +29,9 @@ namespace IEC
         public GameObject hintAds, hintCount;
 
         [SerializeField]
+        private GameObject m_TopButtonsObj;
+
+        [SerializeField]
         private Gradient m_MoveColor;
 
 
@@ -38,6 +41,11 @@ namespace IEC
         }
 
         public void SetActiveTopButtons(bool isActive)
+        {
+            m_TopButtonsObj.SetActive(isActive);
+        }
+
+        public void SetEnableTopButtons(bool isActive)
         {
             btnSetting.interactable = isActive;
             btnSkip.interactable = isActive;

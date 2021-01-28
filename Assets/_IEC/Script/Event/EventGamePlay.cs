@@ -34,6 +34,8 @@ namespace IEC
 
             public const string IAP_BUY_PACKAGES = "GamePlay.IAP_BUY_PACKAGES";
             public const string IAP_RESTORE_NO_ADS = "GamePlay.IAP_RESTORE_NO_ADS";
+
+            public const string END_GAME_GET_REWARD = "GamePlay.END_GAME_GET_REWARD";
         }
     }
 }

@@ -148,7 +148,7 @@ namespace IEC
 
         //Prepare
         public bool isHaveNoAds;
-        public bool isHaveRewardEndGame;
+        public bool isHaveEndGameReward;
         public bool isGreenifyHydrated;
         public bool isRootTreeChangeColorByWater;
 

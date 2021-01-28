@@ -68,6 +68,7 @@ namespace IEC
 
         private void UpdateAb20210121(int abValue)
         {
+            Game.isHaveShop = true;
             UIController.SetupAbUI();
         }
 

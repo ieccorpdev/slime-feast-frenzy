@@ -20,6 +20,7 @@ namespace IEC
 
         public MainUIGroup mainUIGroup;
         public GameOverGroup gameOverUIGroup;
+        public GameOverRewardGroup gameOverReward;
 
         public PopupSetting popupSettings;
         public PopupRating popupRating;
@@ -42,6 +43,7 @@ namespace IEC
             popupSettings.OnInit();
             popupRating.OnInit();
             popupShop.OnInit(ShopConfig);
+            gameOverReward.OnInit();
 
             OnResetAll();
         }
@@ -56,16 +58,35 @@ namespace IEC
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
             mainUIGroup.SetActiveBtnNoAds();
             mainUIGroup.OnEffectTime(false);
-
+            mainUIGroup.SetActiveTopButtons(true);
+            gameOverReward.gameObject.SetActive(false);
             popupShop.OnResetAll();
 
             OnUpdateShopData();
+
+            m_PanelGoldObj.SetActive(false);
         }
 
-        public void OnGameOver(bool isActive, Action callback = null)
+        public void OpenShop()
         {
-            gameOverUIGroup.gameObject.SetActive(isActive);
-            gameOverUIGroup.TweenGameOver(isActive, callback);
+            OnUpdateShopData();
+            m_PanelGoldObj.SetActive(true);
+            popupShop.gameObject.SetActive(true);
+        }
+
+        public void OnGameOver(bool isActive, bool isNewGameOver, Action callback = null)
+        {
+            if (isNewGameOver)
+            {
+                gameOverReward.gameObject.SetActive(true);
+                mainUIGroup.SetActiveTopButtons(false);
+                m_PanelGoldObj.SetActive(true);
+            }
+            else
+            {
+                gameOverUIGroup.gameObject.SetActive(isActive);
+                gameOverUIGroup.TweenGameOver(isActive, callback);
+            }
         }
 
         public void OnUpdateShopData()
