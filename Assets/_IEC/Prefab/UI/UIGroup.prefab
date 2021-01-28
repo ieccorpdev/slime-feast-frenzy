@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8004255808125494440
 RectTransform:
   m_ObjectHideFlags: 0
@@ -88,7 +88,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Direction: {x: 0, y: 0, z: 1}
-  Speed: 100
+  Speed: 300
 --- !u!1 &4037542601700296929
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,12 +485,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8266714035662023704}
   m_Layer: 5
-  m_Name: Effect
+  m_Name: EffectLoading
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8266714035662023704
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4516,7 +4516,7 @@ MonoBehaviour:
   popupSettings: {fileID: 8737656907388489259}
   popupRating: {fileID: 8737656908155501010}
   popupShop: {fileID: 7349106751273183205}
-  loadingObj: {fileID: 3870609338514164940}
+  loadingObj: {fileID: 8676627340637338376}
 --- !u!1 &8737656908273676885
 GameObject:
   m_ObjectHideFlags: 0
@@ -4802,7 +4802,7 @@ RectTransform:
   m_GameObject: {fileID: 9208555002570571099}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8004255808125494440}
   m_Father: {fileID: 8266714035662023704}

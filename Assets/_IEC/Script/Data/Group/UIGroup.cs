@@ -52,6 +52,7 @@ namespace IEC
             popupShop.gameObject.SetActive(false);
 
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            mainUIGroup.SetActiveBtnNoAds();
             mainUIGroup.OnEffectTime(false);
 
             popupShop.OnResetAll();

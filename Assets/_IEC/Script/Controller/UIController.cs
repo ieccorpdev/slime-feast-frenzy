@@ -255,6 +255,7 @@ namespace IEC
         public void SetupAbUI()
         {
             UI.mainUIGroup.SetupAbUI();
+            UI.popupSettings.SetupAbUI();
         }
 
         public void OnResetAll()

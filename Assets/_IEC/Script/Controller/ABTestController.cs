@@ -68,14 +68,13 @@ namespace IEC
 
         private void UpdateAb20210121(int abValue)
         {
-
+            UIController.SetupAbUI();
         }
 
         private void Result20210114()
         {
             Game.isRootTreeOnlyGreenColor = true;
             Game.isHaveShop = false;
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210114(int abValue)
@@ -91,7 +90,7 @@ namespace IEC
             Game.isHintStyleV2 = abValue != 6;
 
             QualitySettings.shadows = Game.isNoShadow ? ShadowQuality.Disable : ShadowQuality.HardOnly;
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void Result20210108()
@@ -162,7 +161,7 @@ namespace IEC
             Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
             Game.isHintStyleV2 = true;
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20201222(int abValue)

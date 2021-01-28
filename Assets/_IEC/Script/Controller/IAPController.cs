@@ -68,8 +68,9 @@ namespace IEC
 
         private void BuyNoAds()
         {
-            Pool.Get<PlayerSecret>().isNoAds = true;
+            PlayerData.isNoAds = true;
             Services.ActiveNoAds(true);
+            UI.mainUIGroup.SetActiveBtnNoAds();
             Services.PushEvent(new IEC.TrackingEvent.BuyNoAds());
         }
 
