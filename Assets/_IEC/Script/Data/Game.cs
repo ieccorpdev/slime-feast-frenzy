@@ -38,6 +38,8 @@ namespace IEC
 
         public int maxGrassOnWall, classicColor;
 
+        public int goldReward;
+
         public RotTutorialConfig rotTutConfig;
 
         public BaseComponent[,] grids;
@@ -137,13 +139,18 @@ namespace IEC
         public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
 
-        //Prepare
         public bool isHaveShop;
         public bool isRootTreeOnlyGreenColor;
         public bool isHaveBossTimerLevelsV3;
         public bool isHaveBossTimerLevelsV4;
         public bool isNoShadow;
         public bool isHintStyleV3;
+
+        //Prepare
+        public bool isHaveNoAds;
+        public bool isHaveRewardEndGame;
+        public bool isGreenifyHydrated;
+        public bool isRootTreeChangeColorByWater = true;
 
         public bool isLeavesEffect;
 

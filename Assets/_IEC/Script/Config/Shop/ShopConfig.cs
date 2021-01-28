@@ -13,6 +13,8 @@ namespace IEC
         public GameObject itemShopObj;
 
         public Material[] waterLineMat1, waterLineMat2;
+
+        public Material[] treebaseMats;
     }
 
     [System.Serializable]

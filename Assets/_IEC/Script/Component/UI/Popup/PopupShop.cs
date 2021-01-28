@@ -17,7 +17,7 @@ namespace IEC
         private Button m_BtnTabBackground, m_BtnTabTheme;
 
         [SerializeField]
-        private Button m_BtnBack, m_BtnBuyItemWatchAds;
+        private Button m_BtnBack, m_BtnBuyItemByAds, m_BtnBuyItemByGold, m_BtnAddGolds;
 
         [SerializeField]
         private GameObject[] m_Tabs, m_BtnNotSelect, m_BtnSelect;
@@ -38,7 +38,7 @@ namespace IEC
         private Transform m_TransGroupBG;
 
         [SerializeField]
-        private TextMeshProUGUI m_TxtTitle;
+        private TextMeshProUGUI m_TxtTitle, m_TxtGold;
 
         private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND" };
 
@@ -47,6 +47,9 @@ namespace IEC
 
         [SerializeField]
         private SimpleScrollSnap[] m_ScrollSnap;
+
+        [SerializeField]
+        private RectTransform m_RectBottomGroup;
 
         public void OnInit(ShopConfig shopConfig)
         {
@@ -85,6 +88,37 @@ namespace IEC
             OnSelectTab(0);
         }
 
+        private void InitButtonEvent()
+        {
+            m_BtnTabBackground.onClick.RemoveAllListeners();
+            m_BtnTabBackground.onClick.AddListener(() => {
+                OnSelectTab(0);
+            });
+
+            m_BtnTabTheme.onClick.RemoveAllListeners();
+            m_BtnTabTheme.onClick.AddListener(() => {
+                OnSelectTab(1);
+            });
+
+            m_BtnBack.onClick.RemoveAllListeners();
+            m_BtnBack.onClick.AddListener(OnHide);
+
+            m_BtnBuyItemByAds.onClick.RemoveAllListeners();
+            m_BtnBuyItemByAds.onClick.AddListener(() => {
+                OnHandleBuyItem(true);
+            });
+
+            m_BtnBuyItemByGold.onClick.RemoveAllListeners();
+            m_BtnBuyItemByGold.onClick.AddListener(() => {
+                OnHandleBuyItem(false);
+            });
+
+            m_BtnAddGolds.onClick.RemoveAllListeners();
+            m_BtnAddGolds.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.SHOP_ADD_GOLD);
+            });
+        }
+
         public void OnResetAll()
         {
             m_ItemClaim.OnResetAll();
@@ -104,6 +138,12 @@ namespace IEC
             }
 
             OnUpdateButtonBuy();
+            UpdateGold();
+        }
+
+        public void UpdateGold()
+        {
+            m_TxtGold.text = StringHelper.GetNumber(PlayerData.gold);
         }
 
         private void OnUpdateButtonBuy()
@@ -123,7 +163,7 @@ namespace IEC
                 isAtive = listBGUnlocked.Count < m_BGCount;
             }
 
-            m_BtnBuyItemWatchAds.interactable = isAtive;
+            m_BtnBuyItemByAds.interactable = isAtive;
         }
 
         public void EffectBuyItem(ItemShopType type, int index)
@@ -167,29 +207,11 @@ namespace IEC
             var sizeY = (1282f * scale) + 315f;
             var minPosY = 1920 - sizeY;
             var posY = (minPosY + bannerHeight) / 2f;
-            m_BtnBuyItemWatchAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
+            m_RectBottomGroup.anchoredPosition = new Vector2(0f, posY);
+            //m_BtnBuyItemByAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
         }
 
-        private void InitButtonEvent()
-        {
-            m_BtnTabBackground.onClick.RemoveAllListeners();
-            m_BtnTabBackground.onClick.AddListener(() => {
-                OnSelectTab(0);
-            });
-
-            m_BtnTabTheme.onClick.RemoveAllListeners();
-            m_BtnTabTheme.onClick.AddListener(() => {
-                OnSelectTab(1);
-            });
-
-            m_BtnBack.onClick.RemoveAllListeners();
-            m_BtnBack.onClick.AddListener(OnHide);
-
-            m_BtnBuyItemWatchAds.onClick.RemoveAllListeners();
-            m_BtnBuyItemWatchAds.onClick.AddListener(OnHandleBuyItem);
-        }
-
-        private void OnHandleBuyItem()
+        private void OnHandleBuyItem(bool isbyAds)
         {
             var totalItem = 0;
             if(TabSelected == ItemShopType.Theme)
@@ -200,7 +222,7 @@ namespace IEC
                 totalItem = m_BGCount;
             }
 
-            EventController.RaiseEvent(EventList.GamePlay.SHOP_BUY_ITEM, new EventParam(this, TabSelected, totalItem));
+            EventController.RaiseEvent(EventList.GamePlay.SHOP_BUY_ITEM, new EventParam(this, isbyAds, TabSelected, totalItem));
         }
 
         public void OnSelectTab(int tabSelect)

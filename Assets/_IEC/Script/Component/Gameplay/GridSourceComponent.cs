@@ -78,6 +78,11 @@ namespace IEC
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
+            for (int i = 4; i < m_WaterCount; i++)
+            {
+                m_WaterComponent[i].SetMainWater(false);
+            }
+
             ConfigWater();
         }
 
