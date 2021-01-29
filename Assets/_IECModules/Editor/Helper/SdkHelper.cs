@@ -23,9 +23,6 @@ namespace _IECModules
         public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
-        public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
-            "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
-
         public const string KOCHAVA_SDK_BASE_URL =
             "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
 
