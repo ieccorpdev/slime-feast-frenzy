@@ -39,10 +39,36 @@ namespace IEC
                     break;
                 case EventList.GamePlay.SHOP_ADD_GOLD:
                     Services.ShowRewardAds(() => {
+                        Game.timeLeftAddGold = 300f;
                         Services.PushEvent(new IEC.TrackingEvent.ShowRewardAddGoldInShop());
                         PlayerData.AddGold(200);
-                        UI.OnUpdateShopData();
+                        UI.EffectCoinClaim(200, PlayerData.gold, () => {
+                            UI.OnUpdateShopData();
+                        });
                     });
+                    break;
+                case EventList.GamePlay.END_GAME_GET_REWARD:
+                    UI.gameOverReward.gameObject.SetActive(false);
+                    var isX5 = (bool)param.p0;
+                    var coinAdd = Game.goldReward;
+                    if (isX5)
+                    {
+                        Services.ShowRewardAds(() => {
+                            Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
+                            coinAdd *= 5;
+                            PlayerData.AddGold(coinAdd);
+                            UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
+                                EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
+                            });
+                        });
+                    }
+                    else
+                    {
+                        PlayerData.AddGold(Game.goldReward);
+                        UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
+                            EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
+                        });
+                    }
                     break;
             }
         }
@@ -69,14 +95,14 @@ namespace IEC
                 var gold = GetGoldItem(type);
                 if (PlayerData.gold >= gold)
                 {
-                    PlayerData.AddGold(gold);
+                    PlayerData.AddGold(-gold);
                     Services.PushEvent(new IEC.TrackingEvent.BuyShopItemByGold());
                     OnBuyItem(type, totalItem);
                 }
             }
         }
 
-        private int GetGoldItem(ItemShopType type)
+        public static int GetGoldItem(ItemShopType type)
         {
             if(type == ItemShopType.Theme)
             {

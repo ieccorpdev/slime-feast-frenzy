@@ -77,6 +77,7 @@ namespace IEC
             UI.bottomAds.sizeDelta = sizeDelta;
 
             UI.popupShop.SetupPositionBtnBuy(bannerHeight);
+            UI.gameOverReward.SetPosGroupBottom(bannerHeight);
         }
     }
 }

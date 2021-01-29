@@ -1,4 +1,6 @@
 ﻿using MoreMountains.NiceVibrations;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -73,6 +75,13 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
+            if (Game.timeLeftAddGold > 0)
+            {
+                Game.timeLeftAddGold -= deltaTime;
+            }
+
+            UI.popupShop.SetCountDown();
+
             if (!Game.isPlaying) return;
             if (Game.isHaveUIAnimation)
             {
@@ -138,13 +147,15 @@ namespace IEC
             UI.mainUIGroup.btnUndo.onClick.AddListener(OnHandleUndo);
             UI.mainUIGroup.btnTime.onClick.AddListener(OnHandleAddTime);
             UI.mainUIGroup.btnShop.onClick.AddListener(OnHandleButtonShop);
+            UI.mainUIGroup.btnNoAds.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.IAP_BUY_PACKAGES, new EventParam(this, IapPackages.NoAds));
+            });
         }
 
         private void OnHandleButtonShop()
         {
             Game.isShowPopup = true;
-            UI.OnUpdateShopData();
-            UI.popupShop.gameObject.SetActive(true);
+            UI.OpenShop();
         }
 
         public void TweenBossLevel()
@@ -245,12 +256,13 @@ namespace IEC
 
         public void SetActiveButtons(bool isActive)
         {
-            UI.mainUIGroup.SetActiveTopButtons(isActive);
+            UI.mainUIGroup.SetEnableTopButtons(isActive);
         }
 
         public void SetupAbUI()
         {
             UI.mainUIGroup.SetupAbUI();
+            UI.popupSettings.SetupAbUI();
         }
 
         public void OnResetAll()
@@ -277,6 +289,7 @@ namespace IEC
         {
             UI.mainUIGroup.OnEffectTime(false);
             UI.gameOverUIGroup.SetTextGameOver(isWin);
+            UI.gameOverReward.SetGoldReward(Game.goldReward);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             
             SetActiveButtons(true);
@@ -291,7 +304,11 @@ namespace IEC
 
         private void ShowGameOver()
         {
-            UI.OnGameOver(true);
+            UI.OnGameOver(true, Game.isHaveEndGameReward);
+            if (Game.isHaveEndGameReward)
+            {
+                StartCoroutine(SpawnConfetti());
+            }
         }
 
         private void ResetVibrateHint()
@@ -308,6 +325,29 @@ namespace IEC
             {
                 m_TimeLeftUI = m_TimeLeft;
                 UI.mainUIGroup.SetTextTimer(m_TimeLeftUI);
+            }
+        }
+
+        [SerializeField]
+        private List<ParticleSystem> m_ListPsWin;
+
+        IEnumerator SpawnConfetti()
+        {
+            for (int i = 0; i < m_ListPsWin.Count; i++)
+            {
+                yield return new WaitForSeconds(.35f);
+
+                var ps = m_ListPsWin[i];
+
+                ps.gameObject.SetActive(true);
+                ps.transform.localScale = Vector3.one * Random.Range(1.5f, 2f);
+                ps.transform.localPosition = new Vector3(
+                    Random.Range(-2, 2),
+                    Random.Range(-3, 3),
+                    2
+                );
+
+                ps.Play();
             }
         }
     }

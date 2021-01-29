@@ -277,8 +277,8 @@ namespace IEC
                 }
                 else
                 {
-                    Game.listTerrainType.Add(ShopConfig.listThemeConfigs[0].listTerrains[0]);
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                    Game.listTerrainType.Add(ShopConfig.listThemeConfigs[0].listTerrains[1]);
+                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
                 }
             }
             else

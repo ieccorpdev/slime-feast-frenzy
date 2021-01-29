@@ -26,7 +26,7 @@ namespace IEC
 
         private Tween m_GameOver;
 
-        private static readonly List<string> TextWinBonus = new List<string>
+        public static readonly List<string> TextWinBonus = new List<string>
         {"You've done well", "Cool", "Bravo", "Awesome!", "Great", "Nicely Done!"};
 
         private float timeEffect = .4f;

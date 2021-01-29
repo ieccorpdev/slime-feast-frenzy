@@ -31,6 +31,11 @@ namespace IEC
             public const string SHOP_SELECT_ITEM = "GamePlay.SHOP_SELECT_ITEM";
             public const string SHOP_BUY_ITEM = "GamePlay.SHOP_BUY_ITEM";
             public const string SHOP_ADD_GOLD = "GamePlay.SHOP_ADD_GOLD";
+
+            public const string IAP_BUY_PACKAGES = "GamePlay.IAP_BUY_PACKAGES";
+            public const string IAP_RESTORE_NO_ADS = "GamePlay.IAP_RESTORE_NO_ADS";
+
+            public const string END_GAME_GET_REWARD = "GamePlay.END_GAME_GET_REWARD";
         }
     }
 }

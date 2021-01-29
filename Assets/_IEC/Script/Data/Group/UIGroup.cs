@@ -16,14 +16,25 @@ namespace IEC
 
         public RectTransform bottomAds;
 
-        public TMP_Text txtLevel;
+        public TMP_Text txtLevel, txtGold;
 
         public MainUIGroup mainUIGroup;
         public GameOverGroup gameOverUIGroup;
+        public GameOverRewardGroup gameOverReward;
 
         public PopupSetting popupSettings;
         public PopupRating popupRating;
         public PopupShop popupShop;
+
+        public GameObject loadingObj;
+        [SerializeField]
+        private GameObject m_PanelGoldObj;
+
+        [SerializeField]
+        private EffectCoinClaim m_EffectCoinClaim;
+
+        [SerializeField]
+        private Transform m_TransCoinIcon;
 
         public void LocateGroup()
         {
@@ -38,6 +49,7 @@ namespace IEC
             popupSettings.OnInit();
             popupRating.OnInit();
             popupShop.OnInit(ShopConfig);
+            gameOverReward.OnInit();
 
             OnResetAll();
         }
@@ -50,22 +62,58 @@ namespace IEC
             popupShop.gameObject.SetActive(false);
 
             popupSettings.SetStatus(PlayerData.isSoundOn, PlayerData.isVibrateOn);
+            mainUIGroup.SetActiveBtnNoAds();
             mainUIGroup.OnEffectTime(false);
-
+            mainUIGroup.SetActiveTopButtons(true);
+            gameOverReward.gameObject.SetActive(false);
             popupShop.OnResetAll();
 
             OnUpdateShopData();
+
+            SetActiveGroupGold(false);
         }
 
-        public void OnGameOver(bool isActive, Action callback = null)
+        public void EffectCoinClaim(int moneyAdd, int endMoney, Action callback = null)
         {
-            gameOverUIGroup.gameObject.SetActive(isActive);
-            gameOverUIGroup.TweenGameOver(isActive, callback);
+            m_EffectCoinClaim.SpawnEffect(txtGold, m_TransCoinIcon.position, moneyAdd, endMoney, callback);
+        }
+
+        public void OpenShop()
+        {
+            OnUpdateShopData();
+            SetActiveGroupGold(true);
+            popupShop.gameObject.SetActive(true);
+        }
+
+        public void SetActiveGroupGold(bool isActive)
+        {
+            m_PanelGoldObj.SetActive(isActive);
+        }
+
+        public void OnGameOver(bool isActive, bool isNewGameOver, Action callback = null)
+        {
+            if (isNewGameOver)
+            {
+                gameOverReward.gameObject.SetActive(true);
+                mainUIGroup.SetActiveTopButtons(false);
+                SetActiveGroupGold(true);
+            }
+            else
+            {
+                gameOverUIGroup.gameObject.SetActive(isActive);
+                gameOverUIGroup.TweenGameOver(isActive, callback);
+            }
         }
 
         public void OnUpdateShopData()
         {
             popupShop.OnUpdateData();
+            UpdateGold();
+        }
+
+        public void UpdateGold()
+        {
+            txtGold.text = StringHelper.GetNumber(PlayerData.gold);
         }
     }
 

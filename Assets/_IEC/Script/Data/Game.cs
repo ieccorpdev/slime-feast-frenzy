@@ -72,6 +72,8 @@ namespace IEC
 
         public InterDelayConfig interDelayConfig;
 
+        public float timeLeftAddGold;
+
         public float DelayInterstitial
         {
             get
@@ -113,7 +115,6 @@ namespace IEC
         public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
         
-
         public bool isHaveNotification;
 
         public int themeDefault;
@@ -146,11 +147,12 @@ namespace IEC
         public bool isNoShadow;
         public bool isHintStyleV3;
 
+        public bool isHaveEndGameReward;
+        public bool isGreenifyHydrated;
+        public bool isRootTreeChangeColorByWater;
+
         //Prepare
         public bool isHaveNoAds;
-        public bool isHaveRewardEndGame;
-        public bool isGreenifyHydrated;
-        public bool isRootTreeChangeColorByWater = true;
 
         public bool isLeavesEffect;
 
@@ -280,5 +282,11 @@ namespace IEC
         TopRight,
         BotLeft,
         BotRight
+    }
+
+    public enum IapPackages
+    {
+        None,
+        NoAds
     }
 }

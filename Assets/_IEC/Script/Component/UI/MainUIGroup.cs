@@ -9,8 +9,8 @@ namespace IEC
 {
     public class MainUIGroup : MonoBehaviour, IUIGroup
     {
-        private Game m_Game;
-        private Game Game => m_Game ?? Pool.Get<Game>();
+        private Game Game => Pool.Get<Game>();
+        private PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
 
         public Button btnRestart, btnSkip, btnSetting, btnHint, btnUndo, btnTime, btnShop, btnNoAds;
 
@@ -29,6 +29,9 @@ namespace IEC
         public GameObject hintAds, hintCount;
 
         [SerializeField]
+        private GameObject m_TopButtonsObj;
+
+        [SerializeField]
         private Gradient m_MoveColor;
 
 
@@ -38,6 +41,11 @@ namespace IEC
         }
 
         public void SetActiveTopButtons(bool isActive)
+        {
+            m_TopButtonsObj.SetActive(isActive);
+        }
+
+        public void SetEnableTopButtons(bool isActive)
         {
             btnSetting.interactable = isActive;
             btnSkip.interactable = isActive;
@@ -49,6 +57,11 @@ namespace IEC
             btnSetting.gameObject.SetActive(Game.isHaveSetting);
             btnSkip.gameObject.SetActive(!Game.isHaveHint);
             btnShop.gameObject.SetActive(Game.isHaveShop);
+        }
+
+        public void SetActiveBtnNoAds()
+        {
+            btnNoAds.gameObject.SetActive(Game.isHaveNoAds && !PlayerData.isNoAds);
         }
 
         public void SetupBossLevel(bool isBossLevel)
