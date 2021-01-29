@@ -19,7 +19,7 @@ namespace _IECModules
 
         public const string FACEBOOK_SDK_BASE_URL =
             "https://lookaside.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
-        
+
         public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
@@ -38,7 +38,7 @@ namespace _IECModules
 
         public const string FACEBOOK_SDK_CURRENT_VERSION_URL =
             "https://lookaside.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
-            
+
         public const string EXTERNAL_PACKAGE_MANAGER_URL =
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
 
@@ -47,6 +47,7 @@ namespace _IECModules
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
         public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
         public const string FIREBAE_ANALYTIC_PKG = "com.google.firebase.analytics";
+        public const string IN_APP_RATING_PKG = "com.google.play.review";
 
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
@@ -78,7 +79,8 @@ namespace _IECModules
         {
             [EXTERNAL_DEPENDENCY_PKG] = new UnityPackageInfo { id = EXTERNAL_DEPENDENCY_PKG },
             [FIREBASE_REMOTE_CONFIG_PKG] = new UnityPackageInfo { id = FIREBASE_REMOTE_CONFIG_PKG },
-            [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo { id = FIREBAE_ANALYTIC_PKG }
+            [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo { id = FIREBAE_ANALYTIC_PKG },
+            [IN_APP_RATING_PKG] = new UnityPackageInfo { id = IN_APP_RATING_PKG }
         };
 
         public static void LoadApplovinVersionList()
