@@ -150,6 +150,19 @@ namespace IEC
             UI.mainUIGroup.btnNoAds.onClick.AddListener(() => {
                 EventController.RaiseEvent(EventList.GamePlay.IAP_BUY_PACKAGES, new EventParam(this, IapPackages.NoAds));
             });
+
+            UI.gameOverReward.btnGetx5.onClick.AddListener(() => {
+                Services.ShowRewardAds(() => {
+                    UI.gameOverReward.gameObject.SetActive(false);
+                    Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
+                    EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+                });
+            });
+
+            UI.gameOverReward.btnNoThanks.onClick.AddListener(() => {
+                UI.gameOverReward.gameObject.SetActive(false);
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+            });
         }
 
         private void OnHandleButtonShop()

@@ -52,24 +52,12 @@ namespace IEC
                     var coinAdd = Game.goldReward;
                     if (isX5)
                     {
-                        UI.gameOverReward.gameObject.SetActive(false);
-                        Services.ShowRewardAds(() => {
-                            Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
-                            coinAdd *= 5;
-                            PlayerData.AddGold(coinAdd);
-                            UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
-                                EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
-                            });
-                        });
+                        coinAdd *= 5;
                     }
-                    else
-                    {
-                        UI.gameOverReward.gameObject.SetActive(false);
-                        PlayerData.AddGold(Game.goldReward);
-                        UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
-                            EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
-                        });
-                    }
+                    PlayerData.AddGold(coinAdd);
+                    UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
+                        EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
+                    });
                     break;
             }
         }
