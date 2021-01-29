@@ -60,6 +60,7 @@ namespace _IECModules
             PluginIronSource,
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
+            PluginInAppRating
         }
 
         private void Awake()
@@ -204,6 +205,30 @@ namespace _IECModules
 
             firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
                firebaseRemotePkg.listVersion,
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
+            #region In App Rating
+
+            var inAppRatingPkg = SdkHelper.DictUnityPackage[SdkHelper.IN_APP_RATING_PKG];
+            var inAppRatingLoaded = inAppRatingPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"In App Rating {(inAppRatingLoaded ? "Load Done" : $"Loading {loadingDotText}")}", ()=>
+            {
+                if(!inAppRatingLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                inAppRatingPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginInAppRating);
+            });
+            inAppRatingPkg.versionSelected = EditorGUILayout.Popup("", inAppRatingPkg.versionSelected,
+               inAppRatingPkg.listVersion,
                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
