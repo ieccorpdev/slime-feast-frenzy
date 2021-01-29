@@ -656,6 +656,7 @@ namespace IEC
                 if (requestFlowOperation.Error != ReviewErrorCode.NoError)
                 {
                     Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
+                    Application.OpenURL("market://details?id=" + Application.identifier);
                     yield break;
                 }
                 var playReviewInfo = requestFlowOperation.GetResult();
@@ -664,6 +665,7 @@ namespace IEC
                 if (launchFlowOperation.Error != ReviewErrorCode.NoError)
                 {
                     Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
+                    Application.OpenURL("market://details?id=" + Application.identifier);
                     yield break;
                 }
             }
