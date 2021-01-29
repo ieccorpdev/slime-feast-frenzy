@@ -2,12 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+#if PluginInAppRating
+#if UNITY_ANDROID
+using Google.Play.Review;
+#endif
+#endif
 namespace IEC
 {
     public class ServicesController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate, IEventPauseApp, IEventQuitApp
     {
-        #region properties
+#region properties
 
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
@@ -34,7 +38,7 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-        #endregion
+#endregion
 
         public void LocateController()
         {
@@ -93,7 +97,7 @@ namespace IEC
         public void BehaviourStart()
         {
             m_IsInitializing = false;
-            foreach(var sEvent in m_InitEvents)
+            foreach (var sEvent in m_InitEvents)
             {
                 EventController.RaiseEvent(sEvent, new EventParam(this));
             }
@@ -185,7 +189,7 @@ namespace IEC
             });
 #endif
             m_Ads = new AdsMock(false);
-            
+
             m_Login = new LoginMock();
             m_LeaderBoard = new LeaderBoardMock();
 
@@ -296,10 +300,10 @@ namespace IEC
             else
             {
 #if (PluginFacebookAudienceNetwork)
-    #if UNITY_IOS
+#if UNITY_IOS
                 Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled true");
                 AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(true);
-    #endif
+#endif
 #endif
 #if (PluginAppodeal)
                 var disableNetworks = new string[] {
@@ -636,8 +640,38 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Service.COUNT_ONE_SEC, new EventParam(this));
             }
         }
+#if PluginInAppRating
+        public void RateUs()
+        {
+#if UNITY_IOS
+            UnityEngine.iOS.Device.RequestStoreReview();
+#endif
+#if UNITY_ANDROID
+            StartCoroutine(IE_RequestReview());
+            IEnumerator IE_RequestReview()
+            {
+                ReviewManager m_Review = new ReviewManager();
+                var requestFlowOperation = m_Review.RequestReviewFlow();
+                yield return requestFlowOperation;
+                if (requestFlowOperation.Error != ReviewErrorCode.NoError)
+                {
+                    Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
+                    yield break;
+                }
+                var playReviewInfo = requestFlowOperation.GetResult();
+                var launchFlowOperation = m_Review.LaunchReviewFlow(playReviewInfo);
+                yield return launchFlowOperation;
+                if (launchFlowOperation.Error != ReviewErrorCode.NoError)
+                {
+                    Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
+                    yield break;
+                }
+            }
+#endif
+        }
+#endif
 
-#region services
+        #region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
