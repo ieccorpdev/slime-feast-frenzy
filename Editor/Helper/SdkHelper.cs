@@ -19,6 +19,9 @@ namespace _IECModules
 
         public const string FACEBOOK_SDK_BASE_URL =
             "https://lookaside.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
+        
+        public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
+            "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
         public const string KOCHAVA_SDK_BASE_URL =
             "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
@@ -48,6 +51,7 @@ namespace _IECModules
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
         public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, version);
+        public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") => string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
         public static string EDMUrlByVersion(string version) => string.Format(EXTERNAL_PACKAGE_MANAGER_URL, version, version.Substring(1));
 
         public static string IronSourceSdkUrlByVersion => string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
