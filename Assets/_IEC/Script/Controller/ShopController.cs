@@ -48,11 +48,11 @@ namespace IEC
                     });
                     break;
                 case EventList.GamePlay.END_GAME_GET_REWARD:
-                    UI.gameOverReward.gameObject.SetActive(false);
                     var isX5 = (bool)param.p0;
                     var coinAdd = Game.goldReward;
                     if (isX5)
                     {
+                        UI.gameOverReward.gameObject.SetActive(false);
                         Services.ShowRewardAds(() => {
                             Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
                             coinAdd *= 5;
@@ -64,6 +64,7 @@ namespace IEC
                     }
                     else
                     {
+                        UI.gameOverReward.gameObject.SetActive(false);
                         PlayerData.AddGold(Game.goldReward);
                         UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
                             EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
