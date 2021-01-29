@@ -113,7 +113,6 @@ namespace IEC
         public bool isHaveNewWaterSkin;
         public bool isHaveBossLimitMoveLevels;
         
-
         public bool isHaveNotification;
 
         public int themeDefault;

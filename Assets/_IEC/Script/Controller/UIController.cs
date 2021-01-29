@@ -1,4 +1,6 @@
 ﻿using MoreMountains.NiceVibrations;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -297,6 +299,10 @@ namespace IEC
         private void ShowGameOver()
         {
             UI.OnGameOver(true, Game.isHaveEndGameReward);
+            if (Game.isHaveEndGameReward)
+            {
+                StartCoroutine(SpawnConfetti());
+            }
         }
 
         private void ResetVibrateHint()
@@ -313,6 +319,29 @@ namespace IEC
             {
                 m_TimeLeftUI = m_TimeLeft;
                 UI.mainUIGroup.SetTextTimer(m_TimeLeftUI);
+            }
+        }
+
+        [SerializeField]
+        private List<ParticleSystem> m_ListPsWin;
+
+        IEnumerator SpawnConfetti()
+        {
+            for (int i = 0; i < m_ListPsWin.Count; i++)
+            {
+                yield return new WaitForSeconds(.75f);
+
+                var ps = m_ListPsWin[i];
+
+                ps.gameObject.SetActive(true);
+                ps.transform.localScale = Vector3.one * Random.Range(1.5f, 2f);
+                ps.transform.localPosition = new Vector3(
+                    Random.Range(-2, 2),
+                    Random.Range(-3, 3),
+                    2
+                );
+
+                ps.Play();
             }
         }
     }
