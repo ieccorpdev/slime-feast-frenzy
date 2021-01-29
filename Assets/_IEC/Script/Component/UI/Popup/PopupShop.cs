@@ -38,7 +38,7 @@ namespace IEC
         private Transform m_TransGroupBG;
 
         [SerializeField]
-        private TextMeshProUGUI m_TxtTitle;
+        private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem;
 
         private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND" };
 
@@ -158,6 +158,7 @@ namespace IEC
             }
 
             m_BtnBuyItemByAds.interactable = isAtive;
+            m_BtnBuyItemByGold.interactable = isAtive && (PlayerData.gold >= ShopController.GetGoldItem(TabSelected));
         }
 
         public void EffectBuyItem(ItemShopType type, int index)
@@ -231,7 +232,7 @@ namespace IEC
             }
 
             m_TxtTitle.text = SHOP_TITLE[tabSelect];
-
+            m_TxtGoldBuyItem.text = StringHelper.GetNumber(ShopController.GetGoldItem(TabSelected));
             OnUpdateButtonBuy();
         }
 

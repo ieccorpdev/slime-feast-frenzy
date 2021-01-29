@@ -30,6 +30,12 @@ namespace IEC
         [SerializeField]
         private GameObject m_PanelGoldObj;
 
+        [SerializeField]
+        private EffectCoinClaim m_EffectCoinClaim;
+
+        [SerializeField]
+        private Transform m_TransCoinIcon;
+
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -65,6 +71,11 @@ namespace IEC
             OnUpdateShopData();
 
             m_PanelGoldObj.SetActive(false);
+        }
+
+        public void EffectCoinClaim(int moneyAdd, int endMoney, Action callback = null)
+        {
+            m_EffectCoinClaim.SpawnEffect(txtGold, m_TransCoinIcon.position, moneyAdd, endMoney, callback);
         }
 
         public void OpenShop()
