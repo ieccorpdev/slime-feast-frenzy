@@ -47,13 +47,13 @@ namespace IEC
             Result20210114();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210121(abValue);
+            UpdateAb20210129(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210121(abValue);
+                    UpdateAb20210129(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -66,10 +66,19 @@ namespace IEC
             );
         }
 
+        private void UpdateAb20210129(int abValue)
+        {
+            Game.isHaveShop = abValue == 1 || abValue == 2;
+            Game.isHaveEndGameReward = abValue == 2;
+            Game.isGreenifyHydrated = abValue == 3;
+            Game.isRootTreeChangeColorByWater = abValue == 4;
+            UIController.SetupAbUI();
+        }
+
         private void UpdateAb20210121(int abValue)
         {
             Game.isHaveShop = true;
-            UIController.SetupAbUI();
+            //Controller.SetupAbUI();
         }
 
         private void Result20210114()

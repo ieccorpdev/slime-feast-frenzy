@@ -16,6 +16,9 @@ namespace IEC
 
         private const string COIN = "<sprite=\"coin\" index=0>";
 
+        [SerializeField]
+        private RectTransform m_RectBot;
+
         public void OnInit()
         {
             m_BtnGetx5.onClick.AddListener(() => {
@@ -31,6 +34,11 @@ namespace IEC
         {
             m_TxtGold.text = $"{StringHelper.GetNumber(gold)} {COIN}";
             m_TxtGO.text = GameOverGroup.TextWinBonus[Random.Range(0, GameOverGroup.TextWinBonus.Count)];
+        }
+
+        public void SetPosGroupBottom(float bannerHeight)
+        {
+            m_RectBot.anchoredPosition = new Vector2(0f, bannerHeight);
         }
     }
 }
