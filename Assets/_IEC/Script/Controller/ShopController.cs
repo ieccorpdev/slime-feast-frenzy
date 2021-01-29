@@ -48,27 +48,16 @@ namespace IEC
                     });
                     break;
                 case EventList.GamePlay.END_GAME_GET_REWARD:
-                    UI.gameOverReward.gameObject.SetActive(false);
                     var isX5 = (bool)param.p0;
                     var coinAdd = Game.goldReward;
                     if (isX5)
                     {
-                        Services.ShowRewardAds(() => {
-                            Services.PushEvent(new IEC.TrackingEvent.ShowRewardX5Gold());
-                            coinAdd *= 5;
-                            PlayerData.AddGold(coinAdd);
-                            UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
-                                EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
-                            });
-                        });
+                        coinAdd *= 5;
                     }
-                    else
-                    {
-                        PlayerData.AddGold(Game.goldReward);
-                        UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
-                            EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
-                        });
-                    }
+                    PlayerData.AddGold(coinAdd);
+                    UI.EffectCoinClaim(coinAdd, PlayerData.gold, () => {
+                        EventController.RaiseEventDelay(.2f, EventList.GamePlay.GAME_RESTART);
+                    });
                     break;
             }
         }

@@ -11,8 +11,7 @@ namespace IEC
         [SerializeField]
         private TextMeshProUGUI m_TxtGO, m_TxtGold;
 
-        [SerializeField]
-        private Button m_BtnGetx5, m_BtnNoThanks;
+        public Button btnGetx5, btnNoThanks;
 
         private const string COIN = "<sprite=\"coin\" index=0>";
 
@@ -21,13 +20,7 @@ namespace IEC
 
         public void OnInit()
         {
-            m_BtnGetx5.onClick.AddListener(() => {
-                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
-            });
 
-            m_BtnNoThanks.onClick.AddListener(() => {
-                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, false));
-            });
         }
 
         public void SetGoldReward(int gold)
