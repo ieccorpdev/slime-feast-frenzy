@@ -75,6 +75,13 @@ namespace IEC
 
         public void BehaviourUpdate(float deltaTime)
         {
+            if (Game.timeLeftAddGold > 0)
+            {
+                Game.timeLeftAddGold -= deltaTime;
+            }
+
+            UI.popupShop.SetCountDown();
+
             if (!Game.isPlaying) return;
             if (Game.isHaveUIAnimation)
             {
@@ -329,7 +336,7 @@ namespace IEC
         {
             for (int i = 0; i < m_ListPsWin.Count; i++)
             {
-                yield return new WaitForSeconds(.75f);
+                yield return new WaitForSeconds(.35f);
 
                 var ps = m_ListPsWin[i];
 

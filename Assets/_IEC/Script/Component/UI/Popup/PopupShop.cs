@@ -38,7 +38,7 @@ namespace IEC
         private Transform m_TransGroupBG;
 
         [SerializeField]
-        private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem;
+        private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem, m_TxtTimeCountDown;
 
         private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND" };
 
@@ -50,6 +50,9 @@ namespace IEC
 
         [SerializeField]
         private RectTransform m_RectBottomGroup;
+
+        [SerializeField]
+        private GameObject m_GoldObj;
 
         public void OnInit(ShopConfig shopConfig)
         {
@@ -117,6 +120,24 @@ namespace IEC
             m_BtnAddGolds.onClick.AddListener(() => {
                 EventController.RaiseEvent(EventList.GamePlay.SHOP_ADD_GOLD);
             });
+        }
+
+        private bool m_IsOldStatus = true, m_IsActiveTimer;
+        public void SetCountDown()
+        {
+            m_IsActiveTimer = Game.timeLeftAddGold > 0;
+
+            if (m_IsActiveTimer)
+            {
+                m_TxtTimeCountDown.text = StringHelper.GetTime((int)Game.timeLeftAddGold);
+            }
+            if (m_IsActiveTimer != m_IsOldStatus)
+            {
+                m_IsOldStatus = m_IsActiveTimer;
+                m_TxtTimeCountDown.gameObject.SetActive(m_IsActiveTimer);
+                m_GoldObj.SetActive(!m_IsActiveTimer);
+                m_BtnAddGolds.interactable = !m_IsActiveTimer;
+            }
         }
 
         public void OnResetAll()
@@ -241,6 +262,7 @@ namespace IEC
             gameObject.SetActive(false);
             Game.isShowPopup = false;
             OnResetAll();
+            Pool.Get<UIGroup>().SetActiveGroupGold(false);
         }
     }
 }

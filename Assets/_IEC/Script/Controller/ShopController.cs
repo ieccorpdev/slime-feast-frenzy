@@ -39,6 +39,7 @@ namespace IEC
                     break;
                 case EventList.GamePlay.SHOP_ADD_GOLD:
                     Services.ShowRewardAds(() => {
+                        Game.timeLeftAddGold = 300f;
                         Services.PushEvent(new IEC.TrackingEvent.ShowRewardAddGoldInShop());
                         PlayerData.AddGold(200);
                         UI.EffectCoinClaim(200, PlayerData.gold, () => {

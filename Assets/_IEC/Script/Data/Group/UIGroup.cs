@@ -70,7 +70,7 @@ namespace IEC
 
             OnUpdateShopData();
 
-            m_PanelGoldObj.SetActive(false);
+            SetActiveGroupGold(false);
         }
 
         public void EffectCoinClaim(int moneyAdd, int endMoney, Action callback = null)
@@ -81,8 +81,13 @@ namespace IEC
         public void OpenShop()
         {
             OnUpdateShopData();
-            m_PanelGoldObj.SetActive(true);
+            SetActiveGroupGold(true);
             popupShop.gameObject.SetActive(true);
+        }
+
+        public void SetActiveGroupGold(bool isActive)
+        {
+            m_PanelGoldObj.SetActive(isActive);
         }
 
         public void OnGameOver(bool isActive, bool isNewGameOver, Action callback = null)
@@ -91,7 +96,7 @@ namespace IEC
             {
                 gameOverReward.gameObject.SetActive(true);
                 mainUIGroup.SetActiveTopButtons(false);
-                m_PanelGoldObj.SetActive(true);
+                SetActiveGroupGold(true);
             }
             else
             {

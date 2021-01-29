@@ -72,6 +72,8 @@ namespace IEC
 
         public InterDelayConfig interDelayConfig;
 
+        public float timeLeftAddGold;
+
         public float DelayInterstitial
         {
             get
