@@ -1,89 +1,106 @@
-## IEC Module
-Common Modules for all IEC Unity Projects! 
+# IEC Game
 
-### Installation
+## Empty Project
+
+> Project để khởi tạo code các dự án game
+
+* [naming-convention] - Quy chuẩn đặt tên
+* [folder-structure] - Cấu trúc thư mục
+* [project-structure] - Cấu trúc mẫu project
+
+## [Project IEC Module] - git subtree cho code chung
+
+[Project IEC Module]: <https://gitlab.com/iecgames/iec-unity-modules>
+[naming-convention]: <Wiki/naming-convention.md>
+[folder-structure]: <Wiki/assets-folder-structure.md>
+[project-structure]: <Wiki/event-data-controller-template-project.md>
+
+## Các giai đoạn sản xuất game
+* Test CPI
+* Tối ưu LTV
+* Đẩy Monetize
+
+## Tổ chức git branch
+#### Các branch chính
+* `develop` : nơi commit chuẩn bị cho release kế tiếp
+* `master` : nơi commit chuẩn bị cho release hiện tại
+* `release/aab` , `release/ios` : nơi commit build các bản release
+#### Các nhóm branch phụ
+* `sdk/` : dành cho maintain sdk riêng với android, ios
+* `dev/` : dành cho riêng từng feature
+* `hotfix/` : branch fix bug cho bản release
+* `mkt/` : branch tính năng quay video ads
+
+### Tạo Gitlab project mới bằng Discord
 ```
-# First Time Install: add the Project to `Assets/_IECModules` folder.
-git subtree add -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
-
-# Pull new update to module in the same folder.
-git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
-
-# Push all the commit with changes back.
-git subtree push -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master
-```
-*Add or pull a new project should use `--squash`, which merge all changes into 1 commit only*
-
-### Usage
-Add Module Controller from menu `IEC/Create Module Controller` at first scene your game start, similar to Unity Reporter
-
-#### 1. Unity Package Included:
-* [Unity Log Viewer (Reporter)](https://assetstore.unity.com/packages/tools/log-viewer-12047)
-* [Player Prefs Editor](https://assetstore.unity.com/packages/tools/playersprefs-editor-and-utilities-26656)
-
-#### 2. Unity Helper Script:
-* [Show FPS](http://wiki.unity3d.com/index.php?title=FramesPerSecond)
-* [Play From First Scene](https://answers.unity.com/questions/441246/editor-script-to-make-play-always-jump-to-a-start.html)
-
-#### 3. Cheat Code Modules
-
-##### Public Params
-* `haveOpenedCheatCode` `bool`: `true` when the Cheat Code have been opened at least once. 
-* `showCheatCodeState` The current State of CheatCode (`Show`, `ShowPasswordInput`, `ShowCheatCode`)
-* `onCheatCodeOpen` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel open
-* `onCheatCodeClose` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel close
-* `onCheatCodeStateChange` [UnityAction](https://docs.unity3d.com/ScriptReference/Events.UnityAction.html) Callback when CheatCode Panel State change (`Show`, `ShowPasswordInput`, `ShowCheatCode`)
-* `positionActivate` The screen corner position to click open CheatCode
-
-##### Methods
-* AddCheatCodeButton(string `buttonText`, Action\<CheatCodeParam\> `onClick`)
-```
-ModuleController.cheatCode.AddCheatCodeButton("Test Button", cheatCodeParam => {
-    cheatCodeParam.buttonText = "Clicked!!";
-});
-```
-* AddCheatCodeButtonWithInput(string `buttonText`, Action\<CheatCodeParam\> `onClick`, params InputParam[] `inputParams`)
-```
-ModuleController.cheatCode.AddCheatCodeButtonWithInput("Mouse Rotation",
-    param => { print(param.inputParams.Count); },
-    new CheatCode.InputParam {label = "x"}
-    , new CheatCode.InputParam {label = "y"}
-    , new CheatCode.InputParam {label = "z"}
-);
-```
-* AddCheatCodeButtonWithDropdown(string `buttonText`, Action\<CheatCodeParam\> `onClick`, List\<string\> `options`, int `defaultValue = 0`)
-```
-ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("AB Test",
-    cheatCodeParam =>
-    {
-        print(cheatCodeParam.dropdownParam.value);
-        // set new AB Test Value
-    }, new List<string>
-    {
-        "AB-FullAds-30",
-        "AB-FullAds-60"
-    }
-    , Controllers.Get<ServicesController>().ABTest().GetValue("AB-FullAds")
-);
-```
-* Others
-```
-# Get Cheat Code Param From Button Text
-ModuleController.cheatCode.GetCheatCodeParam(buttonText);
-
-# Remove Cheat Code by Button Text
-ModuleController.cheatCode.RemoveCheatCodeButtonByName(buttonText);
-
+!create-git <Name of the project>
+[Example] 
+!create-git Ball Sort Puzzle
 ```
 
-#### 4. Plugin Define Symbols
-* `PluginFacebook` : add after import Facebook SDK to use `FBAnalyticEvent`
-* `PluginFirebase` : add after import any Firebase SDK
-* `PluginFirebaseAnalytic` : add after import Firebase Analytic SDK to use `FirebaseAnalyticModule`
-* `PluginFirebaseRemote` : add after import Firebase Remote SDK to use `FirebaseRemoteConfigModule`
-* `PluginAppodeal` : add after import Appodeal SDK to use `AppodealModule`
-* `PluginGoogleAds` : add after import Admob SDK to use `AdmobModule` with `EcpmAdsModule`
-* `PluginApplovin` : add after import Applovin SDK to use `ApplovinModule`
-* `PluginKochava` : add after import Kochava SDK to use `KochavaAnalyticModule`
-* `PluginUnityIAP` : add after add Unity IAP SDK to use `IapUnityModule`
-* `PluginReceiptVerify` : add after create `GooglePlayTangle` and `AppleTangle` to verify IAP offline
+### Tạo Unity Cloud Build bằng Discord
+```
+!create-ucb <link-to-google-sheet-checklist>
+[Example] 
+!create-ucb https://docs.google.com/spreadsheets/d/132-mvGPajWw38ZuNMS6uPHisaw0H8jZsmapIdup42zc/edit#gid=927018210
+```
+
+### Quy trình giai đoạn Test CPI
+1. Tạo project `gitlab`
+2. Checkout branch `develop`
+3. Commit hoàn thiện tính năng yêu cầu cho bản test CPI
+4. Gắn `Facebook` SDK, gắn `Kochava` SDK, Dependency Resolver > Resolve project
+5. Dùng tool gắn ID từ `checklist`
+6. Config gắn `keystore` đã tạo bởi tool
+7. Merge branch vào `release`
+8. Tạo Unity cloud build trên branch `release/aab`
+
+### Quy trình giai đoạn Tối ưu LTV
+1. Checkout branch `develop`
+2. Gắn `Applovin` SDK
+4. Dùng tool gắn Applovin Ads ID, inter, banner, reward ID, Admob ID
+5. Commit hoàn thiện các tính năng AB test (xem thêm Quy trình bổ sung tính năng mới)
+6. Dùng tool update config AB test từ checklist AB Test
+7. Merge branch vào `release`
+8. Check Unity cloud build
+
+### Quy trình giai đoạn Đẩy Monetize
+1. Block push thẳng với branch `release`
+2. Chỉnh sửa vào branch release phải qua merge request gửi tới dev phụ trách chính
+
+### Quy trình merge branch vào release
+1. Merge `develop` vào `master`
+2. Merge `master` vào `release/aab`
+(hoặc push lên gitlab tạo merge request)
+
+### Quy trình bổ sung tính năng mới
+1. Tạo branch `dev/feature-x`
+2. Tạo code bật/tắt cho tính năng logic mới
+3. Đặt test code bật tính năng trong `ABTestController`
+4. Đề xuất Review bổ sung tính năng mới
+5. Xóa test code bật tính năng trong `ABTestController`
+5. Merge branch vào `develop`
+
+### Quy trình review bổ sung tính năng mới
+1. Kiểm tra code mới có block toggle bật/tắt với code cũ
+2. Biến toggle có tên dạng `(bool) isHaveABC` hoặc `(int) versionABC`
+3. Test tắt feature không ảnh hưởng logic cũ
+
+### Quy trình fix bug release (Merge)
+1. Checkout branch `master`
+2. Commit fix bug
+3. Merge `master` vào cả `develop` và `release`
+
+### Quy trình fix bug release (Cherry-pick)
+1. Checkout branch `develop`
+2. Commit fix bug
+3. Cherry-pick commit vào cả `develop` và `release`
+
+### Checklist bug hay gặp
+* Gameplay, UI bị sai khi ở tỉ lệ màn hình 16:9, 18:9,...
+* Safe area
+* Banner bottom Ads đè UI
+* Show inter bị delay vào gameplay khiến click nhầm
+
+Xem thêm tại IEC Dev Workflow
+<https://docs.google.com/document/d/1ziseqnM_tzq4_2u9jZ8u17AQ83y8k_A9xG0E1CeOU_k/edit?usp=sharing>
