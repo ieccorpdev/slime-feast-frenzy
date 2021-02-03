@@ -361,14 +361,14 @@ namespace _IECModules
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
                         servicesConfig.ApplovinConfig.ios.appID = checklistItemValue;
 #if UNITY_IOS
-                        UpdateApplovinQualityService(checklistItemValue);
+                        // UpdateApplovinQualityService(checklistItemValue);
 #endif
                         break;
                     case ChecklistItemName.ApplovinAndroidID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin Android ID: {checklistItemValue}");
                         servicesConfig.ApplovinConfig.android.appID = checklistItemValue;
 #if UNITY_ANDROID
-                        UpdateApplovinQualityService(checklistItemValue);
+                        // UpdateApplovinQualityService(checklistItemValue);
 #endif
                         break;
                     case ChecklistItemName.ApplovinIOSInterID:
