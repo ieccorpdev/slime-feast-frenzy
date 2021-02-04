@@ -71,6 +71,7 @@ namespace IEC
             PlayerData.isNoAds = true;
             Services.ActiveNoAds(true);
             UI.mainUIGroup.SetActiveBtnNoAds();
+            UI.popupShop.SetActiveNoAds();
             Services.PushEvent(new IEC.TrackingEvent.BuyNoAds());
         }
 

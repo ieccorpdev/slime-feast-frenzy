@@ -61,7 +61,7 @@ namespace IEC
 
         public void SetActiveBtnNoAds()
         {
-            btnNoAds.gameObject.SetActive(Game.isHaveNoAds && !PlayerData.isNoAds);
+            btnNoAds.gameObject.SetActive(Game.isHaveNoAdsInMainScreen && !PlayerData.isNoAds);
         }
 
         public void SetupBossLevel(bool isBossLevel)

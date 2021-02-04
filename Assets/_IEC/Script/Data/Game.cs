@@ -152,7 +152,8 @@ namespace IEC
         public bool isRootTreeChangeColorByWater;
 
         //Prepare
-        public bool isHaveNoAds;
+        public bool isHaveNoAdsInMainScreen;
+        public bool isHaveNoAdsInShopTab;
 
         public bool isLeavesEffect;
 
