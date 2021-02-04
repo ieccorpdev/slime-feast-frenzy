@@ -54,6 +54,16 @@ namespace IEC
 #endif
             });
 
+            ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_WIN", cheatCodeParam =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_LOSE", cheatCodeParam =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Toggle NoAds", cheatCodeParam =>
             {
                 var data = Pool.Get<ServiceData>();
