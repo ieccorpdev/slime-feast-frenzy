@@ -151,8 +151,11 @@ namespace IEC
         public bool isGreenifyHydrated;
         public bool isRootTreeChangeColorByWater;
 
-        //Prepare
-        public bool isHaveNoAds;
+        public bool isHaveNoAdsInMainScreen;
+        public bool isHaveNoAdsInShopTab;
+        public bool isCameraTopView;
+        public bool isNewGameOver;
+        public bool isHaveConfettiGameOver;
 
         public bool isLeavesEffect;
 

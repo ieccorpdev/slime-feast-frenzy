@@ -14,10 +14,11 @@ namespace IEC
         private Game Game => Pool.Get<Game>();
 
         [SerializeField]
-        private Button m_BtnTabBackground, m_BtnTabTheme;
+        private Button m_BtnTabBackground, m_BtnTabTheme, m_BtnTabNoAds;
 
         [SerializeField]
-        private Button m_BtnBack, m_BtnBuyItemByAds, m_BtnBuyItemByGold, m_BtnAddGolds;
+        private Button m_BtnBack, m_BtnBuyItemByAds, m_BtnBuyItemByGold, m_BtnAddGolds, 
+            m_BtnNoAds, m_BtnRestorePurchase;
 
         [SerializeField]
         private GameObject[] m_Tabs, m_BtnNotSelect, m_BtnSelect;
@@ -40,7 +41,7 @@ namespace IEC
         [SerializeField]
         private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem, m_TxtTimeCountDown;
 
-        private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND" };
+        private static string[] SHOP_TITLE = new string[] {"THEME", "BACKGROUND", "NO ADS" };
 
         [SerializeField]
         private ItemClaimShop m_ItemClaim;
@@ -52,7 +53,7 @@ namespace IEC
         private RectTransform m_RectBottomGroup;
 
         [SerializeField]
-        private GameObject m_GoldObj;
+        private GameObject m_GoldObj, m_PurchasedObj;
 
         public void OnInit(ShopConfig shopConfig)
         {
@@ -91,6 +92,17 @@ namespace IEC
             OnSelectTab(0);
         }
 
+        public void SetupAbUI()
+        {
+            var width = Game.isHaveNoAdsInShopTab ? 345f : 530f;
+            var size = new Vector2(width, 118f);
+            m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
+            m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
+            m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
+
+            m_BtnTabNoAds.gameObject.SetActive(Game.isHaveNoAdsInShopTab);
+        }
+
         private void InitButtonEvent()
         {
             m_BtnTabBackground.onClick.RemoveAllListeners();
@@ -101,6 +113,11 @@ namespace IEC
             m_BtnTabTheme.onClick.RemoveAllListeners();
             m_BtnTabTheme.onClick.AddListener(() => {
                 OnSelectTab(1);
+            });
+
+            m_BtnTabNoAds.onClick.RemoveAllListeners();
+            m_BtnTabNoAds.onClick.AddListener(() => {
+                OnSelectTab(2);
             });
 
             m_BtnBack.onClick.RemoveAllListeners();
@@ -120,6 +137,23 @@ namespace IEC
             m_BtnAddGolds.onClick.AddListener(() => {
                 EventController.RaiseEvent(EventList.GamePlay.SHOP_ADD_GOLD);
             });
+
+            m_BtnNoAds.onClick.RemoveAllListeners();
+            m_BtnNoAds.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.IAP_BUY_PACKAGES, new EventParam(this, IapPackages.NoAds));
+            });
+
+            m_BtnRestorePurchase.onClick.RemoveAllListeners();
+            m_BtnRestorePurchase.onClick.AddListener(() => {
+                EventController.RaiseEvent(EventList.GamePlay.IAP_RESTORE_NO_ADS);
+            });
+        }
+
+        public void SetActiveNoAds()
+        {
+            m_PurchasedObj.SetActive(PlayerData.isNoAds);
+            m_BtnNoAds.gameObject.SetActive(!PlayerData.isNoAds);
+            m_BtnRestorePurchase.gameObject.SetActive(PlayerData.isNoAds);
         }
 
         private bool m_IsOldStatus = true, m_IsActiveTimer;
@@ -144,6 +178,7 @@ namespace IEC
         {
             m_ItemClaim.OnResetAll();
             m_ItemClaim.gameObject.SetActive(false);
+            SetActiveNoAds();
         }
 
         public void OnUpdateData()

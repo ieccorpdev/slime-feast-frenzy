@@ -276,6 +276,7 @@ namespace IEC
         {
             UI.mainUIGroup.SetupAbUI();
             UI.popupSettings.SetupAbUI();
+            UI.popupShop.SetupAbUI();
         }
 
         public void OnResetAll()
@@ -302,6 +303,7 @@ namespace IEC
         {
             UI.mainUIGroup.OnEffectTime(false);
             UI.gameOverUIGroup.SetTextGameOver(isWin);
+            UI.gameOverUIGroupNew.SetTextGameOver(isWin);
             UI.gameOverReward.SetGoldReward(Game.goldReward);
             EventController.RaiseEvent(EventList.GamePlay.PLAY_SOUND, new EventParam(SoundName.VICTORY));
             
@@ -317,8 +319,8 @@ namespace IEC
 
         private void ShowGameOver()
         {
-            UI.OnGameOver(true, Game.isHaveEndGameReward);
-            if (Game.isHaveEndGameReward)
+            UI.OnGameOver(true, Game.isHaveEndGameReward || Game.isNewGameOver);
+            if (Game.isHaveEndGameReward || Game.isHaveConfettiGameOver)
             {
                 StartCoroutine(SpawnConfetti());
             }

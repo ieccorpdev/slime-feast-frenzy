@@ -43,7 +43,7 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAds);
+            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsInMainScreen);
         }
     }
 }
