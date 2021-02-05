@@ -321,7 +321,7 @@ namespace IEC
         private void ShowGameOver()
         {
             UI.OnGameOver(true, Game.isHaveEndGameReward || Game.isNewGameOver);
-            if (Game.isHaveEndGameReward)
+            if (Game.isHaveEndGameReward || Game.isHaveConfettiGameOver)
             {
                 StartCoroutine(SpawnConfetti());
             }

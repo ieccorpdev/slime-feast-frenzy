@@ -30,7 +30,7 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            SetupMainCam();
+            //SetupMainCam();
         }
 
         public void SetupMainCam()
