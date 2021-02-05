@@ -61,6 +61,12 @@ namespace IEC
                 value = PlayerData.level
             });
 
+            ModuleController.cheatCode.AddCheatCodeButton("Set GameOver", cheatCodeParam =>
+            {
+                GameController.GameOver(true);
+                EventController.RaiseEventDelay(.1f, EventList.GamePlay.GAME_OVER_UI, new EventParam(this, true));
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Level: " + Game.isCheatLevel, cheatCodeParam =>
             {
                 Game.isCheatLevel = !Game.isCheatLevel;
