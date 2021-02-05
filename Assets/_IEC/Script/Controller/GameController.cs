@@ -30,6 +30,18 @@ namespace IEC
 
         public void BehaviourAwake()
         {
+            SetupMainCam();
+        }
+
+        public void SetupMainCam()
+        {
+            var posY = Game.isCameraTopView ? 5.1f : 5.2f;
+            var posZ = Game.isCameraTopView ? -.1f : -2.16f;
+
+            var rotX = Game.isCameraTopView ? 90f : 70f;
+            GamePlay.mainCamera.transform.localRotation = Quaternion.Euler(rotX, 0f, 0f);
+            GamePlay.mainCamera.transform.localPosition = new Vector3(0f, posY, posZ);
+
             m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
         }
