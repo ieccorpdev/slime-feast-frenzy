@@ -21,6 +21,7 @@ namespace IEC
         public MainUIGroup mainUIGroup;
         public GameOverGroup gameOverUIGroup;
         public GameOverRewardGroup gameOverReward;
+        public GameOverGroupNew gameOverUIGroupNew;
 
         public PopupSetting popupSettings;
         public PopupRating popupRating;
@@ -50,6 +51,7 @@ namespace IEC
             popupRating.OnInit();
             popupShop.OnInit(ShopConfig);
             gameOverReward.OnInit();
+            gameOverUIGroupNew.OnInit();
 
             OnResetAll();
         }
@@ -66,6 +68,7 @@ namespace IEC
             mainUIGroup.OnEffectTime(false);
             mainUIGroup.SetActiveTopButtons(true);
             gameOverReward.gameObject.SetActive(false);
+            gameOverUIGroupNew.gameObject.SetActive(false);
             popupShop.OnResetAll();
 
             OnUpdateShopData();
@@ -94,9 +97,11 @@ namespace IEC
         {
             if (isNewGameOver)
             {
-                gameOverReward.gameObject.SetActive(true);
+                bool isShowRewardEndGame = Game.isHaveEndGameReward;
+                gameOverReward.gameObject.SetActive(isShowRewardEndGame);
                 mainUIGroup.SetActiveTopButtons(false);
-                SetActiveGroupGold(true);
+                SetActiveGroupGold(isShowRewardEndGame);
+                gameOverUIGroupNew.gameObject.SetActive(Game.isNewGameOver);
             }
             else
             {

@@ -154,6 +154,7 @@ namespace IEC
         public bool isHaveNoAdsInMainScreen;
         public bool isHaveNoAdsInShopTab;
         public bool isCameraTopView;
+        public bool isNewGameOver;
 
         public bool isLeavesEffect;
 
