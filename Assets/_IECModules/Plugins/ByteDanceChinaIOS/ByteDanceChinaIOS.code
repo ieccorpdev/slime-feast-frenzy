@@ -1,0 +1,42 @@
+#import <Foundation/Foundation.h>
+#import "BDAutoTrack.h"
+
+NSString* CreateNSString(const char* string){
+    if(string){
+        return [NSString stringWithUTF8String:string];
+    }
+    else{
+        return [NSString stringWithUTF8String:""];
+    }
+}
+
+extern "C" {
+    
+#pragma mark - Functions
+    
+    void _initByteDance(const char* appId , const char* appName) {
+       
+        /* Initialization start*/
+        BDAutoTrackConfig *config = [BDAutoTrackConfig new];
+
+        /* The default domestic domain name: BDAutoTrackServiceVendorCN,
+             Singapore: BDAutoTrackServiceVendorSG,
+             East US: BDAutoTrackServiceVendorVA,
+             Note: The did registered for different vendor services at home and abroad are different. Switching from CN to SG or VA will change, and switch back will also change. Therefore, you must be cautious when switching vendors. Random switching can cause problems with user addition and statistics, which requires self-assessment. */
+        NSString* nsAppId = CreateNSString(appId);
+        NSString* nsAppName = CreateNSString(appName);
+        NSLog(@"appId: %@",nsAppId);
+        NSLog(@"appName: %@",nsAppName);
+        config.serviceVendor = BDAutoTrackServiceVendorCN;
+
+        config.appID = nsAppId; // Advertising background application, tool-conversion tracking-tracking application-use sdk
+        config.appName = nsAppName; // Same as the app_name when you applied for the app ID
+        config.channel = @"App Store"; // iOS generally defaults to App Store
+        config.showDebugLog = NO; // Whether to output the log in the console, only for debugging. Please set the release version to NO
+        config.logNeedEncrypt = YES; // Whether to encrypt the log, the default encryption. Please set the release version to YES
+        config.gameModeEnable = YES;
+        [BDAutoTrack startTrackWithConfig:config];
+        NSLog(@"End of init bytedance");
+        /* End of initialization*/
+    }
+}

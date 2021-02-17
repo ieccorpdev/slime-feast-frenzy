@@ -9,7 +9,7 @@ public class ServicesConfig : ScriptableObject
 {
     [Header("Project Checklist URL")]
     public string projectChecklistUrl;
-    
+
     [Header("Bundle Version")]
     public int bundleVersion;
 
@@ -52,6 +52,10 @@ public class ServicesConfig : ScriptableObject
     public bool isTestRemoteConfig;
     public List<RemoteConfigData> remoteConfigs;
 
+    [Header("ByteDanceConfig")]
+    public string appName;
+    public string appId;
+
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";
 
@@ -84,7 +88,7 @@ public class ServicesConfig : ScriptableObject
             remoteConfigs = new List<RemoteConfigData>();
         }
 
-        if(remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
+        if (remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
         {
             remoteConfigs.Add(remoteCustomEventFirebase);
         }

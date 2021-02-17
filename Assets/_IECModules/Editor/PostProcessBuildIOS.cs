@@ -66,6 +66,29 @@ public class PostProcessBuildIOS : MonoBehaviour
             pbxProject.ReadFromFile(projectPath);
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
+
+#if PluginByteDanceChinaIOS
+            var debugRangerPath = path + "/Pods/Target Support Files/RangersAppLog/RangersAppLog.debug.xcconfig";
+            var releaseRangerPath = path + "/Pods/Target Support Files/RangersAppLog/RangersAppLog.release.xcconfig";
+            var debugRangerContent = File.ReadAllText(debugRangerPath);
+            var releaseRangerContent = File.ReadAllText(releaseRangerPath);
+            debugRangerContent += "ENABLE_BITCODE = NO\n";
+            releaseRangerContent += "ENABLE_BITCODE = NO\n";
+            File.WriteAllText(debugRangerPath, debugRangerContent);
+            File.WriteAllText(releaseRangerPath, releaseRangerContent);
+
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "libz.tbd", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "libsqlite3.tbd", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "Foundation.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "UIKit.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "JavaScriptCore.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "WebKit.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "CoreFoundation.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "CoreTelephony.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "Security.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "SystemConfiguration.framework", false);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "AdSupport.framework", false);
+#endif
             pbxProject.WriteToFile(projectPath);
         }
 

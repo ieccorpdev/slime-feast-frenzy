@@ -2,16 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 #if PluginInAppRating
 #if UNITY_ANDROID
 using Google.Play.Review;
 #endif
 #endif
+
+#if PluginByteDanceChinaIOS
+using System.Runtime.InteropServices;
+#endif
+
 namespace IEC
 {
     public class ServicesController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate, IEventPauseApp, IEventQuitApp
     {
-#region properties
+        #region properties
 
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
@@ -38,7 +44,12 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#endregion
+        #endregion
+
+#if PluginByteDanceChinaIOS
+        [DllImport("__Internal")]
+        private static extern int _initByteDance(string appId, string appName);
+#endif
 
         public void LocateController()
         {
@@ -229,6 +240,9 @@ namespace IEC
 #if (PluginFirebaseRemote)
             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
+#endif
+#if PluginByteDanceChinaIOS
+            _initByteDance(config.appId, config.appName);
 #endif
             InitAdsAfterGDPR(true);
 
@@ -793,6 +807,6 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-#endregion
+        #endregion
     }
 }
