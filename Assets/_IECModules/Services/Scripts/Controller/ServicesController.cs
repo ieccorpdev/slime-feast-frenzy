@@ -2,16 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Balaso;
 #if PluginInAppRating
 #if UNITY_ANDROID
 using Google.Play.Review;
 #endif
 #endif
+
+#if PluginByteDanceChinaIOS
+using System.Runtime.InteropServices;
+#endif
+
+
 namespace IEC
 {
     public class ServicesController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate, IEventPauseApp, IEventQuitApp
     {
-#region properties
+        #region properties
 
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
@@ -38,7 +45,12 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#endregion
+        #endregion
+
+#if PluginByteDanceChinaIOS
+        [DllImport("__Internal")]
+        private static extern int _initByteDance(string appId, string appName);
+#endif
 
         public void LocateController()
         {
@@ -76,7 +88,10 @@ namespace IEC
             if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
-
+#if UNITY_IOS
+            AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
+            AppTrackingTransparency.UpdateConversionValue(3);
+#endif
             InitServices();
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
@@ -230,7 +245,46 @@ namespace IEC
             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
 #endif
-            InitAdsAfterGDPR(true);
+#if PluginByteDanceChinaIOS
+            _initByteDance(config.appId, config.appName);
+#endif
+#if UNITY_IOS
+            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+            {
+                switch (status)
+                {
+                    case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
+                        Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
+                        Debug.LogWarning("AuthorizationStatus: RESTRICTED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.DENIED:
+                        Debug.LogWarning("AuthorizationStatus: DENIED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
+                        Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                        break;
+                }
+                // Obtain IDFA
+                Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
+                InitAdsAfterGDPR(true, status == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+            };
+
+            AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
+            Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
+            if (currentStatus != AppTrackingTransparency.AuthorizationStatus.AUTHORIZED)
+            {
+                Debug.LogWarning("Requesting authorization...");
+                AppTrackingTransparency.RequestTrackingAuthorization();
+            }
+            else
+            {
+                InitAdsAfterGDPR(true, currentStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+            }
+#else
+            InitAdsAfterGDPR(true,true);
+#endif
 
             foreach (var analytic in m_ListAnalytics)
             {
@@ -288,7 +342,7 @@ namespace IEC
             Pool.Set(m_ServiceData);
         }
 
-        void InitAdsAfterGDPR(bool isAcceptConsent)
+        void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
         {
             bool isNoAds = config.IsNoAds || Application.isEditor;
 
@@ -301,8 +355,8 @@ namespace IEC
             {
 #if (PluginFacebookAudienceNetwork)
 #if UNITY_IOS
-                Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled true");
-                AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(true);
+                Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled: " + isAlowAppTracking);
+                AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(isAlowAppTracking);
 #endif
 #endif
 #if (PluginAppodeal)
@@ -793,6 +847,6 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-#endregion
+        #endregion
     }
 }
