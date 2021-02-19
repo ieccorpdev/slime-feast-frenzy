@@ -19,7 +19,7 @@ namespace IEC
             Kochava.Tracker.Config.SetRetrieveAttribution(true);
             Kochava.Tracker.Initialize();
             var kochavaVersion = Kochava.Tracker.GetVersion();
-            Debug.LogError("Kochava Version:" + kochavaVersion);
+            Debug.LogWarning("Kochava Version:" + kochavaVersion);
 
         }
 
