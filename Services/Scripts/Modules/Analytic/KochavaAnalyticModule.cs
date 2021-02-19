@@ -13,13 +13,14 @@ namespace IEC
         public KochavaAnalyticModule(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
-            var kochavaVersion = Kochava.Tracker.GetVersion();
             Debug.LogError("Kochava AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
-            Debug.LogError("Kochava Version:" + kochavaVersion);
             Kochava.Tracker.Config.SetAppGuid(appID);
             Kochava.Tracker.Config.SetLogLevel(Kochava.DebugLogLevel.info);
             Kochava.Tracker.Config.SetRetrieveAttribution(true);
             Kochava.Tracker.Initialize();
+            var kochavaVersion = Kochava.Tracker.GetVersion();
+            Debug.LogError("Kochava Version:" + kochavaVersion);
+
         }
 
         public void Init()
