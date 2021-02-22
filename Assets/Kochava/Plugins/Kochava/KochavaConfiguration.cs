@@ -28,7 +28,16 @@ public class KochavaConfiguration : MonoBehaviour {
 	[Header("Partner Configuration (Optional)")]
 	public string kochavaPartnerName = "";
 	public string kochavaPartnerApp = "";
-    
+
+    [Header("Instant Apps / App Clips (Optional")]
+    public string instantAppGUID_Android = "";
+    public string containerAppGroupIdentifier_iOS = "";
+
+    [Header("App Tracking Transparency (iOS)")]
+    public bool attEnabled = false;
+    public double attWaitTime = 30;
+    public bool attAutoRequest = true;
+
     [Header("Settings")]
     public bool appAdLimitTracking = false;
 	public Kochava.DebugLogLevel logLevel;
@@ -72,11 +81,14 @@ public class KochavaConfiguration : MonoBehaviour {
         // NOTE: If you wish to initialize Kochava elsewhere (in your own code) please consult the documentation for examples at https://support.kochava.com/sdk-integration/unity-sdk-integration
         Kochava.Tracker.Config.SetLogLevel(logLevel);
         Kochava.Tracker.Config.SetAppGuid(platformAppGUID);
+        Kochava.Tracker.Config.SetInstantAppGuid(instantAppGUID_Android);
+        Kochava.Tracker.Config.SetContainerAppGroupIdentifier(containerAppGroupIdentifier_iOS);
         Kochava.Tracker.Config.SetRetrieveAttribution(requestAttributionCallback);
 		Kochava.Tracker.Config.SetIntelligentConsentManagement(intelligentConsentManagement);
         Kochava.Tracker.Config.SetPartnerName(kochavaPartnerName);
 		Kochava.Tracker.Config.SetPartnerApp(kochavaPartnerApp);
         Kochava.Tracker.Config.SetSleep(sleepOnStart);
+        Kochava.Tracker.Config.SetAppTrackingTransparency(attEnabled, attWaitTime, attAutoRequest);
 
 		// To prevent overriding values set using the setter we only apply this value once on the first launch.
 		bool latSet = PlayerPrefs.HasKey("kou__latset");
