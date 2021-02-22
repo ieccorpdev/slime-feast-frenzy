@@ -96,19 +96,4 @@ public class MathHelper
 
         return listTemp[UnityEngine.Random.Range(0, listTemp.Count)];
     }
-
-    public static int[,] RotateMatrix(int[,] matrix, int n)
-    {
-        int[,] ret = new int[n, n];
-
-        for (int i = 0; i < n; ++i)
-        {
-            for (int j = 0; j < n; ++j)
-            {
-                ret[i, j] = matrix[n - j - 1, i];
-            }
-        }
-
-        return ret;
-    }
 }

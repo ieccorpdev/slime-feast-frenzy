@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace IEC
@@ -14,9 +15,6 @@ namespace IEC
 
         [SerializeField]
         private bool m_IsDontDestroy;
-
-        [SerializeField]
-        private GameObject m_SceneRootObj;
 
         IEventListener[] m_Listeners;
         IEventAwake[] m_AwakeEvents;
@@ -89,10 +87,7 @@ namespace IEC
             }
 
             LocateController();
-            if (m_SceneRootObj != null)
-            {
-                LocateGroup(m_SceneRootObj.transform);
-            }
+            LocateGroup();
 
             var consentController = FindObjectOfType<ConsentController>();
             if (consentController != null)
@@ -333,9 +328,10 @@ namespace IEC
             }
         }
 
-        void LocateGroup(Transform parentT)
+        void LocateGroup()
         {
-            var groups = parentT.GetComponentsInChildren<IGroup>(true);
+            var groups = FindObjectsOfType<MonoBehaviour>().OfType<IGroup>();
+
             foreach (var g in groups)
             {
                 g.LocateGroup();
