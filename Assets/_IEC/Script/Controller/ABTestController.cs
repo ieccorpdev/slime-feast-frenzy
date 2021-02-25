@@ -48,13 +48,13 @@ namespace IEC
             Result20210129();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210205(abValue);
+            UpdateAb20210226(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210205(abValue);
+                    UpdateAb20210226(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -67,6 +67,12 @@ namespace IEC
             );
         }
 
+        private void UpdateAb20210226(int abValue)
+        {
+            UIController.SetupAbUI();
+            GameController.SetupMainCam();
+        }
+
         private void UpdateAb20210205(int abValue)
         {
             Game.isHaveNoAdsInMainScreen = abValue == 1;
@@ -75,8 +81,8 @@ namespace IEC
             Game.isCameraTopView = abValue == 3;
             Game.isNewGameOver = abValue == 4;
             Game.isHaveConfettiGameOver = abValue == 5 || abValue == 4;
-            UIController.SetupAbUI();
-            GameController.SetupMainCam();
+            //UIController.SetupAbUI();
+            //GameController.SetupMainCam();
         }
 
         private void UpdateAb20210203(int abValue)
@@ -95,7 +101,7 @@ namespace IEC
             Game.isHaveEndGameReward = abValue == 2;
             Game.isGreenifyHydrated = abValue == 3;
             Game.isRootTreeChangeColorByWater = abValue == 4;
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20210121(int abValue)
