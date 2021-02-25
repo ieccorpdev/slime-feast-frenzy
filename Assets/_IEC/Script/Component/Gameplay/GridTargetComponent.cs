@@ -179,6 +179,7 @@ namespace IEC
             var minIndex = Game.isHaveNewTrees ? 4 : 0;
             var maxIndex = Game.isHaveNewTrees ? 15 : 5;
 
+            m_ListTransTrees.Clear();
             m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
             Game.levelSeed += 1;
 
@@ -296,6 +297,7 @@ namespace IEC
         {
             m_TweenScale?.Kill(true);
             IsGrowUpComplete = false;
+            m_ListTransTrees.Clear();
             base.OnDestroyMe();
         }
     }
