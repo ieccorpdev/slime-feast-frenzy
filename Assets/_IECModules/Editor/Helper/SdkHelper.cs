@@ -12,14 +12,14 @@ namespace _IECModules
     public static class SdkHelper
     {
         public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
-
+        public const string KOCHAVA_VERSION_CACHE = "kochava_version_cache";
         public const string FACEBOOK_CURRENT_VERSION = "7.18.0";
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
         public const string KOCHAVA_CURRENT_VERSION = "4.1.1";
 
         public const string FACEBOOK_SDK_BASE_URL =
             "https://lookaside.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
-        
+
         public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
@@ -56,19 +56,31 @@ namespace _IECModules
         public static string EDMUrlByVersion(string version) => string.Format(EXTERNAL_PACKAGE_MANAGER_URL, version, version.Substring(1));
 
         public static string IronSourceSdkUrlByVersion => string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
-        public static string KochavaSdkUrlByVersion => string.Format(KOCHAVA_SDK_BASE_URL, KOCHAVA_CURRENT_VERSION);
+        public static string KochavaSdkUrlByVersion(string version) => string.Format(KOCHAVA_SDK_BASE_URL, version);
 
         public static string[] ListApplovinVersionDefault = {
             "3.0.0-Android-9.13.2-iOS-6.13.2",
             "2.4.16-Android-9.13.1-iOS-6.13.1"
         };
+
+        public static string[] ListKochavaVersionDefault = {
+            "3.0.0"
+        };
+
         public static string[] ListApplovinVersionFromBintray;
+        public static string[] ListKochavaVersionFromBintray;
 
         public static string[] ListApplovinVersion =>
             ListApplovinVersionFromBintray == null ||
             ListApplovinVersionFromBintray.Length <= ListApplovinVersionDefault.Length
                 ? ListApplovinVersionDefault
                 : ListApplovinVersionFromBintray;
+
+        public static string[] ListKochavaVersion =>
+            ListKochavaVersionFromBintray == null ||
+            ListKochavaVersionFromBintray.Length <= ListKochavaVersionDefault.Length
+                ? ListKochavaVersionDefault
+                : ListKochavaVersionFromBintray;
 
         public static string[] ListFirebaseVersion = {
             "6.15.2",
@@ -94,14 +106,43 @@ namespace _IECModules
                 }).Send();
 
         }
+
+        public static void LoadKochavaVersionList()
+        {
+            PlayerPrefs.DeleteKey(KOCHAVA_VERSION_CACHE);
+            var httpRequest = new HTTPRequest(
+                new Uri("https://api.bintray.com/packages/kochava/Generic/KochavaTracker-Unity"),
+                (originalRequest, response) =>
+                {
+                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, response.DataAsText);
+                }).Send();
+        }
+
+
         public static bool LoadApplovinVersionFromCache()
         {
             if (ListApplovinVersionFromBintray != null) return true;
             var data = PlayerPrefs.GetString(APPLOVIN_VERSION_CACHE);
             if (string.IsNullOrEmpty(data)) return false;
-            var bintrayApplovinPackageData = JsonConvert.DeserializeObject<BintrayApplovinPackageData>(data);
+            var bintrayApplovinPackageData = JsonConvert.DeserializeObject<BintrayPackageData>(data);
             ListApplovinVersionFromBintray =
                 bintrayApplovinPackageData.versions.Select(x =>
+                    x.Replace("unity_", "")
+                        .Replace("_", "-")
+                        .Replace("android", "Android")
+                        .Replace("ios", "iOS")
+                ).ToArray();
+            return true;
+        }
+
+        public static bool LoadKochavaVersionFromCache()
+        {
+            if (ListKochavaVersionFromBintray != null) return true;
+            var data = PlayerPrefs.GetString(KOCHAVA_VERSION_CACHE);
+            if (string.IsNullOrEmpty(data)) return false;
+            var bintrayKochavaPackageData = JsonConvert.DeserializeObject<BintrayPackageData>(data);
+            ListKochavaVersionFromBintray =
+                bintrayKochavaPackageData.versions.Select(x =>
                     x.Replace("unity_", "")
                         .Replace("_", "-")
                         .Replace("android", "Android")
@@ -112,7 +153,7 @@ namespace _IECModules
     }
 
     [Serializable]
-    public class BintrayApplovinPackageData
+    public class BintrayPackageData
     {
         public string name;
         public string repo;
