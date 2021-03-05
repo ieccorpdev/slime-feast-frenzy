@@ -9,7 +9,7 @@ using Google.Play.Review;
 #endif
 #endif
 
-#if PluginByteDanceChinaIOS
+#if UNITY_IOS
 using System.Runtime.InteropServices;
 #endif
 
@@ -50,6 +50,10 @@ namespace IEC
 #if PluginByteDanceChinaIOS
         [DllImport("__Internal")]
         private static extern int _initByteDance(string appId, string appName);
+#endif
+#if UNITY_IOS
+        [DllImport("_Internal")]
+        private static extern void _openAppSetting();
 #endif
 
         public void LocateController()
@@ -726,6 +730,13 @@ namespace IEC
 #endif
         }
 #endif
+
+        public void OpenAppSetingIos()
+        {
+#if UNITY_IOS
+            _openAppSetting();
+#endif
+        }
 
         #region services
 
