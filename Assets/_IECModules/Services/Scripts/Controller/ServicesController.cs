@@ -697,7 +697,7 @@ namespace IEC
             }
         }
 
-        void SendEmail()
+        public void SendEmail()
         {
             string email = "support@iecglobal.com.au";
             string title = string.Empty;
@@ -707,7 +707,7 @@ namespace IEC
             }
             else
             {
-                title = Application.productName + "IOS Support";
+                title = Application.productName + " IOS Support";
             }
             title = MyEscapeURL(title);
             var userIDFA = m_UserIDFA;
