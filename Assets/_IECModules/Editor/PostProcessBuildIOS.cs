@@ -7,6 +7,8 @@ using UnityEditor.iOS.Xcode;
 using System.IO;
 using System.Collections.Generic;
 using System;
+using System.Linq;
+using BestHTTP;
 
 public class PostProcessBuildIOS : MonoBehaviour
 {
@@ -38,6 +40,7 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
+        CheckAddSmaatoSKAdNetworkID(path);
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
@@ -111,6 +114,42 @@ public class PostProcessBuildIOS : MonoBehaviour
 
             }
         }
+    }
+    public static void CheckAddSmaatoSKAdNetworkID(string path = "")
+    {
+#if PluginApplovin
+        if(!File.Exists(Application.dataPath + "/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml")) return;
+        const string smaatoGuideUrl = "https://developers.smaato.com/publishers/nextgen-sdk-ios-integration/#skadnetwork-setup-ios";
+        new HTTPRequest(new Uri(smaatoGuideUrl), (originalRequest, response) =>
+        {
+            var smaatoSKAdNetworkItems = response.DataAsText.GetBetweenString("SKAdNetworkItems", "&lt;/array&gt;")
+                .Replace("&lt;", "<").Replace("&gt;", ">")
+                .Split(new[] {"<string>"}, StringSplitOptions.None)
+                .ToList();
+            smaatoSKAdNetworkItems.RemoveAt(0);
+            smaatoSKAdNetworkItems = smaatoSKAdNetworkItems.Select(x => x.Substring(0, 10)).ToList();
+
+            // path = "D:/Works/iec/unity-empty-project/Assets/_IECModules/Editor";
+            var plistPath = Path.Combine(path, "Info.plist");
+            var plist = new PlistDocument();
+            plist.ReadFromFile(plistPath);
+
+            // Update value
+            var rootDict = plist.root;
+            var plistSKAdNetworkItemsArray = rootDict.values["SKAdNetworkItems"].AsArray();
+
+            var missingSKAdId = smaatoSKAdNetworkItems.Where(smaatoId =>
+                !plistSKAdNetworkItemsArray.values.Any(x => x.AsDict().values["SKAdNetworkIdentifier"].AsString().Contains(smaatoId)))
+                .ToList();
+            
+            if(missingSKAdId.Count == 0) return;
+            Debug.LogWarning($"{missingSKAdId.Count} SKAdnetworkID Missing: {missingSKAdId.JsonSerialize()}");
+            
+            missingSKAdId.ForEach(missingId => plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
+            File.WriteAllText(plistPath, plist.WriteToString());
+        }).Send();
+
+#endif
     }
 #endif
 }
