@@ -305,6 +305,7 @@ namespace IEC
             {
                 SetUpAbTest(config, this.config.bundleVersion);
             }
+
         }
 
         void RaiseInitEvent(string sEvent)
@@ -424,6 +425,8 @@ namespace IEC
                 {
                     PushEvent("click_banner_ads");
                 });
+
+                RequestUserIdfa();
             }
         }
 
@@ -736,6 +739,59 @@ namespace IEC
 #endif
         }
 #endif
+        const string USER_IDFA = "UserIDFA";
+        private string m_UserIDFA;
+        void RequestUserIdfa()
+        {
+            m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
+            if (string.IsNullOrWhiteSpace(m_UserIDFA))
+            {
+                Application.RequestAdvertisingIdentifierAsync((string advertisingId, bool trackingEnabled, string error) =>
+                {
+                    Debug.Log("advertisingId " + advertisingId + " , " + trackingEnabled + " , " + error);
+                    if (!string.IsNullOrWhiteSpace(advertisingId))
+                    {
+                        m_UserIDFA = advertisingId;
+                    }
+                });
+            }
+            else
+            {
+                Debug.Log("advertisingId " + m_UserIDFA);
+            }
+        }
+
+        public void SendEmail()
+        {
+            string email = "support@iecglobal.com.au";
+            string title = string.Empty;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                title = Application.productName + " Android Support";
+            }
+            else
+            {
+                title = Application.productName + " IOS Support";
+            }
+            title = MyEscapeURL(title);
+            var userIDFA = m_UserIDFA;
+            var newLine = Application.isMobilePlatform ? "<br>" : System.Environment.NewLine;
+            string message = Application.productName + " version: " + Application.version + newLine;
+            if (!string.IsNullOrWhiteSpace(userIDFA))
+            {
+                message += "ID: " + userIDFA + newLine;
+            }
+            message += newLine + "Hello, " + newLine;
+            Debug.Log("message SendEmail: " + message);
+            message = MyEscapeURL(message);
+            Debug.Log("message SendEmail EscapeURL: " + message);
+            Application.OpenURL("mailto:" + email + "?subject=" + title + "&body=" + message);
+        }
+
+        string MyEscapeURL(string url)
+        {
+            return WWW.EscapeURL(url).Replace("+", "%20");
+        }
 
         public void OpenAppSetingIos()
         {
