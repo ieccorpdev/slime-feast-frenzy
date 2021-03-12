@@ -32,6 +32,7 @@ namespace _IECModules
         private bool m_ShowDebugButton = false;
 
         private int m_PluginApplovinVersionSelect;
+        private int m_PluginKochavaVersionSelect;
         private int m_PluginFirebaseVersionSelect;
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
@@ -60,6 +61,8 @@ namespace _IECModules
             PluginIronSource,
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
+            PluginInAppRating,
+            PluginByteDanceChinaIOS
         }
 
         private void Awake()
@@ -70,6 +73,7 @@ namespace _IECModules
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
             AddRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
+            SdkHelper.LoadKochavaVersionList();
             var unityPackages = SdkHelper.DictUnityPackage.Values;
             foreach (var pkg in unityPackages)
             {
@@ -79,8 +83,8 @@ namespace _IECModules
 
         private void InitGuiParams()
         {
-            if(m_StyleHeader1 == null) m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
-            if(m_StyleHeader2 == null) m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
+            if (m_StyleHeader1 == null) m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
+            if (m_StyleHeader2 == null) m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -118,9 +122,9 @@ namespace _IECModules
                     ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
                 }, 220);
             }
-            
+
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
-            
+
             CreateGuiLabel("- SDK For Prototype", m_StyleHeader2);
 
             CreateGuiButton("Facebook SDK (latest)", () =>
@@ -131,11 +135,16 @@ namespace _IECModules
 
             GUILayout.Space(20);
 
-            CreateGuiButton($"Kochava SDK {SdkHelper.KOCHAVA_CURRENT_VERSION}", () =>
+            var kochavaSdkLoaded = SdkHelper.LoadKochavaVersionFromCache();
+            CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion);
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion(SdkHelper.ListKochavaVersion[m_PluginKochavaVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             });
+
+            m_PluginKochavaVersionSelect = EditorGUILayout.Popup("", m_PluginKochavaVersionSelect,
+                SdkHelper.ListKochavaVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
 
@@ -151,7 +160,7 @@ namespace _IECModules
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
-            
+
             CreateGuiButton($"Facebook Audience Network v6.2.1", () =>
             {
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.FacebookAudienceNetworkSdkUrlByVersion());
@@ -206,12 +215,47 @@ namespace _IECModules
                firebaseRemotePkg.listVersion,
                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.Space();
+            EditorGUILayout.BeginHorizontal();
+
+            #endregion
+
+            #region In App Rating
+
+            var inAppRatingPkg = SdkHelper.DictUnityPackage[SdkHelper.IN_APP_RATING_PKG];
+            var inAppRatingLoaded = inAppRatingPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"In App Rating {(inAppRatingLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!inAppRatingLoaded)
+                {
+                    return;
+                }
+                AddRegistries(GoogleRegistry);
+                inAppRatingPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginInAppRating);
+            });
+            inAppRatingPkg.versionSelected = EditorGUILayout.Popup("", inAppRatingPkg.versionSelected,
+               inAppRatingPkg.listVersion,
+               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+
             CreateGuiBreakLine();
 
             #endregion
 
+            #region ByteDance China IOS
+            CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
+            CreateGuiButton($"ByteDance SDK", () =>
+            {
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginByteDanceChinaIOS);
+                CopyByteDanceSDKChinaIOS();
+                LogEditorHelper.AddLog("Copy ByteDance SDK done!");
+            });
+            CreateGuiBreakLine();
+            #endregion
+
             CreateGuiLabel("2. Project Resolver", m_StyleHeader1);
-            
+
             #region External Dependency Manager
 
             var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
@@ -233,7 +277,7 @@ namespace _IECModules
             EditorGUILayout.BeginHorizontal();
 
             #endregion
-            
+
             CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
 
             CreateGuiBreakLine();
@@ -330,7 +374,28 @@ namespace _IECModules
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
+        private void CopyByteDanceSDKChinaIOS()
+        {
+            var sourcePath = Application.dataPath + "/_IECModules/Plugins/ByteDanceChinaIOS/";
+            var desPath = Application.dataPath + "/ByteDanceChina";
+            if (!Directory.Exists(desPath))
+            {
+                Directory.CreateDirectory(desPath);
+            }
+            if (!Directory.Exists(desPath + "/Editor"))
+            {
+                Directory.CreateDirectory(desPath + "/Editor");
+            }
+            File.Copy(sourcePath + "Dependencies.xml", desPath + "/Editor/Dependencies.xml", true);
 
+            if (!Directory.Exists(desPath + "/Plugins/iOS"))
+            {
+                Directory.CreateDirectory(desPath + "/Plugins/iOS");
+            }
+
+            File.Copy(sourcePath + "ByteDanceChinaIOS.code", desPath + "/Plugins/iOS/ByteDanceChinaIOS.mm", true);
+            File.Copy(sourcePath + "ByteDanceChinaIOS.bridge", desPath + "/Plugins/iOS/ByteDanceChinaIOS.h", true);
+        }
     }
 
     public class RegistryManifest
