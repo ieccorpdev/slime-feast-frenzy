@@ -20,7 +20,7 @@ using UnityEngine;
 /// </summary>
 public class AppLovinSettings : ScriptableObject
 {
-    private const string SettingsExportPath = "MaxSdk/Resources/AppLovinSettings.asset";
+    public const string SettingsExportPath = "MaxSdk/Resources/AppLovinSettings.asset";
 
     private static AppLovinSettings instance;
 
@@ -44,7 +44,25 @@ public class AppLovinSettings : ScriptableObject
         {
             if (instance == null)
             {
-                var settingsFilePath = Path.Combine(AppLovinIntegrationManager.PluginParentDirectory, SettingsExportPath);
+                string settingsFilePath;
+                // The settings file should be under the Assets/ folder so that it can be version controlled and cannot be overriden when updating.
+                // If the plugin is outside the Assets folder, create the settings asset at the default location.
+                if (AppLovinIntegrationManager.IsPluginOutsideAssetsDirectory)
+                {
+                    // Note: Can't use absolute path when calling `CreateAsset`. Should use relative path to Assets/ directory.
+                    settingsFilePath = Path.Combine("Assets", SettingsExportPath);
+
+                    var maxSdkDir = Path.Combine(Application.dataPath, "MaxSdk");
+                    if (!Directory.Exists(maxSdkDir))
+                    {
+                        Directory.CreateDirectory(maxSdkDir);
+                    }
+                }
+                else
+                {
+                    settingsFilePath = Path.Combine(AppLovinIntegrationManager.PluginParentDirectory, SettingsExportPath);
+                }
+
                 var settingsDir = Path.GetDirectoryName(settingsFilePath);
                 if (!Directory.Exists(settingsDir))
                 {
