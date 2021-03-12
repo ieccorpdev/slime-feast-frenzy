@@ -253,7 +253,7 @@ namespace IEC
             _initByteDance(config.appId, config.appName);
 #endif
 #if UNITY_IOS
-            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
             {
                 switch (status)
                 {
@@ -272,19 +272,25 @@ namespace IEC
                 }
                 // Obtain IDFA
                 Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
-                InitAdsAfterGDPR(true, status == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+                InitAdsAfterGDPR(true, status != AppTrackingTransparency.AuthorizationStatus.DENIED);
             };
 
             AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
             Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
-            if (currentStatus != AppTrackingTransparency.AuthorizationStatus.AUTHORIZED)
+
+            var deviceVer = UnityEngine.iOS.Device.systemVersion;
+
+            Debug.LogWarning("device ver:" + deviceVer);
+            var isNeedShowAtt = GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+
+            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
             }
             else
             {
-                InitAdsAfterGDPR(true, currentStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+                InitAdsAfterGDPR(true, currentStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
             }
 #else
             InitAdsAfterGDPR(true,true);
@@ -859,5 +865,14 @@ namespace IEC
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
         #endregion
+
+        int GetIntDeviceVerion(string version)
+        {
+            var verSplit = version.Split('.');
+            var major = int.Parse(verSplit[0]);
+            var minor = int.Parse(verSplit[1]);
+            return (major * 1000 + minor);
+        }
+
     }
 }
