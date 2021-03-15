@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Balaso;
+using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
 using Google.Play.Review;
@@ -269,6 +270,7 @@ namespace IEC
                     case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
                         Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
                         PushEvent("att_145_allow");
+                        SendATTAnalytic("att_success");
                         break;
                 }
                 // Obtain IDFA
@@ -288,6 +290,7 @@ namespace IEC
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
+                SendATTAnalytic("att_show");
             }
             else
             {
@@ -307,6 +310,23 @@ namespace IEC
                 SetUpAbTest(config, this.config.bundleVersion);
             }
 
+        }
+
+        public void SendATTAnalytic(string eventName)
+        {
+            const string serverUrl = "https://att-analytic.ieccorp.vn/";
+            var endPoint = $"{serverUrl}sendAnalyticEvent.php";
+            
+            var formData = new WWWForm();
+            formData.AddField("data[bundleId]", Application.identifier);
+            formData.AddField("data[eventName]", eventName);
+            
+            StartCoroutine(ISendATTAnalytic(endPoint, formData));
+        }
+        IEnumerator ISendATTAnalytic(string url, WWWForm formData) {
+     
+            var www = UnityWebRequest.Post(url, formData);
+            yield return www.SendWebRequest();
         }
 
         void RaiseInitEvent(string sEvent)
