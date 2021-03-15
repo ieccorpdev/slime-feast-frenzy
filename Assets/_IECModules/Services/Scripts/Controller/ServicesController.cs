@@ -268,6 +268,7 @@ namespace IEC
                         break;
                     case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
                         Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                        PushEvent("att_145_allow");
                         break;
                 }
                 // Obtain IDFA
