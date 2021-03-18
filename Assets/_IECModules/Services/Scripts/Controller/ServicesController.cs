@@ -219,8 +219,8 @@ namespace IEC
 #if (PluginKochava)
             if (Application.isEditor)
             {
-                Debug.LogError("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogError("Kochava iOS ID: " + config.kochavaConfig.iosID);
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
             }
 #endif
 

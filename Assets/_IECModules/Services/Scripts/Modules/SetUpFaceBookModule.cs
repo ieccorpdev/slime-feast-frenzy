@@ -56,7 +56,7 @@ namespace IEC
                     }
 
                     var appID = FB.AppId;
-                    Debug.LogError("Facebook AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
+                    Debug.LogWarning("Facebook AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
                     
                     UnityToolbag.Dispatcher.InvokeAsync(() =>
                     {
