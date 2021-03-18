@@ -237,6 +237,7 @@ namespace IEC
 #if (PluginFirebaseAnalytic)
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
+                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
 
 #if (PluginKochava)
@@ -249,6 +250,7 @@ namespace IEC
 #if (PluginFirebaseRemote)
             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
+            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
 #endif
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
