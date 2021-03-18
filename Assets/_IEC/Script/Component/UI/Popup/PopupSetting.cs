@@ -7,7 +7,7 @@ namespace IEC
 {
     public class PopupSetting : _BaseBehaviour, IUIGroup
     {
-        public Button btnClose, btnSound, btnVibrate, btnFeedBack, btnRestorePurchase;
+        public Button btnClose, btnSound, btnVibrate, btnFeedBack, btnRestorePurchase, btnEditConsent;
 
         public GameObject soundOffObj, vibrateOffObj;
 
@@ -37,6 +37,11 @@ namespace IEC
 
             btnRestorePurchase.onClick.AddListener(() => {
                 EventController.RaiseEvent(EventList.GamePlay.IAP_RESTORE_NO_ADS);
+            });
+
+            btnEditConsent.onClick.AddListener(() =>
+            {
+                Controllers.Get<ServicesController>().EditOCM();
             });
 
         }
