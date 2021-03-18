@@ -56,6 +56,7 @@ namespace IEC
                     }
 
                     var appID = FB.AppId;
+                    Debug.LogWarning($"Facebook SDK Version: {FacebookSdkVersion.Build}");
                     Debug.LogWarning("Facebook AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
                     
                     UnityToolbag.Dispatcher.InvokeAsync(() =>
