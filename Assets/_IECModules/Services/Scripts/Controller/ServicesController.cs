@@ -13,7 +13,7 @@ using Google.Play.Review;
 #if UNITY_IOS
 using System.Runtime.InteropServices;
 #endif
-
+using OgurySdk;
 
 namespace IEC
 {
@@ -97,6 +97,7 @@ namespace IEC
             AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
             AppTrackingTransparency.UpdateConversionValue(3);
 #endif
+            InitOCM();
             InitServices();
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
@@ -950,6 +951,41 @@ namespace IEC
             var minor = int.Parse(verSplit[1]);
             return (major * 1000 + minor);
         }
+
+        #region Ogury Choice Manager
+
+        void InitOCM()
+        {
+            Ogury.Start("ANDROID_ASSET_KEY", "IOS_ASSET_KEY");
+            OguryChoiceManager.OnAskComplete += OnCMComplete;
+            OguryChoiceManager.OnAskError += OnCMError;
+
+            // get user consent
+            OguryChoiceManager.Ask();
+        }
+
+        private void OnDestroy()
+        {
+            OguryChoiceManager.OnAskComplete -= OnCMComplete;
+            OguryChoiceManager.OnAskError -= OnCMError;
+        }
+
+        private void OnCMComplete(OguryChoiceManager.Answer answer)
+        {
+            // will serve personalized or non-personalized ads, depending on the answer
+        }
+
+        private void OnCMError(OguryError error)
+        {
+            // will serve non-personalized ads
+        }
+
+        public void EditOCM()
+        {
+            OguryChoiceManager.Edit();
+        }
+
+        #endregion
 
     }
 }
