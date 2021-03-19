@@ -322,6 +322,8 @@ namespace IEC
             var formData = new WWWForm();
             formData.AddField("data[bundleId]", Application.identifier);
             formData.AddField("data[eventName]", eventName);
+            formData.AddField("data[deviceVersion]", SystemInfo.operatingSystem);
+            formData.AddField("data[appVersion]", Application.version);
             
             StartCoroutine(ISendATTAnalytic(endPoint, formData));
         }
