@@ -956,7 +956,7 @@ namespace IEC
 
         void InitOCM()
         {
-            Ogury.Start("ANDROID_ASSET_KEY", "IOS_ASSET_KEY");
+            Ogury.Start("OGY-8B8F812E7137", "IOS_ASSET_KEY");
             OguryChoiceManager.OnAskComplete += OnCMComplete;
             OguryChoiceManager.OnAskError += OnCMError;
 
