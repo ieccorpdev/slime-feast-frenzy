@@ -47,6 +47,7 @@ namespace IEC
         public List<GridSourceComponent> listSource = new List<GridSourceComponent>();
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
+        public List<BaseComponent> listTiles = new List<BaseComponent>();
 
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
@@ -157,6 +158,10 @@ namespace IEC
         public bool isNewGameOver;
         public bool isHaveConfettiGameOver;
 
+        //Prepare
+        public bool isFixedBlock = true;
+
+
         public bool isLeavesEffect;
 
         public void OnResetAll()
@@ -180,6 +185,7 @@ namespace IEC
 
             listGrids.Clear();
             listUndo.Clear();
+            listTiles.Clear();
 
             isBossLevel = false;
             undoRemains = 2;

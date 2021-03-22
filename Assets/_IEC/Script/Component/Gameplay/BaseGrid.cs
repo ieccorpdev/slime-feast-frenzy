@@ -29,7 +29,7 @@ namespace IEC
         public override void SetGridLock()
         {
             base.SetGridLock();
-            SetGridLine(TrueRot);
+            m_CurrentRot = TrueRot;
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
@@ -54,6 +54,7 @@ namespace IEC
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
+            if (m_IsLock) return;
 
             if (!isUndo && Game.isHaveBossLimitMoveLevels)
             {

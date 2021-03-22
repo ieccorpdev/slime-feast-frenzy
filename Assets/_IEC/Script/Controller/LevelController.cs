@@ -15,6 +15,8 @@ namespace IEC
 
         private List<IslandComponent> m_ListIsland = new List<IslandComponent>();
 
+        private List<int> m_ListIndexGridLock = new List<int>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -218,12 +220,40 @@ namespace IEC
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
 
+            SetGridLocks(Game.size - 2);
+
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
             var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
             var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
+        }
+
+        private void SetGridLocks(int size)
+        {
+            if (!Game.isFixedBlock) return;
+            m_ListIndexGridLock.Clear();
+            var level = PlayerData.level;
+
+            var totalTileLocks = GetTotalLockTile(size, level);
+            var totalTile = Game.listTiles.Count;
+
+            for (int i = 0; i < totalTileLocks; i++)
+            {
+                var tileIndex = MathHelper.GetRandomIndexByList(m_ListIndexGridLock, totalTile, level);
+                m_ListIndexGridLock.Add(tileIndex);
+
+                Game.listTiles[tileIndex].SetGridLock();
+            }
+        }
+
+        private int GetTotalLockTile(int size, int level)
+        {
+            var max = size;
+            var min = size / 2;
+
+            return RandomHelper.RangeWithSeed(level, min, max);
         }
 
         private string[] GetMergeLevel(int size, int seed)
@@ -415,6 +445,7 @@ namespace IEC
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
+            Game.listTiles.Add(gridComp);
 
             if (Game.isBossLevel)
             {

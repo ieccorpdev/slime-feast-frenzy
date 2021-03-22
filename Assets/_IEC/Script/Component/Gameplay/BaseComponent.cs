@@ -79,7 +79,7 @@ namespace IEC
         public virtual bool IsTrueRot() => m_CurrentRot == TrueRot;
         public bool IsAllowRotation => !m_IsRotating;
 
-        protected bool m_IsRotating, m_IsHaveWater;
+        protected bool m_IsRotating, m_IsHaveWater, m_IsLock;
 
         protected bool m_IsOldHaveWater, m_IsHavingWater;
 
@@ -141,7 +141,11 @@ namespace IEC
 
         public virtual void SetGridLock()
         {
-            m_Terrain.SetActiveLock(true);
+            m_IsLock = true;
+            if (m_Terrain != null)
+            {
+                m_Terrain.SetActiveLock(true);
+            }
         }
 
         public virtual void OnUpdateSetTerrain()
@@ -225,6 +229,7 @@ namespace IEC
             m_OldWaterIndexColor = 0;
             m_DelayStart = 0;
             m_IsHavingWater = false;
+            m_IsLock = false;
             m_ListWaterColor.Clear();
             m_StartWater = WaterPoint.CENTER;
         }
