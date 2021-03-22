@@ -159,7 +159,8 @@ namespace IEC
         public bool isHaveConfettiGameOver;
 
         //Prepare
-        public bool isFixedBlock = true;
+        public bool isFixedBlock;
+        public bool isHintFixedBlockStyle;
 
 
         public bool isLeavesEffect;

@@ -139,7 +139,7 @@ namespace IEC
             }
         }
 
-        public virtual void SetGridLock()
+        public virtual void SetLock()
         {
             m_IsLock = true;
             if (m_Terrain != null)

@@ -26,9 +26,9 @@ namespace IEC
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
-        public override void SetGridLock()
+        public override void SetLock()
         {
-            base.SetGridLock();
+            base.SetLock();
             m_CurrentRot = TrueRot;
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
@@ -96,6 +96,10 @@ namespace IEC
         public override void OnHint()
         {
             base.OnHint();
+            if (Game.isHintFixedBlockStyle)
+            {
+                SetLock();
+            }
             m_IsRotating = true;
             m_Tween?.Kill(true);
 

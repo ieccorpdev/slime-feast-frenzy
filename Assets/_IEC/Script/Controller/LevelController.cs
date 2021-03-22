@@ -236,7 +236,7 @@ namespace IEC
             m_ListIndexGridLock.Clear();
             var level = PlayerData.level;
 
-            var totalTileLocks = GetTotalLockTile(size, level);
+            var totalTileLocks = GetTotalFixedBlock(size, level);
             var totalTile = Game.listTiles.Count;
 
             for (int i = 0; i < totalTileLocks; i++)
@@ -244,11 +244,11 @@ namespace IEC
                 var tileIndex = MathHelper.GetRandomIndexByList(m_ListIndexGridLock, totalTile, level);
                 m_ListIndexGridLock.Add(tileIndex);
 
-                Game.listTiles[tileIndex].SetGridLock();
+                Game.listTiles[tileIndex].SetLock();
             }
         }
 
-        private int GetTotalLockTile(int size, int level)
+        private int GetTotalFixedBlock(int size, int level)
         {
             var max = size;
             var min = size / 2;
