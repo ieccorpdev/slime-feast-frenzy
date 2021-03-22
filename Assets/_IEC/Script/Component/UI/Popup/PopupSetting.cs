@@ -58,8 +58,8 @@ namespace IEC
         {
             btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsInMainScreen);
 
-            m_RectGroup.sizeDelta = new Vector2(640f, Game.isHaveNoAdsInMainScreen ? 620f : 440f);
-            m_RectPannel.sizeDelta = new Vector2(800f, Game.isHaveNoAdsInMainScreen ? 900f : 750f);
+            //m_RectGroup.sizeDelta = new Vector2(640f, Game.isHaveNoAdsInMainScreen ? 620f : 440f);
+            //m_RectPannel.sizeDelta = new Vector2(800f, Game.isHaveNoAdsInMainScreen ? 900f : 750f);
         }
 
         void SendEmail()
