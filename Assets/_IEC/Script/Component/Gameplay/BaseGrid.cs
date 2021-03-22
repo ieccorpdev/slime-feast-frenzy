@@ -26,6 +26,13 @@ namespace IEC
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
+        public override void SetGridLock()
+        {
+            base.SetGridLock();
+            SetGridLine(TrueRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+        }
+
         private void SetGridLine(int rot)
         {
             CurrentLine = DefaultLine;

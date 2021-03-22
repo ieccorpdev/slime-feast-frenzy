@@ -14,4 +14,9 @@ public class TerrainComponent : MonoBehaviour
     {
         m_Mesh.material = mat;
     }
+
+    public void SetActiveLock(bool isActive)
+    {
+        m_LockObj.SetActive(isActive);
+    }
 }

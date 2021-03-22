@@ -133,6 +133,15 @@ namespace IEC
                 OnTweenMove(false);
             }
 
+            if(m_Terrain != null)
+            {
+                m_Terrain.SetActiveLock(false);
+            }
+        }
+
+        public virtual void SetGridLock()
+        {
+            m_Terrain.SetActiveLock(true);
         }
 
         public virtual void OnUpdateSetTerrain()
