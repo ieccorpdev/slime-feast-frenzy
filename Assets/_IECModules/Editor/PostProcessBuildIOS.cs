@@ -46,10 +46,11 @@ public class PostProcessBuildIOS : MonoBehaviour
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
-        // EditCapability();
+        EditCloudSaveCapability();
 
-        void EditCapability()
+        void EditCloudSaveCapability()
         {
+            if(!Directory.Exists(Application.dataPath + "Extensions/CloudOnce")) return;
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(projectPath);
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
