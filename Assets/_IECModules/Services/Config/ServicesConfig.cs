@@ -51,6 +51,10 @@ public class ServicesConfig : ScriptableObject
     [Header("RemoteConfig")]
     public bool isTestRemoteConfig;
     public List<RemoteConfigData> remoteConfigs;
+    
+    [Header("SDK Version")]
+    public string firebaseSDKVersion;
+    public string firebaseRemoteSDKVersion;
 
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";
