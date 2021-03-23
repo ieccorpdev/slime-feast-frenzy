@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using BestHTTP;
+using SimpleJSON;
 
 public class PostProcessBuildIOS : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class PostProcessBuildIOS : MonoBehaviour
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
         CheckAddSmaatoSKAdNetworkID(path);
+        CheckAddInmobiSKAdNetworkID(path);
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
@@ -129,27 +131,49 @@ public class PostProcessBuildIOS : MonoBehaviour
             smaatoSKAdNetworkItems.RemoveAt(0);
             smaatoSKAdNetworkItems = smaatoSKAdNetworkItems.Select(x => x.Substring(0, 10)).ToList();
 
-            // path = "D:/Works/iec/unity-empty-project/Assets/_IECModules/Editor";
-            var plistPath = Path.Combine(path, "Info.plist");
-            var plist = new PlistDocument();
-            plist.ReadFromFile(plistPath);
-
-            // Update value
-            var rootDict = plist.root;
-            var plistSKAdNetworkItemsArray = rootDict.values["SKAdNetworkItems"].AsArray();
-
-            var missingSKAdId = smaatoSKAdNetworkItems.Where(smaatoId =>
-                !plistSKAdNetworkItemsArray.values.Any(x => x.AsDict().values["SKAdNetworkIdentifier"].AsString().Contains(smaatoId)))
-                .ToList();
-            
-            if(missingSKAdId.Count == 0) return;
-            Debug.LogWarning($"{missingSKAdId.Count} SKAdnetworkID Missing: {missingSKAdId.JsonSerialize()}");
-            
-            missingSKAdId.ForEach(missingId => plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
-            File.WriteAllText(plistPath, plist.WriteToString());
+            AddMissingSKAdNetworkID(smaatoSKAdNetworkItems, path);
         }).Send();
 
 #endif
+    }
+    public static void CheckAddInmobiSKAdNetworkID(string path = "")
+    {
+#if PluginApplovin
+        if(!File.Exists(Application.dataPath + "/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml")) return;
+        const string inmobiSkAdNetworkJsonUrl = "https://www.inmobi.com/skadnetworkids.json";
+        new HTTPRequest(new Uri(inmobiSkAdNetworkJsonUrl), (originalRequest, response) =>
+        {
+            var inmobiSKAdNetworkJsonItems = JSON.Parse(response.DataAsText)["skadnetwork_ids"].AsArray;
+            var inmobiSKAdNetworkItems = new List<string>();
+            for (var i = 0; i < inmobiSKAdNetworkJsonItems.Count; i++)
+            {
+                inmobiSKAdNetworkItems.Add(inmobiSKAdNetworkJsonItems[i]["skadnetwork_id"].ToString().Substring(2, 10));
+            }
+                
+            AddMissingSKAdNetworkID(inmobiSKAdNetworkItems, path);
+        }).Send();
+
+#endif
+    }
+
+    public static void AddMissingSKAdNetworkID(List<string> missingSkAdNetworkItems, string path = "")
+    {
+        var plistPath = Path.Combine(path, "Info.plist");
+        var plist = new PlistDocument();
+        plist.ReadFromFile(plistPath);
+
+        var rootDict = plist.root;
+        var plistSKAdNetworkItemsArray = rootDict.values["SKAdNetworkItems"].AsArray();
+
+        var missingSKAdId = missingSkAdNetworkItems.Where(smaatoId =>
+                !plistSKAdNetworkItemsArray.values.Any(x => x.AsDict().values["SKAdNetworkIdentifier"].AsString().Contains(smaatoId)))
+            .ToList();
+            
+        if(missingSKAdId.Count == 0) return;
+        Debug.LogWarning($"{missingSKAdId.Count} SKAdnetworkID Missing: {missingSKAdId.JsonSerialize()}");
+            
+        missingSKAdId.ForEach(missingId => plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
+        File.WriteAllText(plistPath, plist.WriteToString());
     }
 #endif
 }
