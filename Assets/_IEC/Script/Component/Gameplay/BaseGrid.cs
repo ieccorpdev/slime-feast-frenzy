@@ -11,17 +11,12 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
             SetGridLine(TrueRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[TrueRot], 0f);
         }
 
-        public override void SetTempRot(int tempRot)
+        public override void BeforeInit()
         {
-            base.SetTempRot(tempRot);
-            m_CurrentRot = tempRot;
-        }
-
-        public override void AfterInit()
-        {
-            base.AfterInit();
+            base.BeforeInit();
             SetGridLine(m_CurrentRot);
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }

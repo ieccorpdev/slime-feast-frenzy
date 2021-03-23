@@ -125,20 +125,11 @@ namespace IEC
                 }
             }
 
-            if (GridType != GridType.WALL)
-            {
-                transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-            }
-
             OnUpdateSetTerrain();
-
-            if (Game.isStartLevelEffect)
-            {
-                OnTweenMove(false);
-            }
 
             if(m_Terrain != null)
             {
+                m_Terrain.OnKillTween();
                 m_Terrain.SetActiveLock(false);
             }
         }
@@ -221,6 +212,11 @@ namespace IEC
                 m_HintEffect.OnDestroyMe();
             }
 
+            if (m_Terrain != null)
+            {
+                m_Terrain.OnKillTween();
+            }
+
             OnResetData();
 
             PrefabHelper.Destroy(gameObject);
@@ -241,6 +237,11 @@ namespace IEC
             m_IsSetupArrow = false;
         }
 
+        public virtual void BeforeInit()
+        {
+
+        }
+
         public virtual void AfterInit()
         {
             if (GridType != GridType.GRID_SOURCE)
@@ -252,11 +253,6 @@ namespace IEC
         protected virtual int[,] GetDefaultLine(int style)
         {
             return OriginLine;
-        }
-
-        public virtual void SetTempRot(int tempRot)
-        {
-
         }
 
         public virtual void PrepareCheckConnect()
@@ -385,13 +381,14 @@ namespace IEC
             m_IsSetupArrow = true;
 
             var originStartPos = GetWaterPos(point);
+            originStartPos.y = 0f;
             var dir1 = (CenterPos - originStartPos).normalized;
 
             m_StartPos1 = originStartPos + (dir1 * m_RatioDist);
             m_EndPos1 = CenterPos + (-dir1 * m_RatioDist);
 
             var originDestinationPos = GetDestination(point);
-
+            originDestinationPos.y = 0f;
             var dir2 = (originDestinationPos - CenterPos).normalized;
 
             m_StartPos2 = CenterPos + (dir2 * m_RatioDist);
@@ -518,29 +515,24 @@ namespace IEC
             }
         }
 
-        private void OnTweenMove(bool isDestroy)
+        public void OnTweenMove(bool isTween)
         {
             m_Tween?.Kill(true);
-
-            var moveTime = Config.startEffectMoveTime;
-            var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
-
-            if (isDestroy)
+            if (isTween)
             {
-                m_Tween = transform.DOLocalMoveY(15f, moveTime).SetEase(Ease.InCirc)
-                    .SetDelay(delayTime).OnComplete(() =>
-                    {
-                        PrefabHelper.Destroy(gameObject);
-                    });
+                var moveTime = Config.startEffectMoveTime;
+                var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
+
+                m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
             }
             else
             {
                 var tempPos = CurrentLocalPos;
                 tempPos.y = 20f;
                 transform.localPosition = tempPos;
-
-                m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
             }
+
+
         }
 
         private int GetIndexSpawn()

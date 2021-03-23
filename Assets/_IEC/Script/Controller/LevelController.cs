@@ -225,6 +225,15 @@ namespace IEC
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
+
+            Game.listGrids.ForEach(x => x.BeforeInit());
+            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
+
+            if (Game.isStartLevelEffect)
+            {
+                Game.listGrids.ForEach(x => x.OnTweenMove(true));
+            }
+
             var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
             var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
@@ -358,7 +367,7 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
 
-                    var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
+                    var posSpawn = new Vector3(startPosX + j, 20f, startPosZ - i);
                     var gridData = levelConfig.gridTypes[row, col].Trim();
                     SpawnGrid(GamePlay.transGridParent, posSpawn, row, col, gridData, 
                         levelConfig.gridHints[row, col], isRandomRot, gridSeed);
@@ -466,9 +475,6 @@ namespace IEC
             GamePlay.listWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
             GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
 
-            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
-
-
             GamePlay.wallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
 
@@ -486,7 +492,7 @@ namespace IEC
         {
             for (int i = 1; i <= count; i++)
             {
-                var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
+                var posSpawn = new Vector3(startPos + (i - 1) * 1, 20f, 0f);
                 var wallValue = walls[i];
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj, parent).transform;
