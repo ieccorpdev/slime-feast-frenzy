@@ -50,7 +50,7 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         void EditCloudSaveCapability()
         {
-            if(!Directory.Exists(Application.dataPath + "Extensions/CloudOnce")) return;
+            if(!Directory.Exists(Application.dataPath + "/Extensions/CloudOnce")) return;
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(projectPath);
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
