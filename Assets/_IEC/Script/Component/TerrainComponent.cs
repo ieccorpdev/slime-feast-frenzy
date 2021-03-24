@@ -7,6 +7,9 @@ public class TerrainComponent : MonoBehaviour
     [SerializeField]
     private MeshRenderer m_Mesh;
 
+    [SerializeField]
+    private GameObject m_LockObj;
+
     public void SetupTerrain(Material mat)
     {
         m_Mesh.material = mat;

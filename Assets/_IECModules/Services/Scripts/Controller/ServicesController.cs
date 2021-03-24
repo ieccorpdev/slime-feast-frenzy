@@ -220,8 +220,8 @@ namespace IEC
 #if (PluginKochava)
             if (Application.isEditor)
             {
-                Debug.LogError("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogError("Kochava iOS ID: " + config.kochavaConfig.iosID);
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
             }
 #endif
 
@@ -238,6 +238,7 @@ namespace IEC
 #if (PluginFirebaseAnalytic)
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
+                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
 
 #if (PluginKochava)
@@ -250,6 +251,7 @@ namespace IEC
 #if (PluginFirebaseRemote)
             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
+            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
 #endif
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
@@ -285,7 +287,7 @@ namespace IEC
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
 
             Debug.LogWarning("device ver:" + deviceVer);
-            var isNeedShowAtt = GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+            var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
 
             if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
             {
@@ -321,6 +323,9 @@ namespace IEC
             var formData = new WWWForm();
             formData.AddField("data[bundleId]", Application.identifier);
             formData.AddField("data[eventName]", eventName);
+            formData.AddField("data[deviceModel]", SystemInfo.deviceModel);
+            formData.AddField("data[deviceVersion]", SystemInfo.operatingSystem);
+            formData.AddField("data[appVersion]", Application.version);
             
             StartCoroutine(ISendATTAnalytic(endPoint, formData));
         }
@@ -388,6 +393,7 @@ namespace IEC
             {
 #if (PluginFacebookAudienceNetwork)
 #if UNITY_IOS
+                Debug.LogWarning($"AudienceNetwork SDK Version: {AudienceNetwork.SdkVersion.Build}");
                 Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled: " + isAlowAppTracking);
                 AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(isAlowAppTracking);
 #endif

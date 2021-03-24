@@ -160,15 +160,7 @@ namespace _IECModules
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
-
-            CreateGuiButton($"Facebook Audience Network v6.2.1", () =>
-            {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FacebookAudienceNetworkSdkUrlByVersion());
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
-            });
-
-            CreateGuiBreakLine();
-
+            
             #region Firebase Analytics
 
             var firebaseAnalyticPkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBAE_ANALYTIC_PKG];
@@ -186,14 +178,22 @@ namespace _IECModules
             });
 
             firebaseAnalyticPkg.versionSelected = EditorGUILayout.Popup("", firebaseAnalyticPkg.versionSelected,
-               firebaseAnalyticPkg.listVersion,
-               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
-
-            EditorGUILayout.EndHorizontal();
-            EditorGUILayout.Space();
-            EditorGUILayout.BeginHorizontal();
+                firebaseAnalyticPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            
+            CreateGuiBreakLine();
 
             #endregion
+            
+            CreateGuiLabel("- Other SDK", m_StyleHeader2);
+
+            CreateGuiButton($"Facebook Audience Network v6.2.1", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FacebookAudienceNetworkSdkUrlByVersion());
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
+            });
+
+            CreateGuiBreakLine();
 
             #region Firebase RemoteConfig
 
@@ -243,16 +243,16 @@ namespace _IECModules
 
             #endregion
 
-            #region ByteDance China IOS
-            CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
-            CreateGuiButton($"ByteDance SDK", () =>
-            {
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginByteDanceChinaIOS);
-                CopyByteDanceSDKChinaIOS();
-                LogEditorHelper.AddLog("Copy ByteDance SDK done!");
-            });
-            CreateGuiBreakLine();
-            #endregion
+            // #region ByteDance China IOS
+            // CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
+            // CreateGuiButton($"ByteDance SDK", () =>
+            // {
+            //     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginByteDanceChinaIOS);
+            //     CopyByteDanceSDKChinaIOS();
+            //     LogEditorHelper.AddLog("Copy ByteDance SDK done!");
+            // });
+            // CreateGuiBreakLine();
+            // #endregion
 
             CreateGuiLabel("2. Project Resolver", m_StyleHeader1);
 
