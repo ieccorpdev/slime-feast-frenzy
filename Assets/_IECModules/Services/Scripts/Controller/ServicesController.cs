@@ -2,6 +2,18 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Balaso;
+using UnityEngine.Networking;
+#if PluginInAppRating
+#if UNITY_ANDROID
+using Google.Play.Review;
+#endif
+#endif
+
+#if UNITY_IOS
+using System.Runtime.InteropServices;
+#endif
+
 
 namespace IEC
 {
@@ -35,6 +47,15 @@ namespace IEC
 
         IAnalyticEvent m_FirebaseAnalytic;
         #endregion
+
+#if PluginByteDanceChinaIOS
+        [DllImport("__Internal")]
+        private static extern int _initByteDance(string appId, string appName);
+#endif
+#if UNITY_IOS
+        [DllImport("_Internal")]
+        private static extern void _openAppSetting();
+#endif
 
         public void LocateController()
         {
@@ -72,7 +93,10 @@ namespace IEC
             if (isInitAwake) return;
             UnityToolbag.Dispatcher.Awake();
             Init();
-
+#if UNITY_IOS
+            AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
+            AppTrackingTransparency.UpdateConversionValue(3);
+#endif
             InitServices();
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
@@ -93,7 +117,7 @@ namespace IEC
         public void BehaviourStart()
         {
             m_IsInitializing = false;
-            foreach(var sEvent in m_InitEvents)
+            foreach (var sEvent in m_InitEvents)
             {
                 EventController.RaiseEvent(sEvent, new EventParam(this));
             }
@@ -185,7 +209,7 @@ namespace IEC
             });
 #endif
             m_Ads = new AdsMock(false);
-            
+
             m_Login = new LoginMock();
             m_LeaderBoard = new LeaderBoardMock();
 
@@ -195,8 +219,8 @@ namespace IEC
 #if (PluginKochava)
             if (Application.isEditor)
             {
-                Debug.LogError("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogError("Kochava iOS ID: " + config.kochavaConfig.iosID);
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
             }
 #endif
 
@@ -213,6 +237,7 @@ namespace IEC
 #if (PluginFirebaseAnalytic)
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
+                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
 
 #if (PluginKochava)
@@ -225,8 +250,57 @@ namespace IEC
 #if (PluginFirebaseRemote)
             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
+            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
 #endif
-            InitAdsAfterGDPR(true);
+#if PluginByteDanceChinaIOS
+            _initByteDance(config.appId, config.appName);
+#endif
+#if UNITY_IOS
+             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+            {
+                switch (status)
+                {
+                    case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
+                        Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
+                        Debug.LogWarning("AuthorizationStatus: RESTRICTED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.DENIED:
+                        Debug.LogWarning("AuthorizationStatus: DENIED");
+                        break;
+                    case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
+                        Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                        PushEvent("att_145_allow");
+                        SendATTAnalytic("att_success");
+                        break;
+                }
+                // Obtain IDFA
+                Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
+                InitAdsAfterGDPR(true, status != AppTrackingTransparency.AuthorizationStatus.DENIED);
+            };
+
+            AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
+            Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
+
+            var deviceVer = UnityEngine.iOS.Device.systemVersion;
+
+            Debug.LogWarning("device ver:" + deviceVer);
+            var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+
+            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
+            {
+                Debug.LogWarning("Requesting authorization...");
+                AppTrackingTransparency.RequestTrackingAuthorization();
+                SendATTAnalytic("att_show");
+            }
+            else
+            {
+                InitAdsAfterGDPR(true, currentStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+            }
+#else
+            InitAdsAfterGDPR(true,true);
+#endif
 
             foreach (var analytic in m_ListAnalytics)
             {
@@ -237,6 +311,27 @@ namespace IEC
             {
                 SetUpAbTest(config, this.config.bundleVersion);
             }
+
+        }
+
+        public void SendATTAnalytic(string eventName)
+        {
+            const string serverUrl = "https://att-analytic.ieccorp.vn/";
+            var endPoint = $"{serverUrl}sendAnalyticEvent.php";
+            
+            var formData = new WWWForm();
+            formData.AddField("data[bundleId]", Application.identifier);
+            formData.AddField("data[eventName]", eventName);
+            formData.AddField("data[deviceModel]", SystemInfo.deviceModel);
+            formData.AddField("data[deviceVersion]", SystemInfo.operatingSystem);
+            formData.AddField("data[appVersion]", Application.version);
+            
+            StartCoroutine(ISendATTAnalytic(endPoint, formData));
+        }
+        IEnumerator ISendATTAnalytic(string url, WWWForm formData) {
+     
+            var www = UnityWebRequest.Post(url, formData);
+            yield return www.SendWebRequest();
         }
 
         void RaiseInitEvent(string sEvent)
@@ -284,7 +379,7 @@ namespace IEC
             Pool.Set(m_ServiceData);
         }
 
-        void InitAdsAfterGDPR(bool isAcceptConsent)
+        void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
         {
             bool isNoAds = config.IsNoAds || Application.isEditor;
 
@@ -296,10 +391,11 @@ namespace IEC
             else
             {
 #if (PluginFacebookAudienceNetwork)
-    #if UNITY_IOS
-                Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled true");
-                AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(true);
-    #endif
+#if UNITY_IOS
+                Debug.LogWarning($"AudienceNetwork SDK Version: {AudienceNetwork.SdkVersion.Build}");
+                Debug.LogWarning("AudienceNetwork SetAdvertiserTrackingEnabled: " + isAlowAppTracking);
+                AudienceNetwork.AdSettings.SetAdvertiserTrackingEnabled(isAlowAppTracking);
+#endif
 #endif
 #if (PluginAppodeal)
                 var disableNetworks = new string[] {
@@ -356,6 +452,8 @@ namespace IEC
                 {
                     PushEvent("click_banner_ads");
                 });
+
+                RequestUserIdfa();
             }
         }
 
@@ -636,8 +734,100 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Service.COUNT_ONE_SEC, new EventParam(this));
             }
         }
+#if PluginInAppRating
+        public void RateUs()
+        {
+#if UNITY_IOS
+            UnityEngine.iOS.Device.RequestStoreReview();
+#endif
+#if UNITY_ANDROID
+            StartCoroutine(IE_RequestReview());
+            IEnumerator IE_RequestReview()
+            {
+                ReviewManager m_Review = new ReviewManager();
+                var requestFlowOperation = m_Review.RequestReviewFlow();
+                yield return requestFlowOperation;
+                if (requestFlowOperation.Error != ReviewErrorCode.NoError)
+                {
+                    Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
+                    Application.OpenURL("market://details?id=" + Application.identifier);
+                    yield break;
+                }
+                var playReviewInfo = requestFlowOperation.GetResult();
+                var launchFlowOperation = m_Review.LaunchReviewFlow(playReviewInfo);
+                yield return launchFlowOperation;
+                if (launchFlowOperation.Error != ReviewErrorCode.NoError)
+                {
+                    Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
+                    Application.OpenURL("market://details?id=" + Application.identifier);
+                    yield break;
+                }
+            }
+#endif
+        }
+#endif
+        const string USER_IDFA = "UserIDFA";
+        private string m_UserIDFA;
+        void RequestUserIdfa()
+        {
+            m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
+            if (string.IsNullOrWhiteSpace(m_UserIDFA))
+            {
+                Application.RequestAdvertisingIdentifierAsync((string advertisingId, bool trackingEnabled, string error) =>
+                {
+                    Debug.Log("advertisingId " + advertisingId + " , " + trackingEnabled + " , " + error);
+                    if (!string.IsNullOrWhiteSpace(advertisingId))
+                    {
+                        m_UserIDFA = advertisingId;
+                    }
+                });
+            }
+            else
+            {
+                Debug.Log("advertisingId " + m_UserIDFA);
+            }
+        }
 
-#region services
+        public void SendEmail()
+        {
+            string email = "support@iecglobal.com.au";
+            string title = string.Empty;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                title = Application.productName + " Android Support";
+            }
+            else
+            {
+                title = Application.productName + " IOS Support";
+            }
+            title = MyEscapeURL(title);
+            var userIDFA = m_UserIDFA;
+            var newLine = Application.isMobilePlatform ? "<br>" : System.Environment.NewLine;
+            string message = Application.productName + " version: " + Application.version + newLine;
+            if (!string.IsNullOrWhiteSpace(userIDFA))
+            {
+                message += "ID: " + userIDFA + newLine;
+            }
+            message += newLine + "Hello, " + newLine;
+            Debug.Log("message SendEmail: " + message);
+            message = MyEscapeURL(message);
+            Debug.Log("message SendEmail EscapeURL: " + message);
+            Application.OpenURL("mailto:" + email + "?subject=" + title + "&body=" + message);
+        }
+
+        string MyEscapeURL(string url)
+        {
+            return WWW.EscapeURL(url).Replace("+", "%20");
+        }
+
+        public void OpenAppSetingIos()
+        {
+#if UNITY_IOS
+            _openAppSetting();
+#endif
+        }
+
+        #region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
@@ -757,6 +947,15 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-#endregion
+        #endregion
+
+        int GetIntDeviceVerion(string version)
+        {
+            var verSplit = version.Split('.');
+            var major = int.Parse(verSplit[0]);
+            var minor = int.Parse(verSplit[1]);
+            return (major * 1000 + minor);
+        }
+
     }
 }

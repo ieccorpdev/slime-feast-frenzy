@@ -29,11 +29,10 @@ using UnityEngine.Networking;
 public class Kochava : MonoBehaviour {
     
     // SDK Version Constants
-	private const bool isUnityStoreBuild = false;
-	private const string sdkVersionNumber = "4.1.1";
-	private const string sdkNativeName = isUnityStoreBuild ? "Unity NET Store" : "Unity NET";
-	private const string sdkName = isUnityStoreBuild ? "Unity Store" : "Unity";
-	private const string sdkBuildDate = "2020-04-21T16:46:02Z";
+	private const string sdkVersionNumber = "4.2.2";
+	private const string sdkNativeName = "Unity NET";
+	private const string sdkName = "Unity";
+	private const string sdkBuildDate = "2021-01-25T19:08:33Z";
 
 	// Logging levels
     public enum DebugLogLevel
@@ -92,6 +91,7 @@ public class Kochava : MonoBehaviour {
     
     // Input parameter backing fields
     private static string _appGUID = "";
+    private static string _instantAppGUID = "";
     private static bool _appAdLimitTracking = false;
 	private static bool _appAdLimitTrackingSet = false;
     private static bool _sleep = false;
@@ -99,11 +99,15 @@ public class Kochava : MonoBehaviour {
     private static string _partnerName = "";
 	private static string _partnerApp = "";
     private static bool _requestAttributionCallback = false;
+    private static string _containerAppGroupIdentifier = "";
     private static bool _intelligentConsentManagement = false;
     private static bool _manualManagedConsentRequirements = false;
     private static Dictionary<string, object> _dictionaryCustom = new Dictionary<string, object>();
     private static AttributionCallbackDelegate _attributionCallbackDelegate;
     private static ConsentStatusChangeDelegate _consentStatusChangeDelegate;
+    private static bool _attEnabled = false;
+    private static double _attWaitTime = 30;
+    private static bool _attAutoRequest = true;
 #if !WRAPPED_NATIVES
     private static string _productName = "";
 #endif
@@ -129,6 +133,15 @@ public class Kochava : MonoBehaviour {
                 if (string.IsNullOrEmpty(value)) return;
                 _appGUID = value;
                 LOG("Config: appGUID = " + _appGUID, LOG_DEBUG);
+            }
+
+            // Android Only
+            public static void SetInstantAppGuid(string value)
+            {
+                if (CheckInitialized()) return;
+                if (string.IsNullOrEmpty(value)) return;
+                _instantAppGUID = value;
+                LOG("Config: instantAppGUID = " + _instantAppGUID, LOG_DEBUG);
             }
 
             public static void SetPartnerName(string value)
@@ -169,6 +182,15 @@ public class Kochava : MonoBehaviour {
                 LOG("Config: requestAttributionCallback = " + _requestAttributionCallback.ToString(), LOG_DEBUG);
             }
 
+            // (iOS Only) Set the container app group identifier for the App Clip conversion.
+            public static void SetContainerAppGroupIdentifier(string value)
+            {
+                if (CheckInitialized()) return;
+                if (string.IsNullOrEmpty(value)) return;
+                _containerAppGroupIdentifier = value;
+                LOG("Config: containerAppGroupIdentifier = " + _containerAppGroupIdentifier, LOG_DEBUG);
+            }
+
             // add a custom key/value pair to the config dictionary
             public static void SetCustomKeyValuePair(string key, object value)
             {
@@ -199,6 +221,15 @@ public class Kochava : MonoBehaviour {
                 LOG("Config: sleep = " + _sleep.ToString(), LOG_DEBUG);    
             }
 
+            public static void SetAppTrackingTransparency(bool enabled, double waitTime, bool autoRequest)
+            {
+                if (CheckInitialized()) return;
+                _attEnabled = enabled;
+                _attWaitTime = waitTime;
+                _attAutoRequest = autoRequest;
+                LOG("Config: AppTrackingTransparency = {enabled=" + _attEnabled.ToString() + ", waitTime=" + _attWaitTime.ToString() + ", autoRequest=" + _attAutoRequest.ToString() + "}", LOG_DEBUG);
+            }
+
             // helper function that logs if the tracker was already initialized
             private static bool CheckInitialized()
             {
@@ -211,18 +242,6 @@ public class Kochava : MonoBehaviour {
         // initialization
         public static void Initialize()
         {
-			if (isUnityStoreBuild) {
-				//Check if Unity Analytics is enabled as the SDK is not permitted to be initialized without it.
-				bool unityAnalyticsEnabled = false;
-#if UNITY_ANALYTICS
-			unityAnalyticsEnabled = UnityEngine.Analytics.Analytics.enabled;
-#endif
-				if (!unityAnalyticsEnabled) {
-					LOG ("CANNOT INITIALIZE KOCHAVA - Unity Analytics must be both enabled and active for this project in order to utilize the Kochava SDK.", LOG_ERROR);
-					return;
-				}
-			}
-
             // make sure config input parameters exist
 #if WRAPPED_NATIVES
 			if (string.IsNullOrEmpty(_appGUID) && string.IsNullOrEmpty(_partnerName))
@@ -254,10 +273,11 @@ public class Kochava : MonoBehaviour {
 
 #if ANDROID
             LOG("Initializing Kochava native Android library", LOG_INFO);
-			androidNativeStart(_appGUID, _partnerName, _logLevel, _appAdLimitTracking, _appAdLimitTrackingSet, _sleep, _requestAttributionCallback, _intelligentConsentManagement, _manualManagedConsentRequirements, _dictionaryCustom);
+			androidNativeStart(_appGUID, _instantAppGUID, _partnerName, _logLevel, _appAdLimitTracking, _appAdLimitTrackingSet, _sleep, _requestAttributionCallback, _intelligentConsentManagement, _manualManagedConsentRequirements, _dictionaryCustom);
 #elif IOS
             LOG("Initializing Kochava native iOS library", LOG_INFO);
-			iOSNativeStart(_appGUID, _partnerName, _logLevel, _appAdLimitTracking, _appAdLimitTrackingSet, _sleep, _requestAttributionCallback, _intelligentConsentManagement, _manualManagedConsentRequirements, _dictionaryCustom);
+            iOSNativeSetAppTrackingTransparency(_attEnabled, _attWaitTime, _attAutoRequest);
+			iOSNativeStart(_appGUID, _partnerName, _logLevel, _appAdLimitTracking, _appAdLimitTrackingSet, _sleep, _requestAttributionCallback, _containerAppGroupIdentifier, _intelligentConsentManagement, _manualManagedConsentRequirements, _dictionaryCustom);
 #elif WINDOWS_UWP
             LOG("Initializing Kochava native Windows Store (UWP) library", LOG_INFO);
 			windowsUwpNativeStart(_appGUID, _partnerName, _logLevel, _appAdLimitTracking, _appAdLimitTrackingSet, _sleep, _requestAttributionCallback, _intelligentConsentManagement, _manualManagedConsentRequirements, _dictionaryCustom);
@@ -273,6 +293,7 @@ public class Kochava : MonoBehaviour {
         {
             // Input Parameters
             _appGUID = "";
+            _instantAppGUID = "";
             _appAdLimitTracking = false;
 			_appAdLimitTrackingSet = false;
             _sleep = false;
@@ -280,6 +301,7 @@ public class Kochava : MonoBehaviour {
             _partnerName = "";
 			_partnerApp = "";
             _requestAttributionCallback = false;
+            _containerAppGroupIdentifier = "";
             _intelligentConsentManagement = false;
             _manualManagedConsentRequirements = false;
             _dictionaryCustom = new Dictionary<string, object>();
@@ -748,6 +770,28 @@ public class Kochava : MonoBehaviour {
 #endif
 		}
 
+        // (iOS) Request App Tracking Transparency Authorization.
+        public static void EnableAppTrackingTransparencyAutoRequest()
+        {
+#if IOS
+            iOSNativeEnableAppTrackingTransparencyAutoRequest();
+#else
+            LOG("EnableAppTrackingTransparencyAutoRequest() EnableAppTrackingTransparencyAutoRequest is not supported on this platform.", LOG_ERROR);
+#endif
+        }
+
+        // Reserved function, only use if directed to by your Client Success Manager.
+        public static void ExecuteAdvancedInstruction(string key, string command)
+		{
+#if ANDROID
+            androidNativeExecuteAdvancedInstruction(key, command);
+#elif IOS
+            iOSNativeExecuteAdvancedInstruction(key, command);
+#else
+            LOG("ExecuteAdvancedInstruction() ExecuteAdvancedInstruction is not supported on this platform.", LOG_ERROR);
+#endif
+        }
+
         // helper to check whether we've completed initialization
         private static bool CheckTrackerInitialized(string sourceName)
         {
@@ -1136,9 +1180,9 @@ public class Kochava : MonoBehaviour {
         }
 
     }
-    
+
 #endif
-    
+
 #if WRAPPED_NATIVES
     //Scheduled callbacks to the host app.
 	private readonly object cacheLock = new object();
@@ -1179,7 +1223,7 @@ public class Kochava : MonoBehaviour {
 		}
 	}
 #endif
-    
+
 #if ANDROID // native Android SDK
 
     // internal attribution handler
@@ -1232,7 +1276,7 @@ public class Kochava : MonoBehaviour {
 		}
 	}
     
-	private static void androidNativeStart(string appGuid, string partnerName, int logLevel, bool appLimitAdTracking, bool appLimitAdTrackingSet, bool sleep, bool retrieveAttribution, bool icm, bool icmManual, Dictionary<string, object> custom)
+	private static void androidNativeStart(string appGuid, string instantAppGuid, string partnerName, int logLevel, bool appLimitAdTracking, bool appLimitAdTrackingSet, bool sleep, bool retrieveAttribution, bool icm, bool icmManual, Dictionary<string, object> custom)
     {
         try
         {
@@ -1246,7 +1290,13 @@ public class Kochava : MonoBehaviour {
 
             // Get the Tracker and set the version extension.
             androidTracker = new AndroidJavaClass("com.kochava.base.Tracker");
-            androidTracker.CallStatic("ext", new AndroidJavaObject("java.lang.String", sdkName + " " + sdkVersionNumber), new AndroidJavaObject("java.lang.String", sdkBuildDate));
+
+            // Set the wrapper info.
+            Dictionary<string, object> wrapper = new Dictionary<string, object>();
+            wrapper["name"] = sdkName;
+            wrapper["version"] = sdkVersionNumber;
+            wrapper["build_date"] = sdkBuildDate;
+            androidNativeExecuteAdvancedInstruction("wrapper", Json.ToString(wrapper));
 
             // Configure the Android Native SDK.
             using (AndroidJavaClass androidUnityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
@@ -1259,7 +1309,11 @@ public class Kochava : MonoBehaviour {
                 {
                     kochavaConfig.Call<AndroidJavaObject>("setAppGuid", new AndroidJavaObject("java.lang.String", appGuid));
                 }
-                if(!string.IsNullOrEmpty(partnerName))
+                if (!string.IsNullOrEmpty(instantAppGuid))
+                {
+                    kochavaConfig.Call<AndroidJavaObject>("setInstantAppGuid", new AndroidJavaObject("java.lang.String", instantAppGuid));
+                }
+                if (!string.IsNullOrEmpty(partnerName))
                 {
                     kochavaConfig.Call<AndroidJavaObject>("setPartnerName", new AndroidJavaObject("java.lang.String", partnerName));
                 }
@@ -1472,7 +1526,14 @@ public class Kochava : MonoBehaviour {
 		// Send the request to the Android SDK.
 		androidTracker.CallStatic("processDeeplink", path, timeout, new AndroidDeeplinkHandler(requestId));
 	}
-    
+
+    private static void androidNativeExecuteAdvancedInstruction(string key, string command)
+    {
+        // Uses a temp tracker as this may be called before the SDK has been started.
+        AndroidJavaObject tempTracker = new AndroidJavaClass("com.kochava.base.Tracker");
+        tempTracker.CallStatic("executeAdvancedInstruction", new AndroidJavaObject("java.lang.String", key), new AndroidJavaObject("java.lang.String", command));
+    }
+
 #elif IOS // native iOS SDK
 
     //Callback method from the iOS .mm layer. Name and location cannot change.
@@ -1514,54 +1575,73 @@ public class Kochava : MonoBehaviour {
 		}
 	}
 
-	private static void iOSNativeStart(string appGuid, string partnerName, int logLevel, bool appLimitAdTracking, bool appLimitAdTrackingSet, bool sleep, bool retrieveAttribution, bool icm, bool icmManual, Dictionary<string, object> custom)
+	private static void iOSNativeStart(string appGuid, string partnerName, int logLevel, bool appLimitAdTracking, bool appLimitAdTrackingSet, bool sleep, bool retrieveAttribution, string containerAppGroupIdentifier, bool icm, bool icmManual, Dictionary<string, object> custom)
     {
-        Dictionary<string, object> config = new Dictionary<string, object>();
-        if(!string.IsNullOrEmpty(appGuid))
-        {
-            config ["appGUIDString"] = appGuid;
-        }
-        if(!string.IsNullOrEmpty(partnerName))
-        {
-            config ["partnerName"] = partnerName;
-        }
-		switch (logLevel)
+        // Set the wrapper info.
+        Dictionary<string, object> wrapper = new Dictionary<string, object>();
+        wrapper["name"] = sdkName;
+        wrapper["version"] = sdkVersionNumber;
+        wrapper["build_date"] = sdkBuildDate;
+        iOSNativeExecuteAdvancedInstruction("wrapper", Json.ToString(wrapper));
+
+        // Set the log level.
+        switch (logLevel)
 		{
 			case 0:
-				config ["logLevel"] = "never";
+                iOSNativeSetLogLevel("never");
 				break;
 			case 1:
-				config ["logLevel"] = "error";
+                iOSNativeSetLogLevel("error");
 				break;
 			case 2:
-				config ["logLevel"] = "warn";
+                iOSNativeSetLogLevel("warn");
 				break;
 			case 3:
-				config ["logLevel"] = "info";
+                iOSNativeSetLogLevel("info");
 				break;
 			case 4:
-				config ["logLevel"] = "debug";
+                iOSNativeSetLogLevel("debug");
 				break;
 			case 5:
-				config ["logLevel"] = "trace";
+                iOSNativeSetLogLevel("trace");
 				break;
 		}
+
+        // set containerAppGroupIdentifier
+        if(!string.IsNullOrEmpty(containerAppGroupIdentifier))
+        {
+            iOSNativeSetContainerAppGroupIdentifier(containerAppGroupIdentifier);
+        }
+
+        // Start the SDK.
+        if(!string.IsNullOrEmpty(appGuid))
+        {
+            iOSNativeStartWithAppGuid(appGuid);
+        } 
+        else if(!string.IsNullOrEmpty(partnerName))
+        {
+            iOSNativeStartWithPartnerName(partnerName);
+        }
+
+        // Set custom values.
+        iOSNativeSetCustom(Json.ToString(custom));
+
+        // Set ICM Options.
+        iOSNativeSetIcm(icm, icmManual);
+
+        // Set attribution listener.
+        if(retrieveAttribution)
+        {
+            iOSNativeRequestAttribution();
+        }
+
+        // Set Lat
 		if(appLimitAdTrackingSet)
 		{
-			config ["limitAdTracking"] = appLimitAdTracking;
+            iOSNativeSetAppLimitAdTrackingBool(appLimitAdTracking);
 		}
-        config ["retrieveAttribution"] = retrieveAttribution;
-        config ["consentIntelligentManagement"] = icm;
-        config ["consentManualManagedRequirements"] = icmManual;
-        config ["wrapperNameString"] = sdkName;
-        config ["wrapperVersionString"] = sdkVersionNumber;
-        config ["wrapperBuildDateString"] = sdkBuildDate;
-        // append custom values directly to config dictionary
-        foreach (var cus in custom) config.Add(cus.Key, cus.Value);
-        //Call the mm layer start.
-        iOSNativeStart(Json.ToString(config));
         
-        //If sleep is set then enable it right after configuring.
+        // Set sleep
         iOSNativeSetSleepBool(sleep);
     }
 
@@ -1590,7 +1670,25 @@ public class Kochava : MonoBehaviour {
 	}
 
     [DllImport("__Internal")]
-    private static extern void iOSNativeStart(string inputParameters);
+    private static extern void iOSNativeSetContainerAppGroupIdentifier(string identifier);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeEnableAppTrackingTransparencyAutoRequest();
+    [DllImport("__Internal")]
+    private static extern void iOSNativeSetAppTrackingTransparency(bool enabled, double waitTime, bool autoRequest);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeExecuteAdvancedInstruction(string key, string value);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeSetLogLevel(string logLevel);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeStartWithAppGuid(string appGuid);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeStartWithPartnerName(string partnerName);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeSetCustom(string custom);
+    [DllImport("__Internal")]
+    private static extern void iOSNativeRequestAttribution();
+    [DllImport("__Internal")]
+    private static extern void iOSNativeSetIcm(bool icmEnabled, bool manualManaged);
     [DllImport("__Internal")]
     private static extern void iOSNativeSendEvent(string eventName, string eventInfo);
     [DllImport("__Internal")]
@@ -3979,4 +4077,4 @@ public class Kochava : MonoBehaviour {
 
 #endif
 
-        }
+}
