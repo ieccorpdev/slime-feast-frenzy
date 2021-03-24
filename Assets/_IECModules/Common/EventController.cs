@@ -331,6 +331,7 @@ namespace IEC
         void LocateGroup()
         {
             var groups = FindObjectsOfType<MonoBehaviour>().OfType<IGroup>();
+
             foreach (var g in groups)
             {
                 g.LocateGroup();
