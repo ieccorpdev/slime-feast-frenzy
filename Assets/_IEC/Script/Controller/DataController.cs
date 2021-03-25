@@ -32,8 +32,8 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.NONE:
-                    Debug.Log("event none");
+                case EventList.SAVE_DATA:
+                    SaveData();
                     break;
             }
         }
