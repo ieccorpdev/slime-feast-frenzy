@@ -196,7 +196,6 @@ namespace IEC
             }
 
             MaxSdk.CreateBanner(m_Config.bannerID, ConvertBannerPos(bannerPos));
-            MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
             AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
         }
 
