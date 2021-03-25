@@ -161,7 +161,7 @@ namespace IEC
         //Prepare
         public bool isFixedBlock;
         public bool isHintFixedBlockStyle;
-
+        public bool isOneWayBlock;
 
         public bool isLeavesEffect;
 

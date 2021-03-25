@@ -15,8 +15,6 @@ namespace IEC
 
         private List<IslandComponent> m_ListIsland = new List<IslandComponent>();
 
-        private List<int> m_ListIndexGridLock = new List<int>();
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -220,7 +218,15 @@ namespace IEC
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
 
-            SetGridLocks(Game.size - 2);
+            if(Game.isOneWayBlock || Game.isFixedBlock)
+            {
+                //if (PlayerData.level > 10)
+                //{
+                //    SetFixedGrid(Game.size - 2);
+                //}
+
+                SetFixedGrid(Game.size - 2);
+            }
 
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
@@ -239,30 +245,42 @@ namespace IEC
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
-        private void SetGridLocks(int size)
+        private void SetFixedGrid(int size)
         {
-            if (!Game.isFixedBlock) return;
-            m_ListIndexGridLock.Clear();
             var level = PlayerData.level;
 
-            var totalTileLocks = GetTotalFixedBlock(size, level);
-            var totalTile = Game.listTiles.Count;
+            var totalLockGrid = RandomHelper.RangeWithSeed(level, 0, size);
 
-            for (int i = 0; i < totalTileLocks; i++)
+            var listFixedGrid = GetListFixedBlocks(level, totalLockGrid, Game.listTiles.Count);
+            var totalTile = listFixedGrid.Count;
+
+            for (int i = 0; i < totalTile; i++)
             {
-                var tileIndex = MathHelper.GetRandomIndexByList(m_ListIndexGridLock, totalTile, level);
-                m_ListIndexGridLock.Add(tileIndex);
-
-                Game.listTiles[tileIndex].SetLock();
+                if (Game.isFixedBlock)
+                {
+                    Game.listTiles[listFixedGrid[i]].SetLock();
+                }
+                else
+                {
+                    Game.listTiles[listFixedGrid[i]].OnSetActiveArrow();
+                }
+                
             }
         }
 
-        private int GetTotalFixedBlock(int size, int level)
-        {
-            var max = size;
-            var min = size / 2;
+        private List<int> m_TempListIndex = new List<int>();
 
-            return RandomHelper.RangeWithSeed(level, min, max);
+        private List<int> GetListFixedBlocks(int level, int count, int totalGrid)
+        {
+            m_TempListIndex.Clear();
+
+            for (int i = 0; i < count; i++)
+            {
+                var tileIndex = MathHelper.GetRandomIndexByList(m_TempListIndex, totalGrid, level);
+                m_TempListIndex.Add(tileIndex);
+            }
+
+            return m_TempListIndex;
         }
 
         private string[] GetMergeLevel(int size, int seed)
@@ -454,7 +472,19 @@ namespace IEC
 
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
-            Game.listTiles.Add(gridComp);
+
+            if (Game.isFixedBlock)
+            {
+                Game.listTiles.Add(gridComp);
+            }
+
+            if (Game.isOneWayBlock)
+            {
+                if(gridComp.GridType == GridType.GRID_CURVE || gridComp.GridType == GridType.GRID_STRAIGHT)
+                {
+                    Game.listTiles.Add(gridComp);
+                }
+            }
 
             if (Game.isBossLevel)
             {

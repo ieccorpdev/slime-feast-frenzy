@@ -89,7 +89,10 @@ namespace IEC
 
         protected WaterPoint m_StartWater;
 
-        private bool m_IsSetupArrow;
+        public WaterPoint Inline;
+        protected int m_InlineIndex;
+
+        public bool IsOneWayBlock;
 
 
         //Temp
@@ -132,6 +135,8 @@ namespace IEC
                 m_Terrain.OnKillTween();
                 m_Terrain.SetActiveLock(false);
             }
+
+            IsOneWayBlock = false;
         }
 
         public virtual void SetLock()
@@ -233,8 +238,6 @@ namespace IEC
             m_IsLock = false;
             m_ListWaterColor.Clear();
             m_StartWater = WaterPoint.CENTER;
-
-            m_IsSetupArrow = false;
         }
 
         public virtual void BeforeInit()
@@ -266,7 +269,7 @@ namespace IEC
             }
         }
 
-        public List<BaseComponent> GetGridsCanConnect(int color, bool isSetupArrow)
+        public List<BaseComponent> GetGridsCanConnect(int color, bool isInit)
         {
             m_ListGridConnect.Clear();
             if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
@@ -278,13 +281,27 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineBot)
                     {
-                        m_TempGrid.SetStartWater(WaterPoint.BOT);
-
-                        if (isSetupArrow)
+                        if (isInit)
                         {
                             m_TempGrid.SetupArrow(WaterPoint.BOT);
+                            m_ListGridConnect.Add(m_TempGrid);
                         }
-                        m_ListGridConnect.Add(m_TempGrid);
+                        else
+                        {
+                            if(Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            {
+                                if(m_TempGrid.Inline == WaterPoint.BOT)
+                                {
+                                    m_ListGridConnect.Add(m_TempGrid);
+                                    m_TempGrid.SetStartWater(WaterPoint.BOT);
+                                }
+                            }
+                            else
+                            {
+                                m_ListGridConnect.Add(m_TempGrid);
+                                m_TempGrid.SetStartWater(WaterPoint.BOT);
+                            }
+                        }
                     }
                 }
             }
@@ -296,12 +313,27 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineTop)
                     {
-                        m_TempGrid.SetStartWater(WaterPoint.TOP);
-                        if (isSetupArrow)
+                        if (isInit)
                         {
                             m_TempGrid.SetupArrow(WaterPoint.TOP);
+                            m_ListGridConnect.Add(m_TempGrid);
                         }
-                        m_ListGridConnect.Add(m_TempGrid);
+                        else
+                        {
+                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            {
+                                if (m_TempGrid.Inline == WaterPoint.TOP)
+                                {
+                                    m_ListGridConnect.Add(m_TempGrid);
+                                    m_TempGrid.SetStartWater(WaterPoint.TOP);
+                                }
+                            }
+                            else
+                            {
+                                m_ListGridConnect.Add(m_TempGrid);
+                                m_TempGrid.SetStartWater(WaterPoint.TOP);
+                            }
+                        }
                     }
                 }
             }
@@ -313,12 +345,27 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineRight)
                     {
-                        m_TempGrid.SetStartWater(WaterPoint.RIGHT);
-                        if (isSetupArrow)
+                        if (isInit)
                         {
                             m_TempGrid.SetupArrow(WaterPoint.RIGHT);
+                            m_ListGridConnect.Add(m_TempGrid);
                         }
-                        m_ListGridConnect.Add(m_TempGrid);
+                        else
+                        {
+                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            {
+                                if (m_TempGrid.Inline == WaterPoint.RIGHT)
+                                {
+                                    m_ListGridConnect.Add(m_TempGrid);
+                                    m_TempGrid.SetStartWater(WaterPoint.RIGHT);
+                                }
+                            }
+                            else
+                            {
+                                m_ListGridConnect.Add(m_TempGrid);
+                                m_TempGrid.SetStartWater(WaterPoint.RIGHT);
+                            }
+                        }
                     }
                 }
             }
@@ -330,12 +377,27 @@ namespace IEC
                 {
                     if (m_TempGrid.IsHaveLineLeft)
                     {
-                        m_TempGrid.SetStartWater(WaterPoint.LEFT);
-                        if (isSetupArrow)
+                        if (isInit)
                         {
                             m_TempGrid.SetupArrow(WaterPoint.LEFT);
+                            m_ListGridConnect.Add(m_TempGrid);
                         }
-                        m_ListGridConnect.Add(m_TempGrid);
+                        else
+                        {
+                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            {
+                                if (m_TempGrid.Inline == WaterPoint.LEFT)
+                                {
+                                    m_ListGridConnect.Add(m_TempGrid);
+                                    m_TempGrid.SetStartWater(WaterPoint.LEFT);
+                                }
+                            }
+                            else
+                            {
+                                m_ListGridConnect.Add(m_TempGrid);
+                                m_TempGrid.SetStartWater(WaterPoint.LEFT);
+                            }
+                        }
                     }
                 }
             }
@@ -366,6 +428,13 @@ namespace IEC
             m_StartWater = point;
         }
 
+        public void OnSetActiveArrow()
+        {
+            IsOneWayBlock = true;
+
+            m_Terrain.SetActiveArrow();
+        }
+
         public void SetupArrow(WaterPoint point)
         {
             if (GridType == GridType.GRID_STRAIGHT || GridType == GridType.GRID_CURVE)
@@ -377,8 +446,8 @@ namespace IEC
         private float m_RatioDist = 2f;
         private void OnSetUpArrow(WaterPoint point)
         {
-            if (m_IsSetupArrow) return;
-            m_IsSetupArrow = true;
+            if (!Game.isOneWayBlock) return;
+            m_InlineIndex = (int)point;
 
             var originStartPos = GetWaterPos(point);
             originStartPos.y = 0f;

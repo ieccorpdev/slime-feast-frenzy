@@ -44,8 +44,11 @@ public class TerrainComponent : MonoBehaviour
         arrayPos[0] = m_EndPos1;
         arrayPos[1] = m_StartPos2;
         arrayPos[2] = m_EndPos2;
+    }
 
-        //StartCoroutine(IETweenArrow());
+    public void SetActiveArrow()
+    {
+        StartCoroutine(IETweenArrow());
     }
 
     private int arrowIndex;

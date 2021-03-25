@@ -13,10 +13,10 @@
 
     public enum WaterPoint
     {
-        CENTER,
         TOP,
+        RIGHT,
         BOT,
         LEFT,
-        RIGHT
+        CENTER
     }
 }
