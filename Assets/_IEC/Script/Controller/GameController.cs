@@ -57,7 +57,7 @@ namespace IEC
             {
                 PlayerData.AddLevel();
             }
-
+            EventController.RaiseEvent(EventList.SAVE_DATA);
             Services.PushEvent(new TrackingEvent.GameOver());
         }
 
