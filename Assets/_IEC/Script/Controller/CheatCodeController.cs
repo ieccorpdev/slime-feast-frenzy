@@ -54,6 +54,16 @@ namespace IEC
 #endif
             });
 
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
+            {
+                int level = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.level = level;
+                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.level
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_WIN", cheatCodeParam =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
