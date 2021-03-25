@@ -84,6 +84,9 @@ namespace IEC
 
                     });
                     break;
+                case EventList.Service.INIT_AD_DONE:
+                    ShowWhiteBanner();
+                    break;
             }
         }
 
@@ -282,7 +285,7 @@ namespace IEC
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
 
             Debug.LogWarning("device ver:" + deviceVer);
-            var isNeedShowAtt = GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+            var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
 
             if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
             {
@@ -362,6 +365,7 @@ namespace IEC
             {
                 var adsMock = new AdsMock(config.IsEditorAdsLoaded);
                 m_Ads = adsMock;
+                EventController.RaiseEvent(EventList.Service.INIT_AD_DONE);
             }
             else
             {
@@ -931,5 +935,13 @@ namespace IEC
             return (major * 1000 + minor);
         }
 
+        private void ShowWhiteBanner()
+        {
+            var canvasBanner = Resources.Load<GameObject>("CanvasBanner");
+            var canvasObj = Instantiate(canvasBanner);
+            var scaler = canvasObj.GetComponent<UnityEngine.UI.CanvasScaler>();
+            var bannerAds = canvasObj.GetComponentInChildren<BannerAds>();
+            bannerAds.SetBannerHeight(GetBannerHeight(scaler));
+        }
     }
 }
