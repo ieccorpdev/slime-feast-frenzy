@@ -95,7 +95,7 @@ namespace IEC
             base.OnHint();
             if (Game.isHintFixedBlockStyle)
             {
-                SetLock();
+                SetLockHint();
             }
             m_IsRotating = true;
             m_Tween?.Kill(true);

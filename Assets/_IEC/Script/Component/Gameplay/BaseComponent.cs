@@ -136,10 +136,20 @@ namespace IEC
                 m_Terrain.SetActiveLock(false);
             }
 
+            m_IsLock = false;
             IsOneWayBlock = false;
         }
 
         public virtual void SetLock()
+        {
+            m_IsLock = true;
+            if (m_Terrain != null)
+            {
+                m_Terrain.SetActiveLock(true);
+            }
+        }
+
+        protected void SetLockHint()
         {
             m_IsLock = true;
             if (m_Terrain != null)
@@ -235,7 +245,6 @@ namespace IEC
             m_OldWaterIndexColor = 0;
             m_DelayStart = 0;
             m_IsHavingWater = false;
-            m_IsLock = false;
             m_ListWaterColor.Clear();
             m_StartWater = WaterPoint.CENTER;
         }
