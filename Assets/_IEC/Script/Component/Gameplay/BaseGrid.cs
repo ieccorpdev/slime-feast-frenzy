@@ -11,23 +11,27 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
             SetGridLine(TrueRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[TrueRot], 0f);
         }
 
-        public override void SetTempRot(int tempRot)
+        public override void BeforeInit()
         {
-            base.SetTempRot(tempRot);
-            m_CurrentRot = tempRot;
-        }
-
-        public override void AfterInit()
-        {
-            base.AfterInit();
+            base.BeforeInit();
             SetGridLine(m_CurrentRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+        }
+
+        public override void SetLock()
+        {
+            base.SetLock();
+            m_CurrentRot = TrueRot;
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
         private void SetGridLine(int rot)
         {
+            Inline = (WaterPoint)((m_InlineIndex + m_CurrentRot -  TrueRot) % 4);
+
             CurrentLine = DefaultLine;
             for (int i = 0; i < rot; i++)
             {
@@ -47,6 +51,7 @@ namespace IEC
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
+            if (m_IsLock) return;
 
             if (!isUndo && Game.isHaveBossLimitMoveLevels)
             {
@@ -88,6 +93,10 @@ namespace IEC
         public override void OnHint()
         {
             base.OnHint();
+            if (Game.isHintFixedBlockStyle)
+            {
+                SetLockHint();
+            }
             m_IsRotating = true;
             m_Tween?.Kill(true);
 

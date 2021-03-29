@@ -156,7 +156,7 @@ namespace IEC
                     for (int j = startIndex; j < count; j++)
                     {
                         var grid = m_ListGridHaveWater[j];
-                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor, false);
                         startIndex += 1;
                         var listGridNearCount = listGrids.Count;
                         if (listGrids.Count > 0)

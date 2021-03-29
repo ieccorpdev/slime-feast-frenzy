@@ -46,15 +46,16 @@ namespace IEC
             Result20210108();
             Result20210114();
             Result20210129();
+            Result20210226();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210226(abValue);
+            UpdateAb20210330(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210226(abValue);
+                    UpdateAb20210330(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -65,6 +66,18 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+        private void UpdateAb20210330(int abValue)
+        {
+            Game.isFixedBlock = abValue == 1;
+            Game.isHintFixedBlockStyle = abValue == 2;
+            Game.isOneWayBlock = abValue == 3;
+        }
+
+        private void Result20210226()
+        {
+            UIController.SetupAbUI();
+            GameController.SetupMainCam();
         }
 
         private void UpdateAb20210226(int abValue)
