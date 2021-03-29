@@ -196,6 +196,9 @@ namespace IEC
             }
 
             MaxSdk.CreateBanner(m_Config.bannerID, ConvertBannerPos(bannerPos));
+#if UNITY_ANDROID
+            MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
+#endif
             AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
         }
 
