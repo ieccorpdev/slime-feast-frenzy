@@ -62,6 +62,14 @@ namespace IEC
             //m_RectPannel.sizeDelta = new Vector2(800f, Game.isHaveNoAdsInMainScreen ? 900f : 750f);
         }
 
+        public void SetActiveConsent(bool isActive)
+        {
+            btnEditConsent.gameObject.SetActive(isActive);
+
+            m_RectGroup.sizeDelta = new Vector2(620f, isActive ? 620f : 440f);
+            m_RectPannel.sizeDelta = new Vector2(800f, isActive ? 1020f : 750f);
+        }
+
         void SendEmail()
         {
             string email = "support@iecglobal.com.au";
