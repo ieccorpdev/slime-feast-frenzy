@@ -1,4 +1,5 @@
 ﻿using MoreMountains.NiceVibrations;
+using OgurySdk;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -135,6 +136,7 @@ namespace IEC
 
             UI.mainUIGroup.btnSetting.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
+                UI.popupSettings.SetActiveConsent(OguryChoiceManager.EditAvailable);
                 UI.popupSettings.gameObject.SetActive(true);
                 Game.isShowPopup = true;
             });
