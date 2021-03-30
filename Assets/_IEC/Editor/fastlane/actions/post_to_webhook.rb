@@ -10,7 +10,7 @@ module Fastlane
         versionName = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleShortVersionString")
         buildNumber = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleVersion")
 
-        Faraday.post("http://passive.discordbot.game.ieccorp.vn:3004/", JSON.generate({ 
+        Faraday.post("http://discordbot.game.ieccorp.vn:3004/", JSON.generate({ 
           bundleId: bundleId, 
           appName: appName,
           versionName: versionName,
