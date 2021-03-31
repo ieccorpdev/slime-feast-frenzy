@@ -86,7 +86,9 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
+#if UNITY_IOS
                     ShowWhiteBanner();
+#endif
                     break;
             }
         }
@@ -482,7 +484,12 @@ namespace IEC
             float unityScale = canvasScaler.transform.localScale.y;
             Debug.Log("m_Ads.GetBannerHeight() : " + m_Ads.GetBannerHeight());
             Debug.Log("unityScale: " + unityScale);
-            return Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale;
+            var scale = 1f;
+            if (1f * Screen.height / Screen.width > 2f)
+            {
+                scale = 1.2f;
+            }
+            return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
         public void SetUpAbTest(ABTestConfig abTest, int versionCode)
