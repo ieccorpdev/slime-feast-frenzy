@@ -485,7 +485,7 @@ namespace IEC
             Debug.Log("m_Ads.GetBannerHeight() : " + m_Ads.GetBannerHeight());
             Debug.Log("unityScale: " + unityScale);
             var scale = 1f;
-            if (1f * Screen.height / Screen.width > 16f / 9)
+            if (1f * Screen.height / Screen.width > 2f)
             {
                 scale = 1.2f;
             }
