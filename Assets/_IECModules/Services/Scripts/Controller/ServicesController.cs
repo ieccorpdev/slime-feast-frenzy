@@ -488,6 +488,13 @@ namespace IEC
             if (1f * Screen.height / Screen.width > 2f)
             {
                 scale = 1.2f;
+                // hotfix for iPhone X, iPhone X GSM, iPhone XS
+                if(SystemInfo.deviceModel  == "iPhone10,3" 
+                || SystemInfo.deviceModel  == "iPhone10,6" 
+                || SystemInfo.deviceModel  == "iPhone11,2"
+                ){
+                    scale = 1f;
+                }
             }
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
