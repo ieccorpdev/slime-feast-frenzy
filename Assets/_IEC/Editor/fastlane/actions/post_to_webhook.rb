@@ -7,8 +7,13 @@ module Fastlane
 
         bundleId = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
         appName = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleDisplayName")
-        versionName = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleShortVersionString")
-        buildNumber = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleVersion")
+        versionName = Fastlane::Actions::GetVersionNumberAction.run(target: "Unity-iPhone")
+        buildNumber = Fastlane::Actions::GetBuildNumberAction.run({})
+
+        # UI.message bundleId
+        # UI.message appName
+        # UI.message versionName
+        # UI.message buildNumber
 
         Faraday.post("http://discordbot.game.ieccorp.vn:3004/", JSON.generate({ 
           bundleId: bundleId, 
