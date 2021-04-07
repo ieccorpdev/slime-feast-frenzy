@@ -220,12 +220,10 @@ namespace IEC
 
             if(Game.isOneWayBlock || Game.isFixedBlock)
             {
-                //if (PlayerData.level > 10)
-                //{
-                //    SetFixedGrid(Game.size - 2);
-                //}
-
-                SetFixedGrid(Game.size - 2);
+                if (PlayerData.level > 10)
+                {
+                    SetFixedGrid(Game.size - 2);
+                }
             }
 
             UIController.SetLevel(Game.isBossLevel);
