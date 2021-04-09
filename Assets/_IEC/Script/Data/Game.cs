@@ -124,7 +124,6 @@ namespace IEC
         public bool isHaveBossMixColorLevels;
         public bool isLevelDifficultyV4;
 
-        //AB test
         public bool isNewUI;
         public bool isHaveNewTrees;
         public bool isStartLevelEffect;
@@ -136,7 +135,7 @@ namespace IEC
         public bool isNewWaterEffect;
 
         public bool isLevelDifficultyV5;
-        public bool isNewTreeColorV1;
+        public bool isTreeColorV1;
         public bool isHaveUIAnimation;
         public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
@@ -158,10 +157,14 @@ namespace IEC
         public bool isNewGameOver;
         public bool isHaveConfettiGameOver;
 
-        //Prepare
-        public bool isFixedBlock;
+        public bool isHaveFixedBlock;
         public bool isHintFixedBlockStyle;
-        public bool isOneWayBlock;
+
+        public bool isHaveOneWayBlock;
+        public bool isHaveBigSquare;
+        public bool isHaveNoAdsV3;
+        public bool isTreeColorV2;
+
 
         public bool isLeavesEffect;
 

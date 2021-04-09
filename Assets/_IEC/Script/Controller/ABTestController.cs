@@ -69,6 +69,14 @@ namespace IEC
             );
         }
 
+        private void UpdateAb20210412(int abValue)
+        {
+            Game.isHaveOneWayBlock = abValue == 1;
+            Game.isHaveBigSquare = abValue == 2;
+            Game.isHaveNoAdsV3 = abValue == 3;
+            Game.isTreeColorV2 = abValue == 4;
+        }
+
         private void UpdateAb20210407(int abValue)
         {
 
@@ -76,16 +84,16 @@ namespace IEC
 
         private void Result20210330()
         {
-            Game.isFixedBlock = true;
+            Game.isHaveFixedBlock = true;
             Game.isHintFixedBlockStyle = false;
-            Game.isOneWayBlock = false;
+            //Game.isOneWayBlock = false;
         }
 
         private void UpdateAb20210330(int abValue)
         {
-            Game.isFixedBlock = abValue == 1;
+            Game.isHaveFixedBlock = abValue == 1;
             Game.isHintFixedBlockStyle = abValue == 2;
-            Game.isOneWayBlock = abValue == 3;
+            Game.isHaveOneWayBlock = abValue == 3;
         }
 
         private void Result20210226()
@@ -162,7 +170,7 @@ namespace IEC
         private void Result20210108()
         {
             Game.isLevelDifficultyV5 = false;
-            Game.isNewTreeColorV1 = false;
+            Game.isTreeColorV1 = false;
             Game.isHaveUIAnimation = false;
             Game.isChangeGridStatus = false;
             Game.isHaveDynamicInter = false;
@@ -171,7 +179,7 @@ namespace IEC
         private void UpdateAb20210108(int abValue)
         {
             Game.isLevelDifficultyV5 = abValue == 1;
-            Game.isNewTreeColorV1 = abValue == 2;
+            Game.isTreeColorV1 = abValue == 2;
             Game.isHaveUIAnimation = abValue == 3;
             Game.isChangeGridStatus = abValue == 4;
             Game.isHaveDynamicInter = abValue == 5;

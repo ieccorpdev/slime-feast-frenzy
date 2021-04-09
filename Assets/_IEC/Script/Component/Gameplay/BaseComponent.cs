@@ -297,7 +297,7 @@ namespace IEC
                         }
                         else
                         {
-                            if(Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if(Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if(m_TempGrid.Inline == WaterPoint.BOT)
                                 {
@@ -329,7 +329,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.TOP)
                                 {
@@ -361,7 +361,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.RIGHT)
                                 {
@@ -393,7 +393,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.LEFT)
                                 {
@@ -455,7 +455,7 @@ namespace IEC
         private float m_RatioDist = 2f;
         private void OnSetUpArrow(WaterPoint point)
         {
-            if (!Game.isOneWayBlock) return;
+            if (!Game.isHaveOneWayBlock) return;
             m_InlineIndex = (int)point;
 
             var originStartPos = GetWaterPos(point);

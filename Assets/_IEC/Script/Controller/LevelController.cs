@@ -218,11 +218,31 @@ namespace IEC
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
             }
 
-            if(Game.isOneWayBlock || Game.isFixedBlock)
+            //if(Game.isOneWayBlock || Game.isFixedBlock)
+            //{
+            //    if (PlayerData.level > 10)
+            //    {
+            //        SetFixedGrid(Game.size - 2);
+            //    }
+            //}
+
+            var level = PlayerData.level;
+            bool isHaveFixedBlock = Game.isHaveFixedBlock;
+
+            if (level > 10)
             {
-                if (PlayerData.level > 10)
+                if (Game.isHaveOneWayBlock)
                 {
-                    SetFixedGrid(Game.size - 2);
+                    if ((level % 5) != 0)
+                    {
+                        isHaveFixedBlock = false;
+                        SetFixedGrid(level, Game.size - 2, false);
+                    }
+                } 
+
+                if (isHaveFixedBlock)
+                {
+                    SetFixedGrid(level, Game.size - 2, true);
                 }
             }
 
@@ -243,10 +263,8 @@ namespace IEC
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
-        private void SetFixedGrid(int size)
+        private void SetFixedGrid(int level, int size, bool isFixedBlock)
         {
-            var level = PlayerData.level;
-
             var totalLockGrid = RandomHelper.RangeWithSeed(level, 0, size);
 
             var listFixedGrid = GetListFixedBlocks(level, totalLockGrid, Game.listTiles.Count);
@@ -254,7 +272,7 @@ namespace IEC
 
             for (int i = 0; i < totalTile; i++)
             {
-                if (Game.isFixedBlock)
+                if (isFixedBlock)
                 {
                     Game.listTiles[listFixedGrid[i]].SetLock();
                 }
@@ -471,14 +489,18 @@ namespace IEC
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
 
-            if (Game.isFixedBlock)
-            {
-                Game.listTiles.Add(gridComp);
-            }
+            bool isFixedBlock = Game.isHaveFixedBlock;
 
-            if (Game.isOneWayBlock)
+            if (Game.isHaveOneWayBlock)
             {
-                if(gridComp.GridType == GridType.GRID_CURVE || gridComp.GridType == GridType.GRID_STRAIGHT)
+                if (gridComp.GridType == GridType.GRID_CURVE || gridComp.GridType == GridType.GRID_STRAIGHT)
+                {
+                    Game.listTiles.Add(gridComp);
+                }
+            }
+            else
+            {
+                if (isFixedBlock)
                 {
                     Game.listTiles.Add(gridComp);
                 }
