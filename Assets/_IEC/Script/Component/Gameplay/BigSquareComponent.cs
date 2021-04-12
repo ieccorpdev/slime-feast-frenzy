@@ -20,6 +20,9 @@ namespace IEC
 
         private int m_GridSize, m_LineSize;
 
+        [SerializeField]
+        private TerrainComponent m_Terrain;
+
         public void OnInit(BaseComponent[,] gridsInput, int row, int col)
         {
             OnResetAll();
@@ -29,6 +32,9 @@ namespace IEC
             grids = gridsInput;
 
             m_GridSize = gridsInput.GetLength(0);
+            m_Terrain.transform.localScale = new Vector3(m_GridSize, 1f, m_GridSize);
+            m_Terrain.SetupTerrain(Game.listTerrainType[0]);
+
             m_LineSize = m_GridSize * 3;
 
             CurrentLine = new int[m_LineSize, m_LineSize];
@@ -45,6 +51,7 @@ namespace IEC
             var posZ = (grids[0, 0].CurrentWorldPos.z + grids[m_GridSize - 1, 0].CurrentWorldPos.z) / 2f;
 
             transform.position = new Vector3(posX, 20f, posZ);
+            
 
             for (int i = 0; i < m_GridSize; i++)
             {

@@ -465,7 +465,6 @@ namespace IEC
         public void OnSetActiveArrow()
         {
             IsOneWayBlock = true;
-
             m_Terrain.SetActiveArrow();
         }
 
