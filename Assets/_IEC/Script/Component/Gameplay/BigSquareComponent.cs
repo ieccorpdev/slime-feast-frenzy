@@ -7,7 +7,7 @@ namespace IEC
 {
     public class BigSquareComponent : _BaseBehaviour
     {
-        private int[,] CurrentLine = new int[6, 6];
+        private int[,] CurrentLine;
 
         private BaseComponent[,] grids;
 
@@ -15,6 +15,10 @@ namespace IEC
         private Tween m_Tween;
 
         private int m_RowStart, m_ColStart;
+
+        private Vector3 CurrentWorldPos => transform.position;
+
+        private int m_GridSize, m_LineSize;
 
         public void OnInit(BaseComponent[,] gridsInput, int row, int col)
         {
@@ -24,22 +28,27 @@ namespace IEC
 
             grids = gridsInput;
 
-            for (int i = 0; i < 6; i++)
+            m_GridSize = gridsInput.GetLength(0);
+            m_LineSize = m_GridSize * 3;
+
+            CurrentLine = new int[m_LineSize, m_LineSize];
+
+            for (int i = 0; i < m_LineSize; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < m_LineSize; j++)
                 {
                     CurrentLine[i, j] = gridsInput[i / 3, j / 3].CurrentLine[i % 3, j % 3];
                 }
             }
 
-            var posX = (grids[0, 0].CurrentWorldPos.x + grids[0, 1].CurrentWorldPos.x) / 2f;
-            var posZ = (grids[0, 0].CurrentWorldPos.z + grids[1, 0].CurrentWorldPos.z) / 2f;
+            var posX = (grids[0, 0].CurrentWorldPos.x + grids[0, m_GridSize - 1].CurrentWorldPos.x) / 2f;
+            var posZ = (grids[0, 0].CurrentWorldPos.z + grids[m_GridSize - 1, 0].CurrentWorldPos.z) / 2f;
 
-            transform.position = new Vector3(posX, -.11f, posZ);
+            transform.position = new Vector3(posX, 20f, posZ);
 
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < m_GridSize; i++)
             {
-                for (int j = 0; j < 2; j++)
+                for (int j = 0; j < m_GridSize; j++)
                 {
                     grids[i, j].transform.SetParent(transform);
                     grids[i, j].SetLock(false);
@@ -68,10 +77,10 @@ namespace IEC
                     transform.localPosition = currentPos;
                     m_IsRotating = false;
 
-                    grids = RotateMatrix(grids, 2);
-                    for (int i = m_RowStart; i < m_RowStart + 2; i++)
+                    grids = RotateMatrix(grids, m_GridSize);
+                    for (int i = m_RowStart; i < m_RowStart + m_GridSize; i++)
                     {
-                        for (int j = m_ColStart; j < m_ColStart + 2; j++)
+                        for (int j = m_ColStart; j < m_ColStart + m_GridSize; j++)
                         {
                             var row = i - m_RowStart;
                             var col = j - m_ColStart;
@@ -81,7 +90,7 @@ namespace IEC
                         }
                     }
 
-                    CurrentLine = MathHelper.RotateMatrix(CurrentLine, 6);
+                    CurrentLine = MathHelper.RotateMatrix(CurrentLine, m_LineSize);
                     SetNewLine();
 
                     EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
@@ -90,9 +99,9 @@ namespace IEC
 
         private void SetNewLine()
         {
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < m_LineSize; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < m_LineSize; j++)
                 {
                     grids[i / 3, j / 3].CurrentLine[i % 3, j % 3] = CurrentLine[i, j];
                 }
@@ -120,14 +129,29 @@ namespace IEC
             m_Tween?.Kill(true);
         }
 
+        public void OnDestroyMe()
+        {
+            PrefabHelper.Destroy(gameObject);
+        }
+
+        public void OnTweenMove()
+        {
+            m_Tween?.Kill(true);
+
+            var moveTime = Config.startEffectMoveTime;
+            var delayTime = moveTime + CurrentWorldPos.x * .1f;
+
+            m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+        }
+
 
         [NaughtyAttributes.Button]
         protected void CheckLine()
         {
             var str = "";
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < m_LineSize; i++)
             {
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < m_LineSize; j++)
                 {
                     str += CurrentLine[i, j];
                 }

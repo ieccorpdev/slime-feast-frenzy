@@ -101,6 +101,9 @@ namespace IEC
             m_TimeStart = System.DateTime.Now;
             Game.goldReward = RandomHelper.RangeWithSeed(PlayerData.level, 50, 100);
             PushPlayLevelEvent();
+
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
         public void SetupCamera(int size, int rotIndex)

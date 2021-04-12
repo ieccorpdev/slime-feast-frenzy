@@ -161,7 +161,7 @@ namespace IEC
         public bool isHintFixedBlockStyle;
 
         public bool isHaveOneWayBlock;
-        public bool isHaveBigSquare;
+        public bool isHaveBigSquare = true;
         public bool isHaveNoAdsV3;
         public bool isTreeColorV2;
 
