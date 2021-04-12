@@ -75,6 +75,8 @@ namespace IEC
             Game.isHaveBigSquare = abValue == 2;
             Game.isHaveNoAdsV3 = abValue == 3;
             Game.isTreeColorV2 = abValue == 4;
+
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210407(int abValue)
@@ -98,19 +100,18 @@ namespace IEC
 
         private void Result20210226()
         {
-            UIController.SetupAbUI();
             GameController.SetupMainCam();
         }
 
         private void UpdateAb20210226(int abValue)
         {
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
             GameController.SetupMainCam();
         }
 
         private void UpdateAb20210205(int abValue)
         {
-            Game.isHaveNoAdsInMainScreen = abValue == 1;
+            Game.isHaveNoAdsV3 = abValue == 1;
             Game.isHaveNoAdsInShopTab = abValue == 2;
             Game.isHaveShop = abValue == 2;
             Game.isCameraTopView = abValue == 3;
