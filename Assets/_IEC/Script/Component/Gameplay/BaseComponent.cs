@@ -238,6 +238,8 @@ namespace IEC
                 if (m_WaterComponent[i].gameObject.activeInHierarchy)
                 {
                     m_WaterComponent[i].OnUpdate(deltaTime);
+
+                    m_WaterComponent[i].UpdatePos(GetWaterPos(m_StartWater));
                 }
             }
         }

@@ -121,6 +121,12 @@ namespace IEC
             ApplyData(propertyBlock);
         }
 
+        public void UpdatePos(Vector3 pos)
+        {
+            MaterialPropertyBlock.SetVector("_GLOBALMaskPosition", pos);
+            ApplyData(MaterialPropertyBlock);
+        }
+
         float deltaAmount;
         float ratioTime;
 
