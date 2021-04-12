@@ -109,7 +109,8 @@ namespace IEC
         public override void AfterInit()
         {
             base.AfterInit();
-            SetSetGrowingWater(true, WaterPoint.CENTER);
+            m_StartWater = WaterPoint.CENTER;
+            SetSetGrowingWater(true, m_StartWater);
         }
 
         private void ConfigWater()

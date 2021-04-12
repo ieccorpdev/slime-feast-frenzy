@@ -21,6 +21,8 @@ namespace IEC
 
         public Image sprBGTop, sprBGBot;
 
+        public Transform groupBigSquare;
+
         public void LocateGroup()
         {
             Pool.Set(this);

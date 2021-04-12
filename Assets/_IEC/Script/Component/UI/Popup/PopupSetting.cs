@@ -56,18 +56,21 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsInMainScreen);
-
-            //m_RectGroup.sizeDelta = new Vector2(640f, Game.isHaveNoAdsInMainScreen ? 620f : 440f);
-            //m_RectPannel.sizeDelta = new Vector2(800f, Game.isHaveNoAdsInMainScreen ? 900f : 750f);
+            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsV3);
         }
 
         public void SetActiveConsent(bool isActive)
         {
             btnEditConsent.gameObject.SetActive(isActive);
 
-            m_RectGroup.sizeDelta = new Vector2(620f, isActive ? 620f : 440f);
-            m_RectPannel.sizeDelta = new Vector2(800f, isActive ? 1020f : 750f);
+            var isScaleUp = isActive || Game.isHaveNoAdsV3;
+            var isHaveBoth = isActive && Game.isHaveNoAdsV3;
+
+            var scaleYGroup = isHaveBoth ? 800f : (isScaleUp ? 620f : 440f);
+            var scaleYPanel = isHaveBoth ? 1290f : (isScaleUp ? 1020f : 750f);
+
+            m_RectGroup.sizeDelta = new Vector2(620f, scaleYGroup);
+            m_RectPannel.sizeDelta = new Vector2(800f, scaleYPanel);
         }
 
         void SendEmail()

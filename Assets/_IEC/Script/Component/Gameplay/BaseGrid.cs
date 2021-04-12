@@ -17,15 +17,19 @@ namespace IEC
         public override void BeforeInit()
         {
             base.BeforeInit();
+            if (m_IsLock) return;
             SetGridLine(m_CurrentRot);
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
-        public override void SetLock()
+        public override void SetLock(bool isChangeTerrain)
         {
-            base.SetLock();
-            m_CurrentRot = TrueRot;
-            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            base.SetLock(isChangeTerrain);
+            if (isChangeTerrain)
+            {
+                m_CurrentRot = TrueRot;
+                Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+            }
         }
 
         private void SetGridLine(int rot)

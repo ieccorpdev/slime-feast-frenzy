@@ -18,6 +18,7 @@ namespace IEC
         public GameObject noneObj;
 
         public GameObject islandObj;
+        public GameObject bigSquareObj;
     }
 }
 //-90 0 180 90

@@ -50,13 +50,13 @@ namespace IEC
             Result20210330();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210407(abValue);
+            UpdateAb20210412(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210407(abValue);
+                    UpdateAb20210412(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -69,6 +69,16 @@ namespace IEC
             );
         }
 
+        private void UpdateAb20210412(int abValue)
+        {
+            Game.isHaveOneWayBlock = abValue == 1;
+            Game.isHaveBigSquare = abValue == 2;
+            Game.isHaveNoAdsV3 = abValue == 3;
+            Game.isTreeColorV2 = abValue == 4;
+
+            UIController.SetupAbUI();
+        }
+
         private void UpdateAb20210407(int abValue)
         {
 
@@ -76,33 +86,32 @@ namespace IEC
 
         private void Result20210330()
         {
-            Game.isFixedBlock = true;
+            Game.isHaveFixedBlock = true;
             Game.isHintFixedBlockStyle = false;
-            Game.isOneWayBlock = false;
+            //Game.isOneWayBlock = false;
         }
 
         private void UpdateAb20210330(int abValue)
         {
-            Game.isFixedBlock = abValue == 1;
+            Game.isHaveFixedBlock = abValue == 1;
             Game.isHintFixedBlockStyle = abValue == 2;
-            Game.isOneWayBlock = abValue == 3;
+            Game.isHaveOneWayBlock = abValue == 3;
         }
 
         private void Result20210226()
         {
-            UIController.SetupAbUI();
             GameController.SetupMainCam();
         }
 
         private void UpdateAb20210226(int abValue)
         {
-            UIController.SetupAbUI();
+            //UIController.SetupAbUI();
             GameController.SetupMainCam();
         }
 
         private void UpdateAb20210205(int abValue)
         {
-            Game.isHaveNoAdsInMainScreen = abValue == 1;
+            Game.isHaveNoAdsV3 = abValue == 1;
             Game.isHaveNoAdsInShopTab = abValue == 2;
             Game.isHaveShop = abValue == 2;
             Game.isCameraTopView = abValue == 3;
@@ -162,7 +171,7 @@ namespace IEC
         private void Result20210108()
         {
             Game.isLevelDifficultyV5 = false;
-            Game.isNewTreeColorV1 = false;
+            Game.isTreeColorV1 = false;
             Game.isHaveUIAnimation = false;
             Game.isChangeGridStatus = false;
             Game.isHaveDynamicInter = false;
@@ -171,7 +180,7 @@ namespace IEC
         private void UpdateAb20210108(int abValue)
         {
             Game.isLevelDifficultyV5 = abValue == 1;
-            Game.isNewTreeColorV1 = abValue == 2;
+            Game.isTreeColorV1 = abValue == 2;
             Game.isHaveUIAnimation = abValue == 3;
             Game.isChangeGridStatus = abValue == 4;
             Game.isHaveDynamicInter = abValue == 5;

@@ -19,6 +19,9 @@ namespace IEC
         [SerializeField]
         protected GameObject[] m_LineStyleObjs;
 
+        [SerializeField]
+        private Collider m_Collider;
+
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
 
@@ -43,7 +46,7 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        protected int[,] CurrentLine = new int[3, 3];
+        public int[,] CurrentLine = new int[3, 3];
         protected int[,] DefaultLine = new int[3, 3];
 
         public bool IsHaveLineTop => CurrentLine[0, 1] == 1;
@@ -134,18 +137,38 @@ namespace IEC
             {
                 m_Terrain.OnKillTween();
                 m_Terrain.SetActiveLock(false);
+                m_Terrain.gameObject.SetActive(true);
             }
 
             m_IsLock = false;
             IsOneWayBlock = false;
+
+            if (m_Collider)
+            {
+                m_Collider.enabled = true;
+            }
         }
 
-        public virtual void SetLock()
+        public void SetNewPos(int row, int col)
+        {
+            Row = row;
+            Col = col;
+        }
+
+        public virtual void SetLock(bool isChangeTerrain)
         {
             m_IsLock = true;
-            if (m_Terrain != null)
+            m_Collider.enabled = false;
+            if (isChangeTerrain)
             {
-                m_Terrain.SetActiveLock(true);
+                if (m_Terrain != null)
+                {
+                    m_Terrain.SetActiveLock(true);
+                }
+            }
+            else
+            {
+                m_Terrain.gameObject.SetActive(false);
             }
         }
 
@@ -215,6 +238,8 @@ namespace IEC
                 if (m_WaterComponent[i].gameObject.activeInHierarchy)
                 {
                     m_WaterComponent[i].OnUpdate(deltaTime);
+
+                    m_WaterComponent[i].UpdatePos(GetWaterPos(m_StartWater));
                 }
             }
         }
@@ -297,7 +322,7 @@ namespace IEC
                         }
                         else
                         {
-                            if(Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if(Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if(m_TempGrid.Inline == WaterPoint.BOT)
                                 {
@@ -329,7 +354,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.TOP)
                                 {
@@ -361,7 +386,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.RIGHT)
                                 {
@@ -393,7 +418,7 @@ namespace IEC
                         }
                         else
                         {
-                            if (Game.isOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
                             {
                                 if (m_TempGrid.Inline == WaterPoint.LEFT)
                                 {
@@ -440,7 +465,6 @@ namespace IEC
         public void OnSetActiveArrow()
         {
             IsOneWayBlock = true;
-
             m_Terrain.SetActiveArrow();
         }
 
@@ -455,7 +479,7 @@ namespace IEC
         private float m_RatioDist = 2f;
         private void OnSetUpArrow(WaterPoint point)
         {
-            if (!Game.isOneWayBlock) return;
+            if (!Game.isHaveOneWayBlock) return;
             m_InlineIndex = (int)point;
 
             var originStartPos = GetWaterPos(point);
@@ -685,15 +709,16 @@ namespace IEC
         [NaughtyAttributes.Button]
         protected void CheckLine()
         {
+            var str = "";
             for (int i = 0; i < 3; i++)
             {
-                var str = "";
                 for (int j = 0; j < 3; j++)
                 {
                     str += CurrentLine[i, j];
                 }
-                Debug.LogError(str);
+                str += "\n";
             }
+            Debug.LogError("\n" + str);
 
             Debug.LogError("IsHaveLineTop: " + IsHaveLineTop + " | IsHaveLineBot: " + IsHaveLineBot
                 + " | IsHaveLineLeft: " + IsHaveLineLeft + " | IsHaveLineRight: " + IsHaveLineRight);
