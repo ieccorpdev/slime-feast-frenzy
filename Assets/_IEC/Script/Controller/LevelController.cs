@@ -37,6 +37,7 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
             PrefabHelper.SetUpPrefab(ComponentConfig.islandObj);
+            PrefabHelper.SetUpPrefab(ComponentConfig.bigSquareObj);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -246,6 +247,25 @@ namespace IEC
                 }
             }
 
+            var isMegreGrid = true;
+            if (isMegreGrid)
+            {
+                BaseComponent[,] gridMerge = new BaseComponent[2, 2];
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < 2; j++)
+                    {
+                        gridMerge[i, j] = Game.grids[i + 1, j + 1];
+                    }
+                }
+
+                var bigSquareObj = PrefabHelper.Clone(ComponentConfig.bigSquareObj);
+                var bigSquareComp = bigSquareObj.GetComponent<BigSquareComponent>();
+
+                bigSquareComp.OnInit(gridMerge, 1, 1);
+            }
+
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
@@ -274,7 +294,7 @@ namespace IEC
             {
                 if (isFixedBlock)
                 {
-                    Game.listTiles[listFixedGrid[i]].SetLock();
+                    Game.listTiles[listFixedGrid[i]].SetLock(true);
                 }
                 else
                 {
