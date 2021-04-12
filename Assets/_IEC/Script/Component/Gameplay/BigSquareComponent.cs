@@ -67,27 +67,24 @@ namespace IEC
                 {
                     transform.localPosition = currentPos;
                     m_IsRotating = false;
-                    CurrentLine = MathHelper.RotateMatrix(CurrentLine, 6);
-                    grids = RotateMatrix(grids, 2);
-                    SetNewLine();
 
+                    grids = RotateMatrix(grids, 2);
                     for (int i = m_RowStart; i < m_RowStart + 2; i++)
                     {
                         for (int j = m_ColStart; j < m_ColStart + 2; j++)
                         {
-                            var newRow = i - m_RowStart;
-                            var newCol = j - m_ColStart;
-                            Game.grids[i, j] = grids[newRow, newCol];
+                            var row = i - m_RowStart;
+                            var col = j - m_ColStart;
+                            Game.grids[i, j] = grids[row, col];
                             Game.grids[i, j].gameObject.name = "Row " + i + " | Col " + j;
+                            Game.grids[i, j].SetNewPos(i, j);
                         }
                     }
 
-                    //EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
+                    CurrentLine = MathHelper.RotateMatrix(CurrentLine, 6);
+                    SetNewLine();
 
-                    //if (Game.isTutorial)
-                    //{
-                    //    EventController.RaiseEvent(EventList.GamePlay.GAME_GRID_CLICK_TUTORIAL);
-                    //}
+                    EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
                 });
         }
 
