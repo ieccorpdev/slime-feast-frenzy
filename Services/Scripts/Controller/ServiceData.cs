@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +12,7 @@ namespace IEC
         public bool isNoAdsReward;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
+        public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 
         [NonSerialized]
         public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
