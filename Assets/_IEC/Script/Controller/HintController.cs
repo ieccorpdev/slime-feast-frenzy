@@ -64,9 +64,21 @@ namespace IEC
                     var grid = Game.listHints[i];
                     if (!grid.IsTrueRot())
                     {
-                        grid.OnHint();
-                        m_ListTempHint.Add(grid);
-                        moveCount += 1;
+                        if (Game.isHaveBigSquare)
+                        {
+                            if (!grid.IsInBigSquare)
+                            {
+                                grid.OnHint();
+                                m_ListTempHint.Add(grid);
+                                moveCount += 1;
+                            }
+                        }
+                        else
+                        {
+                            grid.OnHint();
+                            m_ListTempHint.Add(grid);
+                            moveCount += 1;
+                        }
                     }
 
                     if(moveCount >= addIndex)
