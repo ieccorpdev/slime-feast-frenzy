@@ -185,7 +185,7 @@ namespace IEC
             return 50f * f;
         }
 
-#region bannerAds
+        #region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -196,9 +196,7 @@ namespace IEC
             }
 
             MaxSdk.CreateBanner(m_Config.bannerID, ConvertBannerPos(bannerPos));
-#if UNITY_ANDROID
             MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
-#endif
             AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
         }
 
@@ -255,12 +253,12 @@ namespace IEC
             Debug.Log("BannerAd_OnAdClicked");
         }
 
-#endregion
-#region full ads
+        #endregion
+        #region full ads
 
         bool IsFullAdsLoaded()
         {
-            return MaxSdk.IsInterstitialReady(m_Config.interstitialID) && 
+            return MaxSdk.IsInterstitialReady(m_Config.interstitialID) &&
                 Application.internetReachability != NetworkReachability.NotReachable;
         }
 
@@ -376,9 +374,9 @@ namespace IEC
             MaxSdkCallbacks.OnInterstitialHiddenEvent += InterstitialAd_OnAdClosed;
         }
 
-#endregion
+        #endregion
 
-#region rewardAds
+        #region rewardAds
 
         bool IsRewardLoaded()
         {
@@ -490,7 +488,7 @@ namespace IEC
             MaxSdkCallbacks.OnRewardedAdReceivedRewardEvent += RewardedAdsView_OnUserEarnedReward;
         }
 
-#endregion
+        #endregion
 
         public void ResetLoadCount()
         {
