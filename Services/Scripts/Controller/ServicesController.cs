@@ -87,7 +87,7 @@ namespace IEC
                     break;
                 case EventList.Service.INIT_AD_DONE:
 #if UNITY_IOS
-                    ShowWhiteBanner();
+                    //ShowWhiteBanner();
 #endif
                     break;
             }
@@ -261,29 +261,28 @@ namespace IEC
             _initByteDance(config.appId, config.appName);
 #endif
 #if UNITY_IOS
-             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
-            {
-                switch (status)
-                {
-                    case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
-                        Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
-                        Debug.LogWarning("AuthorizationStatus: RESTRICTED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.DENIED:
-                        Debug.LogWarning("AuthorizationStatus: DENIED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
-                        Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
-                        PushEvent("att_145_allow");
-                        SendATTAnalytic("att_success");
-                        break;
-                }
-                // Obtain IDFA
-                Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
-                InitAdsAfterGDPR(true, status != AppTrackingTransparency.AuthorizationStatus.DENIED);
-            };
+            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+           {
+               switch (status)
+               {
+                   case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
+                       Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
+                       Debug.LogWarning("AuthorizationStatus: RESTRICTED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.DENIED:
+                       Debug.LogWarning("AuthorizationStatus: DENIED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
+                       Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                       PushEvent("att_145_allow");
+                       SendATTAnalytic("att_success");
+                       break;
+               }
+               // Obtain IDFA
+               Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
+           };
 
             AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
             Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
@@ -297,6 +296,7 @@ namespace IEC
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
+                StartCoroutine(IE_WaitATT());
                 SendATTAnalytic("att_show");
             }
             else
@@ -319,22 +319,30 @@ namespace IEC
 
         }
 
+        IEnumerator IE_WaitATT()
+        {
+            yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
+            Debug.LogWarning("Init ad after ATT");
+            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+        }
+
         public void SendATTAnalytic(string eventName)
         {
             const string serverUrl = "https://att-analytic.ieccorp.vn/";
             var endPoint = $"{serverUrl}sendAnalyticEvent.php";
-            
+
             var formData = new WWWForm();
             formData.AddField("data[bundleId]", Application.identifier);
             formData.AddField("data[eventName]", eventName);
             formData.AddField("data[deviceModel]", SystemInfo.deviceModel);
             formData.AddField("data[deviceVersion]", SystemInfo.operatingSystem);
             formData.AddField("data[appVersion]", Application.version);
-            
+
             StartCoroutine(ISendATTAnalytic(endPoint, formData));
         }
-        IEnumerator ISendATTAnalytic(string url, WWWForm formData) {
-     
+        IEnumerator ISendATTAnalytic(string url, WWWForm formData)
+        {
+
             var www = UnityWebRequest.Post(url, formData);
             yield return www.SendWebRequest();
         }
@@ -488,6 +496,14 @@ namespace IEC
             if (1f * Screen.height / Screen.width > 2f)
             {
                 scale = 1.2f;
+                // hotfix for iPhone X, iPhone X GSM, iPhone XS
+                if (SystemInfo.deviceModel == "iPhone10,3"
+                || SystemInfo.deviceModel == "iPhone10,6"
+                || SystemInfo.deviceModel == "iPhone11,2"
+                )
+                {
+                    scale = 1f;
+                }
             }
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
