@@ -32,6 +32,10 @@ namespace IEC
 
         protected override int GetTrueRotHint()
         {
+            if (IsOneWayBlock)
+            {
+                return TrueRot;
+            }
             return (m_CurrentRot + 1) % 4;
         }
     }

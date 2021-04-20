@@ -133,6 +133,10 @@ namespace IEC
         {
             if (m_LineType == 1)
             {
+                if (IsOneWayBlock)
+                {
+                    return TrueRot;
+                }
                 return (m_CurrentRot + 1) % 4;
             }
             else

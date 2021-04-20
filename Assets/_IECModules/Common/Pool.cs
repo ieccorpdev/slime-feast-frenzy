@@ -7,15 +7,18 @@ namespace IEC
 {
     public static class Pool
     {
-        static List<IComponentMap> s_ListMap = new List<IComponentMap>();
-
-        static Dictionary<Type, object> m_Dict = new Dictionary<Type, object>();
-        static Dictionary<Type, object> m_DictMap = new Dictionary<Type, object>();
+        static readonly Dictionary<Type, object> m_Dict = new Dictionary<Type, object>();
+        static readonly Dictionary<Type, Func<object>> m_DictCreate = new Dictionary<Type, Func<object>>();
 
         static Pool()
         {
         }
 
+        /// <summary>
+        /// set single object to Get from type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="t"></param>
         public static void Set<T>(T t) where T : class, new()
         {
             if (t == null)
@@ -27,49 +30,63 @@ namespace IEC
             m_Dict[type] = t;
         }
 
+        /// <summary>
+        /// get single object from type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         public static T Get<T>() where T : class, new()
         {
             var type = typeof(T);
-            if (!m_Dict.ContainsKey(type))
+            if (m_Dict.TryGetValue(type, out var result))
             {
-                m_Dict[type] = new T();
+                return result as T;
             }
-            return m_Dict[type] as T;
+            var t = new T();
+            m_Dict[type] = t;
+            return t;
         }
-
-        public static ComponentMap<T> GetMap<T>() where T : class, new()
+        
+        /// <summary>
+        /// return object from function SetCreate
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T GetCreate<T>() where T : class, new()
         {
             var type = typeof(T);
-            if (!m_DictMap.ContainsKey(type))
+            if (m_DictCreate.TryGetValue(type, out var func))
             {
-                var map = new ComponentMap<T>();
-                s_ListMap.Add(map);
-                m_DictMap[type] = map;
+                return func.Invoke() as T;
             }
-            return m_DictMap[type] as ComponentMap<T>;
+            return new T();
         }
 
-        static ComponentMap<T> NewMap<T>(ComponentMap<T> map) where T : class, new()
+        /// <summary>
+        /// set function return what we get from GetCreate
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="functionCreate"></param>
+        public static void SetCreate<T>(Func<T> functionCreate) where T : class, new()
         {
-            map = new ComponentMap<T>();
-            s_ListMap.Add(map);
-            return map;
+            var type = typeof(T);
+            m_DictCreate[type] = functionCreate;
         }
 
-        public static void Remove(int objID)
+        public static void ClearAll()
         {
-            for (int i = 0; i < s_ListMap.Count; i++)
-            {
-                s_ListMap[i].Remove(objID);
-            }
+            m_Dict.Clear();
+            m_DictCreate.Clear();
         }
 
-        public static void RemoveAll()
+        public static void ClearAllSingle()
         {
-            for (int i = 0; i < s_ListMap.Count; i++)
-            {
-                s_ListMap[i].RemoveAll();
-            }
+            m_Dict.Clear();
+        }
+
+        public static void ClearAllCreate()
+        {
+            m_DictCreate.Clear();
         }
     }
 }

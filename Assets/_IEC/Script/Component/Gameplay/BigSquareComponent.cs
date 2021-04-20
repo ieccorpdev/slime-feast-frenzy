@@ -23,6 +23,9 @@ namespace IEC
         [SerializeField]
         private TerrainComponent m_Terrain;
 
+        [SerializeField]
+        private BoxCollider m_BoxCollider;
+
         public void OnInit(BaseComponent[,] gridsInput, int row, int col)
         {
             OnResetAll();
@@ -34,6 +37,8 @@ namespace IEC
             m_GridSize = gridsInput.GetLength(0);
             m_Terrain.transform.localScale = new Vector3(m_GridSize, 1f, m_GridSize);
             m_Terrain.SetupTerrain(Game.listTerrainType[0]);
+
+            m_BoxCollider.size = new Vector3(m_GridSize, 0.12f, m_GridSize);
 
             m_LineSize = m_GridSize * 3;
 
@@ -61,6 +66,8 @@ namespace IEC
                     grids[i, j].SetLock(false);
                 }
             }
+
+
         }
 
         private void OnMouseDown()

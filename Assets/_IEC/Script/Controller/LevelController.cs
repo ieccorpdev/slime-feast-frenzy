@@ -240,10 +240,6 @@ namespace IEC
                         var maxSquareSize = MathHelper.ClampInt(size - 2, 3, 6);
                         var sizeBigSquare = RandomHelper.RangeWithSeed(seed, 2, maxSquareSize);
                         seed += 1;
-
-                        Debug.LogError("maxSquareSize: " + maxSquareSize);
-                        Debug.LogError("sizeBigSquare: " + sizeBigSquare);
-
                         var maxIndex = size - sizeBigSquare;
 
                         var radRow = RandomHelper.RangeWithSeed(seed, 1, maxIndex);

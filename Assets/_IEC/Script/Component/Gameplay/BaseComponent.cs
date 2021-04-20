@@ -95,7 +95,7 @@ namespace IEC
         public WaterPoint Inline;
         protected int m_InlineIndex;
 
-        public bool IsOneWayBlock;
+        public bool IsOneWayBlock, IsInBigSquare;
 
 
         //Temp
@@ -142,6 +142,7 @@ namespace IEC
 
             m_IsLock = false;
             IsOneWayBlock = false;
+            IsInBigSquare = false;
 
             if (m_Collider)
             {
@@ -169,6 +170,11 @@ namespace IEC
             else
             {
                 m_Terrain.gameObject.SetActive(false);
+
+                if (Game.isHaveBigSquare)
+                {
+                    IsInBigSquare = true;
+                }
             }
         }
 
@@ -622,10 +628,19 @@ namespace IEC
             m_Tween?.Kill(true);
             if (isTween)
             {
-                var moveTime = Config.startEffectMoveTime;
-                var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
+                if (IsInBigSquare)
+                {
+                    var tempPos = CurrentLocalPos;
+                    tempPos.y = 0f;
+                    transform.localPosition = tempPos;
+                }
+                else
+                {
+                    var moveTime = Config.startEffectMoveTime;
+                    var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
 
-                m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+                    m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+                }
             }
             else
             {
