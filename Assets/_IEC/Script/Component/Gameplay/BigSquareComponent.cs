@@ -78,6 +78,8 @@ namespace IEC
 
         private void OnRotation()
         {
+            if (Game.isShowPopup) return;
+            if (!Game.isPlaying) return;
             if (m_IsRotating) return;
 
             m_CurrentRot = (m_CurrentRot + 1) % 4;
