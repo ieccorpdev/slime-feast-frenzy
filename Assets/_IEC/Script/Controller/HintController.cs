@@ -39,6 +39,7 @@ namespace IEC
         {
             if (!Game.isPlaying) return;
             if (!Game.isAllowHint) return;
+            Game.listBigSquare.ForEach(x => x.OnHint());
             m_ListTempHint.Clear();
             Game.isAllowHint = false;
             var addIndex = Game.size - 2;

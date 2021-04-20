@@ -14,7 +14,6 @@ namespace IEC
         private List<string[,]> m_ListLevel = new List<string[,]>();
 
         private List<IslandComponent> m_ListIsland = new List<IslandComponent>();
-        private List<BigSquareComponent> m_ListBigSquare = new List<BigSquareComponent>();
 
         public void LocateController()
         {
@@ -61,8 +60,8 @@ namespace IEC
             m_ListIsland.ForEach(x => x.OnDestroyMe());
             m_ListIsland.Clear();
 
-            m_ListBigSquare.ForEach(x => x.OnDestroyMe());
-            m_ListBigSquare.Clear();
+            Game.listBigSquare.ForEach(x => x.OnDestroyMe());
+            Game.listBigSquare.Clear();
         }
 
         private IEnumerator IESpawnLevel()
@@ -262,7 +261,7 @@ namespace IEC
 
                         bigSquareComp.OnInit(gridMerge, radRow, radCol);
 
-                        m_ListBigSquare.Add(bigSquareComp);
+                        Game.listBigSquare.Add(bigSquareComp);
                     }
                 }
             }
@@ -295,7 +294,7 @@ namespace IEC
             if (Game.isStartLevelEffect)
             {
                 Game.listGrids.ForEach(x => x.OnTweenMove(true));
-                m_ListBigSquare.ForEach(x => x.OnTweenMove());
+                Game.listBigSquare.ForEach(x => x.OnTweenMove());
             }
 
             var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
