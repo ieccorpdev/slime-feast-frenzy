@@ -112,7 +112,7 @@ namespace IEC
             Sequence sequence = DOTween.Sequence();
             var currentPos = transform.localPosition;
 
-            m_CurrentRot = TrueRot;
+            m_CurrentRot = GetTrueRotHint();
 
             m_Tween = sequence.Join(transform.DOLocalRotate(rot, time, RotateMode.FastBeyond360).SetRelative())
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))

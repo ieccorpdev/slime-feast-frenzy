@@ -8,7 +8,11 @@ namespace IEC
     {
         public override bool IsTrueRot()
         {
-            if(TrueRot == 0 || TrueRot == 2)
+            if (IsOneWayBlock)
+            {
+                return m_CurrentRot == TrueRot;
+            }
+            else if (TrueRot == 0 || TrueRot == 2)
             {
                 return (m_CurrentRot == 0 || m_CurrentRot == 2);
             }
