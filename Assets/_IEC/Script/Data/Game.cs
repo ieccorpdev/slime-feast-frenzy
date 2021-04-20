@@ -48,6 +48,7 @@ namespace IEC
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
         public List<BaseComponent> listTiles = new List<BaseComponent>();
+        public List<BigSquareComponent> listBigSquare = new List<BigSquareComponent>();
 
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
