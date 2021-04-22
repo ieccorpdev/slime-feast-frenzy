@@ -195,9 +195,23 @@ namespace IEC
                 return;
             }
 
-            MaxSdk.CreateBanner(m_Config.bannerID, ConvertBannerPos(bannerPos));
-            MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
+            //MaxSdk.CreateBanner(m_Config.bannerID, ConvertBannerPos(bannerPos));
+            //MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
+
+            InitializeBannerAds(m_Config.bannerID, bannerPos);
+
             AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
+        }
+
+        public void InitializeBannerAds(string bannerAdUnitId, AdsEnum bannerPos)
+        {
+            // Adaptive banners are sized based on device width for positions that stretch full width (TopCenter and BottomCenter).
+            // You may use the utility method `MaxSdkUtils.GetAdaptiveBannerHeight()` to help with view sizing adjustments
+            MaxSdk.CreateBanner(bannerAdUnitId, ConvertBannerPos(bannerPos));
+            MaxSdk.SetBannerExtraParameter(bannerAdUnitId, "adaptive_banner", "true");
+
+            // Set background or background color for banners to be fully functional
+            MaxSdk.SetBannerBackgroundColor(bannerAdUnitId, Color.white);
         }
 
         void ShowBanner(Action<AdsEventArgs> showCallback, AdsEnum bannerPos)
