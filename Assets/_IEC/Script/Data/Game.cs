@@ -17,6 +17,7 @@ namespace IEC
     {
         public bool isDebugReset;
         public int emptyData;
+        public int abVersion;
 
         public float timeDelayFullAds;
 
