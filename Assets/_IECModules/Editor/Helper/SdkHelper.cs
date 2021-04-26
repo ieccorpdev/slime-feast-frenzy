@@ -24,7 +24,7 @@ namespace _IECModules
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
         public const string KOCHAVA_SDK_BASE_URL =
-            "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
+            "https://github.com/Kochava/unity-kochavatracker-releases/releases/download/v{0}/KochavaTrackerUnity.unitypackage";
 
         public const string FIREBASE_SDK_BASE_URL =
             "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
@@ -68,7 +68,7 @@ namespace _IECModules
         };
 
         public static string[] ListApplovinVersionFromBintray;
-        public static string[] ListKochavaVersionFromBintray;
+        public static string[] ListKochavaVersionFromGithub;
 
         public static string[] ListApplovinVersion =>
             ListApplovinVersionFromBintray == null ||
@@ -77,10 +77,10 @@ namespace _IECModules
                 : ListApplovinVersionFromBintray;
 
         public static string[] ListKochavaVersion =>
-            ListKochavaVersionFromBintray == null ||
-            ListKochavaVersionFromBintray.Length <= ListKochavaVersionDefault.Length
+            ListKochavaVersionFromGithub == null ||
+            ListKochavaVersionFromGithub.Length <= ListKochavaVersionDefault.Length
                 ? ListKochavaVersionDefault
-                : ListKochavaVersionFromBintray;
+                : ListKochavaVersionFromGithub;
 
         public static string[] ListFirebaseVersion = {
             "6.15.2",
@@ -111,10 +111,16 @@ namespace _IECModules
         {
             PlayerPrefs.DeleteKey(KOCHAVA_VERSION_CACHE);
             var httpRequest = new HTTPRequest(
-                new Uri("https://api.bintray.com/packages/kochava/Generic/KochavaTracker-Unity"),
+                new Uri("https://api.github.com/repos/Kochava/unity-kochavatracker-releases/releases"),
                 (originalRequest, response) =>
                 {
-                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, response.DataAsText);
+                    var data = JSONNode.Parse(response.DataAsText).AsArray;
+                    var versions = new List<string>();
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        versions.Add(data[i]["name"]);
+                    }
+                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, JsonConvert.SerializeObject(versions));
                 }).Send();
         }
 
@@ -137,17 +143,10 @@ namespace _IECModules
 
         public static bool LoadKochavaVersionFromCache()
         {
-            if (ListKochavaVersionFromBintray != null) return true;
+            if (ListKochavaVersionFromGithub != null) return true;
             var data = PlayerPrefs.GetString(KOCHAVA_VERSION_CACHE);
             if (string.IsNullOrEmpty(data)) return false;
-            var bintrayKochavaPackageData = JsonConvert.DeserializeObject<BintrayPackageData>(data);
-            ListKochavaVersionFromBintray =
-                bintrayKochavaPackageData.versions.Select(x =>
-                    x.Replace("unity_", "")
-                        .Replace("_", "-")
-                        .Replace("android", "Android")
-                        .Replace("ios", "iOS")
-                ).ToArray();
+            ListKochavaVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
             return true;
         }
     }
