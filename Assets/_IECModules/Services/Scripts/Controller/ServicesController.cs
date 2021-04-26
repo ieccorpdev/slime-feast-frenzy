@@ -301,7 +301,7 @@ namespace IEC
             }
             else
             {
-                InitAdsAfterGDPR(true, currentStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+                InitAdsAfterGDPR(true, currentStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
 #else
             InitAdsAfterGDPR(true,true);
@@ -323,7 +323,7 @@ namespace IEC
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
         }
 
         public void SendATTAnalytic(string eventName)
