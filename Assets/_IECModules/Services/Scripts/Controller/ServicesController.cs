@@ -323,8 +323,8 @@ namespace IEC
             }
             m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
             m_ListAnalytics.Add(m_KochavaAnalytic);
-            InitAdsAfterGDPR(true, isHaveIDFA);
 #endif
+            InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
         public void SendATTAnalytic(string eventName)
