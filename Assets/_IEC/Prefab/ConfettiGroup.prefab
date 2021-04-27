@@ -4588,7 +4588,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: dc40e2beb02262d49a59386868513fb0, type: 2}
-  - {fileID: 2100000, guid: dc40e2beb02262d49a59386868513fb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9219,7 +9218,6 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 29186e1e6edef3a4e9f89c106a7f6de4, type: 2}
   - {fileID: 2100000, guid: 29186e1e6edef3a4e9f89c106a7f6de4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -13852,7 +13850,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: cbe4b53ccbdab374b8047a7ea4b9366a, type: 2}
-  - {fileID: 2100000, guid: cbe4b53ccbdab374b8047a7ea4b9366a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -18483,7 +18480,6 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: db804af7e674ce245b740d49a1920972, type: 2}
   - {fileID: 2100000, guid: db804af7e674ce245b740d49a1920972, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -23122,7 +23118,6 @@ ParticleSystemRenderer:
   m_RendererPriority: 0
   m_Materials:
   - {fileID: 2100000, guid: dc40e2beb02262d49a59386868513fb0, type: 2}
-  - {fileID: 2100000, guid: dc40e2beb02262d49a59386868513fb0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -27753,7 +27748,6 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: cb06399f8d640a347a7adc63a58f324a, type: 2}
   - {fileID: 2100000, guid: cb06399f8d640a347a7adc63a58f324a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
@@ -115835,6 +115829,7 @@ GameObject:
   - component: {fileID: 5260891114779669161}
   - component: {fileID: 5260891114779669160}
   - component: {fileID: 5260891114779669167}
+  - component: {fileID: 4787372066743459331}
   m_Layer: 31
   m_Name: ConfettiGroup
   m_TagString: Untagged
@@ -115918,6 +115913,37 @@ MonoBehaviour:
   areaX: {x: -2, y: 2}
   areaY: {x: -3, y: 3}
   radiusNoOverlap: 1
+--- !u!114 &4787372066743459331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5260891114779669166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 1
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_Version: 2
 --- !u!1 &5260891114805927193
 GameObject:
   m_ObjectHideFlags: 0
@@ -129769,7 +129795,6 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 513637e4ae3405741b9bf28fba66fd04, type: 2}
   - {fileID: 2100000, guid: 513637e4ae3405741b9bf28fba66fd04, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
