@@ -324,6 +324,10 @@ namespace IEC
             m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
+#if (PluginAdjust)
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
@@ -598,6 +602,9 @@ namespace IEC
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
+#if (PluginAdjust)
+                    m_AdjustAnalytic?.PushEventFullAd();
+#endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     if (fullAdCount == 50)
@@ -661,6 +668,9 @@ namespace IEC
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
                         m_KochavaAnalytic?.PushEventRewardAd();
+#endif
+#if (PluginAdjust)
+                        m_AdjustAnalytic?.PushEventRewardAd();
 #endif
                         PushEvent("show_reward_ad", 1);
 
@@ -974,6 +984,10 @@ namespace IEC
 
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
+#endif
+        
+#if (PluginAdjust)
+        AdjustAnalyticModule m_AdjustAnalytic;
 #endif
         #endregion
 
