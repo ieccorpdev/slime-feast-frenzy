@@ -221,14 +221,6 @@ namespace IEC
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal());
 
-#if (PluginKochava)
-            if (Application.isEditor)
-            {
-                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
-            }
-#endif
-
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
                 m_ListAnalytics.Add(new AnalyticEventMock());
@@ -243,11 +235,6 @@ namespace IEC
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
-
-#if (PluginKochava)
-                m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
-                m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
             }
 
@@ -301,10 +288,10 @@ namespace IEC
             }
             else
             {
-                InitAdsAfterGDPR(true, currentStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+                InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
 #else
-            InitAdsAfterGDPR(true,true);
+            InitSDKAfterATT(true);
 #endif
 
             foreach (var analytic in m_ListAnalytics)
@@ -323,7 +310,21 @@ namespace IEC
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+            InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+        }
+
+        void InitSDKAfterATT(bool isHaveIDFA)
+        {
+#if (PluginKochava)
+            if (Application.isEditor)
+            {
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
+            }
+            m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
+            m_ListAnalytics.Add(m_KochavaAnalytic);
+#endif
+            InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
         public void SendATTAnalytic(string eventName)
