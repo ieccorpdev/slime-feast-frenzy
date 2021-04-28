@@ -51,7 +51,9 @@ namespace _IECModules
             ApplovinAndroidRewardID,
             IronSourceIOSID,
             IronSourceAndroidID,
-            AbTestList
+            AbTestList,
+            AdjustIDAndroid,
+            AdjustIDiOS,
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -93,7 +95,10 @@ namespace _IECModules
             {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
-            {"AB Test List", ChecklistItemName.AbTestList}
+            {"AB Test List", ChecklistItemName.AbTestList},
+            {"Adjust ID IOS", ChecklistItemName.AdjustIDiOS},
+            {"Adjust ID Android", ChecklistItemName.AdjustIDAndroid},
+            
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -355,7 +360,18 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #endif
-
+                    
+#if PluginAdjust
+                    case ChecklistItemName.AdjustIDiOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
+                        servicesConfig.adjustConfig.iosID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AdjustIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
+                        servicesConfig.adjustConfig.androidID = checklistItemValue;
+                        break;        
+#endif
+                    
 #if PluginApplovin
                     case ChecklistItemName.ApplovinIOSID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
