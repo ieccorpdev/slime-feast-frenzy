@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 namespace IEC
 {
@@ -23,6 +24,18 @@ namespace IEC
         public virtual void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
+        }
+
+        [Button]
+        public void TestShow()
+        {
+            Show();
+        }
+
+        [Button]
+        public void TestHide()
+        {
+            Hide();
         }
     }
 }
