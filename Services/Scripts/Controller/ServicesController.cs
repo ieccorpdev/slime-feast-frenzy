@@ -53,7 +53,7 @@ namespace IEC
         private static extern int _initByteDance(string appId, string appName);
 #endif
 #if UNITY_IOS
-        [DllImport("_Internal")]
+        [DllImport("__Internal")]
         private static extern void _openAppSetting();
 #endif
 
@@ -279,7 +279,11 @@ namespace IEC
             Debug.LogWarning("device ver:" + deviceVer);
             var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
 
-            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
+            if (!isNeedShowAtt)
+            {
+                InitSDKAfterATT(true);
+            }
+            else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
