@@ -279,7 +279,11 @@ namespace IEC
             Debug.LogWarning("device ver:" + deviceVer);
             var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
 
-            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
+            if (!isNeedShowAtt)
+            {
+                InitSDKAfterATT(true);
+            }
+            else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
