@@ -53,7 +53,7 @@ namespace IEC
         private static extern int _initByteDance(string appId, string appName);
 #endif
 #if UNITY_IOS
-        [DllImport("_Internal")]
+        [DllImport("__Internal")]
         private static extern void _openAppSetting();
 #endif
 
