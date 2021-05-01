@@ -33,6 +33,7 @@ namespace _IECModules
 
         private int m_PluginApplovinVersionSelect;
         private int m_PluginKochavaVersionSelect;
+        private int m_PluginAdjustVersionSelect;
         private int m_PluginFirebaseVersionSelect;
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
@@ -57,6 +58,7 @@ namespace _IECModules
             PluginFirebaseAnalytic,
             PluginFirebaseRemote,
             PluginKochava,
+            PluginAdjust,
             PluginApplovin,
             PluginIronSource,
             PluginUnityIAP,
@@ -74,6 +76,7 @@ namespace _IECModules
             AddRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
             SdkHelper.LoadKochavaVersionList();
+            SdkHelper.LoadAdjustVersionList();
             var unityPackages = SdkHelper.DictUnityPackage.Values;
             foreach (var pkg in unityPackages)
             {
@@ -132,8 +135,8 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
-
-            GUILayout.Space(20);
+            
+            CreateGuiBreakLine();
 
             var kochavaSdkLoaded = SdkHelper.LoadKochavaVersionFromCache();
             CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
@@ -144,6 +147,19 @@ namespace _IECModules
 
             m_PluginKochavaVersionSelect = EditorGUILayout.Popup("", m_PluginKochavaVersionSelect,
                 SdkHelper.ListKochavaVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+            
+            CreateGuiBreakLine();
+            
+            var adjustSdkLoaded = SdkHelper.LoadAdjustVersionFromCache();
+            CreateGuiButton($"Adjust SDK {(adjustSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AdjustSdkUrlByVersion(SdkHelper.ListAdjustVersion[m_PluginAdjustVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
+            });
+
+            m_PluginAdjustVersionSelect = EditorGUILayout.Popup("", m_PluginAdjustVersionSelect,
+                SdkHelper.ListAdjustVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);

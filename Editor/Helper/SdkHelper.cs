@@ -13,6 +13,7 @@ namespace _IECModules
     {
         public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
         public const string KOCHAVA_VERSION_CACHE = "kochava_version_cache";
+        public const string ADJUST_VERSION_CACHE = "adjust_version_cache";
         public const string FACEBOOK_CURRENT_VERSION = "7.18.0";
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
         public const string KOCHAVA_CURRENT_VERSION = "4.1.1";
@@ -24,7 +25,10 @@ namespace _IECModules
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
 
         public const string KOCHAVA_SDK_BASE_URL =
-            "https://bintray.com/kochava/Generic/download_file?file_path={0}%2FKochavaTrackerUnity.unitypackage";
+            "https://github.com/Kochava/unity-kochavatracker-releases/releases/download/v{0}/KochavaTrackerUnity.unitypackage";
+        
+        public const string ADJUST_SDK_BASE_URL =
+            "https://github.com/adjust/unity_sdk/releases/download/v{0}/Adjust_v{0}.unitypackage";
 
         public const string FIREBASE_SDK_BASE_URL =
             "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
@@ -57,6 +61,7 @@ namespace _IECModules
 
         public static string IronSourceSdkUrlByVersion => string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
         public static string KochavaSdkUrlByVersion(string version) => string.Format(KOCHAVA_SDK_BASE_URL, version);
+        public static string AdjustSdkUrlByVersion(string version) => string.Format(ADJUST_SDK_BASE_URL, version);
 
         public static string[] ListApplovinVersionDefault = {
             "3.0.0-Android-9.13.2-iOS-6.13.2",
@@ -66,9 +71,13 @@ namespace _IECModules
         public static string[] ListKochavaVersionDefault = {
             "3.0.0"
         };
+        public static string[] ListAdjustVersionDefault = {
+            "4.29.0"
+        };
 
         public static string[] ListApplovinVersionFromBintray;
-        public static string[] ListKochavaVersionFromBintray;
+        public static string[] ListKochavaVersionFromGithub;
+        public static string[] ListAdjustVersionFromGithub;
 
         public static string[] ListApplovinVersion =>
             ListApplovinVersionFromBintray == null ||
@@ -77,10 +86,15 @@ namespace _IECModules
                 : ListApplovinVersionFromBintray;
 
         public static string[] ListKochavaVersion =>
-            ListKochavaVersionFromBintray == null ||
-            ListKochavaVersionFromBintray.Length <= ListKochavaVersionDefault.Length
+            ListKochavaVersionFromGithub == null ||
+            ListKochavaVersionFromGithub.Length <= ListKochavaVersionDefault.Length
                 ? ListKochavaVersionDefault
-                : ListKochavaVersionFromBintray;
+                : ListKochavaVersionFromGithub;
+        public static string[] ListAdjustVersion =>
+            ListAdjustVersionFromGithub == null ||
+            ListAdjustVersionFromGithub.Length <= ListAdjustVersionDefault.Length
+                ? ListAdjustVersionDefault
+                : ListAdjustVersionFromGithub;
 
         public static string[] ListFirebaseVersion = {
             "6.15.2",
@@ -111,10 +125,16 @@ namespace _IECModules
         {
             PlayerPrefs.DeleteKey(KOCHAVA_VERSION_CACHE);
             var httpRequest = new HTTPRequest(
-                new Uri("https://api.bintray.com/packages/kochava/Generic/KochavaTracker-Unity"),
+                new Uri("https://api.github.com/repos/Kochava/unity-kochavatracker-releases/releases"),
                 (originalRequest, response) =>
                 {
-                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, response.DataAsText);
+                    var data = JSONNode.Parse(response.DataAsText).AsArray;
+                    var versions = new List<string>();
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        versions.Add(data[i]["name"]);
+                    }
+                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, JsonConvert.SerializeObject(versions));
                 }).Send();
         }
 
@@ -137,17 +157,36 @@ namespace _IECModules
 
         public static bool LoadKochavaVersionFromCache()
         {
-            if (ListKochavaVersionFromBintray != null) return true;
+            if (ListKochavaVersionFromGithub != null) return true;
             var data = PlayerPrefs.GetString(KOCHAVA_VERSION_CACHE);
             if (string.IsNullOrEmpty(data)) return false;
-            var bintrayKochavaPackageData = JsonConvert.DeserializeObject<BintrayPackageData>(data);
-            ListKochavaVersionFromBintray =
-                bintrayKochavaPackageData.versions.Select(x =>
-                    x.Replace("unity_", "")
-                        .Replace("_", "-")
-                        .Replace("android", "Android")
-                        .Replace("ios", "iOS")
-                ).ToArray();
+            ListKochavaVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
+            return true;
+        }
+
+        public static void LoadAdjustVersionList()
+        {
+            PlayerPrefs.DeleteKey(ADJUST_VERSION_CACHE );
+            var httpRequest = new HTTPRequest(
+                new Uri("https://api.github.com/repos/adjust/unity_sdk/releases"),
+                (originalRequest, response) =>
+                {
+                    var data = JSONNode.Parse(response.DataAsText).AsArray;
+                    var versions = new List<string>();
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        versions.Add(data[i]["name"].Value.Split(' ')[1]);
+                    }
+                    PlayerPrefs.SetString(ADJUST_VERSION_CACHE, JsonConvert.SerializeObject(versions));
+                }).Send();
+        }
+        
+        public static bool LoadAdjustVersionFromCache()
+        {
+            if (ListAdjustVersionFromGithub != null) return true;
+            var data = PlayerPrefs.GetString(ADJUST_VERSION_CACHE);
+            if (string.IsNullOrEmpty(data)) return false;
+            ListAdjustVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
             return true;
         }
     }
