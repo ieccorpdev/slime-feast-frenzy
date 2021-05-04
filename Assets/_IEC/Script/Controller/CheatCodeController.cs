@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using _IECModules;
+using System.Collections.Generic;
 
 namespace IEC
 {
@@ -94,6 +95,29 @@ namespace IEC
             {
                 value = PlayerData.themeSelected
             });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Water Color: " + Game.isCheatWaterColor, cheatCodeParam =>
+            {
+                Game.isCheatWaterColor = !Game.isCheatWaterColor;
+                cheatCodeParam.buttonText = "Is Cheat Water Color: " + Game.isCheatWaterColor;
+            });
+
+            List<string> listWaterColor = new List<string>();
+
+            for (int i = 0; i < 12; i++)
+            {
+                listWaterColor.Add(i.ToString());
+            }
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set water color",
+            cheatCodeParam =>
+            {
+                Game.classicColor = cheatCodeParam.dropdownParam.value;
+                OnRestartLevel();
+            },
+            listWaterColor,
+            Game.classicColor
+            );
         }
 
         private void OnRestartLevel()

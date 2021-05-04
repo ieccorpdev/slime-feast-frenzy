@@ -186,7 +186,10 @@ namespace IEC
 
             if (Game.isRandomColorClassicMode)
             {
-                Game.classicColor = RandomHelper.Range(0, 12);
+                if (!Game.isCheatWaterColor)
+                {
+                    Game.classicColor = RandomHelper.Range(0, 12);
+                }
             }
 
             var rotIndex = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) : 0;
