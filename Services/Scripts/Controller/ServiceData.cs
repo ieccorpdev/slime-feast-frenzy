@@ -12,7 +12,9 @@ namespace IEC
         public bool isNoAdsReward;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
+#if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
+#endif
 
         [NonSerialized]
         public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
