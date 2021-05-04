@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Balaso;
 using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
@@ -12,6 +11,7 @@ using Google.Play.Review;
 
 #if UNITY_IOS
 using System.Runtime.InteropServices;
+using Balaso;
 #endif
 
 
@@ -310,12 +310,14 @@ namespace IEC
 
         }
 
+#if UNITY_IOS
         IEnumerator IE_WaitATT()
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
             InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
         }
+#endif
 
         void InitSDKAfterATT(bool isHaveIDFA)
         {
@@ -869,7 +871,7 @@ namespace IEC
 #endif
         }
 
-        #region services
+#region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
@@ -993,7 +995,7 @@ namespace IEC
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
 #endif
-        #endregion
+#endregion
 
         int GetIntDeviceVerion(string version)
         {
