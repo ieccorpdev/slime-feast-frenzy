@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if(PluginNotification)
+using System;
 using Unity.Notifications.Android;
 
 namespace _IECModules
@@ -44,3 +45,4 @@ namespace _IECModules
         }
     }
 }
+#endif
