@@ -1,4 +1,5 @@
 ﻿#if(PluginNotification)
+#if UNITY_IOS
 using System;
 using Unity.Notifications.iOS;
 using NotificationServices = UnityEngine.iOS.NotificationServices;
@@ -45,4 +46,5 @@ namespace _IECModules
         }
     }
 }
+#endif
 #endif

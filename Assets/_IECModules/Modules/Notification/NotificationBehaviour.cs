@@ -15,7 +15,9 @@ namespace _IECModules
 #if UNITY_IOS
             return new IOSNotification();
 #endif
+#if UNITY_ANDROID
             return new AndroidNotification();
+#endif
 #endif
             return new BaseNotification();
         });
