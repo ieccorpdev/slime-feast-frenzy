@@ -64,7 +64,8 @@ namespace _IECModules
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
-            PluginByteDanceChinaIOS
+            PluginByteDanceChinaIOS,
+            PluginNotification
         }
 
         private void Awake()
@@ -255,6 +256,22 @@ namespace _IECModules
                inAppRatingPkg.listVersion,
                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
+            CreateGuiBreakLine();
+
+            #endregion
+
+            #region Notification
+
+            var notificationPkg = SdkHelper.DictUnityPackage[SdkHelper.NOTIFICATION_PKG];
+            var isNotificationLoaded = notificationPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Notification {(isNotificationLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!isNotificationLoaded) return;
+                notificationPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
+            });
+            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected, notificationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 
             #endregion
