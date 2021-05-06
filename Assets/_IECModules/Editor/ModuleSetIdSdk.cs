@@ -10,6 +10,8 @@ namespace _IECModules
 {
     public class ModuleSetIdSdk : EditorWindow
     {
+        private Vector3 m_ScrollPos;
+
         [MenuItem("IEC/Set ID SDK")]
         public static void ShowWindow()
         {
@@ -96,6 +98,7 @@ namespace _IECModules
 
         private void OnGUI()
         {
+            m_ScrollPos = EditorGUILayout.BeginScrollView(m_ScrollPos);
             InitGuiParams();
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
@@ -342,6 +345,7 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
 
             LogEditorHelper.EditorOnGUI();
+            EditorGUILayout.EndScrollView();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
