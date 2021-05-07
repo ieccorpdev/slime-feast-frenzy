@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using _IECModules;
 
 namespace IEC
 {
@@ -25,6 +26,7 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_WIN:
                     Game.SetGameState(GameState.Win);
                     OnGameOver();
+                    RequestNotification();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     Game.SetGameState(GameState.Lose);
@@ -75,6 +77,14 @@ namespace IEC
 
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
+        }
+
+        void RequestNotification()
+        {
+            if (PlayerData.level > 3)
+            {
+                ModuleController.notificationBehaviour.Notification.RequestAuthorization();
+            }
         }
     }
 }

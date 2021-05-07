@@ -10,6 +10,8 @@ namespace _IECModules
 {
     public class ModuleSetIdSdk : EditorWindow
     {
+        private Vector3 m_ScrollPos;
+
         [MenuItem("IEC/Set ID SDK")]
         public static void ShowWindow()
         {
@@ -65,7 +67,8 @@ namespace _IECModules
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
-            PluginByteDanceChinaIOS
+            PluginByteDanceChinaIOS,
+            PluginNotification
         }
 
         private void Awake()
@@ -96,6 +99,7 @@ namespace _IECModules
 
         private void OnGUI()
         {
+            m_ScrollPos = EditorGUILayout.BeginScrollView(m_ScrollPos);
             InitGuiParams();
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
@@ -263,6 +267,22 @@ namespace _IECModules
 
             #endregion
 
+            #region Notification
+
+            var notificationPkg = SdkHelper.DictUnityPackage[SdkHelper.NOTIFICATION_PKG];
+            var isNotificationLoaded = notificationPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Notification {(isNotificationLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!isNotificationLoaded) return;
+                notificationPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
+            });
+            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected, notificationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+
+            #endregion
+
             // #region ByteDance China IOS
             // CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
             // CreateGuiButton($"ByteDance SDK", () =>
@@ -330,6 +350,7 @@ namespace _IECModules
             EditorGUILayout.EndScrollView();
 
             LogEditorHelper.EditorOnGUI();
+            EditorGUILayout.EndScrollView();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);

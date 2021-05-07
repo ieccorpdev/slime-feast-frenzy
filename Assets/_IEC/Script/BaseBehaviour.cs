@@ -45,6 +45,13 @@ public class BaseBehaviour : MonoBehaviour
         return (T) CreateIfNotExistDictionary[dictKey];
     }
 
+    public void SetSingleCreateIfNotExist<T>(T obj, string customName = null)
+    {
+        var dictKey = typeof(T).ToString();
+        if (!string.IsNullOrEmpty(customName)) dictKey = customName;
+        CreateIfNotExistDictionary[dictKey] = obj;
+    }
+
     protected void SingleClear<T>()
     {
         var type = typeof(T);
