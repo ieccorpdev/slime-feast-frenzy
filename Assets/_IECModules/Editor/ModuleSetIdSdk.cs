@@ -40,6 +40,7 @@ namespace _IECModules
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
+        private Vector2 m_ScrollPosition = Vector2.zero;
 
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
@@ -99,7 +100,10 @@ namespace _IECModules
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
             for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+            
+            m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition);
             EditorGUILayout.BeginHorizontal();
+            
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
@@ -306,7 +310,7 @@ namespace _IECModules
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
@@ -314,7 +318,7 @@ namespace _IECModules
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
@@ -323,6 +327,7 @@ namespace _IECModules
             }
 
             EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndScrollView();
 
             LogEditorHelper.EditorOnGUI();
         }
