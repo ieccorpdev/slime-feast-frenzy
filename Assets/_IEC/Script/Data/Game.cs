@@ -15,7 +15,7 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isCheatLevel;
+        public bool isCheatLevel, isCheatWaterColor;
 
         public bool isShowPopup;
 
