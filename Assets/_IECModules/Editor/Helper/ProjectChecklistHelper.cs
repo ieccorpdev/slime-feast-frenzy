@@ -30,6 +30,8 @@ namespace _IECModules
             FacebookID,
             FirebaseConfigFileIOS,
             FirebaseConfigFileAndroid,
+            UnityProjectID,
+            UnityProjectName,
             KochavaIDIOS,
             KochavaIDAndroid,
             AppodealIDIOS,
@@ -74,6 +76,8 @@ namespace _IECModules
             {"Facebook ID", ChecklistItemName.FacebookID},
             {"Firebase Config File IOS", ChecklistItemName.FirebaseConfigFileIOS},
             {"Firebase Config File Android", ChecklistItemName.FirebaseConfigFileAndroid},
+            {"Unity Project Id", ChecklistItemName.UnityProjectID},
+            {"Unity Project Name", ChecklistItemName.UnityProjectName},
             {"Kochava ID IOS", ChecklistItemName.KochavaIDIOS},
             {"Kochava ID Android", ChecklistItemName.KochavaIDAndroid},
             {"Appodeal ID IOS", ChecklistItemName.AppodealIDIOS},
@@ -245,7 +249,11 @@ namespace _IECModules
             LogEditorHelper.AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
             PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) 29;
+            PlayerSettings.enableCrashReportAPI = true;
 
+            var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            var listProjectSettingChange = new List<KeyValuePair<string, string>>();
+            
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
                 var checklistItemName = keyValuePair.Key;
@@ -314,6 +322,19 @@ namespace _IECModules
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
                         break;
+#endif
+                    case ChecklistItemName.UnityProjectID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
+                        listProjectSettingChange.Add(new KeyValuePair<string, string>(
+                            projectSettingAssetFile.GetBetweenString("cloudProjectId: ", "\n"), 
+                            $"cloudProjectId: {checklistItemValue}\n"));
+                        break;
+                    case ChecklistItemName.UnityProjectName:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
+                        listProjectSettingChange.Add(new KeyValuePair<string, string>(
+                            projectSettingAssetFile.GetBetweenString("projectName: ", "\n"), 
+                            $"projectName: {checklistItemValue}\n"));
+                        break;    
                     case ChecklistItemName.FirebaseConfigFileIOS:
                         break;
                     case ChecklistItemName.FirebaseConfigFileAndroid:
@@ -359,8 +380,6 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
-#endif
-                    
 #if PluginAdjust
                     case ChecklistItemName.AdjustIDiOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
@@ -425,9 +444,24 @@ namespace _IECModules
                 }
             }
             
+            
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            var callbackFunction = new EditorApplication.CallbackFunction(() =>
+            {
+                UpdateProjectSettingCloud(projectSettingAssetFile, listProjectSettingChange);
+            });
+            EditorApplication.delayCall += callbackFunction;
+
+        }
+
+        private static void UpdateProjectSettingCloud(string projectSettingAssetFile, List<KeyValuePair<string, string>> listProjectSettingChange)
+        {
+            projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            listProjectSettingChange.ForEach(keyValue => projectSettingAssetFile = projectSettingAssetFile.Replace(keyValue.Key, keyValue.Value));
+            File.WriteAllText("ProjectSettings/ProjectSettings.asset", projectSettingAssetFile);
         }
 
         private static void UpdateApplovinQualityService(string sdkKey)

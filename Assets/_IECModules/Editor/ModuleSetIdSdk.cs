@@ -344,9 +344,10 @@ namespace _IECModules
             }
 
             EditorGUILayout.EndHorizontal();
-            EditorGUILayout.EndScrollView();
 
             LogEditorHelper.EditorOnGUI();
+            
+            EditorGUILayout.EndScrollView();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
