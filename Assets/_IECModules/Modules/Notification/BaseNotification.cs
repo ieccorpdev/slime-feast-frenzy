@@ -32,5 +32,10 @@ namespace _IECModules
         {
             Debug.LogWarning("Notification: ScheduleNotification");
         }
+
+        public virtual void RequestAuthorization()
+        {
+            Debug.LogWarning("Notification: RequestAuthorization");
+        }
     }
 }

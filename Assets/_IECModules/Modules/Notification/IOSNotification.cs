@@ -1,4 +1,4 @@
-﻿#if(PluginNotification)
+﻿#if (PluginNotification)
 #if UNITY_IOS
 using System;
 using Unity.Notifications.iOS;
@@ -9,6 +9,12 @@ namespace _IECModules
 {
     public class IOSNotification : BaseNotification
     {
+        public override void RequestAuthorization()
+        {
+            base.RequestAuthorization();
+            NotificationServices.RegisterForNotifications(NotificationType.Alert | NotificationType.Badge | NotificationType.Sound);
+        }
+
         public override void CancelAllNotification()
         {
             base.CancelAllNotification();
