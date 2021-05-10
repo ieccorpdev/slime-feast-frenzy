@@ -16,11 +16,23 @@ namespace IEC
 #endif
         bool IsProductCanFreeTrialSubscription(string productID);
 
-        void PurchaseProduct(string productID, Action<bool> callBack);
+        /// <summary>
+        /// Action<string, bool, bool> => (productId, isSuccess, isRestorePurchase)
+        /// </summary>
+        /// <param name="callback"></param>
+        void SetPurchaseCallback(Action<string, bool, bool> callback);
 
-        void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks);
 
-        void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone);
+        /// <summary>
+        /// Action<bool> isRestorePurchase
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <param name="callback"></param>
+        void SetReceiveProductCallback(string productId, Action<bool> callback);
+
+        void PurchaseProduct(string productID);
+
+        void RestorePurchase(Action<bool> onRestoreDone);
 
         LocalizePriceInfo GetLocalizePrice(string productID, bool isNewFormat = true);
 
