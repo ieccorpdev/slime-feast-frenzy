@@ -8,13 +8,13 @@ using SimpleJSON;
 
 namespace _IECModules
 {
-    public class ModuleSetIdSdk : EditorWindow
+    public class ModuleSdkManager : EditorWindow
     {
-        [MenuItem("IEC/Set ID SDK")]
+        [MenuItem("IEC/SDK Manager")]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
+            GetWindow(typeof(ModuleSdkManager), false, $"SDK Manager v{VERSION}");
         }
 
         public const string VERSION = "1.3.0";
