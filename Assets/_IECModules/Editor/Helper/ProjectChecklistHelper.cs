@@ -252,7 +252,10 @@ namespace _IECModules
             PlayerSettings.enableCrashReportAPI = true;
 
             var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
-            var listProjectSettingChange = new List<KeyValuePair<string, string>>();
+            var listProjectSettingChange = new List<Func<string, string>>();
+            listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                projectSetting.GetBetweenString("organizationId: ", "\n"), 
+                $"organizationId: iec-corporation\n"));
             
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
@@ -325,14 +328,14 @@ namespace _IECModules
 #endif
                     case ChecklistItemName.UnityProjectID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
-                        listProjectSettingChange.Add(new KeyValuePair<string, string>(
-                            projectSettingAssetFile.GetBetweenString("cloudProjectId: ", "\n"), 
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("cloudProjectId: ", "\n"),
                             $"cloudProjectId: {checklistItemValue}\n"));
                         break;
                     case ChecklistItemName.UnityProjectName:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
-                        listProjectSettingChange.Add(new KeyValuePair<string, string>(
-                            projectSettingAssetFile.GetBetweenString("projectName: ", "\n"), 
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("projectName: ", "\n"), 
                             $"projectName: {checklistItemValue}\n"));
                         break;    
                     case ChecklistItemName.FirebaseConfigFileIOS:
@@ -448,20 +451,13 @@ namespace _IECModules
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-
-            var callbackFunction = new EditorApplication.CallbackFunction(() =>
+            
+            var projectSettingAssetFileStr = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            listProjectSettingChange.ForEach(func =>
             {
-                UpdateProjectSettingCloud(projectSettingAssetFile, listProjectSettingChange);
+                projectSettingAssetFileStr = func.Invoke(projectSettingAssetFileStr);
             });
-            EditorApplication.delayCall += callbackFunction;
-
-        }
-
-        private static void UpdateProjectSettingCloud(string projectSettingAssetFile, List<KeyValuePair<string, string>> listProjectSettingChange)
-        {
-            projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
-            listProjectSettingChange.ForEach(keyValue => projectSettingAssetFile = projectSettingAssetFile.Replace(keyValue.Key, keyValue.Value));
-            File.WriteAllText("ProjectSettings/ProjectSettings.asset", projectSettingAssetFile);
+            File.WriteAllText("ProjectSettings/ProjectSettings.asset", projectSettingAssetFileStr);
         }
 
         private static void UpdateApplovinQualityService(string sdkKey)
