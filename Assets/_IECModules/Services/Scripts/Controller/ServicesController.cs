@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Balaso;
 using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
@@ -12,6 +11,7 @@ using Google.Play.Review;
 
 #if UNITY_IOS
 using System.Runtime.InteropServices;
+using Balaso;
 #endif
 
 
@@ -53,7 +53,7 @@ namespace IEC
         private static extern int _initByteDance(string appId, string appName);
 #endif
 #if UNITY_IOS
-        [DllImport("_Internal")]
+        [DllImport("__Internal")]
         private static extern void _openAppSetting();
 #endif
 
@@ -221,14 +221,6 @@ namespace IEC
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal());
 
-#if (PluginKochava)
-            if (Application.isEditor)
-            {
-                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
-            }
-#endif
-
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
                 m_ListAnalytics.Add(new AnalyticEventMock());
@@ -243,11 +235,6 @@ namespace IEC
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
-
-#if (PluginKochava)
-                m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
-                m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
             }
 
@@ -292,7 +279,11 @@ namespace IEC
             Debug.LogWarning("device ver:" + deviceVer);
             var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
 
-            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
+            if (!isNeedShowAtt)
+            {
+                InitSDKAfterATT(true);
+            }
+            else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
@@ -301,10 +292,10 @@ namespace IEC
             }
             else
             {
-                InitAdsAfterGDPR(true, currentStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+                InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
 #else
-            InitAdsAfterGDPR(true,true);
+            InitSDKAfterATT(true);
 #endif
 
             foreach (var analytic in m_ListAnalytics)
@@ -319,11 +310,31 @@ namespace IEC
 
         }
 
+#if UNITY_IOS
         IEnumerator IE_WaitATT()
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+            InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+        }
+#endif
+
+        void InitSDKAfterATT(bool isHaveIDFA)
+        {
+#if (PluginKochava)
+            if (Application.isEditor)
+            {
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
+            }
+            m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
+            m_ListAnalytics.Add(m_KochavaAnalytic);
+#endif
+#if (PluginAdjust)
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+            InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
         public void SendATTAnalytic(string eventName)
@@ -597,6 +608,9 @@ namespace IEC
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
+#if (PluginAdjust)
+                    m_AdjustAnalytic?.PushEventFullAd();
+#endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     if (fullAdCount == 50)
@@ -660,6 +674,9 @@ namespace IEC
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
                         m_KochavaAnalytic?.PushEventRewardAd();
+#endif
+#if (PluginAdjust)
+                        m_AdjustAnalytic?.PushEventRewardAd();
 #endif
                         PushEvent("show_reward_ad", 1);
 
@@ -854,7 +871,7 @@ namespace IEC
 #endif
         }
 
-        #region services
+#region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
@@ -974,7 +991,11 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-        #endregion
+        
+#if (PluginAdjust)
+        AdjustAnalyticModule m_AdjustAnalytic;
+#endif
+#endregion
 
         int GetIntDeviceVerion(string version)
         {

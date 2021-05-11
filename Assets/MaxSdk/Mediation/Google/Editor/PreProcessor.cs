@@ -18,7 +18,7 @@ using UnityEditor.Build.Reporting;
 #endif
 using UnityEngine;
 
-namespace AppLovinMax
+namespace AppLovinMax.Mediation.Google.Editor
 {
     /// <summary>
     /// A pre processor that will add the AdMob App ID to the <c>AndroidManifest.xml</c> file.
@@ -101,7 +101,6 @@ namespace AppLovinMax
         }
 
         public int callbackOrder
-
         {
             get { return 0; }
         }

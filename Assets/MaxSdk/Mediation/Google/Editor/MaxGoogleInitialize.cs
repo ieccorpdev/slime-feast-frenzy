@@ -10,7 +10,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace AppLovinMax.Google
+namespace AppLovinMax.Mediation.Google.Editor
 {
     [InitializeOnLoad]
     public class MaxGoogleInitialize
