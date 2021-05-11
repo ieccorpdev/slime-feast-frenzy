@@ -8,13 +8,13 @@ using SimpleJSON;
 
 namespace _IECModules
 {
-    public class ModuleSetIdSdk : EditorWindow
+    public class ModuleSdkManager : EditorWindow
     {
-        [MenuItem("IEC/Set ID SDK")]
+        [MenuItem("IEC/SDK Manager")]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
+            GetWindow(typeof(ModuleSdkManager), false, $"SDK Manager v{VERSION}");
         }
 
         public const string VERSION = "1.3.0";
@@ -40,6 +40,7 @@ namespace _IECModules
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
+        private Vector2 m_ScrollPosition = Vector2.zero;
 
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
@@ -64,7 +65,8 @@ namespace _IECModules
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
-            PluginByteDanceChinaIOS
+            PluginByteDanceChinaIOS,
+            PluginNotification
         }
 
         private void Awake()
@@ -99,7 +101,10 @@ namespace _IECModules
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
             for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+            
+            m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition);
             EditorGUILayout.BeginHorizontal();
+            
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
@@ -259,6 +264,22 @@ namespace _IECModules
 
             #endregion
 
+            #region Notification
+
+            var notificationPkg = SdkHelper.DictUnityPackage[SdkHelper.NOTIFICATION_PKG];
+            var isNotificationLoaded = notificationPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Notification {(isNotificationLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!isNotificationLoaded) return;
+                notificationPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
+            });
+            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected, notificationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+
+            #endregion
+
             // #region ByteDance China IOS
             // CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
             // CreateGuiButton($"ByteDance SDK", () =>
@@ -306,7 +327,7 @@ namespace _IECModules
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
@@ -314,7 +335,7 @@ namespace _IECModules
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
@@ -325,6 +346,8 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
 
             LogEditorHelper.EditorOnGUI();
+            
+            EditorGUILayout.EndScrollView();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);

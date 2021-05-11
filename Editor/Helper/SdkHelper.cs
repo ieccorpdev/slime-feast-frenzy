@@ -52,6 +52,7 @@ namespace _IECModules
         public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
         public const string FIREBAE_ANALYTIC_PKG = "com.google.firebase.analytics";
         public const string IN_APP_RATING_PKG = "com.google.play.review";
+        public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
 
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
@@ -106,7 +107,8 @@ namespace _IECModules
             [EXTERNAL_DEPENDENCY_PKG] = new UnityPackageInfo { id = EXTERNAL_DEPENDENCY_PKG },
             [FIREBASE_REMOTE_CONFIG_PKG] = new UnityPackageInfo { id = FIREBASE_REMOTE_CONFIG_PKG },
             [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo { id = FIREBAE_ANALYTIC_PKG },
-            [IN_APP_RATING_PKG] = new UnityPackageInfo { id = IN_APP_RATING_PKG }
+            [IN_APP_RATING_PKG] = new UnityPackageInfo { id = IN_APP_RATING_PKG },
+            [NOTIFICATION_PKG] = new UnityPackageInfo { id = NOTIFICATION_PKG }
         };
 
         public static void LoadApplovinVersionList()
