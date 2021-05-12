@@ -198,7 +198,11 @@ namespace IEC
                 }
                 else
                 {
-                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType), Game.isBlockGrayColor);
+                    var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ? 
+                        ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) 
+                        : Game.listTerrainType;
+                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat), 
+                        Game.isBlockGrayColor, Game.isFlyingIsland);
                 }
 
 
@@ -739,7 +743,7 @@ namespace IEC
         {
             if (m_Terrain == null) return;
             var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor);
+            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
         }
 
         protected virtual int GetTrueRotHint()

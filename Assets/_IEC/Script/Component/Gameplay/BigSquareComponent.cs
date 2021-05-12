@@ -37,7 +37,7 @@ namespace IEC
 
             m_GridSize = gridsInput.GetLength(0);
             m_Terrain.transform.localScale = new Vector3(m_GridSize, 1f, m_GridSize);
-            m_Terrain.SetupTerrain(Game.listTerrainType[0], Game.isBlockGrayColor);
+            m_Terrain.SetupTerrain(Game.listTerrainType[0], Game.isBlockGrayColor, Game.isFlyingIsland);
 
             m_BoxCollider.size = new Vector3(m_GridSize, 0.12f, m_GridSize);
 

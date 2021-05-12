@@ -115,13 +115,13 @@ namespace IEC
 
         private void Result20210226()
         {
-            GameController.SetupMainCam();
+            //GameController.SetupMainCam();
         }
 
         private void UpdateAb20210226(int abValue)
         {
             //UIController.SetupAbUI();
-            GameController.SetupMainCam();
+            //GameController.SetupMainCam();
         }
 
         private void UpdateAb20210205(int abValue)

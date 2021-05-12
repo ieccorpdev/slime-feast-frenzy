@@ -6,7 +6,7 @@ using DG.Tweening;
 public class TerrainComponent : MonoBehaviour
 {
     [SerializeField]
-    private MeshRenderer m_Mesh;
+    private MeshRenderer m_Mesh, m_MeshIsLand;
 
     [SerializeField]
     private GameObject m_LockObj;
@@ -22,21 +22,30 @@ public class TerrainComponent : MonoBehaviour
 
     private bool m_IsTweenArrow;
 
-    public void SetupTerrain(Material mat, bool isHaveGray)
+    public void SetupTerrain(Material mat, bool isHaveGray, bool isFyingIsLand)
     {
-        m_Mesh.material = mat;
-
-        if(m_TerrainMat == null)
+        if (m_TerrainMat == null)
         {
             m_TerrainMat = new MaterialPropertyBlock();
         }
 
-        m_TerrainMat.SetFloat(Shader_HaveGray, isHaveGray ? 1f : 0f);
-        if (isHaveGray)
+        if (isFyingIsLand)
         {
-            SetPos(Vector3.one * 30);
+            m_MeshIsLand.material = mat;
         }
-        ApplyData();
+        else
+        {
+            m_Mesh.material = mat;
+            m_TerrainMat.SetFloat(Shader_HaveGray, isHaveGray ? 1f : 0f);
+            if (isHaveGray)
+            {
+                SetPos(Vector3.one * 30);
+            }
+            ApplyData();
+        }
+
+        m_Mesh.gameObject.SetActive(!isFyingIsLand);
+        m_MeshIsLand.gameObject.SetActive(isFyingIsLand);
     }
 
     public void ResetTerrain()

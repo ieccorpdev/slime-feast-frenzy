@@ -15,6 +15,8 @@ namespace IEC
         public Material[] waterLineMat1, waterLineMat2;
 
         public Material[] treebaseMats;
+
+        public List<Material> listTerrainIsLand1, listTerrainIsLand2;
     }
 
     [System.Serializable]

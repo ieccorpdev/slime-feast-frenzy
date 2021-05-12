@@ -35,10 +35,10 @@ namespace IEC
 
         public void SetupMainCam()
         {
-            var posY = Game.isCameraTopView ? 5.1f : 5.2f;
-            var posZ = Game.isCameraTopView ? -.1f : -2.16f;
+            var posY = Game.isFlyingIsland ? 5.3f : 5.2f;
+            var posZ = Game.isFlyingIsland ? -4.55f : -2.16f;
 
-            var rotX = Game.isCameraTopView ? 90f : 70f;
+            var rotX = Game.isFlyingIsland ? 55f : 70f;
             GamePlay.mainCamera.transform.localRotation = Quaternion.Euler(rotX, 0f, 0f);
             GamePlay.mainCamera.transform.localPosition = new Vector3(0f, posY, posZ);
 
@@ -127,6 +127,11 @@ namespace IEC
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
             var rotY = rotIndex * 90f;
+
+            //if (Game.isFlyingIsland)
+            //{
+            //    rotY = 45f;
+            //}
 
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }
