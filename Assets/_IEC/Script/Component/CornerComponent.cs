@@ -20,6 +20,7 @@ namespace IEC
 
         private void OnMouseDown()
         {
+            if (Game.isFlyingIsland) return;
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);

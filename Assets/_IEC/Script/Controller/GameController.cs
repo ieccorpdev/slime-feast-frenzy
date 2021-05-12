@@ -128,10 +128,10 @@ namespace IEC
 
             var rotY = rotIndex * 90f;
 
-            //if (Game.isFlyingIsland)
-            //{
-            //    rotY = 45f;
-            //}
+            if (Game.isFlyingIsland)
+            {
+                rotY = 45f;
+            }
 
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }

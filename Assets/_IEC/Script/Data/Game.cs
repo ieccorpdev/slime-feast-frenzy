@@ -167,7 +167,7 @@ namespace IEC
 
         public bool isTreeGrayColor;
         public bool isBlockGrayColor;
-        public bool isFlyingIsland = true;
+        public bool isFlyingIsland;
 
         public bool isLeavesEffect;
 

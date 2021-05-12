@@ -40,6 +40,7 @@ namespace IEC
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
+            if (Game.isFlyingIsland) return;
             OnDOShakePosition();
         }
 
