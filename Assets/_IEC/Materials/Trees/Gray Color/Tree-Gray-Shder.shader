@@ -62,7 +62,7 @@
         void surf (Input IN, inout SurfaceOutput o) {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             half dist = distance(_GLOBALMaskPosition, IN.worldPos);
-            half sphere = 1 - saturate((dist - _FillAmount) / 0.1);
+            half sphere = 1 - saturate((dist - _FillAmount) / 0.05);
             o.Albedo = c.rgb;
             o.Alpha = c.a;
             o.Albedo *= (_Smooth * _Glossiness);

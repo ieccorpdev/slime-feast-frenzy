@@ -14,11 +14,51 @@ public class TerrainComponent : MonoBehaviour
     [SerializeField]
     private Transform[] m_TransArrows;
 
+    private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
+    private static int Shader_Pos = Shader.PropertyToID("_GLOBALMaskPosition");
+    private static int Shader_HaveGray = Shader.PropertyToID("_HaveGray");
+
+    private MaterialPropertyBlock m_TerrainMat;
+
     private bool m_IsTweenArrow;
 
-    public void SetupTerrain(Material mat)
+    public void SetupTerrain(Material mat, bool isHaveGray)
     {
         m_Mesh.material = mat;
+
+        if(m_TerrainMat == null)
+        {
+            m_TerrainMat = new MaterialPropertyBlock();
+        }
+
+        m_TerrainMat.SetFloat(Shader_HaveGray, isHaveGray ? 1f : 0f);
+        if (isHaveGray)
+        {
+            SetPos(Vector3.one * 30);
+        }
+        ApplyData();
+    }
+
+    public void ResetTerrain()
+    {
+        OnUpdate(0f);
+    }
+
+    public void SetPos(Vector3 pos)
+    {
+        m_TerrainMat.SetVector(Shader_Pos, pos);
+        ApplyData();
+    }
+
+    private void ApplyData()
+    {
+        m_Mesh.SetPropertyBlock(m_TerrainMat);
+    }
+
+    public void OnUpdate(float fillAmount)
+    {
+        m_TerrainMat.SetFloat(Shader_FillAmount, fillAmount);
+        ApplyData();
     }
 
     public void SetActiveLock(bool isActive)

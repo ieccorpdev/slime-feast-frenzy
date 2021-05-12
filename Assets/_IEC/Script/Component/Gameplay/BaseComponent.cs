@@ -127,7 +127,7 @@ namespace IEC
             {
                 for (int i = 0; i < m_WaterCount; i++)
                 {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, Game.isNewWaterEffect);
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping, Game.isNewWaterEffect);
                 }
             }
 
@@ -138,6 +138,7 @@ namespace IEC
                 m_Terrain.OnKillTween();
                 m_Terrain.SetActiveLock(false);
                 m_Terrain.gameObject.SetActive(true);
+                m_Terrain.ResetTerrain();
             }
 
             m_IsLock = false;
@@ -197,7 +198,7 @@ namespace IEC
                 }
                 else
                 {
-                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType));
+                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, Game.listTerrainType), Game.isBlockGrayColor);
                 }
 
 
@@ -234,6 +235,20 @@ namespace IEC
         public virtual void FixLevelData(int newCurrentRot)
         { 
 
+        }
+
+        protected virtual void OnGrowUping(float fillAmount)
+        {
+            if (Game.isBlockGrayColor)
+            {
+                if (!m_IsLock)
+                {
+                    if (m_Terrain != null)
+                    {
+                        m_Terrain.OnUpdate(fillAmount);
+                    }
+                }
+            }
         }
 
         public virtual void OnUpdate(float deltaTime)
@@ -600,9 +615,21 @@ namespace IEC
 
         protected void SetSetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
         {
+            var waterPos = GetWaterPos(waterPoint);
             for (int i = 0; i < m_WaterCount; i++)
             {
-                m_WaterComponent[i].SetGrowing(isGrowUp, GetWaterPos(waterPoint), m_DelayStart);
+                m_WaterComponent[i].SetGrowing(isGrowUp, waterPos, m_DelayStart);
+            }
+
+            if (Game.isBlockGrayColor)
+            {
+                if (!m_IsLock)
+                {
+                    if (m_Terrain != null)
+                    {
+                        m_Terrain.SetPos(waterPos);
+                    }
+                }
             }
         }
 
@@ -712,7 +739,7 @@ namespace IEC
         {
             if (m_Terrain == null) return;
             var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-            m_Terrain.SetupTerrain(mat);
+            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor);
         }
 
         protected virtual int GetTrueRotHint()

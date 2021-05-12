@@ -44,14 +44,16 @@ namespace IEC
 
         public float m_FillAmount;
 
-        private System.Action growUpCallBack;
+        private System.Action m_GrowUpDoneCallBack;
+
+        private System.Action<float> m_ScaleCallBack;
 
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
         private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
 
         private bool isMainWater = true;
 
-        public void OnInit(System.Action callBack, bool isNewEffect)
+        public void OnInit(System.Action callBack, System.Action<float> scaleCallBack, bool isNewEffect)
         {
             if (isNewEffect)
             {
@@ -69,7 +71,8 @@ namespace IEC
                 materialPropertyBlock = new MaterialPropertyBlock();
             }
 
-            growUpCallBack = callBack;
+            m_GrowUpDoneCallBack = callBack;
+            m_ScaleCallBack = scaleCallBack;
 
             m_FillAmount = 0f;
             m_IsScale = false;
@@ -81,18 +84,6 @@ namespace IEC
         public void SetMainWater(bool isMainWater)
         {
             this.isMainWater = isMainWater;
-
-            //if (isMainWater)
-            //{
-            //    waterTile = new Vector2(.2f, .2f);
-            //    distortionTile = new Vector2(.06f, .06f);
-            //}
-            //else
-            //{
-            //    waterTile = new Vector2(.1f, .1f);
-            //    distortionTile = new Vector2(.4f, .4f);
-            //}
-            //SetUpPropertyBlock(MaterialPropertyBlock);
         }
 
         public void SetColor(Color color, bool isUpdateNow)
@@ -155,7 +146,7 @@ namespace IEC
 
                         if (isMainWater)
                         {
-                            growUpCallBack?.Invoke();
+                            m_GrowUpDoneCallBack?.Invoke();
                         }
                     }
                 }
@@ -165,6 +156,11 @@ namespace IEC
                     {
                         m_IsScale = false;
                     }
+                }
+
+                if (isMainWater)
+                {
+                    m_ScaleCallBack?.Invoke(m_FillAmount);
                 }
             }
 
