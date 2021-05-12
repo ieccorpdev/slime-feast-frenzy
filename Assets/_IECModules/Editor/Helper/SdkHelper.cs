@@ -13,6 +13,7 @@ using UnityEngine;
 using SimpleJSON;
 using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 
 namespace _IECModules
 {
@@ -343,6 +344,7 @@ namespace _IECModules
                     }
 
                     versions = versions.OrderByDescending(x => new Version(x)).ToList();
+                    // Debug.Log(id);
                     // foreach (var version in versions)
                     // {
                     //     Debug.Log(version);
@@ -350,6 +352,7 @@ namespace _IECModules
 
                     PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(versions));
                     versionSelected = 0;
+                    LoadPKGVersionFromCache();
                 });
             }).Send();
         }
@@ -380,12 +383,19 @@ namespace _IECModules
         public void InstallHighestVersion()
         {
             var version = GetGitlabUrlByVersion(listVersion.First());
+            // Debug.Log(version);
             InstallPKG(version);
         }
 
         public override void Install()
         {
-            InstallPKG(GetGitlabUrlByVersion(listVersion[versionSelected]));
+            var version = listVersion[versionSelected];
+            LogEditorHelper.AddLog($"Begin install: {id}-{version}");
+            InstallPKG(GetGitlabUrlByVersion(version), (request) =>
+            {
+                LogEditorHelper.AddLog($"Begin install dependency");
+            });
+            
             foreach (var dependency in dependencies)
             {
                 dependency.InstallHighestVersion();
@@ -444,9 +454,9 @@ namespace _IECModules
             InstallPKG(listVersion[versionSelected]);
         }
 
-        protected void InstallPKG(string version)
+        protected void InstallPKG(string version, Action<AddRequest> onInstallComplete = null)
         {
-            PackageManagerHelper.Add($"{id}@{version}");
+            PackageManagerHelper.Add($"{id}@{version}", onInstallComplete);
         }
 
         public virtual void Uninstall()
