@@ -165,6 +165,10 @@ namespace IEC
         public bool isHaveNoAdsV3;
         public bool isTreeColorV2;
 
+        public bool isTreeGrayColor;
+        public bool isBlockGrayColor;
+        public bool isFlyingIsland;
+
 
         public bool isLeavesEffect;
 

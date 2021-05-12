@@ -5,7 +5,7 @@
         _GrayColor ("Main Color", Color) = (1,1,1,1)
         _Glossiness ("Smoothness", Range(1,2)) = 1
         _MainTex ("Base (RGB)", 2D) = "white" {}
-        _GLOBALMaskPosition ("Water tiling", Vector) = (1, 1, 1, 1)
+        _GLOBALMaskPosition ("Mask", Vector) = (1, 1, 1, 1)
         _FillAmount ("_Fill Amount", Float) = 0
     }
     SubShader {
@@ -19,12 +19,6 @@
         #pragma surface surf SimpleSpecular fullforwardshadows
         // Use shader model 3.0 target, to get nicer looking lighting
         #pragma target 3.0
- 
-        
-        sampler2D _MainTex;
-        fixed4 _Color;
-        fixed4 _GrayColor;
-        fixed4 _Smooth;
 
         half4 LightingSimpleSpecular (SurfaceOutput s, half3 lightDir, half3 viewDir, half atten) {
             half3 h = normalize (lightDir + viewDir);
@@ -45,6 +39,11 @@
             float3 worldPos;
         };
 
+        sampler2D _MainTex;
+        fixed4 _Color;
+        fixed4 _GrayColor;
+        fixed4 _Smooth;
+
         float3 _GLOBALMaskPosition;
         fixed _FillAmount;
         fixed _Glossiness;
@@ -63,7 +62,7 @@
         void surf (Input IN, inout SurfaceOutput o) {
             fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
             half dist = distance(_GLOBALMaskPosition, IN.worldPos);
-            half sphere = 1 - saturate((dist - _FillAmount) / 0);
+            half sphere = 1 - saturate((dist - _FillAmount) / 0.1);
             o.Albedo = c.rgb;
             o.Alpha = c.a;
             o.Albedo *= (_Smooth * _Glossiness);
