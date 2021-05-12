@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -10,6 +11,7 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine;
 using SimpleJSON;
+using UnityEditor;
 using UnityEditor.PackageManager;
 
 namespace _IECModules
@@ -59,7 +61,7 @@ namespace _IECModules
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
         public const string FIREBASE_APP_CORE = "com.google.firebase.app";
         public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
-        public const string FIREBAE_ANALYTIC_PKG = "com.google.firebase.analytics";
+        public const string FIREBASE_ANALYTIC_PKG = "com.google.firebase.analytics";
         public const string IN_APP_RATING_PKG = "com.google.play.review";
         public const string ANDROID_APPBUNDLE = "com.google.android.appbundle";
         public const string GOOGLE_PLAY_COMMON = "com.google.play.common";
@@ -129,10 +131,6 @@ namespace _IECModules
 
         public static Dictionary<string, UnityPackageInfo> DictUnityPackage = new Dictionary<string, UnityPackageInfo>
         {
-            [EXTERNAL_DEPENDENCY_PKG] = new UnityPackageInfo {id = EXTERNAL_DEPENDENCY_PKG},
-            [FIREBASE_REMOTE_CONFIG_PKG] = new UnityPackageInfo {id = FIREBASE_REMOTE_CONFIG_PKG},
-            [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo {id = FIREBAE_ANALYTIC_PKG},
-            [IN_APP_RATING_PKG] = new UnityPackageInfo {id = IN_APP_RATING_PKG},
             [NOTIFICATION_PKG] = new UnityPackageInfo {id = NOTIFICATION_PKG}
         };
 
@@ -141,43 +139,13 @@ namespace _IECModules
             {
                 [EXTERNAL_DEPENDENCY_PKG] =
                     new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}, //need for all firebase sdk, ad sdk,...
-                [FIREBASE_APP_CORE] = new GitlabPackageInfo
-                {
-                    id = FIREBASE_APP_CORE,
-                    dependencies = new List<GitlabPackageInfo> {new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}}
-                }, //need for all firebase sdk
-                [FIREBASE_REMOTE_CONFIG_PKG] = new GitlabPackageInfo
-                {
-                    id = FIREBASE_REMOTE_CONFIG_PKG,
-                    dependencies = new List<GitlabPackageInfo>
-                    {
-                        new GitlabPackageInfo {id = FIREBASE_APP_CORE},
-                        new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}
-                    }
-                },
-                [FIREBAE_ANALYTIC_PKG] = new GitlabPackageInfo
-                {
-                    id = FIREBAE_ANALYTIC_PKG,
-                    dependencies = new List<GitlabPackageInfo>
-                    {
-                        new GitlabPackageInfo {id = FIREBASE_APP_CORE},
-                        new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}
-                    }
-                },
+                [FIREBASE_APP_CORE] = new GitlabPackageInfo {id = FIREBASE_APP_CORE}, //need for all firebase sdk
+                [FIREBASE_REMOTE_CONFIG_PKG] = new GitlabPackageInfo {id = FIREBASE_REMOTE_CONFIG_PKG},
+                [FIREBASE_ANALYTIC_PKG] = new GitlabPackageInfo {id = FIREBASE_ANALYTIC_PKG},
                 [ANDROID_APPBUNDLE] = new GitlabPackageInfo {id = ANDROID_APPBUNDLE}, //need for google play review
                 [GOOGLE_PLAY_COMMON] = new GitlabPackageInfo {id = GOOGLE_PLAY_COMMON}, //need for google play review
                 [GOOGLE_PLAY_CORE] = new GitlabPackageInfo {id = GOOGLE_PLAY_CORE}, //need for google play review
-                
-                [IN_APP_RATING_PKG] = new GitlabPackageInfo
-                {
-                    id = IN_APP_RATING_PKG,
-                    dependencies = new List<GitlabPackageInfo>
-                    {
-                        new GitlabPackageInfo {id = ANDROID_APPBUNDLE},
-                        new GitlabPackageInfo {id = GOOGLE_PLAY_COMMON},
-                        new GitlabPackageInfo {id = GOOGLE_PLAY_CORE}
-                    }
-                }
+                [IN_APP_RATING_PKG] = new GitlabPackageInfo {id = IN_APP_RATING_PKG}
             };
 
         public static void LoadApplovinVersionList()
@@ -262,6 +230,68 @@ namespace _IECModules
             ListAdjustVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
             return true;
         }
+
+        public static void AddDependenciesForPluginGitlab()
+        {
+            DictGitlabPluginVersion[FIREBASE_ANALYTIC_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
+                DictGitlabPluginVersion[FIREBASE_APP_CORE]
+            });
+
+            DictGitlabPluginVersion[FIREBASE_REMOTE_CONFIG_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
+                DictGitlabPluginVersion[FIREBASE_APP_CORE]
+            });
+
+            DictGitlabPluginVersion[IN_APP_RATING_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[GOOGLE_PLAY_CORE],
+                DictGitlabPluginVersion[GOOGLE_PLAY_COMMON],
+                DictGitlabPluginVersion[ANDROID_APPBUNDLE]
+            });
+        }
+        
+        public static void AddRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+
+            var jsonNode = JSON.Parse(manifestFileContent);
+            jsonNode["scopedRegistries"] = new JSONArray();
+            var scopes = new JSONArray();
+            foreach (var regScope in registry.scopes)
+            {
+                scopes.Add(new JSONString(regScope));
+            }
+
+            var item = new JSONObject
+            {
+                ["name"] = registry.name,
+                ["url"] = registry.url,
+                ["scopes"] = scopes
+            };
+            jsonNode["scopedRegistries"].Add(item);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        }
+        
+        public static void RemoveRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+
+            var jsonNode = JSON.Parse(manifestFileContent);
+            var scopeRegistry = jsonNode["scopedRegistries"];
+            JSONNode googleRegistry = null;
+            for (int i = 0; i < scopeRegistry.Count; i++)
+            {
+                if (scopeRegistry[i]["url"] == registry.url) googleRegistry = scopeRegistry[i];
+            }
+
+            if (googleRegistry != null) scopeRegistry.Remove(googleRegistry);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        }
     }
 
     [Serializable]
@@ -276,11 +306,16 @@ namespace _IECModules
 
     public class GitlabPackageInfo : UnityPackageInfo
     {
-        public List<GitlabPackageInfo> dependencies;
+        public List<GitlabPackageInfo> dependencies = new List<GitlabPackageInfo>();
+
+        public void SetDependencies(List<GitlabPackageInfo> dependencies)
+        {
+            this.dependencies = dependencies;
+        }
 
         public override void LoadPKGVersionList()
         {
-            Debug.Log("Load package:" + id);
+            // Debug.Log("Load package:" + id);
             PlayerPrefs.DeleteKey(cache);
             var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/branches";
             var versions = new List<string>();
@@ -307,13 +342,14 @@ namespace _IECModules
                         }
                     }
 
-                    versions = versions.OrderByDescending(x => x).ToList();
+                    versions = versions.OrderByDescending(x => new Version(x)).ToList();
                     // foreach (var version in versions)
                     // {
                     //     Debug.Log(version);
                     // }
 
                     PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(versions));
+                    versionSelected = 0;
                 });
             }).Send();
         }
@@ -326,7 +362,7 @@ namespace _IECModules
                 // Debug.Log("page:" + url);
                 var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
                 {
-                    var dataItem = JSONNode.Parse(response.DataAsText).AsArray;
+                    var dataItem = JSONNode.Parse(response.DataAsText);
                     for (int i = 0; i < dataItem.Count; i++)
                     {
                         data.Add(dataItem[i]);
@@ -341,24 +377,24 @@ namespace _IECModules
             }
         }
 
-        public List<string> PKGGitlabUrl()
+        public void InstallHighestVersion()
         {
-            var listUrl = new List<string>();
-            listUrl.Add($"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}#{versionSelected}");
-            foreach (var dependency in dependencies)
-            {
-                listUrl = listUrl.Concat(dependency.PKGGitlabUrl()).ToList();
-            }
-
-            return listUrl;
+            var version = GetGitlabUrlByVersion(listVersion.First());
+            InstallPKG(version);
         }
 
         public override void Install()
         {
+            InstallPKG(GetGitlabUrlByVersion(listVersion[versionSelected]));
+            foreach (var dependency in dependencies)
+            {
+                dependency.InstallHighestVersion();
+            }
         }
 
-        public override void Uninstall()
+        string GetGitlabUrlByVersion(string version)
         {
+            return $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
         }
     }
 
@@ -388,6 +424,7 @@ namespace _IECModules
             {
                 var packageInfo = searchRequest.Result[0];
                 listVersionLoad = packageInfo.versions.compatible.Reverse().ToArray();
+                versionSelected = 0;
                 PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(listVersionLoad));
             });
         }
@@ -404,7 +441,12 @@ namespace _IECModules
 
         public virtual void Install()
         {
-            PackageManagerHelper.Add($"{id}@{listVersion[versionSelected]}");
+            InstallPKG(listVersion[versionSelected]);
+        }
+
+        protected void InstallPKG(string version)
+        {
+            PackageManagerHelper.Add($"{id}@{version}");
         }
 
         public virtual void Uninstall()

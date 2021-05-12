@@ -73,7 +73,8 @@ namespace _IECModules
             if (ProjectChecklistHelper.servicesConfig != null &&
                 !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
-            AddRegistries(GoogleRegistry);
+            // AddRegistries(GoogleRegistry);
+            SdkHelper.RemoveRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
             SdkHelper.LoadKochavaVersionList();
             SdkHelper.LoadAdjustVersionList();
@@ -87,6 +88,9 @@ namespace _IECModules
             {
                 pkg.LoadPKGVersionList();
             }
+
+            SdkHelper.AddDependenciesForPluginGitlab();
+            Debug.Log("Module Awake");
         }
 
         private void InitGuiParams()
@@ -128,6 +132,12 @@ namespace _IECModules
                 GUILayout.Space(20);
                 CreateGuiButton("Test Remove Define PluginFacebook",
                     () => { ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook); }, 220);
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Add Dependencies",
+                    () =>
+                    {
+                    }, 220);
             }
 
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
@@ -186,7 +196,7 @@ namespace _IECModules
 
             #region Firebase Analytics
 
-            var firebaseAnalyticPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBAE_ANALYTIC_PKG];
+            var firebaseAnalyticPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBASE_ANALYTIC_PKG];
             var firebaseAnalyticLoaded = firebaseAnalyticPkg.LoadPKGVersionFromCache();
             CreateGuiButton(
                 $"Firebase Analytics {(firebaseAnalyticLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
@@ -196,7 +206,6 @@ namespace _IECModules
                         return;
                     }
 
-                    AddRegistries(GoogleRegistry);
                     firebaseAnalyticPkg.Install();
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
@@ -232,7 +241,6 @@ namespace _IECModules
                         return;
                     }
 
-                    AddRegistries(GoogleRegistry);
                     firebaseRemotePkg.Install();
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseRemote);
@@ -259,7 +267,6 @@ namespace _IECModules
                     return;
                 }
 
-                AddRegistries(GoogleRegistry);
                 inAppRatingPkg.Install();
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginInAppRating);
             });
@@ -310,7 +317,6 @@ namespace _IECModules
                 {
                     if (!edmSdkLoaded) return;
                     ProjectResolveHelper.DeleteObsoleteResolver();
-                    AddRegistries(GoogleRegistry);
                     edmPkg.Install();
                 });
 
@@ -337,7 +343,9 @@ namespace _IECModules
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl,
+                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
@@ -346,7 +354,9 @@ namespace _IECModules
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString,
+                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x),
@@ -404,29 +414,6 @@ namespace _IECModules
             projectSettingFileContent =
                 projectSettingFileContent.Replace("m_ShowUnitySplashScreen: 1", "m_ShowUnitySplashScreen: 0");
             File.WriteAllText(projectSettingFileName, projectSettingFileContent);
-        }
-
-        private void AddRegistries(RegistryManifest registry)
-        {
-            var manifestFileName = "Packages/manifest.json";
-            var manifestFileContent = File.ReadAllText(manifestFileName);
-
-            var jsonNode = JSON.Parse(manifestFileContent);
-            jsonNode["scopedRegistries"] = new JSONArray();
-            var scopes = new JSONArray();
-            foreach (var regScope in registry.scopes)
-            {
-                scopes.Add(new JSONString(regScope));
-            }
-
-            var item = new JSONObject
-            {
-                ["name"] = registry.name,
-                ["url"] = registry.url,
-                ["scopes"] = scopes
-            };
-            jsonNode["scopedRegistries"].Add(item);
-            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
         private void CopyByteDanceSDKChinaIOS()
