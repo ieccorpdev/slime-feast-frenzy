@@ -277,7 +277,8 @@ namespace IEC
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
 
             Debug.LogWarning("device ver:" + deviceVer);
-            var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+            
+            var isNeedShowAtt = !Application.isEditor && CompareVersion.IsHigherOrEqual(deviceVer, "14.5");
 
             if (!isNeedShowAtt)
             {
