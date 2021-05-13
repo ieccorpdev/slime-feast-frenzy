@@ -236,24 +236,36 @@ namespace _IECModules
         {
             DictGitlabPluginVersion[FIREBASE_ANALYTIC_PKG].SetDependencies(new List<GitlabPackageInfo>
             {
-                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
                 DictGitlabPluginVersion[FIREBASE_APP_CORE]
             });
 
             DictGitlabPluginVersion[FIREBASE_REMOTE_CONFIG_PKG].SetDependencies(new List<GitlabPackageInfo>
             {
-                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
                 DictGitlabPluginVersion[FIREBASE_APP_CORE]
             });
 
             DictGitlabPluginVersion[IN_APP_RATING_PKG].SetDependencies(new List<GitlabPackageInfo>
             {
                 DictGitlabPluginVersion[GOOGLE_PLAY_CORE],
-                DictGitlabPluginVersion[GOOGLE_PLAY_COMMON],
+                DictGitlabPluginVersion[GOOGLE_PLAY_COMMON]
+            });
+
+            DictGitlabPluginVersion[FIREBASE_APP_CORE].SetDependencies(null, new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG]
+            });
+
+            DictGitlabPluginVersion[GOOGLE_PLAY_CORE].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[ANDROID_APPBUNDLE]
+            });
+
+            DictGitlabPluginVersion[GOOGLE_PLAY_COMMON].SetDependencies(new List<GitlabPackageInfo>
+            {
                 DictGitlabPluginVersion[ANDROID_APPBUNDLE]
             });
         }
-        
+
         public static void AddRegistries(RegistryManifest registry)
         {
             var manifestFileName = "Packages/manifest.json";
@@ -276,7 +288,7 @@ namespace _IECModules
             jsonNode["scopedRegistries"].Add(item);
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
-        
+
         public static void RemoveRegistries(RegistryManifest registry)
         {
             var manifestFileName = "Packages/manifest.json";
@@ -307,11 +319,14 @@ namespace _IECModules
 
     public class GitlabPackageInfo : UnityPackageInfo
     {
-        public List<GitlabPackageInfo> dependencies = new List<GitlabPackageInfo>();
+        public List<GitlabPackageInfo> nonContrainDependencies;
+        public List<GitlabPackageInfo> constrainDependencies;
 
-        public void SetDependencies(List<GitlabPackageInfo> dependencies)
+        public void SetDependencies(List<GitlabPackageInfo> constrainDependencies = null,
+            List<GitlabPackageInfo> nonContrainDependencies = null)
         {
-            this.dependencies = dependencies;
+            this.nonContrainDependencies = nonContrainDependencies;
+            this.constrainDependencies = constrainDependencies;
         }
 
         public override void LoadPKGVersionList()
@@ -390,21 +405,43 @@ namespace _IECModules
         public override void Install()
         {
             var version = listVersion[versionSelected];
+            Install(version);
+        }
+
+        public void Install(string version)
+        {
             LogEditorHelper.AddLog($"Begin install: {id}-{version}");
-            InstallPKG(GetGitlabUrlByVersion(version), (request) =>
-            {
-                LogEditorHelper.AddLog($"Begin install dependency");
-            });
-            
-            foreach (var dependency in dependencies)
-            {
-                dependency.InstallHighestVersion();
-            }
+            InstallPKG(GetGitlabUrlByVersion(version),
+                (request) => { 
+                    LogEditorHelper.AddLog($"Begin install dependency"); 
+                    InstallDependencies(version);
+                });
         }
 
         string GetGitlabUrlByVersion(string version)
         {
             return $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
+        }
+
+        public virtual void InstallDependencies(string pluginVersion)
+        {
+            if (constrainDependencies != null)
+            {
+                foreach (var constrainDependency in constrainDependencies)
+                {
+                    Debug.Log("contraint:" +  constrainDependencies.Count);
+                    constrainDependency.Install(pluginVersion);
+                }
+            }
+
+            if (nonContrainDependencies != null)
+            {
+                Debug.Log("non contraint:" +  nonContrainDependencies.Count);
+                foreach (var nonContrainDependency in nonContrainDependencies)
+                {
+                    nonContrainDependency.InstallHighestVersion();
+                }
+            }
         }
     }
 
