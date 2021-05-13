@@ -343,9 +343,7 @@ namespace _IECModules
             {
                 OnClickSetSDKId();
             }
-
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl,
-                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
@@ -354,9 +352,7 @@ namespace _IECModules
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString,
-                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x),
