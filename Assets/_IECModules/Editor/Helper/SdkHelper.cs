@@ -466,6 +466,11 @@ namespace _IECModules
                 }
             }
         }
+
+        public override void InstallPKG(string version)
+        {
+            SdkHelper.AddDependency(id,version);
+        }
     }
 
     public class UnityPackageInfo
