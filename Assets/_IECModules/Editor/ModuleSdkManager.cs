@@ -89,7 +89,6 @@ namespace _IECModules
                 pkg.LoadPKGVersionList();
             }
 
-            SdkHelper.AddDependenciesForPluginGitlab();
             Debug.Log("Module Awake");
         }
 

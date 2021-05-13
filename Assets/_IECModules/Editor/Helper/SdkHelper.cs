@@ -138,15 +138,60 @@ namespace _IECModules
         public static Dictionary<string, GitlabPackageInfo> DictGitlabPluginVersion =
             new Dictionary<string, GitlabPackageInfo>
             {
-                [EXTERNAL_DEPENDENCY_PKG] =
-                    new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}, //need for all firebase sdk, ad sdk,...
-                [FIREBASE_APP_CORE] = new GitlabPackageInfo {id = FIREBASE_APP_CORE}, //need for all firebase sdk
-                [FIREBASE_REMOTE_CONFIG_PKG] = new GitlabPackageInfo {id = FIREBASE_REMOTE_CONFIG_PKG},
-                [FIREBASE_ANALYTIC_PKG] = new GitlabPackageInfo {id = FIREBASE_ANALYTIC_PKG},
+                [EXTERNAL_DEPENDENCY_PKG] = new GitlabPackageInfo
+                {
+                    id = EXTERNAL_DEPENDENCY_PKG
+                }, //need for all firebase sdk, ad sdk,...
+                [FIREBASE_APP_CORE] = new GitlabPackageInfo
+                {
+                    id = FIREBASE_APP_CORE,
+                    nonContrainDependencies = new List<string>
+                    {
+                        EXTERNAL_DEPENDENCY_PKG
+                    }
+                }, //need for all firebase sdk
+                [FIREBASE_REMOTE_CONFIG_PKG] = new GitlabPackageInfo
+                {
+                    id = FIREBASE_REMOTE_CONFIG_PKG,
+                    constrainDependencies = new List<string>
+                    {
+                        FIREBASE_APP_CORE
+                    }
+                },
+                [FIREBASE_ANALYTIC_PKG] = new GitlabPackageInfo
+                {
+                    id = FIREBASE_ANALYTIC_PKG,
+                    constrainDependencies = new List<string>
+                    {
+                        FIREBASE_APP_CORE
+                    }
+                },
                 [ANDROID_APPBUNDLE] = new GitlabPackageInfo {id = ANDROID_APPBUNDLE}, //need for google play review
-                [GOOGLE_PLAY_COMMON] = new GitlabPackageInfo {id = GOOGLE_PLAY_COMMON}, //need for google play review
-                [GOOGLE_PLAY_CORE] = new GitlabPackageInfo {id = GOOGLE_PLAY_CORE}, //need for google play review
-                [IN_APP_RATING_PKG] = new GitlabPackageInfo {id = IN_APP_RATING_PKG}
+                [GOOGLE_PLAY_COMMON] = new GitlabPackageInfo
+                {
+                    id = GOOGLE_PLAY_COMMON,
+                    constrainDependencies = new List<string>
+                    {
+                        ANDROID_APPBUNDLE
+                    }
+                }, //need for google play review
+                [GOOGLE_PLAY_CORE] = new GitlabPackageInfo
+                {
+                    id = GOOGLE_PLAY_CORE,
+                    constrainDependencies = new List<string>
+                    {
+                        ANDROID_APPBUNDLE
+                    }
+                }, //need for google play review
+                [IN_APP_RATING_PKG] = new GitlabPackageInfo
+                {
+                    id = IN_APP_RATING_PKG,
+                    constrainDependencies = new List<string>
+                    {
+                        GOOGLE_PLAY_CORE,
+                        GOOGLE_PLAY_COMMON
+                    }
+                }
             };
 
         public static void LoadApplovinVersionList()
@@ -232,38 +277,14 @@ namespace _IECModules
             return true;
         }
 
-        public static void AddDependenciesForPluginGitlab()
+        public static void AddDependency(string pkgName, string version)
         {
-            DictGitlabPluginVersion[FIREBASE_ANALYTIC_PKG].SetDependencies(new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[FIREBASE_APP_CORE]
-            });
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
 
-            DictGitlabPluginVersion[FIREBASE_REMOTE_CONFIG_PKG].SetDependencies(new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[FIREBASE_APP_CORE]
-            });
-
-            DictGitlabPluginVersion[IN_APP_RATING_PKG].SetDependencies(new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[GOOGLE_PLAY_CORE],
-                DictGitlabPluginVersion[GOOGLE_PLAY_COMMON]
-            });
-
-            DictGitlabPluginVersion[FIREBASE_APP_CORE].SetDependencies(null, new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG]
-            });
-
-            DictGitlabPluginVersion[GOOGLE_PLAY_CORE].SetDependencies(new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[ANDROID_APPBUNDLE]
-            });
-
-            DictGitlabPluginVersion[GOOGLE_PLAY_COMMON].SetDependencies(new List<GitlabPackageInfo>
-            {
-                DictGitlabPluginVersion[ANDROID_APPBUNDLE]
-            });
+            var jsonNode = JSON.Parse(manifestFileContent);
+            jsonNode["dependencies"][pkgName] = version;
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
         public static void AddRegistries(RegistryManifest registry)
@@ -319,11 +340,11 @@ namespace _IECModules
 
     public class GitlabPackageInfo : UnityPackageInfo
     {
-        public List<GitlabPackageInfo> nonContrainDependencies;
-        public List<GitlabPackageInfo> constrainDependencies;
+        public List<string> nonContrainDependencies;
+        public List<string> constrainDependencies;
 
-        public void SetDependencies(List<GitlabPackageInfo> constrainDependencies = null,
-            List<GitlabPackageInfo> nonContrainDependencies = null)
+        public void SetDependencies(List<string> constrainDependencies = null,
+            List<string> nonContrainDependencies = null)
         {
             this.nonContrainDependencies = nonContrainDependencies;
             this.constrainDependencies = constrainDependencies;
@@ -411,11 +432,8 @@ namespace _IECModules
         public void Install(string version)
         {
             LogEditorHelper.AddLog($"Begin install: {id}-{version}");
-            InstallPKG(GetGitlabUrlByVersion(version),
-                (request) => { 
-                    LogEditorHelper.AddLog($"Begin install dependency"); 
-                    InstallDependencies(version);
-                });
+            InstallPKG(GetGitlabUrlByVersion(version));
+            InstallDependencies(version);
         }
 
         string GetGitlabUrlByVersion(string version)
@@ -425,21 +443,26 @@ namespace _IECModules
 
         public virtual void InstallDependencies(string pluginVersion)
         {
+            if (constrainDependencies != null || nonContrainDependencies != null)
+            {
+                LogEditorHelper.AddLog($"Begin install dependencies");
+            }
+
             if (constrainDependencies != null)
             {
                 foreach (var constrainDependency in constrainDependencies)
                 {
-                    Debug.Log("contraint:" +  constrainDependencies.Count);
-                    constrainDependency.Install(pluginVersion);
+                    var dependency = SdkHelper.DictGitlabPluginVersion[constrainDependency];
+                    dependency.Install(pluginVersion);
                 }
             }
 
             if (nonContrainDependencies != null)
             {
-                Debug.Log("non contraint:" +  nonContrainDependencies.Count);
                 foreach (var nonContrainDependency in nonContrainDependencies)
                 {
-                    nonContrainDependency.InstallHighestVersion();
+                    var dependency = SdkHelper.DictGitlabPluginVersion[nonContrainDependency];
+                    dependency.InstallHighestVersion();
                 }
             }
         }
@@ -491,9 +514,9 @@ namespace _IECModules
             InstallPKG(listVersion[versionSelected]);
         }
 
-        protected void InstallPKG(string version, Action<AddRequest> onInstallComplete = null)
+        public virtual void InstallPKG(string version)
         {
-            PackageManagerHelper.Add($"{id}@{version}", onInstallComplete);
+            PackageManagerHelper.Add($"{id}@{version}");
         }
 
         public virtual void Uninstall()
