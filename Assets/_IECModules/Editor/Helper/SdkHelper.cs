@@ -1,19 +1,31 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.UI;
 using BestHTTP;
 using Newtonsoft.Json;
+using NUnit.Framework;
 using UnityEngine;
 using SimpleJSON;
+using UnityEditor;
 using UnityEditor.PackageManager;
+using UnityEditor.PackageManager.Requests;
 
 namespace _IECModules
 {
     public static class SdkHelper
     {
+        public const string GITLAB_API = "https://gitlab.com/api/v4/";
+        public const string GITLAB_GROUP_NAME = "iec-public-google-registry";
+
         public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
         public const string KOCHAVA_VERSION_CACHE = "kochava_version_cache";
         public const string ADJUST_VERSION_CACHE = "adjust_version_cache";
+
         public const string FACEBOOK_CURRENT_VERSION = "7.18.0";
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
         public const string KOCHAVA_CURRENT_VERSION = "4.1.1";
@@ -26,7 +38,7 @@ namespace _IECModules
 
         public const string KOCHAVA_SDK_BASE_URL =
             "https://github.com/Kochava/unity-kochavatracker-releases/releases/download/v{0}/KochavaTrackerUnity.unitypackage";
-        
+
         public const string ADJUST_SDK_BASE_URL =
             "https://github.com/adjust/unity_sdk/releases/download/v{0}/Adjust_v{0}.unitypackage";
 
@@ -47,32 +59,45 @@ namespace _IECModules
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
 
 
-
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
+        public const string FIREBASE_APP_CORE = "com.google.firebase.app";
         public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
-        public const string FIREBAE_ANALYTIC_PKG = "com.google.firebase.analytics";
+        public const string FIREBASE_ANALYTIC_PKG = "com.google.firebase.analytics";
         public const string IN_APP_RATING_PKG = "com.google.play.review";
+        public const string ANDROID_APPBUNDLE = "com.google.android.appbundle";
+        public const string GOOGLE_PLAY_COMMON = "com.google.play.common";
+        public const string GOOGLE_PLAY_CORE = "com.google.play.core";
         public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
 
         public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
         public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
         public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, version);
-        public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") => string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
-        public static string EDMUrlByVersion(string version) => string.Format(EXTERNAL_PACKAGE_MANAGER_URL, version, version.Substring(1));
 
-        public static string IronSourceSdkUrlByVersion => string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
+        public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") =>
+            string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
+
+        public static string EDMUrlByVersion(string version) =>
+            string.Format(EXTERNAL_PACKAGE_MANAGER_URL, version, version.Substring(1));
+
+        public static string IronSourceSdkUrlByVersion =>
+            string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
+
         public static string KochavaSdkUrlByVersion(string version) => string.Format(KOCHAVA_SDK_BASE_URL, version);
         public static string AdjustSdkUrlByVersion(string version) => string.Format(ADJUST_SDK_BASE_URL, version);
 
-        public static string[] ListApplovinVersionDefault = {
+        public static string[] ListApplovinVersionDefault =
+        {
             "3.0.0-Android-9.13.2-iOS-6.13.2",
             "2.4.16-Android-9.13.1-iOS-6.13.1"
         };
 
-        public static string[] ListKochavaVersionDefault = {
+        public static string[] ListKochavaVersionDefault =
+        {
             "3.0.0"
         };
-        public static string[] ListAdjustVersionDefault = {
+
+        public static string[] ListAdjustVersionDefault =
+        {
             "4.29.0"
         };
 
@@ -91,36 +116,49 @@ namespace _IECModules
             ListKochavaVersionFromGithub.Length <= ListKochavaVersionDefault.Length
                 ? ListKochavaVersionDefault
                 : ListKochavaVersionFromGithub;
+
         public static string[] ListAdjustVersion =>
             ListAdjustVersionFromGithub == null ||
             ListAdjustVersionFromGithub.Length <= ListAdjustVersionDefault.Length
                 ? ListAdjustVersionDefault
                 : ListAdjustVersionFromGithub;
 
-        public static string[] ListFirebaseVersion = {
+
+        public static string[] ListFirebaseVersion =
+        {
             "6.15.2",
             "6.1.1"
         };
 
         public static Dictionary<string, UnityPackageInfo> DictUnityPackage = new Dictionary<string, UnityPackageInfo>
         {
-            [EXTERNAL_DEPENDENCY_PKG] = new UnityPackageInfo { id = EXTERNAL_DEPENDENCY_PKG },
-            [FIREBASE_REMOTE_CONFIG_PKG] = new UnityPackageInfo { id = FIREBASE_REMOTE_CONFIG_PKG },
-            [FIREBAE_ANALYTIC_PKG] = new UnityPackageInfo { id = FIREBAE_ANALYTIC_PKG },
-            [IN_APP_RATING_PKG] = new UnityPackageInfo { id = IN_APP_RATING_PKG },
-            [NOTIFICATION_PKG] = new UnityPackageInfo { id = NOTIFICATION_PKG }
+            [NOTIFICATION_PKG] = new UnityPackageInfo {id = NOTIFICATION_PKG}
         };
+
+        public static Dictionary<string, GitlabPackageInfo> DictGitlabPluginVersion =
+            new Dictionary<string, GitlabPackageInfo>
+            {
+                [EXTERNAL_DEPENDENCY_PKG] =
+                    new GitlabPackageInfo {id = EXTERNAL_DEPENDENCY_PKG}, //need for all firebase sdk, ad sdk,...
+                [FIREBASE_APP_CORE] = new GitlabPackageInfo {id = FIREBASE_APP_CORE}, //need for all firebase sdk
+                [FIREBASE_REMOTE_CONFIG_PKG] = new GitlabPackageInfo {id = FIREBASE_REMOTE_CONFIG_PKG},
+                [FIREBASE_ANALYTIC_PKG] = new GitlabPackageInfo {id = FIREBASE_ANALYTIC_PKG},
+                [ANDROID_APPBUNDLE] = new GitlabPackageInfo {id = ANDROID_APPBUNDLE}, //need for google play review
+                [GOOGLE_PLAY_COMMON] = new GitlabPackageInfo {id = GOOGLE_PLAY_COMMON}, //need for google play review
+                [GOOGLE_PLAY_CORE] = new GitlabPackageInfo {id = GOOGLE_PLAY_CORE}, //need for google play review
+                [IN_APP_RATING_PKG] = new GitlabPackageInfo {id = IN_APP_RATING_PKG}
+            };
 
         public static void LoadApplovinVersionList()
         {
             PlayerPrefs.DeleteKey(APPLOVIN_VERSION_CACHE);
             var httpRequest = new HTTPRequest(
-                new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
-                (originalRequest, response) =>
-                {
-                    PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
-                }).Send();
-
+                    new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
+                    (originalRequest, response) =>
+                    {
+                        PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
+                    })
+                .Send();
         }
 
         public static void LoadKochavaVersionList()
@@ -136,6 +174,7 @@ namespace _IECModules
                     {
                         versions.Add(data[i]["name"]);
                     }
+
                     PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, JsonConvert.SerializeObject(versions));
                 }).Send();
         }
@@ -168,7 +207,7 @@ namespace _IECModules
 
         public static void LoadAdjustVersionList()
         {
-            PlayerPrefs.DeleteKey(ADJUST_VERSION_CACHE );
+            PlayerPrefs.DeleteKey(ADJUST_VERSION_CACHE);
             var httpRequest = new HTTPRequest(
                 new Uri("https://api.github.com/repos/adjust/unity_sdk/releases"),
                 (originalRequest, response) =>
@@ -179,10 +218,11 @@ namespace _IECModules
                     {
                         versions.Add(data[i]["name"].Value.Split(' ')[1]);
                     }
+
                     PlayerPrefs.SetString(ADJUST_VERSION_CACHE, JsonConvert.SerializeObject(versions));
                 }).Send();
         }
-        
+
         public static bool LoadAdjustVersionFromCache()
         {
             if (ListAdjustVersionFromGithub != null) return true;
@@ -190,6 +230,68 @@ namespace _IECModules
             if (string.IsNullOrEmpty(data)) return false;
             ListAdjustVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
             return true;
+        }
+
+        public static void AddDependenciesForPluginGitlab()
+        {
+            DictGitlabPluginVersion[FIREBASE_ANALYTIC_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
+                DictGitlabPluginVersion[FIREBASE_APP_CORE]
+            });
+
+            DictGitlabPluginVersion[FIREBASE_REMOTE_CONFIG_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[EXTERNAL_DEPENDENCY_PKG],
+                DictGitlabPluginVersion[FIREBASE_APP_CORE]
+            });
+
+            DictGitlabPluginVersion[IN_APP_RATING_PKG].SetDependencies(new List<GitlabPackageInfo>
+            {
+                DictGitlabPluginVersion[GOOGLE_PLAY_CORE],
+                DictGitlabPluginVersion[GOOGLE_PLAY_COMMON],
+                DictGitlabPluginVersion[ANDROID_APPBUNDLE]
+            });
+        }
+        
+        public static void AddRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+
+            var jsonNode = JSON.Parse(manifestFileContent);
+            jsonNode["scopedRegistries"] = new JSONArray();
+            var scopes = new JSONArray();
+            foreach (var regScope in registry.scopes)
+            {
+                scopes.Add(new JSONString(regScope));
+            }
+
+            var item = new JSONObject
+            {
+                ["name"] = registry.name,
+                ["url"] = registry.url,
+                ["scopes"] = scopes
+            };
+            jsonNode["scopedRegistries"].Add(item);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        }
+        
+        public static void RemoveRegistries(RegistryManifest registry)
+        {
+            var manifestFileName = "Packages/manifest.json";
+            var manifestFileContent = File.ReadAllText(manifestFileName);
+
+            var jsonNode = JSON.Parse(manifestFileContent);
+            var scopeRegistry = jsonNode["scopedRegistries"];
+            JSONNode googleRegistry = null;
+            for (int i = 0; i < scopeRegistry.Count; i++)
+            {
+                if (scopeRegistry[i]["url"] == registry.url) googleRegistry = scopeRegistry[i];
+            }
+
+            if (googleRegistry != null) scopeRegistry.Remove(googleRegistry);
+            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
     }
 
@@ -203,53 +305,161 @@ namespace _IECModules
         public string updated;
     }
 
+    public class GitlabPackageInfo : UnityPackageInfo
+    {
+        public List<GitlabPackageInfo> dependencies = new List<GitlabPackageInfo>();
+
+        public void SetDependencies(List<GitlabPackageInfo> dependencies)
+        {
+            this.dependencies = dependencies;
+        }
+
+        public override void LoadPKGVersionList()
+        {
+            // Debug.Log("Load package:" + id);
+            PlayerPrefs.DeleteKey(cache);
+            var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/branches";
+            var versions = new List<string>();
+            var requestUrl100 = url + "?per_page=100";
+            var httpRequest = new HTTPRequest(new Uri(requestUrl100), (request, response) =>
+            {
+                var numPage = int.Parse(response.Headers["x-total-pages"][0]);
+                // Debug.Log(numPage);
+                var listPageUrl = new List<string>();
+                var data = JSONNode.Parse(response.DataAsText).AsArray;
+                for (int i = 2; i <= numPage; i++)
+                {
+                    listPageUrl.Add($"{requestUrl100}&page={i}");
+                }
+
+                RequestListUrl(listPageUrl, 0, data, () =>
+                {
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        var version = data[i]["name"].Value;
+                        if (version != "master")
+                        {
+                            versions.Add(version);
+                        }
+                    }
+
+                    versions = versions.OrderByDescending(x => new Version(x)).ToList();
+                    // Debug.Log(id);
+                    // foreach (var version in versions)
+                    // {
+                    //     Debug.Log(version);
+                    // }
+
+                    PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(versions));
+                    versionSelected = 0;
+                    LoadPKGVersionFromCache();
+                });
+            }).Send();
+        }
+
+        void RequestListUrl(List<string> listUrl, int index, JSONArray data, Action callback)
+        {
+            if (index < listUrl.Count)
+            {
+                var url = listUrl[index];
+                // Debug.Log("page:" + url);
+                var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
+                {
+                    var dataItem = JSONNode.Parse(response.DataAsText);
+                    for (int i = 0; i < dataItem.Count; i++)
+                    {
+                        data.Add(dataItem[i]);
+                    }
+
+                    RequestListUrl(listUrl, index + 1, data, callback);
+                }).Send();
+            }
+            else
+            {
+                callback?.Invoke();
+            }
+        }
+
+        public void InstallHighestVersion()
+        {
+            var version = GetGitlabUrlByVersion(listVersion.First());
+            // Debug.Log(version);
+            InstallPKG(version);
+        }
+
+        public override void Install()
+        {
+            var version = listVersion[versionSelected];
+            LogEditorHelper.AddLog($"Begin install: {id}-{version}");
+            InstallPKG(GetGitlabUrlByVersion(version), (request) =>
+            {
+                LogEditorHelper.AddLog($"Begin install dependency");
+            });
+            
+            foreach (var dependency in dependencies)
+            {
+                dependency.InstallHighestVersion();
+            }
+        }
+
+        string GetGitlabUrlByVersion(string version)
+        {
+            return $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
+        }
+    }
+
     public class UnityPackageInfo
     {
         public int versionSelected;
         string versionInstalled;
-        public string[] listDefaultVerion = new string[] { "1.0" };
-        public string[] listVersionLoadFromUnity;
+        public string[] listDefaultVerion = new string[] {"1.0"};
+        public string[] listVersionLoad;
+
         public string[] listVersion =>
-                listVersionLoadFromUnity == null ||
-                listVersionLoadFromUnity.Length <= listDefaultVerion.Length
+            listVersionLoad == null ||
+            listVersionLoad.Length <= listDefaultVerion.Length
                 ? listDefaultVerion
-                : listVersionLoadFromUnity;
+                : listVersionLoad;
 
         public string id;
+
         public string cache
         {
-            get
-            {
-                return id + "_cache";
-            }
+            get { return id + "_cache"; }
         }
 
-        public void LoadPKGVersionList()
+        public virtual void LoadPKGVersionList()
         {
             PackageManagerHelper.Search(id, (searchRequest) =>
             {
                 var packageInfo = searchRequest.Result[0];
-                listVersionLoadFromUnity = packageInfo.versions.compatible.Reverse().ToArray();
-                PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(listVersionLoadFromUnity));
+                listVersionLoad = packageInfo.versions.compatible.Reverse().ToArray();
+                versionSelected = 0;
+                PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(listVersionLoad));
             });
         }
 
-        public bool LoadPKGVersionFromCache()
+        public virtual bool LoadPKGVersionFromCache()
         {
-            if (listVersionLoadFromUnity != null) return true;
+            if (listVersionLoad != null) return true;
             var data = PlayerPrefs.GetString(cache);
             if (string.IsNullOrEmpty(data)) return false;
 
-            listVersionLoadFromUnity = JSON.Parse(data).AsStringArray;
+            listVersionLoad = JSON.Parse(data).AsStringArray;
             return true;
         }
 
-        public void Install()
+        public virtual void Install()
         {
-            PackageManagerHelper.Add($"{id}@{listVersion[versionSelected]}");
+            InstallPKG(listVersion[versionSelected]);
         }
 
-        public void Uninstall()
+        protected void InstallPKG(string version, Action<AddRequest> onInstallComplete = null)
+        {
+            PackageManagerHelper.Add($"{id}@{version}", onInstallComplete);
+        }
+
+        public virtual void Uninstall()
         {
             PackageManagerHelper.Remove(id);
         }
