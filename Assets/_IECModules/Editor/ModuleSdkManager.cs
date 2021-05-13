@@ -8,13 +8,13 @@ using SimpleJSON;
 
 namespace _IECModules
 {
-    public class ModuleSetIdSdk : EditorWindow
+    public class ModuleSdkManager : EditorWindow
     {
-        [MenuItem("IEC/Set ID SDK")]
+        [MenuItem("IEC/SDK Manager")]
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleSetIdSdk), false, $"Set ID SDK v{VERSION}");
+            GetWindow(typeof(ModuleSdkManager), false, $"SDK Manager v{VERSION}");
         }
 
         public const string VERSION = "1.3.0";
@@ -33,12 +33,14 @@ namespace _IECModules
 
         private int m_PluginApplovinVersionSelect;
         private int m_PluginKochavaVersionSelect;
+        private int m_PluginAdjustVersionSelect;
         private int m_PluginFirebaseVersionSelect;
         private int m_PluginEDMVersionSelect;
         private int m_PluginFirebaseCoreSelect;
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
+        private Vector2 m_ScrollPosition = Vector2.zero;
 
         private static RegistryManifest GoogleRegistry = new RegistryManifest
         {
@@ -57,12 +59,14 @@ namespace _IECModules
             PluginFirebaseAnalytic,
             PluginFirebaseRemote,
             PluginKochava,
+            PluginAdjust,
             PluginApplovin,
             PluginIronSource,
             PluginUnityIAP,
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
-            PluginByteDanceChinaIOS
+            PluginByteDanceChinaIOS,
+            PluginNotification
         }
 
         private void Awake()
@@ -74,6 +78,7 @@ namespace _IECModules
             AddRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
             SdkHelper.LoadKochavaVersionList();
+            SdkHelper.LoadAdjustVersionList();
             var unityPackages = SdkHelper.DictUnityPackage.Values;
             foreach (var pkg in unityPackages)
             {
@@ -96,7 +101,10 @@ namespace _IECModules
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
             for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
+            
+            m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition);
             EditorGUILayout.BeginHorizontal();
+            
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
@@ -132,8 +140,8 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
-
-            GUILayout.Space(20);
+            
+            CreateGuiBreakLine();
 
             var kochavaSdkLoaded = SdkHelper.LoadKochavaVersionFromCache();
             CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
@@ -144,6 +152,19 @@ namespace _IECModules
 
             m_PluginKochavaVersionSelect = EditorGUILayout.Popup("", m_PluginKochavaVersionSelect,
                 SdkHelper.ListKochavaVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+            
+            CreateGuiBreakLine();
+            
+            var adjustSdkLoaded = SdkHelper.LoadAdjustVersionFromCache();
+            CreateGuiButton($"Adjust SDK {(adjustSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AdjustSdkUrlByVersion(SdkHelper.ListAdjustVersion[m_PluginAdjustVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
+            });
+
+            m_PluginAdjustVersionSelect = EditorGUILayout.Popup("", m_PluginAdjustVersionSelect,
+                SdkHelper.ListAdjustVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
@@ -243,6 +264,22 @@ namespace _IECModules
 
             #endregion
 
+            #region Notification
+
+            var notificationPkg = SdkHelper.DictUnityPackage[SdkHelper.NOTIFICATION_PKG];
+            var isNotificationLoaded = notificationPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Notification {(isNotificationLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!isNotificationLoaded) return;
+                notificationPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
+            });
+            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected, notificationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+
+            #endregion
+
             // #region ByteDance China IOS
             // CreateGuiLabel("ByteDance China IOS", m_StyleHeader1);
             // CreateGuiButton($"ByteDance SDK", () =>
@@ -290,7 +327,7 @@ namespace _IECModules
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
@@ -298,7 +335,7 @@ namespace _IECModules
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - 250));
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
@@ -309,6 +346,8 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
 
             LogEditorHelper.EditorOnGUI();
+            
+            EditorGUILayout.EndScrollView();
         }
 
         private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);

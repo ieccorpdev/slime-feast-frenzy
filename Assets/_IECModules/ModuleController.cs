@@ -13,6 +13,8 @@ namespace _IECModules
         
         public static GoogleSheetToCSV googleSheetToCsv;
 
+        public static NotificationBehaviour notificationBehaviour;
+
         private void Awake()
         {
             if (instance)
@@ -29,6 +31,8 @@ namespace _IECModules
             cheatCode = GetComponentInChildren<CheatCode>(true);
             
             googleSheetToCsv = GetComponentInChildren<GoogleSheetToCSV>(true);
+
+            notificationBehaviour = GetComponentInChildren<NotificationBehaviour>(true);
 
             InitConstParam();
         }

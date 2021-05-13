@@ -7,7 +7,7 @@ using UnityEngine.Purchasing;
 
 namespace IEC
 {
-    public class IAPController : _BaseBehaviour, IController, IEventListener
+    public class IAPController : _BaseBehaviour, IController, IEventListener, IEventAwake
     {
         private const string NO_ADS = "com.gma.water.connect.puzzle.no.ads";
 
@@ -38,22 +38,29 @@ namespace IEC
             }
         }
 
+        public void BehaviourAwake()
+        {
+            Services.IAP().SetPurchaseCallback(PurchaseCallback);
+        }
+
         private void OnClickPurchaseProduct(string productId)
         {
             UI.loadingObj.gameObject.SetActive(true);
-            Services.IAP().PurchaseProduct(productId, success =>
-            {
-                UI.loadingObj.gameObject.SetActive(false);
-                print($"Purchase {productId}: {success}");
-                if (!success) return;
-                PurchaseProductSuccess(productId);
-                Services.PushEvent("iap_buy_packages",
-                    IapCatalog.Find(item => item.id == productId).applePriceTier, new Dictionary<string, object>
-                    {
+            Services.IAP().PurchaseProduct(productId);
+        }
+
+        void PurchaseCallback(string productId, bool isSuccess, bool isRestore)
+        {
+            UI.loadingObj.gameObject.SetActive(false);
+            print($"Purchase {productId}: {isSuccess}");
+            if (!isSuccess) return;
+            PurchaseProductSuccess(productId);
+            Services.PushEvent("iap_buy_packages",
+                IapCatalog.Find(item => item.id == productId).applePriceTier, new Dictionary<string, object>
+                {
                         {"level", PlayerData.level},
                         {"package", productId}
-                    });
-            });
+                });
         }
 
         private void PurchaseProductSuccess(string productId)
@@ -90,19 +97,7 @@ namespace IEC
 
         private void Restore()
         {
-            var actionRestoreNoAds = new Action<bool>((rs) =>
-            {
-                if (rs)
-                {
-                    BuyNoAds();
-                }
-            });
-
-            var dictRestoreNoAds = new Dictionary<string, Action<bool>>();
-            dictRestoreNoAds[NO_ADS] = actionRestoreNoAds;
-
-            Services.IAP().RestorePurchase(dictRestoreNoAds, success => { print($"Restore Result: {success}"); });
+            Services.IAP().RestorePurchase(success => { print($"Restore Result: {success}"); });
         }
-
     }
 }

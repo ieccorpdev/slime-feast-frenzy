@@ -30,6 +30,8 @@ namespace _IECModules
             FacebookID,
             FirebaseConfigFileIOS,
             FirebaseConfigFileAndroid,
+            UnityProjectID,
+            UnityProjectName,
             KochavaIDIOS,
             KochavaIDAndroid,
             AppodealIDIOS,
@@ -51,7 +53,9 @@ namespace _IECModules
             ApplovinAndroidRewardID,
             IronSourceIOSID,
             IronSourceAndroidID,
-            AbTestList
+            AbTestList,
+            AdjustIDAndroid,
+            AdjustIDiOS,
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -72,6 +76,8 @@ namespace _IECModules
             {"Facebook ID", ChecklistItemName.FacebookID},
             {"Firebase Config File IOS", ChecklistItemName.FirebaseConfigFileIOS},
             {"Firebase Config File Android", ChecklistItemName.FirebaseConfigFileAndroid},
+            {"Unity Project Id", ChecklistItemName.UnityProjectID},
+            {"Unity Project Name", ChecklistItemName.UnityProjectName},
             {"Kochava ID IOS", ChecklistItemName.KochavaIDIOS},
             {"Kochava ID Android", ChecklistItemName.KochavaIDAndroid},
             {"Appodeal ID IOS", ChecklistItemName.AppodealIDIOS},
@@ -93,7 +99,10 @@ namespace _IECModules
             {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
-            {"AB Test List", ChecklistItemName.AbTestList}
+            {"AB Test List", ChecklistItemName.AbTestList},
+            {"Adjust ID IOS", ChecklistItemName.AdjustIDiOS},
+            {"Adjust ID Android", ChecklistItemName.AdjustIDAndroid},
+            
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -240,7 +249,14 @@ namespace _IECModules
             LogEditorHelper.AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
             PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) 29;
+            PlayerSettings.enableCrashReportAPI = true;
 
+            var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            var listProjectSettingChange = new List<Func<string, string>>();
+            listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                projectSetting.GetBetweenString("organizationId: ", "\n"), 
+                $"organizationId: iec-corporation\n"));
+            
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
                 var checklistItemName = keyValuePair.Key;
@@ -309,6 +325,19 @@ namespace _IECModules
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
                         break;
+#endif
+                    case ChecklistItemName.UnityProjectID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("cloudProjectId: ", "\n"),
+                            $"cloudProjectId: {checklistItemValue}\n"));
+                        break;
+                    case ChecklistItemName.UnityProjectName:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("projectName: ", "\n"), 
+                            $"projectName: {checklistItemValue}\n"));
+                        break;    
                     case ChecklistItemName.FirebaseConfigFileIOS:
                         break;
                     case ChecklistItemName.FirebaseConfigFileAndroid:
@@ -354,8 +383,17 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
+#if PluginAdjust
+                    case ChecklistItemName.AdjustIDiOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
+                        servicesConfig.adjustConfig.iosID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AdjustIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
+                        servicesConfig.adjustConfig.androidID = checklistItemValue;
+                        break;        
 #endif
-
+                    
 #if PluginApplovin
                     case ChecklistItemName.ApplovinIOSID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
@@ -409,9 +447,17 @@ namespace _IECModules
                 }
             }
             
+            
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+            
+            var projectSettingAssetFileStr = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            listProjectSettingChange.ForEach(func =>
+            {
+                projectSettingAssetFileStr = func.Invoke(projectSettingAssetFileStr);
+            });
+            File.WriteAllText("ProjectSettings/ProjectSettings.asset", projectSettingAssetFileStr);
         }
 
         private static void UpdateApplovinQualityService(string sdkKey)

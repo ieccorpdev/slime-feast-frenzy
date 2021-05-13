@@ -13,8 +13,13 @@ namespace IEC
         IapConfig config;
         IDataService dataService;
 
-        Dictionary<string, Action<bool>> purchaseCallbacks;
-        Dictionary<string, Action<bool>> restoreCallbacks;
+        /// <summary>
+        /// Action<string, bool, bool> : productId, isSuccess, isRestore
+        /// </summary>
+        Action<string, bool, bool> purchaseResultAction;
+        Dictionary<string, Action<bool>> receiveProductActions = new Dictionary<string, Action<bool>>();
+        bool isPurchasing = false;
+
         Action<bool> onRestoreDone;
         Action initializedCallback;
         bool isHaveProductRestore = false;
@@ -51,7 +56,6 @@ namespace IEC
             this.config = config;
             this.dataService = dataService;
             this.receiptVerify = receiptVerify;
-            purchaseCallbacks = new Dictionary<string, Action<bool>>();
         }
 
         public void SetCallbackAnalytic(Action<string> logIapOpen, Action<string> logPurchaseSuccess1, Action<string> logPurchaseSuccess2, Action<string> logPurchaseFail)
@@ -90,21 +94,34 @@ namespace IEC
             return dataService.GetBool(productID, false);
         }
 
-        public void PurchaseProduct(string productID, Action<bool> callBack)
+        public void PurchaseProduct(string productID)
         {
-            purchaseCallbacks[productID] = callBack;
+            isPurchasing = true;
             SafeInvoke(m_LogIapOpen, productID);
             BuyProductID(productID);
         }
 
         void PurchaseProductResult(string productID, bool result)
         {
-            if (purchaseCallbacks.ContainsKey(productID))
+            isPurchasing = false;
+            IapProductResult(productID, result, false);
+        }
+
+        void RestoreProductResult(string productID, bool result)
+        {
+            IapProductResult(productID, result, true);
+        }
+
+        void IapProductResult(string productID, bool isSuccess, bool isRestore)
+        {
+            Debug.LogWarningFormat("IapProductResult {0} {1} {2}", productID, isSuccess, isRestore);
+            if (isSuccess) dataService.SetBool(productID, isSuccess);
+
+            purchaseResultAction?.Invoke(productID, isSuccess, isRestore);
+            if (isSuccess && receiveProductActions.TryGetValue(productID, out var action))
             {
-                purchaseCallbacks[productID](result);
-                purchaseCallbacks.Remove(productID);
-                if (result == true)
-                    dataService.SetBool(productID, result);
+                Debug.LogWarningFormat("ReceiveProduct: " + productID);
+                action.Invoke(isRestore);
             }
         }
 
@@ -157,18 +174,22 @@ namespace IEC
             }
         }
 
-        public void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone)
+        public void RestorePurchase(Action<bool> onRestoreDone)
         {
-            SetRestoreCallbacks(callbacks);
             this.onRestoreDone = onRestoreDone;
             isHaveProductRestore = false;
             Restore();
         }
 
-        public void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks)
+        public void SetPurchaseCallback(Action<string, bool, bool> callback)
         {
-            Debug.LogWarning("SetRestoreCallbacks: " + (callbacks != null ? callbacks.Count : 0));
-            restoreCallbacks = callbacks;
+            purchaseResultAction = callback;
+        }
+
+        public void SetReceiveProductCallback(string productId, Action<bool> callback)
+        {
+            if (string.IsNullOrWhiteSpace(productId)) return;
+            receiveProductActions[productId] = callback;
         }
 
         void Restore()
@@ -184,18 +205,18 @@ namespace IEC
 
             if (Application.platform == RuntimePlatform.Android)
             {
-                foreach (string productId in restoreCallbacks.Keys)
+                foreach (var product in controller.products.all)
                 {
-                    var product = controller.products.WithID(productId);
+                    var productId = product.definition.id;
                     if (product != null && product.hasReceipt && !IsProductPurchased(productId))
                     {
-                        restoreCallbacks[productId](true);
+                        RestoreProductResult(productId, true);
                         dataService.SetBool(productId, true);
                         isHaveProductRestore = true;
                     }
                     else
                     {
-                        restoreCallbacks[productId](false);
+                        RestoreProductResult(productId, false);
                     }
                 }
                 onRestoreDone(isHaveProductRestore);
@@ -243,25 +264,22 @@ namespace IEC
             receiptVerify.CheckReceipt(args.purchasedProduct, isValid =>
             {
                 Debug.LogWarning("CheckReceipt isValid: " + isValid + " | ProductId: " + productId);
-                Debug.LogWarning("restoreCallbacks: " + (restoreCallbacks != null ? restoreCallbacks.Count : 0));
                 if (isValid)
                 {
                     // Unlock the appropriate content here.
-                    if (purchaseCallbacks.ContainsKey(productId))
+                    if (isPurchasing)
                     {
+                        Debug.LogWarning("success product purchase : " + productId);
                         controller.ConfirmPendingPurchase(args.purchasedProduct);
                         SafeInvoke(m_LogSuccess2, productId);
                         PurchaseProductResult(productId, true);
                     }
-                    else if (restoreCallbacks != null && restoreCallbacks.ContainsKey(productId))
-                    {
-                        controller.ConfirmPendingPurchase(args.purchasedProduct);
-                        isHaveProductRestore = true;
-                        restoreCallbacks[productId](true);
-                    }
                     else
                     {
-                        Debug.LogError(string.Format("ProcessPurchase: FAIL. Unrecognized product: '{0}'", productId));
+                        Debug.LogWarning("restore pending purchase : " + productId);
+                        controller.ConfirmPendingPurchase(args.purchasedProduct);
+                        isHaveProductRestore = true;
+                        RestoreProductResult(productId, true);
                     }
                 }
                 else

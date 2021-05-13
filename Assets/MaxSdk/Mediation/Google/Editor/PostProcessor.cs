@@ -14,7 +14,7 @@ using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
-namespace AppLovinMax
+namespace AppLovinMax.Mediation.Google.Editor
 {
     /// <summary>
     /// A post processor that will add the AdMob App ID to the <c>info.plist</c> file.
