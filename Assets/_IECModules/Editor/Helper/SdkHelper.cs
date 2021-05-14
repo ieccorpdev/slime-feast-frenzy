@@ -434,6 +434,7 @@ namespace _IECModules
             LogEditorHelper.AddLog($"Begin install: {id}-{version}");
             InstallPKG(GetGitlabUrlByVersion(version));
             InstallDependencies(version);
+            EditorApplication.ExecuteMenuItem("Assets/Refresh");
         }
 
         string GetGitlabUrlByVersion(string version)
