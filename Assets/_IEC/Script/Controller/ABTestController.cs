@@ -77,7 +77,7 @@ namespace IEC
             Game.isBlockGrayColor = abValue == 3;
             Game.isFlyingIsland = abValue == 4 || abValue == 5;
 
-            if(abValue == 5)
+            if(abValue == 4)
             {
                 PlayerData.UnlockBackground(0);
                 PlayerData.UnlockTheme(0);

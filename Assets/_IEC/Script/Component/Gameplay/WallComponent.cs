@@ -51,7 +51,9 @@ namespace IEC
 
             m_TeleportPipe.SetActive(isHaveHole && Game.isFlyingIsland);
 
-            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
+            var rot = GetRotY(isBotTop, isReverse);
+            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, rot, 0f);
+            m_TeleportPipe.transform.localRotation = Quaternion.Euler(0f, rot + 180f, 0f);
             CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
 
             OnUpdateSetTerrain();
