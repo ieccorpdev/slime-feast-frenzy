@@ -287,6 +287,12 @@ namespace _IECModules
                 notificationPkg.Install();
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
             });
+#if PluginNotification
+            if (Unity.Notifications.NotificationSettings.iOSSettings.RequestAuthorizationOnAppLaunch)
+            {
+                Unity.Notifications.NotificationSettings.iOSSettings.RequestAuthorizationOnAppLaunch = false;
+            }
+#endif
             notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected,
                 notificationPkg.listVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
