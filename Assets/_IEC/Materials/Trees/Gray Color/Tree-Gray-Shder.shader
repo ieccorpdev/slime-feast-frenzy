@@ -66,7 +66,7 @@
             o.Albedo = c.rgb;
             o.Alpha = c.a;
             o.Albedo *= (_Smooth * _Glossiness);
-            if(dist > _FillAmount) o.Albedo = _GrayColor.rgb;
+            if(dist > _FillAmount) o.Albedo *= _GrayColor;
         }
         ENDCG
     }
