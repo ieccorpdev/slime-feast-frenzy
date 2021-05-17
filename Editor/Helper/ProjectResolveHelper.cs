@@ -35,7 +35,7 @@ namespace _IECModules
             if (m_WarningTextStyle == null)
             {
                 m_WarningTextStyle = new GUIStyle(GUI.skin.textArea);
-                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0.5f, 0f);
+                m_WarningTextStyle.normal.textColor = m_WarningTextStyle.focused.textColor = new Color(1f, 0f, 0f);
             }
 
             m_WarningString = "";
