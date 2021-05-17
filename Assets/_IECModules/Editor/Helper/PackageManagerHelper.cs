@@ -17,7 +17,7 @@ namespace _IECModules
         RemoveRequest,
         SearchRequest
     }
-
+    
     public class PackageManagerHelper : MonoBehaviour
     {
         static Queue<PKGRequest> listRequest = new Queue<PKGRequest>();
@@ -27,29 +27,36 @@ namespace _IECModules
 
         public static void Add(string package, Action<AddRequest> onSuccess = null)
         {
-            // Add a package to the project
-            var addPKGRequest = Client.Add(package);
-            var pkgRequest = new PKGRequest();
-            pkgRequest.InitAddRequest(addPKGRequest, onSuccess);
+            var pkgRequest = new PKGRequest()
+            {
+                type = RequestType.AddRequest,
+                package = package,
+                onAddRequestDone = onSuccess
+            };
             QueueAndRun(pkgRequest);
-
         }
-
-
+        
         public static void Search(string package, Action<SearchRequest> onSuccess = null)
         {
-            var searchPKGRequest = Client.Search(package);
-            var pkgRequest = new PKGRequest();
-            pkgRequest.InitSearchRequest(searchPKGRequest, onSuccess);
+            var pkgRequest = new PKGRequest()
+            {
+                type = RequestType.SearchRequest,
+                package = package,
+                onSearchRequestDone = onSuccess
+            };
             QueueAndRun(pkgRequest);
 
         }
 
         public static void Remove(string package, Action<RemoveRequest> onSuccess = null, bool skipError = false)
         {
-            var removePKGRequest = Client.Remove(package);
-            var pkgRequest = new PKGRequest();
-            pkgRequest.InitRemoveRequest(removePKGRequest, onSuccess, skipError);
+            var pkgRequest = new PKGRequest()
+            {
+                type = RequestType.RemoveRequest,
+                package = package,
+                onRemoveRequestDone = onSuccess,
+                skipErrorMessage = skipError
+            };
             QueueAndRun(pkgRequest);
         }
 
@@ -58,9 +65,31 @@ namespace _IECModules
             listRequest.Enqueue(request);
             if (currentRequest == null)
             {
-                currentRequest = listRequest.Peek();
-                EditorApplication.update += Progress;
+                RunNextRequest();
             }
+        }
+
+        static void RunNextRequest()
+        {
+            currentRequest = listRequest.Peek();
+            var processName = "";
+            switch (currentRequest.type)
+            {
+                case RequestType.AddRequest:
+                    currentRequest.InitAddRequest();
+                    processName = "Installing";
+                    break;
+                case RequestType.RemoveRequest:
+                    currentRequest.InitRemoveRequest();
+                    processName = "Removing";
+                    break;
+                case RequestType.SearchRequest:
+                    currentRequest.InitSearchRequest();
+                    processName = "Searching";
+                    break;
+            }
+            LogEditorHelper.AddLog($"{processName}: {currentRequest.package}");
+            EditorApplication.update += Progress;
         }
 
         static void Progress()
@@ -120,11 +149,11 @@ namespace _IECModules
                 listRequest.Dequeue();
                 if (listRequest.Count > 0)
                 {
-                    currentRequest = listRequest.Peek();
-                    EditorApplication.update += Progress;
+                    RunNextRequest();
                 }
                 else
                 {
+                    LogEditorHelper.AddLog("Process is completed");
                     currentRequest = null;
                 }
             }
@@ -137,7 +166,7 @@ namespace _IECModules
     {
         public RequestType type;
         public Request request;
-
+        public string package;
         public bool skipErrorMessage;
 
         public Action<AddRequest> onAddRequestDone;
@@ -147,47 +176,21 @@ namespace _IECModules
         public Action<RemoveRequest> onRemoveRequestDone;
         public Action<SearchRequest> onSearchRequestDone;
 
-        public void InitAddRequest(AddRequest addRequest, Action<AddRequest> onSuccess = null)
+        public void InitAddRequest()
         {
             type = RequestType.AddRequest;
-            request = addRequest;
-            onAddRequestDone = onSuccess;
+            request = Client.Add(package);
         }
-
-        public void InitListRequest(ListRequest listRequest, Action<ListRequest> onSuccess = null)
-        {
-            type = RequestType.ListRequest;
-            request = listRequest;
-            onListRequestDone = onSuccess;
-        }
-
-        public void InitEmbedRequest(EmbedRequest embedRequest, Action<EmbedRequest> onSuccess = null)
-        {
-            type = RequestType.EmbedREquest;
-            request = embedRequest;
-            onEmbedRequestDone = onSuccess;
-        }
-
-        public void InitPackRequest(PackRequest packRequest, Action<PackRequest> onSuccess = null)
-        {
-            type = RequestType.PackRequest;
-            request = packRequest;
-            onPackRequestDone = onSuccess;
-        }
-
-        public void InitRemoveRequest(RemoveRequest removeRequest, Action<RemoveRequest> onSuccess = null, bool skipError = false)
+        public void InitRemoveRequest()
         {
             type = RequestType.RemoveRequest;
-            request = removeRequest;
-            onRemoveRequestDone = onSuccess;
-            skipErrorMessage = skipError;
+            request = Client.Remove(package);
         }
 
-        public void InitSearchRequest(SearchRequest searchRequest, Action<SearchRequest> onSuccess = null)
+        public void InitSearchRequest()
         {
             type = RequestType.SearchRequest;
-            request = searchRequest;
-            onSearchRequestDone = onSuccess;
+            request = Client.Search(package);
         }
     }
 }
