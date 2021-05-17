@@ -84,7 +84,7 @@ namespace IEC
 
         protected bool m_IsRotating, m_IsHaveWater, m_IsLock;
 
-        protected bool m_IsOldHaveWater, m_IsHavingWater;
+        protected bool m_IsOldHaveWater, m_IsHavingWater, m_IsMoving;
 
         protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
@@ -202,7 +202,7 @@ namespace IEC
                         ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) 
                         : Game.listTerrainType;
                     m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat), 
-                        Game.isBlockGrayColor, Game.isFlyingIsland);
+                        Game.isBlockDarkColor, Game.isFlyingIsland);
                 }
 
 
@@ -243,7 +243,7 @@ namespace IEC
 
         protected virtual void OnGrowUping(float fillAmount)
         {
-            if (Game.isBlockGrayColor)
+            if (Game.isBlockDarkColor)
             {
                 if (!m_IsLock)
                 {
@@ -625,7 +625,7 @@ namespace IEC
                 m_WaterComponent[i].SetGrowing(isGrowUp, waterPos, m_DelayStart);
             }
 
-            if (Game.isBlockGrayColor)
+            if (Game.isBlockDarkColor)
             {
                 if (!m_IsLock)
                 {
@@ -670,7 +670,10 @@ namespace IEC
                     var moveTime = Config.startEffectMoveTime;
                     var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
 
-                    m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime);
+                    m_IsMoving = true;
+                    m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime).OnComplete(() => {
+                        m_IsMoving = false;
+                    });
                 }
             }
             else
@@ -679,8 +682,6 @@ namespace IEC
                 tempPos.y = 20f;
                 transform.localPosition = tempPos;
             }
-
-
         }
 
         private int GetIndexSpawn()
@@ -743,7 +744,7 @@ namespace IEC
         {
             if (m_Terrain == null) return;
             var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
+            m_Terrain.SetupTerrain(mat, Game.isBlockDarkColor, Game.isFlyingIsland);
         }
 
         protected virtual int GetTrueRotHint()

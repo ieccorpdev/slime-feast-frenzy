@@ -51,13 +51,13 @@ namespace IEC
             Result20210412();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210512(abValue);
+            UpdateAb20210518(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210512(abValue);
+                    UpdateAb20210518(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -70,17 +70,23 @@ namespace IEC
             );
         }
 
-        private void UpdateAb20210512(int abValue)
+        private void UpdateAb20210518(int abValue)
         {
             Game.isHaveNoAdsV3 = abValue == 1;
             Game.isTreeGrayColor = abValue == 2;
-            Game.isBlockGrayColor = abValue == 3;
+            Game.isBlockDarkColor = abValue == 3;
             Game.isFlyingIsland = abValue == 4 || abValue == 5;
 
             if(abValue == 4)
             {
                 PlayerData.UnlockBackground(0);
                 PlayerData.UnlockTheme(0);
+            }
+
+            if (abValue == 5)
+            {
+                PlayerData.UnlockBackground(2);
+                PlayerData.UnlockTheme(2);
             }
 
             GameController.SetupMainCam();

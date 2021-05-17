@@ -38,7 +38,7 @@
         half dist = distance(_GLOBALMaskPosition, IN.worldPos);
 	    half sphere = 1 - saturate((dist - _FillAmount) / 0);
 
-	    if(_HaveGray > .5 && dist > _FillAmount) o.Albedo = _GrayColor.rgb;
+	    if(_HaveGray > .5 && dist > _FillAmount) o.Albedo *= _GrayColor;
     }
     ENDCG
     }

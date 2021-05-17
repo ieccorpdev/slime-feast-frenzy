@@ -236,6 +236,8 @@ namespace IEC
                 m_TrunkMesh.material = Config.trunkGrayMat;
                 m_ListMeshTrees.ForEach(x => x.material = Config.treeGrayMat);
 
+                m_FillAmount = 0f;
+                OnUpdateFillAmount(m_FillAmount);
                 SetupColor(CurrentWaterColor);
             }
             else
@@ -261,26 +263,38 @@ namespace IEC
             {
                 var ratio = (m_ListTransTrees[0].lossyScale.x - .4f) / 1.1f;
                 m_FillAmount = ratio * 1.5f;
-                OnUpdatePropertyBlock();
+                OnUpdateFillAmount(m_FillAmount);
+            }
+
+            if (m_IsMoving)
+            {
+                UpdateColorPos(true);
             }
         }
 
         private void SetupColor(Color color)
         {
             m_TreeMat.SetColor(Shader_Color, color);
+        }
 
+        private void UpdateColorPos(bool isTweenMoving)
+        {
             var pos = CurrentWorldPos;
-            pos.y = -.11f;
+            if (!isTweenMoving)
+            {
+                pos.y = -.11f;
+            }
+            
             m_TreeMat.SetVector(Shader_Pos, pos);
             m_TrunkMat.SetVector(Shader_Pos, pos);
 
             ApplyData();
         }
 
-        private void OnUpdatePropertyBlock()
+        private void OnUpdateFillAmount(float fillAmount)
         {
-            m_TreeMat.SetFloat(Shader_FillAmount, m_FillAmount);
-            m_TrunkMat.SetFloat(Shader_FillAmount, m_FillAmount);
+            m_TreeMat.SetFloat(Shader_FillAmount, fillAmount);
+            m_TrunkMat.SetFloat(Shader_FillAmount, fillAmount);
             ApplyData();
         }
 
