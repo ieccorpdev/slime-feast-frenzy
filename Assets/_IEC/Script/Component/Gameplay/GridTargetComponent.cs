@@ -29,6 +29,10 @@ namespace IEC
 
         private List<Transform> m_ListTransTrees = new List<Transform>();
 
+        public List<Renderer> m_ListMeshTrees = new List<Renderer>();
+
+        public Renderer m_TrunkMesh;
+
         public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
 
         private bool IsGrowUpComplete;
@@ -37,6 +41,14 @@ namespace IEC
 
         private static float SMALL_SCALE = .4f;
         private static float LARGE_SCALE = 1.5f;
+
+        private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
+        private static int Shader_Color = Shader.PropertyToID("_Color");
+        private static int Shader_Pos = Shader.PropertyToID("_GLOBALMaskPosition");
+
+        private MaterialPropertyBlock m_TreeMat, m_TrunkMat;
+
+        public float m_FillAmount;
 
         private Material CurrentMat
         {
@@ -54,11 +66,11 @@ namespace IEC
         }
 
         protected override int[,] OriginLine => new int[3, 3]
-{
+        {
             { 0, 0, 0},
             { 0, 1, 0},
             { 0, 0, 0}
-};
+        };
 
         private int[,] EndLine => new int[3, 3]
         {
@@ -154,6 +166,16 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
 
+            if(m_TreeMat == null)
+            {
+                m_TreeMat = new MaterialPropertyBlock();
+            }
+
+            if(m_TrunkMat == null)
+            {
+                m_TrunkMat = new MaterialPropertyBlock();
+            }
+
             m_LineType = lineType;
             // Line
             for (int i = 0; i < 4; i++)
@@ -197,14 +219,30 @@ namespace IEC
             }
 
             var tree = m_TreesStyles[m_TargetIndex].transform.GetChild(0);
+            m_TrunkMesh = m_TreesStyles[m_TargetIndex].transform.GetChild(1).GetComponent<Renderer>();
 
+            m_ListMeshTrees.Clear();
             for (int i = 0; i < tree.childCount; i++)
             {
                 var itemTree = tree.GetChild(i);
                 itemTree.localScale = Vector3.one * SMALL_SCALE;
-                itemTree.GetComponent<MeshRenderer>().material = mat;
-
+                var mesh = itemTree.GetComponent<Renderer>();
+                m_ListMeshTrees.Add(mesh);
                 m_ListTransTrees.Add(itemTree);
+            }
+
+            if (Game.isTreeGrayColor)
+            {
+                m_TrunkMesh.material = Config.trunkGrayMat;
+                m_ListMeshTrees.ForEach(x => x.material = Config.treeGrayMat);
+
+                m_FillAmount = 0f;
+                OnUpdateFillAmount(m_FillAmount);
+                SetupColor(CurrentWaterColor);
+            }
+            else
+            {
+                m_ListMeshTrees.ForEach(x => x.material = mat);
             }
 
             if (Game.isRootTreeOnlyGreenColor)
@@ -215,6 +253,55 @@ namespace IEC
             {
                 m_RootTreeMesh.material = mat;
             }
+        }
+
+        public override void OnUpdate(float deltaTime)
+        {
+            base.OnUpdate(deltaTime);
+
+            if (m_IsScaling)
+            {
+                var ratio = (m_ListTransTrees[0].lossyScale.x - .4f) / 1.1f;
+                m_FillAmount = ratio * 1.5f;
+                OnUpdateFillAmount(m_FillAmount);
+            }
+
+            if (m_IsMoving)
+            {
+                UpdateColorPos(true);
+            }
+        }
+
+        private void SetupColor(Color color)
+        {
+            m_TreeMat.SetColor(Shader_Color, color);
+        }
+
+        private void UpdateColorPos(bool isTweenMoving)
+        {
+            var pos = CurrentWorldPos;
+            if (!isTweenMoving)
+            {
+                pos.y = -.11f;
+            }
+            
+            m_TreeMat.SetVector(Shader_Pos, pos);
+            m_TrunkMat.SetVector(Shader_Pos, pos);
+
+            ApplyData();
+        }
+
+        private void OnUpdateFillAmount(float fillAmount)
+        {
+            m_TreeMat.SetFloat(Shader_FillAmount, fillAmount);
+            m_TrunkMat.SetFloat(Shader_FillAmount, fillAmount);
+            ApplyData();
+        }
+
+        private void ApplyData()
+        {
+            m_ListMeshTrees.ForEach(x => x.SetPropertyBlock(m_TreeMat));
+            m_TrunkMesh.SetPropertyBlock(m_TrunkMat);
         }
 
 
@@ -282,19 +369,25 @@ namespace IEC
             }
         }
 
+        public bool m_IsScaling;
         private void TweenScale(bool isGrowUp, System.Action callBack = null)
         {
             m_TweenScale?.Kill(false);
             Sequence sequence = DOTween.Sequence();
 
             var ease = isGrowUp ? Ease.OutBounce : Ease.Unset;
+            m_IsScaling = true;
+
+            var timeScale = Game.isTreeGrayColor ? 1f : .75f;
 
             m_TweenScale = sequence.OnComplete(() => {
                 callBack?.Invoke();
+                m_IsScaling = false;
             });
+
             for (int i = 0; i < m_ListTransTrees.Count; i++)
             {
-                sequence.Join(m_ListTransTrees[i].DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, .75f)
+                sequence.Join(m_ListTransTrees[i].DOScale(isGrowUp ? Vector3.one * LARGE_SCALE : Vector3.one * SMALL_SCALE, timeScale)
                 .SetEase(ease));
             }
 

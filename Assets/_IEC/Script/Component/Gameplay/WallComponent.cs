@@ -8,7 +8,7 @@ namespace IEC
     public class WallComponent : BaseComponent
     {
         [SerializeField]
-        private GameObject m_WallObj, m_WallHoleObj;
+        private GameObject m_WallObj, m_WallHoleObj, m_TeleportPipe;
 
         [SerializeField]
         private MeshRenderer[] m_WallMesh;
@@ -40,15 +40,20 @@ namespace IEC
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
+            if (Game.isFlyingIsland) return;
             OnDOShakePosition();
         }
 
         public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
         {
-            m_WallObj.SetActive(!isHaveHole);
-            m_WallHoleObj.SetActive(isHaveHole);
+            m_WallObj.SetActive(!isHaveHole && !Game.isFlyingIsland);
+            m_WallHoleObj.SetActive(isHaveHole && !Game.isFlyingIsland);
 
-            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
+            m_TeleportPipe.SetActive(isHaveHole && Game.isFlyingIsland);
+
+            var rot = GetRotY(isBotTop, isReverse);
+            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, rot, 0f);
+            m_TeleportPipe.transform.localRotation = Quaternion.Euler(0f, rot + 180f, 0f);
             CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
 
             OnUpdateSetTerrain();

@@ -37,6 +37,8 @@ namespace IEC
 
         public InterDelayConfig interDelayConfig;
 
+        public Material treeGrayMat, trunkGrayMat;
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)

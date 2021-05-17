@@ -20,6 +20,7 @@ namespace IEC
 
         private void OnMouseDown()
         {
+            if (Game.isFlyingIsland) return;
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
@@ -29,7 +30,7 @@ namespace IEC
         public void OnTweenMove()
         {
             m_Tween?.Kill(true);
-            gameObject.SetActive(true);
+            gameObject.SetActive(true && !Game.isFlyingIsland);
             if (!Game.isStartLevelEffect) return;
             var moveTime = Config.startEffectMoveTime;
             var delayTime = 0f;
