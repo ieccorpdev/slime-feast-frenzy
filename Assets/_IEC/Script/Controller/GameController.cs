@@ -122,8 +122,12 @@ namespace IEC
             }
 
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam;
+            if (Game.isFlyingIsland)
+            {
+                delta += ((size - 5) * .25f);
+            }
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
-
+            
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
             var rotY = rotIndex * 90f;
