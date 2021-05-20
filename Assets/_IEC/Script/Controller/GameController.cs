@@ -116,16 +116,12 @@ namespace IEC
                 m_DeltaSizeMinCam = RATIO_CAMERA_SIZE_MIN * m_DeltaScreenRatio;
                 m_IsInitCam = true;
 
-                var distMax = 9f + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
+                var distMax = (Game.isFlyingIsland ? 12.5f : 9f) + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
 
                 m_RatioCamSize = (distMax - m_DeltaSizeMinCam) / 6f;
             }
 
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam;
-            if (Game.isFlyingIsland)
-            {
-                delta += ((size - 5) * .25f);
-            }
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
             
             GamePlay.mainCamera.transform.localPosition = cameraPos;
