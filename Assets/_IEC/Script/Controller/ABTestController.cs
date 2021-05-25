@@ -52,12 +52,14 @@ namespace IEC
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAb20210518(abValue);
+            UpdateAb20210524(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     UpdateAb20210518(abValue);
+                    UpdateAb20210524(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -70,6 +72,14 @@ namespace IEC
             );
         }
 
+        private void UpdateAb20210524(int abValue)
+        {
+            if (abValue == 1)
+            {
+                SingleFind<OguryModule>().Init();
+            }
+        }
+        
         private void UpdateAb20210518(int abValue)
         {
             Game.isHaveNoAdsV3 = abValue == 1;

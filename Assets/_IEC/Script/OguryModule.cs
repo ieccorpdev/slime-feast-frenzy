@@ -12,7 +12,7 @@ public class OguryModule : MonoBehaviour
     private int marginX;
     private int marginY;
 
-    private void Start()
+    public void Init()
     {
         marginX = (DisplayMetricsAndroid.XDPI > 0) ? ((int) DisplayMetricsAndroid.XDPI / 2) : ((int)Screen.dpi / 2) - 90;
         Debug.LogWarning("Margin X:" + marginX);
