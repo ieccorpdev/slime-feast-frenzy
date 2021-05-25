@@ -11,53 +11,53 @@ public class OguryModule : MonoBehaviour
     private void Start()
     {
         Ogury.Start("OGY-8B8F812E7137", "IOS_ASSET_KEY");
-        _thumbnailAd = new OguryThumbnailAd("b63dcc40-9e8c-0139-4726-0242ac120004_test", "IOS_AD_UNIT_ID");
+        _thumbnailAd = new OguryThumbnailAd("b63dcc40-9e8c-0139-4726-0242ac120004", "IOS_AD_UNIT_ID");
         _thumbnailAd.OnAdLoaded += ad =>
         {
-            Debug.LogWarning("On thumbnail loaded");
-            _thumbnailAd.Show(OguryThumbnailAdGravity.BottomLeft, 0, 0); 
+            Debug.LogWarning("Thumbnail OnAdLoaded");
+            _thumbnailAd.Show();
         };
         _thumbnailAd.OnAdClosed += ad =>
         {
-            Debug.LogWarning("On thumbnail closed");
-            Controllers.Get<ServicesController>().SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-            StartCoroutine(IE_LoadAd(0));
+            Debug.LogWarning("Thumbnail OnAdClosed");
+            StartCoroutine(IE_LoadAd(0f));
+            Controllers.Get<ServicesController>().SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
         };
         _thumbnailAd.OnAdDisplayed += ad =>
         {
-            Debug.LogWarning("On thumbnail displayed");
-            Controllers.Get<ServicesController>().SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+            Debug.LogWarning("Thumbnail OnAdDisplayed");
+            Controllers.Get<ServicesController>().SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
         };
         _thumbnailAd.OnAdError += (ad, error) =>
         {
-            Debug.LogWarning("On thumbnail error:" + error.Description);
+            Debug.LogWarning("Thumbnail OnAdError:" + error.Description);
             StartCoroutine(IE_LoadAd(1f));
-        };
-        _thumbnailAd.OnAdNotLoaded += ad =>
-        {
-            Debug.LogWarning("On thumbnail not loaded");
         };
         _thumbnailAd.OnAdNotAvailable += ad =>
         {
-            Debug.LogWarning("On thumbnail not available");
+            Debug.LogWarning("Thumbnail OnAdNotAvailable");
         };
+        _thumbnailAd.OnAdNotLoaded += ad =>
+        {
+            Debug.LogWarning("Thumbnail OnAdNotLoaded");
+        };
+        
         Ogury.StartAds();
-        StartCoroutine(IE_LoadAd(0));
         Debug.LogWarning("Start Ogury");
+        StartCoroutine(IE_LoadAd(0f));
     }
 
-    IEnumerator IE_LoadAd(float timeDelay)
+    IEnumerator IE_LoadAd(float time)
     {
-        if (timeDelay <= 0)
+        if (time <= 0)
         {
             yield return null;
         }
         else
         {
-            var wait = new WaitForSeconds(timeDelay);
-            yield return wait;
+            yield return new WaitForSeconds(1f);
         }
         _thumbnailAd.Load();
-        Debug.LogWarning("Load Thumbnail");
+        Debug.LogWarning("Load Ad");
     }
 }
