@@ -1,29 +1,25 @@
 {
   "dependencies": {
     "com.google.external-dependency-manager": {
-      "version": "1.2.164",
+      "version": "https://gitlab.com/iec-public-google-registry/com.google.external-dependency-manager.git#1.2.165",
       "depth": 0,
-      "source": "registry",
+      "source": "git",
       "dependencies": {},
-      "url": "https://unityregistry-pa.googleapis.com"
+      "hash": "92a7837da8db2c31954c79b252d89ceeb29b5f9e"
     },
     "com.google.firebase.analytics": {
-      "version": "7.0.2",
+      "version": "https://gitlab.com/iec-public-google-registry/com.google.firebase.analytics.git#7.0.2",
       "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "com.google.firebase.app": "7.0.2"
-      },
-      "url": "https://unityregistry-pa.googleapis.com"
+      "source": "git",
+      "dependencies": {},
+      "hash": "e1ba771f77b4f0860ced6d22f7b9655eb452e26d"
     },
     "com.google.firebase.app": {
-      "version": "7.0.2",
-      "depth": 1,
-      "source": "registry",
-      "dependencies": {
-        "com.google.external-dependency-manager": "1.2.163"
-      },
-      "url": "https://unityregistry-pa.googleapis.com"
+      "version": "https://gitlab.com/iec-public-google-registry/com.google.firebase.app.git#7.0.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6ba090e9ecd6a43a41283e23c72c3cd9292a1f88"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -95,11 +91,15 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "2.1.0",
+      "version": "3.0.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.ugui": "1.0.0"
+        "com.unity.ugui": "1.0.0",
+        "com.unity.modules.unityanalytics": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.androidjni": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
