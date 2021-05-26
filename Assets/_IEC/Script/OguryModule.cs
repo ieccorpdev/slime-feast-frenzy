@@ -40,7 +40,11 @@ public class OguryModule : MonoBehaviour
             Debug.LogWarning("Thumbnail OnAdError:" + error.Description);
             StartCoroutine(IE_LoadAd(1f));
         };
-        _thumbnailAd.OnAdNotAvailable += ad => { Debug.LogWarning("Thumbnail OnAdNotAvailable"); };
+        _thumbnailAd.OnAdNotAvailable += ad =>
+        {
+            Debug.LogWarning("Thumbnail OnAdNotAvailable");
+            StartCoroutine(IE_LoadAd(1f));
+        };
         _thumbnailAd.OnAdNotLoaded += ad => { Debug.LogWarning("Thumbnail OnAdNotLoaded"); };
         Ogury.StartAds();
         ModuleController.cheatCode.AddCheatCodeButtonWithInput("Margin X", param =>
@@ -62,7 +66,7 @@ public class OguryModule : MonoBehaviour
         Debug.LogWarning("Start Ogury");
         StartCoroutine(IE_LoadAd(0f));
     }
-
+    
     IEnumerator IE_LoadAd(float time)
     {
         if (time <= 0)
