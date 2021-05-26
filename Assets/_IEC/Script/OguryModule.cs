@@ -18,7 +18,7 @@ public class OguryModule : MonoBehaviour
         Debug.LogWarning("Margin X:" + marginX);
         marginY = 0;
         Ogury.Start("OGY-8B8F812E7137", "IOS_ASSET_KEY");
-        _thumbnailAd = new OguryThumbnailAd("b63dcc40-9e8c-0139-4726-0242ac120004_test", "IOS_AD_UNIT_ID");
+        _thumbnailAd = new OguryThumbnailAd("b63dcc40-9e8c-0139-4726-0242ac120004", "IOS_AD_UNIT_ID");
         _thumbnailAd.OnAdLoaded += ad =>
         {
             Debug.LogWarning("Thumbnail OnAdLoaded");
