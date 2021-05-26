@@ -22,11 +22,6 @@ namespace _IECModules
             return new BaseNotification();
         });
 
-        private void Start()
-        {
-            Init();
-        }
-
         private void OnApplicationPause(bool pause)
         {
             if (pause)

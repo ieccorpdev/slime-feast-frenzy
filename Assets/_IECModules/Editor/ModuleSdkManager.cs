@@ -34,9 +34,6 @@ namespace _IECModules
         private int m_PluginApplovinVersionSelect;
         private int m_PluginKochavaVersionSelect;
         private int m_PluginAdjustVersionSelect;
-        private int m_PluginFirebaseVersionSelect;
-        private int m_PluginEDMVersionSelect;
-        private int m_PluginFirebaseCoreSelect;
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
@@ -73,23 +70,34 @@ namespace _IECModules
         {
             LogEditorHelper.ClearLog();
             ProjectChecklistHelper.LoadServicesConfig();
-            if (ProjectChecklistHelper.servicesConfig != null && !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
+            if (ProjectChecklistHelper.servicesConfig != null &&
+                !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
-            AddRegistries(GoogleRegistry);
+            // AddRegistries(GoogleRegistry);
+            SdkHelper.RemoveRegistries(GoogleRegistry);
             SdkHelper.LoadApplovinVersionList();
             SdkHelper.LoadKochavaVersionList();
             SdkHelper.LoadAdjustVersionList();
+            foreach (var pkg in SdkHelper.DictGitlabPluginVersion.Values)
+            {
+                pkg.LoadPKGVersionList();
+            }
+
             var unityPackages = SdkHelper.DictUnityPackage.Values;
             foreach (var pkg in unityPackages)
             {
                 pkg.LoadPKGVersionList();
             }
+
+            Debug.Log("Module Awake");
         }
 
         private void InitGuiParams()
         {
-            if (m_StyleHeader1 == null) m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
-            if (m_StyleHeader2 == null) m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
+            if (m_StyleHeader1 == null)
+                m_StyleHeader1 = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
+            if (m_StyleHeader2 == null)
+                m_StyleHeader2 = new GUIStyle(GUI.skin.label) {fontSize = 12, fontStyle = FontStyle.Bold};
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -101,11 +109,12 @@ namespace _IECModules
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
             for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
-            
+
             m_ScrollPosition = EditorGUILayout.BeginScrollView(m_ScrollPosition);
             EditorGUILayout.BeginHorizontal();
-            
-            if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+
+            if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x),
+                GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
             }
@@ -113,22 +122,21 @@ namespace _IECModules
             if (m_ShowDebugButton)
             {
                 GUILayout.Space(20);
-                CreateGuiButton("Test Create Keystore", () =>
-                {
-                    KeystoreHelper.CreateKeyStore("thanhdeptrai");
-                });
+                CreateGuiButton("Test Create Keystore", () => { KeystoreHelper.CreateKeyStore("thanhdeptrai"); });
 
                 GUILayout.Space(20);
-                CreateGuiButton("Test Add Define PluginFacebook", () =>
-                {
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-                }, 220);
+                CreateGuiButton("Test Add Define PluginFacebook",
+                    () => { ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook); }, 220);
 
                 GUILayout.Space(20);
-                CreateGuiButton("Test Remove Define PluginFacebook", () =>
-                {
-                    ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook);
-                }, 220);
+                CreateGuiButton("Test Remove Define PluginFacebook",
+                    () => { ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook); }, 220);
+                
+                GUILayout.Space(20);
+                CreateGuiButton("Test Add Dependencies",
+                    () =>
+                    {
+                    }, 220);
             }
 
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
@@ -140,26 +148,28 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
-            
+
             CreateGuiBreakLine();
 
             var kochavaSdkLoaded = SdkHelper.LoadKochavaVersionFromCache();
             CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkUrlByVersion(SdkHelper.ListKochavaVersion[m_PluginKochavaVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(
+                    SdkHelper.KochavaSdkUrlByVersion(SdkHelper.ListKochavaVersion[m_PluginKochavaVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             });
 
             m_PluginKochavaVersionSelect = EditorGUILayout.Popup("", m_PluginKochavaVersionSelect,
                 SdkHelper.ListKochavaVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
-            
+
             CreateGuiBreakLine();
-            
+
             var adjustSdkLoaded = SdkHelper.LoadAdjustVersionFromCache();
             CreateGuiButton($"Adjust SDK {(adjustSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AdjustSdkUrlByVersion(SdkHelper.ListAdjustVersion[m_PluginAdjustVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(
+                    SdkHelper.AdjustSdkUrlByVersion(SdkHelper.ListAdjustVersion[m_PluginAdjustVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
             });
 
@@ -172,7 +182,8 @@ namespace _IECModules
             var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(
+                    SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
 
@@ -181,31 +192,32 @@ namespace _IECModules
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
-            
+
             #region Firebase Analytics
 
-            var firebaseAnalyticPkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBAE_ANALYTIC_PKG];
+            var firebaseAnalyticPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBASE_ANALYTIC_PKG];
             var firebaseAnalyticLoaded = firebaseAnalyticPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"Firebase Analytics {(firebaseAnalyticLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!firebaseAnalyticLoaded)
+            CreateGuiButton(
+                $"Firebase Analytics {(firebaseAnalyticLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
                 {
-                    return;
-                }
-                AddRegistries(GoogleRegistry);
-                firebaseAnalyticPkg.Install();
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            });
+                    if (!firebaseAnalyticLoaded)
+                    {
+                        return;
+                    }
+
+                    firebaseAnalyticPkg.Install();
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
+                });
 
             firebaseAnalyticPkg.versionSelected = EditorGUILayout.Popup("", firebaseAnalyticPkg.versionSelected,
                 firebaseAnalyticPkg.listVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
-            
+
             CreateGuiBreakLine();
 
             #endregion
-            
+
             CreateGuiLabel("- Other SDK", m_StyleHeader2);
 
             CreateGuiButton($"Facebook Audience Network v6.2.1", () =>
@@ -218,23 +230,24 @@ namespace _IECModules
 
             #region Firebase RemoteConfig
 
-            var firebaseRemotePkg = SdkHelper.DictUnityPackage[SdkHelper.FIREBASE_REMOTE_CONFIG_PKG];
+            var firebaseRemotePkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBASE_REMOTE_CONFIG_PKG];
             var firebaseRemoteLoaded = firebaseRemotePkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"Firebase Remote Config {(firebaseRemoteLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!firebaseRemoteLoaded)
+            CreateGuiButton(
+                $"Firebase Remote Config {(firebaseRemoteLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
                 {
-                    return;
-                }
-                AddRegistries(GoogleRegistry);
-                firebaseRemotePkg.Install();
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseRemote);
-            });
+                    if (!firebaseRemoteLoaded)
+                    {
+                        return;
+                    }
+
+                    firebaseRemotePkg.Install();
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseRemote);
+                });
 
             firebaseRemotePkg.versionSelected = EditorGUILayout.Popup("", firebaseRemotePkg.versionSelected,
-               firebaseRemotePkg.listVersion,
-               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+                firebaseRemotePkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.Space();
@@ -244,7 +257,7 @@ namespace _IECModules
 
             #region In App Rating
 
-            var inAppRatingPkg = SdkHelper.DictUnityPackage[SdkHelper.IN_APP_RATING_PKG];
+            var inAppRatingPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.IN_APP_RATING_PKG];
             var inAppRatingLoaded = inAppRatingPkg.LoadPKGVersionFromCache();
             CreateGuiButton($"In App Rating {(inAppRatingLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
@@ -252,13 +265,13 @@ namespace _IECModules
                 {
                     return;
                 }
-                AddRegistries(GoogleRegistry);
+
                 inAppRatingPkg.Install();
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginInAppRating);
             });
             inAppRatingPkg.versionSelected = EditorGUILayout.Popup("", inAppRatingPkg.versionSelected,
-               inAppRatingPkg.listVersion,
-               GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+                inAppRatingPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
 
@@ -274,7 +287,14 @@ namespace _IECModules
                 notificationPkg.Install();
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginNotification);
             });
-            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected, notificationPkg.listVersion,
+#if PluginNotification
+            if (Unity.Notifications.NotificationSettings.iOSSettings.RequestAuthorizationOnAppLaunch)
+            {
+                Unity.Notifications.NotificationSettings.iOSSettings.RequestAuthorizationOnAppLaunch = false;
+            }
+#endif
+            notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected,
+                notificationPkg.listVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 
@@ -295,15 +315,15 @@ namespace _IECModules
 
             #region External Dependency Manager
 
-            var edmPkg = SdkHelper.DictUnityPackage[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+            var edmPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
             var edmSdkLoaded = edmPkg.LoadPKGVersionFromCache();
-            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                if (!edmSdkLoaded) return;
-                ProjectResolveHelper.DeleteObsoleteResolver();
-                AddRegistries(GoogleRegistry);
-                edmPkg.Install();
-            });
+            CreateGuiButton($"External Dependency Manager {(edmSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}",
+                () =>
+                {
+                    if (!edmSdkLoaded) return;
+                    ProjectResolveHelper.DeleteObsoleteResolver();
+                    edmPkg.Install();
+                });
 
             edmPkg.versionSelected = EditorGUILayout.Popup("", edmPkg.versionSelected,
                 edmPkg.listVersion,
@@ -323,22 +343,25 @@ namespace _IECModules
 
             CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
 
-            if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x),
+                GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
-            if (GUILayout.Button("Update string directly", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update string directly", GUILayout.Width(buttonSize.x),
+                GUILayout.Height(buttonSize.y)))
             {
                 ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.05f));
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
-            if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x), GUILayout.Height(buttonSize.y)))
+            if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x),
+                GUILayout.Height(buttonSize.y)))
             {
                 ProjectChecklistHelper.UpdateAbVersionFromChecklist(m_GoogleSheetUrl);
             }
@@ -346,17 +369,20 @@ namespace _IECModules
             EditorGUILayout.EndHorizontal();
 
             LogEditorHelper.EditorOnGUI();
-            
+
             EditorGUILayout.EndScrollView();
         }
 
-        private void CreateGuiButton(string text, Action onClickButton) => CreateGuiButton(text, onClickButton, buttonSize.x);
+        private void CreateGuiButton(string text, Action onClickButton) =>
+            CreateGuiButton(text, onClickButton, buttonSize.x);
+
         private void CreateGuiButton(string text, Action onClickButton, float buttonWidth)
         {
             if (!GUILayout.Button(text, GUILayout.Width(buttonWidth), GUILayout.Height(buttonSize.y))) return;
             LogEditorHelper.ClearLog();
             onClickButton?.Invoke();
         }
+
         private void CreateGuiLabel(string text, GUIStyle guiStyle)
         {
             EditorGUILayout.EndHorizontal();
@@ -365,6 +391,7 @@ namespace _IECModules
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
         }
+
         private void CreateGuiBreakLine()
         {
             EditorGUILayout.EndHorizontal();
@@ -390,29 +417,6 @@ namespace _IECModules
             File.WriteAllText(projectSettingFileName, projectSettingFileContent);
         }
 
-        private void AddRegistries(RegistryManifest registry)
-        {
-            var manifestFileName = "Packages/manifest.json";
-            var manifestFileContent = File.ReadAllText(manifestFileName);
-
-            var jsonNode = JSON.Parse(manifestFileContent);
-            jsonNode["scopedRegistries"] = new JSONArray();
-            var scopes = new JSONArray();
-            foreach (var regScope in registry.scopes)
-            {
-                scopes.Add(new JSONString(regScope));
-            }
-
-            var item = new JSONObject
-            {
-                ["name"] = registry.name,
-                ["url"] = registry.url,
-                ["scopes"] = scopes
-            };
-            jsonNode["scopedRegistries"].Add(item);
-            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
-        }
-
         private void CopyByteDanceSDKChinaIOS()
         {
             var sourcePath = Application.dataPath + "/_IECModules/Plugins/ByteDanceChinaIOS/";
@@ -421,10 +425,12 @@ namespace _IECModules
             {
                 Directory.CreateDirectory(desPath);
             }
+
             if (!Directory.Exists(desPath + "/Editor"))
             {
                 Directory.CreateDirectory(desPath + "/Editor");
             }
+
             File.Copy(sourcePath + "Dependencies.xml", desPath + "/Editor/Dependencies.xml", true);
 
             if (!Directory.Exists(desPath + "/Plugins/iOS"))
@@ -444,4 +450,3 @@ namespace _IECModules
         public List<string> scopes;
     }
 }
-
