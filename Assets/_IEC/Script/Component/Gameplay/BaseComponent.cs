@@ -93,7 +93,7 @@ namespace IEC
         protected WaterPoint m_StartWater;
 
         public WaterPoint Inline;
-        protected int m_InlineIndex;
+        public int m_InlineOrigin, m_InlineOffset;
 
         public bool IsOneWayBlock, IsInBigSquare;
 
@@ -505,7 +505,9 @@ namespace IEC
         private void OnSetUpArrow(WaterPoint point)
         {
             if (!Game.isHaveOneWayBlock) return;
-            m_InlineIndex = (int)point;
+            m_InlineOrigin = (int)point;
+
+            m_InlineOffset = LevelHelper.CalculatorMissingRot(m_InlineOrigin, TrueRot);
 
             var originStartPos = GetWaterPos(point);
             originStartPos.y = 0f;
