@@ -34,8 +34,7 @@ namespace IEC
 
         private void SetGridLine(int rot)
         {
-            Inline = (WaterPoint)((m_InlineIndex + m_CurrentRot -  TrueRot) % 4);
-
+            Inline = (WaterPoint)((m_CurrentRot - m_InlineOffset + 4) % 4);
             CurrentLine = DefaultLine;
             for (int i = 0; i < rot; i++)
             {
