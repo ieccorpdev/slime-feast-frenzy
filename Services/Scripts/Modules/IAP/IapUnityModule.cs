@@ -17,6 +17,8 @@ namespace IEC
         /// Action<string, bool, bool> : productId, isSuccess, isRestore
         /// </summary>
         Action<string, bool, bool> purchaseResultAction;
+
+        private Action<string, bool> purchaseVerifyAction;
         Dictionary<string, Action<bool>> receiveProductActions = new Dictionary<string, Action<bool>>();
         bool isPurchasing = false;
 
@@ -185,6 +187,11 @@ namespace IEC
         {
             purchaseResultAction = callback;
         }
+        
+        public void SetPurchaseVerifyCallback(Action<string, bool> callback)
+        {
+            purchaseVerifyAction = callback;
+        }
 
         public void SetReceiveProductCallback(string productId, Action<bool> callback)
         {
@@ -264,28 +271,22 @@ namespace IEC
             receiptVerify.CheckReceipt(args.purchasedProduct, isValid =>
             {
                 Debug.LogWarning("CheckReceipt isValid: " + isValid + " | ProductId: " + productId);
-                if (isValid)
-                {
                     // Unlock the appropriate content here.
-                    if (isPurchasing)
-                    {
-                        Debug.LogWarning("success product purchase : " + productId);
-                        controller.ConfirmPendingPurchase(args.purchasedProduct);
-                        SafeInvoke(m_LogSuccess2, productId);
-                        PurchaseProductResult(productId, true);
-                    }
-                    else
-                    {
-                        Debug.LogWarning("restore pending purchase : " + productId);
-                        controller.ConfirmPendingPurchase(args.purchasedProduct);
-                        isHaveProductRestore = true;
-                        RestoreProductResult(productId, true);
-                    }
+                if (isPurchasing)
+                {
+                    Debug.LogWarning("success product purchase : " + productId);
+                    controller.ConfirmPendingPurchase(args.purchasedProduct);
+                    SafeInvoke(m_LogSuccess2, productId);
+                    PurchaseProductResult(productId, true);
                 }
                 else
                 {
-                    Debug.LogError(string.Format("ProcessPurchase: FAIL. Not valid puchase of product: '{0}'", productId));
+                    Debug.LogWarning("restore pending purchase : " + productId);
+                    controller.ConfirmPendingPurchase(args.purchasedProduct);
+                    isHaveProductRestore = true;
+                    RestoreProductResult(productId, true);
                 }
+                purchaseVerifyAction?.Invoke(productId,isValid);
             });
 
             return PurchaseProcessingResult.Pending;
