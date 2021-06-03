@@ -3,6 +3,11 @@
 # Learn more about this keyword here: https://docs.gitlab.com/ee/ci/yaml/README.html#script
 
 # After committing this template, visit CI/CD > Jobs to see the script output.
+workflow:
+  rules:
+    - if: '$SSH_PRIVATE_KEY_MODULE_SUBTREE == null'
+      when: never
+    - when: always
 
 job:
   before_script:
