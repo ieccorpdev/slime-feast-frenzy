@@ -49,7 +49,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         public string Name;
         public string DisplayName;
         public string DownloadUrl;
-        public string PluginFileName;
         public string DependenciesFilePath;
         public string[] PluginFilePaths;
         public Versions LatestVersions;
@@ -78,9 +77,22 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                    && (Ios == null || Ios.Equals(versions.Ios));
         }
 
+        public bool HasEqualSdkVersions(Versions versions)
+        {
+            return versions != null
+                   && AdapterSdkVersion(Android).Equals(AdapterSdkVersion(versions.Android))
+                   && AdapterSdkVersion(Ios).Equals(AdapterSdkVersion(versions.Ios));
+        }
+
         public override int GetHashCode()
         {
             return new {Unity, Android, Ios}.GetHashCode();
+        }
+
+        private static string AdapterSdkVersion(string adapterVersion)
+        {
+            var index = adapterVersion.LastIndexOf(".");
+            return index > 0 ? adapterVersion.Substring(0, index) : adapterVersion;
         }
     }
 
@@ -108,8 +120,8 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private static readonly AppLovinIntegrationManager instance = new AppLovinIntegrationManager();
 
         public static readonly string GradleTemplatePath = Path.Combine("Assets/Plugins/Android", "mainTemplate.gradle");
-        public const string DefaultPluginExportPath = "Assets/MaxSdk";
-        private const string MaxSdkAssetExportPath = "MaxSdk/Scripts/MaxSdk.cs";
+        public static readonly string DefaultPluginExportPath = Path.Combine("Assets", "MaxSdk");
+        private static readonly string MaxSdkAssetExportPath = Path.Combine("MaxSdk", "Scripts/MaxSdk.cs");
 
         /// <summary>
         /// Some publishers might re-export our plugin via Unity Package Manager and the plugin will not be under the Assets folder. This means that the mediation adapters, settings files should not be moved to the packages folder,
@@ -121,6 +133,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         {
             "MaxSdk/Mediation",
             "MaxSdk/Mediation.meta",
+            "MaxSdk/Resources.meta",
             AppLovinSettings.SettingsExportPath,
             AppLovinSettings.SettingsExportPath + ".meta"
         };
@@ -163,7 +176,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         /// </summary>
         public static bool IsPluginOutsideAssetsDirectory
         {
-            get { return !PluginParentDirectory.StartsWith("Assets/"); }
+            get { return !PluginParentDirectory.StartsWith("Assets"); }
         }
 
         /// <summary>
@@ -293,7 +306,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
                 if (pluginData != null)
                 {
-
                     // Get current version of the plugin
                     var appLovinMax = pluginData.AppLovinMax;
                     UpdateCurrentVersions(appLovinMax, PluginParentDirectory);
@@ -382,7 +394,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         /// <returns></returns>
         public IEnumerator DownloadPlugin(Network network)
         {
-            var path = Path.Combine(Application.temporaryCachePath, network.PluginFileName); // TODO: Maybe delete plugin file after finishing import.
+            var path = Path.Combine(Application.temporaryCachePath, GetPluginFileName(network)); // TODO: Maybe delete plugin file after finishing import.
 #if UNITY_2017_2_OR_NEWER
             var downloadHandler = new DownloadHandlerFile(path);
 #else
@@ -545,7 +557,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private bool IsImportingNetwork(string packageName)
         {
             // Note: The pluginName doesn't have the '.unitypacakge' extension included in its name but the pluginFileName does. So using Contains instead of Equals.
-            return importingNetwork != null && importingNetwork.PluginFileName.Contains(packageName);
+            return importingNetwork != null && GetPluginFileName(importingNetwork).Contains(packageName);
         }
 
         /// <summary>
@@ -570,7 +582,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 var defaultPluginLocation = Path.Combine("Assets", "MaxSdk");
                 if (Directory.Exists(defaultPluginLocation))
                 {
-                    AddLabelsToAssets(defaultPluginLocation, "Assets/");
+                    AddLabelsToAssets(defaultPluginLocation, "Assets");
                 }
             }
 
@@ -757,6 +769,11 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 #else
             return false;
 #endif
+        }
+
+        private static string GetPluginFileName(Network network)
+        {
+            return network.Name.ToLower() + "_" + network.LatestVersions.Unity + ".unitypackage";
         }
 
         #endregion
