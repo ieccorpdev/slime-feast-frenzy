@@ -46,6 +46,11 @@ public class OguryModule : MonoBehaviour
             StartCoroutine(IE_LoadAd(1f));
         };
         _thumbnailAd.OnAdNotLoaded += ad => { Debug.LogWarning("Thumbnail OnAdNotLoaded"); };
+        _thumbnailAd.SetBlacklistActivities(
+            "com.unity3d.services.ads.adunit.AdUnitActivity",
+            "com.unity3d.services.ads.adunit.AdUnitTransparentActivity",
+            "com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity",
+            "com.unity3d.services.ads.adunit.AdUnitSoftwareActivity");
         Ogury.StartAds();
         ModuleController.cheatCode.AddCheatCodeButtonWithInput("Margin X", param =>
         {

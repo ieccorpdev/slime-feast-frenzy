@@ -160,7 +160,7 @@ namespace IEC
 
                 if (isMainWater)
                 {
-                    m_ScaleCallBack?.Invoke(m_FillAmount);
+                    m_ScaleCallBack?.Invoke(m_FillAmount + (m_FillAmount / MAX_AMOUNT) * .1f);
                 }
             }
 
