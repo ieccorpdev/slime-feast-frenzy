@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
 #if PluginInAppRating
@@ -13,7 +15,7 @@ using Google.Play.Review;
 using System.Runtime.InteropServices;
 using Balaso;
 #endif
-using OgurySdk;
+
 
 namespace IEC
 {
@@ -85,19 +87,36 @@ namespace IEC
 
                     });
                     break;
+                case EventList.Service.INIT_AD_DONE:
+#if UNITY_IOS
+                    //ShowWhiteBanner();
+#endif
+                    break;
             }
         }
 
         public void BehaviourAwake()
         {
             if (isInitAwake) return;
+            
+            Application.logMessageReceived += (condition, trace, type) =>
+            {
+                var log = new Logs
+                {
+                    condition = condition,
+                    stackTrace = trace,
+                    type = type,
+                    dateTime = DateTime.Now.ToString()
+                };
+                SaveLog.AddLog(log);
+            };
+            
             UnityToolbag.Dispatcher.Awake();
             Init();
 #if UNITY_IOS
             AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
             AppTrackingTransparency.UpdateConversionValue(3);
 #endif
-            InitOCM();
             InitServices();
 
             var serverUrl = DataSecure().GetString(SERVER_URL_KEY, TimeServerModule.REQUEST_URL);
@@ -111,7 +130,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-            StartCoroutine(IE_CountOneSec());
+           // StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
 
@@ -208,6 +227,15 @@ namespace IEC
             {
                 PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
             });
+            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
+            {
+                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
+                var param = new Dictionary<string, object>
+                {
+                    ["productID"] = productID
+                };
+                PushEvent(eventName,1,param);
+            } );
 #endif
             m_Ads = new AdsMock(false);
 
@@ -244,29 +272,28 @@ namespace IEC
             _initByteDance(config.appId, config.appName);
 #endif
 #if UNITY_IOS
-             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
-            {
-                switch (status)
-                {
-                    case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
-                        Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
-                        Debug.LogWarning("AuthorizationStatus: RESTRICTED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.DENIED:
-                        Debug.LogWarning("AuthorizationStatus: DENIED");
-                        break;
-                    case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
-                        Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
-                        PushEvent("att_145_allow");
-                        SendATTAnalytic("att_success");
-                        break;
-                }
-                // Obtain IDFA
-                Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
-                InitAdsAfterGDPR(true, status != AppTrackingTransparency.AuthorizationStatus.DENIED);
-            };
+            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+           {
+               switch (status)
+               {
+                   case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
+                       Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
+                       Debug.LogWarning("AuthorizationStatus: RESTRICTED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.DENIED:
+                       Debug.LogWarning("AuthorizationStatus: DENIED");
+                       break;
+                   case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
+                       Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                       PushEvent("att_145_allow");
+                       SendATTAnalytic("att_success");
+                       break;
+               }
+               // Obtain IDFA
+               Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
+           };
 
             AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
             Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
@@ -285,6 +312,7 @@ namespace IEC
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
+                StartCoroutine(IE_WaitATT());
                 SendATTAnalytic("att_show");
             }
             else
@@ -338,18 +366,19 @@ namespace IEC
         {
             const string serverUrl = "https://att-analytic.ieccorp.vn/";
             var endPoint = $"{serverUrl}sendAnalyticEvent.php";
-            
+
             var formData = new WWWForm();
             formData.AddField("data[bundleId]", Application.identifier);
             formData.AddField("data[eventName]", eventName);
             formData.AddField("data[deviceModel]", SystemInfo.deviceModel);
             formData.AddField("data[deviceVersion]", SystemInfo.operatingSystem);
             formData.AddField("data[appVersion]", Application.version);
-            
+
             StartCoroutine(ISendATTAnalytic(endPoint, formData));
         }
-        IEnumerator ISendATTAnalytic(string url, WWWForm formData) {
-     
+        IEnumerator ISendATTAnalytic(string url, WWWForm formData)
+        {
+
             var www = UnityWebRequest.Post(url, formData);
             yield return www.SendWebRequest();
         }
@@ -407,6 +436,7 @@ namespace IEC
             {
                 var adsMock = new AdsMock(config.IsEditorAdsLoaded);
                 m_Ads = adsMock;
+                EventController.RaiseEvent(EventList.Service.INIT_AD_DONE);
             }
             else
             {
@@ -498,7 +528,20 @@ namespace IEC
             float unityScale = canvasScaler.transform.localScale.y;
             Debug.Log("m_Ads.GetBannerHeight() : " + m_Ads.GetBannerHeight());
             Debug.Log("unityScale: " + unityScale);
-            return Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale;
+            var scale = 1f;
+            if (1f * Screen.height / Screen.width > 2f)
+            {
+                scale = 1.2f;
+                // hotfix for iPhone X, iPhone X GSM, iPhone XS
+                if (SystemInfo.deviceModel == "iPhone10,3"
+                || SystemInfo.deviceModel == "iPhone10,6"
+                || SystemInfo.deviceModel == "iPhone11,2"
+                )
+                {
+                    scale = 1f;
+                }
+            }
+            return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
         public void SetUpAbTest(ABTestConfig abTest, int versionCode)
@@ -578,6 +621,7 @@ namespace IEC
         {
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
             {
+                Debug.Log("show full ads");
                 SafeInvoke(closeCallback);
                 return;
             }
@@ -813,9 +857,11 @@ namespace IEC
                 Debug.Log("advertisingId " + m_UserIDFA);
             }
         }
-
+        
+        [NaughtyAttributes.Button]
         public void SendEmail()
         {
+            SaveLogToFile();
             string email = "support@iecglobal.com.au";
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
@@ -826,19 +872,33 @@ namespace IEC
             {
                 title = Application.productName + " IOS Support";
             }
-            title = MyEscapeURL(title);
+
             var userIDFA = m_UserIDFA;
-            var newLine = Application.isMobilePlatform ? "<br>" : System.Environment.NewLine;
+            var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
-            if (!string.IsNullOrWhiteSpace(userIDFA))
-            {
-                message += "ID: " + userIDFA + newLine;
-            }
+            // message = MyEscapeURL(message);
+            
             message += newLine + "Hello, " + newLine;
             Debug.Log("message SendEmail: " + message);
-            message = MyEscapeURL(message);
-            Debug.Log("message SendEmail EscapeURL: " + message);
-            Application.OpenURL("mailto:" + email + "?subject=" + title + "&body=" + message);
+            var mail = new UT.MailMessage()
+                .AddTo(email)
+                .SetSubject(title)
+                .SetBody(message)
+                .AddAttachment(Application.persistentDataPath + @"/log.txt");
+            UT.Mail.Compose(mail, "Support");
+        }
+
+        void SaveLogToFile()
+        {
+            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+            var saveLog = Json().ToJson(SaveLog.GetLog());
+            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
+                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
+            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+            txtWrite.Write(content);
+            txtWrite.Close();
         }
 
         string MyEscapeURL(string url)
@@ -987,40 +1047,18 @@ namespace IEC
             return (major * 1000 + minor);
         }
 
-        #region Ogury Choice Manager
-
-        void InitOCM()
+        private void ShowWhiteBanner()
         {
-            Ogury.Start("OGY-8B8F812E7137", "IOS_ASSET_KEY");
-            OguryChoiceManager.OnAskComplete += OnCMComplete;
-            OguryChoiceManager.OnAskError += OnCMError;
-
-            // get user consent
-            OguryChoiceManager.Ask();
+            var canvasBanner = Resources.Load<GameObject>("CanvasBanner");
+            var canvasObj = Instantiate(canvasBanner);
+            var scaler = canvasObj.GetComponent<UnityEngine.UI.CanvasScaler>();
+            var bannerAds = canvasObj.GetComponentInChildren<BannerAds>();
+            bannerAds.SetBannerHeight(GetBannerHeight(scaler));
         }
 
-        private void OnDestroy()
+        public void ResetTimeShowFullAds()
         {
-            OguryChoiceManager.OnAskComplete -= OnCMComplete;
-            OguryChoiceManager.OnAskError -= OnCMError;
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
         }
-
-        private void OnCMComplete(OguryChoiceManager.Answer answer)
-        {
-            // will serve personalized or non-personalized ads, depending on the answer
-        }
-
-        private void OnCMError(OguryError error)
-        {
-            // will serve non-personalized ads
-        }
-
-        public void EditOCM()
-        {
-            OguryChoiceManager.Edit();
-        }
-
-        #endregion
-
     }
 }
