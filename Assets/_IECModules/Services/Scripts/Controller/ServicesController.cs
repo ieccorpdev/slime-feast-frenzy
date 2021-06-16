@@ -5,6 +5,7 @@ using System.IO;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
+using OgurySdk;
 #if PluginInAppRating
 #if UNITY_ANDROID
 using Google.Play.Review;
@@ -113,6 +114,7 @@ namespace IEC
             
             UnityToolbag.Dispatcher.Awake();
             Init();
+            InitOCM();
 #if UNITY_IOS
             AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
             AppTrackingTransparency.UpdateConversionValue(3);
@@ -130,7 +132,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-           // StartCoroutine(IE_CountOneSec());
+            StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
 
@@ -1060,5 +1062,40 @@ namespace IEC
         {
             lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
         }
+
+        #region Ogury Choice Manager
+
+        void InitOCM()
+        {
+            Ogury.Start("OGY-8B8F812E7137", "IOS_ASSET_KEY");
+            OguryChoiceManager.OnAskComplete += OnCMComplete;
+            OguryChoiceManager.OnAskError += OnCMError;
+
+            // get user consent
+            OguryChoiceManager.Ask();
+        }
+
+        private void OnDestroy()
+        {
+            OguryChoiceManager.OnAskComplete -= OnCMComplete;
+            OguryChoiceManager.OnAskError -= OnCMError;
+        }
+
+        private void OnCMComplete(OguryChoiceManager.Answer answer)
+        {
+            // will serve personalized or non-personalized ads, depending on the answer
+        }
+
+        private void OnCMError(OguryError error)
+        {
+            // will serve non-personalized ads
+        }
+
+        public void EditOCM()
+        {
+            OguryChoiceManager.Edit();
+        }
+
+        #endregion
     }
 }
