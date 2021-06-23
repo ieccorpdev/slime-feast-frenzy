@@ -98,9 +98,9 @@ namespace _IECModules
         private void InitGuiParams()
         {
             if (m_StyleHeader1 == null)
-                m_StyleHeader1 = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
+                m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
             if (m_StyleHeader2 == null)
-                m_StyleHeader2 = new GUIStyle(GUI.skin.label) {fontSize = 12, fontStyle = FontStyle.Bold};
+                m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -134,7 +134,7 @@ namespace _IECModules
                 GUILayout.Space(20);
                 CreateGuiButton("Test Remove Define PluginFacebook",
                     () => { ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook); }, 220);
-                
+
                 GUILayout.Space(20);
                 CreateGuiButton("Test Add Dependencies",
                     () =>
@@ -209,6 +209,7 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(
                     SdkHelper.OgurySdkUrlByVersion(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]));
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginOgury);
+                ConfigOguryRequirements(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]);
             });
 
             m_PluginOguryVersionSelect = EditorGUILayout.Popup("", m_PluginOguryVersionSelect,
@@ -464,6 +465,23 @@ namespace _IECModules
 
             File.Copy(sourcePath + "ByteDanceChinaIOS.code", desPath + "/Plugins/iOS/ByteDanceChinaIOS.mm", true);
             File.Copy(sourcePath + "ByteDanceChinaIOS.bridge", desPath + "/Plugins/iOS/ByteDanceChinaIOS.h", true);
+        }
+
+        private void ConfigOguryRequirements(string versionAsString)
+        {
+            var version = new Version(versionAsString);
+            if (version.Major < 7)
+            {
+                return;
+            }
+
+            if(!Directory.Exists(Application.dataPath + "/OgurySdk/Editor"))
+            {
+                Directory.CreateDirectory(Application.dataPath + "/OgurySdk/Editor");
+            }
+            var sourcePath = Application.dataPath + "/_IECModules/Plugins/Ogury";
+            var dependenciesPath = sourcePath + "/OgurySdkDependencies.xml";
+            File.Copy(dependenciesPath, Application.dataPath + "/OgurySdk/Editor/OgurySdkDependencies.xml", true);
         }
     }
 
