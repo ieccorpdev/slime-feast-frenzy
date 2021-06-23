@@ -46,6 +46,10 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
+#if PluginOgury
+        OguryModule m_OguryModule;
+#endif
+
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -89,6 +93,16 @@ namespace IEC
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
+                    Ads().Load(AdsEnum.BANNER_BOTTOM, null);
+#if PluginOgury
+                    if (!m_OguryModule.IsThumbnailShowing())
+                    {
+                        Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                    }
+#else
+                    Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+#endif
+                    StartCoroutine(IE_LoadAd());
                     break;
             }
         }
@@ -456,6 +470,10 @@ namespace IEC
                 ecpmAds.SetUseEcpm(AdsEnum.REWARD, false);
 
                 m_Ads = ecpmAds;
+#endif
+#if PluginOgury
+                m_OguryModule = new OguryModule();
+                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
@@ -872,7 +890,7 @@ namespace IEC
 #endif
         }
 
-#region services
+        #region services
 
         ISetUpSdkService m_SetUpFacebook;
         ISetUpSdkService m_SetUpFirebase;
@@ -992,11 +1010,11 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
-        
+
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
 #endif
-#endregion
+        #endregion
 
         int GetIntDeviceVerion(string version)
         {
@@ -1013,6 +1031,34 @@ namespace IEC
             var scaler = canvasObj.GetComponent<UnityEngine.UI.CanvasScaler>();
             var bannerAds = canvasObj.GetComponentInChildren<BannerAds>();
             bannerAds.SetBannerHeight(GetBannerHeight(scaler));
+        }
+
+        IEnumerator IE_LoadAd()
+        {
+            var delaySec = new WaitForSecondsRealtime(3f);
+            while (true)
+            {
+                Ads().Load(AdsEnum.INTERSTITIAL, null);
+                Ads().Load(AdsEnum.REWARD, null);
+#if PluginOgury
+                m_OguryModule.LoadThumbnail((eventArg) =>
+                {
+                    if (eventArg == AdsEventArgs.DONE)
+                    {
+                        if (m_ServiceData.isNoAds)
+                        {
+                            return;
+                        }
+                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+                        m_OguryModule.ShowThumbnail((eventArgs) =>
+                        {
+                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                        });
+                    }
+                });
+#endif
+                yield return delaySec;
+            }
         }
     }
 }
