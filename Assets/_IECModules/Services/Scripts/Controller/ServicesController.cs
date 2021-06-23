@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
 #if PluginInAppRating
@@ -96,6 +98,19 @@ namespace IEC
         public void BehaviourAwake()
         {
             if (isInitAwake) return;
+            
+            Application.logMessageReceived += (condition, trace, type) =>
+            {
+                var log = new Logs
+                {
+                    condition = condition,
+                    stackTrace = trace,
+                    type = type,
+                    dateTime = DateTime.Now.ToString()
+                };
+                SaveLog.AddLog(log);
+            };
+            
             UnityToolbag.Dispatcher.Awake();
             Init();
 #if UNITY_IOS
@@ -115,7 +130,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-            StartCoroutine(IE_CountOneSec());
+           // StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
 
@@ -212,6 +227,15 @@ namespace IEC
             {
                 PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
             });
+            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
+            {
+                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
+                var param = new Dictionary<string, object>
+                {
+                    ["productID"] = productID
+                };
+                PushEvent(eventName,1,param);
+            } );
 #endif
             m_Ads = new AdsMock(false);
 
@@ -597,6 +621,7 @@ namespace IEC
         {
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
             {
+                Debug.Log("show full ads");
                 SafeInvoke(closeCallback);
                 return;
             }
@@ -832,9 +857,11 @@ namespace IEC
                 Debug.Log("advertisingId " + m_UserIDFA);
             }
         }
-
+        
+        [NaughtyAttributes.Button]
         public void SendEmail()
         {
+            SaveLogToFile();
             string email = "support@iecglobal.com.au";
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
@@ -845,19 +872,33 @@ namespace IEC
             {
                 title = Application.productName + " IOS Support";
             }
-            title = MyEscapeURL(title);
+
             var userIDFA = m_UserIDFA;
-            var newLine = Application.isMobilePlatform ? "<br>" : System.Environment.NewLine;
+            var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
-            if (!string.IsNullOrWhiteSpace(userIDFA))
-            {
-                message += "ID: " + userIDFA + newLine;
-            }
+            // message = MyEscapeURL(message);
+            
             message += newLine + "Hello, " + newLine;
             Debug.Log("message SendEmail: " + message);
-            message = MyEscapeURL(message);
-            Debug.Log("message SendEmail EscapeURL: " + message);
-            Application.OpenURL("mailto:" + email + "?subject=" + title + "&body=" + message);
+            var mail = new UT.MailMessage()
+                .AddTo(email)
+                .SetSubject(title)
+                .SetBody(message)
+                .AddAttachment(Application.persistentDataPath + @"/log.txt");
+            UT.Mail.Compose(mail, "Support");
+        }
+
+        void SaveLogToFile()
+        {
+            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+            var saveLog = Json().ToJson(SaveLog.GetLog());
+            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
+                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
+            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+            txtWrite.Write(content);
+            txtWrite.Close();
         }
 
         string MyEscapeURL(string url)
@@ -1013,6 +1054,11 @@ namespace IEC
             var scaler = canvasObj.GetComponent<UnityEngine.UI.CanvasScaler>();
             var bannerAds = canvasObj.GetComponentInChildren<BannerAds>();
             bannerAds.SetBannerHeight(GetBannerHeight(scaler));
+        }
+
+        public void ResetTimeShowFullAds()
+        {
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
         }
     }
 }

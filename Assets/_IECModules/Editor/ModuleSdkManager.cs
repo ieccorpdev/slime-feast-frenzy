@@ -34,6 +34,7 @@ namespace _IECModules
         private int m_PluginApplovinVersionSelect;
         private int m_PluginKochavaVersionSelect;
         private int m_PluginAdjustVersionSelect;
+        private int m_PluginOguryVersionSelect;
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
@@ -63,7 +64,8 @@ namespace _IECModules
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
             PluginByteDanceChinaIOS,
-            PluginNotification
+            PluginNotification,
+            PluginOgury
         }
 
         private void Awake()
@@ -78,6 +80,7 @@ namespace _IECModules
             SdkHelper.LoadApplovinVersionList();
             SdkHelper.LoadKochavaVersionList();
             SdkHelper.LoadAdjustVersionList();
+            SdkHelper.LoadOguryVersionList();
             foreach (var pkg in SdkHelper.DictGitlabPluginVersion.Values)
             {
                 pkg.LoadPKGVersionList();
@@ -137,6 +140,13 @@ namespace _IECModules
                     () =>
                     {
                     }, 220);
+
+                GUILayout.Space(20);
+                CreateGuiButton("Test Ogury",
+                    () =>
+                    {
+                        SdkHelper.LoadOguryVersionList();
+                    }, 220);
             }
 
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
@@ -189,6 +199,20 @@ namespace _IECModules
 
             m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
                 SdkHelper.ListApplovinVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            CreateGuiBreakLine();
+
+            var ogurySdkLoaded = SdkHelper.LoadOguryVersionFromCache();
+            CreateGuiButton($"Ogury SDK {(ogurySdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(
+                    SdkHelper.OgurySdkUrlByVersion(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginOgury);
+            });
+
+            m_PluginOguryVersionSelect = EditorGUILayout.Popup("", m_PluginOguryVersionSelect,
+                SdkHelper.ListOguryVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
