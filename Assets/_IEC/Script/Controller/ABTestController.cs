@@ -50,17 +50,17 @@ namespace IEC
             Result20210330();
             Result20210412();
             Result20210518();
+            Result20210524();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            // UpdateAb20210518(abValue);
-            UpdateAb20210524(abValue);
+            UpdateAb20210630(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     // UpdateAb20210518(abValue);
-                    UpdateAb20210524(abValue);
+                    UpdateAb20210630(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -71,6 +71,16 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20210630(int abValue)
+        {
+
+        }
+
+        private void Result20210524()
+        {
+            SingleFind<OguryModule>().Init();
         }
 
         private void UpdateAb20210524(int abValue)
