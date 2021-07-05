@@ -380,8 +380,29 @@ namespace IEC
         {
             Game.listTerrainType.Clear();
             var listTheme = ShopConfig.listThemeConfigs;
-            var index = PlayerData.themeSelected % listTheme.Count;
-            Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
+            var themeIndex = PlayerData.themeSelected % listTheme.Count;
+
+            if (Game.isRandomTheme)
+            {
+                themeIndex = Random.Range(0, listTheme.Count);
+
+                var bgIndex = 0;
+
+                if(themeIndex == 2)
+                {
+                    bgIndex = 2;
+                }else if(themeIndex == 3)
+                {
+                    bgIndex = 3;
+                }
+                else if(themeIndex == 4)
+                {
+                    bgIndex = 1;
+                }
+
+                GamePlay.SetBackground(bgIndex);
+            }
+            Game.enviromentConfig = ShopConfig.listThemeConfigs[themeIndex];
 
             if(Game.isChangeGridStatus || Game.isGreenifyHydrated)
             {

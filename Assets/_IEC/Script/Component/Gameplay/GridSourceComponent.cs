@@ -6,6 +6,9 @@ namespace IEC
 {
     public class GridSourceComponent : BaseGrid
     {
+        [SerializeField]
+        private Transform m_TranScale;
+
         protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -69,6 +72,8 @@ namespace IEC
         public override void OnInit(GridType gridType, int row, int col, int rotTrue = 0, int rot = 0, int color = 0, int lineType = 0)
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
+
+            m_TranScale.localScale = Vector3.one * (Game.isBiggerFoundtain ? 1.5f : 1f);
 
             m_LineType = lineType;
 

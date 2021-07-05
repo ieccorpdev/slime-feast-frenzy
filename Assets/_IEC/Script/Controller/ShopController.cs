@@ -19,7 +19,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            GamePlay.SetBackground();
+            GamePlay.SetBackground(PlayerData.backgroundSelected);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -131,7 +131,7 @@ namespace IEC
             }
             else if(type == ItemShopType.Background)
             {
-                GamePlay.SetBackground();
+                GamePlay.SetBackground(PlayerData.backgroundSelected);
             }
         }
     }

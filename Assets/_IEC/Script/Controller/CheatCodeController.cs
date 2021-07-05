@@ -79,7 +79,7 @@ namespace IEC
                 int valueInput = int.Parse(param.inputParams[0].value.ToString());
                 var bgIndex = valueInput % ShopConfig.listBGConfig.Count;
                 PlayerData.UnlockBackground(bgIndex);
-                GamePlay.SetBackground();
+                GamePlay.SetBackground(PlayerData.backgroundSelected);
             }, new CheatCode.InputParam
             {
                 value = PlayerData.backgroundSelected
