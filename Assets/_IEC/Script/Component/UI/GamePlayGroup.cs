@@ -28,9 +28,9 @@ namespace IEC
             Pool.Set(this);
         }
 
-        public void SetBackground()
+        public void SetBackground(int index)
         {
-            var config = ShopConfig.listBGConfig[PlayerData.backgroundSelected];
+            var config = ShopConfig.listBGConfig[index];
 
             sprBackground.sprite = config.sprMain;
             sprBGTop.sprite = config.sprTop;

@@ -169,6 +169,9 @@ namespace IEC
         public bool isBlockDarkColor;
         public bool isFlyingIsland;
 
+        public bool isBiggerFoundtain;
+        public bool isRandomTheme;
+
         public bool isLeavesEffect;
 
         public void OnResetAll()
