@@ -97,7 +97,7 @@ namespace IEC
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
 #if PluginOgury
-                    if (!m_OguryModule.IsThumbnailShowing())
+                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
                     {
                         SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
                     }
@@ -1082,7 +1082,7 @@ namespace IEC
                 Ads().Load(AdsEnum.INTERSTITIAL, null);
                 Ads().Load(AdsEnum.REWARD, null);
 #if PluginOgury
-                m_OguryModule.LoadThumbnail((eventArg) =>
+                m_OguryModule?.LoadThumbnail((eventArg) =>
                 {
                     if (eventArg == AdsEventArgs.DONE)
                     {
