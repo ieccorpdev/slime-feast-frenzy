@@ -402,6 +402,11 @@ namespace IEC
 
                 GamePlay.SetBackground(bgIndex);
             }
+            else
+            {
+                GamePlay.SetBackground(PlayerData.backgroundSelected);
+            }
+
             Game.enviromentConfig = ShopConfig.listThemeConfigs[themeIndex];
 
             if(Game.isChangeGridStatus || Game.isGreenifyHydrated)

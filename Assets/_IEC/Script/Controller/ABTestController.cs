@@ -79,13 +79,11 @@ namespace IEC
                 PlayerData.UnlockBackground(0);
                 PlayerData.UnlockTheme(0);
             }
-
-            if (abValue == 2)
+            else
             {
                 PlayerData.UnlockBackground(2);
                 PlayerData.UnlockTheme(2);
             }
-
             Game.isFlyingIsland = abValue == 1 || abValue == 2;
 
             Game.isBiggerFoundtain = abValue == 4;
@@ -115,7 +113,7 @@ namespace IEC
 
         private void Result20210518()
         {
-            UpdateAb20210518(0);
+            UpdateAb20210518(3);
         }
         
         private void UpdateAb20210518(int abValue)

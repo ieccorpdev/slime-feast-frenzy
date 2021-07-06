@@ -19,7 +19,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            GamePlay.SetBackground(PlayerData.backgroundSelected);
+            
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
