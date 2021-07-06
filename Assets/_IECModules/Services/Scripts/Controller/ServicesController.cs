@@ -100,10 +100,10 @@ namespace IEC
 #if PluginOgury
                     if (!m_OguryModule.IsThumbnailShowing())
                     {
-                        Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
                     }
 #else
-                    Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
 #endif
                     StartCoroutine(IE_LoadAd());
                     break;
