@@ -56,6 +56,16 @@ namespace _IECModules
             AbTestList,
             AdjustIDAndroid,
             AdjustIDiOS,
+            OguryIOSID,
+            OguryAndroidID,
+            OguryIOSInterID,
+            OguryIOSBannerID,
+            OguryIOSRewardID,
+            OguryIOSThumbnailID,
+            OguryAndroidInterID,
+            OguryAndroidBannerID,
+            OguryAndroidRewardID,
+            OguryAndroidThumbnailID,
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -102,7 +112,16 @@ namespace _IECModules
             {"AB Test List", ChecklistItemName.AbTestList},
             {"Adjust ID IOS", ChecklistItemName.AdjustIDiOS},
             {"Adjust ID Android", ChecklistItemName.AdjustIDAndroid},
-            
+            {"Ogury IOS ID", ChecklistItemName.OguryIOSID },
+            {"Ogury Android ID", ChecklistItemName.OguryAndroidID },
+            {"Ogury IOS Inter ID", ChecklistItemName.OguryIOSInterID },
+            {"Ogury IOS Banner ID", ChecklistItemName.OguryIOSBannerID },
+            {"Ogury IOS Reward ID", ChecklistItemName.OguryIOSRewardID },
+            {"Ogury IOS Thumbnail ID", ChecklistItemName.OguryIOSThumbnailID },
+            {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID },
+            {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID },
+            {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID },
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID }
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -444,14 +463,56 @@ namespace _IECModules
                         AppLovinSettings.Instance.SaveAsync();
                         break;
 #endif
+#if PluginOgury
+                    case ChecklistItemName.OguryIOSID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Inter ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Banner ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Reward ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSThumbnailID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Thumbnail ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.thumbnailID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Inter ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Banner ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Reward ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidThumbnailID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Thumbnail ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.thumbnailID = checklistItemValue;
+                        break;
+#endif
                 }
             }
-            
-            
+
+
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            
+
             var projectSettingAssetFileStr = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
             listProjectSettingChange.ForEach(func =>
             {
