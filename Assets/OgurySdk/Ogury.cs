@@ -27,10 +27,8 @@ namespace OgurySdk
             // Noop
 #elif UNITY_ANDROID
             ogury.CallStatic("start", androidAssetKey);
-            Debug.Log("Android SDK Version : " + SdkVersion);
 #elif UNITY_IOS
             ogury_start(iosAssetKey);
-            Debug.Log("iOS SDK Version : " + SdkVersion);
 #endif
         }
 

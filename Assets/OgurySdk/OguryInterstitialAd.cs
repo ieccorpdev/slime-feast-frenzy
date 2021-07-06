@@ -42,7 +42,6 @@ namespace OgurySdk
         public event InterstitialAdEventHandler OnAdLoaded;
         public event InterstitialAdEventHandler OnAdNotLoaded;
         public event InterstitialAdEventHandler OnAdDisplayed;
-        public event InterstitialAdEventHandler OnAdImpression;
         public event InterstitialAdEventHandler OnAdClosed;
         public event InterstitialAdErrorEventHandler OnAdError;
 
@@ -107,16 +106,6 @@ namespace OgurySdk
                         && strong.OnAdDisplayed != null)
                     {
                         strong.OnAdDisplayed.Invoke(strong);
-                    }
-                };
-                OguryCallbacks.Instance.OnAdImpression += instanceId =>
-                {
-                    OguryInterstitialAd strong = capturedWeakInterstitialAd.Target as OguryInterstitialAd;
-                    if (instanceId == capturedInstanceId
-                        && strong != null
-                        && strong.OnAdImpression != null)
-                    {
-                        strong.OnAdImpression.Invoke(strong);
                     }
                 };
                 OguryCallbacks.Instance.OnAdClosed += instanceId =>

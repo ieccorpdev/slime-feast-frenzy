@@ -60,7 +60,6 @@ namespace OgurySdk
         public event ThumbnailAdEventHandler OnAdLoaded;
         public event ThumbnailAdEventHandler OnAdNotLoaded;
         public event ThumbnailAdEventHandler OnAdDisplayed;
-        public event ThumbnailAdEventHandler OnAdImpression;
         public event ThumbnailAdEventHandler OnAdClosed;
         public event ThumbnailAdErrorEventHandler OnAdError;
 
@@ -125,16 +124,6 @@ namespace OgurySdk
                         && strong.OnAdDisplayed != null)
                     {
                         strong.OnAdDisplayed.Invoke(strong);
-                    }
-                };
-                OguryCallbacks.Instance.OnAdImpression += instanceId =>
-                {
-                    OguryThumbnailAd strong = capturedWeakThumbnailAd.Target as OguryThumbnailAd;
-                    if (instanceId == capturedInstanceId
-                        && strong != null
-                        && strong.OnAdImpression != null)
-                    {
-                        strong.OnAdImpression.Invoke(strong);
                     }
                 };
                 OguryCallbacks.Instance.OnAdClosed += instanceId =>
