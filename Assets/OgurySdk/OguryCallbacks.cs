@@ -18,6 +18,8 @@ namespace OgurySdk
         public event InternalEventHandler OnAdNotLoaded;
 
         public event InternalEventHandler OnAdDisplayed;
+
+        public event InternalEventHandler OnAdImpression;
         
         public event InternalEventHandler OnAdClicked;
 
@@ -168,6 +170,19 @@ namespace OgurySdk
             if (OnAdDisplayed != null)
             {
                 OnAdDisplayed.Invoke(msg.instanceId);
+            }
+        }
+
+        public void ForwardOnAdImpression(string payload)
+        {
+            SimpleMessage msg = JsonUtility.FromJson<SimpleMessage>(payload);
+            if (msg.debug)
+            {
+                Debug.Log("OnAdImpression: " + msg.instanceId);
+            }
+            if (OnAdImpression != null)
+            {
+                OnAdImpression.Invoke(msg.instanceId);
             }
         }
         
