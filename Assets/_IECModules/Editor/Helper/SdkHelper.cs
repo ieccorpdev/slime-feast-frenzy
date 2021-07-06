@@ -62,6 +62,11 @@ namespace _IECModules
         public const string OGURY_SDK_BASE_URL =
             "https://binaries.ogury.co/release/unity/{0}/OgurySdk-{0}.unitypackage";
 
+        public const string APPLOVIN_LATEST_SDK_URL =
+            "https://dash.applovin.com/docs/v1/unity_integration_manager?plugin_version=latest";
+
+
+
 
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
         public const string FIREBASE_APP_CORE = "com.google.firebase.app";
@@ -96,6 +101,8 @@ namespace _IECModules
             "3.0.0-Android-9.13.2-iOS-6.13.2",
             "2.4.16-Android-9.13.1-iOS-6.13.1"
         };
+
+        public static string ApplovinLatestDownloadLink = string.Empty;
 
         public static string[] ListKochavaVersionDefault =
         {
@@ -222,6 +229,19 @@ namespace _IECModules
                         PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
                     })
                 .Send();
+        }
+
+        public static void LoadApplovinLatestVersion()
+        {
+            var httpRequest = new HTTPRequest(
+                new Uri(APPLOVIN_LATEST_SDK_URL),
+                (originalRequest, response) =>
+                {
+                    var dataTxt = response.DataAsText;
+                    var json = JSON.Parse(dataTxt);
+                    ApplovinLatestDownloadLink = json["AppLovinMax"]["DownloadUrl"];
+                    Debug.Log(ApplovinLatestDownloadLink);
+                }).Send();
         }
 
         public static void LoadKochavaVersionList()
