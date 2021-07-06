@@ -22,7 +22,10 @@ public class OguryModule : MonoBehaviour
         _thumbnailAd.OnAdLoaded += ad =>
         {
             Debug.LogWarning("Thumbnail OnAdLoaded");
-            _thumbnailAd.Show(OguryThumbnailAdGravity.BottomLeft, marginX, marginY);
+            if (!Pool.Get<ServiceData>().isNoAds)
+            {
+                _thumbnailAd.Show(OguryThumbnailAdGravity.BottomLeft, marginX, marginY);
+            }
         };
         _thumbnailAd.OnAdClosed += ad =>
         {
