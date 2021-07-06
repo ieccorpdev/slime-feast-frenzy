@@ -77,7 +77,8 @@ namespace _IECModules
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
             // AddRegistries(GoogleRegistry);
             SdkHelper.RemoveRegistries(GoogleRegistry);
-            SdkHelper.LoadApplovinVersionList();
+            //SdkHelper.LoadApplovinVersionList();
+            SdkHelper.LoadApplovinLatestVersion();
             SdkHelper.LoadKochavaVersionList();
             SdkHelper.LoadAdjustVersionList();
             SdkHelper.LoadOguryVersionList();
@@ -189,17 +190,24 @@ namespace _IECModules
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
 
-            var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            //var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            //CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            //{
+            //    ImportUnityPackageHelper.DownloadPackage(
+            //        SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+            //    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+            //});
+
+            //m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
+            //    SdkHelper.ListApplovinVersion,
+            //    GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            var applovinSdkLoaded = !string.IsNullOrEmpty(SdkHelper.ApplovinLatestDownloadLink);
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(
-                    SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinLatestDownloadLink);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
-
-            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
-                SdkHelper.ListApplovinVersion,
-                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
 
