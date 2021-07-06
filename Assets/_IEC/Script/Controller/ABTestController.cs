@@ -63,7 +63,6 @@ namespace IEC
                 abIndex
             );
 
-            var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
             ApplyAbTest(abIndex);
         }
 
