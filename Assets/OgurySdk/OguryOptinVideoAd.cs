@@ -40,7 +40,6 @@ namespace OgurySdk
         public event OptinVideoAdEventHandler OnAdLoaded;
         public event OptinVideoAdEventHandler OnAdNotLoaded;
         public event OptinVideoAdEventHandler OnAdDisplayed;
-        public event OptinVideoAdEventHandler OnAdImpression;
         public event OptinVideoAdRewardedEventHandler OnAdRewarded;
         public event OptinVideoAdEventHandler OnAdClosed;
         public event OptinVideoAdErrorEventHandler OnAdError;
@@ -109,16 +108,6 @@ namespace OgurySdk
                         && strong.OnAdDisplayed != null)
                     {
                         strong.OnAdDisplayed.Invoke(strong);
-                    }
-                };
-                OguryCallbacks.Instance.OnAdImpression += instanceId =>
-                {
-                    OguryOptinVideoAd strong = capturedWeakOptinVideoAd.Target as OguryOptinVideoAd;
-                    if (instanceId == capturedInstanceId
-                        && strong != null
-                        && strong.OnAdImpression != null)
-                    {
-                        strong.OnAdImpression.Invoke(strong);
                     }
                 };
                 OguryCallbacks.Instance.OnAdRewarded += (instanceId, rewardItem) =>
