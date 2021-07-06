@@ -34,6 +34,7 @@ namespace _IECModules
         private int m_PluginApplovinVersionSelect;
         private int m_PluginKochavaVersionSelect;
         private int m_PluginAdjustVersionSelect;
+        private int m_PluginOguryVersionSelect;
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
@@ -63,7 +64,8 @@ namespace _IECModules
             PluginFacebookAudienceNetwork,
             PluginInAppRating,
             PluginByteDanceChinaIOS,
-            PluginNotification
+            PluginNotification,
+            PluginOgury
         }
 
         private void Awake()
@@ -75,9 +77,11 @@ namespace _IECModules
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
             // AddRegistries(GoogleRegistry);
             SdkHelper.RemoveRegistries(GoogleRegistry);
-            SdkHelper.LoadApplovinVersionList();
+            //SdkHelper.LoadApplovinVersionList();
+            SdkHelper.LoadApplovinLatestVersion();
             SdkHelper.LoadKochavaVersionList();
             SdkHelper.LoadAdjustVersionList();
+            SdkHelper.LoadOguryVersionList();
             foreach (var pkg in SdkHelper.DictGitlabPluginVersion.Values)
             {
                 pkg.LoadPKGVersionList();
@@ -95,9 +99,9 @@ namespace _IECModules
         private void InitGuiParams()
         {
             if (m_StyleHeader1 == null)
-                m_StyleHeader1 = new GUIStyle(GUI.skin.label) {fontSize = 18, fontStyle = FontStyle.Bold};
+                m_StyleHeader1 = new GUIStyle(GUI.skin.label) { fontSize = 18, fontStyle = FontStyle.Bold };
             if (m_StyleHeader2 == null)
-                m_StyleHeader2 = new GUIStyle(GUI.skin.label) {fontSize = 12, fontStyle = FontStyle.Bold};
+                m_StyleHeader2 = new GUIStyle(GUI.skin.label) { fontSize = 12, fontStyle = FontStyle.Bold };
         }
 
         private static Vector2 buttonSize = new Vector2(300, 20);
@@ -131,11 +135,18 @@ namespace _IECModules
                 GUILayout.Space(20);
                 CreateGuiButton("Test Remove Define PluginFacebook",
                     () => { ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginFacebook); }, 220);
-                
+
                 GUILayout.Space(20);
                 CreateGuiButton("Test Add Dependencies",
                     () =>
                     {
+                    }, 220);
+
+                GUILayout.Space(20);
+                CreateGuiButton("Test Ogury",
+                    () =>
+                    {
+                        SdkHelper.LoadOguryVersionList();
                     }, 220);
             }
 
@@ -179,16 +190,38 @@ namespace _IECModules
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
 
-            var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            //var applovinSdkLoaded = SdkHelper.LoadApplovinVersionFromCache();
+            //CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            //{
+            //    ImportUnityPackageHelper.DownloadPackage(
+            //        SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+            //    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+            //});
+
+            //m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
+            //    SdkHelper.ListApplovinVersion,
+            //    GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            var applovinSdkLoaded = !string.IsNullOrEmpty(SdkHelper.ApplovinLatestDownloadLink);
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(
-                    SdkHelper.ApplovinSdkUrlByVersion(SdkHelper.ListApplovinVersion[m_PluginApplovinVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinLatestDownloadLink);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
 
-            m_PluginApplovinVersionSelect = EditorGUILayout.Popup("", m_PluginApplovinVersionSelect,
-                SdkHelper.ListApplovinVersion,
+            CreateGuiBreakLine();
+
+            var ogurySdkLoaded = SdkHelper.LoadOguryVersionFromCache();
+            CreateGuiButton($"Ogury SDK {(ogurySdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(
+                    SdkHelper.OgurySdkUrlByVersion(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]));
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginOgury);
+                ConfigOguryRequirements(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]);
+            });
+
+            m_PluginOguryVersionSelect = EditorGUILayout.Popup("", m_PluginOguryVersionSelect,
+                SdkHelper.ListOguryVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
@@ -440,6 +473,23 @@ namespace _IECModules
 
             File.Copy(sourcePath + "ByteDanceChinaIOS.code", desPath + "/Plugins/iOS/ByteDanceChinaIOS.mm", true);
             File.Copy(sourcePath + "ByteDanceChinaIOS.bridge", desPath + "/Plugins/iOS/ByteDanceChinaIOS.h", true);
+        }
+
+        private void ConfigOguryRequirements(string versionAsString)
+        {
+            var version = new Version(versionAsString);
+            if (version.Major < 7)
+            {
+                return;
+            }
+
+            if(!Directory.Exists(Application.dataPath + "/OgurySdk/Editor"))
+            {
+                Directory.CreateDirectory(Application.dataPath + "/OgurySdk/Editor");
+            }
+            var sourcePath = Application.dataPath + "/_IECModules/Plugins/Ogury";
+            var dependenciesPath = sourcePath + "/OgurySdkDependencies.xml";
+            File.Copy(dependenciesPath, Application.dataPath + "/OgurySdk/Editor/OgurySdkDependencies.xml", true);
         }
     }
 

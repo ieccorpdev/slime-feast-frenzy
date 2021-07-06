@@ -1,11 +1,11 @@
-﻿using System.IO;
+﻿#if (PluginOgury)
+using System.IO;
 using System.Text;
 using System.Xml;
 using UnityEditor.Android;
 
 public class ModifyUnityAndroidAppManifest : IPostGenerateGradleAndroidProject
 {
-
     public void OnPostGenerateGradleAndroidProject(string basePath)
     {
         // If needed, add condition checks on whether you need to run the modification routine.
@@ -87,8 +87,10 @@ internal class AndroidManifest : AndroidXmlDocument
         return attr;
     }
 
-    internal void SetHardwareAcceleration(){
+    internal void SetHardwareAcceleration()
+    {
         ActivityElement.Attributes.Append(CreateAndroidAttribute("hardwareAccelerated", "true"));
     }
-   
+
 }
+#endif

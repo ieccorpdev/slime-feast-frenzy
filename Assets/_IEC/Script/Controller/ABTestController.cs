@@ -100,15 +100,15 @@ namespace IEC
 
         private void Result20210524()
         {
-            SingleFind<OguryModule>().Init();
+            //SingleFind<OguryModule>().Init();
         }
 
         private void UpdateAb20210524(int abValue)
         {
-            if (abValue == 1)
-            {
-                SingleFind<OguryModule>().Init();
-            }
+            //if (abValue == 1)
+            //{
+            //    SingleFind<OguryModule>().Init();
+            //}
         }
 
         private void Result20210518()

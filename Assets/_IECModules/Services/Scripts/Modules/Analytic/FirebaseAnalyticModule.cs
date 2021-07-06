@@ -69,10 +69,17 @@ namespace IEC
                 return;
             }
             var newName = eventName.Replace(' ', '_').Replace('-', '_');
+
+            if (param != null && param.ContainsKey("level"))
+            {
+                value = (int)param["level"];
+            }
             var firebaseParams = new List<Parameter>
             {
-                new Parameter(FirebaseAnalytics.ParameterValue, value)
+                new Parameter(FirebaseAnalytics.ParameterValue, value),
+                new Parameter(FirebaseAnalytics.ParameterCurrency, "USD")
             };
+
             if (param != null)
             {
                 var keys = param.Keys;

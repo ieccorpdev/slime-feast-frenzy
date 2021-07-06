@@ -30,9 +30,9 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
-                    Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);
-                    StartCoroutine(IE_LoadAd());
+                    //Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
+                    //Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                    //StartCoroutine(IE_LoadAd());
                     UpdateWhiteBannerSize();
                     break;
             }
