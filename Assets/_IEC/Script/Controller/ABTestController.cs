@@ -36,14 +36,52 @@ namespace IEC
             var serviceAbTest = Services.ABTest();
             var abTestConfigs = Services.config.abTestConfigs;
             var listAbTestConfigs = Services.config.abTestConfigs.ToList();
-            var oldAbIndex = listAbTestConfigs.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
-            var oldAbConfig = (oldAbIndex >= 0) ? listAbTestConfigs[oldAbIndex] : null;
-            var abTestConfig = Services.config.abTestConfigs.Where(x => x.IsActive).LastOrDefault();
-            var isLatestAbUser = (oldAbIndex == listAbTestConfigs.Count - 1);
+            var abIndex = listAbTestConfigs.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
 
+            var forceSetAb = "ForceSetAB";
+            var forceSetAbName = Services.DataSecure().GetString(forceSetAb, "No Force Set");
+            var forceSetAbIndex = listAbTestConfigs.FindLastIndex(x => x.KeyName == forceSetAbName);
+            abIndex = (forceSetAbIndex >= 0) ? forceSetAbIndex : abIndex;
+
+            var abConfig = listAbTestConfigs.ElementAtOrDefault(abIndex);
+
+            if (abConfig == null)
+            {
+                Debug.LogError("No AB Test");
+                return;
+            }
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("AB Test Config",
+                cheatCodeParam =>
+                {
+                    var cheatAbIndex = cheatCodeParam.dropdownParam.value;
+                    Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
+                    Pool.Set(new Game());
+                    ApplyAbTest(cheatAbIndex);
+                },
+                abTestConfigs.Select(x => x.KeyName).ToList(),
+                abIndex
+            );
+
+            var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
+            ApplyAbTest(abIndex);
+        }
+
+        void ApplyAbTest(int abIndex)
+        {
+            var serviceAbTest = Services.ABTest();
+            var listAbTestConfigs = Services.config.abTestConfigs.ToList();
+            var abConfig = (abIndex >= 0) ? listAbTestConfigs[abIndex] : null;
+
+            if (abConfig == null)
+            {
+                Debug.LogError("ApplyAbTest found no AB test");
+                return;
+            }
+
+            var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
             var listResultAb = GetListResultAction();
             var listUpdateAb = GetListUpdateAbAction();
-            var latestUpdateAb = listUpdateAb.LastOrDefault();
 
             if (listUpdateAb.Count != listAbTestConfigs.Count)
             {
@@ -53,41 +91,46 @@ namespace IEC
 
             for (int i = 0; i < listResultAb.Count; i++)
             {
-                if (i < oldAbIndex)
+                if (i < abIndex)
                 {
                     listResultAb[i].Invoke();
                 }
             }
-            if (oldAbIndex >= 0 && oldAbIndex < listUpdateAb.Count && !isLatestAbUser && oldAbConfig != null)
-            {
-                listUpdateAb[oldAbIndex].Invoke(serviceAbTest.GetValue(oldAbConfig.KeyName, 0));
-            }
+
+            var updateAbAction = listUpdateAb[abIndex];
+            updateAbAction.Invoke(abValue);
 
             ResultAllAbTest();
 
-            if (!isLatestAbUser || abTestConfig == null || latestUpdateAb == null)
+            AddCheatCodeVersionAB(abConfig, updateAbAction, abValue);
+
+            var abEventName = abConfig.ListEventsAB[abValue];
+            Game.abVersion = int.Parse(abEventName.Split('v').Last());
+        }
+
+        void AddCheatCodeVersionAB(ABTestConfig abTestConfig, Action<int> updateAbAction, int abValue)
+        {
+            var cheatCodeName = "AB Test Version";
+            var cheatCode = ModuleController.cheatCode.GetCheatCodeParam(cheatCodeName);
+            if (cheatCode == null)
             {
-                Debug.LogError("No AB Test");
-                return;
+                ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(cheatCodeName, null, null);
+                cheatCode = ModuleController.cheatCode.GetCheatCodeParam(cheatCodeName);
             }
 
-            var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            var abEventName = abTestConfig.ListEventsAB[abValue];
-            Game.abVersion = int.Parse(abEventName.Split('v').Last());
-            latestUpdateAb(abValue);
+            cheatCode.action = cheatCodeParam =>
+            {
+                abValue = cheatCodeParam.dropdownParam.value;
+                Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
+                updateAbAction(abValue);
+                EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
+            };
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
-                cheatCodeParam =>
-                {
-                    abValue = cheatCodeParam.dropdownParam.value;
-                    Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                    latestUpdateAb(abValue);
-                    EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
-                    // set new AB Test Value
-                },
-                abTestConfig.ListEventsAB.ToList(),
-                abValue
-            );
+            cheatCode.dropdownParam = new CheatCode.DropdownParam
+            {
+                options = abTestConfig.ListEventsAB.ToList(),
+                value = abValue
+            };
         }
 
         void ResultAllAbTest()
