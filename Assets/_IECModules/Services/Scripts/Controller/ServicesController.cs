@@ -1101,5 +1101,10 @@ namespace IEC
                 yield return delaySec;
             }
         }
+        
+        public void ResetTimeShowFullAds()
+        {
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+        }
     }
 }
