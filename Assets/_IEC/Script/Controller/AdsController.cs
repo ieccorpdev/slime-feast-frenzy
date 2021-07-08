@@ -33,7 +33,7 @@ namespace IEC
                     //Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
                     //Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);
                     //StartCoroutine(IE_LoadAd());
-                    UpdateWhiteBannerSize();
+                    //UpdateWhiteBannerSize();
                     break;
             }
         }
