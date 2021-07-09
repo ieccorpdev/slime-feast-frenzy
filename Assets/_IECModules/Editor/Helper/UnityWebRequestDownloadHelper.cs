@@ -42,23 +42,11 @@ namespace _IECModules
             }
             return uwr;
         }
+
         public static List<List<string>> DownloadCsvFromAuthUrl(string url)
         {
             var jsoner = new IEC.JsonDotNetModule();
-            var hostUrl = "passive.discordbot.game.ieccorp.vn:3002/sheet";
-            var dictContent = new Dictionary<string, string>
-            {
-                ["token"] = "WinterWolf2020",
-                ["sheetUrl"] = url,
-                ["format"] = "jsonarray"
-            };
-
-            var uwr = new UnityWebRequest(hostUrl, "POST");
-            byte[] bodyRaw = Encoding.UTF8.GetBytes(jsoner.ToJson(dictContent));
-            uwr.uploadHandler = new UploadHandlerRaw(bodyRaw);
-            uwr.downloadHandler = new DownloadHandlerBuffer();
-            uwr.SetRequestHeader("Content-Type", "application/json");
-
+            var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url);
             uwr.SendWebRequest();
             while (!uwr.isDone)
             {
