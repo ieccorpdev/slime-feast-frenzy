@@ -25,14 +25,18 @@ namespace IEC
 
         MaxSdkBase.BannerPosition m_BannerAdsPos = MaxSdkBase.BannerPosition.BottomCenter;
 
+        Action<string, float, Dictionary<string, object>> pushEventAction;
 
-        public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback)
+
+        public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
             var config = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
             config.appID = config.appID.Trim();
             config.bannerID = config.bannerID.Trim();
             config.interstitialID = config.interstitialID.Trim();
             config.rewardID = config.rewardID.Trim();
+
+            this.pushEventAction = pushEventAction;
 
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
@@ -486,7 +490,7 @@ namespace IEC
             MaxSdkCallbacks.OnRewardedAdFailedToDisplayEvent += RewardedAdsView_OnAdFailedToShow;
             MaxSdkCallbacks.OnRewardedAdHiddenEvent += RewardedAdsView_OnAdClosed;
             MaxSdkCallbacks.OnRewardedAdReceivedRewardEvent += RewardedAdsView_OnUserEarnedReward;
-             MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
+            MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
 #endregion
@@ -505,7 +509,7 @@ namespace IEC
             Debug.LogWarning("country code:" + countryCode);
             Debug.LogWarning("network name:" + networkName);
             Debug.LogWarning("ad unit identifier:" + adUnitIdentifier);
-            Debug.LogWarning("placemen:" + placement);
+            Debug.LogWarning("placement:" + placement);
 
             var dict = new Dictionary<string, object>();
             dict["revenue"] = revenue;
@@ -513,7 +517,7 @@ namespace IEC
             dict["network_name"] = networkName;
             var eventName = EventName(adUnitId);
 
-            Controllers.Get<ServicesController>().PushEvent(eventName,(float) revenue, dict);
+            pushEventAction?.Invoke(eventName, (float) revenue, dict);
         }
 
         private string EventName(string adUnitId)
@@ -521,10 +525,12 @@ namespace IEC
             if (adUnitId.Equals(m_Config.bannerID))
             {
                 return "rev_banner_ad";
-            }else if (adUnitId.Equals(m_Config.interstitialID))
+            }
+            else if (adUnitId.Equals(m_Config.interstitialID))
             {
                 return "rev_full_ad";
-            }else if (adUnitId.Equals(m_Config.rewardID))
+            }
+            else if (adUnitId.Equals(m_Config.rewardID))
             {
                 return "rev_reward_ad";
             }
@@ -533,6 +539,7 @@ namespace IEC
                 return "rev";
             }
         }
+
         public void ResetLoadCount()
         {
             m_LoadFullAdCount = 0;
