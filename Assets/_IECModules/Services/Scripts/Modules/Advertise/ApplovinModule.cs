@@ -185,7 +185,7 @@ namespace IEC
             return 50f * f;
         }
 
-        #region bannerAds
+#region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -253,8 +253,8 @@ namespace IEC
             Debug.Log("BannerAd_OnAdClicked");
         }
 
-        #endregion
-        #region full ads
+#endregion
+#region full ads
 
         bool IsFullAdsLoaded()
         {
@@ -374,9 +374,9 @@ namespace IEC
             MaxSdkCallbacks.OnInterstitialHiddenEvent += InterstitialAd_OnAdClosed;
         }
 
-        #endregion
+#endregion
 
-        #region rewardAds
+#region rewardAds
 
         bool IsRewardLoaded()
         {
@@ -486,10 +486,53 @@ namespace IEC
             MaxSdkCallbacks.OnRewardedAdFailedToDisplayEvent += RewardedAdsView_OnAdFailedToShow;
             MaxSdkCallbacks.OnRewardedAdHiddenEvent += RewardedAdsView_OnAdClosed;
             MaxSdkCallbacks.OnRewardedAdReceivedRewardEvent += RewardedAdsView_OnUserEarnedReward;
+             MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
-        #endregion
+#endregion
+         private void OnAdRevenuePaidEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        {
+            double revenue = MaxSdk.GetAdInfo(adUnitId).Revenue;
 
+            // Miscellaneous data
+            string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
+            string networkName = adInfo.NetworkName; // Display name of the network that showed the ad (e.g. "AdColony")
+            string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
+            string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
+
+            Debug.LogWarning("Reward Revenue Event:" + adUnitId);
+            Debug.LogWarning("rev:" + revenue);
+            Debug.LogWarning("country code:" + countryCode);
+            Debug.LogWarning("network name:" + networkName);
+            Debug.LogWarning("ad unit identifier:" + adUnitIdentifier);
+            Debug.LogWarning("placemen:" + placement);
+
+            var dict = new Dictionary<string, object>();
+            dict["revenue"] = revenue;
+            dict["ad_unit_id"] = adUnitId;
+            dict["network_name"] = networkName;
+            var eventName = EventName(adUnitId);
+
+            Controllers.Get<ServicesController>().PushEvent(eventName,(float) revenue, dict);
+        }
+
+        private string EventName(string adUnitId)
+        {
+            if (adUnitId.Equals(m_Config.bannerID))
+            {
+                return "rev_banner_ad";
+            }else if (adUnitId.Equals(m_Config.interstitialID))
+            {
+                return "rev_full_ad";
+            }else if (adUnitId.Equals(m_Config.rewardID))
+            {
+                return "rev_reward_ad";
+            }
+            else
+            {
+                return "rev";
+            }
+        }
         public void ResetLoadCount()
         {
             m_LoadFullAdCount = 0;
