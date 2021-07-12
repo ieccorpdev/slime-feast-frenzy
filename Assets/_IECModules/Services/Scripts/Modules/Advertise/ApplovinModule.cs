@@ -516,7 +516,7 @@ namespace IEC
             dict["network_name"] = networkName;
             var eventName = EventName(adUnitId);
 
-            Controllers.Get<ServicesController>().PushEvent(eventName, 1, dict);
+            Controllers.Get<ServicesController>().PushEvent(eventName, (float)revenue, dict);
         }
 
         private string EventName(string adUnitId)

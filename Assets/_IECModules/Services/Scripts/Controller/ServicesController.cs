@@ -93,6 +93,10 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
+                    if(m_ServiceData.isNoAds)
+                    {
+                        break;
+                    }
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
@@ -1138,5 +1142,10 @@ namespace IEC
         }
 
         #endregion
+        
+        public void ResetTimeShowFullAds()
+        {
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+        }
     }
 }
