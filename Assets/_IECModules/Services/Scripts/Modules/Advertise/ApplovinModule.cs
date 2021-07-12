@@ -230,6 +230,7 @@ namespace IEC
             MaxSdkCallbacks.OnBannerAdLoadFailedEvent += BannerAd_OnAdFailedToLoad;
             MaxSdkCallbacks.OnBannerAdCollapsedEvent += BannerAd_OnAdCollapsed;
             MaxSdkCallbacks.OnBannerAdExpandedEvent += BannerAd_OnAdExpanded;
+            MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
         private void BannerAd_OnAdExpanded(string adUnitId)
@@ -376,6 +377,7 @@ namespace IEC
             MaxSdkCallbacks.OnInterstitialLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
             MaxSdkCallbacks.OnInterstitialAdFailedToDisplayEvent += InterstitialAd_OnAdFailedToDisplay;
             MaxSdkCallbacks.OnInterstitialHiddenEvent += InterstitialAd_OnAdClosed;
+            MaxSdkCallbacks.Interstitial.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
 #endregion
