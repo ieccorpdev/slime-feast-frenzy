@@ -506,15 +506,16 @@ namespace IEC
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
                 applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
-                  {
-                      if (result)
-                      {
-                          applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
-                          applovinAds.Load(AdsEnum.INTERSTITIAL, null);
-                          applovinAds.Load(AdsEnum.REWARD, null);
-                          RaiseInitEvent(EventList.Service.INIT_AD_DONE);
-                      }
-                  });
+                {
+                    if (result)
+                    {
+                        applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
+                        applovinAds.Load(AdsEnum.INTERSTITIAL, null);
+                        applovinAds.Load(AdsEnum.REWARD, null);
+                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                    }
+                },
+                PushEvent);
 
                 m_Ads = applovinAds;
 #endif
