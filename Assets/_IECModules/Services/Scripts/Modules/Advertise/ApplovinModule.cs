@@ -496,7 +496,7 @@ namespace IEC
         }
 
 #endregion
-         private void OnAdRevenuePaidEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        private void OnAdRevenuePaidEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             double revenue = MaxSdk.GetAdInfo(adUnitId).Revenue;
 
