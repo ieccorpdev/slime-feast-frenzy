@@ -25,7 +25,7 @@ namespace _IECModules
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private const string m_AbVersionDefault =
-            "AB_20201029_v44";
+            "1.9.0 AB_20210708_v82";
 
         private string m_AbVersionString = m_AbVersionDefault;
 
@@ -385,15 +385,18 @@ namespace _IECModules
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
-            if (GUILayout.Button("Update string directly", GUILayout.Width(buttonSize.x),
+            if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
             {
-                ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
+                var lastVersionString = m_AbVersionString.Split(' ')[0];
+                var lastAbString = m_AbVersionString.Split(' ')[1];
+                PlayerSettings.bundleVersion = lastVersionString;
+                ProjectChecklistHelper.UpdateAbVersion(lastAbString);
             }
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
-            if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x),
+            if (GUILayout.Button("Update AB from Project Checklist", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
             {
                 ProjectChecklistHelper.UpdateAbVersionFromChecklist(m_GoogleSheetUrl);

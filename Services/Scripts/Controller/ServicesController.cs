@@ -92,17 +92,21 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
+                    if(m_ServiceData.isNoAds)
+                    {
+                        break;
+                    }
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
 #if PluginOgury
-                    if (!m_OguryModule.IsThumbnailShowing())
+                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
                     {
-                        Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
                     }
 #else
-                    Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
 #endif
                     StartCoroutine(IE_LoadAd());
                     break;
@@ -1082,7 +1086,7 @@ namespace IEC
                 Ads().Load(AdsEnum.INTERSTITIAL, null);
                 Ads().Load(AdsEnum.REWARD, null);
 #if PluginOgury
-                m_OguryModule.LoadThumbnail((eventArg) =>
+                m_OguryModule?.LoadThumbnail((eventArg) =>
                 {
                     if (eventArg == AdsEventArgs.DONE)
                     {
@@ -1100,6 +1104,11 @@ namespace IEC
 #endif
                 yield return delaySec;
             }
+        }
+        
+        public void ResetTimeShowFullAds()
+        {
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
         }
     }
 }

@@ -145,13 +145,15 @@ public class GoogleSheetUtility : MonoBehaviour
         var instance = FindObjectOfType<GoogleSheetToCSV>();
         if (instance == null)
         {
+            Debug.LogError("No GoogleSheetToCSV Instance");
             onError?.Invoke("No GoogleSheetToCSV Instance");
             return;
         }
 
         instance.DownLoadCsv(url, skipFirstLine, onComplete, onError);
 #else
-            onError?.Invoke("Must use in Unity Editor");
+        Debug.LogError("Must use in Unity Editor");
+        onError?.Invoke("Must use in Unity Editor");
 #endif
     }
 }

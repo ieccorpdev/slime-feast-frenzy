@@ -105,13 +105,14 @@ namespace _IECModules
         private IEnumerator DownloadCsvCoroutine(string url, bool skipFirstLine,
             Action<List<List<string>>> onComplete, Action<string> onError)
         {
-            //Debug.Log("DownloadCSV: " + url);
-            var www = UnityWebRequest.Get(url);
-            
+            Debug.Log("DownloadCSV: " + url);
+            var www = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url);
+
             yield return www.SendWebRequest();
 
             if (!string.IsNullOrEmpty(www.error))
             {
+                Debug.LogError("Error downloading: " + www.error);
                 onError?.Invoke("Error downloading: " + www.error);
                 yield break;
             }
@@ -120,16 +121,22 @@ namespace _IECModules
             try
             {
                 var csvContent = www.downloadHandler.text;
-                parseCSV = ParseCSV(csvContent, skipFirstLine);
+                Debug.Log("csvContent: ");
+                Debug.Log(csvContent);
+                var jsoner = new IEC.JsonDotNetModule();
+                parseCSV = jsoner.FromJson<List<List<string>>>(csvContent);
+                if (skipFirstLine) parseCSV.RemoveAt(0);
             }
             catch (Exception e)
             {
+                Debug.LogError($"{e.Message}\n{e.StackTrace}");
                 onError?.Invoke($"{e.Message}\n{e.StackTrace}");
                 yield break;
             }
 
             if (parseCSV == null)
             {
+                Debug.LogError("Unknown Error, null Data");
                 onError?.Invoke("Unknown Error, null Data");
                 yield break;
             }
