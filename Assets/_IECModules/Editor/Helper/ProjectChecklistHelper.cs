@@ -30,6 +30,8 @@ namespace _IECModules
             FacebookID,
             FirebaseConfigFileIOS,
             FirebaseConfigFileAndroid,
+            UnityProjectID,
+            UnityProjectName,
             KochavaIDIOS,
             KochavaIDAndroid,
             AppodealIDIOS,
@@ -51,7 +53,19 @@ namespace _IECModules
             ApplovinAndroidRewardID,
             IronSourceIOSID,
             IronSourceAndroidID,
-            AbTestList
+            AbTestList,
+            AdjustIDAndroid,
+            AdjustIDiOS,
+            OguryIOSID,
+            OguryAndroidID,
+            OguryIOSInterID,
+            OguryIOSBannerID,
+            OguryIOSRewardID,
+            OguryIOSThumbnailID,
+            OguryAndroidInterID,
+            OguryAndroidBannerID,
+            OguryAndroidRewardID,
+            OguryAndroidThumbnailID,
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -72,6 +86,8 @@ namespace _IECModules
             {"Facebook ID", ChecklistItemName.FacebookID},
             {"Firebase Config File IOS", ChecklistItemName.FirebaseConfigFileIOS},
             {"Firebase Config File Android", ChecklistItemName.FirebaseConfigFileAndroid},
+            {"Unity Project Id", ChecklistItemName.UnityProjectID},
+            {"Unity Project Name", ChecklistItemName.UnityProjectName},
             {"Kochava ID IOS", ChecklistItemName.KochavaIDIOS},
             {"Kochava ID Android", ChecklistItemName.KochavaIDAndroid},
             {"Appodeal ID IOS", ChecklistItemName.AppodealIDIOS},
@@ -93,7 +109,19 @@ namespace _IECModules
             {"Applovin Android Reward ID", ChecklistItemName.ApplovinAndroidRewardID},
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
-            {"AB Test List", ChecklistItemName.AbTestList}
+            {"AB Test List", ChecklistItemName.AbTestList},
+            {"Adjust ID IOS", ChecklistItemName.AdjustIDiOS},
+            {"Adjust ID Android", ChecklistItemName.AdjustIDAndroid},
+            {"Ogury IOS ID", ChecklistItemName.OguryIOSID },
+            {"Ogury Android ID", ChecklistItemName.OguryAndroidID },
+            {"Ogury IOS Inter ID", ChecklistItemName.OguryIOSInterID },
+            {"Ogury IOS Banner ID", ChecklistItemName.OguryIOSBannerID },
+            {"Ogury IOS Reward ID", ChecklistItemName.OguryIOSRewardID },
+            {"Ogury IOS Thumbnail ID", ChecklistItemName.OguryIOSThumbnailID },
+            {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID },
+            {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID },
+            {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID },
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID }
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -240,7 +268,14 @@ namespace _IECModules
             LogEditorHelper.AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
             PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) 29;
+            PlayerSettings.enableCrashReportAPI = true;
 
+            var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            var listProjectSettingChange = new List<Func<string, string>>();
+            listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                projectSetting.GetBetweenString("organizationId: ", "\n"), 
+                $"organizationId: iec-corporation\n"));
+            
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
                 var checklistItemName = keyValuePair.Key;
@@ -309,6 +344,19 @@ namespace _IECModules
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
                         break;
+#endif
+                    case ChecklistItemName.UnityProjectID:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("cloudProjectId: ", "\n"),
+                            $"cloudProjectId: {checklistItemValue}\n"));
+                        break;
+                    case ChecklistItemName.UnityProjectName:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
+                        listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
+                            projectSetting.GetBetweenString("projectName: ", "\n"), 
+                            $"projectName: {checklistItemValue}\n"));
+                        break;    
                     case ChecklistItemName.FirebaseConfigFileIOS:
                         break;
                     case ChecklistItemName.FirebaseConfigFileAndroid:
@@ -354,8 +402,17 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
+#if PluginAdjust
+                    case ChecklistItemName.AdjustIDiOS:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
+                        servicesConfig.adjustConfig.iosID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.AdjustIDAndroid:
+                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
+                        servicesConfig.adjustConfig.androidID = checklistItemValue;
+                        break;        
 #endif
-
+                    
 #if PluginApplovin
                     case ChecklistItemName.ApplovinIOSID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
@@ -406,12 +463,62 @@ namespace _IECModules
                         AppLovinSettings.Instance.SaveAsync();
                         break;
 #endif
+#if PluginOgury
+                    case ChecklistItemName.OguryIOSID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Inter ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Banner ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Reward ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryIOSThumbnailID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury IOS Thumbnail ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.ios.thumbnailID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.appID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidInterID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Inter ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.interstitialID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidBannerID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Banner ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.bannerID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidRewardID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Reward ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.rewardID = checklistItemValue;
+                        break;
+                    case ChecklistItemName.OguryAndroidThumbnailID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Thumbnail ID: {checklistItemValue}");
+                        servicesConfig.OguryConfig.android.thumbnailID = checklistItemValue;
+                        break;
+#endif
                 }
             }
-            
+
+
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+
+            var projectSettingAssetFileStr = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
+            listProjectSettingChange.ForEach(func =>
+            {
+                projectSettingAssetFileStr = func.Invoke(projectSettingAssetFileStr);
+            });
+            File.WriteAllText("ProjectSettings/ProjectSettings.asset", projectSettingAssetFileStr);
         }
 
         private static void UpdateApplovinQualityService(string sdkKey)

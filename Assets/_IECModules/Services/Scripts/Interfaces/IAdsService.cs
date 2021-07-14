@@ -40,6 +40,19 @@ namespace IEC
         public string rewardID;
     }
 
+    [Serializable]
+    public class OguryAdsPlatformConfig : AdsPlatformConfig
+    {
+        public string thumbnailID;
+    }
+
+    [Serializable]
+    public class OguryAdsConfig
+    {
+        public OguryAdsPlatformConfig android;
+        public OguryAdsPlatformConfig ios;
+    }
+
     public class AdsStateData
     {
         public Action<AdsEventArgs> onLoad;

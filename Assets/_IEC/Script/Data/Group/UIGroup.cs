@@ -21,6 +21,7 @@ namespace IEC
         public ScreenInGame screenInGame;
         public ScreenLevelWin screenLevelWin;
         public ScreenLevelLose screenLevelLose;
+        public ScreenShopTest screenShopTest;
 
         public void LocateGroup()
         {

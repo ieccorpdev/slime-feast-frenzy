@@ -15,6 +15,16 @@ namespace IEC
 
             public const string REMOTE_CONFIG_LOADED = "Service.REMOTE_CONFIG_LOADED";
             public const string UPDATE_TIME_SERVER = "Service.UPDATE_TIME_SERVER";
+
+            public const string SHOW_INTER_DONE = "Service.SHOW_INTER_DONE";
+            public const string SHOW_REWARD = "Service.SHOW_REWARD";
+        }
+
+        public static class Leaderboard
+        {
+            public const string SHOW_LEADERBOARD = "Leaderboard.SHOW_LEADERBOARD";
+            public const string LOAD_DATA_FROM_SERVER = "Leaderboard.LOAD_DATA_FROM_SERVER";
+            public const string PUSH_PLAYER_DATA = "Leaderboard.PUSH_PLAYER_DATA";
         }
     }
 }

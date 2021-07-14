@@ -31,6 +31,7 @@ public class ServicesConfig : ScriptableObject
 
     public AdsConfig ApplovinConfig;
     public AdsConfig IronSourceConfig;
+    public OguryAdsConfig OguryConfig;
 
     [Header("Iap Config")]
     public bool IapTestFree;
@@ -43,6 +44,9 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Kochava")]
     public PlatformConfig kochavaConfig;
+    
+    [Header("Adjust")]
+    public PlatformConfig adjustConfig;
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;

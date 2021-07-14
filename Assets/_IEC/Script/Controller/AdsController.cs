@@ -26,11 +26,9 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
-                    Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);
-                    StartCoroutine(IE_LoadAd());
                     UpdateWhiteBannerSize();
                     break;
+
             }
         }
 
@@ -46,18 +44,7 @@ namespace IEC
             }
         }
 
-        IEnumerator IE_LoadAd()
-        {
-            var delaySec = new WaitForSecondsRealtime(3f);
-            while (true)
-            {
-                Services.Ads().Load(AdsEnum.INTERSTITIAL, null);
-                Services.Ads().Load(AdsEnum.REWARD, null);
-                yield return delaySec;
-            }
-        }
-
-        void UpdateWhiteBannerSize()
+        public void UpdateWhiteBannerSize()
         {
             Debug.LogWarning("UpdateWhiteBannerSize");
             var sizeDelta = UI.bottomAds.sizeDelta;
