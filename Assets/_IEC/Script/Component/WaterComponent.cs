@@ -127,8 +127,8 @@ namespace IEC
 
         public void OnUpdate(float deltaTime)
         {
-            //isChanged = Application.isEditor;
-            isChanged = false;
+            isChanged = Application.isEditor;
+            //isChanged = false;
 
             if (m_IsScale)
             {
@@ -183,26 +183,26 @@ namespace IEC
 
         private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
         {
-            //propertyBlock.SetVector("_Tiling", waterTile);
-            //propertyBlock.SetVector("_DistTiling", distortionTile);
-            //propertyBlock.SetVector("_MoveDirection", new Vector4(moveDirection.x, 0f, moveDirection.y, 0f));
+            propertyBlock.SetVector("_Tiling", waterTile);
+            propertyBlock.SetVector("_DistTiling", distortionTile);
+            propertyBlock.SetVector("_MoveDirection", new Vector4(moveDirection.x, 0f, moveDirection.y, 0f));
 
-            //if (waterTex != null)
-            //{
-            //    propertyBlock.SetTexture("_WaterTex", waterTex);
-            //}
+            if (waterTex != null)
+            {
+                propertyBlock.SetTexture("_WaterTex", waterTex);
+            }
 
-            //if (distortionTex != null)
-            //{
-            //    propertyBlock.SetTexture("_DistTex", distortionTex);
-            //}
+            if (distortionTex != null)
+            {
+                propertyBlock.SetTexture("_DistTex", distortionTex);
+            }
 
-            //propertyBlock.SetFloat("_TextureVisibility", textureVisibility);
-            //propertyBlock.SetFloat("_WaterHeight", waterHeight);
-            //propertyBlock.SetFloat("_WaterDeep", waterDeep);
-            //propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
-            //propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
-            //propertyBlock.SetFloat("_BorderWidth", borderWidth);
+            propertyBlock.SetFloat("_TextureVisibility", textureVisibility);
+            propertyBlock.SetFloat("_WaterHeight", waterHeight);
+            propertyBlock.SetFloat("_WaterDeep", waterDeep);
+            propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
+            propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
+            propertyBlock.SetFloat("_BorderWidth", borderWidth);
 
             OnUpdatePropertyBlock(propertyBlock);
 

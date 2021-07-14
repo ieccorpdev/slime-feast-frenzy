@@ -34,19 +34,21 @@
 		// to foam being rendered.
 		_FoamMaxDistance("Foam Maximum Distance", Float) = 0.4
 		_FoamMinDistance("Foam Minimum Distance", Float) = 0.04		
+
+		_GLOBALMaskPosition("Mask Position", Vector) = (0, 0, 0, 0)
+		_FillAmount("Fill Amount", Float) = 0		
     }
     SubShader
     {
-		Tags
-		{
-			"Queue" = "Transparent"
-		}
+		Tags{ "RenderType"="Opaque" "Queue"="Transparent"}
 
         Pass
         {
 			// Transparent "normal" blending.
+			Cull off
+			LOD 200
 			Blend SrcAlpha OneMinusSrcAlpha
-			ZWrite Off
+			ZWrite off
 
             CGPROGRAM
 			#define SMOOTHSTEP_AA 0.01
@@ -55,6 +57,8 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
+			#pragma multi_compile_fog
+			#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
 
 			// Blends two colors using the same algorithm that our shader is using
 			// to blend with the screen. This is usually called "normal blending",
