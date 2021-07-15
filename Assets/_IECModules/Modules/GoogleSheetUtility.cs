@@ -63,7 +63,8 @@ public class GoogleSheetUtility : MonoBehaviour
                 var fieldInfo = fieldParamListSorted[i];
                 if (fieldInfo == null) continue;
 
-                var cell = row[i];
+                var cell = string.Empty;
+                if (i < row.Count) cell = row[i];
                 if (!string.IsNullOrWhiteSpace(cell)) rowIsEmpty = false;
                 
                 if (fieldInfo.FieldType.IsGenericType && fieldInfo.FieldType.GetGenericTypeDefinition() == typeof(List<>))
@@ -84,7 +85,7 @@ public class GoogleSheetUtility : MonoBehaviour
             if (rowIsEmpty)
             {
                 listNewValue.RemoveAt(listNewValue.Count - 1);
-                break;
+                // break;
             }
         }
         
