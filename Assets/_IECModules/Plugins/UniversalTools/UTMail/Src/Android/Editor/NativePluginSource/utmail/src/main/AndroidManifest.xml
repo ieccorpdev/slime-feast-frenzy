@@ -1,0 +1,16 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="universal.tools.mail">
+
+    <application>
+        <provider
+            android:name="universal.tools.mail.FileProvider"
+            android:authorities="${applicationId}.universal.tools.mail.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/utmail_provider_paths"/>
+        </provider>
+    </application>
+
+</manifest>

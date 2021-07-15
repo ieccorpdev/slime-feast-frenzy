@@ -9,17 +9,27 @@ module Fastlane
         appName = Fastlane::Actions::GetInfoPlistValueAction.run(path: "./Info.plist", key: "CFBundleDisplayName")
         versionName = Fastlane::Actions::GetVersionNumberAction.run(target: "Unity-iPhone")
         buildNumber = Fastlane::Actions::GetBuildNumberAction.run({})
+        lastGitCommit = Fastlane::Actions::LastGitCommitAction.run({})
+        changelogGitCommit = Fastlane::Actions::ChangelogFromGitCommitsAction.run({
+          pretty: "%B",
+          commits_count: 5, 
+          merge_commit_filtering: "include_merges"
+        })
 
         # UI.message bundleId
         # UI.message appName
         # UI.message versionName
         # UI.message buildNumber
-
+        # UI.message lastGitCommit[:author_email]
+        # UI.message changelogGitCommit
+        
         Faraday.post("http://discordbot.game.ieccorp.vn:3004/", JSON.generate({ 
           bundleId: bundleId, 
           appName: appName,
           versionName: versionName,
-          buildNumber: buildNumber
+          buildNumber: buildNumber,
+          lastGitCommitAuthor: lastGitCommit[:author_email],
+          changelogGitCommit: changelogGitCommit
         }),
         {
           "Content-Type" => "application/json"

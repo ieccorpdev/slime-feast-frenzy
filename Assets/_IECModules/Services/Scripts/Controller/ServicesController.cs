@@ -1,8 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
-using Balaso;
 using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
@@ -12,6 +13,7 @@ using Google.Play.Review;
 
 #if UNITY_IOS
 using System.Runtime.InteropServices;
+using Balaso;
 #endif
 
 
@@ -46,6 +48,10 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
+#if PluginOgury
+        OguryModule m_OguryModule;
+#endif
+
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -53,7 +59,7 @@ namespace IEC
         private static extern int _initByteDance(string appId, string appName);
 #endif
 #if UNITY_IOS
-        [DllImport("_Internal")]
+        [DllImport("__Internal")]
         private static extern void _openAppSetting();
 #endif
 
@@ -86,9 +92,23 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
+                    if(m_ServiceData.isNoAds)
+                    {
+                        break;
+                    }
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
+                    Ads().Load(AdsEnum.BANNER_BOTTOM, null);
+#if PluginOgury
+                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
+                    {
+                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                    }
+#else
+                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+#endif
+                    StartCoroutine(IE_LoadAd());
                     break;
             }
         }
@@ -96,6 +116,19 @@ namespace IEC
         public void BehaviourAwake()
         {
             if (isInitAwake) return;
+            
+            Application.logMessageReceived += (condition, trace, type) =>
+            {
+                var log = new Logs
+                {
+                    condition = condition,
+                    stackTrace = trace,
+                    type = type,
+                    dateTime = DateTime.Now.ToString()
+                };
+                SaveLog.AddLog(log);
+            };
+            
             UnityToolbag.Dispatcher.Awake();
             Init();
 #if UNITY_IOS
@@ -115,7 +148,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-            StartCoroutine(IE_CountOneSec());
+           // StartCoroutine(IE_CountOneSec());
             isInitAwake = true;
         }
 
@@ -212,6 +245,15 @@ namespace IEC
             {
                 PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
             });
+            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
+            {
+                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
+                var param = new Dictionary<string, object>
+                {
+                    ["productID"] = productID
+                };
+                PushEvent(eventName,1,param);
+            } );
 #endif
             m_Ads = new AdsMock(false);
 
@@ -220,14 +262,6 @@ namespace IEC
 
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal());
-
-#if (PluginKochava)
-            if (Application.isEditor)
-            {
-                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
-                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
-            }
-#endif
 
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
@@ -243,11 +277,6 @@ namespace IEC
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
-
-#if (PluginKochava)
-                m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
-                m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
             }
 
@@ -290,9 +319,14 @@ namespace IEC
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
 
             Debug.LogWarning("device ver:" + deviceVer);
-            var isNeedShowAtt = !Application.isEditor && GetIntDeviceVerion(deviceVer) >= GetIntDeviceVerion("14.5");
+            
+            var isNeedShowAtt = !Application.isEditor && CompareVersion.IsHigherOrEqual(deviceVer, "14.5");
 
-            if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED && isNeedShowAtt)
+            if (!isNeedShowAtt)
+            {
+                InitSDKAfterATT(true);
+            }
+            else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
             {
                 Debug.LogWarning("Requesting authorization...");
                 AppTrackingTransparency.RequestTrackingAuthorization();
@@ -301,10 +335,10 @@ namespace IEC
             }
             else
             {
-                InitAdsAfterGDPR(true, currentStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+                InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
 #else
-            InitAdsAfterGDPR(true,true);
+            InitSDKAfterATT(true);
 #endif
 
             foreach (var analytic in m_ListAnalytics)
@@ -319,11 +353,31 @@ namespace IEC
 
         }
 
+#if UNITY_IOS
         IEnumerator IE_WaitATT()
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitAdsAfterGDPR(true, AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.DENIED);
+            InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+        }
+#endif
+
+        void InitSDKAfterATT(bool isHaveIDFA)
+        {
+#if (PluginKochava)
+            if (Application.isEditor)
+            {
+                Debug.LogWarning("Kochava Android ID: " + config.kochavaConfig.androidID);
+                Debug.LogWarning("Kochava iOS ID: " + config.kochavaConfig.iosID);
+            }
+            m_KochavaAnalytic = new KochavaAnalyticModule(config.kochavaConfig.androidID, config.kochavaConfig.iosID);
+            m_ListAnalytics.Add(m_KochavaAnalytic);
+#endif
+#if (PluginAdjust)
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+            InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
         public void SendATTAnalytic(string eventName)
@@ -445,18 +499,23 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
+#if PluginOgury
+                m_OguryModule = new OguryModule();
+                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
+#endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
                 applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
-                  {
-                      if (result)
-                      {
-                          applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
-                          applovinAds.Load(AdsEnum.INTERSTITIAL, null);
-                          applovinAds.Load(AdsEnum.REWARD, null);
-                          RaiseInitEvent(EventList.Service.INIT_AD_DONE);
-                      }
-                  });
+                {
+                    if (result)
+                    {
+                        applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
+                        applovinAds.Load(AdsEnum.INTERSTITIAL, null);
+                        applovinAds.Load(AdsEnum.REWARD, null);
+                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                    }
+                },
+                PushEvent);
 
                 m_Ads = applovinAds;
 #endif
@@ -585,6 +644,7 @@ namespace IEC
         {
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
             {
+                Debug.Log("show full ads");
                 SafeInvoke(closeCallback);
                 return;
             }
@@ -596,6 +656,9 @@ namespace IEC
                     PushEvent("show_full_ad");
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
+#endif
+#if (PluginAdjust)
+                    m_AdjustAnalytic?.PushEventFullAd();
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
@@ -660,6 +723,9 @@ namespace IEC
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
                         m_KochavaAnalytic?.PushEventRewardAd();
+#endif
+#if (PluginAdjust)
+                        m_AdjustAnalytic?.PushEventRewardAd();
 #endif
                         PushEvent("show_reward_ad", 1);
 
@@ -814,9 +880,11 @@ namespace IEC
                 Debug.Log("advertisingId " + m_UserIDFA);
             }
         }
-
+        
+        [NaughtyAttributes.Button]
         public void SendEmail()
         {
+            SaveLogToFile();
             string email = "support@iecglobal.com.au";
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
@@ -827,19 +895,33 @@ namespace IEC
             {
                 title = Application.productName + " IOS Support";
             }
-            title = MyEscapeURL(title);
+
             var userIDFA = m_UserIDFA;
-            var newLine = Application.isMobilePlatform ? "<br>" : System.Environment.NewLine;
+            var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
-            if (!string.IsNullOrWhiteSpace(userIDFA))
-            {
-                message += "ID: " + userIDFA + newLine;
-            }
+            // message = MyEscapeURL(message);
+            
             message += newLine + "Hello, " + newLine;
             Debug.Log("message SendEmail: " + message);
-            message = MyEscapeURL(message);
-            Debug.Log("message SendEmail EscapeURL: " + message);
-            Application.OpenURL("mailto:" + email + "?subject=" + title + "&body=" + message);
+            var mail = new UT.MailMessage()
+                .AddTo(email)
+                .SetSubject(title)
+                .SetBody(message)
+                .AddAttachment(Application.persistentDataPath + @"/log.txt");
+            UT.Mail.Compose(mail, "Support");
+        }
+
+        void SaveLogToFile()
+        {
+            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+            var saveLog = Json().ToJson(SaveLog.GetLog());
+            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
+                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
+            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+            txtWrite.Write(content);
+            txtWrite.Close();
         }
 
         string MyEscapeURL(string url)
@@ -974,6 +1056,10 @@ namespace IEC
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
+
+#if (PluginAdjust)
+        AdjustAnalyticModule m_AdjustAnalytic;
+#endif
         #endregion
 
         int GetIntDeviceVerion(string version)
@@ -991,6 +1077,39 @@ namespace IEC
             var scaler = canvasObj.GetComponent<UnityEngine.UI.CanvasScaler>();
             var bannerAds = canvasObj.GetComponentInChildren<BannerAds>();
             bannerAds.SetBannerHeight(GetBannerHeight(scaler));
+        }
+
+        IEnumerator IE_LoadAd()
+        {
+            var delaySec = new WaitForSecondsRealtime(3f);
+            while (true)
+            {
+                Ads().Load(AdsEnum.INTERSTITIAL, null);
+                Ads().Load(AdsEnum.REWARD, null);
+#if PluginOgury
+                m_OguryModule?.LoadThumbnail((eventArg) =>
+                {
+                    if (eventArg == AdsEventArgs.DONE)
+                    {
+                        if (m_ServiceData.isNoAds)
+                        {
+                            return;
+                        }
+                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+                        m_OguryModule.ShowThumbnail((eventArgs) =>
+                        {
+                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                        });
+                    }
+                });
+#endif
+                yield return delaySec;
+            }
+        }
+        
+        public void ResetTimeShowFullAds()
+        {
+            lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
         }
     }
 }

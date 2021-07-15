@@ -10,6 +10,8 @@ namespace IEC
     public class InAppPurchaseMock : IInAppPurchaseService
     {
         IDataService m_DataService;
+        Action<string, bool, bool> purchaseResultAction;
+        Dictionary<string, Action<bool>> recieveProductActions = new Dictionary<string, Action<bool>>();
 
         public InAppPurchaseMock(IDataService dataService)
         {
@@ -47,19 +49,27 @@ namespace IEC
             return false;
         }
 
-        public void PurchaseProduct(string productID, Action<bool> callBack)
+        public void PurchaseProduct(string productID)
         {
-            m_DataService.SetBool(productID, true);
-            callBack(true);
+            IapProductResult(productID, true, false);
         }
 
-        public void RestorePurchase(Dictionary<string, Action<bool>> callbacks, Action<bool> onRestoreDone)
+        void IapProductResult(string productID, bool isSuccess, bool isRestore)
         {
-            foreach (var item in callbacks)
+            if (recieveProductActions.ContainsKey(productID))
             {
-                m_DataService.SetBool(item.Key, true);
-                item.Value(true);
+                if (isSuccess) m_DataService.SetBool(productID, true);
+
+                purchaseResultAction?.Invoke(productID, isSuccess, isRestore);
+                if (isSuccess && recieveProductActions.TryGetValue(productID, out var action))
+                {
+                    action.Invoke(isRestore);
+                }
             }
+        }
+
+        public void RestorePurchase(Action<bool> onRestoreDone)
+        {
             onRestoreDone(true);
         }
 
@@ -70,8 +80,15 @@ namespace IEC
         }
 #endif
 
-        public void SetRestoreCallbacks(Dictionary<string, Action<bool>> callbacks)
+        public void SetPurchaseCallback(Action<string, bool, bool> callback)
         {
+            purchaseResultAction = callback;
+        }
+
+        public void SetReceiveProductCallback(string productId, Action<bool> callback)
+        {
+            if (string.IsNullOrWhiteSpace(productId)) return;
+            recieveProductActions[productId] = callback;
         }
     }
 }
