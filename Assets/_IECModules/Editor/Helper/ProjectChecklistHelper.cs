@@ -403,11 +403,11 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #if PluginAdjust
-                    case ChecklistItemName.AdjustIDiOS:
+                    case ChecklistItemName.AdjusIosID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
                         servicesConfig.adjustConfig.iosID = checklistItemValue;
                         break;
-                    case ChecklistItemName.AdjustIDAndroid:
+                    case ChecklistItemName.AdjustAndroidID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
                         servicesConfig.adjustConfig.androidID = checklistItemValue;
                         break;        
