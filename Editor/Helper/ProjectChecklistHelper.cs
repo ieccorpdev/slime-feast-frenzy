@@ -54,8 +54,8 @@ namespace _IECModules
             IronSourceIOSID,
             IronSourceAndroidID,
             AbTestList,
-            AdjustIDAndroid,
-            AdjustIDiOS,
+            AdjustAndroidID,
+            AdjusIosID,
             OguryIOSID,
             OguryAndroidID,
             OguryIOSInterID,
@@ -110,8 +110,8 @@ namespace _IECModules
             {"Iron Source IOS ID", ChecklistItemName.IronSourceIOSID},
             {"Iron Source Android ID", ChecklistItemName.IronSourceAndroidID},
             {"AB Test List", ChecklistItemName.AbTestList},
-            {"Adjust ID IOS", ChecklistItemName.AdjustIDiOS},
-            {"Adjust ID Android", ChecklistItemName.AdjustIDAndroid},
+            {"Adjust iOS ID", ChecklistItemName.AdjusIosID},
+            {"Adjust Android ID", ChecklistItemName.AdjustAndroidID},
             {"Ogury IOS ID", ChecklistItemName.OguryIOSID },
             {"Ogury Android ID", ChecklistItemName.OguryAndroidID },
             {"Ogury IOS Inter ID", ChecklistItemName.OguryIOSInterID },
@@ -403,11 +403,11 @@ namespace _IECModules
                         servicesConfig.IronSourceConfig.android.rewardID = checklistItemValue;
                         break;
 #if PluginAdjust
-                    case ChecklistItemName.AdjustIDiOS:
+                    case ChecklistItemName.AdjusIosID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID IOS: {checklistItemValue}");
                         servicesConfig.adjustConfig.iosID = checklistItemValue;
                         break;
-                    case ChecklistItemName.AdjustIDAndroid:
+                    case ChecklistItemName.AdjustAndroidID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
                         servicesConfig.adjustConfig.androidID = checklistItemValue;
                         break;        

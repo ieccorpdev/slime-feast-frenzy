@@ -39,5 +39,4 @@ public static class StringHelper
         if (pFrom == -1 || pTo == -1) return "";
         return original.Substring(pFrom, pTo - pFrom + end.Length);
     }
-
 }
