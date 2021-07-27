@@ -19,14 +19,14 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.NEW_GAME:
-                    UI.ShowScreenByGameState();
-                    UI.textHello.text = "Hello IEC " + PlayerData.level;
+                    UI.ShowScreen(UI.ScreenInGame);
+                    UI.ScreenInGame.SetLevel(PlayerData.level);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    UI.ShowScreenByGameState();
+                    UI.ShowScreen(UI.ScreenLevelWin);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
-                    UI.ShowScreenByGameState();
+                    UI.ShowScreen(UI.ScreenLevelLose);
                     break;
             }
         }
@@ -42,29 +42,29 @@ namespace IEC
 
         void SetEventUI(UIGroup UI)
         {
-            SetEvent(UI.screenInGame.btnRestart, () =>
+            SetEvent(UI.ScreenInGame.btnRestart, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
             });
 
             // test button
-            SetEvent(UI.screenInGame.btnLevelWin, () =>
+            SetEvent(UI.ScreenInGame.btnLevelWin, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
             });
 
             // test button
-            SetEvent(UI.screenInGame.btnLevelLose, () =>
+            SetEvent(UI.ScreenInGame.btnLevelLose, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
             });
 
-            SetEvent(UI.screenLevelLose.btnRetry, () =>
+            SetEvent(UI.ScreenLevelLose.btnRetry, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
             });
 
-            SetEvent(UI.screenLevelWin.btnNext, () =>
+            SetEvent(UI.ScreenLevelWin.btnNext, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
             });

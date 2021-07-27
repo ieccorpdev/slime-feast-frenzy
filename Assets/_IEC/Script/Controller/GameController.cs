@@ -20,22 +20,27 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.NEW_GAME:
-                    Game.SetGameState(GameState.Playing);
+                    GamePlay.SetGameState(UI.ScreenInGame);
                     OnNewGame();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    Game.SetGameState(GameState.Win);
+                    GamePlay.SetGameState(UI.ScreenLevelWin);
                     OnGameOver();
+                    Pool.Get<ConfettiGroup>().ShowConfetti();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
-                    Game.SetGameState(GameState.Lose);
+                    GamePlay.SetGameState(UI.ScreenLevelLose);
                     OnGameOver();
+                    break;
+                case EventList.GamePlay.LEVEL_SKIP:
+                    GamePlay.SetFinishPlay();
                     break;
             }
         }
 
         public void BehaviourAwake()
         {
+            Input.multiTouchEnabled = false;
         }
 
         public void BehaviourStart()
@@ -49,12 +54,14 @@ namespace IEC
             PlayerData.levelTracking = PlayerData.level;
 
             PushPlayLevelEvent();
+
+            GamePlay.SetNewLevel(PlayerData.level);
         }
 
         void OnGameOver()
         {
             Game.SetTimeEndLevel();
-            if (Game.IsWin)
+            if (GamePlay.IsWin)
             {
                 PlayerData.AddLevel();
             }

@@ -30,6 +30,16 @@ namespace IEC
             m_Dict[type] = t;
         }
 
+        public static void Set(Type type, object obj)
+        {
+            if (type == null)
+            {
+                Debug.LogError("Cannot set null object to Pool");
+                return;
+            }
+            m_Dict[type] = obj;
+        }
+
         /// <summary>
         /// get single object from type
         /// </summary>

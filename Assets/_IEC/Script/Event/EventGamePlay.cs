@@ -13,6 +13,7 @@ namespace IEC
 
             public const string LEVEL_WIN = "GamePlay.LEVEL_WIN";
             public const string LEVEL_LOSE = "GamePlay.LEVEL_LOSE";
+            public const string LEVEL_SKIP = "GamePlay.LEVEL_SKIP";
 
             public const string END_LEVEL_ADS = "GamePlay.END_LEVEL_ADS";
         }

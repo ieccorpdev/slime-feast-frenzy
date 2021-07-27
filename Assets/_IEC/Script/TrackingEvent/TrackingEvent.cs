@@ -62,7 +62,7 @@ namespace IEC.TrackingEvent
         {
             var dict = base.GetParams();
             dict["time"] = DataGame.TimeFinishLevel;
-            dict["isWin"] = DataGame.IsWin;
+            dict["isWin"] = DataGamePlay.IsWin;
             return dict;
         }
     }

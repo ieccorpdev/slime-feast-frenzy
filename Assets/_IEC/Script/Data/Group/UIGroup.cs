@@ -17,43 +17,49 @@ namespace IEC
 
         public RectTransform bottomAds;
         public TMP_Text textHello;
+        
+        public ScreenInGame ScreenInGame => Pool.Get<ScreenInGame>();
+        public ScreenLevelWin ScreenLevelWin => Pool.Get<ScreenLevelWin>();
+        public ScreenLevelLose ScreenLevelLose => Pool.Get<ScreenLevelLose>();
+        public ScreenShopTest ScreenShopTest => Pool.Get<ScreenShopTest>();
 
-        public ScreenInGame screenInGame;
-        public ScreenLevelWin screenLevelWin;
-        public ScreenLevelLose screenLevelLose;
-        public ScreenShopTest screenShopTest;
+        public List<ScreenUI> ListScreen => 
+            SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
 
         public void LocateGroup()
         {
             Pool.Set(this);
+            
+            foreach (var screen in ListScreen)
+            {
+                screen.LocateScreen();
+            }
+        }
+
+        void Start()
+        {
+            foreach (var screen in ListScreen)
+            {
+                screen.onShow.AddListener(() =>
+                {
+                    screen.SetShowOrder(CountScreenShowing());
+                    GamePlay.SetGameState(screen);
+                });
+
+                screen.onHide.AddListener(() =>
+                {
+                    var topScreen = ListScreen.Where(s => s.IsShow).OrderByDescending(s => s.ShowOrder).FirstOrDefault();
+                    if (topScreen != null)
+                    {
+                        GamePlay.SetGameState(topScreen);
+                    }
+                });
+            }
         }
 
         public void HideAllScreens()
         {
-            var screens = transform.GetComponentsInChildren<ScreenUI>().ToList();
-            screens.ForEach(s => HideScreen(s, false));
-        }
-
-        [Button]
-        public void ShowScreenByGameState()
-        {
-            ShowScreen(Game.gameState);
-        }
-
-        public void ShowScreen(GameState state)
-        {
-            switch(state)
-            {
-                case GameState.Playing:
-                    ShowScreen(screenInGame);
-                    break;
-                case GameState.Win:
-                    ShowScreen(screenLevelWin);
-                    break;
-                case GameState.Lose:
-                    ShowScreen(screenLevelLose);
-                    break;
-            }
+            ListScreen.ForEach(s => HideScreen(s, false));
         }
 
         public void ShowScreen(ScreenUI screen)
@@ -72,15 +78,35 @@ namespace IEC
 
         public void HideScreen(ScreenUI screen, bool isUseEffect)
         {
+            if (screen.IsHide) return;
+
             if (isUseEffect)
             {
-                screen.Show();
+                screen.Hide();
             }
             else
             {
                 screen.SetActive(false);
             }
+            screen.SetShowOrder(0);
         }
 
+        public bool IsPauseGame()
+        {
+            var listScreen = ListScreen;
+            foreach (var screen in listScreen)
+            {
+                if (screen.IsShow && screen.IS_PAUSE_GAME)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public int CountScreenShowing()
+        {
+            return ListScreen.Count(s => s.IsShow);
+        }
     }
 }

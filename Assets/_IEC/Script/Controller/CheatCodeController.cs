@@ -3,7 +3,7 @@ using _IECModules;
 
 namespace IEC
 {
-    public class CheatCodeController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class CheatCodeController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate
     {
         public void LocateController()
         {
@@ -99,6 +99,23 @@ namespace IEC
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
             });
+        }
+
+        public void BehaviourUpdate(float deltaTime)
+        {
+            if (!Application.isMobilePlatform)
+            {
+                if (Input.GetKeyDown(KeyCode.RightArrow))
+                {
+                    if (!GamePlay.IsWin) PlayerData.level = Mathf.Max(1, PlayerData.level + 1);
+                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                }
+                else if (Input.GetKeyDown(KeyCode.LeftArrow))
+                {
+                    PlayerData.level = Mathf.Max(1, PlayerData.level - 1);
+                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                }
+            }
         }
     }
 }
