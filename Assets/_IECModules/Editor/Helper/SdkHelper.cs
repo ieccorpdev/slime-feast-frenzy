@@ -22,26 +22,10 @@ namespace _IECModules
         public const string GITLAB_API = "https://gitlab.com/api/v4/";
         public const string GITLAB_GROUP_NAME = "iec-public-google-registry";
 
-        public const string APPLOVIN_VERSION_CACHE = "applovin_version_cache";
-        public const string KOCHAVA_VERSION_CACHE = "kochava_version_cache";
-        public const string ADJUST_VERSION_CACHE = "adjust_version_cache";
-        public const string OGURY_VERSION_CACHE = "ogury_version_cache";
-
-        public const string FACEBOOK_CURRENT_VERSION = "7.18.0";
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
-        public const string KOCHAVA_CURRENT_VERSION = "4.1.1";
-
-        public const string FACEBOOK_SDK_BASE_URL =
-            "https://lookaside.facebook.com/developers/resources/?id=facebook-unity-sdk-{0}.zip";
 
         public const string FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL =
             "https://developers.facebook.com/resources/audience-network-unity-sdk-{0}.zip";
-
-        public const string KOCHAVA_SDK_BASE_URL =
-            "https://github.com/Kochava/unity-kochavatracker-releases/releases/download/v{0}/KochavaTrackerUnity.unitypackage";
-
-        public const string ADJUST_SDK_BASE_URL =
-            "https://github.com/adjust/unity_sdk/releases/download/v{0}/Adjust_v{0}.unitypackage";
 
         public const string FIREBASE_SDK_BASE_URL =
             "https://gitlab.com/iec-unity-plugins/firebase-unity-plugin/raw/master/{0}/FirebaseAnalytics.unitypackage";
@@ -53,21 +37,12 @@ namespace _IECModules
         public const string IRON_SOURCE_SDK_BASE_URL =
             "https://dl.bintray.com/ironsource-mobile/unity-sdk/IronSource_v{0}.unitypackage";
 
-        public const string FACEBOOK_SDK_CURRENT_VERSION_URL =
-            "https://lookaside.facebook.com/developers/resources/?id=FacebookSDK-current.zip";
-
         public const string EXTERNAL_PACKAGE_MANAGER_URL =
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
 
-        public const string OGURY_SDK_BASE_URL =
-            "https://binaries.ogury.co/release/unity/{0}/OgurySdk-{0}.unitypackage";
-
         public const string APPLOVIN_LATEST_SDK_URL =
             "https://dash.applovin.com/docs/v1/unity_integration_manager?plugin_version=latest";
-
-
-
-
+        
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
         public const string FIREBASE_APP_CORE = "com.google.firebase.app";
         public const string FIREBASE_REMOTE_CONFIG_PKG = "com.google.firebase.remote-config";
@@ -77,83 +52,14 @@ namespace _IECModules
         public const string GOOGLE_PLAY_COMMON = "com.google.play.common";
         public const string GOOGLE_PLAY_CORE = "com.google.play.core";
         public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
-
-        public static string FacebookSdkUrlByVersion => string.Format(FACEBOOK_SDK_BASE_URL, FACEBOOK_CURRENT_VERSION);
-        public static string FirebaseSdkUrlByVersion(string version) => string.Format(FIREBASE_SDK_BASE_URL, version);
-        public static string ApplovinSdkUrlByVersion(string version) => string.Format(APPLOVIN_SDK_BASE_URL, version);
-
-        public static string OgurySdkUrlByVersion(string version) => string.Format(OGURY_SDK_BASE_URL, version);
-
+        
         public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") =>
             string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
 
         public static string EDMUrlByVersion(string version) =>
             string.Format(EXTERNAL_PACKAGE_MANAGER_URL, version, version.Substring(1));
 
-        public static string IronSourceSdkUrlByVersion =>
-            string.Format(IRON_SOURCE_SDK_BASE_URL, IRON_SOURCE_CURRENT_VERSION);
-
-        public static string KochavaSdkUrlByVersion(string version) => string.Format(KOCHAVA_SDK_BASE_URL, version);
-        public static string AdjustSdkUrlByVersion(string version) => string.Format(ADJUST_SDK_BASE_URL, version);
-
-        public static string[] ListApplovinVersionDefault =
-        {
-            "3.0.0-Android-9.13.2-iOS-6.13.2",
-            "2.4.16-Android-9.13.1-iOS-6.13.1"
-        };
-
         public static string ApplovinLatestDownloadLink = string.Empty;
-
-        public static string[] ListKochavaVersionDefault =
-        {
-            "3.0.0"
-        };
-
-        public static string[] ListAdjustVersionDefault =
-        {
-            "4.29.0"
-        };
-
-        public static string[] ListOguryVersionDefault =
-       {
-            "6.0.1"
-        };
-
-        public static string[] ListApplovinVersionFromBintray;
-        public static string[] ListKochavaVersionFromGithub;
-        public static string[] ListAdjustVersionFromGithub;
-        public static string[] ListOguryVersionFromServer;
-
-        public static string[] ListApplovinVersion =>
-            ListApplovinVersionFromBintray == null ||
-            ListApplovinVersionFromBintray.Length <= ListApplovinVersionDefault.Length
-                ? ListApplovinVersionDefault
-                : ListApplovinVersionFromBintray;
-
-        public static string[] ListKochavaVersion =>
-            ListKochavaVersionFromGithub == null ||
-            ListKochavaVersionFromGithub.Length <= ListKochavaVersionDefault.Length
-                ? ListKochavaVersionDefault
-                : ListKochavaVersionFromGithub;
-
-        public static string[] ListAdjustVersion =>
-            ListAdjustVersionFromGithub == null ||
-            ListAdjustVersionFromGithub.Length <= ListAdjustVersionDefault.Length
-                ? ListAdjustVersionDefault
-                : ListAdjustVersionFromGithub;
-
-        public static string[] ListOguryVersion =>
-            ListOguryVersionFromServer == null ||
-            ListOguryVersionFromServer.Length <= ListOguryVersionDefault.Length
-                ? ListOguryVersionDefault
-                : ListOguryVersionFromServer;
-
-
-        public static string[] ListFirebaseVersion =
-        {
-            "6.15.2",
-            "6.1.1"
-        };
 
         public static Dictionary<string, UnityPackageInfo> DictUnityPackage = new Dictionary<string, UnityPackageInfo>
         {
@@ -219,16 +125,42 @@ namespace _IECModules
                 }
             };
 
+        public static readonly FacebookSdkLoader FacebookSdkLoader = new FacebookSdkLoader();
+        public static readonly AdjustSdkLoader AdjustSdkLoader = new AdjustSdkLoader();
+        public static readonly KochavaSdkLoader KochavaSdkLoader = new KochavaSdkLoader();
+        public static readonly OgurySdkLoader OgurySdkLoader = new OgurySdkLoader();
+
+        public static void LoadSdkVersions()
+        {
+            FacebookSdkLoader.Init();
+            AdjustSdkLoader.Init();
+            KochavaSdkLoader.Init();
+            OgurySdkLoader.Init();
+            
+            LoadApplovinLatestVersion();
+            
+            foreach (var pkg in DictGitlabPluginVersion.Values)
+            {
+                pkg.LoadPKGVersionList();
+            }
+
+            var unityPackages = DictUnityPackage.Values;
+            foreach (var pkg in unityPackages)
+            {
+                pkg.LoadPKGVersionList();
+            }
+
+        }
         public static void LoadApplovinVersionList()
         {
-            PlayerPrefs.DeleteKey(APPLOVIN_VERSION_CACHE);
-            var httpRequest = new HTTPRequest(
-                    new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
-                    (originalRequest, response) =>
-                    {
-                        PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
-                    })
-                .Send();
+            // PlayerPrefs.DeleteKey(APPLOVIN_VERSION_CACHE);
+            // var httpRequest = new HTTPRequest(
+            //         new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
+            //         (originalRequest, response) =>
+            //         {
+            //             PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
+            //         })
+            //     .Send();
         }
 
         public static void LoadApplovinLatestVersion()
@@ -240,114 +172,9 @@ namespace _IECModules
                     var dataTxt = response.DataAsText;
                     var json = JSON.Parse(dataTxt);
                     ApplovinLatestDownloadLink = json["AppLovinMax"]["DownloadUrl"];
-                    Debug.Log(ApplovinLatestDownloadLink);
                 }).Send();
         }
-
-        public static void LoadKochavaVersionList()
-        {
-            PlayerPrefs.DeleteKey(KOCHAVA_VERSION_CACHE);
-            var httpRequest = new HTTPRequest(
-                new Uri("https://api.github.com/repos/Kochava/unity-kochavatracker-releases/releases"),
-                (originalRequest, response) =>
-                {
-                    var data = JSONNode.Parse(response.DataAsText).AsArray;
-                    var versions = new List<string>();
-                    for (int i = 0; i < data.Count; i++)
-                    {
-                        versions.Add(data[i]["name"]);
-                    }
-
-                    PlayerPrefs.SetString(KOCHAVA_VERSION_CACHE, JsonConvert.SerializeObject(versions));
-                }).Send();
-        }
-
-
-        public static bool LoadApplovinVersionFromCache()
-        {
-            if (ListApplovinVersionFromBintray != null) return true;
-            var data = PlayerPrefs.GetString(APPLOVIN_VERSION_CACHE);
-            if (string.IsNullOrEmpty(data)) return false;
-            var bintrayApplovinPackageData = JsonConvert.DeserializeObject<BintrayPackageData>(data);
-            ListApplovinVersionFromBintray =
-                bintrayApplovinPackageData.versions.Select(x =>
-                    x.Replace("unity_", "")
-                        .Replace("_", "-")
-                        .Replace("android", "Android")
-                        .Replace("ios", "iOS")
-                ).ToArray();
-            return true;
-        }
-
-        public static bool LoadKochavaVersionFromCache()
-        {
-            if (ListKochavaVersionFromGithub != null) return true;
-            var data = PlayerPrefs.GetString(KOCHAVA_VERSION_CACHE);
-            if (string.IsNullOrEmpty(data)) return false;
-            ListKochavaVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
-            return true;
-        }
-
-        public static void LoadAdjustVersionList()
-        {
-            PlayerPrefs.DeleteKey(ADJUST_VERSION_CACHE);
-            var httpRequest = new HTTPRequest(
-                new Uri("https://api.github.com/repos/adjust/unity_sdk/releases"),
-                (originalRequest, response) =>
-                {
-                    var data = JSONNode.Parse(response.DataAsText).AsArray;
-                    var versions = new List<string>();
-                    for (int i = 0; i < data.Count; i++)
-                    {
-                        versions.Add(data[i]["name"].Value.Split(' ')[1]);
-                    }
-
-                    PlayerPrefs.SetString(ADJUST_VERSION_CACHE, JsonConvert.SerializeObject(versions));
-                }).Send();
-        }
-
-        public static bool LoadAdjustVersionFromCache()
-        {
-            if (ListAdjustVersionFromGithub != null) return true;
-            var data = PlayerPrefs.GetString(ADJUST_VERSION_CACHE);
-            if (string.IsNullOrEmpty(data)) return false;
-            ListAdjustVersionFromGithub = JsonConvert.DeserializeObject<string[]>(data);
-            return true;
-        }
-
-        public static void LoadOguryVersionList()
-        {
-            PlayerPrefs.DeleteKey(OGURY_VERSION_CACHE);
-            var url = "https://ogury-ltd.gitbook.io/release-notes/unity";
-            var content = UnityWebRequestDownloadHelper.DownloadTextFromUrl(url);
-            var versions = content.Split(new[] { "<h1 id=\"" }, StringSplitOptions.None)
-                //.Select(x => x.Substring(0, 5))
-                .ToList();
-            versions.RemoveAt(0);
-            versions = versions.Select(x => x.Split(new[] { " - " }, StringSplitOptions.None)[0]
-            .Split(new[] { "\">" }, StringSplitOptions.None).Last()).ToList();
-            //for(int i = 0; i < versions.Count; i++)
-            //{
-            //    var version = versions[i];
-            //    //var versionCut = version.Split(new[] { "\" " }, StringSplitOptions.None)[0]
-            //    //    .Split('-');
-            //    //version = $"{versionCut[0]}.{versionCut[1]}.{versionCut[2]}";
-            //    version = version.Split(new[] { " - " }, StringSplitOptions.None)[0];
-            //    versions[i] = version.Split(new[] { "\">" }, StringSplitOptions.None).Last();
-            //}
-            PlayerPrefs.SetString(OGURY_VERSION_CACHE, JsonConvert.SerializeObject(versions));
-        }
-
-        public static bool LoadOguryVersionFromCache()
-        {
-            if (ListOguryVersionFromServer != null) return true;
-            var data = PlayerPrefs.GetString(OGURY_VERSION_CACHE);
-            if (string.IsNullOrEmpty(data)) return false;
-            ListOguryVersionFromServer = JsonConvert.DeserializeObject<string[]>(data);
-            //Debug.LogError("Load done");
-            return true;
-        }
-
+        
         public static void AddDependency(string pkgName, string version)
         {
             var manifestFileName = "Packages/manifest.json";
