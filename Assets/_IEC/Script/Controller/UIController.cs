@@ -37,49 +37,6 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            SetEventUI(UI);
-        }
-
-        void SetEventUI(UIGroup UI)
-        {
-            SetEvent(UI.ScreenInGame.btnRestart, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-
-            // test button
-            SetEvent(UI.ScreenInGame.btnLevelWin, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
-            });
-
-            // test button
-            SetEvent(UI.ScreenInGame.btnLevelLose, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
-            });
-
-            SetEvent(UI.ScreenLevelLose.btnRetry, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-
-            SetEvent(UI.ScreenLevelWin.btnNext, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-        }
-
-        void SetEvent(UnityEngine.UI.Button button, System.Action action)
-        {
-            if (button != null)
-            {
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() =>
-                {
-                    action?.Invoke();
-                });
-            }
         }
     }
 }

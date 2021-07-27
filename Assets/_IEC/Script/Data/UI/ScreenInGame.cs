@@ -17,6 +17,24 @@ namespace IEC
         public Button btnLevelWin;
         public Button btnLevelLose;
 
+        private void Start()
+        {
+            SetEvent(btnRestart, () =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
+            });
+            
+            SetEvent(btnLevelWin, () =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
+            });
+            
+            SetEvent(btnLevelLose, () =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
+            });
+        }
+
         public void SetLevel(int level)
         {
             txtLevel.text = "LEVEL " + level.ToString();

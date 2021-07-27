@@ -72,5 +72,17 @@ namespace IEC
         {
             Hide();
         }
+
+        protected void SetEvent(UnityEngine.UI.Button button, System.Action action)
+        {
+            if (button != null)
+            {
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(() =>
+                {
+                    action?.Invoke();
+                });
+            }
+        }
     }
 }
