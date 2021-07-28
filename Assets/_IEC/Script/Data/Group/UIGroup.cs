@@ -46,7 +46,7 @@ namespace IEC
                     GamePlay.SetGameState(screen);
                 });
 
-                screen.onHide.AddListener(() =>
+                screen.onHideDone.AddListener(() =>
                 {
                     var topScreen = ListScreen.Where(s => s.IsShow).OrderByDescending(s => s.ShowOrder).FirstOrDefault();
                     if (topScreen != null)
