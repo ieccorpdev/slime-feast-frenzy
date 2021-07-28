@@ -25,16 +25,11 @@ namespace _IECModules
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private const string m_AbVersionDefault =
-            "AB_20201029_v44";
+            "1.9.0 AB_20210708_v82";
 
         private string m_AbVersionString = m_AbVersionDefault;
 
         private bool m_ShowDebugButton = false;
-
-        private int m_PluginApplovinVersionSelect;
-        private int m_PluginKochavaVersionSelect;
-        private int m_PluginAdjustVersionSelect;
-        private int m_PluginOguryVersionSelect;
 
         private GUIStyle m_StyleHeader1;
         private GUIStyle m_StyleHeader2;
@@ -77,22 +72,8 @@ namespace _IECModules
                 m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
             // AddRegistries(GoogleRegistry);
             SdkHelper.RemoveRegistries(GoogleRegistry);
-            //SdkHelper.LoadApplovinVersionList();
-            SdkHelper.LoadApplovinLatestVersion();
-            SdkHelper.LoadKochavaVersionList();
-            SdkHelper.LoadAdjustVersionList();
-            SdkHelper.LoadOguryVersionList();
-            foreach (var pkg in SdkHelper.DictGitlabPluginVersion.Values)
-            {
-                pkg.LoadPKGVersionList();
-            }
-
-            var unityPackages = SdkHelper.DictUnityPackage.Values;
-            foreach (var pkg in unityPackages)
-            {
-                pkg.LoadPKGVersionList();
-            }
-
+            SdkHelper.LoadSdkVersions();
+            
             Debug.Log("Module Awake");
         }
 
@@ -141,51 +122,47 @@ namespace _IECModules
                     () =>
                     {
                     }, 220);
-
-                GUILayout.Space(20);
-                CreateGuiButton("Test Ogury",
-                    () =>
-                    {
-                        SdkHelper.LoadOguryVersionList();
-                    }, 220);
             }
 
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
 
             CreateGuiLabel("- SDK For Prototype", m_StyleHeader2);
 
-            CreateGuiButton("Facebook SDK (latest)", () =>
+            var facebookSdkLoaded = SdkHelper.FacebookSdkLoader.LoadVersionFromCache();
+            CreateGuiButton($"Facebook SDK {(facebookSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FACEBOOK_SDK_CURRENT_VERSION_URL);
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.FacebookSdkLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
 
-            CreateGuiBreakLine();
-
-            var kochavaSdkLoaded = SdkHelper.LoadKochavaVersionFromCache();
-            CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
-            {
-                ImportUnityPackageHelper.DownloadPackage(
-                    SdkHelper.KochavaSdkUrlByVersion(SdkHelper.ListKochavaVersion[m_PluginKochavaVersionSelect]));
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
-            });
-
-            m_PluginKochavaVersionSelect = EditorGUILayout.Popup("", m_PluginKochavaVersionSelect,
-                SdkHelper.ListKochavaVersion,
+            SdkHelper.FacebookSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.FacebookSdkLoader.versionSelect,
+                SdkHelper.FacebookSdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
 
-            var adjustSdkLoaded = SdkHelper.LoadAdjustVersionFromCache();
+            var kochavaSdkLoaded = SdkHelper.KochavaSdkLoader.LoadVersionFromCache();
+            CreateGuiButton($"Kochava SDK {(kochavaSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.KochavaSdkLoader.SdkSelectVersionUrl);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
+            });
+
+            SdkHelper.KochavaSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.KochavaSdkLoader.versionSelect,
+                SdkHelper.KochavaSdkLoader.ListSDKVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            CreateGuiBreakLine();
+
+            var adjustSdkLoaded = SdkHelper.AdjustSdkLoader.LoadVersionFromCache();
             CreateGuiButton($"Adjust SDK {(adjustSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(
-                    SdkHelper.AdjustSdkUrlByVersion(SdkHelper.ListAdjustVersion[m_PluginAdjustVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AdjustSdkLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
             });
 
-            m_PluginAdjustVersionSelect = EditorGUILayout.Popup("", m_PluginAdjustVersionSelect,
-                SdkHelper.ListAdjustVersion,
+            SdkHelper.AdjustSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.AdjustSdkLoader.versionSelect,
+                SdkHelper.AdjustSdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiLabel("- SDK For LTV", m_StyleHeader2);
@@ -211,17 +188,16 @@ namespace _IECModules
 
             CreateGuiBreakLine();
 
-            var ogurySdkLoaded = SdkHelper.LoadOguryVersionFromCache();
+            var ogurySdkLoaded = SdkHelper.OgurySdkLoader.LoadVersionFromCache();
             CreateGuiButton($"Ogury SDK {(ogurySdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(
-                    SdkHelper.OgurySdkUrlByVersion(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]));
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.OgurySdkLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginOgury);
-                ConfigOguryRequirements(SdkHelper.ListOguryVersion[m_PluginOguryVersionSelect]);
+                ConfigOguryRequirements(SdkHelper.OgurySdkLoader.SdkSelectVersionName);
             });
 
-            m_PluginOguryVersionSelect = EditorGUILayout.Popup("", m_PluginOguryVersionSelect,
-                SdkHelper.ListOguryVersion,
+            SdkHelper.OgurySdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.OgurySdkLoader.versionSelect,
+                SdkHelper.OgurySdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();
@@ -385,15 +361,18 @@ namespace _IECModules
 
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
-            if (GUILayout.Button("Update string directly", GUILayout.Width(buttonSize.x),
+            if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
             {
-                ProjectChecklistHelper.UpdateAbVersion(m_AbVersionString);
+                var lastVersionString = m_AbVersionString.Split(' ')[0];
+                var lastAbString = m_AbVersionString.Split(' ')[1];
+                PlayerSettings.bundleVersion = lastVersionString;
+                ProjectChecklistHelper.UpdateAbVersion(lastAbString);
             }
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
-            if (GUILayout.Button("Update from Project Checklist", GUILayout.Width(buttonSize.x),
+            if (GUILayout.Button("Update AB from Project Checklist", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
             {
                 ProjectChecklistHelper.UpdateAbVersionFromChecklist(m_GoogleSheetUrl);
