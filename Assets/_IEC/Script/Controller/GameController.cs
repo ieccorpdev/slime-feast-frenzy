@@ -19,6 +19,8 @@ namespace IEC
         {
             switch (gameEvent)
             {
+                case EventList.GamePlay.APPLY_AB_TEST:
+                    break;
                 case EventList.GamePlay.NEW_GAME:
                     GamePlay.SetGameState(UI.ScreenInGame);
                     OnNewGame();

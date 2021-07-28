@@ -18,6 +18,8 @@ namespace IEC
         {
             switch (gameEvent)
             {
+                case EventList.GamePlay.APPLY_AB_TEST:
+                    break;
                 case EventList.GamePlay.NEW_GAME:
                     UI.ShowScreen(UI.ScreenInGame);
                     UI.ScreenInGame.SetLevel(PlayerData.level);

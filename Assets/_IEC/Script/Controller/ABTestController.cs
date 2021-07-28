@@ -8,7 +8,7 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
-        #region COMMON
+#region COMMON
         public void LocateController()
         {
             Controllers.Add(this);
@@ -123,6 +123,8 @@ namespace IEC
             AddCheatCodeVersionAB(abConfig, abIndex, abValue);
 
             Game.abVersion = curTestDate.version;
+
+            EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
         }
 
         void AddCheatCodeVersionAB(ABTestConfig abTestConfig, int abIndex, int abValue)
@@ -140,7 +142,6 @@ namespace IEC
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                 ApplyAbTest(abIndex);
-                EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
             };
 
             cheatCode.dropdownParam = new CheatCode.DropdownParam
@@ -149,7 +150,7 @@ namespace IEC
                 value = abValue
             };
         }
-        #endregion
+#endregion
 
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
         {
