@@ -532,7 +532,7 @@ namespace _IECModules
             cheatCodeParam.action = onClick;
         }
 
-        public void AddCheatCodeFromObject(string className, object classObj)
+        public void AddCheatCodeFromObject(string className, object classObj, Action onChange = null)
         {
             AddCheatCodeButton($"Toggle {className} Params",
                 cheatCodeParam => { cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}"; }
@@ -552,6 +552,7 @@ namespace _IECModules
                         {
                             field.SetValue(classObj, !(bool) field.GetValue(classObj));
                             param.buttonText = $"{className}/{fieldName}: {field.GetValue(classObj)}";
+                            onChange?.Invoke();
                         });
                     }
                     else if (fieldType == typeof(int) 
@@ -582,6 +583,7 @@ namespace _IECModules
                                 var valueParse = double.Parse(valueStr);
                                 field.SetValue(classObj, valueParse);
                             }
+                            onChange?.Invoke();
                         }, new InputParam {value = fieldValue});
                     }
                 });

@@ -85,7 +85,10 @@ namespace IEC
 
             ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
             {
-                ModuleController.cheatCode.AddCheatCodeFromObject("Game", Game);
+                ModuleController.cheatCode.AddCheatCodeFromObject("Game", Game, () =>
+                {
+                    EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
+                });
             });
 
             ModuleController.cheatCode.onCheatCodeStateChange.AddListener(() =>
