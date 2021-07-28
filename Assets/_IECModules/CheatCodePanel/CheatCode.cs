@@ -92,6 +92,7 @@ namespace _IECModules
 
         private GUIStyle m_TextureStyle;
         private GUIStyle m_ButtonStyle;
+        private GUIStyle m_ButtonDropdownButtonStyle;
         private GUIStyle m_ButtonDropdownSelectedStyle;
         private GUIStyle m_InputFieldStyle;
         private GUIStyle m_LabelTextStyle;
@@ -183,7 +184,8 @@ namespace _IECModules
             if (m_ButtonStyle != null) return;
             m_ButtonStyle = new GUIStyle(GUI.skin.button) {fontSize = FontSize};
 
-            m_ButtonDropdownSelectedStyle = new GUIStyle(m_ButtonStyle) {normal = {textColor = Color.cyan}};
+            m_ButtonDropdownButtonStyle = new GUIStyle(GUI.skin.button) {fontSize = FontSize, alignment = TextAnchor.MiddleLeft};
+            m_ButtonDropdownSelectedStyle = new GUIStyle(m_ButtonStyle) {normal = {textColor = Color.cyan}, alignment = TextAnchor.MiddleLeft};
 
             m_InputFieldStyle = new GUIStyle(GUI.skin.textField) {fontSize = FontSize};
 
@@ -360,9 +362,10 @@ namespace _IECModules
                                 break;
                             case CheatCodeType.ButtonWithDropdown:
                                 var dropdownParam = cheatCodeParam.dropdownParam;
+                                var optionsCount = dropdownParam.options.Count;
 
                                 var maxWidth = Mathf.Clamp(dropdownParam.options.Max(option =>
-                                        m_ButtonStyle.CalcSize(new GUIContent(option)).x), ButtonSize.y * 3,
+                                        m_ButtonStyle.CalcSize(new GUIContent(option + ((optionsCount > 10)?"000":""))).x), ButtonSize.y * 3,
                                     screenWidthCenter * 0.9f);
 
                                 var dropdownRect = dropdownParam.dropdownRect = new Rect(screenWidthCenter,
@@ -411,7 +414,7 @@ namespace _IECModules
                                             dropdownParam.options[index],
                                             index == dropdownParam.value
                                                 ? m_ButtonDropdownSelectedStyle
-                                                : m_ButtonStyle))
+                                                : m_ButtonDropdownButtonStyle))
                                         {
                                             dropdownParam.isShowOption = false;
                                             dropdownParam.value = index;

@@ -15,9 +15,9 @@ namespace IEC
         public List<ScreenUI> listHideHaveEffect;
         public List<ScreenUI> listHideNoEffect;
 
-        public bool IsShow { get; private set; }
+        public bool IsShow { get; protected set; }
         public bool IsHide => !IsShow;
-        public int ShowOrder { get; private set; }
+        public int ShowOrder { get; protected set; }
 
         [HideInInspector]
         public UnityEvent onShow;

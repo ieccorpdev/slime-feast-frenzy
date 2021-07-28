@@ -93,5 +93,14 @@ namespace IEC
                 list[n] = value;
             }
         }
+
+        public Vector3 InsideUnitSphere()
+        {
+            var rs = new Vector3();
+            rs.x = Range(-1f, 1f);
+            rs.y = Range(-1f, 1f);
+            rs.z = Range(-1f, 1f);
+            return rs;
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace IEC
         public enum EffectType
         {
             INSTANTLY,
-            GROUP_CANVAS_FADE
+            GROUP_CANVAS_FADE,
         }
 
         public enum ActionType
@@ -31,6 +31,11 @@ namespace IEC
         public System.Action<bool> onDone;
 
         string EffectID => "EffectUI_" + action + gameObject.GetInstanceID();
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(EffectID);
+        }
 
         [Button]
         public void TestEffect()
