@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using NaughtyAttributes;
 using UnityEngine.Events;
 
@@ -29,6 +30,8 @@ namespace IEC
         [HideInInspector]
         public UnityEvent onHideDone;
 
+        protected List<Button> listButtonHideOnClick = new List<Button>();
+
         public virtual void LocateScreen()
         {
             Pool.Set(GetType(), this);
@@ -37,6 +40,10 @@ namespace IEC
         public virtual void Show()
         {
             IsShow = true;
+            foreach (var btn in listButtonHideOnClick)
+            {
+                btn.gameObject.SetActive(true);
+            }
             EffectUI.DoShowHide(gameObject, true, (isShow) => onShowDone.Invoke());
             onShow.Invoke();
         }
@@ -82,6 +89,14 @@ namespace IEC
                 {
                     action?.Invoke();
                 });
+
+                if (listButtonHideOnClick.Contains(button))
+                {
+                    button.onClick.AddListener(() =>
+                    {
+                        button.gameObject.SetActive(false);
+                    });
+                }
             }
         }
     }
