@@ -11,6 +11,8 @@ namespace IEC
 
         private void Start()
         {
+            listButtonHideOnClick.Add(btnRetry);
+
             SetEvent(btnRetry, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
