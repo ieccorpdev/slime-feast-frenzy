@@ -40,10 +40,7 @@ namespace IEC
         public virtual void Show()
         {
             IsShow = true;
-            foreach (var btn in listButtonHideOnClick)
-            {
-                btn.gameObject.SetActive(true);
-            }
+            ShowButtonHideOnClick();
             EffectUI.DoShowHide(gameObject, true, (isShow) => onShowDone.Invoke());
             onShow.Invoke();
         }
@@ -80,16 +77,19 @@ namespace IEC
             Hide();
         }
 
+        protected void ShowButtonHideOnClick()
+        {
+            foreach (var btn in listButtonHideOnClick)
+            {
+                btn.gameObject.SetActive(true);
+            }
+        }
+
         protected void SetEvent(UnityEngine.UI.Button button, System.Action action)
         {
             if (button != null)
             {
                 button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() =>
-                {
-                    action?.Invoke();
-                });
-
                 if (listButtonHideOnClick.Contains(button))
                 {
                     button.onClick.AddListener(() =>
@@ -97,6 +97,10 @@ namespace IEC
                         button.gameObject.SetActive(false);
                     });
                 }
+                button.onClick.AddListener(() =>
+                {
+                    action?.Invoke();
+                });
             }
         }
     }
