@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace IEC
 {
-    public enum GameState
-    {
-        Playing, Win, Lose
-    }
-
     /// <summary>
     /// object contain game session data (no save)
     /// </summary>
@@ -24,15 +19,6 @@ namespace IEC
         public System.DateTime timeStartLevel;
         public System.DateTime timeEndLevel;
         public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;
-
-        public GameState gameState = GameState.Playing;
-
-        public bool IsWin => gameState == GameState.Win;
-
-        public void SetGameState(GameState state)
-        {
-            gameState = state;
-        }
 
         public void SetTimeStartLevel()
         {

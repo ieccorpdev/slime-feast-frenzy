@@ -22,6 +22,19 @@ namespace IEC
         }
 
         [Button]
+        public void StopConfetti()
+        {
+            StopAllCoroutines();
+            foreach (Transform child in transform)
+            {
+                if (child.gameObject.TryGetComponent<ParticleSystem>(out var ps))
+                {
+                    ps.Stop();
+                }
+            }
+        }
+
+        [Button]
         public void ShowConfetti()
         {
             StartCoroutine(IEShowConfetti());

@@ -18,15 +18,17 @@ namespace IEC
         {
             switch (gameEvent)
             {
+                case EventList.GamePlay.APPLY_AB_TEST:
+                    break;
                 case EventList.GamePlay.NEW_GAME:
-                    UI.ShowScreenByGameState();
-                    UI.textHello.text = "Hello IEC " + PlayerData.level;
+                    UI.ShowScreen(UI.ScreenInGame);
+                    UI.ScreenInGame.SetLevel(PlayerData.level);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    UI.ShowScreenByGameState();
+                    UI.ShowScreen(UI.ScreenLevelWin);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
-                    UI.ShowScreenByGameState();
+                    UI.ShowScreen(UI.ScreenLevelLose);
                     break;
             }
         }
@@ -37,49 +39,6 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            SetEventUI(UI);
-        }
-
-        void SetEventUI(UIGroup UI)
-        {
-            SetEvent(UI.screenInGame.btnRestart, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-
-            // test button
-            SetEvent(UI.screenInGame.btnLevelWin, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
-            });
-
-            // test button
-            SetEvent(UI.screenInGame.btnLevelLose, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
-            });
-
-            SetEvent(UI.screenLevelLose.btnRetry, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-
-            SetEvent(UI.screenLevelWin.btnNext, () =>
-            {
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
-            });
-        }
-
-        void SetEvent(UnityEngine.UI.Button button, System.Action action)
-        {
-            if (button != null)
-            {
-                button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(() =>
-                {
-                    action?.Invoke();
-                });
-            }
         }
     }
 }

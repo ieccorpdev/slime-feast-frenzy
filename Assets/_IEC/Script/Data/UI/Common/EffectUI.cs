@@ -13,7 +13,7 @@ namespace IEC
         public enum EffectType
         {
             INSTANTLY,
-            GROUP_CANVAS_FADE
+            GROUP_CANVAS_FADE,
         }
 
         public enum ActionType
@@ -28,7 +28,14 @@ namespace IEC
         public Ease ease = Ease.InQuad;
         public float time = 0.3f;
 
+        public System.Action<bool> onDone;
+
         string EffectID => "EffectUI_" + action + gameObject.GetInstanceID();
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(EffectID);
+        }
 
         [Button]
         public void TestEffect()
@@ -48,17 +55,19 @@ namespace IEC
             }
         }
 
-        public static void DoShowHide(GameObject obj, bool isShow)
+        public static void DoShowHide(GameObject obj, bool isShow, System.Action<bool> onDone = null)
         {
             var action = isShow ? ActionType.SHOW : ActionType.HIDE;
             var component = obj.GetComponents<EffectUI>().Where(x => x.action == action).LastOrDefault();
             if (component != null)
             {
+                component.onDone = onDone;
                 component.DoShowHide(isShow);
             }
             else
             {
                 obj.SetActive(isShow);
+                onDone?.Invoke(isShow);
             }
         }
 
@@ -81,6 +90,7 @@ namespace IEC
             if (effect == EffectType.INSTANTLY)
             {
                 gameObject.SetActive(isShow);
+                onDone?.Invoke(isShow);
                 return;
             }
 
@@ -102,6 +112,7 @@ namespace IEC
                 {
                     gameObject.SetActive(false);
                 }
+                onDone?.Invoke(isShow);
             });
         }
 

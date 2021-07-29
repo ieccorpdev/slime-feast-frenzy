@@ -8,6 +8,7 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
+#region COMMON
         public void LocateController()
         {
             Controllers.Add(this);
@@ -35,15 +36,15 @@ namespace IEC
         {
             var serviceAbTest = Services.ABTest();
             var abTestConfigs = Services.config.abTestConfigs;
-            var listAbTestConfigs = Services.config.abTestConfigs.ToList();
-            var abIndex = listAbTestConfigs.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
+            var listAbTestConfig = Services.config.abTestConfigs.ToList();
+            var abIndex = listAbTestConfig.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
 
             var forceSetAb = "ForceSetAB";
             var forceSetAbName = Services.DataSecure().GetString(forceSetAb, "No Force Set");
-            var forceSetAbIndex = listAbTestConfigs.FindLastIndex(x => x.KeyName == forceSetAbName);
+            var forceSetAbIndex = listAbTestConfig.FindLastIndex(x => x.KeyName == forceSetAbName);
             abIndex = (forceSetAbIndex >= 0) ? forceSetAbIndex : abIndex;
 
-            var abConfig = listAbTestConfigs.ElementAtOrDefault(abIndex);
+            var abConfig = listAbTestConfig.ElementAtOrDefault(abIndex);
 
             if (abConfig == null)
             {
@@ -69,8 +70,8 @@ namespace IEC
         void ApplyAbTest(int abIndex)
         {
             var serviceAbTest = Services.ABTest();
-            var listAbTestConfigs = Services.config.abTestConfigs.ToList();
-            var abConfig = (abIndex >= 0) ? listAbTestConfigs[abIndex] : null;
+            var listAbTestConfig = Services.config.abTestConfigs.ToList();
+            var abConfig = (abIndex >= 0) ? listAbTestConfig[abIndex] : null;
 
             if (abConfig == null)
             {
@@ -79,35 +80,54 @@ namespace IEC
             }
 
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
+            var abEventName = abConfig.ListEventsAB[abValue];
             var listResultAb = GetListResultAction();
             var listUpdateAb = GetListUpdateAbAction();
+            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
-            if (listUpdateAb.Count != listAbTestConfigs.Count)
+            var listAbTestDate = listAbTestConfig.Select((x, i) =>
+                new ABTestDate()
+                {
+                    config = x,
+                    date = int.Parse(x.KeyName.Split('_').Last())
+                })
+                .ToList();
+            var curTestDate = listAbTestDate[abIndex];
+            curTestDate.version = int.Parse(abEventName.Split('v').Last());
+
+            if (listUpdateAb.Count != listAbTestConfig.Count)
             {
                 Debug.LogError("List Update AB Action Not Equal List AB Test");
                 return;
             }
 
+            var isOverride = curTestDate.IsOverrideResult(dictOverride, out var overrideDate);
+
             for (int i = 0; i < listResultAb.Count; i++)
             {
-                if (i < abIndex)
+                var testDate = listAbTestDate[i];
+                if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
                     listResultAb[i].Invoke();
                 }
             }
 
-            var updateAbAction = listUpdateAb[abIndex];
-            updateAbAction.Invoke(abValue);
+            if (curTestDate.IsApplyUpdate(overrideDate))
+            {
+                var updateAbAction = listUpdateAb[abIndex];
+                updateAbAction.Invoke(abValue);
+            }
 
             ResultAllAbTest();
 
-            AddCheatCodeVersionAB(abConfig, updateAbAction, abValue);
+            AddCheatCodeVersionAB(abConfig, abIndex, abValue);
 
-            var abEventName = abConfig.ListEventsAB[abValue];
-            Game.abVersion = int.Parse(abEventName.Split('v').Last());
+            Game.abVersion = curTestDate.version;
+
+            EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
         }
 
-        void AddCheatCodeVersionAB(ABTestConfig abTestConfig, Action<int> updateAbAction, int abValue)
+        void AddCheatCodeVersionAB(ABTestConfig abTestConfig, int abIndex, int abValue)
         {
             var cheatCodeName = "AB Test Version";
             var cheatCode = ModuleController.cheatCode.GetCheatCodeParam(cheatCodeName);
@@ -121,14 +141,24 @@ namespace IEC
             {
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                updateAbAction(abValue);
-                EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
+                ApplyAbTest(abIndex);
             };
 
             cheatCode.dropdownParam = new CheatCode.DropdownParam
             {
                 options = abTestConfig.ListEventsAB.ToList(),
                 value = abValue
+            };
+        }
+#endregion
+
+        Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
+        {
+            return new Dictionary<int, Func<int, int, bool>>
+            {
+                //{ 20210718, (date, version) => version == 91 },
+                //{ 20210718, (date, version) => date == 20210714 },
+                //{ 20210718, null },
             };
         }
 
@@ -142,6 +172,7 @@ namespace IEC
             return new List<Action>()
             {
                 //ResultAbFullAds,
+                //ResultAb20210423,
             };
         }
 
@@ -150,7 +181,7 @@ namespace IEC
             return new List<Action<int>>()
             {
                 //UpdateAbFullAds,
-                //UpdateAbFull20210423,
+                //UpdateAb20210423,
             };
         }
 

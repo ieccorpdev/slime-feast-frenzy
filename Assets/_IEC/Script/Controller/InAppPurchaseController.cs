@@ -31,7 +31,7 @@ namespace IEC
             Services.IAP().SetPurchaseCallback(PurchaseProductResult);
 
             //Set single receive callback for each IAP items from here, should call to single item script
-            UI.screenShopTest.SetCallbackIAP();
+            UI.ScreenShopTest.SetCallbackIAP();
         }
 
         public void BehaviourStart()
