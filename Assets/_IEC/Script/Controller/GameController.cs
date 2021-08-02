@@ -30,20 +30,22 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            //SetupMainCam();
         }
 
         public void SetupMainCam()
         {
-            var posY = Game.isFlyingIsland ? 4.3f : 5.2f;
-            var posZ = Game.isFlyingIsland ? -3.85f : -2.16f;
+            GamePlay.transMainCam.rotation = Quaternion.identity;
+            var posY = Game.isHaveIsLand ? 4.3f : 5.2f;
+            var posZ = Game.isHaveIsLand ? -3.85f : -2.16f;
 
-            var rotX = Game.isFlyingIsland ? 55f : 70f;
+            var rotX = Game.isHaveIsLand ? 55f : 70f;
             GamePlay.mainCamera.transform.localRotation = Quaternion.Euler(rotX, 0f, 0f);
             GamePlay.mainCamera.transform.localPosition = new Vector3(0f, posY, posZ);
 
             m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
+
+            GamePlay.SetActiveIsland();
         }
 
         public void GetLevelsData()
@@ -116,7 +118,7 @@ namespace IEC
                 m_DeltaSizeMinCam = RATIO_CAMERA_SIZE_MIN * m_DeltaScreenRatio;
                 m_IsInitCam = true;
 
-                var distMax = (Game.isFlyingIsland ? 12.5f : 9f) + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
+                var distMax = (Game.isHaveIsLand ? 13.5f : 9f) + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
 
                 m_RatioCamSize = (distMax - m_DeltaSizeMinCam) / 6f;
             }
@@ -127,6 +129,10 @@ namespace IEC
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
             var rotY = rotIndex * 90f;
+            if(Game.isHaveIsLand)
+            {
+                rotY = 45f;
+            }
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }
 

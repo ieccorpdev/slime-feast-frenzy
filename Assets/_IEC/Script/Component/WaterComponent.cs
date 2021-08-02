@@ -4,68 +4,35 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class WaterComponent : MonoBehaviour
+    public class WaterComponent : _BaseBehaviour
     {
-        [SerializeField] private Renderer[] waterRenderers;
-
+        [SerializeField] private Renderer waterRenderers;
         [Space]
         [SerializeField] private Color waterColor;
-        [SerializeField] private Texture waterTex;
         [SerializeField] private Vector2 waterTile;
-        [Range(0, 1)] [SerializeField] private float textureVisibility;
 
         [Space]
-        [SerializeField] private Texture distortionTex;
         [SerializeField] private Vector2 distortionTile;
 
         [Space]
         [SerializeField] private float waterHeight;
-        [SerializeField] private float waterDeep;
-        [Range(0, 0.1f)] [SerializeField] private float waterDepthParam;
-        [Range(0, 1)] [SerializeField] private float waterMinAlpha;
-
-        [Space]
-        [SerializeField] private Color borderColor;
-        [Range(0, 1)] [SerializeField] private float borderWidth;
-
-        [Space]
-        [SerializeField] private Vector2 moveDirection;
-
         private MaterialPropertyBlock materialPropertyBlock;
 
-        public MaterialPropertyBlock MaterialPropertyBlock
-        {
-            get { return materialPropertyBlock; }
-        }
-
         private Color m_NewColor;
-
         public bool m_IsScale, m_IsGrowUp, isChanged;
-
         public float m_FillAmount;
 
         private System.Action m_GrowUpDoneCallBack;
-
         private System.Action<float> m_ScaleCallBack;
 
         private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
         private static int Shader_WaterColor = Shader.PropertyToID("_WaterColor");
+        private static int Shader_MaskPos = Shader.PropertyToID("_MaskPos");
 
         private bool isMainWater = true;
 
-        public void OnInit(System.Action callBack, System.Action<float> scaleCallBack, bool isNewEffect)
+        public void OnInit(System.Action callBack, System.Action<float> scaleCallBack)
         {
-            if (isNewEffect)
-            {
-                waterTile = new Vector2(.1f, .1f);
-                distortionTile = new Vector2(.4f, .4f);
-            }
-            else
-            {
-                waterTile = new Vector2(.2f, .2f);
-                distortionTile = new Vector2(.06f, .06f);
-            }
-
             if (materialPropertyBlock == null)
             {
                 materialPropertyBlock = new MaterialPropertyBlock();
@@ -74,11 +41,14 @@ namespace IEC
             m_GrowUpDoneCallBack = callBack;
             m_ScaleCallBack = scaleCallBack;
 
+            waterTile = Game.isNewWaterEffect ? new Vector2(3f, 3f) : new Vector2(.2f, .2f);
+            distortionTile = Game.isNewWaterEffect ? new Vector2(.1f, .1f) : new Vector2(.06f, .06f);
+
             m_FillAmount = 0f;
             m_IsScale = false;
             m_IsGrowUp = false;
 
-            SetUpPropertyBlock(MaterialPropertyBlock);
+            SetUpPropertyBlock();
         }
 
         public void SetMainWater(bool isMainWater)
@@ -93,29 +63,23 @@ namespace IEC
             if (isUpdateNow)
             {
                 waterColor = color;
-                OnUpdatePropertyBlock(MaterialPropertyBlock);
+                OnUpdatePropertyBlock();
             }
         }
 
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
-            SetGrowingPos(MaterialPropertyBlock, pos);
+            UpdatePos(pos);
             m_FillAmount = isGrowUp ?  (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
 
             m_IsGrowUp = isGrowUp;
             m_IsScale = true;
         }
 
-        private void SetGrowingPos(MaterialPropertyBlock propertyBlock, Vector3 pos)
-        {
-            propertyBlock.SetVector("_GLOBALMaskPosition", pos);
-            ApplyData(propertyBlock);
-        }
-
         public void UpdatePos(Vector3 pos)
         {
-            MaterialPropertyBlock.SetVector("_GLOBALMaskPosition", pos);
-            ApplyData(MaterialPropertyBlock);
+            materialPropertyBlock.SetVector(Shader_MaskPos, pos);
+            ApplyData();
         }
 
         float deltaAmount;
@@ -127,8 +91,8 @@ namespace IEC
 
         public void OnUpdate(float deltaTime)
         {
-            //isChanged = Application.isEditor;
-            isChanged = false;
+            isChanged = Application.isEditor;
+            //isChanged = false;
 
             if (m_IsScale)
             {
@@ -172,49 +136,39 @@ namespace IEC
 
             if (isChanged)
             {
-                OnUpdatePropertyBlock(materialPropertyBlock);
+                OnUpdatePropertyBlock();
             }
-        }
 
-        private void SetUpPropertyBlock(MaterialPropertyBlock propertyBlock)
-        {
-            propertyBlock.SetVector("_Tiling", waterTile);
-            propertyBlock.SetVector("_DistTiling", distortionTile);
-            propertyBlock.SetVector("_MoveDirection", new Vector4(moveDirection.x, 0f, moveDirection.y, 0f));
-
-            if (waterTex != null)
+            if (Application.isEditor)
             {
-                propertyBlock.SetTexture("_WaterTex", waterTex);
+                SetUpPropertyBlock();
             }
-
-            if (distortionTex != null)
-            {
-                propertyBlock.SetTexture("_DistTex", distortionTex);
-            }
-
-            propertyBlock.SetFloat("_TextureVisibility", textureVisibility);
-            propertyBlock.SetFloat("_WaterHeight", waterHeight);
-            propertyBlock.SetFloat("_WaterDeep", waterDeep);
-            propertyBlock.SetFloat("_WaterDepth", waterDepthParam);
-            propertyBlock.SetFloat("_WaterMinAlpha", waterMinAlpha);
-            propertyBlock.SetFloat("_BorderWidth", borderWidth);
-
-            OnUpdatePropertyBlock(propertyBlock);
-
-            ApplyData(propertyBlock);
         }
 
-        private void OnUpdatePropertyBlock(MaterialPropertyBlock propertyBlock)
+        private void SetUpPropertyBlock()
         {
-            propertyBlock.SetColor(Shader_WaterColor, waterColor);
-            propertyBlock.SetFloat(Shader_FillAmount, m_FillAmount);
-
-            ApplyData(propertyBlock);
+            materialPropertyBlock.SetVector("_Tiling", waterTile);
+            materialPropertyBlock.SetVector("_DistTiling", distortionTile);
+            var moveDir = Game.isNewWaterEffect ? new Vector4(-.1f, 0f, .1f, 0f) : new Vector4(-.7f, 0f, .3f, 0f);
+            materialPropertyBlock.SetVector("_MoveDirection", moveDir);
+            materialPropertyBlock.SetTexture("_WaterTex", Game.isNewWaterEffect ? Config.waterTexNew : Config.waterTexNormal);
+            materialPropertyBlock.SetTexture("_DistTex", Game.isNewWaterEffect ? Config.distTexNew : Config.distTexNormal);
+            materialPropertyBlock.SetFloat("_WaterHeight", waterHeight);
+            materialPropertyBlock.SetFloat("_IsNewWater", Game.isNewWaterEffect ? 1f : 0f);
+            OnUpdatePropertyBlock();
         }
 
-        private void ApplyData(MaterialPropertyBlock propertyBlock)
+        private void OnUpdatePropertyBlock()
         {
-            waterRenderers[0].SetPropertyBlock(propertyBlock);
+            materialPropertyBlock.SetColor(Shader_WaterColor, waterColor);
+            materialPropertyBlock.SetFloat(Shader_FillAmount, m_FillAmount);
+
+            ApplyData();
+        }
+
+        private void ApplyData()
+        {
+            waterRenderers.SetPropertyBlock(materialPropertyBlock);
         }
     }
 }

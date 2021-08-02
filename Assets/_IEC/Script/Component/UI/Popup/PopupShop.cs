@@ -290,6 +290,8 @@ namespace IEC
             m_TxtTitle.text = SHOP_TITLE[tabSelect];
             m_TxtGoldBuyItem.text = StringHelper.GetNumber(ShopController.GetGoldItem(TabSelected));
             OnUpdateButtonBuy();
+
+            m_RectBottomGroup.gameObject.SetActive(tabSelect != 2);
         }
 
         private void OnHide()

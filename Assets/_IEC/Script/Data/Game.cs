@@ -133,7 +133,7 @@ namespace IEC
         public bool isHintStyleBSP;
         public bool isHaveBossTimerLevels;
         public bool isHaveBossTimerLevelsV2;
-        public bool isNewWaterEffect;
+        
 
         public bool isLevelDifficultyV5;
         public bool isTreeColorV1;
@@ -172,7 +172,14 @@ namespace IEC
         public bool isBiggerFoundtain;
         public bool isRandomTheme;
 
+        public bool isNewWaterEffect;
+        public bool isHaveFloatingIsland;
+        public bool isRandomFlower;
+        public bool isHaveIntroOutro;
+
         public bool isLeavesEffect;
+
+        public bool isHaveIsLand => isHaveFloatingIsland || isFlyingIsland;
 
         public void OnResetAll()
         {

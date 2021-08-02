@@ -163,7 +163,7 @@ namespace IEC
 
             UI.gameOverReward.btnNoThanks.onClick.AddListener(() => {
                 UI.gameOverReward.gameObject.SetActive(false);
-                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, false));
             });
         }
 
@@ -283,6 +283,7 @@ namespace IEC
 
         public void OnResetAll()
         {
+            UIController.SetLevel(false);
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
             UI.mainUIGroup.UpdateHintText();
