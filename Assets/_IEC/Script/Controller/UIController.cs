@@ -161,7 +161,7 @@ namespace IEC
 
             UI.gameOverReward.btnNoThanks.onClick.AddListener(() => {
                 UI.gameOverReward.gameObject.SetActive(false);
-                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, false));
             });
         }
 

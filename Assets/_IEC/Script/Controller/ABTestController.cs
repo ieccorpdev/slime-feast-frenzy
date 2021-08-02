@@ -83,6 +83,13 @@ namespace IEC
                 Game.isStartLevelEffect = false;
             }
 
+            if(abValue == 5)
+            {
+                Game.isHaveShop = true;
+                Game.isHaveEndGameReward = true;
+                Game.isHaveNoAdsInShopTab = true;
+            }
+
             GameController.SetupMainCam();
             UIController.SetupAbUI();
         }

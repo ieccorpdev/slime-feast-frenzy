@@ -29,7 +29,7 @@ namespace IEC
                 effectCoins[i].gameObject.SetActive(false);
             }
 
-            var posSpawn = new Vector2(0f, 0f);
+            var posSpawn = new Vector2(-540f, -960f);
             float distance = Vector2.Distance(posSpawn, posEnd);
 
             int coinCount = effectCoins.Length;
@@ -42,22 +42,21 @@ namespace IEC
             EffectCoins.gameObject.SetActive(true);
 
             var timeToPostart = 0.2f;
-            var posYEnd = posSpawn.y + 1.5f;
             txtMainMoney.text = StringHelper.GetNumber(moneyStart);
 
             for (int i = 0; i < coinCount; i++)
             {
                 var coinObj = effectCoins[i];
-                coinObj.gameObject.SetActive(true);
                 coinObj.transform.localScale = Vector3.one;
                 coinObj.anchoredPosition = posSpawn;
+                coinObj.gameObject.SetActive(true);
                 var posStart = PosRandomSpawnRuby(posSpawn);
                 var index = i;
                 float delayTime = i * ratioTime;
                 float delayTimeToStart = i * 0.05f;
                 sequence
                     .Insert(0f, coinObj.DOAnchorPos(posStart, timeToPostart + delayTime * 2).SetEase(Ease.OutQuad))
-                    .Insert(timeToPostart + delayTime * 2, coinObj.DOMove(posEnd, 0.1f + delayTimeToStart * 0.5f).SetEase(Ease.OutQuad)
+                    .Insert(timeToPostart + delayTime * 2, coinObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * 0.5f).SetEase(Ease.OutQuad)
                         .OnComplete(() =>
                         {
                             moneyStart += rubyAddPerFly;
