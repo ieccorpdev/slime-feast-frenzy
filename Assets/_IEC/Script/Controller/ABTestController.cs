@@ -53,13 +53,13 @@ namespace IEC
             Result20210524();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210705(abValue);
+            UpdateAb20210802(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210705(abValue);
+                    UpdateAb20210802(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -70,6 +70,21 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void UpdateAb20210802(int abValue)
+        {
+            Game.isNewWaterEffect = abValue == 1;
+            Game.isHaveFloatingIsland = abValue == 2;
+            Game.isRandomFlower = abValue == 3;
+            Game.isHaveIntroOutro = abValue == 4;
+            if(abValue == 4)
+            {
+                Game.isStartLevelEffect = false;
+            }
+
+            GameController.SetupMainCam();
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210705(int abValue)
@@ -88,9 +103,6 @@ namespace IEC
 
             Game.isBiggerFoundtain = abValue == 4;
             Game.isRandomTheme = abValue == 5;
-
-            GameController.SetupMainCam();
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210630(int abValue)
@@ -275,7 +287,7 @@ namespace IEC
             Game.isHintStyleBSP = false;
             Game.isHaveBossTimerLevels = false;
             Game.isHaveBossTimerLevelsV2 = false;
-            Game.isNewWaterEffect = false;
+            Game.isNewWaterEffect = true;
 
             //Default
             Game.themeDefault = 2;
