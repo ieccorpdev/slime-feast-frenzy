@@ -19,82 +19,120 @@ namespace IEC
             GUILayout.Space(30);
 
             GUILayout.Space(10);
-            if (GUILayout.Button("Merge level"))
+            if (GUILayout.Button("Get Data"))
             {
-                ClearLog();
+                var levels = ((DataTextConfig)AssetDatabase.LoadAssetAtPath("Assets/_IEC/Config/Level Config/ListLevelRemoveMixColorConfig.asset", typeof(DataTextConfig))).listText;
+                Debug.LogError("Count: " + levels.Count);
 
-                List<int> listLevelIndex = new List<int>();
 
-                int seed = 0;
-
-                for (int i = 0; i < 4; i++)
-                {
-                    var index = MathHelper.GetRandomIndexByList(listLevelIndex, matrix3.Length, seed);
-                    listLevelIndex.Add(index);
-                    seed += 1;
-                }
-
-                string strName = "ListLevelRemoveMixColor";
-
-                var strLevelData = Resources.Load<TextAsset>(strName);
-                var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
-                                 System.StringSplitOptions.RemoveEmptyEntries);
-
-                List<string[,]> listLevel = new List<string[,]>();
-
-                for (int i = 0; i < 4; i++)
-                {
-                    var levelIndex = listLevelIndex[i];
-
-                    var leveText = levelDatas[levelIndex].Trim();
-                    var levelData = leveText.Split(':');
-                    var gridDatas = levelData[3].Trim().Split('_');
-
-                    var grids = LevelHelper.SplitLevel(gridDatas, 3);
-                    listLevel.Add(grids);
-                }
-
-                var gridsNewLevel = LevelHelper.MergeLevel(listLevel, 6);
-
-                //var newLevel = LevelHelper.GetNewlevel(6, gridsNewLevel);
-                //Debug.LogError("newLevel: " + newLevel);
+                //var levelSortText = strLevelSort1.text;
+                //var levelDifficuty = levelSortText.Split(new string[] { "\n", "\r", "\r\n" },
+                //                 System.StringSplitOptions.RemoveEmptyEntries);
 
                 //var str = "";
-                //for (int i = 0; i < 6; i++)
+                //var count = levelDifficuty.Length;
+                //for (int i = 0; i < count; i++)
                 //{
-                //    for (int j = 0; j < 6; j++)
-                //    {
-                //        str += gridsNewLevel[i, j] + " ";
-                //    }
-                //    str += "\n";
-                //}
-
-                //Debug.LogError(str);
-
-
-                //DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
-
-                //int min = 13;
-                //int max = 24;
-
-                //for (int i = min; i < max; i++)
-                //{
-                //    var leveText = levelDatas[i].Trim();
+                //    var leveText = levelDifficuty[i].Trim();
                 //    var levelData = leveText.Split(':');
                 //    var strMode = levelData[1];
+                //    if (strMode.IndexOf("Mix") < 0) continue;
 
-                //    if (!LevelHelper.IsLoopLevel(strMode))
+                //    var strGrid = levelData[3];
+                //    var gridsDatas = strGrid.Trim().Split('_');
+                //    if (IsMixColorLevel(gridsDatas))
                 //    {
-                //        dataTextConfig.listText.Add(i.ToString());
+                //        str += leveText + "\n";
                 //    }
                 //}
 
-                //var count = dataTextConfig.listText.Count;
-                //dataTextConfig.totalItem = count;
-
-                //AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
-                //SetDirty(dataTextConfig);
+                //string path2 = "Assets/_IEC/Resources/ListSolutionMixColors.txt";
+                ////Write some text to the test.txt file
+                //StreamWriter writer = new StreamWriter(path2, true);
+                //writer.WriteLine(str);
+                //writer.Close();
+                //AssetDatabase.Refresh();
             }
+
+
+
+
+            //if (GUILayout.Button("Merge level"))
+            //{
+            //    ClearLog();
+
+            //    List<int> listLevelIndex = new List<int>();
+
+            //    int seed = 0;
+
+            //    for (int i = 0; i < 4; i++)
+            //    {
+            //        var index = MathHelper.GetRandomIndexByList(listLevelIndex, matrix3.Length, seed);
+            //        listLevelIndex.Add(index);
+            //        seed += 1;
+            //    }
+
+            //    string strName = "ListLevelRemoveMixColor";
+
+            //    var strLevelData = Resources.Load<TextAsset>(strName);
+            //    var levelDatas = strLevelData.text.Split(new string[] { "\n", "\r", "\r\n" },
+            //                     System.StringSplitOptions.RemoveEmptyEntries);
+
+            //    List<string[,]> listLevel = new List<string[,]>();
+
+            //    for (int i = 0; i < 4; i++)
+            //    {
+            //        var levelIndex = listLevelIndex[i];
+
+            //        var leveText = levelDatas[levelIndex].Trim();
+            //        var levelData = leveText.Split(':');
+            //        var gridDatas = levelData[3].Trim().Split('_');
+
+            //        var grids = LevelHelper.SplitLevel(gridDatas, 3);
+            //        listLevel.Add(grids);
+            //    }
+
+            //    var gridsNewLevel = LevelHelper.MergeLevel(listLevel, 6);
+
+            //    //var newLevel = LevelHelper.GetNewlevel(6, gridsNewLevel);
+            //    //Debug.LogError("newLevel: " + newLevel);
+
+            //    //var str = "";
+            //    //for (int i = 0; i < 6; i++)
+            //    //{
+            //    //    for (int j = 0; j < 6; j++)
+            //    //    {
+            //    //        str += gridsNewLevel[i, j] + " ";
+            //    //    }
+            //    //    str += "\n";
+            //    //}
+
+            //    //Debug.LogError(str);
+
+
+            //    //DataTextConfig dataTextConfig = CreateInstance<DataTextConfig>();
+
+            //    //int min = 13;
+            //    //int max = 24;
+
+            //    //for (int i = min; i < max; i++)
+            //    //{
+            //    //    var leveText = levelDatas[i].Trim();
+            //    //    var levelData = leveText.Split(':');
+            //    //    var strMode = levelData[1];
+
+            //    //    if (!LevelHelper.IsLoopLevel(strMode))
+            //    //    {
+            //    //        dataTextConfig.listText.Add(i.ToString());
+            //    //    }
+            //    //}
+
+            //    //var count = dataTextConfig.listText.Count;
+            //    //dataTextConfig.totalItem = count;
+
+            //    //AssetDatabase.CreateAsset(dataTextConfig, "Assets/_IEC/Config/Level Config/Matrixs/" + fileName + ".asset");
+            //    //SetDirty(dataTextConfig);
+            //}
 
             #region Old
             //GUILayout.Space(10);
@@ -218,61 +256,6 @@ namespace IEC
             //    writer.WriteLine(str);
             //    writer.Close();
             //    AssetDatabase.Refresh();
-            //}
-
-
-            //if (GUILayout.Button("Spawn Board"))
-            //{
-            //    var obj = Selection.activeGameObject;
-            //    if (obj)
-            //    {
-            //        var levelConfig = obj.GetComponent<LevelConfigData>();
-            //        levelConfig.DestroyAll();
-            //        SpawnWalls(levelConfig);
-            //        SpawnGrids(levelConfig);
-            //    }
-            //}
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("Reset All"))
-            //{
-            //    var obj = Selection.activeGameObject;
-            //    if (obj)
-            //    {
-            //        var levelConfig = obj.GetComponent<LevelConfigData>();
-            //        levelConfig.OnResetAll(true);
-            //    }
-            //}
-
-            //GUILayout.Space(30);
-            //if (GUILayout.Button("Check"))
-            //{
-            //    var obj = Selection.activeGameObject;
-            //    if (obj)
-            //    {
-            //        var levelConfig = obj.GetComponent<LevelConfigData>();
-            //        levelConfig.OnResetAll(false);
-            //    }
-            //}
-
-            //GUILayout.Space(10);
-            //if (GUILayout.Button("Spawn Level"))
-            //{
-            //    var obj = Selection.activeGameObject;
-            //    if (obj)
-            //    {
-            //        var levelConfig = obj.GetComponent<LevelConfigData>();
-            //        var data = levelConfig.GetData();
-            //        var count = TotalLevel();
-            //        count += 1;
-            //        string name = "Level_" + count;
-            //        string path = "Assets/_IEC/Config/Levels/" + name + ".txt";
-
-            //        //Write some text to the test.txt file
-            //        StreamWriter writer = new StreamWriter(path, true);
-            //        writer.WriteLine(data);
-            //        writer.Close();
-            //        AssetDatabase.Refresh();
-            //    }
             //}
 
             #endregion

@@ -23,6 +23,11 @@ namespace IEC
 
         public Transform groupBigSquare;
 
+        public ParticleSystem psIntro;
+
+        public Transform transFloatingIsland;
+        public GameObject cameraBGObj;
+
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -35,6 +40,12 @@ namespace IEC
             sprBackground.sprite = config.sprMain;
             sprBGTop.sprite = config.sprTop;
             sprBGBot.sprite = config.sprBot;
+        }
+
+        public void SetActiveIsland()
+        {
+            transFloatingIsland.gameObject.SetActive(Game.isHaveFloatingIsland);
+            cameraBGObj.SetActive(!Game.isHaveFloatingIsland);
         }
     }
 }

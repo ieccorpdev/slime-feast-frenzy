@@ -6,7 +6,7 @@
 		_DepthGradientShallow("Depth Gradient Shallow", Color) = (0.325, 0.807, 0.971, 0.725)
 
 		// What color the water will sample when the surface below is at its deepest.
-		_WaterColor("Depth Gradient Deep", Color) = (0.086, 0.407, 1, 0.749)
+		_DepthGradientDeep("Depth Gradient Deep", Color) = (0.086, 0.407, 1, 0.749)
 
 		// Maximum distance the surface below the water will affect the color gradient.
 		_DepthMaxDistance("Depth Maximum Distance", Float) = 1
@@ -34,21 +34,19 @@
 		// to foam being rendered.
 		_FoamMaxDistance("Foam Maximum Distance", Float) = 0.4
 		_FoamMinDistance("Foam Minimum Distance", Float) = 0.04		
-
-		_GLOBALMaskPosition("Mask Position", Vector) = (0, 0, 0, 0)
-		_FillAmount("Fill Amount", Float) = 0		
     }
     SubShader
     {
-		Tags{ "RenderType"="Opaque" "Queue"="Transparent"}
+		Tags
+		{
+			"Queue" = "Transparent"
+		}
 
         Pass
         {
 			// Transparent "normal" blending.
-			Cull off
-			LOD 200
 			Blend SrcAlpha OneMinusSrcAlpha
-			ZWrite off
+			ZWrite Off
 
             CGPROGRAM
 			#define SMOOTHSTEP_AA 0.01
@@ -57,8 +55,6 @@
             #pragma fragment frag
 
             #include "UnityCG.cginc"
-			#pragma multi_compile_fog
-			#pragma multi_compile LIGHTMAP_OFF LIGHTMAP_ON
 
 			// Blends two colors using the same algorithm that our shader is using
 			// to blend with the screen. This is usually called "normal blending",
@@ -107,7 +103,7 @@
             }
 
 			float4 _DepthGradientShallow;
-			float4 _WaterColor;
+			float4 _DepthGradientDeep;
 			float4 _FoamColor;
 
 			float _DepthMaxDistance;
@@ -121,29 +117,21 @@
 			sampler2D _CameraDepthTexture;
 			sampler2D _CameraNormalsTexture;
 
-			float3 _GLOBALMaskPosition;
-			fixed _FillAmount;
-
             float4 frag (v2f i) : SV_Target
             {
-				half dist = distance(_GLOBALMaskPosition, i.distortUV);
-				half sphere = 1 - saturate((dist - _FillAmount) / 0);
-				clip(sphere - 0.1);
-
 				// Retrieve the current depth value of the surface behind the
 				// pixel we are currently rendering.
 				float existingDepth01 = tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPosition)).r;
 				// Convert the depth from non-linear 0...1 range to linear
 				// depth, in Unity units.
 				float existingDepthLinear = LinearEyeDepth(existingDepth01);
-				existingDepthLinear = 1;
 
 				// Difference, in Unity units, between the water's surface and the object behind it.
 				float depthDifference = existingDepthLinear - i.screenPosition.w;
 
 				// Calculate the color of the water based on the depth using our two gradient colors.
 				float waterDepthDifference01 = saturate(depthDifference / _DepthMaxDistance);
-				float4 waterColor = lerp(_WaterColor, _WaterColor, waterDepthDifference01);
+				float4 waterColor = lerp(_DepthGradientShallow, _DepthGradientDeep, waterDepthDifference01);
 				
 				// Retrieve the view-space normal of the surface behind the
 				// pixel we are currently rendering.
@@ -154,7 +142,7 @@
 				// Larger differences allow for extra foam to attempt to keep the overall
 				// amount consistent.
 				float3 normalDot = saturate(dot(existingNormal, i.viewNormal));
-				float foamDistance = lerp(-1, _FoamMinDistance, normalDot);
+				float foamDistance = lerp(_FoamMaxDistance, _FoamMinDistance, normalDot);
 				float foamDepthDifference01 = saturate(depthDifference / foamDistance);
 
 				float surfaceNoiseCutoff = foamDepthDifference01 * _SurfaceNoiseCutoff;

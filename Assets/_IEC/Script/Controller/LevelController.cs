@@ -54,7 +54,6 @@ namespace IEC
         {
             GamePlay.listWallCorners.ForEach(x => x.OnDestroyMe());
             Game.OnResetAll();
-            UIController.OnResetAll();
             Sound.SetupAudio();
 
             m_ListIsland.ForEach(x => x.OnDestroyMe());
@@ -66,6 +65,12 @@ namespace IEC
 
         private IEnumerator IESpawnLevel()
         {
+            UIController.OnResetAll();
+            if (Game.isHaveIntroOutro)
+            {
+                GamePlay.psIntro.Play();
+                yield return new WaitForSeconds(.75f);
+            }
             OnResetAll();
             Game.levelSeed = PlayerData.level;
 
@@ -198,6 +203,8 @@ namespace IEC
 
             GameController.SetupCamera(size, rotIndex);
 
+            GamePlay.transFloatingIsland.localScale = Vector3.one * (size - 2);
+
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holePos);
 
@@ -301,7 +308,7 @@ namespace IEC
             }
 
             var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
-            var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
+            var delayTime = Game.isStartLevelEffect ? maxTime : .1f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
         }
 
@@ -459,6 +466,7 @@ namespace IEC
             var halfSize = size / 2;
 
             int gridSeed = Game.levelSeed;
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
 
             for (int i = 0; i < size; i++)
             {
@@ -469,7 +477,7 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
 
-                    var posSpawn = new Vector3(startPosX + j, 20f, startPosZ - i);
+                    var posSpawn = new Vector3(startPosX + j, posY, startPosZ - i);
                     var gridData = levelConfig.gridTypes[row, col].Trim();
                     SpawnGrid(GamePlay.transGridParent, posSpawn, row, col, gridData, 
                         levelConfig.gridHints[row, col], isRandomRot, gridSeed);
@@ -588,10 +596,12 @@ namespace IEC
 
             GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
 
-            GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
-            GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
-            GamePlay.listWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
-            GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
+
+            GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, posY, wallPos);
+            GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, posY, wallPos);
+            GamePlay.listWallCorners[2].transform.localPosition = new Vector3(-wallPos, posY, -wallPos);
+            GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, posY, -wallPos);
 
             GamePlay.wallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
             SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
@@ -608,9 +618,11 @@ namespace IEC
 
         private void SpawnWall(Transform parent, int count, float startPos, int[] walls, bool isBotTop, int index, bool isReverse)
         {
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
+
             for (int i = 1; i <= count; i++)
             {
-                var posSpawn = new Vector3(startPos + (i - 1) * 1, 20f, 0f);
+                var posSpawn = new Vector3(startPos + (i - 1) * 1, posY, 0f);
                 var wallValue = walls[i];
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj, parent).transform;

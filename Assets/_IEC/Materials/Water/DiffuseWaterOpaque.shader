@@ -6,7 +6,6 @@
 		_FoamColor ("Foam color", Color) = (1, 1, 1, 1)
 		_WaterTex ("Water texture", 2D) = "white" {}
 		_Tiling ("Water tiling", Vector) = (1, 1, 1, 1)
-		_TextureVisibility("Texture visibility", Range(0, 1)) = 1
 
 		[Space(20)]
 		_DistTex ("Distortion", 2D) = "white" {}
@@ -17,6 +16,9 @@
 
 		[Space(20)]
 		_MoveDirection ("Direction", Vector) = (0, 0, 0, 0)
+
+		[Space(20)]
+		_IsNewWater ("Is New Water", Float) = 0
 	}
 	SubShader
 	{
@@ -64,12 +66,13 @@
 			fixed2 _DistTiling;
 
 			fixed _WaterHeight;
-			fixed _TextureVisibility;
 
 			fixed3 _MoveDirection;
 
-			float3 _GLOBALMaskPosition;
+			float3 _MaskPos;
 			fixed _FillAmount;
+
+			fixed _IsNewWater;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
@@ -107,16 +110,20 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				half dist = distance(_GLOBALMaskPosition, i.worldPos);
-				half sphere = 1 - saturate((dist - _FillAmount) / 0);
+				half dist = distance(_MaskPos, i.worldPos);
+				half sphere = 1 - saturate((dist - _FillAmount) / 0.01);
 				clip(sphere - 0.1);
 
 				fixed2 water_uv = WaterPlaneUV(i.worldPos, i.camHeightOverWater);
+
 				fixed4 distortion = tex2D(_DistTex, water_uv * _DistTiling) * 2 - 1;
+
+				if(_IsNewWater > .5) distortion = tex2D(_DistTex, i.uv * _DistTiling) * 2 - 1;
+
 				fixed2 distorted_uv = ((water_uv + distortion.rg) - _Time.y * _MoveDirection.xz) * _Tiling;
 
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
-				waterCol = lerp(_WaterColor, fixed4(1, 1, 1, 1), waterCol.r);
+				waterCol = lerp(_WaterColor, _FoamColor, waterCol.r);
 
 				if(dist > (_FillAmount - .05)) waterCol = _FoamColor;
 

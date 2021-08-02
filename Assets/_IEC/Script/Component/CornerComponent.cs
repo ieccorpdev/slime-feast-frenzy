@@ -30,7 +30,7 @@ namespace IEC
         public void OnTweenMove()
         {
             m_Tween?.Kill(true);
-            gameObject.SetActive(true && !Game.isFlyingIsland);
+            gameObject.SetActive(!Game.isHaveIsLand);
             if (!Game.isStartLevelEffect) return;
             var moveTime = Config.startEffectMoveTime;
             var delayTime = 0f;

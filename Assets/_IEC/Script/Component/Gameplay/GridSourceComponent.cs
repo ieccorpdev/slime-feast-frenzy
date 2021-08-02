@@ -7,7 +7,10 @@ namespace IEC
     public class GridSourceComponent : BaseGrid
     {
         [SerializeField]
-        private Transform m_TranScale;
+        private Transform m_TranScale, m_TransWater, m_TransCircle1, m_TransCircle2, m_TransCircle3;
+
+        [SerializeField]
+        private GameObject m_OldFountainObj, m_NewFountainObj;
 
         protected override int[,] OriginLine => new int[3, 3]
         {
@@ -74,6 +77,18 @@ namespace IEC
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
 
             m_TranScale.localScale = Vector3.one * (Game.isBiggerFoundtain ? 1.5f : 1f);
+
+            //m_TransCircle1.localPosition = Game.isNewFountain ? new Vector3(0.035f, .32f, -.005f) : new Vector3(0f, .4f, 0f);
+
+            //m_TransCircle2.localPosition = Game.isNewFountain ? new Vector3(0f, .175f, 0f) : new Vector3(0f, .24f, 0f);
+            //m_TransCircle2.localScale = Vector3.one * (Game.isNewFountain ? 1.2f : 1f);
+
+            //m_TransCircle3.localScale = Vector3.one * (Game.isNewFountain ? 1.85f : 1.65f);
+
+            //m_TransWater.localPosition = Game.isNewFountain ? new Vector3(-0.056f, .26f, 0f) : new Vector3(-.1f, .2f, 0f);
+
+            //m_OldFountainObj.SetActive(!Game.isNewFountain);
+            //m_NewFountainObj.SetActive(Game.isNewFountain);
 
             m_LineType = lineType;
 

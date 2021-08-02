@@ -39,6 +39,8 @@ namespace IEC
 
         public Material treeGrayMat, trunkGrayMat;
 
+        
+
         public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
         {
             if (isMultiClassicColor)
@@ -99,5 +101,7 @@ namespace IEC
 
         public DataTextConfig ListSolutionMixColorsConfig;
         public DataTextConfig ListSolutionRemoveMixColorConfig;
+
+        public Texture waterTexNormal, waterTexNew, distTexNormal, distTexNew;
     }
 }

@@ -213,6 +213,11 @@ namespace IEC
             m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
             Game.levelSeed += 1;
 
+            if (Game.isRandomFlower)
+            {
+                m_TargetIndex = Random.Range(minIndex, maxIndex);
+            }
+
             for (int i = 0; i < m_TreesStyles.Length; i++)
             {
                 m_TreesStyles[i].SetActive(i == m_TargetIndex);

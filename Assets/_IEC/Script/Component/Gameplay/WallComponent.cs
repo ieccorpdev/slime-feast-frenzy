@@ -46,10 +46,10 @@ namespace IEC
 
         public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
         {
-            m_WallObj.SetActive(!isHaveHole && !Game.isFlyingIsland);
-            m_WallHoleObj.SetActive(isHaveHole && !Game.isFlyingIsland);
+            m_WallObj.SetActive(!isHaveHole && !Game.isHaveIsLand);
+            m_WallHoleObj.SetActive(isHaveHole && !Game.isHaveIsLand);
 
-            m_TeleportPipe.SetActive(isHaveHole && Game.isFlyingIsland);
+            m_TeleportPipe.SetActive(isHaveHole && Game.isHaveIsLand);
 
             var rot = GetRotY(isBotTop, isReverse);
             m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, rot, 0f);
