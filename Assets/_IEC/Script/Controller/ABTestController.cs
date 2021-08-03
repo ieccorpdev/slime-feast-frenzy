@@ -76,19 +76,26 @@ namespace IEC
         {
             Game.isNewWaterEffect = abValue == 1;
             Game.isHaveFloatingIsland = abValue == 2;
-            Game.isRandomFlower = abValue == 3;
-            Game.isHaveIntroOutro = abValue == 4;
-            if(abValue == 4)
+
+            if (abValue == 2)
             {
-                Game.isStartLevelEffect = false;
+                PlayerData.UnlockBackground(0);
+                PlayerData.UnlockTheme(0);
+            }
+            else
+            {
+                PlayerData.UnlockBackground(2);
+                PlayerData.UnlockTheme(2);
             }
 
-            if(abValue == 5)
-            {
-                Game.isHaveShop = true;
-                Game.isHaveEndGameReward = true;
-                Game.isHaveNoAdsInShopTab = true;
-            }
+            Game.isRandomFlower = abValue == 3;
+
+            Game.isHaveIntroOutro = abValue == 4;
+            Game.isStartLevelEffect = abValue != 4;
+
+            Game.isHaveShop = abValue == 5;
+            Game.isHaveEndGameReward = abValue == 5;
+            Game.isHaveNoAdsInShopTab = abValue == 5;
 
             GameController.SetupMainCam();
             UIController.SetupAbUI();
