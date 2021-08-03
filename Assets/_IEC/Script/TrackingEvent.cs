@@ -121,6 +121,11 @@ namespace IEC.TrackingEvent
         public override string Name => "iap_no_ads";
     }
 
+    public class RestoreNoAds : Level
+    {
+        public override string Name => "restore_purchase_no_ads";
+    }
+
     public class GameOver : LevelResult
     {
         public override string Name => "game_over";
