@@ -306,7 +306,6 @@ namespace IEC
                 Game.listGrids.ForEach(x => x.OnTweenMove(true));
                 Game.listBigSquare.ForEach(x => x.OnTweenMove());
             }
-
             var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
             var delayTime = Game.isStartLevelEffect ? maxTime : .1f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);

@@ -501,9 +501,9 @@ namespace IEC
             }
         }
 
-        private float m_RatioDist = 2f;
         private void OnSetUpArrow(WaterPoint point)
         {
+            var ratioDist = Game.isHaveIntroOutro ? .1f : 2f;
             if (!Game.isHaveOneWayBlock) return;
             m_InlineOrigin = (int)point;
 
@@ -513,16 +513,17 @@ namespace IEC
             originStartPos.y = 0f;
             var dir1 = (CenterPos - originStartPos).normalized;
 
-            m_StartPos1 = originStartPos + (dir1 * m_RatioDist);
-            m_EndPos1 = CenterPos + (-dir1 * m_RatioDist);
+            m_StartPos1 = originStartPos + (dir1 * ratioDist);
+            m_EndPos1 = CenterPos + (-dir1 * ratioDist);
 
             var originDestinationPos = GetDestination(point);
             originDestinationPos.y = 0f;
             var dir2 = (originDestinationPos - CenterPos).normalized;
 
-            m_StartPos2 = CenterPos + (dir2 * m_RatioDist);
-            m_EndPos2 = originDestinationPos + (-dir2 * m_RatioDist);
+            m_StartPos2 = CenterPos + (dir2 * ratioDist);
+            m_EndPos2 = originDestinationPos + (-dir2 * ratioDist);
 
+            
             m_Terrain.SetArrowPos(m_StartPos1, m_EndPos1, m_StartPos2, m_EndPos2);
         }
 
