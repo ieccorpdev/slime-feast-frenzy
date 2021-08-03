@@ -253,12 +253,13 @@ namespace IEC
 
         public void SetupPositionBtnBuy(float bannerHeight)
         {
-            var ratio = Screen.height / (float)Screen.width;
-            var scale = (1920f / 1080) / ratio;
-            var sizeY = (1282f * scale) + 315f;
-            var minPosY = 1920 - sizeY;
-            var posY = (minPosY + bannerHeight) / 2f;
-            m_RectBottomGroup.anchoredPosition = new Vector2(0f, posY);
+            //var ratio = Screen.height / (float)Screen.width;
+            //var scale = (1920f / 1080) / ratio;
+            //var sizeY = (1282f * scale) + 315f;
+            //var minPosY = 1920 - sizeY;
+            //var posY = (minPosY + bannerHeight) / 2f;
+            //posY += 20f;
+            //m_RectBottomGroup.anchoredPosition = new Vector2(0f, posY);
             //m_BtnBuyItemByAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
         }
 
