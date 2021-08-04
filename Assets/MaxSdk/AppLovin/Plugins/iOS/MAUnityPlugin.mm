@@ -559,7 +559,7 @@ extern "C"
     
     float _MaxScreenDensity()
     {
-        return [UIScreen.mainScreen scale];
+        return [UIScreen.mainScreen nativeScale];
     }
     
     const char * _MaxGetAdInfo(const char *adUnitIdentifier)

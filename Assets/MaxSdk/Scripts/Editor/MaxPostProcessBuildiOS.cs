@@ -36,6 +36,8 @@ namespace AppLovinMax.Scripts.Editor
         private const string UnityMainTargetName = "Unity-iPhone";
 #endif
         private const string TargetUnityIphonePodfileLine = "target 'Unity-iPhone' do";
+        private const string LegacyResourcesDirectoryName = "Resources";
+        private const string AppLovinMaxResourcesDirectoryName = "AppLovinMAXResources";
 
         private static readonly List<string> AtsRequiringNetworks = new List<string>
         {
@@ -156,7 +158,8 @@ namespace AppLovinMax.Scripts.Editor
 
         private static void LocalizeUserTrackingDescriptionIfNeeded(string localizedUserTrackingDescription, string localeCode, string buildPath, PBXProject project, string targetGuid)
         {
-            const string resourcesDirectoryName = "Resources";
+            // Use the legacy resources directory name if the build is being appended (the "Resources" directory already exists if it is an incremental build).
+            var resourcesDirectoryName = Directory.Exists(Path.Combine(buildPath, LegacyResourcesDirectoryName)) ? LegacyResourcesDirectoryName : AppLovinMaxResourcesDirectoryName;
             var resourcesDirectoryPath = Path.Combine(buildPath, resourcesDirectoryName);
             var localeSpecificDirectoryName = localeCode + ".lproj";
             var localeSpecificDirectoryPath = Path.Combine(resourcesDirectoryPath, localeSpecificDirectoryName);
