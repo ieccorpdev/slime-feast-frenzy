@@ -19,6 +19,7 @@ namespace IEC
         public bool IsShow { get; protected set; }
         public bool IsHide => !IsShow;
         public int ShowOrder { get; protected set; }
+        public bool IsFocus { get; protected set; }
 
         [HideInInspector]
         public UnityEvent onShow;
@@ -30,6 +31,11 @@ namespace IEC
         [HideInInspector]
         public UnityEvent onHideDone;
 
+        [HideInInspector]
+        public UnityBoolEvent onHaveFocus;    // bool isOnShow
+        [HideInInspector]
+        public UnityBoolEvent onLostFocus;    // bool isOnHide
+
         protected List<Button> listButtonHideOnClick = new List<Button>();
 
         public virtual void LocateScreen()
@@ -39,17 +45,49 @@ namespace IEC
 
         public virtual void Show()
         {
+            if (IsShow) return;
+
             IsShow = true;
+            IsFocus = true;
             ShowButtonHideOnClick();
-            EffectUI.DoShowHide(gameObject, true, (isShow) => onShowDone.Invoke());
+            EffectUI.DoShowHide(gameObject, true, (isShow) =>
+            {
+                onShowDone.Invoke();
+                onHaveFocus.Invoke(true);
+            });
             onShow.Invoke();
+            onHaveFocus.Invoke(true);
         }
 
         public virtual void Hide()
         {
+            if (IsHide) return;
+
             IsShow = false;
-            EffectUI.DoShowHide(gameObject, false, (isShow) => onHideDone.Invoke());
+            IsFocus = false;
+            EffectUI.DoShowHide(gameObject, false, (isShow) =>
+            {
+                onHideDone.Invoke();
+                onLostFocus.Invoke(true);
+            });
             onHide.Invoke();
+            onLostFocus.Invoke(true);
+        }
+
+        public virtual void LostFocus()
+        {
+            if (!IsFocus) return;
+
+            IsFocus = false;
+            onLostFocus.Invoke(false);
+        }
+
+        public virtual void HaveFocus()
+        {
+            if (IsFocus) return;
+
+            IsFocus = true;
+            onHaveFocus.Invoke(false);
         }
 
         public virtual void SetActive(bool isActive)
