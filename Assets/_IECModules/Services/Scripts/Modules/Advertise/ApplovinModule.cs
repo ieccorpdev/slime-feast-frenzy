@@ -225,35 +225,35 @@ namespace IEC
 
         void InitBanner()
         {
-            MaxSdkCallbacks.OnBannerAdClickedEvent += BannerAd_OnAdClicked;
-            MaxSdkCallbacks.OnBannerAdLoadedEvent += BannerAd_OnAdLoaded;
-            MaxSdkCallbacks.OnBannerAdLoadFailedEvent += BannerAd_OnAdFailedToLoad;
-            MaxSdkCallbacks.OnBannerAdCollapsedEvent += BannerAd_OnAdCollapsed;
-            MaxSdkCallbacks.OnBannerAdExpandedEvent += BannerAd_OnAdExpanded;
+            MaxSdkCallbacks.Banner.OnAdClickedEvent += BannerAd_OnAdClicked;
+            MaxSdkCallbacks.Banner.OnAdLoadedEvent += BannerAd_OnAdLoaded;
+            MaxSdkCallbacks.Banner.OnAdLoadFailedEvent += BannerAd_OnAdFailedToLoad;
+            MaxSdkCallbacks.Banner.OnAdCollapsedEvent += BannerAd_OnAdCollapsed;
+            MaxSdkCallbacks.Banner.OnAdExpandedEvent += BannerAd_OnAdExpanded;
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
-        private void BannerAd_OnAdExpanded(string adUnitId)
+        private void BannerAd_OnAdExpanded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             Debug.Log("BannerAd_OnAdExpanded");
         }
 
-        private void BannerAd_OnAdCollapsed(string adUnitId)
+        private void BannerAd_OnAdCollapsed(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             Debug.Log("BannerAd_OnAdCollapsed");
         }
 
-        private void BannerAd_OnAdFailedToLoad(string adUnitId, int errorCode)
+        private void BannerAd_OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
         {
-            Debug.Log("BannerAd_OnAdFailedToLoad:" + errorCode);
+            Debug.Log("BannerAd_OnAdFailedToLoad:" + errorInfo.Code);
         }
 
-        private void BannerAd_OnAdLoaded(string adUnitId)
+        private void BannerAd_OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             Debug.Log("BannerAd_OnAdLoaded");
         }
 
-        void BannerAd_OnAdClicked(string adUnitId)
+        void BannerAd_OnAdClicked(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             Debug.Log("BannerAd_OnAdClicked");
         }
@@ -313,7 +313,7 @@ namespace IEC
             }
         }
 
-        private void InterstitialAd_OnAdLoaded(string adUnitId)
+        private void InterstitialAd_OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("InterstitialAd_OnAdLoaded");
             var adsState = m_FullAdsState;
@@ -322,10 +322,10 @@ namespace IEC
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
         }
 
-        private void InterstitialAd_OnAdFailedToLoad(string adUnitId, int errorCode)
+        private void InterstitialAd_OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
         {
             var adsState = m_FullAdsState;
-            AdsStateData.DebugLog("InterstitialAd_OnAdFailedToLoad : " + errorCode);
+            AdsStateData.DebugLog("InterstitialAd_OnAdFailedToLoad : " + errorInfo.Code);
             adsState.isLoaded = false;
             adsState.isLoading = false;
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.FAIL);
@@ -338,7 +338,7 @@ namespace IEC
             }
         }
 
-        private void InterstitialAd_OnAdClosed(string adUnitId)
+        private void InterstitialAd_OnAdClosed(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("InterstitialAd_OnAdClosed");
             var adsState = m_FullAdsState;
@@ -352,7 +352,7 @@ namespace IEC
             }
         }
 
-        private void InterstitialAd_OnAdFailedToDisplay(string adUnitId, int errorCode)
+        private void InterstitialAd_OnAdFailedToDisplay(string adUnitId, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("InterstitialAd_OnAdFailedToDisplay");
             var adsState = m_FullAdsState;
@@ -373,10 +373,10 @@ namespace IEC
 
         public void InitializeInterstitialAds()
         {
-            MaxSdkCallbacks.OnInterstitialLoadedEvent += InterstitialAd_OnAdLoaded;
-            MaxSdkCallbacks.OnInterstitialLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
-            MaxSdkCallbacks.OnInterstitialAdFailedToDisplayEvent += InterstitialAd_OnAdFailedToDisplay;
-            MaxSdkCallbacks.OnInterstitialHiddenEvent += InterstitialAd_OnAdClosed;
+            MaxSdkCallbacks.Interstitial.OnAdLoadedEvent += InterstitialAd_OnAdLoaded;
+            MaxSdkCallbacks.Interstitial.OnAdLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
+            MaxSdkCallbacks.Interstitial.OnAdDisplayFailedEvent += InterstitialAd_OnAdFailedToDisplay;
+            MaxSdkCallbacks.Interstitial.OnAdHiddenEvent += InterstitialAd_OnAdClosed;
             MaxSdkCallbacks.Interstitial.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
@@ -433,22 +433,22 @@ namespace IEC
             }
         }
 
-        private void RewardedAdsView_OnAdFailedToShow(string adUnitId, int errorCode)
+        private void RewardedAdsView_OnAdFailedToShow(string adUnitId, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo adInfo)
         {
             m_RewardAdsState.isLoading = false;
             m_RewardAdsState.isLoaded = false;
-            AdsStateData.DebugLog("RewardedAdsView_OnAdFailedToShow : " + errorCode);
+            AdsStateData.DebugLog("RewardedAdsView_OnAdFailedToShow : " + errorInfo.Code);
             m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.FAIL);
         }
 
-        private void RewardedAdsView_OnUserEarnedReward(string adUnitId, MaxSdk.Reward reward)
+        private void RewardedAdsView_OnUserEarnedReward(string adUnitId, MaxSdkBase.Reward reward, MaxSdkBase.AdInfo adInfo)
         {
             m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.DONE_NO_SKIP);
         }
 
-        private void RewardedAdsView_OnAdFailedToLoad(string adUnitId, int errorCode)
+        private void RewardedAdsView_OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
         {
-            AdsStateData.DebugLog("RewardedAdsView_OnAdFailedToLoad : " + errorCode);
+            AdsStateData.DebugLog("RewardedAdsView_OnAdFailedToLoad : " + errorInfo.Code);
             m_RewardAdsState.isLoading = false;
             m_RewardAdsState.isLoaded = false;
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.FAIL);
@@ -461,7 +461,7 @@ namespace IEC
             }
         }
 
-        private void RewardedAdsView_OnAdLoaded(string adUnitId)
+        private void RewardedAdsView_OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("RewardedAdsView_OnAdLoaded");
             m_RewardAdsState.isLoaded = true;
@@ -469,7 +469,7 @@ namespace IEC
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.DONE);
         }
 
-        private void RewardedAdsView_OnAdClosed(string adUnitId)
+        private void RewardedAdsView_OnAdClosed(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("RewardedAdsView_OnAdClosed");
             m_RewardAdsState.isLoading = false;
@@ -487,18 +487,18 @@ namespace IEC
         public void InitializeRewardedAds()
         {
             // Attach callback
-            MaxSdkCallbacks.OnRewardedAdLoadedEvent += RewardedAdsView_OnAdLoaded;
-            MaxSdkCallbacks.OnRewardedAdLoadFailedEvent += RewardedAdsView_OnAdFailedToLoad;
-            MaxSdkCallbacks.OnRewardedAdFailedToDisplayEvent += RewardedAdsView_OnAdFailedToShow;
-            MaxSdkCallbacks.OnRewardedAdHiddenEvent += RewardedAdsView_OnAdClosed;
-            MaxSdkCallbacks.OnRewardedAdReceivedRewardEvent += RewardedAdsView_OnUserEarnedReward;
+            MaxSdkCallbacks.Rewarded.OnAdLoadedEvent += RewardedAdsView_OnAdLoaded;
+            MaxSdkCallbacks.Rewarded.OnAdLoadFailedEvent += RewardedAdsView_OnAdFailedToLoad;
+            MaxSdkCallbacks.Rewarded.OnAdDisplayFailedEvent += RewardedAdsView_OnAdFailedToShow;
+            MaxSdkCallbacks.Rewarded.OnAdHiddenEvent += RewardedAdsView_OnAdClosed;
+            MaxSdkCallbacks.Rewarded.OnAdReceivedRewardEvent += RewardedAdsView_OnUserEarnedReward;
             MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
 #endregion
         private void OnAdRevenuePaidEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
-            double revenue = MaxSdk.GetAdInfo(adUnitId).Revenue;
+            double revenue = adInfo.Revenue;
 
             // Miscellaneous data
             string countryCode = MaxSdk.GetSdkConfiguration().CountryCode; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
@@ -506,17 +506,19 @@ namespace IEC
             string adUnitIdentifier = adInfo.AdUnitIdentifier; // The MAX Ad Unit ID
             string placement = adInfo.Placement; // The placement this ad's postbacks are tied to
 
-            Debug.LogWarning("Reward Revenue Event:" + adUnitId);
+            Debug.LogWarning("Ads Revenue Event:" + adUnitId);
             Debug.LogWarning("rev:" + revenue);
             Debug.LogWarning("country code:" + countryCode);
             Debug.LogWarning("network name:" + networkName);
             Debug.LogWarning("ad unit identifier:" + adUnitIdentifier);
             Debug.LogWarning("placement:" + placement);
 
-            var dict = new Dictionary<string, object>();
-            dict["revenue"] = revenue;
-            dict["ad_unit_id"] = adUnitId;
-            dict["network_name"] = networkName;
+            var dict = new Dictionary<string, object>
+            {
+                ["revenue"] = revenue,
+                ["ad_unit_id"] = adUnitId,
+                ["network_name"] = networkName
+            };
             var eventName = EventName(adUnitId);
 
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
