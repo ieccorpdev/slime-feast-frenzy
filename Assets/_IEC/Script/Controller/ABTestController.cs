@@ -58,7 +58,6 @@ namespace IEC
                 {
                     var cheatAbIndex = cheatCodeParam.dropdownParam.value;
                     Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
-                    Pool.Set(new Game());
                     ApplyAbTest(cheatAbIndex);
                     ResultAllAbTest();
                 },
@@ -72,6 +71,7 @@ namespace IEC
 
         void ApplyAbTest(int abIndex)
         {
+            Pool.Set(new Game());
             var serviceAbTest = Services.ABTest();
             var listAbTestConfig = Services.config.abTestConfigs.ToList();
             var abConfig = (abIndex >= 0) ? listAbTestConfig[abIndex] : null;
