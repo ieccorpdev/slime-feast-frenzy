@@ -9,6 +9,10 @@ namespace _IECModules
 {
     public static class ProjectResolveHelper
     {
+        public static readonly List<string> listPermissionRemove = new List<string>()
+        {
+            "WRITE_EXTERNAL_STORAGE"
+        };
         public static List<string> listObsoleteResolver = new List<string>
         {
             "Assets/ExternalDependencyManager",
@@ -55,9 +59,10 @@ namespace _IECModules
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
+            RemovePermissions(listPermissionRemove);
             //UpdateApplovinQualityService();
         }
-
+        
         public static void DeleteObsoleteResolver()
         {
             listObsoleteResolver.ForEach(path =>
@@ -394,6 +399,31 @@ namespace _IECModules
             }
             googlePlayServicesMethodForceResolveMethod.Invoke(null, null);
         }
+        
+        private static void RemovePermissions(List<string> permissions)
+        {
+            var manifestPath = "Assets/Plugins/Android/AndroidManifest.xml";
+            if (!File.Exists(manifestPath))
+            {
+                return;
+            }
 
+            var manifestContent = File.ReadAllText(manifestPath);
+            var manifestTag = manifestContent.GetBetweenString("<manifest", "</manifest>",false);
+            // Debug.LogError(manifestTag);
+            var manifestTagReplace = manifestTag;
+            for (int i = 0; i < permissions.Count; i++)
+            {
+                var permission = permissions[i];
+                var permissionRemove =
+                    $"<uses-permission android:name=\"android.permission.{permission}\" tools:node=\"remove\"/>";
+                if (!manifestTagReplace.Contains(permissionRemove))
+                {
+                    manifestTagReplace += $"{permissionRemove}\n";
+                }
+            }
+            manifestContent = manifestContent.Replace(manifestTag, manifestTagReplace);
+            File.WriteAllText(manifestPath,manifestContent);
+        }
     }
 }
