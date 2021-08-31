@@ -150,7 +150,13 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-            StartCoroutine(IE_CountOneSec());
+           // StartCoroutine(IE_CountOneSec());
+#if PluginInAppRating
+#if UNITY_ANDROID
+           m_Review = new ReviewManager();
+           StartCoroutine(IE_GetPlayReviewInfo());
+#endif
+#endif
             isInitAwake = true;
         }
 
@@ -508,15 +514,16 @@ namespace IEC
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
                 applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
-                  {
-                      if (result)
-                      {
-                          applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
-                          applovinAds.Load(AdsEnum.INTERSTITIAL, null);
-                          applovinAds.Load(AdsEnum.REWARD, null);
-                          RaiseInitEvent(EventList.Service.INIT_AD_DONE);
-                      }
-                  });
+                {
+                    if (result)
+                    {
+                        applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
+                        applovinAds.Load(AdsEnum.INTERSTITIAL, null);
+                        applovinAds.Load(AdsEnum.REWARD, null);
+                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                    }
+                },
+                PushEvent);
 
                 m_Ads = applovinAds;
 #endif
@@ -828,9 +835,27 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Service.COUNT_ONE_SEC, new EventParam(this));
             }
         }
+        
 #if PluginInAppRating
+        private ReviewManager m_Review;
+        private PlayReviewInfo m_PlayReviewInfo;
+
+        IEnumerator IE_GetPlayReviewInfo()
+        {
+            var requestFlowOperation = m_Review.RequestReviewFlow();
+            yield return requestFlowOperation;
+            if (requestFlowOperation.Error != ReviewErrorCode.NoError)
+            {
+                Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
+                yield break;
+            }
+
+            m_PlayReviewInfo = requestFlowOperation.GetResult();
+        }
+
         public void RateUs()
         {
+            Debug.LogWarning("rate us");
 #if UNITY_IOS
             UnityEngine.iOS.Device.RequestStoreReview();
 #endif
@@ -838,23 +863,13 @@ namespace IEC
             StartCoroutine(IE_RequestReview());
             IEnumerator IE_RequestReview()
             {
-                ReviewManager m_Review = new ReviewManager();
-                var requestFlowOperation = m_Review.RequestReviewFlow();
-                yield return requestFlowOperation;
-                if (requestFlowOperation.Error != ReviewErrorCode.NoError)
-                {
-                    Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
-                    Application.OpenURL("market://details?id=" + Application.identifier);
-                    yield break;
-                }
-                var playReviewInfo = requestFlowOperation.GetResult();
-                var launchFlowOperation = m_Review.LaunchReviewFlow(playReviewInfo);
+                if (m_PlayReviewInfo == null) yield break;
+                var launchFlowOperation = m_Review.LaunchReviewFlow(m_PlayReviewInfo);
                 yield return launchFlowOperation;
                 if (launchFlowOperation.Error != ReviewErrorCode.NoError)
                 {
                     Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
-                    Application.OpenURL("market://details?id=" + Application.identifier);
-                    yield break;
+                    // Application.OpenURL("market://details?id=" + Application.identifier);
                 }
             }
 #endif

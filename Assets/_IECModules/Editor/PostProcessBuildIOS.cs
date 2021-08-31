@@ -77,11 +77,13 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         void CopyFastlaneConfig()
         {
-            var fastlaneFolderPath = (Application.dataPath + "/_IEC/Editor/fastlane");
-            if (Directory.Exists(fastlaneFolderPath))
+            var fastlaneAppFilePath = (Application.dataPath + "/_IEC/Editor/fastlane/Appfile");
+            var fastlaneModuleFolderPath = (Application.dataPath + "/_IECModules/Editor/fastlane");
+            if (File.Exists(fastlaneAppFilePath))
             {
                 Debug.Log("Fastlane config folder found");
-                FileUtil.CopyFileOrDirectory(fastlaneFolderPath, Path.Combine(path, "fastlane"));
+                FileUtil.ReplaceDirectory(fastlaneModuleFolderPath, Path.Combine(path, "fastlane"));
+                FileUtil.ReplaceFile(fastlaneAppFilePath, Path.Combine(path, "fastlane/Appfile"));
             }
         }
 

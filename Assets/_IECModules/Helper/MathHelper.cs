@@ -125,4 +125,22 @@ public class MathHelper
 
         return ret;
     }
+
+    public static int RoundCeilToInt(float f)
+    {
+        var frac = f - (int)f;
+        if (frac == 0.5f)
+        {
+            frac = 1;
+            return (int)f + (int)frac;
+        }
+        return Mathf.RoundToInt(f);
+    }
+
+    public static int RoundCeilToIntGreaterZero(float f)
+    {
+        var round = RoundCeilToInt(f);
+        if (round == 0) return 1;
+        return round;
+    }
 }
