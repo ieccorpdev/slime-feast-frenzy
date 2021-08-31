@@ -39,21 +39,19 @@ namespace IEC
                     if (m_IsShowGOPanel) return;
                     m_IsShowGOPanel = true;
                     GameOver((bool)param.p0);
-                    break;
-                case EventList.GamePlay.GAME_START_PLAY:
                     if (!PlayerData.haveAlreadyRate)
                     {
                         var level = PlayerData.level;
-                        if (level <= 60 && level % 20 == 0 &&
-                            !PlayerData.levelShowRate.Contains(level))
+                        if ((PlayerData.level - 1) % 3 == 0)
                         {
                             Game.isShowPopup = true;
-                            PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
                             UI.popupRating.gameObject.SetActive(true);
                             Game.SetGameState(GameState.Pause);
                         }
                     }
+                    break;
+                case EventList.GamePlay.GAME_START_PLAY:
 
                     if (Game.isBossLevel)
                     {
