@@ -267,7 +267,6 @@ namespace _IECModules
 #if !PluginFacebook
             LogEditorHelper.AddLogError("PluginFacebook NOT Defined!!!!!");
 #endif
-            PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions) 29;
             PlayerSettings.enableCrashReportAPI = true;
 
             var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
