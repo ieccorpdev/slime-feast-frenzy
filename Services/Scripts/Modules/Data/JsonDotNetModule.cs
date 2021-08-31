@@ -3,6 +3,7 @@
 
 #if (JSON_DOT_NET)
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 #endif
 
 using System;
@@ -12,13 +13,20 @@ namespace IEC
     public class JsonDotNetModule : IJsonService
     {
 #if (JSON_DOT_NET)
-		public string ToJson (object obj) {
-			return JsonConvert.SerializeObject (obj);
-		}
+        public string ToJson(object obj)
+        {
+            return JsonConvert.SerializeObject(obj);
+        }
 
-		public T FromJson<T> (string json) {
-			return JsonConvert.DeserializeObject<T> (json);
-		}
+        public T FromJson<T>(string json)
+        {
+            return JsonConvert.DeserializeObject<T>(json);
+        }
+
+        public JObject ToJObject(string json)
+        {
+            return JObject.Parse(json);
+        }
 #else
         public T FromJson<T>(string json)
         {
