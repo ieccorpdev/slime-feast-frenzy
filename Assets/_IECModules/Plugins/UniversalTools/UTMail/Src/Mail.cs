@@ -236,18 +236,18 @@ namespace UT
                 if (updateMessage.Length > 0)
                 {
                     const string lastLine = "\n" + wouldYouLikeMessage;
-                    if (UnityEditor.EditorUtility.DisplayDialog("UTMail has been updated to version " + Version, updateMessage + lastLine, "Yes", "No"))
-                    {
-                        OpenDocs();
-                    }
+                    // if (UnityEditor.EditorUtility.DisplayDialog("UTMail has been updated to version " + Version, updateMessage + lastLine, "Yes", "No"))
+                    // {
+                    //     OpenDocs();
+                    // }
                 }
             }
             else
             {
-                if (UnityEditor.EditorUtility.DisplayDialog("UTMail " + Version + " found.", wouldYouLikeMessage, "Yes", "No"))
-                {
-                    OpenDocs();
-                }
+                // if (UnityEditor.EditorUtility.DisplayDialog("UTMail " + Version + " found.", wouldYouLikeMessage, "Yes", "No"))
+                // {
+                //     OpenDocs();
+                // }
             }
 
             UnityEditor.EditorPrefs.SetString(versionPrefName, Version);

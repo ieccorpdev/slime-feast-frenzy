@@ -51,15 +51,17 @@ namespace IEC
             Result20210412();
             Result20210518();
             Result20210524();
+            Result20210802();
+            Result20210819();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210802(abValue);
+            UpdateAb20210901(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210802(abValue);
+                    UpdateAb20210901(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -70,6 +72,34 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        void UpdateAb20210901(int abValue)
+        {
+            
+        }
+
+        void Result20210819()
+        {
+            
+        }
+
+        private void UpdateAb20210819(int abValue)
+        {
+
+        }
+
+        private void Result20210802()
+        {
+            Game.isNewWaterEffect = true;
+            Game.isRandomFlower = true;
+
+            Game.isHaveShop = true;
+            Game.isHaveEndGameReward = true;
+            Game.isHaveNoAdsInShopTab = true;
+
+            GameController.SetupMainCam();
+            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210802(int abValue)
@@ -96,9 +126,6 @@ namespace IEC
             Game.isHaveShop = abValue == 5;
             Game.isHaveEndGameReward = abValue == 5;
             Game.isHaveNoAdsInShopTab = abValue == 5;
-
-            GameController.SetupMainCam();
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210705(int abValue)
