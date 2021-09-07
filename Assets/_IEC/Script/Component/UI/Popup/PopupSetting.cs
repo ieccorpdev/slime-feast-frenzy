@@ -56,15 +56,18 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsV3);
+            var isHaveRestoreBtn = Game.isHaveNoAdsV3 || Game.isHaveNoAdsInShopTab;
+            btnRestorePurchase.gameObject.SetActive(isHaveRestoreBtn);
         }
 
         public void SetActiveConsent(bool isActive)
         {
             btnEditConsent.gameObject.SetActive(isActive);
 
-            var isScaleUp = isActive || Game.isHaveNoAdsV3;
-            var isHaveBoth = isActive && Game.isHaveNoAdsV3;
+            var isHaveRestoreBtn = Game.isHaveNoAdsV3 || Game.isHaveNoAdsInShopTab;
+
+            var isScaleUp = isActive || isHaveRestoreBtn;
+            var isHaveBoth = isActive && isHaveRestoreBtn;
 
             var scaleYGroup = isHaveBoth ? 800f : (isScaleUp ? 620f : 440f);
             var scaleYPanel = isHaveBoth ? 1290f : (isScaleUp ? 1020f : 750f);
