@@ -51,10 +51,11 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            btnRestorePurchase.gameObject.SetActive(Game.isHaveNoAdsV3);
+            var isHaveRestoreBtn = Game.isHaveNoAdsV3 || Game.isHaveNoAdsInShopTab;
+            btnRestorePurchase.gameObject.SetActive(isHaveRestoreBtn);
 
-            m_RectGroup.sizeDelta = new Vector2(640f, Game.isHaveNoAdsV3 ? 620f : 440f);
-            m_RectPannel.sizeDelta = new Vector2(800f, Game.isHaveNoAdsV3 ? 900f : 750f);
+            m_RectGroup.sizeDelta = new Vector2(640f, isHaveRestoreBtn ? 620f : 440f);
+            m_RectPannel.sizeDelta = new Vector2(800f, isHaveRestoreBtn ? 900f : 750f);
         }
     }
 }

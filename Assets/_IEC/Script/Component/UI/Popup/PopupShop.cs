@@ -153,7 +153,7 @@ namespace IEC
         {
             m_PurchasedObj.SetActive(PlayerData.isNoAds);
             m_BtnNoAds.gameObject.SetActive(!PlayerData.isNoAds);
-            m_BtnRestorePurchase.gameObject.SetActive(PlayerData.isNoAds);
+            //m_BtnRestorePurchase.gameObject.SetActive(PlayerData.isNoAds);
         }
 
         private bool m_IsOldStatus = true, m_IsActiveTimer;
