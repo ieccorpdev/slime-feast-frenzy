@@ -148,6 +148,8 @@ namespace IEC
         void Thumbnail_OnAdError(OguryThumbnailAd ad, OguryError error)
         {
             Debug.Log("Thumbnail OnAdError:" + error.ErrorCode + "-" + error.Description);
+            var id = m_DictIdByThumbnailAd[ad];
+            m_DictThumbnailLoaded[id] = false;
             // LoadThumbnail(ad);
         }
 
@@ -172,7 +174,14 @@ namespace IEC
             for (int i = 0; i < m_ListThumbnailID.Count; i++)
             {
                 var id = m_ListThumbnailID[i];
-                if (!IsThumbnailLoaded(id)) LoadThumbnail(m_DictThumbnailAdById[id]);
+                if (!IsThumbnailLoaded(id))
+                {
+                    LoadThumbnail(m_DictThumbnailAdById[id]);
+                }
+                else if(!m_IsThumbnailShowing)
+                {
+                    ShowThumbnail();
+                }
                 else Debug.LogWarning("thumbnail is loaded:" + id);
             }
         }
