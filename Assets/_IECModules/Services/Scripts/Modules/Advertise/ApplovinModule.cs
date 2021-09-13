@@ -3,7 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+#if PluginFacebook
+using Facebook.Unity;
+#endif
 namespace IEC
 {
     public class ApplovinModule : IAdsService
@@ -520,7 +522,15 @@ namespace IEC
                 ["network_name"] = networkName
             };
             var eventName = EventName(adUnitId);
-
+            #if PluginFacebook
+            if (FB.IsInitialized)
+            {
+                var param = new Dictionary<string, object>();
+                param["ad_type"] = eventName;
+                param["network_name"] = networkName;
+                FB.LogPurchase((float)revenue,"USD", param);
+            }
+            #endif
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
         }
 

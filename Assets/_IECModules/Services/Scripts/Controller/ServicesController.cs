@@ -49,9 +49,9 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#if PluginOgury
-        OguryModule m_OguryModule;
-#endif
+// #if PluginOgury
+//         OguryModule m_OguryModule;
+// #endif
 
         #endregion
 
@@ -101,14 +101,14 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-#if PluginOgury
-                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
-                    {
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                    }
-#else
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-#endif
+// #if PluginOgury
+//                     if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
+//                     {
+//                         SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+//                     }
+// #else
+                    // SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+// #endif
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -507,10 +507,10 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
-#if PluginOgury
-                m_OguryModule = new OguryModule();
-                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
-#endif
+// #if PluginOgury
+//                 m_OguryModule = new OguryModule();
+//                 m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
+// #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
                 applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
@@ -1102,23 +1102,23 @@ namespace IEC
             {
                 Ads().Load(AdsEnum.INTERSTITIAL, null);
                 Ads().Load(AdsEnum.REWARD, null);
-#if PluginOgury
-                m_OguryModule?.LoadThumbnail((eventArg) =>
-                {
-                    if (eventArg == AdsEventArgs.DONE)
-                    {
-                        if (m_ServiceData.isNoAds)
-                        {
-                            return;
-                        }
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                        m_OguryModule.ShowThumbnail((eventArgs) =>
-                        {
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                        });
-                    }
-                });
-#endif
+// #if PluginOgury
+//                 m_OguryModule?.LoadThumbnail((eventArg) =>
+//                 {
+//                     if (eventArg == AdsEventArgs.DONE)
+//                     {
+//                         if (m_ServiceData.isNoAds)
+//                         {
+//                             return;
+//                         }
+//                         SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+//                         m_OguryModule.ShowThumbnail((eventArgs) =>
+//                         {
+//                             SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+//                         });
+//                     }
+//                 });
+// #endif
                 yield return delaySec;
             }
         }
