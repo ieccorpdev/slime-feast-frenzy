@@ -1,4 +1,4 @@
-﻿#if (PluginOgury)
+#if (PluginOgury)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,9 +21,6 @@ namespace IEC
         AdsStateData m_ThumbnailState = new AdsStateData();
         public void Init(OguryAdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback = null)
         {
-            var oguryCallbackObj = new GameObject("OguryCallbacks");
-            oguryCallbackObj.AddComponent<OguryCallbacks>();
-
             m_PlatformConfig = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
 
             Debug.LogWarning("Ogury App Id:" + m_PlatformConfig.appID.Trim());
