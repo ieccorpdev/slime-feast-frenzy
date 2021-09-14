@@ -837,6 +837,7 @@ namespace IEC
         }
         
 #if PluginInAppRating
+#if UNITY_ANDROID
         private ReviewManager m_Review;
         private PlayReviewInfo m_PlayReviewInfo;
 
@@ -852,7 +853,7 @@ namespace IEC
 
             m_PlayReviewInfo = requestFlowOperation.GetResult();
         }
-
+#endif
         public void RateUs()
         {
             Debug.LogWarning("rate us");

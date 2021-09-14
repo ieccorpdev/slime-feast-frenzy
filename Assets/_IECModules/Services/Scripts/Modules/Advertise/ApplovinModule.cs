@@ -6,6 +6,7 @@ using UnityEngine;
 #if PluginFacebook
 using Facebook.Unity;
 #endif
+
 namespace IEC
 {
     public class ApplovinModule : IAdsService
@@ -522,6 +523,14 @@ namespace IEC
                 ["network_name"] = networkName
             };
             var eventName = EventName(adUnitId);
+            var dictParamAll = new Dictionary<string, object>
+            {
+                ["ad_type"] = eventName,
+                ["network_name"] = networkName
+            };
+
+            pushEventAction?.Invoke(eventName, (float) revenue, dict);
+            pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
             #if PluginFacebook
             if (FB.IsInitialized)
             {
@@ -531,7 +540,6 @@ namespace IEC
                 FB.LogPurchase((float)revenue,"USD", param);
             }
             #endif
-            pushEventAction?.Invoke(eventName, (float) revenue, dict);
         }
 
         private string EventName(string adUnitId)
