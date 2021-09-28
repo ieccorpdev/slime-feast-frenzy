@@ -92,6 +92,7 @@ namespace IEC
         public int m_InlineOrigin, m_InlineOffset;
         public bool IsOneWayBlock, IsInBigSquare;
 
+        private bool IsHaveTerrain => m_Terrain != null;
 
         //Temp
         protected Tween m_Tween;
@@ -104,20 +105,6 @@ namespace IEC
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
         {
-            if (!m_IsInit)
-            { 
-                m_IsInit = true;
-                m_WaterCount = m_WaterComponent.Length;
-            }
-
-            if (m_WaterCount > 0)
-            {
-                for (int i = 0; i < m_WaterCount; i++)
-                {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
-                }
-            }
-
             OnResetAll();
 
             GridType = gridType;
@@ -135,6 +122,26 @@ namespace IEC
 
         private void OnResetAll()
         {
+            if (!m_IsInit)
+            {
+                m_IsInit = true;
+                m_WaterCount = m_WaterComponent.Length;
+            }
+
+            if (m_WaterCount > 0)
+            {
+                for (int i = 0; i < m_WaterCount; i++)
+                {
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
+                }
+            }
+
+            m_Tween?.Kill(true);
+            if (m_HintEffect != null)
+            {
+                m_HintEffect.OnDestroyMe();
+            }
+
             m_IsLock = false;
             IsOneWayBlock = false;
             IsInBigSquare = false;
@@ -144,7 +151,7 @@ namespace IEC
                 m_Collider.enabled = true;
             }
 
-            if (m_Terrain)
+            if (IsHaveTerrain)
             {
                 m_Terrain.ResetAll();
             }
@@ -158,35 +165,24 @@ namespace IEC
             Col = col;
         }
 
-        public virtual void SetLock(bool isChangeTerrain)
+        public virtual void SetLock()
         {
             m_IsLock = true;
             m_Collider.enabled = false;
-            if (isChangeTerrain)
-            {
-                if (m_Terrain != null)
-                {
-                    m_Terrain.SetActiveLock(true);
-                }
-            }
-            else
-            {
-                m_Terrain.gameObject.SetActive(false);
 
-                if (Game.isHaveBigSquare)
-                {
-                    IsInBigSquare = true;
-                }
-            }
-        }
-
-        protected void SetLockHint()
-        {
-            m_IsLock = true;
-            if (m_Terrain != null)
+            if (IsHaveTerrain)
             {
                 m_Terrain.SetActiveLock(true);
             }
+        }
+
+        public void PushToBigSquare()
+        {
+            m_IsLock = true;
+            m_Collider.enabled = false;
+
+            IsInBigSquare = true;
+            m_Terrain.gameObject.SetActive(false);
         }
 
         public virtual void OnUpdateSetTerrain()
@@ -241,7 +237,7 @@ namespace IEC
             {
                 if (!m_IsLock)
                 {
-                    if (m_Terrain != null)
+                    if (IsHaveTerrain)
                     {
                         m_Terrain.OnUpdate(fillAmount);
                     }
@@ -265,19 +261,7 @@ namespace IEC
 
         public virtual void OnDestroyMe()
         {
-            m_Tween?.Kill(true);
-            if (m_HintEffect != null)
-            {
-                m_HintEffect.OnDestroyMe();
-            }
-
-            if (m_Terrain != null)
-            {
-                m_Terrain.ResetAll();
-            }
-
-            OnResetDataPlaying();
-
+            OnResetAll();
             PrefabHelper.Destroy(gameObject);
         }
 
@@ -622,7 +606,7 @@ namespace IEC
             {
                 if (!m_IsLock)
                 {
-                    if (m_Terrain != null)
+                    if (IsHaveTerrain)
                     {
                         m_Terrain.SetPos(waterPos);
                     }
@@ -735,9 +719,11 @@ namespace IEC
 
         public virtual void SetTerrainMat()
         {
-            if (m_Terrain == null) return;
-            var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
+            if (IsHaveTerrain) 
+            {
+                var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
+                m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
+            }
         }
 
         protected virtual int GetTrueRotHint()

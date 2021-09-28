@@ -22,14 +22,11 @@ namespace IEC
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
-        public override void SetLock(bool isChangeTerrain)
+        public override void SetLock()
         {
-            base.SetLock(isChangeTerrain);
-            if (isChangeTerrain)
-            {
-                m_CurrentRot = TrueRot;
-                Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
-            }
+            base.SetLock();
+            m_CurrentRot = TrueRot;
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
         private void SetGridLine(int rot)
@@ -98,7 +95,7 @@ namespace IEC
             base.OnHint();
             if (Game.isHintFixedBlockStyle)
             {
-                SetLockHint();
+                SetLock();
             }
             m_IsRotating = true;
             m_Tween?.Kill(true);

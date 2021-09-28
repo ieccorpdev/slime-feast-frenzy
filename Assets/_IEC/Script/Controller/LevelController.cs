@@ -270,7 +270,7 @@ namespace IEC
             {
                 if (isFixedBlock)
                 {
-                    Game.listTiles[listFixedGrid[i]].SetLock(true);
+                    Game.listTiles[listFixedGrid[i]].SetLock();
                 }
                 else
                 {

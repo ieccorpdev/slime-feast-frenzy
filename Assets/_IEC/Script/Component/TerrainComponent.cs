@@ -137,6 +137,7 @@ namespace IEC
                 m_TerrainMat = new MaterialPropertyBlock();
             }
 
+            gameObject.SetActive(true);
             OnUpdate(0f);
             OnKillTween();
             SetActiveLock(false);

@@ -64,7 +64,7 @@ namespace IEC
                 for (int j = 0; j < m_GridSize; j++)
                 {
                     grids[i, j].transform.SetParent(transform);
-                    grids[i, j].SetLock(false);
+                    grids[i, j].PushToBigSquare();
                 }
             }
 
