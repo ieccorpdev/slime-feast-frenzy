@@ -53,7 +53,6 @@ namespace IEC
                     }
                     break;
                 case EventList.GamePlay.GAME_START_PLAY:
-
                     if (Game.isBossLevel)
                     {
                         if (!Game.isShowPopup)

@@ -83,12 +83,17 @@ namespace IEC
         private void PrepareGameStart()
         {             
             Game.listGrids.ForEach(x => x.AfterInit());
+            var min = Game.size * 8;
+            var max = min * 2;
+
+            Game.goldReward = RandomHelper.RangeWithSeed(PlayerData.level, min, max);
+
             Game.SetGameState(GameState.Playing);
             m_TimeStart = System.DateTime.Now;
-            Game.goldReward = RandomHelper.RangeWithSeed(PlayerData.level, 50, 100);
+            
             PushPlayLevelEvent();
 
-            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
+            //EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 

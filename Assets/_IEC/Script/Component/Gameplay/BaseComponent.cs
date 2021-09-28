@@ -312,7 +312,7 @@ namespace IEC
             return OriginLine;
         }
 
-        public virtual void PrepareCheckConnect()
+        public void PrepareCheckConnect()
         {
             if(GridType != GridType.GRID_SOURCE)
             {

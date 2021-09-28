@@ -93,17 +93,17 @@ namespace IEC
                 holeInBoardPos = (HolePos)RandomHelper.RangeWithSeed(Game.levelSeed, 1, 5);
             }
 
+            var sizeLevelMerge = Game.levelSeed > 30 ? 8 : 6;
+            var levelConfig = GetLevelConfig(isMergeLevel, isMixColorLevel, sizeLevelMerge, levelSpawn.level);
+
             var rotIndex = 0;
-            if (levelSpawn.isRandomRotate) 
+            if (levelSpawn.isRandomRotate)
             {
                 rotIndex = RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4);
             }
 
             Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
             GameController.SetupCamera(Game.size, rotIndex);
-
-            var sizeLevelMerge = Game.levelSeed > 30 ? 8 : 6;
-            var levelConfig = GetLevelConfig(isMergeLevel, isMixColorLevel, sizeLevelMerge, levelSpawn.level);
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holeInBoardPos);
@@ -119,96 +119,8 @@ namespace IEC
             }
 
             yield return null;
-
             Hint.CheckSoulution();
-
-            Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
-            Game.moveRemains = Game.totalMove;
-            if (Game.isBossLevel)
-            {
-                UI.mainUIGroup.UpdateMove();
-                Game.timeMaxBossLevel = Game.GetTimerLevel(Game.size - 2);
-                Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
-                Game.timeLeftBossLevel = Game.timeMaxBossLevel;
-            }
-
-            var level = PlayerData.level;
-            bool isHaveFixedOrOneWayBlock = true;
-
-            if (Game.isHaveBigSquare)
-            {
-                if (level > 5)
-                {
-                    var seed = level;
-                    var isHaveBigSquare = RandomHelper.RangeWithSeed(seed, 0, 2) == 0;
-                    seed += 1;
-                    if (isHaveBigSquare)
-                    {
-                        isHaveFixedOrOneWayBlock = false;
-
-                        var maxSquareSize = MathHelper.ClampInt(Game.size - 2, 3, 6);
-                        var sizeBigSquare = RandomHelper.RangeWithSeed(seed, 2, maxSquareSize);
-                        seed += 1;
-                        var maxIndex = Game.size - sizeBigSquare;
-
-                        var radRow = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
-                        seed += 1;
-                        var radCol = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
-
-                        BaseComponent[,] gridMerge = new BaseComponent[sizeBigSquare, sizeBigSquare];
-
-                        for (int i = 0; i < sizeBigSquare; i++)
-                        {
-                            for (int j = 0; j < sizeBigSquare; j++)
-                            {
-                                gridMerge[i, j] = Game.grids[i + radRow, j + radCol];
-                            }
-                        }
-
-                        var bigSquareObj = PrefabHelper.Clone(ComponentConfig.bigSquareObj);
-                        bigSquareObj.transform.SetParent(GamePlay.groupBigSquare);
-                        var bigSquareComp = bigSquareObj.GetComponent<BigSquareComponent>();
-
-                        bigSquareComp.OnInit(gridMerge, radRow, radCol);
-
-                        Game.listBigSquare.Add(bigSquareComp);
-                    }
-                }
-            }
-
-            if (isHaveFixedOrOneWayBlock)
-            {
-                bool isHaveFixedBlock = Game.isHaveFixedBlock;
-                if (level > 10)
-                {
-                    if (Game.isHaveOneWayBlock)
-                    {
-                        if ((level % 5) != 0)
-                        {
-                            isHaveFixedBlock = false;
-                            SetFixedGrid(level, Game.size - 2, false);
-                        }
-                    }
-
-                    SetFixedGrid(level + 1, Game.size - 2, true);
-                }
-            }
-
-            UIController.SetLevel(Game.isBossLevel);
-            UIController.UpdateTimerLevel();
-
-
-            Game.listGrids.ForEach(x => x.BeforeInit());
-            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
-
-            if (Game.isStartLevelEffect)
-            {
-                Game.listGrids.ForEach(x => x.OnTweenMove(true));
-                Game.listBigSquare.ForEach(x => x.OnTweenMove());
-            }
-            var maxTime = (Config.startEffectMoveTime * 2f) + ((Game.size - 2) * .1f) + .1f;
-            var delayTime = Game.isStartLevelEffect ? maxTime : .1f;
-            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
+            AfterSpawnLevel();
         }
 
         private LevelConfig GetLevelConfig(bool isMergeLevel, bool isMixColorLevel, int sizeLevelMerge, int levelSpawn)
@@ -262,10 +174,95 @@ namespace IEC
            return new LevelConfig(Game.size, gridData, gridHintData);
         }
 
+        private void AfterSpawnLevel()
+        {
+            if (Game.isBossLevel)
+            {
+                Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
+                Game.moveRemains = Game.totalMove;
+
+                UI.mainUIGroup.UpdateMove();
+                Game.timeMaxBossLevel = Game.GetTimerLevel(Game.size - 2);
+                Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
+                Game.timeLeftBossLevel = Game.timeMaxBossLevel;
+            }
+
+            var level = PlayerData.level;
+            bool isHaveFixedOrOneWayBlock = (Game.isHaveFixedBlock || Game.isHaveOneWayBlock) && !Game.isHaveBigSquare;
+
+            if (Game.isHaveBigSquare)
+            {
+                if (level > 5)
+                {
+                    var seed = level;
+                    var isHaveBigSquare = RandomHelper.RangeWithSeed(seed, 0, 2) == 0;
+                    seed += 1;
+                    if (isHaveBigSquare)
+                    {
+                        var maxSquareSize = MathHelper.ClampInt(Game.size - 2, 3, 6);
+                        var sizeBigSquare = RandomHelper.RangeWithSeed(seed, 2, maxSquareSize);
+                        seed += 1;
+                        var maxIndex = Game.size - sizeBigSquare;
+
+                        var radRow = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
+                        seed += 1;
+                        var radCol = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
+
+                        BaseComponent[,] gridMerge = new BaseComponent[sizeBigSquare, sizeBigSquare];
+
+                        for (int i = 0; i < sizeBigSquare; i++)
+                        {
+                            for (int j = 0; j < sizeBigSquare; j++)
+                            {
+                                gridMerge[i, j] = Game.grids[i + radRow, j + radCol];
+                            }
+                        }
+
+                        var bigSquareObj = PrefabHelper.Clone(ComponentConfig.bigSquareObj);
+                        bigSquareObj.transform.SetParent(GamePlay.groupBigSquare);
+                        var bigSquareComp = bigSquareObj.GetComponent<BigSquareComponent>();
+
+                        bigSquareComp.OnInit(gridMerge, radRow, radCol);
+
+                        Game.listBigSquare.Add(bigSquareComp);
+                    }
+                }
+            }
+
+            if (isHaveFixedOrOneWayBlock)
+            {
+                if (level > 10)
+                {
+                    if (Game.isHaveOneWayBlock)
+                    {
+                        if ((level % 5) != 0)
+                        {
+                            SetFixedGrid(level, Game.size - 2, false);
+                        }
+                    }
+                    SetFixedGrid(level + 1, Game.size - 2, true);
+                }
+            }
+
+            UIController.SetLevel(Game.isBossLevel);
+            UIController.UpdateTimerLevel();
+
+            Game.listGrids.ForEach(x => x.BeforeInit());
+            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
+
+            if (Game.isStartLevelEffect)
+            {
+                Game.listGrids.ForEach(x => x.OnTweenMove(true));
+                Game.listBigSquare.ForEach(x => x.OnTweenMove());
+            }
+            var maxTime = (Config.startEffectMoveTime * 2f) + ((Game.size - 2) * .1f) + .1f;
+            var delayTime = Game.isStartLevelEffect ? maxTime : .1f;
+            EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
+        }
+
         private void SetFixedGrid(int seed, int size, bool isFixedBlock)
         {
             var totalLockGrid = RandomHelper.RangeWithSeed(seed, 1, size);
-
             var listFixedGrid = GetListFixedBlocks(seed, totalLockGrid, Game.listTiles.Count);
             var totalTile = listFixedGrid.Count;
 
