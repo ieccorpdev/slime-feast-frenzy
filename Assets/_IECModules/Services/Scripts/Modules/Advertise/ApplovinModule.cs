@@ -1,4 +1,4 @@
-﻿#if (PluginApplovin)
+#if (PluginApplovin)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -520,8 +520,14 @@ namespace IEC
                 ["network_name"] = networkName
             };
             var eventName = EventName(adUnitId);
+            var dictParamAll = new Dictionary<string, object>
+            {
+                ["ad_type"] = eventName,
+                ["network_name"] = networkName
+            };
 
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
+            pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }
 
         private string EventName(string adUnitId)
