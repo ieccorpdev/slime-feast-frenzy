@@ -122,7 +122,7 @@ namespace IEC
         public int themeDefault;
         public int backGroundDefault;
 
-        public bool isHaveBossMixColorLevels;
+        public bool isHaveMixColorLevel;
         public bool isLevelDifficultyV4;
 
         public bool isNewUI;
@@ -138,7 +138,6 @@ namespace IEC
         public bool isLevelDifficultyV5;
         public bool isTreeColorV1;
         public bool isHaveUIAnimation;
-        public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
 
         public bool isHaveShop;
@@ -149,7 +148,6 @@ namespace IEC
         public bool isHintStyleV3;
 
         public bool isHaveEndGameReward;
-        public bool isGreenifyHydrated;
         public bool isRootTreeChangeColorByWater;
 
         public bool isHaveNoAdsInShopTab;

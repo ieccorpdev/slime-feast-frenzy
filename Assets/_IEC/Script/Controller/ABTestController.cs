@@ -88,7 +88,7 @@ namespace IEC
 
         private void Result20210802()
         {
-            Game.isNewWaterEffect = true;
+            Game.isNewWaterEffect = false;
             Game.isRandomFlower = true;
 
             Game.isHaveShop = true;
@@ -269,7 +269,6 @@ namespace IEC
         {
             Game.isHaveShop = abValue == 1 || abValue == 2;
             Game.isHaveEndGameReward = abValue == 2;
-            Game.isGreenifyHydrated = abValue == 3;
             Game.isRootTreeChangeColorByWater = abValue == 4;
             //UIController.SetupAbUI();
         }
@@ -307,7 +306,6 @@ namespace IEC
             Game.isLevelDifficultyV5 = false;
             Game.isTreeColorV1 = false;
             Game.isHaveUIAnimation = false;
-            Game.isChangeGridStatus = false;
             Game.isHaveDynamicInter = false;
         }
 
@@ -316,7 +314,6 @@ namespace IEC
             Game.isLevelDifficultyV5 = abValue == 1;
             Game.isTreeColorV1 = abValue == 2;
             Game.isHaveUIAnimation = abValue == 3;
-            Game.isChangeGridStatus = abValue == 4;
             Game.isHaveDynamicInter = abValue == 5;
         }
 
@@ -406,13 +403,13 @@ namespace IEC
             Game.isHaveNotification = true;
             Game.themeDefault = 2;
             Game.backGroundDefault = 2;
-            Game.isHaveBossMixColorLevels = true;
+            Game.isHaveMixColorLevel = true;
         }
 
         private void UpdateAb20201204(int abValue)
         {
             Game.isHaveNotification = abValue == 1;
-            Game.isHaveBossMixColorLevels = abValue == 4;
+            Game.isHaveMixColorLevel = abValue == 4;
         }
 
         private void Result20201201()

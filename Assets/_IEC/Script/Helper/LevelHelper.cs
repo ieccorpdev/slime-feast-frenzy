@@ -5,14 +5,14 @@ using UnityEngine;
 namespace IEC
 {
     [Serializable]
-    public class LevelConfig
+    public struct LevelConfig
     {
         public int size;
         public int[] topWall, botWall, leftWall, rightWall;
         public string[,] gridTypes;
         public int[,] gridHints;
 
-        public void SetSize(int size, string[,] gridTypes, string[,] gridHints)
+        public LevelConfig(int size, string[,] gridTypes, string[,] gridHints)
         {
             this.size = size;
 

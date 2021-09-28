@@ -60,7 +60,8 @@ namespace IEC
                 }
                 else
                 {
-                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1 || Game.isTreeColorV2, Game.classicColor);
+                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1 
+                        || Game.isTreeColorV2, Game.classicColor);
                 }
             }
         }
@@ -312,11 +313,6 @@ namespace IEC
 
         public override void AfterCheckConnect()
         {
-            if ((Game.isChangeGridStatus || Game.isGreenifyHydrated) && Game.isPlaying)
-            {
-                SetTerrainMat();
-            }
-
             if (!m_IsHaveWater)
             {
                 m_IsHavingWater = false;

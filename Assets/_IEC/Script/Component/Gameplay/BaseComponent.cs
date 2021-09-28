@@ -108,13 +108,13 @@ namespace IEC
             { 
                 m_IsInit = true;
                 m_WaterCount = m_WaterComponent.Length;
+            }
 
-                if (m_WaterCount > 0)
+            if (m_WaterCount > 0)
+            {
+                for (int i = 0; i < m_WaterCount; i++)
                 {
-                    for (int i = 0; i < m_WaterCount; i++)
-                    {
-                        m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
-                    }
+                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
                 }
             }
 
@@ -193,18 +193,11 @@ namespace IEC
         {
             if (GridType != GridType.WALL)
             {
-                if (Game.isChangeGridStatus || Game.isGreenifyHydrated)
-                {
-                    SetTerrainMat();
-                }
-                else
-                {
-                    var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ? 
-                        ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) 
-                        : Game.listTerrainType;
-                    m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat), 
-                        Game.isBlockGrayColor, Game.isFlyingIsland);
-                }
+                var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ?
+    ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2)
+    : Game.listTerrainType;
+                m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat),
+                    Game.isBlockGrayColor, Game.isFlyingIsland);
 
 
                 var waterLineMats = (PlayerData.themeSelected == 4) ? ShopConfig.waterLineMat2 : ShopConfig.waterLineMat1;
@@ -591,11 +584,6 @@ namespace IEC
 
         public virtual void AfterCheckConnect()
         {
-            if ((Game.isChangeGridStatus || Game.isGreenifyHydrated) && Game.isPlaying)
-            {
-                SetTerrainMat();
-            }
-
             if (!m_IsHaveWater)
             {
                 m_IsHavingWater = false;
