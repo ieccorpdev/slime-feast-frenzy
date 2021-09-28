@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using OgurySdk;
 using UnityEditor;
 using UnityEngine;
 
@@ -60,9 +61,19 @@ namespace _IECModules
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
             RemovePermissions(listPermissionRemove);
+            GenerateGameObjectOguryCallback();
             //UpdateApplovinQualityService();
         }
-        
+
+        private static void GenerateGameObjectOguryCallback()
+        {
+#if PluginOgury
+            var oguryCallbacks = GameObject.FindObjectOfType<OguryCallbacks>();
+            if(oguryCallbacks != null) return;
+            new GameObject("OguryCallbacks").AddComponent<OguryCallbacks>();
+#endif
+        }
+
         public static void DeleteObsoleteResolver()
         {
             listObsoleteResolver.ForEach(path =>
