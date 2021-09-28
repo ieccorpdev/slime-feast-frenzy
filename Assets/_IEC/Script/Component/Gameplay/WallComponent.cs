@@ -44,6 +44,15 @@ namespace IEC
             OnDOShakePosition();
         }
 
+        private void OnDOShakePosition()
+        {
+            if (!Game.isPlaying) return;
+            m_Tween?.Kill(true);
+            Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
+            m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
+        }
+
         public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
         {
             m_WallObj.SetActive(!isHaveHole && !Game.isHaveIsLand);

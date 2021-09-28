@@ -120,6 +120,16 @@ namespace IEC
             OnUpdateSetTerrain();
         }
 
+        private void OnMouseDown()
+        {
+            OnHandleMouseDown();
+        }
+
+        protected virtual void OnHandleMouseDown()
+        {
+
+        }
+
         private void OnResetAll()
         {
             if (!m_IsInit)
@@ -159,6 +169,38 @@ namespace IEC
             OnResetDataPlaying();
         }
 
+        private void OnResetDataPlaying()
+        {
+            m_IsRotating = false;
+            m_IsHaveWater = false;
+            m_IsOldHaveWater = false;
+            m_OldWaterIndexColor = 0;
+            m_DelayStart = 0;
+            m_IsHavingWater = false;
+            m_ListWaterColor.Clear();
+            m_StartWater = WaterPoint.CENTER;
+
+        }
+
+        public virtual void OnUpdate(float deltaTime)
+        {
+            if (m_WaterCount < 1) return;
+            for (int i = 0; i < m_WaterCount; i++)
+            {
+                if (m_WaterComponent[i].gameObject.activeInHierarchy)
+                {
+                    m_WaterComponent[i].OnUpdate(deltaTime);
+                    m_WaterComponent[i].UpdatePos(GetWaterPos(m_StartWater));
+                }
+            }
+        }
+
+        public virtual void OnDestroyMe()
+        {
+            OnResetAll();
+            PrefabHelper.Destroy(gameObject);
+        }
+
         public void SetNewPos(int row, int col)
         {
             Row = row;
@@ -187,51 +229,23 @@ namespace IEC
 
         public virtual void OnUpdateSetTerrain()
         {
-            if (GridType != GridType.WALL)
+            var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ?
+                ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) : Game.listTerrainType;
+            m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat),
+                Game.isBlockGrayColor, Game.isFlyingIsland);
+
+            var waterLineMats = (PlayerData.themeSelected == 4) ? ShopConfig.waterLineMat2 : ShopConfig.waterLineMat1;
+
+            for (int i = 0; i < 5; i++)
             {
-                var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ?
-    ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2)
-    : Game.listTerrainType;
-                m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat),
-                    Game.isBlockGrayColor, Game.isFlyingIsland);
-
-
-                var waterLineMats = (PlayerData.themeSelected == 4) ? ShopConfig.waterLineMat2 : ShopConfig.waterLineMat1;
-                for (int i = 0; i < 5; i++)
+                if (m_LineStyleObjs[i] != null)
                 {
-                    if(m_LineStyleObjs[i] != null)
-                    {
-                        m_LineStyleObjs[i].GetComponent<MeshRenderer>().material = waterLineMats[i];
-                    }
+                    m_LineStyleObjs[i].GetComponent<MeshRenderer>().material = waterLineMats[i];
                 }
             }
         }
 
-        private void OnMouseDown()
-        {
-            OnHandleMouseDown();
-        }
-
-        protected virtual void OnHandleMouseDown()
-        { 
-
-        }
-
-        protected void OnDOShakePosition()
-        {
-            if (!Game.isPlaying) return;
-            m_Tween?.Kill(true);
-            Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
-            m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
-            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
-        }
-
-        public virtual void FixLevelData(int newCurrentRot)
-        { 
-
-        }
-
-        protected virtual void OnGrowUping(float fillAmount)
+        private void OnGrowUping(float fillAmount)
         {
             if (Game.isBlockGrayColor)
             {
@@ -245,38 +259,6 @@ namespace IEC
             }
         }
 
-        public virtual void OnUpdate(float deltaTime)
-        {
-            if (m_WaterCount < 1) return;
-            for (int i = 0; i < m_WaterCount; i++)
-            {
-                if (m_WaterComponent[i].gameObject.activeInHierarchy)
-                {
-                    m_WaterComponent[i].OnUpdate(deltaTime);
-
-                    m_WaterComponent[i].UpdatePos(GetWaterPos(m_StartWater));
-                }
-            }
-        }
-
-        public virtual void OnDestroyMe()
-        {
-            OnResetAll();
-            PrefabHelper.Destroy(gameObject);
-        }
-
-        private void OnResetDataPlaying()
-        {
-            m_IsRotating = false;
-            m_IsHaveWater = false;
-            m_IsOldHaveWater = false;
-            m_OldWaterIndexColor = 0;
-            m_DelayStart = 0;
-            m_IsHavingWater = false;
-            m_ListWaterColor.Clear();
-            m_StartWater = WaterPoint.CENTER;
-
-        }
 
         public virtual void BeforeInit()
         {
@@ -285,10 +267,7 @@ namespace IEC
 
         public virtual void AfterInit()
         {
-            if (GridType != GridType.GRID_SOURCE)
-            {
-                OnResetDataPlaying();
-            }
+            OnResetDataPlaying();
         }
 
         protected virtual int[,] GetDefaultLine(int style)

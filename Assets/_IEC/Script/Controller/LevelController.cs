@@ -276,7 +276,6 @@ namespace IEC
                 {
                     Game.listTiles[listFixedGrid[i]].OnSetActiveArrow();
                 }
-
             }
         }
 

@@ -67,8 +67,6 @@ namespace IEC
                     grids[i, j].PushToBigSquare();
                 }
             }
-
-
         }
 
         private void OnMouseDown()
