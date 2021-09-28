@@ -31,12 +31,16 @@ public static class StringHelper
         if (pFrom == -1 || pTo == -1 || pFrom >= pTo) return original;
         return original.Remove(pFrom - start.Length, pTo - pFrom + start.Length + end.Length);
     }
-    public static string GetBetweenString(this string original, string start, string end)
+
+    public static string GetBetweenString(this string original, string start, string end,
+        bool includeStartEndString = true)
     {
         var pFrom = original.IndexOf(start, StringComparison.Ordinal);
         var pTo = original.IndexOf(end, pFrom + start.Length, StringComparison.Ordinal);
 
         if (pFrom == -1 || pTo == -1) return "";
-        return original.Substring(pFrom, pTo - pFrom + end.Length);
+        return includeStartEndString
+            ? original.Substring(pFrom, pTo - pFrom + end.Length)
+            : original.Substring(pFrom + start.Length, pTo - pFrom - start.Length);
     }
 }
