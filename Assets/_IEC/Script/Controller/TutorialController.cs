@@ -107,6 +107,7 @@ namespace IEC
 
         private void DoneTutorial()
         {
+            if (!Game.isHaveTutorital) return;
             m_TweenTut?.Kill(true);
             GamePlay.transTutHand.gameObject.SetActive(false);
         }

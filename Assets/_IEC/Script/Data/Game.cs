@@ -68,7 +68,7 @@ namespace IEC
 
         public ThemeConfig enviromentConfig;
 
-        public int isStartLevelEffectType;
+        public int introType;
 
         public bool isCamRotated;
 
@@ -166,7 +166,7 @@ namespace IEC
         public bool isTreeColorV2;
 
         public bool isTreeGrayColor;
-        public bool isBlockDarkColor;
+        public bool isBlockGrayColor;
         public bool isFlyingIsland;
 
         public bool isBiggerFoundtain;
@@ -291,28 +291,5 @@ namespace IEC
             this.level = level;
             this.isRandomRotate = isRandomRotate;
         }
-    }
-
-    public enum GameState
-    {
-        Init,
-        Pause,
-        Playing,
-        GameOver
-    }
-
-    public enum HolePos
-    {
-        None,
-        TopLeft,
-        TopRight,
-        BotLeft,
-        BotRight
-    }
-
-    public enum IapPackages
-    {
-        None,
-        NoAds
     }
 }

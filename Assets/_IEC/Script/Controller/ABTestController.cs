@@ -63,10 +63,7 @@ namespace IEC
                     abValue = cheatCodeParam.dropdownParam.value;
                     UpdateAb20210901(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                    // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
-                    // set new AB Test Value
-
                     PlayerData.numberInterShow = 0;
                 },
                 abTestConfig.ListEventsAB.ToList(),
@@ -173,7 +170,7 @@ namespace IEC
         {
             Game.isHaveNoAdsV3 = abValue == 1;
             Game.isTreeGrayColor = abValue == 2;
-            Game.isBlockDarkColor = abValue == 3;
+            Game.isBlockGrayColor = abValue == 3;
             Game.isFlyingIsland = abValue == 4 || abValue == 5;
 
             if(abValue == 4)
@@ -394,7 +391,6 @@ namespace IEC
         private void Result20201209()
         {
             Game.isLevelDifficultyV4 = true;
-            GameController.GetLevelDifficulty();
         }
 
         private void UpdateAb20201209(int abValue)
@@ -411,35 +407,12 @@ namespace IEC
             Game.themeDefault = 2;
             Game.backGroundDefault = 2;
             Game.isHaveBossMixColorLevels = true;
-
-            GameController.GetLevelsMixColor();
         }
 
         private void UpdateAb20201204(int abValue)
         {
             Game.isHaveNotification = abValue == 1;
-            //if(abValue == 2)
-            //{
-            //    Game.themeIndex = 1;
-            //    Game.backGroundIndex = 1;
-            //}
-            //else if(abValue == 3)
-            //{
-            //    Game.themeIndex = 3;
-            //    Game.backGroundIndex = 3;
-            //}
-            //else
-            //{
-            //    Game.themeIndex = 0;
-            //    Game.backGroundIndex = 0;
-            //}
-
             Game.isHaveBossMixColorLevels = abValue == 4;
-
-            if (Game.isHaveBossMixColorLevels)
-            {
-                GameController.GetLevelsMixColor();
-            }
         }
 
         private void Result20201201()
@@ -453,8 +426,6 @@ namespace IEC
             Game.isLevelDifficultyV3 = abValue == 2;
             Game.isHaveNewWaterSkin = abValue == 3;
             Game.isHaveBossLimitMoveLevels = abValue == 4;
-
-            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201125()
@@ -554,7 +525,6 @@ namespace IEC
         private void Result20201103()
         {
             Game.isHaveNomalLevelsMixColor = false;
-            GameController.GetLevelsData();
         }
 
         private void UpdateAb20201103(int abValue)

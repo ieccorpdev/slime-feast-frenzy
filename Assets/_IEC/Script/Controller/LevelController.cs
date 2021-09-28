@@ -52,6 +52,8 @@ namespace IEC
 
         private void OnResetAll()
         {
+            UIController.OnResetAll();
+
             GamePlay.listWallCorners.ForEach(x => x.OnDestroyMe());
             Game.OnResetAll();
             Sound.SetupAudio();
@@ -65,16 +67,11 @@ namespace IEC
 
         private IEnumerator IESpawnLevel()
         {
-            UIController.OnResetAll();
-            if (Game.isHaveIntroOutro)
-            {
-                GamePlay.psIntro.Play();
-                yield return new WaitForSeconds(.75f);
-            }
             OnResetAll();
-            Game.levelSeed = PlayerData.level;
 
-            Game.isStartLevelEffectType = Random.Range(0, 2);
+            yield return null;
+            Game.levelSeed = PlayerData.level;
+            Game.introType = Random.Range(0, 2);
             SetupEnviroment();
 
             bool isBossMixColor = false;
@@ -202,8 +199,6 @@ namespace IEC
             Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
 
             GameController.SetupCamera(size, rotIndex);
-
-            GamePlay.transFloatingIsland.localScale = Vector3.one * (size - 2);
 
             SpawnWallAll(levelConfig);
             SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holePos);

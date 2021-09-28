@@ -281,7 +281,7 @@ namespace IEC
 
         public void OnResetAll()
         {
-            UIController.SetLevel(false);
+            SetLevel(false);
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
             UI.mainUIGroup.UpdateHintText();

@@ -22,9 +22,9 @@ namespace IEC
         [SerializeField]
         private Collider m_Collider;
 
+        #region Get value
         public int ID => gameObject.GetInstanceID();
         protected Transform Transform => transform;
-
         public Vector3 CurrentWorldPos => transform.position;
         private Vector3 CurrentLocalPos => transform.localPosition;
 
@@ -46,22 +46,19 @@ namespace IEC
             { 0, 0, 0}
         };
 
-        public int[,] CurrentLine = new int[3, 3];
-        protected int[,] DefaultLine = new int[3, 3];
-
         public bool IsHaveLineTop => CurrentLine[0, 1] == 1;
         public bool IsHaveLineBot => CurrentLine[2, 1] == 1;
         public bool IsHaveLineLeft => CurrentLine[1, 0] == 1;
         public bool IsHaveLineRight => CurrentLine[1, 2] == 1;
 
-        // Grid static data
-        //[HideInInspector]
-        public int Row, Col, TrueRot, TrueColor;
+        #endregion
+
+        public int[,] CurrentLine = new int[3, 3];
+        protected int[,] DefaultLine = new int[3, 3];
+
+        public int Row, Col, TrueRot, TrueColor, WaterIndexColor;
 
         public GridType GridType;
-
-        [HideInInspector]
-        public int WaterIndexColor;
 
         // Dynamic data
         protected Color CurrentWaterColor
@@ -82,19 +79,17 @@ namespace IEC
         public virtual bool IsTrueRot() => m_CurrentRot == TrueRot;
         public bool IsAllowRotation => !m_IsRotating;
 
-        protected bool m_IsRotating, m_IsHaveWater, m_IsLock;
-
-        protected bool m_IsOldHaveWater, m_IsHavingWater, m_IsMoving;
+        protected bool m_IsInit, m_IsRotating, m_IsHaveWater, m_IsLock, 
+            m_IsOldHaveWater, m_IsHavingWater, m_IsMoving;
 
         protected int m_CurrentRot, m_OldWaterIndexColor, m_WaterCount;
 
         private int m_DelayStart;
 
         protected WaterPoint m_StartWater;
-
         public WaterPoint Inline;
-        public int m_InlineOrigin, m_InlineOffset;
 
+        public int m_InlineOrigin, m_InlineOffset;
         public bool IsOneWayBlock, IsInBigSquare;
 
 
@@ -109,7 +104,22 @@ namespace IEC
 
         public virtual void OnInit(GridType gridType , int row, int col, int trueRot = 0, int rot = 0, int color = 0, int style = 0)
         {
-            OnResetData();
+            if (!m_IsInit)
+            { 
+                m_IsInit = true;
+                m_WaterCount = m_WaterComponent.Length;
+
+                if (m_WaterCount > 0)
+                {
+                    for (int i = 0; i < m_WaterCount; i++)
+                    {
+                        m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
+                    }
+                }
+            }
+
+            OnResetAll();
+
             GridType = gridType;
             Row = row;
             Col = col;
@@ -120,27 +130,11 @@ namespace IEC
 
             DefaultLine = GetDefaultLine(style);
             CurrentLine = DefaultLine;
-
-            m_WaterCount = m_WaterComponent.Length;
-
-            if(m_WaterCount > 0)
-            {
-                for (int i = 0; i < m_WaterCount; i++)
-                {
-                    m_WaterComponent[i].OnInit(OnWaterGrowUpDone, OnGrowUping);
-                }
-            }
-
             OnUpdateSetTerrain();
+        }
 
-            if(m_Terrain != null)
-            {
-                m_Terrain.OnKillTween();
-                m_Terrain.SetActiveLock(false);
-                m_Terrain.gameObject.SetActive(true);
-                m_Terrain.ResetTerrain();
-            }
-
+        private void OnResetAll()
+        {
             m_IsLock = false;
             IsOneWayBlock = false;
             IsInBigSquare = false;
@@ -149,6 +143,13 @@ namespace IEC
             {
                 m_Collider.enabled = true;
             }
+
+            if (m_Terrain)
+            {
+                m_Terrain.ResetAll();
+            }
+
+            OnResetDataPlaying();
         }
 
         public void SetNewPos(int row, int col)
@@ -202,7 +203,7 @@ namespace IEC
                         ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) 
                         : Game.listTerrainType;
                     m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat), 
-                        Game.isBlockDarkColor, Game.isFlyingIsland);
+                        Game.isBlockGrayColor, Game.isFlyingIsland);
                 }
 
 
@@ -243,7 +244,7 @@ namespace IEC
 
         protected virtual void OnGrowUping(float fillAmount)
         {
-            if (Game.isBlockDarkColor)
+            if (Game.isBlockGrayColor)
             {
                 if (!m_IsLock)
                 {
@@ -279,15 +280,15 @@ namespace IEC
 
             if (m_Terrain != null)
             {
-                m_Terrain.OnKillTween();
+                m_Terrain.ResetAll();
             }
 
-            OnResetData();
+            OnResetDataPlaying();
 
             PrefabHelper.Destroy(gameObject);
         }
 
-        private void OnResetData()
+        private void OnResetDataPlaying()
         {
             m_IsRotating = false;
             m_IsHaveWater = false;
@@ -297,6 +298,7 @@ namespace IEC
             m_IsHavingWater = false;
             m_ListWaterColor.Clear();
             m_StartWater = WaterPoint.CENTER;
+
         }
 
         public virtual void BeforeInit()
@@ -308,7 +310,7 @@ namespace IEC
         {
             if (GridType != GridType.GRID_SOURCE)
             {
-                OnResetData();
+                OnResetDataPlaying();
             }
         }
 
@@ -628,7 +630,7 @@ namespace IEC
                 m_WaterComponent[i].SetGrowing(isGrowUp, waterPos, m_DelayStart);
             }
 
-            if (Game.isBlockDarkColor)
+            if (Game.isBlockGrayColor)
             {
                 if (!m_IsLock)
                 {
@@ -689,7 +691,7 @@ namespace IEC
 
         private int GetIndexSpawn()
         {
-            if (Game.isStartLevelEffectType == 0)
+            if (Game.introType == 0)
             {
                 if (Game.isCamRotated)
                 {
@@ -747,7 +749,7 @@ namespace IEC
         {
             if (m_Terrain == null) return;
             var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-            m_Terrain.SetupTerrain(mat, Game.isBlockDarkColor, Game.isFlyingIsland);
+            m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
         }
 
         protected virtual int GetTrueRotHint()

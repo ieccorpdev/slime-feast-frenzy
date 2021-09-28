@@ -1,4 +1,4 @@
-﻿Shader "Mobile/Bumped Diffuse 2" {
+﻿Shader "WCP/Block" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
         [NoScaleOffset] _BumpMap ("Normalmap", 2D) = "bump" {}

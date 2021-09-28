@@ -30,6 +30,7 @@ namespace IEC
 
         public void BehaviourAwake()
         {
+
         }
 
         public void SetupMainCam()
@@ -44,23 +45,6 @@ namespace IEC
 
             m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
-
-            GamePlay.SetActiveIsland();
-        }
-
-        public void GetLevelsData()
-        {
-
-        }
-
-        public void GetLevelsMixColor()
-        {
-
-        }
-
-        public void GetLevelDifficulty()
-        {
-
         }
 
         public void BehaviourStart()

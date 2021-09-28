@@ -19,4 +19,27 @@
         LEFT,
         CENTER
     }
+
+    public enum GameState
+    {
+        Init,
+        Pause,
+        Playing,
+        GameOver
+    }
+
+    public enum HolePos
+    {
+        None,
+        TopLeft,
+        TopRight,
+        BotLeft,
+        BotRight
+    }
+
+    public enum IapPackages
+    {
+        None,
+        NoAds
+    }
 }
