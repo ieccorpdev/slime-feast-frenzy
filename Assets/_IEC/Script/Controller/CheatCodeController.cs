@@ -62,6 +62,16 @@ namespace IEC
                 value = PlayerData.level
             });
 
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Gold", param =>
+            {
+                int gold = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.AddGold(gold);
+                UI.UpdateGold();
+            }, new CheatCode.InputParam
+            {
+                value = 10000
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Set GameOver", cheatCodeParam =>
             {
                 GameController.GameOver(true);
@@ -72,28 +82,6 @@ namespace IEC
             {
                 Game.isCheatLevel = !Game.isCheatLevel;
                 cheatCodeParam.buttonText = "Is Cheat Level: " + Game.isCheatLevel;
-            });
-
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-3)", param =>
-            {
-                int valueInput = int.Parse(param.inputParams[0].value.ToString());
-                var bgIndex = valueInput % ShopConfig.listBGConfig.Count;
-                PlayerData.UnlockBackground(bgIndex);
-                GamePlay.SetBackground(PlayerData.backgroundSelected);
-            }, new CheatCode.InputParam
-            {
-                value = PlayerData.backgroundSelected
-            });
-
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-3)", param =>
-            {
-                int valueInput = int.Parse(param.inputParams[0].value.ToString());
-                var themeIndex = valueInput % ShopConfig.listThemeConfigs.Count;
-                PlayerData.UnlockTheme(themeIndex);
-                LevelController.SetupTheme(true);
-            }, new CheatCode.InputParam
-            {
-                value = PlayerData.themeSelected
             });
 
             ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Water Color: " + Game.isCheatWaterColor, cheatCodeParam =>

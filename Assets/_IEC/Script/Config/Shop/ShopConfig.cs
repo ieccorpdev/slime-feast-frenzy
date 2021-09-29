@@ -10,13 +10,9 @@ namespace IEC
         public List<ThemeConfig> listThemeConfigs;
         public List<BackgroundConfig> listBGConfig;
 
-        public GameObject itemShopObj;
-
-        public Material[] waterLineMat1, waterLineMat2;
-
-        public Material[] treebaseMats;
-
         public List<Material> listTerrainIsLand1, listTerrainIsLand2;
+
+        public GameObject itemShopObj;
     }
 
     [System.Serializable]
@@ -24,8 +20,9 @@ namespace IEC
     {
         public List<Material> listTerrains;
         public Material wallMat, holeMat, cornerMat;
-
         public ItemShopConfig itemShopConfig;
+
+        public WaterLineConfig waterLineConfig;
     }
 
     [System.Serializable]

@@ -9,42 +9,13 @@ namespace IEC
     public class GridTargetComponent : BaseGrid
     {
         [SerializeField]
-        private ParticleSystem m_PsWin;
-
-        [SerializeField]
         private ParticleSystem[] m_PsWins;
 
         [SerializeField]
         private GameObject[] m_TreeType;
 
         [SerializeField]
-        private MeshRenderer m_RootTreeMesh, m_TreeBaseMesh;
-
-        [SerializeField]
-        private GameObject m_TreeBaseOldObj, m_TreeBaseNewObj;
-
-        private Tween m_TweenScale;
-
-        private int m_TargetIndex;
-
-        private List<Transform> m_ListTransTrees = new List<Transform>();
-
-        public List<Renderer> m_ListMeshTrees = new List<Renderer>();
-
-        public Renderer m_TrunkMesh;
-
-        public bool IsDone => m_IsHaveWater && (TrueColor == WaterColorIndex);
-
-        private bool IsGrowUpComplete;
-
-        public bool IsComplete => IsDone && IsGrowUpComplete;
-
-        private static float SMALL_SCALE = .4f;
-        private static float LARGE_SCALE = 1.5f;
-
-        private MaterialPropertyBlock m_TreeMat, m_TrunkMat;
-
-        public float m_FillAmount;
+        private MeshRenderer m_GroundMesh, m_LineAroundMesh;
 
         private Material CurrentMat
         {
@@ -56,7 +27,7 @@ namespace IEC
                 }
                 else
                 {
-                    return ColorConfig.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1 
+                    return ColorConfig.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1
                         || Game.isTreeColorV2, Game.classicColor);
                 }
             }
@@ -97,6 +68,23 @@ namespace IEC
             { 0, 0, 0}
         };
 
+        public bool IsDone => m_IsHaveWater && (TrueColor == WaterColorIndex);
+        public bool IsComplete => IsDone && m_IsGrowUpComplete;
+
+        private static float SMALL_SCALE = .4f;
+        private static float LARGE_SCALE = 1.5f;
+
+        private Tween m_TweenScale;
+        private int m_TargetIndex, m_LineType;
+        private List<Transform> m_ListTransTrees = new List<Transform>();
+        public List<Renderer> m_ListMeshTrees = new List<Renderer>();
+        public Renderer m_TrunkMesh;
+
+        private bool m_IsGrowUpComplete;
+
+        private MaterialPropertyBlock m_TreeMat, m_TrunkMat;
+        public float m_FillAmount;
+
         protected override int[,] GetDefaultLine(int lineType)
         {
             if (lineType == 1)
@@ -116,8 +104,6 @@ namespace IEC
                 return EndLine;
             }
         }
-
-        private int m_LineType;
 
         public override bool IsTrueRot()
         {
@@ -180,19 +166,12 @@ namespace IEC
                 m_LineStyleObjs[i].SetActive(i == lineType);
             }
 
-            for (int i = 0; i < m_WaterCount - 1; i++)
+            for (int i = 0; i < 4; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
-            bool isNewBaseTree = Game.isRootTreeChangeColorByWater;
-
-            m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(isNewBaseTree);
-
-            m_TreeBaseMesh.material = ShopConfig.treebaseMats[lineType];
-
-            m_TreeBaseOldObj.SetActive(!isNewBaseTree);
-            m_TreeBaseNewObj.SetActive(isNewBaseTree);
+            m_LineAroundMesh.material = Game.themeConfig.waterLineConfig.listRootTreeMat[lineType];
 
             var mat = CurrentMat;
             var colorEffect = mat.color;
@@ -248,11 +227,11 @@ namespace IEC
 
             if (Game.isRootTreeOnlyGreenColor)
             {
-                m_RootTreeMesh.material = ColorConfig.targetDefaultMat;
+                m_GroundMesh.material = ColorConfig.targetDefaultMat;
             }
             else
             {
-                m_RootTreeMesh.material = mat;
+                m_GroundMesh.material = mat;
             }
         }
 
@@ -311,7 +290,7 @@ namespace IEC
             if (!m_IsHaveWater)
             {
                 m_IsHavingWater = false;
-                IsGrowUpComplete = false;
+                m_IsGrowUpComplete = false;
             }
             SetColor();
 
@@ -319,14 +298,14 @@ namespace IEC
             {
                 if (IsDone)
                 {
-                    if (!IsGrowUpComplete)
+                    if (!m_IsGrowUpComplete)
                     {
                         OnWaterGrowUpDone();
                     }
                 }
                 else
                 {
-                    IsGrowUpComplete = false;
+                    m_IsGrowUpComplete = false;
                     TweenScale(false);
                 }
             }
@@ -334,7 +313,7 @@ namespace IEC
             {
                 if (!m_IsHaveWater || !IsDone)
                 {
-                    IsGrowUpComplete = false;
+                    m_IsGrowUpComplete = false;
                     TweenScale(false);
                 }
                 WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
@@ -352,9 +331,9 @@ namespace IEC
         {
             if (IsDone)
             {
-                m_PsWin.Play();
+                m_PsWins[0].Play();
                 TweenScale(true, () => {
-                    IsGrowUpComplete = true;
+                    m_IsGrowUpComplete = true;
                     if (PlayerData.isVibrateOn)
                     {
                         MMVibrationManager.Haptic(HapticTypes.MediumImpact);
@@ -393,7 +372,7 @@ namespace IEC
         public override void OnDestroyMe()
         {
             m_TweenScale?.Kill(true);
-            IsGrowUpComplete = false;
+            m_IsGrowUpComplete = false;
             m_ListTransTrees.Clear();
             base.OnDestroyMe();
         }

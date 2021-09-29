@@ -334,24 +334,24 @@ namespace IEC
             GamePlay.SetBackground(PlayerData.backgroundSelected);
 
             var themeIndex = PlayerData.themeSelected % ShopConfig.listThemeConfigs.Count;
-            Game.enviromentConfig = ShopConfig.listThemeConfigs[themeIndex];
+            Game.themeConfig = ShopConfig.listThemeConfigs[themeIndex];
 
             var type0 = RandomHelper.Range(0, 2);
             if (type0 == 0)
             {
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[0]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[1]);
             }
             else
             {
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[1]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[0]);
             }
 
             if (isUpdateNow)
             {
                 OnUpdateTheme();
-                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
+                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.themeConfig.cornerMat));
             }
         }
 
@@ -497,7 +497,7 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
+            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.themeConfig.cornerMat));
 
             var posY = Game.isStartLevelEffect ? 20f : 0f;
 

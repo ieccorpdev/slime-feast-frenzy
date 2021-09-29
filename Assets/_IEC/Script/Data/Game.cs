@@ -66,7 +66,7 @@ namespace IEC
         public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime;
         
 
-        public ThemeConfig enviromentConfig;
+        public ThemeConfig themeConfig;
 
         public int introType;
 

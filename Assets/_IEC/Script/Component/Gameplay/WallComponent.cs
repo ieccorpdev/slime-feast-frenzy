@@ -72,10 +72,10 @@ namespace IEC
         {
             for (int i = 0; i < m_WallMesh.Length; i++)
             {
-                m_WallMesh[i].material = Game.enviromentConfig.wallMat;
+                m_WallMesh[i].material = Game.themeConfig.wallMat;
             }
 
-            m_HoleMesh.material = Game.enviromentConfig.holeMat;
+            m_HoleMesh.material = Game.themeConfig.holeMat;
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)

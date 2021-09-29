@@ -20,6 +20,8 @@ namespace IEC
         private System.Action m_GrowUpDoneCallBack;
         private System.Action<float> m_ScaleCallBack;
 
+        private bool IsActive => gameObject.activeSelf;
+
         public void OnInit(System.Action callBack, System.Action<float> scaleCallBack)
         {
             if (m_WaterMat == null)
@@ -38,6 +40,7 @@ namespace IEC
 
         public void SetColor(Color color, bool isUpdateNow)
         {
+            if (!IsActive) return;
             m_NewColor = color;
             
             if (isUpdateNow)
@@ -49,6 +52,7 @@ namespace IEC
 
         public void SetGrowing(bool isGrowUp, Vector3 pos, int delay)
         {
+            if (!IsActive) return;
             UpdatePos(pos);
             m_FillAmount = isGrowUp ?  (-delay * MAX_AMOUNT / 1.5f) : m_FillAmount;
 
@@ -58,6 +62,7 @@ namespace IEC
 
         public void UpdatePos(Vector3 pos)
         {
+            if (!IsActive) return;
             m_WaterMat.SetVector(GameShaderValue.SHADER_POS, pos);
             ApplyData();
         }
@@ -71,6 +76,7 @@ namespace IEC
 
         public void OnUpdate(float deltaTime)
         {
+            if (!IsActive) return;
             isChanged = Application.isEditor;
             if (m_IsScale)
             {
@@ -142,7 +148,7 @@ namespace IEC
             ApplyData();
         }
 
-        public void ApplyData()
+        private void ApplyData()
         {
             waterRenderers.SetPropertyBlock(m_WaterMat);
         }

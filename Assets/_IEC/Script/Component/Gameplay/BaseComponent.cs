@@ -180,11 +180,9 @@ namespace IEC
             if (m_WaterCount < 1) return;
             for (int i = 0; i < m_WaterCount; i++)
             {
-                if (m_WaterComponent[i].gameObject.activeInHierarchy)
-                {
-                    m_WaterComponent[i].OnUpdate(deltaTime);
-                    m_WaterComponent[i].UpdatePos(GetWaterPos(m_StartWater));
-                }
+                var water = m_WaterComponent[i];
+                water.OnUpdate(deltaTime);
+                water.UpdatePos(GetWaterPos(m_StartWater));
             }
         }
 
@@ -233,13 +231,13 @@ namespace IEC
             m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat),
                 Game.isBlockGrayColor, Game.isFlyingIsland);
 
-            var waterLineMats = (PlayerData.themeSelected == 4) ? ShopConfig.waterLineMat2 : ShopConfig.waterLineMat1;
 
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (m_LineStyleObjs[i] != null)
                 {
-                    m_LineStyleObjs[i].GetComponent<MeshRenderer>().material = waterLineMats[i];
+                    m_LineStyleObjs[i].GetComponent<MeshRenderer>().material = 
+                        Game.themeConfig.waterLineConfig.listWaterLineMat[i];
                 }
             }
         }
