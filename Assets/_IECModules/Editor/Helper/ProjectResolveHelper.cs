@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using OgurySdk;
 using UnityEditor;
 using UnityEngine;
 
@@ -68,9 +67,9 @@ namespace _IECModules
         private static void GenerateGameObjectOguryCallback()
         {
 #if PluginOgury
-            var oguryCallbacks = GameObject.FindObjectOfType<OguryCallbacks>();
+            var oguryCallbacks = GameObject.FindObjectOfType<OgurySdk.OguryCallbacks>();
             if(oguryCallbacks != null) return;
-            new GameObject("OguryCallbacks").AddComponent<OguryCallbacks>();
+            new GameObject("OguryCallbacks").AddComponent<OgurySdk.OguryCallbacks>();
 #endif
         }
 
