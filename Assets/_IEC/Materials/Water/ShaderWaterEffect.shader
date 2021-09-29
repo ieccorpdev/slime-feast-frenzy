@@ -1,4 +1,4 @@
-﻿Shader "Custom/WaterWCP/DiffuseWaterOpaque"
+﻿Shader "Custom/WCP/Water"
 {
 	Properties
 	{

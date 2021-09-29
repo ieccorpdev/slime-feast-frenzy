@@ -15,7 +15,7 @@ namespace IEC
         private ParticleSystem[] m_PsWins;
 
         [SerializeField]
-        private GameObject[] m_TreesStyles;
+        private GameObject[] m_TreeType;
 
         [SerializeField]
         private MeshRenderer m_RootTreeMesh, m_TreeBaseMesh;
@@ -41,10 +41,6 @@ namespace IEC
 
         private static float SMALL_SCALE = .4f;
         private static float LARGE_SCALE = 1.5f;
-
-        private static int Shader_FillAmount = Shader.PropertyToID("_FillAmount");
-        private static int Shader_Color = Shader.PropertyToID("_Color");
-        private static int Shader_Pos = Shader.PropertyToID("_GLOBALMaskPosition");
 
         private MaterialPropertyBlock m_TreeMat, m_TrunkMat;
 
@@ -192,7 +188,6 @@ namespace IEC
             bool isNewBaseTree = Game.isRootTreeChangeColorByWater;
 
             m_WaterComponent[m_WaterCount - 1].gameObject.SetActive(isNewBaseTree);
-            m_WaterComponent[m_WaterCount - 1].SetMainWater(false);
 
             m_TreeBaseMesh.material = ShopConfig.treebaseMats[lineType];
 
@@ -207,8 +202,8 @@ namespace IEC
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            var minIndex = Game.isHaveNewTrees ? 4 : 0;
-            var maxIndex = Game.isHaveNewTrees ? 15 : 5;
+            var minIndex = 0;
+            var maxIndex = 10;
 
             m_ListTransTrees.Clear();
             m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
@@ -219,13 +214,13 @@ namespace IEC
                 m_TargetIndex = Random.Range(minIndex, maxIndex);
             }
 
-            for (int i = 0; i < m_TreesStyles.Length; i++)
+            for (int i = 0; i < m_TreeType.Length; i++)
             {
-                m_TreesStyles[i].SetActive(i == m_TargetIndex);
+                m_TreeType[i].SetActive(i == m_TargetIndex);
             }
 
-            var tree = m_TreesStyles[m_TargetIndex].transform.GetChild(0);
-            m_TrunkMesh = m_TreesStyles[m_TargetIndex].transform.GetChild(1).GetComponent<Renderer>();
+            var tree = m_TreeType[m_TargetIndex].transform.GetChild(0);
+            m_TrunkMesh = m_TreeType[m_TargetIndex].transform.GetChild(1).GetComponent<Renderer>();
 
             m_ListMeshTrees.Clear();
             for (int i = 0; i < tree.childCount; i++)
@@ -280,7 +275,7 @@ namespace IEC
 
         private void SetupColor(Color color)
         {
-            m_TreeMat.SetColor(Shader_Color, color);
+            m_TreeMat.SetColor(GameShaderValue.SHADER_COLOR, color);
         }
 
         private void UpdateColorPos(bool isTweenMoving)
@@ -291,16 +286,16 @@ namespace IEC
                 pos.y = -.11f;
             }
             
-            m_TreeMat.SetVector(Shader_Pos, pos);
-            m_TrunkMat.SetVector(Shader_Pos, pos);
+            m_TreeMat.SetVector(GameShaderValue.SHADER_POS, pos);
+            m_TrunkMat.SetVector(GameShaderValue.SHADER_POS, pos);
 
             ApplyData();
         }
 
         private void OnUpdateFillAmount(float fillAmount)
         {
-            m_TreeMat.SetFloat(Shader_FillAmount, fillAmount);
-            m_TrunkMat.SetFloat(Shader_FillAmount, fillAmount);
+            m_TreeMat.SetFloat(GameShaderValue.SHADER_FILL_AMOUNT, fillAmount);
+            m_TrunkMat.SetFloat(GameShaderValue.SHADER_FILL_AMOUNT, fillAmount);
             ApplyData();
         }
 

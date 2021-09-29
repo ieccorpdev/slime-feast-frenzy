@@ -1,12 +1,10 @@
 ﻿Shader "Custom/Gray-Color" {
     Properties {
-        _Smooth("Smooth", Color) = (1,1,1,1)
-        _Color ("Main Color", Color) = (1,1,1,1)
+        _MainTex ("Base (RGB)", 2D) = "white" {}
+        _MainColor ("Main Color", Color) = (1,1,1,1)
         _GrayColor ("Main Color", Color) = (1,1,1,1)
         _Glossiness ("Smoothness", Range(1,2)) = 1
-        _MainTex ("Base (RGB)", 2D) = "white" {}
-        _GLOBALMaskPosition ("Mask", Vector) = (1, 1, 1, 1)
-        _FillAmount ("_Fill Amount", Float) = 0
+        _Smooth("Smooth", Color) = (1,1,1,1)
     }
     SubShader {
         Tags { "RenderType"="Opaque" }
@@ -40,13 +38,13 @@
         };
 
         sampler2D _MainTex;
-        fixed4 _Color;
+        fixed4 _MainColor;
         fixed4 _GrayColor;
+        fixed _Glossiness;
         fixed4 _Smooth;
 
-        float3 _GLOBALMaskPosition;
+        float3 _MaskPos;
         fixed _FillAmount;
-        fixed _Glossiness;
  
         // Add instancing support for this shader. You need to check 'Enable Instancing' on materials that use the shader.
         // See https://docs.unity3d.com/Manual/GPUInstancing.html for more information about instancing.
@@ -60,8 +58,8 @@
         }
  
         void surf (Input IN, inout SurfaceOutput o) {
-            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
-            half dist = distance(_GLOBALMaskPosition, IN.worldPos);
+            fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _MainColor;
+            half dist = distance(_MaskPos, IN.worldPos);
             half sphere = 1 - saturate((dist - _FillAmount) / 0.05);
             o.Albedo = c.rgb;
             o.Alpha = c.a;

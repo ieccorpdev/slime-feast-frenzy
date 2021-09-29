@@ -127,7 +127,6 @@ namespace IEC
         public bool isLevelDifficultyV4;
 
         public bool isNewUI;
-        public bool isHaveNewTrees;
         public bool isStartLevelEffect;
         
 

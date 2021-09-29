@@ -6,7 +6,6 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake
     {
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -354,7 +353,6 @@ namespace IEC
         private void Result20201222()
         {
             Game.isNewUI = true;
-            Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
             Game.hintVersion = 1;
         }
@@ -364,7 +362,6 @@ namespace IEC
             abValue += 1;
 
             Game.isNewUI = abValue == 2;
-            Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
         }
 

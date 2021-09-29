@@ -10,7 +10,7 @@ namespace IEC
         private Transform m_TranScale, m_TransWater, m_TransCircle1, m_TransCircle2, m_TransCircle3;
 
         [SerializeField]
-        private GameObject m_OldFountainObj, m_NewFountainObj;
+        private GameObject m_OldFountainObj;
 
         protected override int[,] OriginLine => new int[3, 3]
         {
@@ -87,11 +87,6 @@ namespace IEC
             for (int i = 0; i < m_WaterCount - 4; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
-            }
-
-            for (int i = 4; i < m_WaterCount; i++)
-            {
-                m_WaterComponent[i].SetMainWater(false);
             }
 
             ConfigWater();

@@ -1,4 +1,4 @@
-﻿Shader "Custom/WaterWCP/Block" {
+﻿Shader "Custom/WCP/Block" {
     Properties {
         _MainTex ("Base (RGB)", 2D) = "white" {}
         [NoScaleOffset] _BumpMap ("Normalmap", 2D) = "bump" {}
