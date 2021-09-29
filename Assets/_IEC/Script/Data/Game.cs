@@ -107,6 +107,7 @@ namespace IEC
         public bool isHaveSetting;
         public bool isHaveTutorital;
         public bool isHaveHint;
+        public int hintVersion;
         public bool isReduceHintGrid;
         public bool isFixedHintGrid;
         public bool isFixLevelDifficulty;
@@ -128,9 +129,8 @@ namespace IEC
         public bool isNewUI;
         public bool isHaveNewTrees;
         public bool isStartLevelEffect;
-        public bool isHintStyleV2;
+        
 
-        public bool isHintStyleBSP;
         public bool isHaveBossTimerLevels;
         public bool isHaveBossTimerLevelsV2;
         
@@ -145,7 +145,6 @@ namespace IEC
         public bool isHaveBossTimerLevelsV3;
         public bool isHaveBossTimerLevelsV4;
         public bool isNoShadow;
-        public bool isHintStyleV3;
 
         public bool isHaveEndGameReward;
         public bool isRootTreeChangeColorByWater;

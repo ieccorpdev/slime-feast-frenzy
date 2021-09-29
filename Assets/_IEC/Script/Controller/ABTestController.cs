@@ -251,13 +251,11 @@ namespace IEC
             Game.isCameraTopView = abValue == 3;
             Game.isNewGameOver = abValue == 4;
             Game.isHaveConfettiGameOver = abValue == 5 || abValue == 4;
-            //UIController.SetupAbUI();
-            //GameController.SetupMainCam();
         }
 
         private void UpdateAb20210203(int abValue)
         {
-            //UIController.SetupAbUI();
+            
         }
 
         private void Result20210129()
@@ -270,13 +268,11 @@ namespace IEC
             Game.isHaveShop = abValue == 1 || abValue == 2;
             Game.isHaveEndGameReward = abValue == 2;
             Game.isRootTreeChangeColorByWater = abValue == 4;
-            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20210121(int abValue)
         {
             Game.isHaveShop = true;
-            //Controller.SetupAbUI();
         }
 
         private void Result20210114()
@@ -294,11 +290,9 @@ namespace IEC
             Game.isHaveBossTimerLevelsV4 = abValue == 4;
             Game.isNoShadow = abValue == 5;
 
-            Game.isHintStyleV3 = abValue == 6;
-            Game.isHintStyleV2 = abValue != 6;
+            Game.hintVersion = abValue == 6 ? 2 : 1;
 
             QualitySettings.shadows = Game.isNoShadow ? ShadowQuality.Disable : ShadowQuality.HardOnly;
-            //UIController.SetupAbUI();
         }
 
         private void Result20210108()
@@ -319,7 +313,6 @@ namespace IEC
 
         private void Result20201230()
         {
-            Game.isHintStyleBSP = false;
             Game.isHaveBossTimerLevels = false;
             Game.isHaveBossTimerLevelsV2 = false;
             Game.isNewWaterEffect = true;
@@ -352,7 +345,7 @@ namespace IEC
                 Game.backGroundDefault = 3;
             }
 
-            Game.isHintStyleBSP = abValue == 4;
+            Game.hintVersion = abValue == 6 ? 2 : 1;
             Game.isHaveBossTimerLevels = (abValue == 5) || (abValue == 6);
             Game.isHaveBossTimerLevelsV2 = abValue == 6;
 
@@ -366,8 +359,7 @@ namespace IEC
             Game.isNewUI = true;
             Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
-            Game.isHintStyleV2 = true;
-            //UIController.SetupAbUI();
+            Game.hintVersion = 1;
         }
 
         private void UpdateAb20201222(int abValue)
@@ -377,7 +369,6 @@ namespace IEC
             Game.isNewUI = abValue == 2;
             Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
-            Game.isHintStyleV2 = abValue == 5;
         }
 
         private void UpdateAb20201215(int abValue)
@@ -393,9 +384,6 @@ namespace IEC
         private void UpdateAb20201209(int abValue)
         {
             Game.isLevelDifficultyV4 = abValue == 2;
-            //Game.themeIndex = abValue == 3 ? 5 : 3;
-            //Game.backGroundIndex = abValue == 3 ? 5 : 3;
-            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201204()

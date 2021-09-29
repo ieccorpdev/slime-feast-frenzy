@@ -229,7 +229,7 @@ namespace IEC
 
         private void OnHandleButtonHint()
         {
-            if (Game.isHintStyleBSP)
+            if (Game.hintVersion == 2)
             {
                 if (Game.hintRemains > 0)
                 {
