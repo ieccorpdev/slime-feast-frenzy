@@ -196,6 +196,8 @@ namespace Altom.Editor
             {
                 initSetings(component);
             }
+            component.gameObject.SetActive(false);
+            component.transform.SetAsLastSibling();
 
             EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();
@@ -221,7 +223,6 @@ namespace Altom.Editor
             AltUnityRunner = UnityEditor.PrefabUtility.InstantiatePrefab(altUnityRunner);
             AltUnityRunner altUnityRunnerComponent = ((UnityEngine.GameObject)AltUnityRunner).GetComponent<AltUnityRunner>();
             initSetings(altUnityRunnerComponent);
-
 
             EditorSceneManager.MarkSceneDirty(UnityEngine.SceneManagement.SceneManager.GetActiveScene());
             EditorSceneManager.SaveOpenScenes();

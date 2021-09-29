@@ -112,6 +112,16 @@ namespace Altom.Editor
             Window.Show();
         }
 
+        [UnityEditor.MenuItem("IEC/Setup AltUnity Tester", false, 80)]
+        public static void SetupAltUnityTesterForIEC()
+        {
+            var buildTargetGroup = UnityEditor.BuildTargetGroup.Android;
+            AltUnityBuilder.AddAltUnityTesterInScritpingDefineSymbolsGroup(buildTargetGroup);
+            if (buildTargetGroup == UnityEditor.BuildTargetGroup.Standalone)
+                AltUnityBuilder.CreateJsonFileForInputMappingOfAxis();
+            AltUnityBuilder.InsertAltUnityInTheActiveScene();
+        }
+
         [UnityEditor.MenuItem("Assets/Create/AltUnityTest", true, 80)]
         public static bool CanCreateAltUnityTest()
         {
