@@ -61,7 +61,7 @@ namespace IEC
             return Game.GetGrid(row, col, color);
         }
 
-        public static int GetColor(List<int> listWaterColor)
+        public static int GetColorIndex(List<int> listWaterColor)
         {
             var resultColor = listWaterColor[0];
             if (listWaterColor.Count == 2)

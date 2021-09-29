@@ -252,7 +252,7 @@ namespace IEC
 
             if (Game.isStartLevelEffect)
             {
-                Game.listGrids.ForEach(x => x.OnTweenMove(true));
+                Game.listGrids.ForEach(x => x.OnTweenSpawn(true));
                 Game.listBigSquare.ForEach(x => x.OnTweenMove());
             }
             var maxTime = (Config.startEffectMoveTime * 2f) + ((Game.size - 2) * .1f) + .1f;

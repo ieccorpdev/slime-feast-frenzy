@@ -33,7 +33,7 @@ namespace IEC
 
         public Renderer m_TrunkMesh;
 
-        public bool IsDone => m_IsHaveWater && (TrueColor == WaterIndexColor);
+        public bool IsDone => m_IsHaveWater && (TrueColor == WaterColorIndex);
 
         private bool IsGrowUpComplete;
 
@@ -343,7 +343,7 @@ namespace IEC
                     TweenScale(false);
                 }
                 WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
-                SetSetGrowingWater(m_IsHaveWater, point);
+                SetGrowingWater(m_IsHaveWater, point);
 
                 if (m_IsHaveWater)
                 {

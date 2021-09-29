@@ -136,7 +136,7 @@ namespace IEC
                     for (int j = startIndex; j < count; j++)
                     {
                         var grid = m_ListGridSolution[j];
-                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor, true);
+                        var listGrids = grid.GetGridsCanConnect(source.WaterColorIndex, true);
                         startIndex += 1;
                         var listGridNearCount = listGrids.Count;
                         if (listGridNearCount > 0)
@@ -148,7 +148,7 @@ namespace IEC
                                 if (!m_ListGridSolution.Contains(gridNearConnect))
                                 {
                                     m_ListGridSolution.Add(gridNearConnect);
-                                    gridNearConnect.SetConnect(source.WaterIndexColor, 0);
+                                    gridNearConnect.SetConnect(source.WaterColorIndex, 0);
                                 }
                             }
                         }

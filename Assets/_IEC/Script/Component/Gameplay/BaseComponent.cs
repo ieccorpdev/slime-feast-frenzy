@@ -56,7 +56,7 @@ namespace IEC
         public int[,] CurrentLine = new int[3, 3];
         protected int[,] DefaultLine = new int[3, 3];
 
-        public int Row, Col, TrueRot, TrueColor, WaterIndexColor;
+        public int Row, Col, TrueRot, TrueColor, WaterColorIndex;
 
         public GridType GridType;
 
@@ -65,9 +65,9 @@ namespace IEC
         {
             get
             {
-                if (WaterIndexColor > 0)
+                if (WaterColorIndex > 0)
                 {
-                    return Config.GetWaterColor(WaterIndexColor);
+                    return Config.GetWaterColor(WaterColorIndex);
                 }
                 else
                 {
@@ -97,9 +97,6 @@ namespace IEC
         //Temp
         protected Tween m_Tween;
         protected List<int> m_ListWaterColor = new List<int>();
-        private BaseComponent m_TempGrid;
-        private List<BaseComponent> m_ListGridConnect = new List<BaseComponent>();
-
         private Vector3 m_StartPos1, m_EndPos1, m_StartPos2, m_EndPos2;
 
 
@@ -110,7 +107,7 @@ namespace IEC
             GridType = gridType;
             Row = row;
             Col = col;
-            WaterIndexColor = color;
+            WaterColorIndex = color;
             TrueColor = color;
             m_CurrentRot = rot;
             TrueRot = trueRot;
@@ -152,24 +149,20 @@ namespace IEC
                 m_HintEffect.OnDestroyMe();
             }
 
-            m_IsLock = false;
             IsOneWayBlock = false;
             IsInBigSquare = false;
 
-            if (m_Collider)
-            {
-                m_Collider.enabled = true;
-            }
+            SetActiveLock(false);
 
             if (IsHaveTerrain)
             {
                 m_Terrain.ResetAll();
             }
 
-            OnResetDataPlaying();
+            OnResetData();
         }
 
-        private void OnResetDataPlaying()
+        private void OnResetData()
         {
             m_IsRotating = false;
             m_IsHaveWater = false;
@@ -209,9 +202,7 @@ namespace IEC
 
         public virtual void SetLock()
         {
-            m_IsLock = true;
-            m_Collider.enabled = false;
-
+            SetActiveLock(true);
             if (IsHaveTerrain)
             {
                 m_Terrain.SetActiveLock(true);
@@ -220,11 +211,19 @@ namespace IEC
 
         public void PushToBigSquare()
         {
-            m_IsLock = true;
-            m_Collider.enabled = false;
-
+            SetActiveLock(true);
             IsInBigSquare = true;
             m_Terrain.gameObject.SetActive(false);
+        }
+
+        private void SetActiveLock(bool isActive)
+        {
+            m_IsLock = isActive;
+
+            if (m_Collider)
+            {
+                m_Collider.enabled = !isActive;
+            }
         }
 
         public virtual void OnUpdateSetTerrain()
@@ -259,15 +258,14 @@ namespace IEC
             }
         }
 
+        public virtual void AfterInit()
+        {
+            OnResetData();
+        }
 
         public virtual void BeforeInit()
         {
 
-        }
-
-        public virtual void AfterInit()
-        {
-            OnResetDataPlaying();
         }
 
         protected virtual int[,] GetDefaultLine(int style)
@@ -280,43 +278,51 @@ namespace IEC
             if(GridType != GridType.GRID_SOURCE)
             {
                 m_IsOldHaveWater = m_IsHaveWater;
-                m_OldWaterIndexColor = WaterIndexColor;
+                m_OldWaterIndexColor = WaterColorIndex;
                 m_IsHaveWater = false;
                 m_ListWaterColor.Clear();
             }
         }
 
+        private void AddGridToListConnect( WaterPoint point, bool isInit = false)
+        {
+            GamePlay.listGridConnectCache.Add(GamePlay.gridCache);
+            GamePlay.gridCache.SetStartWater(point);
+
+            if (isInit)
+            {
+                GamePlay.gridCache.SetupArrow(point);
+            }
+        }
+
         public List<BaseComponent> GetGridsCanConnect(int color, bool isInit)
         {
-            m_ListGridConnect.Clear();
-            if (GridType == GridType.GRID_TARGET) return m_ListGridConnect;
+            GamePlay.listGridConnectCache.Clear();
+            if (GridType == GridType.GRID_TARGET) return GamePlay.listGridConnectCache;
 
             if (IsHaveLineTop)
             {
-                m_TempGrid = Game.GetGrid(Row - 1, Col, color);
-                if (m_TempGrid != null)
+                GamePlay.gridCache = Game.GetGrid(Row - 1, Col, color);
+                if (GamePlay.gridCache != null)
                 {
-                    if (m_TempGrid.IsHaveLineBot)
+                    if (GamePlay.gridCache.IsHaveLineBot)
                     {
                         if (isInit)
                         {
-                            m_TempGrid.SetupArrow(WaterPoint.BOT);
-                            m_ListGridConnect.Add(m_TempGrid);
+                            AddGridToListConnect(WaterPoint.BOT, true);
                         }
                         else
                         {
-                            if(Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if(Game.isHaveOneWayBlock && GamePlay.gridCache.IsOneWayBlock)
                             {
-                                if(m_TempGrid.Inline == WaterPoint.BOT)
+                                if(GamePlay.gridCache.Inline == WaterPoint.BOT)
                                 {
-                                    m_ListGridConnect.Add(m_TempGrid);
-                                    m_TempGrid.SetStartWater(WaterPoint.BOT);
+                                    AddGridToListConnect(WaterPoint.BOT);
                                 }
                             }
                             else
                             {
-                                m_ListGridConnect.Add(m_TempGrid);
-                                m_TempGrid.SetStartWater(WaterPoint.BOT);
+                                AddGridToListConnect(WaterPoint.BOT);
                             }
                         }
                     }
@@ -325,30 +331,27 @@ namespace IEC
 
             if (IsHaveLineBot)
             {
-                m_TempGrid = Game.GetGrid(Row + 1, Col, color);
-                if (m_TempGrid != null)
+                GamePlay.gridCache = Game.GetGrid(Row + 1, Col, color);
+                if (GamePlay.gridCache != null)
                 {
-                    if (m_TempGrid.IsHaveLineTop)
+                    if (GamePlay.gridCache.IsHaveLineTop)
                     {
                         if (isInit)
                         {
-                            m_TempGrid.SetupArrow(WaterPoint.TOP);
-                            m_ListGridConnect.Add(m_TempGrid);
+                            AddGridToListConnect(WaterPoint.TOP, true);
                         }
                         else
                         {
-                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && GamePlay.gridCache.IsOneWayBlock)
                             {
-                                if (m_TempGrid.Inline == WaterPoint.TOP)
+                                if (GamePlay.gridCache.Inline == WaterPoint.TOP)
                                 {
-                                    m_ListGridConnect.Add(m_TempGrid);
-                                    m_TempGrid.SetStartWater(WaterPoint.TOP);
+                                    AddGridToListConnect(WaterPoint.TOP);
                                 }
                             }
                             else
                             {
-                                m_ListGridConnect.Add(m_TempGrid);
-                                m_TempGrid.SetStartWater(WaterPoint.TOP);
+                                AddGridToListConnect(WaterPoint.TOP);
                             }
                         }
                     }
@@ -357,30 +360,27 @@ namespace IEC
 
             if (IsHaveLineLeft)
             {
-                m_TempGrid = Game.GetGrid(Row, Col - 1, color);
-                if (m_TempGrid != null)
+                GamePlay.gridCache = Game.GetGrid(Row, Col - 1, color);
+                if (GamePlay.gridCache != null)
                 {
-                    if (m_TempGrid.IsHaveLineRight)
+                    if (GamePlay.gridCache.IsHaveLineRight)
                     {
                         if (isInit)
                         {
-                            m_TempGrid.SetupArrow(WaterPoint.RIGHT);
-                            m_ListGridConnect.Add(m_TempGrid);
+                            AddGridToListConnect(WaterPoint.RIGHT, true);
                         }
                         else
                         {
-                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && GamePlay.gridCache.IsOneWayBlock)
                             {
-                                if (m_TempGrid.Inline == WaterPoint.RIGHT)
+                                if (GamePlay.gridCache.Inline == WaterPoint.RIGHT)
                                 {
-                                    m_ListGridConnect.Add(m_TempGrid);
-                                    m_TempGrid.SetStartWater(WaterPoint.RIGHT);
+                                    AddGridToListConnect(WaterPoint.RIGHT);
                                 }
                             }
                             else
                             {
-                                m_ListGridConnect.Add(m_TempGrid);
-                                m_TempGrid.SetStartWater(WaterPoint.RIGHT);
+                                AddGridToListConnect(WaterPoint.RIGHT);
                             }
                         }
                     }
@@ -389,30 +389,27 @@ namespace IEC
 
             if (IsHaveLineRight)
             {
-                m_TempGrid = Game.GetGrid(Row, Col + 1, color);
-                if (m_TempGrid != null)
+                GamePlay.gridCache = Game.GetGrid(Row, Col + 1, color);
+                if (GamePlay.gridCache != null)
                 {
-                    if (m_TempGrid.IsHaveLineLeft)
+                    if (GamePlay.gridCache.IsHaveLineLeft)
                     {
                         if (isInit)
                         {
-                            m_TempGrid.SetupArrow(WaterPoint.LEFT);
-                            m_ListGridConnect.Add(m_TempGrid);
+                            AddGridToListConnect(WaterPoint.LEFT, true);
                         }
                         else
                         {
-                            if (Game.isHaveOneWayBlock && m_TempGrid.IsOneWayBlock)
+                            if (Game.isHaveOneWayBlock && GamePlay.gridCache.IsOneWayBlock)
                             {
-                                if (m_TempGrid.Inline == WaterPoint.LEFT)
+                                if (GamePlay.gridCache.Inline == WaterPoint.LEFT)
                                 {
-                                    m_ListGridConnect.Add(m_TempGrid);
-                                    m_TempGrid.SetStartWater(WaterPoint.LEFT);
+                                    AddGridToListConnect(WaterPoint.LEFT);
                                 }
                             }
                             else
                             {
-                                m_ListGridConnect.Add(m_TempGrid);
-                                m_TempGrid.SetStartWater(WaterPoint.LEFT);
+                                AddGridToListConnect(WaterPoint.LEFT);
                             }
                         }
                     }
@@ -421,15 +418,14 @@ namespace IEC
 
             if (GridType == GridType.WALL)
             {
-                var m_TempGrid = GridHelper.GetOppositeWall(Row, Col, color, Game);
-                if (m_TempGrid != null)
+                GamePlay.gridCache = GridHelper.GetOppositeWall(Row, Col, color, Game);
+                if (GamePlay.gridCache != null)
                 {
-                    m_TempGrid.SetStartWater(WaterPoint.LEFT);
-                    m_ListGridConnect.Add(m_TempGrid);
+                    AddGridToListConnect(WaterPoint.LEFT);
                 }
             }
 
-            return m_ListGridConnect;
+            return GamePlay.listGridConnectCache;
         }
 
         protected virtual void OnWaterGrowUpDone()
@@ -445,14 +441,9 @@ namespace IEC
             m_StartWater = point;
         }
 
-        public void OnSetActiveArrow()
-        {
-            IsOneWayBlock = true;
-            m_Terrain.SetActiveArrow();
-        }
-
         public void SetupArrow(WaterPoint point)
         {
+            if (!Game.isHaveOneWayBlock) return;
             if (GridType == GridType.GRID_STRAIGHT || GridType == GridType.GRID_CURVE)
             {
                 OnSetUpArrow(point);
@@ -462,7 +453,6 @@ namespace IEC
         private void OnSetUpArrow(WaterPoint point)
         {
             var ratioDist = Game.isHaveIntroOutro ? .1f : 2f;
-            if (!Game.isHaveOneWayBlock) return;
             m_InlineOrigin = (int)point;
 
             m_InlineOffset = LevelHelper.CalculatorMissingRot(m_InlineOrigin, TrueRot);
@@ -487,39 +477,33 @@ namespace IEC
 
         private Vector3 GetDestination(WaterPoint point)
         {
-            if (IsHaveLineTop)
+            if (IsHaveLineTop && point != WaterPoint.TOP)
             {
-                if(point != WaterPoint.TOP)
-                {
-                    return TopPos;
-                }
+                return TopPos;
             }
 
-            if (IsHaveLineBot)
+            if (IsHaveLineBot && point != WaterPoint.BOT)
             {
-                if (point != WaterPoint.BOT)
-                {
-                    return BotPos;
-                }
+                return BotPos;
             }
 
-            if (IsHaveLineLeft)
+            if (IsHaveLineLeft && point != WaterPoint.LEFT)
             {
-                if (point != WaterPoint.LEFT)
-                {
-                    return LeftPos;
-                }
+                return LeftPos;
             }
 
-            if (IsHaveLineRight)
+            if (IsHaveLineRight && point != WaterPoint.RIGHT)
             {
-                if (point != WaterPoint.RIGHT)
-                {
-                    return RightPos;
-                }
+                return RightPos;
             }
 
             return CenterPos;
+        }
+
+        public void OnSetActiveArrow()
+        {
+            IsOneWayBlock = true;
+            m_Terrain.SetActiveArrow();
         }
 
         public bool IsAllowConnect(int color)
@@ -537,25 +521,16 @@ namespace IEC
             }
         }
 
-        public void SetTotalColor(List<int> color)
-        {
-            if(GridType != GridType.GRID_SOURCE)
-            {
-                m_ListWaterColor.AddRange(color);
-            }
-        }
-
         public virtual void AfterCheckConnect()
         {
-            if (!m_IsHaveWater)
+            if (m_IsHaveWater)
             {
-                m_IsHavingWater = false;
+                SetColor();
             }
-            SetColor();
-            //if (m_IsOldHaveWater == m_IsHaveWater && m_OldWaterIndexColor == WaterIndexColor) return;
+
+            m_IsHavingWater = m_IsHaveWater;
             if (m_IsOldHaveWater == m_IsHaveWater) return;
-            WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
-            SetSetGrowingWater(m_IsHaveWater, point);
+            SetGrowingWater(m_IsHaveWater, m_IsHaveWater ? m_StartWater : WaterPoint.CENTER);
 
             if (m_IsHaveWater)
             {
@@ -566,14 +541,14 @@ namespace IEC
         protected void SetColor()
         {
             if (!m_IsHaveWater) return;
-            WaterIndexColor = GridHelper.GetColor(m_ListWaterColor);
-            for (int i = 0; i < m_WaterComponent.Length; i++)
+            WaterColorIndex = GridHelper.GetColorIndex(m_ListWaterColor);
+            for (int i = 0; i < m_WaterCount; i++)
             {
                 m_WaterComponent[i].SetColor(CurrentWaterColor, !m_IsOldHaveWater);
             }
         }
 
-        protected void SetSetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
+        protected void SetGrowingWater(bool isGrowUp, WaterPoint waterPoint)
         {
             var waterPos = GetWaterPos(waterPoint);
             for (int i = 0; i < m_WaterCount; i++)
@@ -581,15 +556,9 @@ namespace IEC
                 m_WaterComponent[i].SetGrowing(isGrowUp, waterPos, m_DelayStart);
             }
 
-            if (Game.isBlockGrayColor)
+            if (Game.isBlockGrayColor && !m_IsLock && IsHaveTerrain)
             {
-                if (!m_IsLock)
-                {
-                    if (IsHaveTerrain)
-                    {
-                        m_Terrain.SetPos(waterPos);
-                    }
-                }
+                m_Terrain.SetPos(waterPos);
             }
         }
 
@@ -610,7 +579,7 @@ namespace IEC
             }
         }
 
-        public void OnTweenMove(bool isTween)
+        public void OnTweenSpawn(bool isTween)
         {
             m_Tween?.Kill(true);
             if (isTween)
@@ -624,7 +593,7 @@ namespace IEC
                 else
                 {
                     var moveTime = Config.startEffectMoveTime;
-                    var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GetIndexSpawn() * .1f;
+                    var delayTime = (GridType == GridType.WALL) ? 0f : moveTime + GamePlay.GetIndexSpawn(Row, Col) * .1f;
 
                     m_IsMoving = true;
                     m_Tween = transform.DOLocalMoveY(0f, moveTime).SetDelay(delayTime).OnComplete(() => {
@@ -637,32 +606,6 @@ namespace IEC
                 var tempPos = CurrentLocalPos;
                 tempPos.y = 20f;
                 transform.localPosition = tempPos;
-            }
-        }
-
-        private int GetIndexSpawn()
-        {
-            if (Game.introType == 0)
-            {
-                if (Game.isCamRotated)
-                {
-                    return Row - 1;
-                }
-                else
-                {
-                    return Col - 1;
-                }
-            }
-            else
-            {
-                if (Game.isCamRotated)
-                {
-                    return (Game.size - Row - 2);
-                }
-                else
-                {
-                    return (Game.size - Col - 2);
-                }
             }
         }
 
@@ -694,15 +637,6 @@ namespace IEC
         public virtual void OnUndo()
         {
 
-        }
-
-        public virtual void SetTerrainMat()
-        {
-            if (IsHaveTerrain) 
-            {
-                var mat = m_IsHaveWater ? Game.listTerrainType[0] : Game.listTerrainType[1];
-                m_Terrain.SetupTerrain(mat, Game.isBlockGrayColor, Game.isFlyingIsland);
-            }
         }
 
         protected virtual int GetTrueRotHint()

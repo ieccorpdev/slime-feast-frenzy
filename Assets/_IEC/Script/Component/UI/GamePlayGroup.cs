@@ -23,6 +23,10 @@ namespace IEC
 
         public Transform groupBigSquare;
 
+        public List<BaseComponent> listGridConnectCache = new List<BaseComponent>();
+
+        public BaseComponent gridCache;
+
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -35,6 +39,32 @@ namespace IEC
             sprBackground.sprite = config.sprMain;
             sprBGTop.sprite = config.sprTop;
             sprBGBot.sprite = config.sprBot;
+        }
+
+        public int GetIndexSpawn(int row, int col)
+        {
+            if (Game.introType == 0)
+            {
+                if (Game.isCamRotated)
+                {
+                    return row - 1;
+                }
+                else
+                {
+                    return col - 1;
+                }
+            }
+            else
+            {
+                if (Game.isCamRotated)
+                {
+                    return (Game.size - row - 2);
+                }
+                else
+                {
+                    return (Game.size - col - 2);
+                }
+            }
         }
     }
 }
