@@ -67,11 +67,11 @@ namespace IEC
             {
                 if (WaterColorIndex > 0)
                 {
-                    return Config.GetWaterColor(WaterColorIndex);
+                    return ColorConfig.GetWaterColor(WaterColorIndex);
                 }
                 else
                 {
-                    return Config.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
+                    return ColorConfig.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
                 }
             }
         }

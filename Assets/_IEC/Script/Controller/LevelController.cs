@@ -74,6 +74,9 @@ namespace IEC
             Game.introType = Random.Range(0, 2);
             SetupTheme(false);
 
+            var warterIndex = Mathf.Clamp(Game.waterEffectVersion - 1, 0, ColorConfig.listWaterEffectConfig.Count - 1);
+            GamePlay.waterEffectData = ColorConfig.listWaterEffectConfig[warterIndex];
+
             bool isMergeLevel = Game.isLevelDifficultyV5 && (Game.levelSeed % 10) == 0;
 
             Game.isBossLevel = (Game.isHaveBossLimitMoveLevels || Game.isHaveBossTimerLevels)

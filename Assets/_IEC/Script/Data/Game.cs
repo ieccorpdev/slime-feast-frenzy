@@ -169,10 +169,11 @@ namespace IEC
         public bool isBiggerFoundtain;
         public bool isRandomTheme;
 
-        public bool isNewWaterEffect;
         public bool isHaveFloatingIsland;
         public bool isRandomFlower;
         public bool isHaveIntroOutro;
+
+        public int waterEffectVersion;
 
         public bool isLeavesEffect;
 

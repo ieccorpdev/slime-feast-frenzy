@@ -88,7 +88,7 @@ namespace IEC
 
         private void Result20210802()
         {
-            Game.isNewWaterEffect = false;
+            Game.waterEffectVersion = 1;
             Game.isRandomFlower = true;
 
             Game.isHaveShop = true;
@@ -101,7 +101,7 @@ namespace IEC
 
         private void UpdateAb20210802(int abValue)
         {
-            Game.isNewWaterEffect = abValue == 1;
+            Game.waterEffectVersion = abValue == 1 ? 2 : 1;
             Game.isHaveFloatingIsland = abValue == 2;
 
             if (abValue == 2)
@@ -315,7 +315,7 @@ namespace IEC
         {
             Game.isHaveBossTimerLevels = false;
             Game.isHaveBossTimerLevelsV2 = false;
-            Game.isNewWaterEffect = true;
+            Game.waterEffectVersion = 1;
 
             //Default
             Game.themeDefault = 2;
@@ -348,9 +348,6 @@ namespace IEC
             Game.hintVersion = abValue == 6 ? 2 : 1;
             Game.isHaveBossTimerLevels = (abValue == 5) || (abValue == 6);
             Game.isHaveBossTimerLevelsV2 = abValue == 6;
-
-            Game.isNewWaterEffect = abValue == 7;
-
             PlayerData.InitTheme(Game.themeDefault, Game.backGroundDefault);
         }
 

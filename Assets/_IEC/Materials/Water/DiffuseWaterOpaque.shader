@@ -2,23 +2,17 @@
 {
 	Properties
 	{
-		_WaterColor ("Water color", Color) = (1, 1, 1, 1)
+		_MainColor ("Main color", Color) = (1, 1, 1, 1)
 		_FoamColor ("Foam color", Color) = (1, 1, 1, 1)
+
 		_WaterTex ("Water texture", 2D) = "white" {}
 		_Tiling ("Water tiling", Vector) = (1, 1, 1, 1)
 
-		[Space(20)]
 		_DistTex ("Distortion", 2D) = "white" {}
 		_DistTiling ("Distortion tiling", Vector) = (1, 1, 1, 1)
 
-		[Space(20)]
-		_WaterHeight ("Water height", Float) = 0
-
-		[Space(20)]
 		_MoveDirection ("Direction", Vector) = (0, 0, 0, 0)
-
-		[Space(20)]
-		_IsNewWater ("Is New Water", Float) = 0
+		_Version ("Water Version", Float) = 0
 	}
 	SubShader
 	{
@@ -53,26 +47,25 @@
 				float4 vertex : SV_POSITION;
 			};
 
-			fixed4 _Color;
+			//Default
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			fixed4 _FoamColor;
+
+
+			fixed4 _MainColor;
 
 			sampler2D _WaterTex;
 			fixed2 _Tiling;
-			fixed4 _WaterColor;
-			fixed4 _FoamColor;
 
 			sampler2D _DistTex;
 			fixed2 _DistTiling;
 
-			fixed _WaterHeight;
-
-			fixed3 _MoveDirection;
-
+			fixed _Version;
 			float3 _MaskPos;
 			fixed _FillAmount;
 
-			fixed _IsNewWater;
+			fixed3 _MoveDirection;
 
 			fixed2 WaterPlaneUV(fixed3 worldPos, fixed camHeightOverWater)
 			{
@@ -89,14 +82,14 @@
 				o.vertex = mul(UNITY_MATRIX_VP, o.worldPos);
 				
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				o.camHeightOverWater = _WorldSpaceCameraPos.y - _WaterHeight;
+				o.camHeightOverWater = _WorldSpaceCameraPos.y;
 
 #if defined(FOG_LINEAR) || defined(FOG_EXP) || defined(FOG_EXP2)
 				fixed3 camToWorldRay = o.worldPos - _WorldSpaceCameraPos;
 				fixed3 rayToWaterPlane = (o.camHeightOverWater / camToWorldRay.y * camToWorldRay);
 
 				fixed3 worldPosOnPlane = _WorldSpaceCameraPos - rayToWaterPlane;
-				fixed3 positionForFog = lerp(worldPosOnPlane, o.worldPos.xyz, o.worldPos.y > _WaterHeight);
+				fixed3 positionForFog = lerp(worldPosOnPlane, o.worldPos.xyz, o.worldPos.y > 0);
 				fixed4 waterVertex = mul(UNITY_MATRIX_VP, fixed4(positionForFog, 1));
 				UNITY_TRANSFER_FOG(o, waterVertex);
 #endif
@@ -118,12 +111,12 @@
 
 				fixed4 distortion = tex2D(_DistTex, water_uv * _DistTiling) * 2 - 1;
 
-				if(_IsNewWater > .5) distortion = tex2D(_DistTex, i.uv * _DistTiling) * 2 - 1;
+				if(_Version == 2) distortion = tex2D(_DistTex, i.uv * _DistTiling) * 2 - 1;
 
 				fixed2 distorted_uv = ((water_uv + distortion.rg) - _Time.y * _MoveDirection.xz) * _Tiling;
 
 				fixed4 waterCol = tex2D(_WaterTex, distorted_uv);
-				waterCol = lerp(_WaterColor, _FoamColor, waterCol.r);
+				waterCol = lerp(_MainColor, _FoamColor, waterCol.r);
 
 				if(dist > (_FillAmount - .05)) waterCol = _FoamColor;
 

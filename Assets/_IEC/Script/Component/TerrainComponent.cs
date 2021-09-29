@@ -33,7 +33,7 @@ namespace IEC
             else
             {
                 m_Mesh.material = mat;
-                m_TerrainMat.SetFloat(GameShaderValue.SHADER_IS_GRAY, isHaveGray ? 1f : 0f);
+                m_TerrainMat.SetFloat(GameShaderValue.SHADER_VERSION, isHaveGray ? 1 : 0);
 
                 if (isHaveGray)
                 {

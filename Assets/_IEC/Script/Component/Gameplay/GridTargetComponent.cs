@@ -56,11 +56,11 @@ namespace IEC
             {
                 if (TrueColor > 0)
                 {
-                    return Config.GetWaterMat(Game.isTreeColorV1 || Game.isTreeColorV2, TrueColor);
+                    return ColorConfig.GetWaterMat(Game.isTreeColorV1 || Game.isTreeColorV2, TrueColor);
                 }
                 else
                 {
-                    return Config.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1 
+                    return ColorConfig.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1 
                         || Game.isTreeColorV2, Game.classicColor);
                 }
             }
@@ -239,8 +239,8 @@ namespace IEC
 
             if (Game.isTreeGrayColor)
             {
-                m_TrunkMesh.material = Config.trunkGrayMat;
-                m_ListMeshTrees.ForEach(x => x.material = Config.treeGrayMat);
+                m_TrunkMesh.material = ColorConfig.trunkGrayMat;
+                m_ListMeshTrees.ForEach(x => x.material = ColorConfig.treeGrayMat);
 
                 m_FillAmount = 0f;
                 OnUpdateFillAmount(m_FillAmount);
@@ -253,7 +253,7 @@ namespace IEC
 
             if (Game.isRootTreeOnlyGreenColor)
             {
-                m_RootTreeMesh.material = Config.targetDefaultMat;
+                m_RootTreeMesh.material = ColorConfig.targetDefaultMat;
             }
             else
             {

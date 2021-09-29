@@ -27,6 +27,8 @@ namespace IEC
 
         public BaseComponent gridCache;
 
+        public WaterEffectData waterEffectData;
+
         public void LocateGroup()
         {
             Pool.Set(this);
