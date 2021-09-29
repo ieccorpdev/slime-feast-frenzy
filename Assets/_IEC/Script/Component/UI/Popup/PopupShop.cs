@@ -69,7 +69,7 @@ namespace IEC
                 var itemConfig = listThemeConfig[i];
                 var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
-                item.OnInit(i, itemConfig.itemShopConfig);
+                item.OnInit(i, itemConfig);
                 m_ListItemTheme.Add(item);
                 
                 if(i == m_ThemeCount - 1)
@@ -85,7 +85,7 @@ namespace IEC
                 var itemConfig = listBGConfig[i];
                 var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupBG);
                 var item = itemObj.GetComponent<ItemShop>();
-                item.OnInit(i, itemConfig.itemShopConfig);
+                item.OnInit(i, itemConfig);
                 m_ListItemBG.Add(item);
             }
 
@@ -222,11 +222,11 @@ namespace IEC
             ItemShopConfig itemShopConfig = null;
             if (type == ItemShopType.Theme)
             {
-                itemShopConfig = ShopConfig.listThemeConfigs[index].itemShopConfig;
+                itemShopConfig = ShopConfig.listThemeConfigs[index];
             }
             else if (type == ItemShopType.Background)
             {
-                itemShopConfig = ShopConfig.listBGConfig[index].itemShopConfig;
+                itemShopConfig = ShopConfig.listBGConfig[index];
             }
 
             m_ItemClaim.gameObject.SetActive(true);
