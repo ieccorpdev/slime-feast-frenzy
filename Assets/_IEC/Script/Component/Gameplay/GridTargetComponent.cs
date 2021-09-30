@@ -23,12 +23,11 @@ namespace IEC
             {
                 if (TrueColor > 0)
                 {
-                    return ColorConfig.GetWaterMat(Game.isTreeColorV1 || Game.isTreeColorV2, TrueColor);
+                    return ColorConfig.GetTargetMat(Game.colorVersion, TrueColor);
                 }
                 else
                 {
-                    return ColorConfig.GetWaterClassicMat(Game.isRandomColorClassicMode, Game.isTreeColorV1
-                        || Game.isTreeColorV2, Game.classicColor);
+                    return ColorConfig.GetTargetClassicMat(Game.colorVersion, Game.classicColor);
                 }
             }
         }
@@ -181,8 +180,8 @@ namespace IEC
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            var minIndex = 0;
-            var maxIndex = 10;
+            var minIndex = 10;
+            var maxIndex = 13;
 
             m_ListTransTrees.Clear();
             m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
@@ -222,7 +221,20 @@ namespace IEC
             }
             else
             {
-                m_ListMeshTrees.ForEach(x => x.material = mat);
+                if (!Game.isMultiColor)
+                {
+                    if (m_TargetIndex > 10)
+                    {
+                        var newMat = ColorConfig.targetDefaultMatNew;
+
+                        m_ListMeshTrees.ForEach(x => x.material = newMat);
+                    }
+                }
+                else
+                {
+                    m_ListMeshTrees.ForEach(x => x.material = mat);
+                }
+                
             }
 
             if (Game.isRootTreeOnlyGreenColor)

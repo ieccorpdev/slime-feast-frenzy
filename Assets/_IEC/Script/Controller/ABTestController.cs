@@ -199,7 +199,7 @@ namespace IEC
 
             Game.isHaveBigSquare = false;
             Game.isHaveNoAdsV3 = false;
-            Game.isTreeColorV2 = false;
+            Game.colorVersion = 2;
 
             //UIController.SetupAbUI();
         }
@@ -209,7 +209,7 @@ namespace IEC
             Game.isHaveOneWayBlock = abValue == 1;
             Game.isHaveBigSquare = abValue == 2;
             Game.isHaveNoAdsV3 = abValue == 3;
-            Game.isTreeColorV2 = abValue == 4;
+            Game.colorVersion = abValue == 4 ? 3 : 2;
         }
 
         private void UpdateAb20210407(int abValue)
@@ -297,7 +297,7 @@ namespace IEC
         private void Result20210108()
         {
             Game.isLevelDifficultyV5 = false;
-            Game.isTreeColorV1 = false;
+            Game.colorVersion = 2;
             Game.isHaveUIAnimation = false;
             Game.isHaveDynamicInter = false;
         }
@@ -305,7 +305,6 @@ namespace IEC
         private void UpdateAb20210108(int abValue)
         {
             Game.isLevelDifficultyV5 = abValue == 1;
-            Game.isTreeColorV1 = abValue == 2;
             Game.isHaveUIAnimation = abValue == 3;
             Game.isHaveDynamicInter = abValue == 5;
         }

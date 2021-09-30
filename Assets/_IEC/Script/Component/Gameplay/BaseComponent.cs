@@ -71,7 +71,7 @@ namespace IEC
                 }
                 else
                 {
-                    return ColorConfig.GetWaterClassicColor(Game.isRandomColorClassicMode, Game.classicColor);
+                    return ColorConfig.GetWaterClassicColor(Game.colorVersion, Game.classicColor);
                 }
             }
         }

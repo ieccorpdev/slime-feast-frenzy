@@ -21,9 +21,11 @@ namespace IEC
 
         public Material treeGrayMat, trunkGrayMat;
 
-        public Color GetWaterClassicColor(bool isMultiClassicColor, int color)
+        public Material targetDefaultMatNew;
+
+        public Color GetWaterClassicColor(int colorVersion, int color)
         {
-            if (isMultiClassicColor)
+            if (colorVersion == 2)
             {
                 return colorBSP[color];
             }
@@ -39,30 +41,24 @@ namespace IEC
             return waterColor[colorIndex];
         }
 
-        public Material GetWaterClassicMat(bool isMultiClassicColor, bool isGradient, int color)
+        public Material GetTargetClassicMat(int colorVersion, int color)
         {
-            if (isMultiClassicColor)
+            if(colorVersion == 2)
             {
-                if (isGradient)
-                {
-                    return matBSPGradient[color];
-                }
-                else
-                {
-                    return matBSP[color];
-                }
-            }
-            else
+                return matBSP[color];
+            }else if(colorVersion == 3)
+            {
+                return matBSPGradient[color];
+            }else
             {
                 return targetDefaultMat;
             }
         }
 
-        public Material GetWaterMat(bool isGradient, int color)
+        public Material GetTargetMat(int colorVersion, int color)
         {
             var colorIndex = Mathf.Clamp(color - 1, 0, targetMats.Length - 1);
-
-            if (isGradient)
+            if (colorVersion == 3)
             {
                 return targetGradientMats[colorIndex];
             }
@@ -70,7 +66,6 @@ namespace IEC
             {
                 return targetMats[colorIndex];
             }
-
         }
 
         public List<WaterEffectData> listWaterEffectConfig;

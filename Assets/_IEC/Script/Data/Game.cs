@@ -135,7 +135,6 @@ namespace IEC
         
 
         public bool isLevelDifficultyV5;
-        public bool isTreeColorV1;
         public bool isHaveUIAnimation;
         public bool isHaveDynamicInter;
 
@@ -159,7 +158,6 @@ namespace IEC
         public bool isHaveOneWayBlock;
         public bool isHaveBigSquare;
         public bool isHaveNoAdsV3;
-        public bool isTreeColorV2;
 
         public bool isTreeGrayColor;
         public bool isBlockGrayColor;
@@ -173,6 +171,7 @@ namespace IEC
         public bool isHaveIntroOutro;
 
         public int waterEffectVersion;
+        public int colorVersion;
 
         public bool isLeavesEffect;
 
