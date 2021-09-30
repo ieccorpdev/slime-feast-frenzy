@@ -88,11 +88,13 @@ namespace IEC
             var psObj = PrefabHelper.Clone(Config.effectLeavesObj);
             psObj.transform.SetParent(GamePlay.effectParent);
             psObj.transform.position = posSpawn;
-            psObj.GetComponent<ParticleSystem>().Play();
+            var ps = psObj.GetComponent<ParticleSystem>();
+            var psMain = ps.main;
+            psMain.startColor = new ParticleSystem.MinMaxGradient(Game.themeConfig.leaveEffectColorMin, Game.themeConfig.leaveEffectColorMax);
+            ps.Play();
             yield return new WaitForSeconds(1f);
 
             PrefabHelper.Destroy(psObj);
         }
     }
-
 }

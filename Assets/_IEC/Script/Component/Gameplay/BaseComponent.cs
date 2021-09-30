@@ -182,7 +182,11 @@ namespace IEC
             {
                 var water = m_WaterComponent[i];
                 water.OnUpdate(deltaTime);
-                water.UpdatePos(GetWaterPos(m_StartWater));
+                if (IsInBigSquare)
+                {
+                    Debug.LogError("a");
+                    water.UpdatePos(GetWaterPos(m_StartWater));
+                }
             }
         }
 

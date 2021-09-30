@@ -12,5 +12,7 @@ namespace IEC
         public WaterLineConfig waterLineConfig;
 
         public int wallType, wallPipeType;
+
+        public Color leaveEffectColorMin, leaveEffectColorMax;
     }
 }
