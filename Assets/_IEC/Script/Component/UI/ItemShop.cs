@@ -46,5 +46,10 @@ namespace IEC
             m_SelectedObj.SetActive(isSelected);
             m_BlockObj.SetActive(!isUnlocked);
         }
+
+        public void OnDestroyMe()
+        {
+            Destroy(gameObject);
+        }
     }
 }

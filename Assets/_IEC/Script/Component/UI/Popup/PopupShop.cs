@@ -24,12 +24,6 @@ namespace IEC
         private List<ItemShop> m_ListItemTheme = new List<ItemShop>();
         private List<ItemShop> m_ListItemBG = new List<ItemShop>();
 
-
-        private ShopConfig ShopConfig;
-
-        [SerializeField]
-        private Transform[] m_TransGroupTheme, m_TransGroupBG;
-
         [SerializeField]
         private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem, m_TxtTimeCountDown;
 
@@ -42,75 +36,139 @@ namespace IEC
         private SimpleScrollSnap[] m_ScrollSnap;
 
         [SerializeField]
-        private GameObject[] m_ToggleThemes, m_ToggleThemesBG;
-
-        [SerializeField]
-        private SimpleScrollSnap m_ScrollTheme, m_ScrollBG;
-
-        [SerializeField]
         private RectTransform m_RectBottomGroup;
 
         [SerializeField]
         private GameObject m_GoldObj, m_PurchasedObj;
 
+        private List<Transform> m_ListTransTabTheme, m_ListTransTabBG;
+        private List<GameObject> m_ListToggleThemes, m_ListToggleBG;
+
+        [SerializeField]
+        private GameObject m_TabThemeObj, m_TabBGObj;
+
+        [SerializeField]
+        private GameObject m_ToggleThemeObj, m_ToggleBGObj;
+
+        [SerializeField]
+        private SimpleScrollSnap m_ScrollTheme, m_ScrollBG;
+
         private int m_BGCount, m_ThemeCount;
+        private bool m_IsInit;
 
-        public void OnInit(ShopConfig shopConfig)
+        public void OnInit()
         {
-            ShopConfig = shopConfig;
-            m_ItemClaim.OnInit(GotoPanel);
+            if (!m_IsInit)
+            {
+                m_IsInit = true;
+                m_ItemClaim.OnInit(GotoPanel);
+                InitButtonEvent();
 
-            InitButtonEvent();
+                m_ListTransTabTheme = new List<Transform>();
+                m_ListTransTabBG = new List<Transform>();
+
+                m_ListToggleThemes = new List<GameObject>();
+                m_ListToggleBG = new List<GameObject>();
+            }
+
+            m_ListItemTheme.ForEach(x => x.OnDestroyMe());
+            m_ListItemTheme.Clear();
+
+            m_ListItemBG.ForEach(x => x.OnDestroyMe());
+            m_ListItemBG.Clear();
+
+            for (int i = 1; i < m_ListTransTabTheme.Count; i++)
+            {
+                Destroy(m_ListTransTabTheme[i].gameObject);
+            }
+
+            m_ListTransTabTheme.Clear();
+            m_ListTransTabTheme.Add(m_TabThemeObj.transform);
+
+            for (int i = 1; i < m_ListToggleThemes.Count; i++)
+            {
+                Destroy(m_ListToggleThemes[i]);
+            }
+
+            m_ListToggleThemes.Clear();
+            m_ListToggleThemes.Add(m_ToggleThemeObj);
 
             var listThemeConfig = ShopConfig.listThemeConfigs;
-            m_ThemeCount = listThemeConfig.Count;
+            m_ThemeCount = Game.addThemeVersion == 2 ? listThemeConfig.Count : 5;
+            var totalTabTheme = Mathf.CeilToInt(m_ThemeCount / 4f);
+
+            if(totalTabTheme > 1)
+            {
+                for (int i = 1; i < totalTabTheme; i++)
+                {
+                    var tabObj = Instantiate(m_TabThemeObj, m_TabThemeObj.transform.parent);
+                    m_ListTransTabTheme.Add(tabObj.transform);
+
+                    var toggleObj = Instantiate(m_ToggleThemeObj, m_ToggleThemeObj.transform.parent);
+                    m_ListToggleThemes.Add(toggleObj);
+                }
+            }
 
             for (int i = 0; i < m_ThemeCount; i++)
             {
                 var itemConfig = listThemeConfig[i];
-                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
+                var itemObj = Instantiate(ShopConfig.itemShopObj, m_ListTransTabTheme[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig);
                 m_ListItemTheme.Add(item);
             }
 
+
+            for (int i = 1; i < m_ListTransTabBG.Count; i++)
+            {
+                Destroy(m_ListTransTabBG[i]);
+            }
+
+            m_ListTransTabBG.Clear();
+            m_ListTransTabBG.Add(m_TabBGObj.transform);
+
+            for (int i = 1; i < m_ListToggleBG.Count; i++)
+            {
+                Destroy(m_ListToggleBG[i]);
+            }
+            m_ListToggleBG.Clear();
+            m_ListToggleBG.Add(m_ToggleBGObj);
+
             var listBGConfig = ShopConfig.listBGConfig;
-            m_BGCount = listBGConfig.Count;
+            m_BGCount = Game.addThemeVersion == 2 ? listBGConfig.Count : 4;
+            var totalTabBG = Mathf.CeilToInt(m_BGCount / 4f);
+
+            if (totalTabBG > 1)
+            {
+                for (int i = 1; i < totalTabBG; i++)
+                {
+                    var tabObj = Instantiate(m_TabBGObj, m_TabBGObj.transform.parent);
+                    m_ListTransTabBG.Add(tabObj.transform);
+
+
+                    var toggleObj = Instantiate(m_ToggleBGObj, m_ToggleBGObj.transform.parent);
+                    m_ListToggleThemes.Add(toggleObj);
+                }
+            }
+
             for (int i = 0; i < m_BGCount; i++)
             {
                 var itemConfig = listBGConfig[i];
-                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupBG[i / 4]);
+                var itemObj = Instantiate(ShopConfig.itemShopObj, m_ListTransTabBG[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig);
                 m_ListItemBG.Add(item);
             }
 
-            SetupAbUI();
+            m_ScrollTheme.Setup();
+            m_ScrollBG.Setup();
 
             OnSelectTab(0);
         }
 
         public void SetupAbUI()
         {
-            //var width = Game.isHaveNoAdsInShopTab ? 345f : 530f;
-            //var size = new Vector2(width, 118f);
-            //m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
-            //m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
-            //m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
-
-            var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
-            for (int i = 0; i < m_ThemeCount; i++)
-            {
-                var item = m_ListItemTheme[i];
-                item.gameObject.SetActive(i < maxIndex);
-            }
-
-            var totalTab = Game.addThemeVersion == 2 ? 3 : 2;
-            for (int i = 0; i < m_TransGroupTheme.Length; i++)
-            {
-                m_TransGroupTheme[i].gameObject.SetActive(i < totalTab);
-            }
-
+            OnInit();
             m_BtnTabNoAds.gameObject.SetActive(Game.isHaveNoAdsInShopTab);
         }
 
@@ -216,8 +274,7 @@ namespace IEC
             bool isAtive = false;
             if (TabSelected == ItemShopType.Theme)
             {
-                var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
-                isAtive = listThemeUnlocked.Count < maxIndex;
+                isAtive = listThemeUnlocked.Count < m_ThemeCount;
             }
             else if (TabSelected == ItemShopType.Background)
             {
@@ -272,7 +329,7 @@ namespace IEC
             var totalItem = 0;
             if(TabSelected == ItemShopType.Theme)
             {
-                totalItem = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
+                totalItem = m_ThemeCount;
             }
             else if(TabSelected == ItemShopType.Background)
             {

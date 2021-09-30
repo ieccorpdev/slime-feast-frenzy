@@ -49,7 +49,6 @@ namespace IEC
 
             popupSettings.OnInit();
             popupRating.OnInit();
-            popupShop.OnInit(ShopConfig);
             gameOverReward.OnInit();
             gameOverUIGroupNew.OnInit();
 
