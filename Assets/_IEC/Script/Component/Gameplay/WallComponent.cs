@@ -75,7 +75,7 @@ namespace IEC
 
                 if(wallType > 0)
                 {
-                    var deltaZ = (point == StartPoint.TOP || point == StartPoint.RIGHT) ? -.1f : .1f;
+                    var deltaZ = (point == StartPoint.TOP || point == StartPoint.RIGHT) ? -.12f : .12f;
 
                     var transWall = wall.transform;
                     var curPos = transWall.localPosition;
