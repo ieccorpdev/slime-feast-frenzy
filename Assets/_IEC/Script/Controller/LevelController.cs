@@ -507,21 +507,23 @@ namespace IEC
             GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, posY, -wallPos);
 
             GamePlay.wallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
-            SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
+            SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, StartPoint.TOP, 0, false);
 
             GamePlay.wallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
-            SpawnWall(GamePlay.wallParents[1], size, startPos, levelConfig.botWall, true, size + 1, true);
+            SpawnWall(GamePlay.wallParents[1], size, startPos, levelConfig.botWall, StartPoint.BOT, size + 1, true);
 
             GamePlay.wallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
-            SpawnWall(GamePlay.wallParents[2], size, startPos, levelConfig.leftWall, false, 0, false);
+            SpawnWall(GamePlay.wallParents[2], size, startPos, levelConfig.leftWall, StartPoint.LEFT, 0, false);
 
             GamePlay.wallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
-            SpawnWall(GamePlay.wallParents[3], size, startPos, levelConfig.rightWall, false, size + 1, true);
+            SpawnWall(GamePlay.wallParents[3], size, startPos, levelConfig.rightWall, StartPoint.RIGHT, size + 1, true);
         }
 
-        private void SpawnWall(Transform parent, int count, float startPos, int[] walls, bool isBotTop, int index, bool isReverse)
+        private void SpawnWall(Transform parent, int count, float startPos, int[] walls, StartPoint point, int index, bool isReverse)
         {
             var posY = Game.isStartLevelEffect ? 20f : 0f;
+
+            bool isBotTop = point == StartPoint.BOT || point == StartPoint.TOP;
 
             for (int i = 1; i <= count; i++)
             {
@@ -540,7 +542,7 @@ namespace IEC
                 wallTrans.gameObject.name = "Row " + row + " | Col " + col;
 
                 wallComp.OnInit(GridType.WALL, row, col);
-                wallComp.SetupWall(wallValue == 2, isBotTop, isReverse);
+                wallComp.SetupWall(wallValue == 2, point, isReverse);
 
                 Game.grids[row, col] = wallComp;
                 Game.listGrids.Add(wallComp);

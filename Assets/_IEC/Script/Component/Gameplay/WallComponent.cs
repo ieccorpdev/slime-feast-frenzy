@@ -8,13 +8,16 @@ namespace IEC
     public class WallComponent : BaseComponent
     {
         [SerializeField]
-        private GameObject m_WallObj, m_WallHoleObj, m_TeleportPipe;
+        private GameObject[] m_WallTypeObj, m_WallPipeTypeObj;
 
         [SerializeField]
-        private MeshRenderer[] m_WallMesh;
+        private Transform m_TransGroupHole;
 
         [SerializeField]
-        private MeshRenderer m_HoleMesh;
+        private MeshRenderer m_WallMesh1;
+
+        [SerializeField]
+        private MeshRenderer m_HoleMesh1;
 
         protected override int[,] OriginLine => new int[3, 3]
         {
@@ -37,6 +40,8 @@ namespace IEC
             { 0, 0, 0}
         };
 
+        private int m_WallTypeCount, m_PipeTypeCount;
+
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
@@ -53,40 +58,68 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
         }
 
-        public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
+        public void SetupWall(bool isHavePipe, StartPoint point, bool isReverse)
         {
-            m_WallObj.SetActive(!isHaveHole && !Game.isHaveIsLand);
-            m_WallHoleObj.SetActive(isHaveHole && !Game.isHaveIsLand);
+            bool isBotTop = point == StartPoint.BOT || point == StartPoint.TOP;
 
-            m_TeleportPipe.SetActive(isHaveHole && Game.isHaveIsLand);
+            m_WallTypeCount = m_WallTypeObj.Length;
+            m_PipeTypeCount = m_WallPipeTypeObj.Length;
 
-            var rot = GetRotY(isBotTop, isReverse);
-            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, rot, 0f);
-            m_TeleportPipe.transform.localRotation = Quaternion.Euler(0f, rot + 180f, 0f);
-            CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
+            var wallType = Game.themeConfig.wallType;
+            var wallPipeType = Game.themeConfig.wallPipeType;
 
-            OnUpdateSetTerrain();
+            for (int i = 0; i < m_WallTypeCount; i++)
+            {
+                var wall = m_WallTypeObj[i];
+                wall.SetActive(i == wallType);
+
+                if(wallType > 0)
+                {
+                    var deltaZ = (point == StartPoint.TOP || point == StartPoint.RIGHT) ? -.1f : .1f;
+
+                    var transWall = wall.transform;
+                    var curPos = transWall.localPosition;
+
+                    curPos.z = deltaZ;
+
+                    transWall.localPosition = curPos;
+                }
+            }
+
+            for (int i = 0; i < m_PipeTypeCount; i++)
+            {
+                m_WallPipeTypeObj[i].SetActive(isHavePipe && i == wallPipeType);
+            }
+
+            if (isHavePipe)
+            {
+                var rot = GetRotY(isBotTop, isReverse);
+                m_TransGroupHole.localRotation = Quaternion.Euler(0f, rot, 0f);
+            }
+
+            CurrentLine = isHavePipe ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
+
+            if(wallType == 0)
+            {
+                OnUpdateSetTerrain();
+            }
         }
 
         public override void OnUpdateSetTerrain()
         {
-            for (int i = 0; i < m_WallMesh.Length; i++)
-            {
-                m_WallMesh[i].material = Game.themeConfig.wallMat;
-            }
-
-            m_HoleMesh.material = Game.themeConfig.holeMat;
+            m_WallMesh1.material = Game.themeConfig.wallMat;
+            m_HoleMesh1.material = Game.themeConfig.holeMat;
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)
         {
             if (isBotTop)
             {
-                return isReverse ? 180f : 0f;
+                return isReverse ? 0f : 180f;
             }
             else
             {
-                return isReverse ? 0f : 180f;
+                return isReverse ? 180f : 0f;
             }
         }
     }

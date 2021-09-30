@@ -10,5 +10,7 @@ namespace IEC
         public List<Material> listTerrains;
         public Material wallMat, holeMat, cornerMat;
         public WaterLineConfig waterLineConfig;
+
+        public int wallType, wallPipeType;
     }
 }

@@ -72,10 +72,10 @@ namespace IEC
                 item.OnInit(i, itemConfig);
                 m_ListItemTheme.Add(item);
                 
-                if(i == m_ThemeCount - 1)
-                {
-                    item.GetComponent<RectTransform>().SetAsFirstSibling();
-                }
+                //if(i == m_ThemeCount - 1)
+                //{
+                //    item.GetComponent<RectTransform>().SetAsFirstSibling();
+                //}
             }
 
             var listBGConfig = ShopConfig.listBGConfig;
@@ -94,11 +94,11 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            var width = Game.isHaveNoAdsInShopTab ? 345f : 530f;
-            var size = new Vector2(width, 118f);
-            m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
-            m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
-            m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
+            //var width = Game.isHaveNoAdsInShopTab ? 345f : 530f;
+            //var size = new Vector2(width, 118f);
+            //m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
+            //m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
+            //m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
 
             m_BtnTabNoAds.gameObject.SetActive(Game.isHaveNoAdsInShopTab);
         }

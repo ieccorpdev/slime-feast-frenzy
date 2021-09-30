@@ -11,7 +11,7 @@
         GRID_CURVE
     }
 
-    public enum WaterPoint
+    public enum StartPoint
     {
         TOP,
         RIGHT,

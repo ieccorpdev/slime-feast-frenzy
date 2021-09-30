@@ -316,7 +316,7 @@ namespace IEC
                     m_IsGrowUpComplete = false;
                     TweenScale(false);
                 }
-                WaterPoint point = m_IsHaveWater ? m_StartWater : WaterPoint.CENTER;
+                StartPoint point = m_IsHaveWater ? m_StartWater : StartPoint.CENTER;
                 SetGrowingWater(m_IsHaveWater, point);
 
                 if (m_IsHaveWater)
