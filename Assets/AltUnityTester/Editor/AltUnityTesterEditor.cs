@@ -1205,7 +1205,7 @@ namespace Altom.Editor
         private void afterExitPlayMode()
         {
             removeAltUnityRunnerPrefab();
-            AltUnityBuilder.RemoveAltUnityTesterFromScriptingDefineSymbols(UnityEditor.BuildPipeline.GetBuildTargetGroup(UnityEditor.EditorUserBuildSettings.activeBuildTarget));
+            //AltUnityBuilder.RemoveAltUnityTesterFromScriptingDefineSymbols(UnityEditor.BuildPipeline.GetBuildTargetGroup(UnityEditor.EditorUserBuildSettings.activeBuildTarget));
             EditorConfiguration.RanInEditor = false;
         }
 
