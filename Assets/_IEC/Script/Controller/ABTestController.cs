@@ -56,11 +56,14 @@ namespace IEC
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
             UpdateAb20211002(abValue);
 
+            ApplyABTest();
+
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
                     UpdateAb20211002(abValue);
+                    ApplyABTest();
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     PlayerData.numberInterShow = 0;
@@ -68,6 +71,12 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        private void ApplyABTest()
+        {
+            GameController.SetupMainCam();
+            UIController.SetupAbUI();
         }
 
         void UpdateAb20211002(int abValue)
@@ -94,15 +103,12 @@ namespace IEC
 
         private void Result20210802()
         {
-            Game.waterEffectVersion = 1;
+            Game.waterEffectVersion = 3;
             Game.isRandomFlower = true;
 
             Game.isHaveShop = true;
             Game.isHaveEndGameReward = true;
             Game.isHaveNoAdsInShopTab = true;
-
-            GameController.SetupMainCam();
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210802(int abValue)
@@ -190,9 +196,6 @@ namespace IEC
                 PlayerData.UnlockBackground(2);
                 PlayerData.UnlockTheme(2);
             }
-
-            //GameController.SetupMainCam();
-            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20210508(int abValue)
@@ -207,8 +210,6 @@ namespace IEC
             Game.isHaveBigSquare = false;
             Game.isHaveNoAdsV3 = false;
             Game.colorVersion = 2;
-
-            //UIController.SetupAbUI();
         }
 
         private void UpdateAb20210412(int abValue)

@@ -65,22 +65,13 @@ namespace IEC
             var listThemeConfig = ShopConfig.listThemeConfigs;
             m_ThemeCount = listThemeConfig.Count;
 
-            var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
             for (int i = 0; i < m_ThemeCount; i++)
             {
                 var itemConfig = listThemeConfig[i];
                 var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig);
-                item.gameObject.SetActive(i < maxIndex);
                 m_ListItemTheme.Add(item);
-            }
-
-            var totalTab = Game.addThemeVersion == 2 ? 3 : 2;
-
-            for (int i = 0; i < m_TransGroupTheme.Length; i++)
-            {
-                m_TransGroupTheme[i].gameObject.SetActive(i < totalTab);
             }
 
             var listBGConfig = ShopConfig.listBGConfig;
@@ -94,6 +85,8 @@ namespace IEC
                 m_ListItemBG.Add(item);
             }
 
+            SetupAbUI();
+
             OnSelectTab(0);
         }
 
@@ -104,6 +97,19 @@ namespace IEC
             //m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
             //m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
             //m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
+
+            var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
+            for (int i = 0; i < m_ThemeCount; i++)
+            {
+                var item = m_ListItemTheme[i];
+                item.gameObject.SetActive(i < maxIndex);
+            }
+
+            var totalTab = Game.addThemeVersion == 2 ? 3 : 2;
+            for (int i = 0; i < m_TransGroupTheme.Length; i++)
+            {
+                m_TransGroupTheme[i].gameObject.SetActive(i < totalTab);
+            }
 
             m_BtnTabNoAds.gameObject.SetActive(Game.isHaveNoAdsInShopTab);
         }

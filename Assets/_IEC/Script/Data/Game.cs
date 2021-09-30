@@ -56,25 +56,14 @@ namespace IEC
         public List<Material> listTerrainType = new List<Material>();
 
         //Boss level
-        public bool isBossLevel;
-        public int totalMove, moveRemains;
-        public int moveCount;
+        public bool isBossLevel, isCamRotated;
+        public int totalMove, moveRemains, introType, undoRemains, hintRemains, moveCount;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
-        public int undoRemains, hintRemains;
-
-        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime;
-        
+        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime, timeLeftAddGold;
 
         public ThemeConfig themeConfig;
-
-        public int introType;
-
-        public bool isCamRotated;
-
         public InterDelayConfig interDelayConfig;
-
-        public float timeLeftAddGold;
 
         public float DelayInterstitial
         {

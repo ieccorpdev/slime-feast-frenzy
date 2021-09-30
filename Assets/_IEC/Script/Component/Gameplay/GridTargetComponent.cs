@@ -180,17 +180,21 @@ namespace IEC
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            var minIndex = 0;
-            var maxIndex = Game.addTreeVersion == 2 ? m_TreeType.Length : 10;
-
             m_ListTransTrees.Clear();
-            m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
-            Game.levelSeed += 1;
+
+            var minIndex = (!Game.isMultiColor && Game.addTreeVersion == 2) ? 10 : 0;
+            var maxIndex = Game.addTreeVersion == 2 ? m_TreeType.Length : 10;
 
             if (Game.isRandomFlower)
             {
                 m_TargetIndex = Random.Range(minIndex, maxIndex);
             }
+            else
+            {
+                m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);
+            }
+
+            Game.levelSeed += 1;
 
             for (int i = 0; i < m_TreeType.Length; i++)
             {
@@ -221,20 +225,15 @@ namespace IEC
             }
             else
             {
-                if (!Game.isMultiColor)
+                if (!Game.isMultiColor && m_TargetIndex >= 10)
                 {
-                    if (m_TargetIndex > 10)
-                    {
-                        var newMat = ColorConfig.targetDefaultMatNew;
-
-                        m_ListMeshTrees.ForEach(x => x.material = newMat);
-                    }
+                    var newMat = ColorConfig.targetDefaultMatNew;
+                    m_ListMeshTrees.ForEach(x => x.material = newMat);
                 }
                 else
                 {
                     m_ListMeshTrees.ForEach(x => x.material = mat);
                 }
-                
             }
 
             if (Game.isRootTreeOnlyGreenColor)
