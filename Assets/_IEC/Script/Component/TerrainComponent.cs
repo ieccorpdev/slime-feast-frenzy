@@ -22,9 +22,25 @@ namespace IEC
 
         private int m_ArrowCount, m_ArrowIndex;
 
-        public void SetupTerrain(Material mat, bool isHaveGray, bool isFyingIsLand)
+        public float m_FillAmount;
+
+        private Vector3 m_WaterPos;
+
+        public void SetupTerrain(Material mat, bool isHaveGray, bool isFyingIsLand, bool isInit)
         {
-            ResetAll();
+            if (isInit)
+            {
+                ResetAll();
+                if (isHaveGray)
+                {
+                    SetPos(Vector3.one * 30);
+                }
+            }
+            else
+            {
+                OnUpdate(m_FillAmount);
+                SetPos(m_WaterPos);
+            }
 
             if (isFyingIsLand)
             {
@@ -34,11 +50,6 @@ namespace IEC
             {
                 m_Mesh.material = mat;
                 m_TerrainMat.SetFloat(GameShaderValue.SHADER_VERSION, isHaveGray ? 1 : 0);
-
-                if (isHaveGray)
-                {
-                    SetPos(Vector3.one * 30);
-                }
                 ApplyData();
             }
 
@@ -48,13 +59,15 @@ namespace IEC
 
         public void SetPos(Vector3 pos)
         {
-            m_TerrainMat.SetVector(GameShaderValue.SHADER_POS, pos);
+            m_WaterPos = pos;
+            m_TerrainMat.SetVector(GameShaderValue.SHADER_POS, m_WaterPos);
             ApplyData();
         }
 
         public void OnUpdate(float fillAmount)
         {
-            m_TerrainMat.SetFloat(GameShaderValue.SHADER_FILL_AMOUNT, fillAmount);
+            m_FillAmount = fillAmount;
+            m_TerrainMat.SetFloat(GameShaderValue.SHADER_FILL_AMOUNT, m_FillAmount);
             ApplyData();
         }
 
@@ -137,8 +150,8 @@ namespace IEC
                 m_TerrainMat = new MaterialPropertyBlock();
             }
 
-            gameObject.SetActive(true);
             OnUpdate(0f);
+            gameObject.SetActive(true);
             OnKillTween();
             SetActiveLock(false);
         }

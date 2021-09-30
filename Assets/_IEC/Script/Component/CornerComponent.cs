@@ -11,11 +11,25 @@ namespace IEC
         private Vector3 CurrentLocalPos => transform.localPosition;
 
         [SerializeField]
+        private GameObject[] m_CornerTypes;
+
+        [SerializeField]
         private MeshRenderer m_Mesh;
 
-        public void OnSetupMat(Material mat)
+        public void OnSetupMat()
         {
-            m_Mesh.material = mat;
+            var wallType = Game.themeConfig.wallType;
+            var typeCount = m_CornerTypes.Length;
+
+            for (int i = 0; i < typeCount; i++)
+            {
+                m_CornerTypes[i].SetActive(i == wallType);
+            }
+
+            if(wallType == 0)
+            {
+                m_Mesh.material = Game.themeConfig.cornerMat;
+            }
         }
 
         private void OnMouseDown()

@@ -351,7 +351,7 @@ namespace IEC
             if (isUpdateNow)
             {
                 OnUpdateTheme();
-                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.themeConfig.cornerMat));
+                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat());
             }
         }
 
@@ -497,7 +497,7 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.themeConfig.cornerMat));
+            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat());
 
             var posY = Game.isStartLevelEffect ? 20f : 0f;
 

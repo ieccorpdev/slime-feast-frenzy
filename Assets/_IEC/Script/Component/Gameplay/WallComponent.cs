@@ -42,6 +42,9 @@ namespace IEC
 
         private int m_WallTypeCount, m_PipeTypeCount;
 
+        private StartPoint m_StartPoint;
+        private bool m_IsHavePipe;
+
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
@@ -60,55 +63,60 @@ namespace IEC
 
         public void SetupWall(bool isHavePipe, StartPoint point, bool isReverse)
         {
-            bool isBotTop = point == StartPoint.BOT || point == StartPoint.TOP;
+            m_StartPoint = point;
+            m_IsHavePipe = isHavePipe;
+
+            bool isBotTop = m_StartPoint == StartPoint.BOT || m_StartPoint == StartPoint.TOP;
 
             m_WallTypeCount = m_WallTypeObj.Length;
             m_PipeTypeCount = m_WallPipeTypeObj.Length;
 
-            var wallType = Game.themeConfig.wallType;
-            var wallPipeType = Game.themeConfig.wallPipeType;
+            if (m_IsHavePipe)
+            {
+                var rot = GetRotY(isBotTop, isReverse);
+                m_TransGroupHole.localRotation = Quaternion.Euler(0f, rot, 0f);
+            }
+
+            CurrentLine = m_IsHavePipe ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
+
+            OnUpdateSetTerrain();
+        }
+
+        public override void OnUpdateSetTerrain()
+        {
+            var themeConfig = Game.themeConfig;
+            var wallType = themeConfig.wallType;
+            var wallPipeType = themeConfig.wallPipeType;
+
+            var deltaZ = (m_StartPoint == StartPoint.TOP || m_StartPoint == StartPoint.RIGHT) ? -.12f : .12f;
+
+            if(wallType == 0 || wallType == 3)
+            {
+                deltaZ = 0;
+            }
 
             for (int i = 0; i < m_WallTypeCount; i++)
             {
                 var wall = m_WallTypeObj[i];
                 wall.SetActive(i == wallType);
 
-                if(wallType > 0)
-                {
-                    var deltaZ = (point == StartPoint.TOP || point == StartPoint.RIGHT) ? -.12f : .12f;
+                var transWall = wall.transform;
+                var curPos = transWall.localPosition;
+                curPos.z = deltaZ;
 
-                    var transWall = wall.transform;
-                    var curPos = transWall.localPosition;
-
-                    curPos.z = deltaZ;
-
-                    transWall.localPosition = curPos;
-                }
+                transWall.localPosition = curPos;
             }
 
             for (int i = 0; i < m_PipeTypeCount; i++)
             {
-                m_WallPipeTypeObj[i].SetActive(isHavePipe && i == wallPipeType);
+                m_WallPipeTypeObj[i].SetActive(m_IsHavePipe && i == wallPipeType);
             }
 
-            if (isHavePipe)
+            if (wallType == 0)
             {
-                var rot = GetRotY(isBotTop, isReverse);
-                m_TransGroupHole.localRotation = Quaternion.Euler(0f, rot, 0f);
+                m_WallMesh1.material = themeConfig.wallMat;
+                m_HoleMesh1.material = themeConfig.holeMat;
             }
-
-            CurrentLine = isHavePipe ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
-
-            if(wallType == 0)
-            {
-                OnUpdateSetTerrain();
-            }
-        }
-
-        public override void OnUpdateSetTerrain()
-        {
-            m_WallMesh1.material = Game.themeConfig.wallMat;
-            m_HoleMesh1.material = Game.themeConfig.holeMat;
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)

@@ -228,9 +228,8 @@ namespace IEC
         {
             var listMat = Game.isFlyingIsland ? (PlayerData.themeSelected == 0 ?
                 ShopConfig.listTerrainIsLand1 : ShopConfig.listTerrainIsLand2) : Game.listTerrainType;
-            m_Terrain.SetupTerrain(GridHelper.GetTerrainType(Row, Col, listMat),
-                Game.isBlockGrayColor, Game.isFlyingIsland);
-
+            var terrainMat = GridHelper.GetTerrainType(Row, Col, listMat);
+            m_Terrain.SetupTerrain(terrainMat, Game.isBlockGrayColor, Game.isFlyingIsland, false);
 
             for (int i = 0; i < 4; i++)
             {
