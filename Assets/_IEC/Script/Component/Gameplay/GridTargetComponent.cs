@@ -180,8 +180,8 @@ namespace IEC
                 m_PsWins[i].startColor = colorEffect;
             }
 
-            var minIndex = 10;
-            var maxIndex = 13;
+            var minIndex = 0;
+            var maxIndex = Game.addTreeVersion == 2 ? m_TreeType.Length : 10;
 
             m_ListTransTrees.Clear();
             m_TargetIndex = RandomHelper.RangeWithSeed(Game.levelSeed, minIndex, maxIndex);

@@ -173,6 +173,11 @@ namespace IEC
         public int waterEffectVersion;
         public int colorVersion;
 
+        public int addThemeVersion = 1;
+        public int addTreeVersion = 1;
+        public int fountainVersion = 1;
+        public int addBackgroundVersion = 1;
+
         public bool isLeavesEffect;
 
         public bool isHaveIsLand => isHaveFloatingIsland || isFlyingIsland;

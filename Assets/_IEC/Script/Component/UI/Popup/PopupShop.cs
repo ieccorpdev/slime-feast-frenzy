@@ -64,18 +64,23 @@ namespace IEC
 
             var listThemeConfig = ShopConfig.listThemeConfigs;
             m_ThemeCount = listThemeConfig.Count;
+
+            var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
             for (int i = 0; i < m_ThemeCount; i++)
             {
                 var itemConfig = listThemeConfig[i];
                 var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig);
+                item.gameObject.SetActive(i < maxIndex);
                 m_ListItemTheme.Add(item);
-                
-                //if(i == m_ThemeCount - 1)
-                //{
-                //    item.GetComponent<RectTransform>().SetAsFirstSibling();
-                //}
+            }
+
+            var totalTab = Game.addThemeVersion == 2 ? 3 : 2;
+
+            for (int i = 0; i < m_TransGroupTheme.Length; i++)
+            {
+                m_TransGroupTheme[i].gameObject.SetActive(i < totalTab);
             }
 
             var listBGConfig = ShopConfig.listBGConfig;
