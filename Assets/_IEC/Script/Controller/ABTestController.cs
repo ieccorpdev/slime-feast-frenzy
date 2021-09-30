@@ -84,6 +84,7 @@ namespace IEC
             Game.addThemeVersion = abValue == 1 ? 2 : 1;
             Game.addTreeVersion = abValue == 1 || abValue == 2 ? 2 : 1;
             Game.fountainVersion = abValue == 1 || abValue == 3 ? 2 : 1;
+            Game.addBackgroundVersion = abValue == 4 ? 2 : 1;
         }
 
         void UpdateAb20210901(int abValue)

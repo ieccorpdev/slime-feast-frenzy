@@ -135,7 +135,7 @@ namespace IEC
             m_ListToggleBG.Add(m_ToggleBGObj);
 
             var listBGConfig = ShopConfig.listBGConfig;
-            m_BGCount = Game.addThemeVersion == 2 ? listBGConfig.Count : 4;
+            m_BGCount = Game.addBackgroundVersion == 2 ? listBGConfig.Count : 4;
             var totalTabBG = Mathf.CeilToInt(m_BGCount / 4f);
 
             if (totalTabBG > 1)
