@@ -24,15 +24,11 @@ namespace IEC
         private List<ItemShop> m_ListItemTheme = new List<ItemShop>();
         private List<ItemShop> m_ListItemBG = new List<ItemShop>();
 
-        private int m_BGCount, m_ThemeCount;
 
         private ShopConfig ShopConfig;
 
         [SerializeField]
-        private Transform[] m_TransGroupTheme;
-
-        [SerializeField]
-        private Transform m_TransGroupBG;
+        private Transform[] m_TransGroupTheme, m_TransGroupBG;
 
         [SerializeField]
         private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem, m_TxtTimeCountDown;
@@ -46,10 +42,18 @@ namespace IEC
         private SimpleScrollSnap[] m_ScrollSnap;
 
         [SerializeField]
+        private GameObject[] m_ToggleThemes, m_ToggleThemesBG;
+
+        [SerializeField]
+        private SimpleScrollSnap m_ScrollTheme, m_ScrollBG;
+
+        [SerializeField]
         private RectTransform m_RectBottomGroup;
 
         [SerializeField]
         private GameObject m_GoldObj, m_PurchasedObj;
+
+        private int m_BGCount, m_ThemeCount;
 
         public void OnInit(ShopConfig shopConfig)
         {
@@ -75,7 +79,7 @@ namespace IEC
             for (int i = 0; i < m_BGCount; i++)
             {
                 var itemConfig = listBGConfig[i];
-                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupBG);
+                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupBG[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
                 item.OnInit(i, itemConfig);
                 m_ListItemBG.Add(item);

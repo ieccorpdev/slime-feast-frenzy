@@ -39,8 +39,20 @@ namespace IEC
             var config = ShopConfig.listBGConfig[index];
 
             sprBackground.sprite = config.sprMain;
-            sprBGTop.sprite = config.sprTop;
-            sprBGBot.sprite = config.sprBot;
+
+            var isHaveTop = config.sprTop != null;
+            sprBGTop.gameObject.SetActive(isHaveTop);
+            if (isHaveTop)
+            {
+                sprBGTop.sprite = config.sprTop;
+            }
+
+            var isHaveBot = config.sprBot != null;
+            sprBGBot.gameObject.SetActive(isHaveBot);
+            if (isHaveBot)
+            {
+                sprBGBot.sprite = config.sprBot;
+            }
         }
 
         public int GetIndexSpawn(int row, int col)
