@@ -7,12 +7,8 @@ using DanielLochner.Assets.SimpleScrollSnap;
 
 namespace IEC
 {
-    public class PopupShop : MonoBehaviour
+    public class PopupShop : _BaseBehaviour
     {
-        private PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
-
-        private Game Game => Pool.Get<Game>();
-
         [SerializeField]
         private Button m_BtnTabBackground, m_BtnTabTheme, m_BtnTabNoAds;
 
@@ -164,7 +160,6 @@ namespace IEC
         {
             m_PurchasedObj.SetActive(PlayerData.isNoAds);
             m_BtnNoAds.gameObject.SetActive(!PlayerData.isNoAds);
-            //m_BtnRestorePurchase.gameObject.SetActive(PlayerData.isNoAds);
         }
 
         private bool m_IsOldStatus = true, m_IsActiveTimer;
@@ -217,7 +212,8 @@ namespace IEC
             bool isAtive = false;
             if (TabSelected == ItemShopType.Theme)
             {
-                isAtive = listThemeUnlocked.Count < m_ThemeCount;
+                var maxIndex = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
+                isAtive = listThemeUnlocked.Count < maxIndex;
             }
             else if (TabSelected == ItemShopType.Background)
             {
@@ -264,14 +260,7 @@ namespace IEC
 
         public void SetupPositionBtnBuy(float bannerHeight)
         {
-            //var ratio = Screen.height / (float)Screen.width;
-            //var scale = (1920f / 1080) / ratio;
-            //var sizeY = (1282f * scale) + 315f;
-            //var minPosY = 1920 - sizeY;
-            //var posY = (minPosY + bannerHeight) / 2f;
-            //posY += 20f;
-            //m_RectBottomGroup.anchoredPosition = new Vector2(0f, posY);
-            //m_BtnBuyItemByAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
+
         }
 
         private void OnHandleBuyItem(bool isbyAds)
@@ -279,8 +268,9 @@ namespace IEC
             var totalItem = 0;
             if(TabSelected == ItemShopType.Theme)
             {
-                totalItem = m_ThemeCount;
-            }else if(TabSelected == ItemShopType.Background)
+                totalItem = Game.addThemeVersion == 2 ? m_ThemeCount : 5;
+            }
+            else if(TabSelected == ItemShopType.Background)
             {
                 totalItem = m_BGCount;
             }
