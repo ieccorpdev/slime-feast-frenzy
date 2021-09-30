@@ -54,13 +54,13 @@ namespace IEC
             Result20210819();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210901(abValue);
+            UpdateAb20211002(abValue);
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210901(abValue);
+                    UpdateAb20211002(abValue);
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     PlayerData.numberInterShow = 0;
@@ -68,6 +68,13 @@ namespace IEC
                 abTestConfig.ListEventsAB.ToList(),
                 abValue
             );
+        }
+
+        void UpdateAb20211002(int abValue)
+        {
+            Game.addThemeVersion = abValue == 1 ? 2 : 1;
+            Game.addTreeVersion = abValue == 1 || abValue == 2 ? 2 : 1;
+            Game.fountainVersion = abValue == 1 || abValue == 3 ? 2 : 1;
         }
 
         void UpdateAb20210901(int abValue)
