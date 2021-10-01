@@ -8,7 +8,7 @@ public class NewAltUnityTest
     [OneTimeSetUp]
     public void SetUp()
     {
-        altUnityDriver =new AltUnityDriver();
+        altUnityDriver = new AltUnityDriver();
     }
 
     //At the end of the test closes the connection with the socket
@@ -21,7 +21,8 @@ public class NewAltUnityTest
     [Test]
     public void Test()
     {
-	//Here you can write the test
+        altUnityDriver.WaitForObject(By.NAME, "AutoTest-ReadyFlag");
+        var autoTestObj = altUnityDriver.FindObject(By.NAME, "AutoTest");
+        autoTestObj.CallComponentMethod("IEC.AutoTestGroup", "StartRecordAction", "");
     }
-
 }
