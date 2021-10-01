@@ -170,7 +170,7 @@ namespace IEC
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
-            m_LineAroundMesh.material = Game.themeConfig.waterLineConfig.listRootTreeMat[lineType];
+            //m_LineAroundMesh.material = Game.themeConfig.waterLineConfig.listRootTreeMat[lineType];
 
             var mat = CurrentMat;
             var colorEffect = mat.color;
@@ -244,6 +244,12 @@ namespace IEC
             {
                 m_GroundMesh.material = mat;
             }
+        }
+
+        public override void OnUpdateSetTerrain()
+        {
+            base.OnUpdateSetTerrain();
+            m_LineAroundMesh.material = Game.themeConfig.waterLineConfig.listRootTreeMat[m_LineType];
         }
 
         public override void OnUpdate(float deltaTime)
