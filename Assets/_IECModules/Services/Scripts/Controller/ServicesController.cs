@@ -935,12 +935,13 @@ namespace IEC
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
                 var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(m_ServiceData));
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
                 var content = $"IDFA:{m_UserIDFA}" +
                     $"\n\nLog:\n{saveLog}" +
                     $"\n\nPlayerData:\n{playerDataEncrypt}" +
                     $"\n\nServiceData:\n{serviceDataEncrypt}";
                 // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+                Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
                 txtWrite.Write(content);
                 txtWrite.Close();
