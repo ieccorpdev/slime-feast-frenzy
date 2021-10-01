@@ -427,9 +427,13 @@ namespace _IECModules
                 var permission = permissions[i];
                 var permissionRemove =
                     $"<uses-permission android:name=\"android.permission.{permission}\" tools:node=\"remove\"/>";
-                if (!manifestTagReplace.Contains(permissionRemove))
+                if (!manifestTagReplace.Contains(permission))
                 {
                     manifestTagReplace += $"{permissionRemove}\n";
+                }
+                else
+                {
+                    Debug.LogError($"Manifest has {permission} permission for some reasons, please check manifest file");
                 }
             }
             manifestContent = manifestContent.Replace(manifestTag, manifestTagReplace);
