@@ -928,15 +928,27 @@ namespace IEC
 
         void SaveLogToFile()
         {
-            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
-            var saveLog = Json().ToJson(SaveLog.GetLog());
-            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
-                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
-            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
-            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-            txtWrite.Write(content);
-            txtWrite.Close();
+            try
+            {
+                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+                var saveLog = Json().ToJson(SaveLog.GetLog());
+                var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(m_ServiceData));
+                var content = $"IDFA:{m_UserIDFA}" +
+                    $"\n\nLog:\n{saveLog}" +
+                    $"\n\nPlayerData:\n{playerDataEncrypt}" +
+                    $"\n\nServiceData:\n{serviceDataEncrypt}";
+                // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+                Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                txtWrite.Write(content);
+                txtWrite.Close();
+            }
+            catch
+            {
+                Debug.LogWarning("Log file is in use");
+            }
         }
 
         string MyEscapeURL(string url)
