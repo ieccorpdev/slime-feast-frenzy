@@ -31,7 +31,7 @@ namespace IEC
 
         public void SetPosGroupBottom(float bannerHeight)
         {
-            m_RectBot.anchoredPosition = new Vector2(0f, bannerHeight + 100f);
+            m_RectBot.anchoredPosition = new Vector2(0f, bannerHeight + 150f);
         }
     }
 }
