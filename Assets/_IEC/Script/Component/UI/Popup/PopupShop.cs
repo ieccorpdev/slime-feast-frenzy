@@ -50,9 +50,6 @@ namespace IEC
         [SerializeField]
         private GameObject m_ToggleThemeObj, m_ToggleBGObj;
 
-        [SerializeField]
-        private SimpleScrollSnap m_ScrollTheme, m_ScrollBG;
-
         private int m_BGCount, m_ThemeCount;
         private bool m_IsInit;
 
@@ -159,9 +156,6 @@ namespace IEC
                 item.OnInit(i, itemConfig);
                 m_ListItemBG.Add(item);
             }
-
-            m_ScrollTheme.Setup();
-            m_ScrollBG.Setup();
 
             OnSelectTab(0);
         }
