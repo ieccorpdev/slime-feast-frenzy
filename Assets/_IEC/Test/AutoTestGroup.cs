@@ -12,8 +12,6 @@ namespace IEC
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         const string PLAYER_DATA_KEY = "PlayerData";
 
-        public AltUnityRunner AltUnity => SingleGetChild<AltUnityRunner>(true);
-
         public bool IsRecording { get; private set; }
         public float TimeStart { get; private set; }
         public DataAutoTestRecord DataRecord { get; private set; }
@@ -51,12 +49,6 @@ namespace IEC
         {
             var readyFlag = transform.GetChild(0).gameObject;
             readyFlag.SetActive(true);
-        }
-
-        [Button]
-        public void StartAltUnity()
-        {
-            AltUnity.gameObject.SetActive(true);
         }
 
         [Button]

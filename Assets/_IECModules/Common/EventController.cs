@@ -151,6 +151,8 @@ namespace IEC
                     eventStart.BehaviourStart();
                 }
             }
+
+            Pool.Get<AutoTestGroup>().SetReady();
         }
 
         private T[] GetEventArray<T>() where T : IEventBehaviour

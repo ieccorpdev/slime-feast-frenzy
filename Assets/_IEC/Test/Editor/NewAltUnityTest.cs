@@ -21,8 +21,21 @@ public class NewAltUnityTest
     [Test]
     public void Test()
     {
+    }
+
+    [Test]
+    public void TestStartRecord()
+    {
         altUnityDriver.WaitForObject(By.NAME, "AutoTest-ReadyFlag");
         var autoTestObj = altUnityDriver.FindObject(By.NAME, "AutoTest");
         autoTestObj.CallComponentMethod("IEC.AutoTestGroup", "StartRecordAction", "");
+    }
+
+    [Test]
+    public void TestStopRecord()
+    {
+        altUnityDriver.WaitForObject(By.NAME, "AutoTest-ReadyFlag");
+        var autoTestObj = altUnityDriver.FindObject(By.NAME, "AutoTest");
+        autoTestObj.CallComponentMethod("IEC.AutoTestGroup", "StopRecordAction", "");
     }
 }
