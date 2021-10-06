@@ -44,11 +44,11 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Kochava")]
     public PlatformConfig kochavaConfig;
-    public AdjustAnalyticEventConfig adjustEventAndroid;
-    public AdjustAnalyticEventConfig adjustEventIos;
 
     [Header("Adjust")]
     public PlatformConfig adjustConfig;
+    public AdjustAnalyticEventConfig adjustEventAndroid;
+    public AdjustAnalyticEventConfig adjustEventIos;
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;
@@ -107,6 +107,4 @@ public class ServicesConfig : ScriptableObject
         public string androidID;
         public string iosID;
     }
-
-    public AdjustAnalyticEventConfig adjustEventConfig;
 }
