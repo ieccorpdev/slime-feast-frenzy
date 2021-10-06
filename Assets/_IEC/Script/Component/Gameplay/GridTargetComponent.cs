@@ -17,7 +17,7 @@ namespace IEC
         [SerializeField]
         private MeshRenderer m_GroundMesh, m_LineAroundMesh;
 
-        private Material CurrentMat
+        private Material CurrentTargetMat
         {
             get
             {
@@ -28,6 +28,22 @@ namespace IEC
                 else
                 {
                     return ColorConfig.GetTargetClassicMat(Game.colorVersion, Game.classicColor);
+                }
+            }
+        }
+
+
+        private Material CurrentGroudMat
+        {
+            get
+            {
+                if (TrueColor > 0)
+                {
+                    return ColorConfig.GetTargetMat(2, TrueColor);
+                }
+                else
+                {
+                    return ColorConfig.GetTargetClassicMat(2, Game.classicColor);
                 }
             }
         }
@@ -170,14 +186,13 @@ namespace IEC
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
-            //m_LineAroundMesh.material = Game.themeConfig.waterLineConfig.listRootTreeMat[lineType];
-
-            var mat = CurrentMat;
-            var colorEffect = mat.color;
+            var targetMat = CurrentTargetMat;
+            var colorEffect = CurrentWaterColor;
 
             for (int i = 0; i < m_PsWins.Length; i++)
             {
-                m_PsWins[i].startColor = colorEffect;
+                var main = m_PsWins[i].main;
+                main.startColor = colorEffect;
             }
 
             m_ListTransTrees.Clear();
@@ -232,18 +247,11 @@ namespace IEC
                 }
                 else
                 {
-                    m_ListMeshTrees.ForEach(x => x.material = mat);
+                    m_ListMeshTrees.ForEach(x => x.material = targetMat);
                 }
             }
 
-            if (Game.isRootTreeOnlyGreenColor)
-            {
-                m_GroundMesh.material = ColorConfig.targetDefaultMat;
-            }
-            else
-            {
-                m_GroundMesh.material = mat;
-            }
+            m_GroundMesh.material = CurrentGroudMat;
         }
 
         public override void OnUpdateSetTerrain()
