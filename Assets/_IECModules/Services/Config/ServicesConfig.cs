@@ -107,4 +107,6 @@ public class ServicesConfig : ScriptableObject
         public string androidID;
         public string iosID;
     }
+
+    public AdjustAnalyticEventConfig adjustEventConfig;
 }
