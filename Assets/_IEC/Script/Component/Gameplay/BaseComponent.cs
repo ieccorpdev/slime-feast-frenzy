@@ -184,7 +184,6 @@ namespace IEC
                 water.OnUpdate(deltaTime);
                 if (IsInBigSquare)
                 {
-                    Debug.LogError("a");
                     water.UpdatePos(GetWaterPos(m_StartWater));
                 }
             }

@@ -210,7 +210,7 @@ namespace IEC
 
             Game.isHaveBigSquare = false;
             Game.isHaveNoAdsV3 = false;
-            Game.colorVersion = 2;
+            Game.colorVersion = 3;
         }
 
         private void UpdateAb20210412(int abValue)

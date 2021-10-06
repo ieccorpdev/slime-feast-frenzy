@@ -25,7 +25,7 @@ namespace IEC
 
         public Color GetWaterClassicColor(int colorVersion, int color)
         {
-            if (colorVersion == 2)
+            if (colorVersion > 1)
             {
                 return colorBSP[color];
             }
