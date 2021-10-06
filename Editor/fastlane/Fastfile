@@ -34,4 +34,11 @@ platform :ios do
   lane :update_build_number do
     increment_build_number({build_number: latest_testflight_build_number + 1})
   end
+  lane :local do |options|
+    update_sign
+    update_build_number
+    build_app(workspace: "Unity-iPhone.xcworkspace", scheme: "Unity-iPhone", xcargs: "-allowProvisioningUpdates", export_xcargs: "-allowProvisioningUpdates",
+        export_method: "ad-hoc", output_name: "app.ipa")
+    install_on_device(device_id: options[:deviceId], ipa: "./app.ipa")
+  end
 end
