@@ -381,7 +381,8 @@ namespace IEC
 #endif
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            var eventConfig = (Application.platform == RuntimePlatform.Android) ? config.adjustEventAndroid : config.adjustEventIos;
+            m_AdjustAnalytic.DictEvent = (eventConfig != null) ? eventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
