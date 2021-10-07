@@ -17,7 +17,7 @@ namespace _IECModules
         {
             
             PlayerPrefs.DeleteKey(VersionCacheKey);
-            var url = "https://ogury-ltd.gitbook.io/release-notes/unity";
+            var url = "https://ogury-ltd.gitbook.io/release-notes/unity/ogury-sdk-plugin";
             var content = UnityWebRequestDownloadHelper.DownloadTextFromUrl(url);
             var versions = content.Split(new[] { "<h1 id=\"" }, StringSplitOptions.None)
                 //.Select(x => x.Substring(0, 5))

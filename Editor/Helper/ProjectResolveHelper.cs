@@ -60,9 +60,19 @@ namespace _IECModules
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
             RemovePermissions(listPermissionRemove);
+            GenerateGameObjectOguryCallback();
             //UpdateApplovinQualityService();
         }
-        
+
+        private static void GenerateGameObjectOguryCallback()
+        {
+#if PluginOgury
+            var oguryCallbacks = GameObject.FindObjectOfType<OgurySdk.OguryCallbacks>();
+            if(oguryCallbacks != null) return;
+            new GameObject("OguryCallbacks").AddComponent<OgurySdk.OguryCallbacks>();
+#endif
+        }
+
         public static void DeleteObsoleteResolver()
         {
             listObsoleteResolver.ForEach(path =>
@@ -417,9 +427,13 @@ namespace _IECModules
                 var permission = permissions[i];
                 var permissionRemove =
                     $"<uses-permission android:name=\"android.permission.{permission}\" tools:node=\"remove\"/>";
-                if (!manifestTagReplace.Contains(permissionRemove))
+                if (!manifestTagReplace.Contains(permission))
                 {
                     manifestTagReplace += $"{permissionRemove}\n";
+                }
+                else
+                {
+                    Debug.LogError($"Manifest has {permission} permission for some reasons, please check manifest file");
                 }
             }
             manifestContent = manifestContent.Replace(manifestTag, manifestTagReplace);
