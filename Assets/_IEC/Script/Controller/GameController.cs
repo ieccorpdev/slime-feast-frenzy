@@ -5,6 +5,8 @@ namespace IEC
 {
     public class GameController : _BaseBehaviour, IController, IEventStart, IEventListener, IEventAwake, IEventUpdate
     {
+        private List<int> ADJUST_LEVEL_EVENT = new List<int> { 4, 10, 11, 14, 30, 40, 50, 55, 60, 70 };
+
         private static float RATIO_DEFAULT = 16f / 10;
         private static float RATIO_CAMERA_SIZE_MIN = 1.45f / (21f / 9 - 16f / 10);
         private static float RATIO_CAMERA_SIZE_MAX = 5.6f / (21f / 9 - 16f / 10);
@@ -232,7 +234,7 @@ namespace IEC
             grid.OnUndo();
         }
 
-        public static void PushPlayLevelEvent()
+        public void PushPlayLevelEvent()
         {
             PlayerData.countPlayThisLevel += 1;
             var level = PlayerData.level;
@@ -242,12 +244,17 @@ namespace IEC
             {
                 PlayerData.levelFirstTime = level;
                 Services.PushEvent(new IEC.TrackingEvent.PlayLevelFirstTime());
-                Services.SetUserProperty("Level", level.ToString());
+                
+                if (level < 15)
+                {
+                    Services.PushEvent($"play_level_first_time_{level}");
+                }
             }
 
-            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
+            var isMislestonePushLevel = level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0;
+
+            if (isMislestonePushLevel || ADJUST_LEVEL_EVENT.Contains(level))
                 Services.PushEvent($"play_level_{level}");
         }
-
     }
 }

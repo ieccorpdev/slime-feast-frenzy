@@ -16,7 +16,7 @@ namespace IEC
         public int gold;
 
         public int level = 1;
-        public int levelFirstTime = 1;
+        public int levelFirstTime = 0;
         public int countPlayThisLevel;
 
         public bool isSoundOn, isVibrateOn, isFirstSetup;

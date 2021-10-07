@@ -87,3 +87,4 @@ ModuleController.cheatCode.RemoveCheatCodeButtonByName(buttonText);
 * `PluginKochava` : add after import Kochava SDK to use `KochavaAnalyticModule`
 * `PluginUnityIAP` : add after add Unity IAP SDK to use `IapUnityModule`
 * `PluginReceiptVerify` : add after create `GooglePlayTangle` and `AppleTangle` to verify IAP offline
+
