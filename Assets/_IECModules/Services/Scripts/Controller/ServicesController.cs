@@ -669,7 +669,8 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    if (fullAdCount % 10 == 0 && fullAdCount > 0)
+                    var milestone = GetMilestone(fullAdCount);
+                    if (fullAdCount % milestone == 0 && fullAdCount > 0)
                     {
                         PushEvent("inter_" + fullAdCount);
                     }
@@ -737,7 +738,8 @@ namespace IEC
                         PushEvent("show_reward_ad", 1);
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
-                        if (rewardCount % 5 == 0 && rewardCount > 0)
+                        var milestone = GetMilestone(rewardCount) / 2;
+                        if (rewardCount % milestone == 0 && rewardCount > 0)
                         {
                             PushEvent("reward_" + rewardCount);
                         }
@@ -1139,6 +1141,18 @@ namespace IEC
         public void ResetTimeShowFullAds()
         {
             lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+        }
+
+        private int GetMilestone(int number)
+        {
+            var milestone = 1;
+            for (int i = 1; i < 10; i++)
+            {
+                milestone *= 10;
+                var div = number / milestone;
+                if (div < 10) break;
+            }
+            return milestone;
         }
     }
 }
