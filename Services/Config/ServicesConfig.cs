@@ -47,8 +47,7 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Adjust")]
     public PlatformConfig adjustConfig;
-    public AdjustAnalyticEventConfig adjustEventAndroid;
-    public AdjustAnalyticEventConfig adjustEventIos;
+    public AdjustAnalyticEventConfig adjustEventConfig;
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;
