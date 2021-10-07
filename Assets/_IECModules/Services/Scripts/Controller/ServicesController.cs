@@ -381,6 +381,8 @@ namespace IEC
 #endif
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            var eventConfig = (Application.platform == RuntimePlatform.Android) ? config.adjustEventAndroid : config.adjustEventIos;
+            m_AdjustAnalytic.DictEvent = (eventConfig != null) ? eventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
@@ -668,9 +670,9 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    if (fullAdCount == 50)
+                    if (fullAdCount % 10 == 0 && fullAdCount > 0)
                     {
-                        PushEvent("inter_50");
+                        PushEvent("inter_" + fullAdCount);
                     }
                     SafeInvoke(canShowCallback);
                 }
@@ -736,9 +738,9 @@ namespace IEC
                         PushEvent("show_reward_ad", 1);
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
-                        if (rewardCount == 15)
+                        if (rewardCount % 5 == 0 && rewardCount > 0)
                         {
-                            PushEvent("reward_15");
+                            PushEvent("reward_" + rewardCount);
                         }
                     }
 
@@ -928,15 +930,28 @@ namespace IEC
 
         void SaveLogToFile()
         {
-            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
-            var saveLog = Json().ToJson(SaveLog.GetLog());
-            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
-                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
-            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
-            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-            txtWrite.Write(content);
-            txtWrite.Close();
+            try
+            {
+                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+                var saveLog = Json().ToJson(SaveLog.GetLog());
+                var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                var content = $"IDFA:{m_UserIDFA}" +
+                    $"\n\nLog:\n{saveLog}" +
+                    $"\n\nPlayerData:\n{playerDataEncrypt}" +
+                    $"\n\nServiceData:\n{serviceDataEncrypt}";
+                // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+                Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
+                Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                txtWrite.Write(content);
+                txtWrite.Close();
+            }
+            catch
+            {
+                Debug.LogWarning("Log file is in use");
+            }
         }
 
         string MyEscapeURL(string url)
