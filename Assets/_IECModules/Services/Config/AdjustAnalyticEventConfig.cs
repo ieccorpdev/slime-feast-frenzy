@@ -55,6 +55,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
 #else
             var adjustEvent = data.adjustIosEventId;
 #endif
+            if(string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
         return dict;
