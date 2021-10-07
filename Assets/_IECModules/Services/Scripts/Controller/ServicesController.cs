@@ -670,9 +670,9 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    if (fullAdCount == 50)
+                    if (fullAdCount % 10 == 0 && fullAdCount > 0)
                     {
-                        PushEvent("inter_50");
+                        PushEvent("inter_" + fullAdCount);
                     }
                     SafeInvoke(canShowCallback);
                 }
@@ -738,9 +738,9 @@ namespace IEC
                         PushEvent("show_reward_ad", 1);
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
-                        if (rewardCount == 15)
+                        if (rewardCount % 5 == 0 && rewardCount > 0)
                         {
-                            PushEvent("reward_15");
+                            PushEvent("reward_" + rewardCount);
                         }
                     }
 
