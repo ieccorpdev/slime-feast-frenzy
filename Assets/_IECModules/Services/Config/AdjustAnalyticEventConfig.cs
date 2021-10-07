@@ -8,7 +8,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
 {
     [Header("Config")]
     public string adjustEventConfigUrl;
-    public string gameName;
+    public string gameNameAndroid;
+    public string gameNameIos;
 
     [Header("Data")]
     public List<Param> listData = new List<Param>();
@@ -17,7 +18,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public class Param
     {
         public string gameEvent;
-        public string adjustEventId;
+        public string adjustAndroidEventId;
+        public string adjustIosEventId;
     }
 
     [NaughtyAttributes.Button]
@@ -26,17 +28,19 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         listData.Clear();
         var data = DownloadCsvFromAuthUrl(adjustEventConfigUrl);
         if (data == null || data.Count == 0) return;
-        var gameIndex = data[0].IndexOf(gameName);
+        var androidIndex = data[0].IndexOf(gameNameAndroid);
+        var iosIndex = data[0].IndexOf(gameNameIos);
         for (int i = 1; i < data.Count; i++)
         {
             var eventMap = data[i];
             var gameEvent = eventMap[0].Trim();
-            var adjustEventId = eventMap[gameIndex].Trim();
-            if (string.IsNullOrEmpty(gameEvent) || string.IsNullOrEmpty(adjustEventId))
+            var adjustAndroidEventId = (androidIndex >=0) ? eventMap[androidIndex].Trim() : string.Empty;
+            var adjustIosEventId = (iosIndex >= 0) ? eventMap[iosIndex].Trim() : string.Empty;
+            if (string.IsNullOrEmpty(gameEvent))
             {
                 continue;
             }
-            var param = new Param { gameEvent = gameEvent, adjustEventId = adjustEventId };
+            var param = new Param { gameEvent = gameEvent, adjustAndroidEventId = adjustAndroidEventId, adjustIosEventId = adjustIosEventId};
             listData.Add(param);
         }
     }
@@ -44,15 +48,20 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public Dictionary<string, string> GetDictEvent()
     {
         var dict = new Dictionary<string, string>();
-        for (int i = 0; i < listData.Count; i++)
+        foreach (var data in listData)
         {
-            var data = listData[i];
-            dict[data.gameEvent] = data.adjustEventId;
+#if UNITY_ANDROID
+            var adjustEvent = data.adjustAndroidEventId;
+#else
+            var adjustEvent = data.adjustIosEventId;
+#endif
+            if(string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
+            dict[data.gameEvent] = adjustEvent;
         }
         return dict;
     }
 
-    public List<List<string>> DownloadCsvFromAuthUrl(string url)
+    private List<List<string>> DownloadCsvFromAuthUrl(string url)
     {
         var jsoner = new IEC.JsonDotNetModule();
         var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url);
