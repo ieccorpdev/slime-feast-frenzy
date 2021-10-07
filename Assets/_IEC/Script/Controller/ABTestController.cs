@@ -54,7 +54,7 @@ namespace IEC
             Result20210819();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20211002(abValue);
+            UpdateAb20211008(abValue);
 
             ApplyABTest();
 
@@ -62,7 +62,7 @@ namespace IEC
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20211002(abValue);
+                    UpdateAb20211008(abValue);
                     ApplyABTest();
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
@@ -77,6 +77,11 @@ namespace IEC
         {
             GameController.SetupMainCam();
             UIController.SetupAbUI();
+        }
+
+        void UpdateAb20211008(int abValue)
+        {
+
         }
 
         void UpdateAb20211002(int abValue)
