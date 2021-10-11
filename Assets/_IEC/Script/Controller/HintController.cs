@@ -39,6 +39,10 @@ namespace IEC
         {
             if (!Game.isPlaying) return;
             if (!Game.isAllowHint) return;
+            if (Game.isHaveBigSquare)
+            {
+                Game.listBigSquare.ForEach(x => x.OnHint());
+            }
             m_ListTempHint.Clear();
             Game.isAllowHint = false;
             var addIndex = Game.size - 2;
@@ -50,46 +54,38 @@ namespace IEC
                 addIndex = Mathf.RoundToInt(addIndex * .7f);
             }
 
-            if (Game.isHintStyleV2 || Game.isHintStyleBSP)
+            if (Game.hintVersion == 2)
             {
-                if (Game.isHintStyleBSP)
-                {
-                    addIndex = 1;
-                }
+                addIndex = 1;
+            }
 
-                var moveCount = 0;
-                var listHintsCount = Game.listHints.Count;
-                for (int i = 0; i < listHintsCount; i++)
+            var moveCount = 0;
+            var listHintsCount = Game.listHints.Count;
+            for (int i = 0; i < listHintsCount; i++)
+            {
+                var grid = Game.listHints[i];
+                if (!grid.IsTrueRot())
                 {
-                    var grid = Game.listHints[i];
-                    if (!grid.IsTrueRot())
+                    if (Game.isHaveBigSquare)
+                    {
+                        if (!grid.IsInBigSquare)
+                        {
+                            grid.OnHint();
+                            m_ListTempHint.Add(grid);
+                            moveCount += 1;
+                        }
+                    }
+                    else
                     {
                         grid.OnHint();
                         m_ListTempHint.Add(grid);
                         moveCount += 1;
                     }
-
-                    if(moveCount >= addIndex)
-                    {
-                        break;
-                    }
                 }
-            }
-            else
-            {
-                Game.maxHintIndex = Mathf.Clamp(Game.maxHintIndex + addIndex, 0, Game.listHints.Count);
-                var startIndexEffect = Game.maxHintIndex - addIndex;
-                for (int i = 0; i < Game.maxHintIndex; i++)
+
+                if(moveCount >= addIndex)
                 {
-                    var grid = Game.listHints[i];
-                    if (i >= startIndexEffect)
-                    {
-                        m_ListTempHint.Add(grid);
-                    }
-                    if (!grid.IsTrueRot())
-                    {
-                        grid.OnHint();
-                    }
+                    break;
                 }
             }
 
@@ -123,7 +119,7 @@ namespace IEC
                     for (int j = startIndex; j < count; j++)
                     {
                         var grid = m_ListGridSolution[j];
-                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        var listGrids = grid.GetGridsCanConnect(source.WaterColorIndex, true);
                         startIndex += 1;
                         var listGridNearCount = listGrids.Count;
                         if (listGridNearCount > 0)
@@ -135,7 +131,7 @@ namespace IEC
                                 if (!m_ListGridSolution.Contains(gridNearConnect))
                                 {
                                     m_ListGridSolution.Add(gridNearConnect);
-                                    gridNearConnect.SetConnect(source.WaterIndexColor, 0);
+                                    gridNearConnect.SetConnect(source.WaterColorIndex, 0);
                                 }
                             }
                         }

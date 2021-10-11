@@ -7,12 +7,8 @@ using DanielLochner.Assets.SimpleScrollSnap;
 
 namespace IEC
 {
-    public class PopupShop : MonoBehaviour
+    public class PopupShop : _BaseBehaviour
     {
-        private PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
-
-        private Game Game => Pool.Get<Game>();
-
         [SerializeField]
         private Button m_BtnTabBackground, m_BtnTabTheme, m_BtnTabNoAds;
 
@@ -27,16 +23,6 @@ namespace IEC
 
         private List<ItemShop> m_ListItemTheme = new List<ItemShop>();
         private List<ItemShop> m_ListItemBG = new List<ItemShop>();
-
-        private int m_BGCount, m_ThemeCount;
-
-        private ShopConfig ShopConfig;
-
-        [SerializeField]
-        private Transform[] m_TransGroupTheme;
-
-        [SerializeField]
-        private Transform m_TransGroupBG;
 
         [SerializeField]
         private TextMeshProUGUI m_TxtTitle, m_TxtGoldBuyItem, m_TxtTimeCountDown;
@@ -55,37 +41,119 @@ namespace IEC
         [SerializeField]
         private GameObject m_GoldObj, m_PurchasedObj;
 
-        public void OnInit(ShopConfig shopConfig)
-        {
-            ShopConfig = shopConfig;
-            m_ItemClaim.OnInit(GotoPanel);
+        private List<Transform> m_ListTransTabTheme, m_ListTransTabBG;
+        private List<GameObject> m_ListToggleThemes, m_ListToggleBG;
 
-            InitButtonEvent();
+        [SerializeField]
+        private GameObject m_TabThemeObj, m_TabBGObj;
+
+        [SerializeField]
+        private GameObject m_ToggleThemeObj, m_ToggleBGObj;
+
+        private int m_BGCount, m_ThemeCount;
+        private bool m_IsInit;
+
+        public void OnInit()
+        {
+            if (!m_IsInit)
+            {
+                m_IsInit = true;
+                m_ItemClaim.OnInit(GotoPanel);
+                InitButtonEvent();
+
+                m_ListTransTabTheme = new List<Transform>();
+                m_ListTransTabBG = new List<Transform>();
+
+                m_ListToggleThemes = new List<GameObject>();
+                m_ListToggleBG = new List<GameObject>();
+            }
+
+            m_ListItemTheme.ForEach(x => x.OnDestroyMe());
+            m_ListItemTheme.Clear();
+
+            m_ListItemBG.ForEach(x => x.OnDestroyMe());
+            m_ListItemBG.Clear();
+
+            for (int i = 1; i < m_ListTransTabTheme.Count; i++)
+            {
+                Destroy(m_ListTransTabTheme[i].gameObject);
+            }
+
+            m_ListTransTabTheme.Clear();
+            m_ListTransTabTheme.Add(m_TabThemeObj.transform);
+
+            for (int i = 1; i < m_ListToggleThemes.Count; i++)
+            {
+                Destroy(m_ListToggleThemes[i]);
+            }
+
+            m_ListToggleThemes.Clear();
+            m_ListToggleThemes.Add(m_ToggleThemeObj);
 
             var listThemeConfig = ShopConfig.listThemeConfigs;
-            m_ThemeCount = listThemeConfig.Count;
-            for (int i = 0; i < m_ThemeCount; i++)
+            m_ThemeCount = Game.addThemeVersion == 2 ? listThemeConfig.Count : 5;
+            var totalTabTheme = Mathf.CeilToInt(m_ThemeCount / 4f);
+
+            if(totalTabTheme > 1)
             {
-                var itemConfig = listThemeConfig[i];
-                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupTheme[i / 4]);
-                var item = itemObj.GetComponent<ItemShop>();
-                item.OnInit(i, itemConfig.itemShopConfig);
-                m_ListItemTheme.Add(item);
-                
-                if(i == m_ThemeCount - 1)
+                for (int i = 1; i < totalTabTheme; i++)
                 {
-                    item.GetComponent<RectTransform>().SetAsFirstSibling();
+                    var tabObj = Instantiate(m_TabThemeObj, m_TabThemeObj.transform.parent);
+                    m_ListTransTabTheme.Add(tabObj.transform);
+
+                    var toggleObj = Instantiate(m_ToggleThemeObj, m_ToggleThemeObj.transform.parent);
+                    m_ListToggleThemes.Add(toggleObj);
                 }
             }
 
+            for (int i = 0; i < m_ThemeCount; i++)
+            {
+                var itemConfig = listThemeConfig[i];
+                var itemObj = Instantiate(ShopConfig.itemShopObj, m_ListTransTabTheme[i / 4]);
+                var item = itemObj.GetComponent<ItemShop>();
+                item.OnInit(i, itemConfig);
+                m_ListItemTheme.Add(item);
+            }
+
+
+            for (int i = 1; i < m_ListTransTabBG.Count; i++)
+            {
+                Destroy(m_ListTransTabBG[i]);
+            }
+
+            m_ListTransTabBG.Clear();
+            m_ListTransTabBG.Add(m_TabBGObj.transform);
+
+            for (int i = 1; i < m_ListToggleBG.Count; i++)
+            {
+                Destroy(m_ListToggleBG[i]);
+            }
+            m_ListToggleBG.Clear();
+            m_ListToggleBG.Add(m_ToggleBGObj);
+
             var listBGConfig = ShopConfig.listBGConfig;
-            m_BGCount = listBGConfig.Count;
+            m_BGCount = Game.addBackgroundVersion == 2 ? listBGConfig.Count : 4;
+            var totalTabBG = Mathf.CeilToInt(m_BGCount / 4f);
+
+            if (totalTabBG > 1)
+            {
+                for (int i = 1; i < totalTabBG; i++)
+                {
+                    var tabObj = Instantiate(m_TabBGObj, m_TabBGObj.transform.parent);
+                    m_ListTransTabBG.Add(tabObj.transform);
+
+
+                    var toggleObj = Instantiate(m_ToggleBGObj, m_ToggleBGObj.transform.parent);
+                    m_ListToggleThemes.Add(toggleObj);
+                }
+            }
+
             for (int i = 0; i < m_BGCount; i++)
             {
                 var itemConfig = listBGConfig[i];
-                var itemObj = Instantiate(ShopConfig.itemShopObj, m_TransGroupBG);
+                var itemObj = Instantiate(ShopConfig.itemShopObj, m_ListTransTabBG[i / 4]);
                 var item = itemObj.GetComponent<ItemShop>();
-                item.OnInit(i, itemConfig.itemShopConfig);
+                item.OnInit(i, itemConfig);
                 m_ListItemBG.Add(item);
             }
 
@@ -94,12 +162,7 @@ namespace IEC
 
         public void SetupAbUI()
         {
-            var width = Game.isHaveNoAdsInShopTab ? 345f : 530f;
-            var size = new Vector2(width, 118f);
-            m_BtnTabBackground.GetComponent<RectTransform>().sizeDelta = size;
-            m_BtnTabTheme.GetComponent<RectTransform>().sizeDelta = size;
-            m_BtnTabNoAds.GetComponent<RectTransform>().sizeDelta = size;
-
+            OnInit();
             m_BtnTabNoAds.gameObject.SetActive(Game.isHaveNoAdsInShopTab);
         }
 
@@ -153,7 +216,6 @@ namespace IEC
         {
             m_PurchasedObj.SetActive(PlayerData.isNoAds);
             m_BtnNoAds.gameObject.SetActive(!PlayerData.isNoAds);
-            m_BtnRestorePurchase.gameObject.SetActive(PlayerData.isNoAds);
         }
 
         private bool m_IsOldStatus = true, m_IsActiveTimer;
@@ -222,11 +284,11 @@ namespace IEC
             ItemShopConfig itemShopConfig = null;
             if (type == ItemShopType.Theme)
             {
-                itemShopConfig = ShopConfig.listThemeConfigs[index].itemShopConfig;
+                itemShopConfig = ShopConfig.listThemeConfigs[index];
             }
             else if (type == ItemShopType.Background)
             {
-                itemShopConfig = ShopConfig.listBGConfig[index].itemShopConfig;
+                itemShopConfig = ShopConfig.listBGConfig[index];
             }
 
             m_ItemClaim.gameObject.SetActive(true);
@@ -253,13 +315,7 @@ namespace IEC
 
         public void SetupPositionBtnBuy(float bannerHeight)
         {
-            var ratio = Screen.height / (float)Screen.width;
-            var scale = (1920f / 1080) / ratio;
-            var sizeY = (1282f * scale) + 315f;
-            var minPosY = 1920 - sizeY;
-            var posY = (minPosY + bannerHeight) / 2f;
-            m_RectBottomGroup.anchoredPosition = new Vector2(0f, posY);
-            //m_BtnBuyItemByAds.GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, posY);
+
         }
 
         private void OnHandleBuyItem(bool isbyAds)
@@ -268,7 +324,8 @@ namespace IEC
             if(TabSelected == ItemShopType.Theme)
             {
                 totalItem = m_ThemeCount;
-            }else if(TabSelected == ItemShopType.Background)
+            }
+            else if(TabSelected == ItemShopType.Background)
             {
                 totalItem = m_BGCount;
             }
@@ -290,6 +347,8 @@ namespace IEC
             m_TxtTitle.text = SHOP_TITLE[tabSelect];
             m_TxtGoldBuyItem.text = StringHelper.GetNumber(ShopController.GetGoldItem(TabSelected));
             OnUpdateButtonBuy();
+
+            m_RectBottomGroup.gameObject.SetActive(tabSelect != 2);
         }
 
         private void OnHide()

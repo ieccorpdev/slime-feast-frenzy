@@ -37,11 +37,12 @@ namespace IEC
             PrefabHelper.SetUpPrefab(ComponentConfig.noneObj);
 
             PrefabHelper.SetUpPrefab(ComponentConfig.islandObj);
+            PrefabHelper.SetUpPrefab(ComponentConfig.bigSquareObj);
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
-            switch (gameEvent) 
+            switch (gameEvent)
             {
                 case EventList.GamePlay.GAME_SPAWN_LEVEL:
                     StartCoroutine(IESpawnLevel());
@@ -51,179 +52,249 @@ namespace IEC
 
         private void OnResetAll()
         {
+            UIController.OnResetAll();
+
             GamePlay.listWallCorners.ForEach(x => x.OnDestroyMe());
             Game.OnResetAll();
-            UIController.OnResetAll();
             Sound.SetupAudio();
 
             m_ListIsland.ForEach(x => x.OnDestroyMe());
             m_ListIsland.Clear();
+
+            Game.listBigSquare.ForEach(x => x.OnDestroyMe());
+            Game.listBigSquare.Clear();
         }
 
         private IEnumerator IESpawnLevel()
         {
             OnResetAll();
+            yield return null;
+
             Game.levelSeed = PlayerData.level;
+            Game.introType = Random.Range(0, 2);
+            SetupTheme(false);
 
-            Game.isStartLevelEffectType = Random.Range(0, 2);
-            SetupEnviroment();
+            var warterIndex = Mathf.Clamp(Game.waterEffectVersion - 1, 0, ColorConfig.listWaterEffectConfig.Count - 1);
+            GamePlay.waterEffectData = ColorConfig.listWaterEffectConfig[warterIndex];
 
-            bool isBossMixColor = false;
-            bool isMergeLevelV5 = false;
+            bool isMergeLevel = Game.isLevelDifficultyV5 && (Game.levelSeed % 10) == 0;
 
-            HolePos holePos = HolePos.None;
+            Game.isBossLevel = (Game.isHaveBossLimitMoveLevels || Game.isHaveBossTimerLevels)
+                && Game.levelSeed >= 20 && (Game.levelSeed % 10) == 0;
 
-            if (Game.isHaveBossMixColorLevels)
+            bool isMixColorLevel = (Game.isHaveMixColorLevel && Game.levelSeed >= 15 && (Game.levelSeed % 5) == 0)
+                && !Game.isCheatLevel && !isMergeLevel && !Game.isBossLevel;
+
+            var levelSpawn = Game.isCheatLevel ? new LevelSpawn(Game.levelSeed, false)
+                : GetLevelSpawn(Game.levelSeed, isMixColorLevel);
+
+            HolePos holeInBoardPos = HolePos.None;
+
+            if (isMergeLevel)
             {
-                if (Game.levelSeed >= 15)
-                {
-                    isBossMixColor = (Game.levelSeed % 5) == 0;
-                }
+                levelSpawn.isRandomRotate = true;
+                holeInBoardPos = (HolePos)RandomHelper.RangeWithSeed(Game.levelSeed, 1, 5);
             }
 
-            if (Game.isHaveBossLimitMoveLevels || Game.isHaveBossTimerLevels)
+            var sizeLevelMerge = Game.levelSeed > 30 ? 8 : 6;
+            var levelConfig = GetLevelConfig(isMergeLevel, isMixColorLevel, sizeLevelMerge, levelSpawn.level);
+
+            var rotIndex = 0;
+            if (levelSpawn.isRandomRotate)
             {
-                if (Game.levelSeed >= 20)
-                {
-                    if((Game.levelSeed % 10) == 0)
-                    {
-                        Game.isBossLevel = true;
-                        isBossMixColor = false;
-                    }
-                }
+                rotIndex = RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4);
             }
-
-            var levelSpawn = Game.isCheatLevel ? new LevelSpawn(Game.levelSeed, false) : GetLevelSpawn(Game.levelSeed);
-            if (Game.isCheatLevel)
-            {
-                isBossMixColor = false;
-            }
-
-            if (Game.isLevelDifficultyV5)
-            {
-                if ((Game.levelSeed % 10) == 0)
-                {
-                    isMergeLevelV5 = true;
-                    isBossMixColor = false;
-
-                    levelSpawn.isRandomRotate = true;
-
-                    holePos = (HolePos)RandomHelper.RangeWithSeed(Game.levelSeed, 1, 5);
-                }
-            }
-
-            var sizeLevelMerge = 6;
-
-            if (Game.levelSeed > 30)
-            {
-                sizeLevelMerge = 8;
-            }
-
-            string[] levelText;
-            int levelBoss = 0;
-
-            if (isMergeLevelV5)
-            {
-                levelText = GetMergeLevel(sizeLevelMerge, Game.levelSeed);
-            }
-            else
-            {
-                if (isBossMixColor)
-                {
-                    var matrix = Mathf.Clamp(4 + Game.levelSeed / 20, 4, 9);
-
-                    levelBoss = LevelHelper.GetMixLevelSpawn(matrix, Game.levelSeed);
-                    levelText = Config.ListLevelsMixColorsConfig.listText[levelBoss].Trim().Split(':');
-                }
-                else
-                {
-                    levelText = Config.ListLevelRemoveMixColorConfig.listText[levelSpawn.level].Trim().Split(':');
-                }
-            }
-
-            string[] hintText;
-
-            if (isMergeLevelV5)
-            {
-                hintText = levelText;
-            }
-            else
-            {
-                if (isBossMixColor)
-                {
-                    hintText = Config.ListSolutionMixColorsConfig.listText[levelBoss].Trim().Split(':');
-                }
-                else
-                {
-                    hintText = Config.ListSolutionRemoveMixColorConfig.listText[levelSpawn.level].Trim().Split(':');
-                }
-            }
-
-            var strGridHints = hintText[3];
-
-            var strMode = levelText[1];
-            var strGrid = levelText[3];
-
-            int size = int.Parse(levelText[0].Substring(levelText[0].Length - 1)) + 2;
-
-            var gridsData = strGrid.Trim().Split('_');
-            string[,] grids = LevelHelper.GetGridValue(gridsData, size, LevelHelper.IsLoopLevel(strMode));
-
-            var gridHintDatas = strGridHints.Trim().Split('_');
-            string[,] gridHints = LevelHelper.GetGridValue(gridHintDatas, size, LevelHelper.IsLoopLevel(strMode));
-
-            LevelConfig levelConfig = new LevelConfig();
-            levelConfig.SetSize(size, grids, gridHints);
-            Game.size = size;
-            Game.maxGrassOnWall = 15 - size;
-            Game.grids = new BaseComponent[size, size];
-
-            Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
-
-            if (Game.isRandomColorClassicMode)
-            {
-                Game.classicColor = RandomHelper.Range(0, 12);
-            }
-
-            var rotIndex = levelSpawn.isRandomRotate ? RandomHelper.RangeWithSeed(Game.levelSeed, 1, 4) : 0;
 
             Game.isCamRotated = (rotIndex == 1) || (rotIndex == 3);
-
-            GameController.SetupCamera(size, rotIndex);
+            GameController.SetupCamera(Game.size, rotIndex);
 
             SpawnWallAll(levelConfig);
-            SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holePos);
+            SpawnGridAll(levelConfig, levelSpawn.isRandomRotate, holeInBoardPos);
 
-            if (isMergeLevelV5)
+            if (isMergeLevel)
             {
                 var isLandSize = sizeLevelMerge / 2;
                 var islandObj = PrefabHelper.Clone(ComponentConfig.islandObj);
                 var isLandComp = islandObj.GetComponent<IslandComponent>();
 
-                isLandComp.OnInit(holePos, isLandSize);
+                isLandComp.OnInit(holeInBoardPos, isLandSize);
                 m_ListIsland.Add(isLandComp);
             }
 
             yield return null;
-
             Hint.CheckSoulution();
+            AfterSpawnLevel();
+        }
 
-            Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
-            Game.moveRemains = Game.totalMove;
+        private LevelConfig GetLevelConfig(bool isMergeLevel, bool isMixColorLevel, int sizeLevelMerge, int levelSpawn)
+        {
+            string[] levelText;
+            string[] hintText;
+
+            if (isMergeLevel)
+            {
+                levelText = GetMergeLevel(sizeLevelMerge, Game.levelSeed);
+                hintText = levelText;
+            }
+            else
+            {
+                if (isMixColorLevel)
+                {
+                    levelText = Config.ListLevelsMixColorsConfig.listText[levelSpawn].Trim().Split(':');
+                    hintText = Config.ListSolutionMixColorsConfig.listText[levelSpawn].Trim().Split(':');
+                }
+                else
+                {
+                    levelText = Config.ListLevelRemoveMixColorConfig.listText[levelSpawn].Trim().Split(':');
+                    hintText = Config.ListSolutionRemoveMixColorConfig.listText[levelSpawn].Trim().Split(':');
+                }
+            }
+
+            var strMode = levelText[1];
+            var strGrid = levelText[3];
+
+            var strGridHints = hintText[3];
+
+            Game.size = int.Parse(levelText[0].Substring(levelText[0].Length - 1)) + 2;
+            Game.maxGrassOnWall = 15 - Game.size;
+            Game.grids = new BaseComponent[Game.size, Game.size];
+
+            Game.isMultiColor = LevelHelper.IsMultiColor(strMode);
+
+            if (!Game.isMultiColor && Game.isRandomColorClassicMode && !Game.isCheatWaterColor)
+            {
+                Game.classicColor = RandomHelper.Range(0, 12);
+            }
+
+            var isLoopLevel = LevelHelper.IsLoopLevel(strMode);
+
+            var gridsText = strGrid.Trim().Split('_');
+            string[,] gridData = LevelHelper.GetGridValue(gridsText, Game.size, isLoopLevel);
+
+            var gridHintText = strGridHints.Trim().Split('_');
+            string[,] gridHintData = LevelHelper.GetGridValue(gridHintText, Game.size, isLoopLevel);
+
+           return new LevelConfig(Game.size, gridData, gridHintData);
+        }
+
+        private void AfterSpawnLevel()
+        {
             if (Game.isBossLevel)
             {
+                Game.totalMove = Mathf.RoundToInt(Game.totalMove * 1.3f);
+                Game.moveRemains = Game.totalMove;
+
                 UI.mainUIGroup.UpdateMove();
-                Game.timeMaxBossLevel = Game.GetTimerLevel(size - 2);
+                Game.timeMaxBossLevel = Game.GetTimerLevel(Game.size - 2);
                 Game.timeShowRVAddTime = (int)(Game.timeMaxBossLevel * .3f);
                 Game.timeLeftBossLevel = Game.timeMaxBossLevel;
+            }
+
+            var level = PlayerData.level;
+            bool isHaveFixedOrOneWayBlock = (Game.isHaveFixedBlock || Game.isHaveOneWayBlock) && !Game.isHaveBigSquare;
+
+            if (Game.isHaveBigSquare)
+            {
+                if (level > 5)
+                {
+                    var seed = level;
+                    var isHaveBigSquare = RandomHelper.RangeWithSeed(seed, 0, 2) == 0;
+                    seed += 1;
+                    if (isHaveBigSquare)
+                    {
+                        var maxSquareSize = MathHelper.ClampInt(Game.size - 2, 3, 6);
+                        var sizeBigSquare = RandomHelper.RangeWithSeed(seed, 2, maxSquareSize);
+                        seed += 1;
+                        var maxIndex = Game.size - sizeBigSquare;
+
+                        var radRow = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
+                        seed += 1;
+                        var radCol = RandomHelper.RangeWithSeed(seed, 1, maxIndex);
+
+                        BaseComponent[,] gridMerge = new BaseComponent[sizeBigSquare, sizeBigSquare];
+
+                        for (int i = 0; i < sizeBigSquare; i++)
+                        {
+                            for (int j = 0; j < sizeBigSquare; j++)
+                            {
+                                gridMerge[i, j] = Game.grids[i + radRow, j + radCol];
+                            }
+                        }
+
+                        var bigSquareObj = PrefabHelper.Clone(ComponentConfig.bigSquareObj);
+                        bigSquareObj.transform.SetParent(GamePlay.groupBigSquare);
+                        var bigSquareComp = bigSquareObj.GetComponent<BigSquareComponent>();
+
+                        bigSquareComp.OnInit(gridMerge, radRow, radCol);
+
+                        Game.listBigSquare.Add(bigSquareComp);
+                    }
+                }
+            }
+
+            if (isHaveFixedOrOneWayBlock)
+            {
+                if (level > 10)
+                {
+                    if (Game.isHaveOneWayBlock)
+                    {
+                        if ((level % 5) != 0)
+                        {
+                            SetFixedGrid(level, Game.size - 2, false);
+                        }
+                    }
+                    SetFixedGrid(level + 1, Game.size - 2, true);
+                }
             }
 
             UIController.SetLevel(Game.isBossLevel);
             UIController.UpdateTimerLevel();
 
-            var maxTime = (Config.startEffectMoveTime * 2f) + ((size - 2) * .1f) + .1f;
-            var delayTime = Game.isStartLevelEffect ? maxTime : 0f;
+            Game.listGrids.ForEach(x => x.BeforeInit());
+            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
+
+            if (Game.isStartLevelEffect)
+            {
+                Game.listGrids.ForEach(x => x.OnTweenSpawn(true));
+                Game.listBigSquare.ForEach(x => x.OnTweenMove());
+            }
+            var maxTime = (Config.startEffectMoveTime * 2f) + ((Game.size - 2) * .1f) + .1f;
+            var delayTime = Game.isStartLevelEffect ? maxTime : .1f;
             EventController.RaiseEventDelay(delayTime, EventList.GamePlay.GAME_START_PLAY);
+        }
+
+        private void SetFixedGrid(int seed, int size, bool isFixedBlock)
+        {
+            var totalLockGrid = RandomHelper.RangeWithSeed(seed, 1, size);
+            var listFixedGrid = GetListFixedBlocks(seed, totalLockGrid, Game.listTiles.Count);
+            var totalTile = listFixedGrid.Count;
+
+            for (int i = 0; i < totalTile; i++)
+            {
+                if (isFixedBlock)
+                {
+                    Game.listTiles[listFixedGrid[i]].SetLock();
+                }
+                else
+                {
+                    Game.listTiles[listFixedGrid[i]].OnSetActiveArrow();
+                }
+            }
+        }
+
+        private List<int> m_TempListIndex = new List<int>();
+
+        private List<int> GetListFixedBlocks(int level, int count, int totalGrid)
+        {
+            m_TempListIndex.Clear();
+
+            for (int i = 0; i < count; i++)
+            {
+                var tileIndex = MathHelper.GetRandomIndexByList(m_TempListIndex, totalGrid, level);
+                m_TempListIndex.Add(tileIndex);
+            }
+
+            return m_TempListIndex;
         }
 
         private string[] GetMergeLevel(int size, int seed)
@@ -256,51 +327,31 @@ namespace IEC
             return LevelHelper.GetNewlevel(size, gridsNewLevel);
         }
 
-        private void SetupEnviroment()
-        {
-            SetupTheme(false);
-        }
-
         public void SetupTheme(bool isUpdateNow)
         {
             Game.listTerrainType.Clear();
-            var listTheme = ShopConfig.listThemeConfigs;
-            var index = PlayerData.themeSelected % listTheme.Count;
-            Game.enviromentConfig = ShopConfig.listThemeConfigs[index];
 
-            if(Game.isChangeGridStatus || Game.isGreenifyHydrated)
+            GamePlay.SetBackground(PlayerData.backgroundSelected);
+
+            var themeIndex = PlayerData.themeSelected % ShopConfig.listThemeConfigs.Count;
+            Game.themeConfig = ShopConfig.listThemeConfigs[themeIndex];
+
+            var type0 = RandomHelper.Range(0, 2);
+            if (type0 == 0)
             {
-                if (Game.isChangeGridStatus)
-                {
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                }
-                else
-                {
-                    Game.listTerrainType.Add(ShopConfig.listThemeConfigs[0].listTerrains[1]);
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                }
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[0]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[1]);
             }
             else
             {
-                var type0 = RandomHelper.Range(0, 2);
-                if (type0 == 0)
-                {
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                }
-                else
-                {
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[1]);
-                    Game.listTerrainType.Add(Game.enviromentConfig.listTerrains[0]);
-                }
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[1]);
+                Game.listTerrainType.Add(Game.themeConfig.listTerrains[0]);
             }
-
 
             if (isUpdateNow)
             {
                 OnUpdateTheme();
-                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
+                GamePlay.listWallCorners.ForEach(x => x.OnSetupMat());
             }
         }
 
@@ -318,6 +369,7 @@ namespace IEC
             var halfSize = size / 2;
 
             int gridSeed = Game.levelSeed;
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
 
             for (int i = 0; i < size; i++)
             {
@@ -328,9 +380,9 @@ namespace IEC
                     var row = i + 1;
                     var col = j + 1;
 
-                    var posSpawn = new Vector3(startPosX + j, 0f, startPosZ - i);
+                    var posSpawn = new Vector3(startPosX + j, posY, startPosZ - i);
                     var gridData = levelConfig.gridTypes[row, col].Trim();
-                    SpawnGrid(GamePlay.transGridParent, posSpawn, row, col, gridData, 
+                    SpawnGrid(GamePlay.transGridParent, posSpawn, row, col, gridData,
                         levelConfig.gridHints[row, col], isRandomRot, gridSeed);
                     gridSeed += 1;
                 }
@@ -345,7 +397,7 @@ namespace IEC
             }
             else
             {
-                if(holePos == HolePos.TopLeft)
+                if (holePos == HolePos.TopLeft)
                 {
                     return (row < halfSize && col < halfSize);
                 }
@@ -385,7 +437,7 @@ namespace IEC
             {
                 if (Game.isMultiColor)
                 {
-                    if(gridData.Length > 3)
+                    if (gridData.Length > 3)
                     {
                         gridColor = int.Parse(gridData.Substring(3, 1));
                     }
@@ -416,6 +468,23 @@ namespace IEC
             Game.grids[row, col] = gridComp;
             Game.listGrids.Add(gridComp);
 
+            bool isFixedBlock = Game.isHaveFixedBlock;
+
+            if (Game.isHaveOneWayBlock)
+            {
+                if (gridComp.GridType == GridType.GRID_CURVE || gridComp.GridType == GridType.GRID_STRAIGHT)
+                {
+                    Game.listTiles.Add(gridComp);
+                }
+            }
+            else
+            {
+                if (isFixedBlock)
+                {
+                    Game.listTiles.Add(gridComp);
+                }
+            }
+
             if (Game.isBossLevel)
             {
                 Game.totalMove += LevelHelper.CalculatorMissingRot(gridRotCurrent, gridRotTrue);
@@ -428,34 +497,37 @@ namespace IEC
             var startPos = (size - 1) / -2f;
             var wallPos = (size / 2f) + .18f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat(Game.enviromentConfig.cornerMat));
+            GamePlay.listWallCorners.ForEach(x => x.OnSetupMat());
 
-            GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, 0f, wallPos);
-            GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, 0f, wallPos);
-            GamePlay.listWallCorners[2].transform.localPosition = new Vector3(-wallPos, 0f, -wallPos);
-            GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, 0f, -wallPos);
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
 
-            GamePlay.listWallCorners.ForEach(x => x.OnTweenMove());
-
+            GamePlay.listWallCorners[0].transform.localPosition = new Vector3(-wallPos, posY, wallPos);
+            GamePlay.listWallCorners[1].transform.localPosition = new Vector3(wallPos, posY, wallPos);
+            GamePlay.listWallCorners[2].transform.localPosition = new Vector3(-wallPos, posY, -wallPos);
+            GamePlay.listWallCorners[3].transform.localPosition = new Vector3(wallPos, posY, -wallPos);
 
             GamePlay.wallParents[0].localPosition = new Vector3(0f, 0f, wallPos);
-            SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, true, 0, false);
+            SpawnWall(GamePlay.wallParents[0], size, startPos, levelConfig.topWall, StartPoint.TOP, 0, false);
 
             GamePlay.wallParents[1].localPosition = new Vector3(0f, 0f, -wallPos);
-            SpawnWall(GamePlay.wallParents[1], size, startPos, levelConfig.botWall, true, size + 1, true);
+            SpawnWall(GamePlay.wallParents[1], size, startPos, levelConfig.botWall, StartPoint.BOT, size + 1, true);
 
             GamePlay.wallParents[2].localPosition = new Vector3(-wallPos, 0f, 0f);
-            SpawnWall(GamePlay.wallParents[2], size, startPos, levelConfig.leftWall, false, 0, false);
+            SpawnWall(GamePlay.wallParents[2], size, startPos, levelConfig.leftWall, StartPoint.LEFT, 0, false);
 
             GamePlay.wallParents[3].localPosition = new Vector3(wallPos, 0f, 0f);
-            SpawnWall(GamePlay.wallParents[3], size, startPos, levelConfig.rightWall, false, size + 1, true);
+            SpawnWall(GamePlay.wallParents[3], size, startPos, levelConfig.rightWall, StartPoint.RIGHT, size + 1, true);
         }
 
-        private void SpawnWall(Transform parent, int count, float startPos, int[] walls, bool isBotTop, int index, bool isReverse)
+        private void SpawnWall(Transform parent, int count, float startPos, int[] walls, StartPoint point, int index, bool isReverse)
         {
+            var posY = Game.isStartLevelEffect ? 20f : 0f;
+
+            bool isBotTop = point == StartPoint.BOT || point == StartPoint.TOP;
+
             for (int i = 1; i <= count; i++)
             {
-                var posSpawn = new Vector3(startPos + (i - 1) * 1, 0f, 0f);
+                var posSpawn = new Vector3(startPos + (i - 1) * 1, posY, 0f);
                 var wallValue = walls[i];
 
                 var wallTrans = PrefabHelper.Clone(ComponentConfig.wallObj, parent).transform;
@@ -470,7 +542,7 @@ namespace IEC
                 wallTrans.gameObject.name = "Row " + row + " | Col " + col;
 
                 wallComp.OnInit(GridType.WALL, row, col);
-                wallComp.SetupWall(wallValue == 2, isBotTop, isReverse);
+                wallComp.SetupWall(wallValue == 2, point, isReverse);
 
                 Game.grids[row, col] = wallComp;
                 Game.listGrids.Add(wallComp);
@@ -478,33 +550,43 @@ namespace IEC
         }
 
 
-        private LevelSpawn GetLevelSpawn(int level)
+        private LevelSpawn GetLevelSpawn(int level, bool isMixColorLevel)
         {
-            var levelIndex = level - 1;
-            var count = Config.ListLevelRemoveMixColorConfig.totalItem;
-            if (level > count)
+            if (isMixColorLevel)
             {
-                return new LevelSpawn((level + 99) % count, true);
+                var leveSize = Mathf.Clamp(4 + level / 20, 4, 9);
+                var mixColorlevel = LevelHelper.GetMixLevelSpawn(leveSize, level);
+                return new LevelSpawn(mixColorlevel, false);
             }
             else
             {
-                if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3 || Game.isLevelDifficultyV4)
+                var levelIndex = level - 1;
+                var count = Config.ListLevelRemoveMixColorConfig.totalItem;
+                if (level > count)
                 {
-                    if (level > 2 && level <= GetConditionLevelDifficulty())
-                    {
-                        var levelSpawn = int.Parse(Config.LevelDifficutyV4Config.listText[levelIndex]);
-                        bool isRotate = false;
-                        if (levelSpawn < 0)
-                        {
-                            isRotate = true;
-                            var matrix = int.Parse(Config.DataDifficutyV4Config.listText[levelIndex]);
-
-                            levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
-                        }
-                        return new LevelSpawn(levelSpawn, isRotate);
-                    }
+                    //return new LevelSpawn((level + 99) % count, true);
+                    return new LevelSpawn(RandomHelper.RangeWithSeed(level, 100, count), true);
                 }
-                return new LevelSpawn((level - 1) % count, false);
+                else
+                {
+                    if (Game.isLevelDifficultyV2 || Game.isLevelDifficultyV3 || Game.isLevelDifficultyV4)
+                    {
+                        if (level > 2 && level <= GetConditionLevelDifficulty())
+                        {
+                            var levelSpawn = int.Parse(Config.LevelDifficutyV4Config.listText[levelIndex]);
+                            bool isRotate = false;
+                            if (levelSpawn < 0)
+                            {
+                                isRotate = true;
+                                var matrix = int.Parse(Config.DataDifficutyV4Config.listText[levelIndex]);
+
+                                levelSpawn = LevelHelper.GetLevelSpawn(matrix, level);
+                            }
+                            return new LevelSpawn(levelSpawn, isRotate);
+                        }
+                    }
+                    return new LevelSpawn((level - 1) % count, false);
+                }
             }
         }
 

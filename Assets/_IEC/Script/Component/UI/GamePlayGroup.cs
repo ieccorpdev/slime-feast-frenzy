@@ -21,18 +21,64 @@ namespace IEC
 
         public Image sprBGTop, sprBGBot;
 
+        public Transform groupBigSquare;
+
+        public List<BaseComponent> listGridConnectCache = new List<BaseComponent>();
+
+        public BaseComponent gridCache;
+
+        public WaterEffectData waterEffectData;
+
         public void LocateGroup()
         {
             Pool.Set(this);
         }
 
-        public void SetBackground()
+        public void SetBackground(int index)
         {
-            var config = ShopConfig.listBGConfig[PlayerData.backgroundSelected];
+            var config = ShopConfig.listBGConfig[index];
 
             sprBackground.sprite = config.sprMain;
-            sprBGTop.sprite = config.sprTop;
-            sprBGBot.sprite = config.sprBot;
+
+            var isHaveTop = config.sprTop != null;
+            sprBGTop.gameObject.SetActive(isHaveTop);
+            if (isHaveTop)
+            {
+                sprBGTop.sprite = config.sprTop;
+            }
+
+            var isHaveBot = config.sprBot != null;
+            sprBGBot.gameObject.SetActive(isHaveBot);
+            if (isHaveBot)
+            {
+                sprBGBot.sprite = config.sprBot;
+            }
+        }
+
+        public int GetIndexSpawn(int row, int col)
+        {
+            if (Game.introType == 0)
+            {
+                if (Game.isCamRotated)
+                {
+                    return row - 1;
+                }
+                else
+                {
+                    return col - 1;
+                }
+            }
+            else
+            {
+                if (Game.isCamRotated)
+                {
+                    return (Game.size - row - 2);
+                }
+                else
+                {
+                    return (Game.size - col - 2);
+                }
+            }
         }
     }
 }

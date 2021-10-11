@@ -24,7 +24,7 @@ namespace IEC
         private void OnClickNoThank()
         {
             Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.PopupRatingNoThank());
-            Pool.Get<PlayerSecret>().haveAlreadyRate = true;
+            Pool.Get<PlayerSecret>().haveAlreadyRate = false;
             Hide(true);
         }
 
@@ -32,26 +32,13 @@ namespace IEC
         {
             Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.PopupRatingLoveIt());
             Pool.Get<PlayerSecret>().haveAlreadyRate = true;
-
-#if UNITY_IOS
-        var result = UnityEngine.iOS.Device.RequestStoreReview();
-        if(!result) Application.OpenURL("itms-apps://itunes.apple.com/app/id1494648714");
-#else
-            Application.OpenURL("market://details?id=" + Application.identifier);
-#endif
+            Controllers.Get<ServicesController>().RateUs();
             Hide(true);
         }
 
         private void Hide(bool isAction)
         {
             gameObject.SetActive(false);
-
-            if (isAction)
-            {
-                var Game = Pool.Get<Game>();
-                Game.SetGameState(GameState.Playing);
-                Controllers.Get<UIController>().TweenBossLevel();
-            }
         }
     }
 

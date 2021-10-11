@@ -15,7 +15,7 @@ namespace IEC
 
         public float timeDelayFullAds;
 
-        public bool isCheatLevel;
+        public bool isCheatLevel, isCheatWaterColor;
 
         public bool isShowPopup;
 
@@ -47,6 +47,8 @@ namespace IEC
         public List<GridSourceComponent> listSource = new List<GridSourceComponent>();
         public List<GridTargetComponent> listTarget = new List<GridTargetComponent>();
         public List<BaseComponent> listGrids = new List<BaseComponent>();
+        public List<BaseComponent> listTiles = new List<BaseComponent>();
+        public List<BigSquareComponent> listBigSquare = new List<BigSquareComponent>();
 
         public List<BaseComponent> listHints = new List<BaseComponent>();
         public int maxHintIndex;
@@ -54,25 +56,14 @@ namespace IEC
         public List<Material> listTerrainType = new List<Material>();
 
         //Boss level
-        public bool isBossLevel;
-        public int totalMove, moveRemains;
-        public int moveCount;
+        public bool isBossLevel, isCamRotated;
+        public int totalMove, moveRemains, introType, undoRemains, hintRemains, moveCount;
 
         public Stack<RotConfig> listUndo = new Stack<RotConfig>();
-        public int undoRemains, hintRemains;
+        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime, timeLeftAddGold;
 
-        public float timeLeftBossLevel, timeMaxBossLevel, timeShowRVAddTime;
-        
-
-        public ThemeConfig enviromentConfig;
-
-        public int isStartLevelEffectType;
-
-        public bool isCamRotated;
-
+        public ThemeConfig themeConfig;
         public InterDelayConfig interDelayConfig;
-
-        public float timeLeftAddGold;
 
         public float DelayInterstitial
         {
@@ -105,6 +96,7 @@ namespace IEC
         public bool isHaveSetting;
         public bool isHaveTutorital;
         public bool isHaveHint;
+        public int hintVersion;
         public bool isReduceHintGrid;
         public bool isFixedHintGrid;
         public bool isFixLevelDifficulty;
@@ -120,24 +112,19 @@ namespace IEC
         public int themeDefault;
         public int backGroundDefault;
 
-        public bool isHaveBossMixColorLevels;
+        public bool isHaveMixColorLevel;
         public bool isLevelDifficultyV4;
 
-        //AB test
         public bool isNewUI;
-        public bool isHaveNewTrees;
         public bool isStartLevelEffect;
-        public bool isHintStyleV2;
+        
 
-        public bool isHintStyleBSP;
         public bool isHaveBossTimerLevels;
         public bool isHaveBossTimerLevelsV2;
-        public bool isNewWaterEffect;
+        
 
         public bool isLevelDifficultyV5;
-        public bool isNewTreeColorV1;
         public bool isHaveUIAnimation;
-        public bool isChangeGridStatus;
         public bool isHaveDynamicInter;
 
         public bool isHaveShop;
@@ -145,19 +132,44 @@ namespace IEC
         public bool isHaveBossTimerLevelsV3;
         public bool isHaveBossTimerLevelsV4;
         public bool isNoShadow;
-        public bool isHintStyleV3;
 
         public bool isHaveEndGameReward;
-        public bool isGreenifyHydrated;
         public bool isRootTreeChangeColorByWater;
 
-        public bool isHaveNoAdsInMainScreen;
         public bool isHaveNoAdsInShopTab;
         public bool isCameraTopView;
         public bool isNewGameOver;
         public bool isHaveConfettiGameOver;
 
+        public bool isHaveFixedBlock;
+        public bool isHintFixedBlockStyle;
+
+        public bool isHaveOneWayBlock;
+        public bool isHaveBigSquare;
+        public bool isHaveNoAdsV3;
+
+        public bool isTreeGrayColor;
+        public bool isBlockGrayColor;
+        public bool isFlyingIsland;
+
+        public bool isBiggerFoundtain;
+        public bool isRandomTheme;
+
+        public bool isHaveFloatingIsland;
+        public bool isRandomFlower;
+        public bool isHaveIntroOutro;
+
+        public int waterEffectVersion;
+        public int colorVersion;
+
+        public int addThemeVersion = 1;
+        public int addTreeVersion = 1;
+        public int fountainVersion = 1;
+        public int addBackgroundVersion = 1;
+
         public bool isLeavesEffect;
+
+        public bool isHaveIsLand => isHaveFloatingIsland || isFlyingIsland;
 
         public void OnResetAll()
         {
@@ -180,6 +192,7 @@ namespace IEC
 
             listGrids.Clear();
             listUndo.Clear();
+            listTiles.Clear();
 
             isBossLevel = false;
             undoRemains = 2;
@@ -268,28 +281,5 @@ namespace IEC
             this.level = level;
             this.isRandomRotate = isRandomRotate;
         }
-    }
-
-    public enum GameState
-    {
-        Init,
-        Pause,
-        Playing,
-        GameOver
-    }
-
-    public enum HolePos
-    {
-        None,
-        TopLeft,
-        TopRight,
-        BotLeft,
-        BotRight
-    }
-
-    public enum IapPackages
-    {
-        None,
-        NoAds
     }
 }

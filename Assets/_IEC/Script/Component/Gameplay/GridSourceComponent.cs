@@ -6,6 +6,12 @@ namespace IEC
 {
     public class GridSourceComponent : BaseGrid
     {
+        [SerializeField]
+        private Transform m_TranScale, m_TransWater, m_TransCircle1, m_TransCircle2, m_TransCircle3;
+
+        [SerializeField]
+        private GameObject[] m_FountainTypeObj;
+
         protected override int[,] OriginLine => new int[3, 3]
         {
             { 0, 0, 0},
@@ -47,7 +53,11 @@ namespace IEC
         {
             if(m_LineType == 1)
             {
-                if (TrueRot == 0 || TrueRot == 2)
+                if (IsOneWayBlock)
+                {
+                    return m_CurrentRot == TrueRot;
+                }
+                else if(TrueRot == 0 || TrueRot == 2)
                 {
                     return (m_CurrentRot == 0 || m_CurrentRot == 2);
                 }
@@ -66,6 +76,7 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
 
+            m_TranScale.localScale = Vector3.one * (Game.isBiggerFoundtain ? 1.5f : 1f);
             m_LineType = lineType;
 
             for (int i = 0; i < 4; i++)
@@ -78,9 +89,12 @@ namespace IEC
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
 
-            for (int i = 4; i < m_WaterCount; i++)
+            var totalFountain = m_FountainTypeObj.Length;
+
+            var fountainType = Mathf.Clamp(Game.fountainVersion - 1, 0, totalFountain - 1);
+            for (int i = 0; i < totalFountain; i++)
             {
-                m_WaterComponent[i].SetMainWater(false);
+                m_FountainTypeObj[i].SetActive(i == fountainType);
             }
 
             ConfigWater();
@@ -108,8 +122,8 @@ namespace IEC
 
         public override void AfterInit()
         {
-            base.AfterInit();
-            SetSetGrowingWater(true, WaterPoint.CENTER);
+            m_StartWater = StartPoint.CENTER;
+            SetGrowingWater(true, m_StartWater);
         }
 
         private void ConfigWater()
@@ -134,6 +148,10 @@ namespace IEC
         {
             if (m_LineType == 1)
             {
+                if (IsOneWayBlock)
+                {
+                    return TrueRot;
+                }
                 return (m_CurrentRot + 1) % 4;
             }
             else

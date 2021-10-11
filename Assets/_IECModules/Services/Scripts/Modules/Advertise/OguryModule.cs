@@ -1,4 +1,4 @@
-#if (PluginOgury)
+﻿#if (PluginOgury)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -17,14 +17,32 @@ namespace IEC
         bool m_IsThumbnailShowing = false;
         bool m_IsInit = false;
 
-        OguryThumbnailAd m_ThumbnailAd;
+        public bool isNoAds;
+
+        Dictionary<string, OguryThumbnailAd> m_DictThumbnailAdById;
+        private Dictionary<OguryThumbnailAd, string> m_DictIdByThumbnailAd;
+        Dictionary<string, bool> m_DictThumbnailLoaded;
+        public Action onShowThumbnail;
+        public Action onCloseThumbnail;
+
+        private List<string> m_ListThumbnailID = new List<string>()
+        {
+            "b63dcc40-9e8c-0139-4726-0242ac120004",
+            "bce6f180-9e8c-0139-f23a-0242ac120004"
+        };
+
         AdsStateData m_ThumbnailState = new AdsStateData();
-        public void Init(OguryAdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback = null)
+
+        public void Init(OguryAdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload,
+            Action<bool> afterInitCallback = null)
         {
             m_PlatformConfig = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
 
             Debug.LogWarning("Ogury App Id:" + m_PlatformConfig.appID.Trim());
             Ogury.Start(adsConfig.android.appID.Trim(), adsConfig.ios.appID.Trim());
+            m_DictThumbnailAdById = new Dictionary<string, OguryThumbnailAd>();
+            m_DictIdByThumbnailAd = new Dictionary<OguryThumbnailAd, string>();
+            m_DictThumbnailLoaded = new Dictionary<string, bool>();
             Ogury.StartAds();
 
             m_Config = adsConfig;
@@ -35,6 +53,7 @@ namespace IEC
 
             m_IsInit = true;
         }
+
         public float GetBannerHeight()
         {
             return 0f;
@@ -52,7 +71,6 @@ namespace IEC
 
         public void Hide(AdsEnum adsType)
         {
-
         }
 
         public bool IsAcceptGDPR()
@@ -67,136 +85,137 @@ namespace IEC
 
         public void Load(AdsEnum adsType, Action<AdsEventArgs> loadCallback)
         {
-
         }
 
         public void SetOnClick(AdsEnum adsType, Action clickCallback)
         {
-
         }
 
         public void Show(AdsEnum adsType, Action<AdsEventArgs> showCallback)
         {
-
         }
 
         #region Thumbnail
+
         void InitThumbnail()
         {
-            m_ThumbnailAd = new OguryThumbnailAd(m_Config.android.thumbnailID.Trim(), m_Config.ios.thumbnailID.Trim());
-            m_ThumbnailAd.OnAdLoaded += Thumbnail_OnAdLoaded;
-            m_ThumbnailAd.OnAdClosed += Thumbnail_OnAdClosed;
-            m_ThumbnailAd.OnAdDisplayed += Thumbnail_OnAdDisplayed;
-            m_ThumbnailAd.OnAdError += Thumbnail_OnAdError;
-            m_ThumbnailAd.OnAdNotAvailable += Thumbnail_OnAdNotAvailable;
-            m_ThumbnailAd.OnAdNotLoaded += Thumbnail_OnAdNotLoaded;
-            m_ThumbnailAd.SetBlacklistActivities(
-                "com.unity3d.services.ads.adunit.AdUnitActivity",
-                "com.unity3d.services.ads.adunit.AdUnitTransparentActivity",
-                "com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity",
-                "com.unity3d.services.ads.adunit.AdUnitSoftwareActivity");
-
+            for (int i = 0; i < m_ListThumbnailID.Count; i++)
+            {
+                var id = m_ListThumbnailID[i];
+                var thumbnailAd = new OguryThumbnailAd(id, id);
+                thumbnailAd.OnAdLoaded += Thumbnail_OnAdLoaded;
+                thumbnailAd.OnAdClosed += Thumbnail_OnAdClosed;
+                thumbnailAd.OnAdDisplayed += Thumbnail_OnAdDisplayed;
+                thumbnailAd.OnAdError += Thumbnail_OnAdError;
+                thumbnailAd.OnAdNotAvailable += Thumbnail_OnAdNotAvailable;
+                thumbnailAd.OnAdNotLoaded += Thumbnail_OnAdNotLoaded;
+                thumbnailAd.SetBlacklistActivities(
+                    "com.unity3d.services.ads.adunit.AdUnitActivity",
+                    "com.unity3d.services.ads.adunit.AdUnitTransparentActivity",
+                    "com.unity3d.services.ads.adunit.AdUnitTransparentSoftwareActivity",
+                    "com.unity3d.services.ads.adunit.AdUnitSoftwareActivity");
+                m_DictThumbnailAdById[id] = thumbnailAd;
+                m_DictIdByThumbnailAd[thumbnailAd] = id;
+                m_DictThumbnailLoaded[id] = false;
+                Debug.LogWarning("Init thumbnail:" + id);
+            }
         }
 
         void Thumbnail_OnAdLoaded(OguryThumbnailAd ad)
         {
-            Debug.Log("Thumbnail OnAdLoaded");
-            var adsState = m_ThumbnailState;
-            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
-            adsState.isLoaded = true;
-            adsState.isLoading = false;
+            var id = m_DictIdByThumbnailAd[ad];
+            Debug.LogWarning("Thumbnail OnAdLoaded:" + id);
+            m_DictThumbnailLoaded[id] = true;
+            ShowThumbnail();
         }
+
         void Thumbnail_OnAdClosed(OguryThumbnailAd ad)
         {
-            Debug.Log("Thumbnail OnAdClosed");
+            var id = m_DictIdByThumbnailAd[ad];
+            Debug.LogWarning("Thumbnail OnAdClosed:" + id);
             m_IsThumbnailShowing = false;
-            var adsState = m_ThumbnailState;
-            adsState.onShow = AdsStateData.SafeInvoke(adsState.onShow, AdsEventArgs.DONE);
-            adsState.isLoaded = false;
-            adsState.isLoading = false;
-            if(m_IsAutoReload)
-            {
-                LoadThumbnail(null);
-            }
+            m_DictThumbnailLoaded[id] = false;
+            onCloseThumbnail?.Invoke();
+            ShowThumbnail();
         }
+
         void Thumbnail_OnAdDisplayed(OguryThumbnailAd ad)
         {
-            Debug.Log("Thumbnail OnAdDisplayed");
-            m_IsThumbnailShowing = true;
+            Debug.LogWarning("Thumbnail OnAdDisplayed");
+            onShowThumbnail?.Invoke();
         }
+
         void Thumbnail_OnAdError(OguryThumbnailAd ad, OguryError error)
         {
             Debug.Log("Thumbnail OnAdError:" + error.ErrorCode + "-" + error.Description);
-            var adsState = m_ThumbnailState;
-            adsState.isLoaded = false;
-            adsState.isLoading = false;
-            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.FAIL);
-
-            if (m_IsAutoReload)
-            {
-                LoadThumbnail(null);
-            }
+            var id = m_DictIdByThumbnailAd[ad];
+            m_DictThumbnailLoaded[id] = false;
+            // LoadThumbnail(ad);
         }
+
         void Thumbnail_OnAdNotAvailable(OguryThumbnailAd ad)
         {
-            Debug.Log("Thumbnail OnAdNotAvailable");
+            Debug.Log("Thumbnail OnAdNotAvailable:" + m_DictIdByThumbnailAd[ad]);
         }
 
         void Thumbnail_OnAdNotLoaded(OguryThumbnailAd ad)
         {
-            Debug.Log("Thumbnail OnAdNotLoaded");
+            Debug.Log("Thumbnail OnAdNotLoaded:" + m_DictIdByThumbnailAd[ad]);
         }
 
-        public void LoadThumbnail(Action<AdsEventArgs> loadCallback)
+        void LoadThumbnail(OguryThumbnailAd ad)
         {
-            var adsState = m_ThumbnailState;
-            adsState.onLoad = loadCallback;
-
-            if (adsState.isLoading)
-            {
-                return;
-            }
-
-            if (IsThumbnailLoaded())
-            {
-                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
-                return;
-            }
-
-            adsState.isLoading = true;
-            adsState.isLoaded = false;
-            adsState.isWaitToShow = false;
-            m_ThumbnailState = adsState;
-
-            m_ThumbnailAd.Load(180, 180);
+            Debug.LogWarning("Load thumbnail:" + m_DictIdByThumbnailAd[ad]);
+            ad.Load(180, 180);
         }
 
-        public void ShowThumbnail(Action<AdsEventArgs> showCallback)
+        public void LoadThumbnail()
         {
-            var adsState = m_ThumbnailState;
-            adsState.isWaitToShow = true;
-
-            if (IsThumbnailLoaded())
+            for (int i = 0; i < m_ListThumbnailID.Count; i++)
             {
-                adsState.onShow = showCallback;
-                m_ThumbnailAd.Show(OguryThumbnailAdGravity.BottomLeft, 0, 0);
-            }
-            else
-            {
-                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
+                var id = m_ListThumbnailID[i];
+                if (!IsThumbnailLoaded(id))
+                {
+                    LoadThumbnail(m_DictThumbnailAdById[id]);
+                }
+                else if(!m_IsThumbnailShowing)
+                {
+                    ShowThumbnail();
+                }
+                else Debug.LogWarning("thumbnail is loaded:" + id);
             }
         }
 
-        public bool IsThumbnailLoaded()
+        public void ShowThumbnail()
         {
-            return m_ThumbnailAd.Loaded &&
-                Application.internetReachability != NetworkReachability.NotReachable;
+            Debug.LogWarning("Call show thumbnail");
+            Debug.LogWarning("isThumbnailShow:" + m_IsThumbnailShowing);
+            Debug.LogWarning("isNoAds:" + isNoAds);
+            if (m_IsThumbnailShowing || isNoAds) return;
+            var id = string.Empty;
+            for (int i = 0; i < m_ListThumbnailID.Count; i++)
+            {
+                id = m_ListThumbnailID[i];
+                if (IsThumbnailLoaded(id)) break;
+            }
+
+            Debug.LogWarning("id:" + id);
+            if (string.IsNullOrEmpty(id)) return;
+            m_IsThumbnailShowing = true;
+            m_DictThumbnailAdById[id].Show(OguryThumbnailAdGravity.BottomLeft, 0, 0);
+        }
+
+        public bool IsThumbnailLoaded(string id)
+        {
+            return m_DictThumbnailLoaded[id] &&
+                   Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         public bool IsThumbnailShowing()
         {
             return m_IsThumbnailShowing;
         }
+
         #endregion
     }
 }

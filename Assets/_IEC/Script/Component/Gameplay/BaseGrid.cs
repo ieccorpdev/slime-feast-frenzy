@@ -11,23 +11,27 @@ namespace IEC
         {
             base.OnInit(gridType, row, col, rotTrue, rot, color, lineType);
             SetGridLine(TrueRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[TrueRot], 0f);
         }
 
-        public override void SetTempRot(int tempRot)
+        public override void BeforeInit()
         {
-            base.SetTempRot(tempRot);
-            m_CurrentRot = tempRot;
-        }
-
-        public override void AfterInit()
-        {
-            base.AfterInit();
+            base.BeforeInit();
+            if (m_IsLock) return;
             SetGridLine(m_CurrentRot);
+            Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
+        }
+
+        public override void SetLock()
+        {
+            base.SetLock();
+            m_CurrentRot = TrueRot;
             Transform.localRotation = Quaternion.Euler(0f, TotalRots[m_CurrentRot], 0f);
         }
 
         private void SetGridLine(int rot)
         {
+            Inline = (StartPoint)((m_CurrentRot - m_InlineOffset + 4) % 4);
             CurrentLine = DefaultLine;
             for (int i = 0; i < rot; i++)
             {
@@ -47,6 +51,7 @@ namespace IEC
             if (Game.isShowPopup) return;
             if (!Game.isPlaying) return;
             if (m_IsRotating) return;
+            if (m_IsLock) return;
 
             if (!isUndo && Game.isHaveBossLimitMoveLevels)
             {
@@ -88,6 +93,10 @@ namespace IEC
         public override void OnHint()
         {
             base.OnHint();
+            if (Game.isHintFixedBlockStyle)
+            {
+                SetLock();
+            }
             m_IsRotating = true;
             m_Tween?.Kill(true);
 
@@ -99,7 +108,7 @@ namespace IEC
             Sequence sequence = DOTween.Sequence();
             var currentPos = transform.localPosition;
 
-            m_CurrentRot = TrueRot;
+            m_CurrentRot = GetTrueRotHint();
 
             m_Tween = sequence.Join(transform.DOLocalRotate(rot, time, RotateMode.FastBeyond360).SetRelative())
                 .Join(transform.DOLocalMoveY(.02f, time / 2).SetLoops(1, LoopType.Yoyo))

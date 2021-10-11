@@ -8,13 +8,16 @@ namespace IEC
     public class WallComponent : BaseComponent
     {
         [SerializeField]
-        private GameObject m_WallObj, m_WallHoleObj;
+        private GameObject[] m_WallTypeObj, m_WallPipeTypeObj;
 
         [SerializeField]
-        private MeshRenderer[] m_WallMesh;
+        private Transform m_TransGroupHole;
 
         [SerializeField]
-        private MeshRenderer m_HoleMesh;
+        private MeshRenderer m_WallMesh1;
+
+        [SerializeField]
+        private MeshRenderer m_HoleMesh1;
 
         protected override int[,] OriginLine => new int[3, 3]
         {
@@ -37,42 +40,94 @@ namespace IEC
             { 0, 0, 0}
         };
 
+        private int m_WallTypeCount, m_PipeTypeCount;
+
+        private StartPoint m_StartPoint;
+        private bool m_IsHavePipe;
+
         protected override void OnHandleMouseDown()
         {
             base.OnHandleMouseDown();
+            if (Game.isFlyingIsland) return;
             OnDOShakePosition();
         }
 
-        public void SetupWall(bool isHaveHole, bool isBotTop, bool isReverse)
+        private void OnDOShakePosition()
         {
-            m_WallObj.SetActive(!isHaveHole);
-            m_WallHoleObj.SetActive(isHaveHole);
+            if (!Game.isPlaying) return;
+            m_Tween?.Kill(true);
+            Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
+            m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
+            EventController.RaiseEvent(EventList.GamePlay.GAME_LEAVES_EFFECT, new EventParam(this, CurrentWorldPos));
+        }
 
-            m_WallHoleObj.transform.localRotation = Quaternion.Euler(0f, GetRotY(isBotTop, isReverse), 0f);
-            CurrentLine = isHaveHole ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
+        public void SetupWall(bool isHavePipe, StartPoint point, bool isReverse)
+        {
+            m_StartPoint = point;
+            m_IsHavePipe = isHavePipe;
+
+            bool isBotTop = m_StartPoint == StartPoint.BOT || m_StartPoint == StartPoint.TOP;
+
+            m_WallTypeCount = m_WallTypeObj.Length;
+            m_PipeTypeCount = m_WallPipeTypeObj.Length;
+
+            if (m_IsHavePipe)
+            {
+                var rot = GetRotY(isBotTop, isReverse);
+                m_TransGroupHole.localRotation = Quaternion.Euler(0f, rot, 0f);
+            }
+
+            CurrentLine = m_IsHavePipe ? (isBotTop ? DefaultLineWallTopBot : DefaultLineWallLeftRight) : OriginLine;
 
             OnUpdateSetTerrain();
         }
 
         public override void OnUpdateSetTerrain()
         {
-            for (int i = 0; i < m_WallMesh.Length; i++)
+            var themeConfig = Game.themeConfig;
+            var wallType = themeConfig.wallType;
+            var wallPipeType = themeConfig.wallPipeType;
+
+            var deltaZ = (m_StartPoint == StartPoint.TOP || m_StartPoint == StartPoint.RIGHT) ? -.12f : .12f;
+
+            if(wallType == 0 || wallType == 3)
             {
-                m_WallMesh[i].material = Game.enviromentConfig.wallMat;
+                deltaZ = 0;
             }
 
-            m_HoleMesh.material = Game.enviromentConfig.holeMat;
+            for (int i = 0; i < m_WallTypeCount; i++)
+            {
+                var wall = m_WallTypeObj[i];
+                wall.SetActive(i == wallType);
+
+                var transWall = wall.transform;
+                var curPos = transWall.localPosition;
+                curPos.z = deltaZ;
+
+                transWall.localPosition = curPos;
+            }
+
+            for (int i = 0; i < m_PipeTypeCount; i++)
+            {
+                m_WallPipeTypeObj[i].SetActive(m_IsHavePipe && i == wallPipeType);
+            }
+
+            if (wallType == 0)
+            {
+                m_WallMesh1.material = themeConfig.wallMat;
+                m_HoleMesh1.material = themeConfig.holeMat;
+            }
         }
 
         private float GetRotY(bool isBotTop, bool isReverse)
         {
             if (isBotTop)
             {
-                return isReverse ? 180f : 0f;
+                return isReverse ? 0f : 180f;
             }
             else
             {
-                return isReverse ? 0f : 180f;
+                return isReverse ? 180f : 0f;
             }
         }
     }

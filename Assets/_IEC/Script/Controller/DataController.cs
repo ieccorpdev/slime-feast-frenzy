@@ -46,9 +46,9 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            EventController.RaiseEvent(EventList.NONE);
-            int emptyConfig = Pool.Get<GameConfig>().emptyConfig.configData;
-            Debug.Log("emptyConfig : " + emptyConfig);
+            //EventController.RaiseEvent(EventList.NONE);
+            //int emptyConfig = Pool.Get<GameConfig>().emptyConfig.configData;
+            //Debug.Log("emptyConfig : " + emptyConfig);
         }
 
         public void SaveData()

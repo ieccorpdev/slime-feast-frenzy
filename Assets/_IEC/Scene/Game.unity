@@ -39734,6 +39734,15 @@ MonoBehaviour:
   sprBackground: {fileID: 686261739}
   sprBGTop: {fileID: 1872505604}
   sprBGBot: {fileID: 1233930733}
+  groupBigSquare: {fileID: 1456579218}
+  listGridConnectCache: []
+  gridCache: {fileID: 0}
+  waterEffectData:
+    waterTex: {fileID: 0}
+    distTex: {fileID: 0}
+    waterTile: {x: 0, y: 0}
+    distortionTile: {x: 0, y: 0}
+    moveDir: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1001 &1868639783
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58924,6 +58933,7 @@ MonoBehaviour:
     emptyData: 0
     timeDelayFullAds: 0
     isCheatLevel: 0
+    isCheatWaterColor: 0
     isShowPopup: 0
     GameState: 0
     isWaitAfterRV: 0
@@ -58947,36 +58957,31 @@ MonoBehaviour:
     listSource: []
     listTarget: []
     listGrids: []
+    listTiles: []
+    listBigSquare: []
     listHints: []
     maxHintIndex: 0
     listTerrainType: []
     isBossLevel: 0
+    isCamRotated: 0
     totalMove: 0
     moveRemains: 0
-    moveCount: 0
+    introType: 0
     undoRemains: 0
     hintRemains: 0
+    moveCount: 0
     timeLeftBossLevel: 0
     timeMaxBossLevel: 0
     timeShowRVAddTime: 0
-    enviromentConfig:
-      listTerrains: []
-      wallMat: {fileID: 0}
-      holeMat: {fileID: 0}
-      cornerMat: {fileID: 0}
-      itemShopConfig:
-        itemShopType: 0
-        name: 
-        spriteIcon: {fileID: 0}
-    isStartLevelEffectType: 0
-    isCamRotated: 0
-    interDelayConfig: {fileID: 0}
     timeLeftAddGold: 0
+    themeConfig: {fileID: 0}
+    interDelayConfig: {fileID: 0}
     isHaveNomalLevelsMixColor: 0
     isFasterRotate: 0
     isHaveSetting: 0
     isHaveTutorital: 0
     isHaveHint: 0
+    hintVersion: 0
     isReduceHintGrid: 0
     isFixedHintGrid: 0
     isFixLevelDifficulty: 1
@@ -58988,35 +58993,45 @@ MonoBehaviour:
     isHaveNotification: 0
     themeDefault: 0
     backGroundDefault: 0
-    isHaveBossMixColorLevels: 0
+    isHaveMixColorLevel: 0
     isLevelDifficultyV4: 1
     isNewUI: 0
-    isHaveNewTrees: 0
     isStartLevelEffect: 0
-    isHintStyleV2: 0
-    isHintStyleBSP: 0
     isHaveBossTimerLevels: 0
     isHaveBossTimerLevelsV2: 0
-    isNewWaterEffect: 0
     isLevelDifficultyV5: 1
-    isNewTreeColorV1: 0
     isHaveUIAnimation: 0
-    isChangeGridStatus: 0
     isHaveDynamicInter: 0
     isHaveShop: 0
     isRootTreeOnlyGreenColor: 0
     isHaveBossTimerLevelsV3: 0
     isHaveBossTimerLevelsV4: 0
     isNoShadow: 0
-    isHintStyleV3: 0
     isHaveEndGameReward: 0
-    isGreenifyHydrated: 0
     isRootTreeChangeColorByWater: 1
-    isHaveNoAdsInMainScreen: 0
     isHaveNoAdsInShopTab: 0
     isCameraTopView: 0
     isNewGameOver: 0
     isHaveConfettiGameOver: 0
+    isHaveFixedBlock: 0
+    isHintFixedBlockStyle: 0
+    isHaveOneWayBlock: 0
+    isHaveBigSquare: 0
+    isHaveNoAdsV3: 0
+    isTreeGrayColor: 0
+    isBlockGrayColor: 0
+    isFlyingIsland: 0
+    isBiggerFoundtain: 0
+    isRandomTheme: 0
+    isHaveFloatingIsland: 1
+    isRandomFlower: 1
+    isHaveIntroOutro: 0
+    waterEffectVersion: 0
+    colorVersion: 0
+    addThemeVersion: 0
+    addTreeVersion: 0
+    fountainVersion: 0
+    addBackgroundVersion: 1
     isLeavesEffect: 0
   m_PlayerSecret:
     lastVersion: 

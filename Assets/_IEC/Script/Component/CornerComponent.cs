@@ -11,15 +11,30 @@ namespace IEC
         private Vector3 CurrentLocalPos => transform.localPosition;
 
         [SerializeField]
+        private GameObject[] m_CornerTypes;
+
+        [SerializeField]
         private MeshRenderer m_Mesh;
 
-        public void OnSetupMat(Material mat)
+        public void OnSetupMat()
         {
-            m_Mesh.material = mat;
+            var wallType = Game.themeConfig.wallType;
+            var typeCount = m_CornerTypes.Length;
+
+            for (int i = 0; i < typeCount; i++)
+            {
+                m_CornerTypes[i].SetActive(i == wallType);
+            }
+
+            if(wallType == 0)
+            {
+                m_Mesh.material = Game.themeConfig.cornerMat;
+            }
         }
 
         private void OnMouseDown()
         {
+            if (Game.isFlyingIsland) return;
             m_Tween?.Kill(true);
             Vector3 shakeVector = new Vector3(0f, 0.05f, 0f);
             m_Tween = transform.DOShakePosition(.5f, shakeVector, 20, 1f, false, true);
@@ -29,7 +44,7 @@ namespace IEC
         public void OnTweenMove()
         {
             m_Tween?.Kill(true);
-            gameObject.SetActive(true);
+            gameObject.SetActive(!Game.isHaveIsLand);
             if (!Game.isStartLevelEffect) return;
             var moveTime = Config.startEffectMoveTime;
             var delayTime = 0f;

@@ -1,4 +1,5 @@
 ﻿using MoreMountains.NiceVibrations;
+using OgurySdk;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -39,22 +40,19 @@ namespace IEC
                     if (m_IsShowGOPanel) return;
                     m_IsShowGOPanel = true;
                     GameOver((bool)param.p0);
-                    break;
-                case EventList.GamePlay.GAME_START_PLAY:
                     if (!PlayerData.haveAlreadyRate)
                     {
                         var level = PlayerData.level;
-                        if (level <= 60 && level % 20 == 0 &&
-                            !PlayerData.levelShowRate.Contains(level))
+                        if ((PlayerData.level - 1) % 3 == 0)
                         {
                             Game.isShowPopup = true;
-                            PlayerData.levelShowRate.Add(level);
                             Services.PushEvent(new IEC.TrackingEvent.ShowPopupRating());
                             UI.popupRating.gameObject.SetActive(true);
                             Game.SetGameState(GameState.Pause);
                         }
                     }
-
+                    break;
+                case EventList.GamePlay.GAME_START_PLAY:
                     if (Game.isBossLevel)
                     {
                         if (!Game.isShowPopup)
@@ -135,6 +133,7 @@ namespace IEC
 
             UI.mainUIGroup.btnSetting.onClick.AddListener(() => {
                 if (Game.isBlockButton) return;
+                UI.popupSettings.SetActiveConsent(OguryChoiceManager.EditAvailable);
                 UI.popupSettings.gameObject.SetActive(true);
                 Game.isShowPopup = true;
             });
@@ -161,7 +160,7 @@ namespace IEC
 
             UI.gameOverReward.btnNoThanks.onClick.AddListener(() => {
                 UI.gameOverReward.gameObject.SetActive(false);
-                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, true));
+                EventController.RaiseEvent(EventList.GamePlay.END_GAME_GET_REWARD, new EventParam(this, false));
             });
         }
 
@@ -215,7 +214,6 @@ namespace IEC
                     UI.mainUIGroup.UpdateUndoText();
                     Game.moveRemains += 1;
                     UI.mainUIGroup.UpdateMove();
-
                     Services.PushEvent(new IEC.TrackingEvent.UndoLevel());
                 }
             }
@@ -231,7 +229,7 @@ namespace IEC
 
         private void OnHandleButtonHint()
         {
-            if (Game.isHintStyleBSP)
+            if (Game.hintVersion == 2)
             {
                 if (Game.hintRemains > 0)
                 {
@@ -282,6 +280,7 @@ namespace IEC
 
         public void OnResetAll()
         {
+            SetLevel(false);
             UI.OnResetAll();
             UI.mainUIGroup.UpdateUndoText();
             UI.mainUIGroup.UpdateHintText();

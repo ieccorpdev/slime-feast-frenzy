@@ -20,5 +20,6 @@ namespace IEC
         protected static GameConfig Config => Pool.Get<GameConfig>();
         protected static ShopConfig ShopConfig => Config.shopConfig;
         protected static ComponentConfig ComponentConfig => Config.componentConfig;
+        protected static ColorConfig ColorConfig => Config.colorConfig;
     }
 }

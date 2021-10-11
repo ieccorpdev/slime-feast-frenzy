@@ -61,7 +61,7 @@ namespace IEC
 
         public void SetActiveBtnNoAds()
         {
-            btnNoAds.gameObject.SetActive(Game.isHaveNoAdsInMainScreen && !PlayerData.isNoAds);
+            btnNoAds.gameObject.SetActive(Game.isHaveNoAdsV3 && !PlayerData.isNoAds);
         }
 
         public void SetupBossLevel(bool isBossLevel)
@@ -112,8 +112,8 @@ namespace IEC
         public void UpdateHintText()
         {
             txtHintCount.text = StringHelper.GetNumber(Game.hintRemains);
-            hintAds.SetActive(Game.hintRemains <= 0 || !Game.isHintStyleBSP);
-            hintCount.SetActive(Game.isHintStyleBSP && Game.hintRemains > 0);
+            hintAds.SetActive(Game.hintRemains <= 0 || !(Game.hintVersion == 2));
+            hintCount.SetActive(Game.hintVersion == 2 && Game.hintRemains > 0);
         }
 
         public void OnEffectTime(bool isActive)

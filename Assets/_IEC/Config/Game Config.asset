@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9257bdeb20d91f74da19e262828713ae, type: 3}
   m_Name: Game Config
   m_EditorClassIdentifier: 
-  emptyConfig: {fileID: 11400000, guid: 231ec135209542c40aa5d332c3cdfd5e, type: 2}
+  colorConfig: {fileID: 11400000, guid: 5ca80dee3bc93e04590d681ab5a00d6c, type: 2}
   componentConfig: {fileID: 11400000, guid: 5fa01dce4a989b34fa9b3dfdaefd4bc7, type: 2}
   shopConfig: {fileID: 11400000, guid: 83eda1825ba188849ae5944d05a0f403, type: 2}
   effectLeavesObj: {fileID: 3988399941596628109, guid: 3537059e6cf3fc0449759f5d7a689c0c,
@@ -21,72 +21,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae08fdba254642743bd24d986da216f7, type: 2}
   - {fileID: 11400000, guid: ce771c8c9ace38545ac849aa8b434798, type: 2}
   - {fileID: 11400000, guid: 735c9ec575f65004e89434a835ec4502, type: 2}
-  waterColor:
-  - {r: 1, g: 0.29411766, b: 0.29411766, a: 1}
-  - {r: 0.18431373, g: 0.49411765, b: 1, a: 1}
-  - {r: 1, g: 0.9372549, b: 0.1029412, a: 1}
-  - {r: 0.8862745, g: 0.36862746, b: 1, a: 1}
-  - {r: 0.12156863, g: 0.8862745, b: 0.25490198, a: 1}
-  - {r: 1, g: 0.6392157, b: 0.101960786, a: 1}
-  - {r: 1, g: 1, b: 1, a: 1}
-  targetColorDefault: {r: 0, g: 0.9098039, b: 0.9098039, a: 1}
-  targetMats:
-  - {fileID: 2100000, guid: 5c6ba3017df047189dc0d2934004cefa, type: 2}
-  - {fileID: 2100000, guid: ec9a17fab0294f64bc30bba9924e3b33, type: 2}
-  - {fileID: 2100000, guid: ee6715ad57d143f29e3646c5522fa4e5, type: 2}
-  - {fileID: 2100000, guid: 3f0bf3685c5c4167b92d3c59abe20621, type: 2}
-  - {fileID: 2100000, guid: 59d4068452f54f23bf5863f4284d78db, type: 2}
-  - {fileID: 2100000, guid: fcc84bd527644884ba4f359241c4ea69, type: 2}
-  - {fileID: 2100000, guid: 5b0ba8eb3f6b4b12b6b4ffbe0dff002b, type: 2}
-  targetGradientMats:
-  - {fileID: 2100000, guid: c1e0c45418de3e145864016affcb0ecd, type: 2}
-  - {fileID: 2100000, guid: 6f59c6921a3070d46ac109d950fed1f2, type: 2}
-  - {fileID: 2100000, guid: cf85361bbb057e8468ca074d8cb51d36, type: 2}
-  - {fileID: 2100000, guid: dd34a7f5f2258ec4b93a505ccaf0f4fe, type: 2}
-  - {fileID: 2100000, guid: fbbb30c1a7c31f0439b4a51e68b48b74, type: 2}
-  - {fileID: 2100000, guid: 1517d41f8b78d144191051d8c427ced4, type: 2}
-  - {fileID: 2100000, guid: d0fcf61ddde10d0408eb56dd9850c265, type: 2}
-  targetDefaultMat: {fileID: 2100000, guid: f2430b571cb340c5b5a5566279adf7c6, type: 2}
-  colorBSP:
-  - {r: 0.9372549, g: 0.4509804, b: 0.654902, a: 1}
-  - {r: 0.5921569, g: 0.44313726, b: 0.84705883, a: 1}
-  - {r: 0.78039217, g: 0.827451, b: 0.3254902, a: 1}
-  - {r: 0.41568628, g: 0.7607843, b: 0.8392157, a: 1}
-  - {r: 0.37254903, g: 0.87058824, b: 0.7019608, a: 1}
-  - {r: 0.827451, g: 0.4392157, b: 0.3254902, a: 1}
-  - {r: 0.3372549, g: 0.3254902, b: 0.827451, a: 1}
-  - {r: 0.3529412, g: 0.827451, b: 0.3254902, a: 1}
-  - {r: 0.79607844, g: 0.3254902, b: 0.827451, a: 1}
-  - {r: 0.827451, g: 0.7529412, b: 0.3254902, a: 1}
-  - {r: 0.827451, g: 0.3254902, b: 0.45882353, a: 1}
-  - {r: 1, g: 0.62352943, b: 0.77254903, a: 1}
-  matBSP:
-  - {fileID: 2100000, guid: d8b297c0160edee49962061291f2f68a, type: 2}
-  - {fileID: 2100000, guid: 0daeb1d2c090f0943860b241227a9dae, type: 2}
-  - {fileID: 2100000, guid: 2bcd2ad87fba2e4479b575420d765e1f, type: 2}
-  - {fileID: 2100000, guid: 7d52fd970cf6d08419441d796a83ec16, type: 2}
-  - {fileID: 2100000, guid: 2eb0b3095b6fa5e4ea0966ecbde494c8, type: 2}
-  - {fileID: 2100000, guid: 4ca7be6f86992434ea1fe57163daf0d5, type: 2}
-  - {fileID: 2100000, guid: e9b418a311054a34ab86c35989619ca2, type: 2}
-  - {fileID: 2100000, guid: 191989673232bb64fbb948e378745268, type: 2}
-  - {fileID: 2100000, guid: 03abab13ccf48834dacf50fa3d3b2156, type: 2}
-  - {fileID: 2100000, guid: 99f8ae33259305a49a320065c3474cc8, type: 2}
-  - {fileID: 2100000, guid: 89a54054ee996ef4fa092e16a87f1c03, type: 2}
-  - {fileID: 2100000, guid: a44aba12ba1d22940905ef81d8aeb6c8, type: 2}
-  matBSPGradient:
-  - {fileID: 2100000, guid: 32c03720858e3db4c81fb09dff41a91f, type: 2}
-  - {fileID: 2100000, guid: af973952f084a1743a5d4aa6a550bf90, type: 2}
-  - {fileID: 2100000, guid: e21943802d61fa941a5933a95d02028f, type: 2}
-  - {fileID: 2100000, guid: 9a1ade0f6a2e11847ad841812069edd0, type: 2}
-  - {fileID: 2100000, guid: b0a3109ca482d874a90e1adf7f674357, type: 2}
-  - {fileID: 2100000, guid: 78388efcfe6080340ba8bda32e335977, type: 2}
-  - {fileID: 2100000, guid: 939c8c6a7644a7e44aa53e1a59b41e71, type: 2}
-  - {fileID: 2100000, guid: 24da44003ac9a744ebe1db64ad7a8441, type: 2}
-  - {fileID: 2100000, guid: b936174fb5619094ea9e291446e3d386, type: 2}
-  - {fileID: 2100000, guid: 4be2bc6f40e1dd4439ba165fb0e1820c, type: 2}
-  - {fileID: 2100000, guid: b8a6b26aaa2e8d44dbcc611ed054bf8d, type: 2}
-  - {fileID: 2100000, guid: e9f6f0994e1028946b194176792670dc, type: 2}
-  - {fileID: 2100000, guid: c3f321e25b2de5445befeb45a71dff54, type: 2}
   startEffectMoveTime: 0.4
   interDelayConfig: {fileID: 11400000, guid: 3f6bf0035db31aa45937d7b75d64029d, type: 2}
   DataDifficutyV4Config: {fileID: 11400000, guid: f6544e7f19c29b443bb0ca4d7205b8ad,
@@ -101,3 +35,7 @@ MonoBehaviour:
     type: 2}
   ListSolutionRemoveMixColorConfig: {fileID: 11400000, guid: 742b57e0ab540c44991e6cc61905d71a,
     type: 2}
+  waterTexNormal: {fileID: 2800000, guid: b3b93417e764a48438369dfd5de14b56, type: 3}
+  waterTexNew: {fileID: 2800000, guid: e082efc4c12fb374d96be7d2a79460b3, type: 3}
+  distTexNormal: {fileID: 2800000, guid: f1bae223aff723348a91fc6d89f51a50, type: 3}
+  distTexNew: {fileID: 2800000, guid: 2edc74a547f51fe478bc6a7abc0a62c0, type: 3}

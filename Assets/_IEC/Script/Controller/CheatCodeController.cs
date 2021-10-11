@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using _IECModules;
+using System.Collections.Generic;
 
 namespace IEC
 {
@@ -61,6 +62,16 @@ namespace IEC
                 value = PlayerData.level
             });
 
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Gold", param =>
+            {
+                int gold = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.AddGold(gold);
+                UI.UpdateGold();
+            }, new CheatCode.InputParam
+            {
+                value = 10000
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Set GameOver", cheatCodeParam =>
             {
                 GameController.GameOver(true);
@@ -73,27 +84,28 @@ namespace IEC
                 cheatCodeParam.buttonText = "Is Cheat Level: " + Game.isCheatLevel;
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Background(0-3)", param =>
+            ModuleController.cheatCode.AddCheatCodeButton("Is Cheat Water Color: " + Game.isCheatWaterColor, cheatCodeParam =>
             {
-                int valueInput = int.Parse(param.inputParams[0].value.ToString());
-                var bgIndex = valueInput % ShopConfig.listBGConfig.Count;
-                PlayerData.UnlockBackground(bgIndex);
-                GamePlay.SetBackground();
-            }, new CheatCode.InputParam
-            {
-                value = PlayerData.backgroundSelected
+                Game.isCheatWaterColor = !Game.isCheatWaterColor;
+                cheatCodeParam.buttonText = "Is Cheat Water Color: " + Game.isCheatWaterColor;
             });
 
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme(0-3)", param =>
+            List<string> listWaterColor = new List<string>();
+
+            for (int i = 0; i < 12; i++)
             {
-                int valueInput = int.Parse(param.inputParams[0].value.ToString());
-                var themeIndex = valueInput % ShopConfig.listThemeConfigs.Count;
-                PlayerData.UnlockTheme(themeIndex);
-                LevelController.SetupTheme(true);
-            }, new CheatCode.InputParam
+                listWaterColor.Add(i.ToString());
+            }
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set water color",
+            cheatCodeParam =>
             {
-                value = PlayerData.themeSelected
-            });
+                Game.classicColor = cheatCodeParam.dropdownParam.value;
+                OnRestartLevel();
+            },
+            listWaterColor,
+            Game.classicColor
+            );
         }
 
         private void OnRestartLevel()

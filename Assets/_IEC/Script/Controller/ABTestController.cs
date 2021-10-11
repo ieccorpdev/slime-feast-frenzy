@@ -6,7 +6,6 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake
     {
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -46,20 +45,27 @@ namespace IEC
             Result20210108();
             Result20210114();
             Result20210129();
+            Result20210226();
+            Result20210330();
+            Result20210412();
+            Result20210518();
+            Result20210524();
+            Result20210802();
+            Result20210819();
 
             var abValue = Services.ABTest().GetValue(abTestConfig.KeyName, 0);
-            UpdateAb20210205(abValue);
+            UpdateAb20211008(abValue);
+
+            ApplyABTest();
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown(abTestConfig.KeyName,
                 cheatCodeParam =>
                 {
                     abValue = cheatCodeParam.dropdownParam.value;
-                    UpdateAb20210205(abValue);
+                    UpdateAb20211008(abValue);
+                    ApplyABTest();
                     Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                    // EventController.RaiseEvent(EventList.GamePlay.RESET_CONFIG);
                     EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
-                    // set new AB Test Value
-
                     PlayerData.numberInterShow = 0;
                 },
                 abTestConfig.ListEventsAB.ToList(),
@@ -67,21 +73,202 @@ namespace IEC
             );
         }
 
+        private void ApplyABTest()
+        {
+            GameController.SetupMainCam();
+            UIController.SetupAbUI();
+        }
+
+        void UpdateAb20211008(int abValue)
+        {
+
+        }
+
+        void UpdateAb20211002(int abValue)
+        {
+            Game.addThemeVersion = abValue == 1 ? 2 : 1;
+            Game.addTreeVersion = abValue == 1 || abValue == 2 ? 2 : 1;
+            Game.fountainVersion = abValue == 1 || abValue == 3 ? 2 : 1;
+            Game.addBackgroundVersion = abValue == 4 ? 2 : 1;
+        }
+
+        void UpdateAb20210901(int abValue)
+        {
+            
+        }
+
+        void Result20210819()
+        {
+            
+        }
+
+        private void UpdateAb20210819(int abValue)
+        {
+
+        }
+
+        private void Result20210802()
+        {
+            Game.waterEffectVersion = 3;
+            Game.isRandomFlower = true;
+
+            Game.isHaveShop = true;
+            Game.isHaveEndGameReward = true;
+            Game.isHaveNoAdsInShopTab = true;
+        }
+
+        private void UpdateAb20210802(int abValue)
+        {
+            Game.waterEffectVersion = abValue == 1 ? 2 : 1;
+            Game.isHaveFloatingIsland = abValue == 2;
+
+            if (abValue == 2)
+            {
+                PlayerData.UnlockBackground(0);
+                PlayerData.UnlockTheme(0);
+            }
+            else
+            {
+                PlayerData.UnlockBackground(2);
+                PlayerData.UnlockTheme(2);
+            }
+
+            Game.isRandomFlower = abValue == 3;
+
+            Game.isHaveIntroOutro = abValue == 4;
+            Game.isStartLevelEffect = abValue != 4;
+
+            Game.isHaveShop = abValue == 5;
+            Game.isHaveEndGameReward = abValue == 5;
+            Game.isHaveNoAdsInShopTab = abValue == 5;
+        }
+
+        private void UpdateAb20210705(int abValue)
+        {
+            if (abValue == 1 || abValue == 3)
+            {
+                PlayerData.UnlockBackground(0);
+                PlayerData.UnlockTheme(0);
+            }
+            else
+            {
+                PlayerData.UnlockBackground(2);
+                PlayerData.UnlockTheme(2);
+            }
+            Game.isFlyingIsland = abValue == 1 || abValue == 2;
+
+            Game.isBiggerFoundtain = abValue == 4;
+            Game.isRandomTheme = abValue == 5;
+        }
+
+        private void UpdateAb20210630(int abValue)
+        {
+
+        }
+
+        private void Result20210524()
+        {
+            //SingleFind<OguryModule>().Init();
+        }
+
+        private void UpdateAb20210524(int abValue)
+        {
+            //if (abValue == 1)
+            //{
+            //    SingleFind<OguryModule>().Init();
+            //}
+        }
+
+        private void Result20210518()
+        {
+            UpdateAb20210518(3);
+        }
+        
+        private void UpdateAb20210518(int abValue)
+        {
+            Game.isHaveNoAdsV3 = abValue == 1;
+            Game.isTreeGrayColor = abValue == 2;
+            Game.isBlockGrayColor = abValue == 3;
+            Game.isFlyingIsland = abValue == 4 || abValue == 5;
+
+            if(abValue == 4)
+            {
+                PlayerData.UnlockBackground(0);
+                PlayerData.UnlockTheme(0);
+            }
+
+            if (abValue == 5)
+            {
+                PlayerData.UnlockBackground(2);
+                PlayerData.UnlockTheme(2);
+            }
+        }
+
+        private void UpdateAb20210508(int abValue)
+        {
+
+        }
+
+        private void Result20210412()
+        {
+            Game.isHaveOneWayBlock = true;
+
+            Game.isHaveBigSquare = false;
+            Game.isHaveNoAdsV3 = false;
+            Game.colorVersion = 3;
+        }
+
+        private void UpdateAb20210412(int abValue)
+        {
+            Game.isHaveOneWayBlock = abValue == 1;
+            Game.isHaveBigSquare = abValue == 2;
+            Game.isHaveNoAdsV3 = abValue == 3;
+            Game.colorVersion = abValue == 4 ? 3 : 2;
+        }
+
+        private void UpdateAb20210407(int abValue)
+        {
+
+        }
+
+        private void Result20210330()
+        {
+            Game.isHaveFixedBlock = true;
+            Game.isHintFixedBlockStyle = false;
+            //Game.isOneWayBlock = false;
+        }
+
+        private void UpdateAb20210330(int abValue)
+        {
+            Game.isHaveFixedBlock = abValue == 1;
+            Game.isHintFixedBlockStyle = abValue == 2;
+            Game.isHaveOneWayBlock = abValue == 3;
+        }
+
+        private void Result20210226()
+        {
+            //GameController.SetupMainCam();
+        }
+
+        private void UpdateAb20210226(int abValue)
+        {
+            //UIController.SetupAbUI();
+            //GameController.SetupMainCam();
+        }
+
         private void UpdateAb20210205(int abValue)
         {
-            Game.isHaveNoAdsInMainScreen = abValue == 1;
+            Game.isHaveNoAdsV3 = abValue == 1;
             Game.isHaveNoAdsInShopTab = abValue == 2;
             Game.isHaveShop = abValue == 2;
             Game.isCameraTopView = abValue == 3;
             Game.isNewGameOver = abValue == 4;
             Game.isHaveConfettiGameOver = abValue == 5 || abValue == 4;
-            UIController.SetupAbUI();
-            GameController.SetupMainCam();
         }
 
         private void UpdateAb20210203(int abValue)
         {
-            //UIController.SetupAbUI();
+            
         }
 
         private void Result20210129()
@@ -93,15 +280,12 @@ namespace IEC
         {
             Game.isHaveShop = abValue == 1 || abValue == 2;
             Game.isHaveEndGameReward = abValue == 2;
-            Game.isGreenifyHydrated = abValue == 3;
             Game.isRootTreeChangeColorByWater = abValue == 4;
-            UIController.SetupAbUI();
         }
 
         private void UpdateAb20210121(int abValue)
         {
             Game.isHaveShop = true;
-            //Controller.SetupAbUI();
         }
 
         private void Result20210114()
@@ -119,37 +303,31 @@ namespace IEC
             Game.isHaveBossTimerLevelsV4 = abValue == 4;
             Game.isNoShadow = abValue == 5;
 
-            Game.isHintStyleV3 = abValue == 6;
-            Game.isHintStyleV2 = abValue != 6;
+            Game.hintVersion = abValue == 6 ? 2 : 1;
 
             QualitySettings.shadows = Game.isNoShadow ? ShadowQuality.Disable : ShadowQuality.HardOnly;
-            //UIController.SetupAbUI();
         }
 
         private void Result20210108()
         {
             Game.isLevelDifficultyV5 = false;
-            Game.isNewTreeColorV1 = false;
+            Game.colorVersion = 2;
             Game.isHaveUIAnimation = false;
-            Game.isChangeGridStatus = false;
             Game.isHaveDynamicInter = false;
         }
 
         private void UpdateAb20210108(int abValue)
         {
             Game.isLevelDifficultyV5 = abValue == 1;
-            Game.isNewTreeColorV1 = abValue == 2;
             Game.isHaveUIAnimation = abValue == 3;
-            Game.isChangeGridStatus = abValue == 4;
             Game.isHaveDynamicInter = abValue == 5;
         }
 
         private void Result20201230()
         {
-            Game.isHintStyleBSP = false;
             Game.isHaveBossTimerLevels = false;
             Game.isHaveBossTimerLevelsV2 = false;
-            Game.isNewWaterEffect = false;
+            Game.waterEffectVersion = 1;
 
             //Default
             Game.themeDefault = 2;
@@ -179,22 +357,17 @@ namespace IEC
                 Game.backGroundDefault = 3;
             }
 
-            Game.isHintStyleBSP = abValue == 4;
+            Game.hintVersion = abValue == 6 ? 2 : 1;
             Game.isHaveBossTimerLevels = (abValue == 5) || (abValue == 6);
             Game.isHaveBossTimerLevelsV2 = abValue == 6;
-
-            Game.isNewWaterEffect = abValue == 7;
-
             PlayerData.InitTheme(Game.themeDefault, Game.backGroundDefault);
         }
 
         private void Result20201222()
         {
             Game.isNewUI = true;
-            Game.isHaveNewTrees = true;
             Game.isStartLevelEffect = true;
-            Game.isHintStyleV2 = true;
-            //UIController.SetupAbUI();
+            Game.hintVersion = 1;
         }
 
         private void UpdateAb20201222(int abValue)
@@ -202,9 +375,7 @@ namespace IEC
             abValue += 1;
 
             Game.isNewUI = abValue == 2;
-            Game.isHaveNewTrees = abValue == 3;
             Game.isStartLevelEffect = abValue == 4;
-            Game.isHintStyleV2 = abValue == 5;
         }
 
         private void UpdateAb20201215(int abValue)
@@ -215,15 +386,11 @@ namespace IEC
         private void Result20201209()
         {
             Game.isLevelDifficultyV4 = true;
-            GameController.GetLevelDifficulty();
         }
 
         private void UpdateAb20201209(int abValue)
         {
             Game.isLevelDifficultyV4 = abValue == 2;
-            //Game.themeIndex = abValue == 3 ? 5 : 3;
-            //Game.backGroundIndex = abValue == 3 ? 5 : 3;
-            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201204()
@@ -231,36 +398,13 @@ namespace IEC
             Game.isHaveNotification = true;
             Game.themeDefault = 2;
             Game.backGroundDefault = 2;
-            Game.isHaveBossMixColorLevels = true;
-
-            GameController.GetLevelsMixColor();
+            Game.isHaveMixColorLevel = true;
         }
 
         private void UpdateAb20201204(int abValue)
         {
             Game.isHaveNotification = abValue == 1;
-            //if(abValue == 2)
-            //{
-            //    Game.themeIndex = 1;
-            //    Game.backGroundIndex = 1;
-            //}
-            //else if(abValue == 3)
-            //{
-            //    Game.themeIndex = 3;
-            //    Game.backGroundIndex = 3;
-            //}
-            //else
-            //{
-            //    Game.themeIndex = 0;
-            //    Game.backGroundIndex = 0;
-            //}
-
-            Game.isHaveBossMixColorLevels = abValue == 4;
-
-            if (Game.isHaveBossMixColorLevels)
-            {
-                GameController.GetLevelsMixColor();
-            }
+            Game.isHaveMixColorLevel = abValue == 4;
         }
 
         private void Result20201201()
@@ -274,8 +418,6 @@ namespace IEC
             Game.isLevelDifficultyV3 = abValue == 2;
             Game.isHaveNewWaterSkin = abValue == 3;
             Game.isHaveBossLimitMoveLevels = abValue == 4;
-
-            //GameController.GetLevelDifficulty();
         }
 
         private void Result20201125()
@@ -375,7 +517,6 @@ namespace IEC
         private void Result20201103()
         {
             Game.isHaveNomalLevelsMixColor = false;
-            GameController.GetLevelsData();
         }
 
         private void UpdateAb20201103(int abValue)

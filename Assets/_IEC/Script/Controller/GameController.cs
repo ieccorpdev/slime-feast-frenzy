@@ -32,35 +32,21 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            //SetupMainCam();
+            
         }
 
         public void SetupMainCam()
         {
-            var posY = Game.isCameraTopView ? 5.1f : 5.2f;
-            var posZ = Game.isCameraTopView ? -.1f : -2.16f;
+            GamePlay.transMainCam.rotation = Quaternion.identity;
+            var posY = Game.isHaveIsLand ? 4.3f : 5.2f;
+            var posZ = Game.isHaveIsLand ? -3.85f : -2.16f;
 
-            var rotX = Game.isCameraTopView ? 90f : 70f;
+            var rotX = Game.isHaveIsLand ? 55f : 70f;
             GamePlay.mainCamera.transform.localRotation = Quaternion.Euler(rotX, 0f, 0f);
             GamePlay.mainCamera.transform.localPosition = new Vector3(0f, posY, posZ);
 
             m_CamOriginPos = GamePlay.mainCamera.transform.localPosition;
             m_CamDirOrigin = GamePlay.mainCamera.transform.forward;
-        }
-
-        public void GetLevelsData()
-        {
-
-        }
-
-        public void GetLevelsMixColor()
-        {
-
-        }
-
-        public void GetLevelDifficulty()
-        {
-
         }
 
         public void BehaviourStart()
@@ -99,12 +85,17 @@ namespace IEC
         private void PrepareGameStart()
         {             
             Game.listGrids.ForEach(x => x.AfterInit());
+            var min = Game.size * 8;
+            var max = min * 2;
+
+            Game.goldReward = RandomHelper.RangeWithSeed(PlayerData.level, min, max);
+
             Game.SetGameState(GameState.Playing);
             m_TimeStart = System.DateTime.Now;
-            Game.goldReward = RandomHelper.RangeWithSeed(PlayerData.level, 50, 100);
+            
             PushPlayLevelEvent();
 
-            EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
+            //EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_TUTORIAL);
             EventController.RaiseEvent(EventList.GamePlay.GAME_CHECK_CONNECT);
         }
 
@@ -118,18 +109,21 @@ namespace IEC
                 m_DeltaSizeMinCam = RATIO_CAMERA_SIZE_MIN * m_DeltaScreenRatio;
                 m_IsInitCam = true;
 
-                var distMax = 9f + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
+                var distMax = (Game.isHaveIsLand ? 13.5f : 9f) + (RATIO_CAMERA_SIZE_MAX * m_DeltaScreenRatio);
 
                 m_RatioCamSize = (distMax - m_DeltaSizeMinCam) / 6f;
             }
 
             var delta = ((size - 5) * m_RatioCamSize) + m_DeltaSizeMinCam;
             var cameraPos = m_CamOriginPos - (delta * m_CamDirOrigin);
-
+            
             GamePlay.mainCamera.transform.localPosition = cameraPos;
 
             var rotY = rotIndex * 90f;
-
+            if(Game.isHaveIsLand)
+            {
+                rotY = 45f;
+            }
             GamePlay.transMainCam.localRotation = Quaternion.Euler(0f, rotY, 0f);
         }
 
@@ -158,7 +152,7 @@ namespace IEC
                     for (int j = startIndex; j < count; j++)
                     {
                         var grid = m_ListGridHaveWater[j];
-                        var listGrids = grid.GetGridsCanConnect(source.WaterIndexColor);
+                        var listGrids = grid.GetGridsCanConnect(source.WaterColorIndex, false);
                         startIndex += 1;
                         var listGridNearCount = listGrids.Count;
                         if (listGrids.Count > 0)
@@ -170,7 +164,7 @@ namespace IEC
                                 if (!m_ListGridHaveWater.Contains(gridNearConnect))
                                 {
                                     m_ListGridHaveWater.Add(gridNearConnect);
-                                    gridNearConnect.SetConnect(source.WaterIndexColor, grid.DelayStart);
+                                    gridNearConnect.SetConnect(source.WaterColorIndex, grid.DelayStart);
                                 }
                             }
                         }
