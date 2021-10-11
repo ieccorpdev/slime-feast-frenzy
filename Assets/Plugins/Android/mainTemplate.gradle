@@ -47,7 +47,7 @@ allprojects {
             url "https://s3.amazonaws.com/smaato-sdk-releases/" // Assets/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml:8
         }
         maven {
-            url (unityProjectPath + "/Assets/GeneratedLocalRepo/Firebase/m2repository") // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:22, Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:18
+            url (unityProjectPath + "/Assets/GeneratedLocalRepo/Firebase/m2repository") // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:22, Packages/com.google.firebase.remote-config/Firebase/Editor/RemoteConfigDependencies.xml:20, Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:18
         }
         mavenLocal()
         jcenter()
@@ -107,6 +107,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-unity:7.0.2' // Packages/com.google.firebase.analytics/Firebase/Editor/AnalyticsDependencies.xml:18
     implementation 'com.google.firebase:firebase-app-unity:7.0.2' // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:22
     implementation 'com.google.firebase:firebase-common:19.3.1' // Packages/com.google.firebase.app/Firebase/Editor/AppDependencies.xml:13
+    implementation 'com.google.firebase:firebase-config:20.0.0' // Packages/com.google.firebase.remote-config/Firebase/Editor/RemoteConfigDependencies.xml:13
+    implementation 'com.google.firebase:firebase-config-unity:7.0.2' // Packages/com.google.firebase.remote-config/Firebase/Editor/RemoteConfigDependencies.xml:20
     implementation 'com.parse.bolts:bolts-android:1.4.0' // Assets/FacebookSDK/Plugins/Editor/Dependencies.xml:4
     implementation 'com.squareup.picasso:picasso:2.71828' // Assets/MaxSdk/Mediation/Snap/Editor/Dependencies.xml:6
 // Android Resolver Dependencies End
