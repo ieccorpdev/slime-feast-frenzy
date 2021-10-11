@@ -29,12 +29,6 @@ namespace IEC
                         EventController.RaiseEvent(EventList.GamePlay.GAME_SPAWN_LEVEL);
                     });
                     break;
-                case EventList.Service.INIT_AD_DONE:
-                    //Services.Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    //Services.Ads().Show(AdsEnum.BANNER_BOTTOM, null);
-                    //StartCoroutine(IE_LoadAd());
-                    //UpdateWhiteBannerSize();
-                    break;
             }
         }
 

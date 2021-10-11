@@ -168,6 +168,7 @@ namespace IEC
         public int addBackgroundVersion = 1;
 
         public bool isLeavesEffect;
+        public bool isShowThumbnail;
 
         public bool isHaveIsLand => isHaveFloatingIsland || isFlyingIsland;
 
