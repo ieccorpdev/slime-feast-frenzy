@@ -22,25 +22,12 @@ namespace _IECModules
             return new BaseNotification();
         });
 
-        private void OnApplicationPause(bool pause)
-        {
-            if (pause)
-            {
-                RegisterNotification();
-            }
-        }
-
-        private void OnApplicationQuit()
-        {
-            RegisterNotification();
-        }
-
         public void Init()
         {
             Notification.Init();
         }
 
-        void RegisterNotification()
+        public void RegisterNotification()
         {
             if (Data == null) return;
             Notification.CancelAllNotification();
