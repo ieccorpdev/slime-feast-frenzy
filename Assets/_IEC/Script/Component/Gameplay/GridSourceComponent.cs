@@ -84,7 +84,7 @@ namespace IEC
                 m_LineStyleObjs[i].SetActive(i == lineType);
             }
 
-            for (int i = 0; i < m_WaterCount - 4; i++)
+            for (int i = 0; i < m_WaterCount - 8; i++)
             {
                 m_WaterComponent[i].gameObject.SetActive(i == lineType);
             }
