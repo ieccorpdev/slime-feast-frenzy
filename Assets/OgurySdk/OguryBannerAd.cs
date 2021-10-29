@@ -42,6 +42,7 @@ namespace OgurySdk
         public event BannerAdEventHandler OnAdLoaded;
         public event BannerAdEventHandler OnAdNotLoaded;
         public event BannerAdEventHandler OnAdDisplayed;
+        public event BannerAdEventHandler OnAdImpression;
         public event BannerAdEventHandler OnAdClicked;
         public event BannerAdEventHandler OnAdClosed;
         public event BannerAdErrorEventHandler OnAdError;
@@ -108,6 +109,16 @@ namespace OgurySdk
                         && strong.OnAdDisplayed != null)
                     {
                         strong.OnAdDisplayed.Invoke(strong);
+                    }
+                };
+                OguryCallbacks.Instance.OnAdImpression += instanceId =>
+                {
+                    OguryBannerAd strong = capturedWeakBannerAd.Target as OguryBannerAd;
+                    if (instanceId == capturedInstanceId
+                        && strong != null
+                        && strong.OnAdImpression != null)
+                    {
+                        strong.OnAdImpression.Invoke(strong);
                     }
                 };
                 OguryCallbacks.Instance.OnAdClicked += instanceId =>
