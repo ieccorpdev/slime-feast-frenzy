@@ -292,14 +292,15 @@ namespace _IECModules
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone, bundleId);
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
-
-                        if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
-                        else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
-                        else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
-                        else
-                        {
-                            LogEditorHelper.AddLogError("Unknown Company Name");
-                        }
+                        
+                        // No need company name anymore 
+                        // if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
+                        // else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
+                        // else if (bundleId.ToLower().Contains(".dta.")) PlayerSettings.companyName = "DTA";
+                        // else
+                        // {
+                        //     LogEditorHelper.AddLogError("Unknown Company Name");
+                        // }
                         break;
                     case ChecklistItemName.KeyStoreName:
                         if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
