@@ -149,6 +149,12 @@ namespace IEC
                 }
             });
            // StartCoroutine(IE_CountOneSec());
+#if PluginInAppRating
+#if UNITY_ANDROID
+           m_Review = new ReviewManager();
+           StartCoroutine(IE_GetPlayReviewInfo());
+#endif
+#endif
             isInitAwake = true;
         }
 
@@ -375,6 +381,7 @@ namespace IEC
 #endif
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
@@ -662,9 +669,10 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    if (fullAdCount == 50)
+                    var milestone = GetMilestone(fullAdCount);
+                    if (fullAdCount % milestone == 0 && fullAdCount > 0)
                     {
-                        PushEvent("inter_50");
+                        PushEvent("inter_" + fullAdCount);
                     }
                     SafeInvoke(canShowCallback);
                 }
@@ -730,9 +738,10 @@ namespace IEC
                         PushEvent("show_reward_ad", 1);
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
-                        if (rewardCount == 15)
+                        var milestone = GetMilestone(rewardCount) / 2;
+                        if (rewardCount % milestone == 0 && rewardCount > 0)
                         {
-                            PushEvent("reward_15");
+                            PushEvent("reward_" + rewardCount);
                         }
                     }
 
@@ -827,9 +836,28 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Service.COUNT_ONE_SEC, new EventParam(this));
             }
         }
+        
 #if PluginInAppRating
+#if UNITY_ANDROID
+        private ReviewManager m_Review;
+        private PlayReviewInfo m_PlayReviewInfo;
+
+        IEnumerator IE_GetPlayReviewInfo()
+        {
+            var requestFlowOperation = m_Review.RequestReviewFlow();
+            yield return requestFlowOperation;
+            if (requestFlowOperation.Error != ReviewErrorCode.NoError)
+            {
+                Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
+                yield break;
+            }
+
+            m_PlayReviewInfo = requestFlowOperation.GetResult();
+        }
+#endif
         public void RateUs()
         {
+            Debug.LogWarning("rate us");
 #if UNITY_IOS
             UnityEngine.iOS.Device.RequestStoreReview();
 #endif
@@ -837,23 +865,13 @@ namespace IEC
             StartCoroutine(IE_RequestReview());
             IEnumerator IE_RequestReview()
             {
-                ReviewManager m_Review = new ReviewManager();
-                var requestFlowOperation = m_Review.RequestReviewFlow();
-                yield return requestFlowOperation;
-                if (requestFlowOperation.Error != ReviewErrorCode.NoError)
-                {
-                    Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
-                    Application.OpenURL("market://details?id=" + Application.identifier);
-                    yield break;
-                }
-                var playReviewInfo = requestFlowOperation.GetResult();
-                var launchFlowOperation = m_Review.LaunchReviewFlow(playReviewInfo);
+                if (m_PlayReviewInfo == null) yield break;
+                var launchFlowOperation = m_Review.LaunchReviewFlow(m_PlayReviewInfo);
                 yield return launchFlowOperation;
                 if (launchFlowOperation.Error != ReviewErrorCode.NoError)
                 {
                     Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
-                    Application.OpenURL("market://details?id=" + Application.identifier);
-                    yield break;
+                    // Application.OpenURL("market://details?id=" + Application.identifier);
                 }
             }
 #endif
@@ -913,15 +931,28 @@ namespace IEC
 
         void SaveLogToFile()
         {
-            var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
-            var saveLog = Json().ToJson(SaveLog.GetLog());
-            var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +  
-                                    SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-            var content = $"IDFA:{m_UserIDFA}\n\nLog:\n{saveLog}\n\nPlayerData:\n{playerDataEncrypt}";
-            // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
-            Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-            txtWrite.Write(content);
-            txtWrite.Close();
+            try
+            {
+                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
+                var saveLog = Json().ToJson(SaveLog.GetLog());
+                var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                var content = $"IDFA:{m_UserIDFA}" +
+                    $"\n\nLog:\n{saveLog}" +
+                    $"\n\nPlayerData:\n{playerDataEncrypt}" +
+                    $"\n\nServiceData:\n{serviceDataEncrypt}";
+                // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
+                Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
+                Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                txtWrite.Write(content);
+                txtWrite.Close();
+            }
+            catch
+            {
+                Debug.LogWarning("Log file is in use");
+            }
         }
 
         string MyEscapeURL(string url)
@@ -1110,6 +1141,18 @@ namespace IEC
         public void ResetTimeShowFullAds()
         {
             lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+        }
+
+        private int GetMilestone(int number)
+        {
+            var milestone = 1;
+            for (int i = 1; i < 10; i++)
+            {
+                milestone *= 10;
+                var div = number / milestone;
+                if (div < 10) break;
+            }
+            return milestone;
         }
     }
 }

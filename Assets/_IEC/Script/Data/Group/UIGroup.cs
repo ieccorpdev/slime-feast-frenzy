@@ -44,6 +44,7 @@ namespace IEC
                 {
                     screen.SetShowOrder(CountScreenShowing());
                     GamePlay.SetGameState(screen);
+                    ListScreen.Where(s => s.IsShow && s != screen).ToList().ForEach(s => s.LostFocus());
                 });
 
                 screen.onHideDone.AddListener(() =>
@@ -52,6 +53,7 @@ namespace IEC
                     if (topScreen != null)
                     {
                         GamePlay.SetGameState(topScreen);
+                        topScreen.HaveFocus();
                     }
                 });
             }

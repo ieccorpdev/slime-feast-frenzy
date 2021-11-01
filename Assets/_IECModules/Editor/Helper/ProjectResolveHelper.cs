@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,6 +10,16 @@ namespace _IECModules
 {
     public static class ProjectResolveHelper
     {
+        public static readonly List<string> listPermissionRemove = new List<string>()
+        {
+            "android.permission.WRITE_EXTERNAL_STORAGE"
+        };
+
+        public static readonly List<string> listPermissionNecessary = new List<string>()
+        {
+            "com.google.android.gms.permission.AD_ID"
+        };
+        
         public static List<string> listObsoleteResolver = new List<string>
         {
             "Assets/ExternalDependencyManager",
@@ -55,7 +66,19 @@ namespace _IECModules
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
+            ModifyPermissions(listPermissionRemove,PermissionAction.Remove);
+            ModifyPermissions(listPermissionNecessary,PermissionAction.Add);
+            GenerateGameObjectOguryCallback();
             //UpdateApplovinQualityService();
+        }
+
+        private static void GenerateGameObjectOguryCallback()
+        {
+#if PluginOgury
+            var oguryCallbacks = GameObject.FindObjectOfType<OgurySdk.OguryCallbacks>();
+            if(oguryCallbacks != null) return;
+            new GameObject("OguryCallbacks").AddComponent<OgurySdk.OguryCallbacks>();
+#endif
         }
 
         public static void DeleteObsoleteResolver()
@@ -394,6 +417,42 @@ namespace _IECModules
             }
             googlePlayServicesMethodForceResolveMethod.Invoke(null, null);
         }
+        
+        public enum PermissionAction
+        {
+            Add,
+            Remove
+        }
+        private static void ModifyPermissions(List<string> permissions, PermissionAction action)
+        {
+            var manifestPath = "Assets/Plugins/Android/AndroidManifest.xml";
+            if (!File.Exists(manifestPath))
+            {
+                return;
+            }
 
+            var manifestContent = File.ReadAllText(manifestPath);
+            var manifestTag = manifestContent.GetBetweenString("<manifest", "</manifest>",false);
+            // Debug.LogError(manifestTag);
+            var manifestTagReplace = manifestTag;
+            for (int i = 0; i < permissions.Count; i++)
+            {
+                var permission = permissions[i];
+                var permissionAction =
+                    $"<uses-permission android:name=\"{permission}\"";
+                if(action == PermissionAction.Remove) permissionAction += " tools:node=\"remove\"";
+                permissionAction += "/>";
+                if (!manifestTagReplace.Contains(permission))
+                {
+                    manifestTagReplace += $"{permissionAction}\n";
+                }
+                else if(action == PermissionAction.Remove)
+                {
+                    LogEditorHelper.AddLogWarning($"Manifest has {permission} permission for some reasons, please check manifest file");
+                }
+            }
+            manifestContent = manifestContent.Replace(manifestTag, manifestTagReplace);
+            File.WriteAllText(manifestPath,manifestContent);
+        }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.IO;
 using _IECModules;
 using SimpleJSON;
@@ -9,6 +10,7 @@ using UnityEngine;
 public class PreProcessBuild : IPreprocessBuildWithReport
 {
     public int callbackOrder => 0;
+
     public void OnPreprocessBuild(BuildReport report)
     {
         SetFirebaseVersion();

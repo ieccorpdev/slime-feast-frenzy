@@ -49,6 +49,7 @@ namespace IEC
             if (abConfig == null)
             {
                 Debug.LogError("No AB Test");
+                ResultAllAbTest();
                 return;
             }
 
@@ -57,18 +58,20 @@ namespace IEC
                 {
                     var cheatAbIndex = cheatCodeParam.dropdownParam.value;
                     Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
-                    Pool.Set(new Game());
                     ApplyAbTest(cheatAbIndex);
+                    ResultAllAbTest();
                 },
                 abTestConfigs.Select(x => x.KeyName).ToList(),
                 abIndex
             );
 
             ApplyAbTest(abIndex);
+            ResultAllAbTest();
         }
 
         void ApplyAbTest(int abIndex)
         {
+            Pool.Set(new Game());
             var serviceAbTest = Services.ABTest();
             var listAbTestConfig = Services.config.abTestConfigs.ToList();
             var abConfig = (abIndex >= 0) ? listAbTestConfig[abIndex] : null;
@@ -118,8 +121,6 @@ namespace IEC
                 updateAbAction.Invoke(abValue);
             }
 
-            ResultAllAbTest();
-
             AddCheatCodeVersionAB(abConfig, abIndex, abValue);
 
             Game.abVersion = curTestDate.version;
@@ -142,6 +143,7 @@ namespace IEC
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                 ApplyAbTest(abIndex);
+                ResultAllAbTest();
             };
 
             cheatCode.dropdownParam = new CheatCode.DropdownParam

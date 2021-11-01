@@ -11,6 +11,8 @@ namespace IEC
     {
         public bool IsDisable { get; set; }
 
+        public Dictionary<string, string> DictEvent;
+
         public AdjustAnalyticModule(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
@@ -23,7 +25,6 @@ namespace IEC
             adjustConfig.setLaunchDeferredDeeplink(false);
             Adjust.start(adjustConfig);
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
-
         }
 
         public void Init()
@@ -38,7 +39,10 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
-            if (IsDisable) return;
+            if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
+            var adjustEvent = new AdjustEvent(DictEvent[eventName]);
+            Adjust.trackEvent(adjustEvent);
+            Debug.Log("Push Adjust Event:" + DictEvent[eventName]);
         }
 
         public void SetUserProperty(string name, string property)

@@ -7,6 +7,8 @@ workflow:
   rules:
     - if: '$SSH_PRIVATE_KEY_MODULE_SUBTREE == null'
       when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
     - when: always
 
 job:

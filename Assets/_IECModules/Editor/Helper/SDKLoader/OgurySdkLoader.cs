@@ -17,23 +17,13 @@ namespace _IECModules
         {
             
             PlayerPrefs.DeleteKey(VersionCacheKey);
-            var url = "https://ogury-ltd.gitbook.io/release-notes/unity";
+            var url = "https://ogury-ltd.gitbook.io/release-notes/unity/ogury-sdk-plugin";
             var content = UnityWebRequestDownloadHelper.DownloadTextFromUrl(url);
-            var versions = content.Split(new[] { "<h1 id=\"" }, StringSplitOptions.None)
+            var versions = content.Split(new[] { "/release-notes/unity/ogury-sdk-plugin#" }, StringSplitOptions.None)
                 //.Select(x => x.Substring(0, 5))
                 .ToList();
             versions.RemoveAt(0);
-            versions = versions.Select(x => x.Split(new[] { " - " }, StringSplitOptions.None)[0]
-                .Split(new[] { "\">" }, StringSplitOptions.None).Last()).ToList();
-            //for(int i = 0; i < versions.Count; i++)
-            //{
-            //    var version = versions[i];
-            //    //var versionCut = version.Split(new[] { "\" " }, StringSplitOptions.None)[0]
-            //    //    .Split('-');
-            //    //version = $"{versionCut[0]}.{versionCut[1]}.{versionCut[2]}";
-            //    version = version.Split(new[] { " - " }, StringSplitOptions.None)[0];
-            //    versions[i] = version.Split(new[] { "\">" }, StringSplitOptions.None).Last();
-            //}
+            versions = versions.Select(x => x.Split(new[] { "-" }, StringSplitOptions.None)[0]).ToList();
             PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
         }
     }
