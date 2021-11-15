@@ -9,7 +9,9 @@ namespace IEC
     public class ApplovinModule : IAdsService
     {
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
-
+        public const string APPLOVIN_REV_ALL_AD = "APPLOVIN_REV_ALL_AD";
+        public const string APPLOVIN_REV_AD_MILESTONE = "APPLOVIN_REV_AD_MILESTONE";
+        
         AdsPlatformConfig m_Config;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -19,6 +21,10 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
+        private float m_RevAd;
+
+        private float m_RevMilestone;
+        
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
@@ -45,6 +51,9 @@ namespace IEC
                 {
                     MaxSdk.SetVerboseLogging(true);
                 }
+
+                m_RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0);
+                m_RevMilestone = PlayerPrefs.GetFloat(APPLOVIN_REV_AD_MILESTONE, 0.1f);
                 MaxSdk.InitializeSdk();
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
@@ -526,6 +535,13 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
+            m_RevAd += (float)revenue;
+            if (m_RevAd >= m_RevMilestone)
+            {
+                pushEventAction?.Invoke("rev_all_ad_10_cent", 0.1f, null);
+                m_RevMilestone += 0.1f;
+            }
+
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }
@@ -554,6 +570,20 @@ namespace IEC
         {
             m_LoadFullAdCount = 0;
             m_LoadRewardCount = 0;
+        }
+        
+        public void OnApplicationPause(bool isPause)
+        {
+            if (isPause)
+            {
+                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,m_RevAd);
+                PlayerPrefs.SetFloat(APPLOVIN_REV_AD_MILESTONE,m_RevMilestone);
+            }
+        }
+
+        public void OnApplicationQuit()
+        {
+            
         }
     }
 }

@@ -14,6 +14,10 @@ namespace IEC
         double GetEcpm(AdsEnum adsType);
 
         float GetBannerHeight();
+
+        void OnApplicationPause(bool isPause);
+
+        void OnApplicationQuit();
     }
 
     public enum AdsEnum
