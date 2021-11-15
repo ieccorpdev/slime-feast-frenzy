@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 1299353349616513270}
   - component: {fileID: 4133761400696431112}
   - component: {fileID: 8158116215970853161}
-  - component: {fileID: 6362609619950241182}
   m_Layer: 0
   m_Name: CanvasInputVisualiser
   m_TagString: Untagged
@@ -82,23 +81,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &6362609619950241182
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 234293430136070461}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!1 &301752370999886199
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,7 +434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1090753737001264102
 Transform:
   m_ObjectHideFlags: 0
@@ -485,10 +467,10 @@ MonoBehaviour:
   AltUnityIcon: {fileID: 5609672992419832639}
   AltUnityPopUpText: {fileID: 497741015065754710}
   AltUnityIconPressed: 0
-  showPopUp: 0
+  showPopUp: 1
   SocketPortNumber: 13000
   MaxLogLength: 100
-  RunOnlyInDebugMode: 1
+  RunOnlyInDebugMode: 0
   outlineShader: {fileID: 4800000, guid: 37d07aac6f4b1dc48924e98e1e398261, type: 3}
   panelHightlightPrefab: {fileID: 1422609480502334, guid: c2c3ede7bbf3b184c9c6d7cc4cf5cad3,
     type: 3}
@@ -650,7 +632,6 @@ GameObject:
   - component: {fileID: 1864078077531964754}
   - component: {fileID: 2923231753403550123}
   - component: {fileID: 6681320020539754424}
-  - component: {fileID: 8464169816287003918}
   m_Layer: 0
   m_Name: CanvasPopUp
   m_TagString: Untagged
@@ -722,23 +703,6 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
---- !u!114 &8464169816287003918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3994806059822145922}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!1 &5257231271573468893
 GameObject:
   m_ObjectHideFlags: 0

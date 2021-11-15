@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _IECModules;
 using UnityEngine;
 using NaughtyAttributes;
 
@@ -14,8 +15,16 @@ namespace IEC
 
         public bool IsRecording { get; private set; }
         public float TimeStart { get; private set; }
+        
+        public bool IsEnableAltUnity { get; private set; }
         public DataAutoTestRecord DataRecord { get; private set; }
 
+        public CheatCode.PositionActivate positionActivate = CheatCode.PositionActivate.TopLeft;
+
+        public float cornerSize = 0.05f;
+
+        private AltUnityRunner m_AltUnity => SingleGetChild<AltUnityRunner>();
+        private int m_TestIndex;
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -40,6 +49,35 @@ namespace IEC
                         y = Input.mousePosition.y,
                         time = Time.time - TimeStart
                     });
+                }
+            }
+            else if(!IsEnableAltUnity)
+            {
+                if (!Input.GetMouseButtonUp(0)) return;
+                var isClickActivate = false;
+                var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
+                var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
+                var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
+                var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
+
+                isClickActivate |= ((positionActivate & CheatCode.PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
+                isClickActivate |= ((positionActivate & CheatCode.PositionActivate.TopRight) != 0 && isClickTop && isClickRight);
+                isClickActivate |= ((positionActivate & CheatCode.PositionActivate.BotLeft) != 0 && isClickBot && isClickLeft);
+                isClickActivate |= ((positionActivate & CheatCode.PositionActivate.BotRight) != 0 && isClickBot && isClickRight);
+
+                if (isClickActivate)
+                {
+                    m_TestIndex++;
+                    if (m_TestIndex != 8) return;
+                    m_TestIndex = 0;
+                    IsEnableAltUnity = true;
+                    Debug.LogWarning("Enable AltUnity");
+                    m_AltUnity.showPopUp = true;
+                    m_AltUnity.gameObject.SetActive(true);
+                }
+                else
+                {
+                    m_TestIndex = 0;
                 }
             }
         }
