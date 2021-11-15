@@ -56,6 +56,14 @@ namespace IEC
             float f = Screen.dpi / 160f;
             return 50f * f;
         }
+
+        public void OnApplicationPause(bool isPause)
+        {
+        }
+
+        public void OnApplicationQuit()
+        {
+        }
     }
 }
 
