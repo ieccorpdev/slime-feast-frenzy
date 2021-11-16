@@ -59,7 +59,7 @@ namespace IEC
             }
             get
             {
-                PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+                return PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
             }
         }
         
