@@ -183,14 +183,12 @@ namespace IEC
             if (isPaused)
             {
                 SaveData();
-                Ads().OnApplicationPause(true);
             }
         }
 
         public void BehaviourQuitApp()
         {
             SaveData();
-            Ads().OnApplicationQuit();
         }
 
         public void InitServices()

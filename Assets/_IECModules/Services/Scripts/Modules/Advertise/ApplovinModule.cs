@@ -11,7 +11,18 @@ namespace IEC
         class RevMilestone
         {
             public float step;
-            public float value;
+
+            public float Value
+            {
+                set
+                {
+                    PlayerPrefs.SetFloat(saveKey,value);
+                }
+                get
+                {
+                    return PlayerPrefs.GetFloat(saveKey, step);
+                }
+            }
             public string eventName;
 
             private string saveKey => $"APPLOVIN_REV_{eventName}";
@@ -19,12 +30,19 @@ namespace IEC
             {
                 this.eventName = eventName;
                 this.step = step;
-                value = PlayerPrefs.GetFloat(saveKey,step);
             }
 
-            public void SaveMilestone()
+            public void CheckRev(float revCheck,Action<bool> onReach)
             {
-                PlayerPrefs.SetFloat(saveKey,value);
+                if (revCheck >= Value)
+                {
+                    onReach?.Invoke(true);
+                    Value += step;
+                }
+                else
+                {
+                    onReach?.Invoke(false);
+                }
             }
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
@@ -39,7 +57,17 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
-        private float m_RevAd;
+        private float RevAd
+        {
+            set
+            {
+                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,value);
+            }
+            get
+            {
+                PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+            }
+        }
         
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
@@ -69,7 +97,7 @@ namespace IEC
                     MaxSdk.SetVerboseLogging(true);
                 }
 
-                m_RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+                RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
                 m_ListRevMilestones = new List<RevMilestone>
                 {
                     new RevMilestone("rev_all_ad_2_cent", 0.02f),
@@ -560,16 +588,16 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
-            m_RevAd += (float)revenue;
+            RevAd += (float)revenue;
             foreach (var milestone in m_ListRevMilestones)
             {
-                if (m_RevAd >= milestone.value)
+                milestone.CheckRev(RevAd, isReach =>
                 {
                     pushEventAction?.Invoke(milestone.eventName,milestone.step,null);
-                    milestone.value += milestone.step;
-                }
+                });
             }
-
+            
+            PlayerPrefs.Save();
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }
@@ -598,23 +626,6 @@ namespace IEC
         {
             m_LoadFullAdCount = 0;
             m_LoadRewardCount = 0;
-        }
-        
-        public void OnApplicationPause(bool isPause)
-        {
-            if (isPause)
-            {
-                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,m_RevAd);
-                foreach (var milestone in m_ListRevMilestones)
-                {
-                    milestone.SaveMilestone();
-                }
-            }
-        }
-
-        public void OnApplicationQuit()
-        {
-            
         }
     }
 }
