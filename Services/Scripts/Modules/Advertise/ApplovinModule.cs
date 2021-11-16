@@ -8,8 +8,40 @@ namespace IEC
 {
     public class ApplovinModule : IAdsService
     {
-        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        class RevMilestone
+        {
+            public float step;
 
+            public float Value
+            {
+                set
+                {
+                    PlayerPrefs.SetFloat(saveKey,value);
+                }
+                get
+                {
+                    return PlayerPrefs.GetFloat(saveKey, step);
+                }
+            }
+            public string eventName;
+
+            private string saveKey => $"APPLOVIN_REV_{eventName}";
+            public RevMilestone(string eventName,float step)
+            {
+                this.eventName = eventName;
+                this.step = step;
+            }
+
+            public bool IsEnoughRev(float revCheck)
+            {
+                if (revCheck < Value) return false;
+                Value += step;
+                return true;
+            }
+        }
+        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        public const string APPLOVIN_REV_ALL_AD = "APPLOVIN_REV_ALL_AD";
+        
         AdsPlatformConfig m_Config;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -19,6 +51,18 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
+        private float RevAd
+        {
+            set
+            {
+                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,value);
+            }
+            get
+            {
+                PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+            }
+        }
+        
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
@@ -27,6 +71,7 @@ namespace IEC
 
         Action<string, float, Dictionary<string, object>> pushEventAction;
 
+        private List<RevMilestone> m_ListRevMilestones;
 
         public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
@@ -45,6 +90,17 @@ namespace IEC
                 {
                     MaxSdk.SetVerboseLogging(true);
                 }
+
+                RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+                m_ListRevMilestones = new List<RevMilestone>
+                {
+                    new RevMilestone("rev_all_ad_1_cent", 0.01f),
+                    new RevMilestone("rev_all_ad_5_cent", 0.05f),
+                    new RevMilestone("rev_all_ad_10_cent", 0.1f),
+                    new RevMilestone("rev_all_ad_50_cent", 0.5f),
+                    new RevMilestone("rev_all_ad_100_cent", 1f)
+                };
+                
                 MaxSdk.InitializeSdk();
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
@@ -526,6 +582,14 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
+            RevAd += (float)revenue;
+            foreach (var milestone in m_ListRevMilestones)
+            {
+                if(milestone.IsEnoughRev(RevAd))
+                    pushEventAction?.Invoke(milestone.eventName,milestone.step,null);
+            }
+            
+            PlayerPrefs.Save();
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }
