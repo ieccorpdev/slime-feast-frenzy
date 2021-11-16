@@ -100,7 +100,7 @@ namespace IEC
                 RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
                 m_ListRevMilestones = new List<RevMilestone>
                 {
-                    new RevMilestone("rev_all_ad_2_cent", 0.02f),
+                    new RevMilestone("rev_all_ad_1_cent", 0.01f),
                     new RevMilestone("rev_all_ad_5_cent", 0.05f),
                     new RevMilestone("rev_all_ad_10_cent", 0.1f),
                     new RevMilestone("rev_all_ad_50_cent", 0.5f),
