@@ -32,17 +32,11 @@ namespace IEC
                 this.step = step;
             }
 
-            public void CheckRev(float revCheck,Action<bool> onReach)
+            public bool IsEnoughRev(float revCheck)
             {
-                if (revCheck >= Value)
-                {
-                    onReach?.Invoke(true);
-                    Value += step;
-                }
-                else
-                {
-                    onReach?.Invoke(false);
-                }
+                if (revCheck < Value) return false;
+                Value += step;
+                return true;
             }
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
@@ -591,10 +585,8 @@ namespace IEC
             RevAd += (float)revenue;
             foreach (var milestone in m_ListRevMilestones)
             {
-                milestone.CheckRev(RevAd, isReach =>
-                {
+                if(milestone.IsEnoughRev(RevAd))
                     pushEventAction?.Invoke(milestone.eventName,milestone.step,null);
-                });
             }
             
             PlayerPrefs.Save();
