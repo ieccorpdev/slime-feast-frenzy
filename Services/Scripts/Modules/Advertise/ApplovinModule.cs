@@ -49,7 +49,7 @@ namespace IEC
             {
                 if (revCheck < Value) return false;
                 var multi = (int) (revCheck / Value);
-                Value = multi * step;
+                Value = (multi + 1) * step;
                 Debug.Log($"{eventName} new milestone: {Value}");
                 return true;
             }
@@ -75,7 +75,7 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
-        private float RevAd
+        public float RevAd
         {
             set
             {
