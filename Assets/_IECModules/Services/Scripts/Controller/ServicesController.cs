@@ -1165,7 +1165,7 @@ namespace IEC
 #if PluginApplovin
             if (m_ApplovinAds == null) return 0;
             var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
-            Debug.Log("Last Rev For Purchase:" + lastTotalRev)
+            Debug.Log("Last Rev For Purchase:" + lastTotalRev);
             valueToSum = m_ApplovinAds.RevAd - lastTotalRev;
             PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ApplovinAds.RevAd);
 #endif
