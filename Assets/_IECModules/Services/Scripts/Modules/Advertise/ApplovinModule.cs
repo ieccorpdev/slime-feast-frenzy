@@ -16,16 +16,29 @@ namespace IEC
             {
                 set
                 {
-                    PlayerPrefs.SetFloat(saveKey,value);
+                    PlayerPrefs.SetFloat(saveMilestoneKey,value);
                 }
                 get
                 {
-                    return PlayerPrefs.GetFloat(saveKey, step);
+                    return PlayerPrefs.GetFloat(saveMilestoneKey, step);
+                }
+            }
+
+            public float LastRev
+            {
+                set
+                {
+                    PlayerPrefs.SetFloat(saveLastRevKey,value);
+                }
+                get
+                {
+                    return PlayerPrefs.GetFloat(saveLastRevKey, 0f);
                 }
             }
             public string eventName;
 
-            private string saveKey => $"APPLOVIN_REV_{eventName}";
+            private string saveMilestoneKey => $"APPLOVIN_REV_{eventName}";
+            private string saveLastRevKey => $"APPLOVIN_LAST_REV_{eventName}";
             public RevMilestone(string eventName,float step)
             {
                 this.eventName = eventName;
@@ -35,8 +48,17 @@ namespace IEC
             public bool IsEnoughRev(float revCheck)
             {
                 if (revCheck < Value) return false;
-                Value += step;
+                var multi = (int) (revCheck / Value);
+                Value = multi * step;
+                Debug.Log($"New milestone {eventName}: {Value}");
                 return true;
+            }
+
+            public float RaiseRev(float rev)
+            {
+                var raiseRev = rev - LastRev;
+                LastRev = rev;
+                return raiseRev;
             }
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
@@ -583,10 +605,14 @@ namespace IEC
             };
 
             RevAd += (float)revenue;
+            Debug.Log("Total Rev:" + RevAd);
             foreach (var milestone in m_ListRevMilestones)
             {
-                if(milestone.IsEnoughRev(RevAd))
-                    pushEventAction?.Invoke(milestone.eventName,milestone.step,null);
+                if (milestone.IsEnoughRev(RevAd))
+                {
+                    var raiseRev = milestone.RaiseRev(RevAd);
+                    pushEventAction?.Invoke(milestone.eventName,raiseRev,null);
+                }
             }
             
             PlayerPrefs.Save();
