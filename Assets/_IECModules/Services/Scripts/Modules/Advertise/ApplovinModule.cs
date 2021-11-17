@@ -75,7 +75,7 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
-        private float RevAd
+        public float RevAd
         {
             set
             {
