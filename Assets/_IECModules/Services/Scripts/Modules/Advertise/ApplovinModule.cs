@@ -50,15 +50,16 @@ namespace IEC
                 if (revCheck < Value) return false;
                 var multi = (int) (revCheck / Value);
                 Value = multi * step;
-                Debug.Log($"New milestone {eventName}: {Value}");
+                Debug.Log($"{eventName} new milestone: {Value}");
                 return true;
             }
 
             public float RaiseRev(float rev)
             {
                 var valueToSum = rev - LastRev;
+                Debug.Log($"{eventName} lastRev: {LastRev}");
+                Debug.Log($"{eventName} valueToSum: {valueToSum}");
                 LastRev = rev;
-                Debug.Log($"ValueToSum {eventName}: {valueToSum}");
                 return valueToSum;
             }
         }
