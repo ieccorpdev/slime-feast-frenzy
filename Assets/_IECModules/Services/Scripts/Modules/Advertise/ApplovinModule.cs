@@ -49,7 +49,7 @@ namespace IEC
             {
                 if (revCheck < Value) return false;
                 var multi = (int) (revCheck / Value);
-                Value = multi * step;
+                Value = (multi + 1) * step;
                 Debug.Log($"{eventName} new milestone: {Value}");
                 return true;
             }
