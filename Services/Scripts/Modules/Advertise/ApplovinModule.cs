@@ -50,15 +50,17 @@ namespace IEC
                 if (revCheck < Value) return false;
                 var multi = (int) (revCheck / Value);
                 Value = multi * step;
-                Debug.Log($"New milestone {eventName}: {Value}");
+                Debug.Log($"{eventName} new milestone: {Value}");
                 return true;
             }
 
             public float RaiseRev(float rev)
             {
-                var raiseRev = rev - LastRev;
+                var valueToSum = rev - LastRev;
+                Debug.Log($"{eventName} lastRev: {LastRev}");
+                Debug.Log($"{eventName} valueToSum: {valueToSum}");
                 LastRev = rev;
-                return raiseRev;
+                return valueToSum;
             }
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
@@ -610,8 +612,8 @@ namespace IEC
             {
                 if (milestone.IsEnoughRev(RevAd))
                 {
-                    var raiseRev = milestone.RaiseRev(RevAd);
-                    pushEventAction?.Invoke(milestone.eventName,raiseRev,null);
+                    var valueToSum = milestone.RaiseRev(RevAd);
+                    pushEventAction?.Invoke(milestone.eventName,valueToSum,null);
                 }
             }
             
