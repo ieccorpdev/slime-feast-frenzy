@@ -48,7 +48,7 @@ namespace IEC
             public bool IsEnoughRev(float revCheck)
             {
                 if (revCheck < Value) return false;
-                var multi = (int) (revCheck / Value);
+                var multi = (int) (revCheck / step);
                 Value = (multi + 1) * step;
                 Debug.Log($"{eventName} new milestone: {Value}");
                 return true;
