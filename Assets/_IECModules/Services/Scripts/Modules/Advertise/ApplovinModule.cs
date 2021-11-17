@@ -56,9 +56,10 @@ namespace IEC
 
             public float RaiseRev(float rev)
             {
-                var raiseRev = rev - LastRev;
+                var valueToSum = rev - LastRev;
                 LastRev = rev;
-                return raiseRev;
+                Debug.Log($"ValueToSum {eventName}: {valueToSum}");
+                return valueToSum;
             }
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
@@ -610,8 +611,8 @@ namespace IEC
             {
                 if (milestone.IsEnoughRev(RevAd))
                 {
-                    var raiseRev = milestone.RaiseRev(RevAd);
-                    pushEventAction?.Invoke(milestone.eventName,raiseRev,null);
+                    var valueToSum = milestone.RaiseRev(RevAd);
+                    pushEventAction?.Invoke(milestone.eventName,valueToSum,null);
                 }
             }
             
