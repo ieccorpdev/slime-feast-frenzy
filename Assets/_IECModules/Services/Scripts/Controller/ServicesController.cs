@@ -148,7 +148,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-           // StartCoroutine(IE_CountOneSec());
+            StartCoroutine(IE_CountOneSec());
 #if PluginInAppRating
 #if UNITY_ANDROID
            m_Review = new ReviewManager();
