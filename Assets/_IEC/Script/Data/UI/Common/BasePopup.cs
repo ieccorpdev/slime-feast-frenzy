@@ -23,13 +23,22 @@ namespace IEC
         
         public override void Show()
         {
+            DOTween.Kill(TweenID);
             IsShow = true;
             gameObject.SetActive(true);
             blackPanel.SetActive(isShowBlackPanel);
+
+            mainPanel.transform.localScale = Vector3.one;
+            if (mainPanel.gameObject.TryGetComponent<AspectRatioScaler>(out var scaler))
+            {
+                scaler.UpdateRect();
+            }
+
             if (isHaveAnim)
             {
+                var scale = mainPanel.transform.localScale;
                 mainPanel.transform.localScale = Vector3.zero;
-                mainPanel.transform.DOScale(Vector3.one, TWEEN_TIME)
+                mainPanel.transform.DOScale(scale, TWEEN_TIME)
                     .SetId(TweenID)
                     .SetEase(Ease.OutBack)
                     .OnComplete(() =>
@@ -46,6 +55,7 @@ namespace IEC
         
         public override void Hide()
         {
+            DOTween.Kill(TweenID);
             IsShow = false;
             if (isHaveAnim)
             {

@@ -66,6 +66,7 @@ namespace IEC
 
         public void ShowScreen(ScreenUI screen)
         {
+            var countShow = CountScreenShowing();
             if (screen.isHideAllOtherScreen)
             {
                 HideAllScreens();
@@ -75,7 +76,14 @@ namespace IEC
                 screen.listHideNoEffect.ForEach(s => HideScreen(s, false));
                 screen.listHideHaveEffect.ForEach(s => HideScreen(s, true));
             }
-            screen.Show();
+            if (countShow == 0)
+            {
+                screen.SetActive(true);
+            }
+            else
+            {
+                screen.Show();
+            }
         }
 
         public void HideScreen(ScreenUI screen, bool isUseEffect)
