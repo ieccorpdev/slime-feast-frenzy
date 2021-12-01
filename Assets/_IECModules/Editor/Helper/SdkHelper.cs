@@ -52,7 +52,8 @@ namespace _IECModules
         public const string GOOGLE_PLAY_COMMON = "com.google.play.common";
         public const string GOOGLE_PLAY_CORE = "com.google.play.core";
         public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
-        
+        public const string I2_LOCALIZATION_PKG = "com.i2.localization";
+
         public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") =>
             string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
 
@@ -122,6 +123,10 @@ namespace _IECModules
                         GOOGLE_PLAY_CORE,
                         GOOGLE_PLAY_COMMON
                     }
+                },
+                [I2_LOCALIZATION_PKG] = new GitlabPackageInfo
+                {
+                    id = I2_LOCALIZATION_PKG
                 }
             };
 

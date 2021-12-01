@@ -60,7 +60,8 @@ namespace _IECModules
             PluginInAppRating,
             PluginByteDanceChinaIOS,
             PluginNotification,
-            PluginOgury
+            PluginOgury,
+            PluginLocalization
         }
 
         private void Awake()
@@ -304,6 +305,23 @@ namespace _IECModules
 #endif
             notificationPkg.versionSelected = EditorGUILayout.Popup("", notificationPkg.versionSelected,
                 notificationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+
+            #endregion
+
+            #region Localization
+
+            var localizationPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.I2_LOCALIZATION_PKG];
+            var isLocalizationLoaded = localizationPkg.LoadPKGVersionFromCache();
+            CreateGuiButton($"Localization {(isLocalizationLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                if (!isLocalizationLoaded) return;
+                localizationPkg.Install();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginLocalization);
+            });
+            localizationPkg.versionSelected = EditorGUILayout.Popup("", localizationPkg.versionSelected,
+                localizationPkg.listVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 
