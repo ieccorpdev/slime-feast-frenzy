@@ -20,7 +20,7 @@ namespace _IECModules
     public static class SdkHelper
     {
         public const string GITLAB_API = "https://gitlab.com/api/v4/";
-        public const string GITLAB_GROUP_NAME = "iec-public-google-registry";
+        public const string GITLAB_GROUP_NAME = "iec-public-registry";
 
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
 
