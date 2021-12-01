@@ -6,6 +6,7 @@ using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
 using OgurySdk;
+using Facebook.Unity;
 #if PluginInAppRating
 #if UNITY_ANDROID
 using Google.Play.Review;
@@ -625,6 +626,14 @@ namespace IEC
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.PushEvent(eventName, value, param);
+            }
+
+            if(eventName == "rev_all_ad_10_cent")
+            {
+                if (FB.IsInitialized)
+                {
+                    FB.LogPurchase(GetValueToSum(), "USD");
+                }
             }
         }
 
