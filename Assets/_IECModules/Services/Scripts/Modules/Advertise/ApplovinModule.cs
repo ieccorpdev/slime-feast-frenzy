@@ -623,15 +623,6 @@ namespace IEC
             PlayerPrefs.Save();
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
-            #if PluginFacebook
-            if (FB.IsInitialized)
-            {
-                var param = new Dictionary<string, object>();
-                param["ad_type"] = eventName;
-                param["network_name"] = networkName;
-                FB.LogPurchase((float)revenue,"USD", param);
-            }
-            #endif
         }
 
         private string EventName(string adUnitId)
