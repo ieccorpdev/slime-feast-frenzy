@@ -150,7 +150,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Service.UPDATE_TIME_SERVER);
                 }
             });
-           // StartCoroutine(IE_CountOneSec());
+            StartCoroutine(IE_CountOneSec());
 #if PluginInAppRating
 #if UNITY_ANDROID
            m_Review = new ReviewManager();
@@ -525,7 +525,7 @@ namespace IEC
                     }
                 },
                 PushEvent);
-
+                m_ApplovinAds = applovinAds;
                 m_Ads = applovinAds;
 #endif
 
@@ -1190,6 +1190,24 @@ namespace IEC
                 if (div < 10) break;
             }
             return milestone;
+        }
+
+        private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
+#if PluginApplovin
+        private ApplovinModule m_ApplovinAds;
+#endif
+        public float GetValueToSum()
+        {
+            var valueToSum = 0f;
+#if PluginApplovin
+            if (m_ApplovinAds == null) return 0;
+            var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
+            Debug.Log("Last Rev For Purchase:" + lastTotalRev);
+            valueToSum = m_ApplovinAds.RevAd - lastTotalRev;
+            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ApplovinAds.RevAd);
+#endif
+            Debug.Log("Value to sum purchase:" + valueToSum);
+            return valueToSum;
         }
     }
 }
