@@ -16,6 +16,8 @@ namespace IEC
         [Header("Debug")]
         public Button btnLevelWin;
         public Button btnLevelLose;
+        public Button btnShowInter;
+        public Button btnShowReward;
 
         private void Start()
         {
@@ -34,6 +36,22 @@ namespace IEC
             SetEvent(btnLevelLose, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE);
+            });
+
+            SetEvent(btnShowInter, () =>
+            {
+                Services.ShowFullAds(() =>
+                {
+                    Debug.LogError("Done inter");
+                });
+            });
+
+            SetEvent(btnShowReward, () =>
+            {
+                Services.ShowRewardAds(() =>
+                {
+                    Debug.LogError("Done reward");
+                });
             });
         }
 

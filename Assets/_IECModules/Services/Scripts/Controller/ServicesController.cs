@@ -527,6 +527,15 @@ namespace IEC
                 m_Ads = applovinAds;
 #endif
 
+#if PluginHuawei
+                var huaweiAds = new HuaweiModule();
+                huaweiAds.Init();
+                huaweiAds.Load(AdsEnum.BANNER_BOTTOM, null);
+                huaweiAds.Load(AdsEnum.INTERSTITIAL, null);
+                huaweiAds.Load(AdsEnum.REWARD, null);
+                m_Ads = huaweiAds;
+#endif
+
                 Debug.Log("Ads:" + m_Ads);
                 m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () =>
                 {
