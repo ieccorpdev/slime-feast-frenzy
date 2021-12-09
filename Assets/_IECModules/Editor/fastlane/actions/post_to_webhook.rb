@@ -23,7 +23,7 @@ module Fastlane
         # UI.message lastGitCommit[:author_email]
         # UI.message changelogGitCommit
         
-        Faraday.post("http://discordbot.game.ieccorp.vn:3004/", JSON.generate({ 
+        Faraday.post("https://us-central1-united-data.cloudfunctions.net/testflightNotify?channel=tester-general", JSON.generate({ 
           bundleId: bundleId, 
           appName: appName,
           versionName: versionName,
@@ -33,7 +33,7 @@ module Fastlane
         }),
         {
           "Content-Type" => "application/json"
-        })  
+        })
       end
 
       #####################################################
