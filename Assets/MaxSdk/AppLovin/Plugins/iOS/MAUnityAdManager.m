@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"4.3.3"
+#define VERSION @"4.3.12"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
@@ -15,6 +15,11 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+    // UnityAppController.mm
+    UIViewController* UnityGetGLViewController(void);
+    UIWindow* UnityGetMainWindow(void);
+    
     // life cycle management
     void UnityPause(int pause);
     void UnitySendMessage(const char* obj, const char* method, const char* msg);
@@ -133,7 +138,7 @@ static NSString *ALSerializeKeyValuePairSeparator;
             self.safeAreaBackground.translatesAutoresizingMaskIntoConstraints = NO;
             self.safeAreaBackground.userInteractionEnabled = NO;
             
-            UIViewController *rootViewController = [MAUnityAdManager unityViewController];
+            UIViewController *rootViewController = [self unityViewController];
             [rootViewController.view addSubview: self.safeAreaBackground];
         });
         
@@ -452,6 +457,7 @@ static NSString *ALSerializeKeyValuePairSeparator;
 {
     return @{@"adUnitId" : ad.adUnitIdentifier,
              @"networkName" : ad.networkName,
+             @"networkPlacement" : ad.networkPlacement,
              @"creativeId" : ad.creativeIdentifier ?: @"",
              @"placement" : ad.placement ?: @"",
              @"revenue" : [@(ad.revenue) stringValue]};
@@ -1005,9 +1011,9 @@ static NSString *ALSerializeKeyValuePairSeparator;
             // Check edge case where ad may be detatched from view controller
             if ( !view.window.rootViewController )
             {
-                [self log: @"%@ missing view controller - re-attaching to %@...", adFormat, [MAUnityAdManager unityViewController]];
+                [self log: @"%@ missing view controller - re-attaching to %@...", adFormat, [self unityViewController]];
                 
-                UIViewController *rootViewController = [MAUnityAdManager unityViewController];
+                UIViewController *rootViewController = [self unityViewController];
                 [rootViewController.view addSubview: view];
                 
                 [self positionAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
@@ -1158,7 +1164,7 @@ static NSString *ALSerializeKeyValuePairSeparator;
         self.adViewPositions[adUnitIdentifier] = adViewPosition;
         self.adViewOffsets[adUnitIdentifier] = [NSValue valueWithCGPoint: offset];
         
-        UIViewController *rootViewController = [MAUnityAdManager unityViewController];
+        UIViewController *rootViewController = [self unityViewController];
         [rootViewController.view addSubview: result];
     }
     
@@ -1479,9 +1485,10 @@ static NSString *ALSerializeKeyValuePairSeparator;
     });
 }
 
-+ (UIViewController *)unityViewController
+- (UIViewController *)unityViewController
 {
-    return [KEY_WINDOW rootViewController];
+    // Handle edge case where `UnityGetGLViewController()` returns nil
+    return UnityGetGLViewController() ?: UnityGetMainWindow().rootViewController ?: [KEY_WINDOW rootViewController];
 }
 
 + (void)forwardUnityEventWithArgs:(NSDictionary<NSString *, NSString *> *)args
