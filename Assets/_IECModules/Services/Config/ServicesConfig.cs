@@ -44,9 +44,10 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Kochava")]
     public PlatformConfig kochavaConfig;
-    
+
     [Header("Adjust")]
     public PlatformConfig adjustConfig;
+    public AdjustAnalyticEventConfig adjustEventConfig;
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;

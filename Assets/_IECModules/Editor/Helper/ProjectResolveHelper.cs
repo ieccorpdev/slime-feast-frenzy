@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
 
@@ -11,8 +12,14 @@ namespace _IECModules
     {
         public static readonly List<string> listPermissionRemove = new List<string>()
         {
-            "WRITE_EXTERNAL_STORAGE"
+            "android.permission.WRITE_EXTERNAL_STORAGE"
         };
+
+        public static readonly List<string> listPermissionNecessary = new List<string>()
+        {
+            "com.google.android.gms.permission.AD_ID"
+        };
+        
         public static List<string> listObsoleteResolver = new List<string>
         {
             "Assets/ExternalDependencyManager",
@@ -59,7 +66,8 @@ namespace _IECModules
             UpdateMainTemplateAndAndroidManifest();
             GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
-            RemovePermissions(listPermissionRemove);
+            ModifyPermissions(listPermissionRemove,PermissionAction.Remove);
+            ModifyPermissions(listPermissionNecessary,PermissionAction.Add);
             GenerateGameObjectOguryCallback();
             //UpdateApplovinQualityService();
         }
@@ -410,7 +418,12 @@ namespace _IECModules
             googlePlayServicesMethodForceResolveMethod.Invoke(null, null);
         }
         
-        private static void RemovePermissions(List<string> permissions)
+        public enum PermissionAction
+        {
+            Add,
+            Remove
+        }
+        private static void ModifyPermissions(List<string> permissions, PermissionAction action)
         {
             var manifestPath = "Assets/Plugins/Android/AndroidManifest.xml";
             if (!File.Exists(manifestPath))
@@ -425,11 +438,17 @@ namespace _IECModules
             for (int i = 0; i < permissions.Count; i++)
             {
                 var permission = permissions[i];
-                var permissionRemove =
-                    $"<uses-permission android:name=\"android.permission.{permission}\" tools:node=\"remove\"/>";
-                if (!manifestTagReplace.Contains(permissionRemove))
+                var permissionAction =
+                    $"<uses-permission android:name=\"{permission}\"";
+                if(action == PermissionAction.Remove) permissionAction += " tools:node=\"remove\"";
+                permissionAction += "/>";
+                if (!manifestTagReplace.Contains(permission))
                 {
-                    manifestTagReplace += $"{permissionRemove}\n";
+                    manifestTagReplace += $"{permissionAction}\n";
+                }
+                else if(action == PermissionAction.Remove)
+                {
+                    LogEditorHelper.AddLogWarning($"Manifest has {permission} permission for some reasons, please check manifest file");
                 }
             }
             manifestContent = manifestContent.Replace(manifestTag, manifestTagReplace);

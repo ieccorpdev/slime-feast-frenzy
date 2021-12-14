@@ -53,7 +53,6 @@ namespace IEC
             EffectUI.DoShowHide(gameObject, true, (isShow) =>
             {
                 onShowDone.Invoke();
-                onHaveFocus.Invoke(true);
             });
             onShow.Invoke();
             onHaveFocus.Invoke(true);
@@ -68,7 +67,6 @@ namespace IEC
             EffectUI.DoShowHide(gameObject, false, (isShow) =>
             {
                 onHideDone.Invoke();
-                onLostFocus.Invoke(true);
             });
             onHide.Invoke();
             onLostFocus.Invoke(true);
@@ -93,9 +91,11 @@ namespace IEC
         public virtual void SetActive(bool isActive)
         {
             IsShow = isActive;
+            IsFocus = isActive;
             gameObject.SetActive(isActive);
             (isActive ? onShowDone : onHideDone).Invoke();
             (isActive ? onShow : onHide).Invoke();
+            (isActive ? onHaveFocus : onLostFocus).Invoke(false);
         }
 
         public void SetShowOrder(int showOrder)

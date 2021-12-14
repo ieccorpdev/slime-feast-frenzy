@@ -65,4 +65,22 @@ public class BaseBehaviour : MonoBehaviour
             FindDictionary.Remove(type);
         }
     }
+
+    protected void SingleClear(string customName)
+    {
+        if (CreateIfNotExistDictionary.ContainsKey(customName))
+        {
+            CreateIfNotExistDictionary.Remove(customName);
+        }
+    }
+
+    protected void SingleClearCreateIfNotExist()
+    {
+        CreateIfNotExistDictionary.Clear();
+    }
+
+    protected void SingleClearFind()
+    {
+        FindDictionary.Clear();
+    }
 }
