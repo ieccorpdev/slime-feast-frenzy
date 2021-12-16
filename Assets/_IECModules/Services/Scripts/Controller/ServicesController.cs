@@ -1158,6 +1158,12 @@ namespace IEC
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
 #if PluginApplovin
         private ApplovinModule m_ApplovinAds;
+
+        public void SetRevAllAd(float value)
+        {
+            if(m_ApplovinAds == null) return;
+            m_ApplovinAds.RevAd = value;
+        }
 #endif
         public float GetValueToSum()
         {
