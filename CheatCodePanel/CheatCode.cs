@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IEC;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -141,6 +142,16 @@ namespace _IECModules
                 cheatCodeParam =>
                 {
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
+                });
+            
+            AddCheatCodeButtonWithInput("Set Rev all ad",
+                param =>
+                {
+                    var rev = float.Parse(param.inputParams[0].value.ToString());
+                    Controllers.Get<ServicesController>().SetRevAllAd(rev);
+                }, new InputParam
+                {
+                    value = 0
                 });
 #endif
 //            AddTestButton();

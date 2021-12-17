@@ -303,7 +303,8 @@ namespace _IECModules
                         // }
                         break;
                     case ChecklistItemName.KeyStoreName:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
+                        // Stop auto creating keystore
+                        // if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
                         break;
                     case ChecklistItemName.KanboardSwimlane:
                         break;
