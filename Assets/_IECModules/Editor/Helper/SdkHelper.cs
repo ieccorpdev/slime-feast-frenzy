@@ -276,7 +276,7 @@ namespace _IECModules
                     for (int i = 0; i < data.Count; i++)
                     {
                         var version = data[i]["name"].Value;
-                        if (version != "master")
+                        if (version != "master" && version != "main")
                         {
                             versions.Add(version);
                         }
