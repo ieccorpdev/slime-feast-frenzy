@@ -1164,6 +1164,12 @@ namespace IEC
             if(m_ApplovinAds == null) return;
             m_ApplovinAds.RevAd = value;
         }
+        
+        public float GetRevAllAd()
+        {
+            if(m_ApplovinAds == null) return 0f;
+            return m_ApplovinAds.RevAd;
+        }
 #endif
         public float GetValueToSum()
         {
