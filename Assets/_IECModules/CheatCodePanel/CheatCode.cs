@@ -269,7 +269,8 @@ namespace _IECModules
                     m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
                         m_InputFieldStyle);
 
-                    if (m_PasswordInputEditString.ToLower().Trim() == "iec123456")
+                    var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
+                    if (passwordEditStr == "iec123456" || passwordEditStr == GetOTPPassword())
                     {
                         m_HaveInputPassword = true;
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -615,6 +616,15 @@ namespace _IECModules
                 m_CheatCodeParamList.RemoveAll(x => x.buttonText.StartsWith($"{className}/"));
                 return false;
             }
+        }
+
+        private string GetOTPPassword()
+        {
+            var otpSeed = 69696;
+            otpSeed += DateTime.UtcNow.Date.Millisecond;
+            var systemRandom = new System.Random(otpSeed);
+            var otpPassword = systemRandom.Next(1000000).ToString();
+            return otpPassword;
         }
     }
 }
