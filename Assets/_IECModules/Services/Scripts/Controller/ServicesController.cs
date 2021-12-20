@@ -26,7 +26,6 @@ namespace IEC
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         public const string SERVER_URL_KEY = "ServerUrl";
-
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
@@ -903,7 +902,7 @@ namespace IEC
         public void SendEmail()
         {
             SaveLogToFile();
-            string email = "support@iecglobal.com.au";
+            string email = config.emailSupport;
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
             {

@@ -56,6 +56,8 @@ public class ServicesConfig : ScriptableObject
     [Header("RemoteConfig")]
     public bool isTestRemoteConfig;
     public List<RemoteConfigData> remoteConfigs;
+    [Header("Email Support")]
+    public string emailSupport;
     
     [Header("SDK Version")]
     public string firebaseSDKVersion;
