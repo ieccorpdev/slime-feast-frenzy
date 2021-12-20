@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using _IECModules;
+using IEC.Linq;
 using UnityEngine;
 using NaughtyAttributes;
+using TMPro;
 
 namespace IEC
 {
@@ -18,6 +20,8 @@ namespace IEC
         
         public bool IsEnableAltUnity { get; private set; }
         public DataAutoTestRecord DataRecord { get; private set; }
+
+        public TMP_Text txtAb;
 
         public CheatCode.PositionActivate positionActivate = CheatCode.PositionActivate.TopLeft;
 
@@ -74,6 +78,13 @@ namespace IEC
                     Debug.LogWarning("Enable AltUnity");
                     m_AltUnity.showPopUp = true;
                     m_AltUnity.gameObject.SetActive(true);
+                    if (LastAbConfig() == null) txtAb.text = "Last AB null";
+                    else
+                    {
+                        var abKey = LastAbConfig().KeyName;
+                        var abValue = Services.ABTest().GetValue(abKey, 0);
+                        txtAb.text = LastAbConfig().ListEventsAB[abValue];
+                    }
                 }
                 else
                 {
@@ -158,6 +169,30 @@ namespace IEC
             Services.DataSecure().Save();
 
             // wait appium close app
+        }
+
+        public int GetCountLastAb()
+        {
+            if (LastAbConfig() == null) return -1;
+            return LastAbConfig().ListEventsAB.Length;
+        }
+
+        public void SetLastAbValue(int abValue)
+        {
+            if (LastAbConfig() == null) return;
+            var key = LastAbConfig().KeyName;
+            Services.DataNormal().SetInt(key, abValue);
+            
+        }
+
+        private ABTestConfig LastAbConfig()
+        {
+            if (Services == null 
+                || Services.config == null 
+                || Services.config.abTestConfigs == null
+                || Services.config.abTestConfigs.Length == 0) return null;
+
+            return Services.config.abTestConfigs.Last();
         }
     }
 }
