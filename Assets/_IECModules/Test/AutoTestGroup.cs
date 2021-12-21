@@ -182,7 +182,7 @@ namespace IEC
             if (LastAbConfig() == null) return;
             var key = LastAbConfig().KeyName;
             Services.DataNormal().SetInt(key, abValue);
-            
+            txtAb.text = $"Set AB:{LastAbConfig().ListEventsAB[abValue]}";
         }
 
         private ABTestConfig LastAbConfig()
