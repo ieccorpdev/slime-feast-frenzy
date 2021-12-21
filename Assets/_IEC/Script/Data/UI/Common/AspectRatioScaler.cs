@@ -64,7 +64,7 @@ namespace UnityEngine.UI
         protected override void OnEnable()
         {
             base.OnEnable();
-            m_DelayedSetDirty = true;
+            //m_DelayedSetDirty = true;
         }
 
         protected override void OnDisable()

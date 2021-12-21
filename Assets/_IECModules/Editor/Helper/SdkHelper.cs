@@ -20,7 +20,7 @@ namespace _IECModules
     public static class SdkHelper
     {
         public const string GITLAB_API = "https://gitlab.com/api/v4/";
-        public const string GITLAB_GROUP_NAME = "iec-public-google-registry";
+        public const string GITLAB_GROUP_NAME = "iec-public-registry";
 
         public const string IRON_SOURCE_CURRENT_VERSION = "6.13.0";
 
@@ -52,7 +52,8 @@ namespace _IECModules
         public const string GOOGLE_PLAY_COMMON = "com.google.play.common";
         public const string GOOGLE_PLAY_CORE = "com.google.play.core";
         public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
-        
+        public const string I2_LOCALIZATION_PKG = "com.i2.localization";
+
         public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") =>
             string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
 
@@ -122,6 +123,10 @@ namespace _IECModules
                         GOOGLE_PLAY_CORE,
                         GOOGLE_PLAY_COMMON
                     }
+                },
+                [I2_LOCALIZATION_PKG] = new GitlabPackageInfo
+                {
+                    id = I2_LOCALIZATION_PKG
                 }
             };
 
@@ -271,7 +276,7 @@ namespace _IECModules
                     for (int i = 0; i < data.Count; i++)
                     {
                         var version = data[i]["name"].Value;
-                        if (version != "master")
+                        if (version != "master" && version != "main")
                         {
                             versions.Add(version);
                         }

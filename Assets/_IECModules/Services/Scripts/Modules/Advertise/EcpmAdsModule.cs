@@ -195,5 +195,13 @@ namespace IEC
         {
             return m_DefaultAds.GetBannerHeight();
         }
+
+        public void OnApplicationPause(bool isPause)
+        {
+        }
+
+        public void OnApplicationQuit()
+        {
+        }
     }
 }

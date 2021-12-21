@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IEC;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -142,6 +143,16 @@ namespace _IECModules
                 {
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
                 });
+            
+            AddCheatCodeButtonWithInput("Set Rev all ad",
+                param =>
+                {
+                    var rev = float.Parse(param.inputParams[0].value.ToString());
+                    Controllers.Get<ServicesController>().SetRevAllAd(rev);
+                }, new InputParam
+                {
+                    value = Controllers.Get<ServicesController>().GetRevAllAd();
+                });
 #endif
 //            AddTestButton();
         }
@@ -258,7 +269,8 @@ namespace _IECModules
                     m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
                         m_InputFieldStyle);
 
-                    if (m_PasswordInputEditString.ToLower().Trim() == "iec123456")
+                    var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
+                    if (passwordEditStr == "iec123456" || passwordEditStr == GetOTPPassword())
                     {
                         m_HaveInputPassword = true;
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -604,6 +616,15 @@ namespace _IECModules
                 m_CheatCodeParamList.RemoveAll(x => x.buttonText.StartsWith($"{className}/"));
                 return false;
             }
+        }
+
+        private string GetOTPPassword()
+        {
+            var otpSeed = 69696;
+            otpSeed += DateTime.UtcNow.Date.Millisecond;
+            var systemRandom = new System.Random(otpSeed);
+            var otpPassword = systemRandom.Next(1000000).ToString();
+            return otpPassword;
         }
     }
 }

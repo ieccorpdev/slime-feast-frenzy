@@ -8,8 +8,64 @@ namespace IEC
 {
     public class ApplovinModule : IAdsService
     {
-        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        class RevMilestone
+        {
+            public float step;
 
+            public float Value
+            {
+                set
+                {
+                    PlayerPrefs.SetFloat(saveMilestoneKey,value);
+                }
+                get
+                {
+                    return PlayerPrefs.GetFloat(saveMilestoneKey, step);
+                }
+            }
+
+            public float LastRev
+            {
+                set
+                {
+                    PlayerPrefs.SetFloat(saveLastRevKey,value);
+                }
+                get
+                {
+                    return PlayerPrefs.GetFloat(saveLastRevKey, 0f);
+                }
+            }
+            public string eventName;
+
+            private string saveMilestoneKey => $"APPLOVIN_REV_{eventName}";
+            private string saveLastRevKey => $"APPLOVIN_LAST_REV_{eventName}";
+            public RevMilestone(string eventName,float step)
+            {
+                this.eventName = eventName;
+                this.step = step;
+            }
+
+            public bool IsEnoughRev(float revCheck)
+            {
+                if (revCheck < Value) return false;
+                var multi = (int) (revCheck / step);
+                Value = (multi + 1) * step;
+                Debug.Log($"{eventName} new milestone: {Value}");
+                return true;
+            }
+
+            public float RaiseRev(float rev)
+            {
+                var valueToSum = rev - LastRev;
+                Debug.Log($"{eventName} lastRev: {LastRev}");
+                Debug.Log($"{eventName} valueToSum: {valueToSum}");
+                LastRev = rev;
+                return valueToSum;
+            }
+        }
+        public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        public const string APPLOVIN_REV_ALL_AD = "APPLOVIN_REV_ALL_AD";
+        
         AdsPlatformConfig m_Config;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -19,6 +75,18 @@ namespace IEC
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
 
+        public float RevAd
+        {
+            set
+            {
+                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,value);
+            }
+            get
+            {
+                return PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+            }
+        }
+        
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
@@ -27,6 +95,7 @@ namespace IEC
 
         Action<string, float, Dictionary<string, object>> pushEventAction;
 
+        private List<RevMilestone> m_ListRevMilestones;
 
         public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
@@ -45,6 +114,17 @@ namespace IEC
                 {
                     MaxSdk.SetVerboseLogging(true);
                 }
+
+                RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
+                m_ListRevMilestones = new List<RevMilestone>
+                {
+                    new RevMilestone("rev_all_ad_1_cent", 0.01f),
+                    new RevMilestone("rev_all_ad_5_cent", 0.05f),
+                    new RevMilestone("rev_all_ad_10_cent", 0.1f),
+                    new RevMilestone("rev_all_ad_50_cent", 0.5f),
+                    new RevMilestone("rev_all_ad_100_cent", 1f)
+                };
+                
                 MaxSdk.InitializeSdk();
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
@@ -526,6 +606,18 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
+            RevAd += (float)revenue;
+            Debug.Log("Total Rev:" + RevAd);
+            foreach (var milestone in m_ListRevMilestones)
+            {
+                if (milestone.IsEnoughRev(RevAd))
+                {
+                    var valueToSum = milestone.RaiseRev(RevAd);
+                    pushEventAction?.Invoke(milestone.eventName,valueToSum,null);
+                }
+            }
+            
+            PlayerPrefs.Save();
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }

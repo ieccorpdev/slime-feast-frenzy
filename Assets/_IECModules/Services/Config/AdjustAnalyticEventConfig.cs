@@ -34,8 +34,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         {
             var eventMap = data[i];
             var gameEvent = eventMap[0].Trim();
-            var adjustAndroidEventId = (androidIndex >=0) ? eventMap[androidIndex].Trim() : string.Empty;
-            var adjustIosEventId = (iosIndex >= 0) ? eventMap[iosIndex].Trim() : string.Empty;
+            var adjustAndroidEventId = (androidIndex >=0 && androidIndex < eventMap.Count) ? eventMap[androidIndex].Trim() : string.Empty;
+            var adjustIosEventId = (iosIndex >= 0 && androidIndex < eventMap.Count) ? eventMap[iosIndex].Trim() : string.Empty;
             if (string.IsNullOrEmpty(gameEvent))
             {
                 continue;
