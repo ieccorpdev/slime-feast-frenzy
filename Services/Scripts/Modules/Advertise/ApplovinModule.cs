@@ -261,15 +261,29 @@ namespace IEC
 
         public float GetBannerHeight()
         {
-            float f = Screen.dpi / 160f;
-            if (MaxSdkUtils.IsTablet())
-            {
-                return 90f * f;
-            }
-            return 50f * f;
+            var adaptiveHeight = MaxSdkUtils.GetAdaptiveBannerHeight();
+            float f = GetScreenDensity();
+            Debug.LogWarning("GetAdaptiveBannerHeight: " + adaptiveHeight);
+            Debug.LogWarning("GetScreenDensity: " + f);
+            return adaptiveHeight * f;
         }
 
-#region bannerAds
+        float GetScreenDensity()
+        {
+            if (Application.platform != RuntimePlatform.Android)
+            {
+                return MaxSdkUtils.GetScreenDensity();
+            }
+            AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
+
+            AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
+            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
+
+            return metrics.Get<float>("ydpi") / 160f;
+        }
+
+        #region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -287,6 +301,7 @@ namespace IEC
         void ShowBanner(Action<AdsEventArgs> showCallback, AdsEnum bannerPos)
         {
             MaxSdk.ShowBanner(m_Config.bannerID);
+            MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
             AdsStateData.SafeInvoke(showCallback, AdsEventArgs.DONE);
         }
 
