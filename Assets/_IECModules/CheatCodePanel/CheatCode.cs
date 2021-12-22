@@ -153,7 +153,7 @@ namespace _IECModules
                     Controllers.Get<ServicesController>().SetRevAllAd(rev);
                 }, new InputParam
                 {
-                    value = Controllers.Get<ServicesController>().GetRevAllAd();
+                    value = Controllers.Get<ServicesController>().GetRevAllAd()
                 });
 #endif
 //            AddTestButton();
