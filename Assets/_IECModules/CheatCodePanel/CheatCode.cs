@@ -145,7 +145,13 @@ namespace _IECModules
                 {
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
                 });
-            
+#endif
+//            AddTestButton();
+        }
+
+        private void Start()
+        {
+#if PluginApplovin
             AddCheatCodeButtonWithInput("Set Rev all ad",
                 param =>
                 {
@@ -156,7 +162,6 @@ namespace _IECModules
                     value = Controllers.Get<ServicesController>().GetRevAllAd()
                 });
 #endif
-//            AddTestButton();
         }
 
         private void AddTestButton()
