@@ -65,6 +65,8 @@ namespace _IECModules
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
+        [Range(0f, 1f)]
+        public float topOffset = 0f;
 
         private ShowCheatCodeState m_ShowCheatCodeState;
 
@@ -245,8 +247,9 @@ namespace _IECModules
         private void OnGUI()
         {
             InitGuiParams();
+            var offset = topOffset * Screen.height;
             var screenWidth = Screen.width;
-            var screenHeight = Screen.height;
+            var screenHeight = Screen.height - offset;
             var screenWidthCenter = (float) screenWidth / 2;
 
             switch (showCheatCodeState)
@@ -256,7 +259,7 @@ namespace _IECModules
                 case ShowCheatCodeState.ShowPasswordInput:
                     var bgColorCurrent = GUI.backgroundColor;
                     GUI.backgroundColor = new Color(0, 0, 0, 0);
-                    if (GuiButton(new Rect(0, screenHeight * 0.25f, screenWidth, screenHeight * 0.75f), ""))
+                    if (GuiButton(new Rect(0, screenHeight * 0.25f + offset, screenWidth, screenHeight * 0.75f), ""))
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
@@ -265,7 +268,7 @@ namespace _IECModules
 
                     var passwordInputTextSize = new Vector2(screenWidthCenter, 300);
                     var passwordInputTextRect = new Rect((screenWidth - passwordInputTextSize.x) / 2,
-                        50, passwordInputTextSize.x, passwordInputTextSize.y);
+                        50 + offset, passwordInputTextSize.x, passwordInputTextSize.y);
                     m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
                         m_InputFieldStyle);
 
@@ -289,19 +292,19 @@ namespace _IECModules
 
 
                     if (GuiButton(
-                        new Rect(20, 20, 0, ButtonSize.y), "Close"))
+                        new Rect(20, 20 + offset, 0, ButtonSize.y), "Close"))
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
 
-                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20,
+                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20 + offset,
                         300, ButtonSize.y), m_InputSearchString, m_InputFieldStyle);
 
-                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20,
+                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20 + offset,
                         150, ButtonSize.y), "Search", m_LabelTextStyle);
 
                     var cheatCodeRectHeight = screenHeight * 0.9f;
-                    var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight;
+                    var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight + offset;
                     var cheatCodeSizeEach = ButtonSize.y * 1.2f;
 
                     var guiSkin = GUI.skin;
