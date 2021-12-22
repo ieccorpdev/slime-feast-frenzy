@@ -65,6 +65,7 @@ public class Images
 
 public class Reporter : MonoBehaviour
 {
+	public static float topOffset = 0f;
 
 	public enum _LogType
 	{
@@ -974,9 +975,11 @@ public class Reporter : MonoBehaviour
 
 	void drawToolBar()
 	{
+		var offset = topOffset;
+		var offsetSize = offset * Screen.height;
 
 		toolBarRect.x = 0f;
-		toolBarRect.y = 0f;
+		toolBarRect.y = 0f + offsetSize;
 		toolBarRect.width = Screen.width;
 		toolBarRect.height = size.y * 2f;
 
@@ -985,7 +988,7 @@ public class Reporter : MonoBehaviour
 
 		GUI.skin = toolbarScrollerSkin;
 		Vector2 drag = getDrag();
-		if ((drag.x != 0) && (downPos != Vector2.zero) && (downPos.y > Screen.height - size.y * 2f)) {
+		if ((drag.x != 0) && (downPos != Vector2.zero) && (downPos.y > Screen.height - size.y * 2f - offsetSize)) {
 			toolbarScrollPosition.x -= (drag.x - toolbarOldDrag);
 		}
 		toolbarOldDrag = drag.x;
@@ -1555,22 +1558,25 @@ public class Reporter : MonoBehaviour
 			return;
 		}
 
+		var offset = topOffset;
+		var offsetSize = offset * Screen.height;
+
 		screenRect.x = 0;
-		screenRect.y = 0;
+		screenRect.y = offsetSize;
 		screenRect.width = Screen.width;
-		screenRect.height = Screen.height;
+		screenRect.height = Screen.height - offsetSize;
 
 		getDownPos();
 
 
 		logsRect.x = 0f;
-		logsRect.y = size.y * 2f;
+		logsRect.y = size.y * 2f + offsetSize;
 		logsRect.width = Screen.width;
-		logsRect.height = Screen.height * 0.75f - size.y * 2f;
+		logsRect.height = Screen.height * 0.75f - size.y * 2f - offsetSize;
 
 		stackRectTopLeft.x = 0f;
 		stackRect.x = 0f;
-		stackRectTopLeft.y = Screen.height * 0.75f;
+		stackRectTopLeft.y = Screen.height * 0.75f + offsetSize;
 		stackRect.y = Screen.height * 0.75f;
 		stackRect.width = Screen.width;
 		stackRect.height = Screen.height * 0.25f - size.y;
@@ -1578,9 +1584,9 @@ public class Reporter : MonoBehaviour
 
 
 		detailRect.x = 0f;
-		detailRect.y = Screen.height - size.y * 3;
+		detailRect.y = Screen.height - size.y * 3 + offsetSize;
 		detailRect.width = Screen.width;
-		detailRect.height = size.y * 3;
+		detailRect.height = size.y * 3 - offsetSize;
 
 		if (currentView == ReportView.Info)
 			DrawInfo();

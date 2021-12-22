@@ -28,7 +28,6 @@ namespace IEC
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         public const string SERVER_URL_KEY = "ServerUrl";
-
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
@@ -681,7 +680,7 @@ namespace IEC
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     var milestone = GetMilestone(fullAdCount);
-                    if (fullAdCount % milestone == 0 && fullAdCount > 0)
+                    if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
                         PushEvent("inter_" + fullAdCount);
                     }
@@ -750,7 +749,7 @@ namespace IEC
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
                         var milestone = GetMilestone(rewardCount) / 2;
-                        if (rewardCount % milestone == 0 && rewardCount > 0)
+                        if (rewardCount % milestone == 0 && rewardCount > 0 && rewardCount < 100)
                         {
                             PushEvent("reward_" + rewardCount);
                         }
@@ -914,7 +913,7 @@ namespace IEC
         public void SendEmail()
         {
             SaveLogToFile();
-            string email = "support@iecglobal.com.au";
+            string email = config.emailSupport;
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
             {
@@ -1204,6 +1203,18 @@ namespace IEC
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
 #if PluginApplovin
         private ApplovinModule m_ApplovinAds;
+
+        public void SetRevAllAd(float value)
+        {
+            if(m_ApplovinAds == null) return;
+            m_ApplovinAds.RevAd = value;
+        }
+        
+        public float GetRevAllAd()
+        {
+            if(m_ApplovinAds == null) return 0f;
+            return m_ApplovinAds.RevAd;
+        }
 #endif
         public float GetValueToSum()
         {

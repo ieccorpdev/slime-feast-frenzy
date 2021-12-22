@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using IEC;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,6 +16,7 @@ namespace _IECModules
         public enum ChecklistItemName
         {
             ProductName,
+            SupportEmail,
             BundleID,
             KeyStoreName,
             KanboardSwimlane,
@@ -71,6 +73,7 @@ namespace _IECModules
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
         {
             {"Tên game", ChecklistItemName.ProductName},
+            {"Support Email", ChecklistItemName.SupportEmail},
             {"BundleID", ChecklistItemName.BundleID},
             {"Keystore Name", ChecklistItemName.KeyStoreName},
             {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
@@ -112,16 +115,16 @@ namespace _IECModules
             {"AB Test List", ChecklistItemName.AbTestList},
             {"Adjust iOS ID", ChecklistItemName.AdjusIosID},
             {"Adjust Android ID", ChecklistItemName.AdjustAndroidID},
-            {"Ogury IOS ID", ChecklistItemName.OguryIOSID },
-            {"Ogury Android ID", ChecklistItemName.OguryAndroidID },
-            {"Ogury IOS Inter ID", ChecklistItemName.OguryIOSInterID },
-            {"Ogury IOS Banner ID", ChecklistItemName.OguryIOSBannerID },
-            {"Ogury IOS Reward ID", ChecklistItemName.OguryIOSRewardID },
-            {"Ogury IOS Thumbnail ID", ChecklistItemName.OguryIOSThumbnailID },
-            {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID },
-            {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID },
-            {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID },
-            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID }
+            {"Ogury IOS ID", ChecklistItemName.OguryIOSID},
+            {"Ogury Android ID", ChecklistItemName.OguryAndroidID},
+            {"Ogury IOS Inter ID", ChecklistItemName.OguryIOSInterID},
+            {"Ogury IOS Banner ID", ChecklistItemName.OguryIOSBannerID},
+            {"Ogury IOS Reward ID", ChecklistItemName.OguryIOSRewardID},
+            {"Ogury IOS Thumbnail ID", ChecklistItemName.OguryIOSThumbnailID},
+            {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID},
+            {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID},
+            {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID},
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -149,7 +152,7 @@ namespace _IECModules
             var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
 
             var getServicesConfigResult = LoadServicesConfig();
-            
+
             if (servicesConfig != null)
             {
                 LogEditorHelper.AddLog("Service Config Load Success: " + getServicesConfigResult);
@@ -159,9 +162,9 @@ namespace _IECModules
                 LogEditorHelper.AddLogError($"Error Loading Service Config!: \n{getServicesConfigResult}");
                 return;
             }
-            
+
             servicesConfig.projectChecklistUrl = googleDocsUrl;
-            
+
             ApplySdkSetting(googleDocsData);
         }
 
@@ -169,7 +172,8 @@ namespace _IECModules
         {
             var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
 
-            dictionaryCheckListValue = googleDocsData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
+            dictionaryCheckListValue = googleDocsData.Where(checklistKey =>
+                    checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
             if (dictionaryCheckListValue.TryGetValue(ChecklistItemName.AbTestList, out string abTestListUrl))
@@ -185,14 +189,15 @@ namespace _IECModules
                 var lastVersionString = "";
                 foreach (var row in googleDocsData)
                 {
-                    if (row.Count >= 5 
-                        && !string.IsNullOrWhiteSpace(row[0]) 
+                    if (row.Count >= 5
+                        && !string.IsNullOrWhiteSpace(row[0])
                         && !string.IsNullOrWhiteSpace(row[1]))
                     {
                         lastVersionString = row[0];
                         lastAbString = row[4];
                     }
                 }
+
                 PlayerSettings.bundleVersion = lastVersionString;
                 UpdateAbVersion(lastAbString);
             }
@@ -213,6 +218,7 @@ namespace _IECModules
                 Debug.LogError("Wrong AB version string format");
                 return;
             }
+
             var abName = splits[0] + "_" + splits[1];
             var verNumber = int.Parse(splits[2].Split('v')[1]);
             var verRootNumber = (verNumber / 10) * 10;
@@ -250,6 +256,7 @@ namespace _IECModules
             {
                 listAb.Add(abName + "_v" + (verRootNumber + i).ToString());
             }
+
             config.ListEventsAB = listAb.ToArray();
             config.SetDefaultRatioAndAB();
 
@@ -260,8 +267,8 @@ namespace _IECModules
 
         private static void ApplySdkSetting(List<List<string>> sdkData)
         {
-
-            dictionaryCheckListValue = sdkData.Where(checklistKey => checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
+            dictionaryCheckListValue = sdkData.Where(checklistKey =>
+                    checklistKey.Count >= 2 && _checklistKey.ContainsKey(checklistKey[0]))
                 .ToDictionary(checklistKey => _checklistKey[checklistKey[0]], checklistKey => checklistKey[1]);
 
 #if !PluginFacebook
@@ -272,9 +279,13 @@ namespace _IECModules
             var projectSettingAssetFile = File.ReadAllText("ProjectSettings/ProjectSettings.asset");
             var listProjectSettingChange = new List<Func<string, string>>();
             listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
-                projectSetting.GetBetweenString("organizationId: ", "\n"), 
+                projectSetting.GetBetweenString("organizationId: ", "\n"),
                 $"organizationId: iec-corporation\n"));
-            
+
+            if (!dictionaryCheckListValue.ContainsKey(ChecklistItemName.SupportEmail))
+            {
+                LogEditorHelper.AddLogError("Support Email Null");
+            }
             foreach (var keyValuePair in dictionaryCheckListValue)
             {
                 var checklistItemName = keyValuePair.Key;
@@ -286,13 +297,18 @@ namespace _IECModules
                         LogEditorHelper.AddLog($"Product Name: {productName}");
                         PlayerSettings.productName = productName;
                         break;
+                    case ChecklistItemName.SupportEmail:
+                        var supportEmail = checklistItemValue;
+                        LogEditorHelper.AddLog($"Support Email: {supportEmail}");
+                        servicesConfig.emailSupport = supportEmail;
+                        break;
                     case ChecklistItemName.BundleID:
                         var bundleId = checklistItemValue;
                         LogEditorHelper.AddLog($"Bundle ID: {bundleId}");
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Standalone, bundleId);
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, bundleId);
                         PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.iOS, bundleId);
-                        
+
                         // No need company name anymore 
                         // if (bundleId.ToLower().Contains(".gma.")) PlayerSettings.companyName = "GMA";
                         // else if (bundleId.ToLower().Contains(".iec.")) PlayerSettings.companyName = "IEC";
@@ -303,7 +319,8 @@ namespace _IECModules
                         // }
                         break;
                     case ChecklistItemName.KeyStoreName:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
+                        // Stop auto creating keystore
+                        // if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
                         break;
                     case ChecklistItemName.KanboardSwimlane:
                         break;
@@ -335,46 +352,54 @@ namespace _IECModules
                             var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
                             if (!Directory.Exists(path1))
                                 Directory.CreateDirectory(path1);
-                            var path2 = Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
+                            var path2 =
+ Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
                             AssetDatabase.CreateAsset(instance, path2);
                         }
                         Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
                         Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {facebookId};
-                        Facebook.Unity.Settings.FacebookSettings.AppLabels = new List<string> {PlayerSettings.productName};
+                        Facebook.Unity.Settings.FacebookSettings.AppLabels =
+ new List<string> {PlayerSettings.productName};
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
                         break;
 #endif
                     case ChecklistItemName.UnityProjectID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Unity Project ID: {checklistItemValue}");
                         listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
                             projectSetting.GetBetweenString("cloudProjectId: ", "\n"),
                             $"cloudProjectId: {checklistItemValue}\n"));
                         break;
                     case ChecklistItemName.UnityProjectName:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Unity Project Name: {checklistItemValue}");
                         listProjectSettingChange.Add(projectSetting => projectSetting.Replace(
-                            projectSetting.GetBetweenString("projectName: ", "\n"), 
+                            projectSetting.GetBetweenString("projectName: ", "\n"),
                             $"projectName: {checklistItemValue}\n"));
-                        break;    
+                        break;
                     case ChecklistItemName.FirebaseConfigFileIOS:
                         break;
                     case ChecklistItemName.FirebaseConfigFileAndroid:
                         break;
                     case ChecklistItemName.KochavaIDIOS:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Kochava ID IOS: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Kochava ID IOS: {checklistItemValue}");
                         servicesConfig.kochavaConfig.iosID = checklistItemValue;
                         break;
                     case ChecklistItemName.KochavaIDAndroid:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Kochava ID Android: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Kochava ID Android: {checklistItemValue}");
                         servicesConfig.kochavaConfig.androidID = checklistItemValue;
                         break;
                     case ChecklistItemName.AppodealIDIOS:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Appodeal ID IOS: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Appodeal ID IOS: {checklistItemValue}");
                         servicesConfig.AppodealConfig.android.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.AppodealIDAndroid:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Appodeal ID Android: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Appodeal ID Android: {checklistItemValue}");
                         servicesConfig.AppodealConfig.android.appID = checklistItemValue;
                         break;
                     case ChecklistItemName.MarketingChecklist:
@@ -387,16 +412,18 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.AdPosition:
                         break;
-                    
+
                     case ChecklistItemName.IronSourceIOSID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Iron Source IOS ID: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Iron Source IOS ID: {checklistItemValue}");
                         servicesConfig.IronSourceConfig.ios.appID = checklistItemValue;
                         servicesConfig.IronSourceConfig.ios.interstitialID = checklistItemValue;
                         servicesConfig.IronSourceConfig.ios.bannerID = checklistItemValue;
                         servicesConfig.IronSourceConfig.ios.rewardID = checklistItemValue;
                         break;
                     case ChecklistItemName.IronSourceAndroidID:
-                        if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Iron Source Android ID: {checklistItemValue}");
+                        if (!string.IsNullOrEmpty(checklistItemValue))
+                            LogEditorHelper.AddLog($"Iron Source Android ID: {checklistItemValue}");
                         servicesConfig.IronSourceConfig.android.appID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.interstitialID = checklistItemValue;
                         servicesConfig.IronSourceConfig.android.bannerID = checklistItemValue;
@@ -410,9 +437,9 @@ namespace _IECModules
                     case ChecklistItemName.AdjustAndroidID:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adjust ID Android: {checklistItemValue}");
                         servicesConfig.adjustConfig.androidID = checklistItemValue;
-                        break;        
+                        break;
 #endif
-                    
+
 #if PluginApplovin
                     case ChecklistItemName.ApplovinIOSID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Applovin IOS ID: {checklistItemValue}");
