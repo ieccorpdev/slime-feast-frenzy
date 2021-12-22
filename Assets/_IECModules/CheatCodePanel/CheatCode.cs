@@ -164,21 +164,6 @@ namespace _IECModules
 #endif
         }
 
-        private void Start()
-        {
-#if PluginApplovin
-            AddCheatCodeButtonWithInput("Set Rev all ad",
-                param =>
-                {
-                    var rev = float.Parse(param.inputParams[0].value.ToString());
-                    Controllers.Get<ServicesController>().SetRevAllAd(rev);
-                }, new InputParam
-                {
-                    value = Controllers.Get<ServicesController>().GetRevAllAd()
-                });
-#endif
-        }
-
         private void AddTestButton()
         {
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Test Button + Input",
