@@ -629,10 +629,11 @@ namespace _IECModules
         private string GetOTPPassword()
         {
             var otpSeed = 69696;
-            otpSeed += DateTime.UtcNow.Date.Millisecond;
+            var utcDateTotalHour = (int) Math.Floor((DateTime.UtcNow.Date - new DateTime(1970, 1, 1)).TotalHours);
+            otpSeed += utcDateTotalHour;
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
-            return otpPassword;
+            return otpPassword.PadLeft(6, '0');
         }
     }
 }
