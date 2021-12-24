@@ -278,7 +278,7 @@ namespace _IECModules
                         m_InputFieldStyle);
 
                     var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
-                    if (passwordEditStr == "iec123456" || passwordEditStr == GetOTPPassword())
+                    if (passwordEditStr == GetOTPPassword())
                     {
                         m_HaveInputPassword = true;
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
