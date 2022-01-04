@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -275,7 +277,10 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
+                var listIgnoredEvent = config.adjustEventConfig.listData
+                    .Where(x => !x.isPushEventToFirebase)
+                    .Select(x => x.gameEvent).ToList();
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif

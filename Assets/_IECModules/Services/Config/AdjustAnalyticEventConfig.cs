@@ -20,6 +20,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public string gameEvent;
         public string adjustAndroidEventId;
         public string adjustIosEventId;
+        public bool isPushEventToFirebase;
     }
 
     [NaughtyAttributes.Button]
@@ -30,17 +31,25 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         if (data == null || data.Count == 0) return;
         var androidIndex = data[0].IndexOf(gameNameAndroid);
         var iosIndex = data[0].IndexOf(gameNameIos);
+        var firebaseIndex = data[0].IndexOf("Firebase");
         for (int i = 1; i < data.Count; i++)
         {
             var eventMap = data[i];
             var gameEvent = eventMap[0].Trim();
             var adjustAndroidEventId = (androidIndex >=0 && androidIndex < eventMap.Count) ? eventMap[androidIndex].Trim() : string.Empty;
-            var adjustIosEventId = (iosIndex >= 0 && androidIndex < eventMap.Count) ? eventMap[iosIndex].Trim() : string.Empty;
+            var adjustIosEventId = (iosIndex >= 0 && iosIndex < eventMap.Count) ? eventMap[iosIndex].Trim() : string.Empty;
+            var isFirebase = eventMap[firebaseIndex] == "TRUE"; 
             if (string.IsNullOrEmpty(gameEvent))
             {
                 continue;
             }
-            var param = new Param { gameEvent = gameEvent, adjustAndroidEventId = adjustAndroidEventId, adjustIosEventId = adjustIosEventId};
+            var param = new Param
+            {
+                gameEvent = gameEvent, 
+                adjustAndroidEventId = adjustAndroidEventId, 
+                adjustIosEventId = adjustIosEventId,
+                isPushEventToFirebase = isFirebase
+            };
             listData.Add(param);
         }
     }
