@@ -65,6 +65,9 @@ namespace IEC
         }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
         public const string APPLOVIN_REV_ALL_AD = "APPLOVIN_REV_ALL_AD";
+        public const string APPLOVIN_REV_INTER_AD = "APPLOVIN_REV_INTER_AD";
+        public const string APPLOVIN_REV_REWARD_AD = "APPLOVIN_REV_REWARD_AD";
+        public const string APPLOVIN_REV_BANNER_AD = "APPLOVIN_REV_BANNER_AD";
         
         AdsPlatformConfig m_Config;
         double m_Ecpm;
@@ -622,6 +625,7 @@ namespace IEC
             };
 
             RevAd += (float)revenue;
+            SaveRevAd(adUnitId,revenue);
             Debug.Log("Total Rev:" + RevAd);
             foreach (var milestone in m_ListRevMilestones)
             {
@@ -654,6 +658,37 @@ namespace IEC
             else
             {
                 return "rev";
+            }
+        }
+
+        private void SaveRevAd(string adUnitId, double rev)
+        {
+            var key = APPLOVIN_REV_BANNER_AD;
+            if (adUnitId.Equals(m_Config.interstitialID))
+            {
+                key = APPLOVIN_REV_INTER_AD;
+            }
+            else if (adUnitId.Equals(m_Config.rewardID))
+            {
+                key = APPLOVIN_REV_REWARD_AD;
+            }
+
+            var lastRev = PlayerPrefs.GetFloat(key, 0f);
+            Debug.LogWarning($"Last Rev {key}:{lastRev}");
+            lastRev += (float) rev;
+            PlayerPrefs.SetFloat(key,lastRev);
+        }
+
+        public float GetRevAd(AdsEnum adType)
+        {
+            switch (adType)
+            {
+                case AdsEnum.REWARD:
+                    return PlayerPrefs.GetFloat(APPLOVIN_REV_REWARD_AD);
+                case AdsEnum.INTERSTITIAL:
+                    return PlayerPrefs.GetFloat(APPLOVIN_REV_INTER_AD);
+                default:
+                    return PlayerPrefs.GetFloat(APPLOVIN_REV_BANNER_AD);
             }
         }
 
