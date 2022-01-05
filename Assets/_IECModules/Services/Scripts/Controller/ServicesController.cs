@@ -1161,12 +1161,12 @@ namespace IEC
         
         public void SetRevAllAd(float value)
         {
-            m_ServiceData.RevAd = value;
+            m_ServiceData.revTotalAd = value;
         }
         
         public float GetRevAllAd()
         {
-            return m_ServiceData.RevAd;
+            return m_ServiceData.revTotalAd;
         }
         
         public float GetValueToSum()
@@ -1174,8 +1174,8 @@ namespace IEC
             var valueToSum = 0f;
             var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
             Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ServiceData.RevAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.RevAd);
+            valueToSum = m_ServiceData.revTotalAd - lastTotalRev;
+            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
         }
