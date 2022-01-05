@@ -450,7 +450,7 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
-            m_ServiceData.pushEventAction = PushEvent;
+            m_ServiceData.Init(PushEvent);
             Pool.Set(m_ServiceData);
         }
 

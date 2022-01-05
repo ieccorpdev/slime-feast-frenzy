@@ -16,10 +16,9 @@ namespace IEC
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
 
-        [NonSerialized]
-        public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
+        [NonSerialized] public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
 
-        public Action<string, float, Dictionary<string, object>> pushEventAction;
+        private Action<string, float, Dictionary<string, object>> m_PushEventAction;
 
         public void SetDictEventParam(string eventName, Func<Dictionary<string, object>> funcParams)
         {
@@ -29,7 +28,14 @@ namespace IEC
             {
                 dictCustomParams = new Dictionary<string, Func<Dictionary<string, object>>>();
             }
+
             dictCustomParams[eventName] = funcParams;
+        }
+
+        public void Init(Action<string, float, Dictionary<string, object>> pushEventAction)
+        {
+            InitRevMilestone();
+            m_PushEventAction = pushEventAction;
         }
 
         public float revTotalAd;
@@ -39,49 +45,8 @@ namespace IEC
         public float revRewardAd;
 
         public float revBannerAd;
-        
-        class RevMilestone
-        {
-            public float step;
 
-            public float value;
-
-            public float lastRev;
-            
-            public string eventName;
-            public RevMilestone(string eventName,float step)
-            {
-                this.eventName = eventName;
-                this.step = step;
-            }
-
-            public bool IsEnoughRev(float revCheck)
-            {
-                if (revCheck < value) return false;
-                var multi = (int) (revCheck / step);
-                value = (multi + 1) * step;
-                Debug.Log($"{eventName} new milestone: {value}");
-                return true;
-            }
-
-            public float RaiseRev(float rev)
-            {
-                var valueToSum = rev - lastRev;
-                Debug.Log($"{eventName} lastRev: {lastRev}");
-                Debug.Log($"{eventName} valueToSum: {valueToSum}");
-                lastRev = rev;
-                return valueToSum;
-            }
-        }
-        
-        private List<RevMilestone> m_ListRevMilestones = new List<RevMilestone>
-        {
-            new RevMilestone("rev_all_ad_1_cent", 0.01f),
-            new RevMilestone("rev_all_ad_5_cent", 0.05f),
-            new RevMilestone("rev_all_ad_10_cent", 0.1f),
-            new RevMilestone("rev_all_ad_50_cent", 0.5f),
-            new RevMilestone("rev_all_ad_100_cent", 1f)
-        };
+        public List<RevMilestone> ListRevMilestones;
 
         public void OnAdRevenue(AdsEnum adType, float revenue)
         {
@@ -100,14 +65,63 @@ namespace IEC
                    break;
             }
             Debug.Log("Total Rev:" + revTotalAd);
-            foreach (var milestone in m_ListRevMilestones)
+            
+            foreach (var milestone in ListRevMilestones)
             {
                 if (milestone.IsEnoughRev(revTotalAd))
                 {
                     var valueToSum = milestone.RaiseRev(revTotalAd);
-                    pushEventAction?.Invoke(milestone.eventName,valueToSum,null);
+                    m_PushEventAction?.Invoke(milestone.eventName,valueToSum ,null);
                 }
             }
+        }
+
+        void InitRevMilestone()
+        {
+            if(ListRevMilestones != null && ListRevMilestones.Count > 0) return;
+            ListRevMilestones = new List<RevMilestone>
+            {
+                new RevMilestone("rev_all_ad_1_cent", 0.01f),
+                new RevMilestone("rev_all_ad_5_cent", 0.05f),
+                new RevMilestone("rev_all_ad_10_cent", 0.1f),
+                new RevMilestone("rev_all_ad_50_cent", 0.5f),
+                new RevMilestone("rev_all_ad_100_cent", 1f)
+            };
+        }
+    }
+    
+    [Serializable]
+    public class RevMilestone
+    {
+        public float step;
+
+        public float value;
+
+        public float lastRev;
+            
+        public string eventName;
+        public RevMilestone(string eventName,float step)
+        {
+            this.eventName = eventName;
+            this.step = step;
+        }
+
+        public bool IsEnoughRev(float revCheck)
+        {
+            if (revCheck < value) return false;
+            var multi = (int) (revCheck / step);
+            value = (multi + 1) * step;
+            Debug.Log($"{eventName} new milestone: {value}");
+            return true;
+        }
+
+        public float RaiseRev(float rev)
+        {
+            var valueToSum = rev - lastRev;
+            Debug.Log($"{eventName} lastRev: {lastRev}");
+            Debug.Log($"{eventName} valueToSum: {valueToSum}");
+            lastRev = rev;
+            return valueToSum;
         }
     }
 }
