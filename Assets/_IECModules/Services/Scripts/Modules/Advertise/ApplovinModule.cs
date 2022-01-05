@@ -8,66 +8,7 @@ namespace IEC
 {
     public class ApplovinModule : IAdsService
     {
-        class RevMilestone
-        {
-            public float step;
-
-            public float Value
-            {
-                set
-                {
-                    PlayerPrefs.SetFloat(saveMilestoneKey,value);
-                }
-                get
-                {
-                    return PlayerPrefs.GetFloat(saveMilestoneKey, step);
-                }
-            }
-
-            public float LastRev
-            {
-                set
-                {
-                    PlayerPrefs.SetFloat(saveLastRevKey,value);
-                }
-                get
-                {
-                    return PlayerPrefs.GetFloat(saveLastRevKey, 0f);
-                }
-            }
-            public string eventName;
-
-            private string saveMilestoneKey => $"APPLOVIN_REV_{eventName}";
-            private string saveLastRevKey => $"APPLOVIN_LAST_REV_{eventName}";
-            public RevMilestone(string eventName,float step)
-            {
-                this.eventName = eventName;
-                this.step = step;
-            }
-
-            public bool IsEnoughRev(float revCheck)
-            {
-                if (revCheck < Value) return false;
-                var multi = (int) (revCheck / step);
-                Value = (multi + 1) * step;
-                Debug.Log($"{eventName} new milestone: {Value}");
-                return true;
-            }
-
-            public float RaiseRev(float rev)
-            {
-                var valueToSum = rev - LastRev;
-                Debug.Log($"{eventName} lastRev: {LastRev}");
-                Debug.Log($"{eventName} valueToSum: {valueToSum}");
-                LastRev = rev;
-                return valueToSum;
-            }
-        }
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
-        public const string APPLOVIN_REV_ALL_AD = "APPLOVIN_REV_ALL_AD";
-        public const string APPLOVIN_REV_INTER_AD = "APPLOVIN_REV_INTER_AD";
-        public const string APPLOVIN_REV_REWARD_AD = "APPLOVIN_REV_REWARD_AD";
-        public const string APPLOVIN_REV_BANNER_AD = "APPLOVIN_REV_BANNER_AD";
         
         AdsPlatformConfig m_Config;
         double m_Ecpm;
@@ -77,18 +18,6 @@ namespace IEC
 
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
-
-        public float RevAd
-        {
-            set
-            {
-                PlayerPrefs.SetFloat(APPLOVIN_REV_ALL_AD,value);
-            }
-            get
-            {
-                return PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
-            }
-        }
         
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
@@ -97,8 +26,8 @@ namespace IEC
         MaxSdkBase.BannerPosition m_BannerAdsPos = MaxSdkBase.BannerPosition.BottomCenter;
 
         Action<string, float, Dictionary<string, object>> pushEventAction;
+        public Action<AdsEnum, float> onAdRevenueAction;
 
-        private List<RevMilestone> m_ListRevMilestones;
 
         public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
@@ -117,16 +46,6 @@ namespace IEC
                 {
                     MaxSdk.SetVerboseLogging(true);
                 }
-
-                RevAd = PlayerPrefs.GetFloat(APPLOVIN_REV_ALL_AD, 0f);
-                m_ListRevMilestones = new List<RevMilestone>
-                {
-                    new RevMilestone("rev_all_ad_1_cent", 0.01f),
-                    new RevMilestone("rev_all_ad_5_cent", 0.05f),
-                    new RevMilestone("rev_all_ad_10_cent", 0.1f),
-                    new RevMilestone("rev_all_ad_50_cent", 0.5f),
-                    new RevMilestone("rev_all_ad_100_cent", 1f)
-                };
                 
                 MaxSdk.InitializeSdk();
 
@@ -624,19 +543,18 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
-            RevAd += (float)revenue;
-            SaveRevAd(adUnitId,revenue);
-            Debug.Log("Total Rev:" + RevAd);
-            foreach (var milestone in m_ListRevMilestones)
+            var adType = AdsEnum.BANNER_BOTTOM;
+            if (adUnitId.Equals(m_Config.interstitialID))
             {
-                if (milestone.IsEnoughRev(RevAd))
-                {
-                    var valueToSum = milestone.RaiseRev(RevAd);
-                    pushEventAction?.Invoke(milestone.eventName,valueToSum,null);
-                }
+                adType = AdsEnum.INTERSTITIAL;
+            }
+            else if (adUnitId.Equals(m_Config.rewardID))
+            {
+                adType = AdsEnum.REWARD;
             }
             
-            PlayerPrefs.Save();
+            onAdRevenueAction?.Invoke(adType,(float)revenue);
+
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
         }
@@ -658,37 +576,6 @@ namespace IEC
             else
             {
                 return "rev";
-            }
-        }
-
-        private void SaveRevAd(string adUnitId, double rev)
-        {
-            var key = APPLOVIN_REV_BANNER_AD;
-            if (adUnitId.Equals(m_Config.interstitialID))
-            {
-                key = APPLOVIN_REV_INTER_AD;
-            }
-            else if (adUnitId.Equals(m_Config.rewardID))
-            {
-                key = APPLOVIN_REV_REWARD_AD;
-            }
-
-            var lastRev = PlayerPrefs.GetFloat(key, 0f);
-            Debug.LogWarning($"Last Rev {key}:{lastRev}");
-            lastRev += (float) rev;
-            PlayerPrefs.SetFloat(key,lastRev);
-        }
-
-        public float GetRevAd(AdsEnum adType)
-        {
-            switch (adType)
-            {
-                case AdsEnum.REWARD:
-                    return PlayerPrefs.GetFloat(APPLOVIN_REV_REWARD_AD);
-                case AdsEnum.INTERSTITIAL:
-                    return PlayerPrefs.GetFloat(APPLOVIN_REV_INTER_AD);
-                default:
-                    return PlayerPrefs.GetFloat(APPLOVIN_REV_BANNER_AD);
             }
         }
 

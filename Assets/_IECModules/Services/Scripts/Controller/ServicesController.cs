@@ -450,6 +450,7 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
+            m_ServiceData.pushEventAction = PushEvent;
             Pool.Set(m_ServiceData);
         }
 
@@ -520,7 +521,7 @@ namespace IEC
                     }
                 },
                 PushEvent);
-                m_ApplovinAds = applovinAds;
+                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
                 m_Ads = applovinAds;
 #endif
 
@@ -1157,31 +1158,24 @@ namespace IEC
         }
 
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
-#if PluginApplovin
-        private ApplovinModule m_ApplovinAds;
-
+        
         public void SetRevAllAd(float value)
         {
-            if(m_ApplovinAds == null) return;
-            m_ApplovinAds.RevAd = value;
+            m_ServiceData.RevAd = value;
         }
         
         public float GetRevAllAd()
         {
-            if(m_ApplovinAds == null) return 0f;
-            return m_ApplovinAds.RevAd;
+            return m_ServiceData.RevAd;
         }
-#endif
+        
         public float GetValueToSum()
         {
             var valueToSum = 0f;
-#if PluginApplovin
-            if (m_ApplovinAds == null) return 0;
             var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
             Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ApplovinAds.RevAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ApplovinAds.RevAd);
-#endif
+            valueToSum = m_ServiceData.RevAd - lastTotalRev;
+            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.RevAd);
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
         }
