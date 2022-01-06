@@ -53,6 +53,7 @@ namespace IEC
         OguryModule m_OguryModule;
 #endif
 
+        private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -622,6 +623,20 @@ namespace IEC
             {
                 analytic.PushEvent(eventName, value, param);
             }
+
+            var fullAdCount = m_EventCount.GetCount("show_full_ad");
+            var rewardCount = m_EventCount.GetCount("show_reward_ad");
+            if (eventName.Equals("show_full_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.INTER, fullAdCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
+
+            if (eventName.Equals("show_reward_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
         }
 
         public void PushCachedEvents()
@@ -1178,6 +1193,33 @@ namespace IEC
             PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
+        }
+
+        public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
+        {
+            m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        void PushEventMilestoneAd(RevAdType adType, int count)
+        {
+            if(count <= 0) return;
+            if(!m_DictListMilestoneAd.ContainsKey(adType)) return;
+            var listMilestone = m_DictListMilestoneAd[adType];
+            if(listMilestone == null) return;
+            var prefix = m_ServiceData.GetPrefixEvent(adType);
+            for (int i = 0; i < listMilestone.Count; i++)
+            {
+                var milestone = listMilestone[i];
+                var eventName = prefix + milestone.ToString();
+                if (count % milestone == 0)
+                {
+                    var valueToSum = m_ServiceData.GetValueToSumRevAd(adType, milestone);
+                    Debug.Log($"{eventName} valueToSum:{valueToSum}");
+                    Debug.LogWarning($"{eventName} lastRev:{m_ServiceData.GetDictMilestoneAd(adType)[milestone]}");
+                    PushEvent(eventName, valueToSum);
+                    m_ServiceData.SetValueToSumRevAd(adType, milestone);
+                }
+            }
         }
     }
 }

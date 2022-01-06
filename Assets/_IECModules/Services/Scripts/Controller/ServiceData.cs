@@ -6,6 +6,13 @@ using UnityEngine;
 
 namespace IEC
 {
+    public enum RevAdType
+    {
+        BANNER,
+        INTER,
+        REWARD,
+        INTER_N_REWARD,
+    }
     [System.Serializable]
     public class ServiceData
     {
@@ -40,6 +47,7 @@ namespace IEC
             if (dictMilestoneBanner == null) dictMilestoneBanner = new Dictionary<int, float>();
             if (dictMilestoneInter == null) dictMilestoneInter = new Dictionary<int, float>();
             if (dictMilestoneReward == null) dictMilestoneReward = new Dictionary<int, float>();
+            if (dictMilestoneRewardNInter == null) dictMilestoneRewardNInter = new Dictionary<int, float>();
         }
 
         public float revTotalAd;
@@ -52,32 +60,45 @@ namespace IEC
 
         public float revBannerAd;
         public Dictionary<int, float> dictMilestoneBanner;
+
+        public float revInterNReward;
+        public Dictionary<int, float> dictMilestoneRewardNInter;
         
-        public float GetValueToSumRevAd(AdsEnum adType, int milestone)
+        public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
             if (!dictMilestone.ContainsKey(milestone)) dictMilestone[milestone] = 0;
             return (GetRevAd(adType) - dictMilestone[milestone]);
         }
 
-        public void SetValueToSumRevAd(AdsEnum adType, int milestone)
+        public void SetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
             dictMilestone[milestone] = GetRevAd(adType);
         }
 
-        private Dictionary<int, float> GetDictMilestoneAd(AdsEnum adType)
+        public Dictionary<int, float> GetDictMilestoneAd(RevAdType adType)
         {
             var dictMilestoneAd = dictMilestoneBanner;
-            if (adType == AdsEnum.INTERSTITIAL) dictMilestoneAd = dictMilestoneInter;
-            else if (adType == AdsEnum.REWARD) dictMilestoneAd = dictMilestoneReward;
+            if (adType == RevAdType.INTER) dictMilestoneAd = dictMilestoneInter;
+            else if (adType == RevAdType.REWARD) dictMilestoneAd = dictMilestoneReward;
+            else if (adType == RevAdType.INTER_N_REWARD) dictMilestoneAd = dictMilestoneRewardNInter;
             return dictMilestoneAd;
         }
 
-        private float GetRevAd(AdsEnum adType)
+        public string GetPrefixEvent(RevAdType adType)
         {
-            if (adType == AdsEnum.INTERSTITIAL) return revInterAd;
-            else if (adType == AdsEnum.REWARD) return revRewardAd;
+            if (adType == RevAdType.INTER) return "rev_inter_";
+            if (adType == RevAdType.REWARD) return "rev_reward_";
+            if (adType == RevAdType.INTER_N_REWARD) return "rev_inter_n_reward_";
+            return "rev_banner_";
+        }
+
+        private float GetRevAd(RevAdType adType)
+        {
+            if (adType == RevAdType.INTER) return revInterAd;
+            if (adType == RevAdType.REWARD) return revRewardAd;
+            if (adType == RevAdType.INTER_N_REWARD) return revInterNReward;
             return revBannerAd;
         }
 
@@ -99,11 +120,15 @@ namespace IEC
             {
                case AdsEnum.REWARD:
                    revRewardAd += revenue;
+                   revInterNReward += revenue;
                    Debug.Log("Rev Reward:" + revRewardAd);
+                   Debug.Log("Rev Reward & Inter:" + revInterNReward);
                    break;
                case AdsEnum.INTERSTITIAL:
                    revInterAd += revenue;
+                   revInterNReward += revenue;
                    Debug.Log("Rev Inter:" + revInterAd);
+                   Debug.Log("Rev Reward & Inter:" + revInterNReward);
                    break;
                case AdsEnum.BANNER_TOP:
                case AdsEnum.BANNER_BOTTOM:
