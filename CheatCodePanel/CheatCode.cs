@@ -164,21 +164,6 @@ namespace _IECModules
 #endif
         }
 
-        private void Start()
-        {
-#if PluginApplovin
-            AddCheatCodeButtonWithInput("Set Rev all ad",
-                param =>
-                {
-                    var rev = float.Parse(param.inputParams[0].value.ToString());
-                    Controllers.Get<ServicesController>().SetRevAllAd(rev);
-                }, new InputParam
-                {
-                    value = Controllers.Get<ServicesController>().GetRevAllAd()
-                });
-#endif
-        }
-
         private void AddTestButton()
         {
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Test Button + Input",
@@ -293,7 +278,7 @@ namespace _IECModules
                         m_InputFieldStyle);
 
                     var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
-                    if (passwordEditStr == "iec123456" || passwordEditStr == GetOTPPassword())
+                    if (passwordEditStr == GetOTPPassword())
                     {
                         m_HaveInputPassword = true;
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -644,10 +629,11 @@ namespace _IECModules
         private string GetOTPPassword()
         {
             var otpSeed = 69696;
-            otpSeed += DateTime.UtcNow.Date.Millisecond;
+            var utcDateTotalHour = (int) Math.Floor((DateTime.UtcNow.Date - new DateTime(1970, 1, 1)).TotalHours);
+            otpSeed += utcDateTotalHour;
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
-            return otpPassword;
+            return otpPassword.PadLeft(6, '0');
         }
     }
 }
