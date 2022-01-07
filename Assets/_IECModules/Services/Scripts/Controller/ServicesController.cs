@@ -1215,7 +1215,7 @@ namespace IEC
                 {
                     var valueToSum = m_ServiceData.GetValueToSumRevAd(adType, milestone);
                     Debug.Log($"{eventName} valueToSum:{valueToSum}");
-                    Debug.LogWarning($"{eventName} lastRev:{m_ServiceData.GetDictMilestoneAd(adType)[milestone]}");
+                    Debug.Log($"{eventName} lastRev:{m_ServiceData.GetDictMilestoneAd(adType)[milestone]}");
                     PushEvent(eventName, valueToSum);
                     m_ServiceData.SetValueToSumRevAd(adType, milestone);
                 }
