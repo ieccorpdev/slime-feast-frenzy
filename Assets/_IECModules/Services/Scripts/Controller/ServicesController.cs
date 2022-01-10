@@ -578,7 +578,12 @@ namespace IEC
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
-                PushEvent(abTest.KeyName, 1, new Dictionary<string, object>
+                var abVersion = s.Split('_')[2].Remove(0, 1);
+                var isNumber = int.TryParse(abVersion, out int version);
+                var eventValue = (isNumber) ? version : 1;
+                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                Debug.LogWarning("AbTest event value:" + eventValue);
+                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
                     {"version", s}
                 });
