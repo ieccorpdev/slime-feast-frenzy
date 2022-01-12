@@ -278,9 +278,14 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                var listIgnoredEvent = config.adjustEventConfig.listData
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
                     .Where(x => !x.isPushEventToFirebase)
                     .Select(x => x.gameEvent).ToList();
+                }
+                
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
