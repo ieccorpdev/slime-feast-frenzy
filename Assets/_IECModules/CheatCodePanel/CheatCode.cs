@@ -139,6 +139,23 @@ namespace _IECModules
                 param.buttonText = $"Applovin Verbose Log: {verboseLogging}";
                 PlayerPrefs.SetInt(APPLOVIN_VERBOSE_LOGGING, verboseLogging);
             });
+
+            var COUNT_PREFIX = "EventCount.";
+            AddCheatCodeButtonWithInput("Set count inter ad", param =>
+            {
+                var count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerPrefs.SetInt($"{COUNT_PREFIX}show_full_ad", count);
+            }, new InputParam{
+                value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_full_ad")
+            });
+
+            AddCheatCodeButtonWithInput("Set count reward ad", param =>
+            {
+                var count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerPrefs.SetInt($"{COUNT_PREFIX}show_reward_ad", count);
+            },new InputParam{
+                value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_reward_ad")
+            });
 #if PluginApplovin
             ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
                 cheatCodeParam =>
