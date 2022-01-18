@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if(PluginFacebook)
+using Facebook.Unity;
+#endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
@@ -205,14 +208,6 @@ namespace IEC
             m_SetUpFacebook = new SetUpSdkMock();
             m_SetUpFirebase = new SetUpSdkMock();
 
-#if (PluginFacebook)
-            m_SetUpFacebook = new SetUpFacebookModule();
-            m_SetUpFacebook.Init((isLoaded) =>
-            {
-                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
-            });
-#endif
-
 #if (PluginFirebase)
             m_SetUpFirebase = new SetUpFirebaseModule();
             m_SetUpFirebase.Init((isLoaded) =>
@@ -389,6 +384,15 @@ namespace IEC
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+#if (PluginFacebook)
+            m_SetUpFacebook = new SetUpFacebookModule();
+            m_SetUpFacebook.Init((isLoaded) =>
+            {
+                FB.Mobile.SetAdvertiserTrackingEnabled(isHaveIDFA);
+                FB.Mobile.SetAdvertiserIDCollectionEnabled(isHaveIDFA);
+                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
+            });
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
