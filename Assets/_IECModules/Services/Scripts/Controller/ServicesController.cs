@@ -651,6 +651,15 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
+            
+#if (PluginFacebook)
+            if (!eventName.Equals("show_full_ad") && !eventName.Equals("show_reward_ad")) return;
+            var countAd = fullAdCount + rewardCount;
+            if(countAd % 10 != 0) return;
+            if(FB.IsInitialized) 
+                FB.LogPurchase(GetValueToSum(),"USD");
+#endif
+
         }
 
         public void PushCachedEvents()
