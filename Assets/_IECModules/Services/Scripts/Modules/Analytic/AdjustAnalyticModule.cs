@@ -12,6 +12,7 @@ namespace IEC
         public bool IsDisable { get; set; }
 
         public Dictionary<string, string> DictEvent;
+        private List<string> m_ListEventRev = new List<string>();
 
         public AdjustAnalyticModule(string androidID, string iosID)
         {
@@ -32,6 +33,12 @@ namespace IEC
 
         }
 
+        public void SetListEventRev(List<string> listEventRev)
+        {
+            m_ListEventRev = listEventRev;
+        }
+        
+
         public void PushCachedEvents()
         {
             if (IsDisable) return;
@@ -41,6 +48,10 @@ namespace IEC
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
+            if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
+            {
+                adjustEvent.setRevenue(value,"USD");
+            }
             Adjust.trackEvent(adjustEvent);
             Debug.Log("Push Adjust Event:" + DictEvent[eventName]);
         }

@@ -277,7 +277,12 @@ namespace IEC
                 if(config.adjustEventConfig != null)
                 {
                     listIgnoredEvent = config.adjustEventConfig.listData
-                    .Where(x => !x.isPushEventToFirebase)
+                    .Where(x =>
+                    {
+                        if(Application.platform == RuntimePlatform.Android)
+                            return !x.android.isPushEventFirebase;
+                        return !x.iOS.isPushEventFirebase;
+                    })
                     .Select(x => x.gameEvent).ToList();
                 }
                 
@@ -383,6 +388,16 @@ namespace IEC
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    if (Application.platform == RuntimePlatform.Android)
+                        return x.android.isAdjustRev;
+                    return x.iOS.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
 #if (PluginFacebook)
