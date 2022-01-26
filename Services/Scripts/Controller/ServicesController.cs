@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if(PluginFacebook)
+using Facebook.Unity;
+#endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
@@ -205,14 +208,6 @@ namespace IEC
             m_SetUpFacebook = new SetUpSdkMock();
             m_SetUpFirebase = new SetUpSdkMock();
 
-#if (PluginFacebook)
-            m_SetUpFacebook = new SetUpFacebookModule();
-            m_SetUpFacebook.Init((isLoaded) =>
-            {
-                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
-            });
-#endif
-
 #if (PluginFirebase)
             m_SetUpFirebase = new SetUpFirebaseModule();
             m_SetUpFirebase.Init((isLoaded) =>
@@ -278,9 +273,14 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                var listIgnoredEvent = config.adjustEventConfig.listData
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
                     .Where(x => !x.isPushEventToFirebase)
                     .Select(x => x.gameEvent).ToList();
+                }
+                
                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
@@ -384,6 +384,15 @@ namespace IEC
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+#if (PluginFacebook)
+            m_SetUpFacebook = new SetUpFacebookModule();
+            m_SetUpFacebook.Init((isLoaded) =>
+            {
+                FB.Mobile.SetAdvertiserTrackingEnabled(isHaveIDFA);
+                FB.Mobile.SetAdvertiserIDCollectionEnabled(isHaveIDFA);
+                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
+            });
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
@@ -578,7 +587,12 @@ namespace IEC
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
-                PushEvent(abTest.KeyName, 1, new Dictionary<string, object>
+                var abVersion = s.Split('_')[2].Remove(0, 1);
+                var isNumber = int.TryParse(abVersion, out int version);
+                var eventValue = (isNumber) ? version : 1;
+                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                Debug.LogWarning("AbTest event value:" + eventValue);
+                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
                     {"version", s}
                 });
@@ -637,6 +651,15 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
+            
+#if (PluginFacebook)
+            if (!eventName.Equals("show_full_ad") && !eventName.Equals("show_reward_ad")) return;
+            var countAd = fullAdCount + rewardCount;
+            if(countAd % 10 != 0) return;
+            if(FB.IsInitialized) 
+                FB.LogPurchase(GetValueToSum(),"USD");
+#endif
+
         }
 
         public void PushCachedEvents()
