@@ -16,6 +16,7 @@ namespace _IECModules
         public enum ChecklistItemName
         {
             ProductName,
+            ProductDisplayName,
             SupportEmail,
             BundleID,
             KeyStoreName,
@@ -73,6 +74,7 @@ namespace _IECModules
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
         {
             {"Tên game", ChecklistItemName.ProductName},
+            {"Display Name", ChecklistItemName.ProductDisplayName},
             {"Support Email", ChecklistItemName.SupportEmail},
             {"BundleID", ChecklistItemName.BundleID},
             {"Keystore Name", ChecklistItemName.KeyStoreName},
@@ -296,6 +298,11 @@ namespace _IECModules
                         var productName = checklistItemValue;
                         LogEditorHelper.AddLog($"Product Name: {productName}");
                         PlayerSettings.productName = productName;
+                        break;
+                    case ChecklistItemName.ProductDisplayName:
+                        var productDisplayName = checklistItemValue;
+                        LogEditorHelper.AddLog($"Product Display Name: {productDisplayName}");
+                        PlayerSettings.productName = productDisplayName;
                         break;
                     case ChecklistItemName.SupportEmail:
                         var supportEmail = checklistItemValue;
