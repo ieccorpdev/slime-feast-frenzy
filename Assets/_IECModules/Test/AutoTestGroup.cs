@@ -22,6 +22,7 @@ namespace IEC
         public DataAutoTestRecord DataRecord { get; private set; }
 
         public TMP_Text txtAb;
+        public CheatCode cheatCode;
 
         public CheatCode.PositionActivate positionActivate = CheatCode.PositionActivate.TopLeft;
 
@@ -183,6 +184,7 @@ namespace IEC
             var key = LastAbConfig().KeyName;
             Services.DataNormal().SetInt(key, abValue);
             txtAb.text = $"Set AB:{LastAbConfig().ListEventsAB[abValue]}";
+            cheatCode.ResetPlayerDataWithoutChangeAb();
         }
 
         private ABTestConfig LastAbConfig()
