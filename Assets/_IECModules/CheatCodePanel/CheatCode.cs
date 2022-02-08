@@ -131,6 +131,16 @@ namespace _IECModules
             {
                 value = 2
             });
+            
+            AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
+            {
+                ResetPlayerData();
+            });
+            
+            AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
+            {
+                ResetPlayerDataWithoutChangeAb();
+            });
 
             var verboseLogging = PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0);
             AddCheatCodeButton($"Applovin Verbose Log: {verboseLogging}", param =>
@@ -651,6 +661,29 @@ namespace _IECModules
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
+        }
+
+        public void ResetPlayerData()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            PlayerPrefs.DeleteAll();
+            Application.Quit();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
+        
+        public void ResetPlayerDataWithoutChangeAb()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            Controllers.Get<ServicesController>().DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+            Controllers.Get<ServicesController>().DataSecure().Save();
+            Application.Quit();
+            
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
     }
 }
