@@ -13,12 +13,14 @@ namespace IEC
         ISetUpSdkService m_FirebaseSDK;
 
         Dictionary<string, string> m_CacheSetProperty = new Dictionary<string, string>();
+        private List<string> m_ListIgnoredEvent = new List<string>();
 
         public bool IsDisable { get ; set; }
 
-        public FirebaseAnalyticModule(ISetUpSdkService firebaseSDK)
+        public FirebaseAnalyticModule(ISetUpSdkService firebaseSDK, List<string> listIgnore)
         {
             m_FirebaseSDK = firebaseSDK;
+            m_ListIgnoredEvent = listIgnore;
         }
 
         public void Init()
@@ -68,6 +70,9 @@ namespace IEC
                 m_ListCachedEvents.Add(new AnalyticEventData { eventName = eventName, value = value, param = param });
                 return;
             }
+            
+            if(m_ListIgnoredEvent != null && m_ListIgnoredEvent.Contains(eventName)) return;
+            
             var newName = eventName.Replace(' ', '_').Replace('-', '_');
 
             if (param != null && param.ContainsKey("level"))

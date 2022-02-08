@@ -2,6 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+#if(PluginFacebook)
+using Facebook.Unity;
+#endif
+using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -51,6 +56,7 @@ namespace IEC
         OguryModule m_OguryModule;
 #endif
 
+        private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -91,10 +97,6 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
-                    if(m_ServiceData.isNoAds)
-                    {
-                        break;
-                    }
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
@@ -206,14 +208,6 @@ namespace IEC
             m_SetUpFacebook = new SetUpSdkMock();
             m_SetUpFirebase = new SetUpSdkMock();
 
-#if (PluginFacebook)
-            m_SetUpFacebook = new SetUpFacebookModule();
-            m_SetUpFacebook.Init((isLoaded) =>
-            {
-                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
-            });
-#endif
-
 #if (PluginFirebase)
             m_SetUpFirebase = new SetUpFirebaseModule();
             m_SetUpFirebase.Init((isLoaded) =>
@@ -279,7 +273,15 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
+                    .Where(x => !x.isPushEventToFirebase)
+                    .Select(x => x.gameEvent).ToList();
+                }
+                
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
@@ -383,6 +385,15 @@ namespace IEC
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
+#if (PluginFacebook)
+            m_SetUpFacebook = new SetUpFacebookModule();
+            m_SetUpFacebook.Init((isLoaded) =>
+            {
+                FB.Mobile.SetAdvertiserTrackingEnabled(isHaveIDFA);
+                FB.Mobile.SetAdvertiserIDCollectionEnabled(isHaveIDFA);
+                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
+            });
+#endif
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
@@ -449,6 +460,7 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
+            m_ServiceData.Init(PushEvent);
             Pool.Set(m_ServiceData);
         }
 
@@ -515,14 +527,11 @@ namespace IEC
                 {
                     if (result)
                     {
-                        applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
-                        applovinAds.Load(AdsEnum.INTERSTITIAL, null);
-                        applovinAds.Load(AdsEnum.REWARD, null);
                         RaiseInitEvent(EventList.Service.INIT_AD_DONE);
                     }
                 },
                 PushEvent);
-                m_ApplovinAds = applovinAds;
+                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
                 m_Ads = applovinAds;
 #endif
 
@@ -578,7 +587,12 @@ namespace IEC
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
-                PushEvent(abTest.KeyName, 1, new Dictionary<string, object>
+                var abVersion = s.Split('_')[2].Remove(0, 1);
+                var isNumber = int.TryParse(abVersion, out int version);
+                var eventValue = (isNumber) ? version : 1;
+                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                Debug.LogWarning("AbTest event value:" + eventValue);
+                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
                     {"version", s}
                 });
@@ -623,6 +637,29 @@ namespace IEC
             {
                 analytic.PushEvent(eventName, value, param);
             }
+
+            var fullAdCount = m_EventCount.GetCount("show_full_ad");
+            var rewardCount = m_EventCount.GetCount("show_reward_ad");
+            if (eventName.Equals("show_full_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.INTER, fullAdCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
+
+            if (eventName.Equals("show_reward_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
+            
+#if (PluginFacebook)
+            if (!eventName.Equals("show_full_ad") && !eventName.Equals("show_reward_ad")) return;
+            var countAd = fullAdCount + rewardCount;
+            if(countAd % 10 != 0) return;
+            if(FB.IsInitialized) 
+                FB.LogPurchase(GetValueToSum(),"USD");
+#endif
+
         }
 
         public void PushCachedEvents()
@@ -669,7 +706,7 @@ namespace IEC
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     var milestone = GetMilestone(fullAdCount);
-                    if (fullAdCount % milestone == 0 && fullAdCount > 0)
+                    if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
                         PushEvent("inter_" + fullAdCount);
                     }
@@ -738,7 +775,7 @@ namespace IEC
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
                         var milestone = GetMilestone(rewardCount) / 2;
-                        if (rewardCount % milestone == 0 && rewardCount > 0)
+                        if (rewardCount % milestone == 0 && rewardCount > 0 && rewardCount < 100)
                         {
                             PushEvent("reward_" + rewardCount);
                         }
@@ -1114,25 +1151,29 @@ namespace IEC
             var delaySec = new WaitForSecondsRealtime(3f);
             while (true)
             {
-                Ads().Load(AdsEnum.INTERSTITIAL, null);
                 Ads().Load(AdsEnum.REWARD, null);
-#if PluginOgury
-                m_OguryModule?.LoadThumbnail((eventArg) =>
+
+                if (!m_ServiceData.isNoAds)
                 {
-                    if (eventArg == AdsEventArgs.DONE)
+                    Ads().Load(AdsEnum.INTERSTITIAL, null);
+#if PluginOgury
+                    m_OguryModule?.LoadThumbnail((eventArg) =>
                     {
-                        if (m_ServiceData.isNoAds)
+                        if (eventArg == AdsEventArgs.DONE)
                         {
-                            return;
+                            if (m_ServiceData.isNoAds)
+                            {
+                                return;
+                            }
+                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+                            m_OguryModule.ShowThumbnail((eventArgs) =>
+                            {
+                                SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                            });
                         }
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                        m_OguryModule.ShowThumbnail((eventArgs) =>
-                        {
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                        });
-                    }
-                });
+                    });
 #endif
+                }
                 yield return delaySec;
             }
         }
@@ -1155,33 +1196,53 @@ namespace IEC
         }
 
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
-#if PluginApplovin
-        private ApplovinModule m_ApplovinAds;
-
+        
         public void SetRevAllAd(float value)
         {
-            if(m_ApplovinAds == null) return;
-            m_ApplovinAds.RevAd = value;
+            m_ServiceData.revTotalAd = value;
         }
         
         public float GetRevAllAd()
         {
-            if(m_ApplovinAds == null) return 0f;
-            return m_ApplovinAds.RevAd;
+            return m_ServiceData.revTotalAd;
         }
-#endif
+        
         public float GetValueToSum()
         {
             var valueToSum = 0f;
-#if PluginApplovin
-            if (m_ApplovinAds == null) return 0;
             var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
             Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ApplovinAds.RevAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ApplovinAds.RevAd);
-#endif
+            valueToSum = m_ServiceData.revTotalAd - lastTotalRev;
+            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
+        }
+
+        public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
+        {
+            m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        void PushEventMilestoneAd(RevAdType adType, int count)
+        {
+            if(count <= 0) return;
+            if(!m_DictListMilestoneAd.ContainsKey(adType)) return;
+            var listMilestone = m_DictListMilestoneAd[adType];
+            if(listMilestone == null) return;
+            var prefix = m_ServiceData.GetPrefixEvent(adType);
+            for (int i = 0; i < listMilestone.Count; i++)
+            {
+                var milestone = listMilestone[i];
+                var eventName = prefix + milestone.ToString();
+                if (count % milestone == 0)
+                {
+                    var valueToSum = m_ServiceData.GetValueToSumRevAd(adType, milestone);
+                    Debug.Log($"{eventName} valueToSum:{valueToSum}");
+                    Debug.Log($"{eventName} lastRev:{m_ServiceData.GetDictMilestoneAd(adType)[milestone]}");
+                    PushEvent(eventName, valueToSum);
+                    m_ServiceData.SetValueToSumRevAd(adType, milestone);
+                }
+            }
         }
     }
 }

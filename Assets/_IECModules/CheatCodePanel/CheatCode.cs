@@ -65,6 +65,8 @@ namespace _IECModules
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
+        [Range(0f, 1f)]
+        public float topOffset = 0f;
 
         private ShowCheatCodeState m_ShowCheatCodeState;
 
@@ -129,6 +131,16 @@ namespace _IECModules
             {
                 value = 2
             });
+            
+            AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
+            {
+                ResetPlayerData();
+            });
+            
+            AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
+            {
+                ResetPlayerDataWithoutChangeAb();
+            });
 
             var verboseLogging = PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0);
             AddCheatCodeButton($"Applovin Verbose Log: {verboseLogging}", param =>
@@ -137,13 +149,36 @@ namespace _IECModules
                 param.buttonText = $"Applovin Verbose Log: {verboseLogging}";
                 PlayerPrefs.SetInt(APPLOVIN_VERBOSE_LOGGING, verboseLogging);
             });
+
+            var COUNT_PREFIX = "EventCount.";
+            AddCheatCodeButtonWithInput("Set count inter ad", param =>
+            {
+                var count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerPrefs.SetInt($"{COUNT_PREFIX}show_full_ad", count);
+            }, new InputParam{
+                value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_full_ad")
+            });
+
+            AddCheatCodeButtonWithInput("Set count reward ad", param =>
+            {
+                var count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerPrefs.SetInt($"{COUNT_PREFIX}show_reward_ad", count);
+            },new InputParam{
+                value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_reward_ad")
+            });
 #if PluginApplovin
             ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
                 cheatCodeParam =>
                 {
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
                 });
-            
+#endif
+//            AddTestButton();
+        }
+
+        private void Start()
+        {
+#if PluginApplovin
             AddCheatCodeButtonWithInput("Set Rev all ad",
                 param =>
                 {
@@ -151,10 +186,9 @@ namespace _IECModules
                     Controllers.Get<ServicesController>().SetRevAllAd(rev);
                 }, new InputParam
                 {
-                    value = Controllers.Get<ServicesController>().GetRevAllAd();
+                    value = Controllers.Get<ServicesController>().GetRevAllAd()
                 });
 #endif
-//            AddTestButton();
         }
 
         private void AddTestButton()
@@ -245,8 +279,9 @@ namespace _IECModules
         private void OnGUI()
         {
             InitGuiParams();
+            var offset = topOffset * Screen.height;
             var screenWidth = Screen.width;
-            var screenHeight = Screen.height;
+            var screenHeight = Screen.height - offset;
             var screenWidthCenter = (float) screenWidth / 2;
 
             switch (showCheatCodeState)
@@ -256,7 +291,7 @@ namespace _IECModules
                 case ShowCheatCodeState.ShowPasswordInput:
                     var bgColorCurrent = GUI.backgroundColor;
                     GUI.backgroundColor = new Color(0, 0, 0, 0);
-                    if (GuiButton(new Rect(0, screenHeight * 0.25f, screenWidth, screenHeight * 0.75f), ""))
+                    if (GuiButton(new Rect(0, screenHeight * 0.25f + offset, screenWidth, screenHeight * 0.75f), ""))
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
@@ -265,12 +300,12 @@ namespace _IECModules
 
                     var passwordInputTextSize = new Vector2(screenWidthCenter, 300);
                     var passwordInputTextRect = new Rect((screenWidth - passwordInputTextSize.x) / 2,
-                        50, passwordInputTextSize.x, passwordInputTextSize.y);
+                        50 + offset, passwordInputTextSize.x, passwordInputTextSize.y);
                     m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
                         m_InputFieldStyle);
 
                     var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
-                    if (passwordEditStr == "iec123456" || passwordEditStr == GetOTPPassword())
+                    if (passwordEditStr == GetOTPPassword())
                     {
                         m_HaveInputPassword = true;
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -289,19 +324,19 @@ namespace _IECModules
 
 
                     if (GuiButton(
-                        new Rect(20, 20, 0, ButtonSize.y), "Close"))
+                        new Rect(20, 20 + offset, 0, ButtonSize.y), "Close"))
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
 
-                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20,
+                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20 + offset,
                         300, ButtonSize.y), m_InputSearchString, m_InputFieldStyle);
 
-                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20,
+                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20 + offset,
                         150, ButtonSize.y), "Search", m_LabelTextStyle);
 
                     var cheatCodeRectHeight = screenHeight * 0.9f;
-                    var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight;
+                    var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight + offset;
                     var cheatCodeSizeEach = ButtonSize.y * 1.2f;
 
                     var guiSkin = GUI.skin;
@@ -621,10 +656,34 @@ namespace _IECModules
         private string GetOTPPassword()
         {
             var otpSeed = 69696;
-            otpSeed += DateTime.UtcNow.Date.Millisecond;
+            var utcDateTotalHour = (int) Math.Floor((DateTime.UtcNow.Date - new DateTime(1970, 1, 1)).TotalHours);
+            otpSeed += utcDateTotalHour;
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
-            return otpPassword;
+            return otpPassword.PadLeft(6, '0');
+        }
+
+        public void ResetPlayerData()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            PlayerPrefs.DeleteAll();
+            Application.Quit();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
+        
+        public void ResetPlayerDataWithoutChangeAb()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            Controllers.Get<ServicesController>().DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+            Controllers.Get<ServicesController>().DataSecure().Save();
+            Application.Quit();
+            
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
     }
 }
