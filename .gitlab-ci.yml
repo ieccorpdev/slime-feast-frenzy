@@ -7,6 +7,8 @@ workflow:
   rules:
     - if: '$SSH_PRIVATE_KEY_MODULE_SUBTREE == null'
       when: never
+    - if: '$CI_COMMIT_BRANCH != "master"'
+      when: never
     - when: always
 
 job:
@@ -19,10 +21,7 @@ job:
     - echo "$SSH_PUBLIC_KEY" >> ~/.ssh/id_rsa.pub
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - if [ "$CI_COMMIT_BRANCH" == "master" ]; then export CI_BRANCH="master"; else export CI_BRANCH="dev/$CI_COMMIT_BRANCH"; fi
-    - echo $CI_BRANCH
     - git config --global user.email "${CI_EMAIL}"
     - git config --global user.name "${CI_USERNAME}"
-    - curl --request POST --header "PRIVATE-TOKEN:$API_TOKEN" "https://gitlab.com/api/v4/projects/13251251/repository/branches?branch=$CI_BRANCH&ref=master"
-    - git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git $CI_BRANCH --squash
-    - git subtree push -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git $CI_BRANCH
+    - git subtree pull -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master --squash
+    - git subtree push -P Assets/_IECModules git@gitlab.com:iecgames/iec-unity-modules.git master
