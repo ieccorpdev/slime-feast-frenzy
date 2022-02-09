@@ -520,6 +520,14 @@ namespace IEC
 #if PluginOgury
                 m_OguryModule = new OguryModule();
                 m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
+                m_OguryModule.onThumbnailClose = () =>
+                {
+                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                };
+                m_OguryModule.onThumbnailDisplay = () =>
+                {
+                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+                };
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
