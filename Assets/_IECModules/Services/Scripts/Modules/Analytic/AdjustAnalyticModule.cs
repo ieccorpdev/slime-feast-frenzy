@@ -38,7 +38,6 @@ namespace IEC
             m_ListEventRev = listEventRev;
         }
 
-
         public void PushCachedEvents()
         {
             if (IsDisable) return;
