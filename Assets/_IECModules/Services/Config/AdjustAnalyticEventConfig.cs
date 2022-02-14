@@ -18,16 +18,9 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public class Param
     {
         public string gameEvent;
-        public PlatformParam android;
-        public PlatformParam iOS;
-    }
-
-    [Serializable]
-    public class PlatformParam
-    {
-        public string adjustEventId;
-        public bool isPushEventFirebase;
-        public bool isAdjustRev;
+        public string adjustAndroidEventId;
+        public string adjustIosEventId;
+        public bool isPushEventToFirebase;
     }
 
     [NaughtyAttributes.Button]
@@ -38,48 +31,27 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         if (data == null || data.Count == 0) return;
         var androidIndex = data[0].IndexOf("Adjust Android");
         var iosIndex = data[0].IndexOf("Adjust iOS");
-        var firebaseIndexAndroid = data[0].IndexOf("Firebase Android");
-        var firebaseIndexIOS = data[0].IndexOf("Firebase iOS");
-        var adjustRevAndroid = data[0].IndexOf("Adjust in app revenue Android");
-        var adjustRevIOS = data[0].IndexOf("Adjust in app revenue iOS");
+        var firebaseIndex = data[0].IndexOf("Firebase");
         for (int i = 1; i < data.Count; i++)
         {
             var eventMap = data[i];
             var gameEvent = eventMap[0].Trim();
-            var adjustEventIdAndroid = GetValue(androidIndex, eventMap);
-            var adjustEventIdIOS = GetValue(iosIndex, eventMap);
-            var isFirebaseAndroid = GetValue(firebaseIndexAndroid, eventMap) == "TRUE";
-            var isFirebaseIOS = GetValue(firebaseIndexIOS, eventMap) == "TRUE";
-            var isAdjustRevAndroid = GetValue(adjustRevAndroid, eventMap) == "TRUE";
-            var isAdjustRevIOS = GetValue(adjustRevIOS, eventMap) == "TRUE";
+            var adjustAndroidEventId = (androidIndex >=0 && androidIndex < eventMap.Count) ? eventMap[androidIndex].Trim() : string.Empty;
+            var adjustIosEventId = (iosIndex >= 0 && iosIndex < eventMap.Count) ? eventMap[iosIndex].Trim() : string.Empty;
+            var isFirebase = (firebaseIndex >= 0 && firebaseIndex < eventMap.Count) && eventMap[firebaseIndex] == "TRUE"; 
             if (string.IsNullOrEmpty(gameEvent))
             {
                 continue;
             }
             var param = new Param
             {
-                gameEvent = gameEvent,
-                android = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdAndroid,
-                    isPushEventFirebase = isFirebaseAndroid,
-                    isAdjustRev = isAdjustRevAndroid
-                },
-                iOS = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdIOS,
-                    isPushEventFirebase = isFirebaseIOS,
-                    isAdjustRev = isAdjustRevIOS
-
-                }
+                gameEvent = gameEvent, 
+                adjustAndroidEventId = adjustAndroidEventId, 
+                adjustIosEventId = adjustIosEventId,
+                isPushEventToFirebase = isFirebase
             };
             listData.Add(param);
         }
-    }
-
-    private string GetValue(int index, List<string> listValue)
-    {
-        return (index >= 0 && index < listValue.Count) ? listValue[index].Trim() : string.Empty;
     }
 
     public Dictionary<string, string> GetDictEvent()
@@ -88,11 +60,11 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         foreach (var data in listData)
         {
 #if UNITY_ANDROID
-            var adjustEvent = data.android.adjustEventId;
+            var adjustEvent = data.adjustAndroidEventId;
 #else
-            var adjustEvent = data.iOS.adjustEventId;
+            var adjustEvent = data.adjustIosEventId;
 #endif
-            if (string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
+            if(string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
         return dict;
