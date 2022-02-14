@@ -1,0 +1,45 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace IEC
+{
+    /// <summary>
+    /// object contain player secret data (need save and secure)
+    /// </summary>
+    [System.Serializable]
+    public class PlayerSecret : IData
+    {
+        public const string DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
+
+        public string lastVersion;
+        public string lastPlayTime;
+        public bool isNoAds;
+        public int gold;
+
+        public int level = 1;
+        public int levelTracking = 1;
+        public int levelFirstTime = 0;
+
+        public void AddLevel()
+        {
+            level += 1;
+        }
+
+        public void SaveLastPlayTime()
+        {
+            lastPlayTime = DateTime.Now.ToString(DATE_TIME_FORMAT);
+        }
+
+        public DateTime GetLastPlayDateTime()
+        {
+            if (DateTime.TryParse(lastPlayTime, out DateTime dateTime))
+            {
+                return dateTime;
+            }
+            return DateTime.Now;
+        }
+
+    }
+}
