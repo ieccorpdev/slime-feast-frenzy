@@ -173,6 +173,15 @@ namespace _IECModules
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
                 });
 #endif
+#if PluginAdjust
+            var sandBoxEnable = PlayerPrefs.GetInt(AdjustAnalyticModule.ADJUST_SANDBOX, 0);
+            AddCheatCodeButton($"Adjust Sandbox: {sandBoxEnable}", param =>
+            {
+                sandBoxEnable = 1 - sandBoxEnable;
+                param.buttonText = $"Adjust Sandbox: {sandBoxEnable}";
+                PlayerPrefs.SetInt(AdjustAnalyticModule.ADJUST_SANDBOX, sandBoxEnable);
+            });
+#endif
 //            AddTestButton();
         }
 
