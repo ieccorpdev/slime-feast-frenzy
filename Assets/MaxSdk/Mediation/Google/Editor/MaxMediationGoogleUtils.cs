@@ -47,8 +47,11 @@ namespace AppLovinMax.Mediation.Google.Editor
 
         private static string GetAppLovinSettingsAssetPath()
         {
+            // Since the settings asset is generated during compile time, the asset label will contain platform specific path separator. So, use platform specific export path.  
+            var assetLabel = "l:al_max_export_path-" + AppLovinSettingsExportPath.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+            var guids = AssetDatabase.FindAssets(assetLabel);
+
             var defaultPath = Path.Combine("Assets", AppLovinSettingsExportPath);
-            var guids = AssetDatabase.FindAssets("l:al_max_export_path-" + AppLovinSettingsExportPath);
 
             return guids.Length > 0 ? AssetDatabase.GUIDToAssetPath(guids[0]) : defaultPath;
         }
