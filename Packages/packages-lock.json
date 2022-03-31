@@ -15,25 +15,29 @@
       "hash": "4a85af6626e6b9127adc3aa32f130bd05761b8f4"
     },
     "com.google.external-dependency-manager": {
-      "version": "https://gitlab.com/iec-public-google-registry/com.google.external-dependency-manager.git#1.2.165",
+      "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.169",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "92a7837da8db2c31954c79b252d89ceeb29b5f9e"
+      "hash": "cba67276e9f3c74adf1427652963e5dd571affb9"
     },
     "com.google.firebase.analytics": {
-      "version": "https://gitlab.com/iec-public-google-registry/com.google.firebase.analytics.git#7.0.2",
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#8.8.0",
       "depth": 0,
       "source": "git",
-      "dependencies": {},
-      "hash": "e1ba771f77b4f0860ced6d22f7b9655eb452e26d"
+      "dependencies": {
+        "com.google.firebase.app": "8.8.0"
+      },
+      "hash": "daf25648c8c7ecb0b455f9ba9a6bf01d99863dac"
     },
     "com.google.firebase.app": {
-      "version": "https://gitlab.com/iec-public-google-registry/com.google.firebase.app.git#7.0.2",
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#8.8.0",
       "depth": 0,
       "source": "git",
-      "dependencies": {},
-      "hash": "6ba090e9ecd6a43a41283e23c72c3cd9292a1f88"
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.169"
+      },
+      "hash": "11c6cc169af188ab31c4d5945ac1ed528e3c048d"
     },
     "com.google.firebase.remote-config": {
       "version": "https://gitlab.com/iec-public-google-registry/com.google.firebase.remote-config.git#7.0.2",
