@@ -41,18 +41,19 @@ namespace IEC
         {
             if (!IsFirebaseReady()) return;
 
-            FirebaseRemoteConfig.FetchAsync(new System.TimeSpan(0)).ContinueWithOnMainThread(taskFetch =>
+            FirebaseRemoteConfig.DefaultInstance.FetchAsync(new System.TimeSpan(0)).ContinueWithOnMainThread(taskFetch =>
             {
-                var info = FirebaseRemoteConfig.Info;
+                var info = FirebaseRemoteConfig.DefaultInstance.Info;
                 switch (info.LastFetchStatus)
                 {
                     case LastFetchStatus.Success:
-                        FirebaseRemoteConfig.ActivateFetched();
+                        //FirebaseRemoteConfig.ActivateFetched();
+                        FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
                         Debug.Log(String.Format("Remote data loaded and ready (last fetch time {0}).", info.FetchTime));
 
-                        foreach (var key in FirebaseRemoteConfig.Keys)
+                        foreach (var key in FirebaseRemoteConfig.DefaultInstance.Keys)
                         {
-                            var value = FirebaseRemoteConfig.GetValue(key);
+                            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key);
                             m_DictValue[key] = value;
                             Debug.Log("Remote " + key + ":" + value);
                         }
