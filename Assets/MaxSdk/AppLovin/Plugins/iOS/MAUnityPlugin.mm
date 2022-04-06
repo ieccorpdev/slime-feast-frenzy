@@ -436,9 +436,9 @@ extern "C"
                                                               value: (__bridge id) value];
     }
     
-    void _MaxSetBannerCustomData(const char *adUnitIdentifier, const char *customData)
+    void _MaxSetBannerCustomPostbackData(const char *adUnitIdentifier, const char *value)
     {
-        [_adManager setBannerCustomData: NSSTRING(customData) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+        [_adManager setBannerCustomPostbackData: NSSTRING(value) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
 
     void _MaxSetBannerWidth(const char *adUnitIdentifier, const float width)
@@ -562,9 +562,9 @@ extern "C"
                                                             value: (__bridge id)value];
     }
     
-    void _MaxSetMRecCustomData(const char *adUnitIdentifier, const char *customData)
+    void _MaxSetMRecCustomPostbackData(const char *adUnitIdentifier, const char *value)
     {
-        [_adManager setMRecCustomData: NSSTRING(customData) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+        [_adManager setMRecCustomPostbackData: NSSTRING(value) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
 
     const char * _MaxGetMRecLayout(const char *adUnitIdentifier)
@@ -639,6 +639,11 @@ extern "C"
                                                                       key: NSSTRING(key)
                                                                     value: (__bridge id)value];
     }
+    
+    void _MaxSetInterstitialCustomPostbackData(const char *adUnitIdentifier, const char *value)
+    {
+        [_adManager setInterstitialCustomPostbackData: NSSTRING(value) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
 
     bool _MaxIsInterstitialReady(const char *adUnitIdentifier)
     {
@@ -647,11 +652,11 @@ extern "C"
         return [_adManager isInterstitialReadyWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
-    void _MaxShowInterstitial(const char *adUnitIdentifier, const char *placement, const char *customData)
+    void _MaxShowInterstitial(const char *adUnitIdentifier, const char *placement)
     {
         if (!isPluginInitialized()) return;
         
-        [_adManager showInterstitialWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement) customData: NSSTRING(customData)];
+        [_adManager showInterstitialWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement)];
     }
     
     void _MaxLoadRewardedAd(const char *adUnitIdentifier)
@@ -674,6 +679,11 @@ extern "C"
                                                                     key: NSSTRING(key)
                                                                   value: (__bridge id)value];
     }
+    
+    void _MaxSetRewardedAdCustomPostbackData(const char *adUnitIdentifier, const char *value)
+    {
+        [_adManager setRewardedAdCustomPostbackData: NSSTRING(value) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
 
     bool _MaxIsRewardedAdReady(const char *adUnitIdentifier)
     {
@@ -682,11 +692,11 @@ extern "C"
         return [_adManager isRewardedAdReadyWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
-    void _MaxShowRewardedAd(const char *adUnitIdentifier, const char *placement, const char *customData)
+    void _MaxShowRewardedAd(const char *adUnitIdentifier, const char *placement)
     {
         if (!isPluginInitialized()) return;
         
-        [_adManager showRewardedAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement) customData: NSSTRING(customData)];
+        [_adManager showRewardedAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement)];
     }
     
     void _MaxLoadRewardedInterstitialAd(const char *adUnitIdentifier)
@@ -709,6 +719,11 @@ extern "C"
                                                                                 key: NSSTRING(key)
                                                                               value: (__bridge id)value];
     }
+    
+    void _MaxSetRewardedInterstitialAdCustomPostbackData(const char *adUnitIdentifier, const char *value)
+    {
+        [_adManager setRewardedInterstitialAdCustomPostbackData: NSSTRING(value) forAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
+    }
 
     bool _MaxIsRewardedInterstitialAdReady(const char *adUnitIdentifier)
     {
@@ -717,11 +732,11 @@ extern "C"
         return [_adManager isRewardedInterstitialAdReadyWithAdUnitIdentifier: NSSTRING(adUnitIdentifier)];
     }
     
-    void _MaxShowRewardedInterstitialAd(const char *adUnitIdentifier, const char *placement, const char *customData)
+    void _MaxShowRewardedInterstitialAd(const char *adUnitIdentifier, const char *placement)
     {
         if (!isPluginInitialized()) return;
         
-        [_adManager showRewardedInterstitialAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement) customData: NSSTRING(customData)];
+        [_adManager showRewardedInterstitialAdWithAdUnitIdentifier: NSSTRING(adUnitIdentifier) placement: NSSTRING(placement)];
     }
     
     void _MaxTrackEvent(const char *event, const char *parameters)

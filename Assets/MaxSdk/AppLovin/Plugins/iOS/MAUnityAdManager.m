@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"5.2.2"
+#define VERSION @"5.1.3"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
@@ -64,7 +64,7 @@ extern "C" {
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSArray<NSLayoutConstraint *> *> *adViewConstraints;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, NSString *> *> *adViewExtraParametersToSetAfterCreate;
 @property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableDictionary<NSString *, id> *> *adViewLocalExtraParametersToSetAfterCreate;
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *adViewCustomDataToSetAfterCreate;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSString *> *adViewCustomPostbackDatatoSetAfterCreate;
 @property (nonatomic, strong) NSMutableArray<NSString *> *adUnitIdentifiersToShowAfterCreate;
 @property (nonatomic, strong) NSMutableSet<NSString *> *disabledAdaptiveBannerAdUnitIdentifiers;
 @property (nonatomic, strong) UIView *safeAreaBackground;
@@ -120,7 +120,7 @@ static ALUnityBackgroundCallback backgroundCallback;
         self.adViewConstraints = [NSMutableDictionary dictionaryWithCapacity: 2];
         self.adViewExtraParametersToSetAfterCreate = [NSMutableDictionary dictionaryWithCapacity: 1];
         self.adViewLocalExtraParametersToSetAfterCreate = [NSMutableDictionary dictionaryWithCapacity: 1];
-        self.adViewCustomDataToSetAfterCreate = [NSMutableDictionary dictionaryWithCapacity: 1];
+        self.adViewCustomPostbackDatatoSetAfterCreate = [NSMutableDictionary dictionaryWithCapacity: 1];
         self.adUnitIdentifiersToShowAfterCreate = [NSMutableArray arrayWithCapacity: 2];
         self.disabledAdaptiveBannerAdUnitIdentifiers = [NSMutableSet setWithCapacity: 2];
         self.adInfoDict = [NSMutableDictionary dictionary];
@@ -249,9 +249,9 @@ static ALUnityBackgroundCallback backgroundCallback;
     [self setAdViewLocalExtraParameterForAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier] key: key value: value];
 }
 
-- (void)setBannerCustomData:(nullable NSString *)customData forAdUnitIdentifier:(NSString *)adUnitIdentifier
+- (void)setBannerCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier
 {
-    [self setAdViewCustomData: customData forAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier]];
+    [self setAdViewCustomPostbackData: value forAdUnitIdentifier: adUnitIdentifier adFormat: [self adViewAdFormatForAdUnitIdentifier: adUnitIdentifier]];
 }
 
 - (void)showBannerWithAdUnitIdentifier:(NSString *)adUnitIdentifier
@@ -326,9 +326,9 @@ static ALUnityBackgroundCallback backgroundCallback;
     [self setAdViewLocalExtraParameterForAdUnitIdentifier: adUnitIdentifier adFormat: MAAdFormat.mrec key: key value: value];
 }
 
-- (void)setMRecCustomData:(nullable NSString *)customData forAdUnitIdentifier:(NSString *)adUnitIdentifier;
+- (void)setMRecCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier
 {
-    [self setAdViewCustomData: customData forAdUnitIdentifier: adUnitIdentifier adFormat: MAAdFormat.mrec];
+    [self setAdViewCustomPostbackData: value forAdUnitIdentifier: adUnitIdentifier adFormat: MAAdFormat.mrec];
 }
 
 - (void)showMRecWithAdUnitIdentifier:(NSString *)adUnitIdentifier
@@ -408,10 +408,10 @@ static ALUnityBackgroundCallback backgroundCallback;
     return [interstitial isReady];
 }
 
-- (void)showInterstitialWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(nullable NSString *)placement customData:(nullable NSString *)customData
+- (void)showInterstitialWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(NSString *)placement
 {
     MAInterstitialAd *interstitial = [self retrieveInterstitialForAdUnitIdentifier: adUnitIdentifier];
-    [interstitial showAdForPlacement: placement customData: customData];
+    [interstitial showAdForPlacement: placement];
 }
 
 - (void)setInterstitialExtraParameterForAdUnitIdentifier:(NSString *)adUnitIdentifier key:(NSString *)key value:(nullable NSString *)value
@@ -424,6 +424,12 @@ static ALUnityBackgroundCallback backgroundCallback;
 {
     MAInterstitialAd *interstitial = [self retrieveInterstitialForAdUnitIdentifier: adUnitIdentifier];
     [interstitial setLocalExtraParameterForKey: key value: value];
+}
+
+- (void)setInterstitialCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier
+{
+    MAInterstitialAd *interstitial = [self retrieveInterstitialForAdUnitIdentifier: adUnitIdentifier];
+    interstitial.customPostbackData = value;
 }
 
 #pragma mark - Rewarded
@@ -440,10 +446,10 @@ static ALUnityBackgroundCallback backgroundCallback;
     return [rewardedAd isReady];
 }
 
-- (void)showRewardedAdWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(nullable NSString *)placement customData:(nullable NSString *)customData
+- (void)showRewardedAdWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(NSString *)placement
 {
     MARewardedAd *rewardedAd = [self retrieveRewardedAdForAdUnitIdentifier: adUnitIdentifier];
-    [rewardedAd showAdForPlacement: placement customData: customData];
+    [rewardedAd showAdForPlacement: placement];
 }
 
 - (void)setRewardedAdExtraParameterForAdUnitIdentifier:(NSString *)adUnitIdentifier key:(NSString *)key value:(nullable NSString *)value
@@ -456,6 +462,12 @@ static ALUnityBackgroundCallback backgroundCallback;
 {
     MARewardedAd *rewardedAd = [self retrieveRewardedAdForAdUnitIdentifier: adUnitIdentifier];
     [rewardedAd setLocalExtraParameterForKey: key value: value];
+}
+
+- (void)setRewardedAdCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier
+{
+    MARewardedAd *rewardedAd = [self retrieveRewardedAdForAdUnitIdentifier: adUnitIdentifier];
+    rewardedAd.customPostbackData = value;
 }
 
 #pragma mark - Rewarded Interstitials
@@ -472,10 +484,10 @@ static ALUnityBackgroundCallback backgroundCallback;
     return [rewardedInterstitialAd isReady];
 }
 
-- (void)showRewardedInterstitialAdWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(nullable NSString *)placement customData:(nullable NSString *)customData
+- (void)showRewardedInterstitialAdWithAdUnitIdentifier:(NSString *)adUnitIdentifier placement:(NSString *)placement
 {
     MARewardedInterstitialAd *rewardedInterstitialAd = [self retrieveRewardedInterstitialAdForAdUnitIdentifier: adUnitIdentifier];
-    [rewardedInterstitialAd showAdForPlacement: placement customData: customData];
+    [rewardedInterstitialAd showAdForPlacement: placement];
 }
 
 - (void)setRewardedInterstitialAdExtraParameterForAdUnitIdentifier:(NSString *)adUnitIdentifier key:(NSString *)key value:(nullable NSString *)value
@@ -488,6 +500,12 @@ static ALUnityBackgroundCallback backgroundCallback;
 {
     MARewardedInterstitialAd *rewardedInterstitialAd = [self retrieveRewardedInterstitialAdForAdUnitIdentifier: adUnitIdentifier];
     [rewardedInterstitialAd setLocalExtraParameterForKey: key value: value];
+}
+
+- (void)setRewardedInterstitialAdCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier
+{
+    MARewardedInterstitialAd *rewardedInterstitialAd = [self retrieveRewardedInterstitialAdForAdUnitIdentifier: adUnitIdentifier];
+    rewardedInterstitialAd.customPostbackData = value;
 }
 
 #pragma mark - Event Tracking
@@ -1025,13 +1043,13 @@ static ALUnityBackgroundCallback backgroundCallback;
             [self.adViewLocalExtraParametersToSetAfterCreate removeObjectForKey: adUnitIdentifier];
         }
         
-        // Handle initial custom data if publisher sets it before creating ad view
-        if ( self.adViewCustomDataToSetAfterCreate[adUnitIdentifier] )
+        // Handle initial custom postback data if publisher sets it before creating ad view
+        if ( self.adViewCustomPostbackDatatoSetAfterCreate[adUnitIdentifier] )
         {
-            NSString *customData = self.adViewCustomDataToSetAfterCreate[adUnitIdentifier];
-            adView.customData = customData;
+            NSString *customPostbackData = self.adViewCustomPostbackDatatoSetAfterCreate[adUnitIdentifier];
+            adView.customPostbackData = customPostbackData;
             
-            [self.adViewCustomDataToSetAfterCreate removeObjectForKey: adUnitIdentifier];
+            [self.adViewCustomPostbackDatatoSetAfterCreate removeObjectForKey: adUnitIdentifier];
         }
         
         [adView loadAd];
@@ -1178,7 +1196,7 @@ static ALUnityBackgroundCallback backgroundCallback;
             [self log: @"%@ does not exist for ad unit identifier %@. Saving local extra parameter to be set when it is created.", adFormat, adUnitIdentifier];
             
             // The adView has not yet been created. Store the loca extra parameters, so that they can be added once the adview has been created.
-            NSMutableDictionary<NSString *, id> *localExtraParameters = self.adViewLocalExtraParametersToSetAfterCreate[adUnitIdentifier];
+            NSMutableDictionary<NSString *, NSString *> *localExtraParameters = self.adViewLocalExtraParametersToSetAfterCreate[adUnitIdentifier];
             if ( !localExtraParameters )
             {
                 localExtraParameters = [NSMutableDictionary dictionaryWithCapacity: 1];
@@ -1190,21 +1208,21 @@ static ALUnityBackgroundCallback backgroundCallback;
     });
 }
 
-- (void)setAdViewCustomData:(nullable NSString *)customData forAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat
+- (void)setAdViewCustomPostbackData:(nullable NSString *)value forAdUnitIdentifier:(NSString *)adUnitIdentifier adFormat:(MAAdFormat *)adFormat
 {
     max_unity_dispatch_on_main_thread(^{
         
         MAAdView *adView = [self retrieveAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat];
         if ( adView )
         {
-            adView.customData = customData;
+            adView.customPostbackData = value;
         }
         else
         {
-            [self log: @"%@ does not exist for ad unit identifier %@. Saving custom data to be set when it is created.", adFormat, adUnitIdentifier];
+            [self log: @"%@ does not exist for ad unit identifier %@. Saving custom postback data to be set when it is created.", adFormat, adUnitIdentifier];
             
-            // The adView has not yet been created. Store the custom data, so that they can be added once the AdView has been created.
-            self.adViewCustomDataToSetAfterCreate[adUnitIdentifier] = customData;
+            // The adView has not yet been created. Store the custom postback data, so that they can be added once the AdView has been created.
+            self.adViewCustomPostbackDatatoSetAfterCreate[adUnitIdentifier] = value;
         }
     });
 }

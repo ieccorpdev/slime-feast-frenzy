@@ -499,17 +499,17 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxSetBannerCustomData(string adUnitIdentifier, string customData);
+    private static extern void _MaxSetBannerCustomPostbackData(string adUnitIdentifier, string value);
 
     /// <summary>
-    /// The custom data to tie the showing banner ad to, for ILRD and rewarded postbacks via the <c>{CUSTOM_DATA}</c> macro. Maximum size is 8KB.
+    /// Set custom data to be set in the ILRD postbacks via the {CUSTOM_DATA}  macro.
     /// </summary>
-    /// <param name="adUnitIdentifier">Banner ad unit identifier of the banner to set the custom data for.</param>
-    /// <param name="customData">The custom data to be set.</param>
-    public static void SetBannerCustomData(string adUnitIdentifier, string customData)
+    /// <param name="adUnitIdentifier">Ad unit identifier of the banner to set the custom postback data for.</param>
+    /// <param name="value">The value for the custom postback data.</param>
+    public static void SetBannerCustomPostbackData(string adUnitIdentifier, string value)
     {
-        ValidateAdUnitIdentifier(adUnitIdentifier, "set banner custom data");
-        _MaxSetBannerCustomData(adUnitIdentifier, customData);
+        ValidateAdUnitIdentifier(adUnitIdentifier, "set banner custom postback data");
+        _MaxSetBannerCustomPostbackData(adUnitIdentifier, value);
     }
 
     [DllImport("__Internal")]
@@ -714,17 +714,17 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxSetMRecCustomData(string adUnitIdentifier, string value);
+    private static extern void _MaxSetMRecCustomPostbackData(string adUnitIdentifier, string value);
 
     /// <summary>
-    /// The custom data to tie the showing MREC ad to, for ILRD and rewarded postbacks via the <c>{CUSTOM_DATA}</c> macro. Maximum size is 8KB.
+    /// Set custom data to be set in the ILRD postbacks via the {CUSTOM_DATA}  macro.
     /// </summary>
-    /// <param name="adUnitIdentifier">MREC Ad unit identifier of the banner to set the custom data for.</param>
-    /// <param name="customData">The custom data to be set.</param>
-    public static void SetMRecCustomData(string adUnitIdentifier, string customData)
+    /// <param name="adUnitIdentifier">Ad unit identifier of the MREC to set the custom postback data for.</param>
+    /// <param name="value">The value for the custom postback data.</param>
+    public static void SetMRecCustomPostbackData(string adUnitIdentifier, string value)
     {
-        ValidateAdUnitIdentifier(adUnitIdentifier, "set MREC custom data");
-        _MaxSetMRecCustomData(adUnitIdentifier, customData);
+        ValidateAdUnitIdentifier(adUnitIdentifier, "set MREC custom postback data");
+        _MaxSetMRecCustomPostbackData(adUnitIdentifier, value);
     }
 
     [DllImport("__Internal")]
@@ -890,21 +890,29 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxShowInterstitial(string adUnitIdentifier, string placement, string customData);
+    private static extern void _MaxShowInterstitial(string adUnitIdentifier, string placement);
+
+    /// <summary>
+    /// Present loaded interstitial. Note: if the interstitial is not ready to be displayed nothing will happen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the interstitial to load</param>
+    public static void ShowInterstitial(string adUnitIdentifier)
+    {
+        ShowInterstitial(adUnitIdentifier, null);
+    }
 
     /// <summary>
     /// Present loaded interstitial for a given placement to tie ad events to. Note: if the interstitial is not ready to be displayed nothing will happen.
     /// </summary>
     /// <param name="adUnitIdentifier">Ad unit identifier of the interstitial to load</param>
     /// <param name="placement">The placement to tie the showing ad's events to</param>
-    /// <param name="customData">The custom data to tie the showing ad's events to. Maximum size is 8KB.</param>
-    public static void ShowInterstitial(string adUnitIdentifier, string placement = null, string customData = null)
+    public static void ShowInterstitial(string adUnitIdentifier, string placement)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "show interstitial");
 
         if (IsInterstitialReady(adUnitIdentifier))
         {
-            _MaxShowInterstitial(adUnitIdentifier, placement, customData);
+            _MaxShowInterstitial(adUnitIdentifier, placement);
         }
         else
         {
@@ -950,6 +958,20 @@ public class MaxSdkiOS : MaxSdkBase
         _MaxSetInterstitialLocalExtraParameter(adUnitIdentifier, key, intPtrValue);
     }
 
+    [DllImport("__Internal")]
+    private static extern void _MaxSetInterstitialCustomPostbackData(string adUnitIdentifier, string value);
+
+    /// <summary>
+    /// Set custom data to be set in the ILRD postbacks via the {CUSTOM_DATA}  macro.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the interstitial to set the custom postback data for.</param>
+    /// <param name="value">The value for the custom postback data.</param>
+    public static void SetInterstitialCustomPostbackData(string adUnitIdentifier, string value)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "set interstitial custom postback data");
+        _MaxSetInterstitialCustomPostbackData(adUnitIdentifier, value);
+    }
+
     #endregion
 
     #region Rewarded
@@ -982,21 +1004,30 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxShowRewardedAd(string adUnitIdentifier, string placement, string customData);
+    private static extern void _MaxShowRewardedAd(string adUnitIdentifier, string placement);
+
+
+    /// <summary>
+    /// Present loaded rewarded ad. Note: if the rewarded ad is not ready to be displayed nothing will happen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the rewarded ad to show</param>
+    public static void ShowRewardedAd(string adUnitIdentifier)
+    {
+        ShowRewardedAd(adUnitIdentifier, null);
+    }
 
     /// <summary>
     /// Present loaded rewarded ad for a given placement to tie ad events to. Note: if the rewarded ad is not ready to be displayed nothing will happen.
     /// </summary>
     /// <param name="adUnitIdentifier">Ad unit identifier of the interstitial to load</param>
     /// <param name="placement">The placement to tie the showing ad's events to</param>
-    /// <param name="customData">The custom data to tie the showing ad's events to. Maximum size is 8KB.</param>
-    public static void ShowRewardedAd(string adUnitIdentifier, string placement = null, string customData = null)
+    public static void ShowRewardedAd(string adUnitIdentifier, string placement)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "show rewarded ad");
 
         if (IsRewardedAdReady(adUnitIdentifier))
         {
-            _MaxShowRewardedAd(adUnitIdentifier, placement, customData);
+            _MaxShowRewardedAd(adUnitIdentifier, placement);
         }
         else
         {
@@ -1042,6 +1073,20 @@ public class MaxSdkiOS : MaxSdkBase
         _MaxSetRewardedAdLocalExtraParameter(adUnitIdentifier, key, intPtrValue);
     }
 
+    [DllImport("__Internal")]
+    private static extern void _MaxSetRewardedAdCustomPostbackData(string adUnitIdentifier, string value);
+
+    /// <summary>
+    /// Set custom data to be set in the ILRD postbacks via the {CUSTOM_DATA}  macro.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the rewarded ad to set the custom postback data for.</param>
+    /// <param name="value">The value for the custom postback data.</param>
+    public static void SetRewardedAdCustomPostbackData(string adUnitIdentifier, string value)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "set rewarded custom postback data");
+        _MaxSetRewardedAdCustomPostbackData(adUnitIdentifier, value);
+    }
+
     #endregion
 
     #region Rewarded Interstitials
@@ -1074,21 +1119,30 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxShowRewardedInterstitialAd(string adUnitIdentifier, string placement, string customData);
+    private static extern void _MaxShowRewardedInterstitialAd(string adUnitIdentifier, string placement);
+
+
+    /// <summary>
+    /// Present loaded rewarded interstitial ad. Note: if the rewarded interstitial ad is not ready to be displayed nothing will happen.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the rewarded interstitial ad to show</param>
+    public static void ShowRewardedInterstitialAd(string adUnitIdentifier)
+    {
+        ShowRewardedInterstitialAd(adUnitIdentifier, null);
+    }
 
     /// <summary>
     /// Present loaded rewarded interstitial ad for a given placement to tie ad events to. Note: if the rewarded interstitial ad is not ready to be displayed nothing will happen.
     /// </summary>
     /// <param name="adUnitIdentifier">Ad unit identifier of the rewarded interstitial to show</param>
     /// <param name="placement">The placement to tie the showing ad's events to</param>
-    /// <param name="customData">The custom data to tie the showing ad's events to. Maximum size is 8KB.</param>
-    public static void ShowRewardedInterstitialAd(string adUnitIdentifier, string placement = null, string customData = null)
+    public static void ShowRewardedInterstitialAd(string adUnitIdentifier, string placement)
     {
         ValidateAdUnitIdentifier(adUnitIdentifier, "show rewarded interstitial ad");
 
         if (IsRewardedInterstitialAdReady(adUnitIdentifier))
         {
-            _MaxShowRewardedInterstitialAd(adUnitIdentifier, placement, customData);
+            _MaxShowRewardedInterstitialAd(adUnitIdentifier, placement);
         }
         else
         {
@@ -1132,6 +1186,20 @@ public class MaxSdkiOS : MaxSdkBase
 
         var intPtrValue = value == null ? IntPtr.Zero : (IntPtr) value;
         _MaxSetRewardedInterstitialAdLocalExtraParameter(adUnitIdentifier, key, intPtrValue);
+    }
+
+    [DllImport("__Internal")]
+    private static extern void _MaxSetRewardedInterstitialAdCustomPostbackData(string adUnitIdentifier, string value);
+
+    /// <summary>
+    /// Set custom data to be set in the ILRD postbacks via the {CUSTOM_DATA}  macro.
+    /// </summary>
+    /// <param name="adUnitIdentifier">Ad unit identifier of the rewarded interstitial ad to set the custom postback data for.</param>
+    /// <param name="value">The value for the custom postback data.</param>
+    public static void SetRewardedInterstitialAdCustomPostbackData(string adUnitIdentifier, string value)
+    {
+        ValidateAdUnitIdentifier(adUnitIdentifier, "set rewarded interstitial custom postback data");
+        _MaxSetRewardedInterstitialAdCustomPostbackData(adUnitIdentifier, value);
     }
 
     #endregion
