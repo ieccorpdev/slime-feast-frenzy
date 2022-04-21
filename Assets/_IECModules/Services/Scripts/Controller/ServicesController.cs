@@ -577,7 +577,7 @@ namespace IEC
             }
         }
 
-        void SaveData()
+        public void SaveData()
         {
             Init();
             DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
@@ -647,6 +647,7 @@ namespace IEC
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
             param["Dy"] = m_Retention.GetCountDay();
+            param["cumulative_revenue"] = m_ServiceData.revTotalAd;
 
             if (m_ServiceData.dictCustomParams != null && m_ServiceData.dictCustomParams.ContainsKey(eventName))
             {
