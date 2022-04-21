@@ -9,7 +9,7 @@ namespace IEC
     public class ApplovinModule : IAdsService
     {
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
-
+        
         AdsPlatformConfig m_Config;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -18,7 +18,7 @@ namespace IEC
 
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
-
+        
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
@@ -26,6 +26,7 @@ namespace IEC
         MaxSdkBase.BannerPosition m_BannerAdsPos = MaxSdkBase.BannerPosition.BottomCenter;
 
         Action<string, float, Dictionary<string, object>> pushEventAction;
+        public Action<AdsEnum, float> onAdRevenueAction;
 
 
         public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
@@ -36,6 +37,11 @@ namespace IEC
             config.interstitialID = config.interstitialID.Trim();
             config.rewardID = config.rewardID.Trim();
 
+            Debug.LogWarning("Applovin App ID:" + config.appID);
+            Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
+            Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
+            Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
+
             this.pushEventAction = pushEventAction;
 
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
@@ -45,6 +51,7 @@ namespace IEC
                 {
                     MaxSdk.SetVerboseLogging(true);
                 }
+                
                 MaxSdk.InitializeSdk();
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
@@ -181,15 +188,29 @@ namespace IEC
 
         public float GetBannerHeight()
         {
-            float f = Screen.dpi / 160f;
-            if (MaxSdkUtils.IsTablet())
-            {
-                return 90f * f;
-            }
-            return 50f * f;
+            var adaptiveHeight = MaxSdkUtils.GetAdaptiveBannerHeight();
+            float f = GetScreenDensity();
+            Debug.LogWarning("GetAdaptiveBannerHeight: " + adaptiveHeight);
+            Debug.LogWarning("GetScreenDensity: " + f);
+            return adaptiveHeight * f;
         }
 
-#region bannerAds
+        float GetScreenDensity()
+        {
+            if (Application.platform != RuntimePlatform.Android)
+            {
+                return MaxSdkUtils.GetScreenDensity();
+            }
+            AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
+
+            AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
+            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
+
+            return metrics.Get<float>("ydpi") / 160f;
+        }
+
+        #region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -207,6 +228,7 @@ namespace IEC
         void ShowBanner(Action<AdsEventArgs> showCallback, AdsEnum bannerPos)
         {
             MaxSdk.ShowBanner(m_Config.bannerID);
+            MaxSdk.SetBannerBackgroundColor(m_Config.bannerID, Color.white);
             AdsStateData.SafeInvoke(showCallback, AdsEventArgs.DONE);
         }
 
@@ -525,6 +547,18 @@ namespace IEC
                 ["ad_type"] = eventName,
                 ["network_name"] = networkName
             };
+
+            var adType = AdsEnum.BANNER_BOTTOM;
+            if (adUnitId.Equals(m_Config.interstitialID))
+            {
+                adType = AdsEnum.INTERSTITIAL;
+            }
+            else if (adUnitId.Equals(m_Config.rewardID))
+            {
+                adType = AdsEnum.REWARD;
+            }
+            
+            onAdRevenueAction?.Invoke(adType,(float)revenue);
 
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);

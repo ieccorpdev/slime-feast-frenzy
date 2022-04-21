@@ -14,6 +14,7 @@ namespace IEC
         {
             INSTANTLY,
             GROUP_CANVAS_FADE,
+            SLIDE_RIGHT_LEFT,
         }
 
         public enum ActionType
@@ -104,6 +105,11 @@ namespace IEC
                     sequence.Join(GroupCanvasFade(from, to, time, ease));
                     break;
                 }
+                case EffectType.SLIDE_RIGHT_LEFT:
+                {
+                    sequence.Join(SlideRightToLeft(isShow, time, ease));
+                    break;
+                }
             }
 
             sequence.OnComplete(() =>
@@ -119,9 +125,27 @@ namespace IEC
         Tween GroupCanvasFade(float from, float to, float time, Ease ease)
         {
             var groupCanvas = GetComponent<CanvasGroup>();
-            groupCanvas.alpha = from;
-            return groupCanvas.DOFade(to, time).SetEase(ease);
+            var sequence = DOTween.Sequence();
+            sequence.Append(groupCanvas.DOFade(from, 0))
+                    .Append(groupCanvas.DOFade(to, time).SetEase(ease));
+            return sequence;
         }
 
+        Tween SlideRightToLeft(bool isShow, float time, Ease ease)
+        {
+            var r = GetComponent<RectTransform>();
+            var width = r.rect.width;
+            var height = r.rect.height;
+            r.anchorMin = 0.5f * Vector3.one;
+            r.anchorMax = 0.5f * Vector3.one;
+            r.sizeDelta = new Vector2(width, height);
+            var from = isShow ? r.sizeDelta.x : 0f;
+            var to = isShow ? 0f : -1f * r.sizeDelta.x;
+
+            var sequence = DOTween.Sequence();
+            sequence.Append(r.DOAnchorPosX(from, 0))
+                    .Append(r.DOAnchorPosX(to, time).SetEase(ease));
+            return sequence;
+        }
     }
 }

@@ -19,6 +19,10 @@ namespace IEC
 
         OguryThumbnailAd m_ThumbnailAd;
         AdsStateData m_ThumbnailState = new AdsStateData();
+
+        public Action onThumbnailDisplay;
+        public Action onThumbnailClose;
+        
         public void Init(OguryAdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback = null)
         {
             m_PlatformConfig = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
@@ -118,11 +122,13 @@ namespace IEC
             {
                 LoadThumbnail(null);
             }
+            onThumbnailClose?.Invoke();
         }
         void Thumbnail_OnAdDisplayed(OguryThumbnailAd ad)
         {
             Debug.Log("Thumbnail OnAdDisplayed");
             m_IsThumbnailShowing = true;
+            onThumbnailDisplay?.Invoke();
         }
         void Thumbnail_OnAdError(OguryThumbnailAd ad, OguryError error)
         {
