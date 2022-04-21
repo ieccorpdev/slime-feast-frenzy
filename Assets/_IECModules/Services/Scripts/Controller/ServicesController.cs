@@ -358,6 +358,7 @@ namespace IEC
                 analytic.Init();
             }
 
+            this.config.SetActiveAbByVersion();
             foreach (var config in config.abTestConfigs)
             {
                 SetUpAbTest(config, this.config.bundleVersion);

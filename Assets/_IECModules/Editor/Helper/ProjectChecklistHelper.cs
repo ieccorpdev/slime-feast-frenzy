@@ -214,6 +214,7 @@ namespace _IECModules
             LoadServicesConfig();
 
             var listConfig = servicesConfig.abTestConfigs.ToList();
+            var platformVersion = servicesConfig.GetPlatformVersion();
             var splits = setAbString.Split('_');
             if (splits.Length != 3)
             {
@@ -225,6 +226,8 @@ namespace _IECModules
             var verNumber = int.Parse(splits[2].Split('v')[1]);
             var verRootNumber = (verNumber / 10) * 10;
             var abCount = verNumber % 10 + 1;
+
+            platformVersion.abTest = abName;
 
             listConfig.ForEach(x =>
             {
@@ -250,7 +253,7 @@ namespace _IECModules
 
             config.name = abName;
             config.KeyName = abName;
-            config.IsActive = true;
+            config.IsActive = false;
             config.IsOnlyNewInstall = true;
             config.IsOverride = false;
             var listAb = new List<string>();
@@ -263,6 +266,7 @@ namespace _IECModules
             config.SetDefaultRatioAndAB();
 
             EditorUtility.SetDirty(config);
+            EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }

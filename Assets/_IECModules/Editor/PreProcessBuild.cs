@@ -14,6 +14,14 @@ public class PreProcessBuild : IPreprocessBuildWithReport
     public void OnPreprocessBuild(BuildReport report)
     {
         SetFirebaseVersion();
+        SetPlatformVersion();
+    }
+
+    private void SetPlatformVersion()
+    {
+        ProjectChecklistHelper.LoadServicesConfig();
+        var platformVersion = ProjectChecklistHelper.servicesConfig.GetPlatformVersion();
+        PlayerSettings.bundleVersion = platformVersion.version;
     }
 
     private void SetFirebaseVersion()

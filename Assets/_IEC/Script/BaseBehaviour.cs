@@ -52,6 +52,17 @@ public class BaseBehaviour : MonoBehaviour
         CreateIfNotExistDictionary[dictKey] = obj;
     }
 
+    public T GetSingleCreate<T>(string customName = null) where T : Object
+    {
+        var dictKey = typeof(T).ToString();
+        if (!string.IsNullOrEmpty(customName)) dictKey = customName;
+        if (CreateIfNotExistDictionary.TryGetValue(dictKey, out var obj))
+        {
+            return (T)obj;
+        }
+        return null;
+    }
+
     protected void SingleClear<T>()
     {
         var type = typeof(T);

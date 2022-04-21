@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using SimpleJSON;
@@ -74,7 +75,9 @@ namespace _IECModules
             // AddRegistries(GoogleRegistry);
             SdkHelper.RemoveRegistries(GoogleRegistry);
             SdkHelper.LoadSdkVersions();
-            
+
+            SetAbVersionString();
+
             Debug.Log("Module Awake");
         }
 
@@ -382,10 +385,13 @@ namespace _IECModules
             if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
             {
-                var lastVersionString = m_AbVersionString.Split(' ')[0];
+                var config = ProjectChecklistHelper.servicesConfig;
+                var platformVersion = config.GetPlatformVersion();
+                platformVersion.version = m_AbVersionString.Split(' ')[0];
                 var lastAbString = m_AbVersionString.Split(' ')[1];
-                PlayerSettings.bundleVersion = lastVersionString;
+                PlayerSettings.bundleVersion = platformVersion.version;
                 ProjectChecklistHelper.UpdateAbVersion(lastAbString);
+                EditorUtility.SetDirty(config);
             }
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
@@ -401,6 +407,17 @@ namespace _IECModules
             LogEditorHelper.EditorOnGUI();
 
             EditorGUILayout.EndScrollView();
+        }
+
+        private void SetAbVersionString()
+        {
+            var config = ProjectChecklistHelper.servicesConfig;
+            var platformVersion = config.GetPlatformVersion();
+            var version = string.IsNullOrWhiteSpace(platformVersion.version) ? PlayerSettings.bundleVersion : platformVersion.version;
+            var abName = "AB_" + platformVersion.abTest;
+            var abTest = config.abTestConfigs.LastOrDefault(ab => ab.KeyName == abName);
+            var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
+            m_AbVersionString = version + " " + abVerStr;
         }
 
         private void CreateGuiButton(string text, Action onClickButton) =>

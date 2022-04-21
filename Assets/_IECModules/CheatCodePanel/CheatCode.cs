@@ -254,7 +254,7 @@ namespace _IECModules
             var cornerSize = 0.2f;
             var isClickActivate = false;
 
-            var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
+            var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize - topOffset);
             var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
             var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
             var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
@@ -267,7 +267,14 @@ namespace _IECModules
             if (isClickActivate)
             {
                 m_TestIndex++;
-                if (m_TestIndex != 8 && (m_TestIndex != 3 || !m_HaveInputPassword && !Application.isEditor)) return;
+                if (m_TestIndex != 8 && (m_TestIndex != 3 || !m_HaveInputPassword && !Application.isEditor))
+                {
+                    if (!m_HaveInputPassword)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.Hide);
+                    }
+                    return;
+                }
                 m_TestIndex = 0;
 
                 if (m_HaveInputPassword || Application.isEditor)
@@ -290,7 +297,7 @@ namespace _IECModules
             InitGuiParams();
             var offset = topOffset * Screen.height;
             var screenWidth = Screen.width;
-            var screenHeight = Screen.height - offset;
+            var screenHeight = Screen.height;
             var screenWidthCenter = (float) screenWidth / 2;
 
             switch (showCheatCodeState)
