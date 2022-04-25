@@ -50,6 +50,7 @@ namespace IEC
             {
                 Debug.LogError("No AB Test");
                 ResultAllAbTest();
+                EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
                 return;
             }
 
@@ -59,14 +60,12 @@ namespace IEC
                     var cheatAbIndex = cheatCodeParam.dropdownParam.value;
                     Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
                     ApplyAbTest(cheatAbIndex);
-                    ResultAllAbTest();
                 },
                 abTestConfigs.Select(x => x.KeyName).ToList(),
                 abIndex
             );
 
             ApplyAbTest(abIndex);
-            ResultAllAbTest();
         }
 
         void ApplyAbTest(int abIndex)
@@ -120,6 +119,8 @@ namespace IEC
                 var updateAbAction = listUpdateAb[abIndex];
                 updateAbAction.Invoke(abValue);
             }
+
+            ResultAllAbTest();
 
             AddCheatCodeVersionAB(abConfig, abIndex, abValue);
 
