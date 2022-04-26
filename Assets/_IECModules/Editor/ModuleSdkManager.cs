@@ -421,7 +421,7 @@ namespace _IECModules
             var abName = "AB_" + platformVersion.abTest;
             var abTest = config.abTestConfigs.LastOrDefault(ab => ab.KeyName == abName);
             var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
-            m_AbVersionString = version + " " + abVerStr;
+            m_AbVersionString = "android " + version + " " + abVerStr;
         }
 
         private void CreateGuiButton(string text, Action onClickButton) =>
