@@ -1233,5 +1233,10 @@ namespace IEC
                 }
             }
         }
+
+        public int GetEventCount(string eventName)
+        {
+            return m_EventCount.GetCount(eventName);
+        }
     }
 }
