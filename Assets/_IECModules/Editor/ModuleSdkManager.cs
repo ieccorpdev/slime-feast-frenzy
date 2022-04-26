@@ -26,7 +26,7 @@ namespace _IECModules
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private const string m_AbVersionDefault =
-            "1.9.0 AB_20210708_v82";
+            "android 1.9.0 AB_20210708_v82";
 
         private string m_AbVersionString = m_AbVersionDefault;
 
@@ -386,10 +386,14 @@ namespace _IECModules
                 GUILayout.Height(buttonSize.y)))
             {
                 var config = ProjectChecklistHelper.servicesConfig;
-                var platformVersion = config.GetPlatformVersion();
-                platformVersion.version = m_AbVersionString.Split(' ')[0];
-                var lastAbString = m_AbVersionString.Split(' ')[1];
-                PlayerSettings.bundleVersion = platformVersion.version;
+                var platform = m_AbVersionString.Split(' ')[0];
+                var platformVersion = config.GetPlatformVersion(platform);
+                platformVersion.version = m_AbVersionString.Split(' ')[1];
+                var lastAbString = m_AbVersionString.Split(' ')[2];
+                if (config.platform.ToLower() == platform.ToLower())
+                {
+                    PlayerSettings.bundleVersion = platformVersion.version;
+                }
                 ProjectChecklistHelper.UpdateAbVersion(lastAbString);
                 EditorUtility.SetDirty(config);
             }

@@ -124,6 +124,11 @@ public class ServicesConfig : ScriptableObject
         return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
     }
 
+    public VersionConfig GetPlatformVersion(string platform)
+    {
+        return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
+    }
+
     [Serializable]
     public class PlatformConfig
     {
