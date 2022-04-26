@@ -52,9 +52,6 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#if PluginOgury
-        OguryModule m_OguryModule;
-#endif
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         #endregion
@@ -101,14 +98,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-#if PluginOgury
-                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
-                    {
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                    }
-#else
                     SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-#endif
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -532,18 +522,6 @@ namespace IEC
                 ecpmAds.SetUseEcpm(AdsEnum.REWARD, false);
 
                 m_Ads = ecpmAds;
-#endif
-#if PluginOgury
-                m_OguryModule = new OguryModule();
-                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
-                m_OguryModule.onThumbnailClose = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                };
-                m_OguryModule.onThumbnailDisplay = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                };
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
@@ -1181,23 +1159,6 @@ namespace IEC
                 if (!m_ServiceData.isNoAds)
                 {
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
-#if PluginOgury
-                    m_OguryModule?.LoadThumbnail((eventArg) =>
-                    {
-                        if (eventArg == AdsEventArgs.DONE)
-                        {
-                            if (m_ServiceData.isNoAds)
-                            {
-                                return;
-                            }
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                            m_OguryModule.ShowThumbnail((eventArgs) =>
-                            {
-                                SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                            });
-                        }
-                    });
-#endif
                 }
                 yield return delaySec;
             }
