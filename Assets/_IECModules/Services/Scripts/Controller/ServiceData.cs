@@ -150,7 +150,7 @@ namespace IEC
 
         void InitRevMilestone(AdjustAnalyticEventConfig config)
         {
-            ListRevMilestones = config.GetListRevAllAdCentMilestone();
+            ListRevMilestones = (config != null) ? config.GetListRevAllAdCentMilestone() : m_ListSetup;
         }
     }
     

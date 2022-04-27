@@ -1217,6 +1217,7 @@ namespace IEC
 
         private void InitMilestoneAd()
         {
+            if(config.adjustEventConfig == null) return;
             m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
         }
 
