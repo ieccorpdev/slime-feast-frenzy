@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IEC;
+
 [CreateAssetMenu(fileName = "AdjustAnalyticEventConfig", menuName = "Services/AdjustAnalyticEventConfig")]
 public class AdjustAnalyticEventConfig : ScriptableObject
 {
@@ -117,5 +119,72 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         Debug.Log("Data downloaded:\n" + uwr.downloadHandler.text);
 
         return jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
+    }
+
+    public List<int> GetListPlayLevel()
+    {
+        return GetListValueEvent("play_level_");
+    }
+
+    public List<int> GetListPlayLevelFirstTime()
+    {
+        return GetListValueEvent("play_level_first_time_");
+    }
+
+    public Dictionary<RevAdType, List<int>> GetListMilestone()
+    {
+        var dict = new Dictionary<RevAdType, List<int>>
+        {
+            [RevAdType.INTER] = GetListValueEvent("rev_inter_"),
+            [RevAdType.BANNER] = GetListValueEvent("rev_banner_"),
+            [RevAdType.REWARD] = GetListValueEvent("rev_reward_"),
+            [RevAdType.INTER_N_REWARD] = GetListValueEvent("rev_inter_n_reward_")
+        };
+       
+       
+       foreach (var key in dict.Keys)
+       {
+           var listMilestoneStr = string.Empty;
+           var listMilestone = dict[key];
+           listMilestoneStr = listMilestone.Aggregate(listMilestoneStr, (current, value) => current + $"{value},");
+           if(!string.IsNullOrEmpty(listMilestoneStr)) listMilestoneStr = listMilestoneStr.Remove(listMilestoneStr.Length - 1);
+           Debug.LogWarning($"{key.ToString()}:{listMilestoneStr}");
+       }
+
+       return dict;
+    }
+
+    public List<RevMilestone> GetListRevAllAdCentMilestone()
+    {
+        var list =  GetListValueEvent("rev_all_ad_", "_cent")
+            .Select(x => new RevMilestone($"rev_all_ad_{x}_cent", x / 100f))
+            .ToList();
+        
+        foreach (var revMilestone in list)
+        {
+            Debug.LogWarning($"{revMilestone.eventName}:{revMilestone.step}");
+        }
+
+        return list;
+    }
+
+    private bool TryGetValueEvent(string origin, string first, string end, out int result)
+    {
+        return int.TryParse(StringHelper.GetBetweenString(origin, first, end, false), out result);
+    }
+
+    private List<int> GetListValueEvent(string prefix, string end = "")
+    {
+        if (end == "") end = string.Empty;
+        var listResult = new List<int>();
+        foreach (var data in listData)
+        {
+            var eventName = data.gameEvent;
+            if (eventName.Contains(prefix) && TryGetValueEvent(eventName, prefix, end, out var result))
+            {
+                listResult.Add(result);
+            }
+        }
+        return listResult;
     }
 }

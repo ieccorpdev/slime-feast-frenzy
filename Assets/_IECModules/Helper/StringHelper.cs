@@ -37,6 +37,7 @@ public static class StringHelper
     {
         var pFrom = original.IndexOf(start, StringComparison.Ordinal);
         var pTo = original.IndexOf(end, pFrom + start.Length, StringComparison.Ordinal);
+        if (end == string.Empty || end == "") pTo = original.Length;
 
         if (pFrom == -1 || pTo == -1) return "";
         return includeStartEndString

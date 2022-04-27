@@ -467,7 +467,8 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
-            m_ServiceData.Init(PushEvent);
+            m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
 
@@ -1209,7 +1210,14 @@ namespace IEC
 
         public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
         {
+            //Deprecated
+            return;
             m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        private void InitMilestoneAd()
+        {
+            m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
         }
 
         void PushEventMilestoneAd(RevAdType adType, int count)
