@@ -16,6 +16,7 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Version by platform")]
     [Tooltip("android or ios")]
+    public bool isVersionByPlatform;
     public string platform = "android";
     public VersionConfig versionAndroid;
     public VersionConfig versionIOS;
@@ -111,6 +112,8 @@ public class ServicesConfig : ScriptableObject
 
     public void SetActiveAbByVersion()
     {
+        if (!isVersionByPlatform) return;
+
         var versionConfig = GetPlatformVersion();
 
         foreach (var ab in abTestConfigs)
@@ -140,6 +143,6 @@ public class ServicesConfig : ScriptableObject
     public class VersionConfig
     {
         public string version = "1.0.0";
-        public string abTest = "20220414";
+        public string abTest = "AB_20220414";
     }
 }

@@ -386,6 +386,7 @@ namespace _IECModules
                 GUILayout.Height(buttonSize.y)))
             {
                 var config = ProjectChecklistHelper.servicesConfig;
+                config.isVersionByPlatform = true;
                 var platform = m_AbVersionString.Split(' ')[0];
                 var platformVersion = config.GetPlatformVersion(platform);
                 platformVersion.version = m_AbVersionString.Split(' ')[1];
