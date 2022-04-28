@@ -656,7 +656,18 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
-            
+
+            if (onPushEvent == null)
+            {
+                onPushEvent = (s =>
+                {
+                    if (s != "show_full_ad" && s != "show_reward_ad") return;
+                    if (fullAdCount + rewardCount % 10 == 0)
+                    {
+                        PushFBLogPurchase();
+                    }
+                });
+            }
             onPushEvent?.Invoke(eventName);
 
         }
