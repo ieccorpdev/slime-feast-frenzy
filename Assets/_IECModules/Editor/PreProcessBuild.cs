@@ -20,7 +20,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
     private void SetPlatformVersion()
     {
         ProjectChecklistHelper.LoadServicesConfig();
-        if (PlayerSettings.bundleVersion == "1.0.0")
+        if (ProjectChecklistHelper.servicesConfig.isVersionByPlatform)
         {
             var platform = EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS ? "ios" : "android";
             var platformVersion = ProjectChecklistHelper.servicesConfig.GetPlatformVersion(platform);
