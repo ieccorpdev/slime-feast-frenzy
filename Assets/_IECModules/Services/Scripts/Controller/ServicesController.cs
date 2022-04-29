@@ -354,7 +354,8 @@ namespace IEC
             {
                 SetUpAbTest(config, this.config.bundleVersion);
             }
-
+            
+            PushPercentile();
         }
 
 #if UNITY_IOS
@@ -1257,6 +1258,20 @@ namespace IEC
         public int GetEventCount(string eventName)
         {
             return m_EventCount.GetCount(eventName);
+        }
+
+        void PushPercentile()
+        {
+            if(config.percentileEventConfig == null || !m_Retention.IsNewDay(m_ServiceData.userDay)) return;
+            m_ServiceData.userDay = m_Retention.GetCountDay();
+            var listEvent = config.percentileEventConfig.GetListEventPush(m_ServiceData.userDay - 1, m_ServiceData.revTotalAd);
+            foreach (var percentileEvent in listEvent)
+            {
+                foreach (var analytic in m_ListAnalytics)
+                {
+                    analytic.PushEvent(percentileEvent, m_ServiceData.revTotalAd);
+                }
+            }
         }
     }
 }

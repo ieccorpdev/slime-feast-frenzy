@@ -77,5 +77,10 @@ namespace IEC
         {
             return m_CountDay;
         }
+
+        public bool IsNewDay(int userDay)
+        {
+            return m_CountDay > userDay;
+        }
     }
 }

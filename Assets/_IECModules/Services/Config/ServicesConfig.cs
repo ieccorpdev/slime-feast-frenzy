@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _IECModules;
 using UnityEngine;
 using IEC;
 
@@ -59,6 +60,8 @@ public class ServicesConfig : ScriptableObject
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;
+
+    [Header("Percentile Event Config")] public PercentileEventConfig percentileEventConfig;
 
 
     [Header("RemoteConfig")]
