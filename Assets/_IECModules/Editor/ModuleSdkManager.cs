@@ -386,16 +386,24 @@ namespace _IECModules
                 GUILayout.Height(buttonSize.y)))
             {
                 var config = ProjectChecklistHelper.servicesConfig;
-                config.isVersionByPlatform = true;
-                var platform = m_AbVersionString.Split(' ')[0];
-                var platformVersion = config.GetPlatformVersion(platform);
-                platformVersion.version = m_AbVersionString.Split(' ')[1];
-                var lastAbString = m_AbVersionString.Split(' ')[2];
-                if (config.platform.ToLower() == platform.ToLower())
+                var split = m_AbVersionString.Split(' ');
+                config.isVersionByPlatform = split.Length == 3;
+                if (config.isVersionByPlatform)
                 {
-                    PlayerSettings.bundleVersion = platformVersion.version;
+                    var platform = split[0];
+                    var platformVersion = config.GetPlatformVersion(platform);
+                    platformVersion.version = split[1];
+                    var lastAbString = split[2];
+                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform);
                 }
-                ProjectChecklistHelper.UpdateAbVersion(lastAbString);
+                else
+                {
+                    // example: "1.9.0 AB_20210708_v82"
+                    var version = split[0];
+                    var abString = split[1];
+                    PlayerSettings.bundleVersion = version;
+                    ProjectChecklistHelper.UpdateAbVersion(abString);
+                }
                 EditorUtility.SetDirty(config);
             }
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
