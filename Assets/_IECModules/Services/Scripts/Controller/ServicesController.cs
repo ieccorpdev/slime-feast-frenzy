@@ -354,8 +354,6 @@ namespace IEC
             {
                 SetUpAbTest(config, this.config.bundleVersion);
             }
-            
-            PushPercentile();
         }
 
 #if UNITY_IOS
@@ -536,7 +534,11 @@ namespace IEC
                     }
                 },
                 PushEvent);
-                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
+                applovinAds.onAdRevenueAction = (adType, rev)=>
+                {
+                    m_ServiceData.OnAdRevenue(adType, rev);
+                    PushPercentile();
+                };
                 m_Ads = applovinAds;
 #endif
 
@@ -1262,14 +1264,16 @@ namespace IEC
 
         void PushPercentile()
         {
-            if(config.percentileEventConfig == null || !m_Retention.IsNewDay(m_ServiceData.userDay)) return;
-            m_ServiceData.userDay = m_Retention.GetCountDay();
-            var listEvent = config.percentileEventConfig.GetListEventPush(m_ServiceData.userDay - 1, m_ServiceData.revTotalAd);
-            foreach (var percentileEvent in listEvent)
+            if(config.percentileEventConfig == null) return;
+            var day = m_Retention.GetCountDay();
+            foreach (var param in config.percentileEventConfig.listParam)
             {
-                foreach (var analytic in m_ListAnalytics)
+                if (m_ServiceData.revTotalAd >= param.Rev
+                    && day <= param.Day
+                    && !m_ServiceData.listPercentileEvent.Contains(param.eventName))
                 {
-                    analytic.PushEvent(percentileEvent, m_ServiceData.revTotalAd);
+                    PushEvent(param.eventName, m_ServiceData.revTotalAd);
+                    m_ServiceData.listPercentileEvent.Add(param.eventName);
                 }
             }
         }

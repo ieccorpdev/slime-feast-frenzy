@@ -16,6 +16,23 @@ namespace _IECModules
             public string country;
             public float revAndroid;
             public float revIOS;
+
+            private int m_Day = -1;
+            public int Day
+            {
+                get
+                {
+                    if (m_Day != -1) return m_Day;
+                    var convert = int.TryParse(
+                        eventName.GetBetweenString($"percentile_{country.ToLower()}_d", string.Empty), out m_Day);
+                    if (convert) return m_Day;
+                    Debug.LogError("Error get day retention rev");
+                    m_Day = -2;
+                    return m_Day;
+                }
+            }
+
+            public float Rev => Application.platform == RuntimePlatform.Android ? revAndroid : revIOS;
         }
 
         public string url;
@@ -39,19 +56,6 @@ namespace _IECModules
                     listParam.Add(param);
                 }
             }, Debug.LogError);
-        }
-
-        public List<string> GetListEventPush(int day, float totalRev)
-        {
-            return listParam.Where(x =>
-            {
-                var eventDayStr =
-                    x.eventName.GetBetweenString($"_percentile_{x.country.ToLower()}_d", string.Empty, false);
-                int.TryParse(eventDayStr, out var eventDay);
-                var isEnoughRev =
-                    totalRev >= ((Application.platform == RuntimePlatform.Android) ? x.revAndroid : x.revIOS);
-                return eventDay == day && isEnoughRev;
-            }).Select(x => x.eventName).ToList();
         }
     }
 }

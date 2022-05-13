@@ -23,7 +23,7 @@ namespace IEC
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
-        public int userDay = 0;
+        public List<string> listPercentileEvent = new List<string>();
         [NonSerialized] public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
 
         private Action<string, float, Dictionary<string, object>> m_PushEventAction;
