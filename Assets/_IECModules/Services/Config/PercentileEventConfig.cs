@@ -24,7 +24,7 @@ namespace _IECModules
                 {
                     if (m_Day != -1) return m_Day;
                     var convert = int.TryParse(
-                        eventName.GetBetweenString($"percentile_{country.ToLower()}_d", string.Empty), out m_Day);
+                        eventName.GetBetweenString($"percentile_{country.ToLower()}_d", string.Empty,false), out m_Day);
                     if (convert) return m_Day;
                     Debug.LogError("Error get day retention rev");
                     m_Day = -2;
