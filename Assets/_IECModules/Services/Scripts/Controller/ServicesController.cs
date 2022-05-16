@@ -1265,7 +1265,7 @@ namespace IEC
         void PushPercentile()
         {
             if(config.percentileEventConfig == null) return;
-            var day = m_Retention.GetCountDay();
+            var day = m_Retention.GetCountDay() - 1;
             foreach (var param in config.percentileEventConfig.listParam)
             {
                 if (m_ServiceData.revTotalAd >= param.Rev
