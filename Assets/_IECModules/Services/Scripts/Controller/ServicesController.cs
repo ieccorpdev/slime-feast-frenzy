@@ -1266,8 +1266,11 @@ namespace IEC
         {
             if(config.percentileEventConfig == null) return;
             var day = m_Retention.GetCountDay() - 1;
+            Debug.Log("day:" + day);
             foreach (var param in config.percentileEventConfig.listParam)
             {
+                Debug.Log("param Day:" + param.Day);
+                Debug.Log("Is Push Event:" + m_ServiceData.listPercentileEvent.Contains(param.eventName));
                 if (m_ServiceData.revTotalAd >= param.Rev
                     && day <= param.Day
                     && !m_ServiceData.listPercentileEvent.Contains(param.eventName))
