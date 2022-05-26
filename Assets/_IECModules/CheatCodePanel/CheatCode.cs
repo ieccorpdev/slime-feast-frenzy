@@ -5,6 +5,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Diagnostics;
 using UnityEngine.UI;
 
 namespace _IECModules
@@ -62,6 +63,13 @@ namespace _IECModules
             TopRight = 1 << 1,
             BotLeft = 1 << 2,
             BotRight = 1 << 3
+        }
+
+        public enum CheatCodeExceptionType
+        {
+            Exception,
+            OutOfRange,
+            Null
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
@@ -136,7 +144,32 @@ namespace _IECModules
             {
                 ResetPlayerData();
             });
-            
+
+            var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
+            {
+                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+            }, listCrashCategory);
+
+            var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Create Exception!!!!!", param =>
+            {
+                var exceptionType = (CheatCodeExceptionType)Enum.Parse(typeof(CheatCodeExceptionType), listExceptionType[param.dropdownParam.value]);
+                switch (exceptionType)
+                {
+                    case CheatCodeExceptionType.Exception:
+                        throw new Exception("Cheat Code Exception");
+                    case CheatCodeExceptionType.OutOfRange:
+                        var a = new int[3];
+                        var b = a[3];
+                        break;
+                    case CheatCodeExceptionType.Null:
+                        SpriteRenderer sprite = null;
+                        var c = sprite.sprite;
+                        break;
+                }
+            }, listExceptionType);
+
             AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
             {
                 ResetPlayerDataWithoutChangeAb();
