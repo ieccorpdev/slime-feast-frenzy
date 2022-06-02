@@ -662,7 +662,9 @@ namespace IEC
                 onPushEvent = (s =>
                 {
                     if (s != "show_full_ad" && s != "show_reward_ad") return;
-                    if (fullAdCount + rewardCount % 10 == 0)
+                    var count = m_EventCount.GetCount("show_full_ad")
+                                + m_EventCount.GetCount("show_reward_ad");
+                    if (count % 10 == 0)
                     {
                         PushFBLogPurchase();
                     }
