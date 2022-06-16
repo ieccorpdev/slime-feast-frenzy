@@ -40,9 +40,9 @@ namespace IEC
             dictCustomParams[eventName] = funcParams;
         }
 
-        public void Init(Action<string, float, Dictionary<string, object>> pushEventAction)
+        public void Init(AdjustAnalyticEventConfig config, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
-            InitRevMilestone();
+            InitRevMilestone(config);
             m_PushEventAction = pushEventAction;
             if (dictMilestoneBanner == null) dictMilestoneBanner = new Dictionary<int, float>();
             if (dictMilestoneInter == null) dictMilestoneInter = new Dictionary<int, float>();
@@ -148,22 +148,9 @@ namespace IEC
             }
         }
 
-        void InitRevMilestone()
+        void InitRevMilestone(AdjustAnalyticEventConfig config)
         {
-            if (ListRevMilestones == null)
-                ListRevMilestones = new List<RevMilestone>();
-
-            if (ListRevMilestones.Count < m_ListSetup.Count)
-            {
-                var listExistEvent = ListRevMilestones.Select(x => x.eventName).ToList();
-                foreach (var e in m_ListSetup)
-                {
-                    if (!listExistEvent.Contains(e.eventName))
-                    {
-                        ListRevMilestones.Add(e);
-                    }
-                }
-            }
+            ListRevMilestones = (config != null) ? config.GetListRevAllAdCentMilestone() : m_ListSetup;
         }
     }
     

@@ -201,7 +201,7 @@ namespace _IECModules
                 }
 
                 PlayerSettings.bundleVersion = lastVersionString;
-                UpdateAbVersion(lastAbString);
+                UpdateAbVersion(lastAbString, servicesConfig.platform);
             }
             else
             {
@@ -209,12 +209,11 @@ namespace _IECModules
             }
         }
 
-        public static void UpdateAbVersion(string setAbString)
+        public static void UpdateAbVersion(string setAbString, string platform = "")
         {
             LoadServicesConfig();
 
             var listConfig = servicesConfig.abTestConfigs.ToList();
-            var platformVersion = servicesConfig.GetPlatformVersion();
             var splits = setAbString.Split('_');
             if (splits.Length != 3)
             {
@@ -227,7 +226,11 @@ namespace _IECModules
             var verRootNumber = (verNumber / 10) * 10;
             var abCount = verNumber % 10 + 1;
 
-            platformVersion.abTest = abName;
+            if (servicesConfig.isVersionByPlatform)
+            {
+                var platformVersion = servicesConfig.GetPlatformVersion(platform);
+                platformVersion.abTest = abName;
+            }
 
             listConfig.ForEach(x =>
             {
@@ -253,7 +256,7 @@ namespace _IECModules
 
             config.name = abName;
             config.KeyName = abName;
-            config.IsActive = false;
+            config.IsActive = true;
             config.IsOnlyNewInstall = true;
             config.IsOverride = false;
             var listAb = new List<string>();

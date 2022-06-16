@@ -26,7 +26,7 @@ namespace _IECModules
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private const string m_AbVersionDefault =
-            "1.9.0 AB_20210708_v82";
+            "android 1.9.0 AB_20210708_v82";
 
         private string m_AbVersionString = m_AbVersionDefault;
 
@@ -183,13 +183,15 @@ namespace _IECModules
             //    SdkHelper.ListApplovinVersion,
             //    GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
-            var applovinSdkLoaded = !string.IsNullOrEmpty(SdkHelper.ApplovinLatestDownloadLink);
+            var applovinSdkLoaded = SdkHelper.ApplovinMaxLoader.LoadVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinLatestDownloadLink);
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinMaxLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
-
+            SdkHelper.ApplovinMaxLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.ApplovinMaxLoader.versionSelect,
+                SdkHelper.ApplovinMaxLoader.ListSDKVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 
             var ogurySdkLoaded = SdkHelper.OgurySdkLoader.LoadVersionFromCache();
@@ -386,11 +388,24 @@ namespace _IECModules
                 GUILayout.Height(buttonSize.y)))
             {
                 var config = ProjectChecklistHelper.servicesConfig;
-                var platformVersion = config.GetPlatformVersion();
-                platformVersion.version = m_AbVersionString.Split(' ')[0];
-                var lastAbString = m_AbVersionString.Split(' ')[1];
-                PlayerSettings.bundleVersion = platformVersion.version;
-                ProjectChecklistHelper.UpdateAbVersion(lastAbString);
+                var split = m_AbVersionString.Split(' ');
+                config.isVersionByPlatform = split.Length == 3;
+                if (config.isVersionByPlatform)
+                {
+                    var platform = split[0];
+                    var platformVersion = config.GetPlatformVersion(platform);
+                    platformVersion.version = split[1];
+                    var lastAbString = split[2];
+                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform);
+                }
+                else
+                {
+                    // example: "1.9.0 AB_20210708_v82"
+                    var version = split[0];
+                    var abString = split[1];
+                    PlayerSettings.bundleVersion = version;
+                    ProjectChecklistHelper.UpdateAbVersion(abString);
+                }
                 EditorUtility.SetDirty(config);
             }
             m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
@@ -417,7 +432,7 @@ namespace _IECModules
             var abName = "AB_" + platformVersion.abTest;
             var abTest = config.abTestConfigs.LastOrDefault(ab => ab.KeyName == abName);
             var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
-            m_AbVersionString = version + " " + abVerStr;
+            m_AbVersionString = "android " + version + " " + abVerStr;
         }
 
         private void CreateGuiButton(string text, Action onClickButton) =>

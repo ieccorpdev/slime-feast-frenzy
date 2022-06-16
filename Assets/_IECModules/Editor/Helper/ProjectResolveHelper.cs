@@ -69,6 +69,7 @@ namespace _IECModules
             ModifyPermissions(listPermissionRemove,PermissionAction.Remove);
             ModifyPermissions(listPermissionNecessary,PermissionAction.Add);
             GenerateGameObjectOguryCallback();
+            DeleteObsoleteResolver();
             //UpdateApplovinQualityService();
         }
 

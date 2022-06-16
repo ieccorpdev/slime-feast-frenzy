@@ -52,11 +52,9 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#if PluginOgury
-        OguryModule m_OguryModule;
-#endif
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
+        public Action<string> onPushEvent;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -101,14 +99,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-#if PluginOgury
-                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
-                    {
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                    }
-#else
                     SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-#endif
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -476,7 +467,8 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
-            m_ServiceData.Init(PushEvent);
+            m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
 
@@ -532,18 +524,6 @@ namespace IEC
                 ecpmAds.SetUseEcpm(AdsEnum.REWARD, false);
 
                 m_Ads = ecpmAds;
-#endif
-#if PluginOgury
-                m_OguryModule = new OguryModule();
-                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
-                m_OguryModule.onThumbnailClose = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                };
-                m_OguryModule.onThumbnailDisplay = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                };
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
@@ -676,15 +656,30 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
-            
+
+            if (onPushEvent == null)
+            {
+                onPushEvent = (s =>
+                {
+                    if (s != "show_full_ad" && s != "show_reward_ad") return;
+                    var count = m_EventCount.GetCount("show_full_ad")
+                                + m_EventCount.GetCount("show_reward_ad");
+                    if (count % 10 == 0)
+                    {
+                        PushFBLogPurchase();
+                    }
+                });
+            }
+            onPushEvent?.Invoke(eventName);
+
+        }
+
+        public void PushFBLogPurchase()
+        {
 #if (PluginFacebook)
-            if (!eventName.Equals("show_full_ad") && !eventName.Equals("show_reward_ad")) return;
-            var countAd = fullAdCount + rewardCount;
-            if(countAd % 10 != 0) return;
             if(FB.IsInitialized) 
                 FB.LogPurchase(GetValueToSum(),"USD");
 #endif
-
         }
 
         public void PushCachedEvents()
@@ -1181,23 +1176,6 @@ namespace IEC
                 if (!m_ServiceData.isNoAds)
                 {
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
-#if PluginOgury
-                    m_OguryModule?.LoadThumbnail((eventArg) =>
-                    {
-                        if (eventArg == AdsEventArgs.DONE)
-                        {
-                            if (m_ServiceData.isNoAds)
-                            {
-                                return;
-                            }
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                            m_OguryModule.ShowThumbnail((eventArgs) =>
-                            {
-                                SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                            });
-                        }
-                    });
-#endif
                 }
                 yield return delaySec;
             }
@@ -1245,7 +1223,15 @@ namespace IEC
 
         public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
         {
+            //Deprecated
+            return;
             m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        private void InitMilestoneAd()
+        {
+            if(config.adjustEventConfig == null) return;
+            m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
         }
 
         void PushEventMilestoneAd(RevAdType adType, int count)
@@ -1268,6 +1254,11 @@ namespace IEC
                     m_ServiceData.SetValueToSumRevAd(adType, milestone);
                 }
             }
+        }
+
+        public int GetEventCount(string eventName)
+        {
+            return m_EventCount.GetCount(eventName);
         }
     }
 }

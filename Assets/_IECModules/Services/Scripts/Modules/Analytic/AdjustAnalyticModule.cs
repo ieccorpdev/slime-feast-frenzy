@@ -52,12 +52,14 @@ namespace IEC
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
+            var adjustLog = $"Push Adjust Event:{DictEvent[eventName]}";
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
                 adjustEvent.setRevenue(value, "USD");
+                adjustLog += $"__Rev:{value}";
             }
             Adjust.trackEvent(adjustEvent);
-            Debug.Log("Push Adjust Event:" + DictEvent[eventName]);
+            Debug.Log(adjustLog);
         }
 
         public void SetUserProperty(string name, string property)
