@@ -18,7 +18,7 @@ using Google.Play.Review;
 
 #if UNITY_IOS
 using System.Runtime.InteropServices;
-using Balaso;
+using Unity.Advertisement.IosSupport;
 #endif
 
 
@@ -124,8 +124,8 @@ namespace IEC
             UnityToolbag.Dispatcher.Awake();
             Init();
 #if UNITY_IOS
-            AppTrackingTransparency.RegisterAppForAdNetworkAttribution();
-            AppTrackingTransparency.UpdateConversionValue(3);
+            SkAdNetworkBinding.SkAdNetworkRegisterAppForNetworkAttribution();
+            SkAdNetworkBinding.SkAdNetworkUpdateConversionValue(3);
 #endif
             InitServices();
 
@@ -293,30 +293,30 @@ namespace IEC
             _initByteDance(config.appId, config.appName);
 #endif
 #if UNITY_IOS
-            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
-           {
-               switch (status)
-               {
-                   case AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED:
-                       Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
-                       break;
-                   case AppTrackingTransparency.AuthorizationStatus.RESTRICTED:
-                       Debug.LogWarning("AuthorizationStatus: RESTRICTED");
-                       break;
-                   case AppTrackingTransparency.AuthorizationStatus.DENIED:
-                       Debug.LogWarning("AuthorizationStatus: DENIED");
-                       break;
-                   case AppTrackingTransparency.AuthorizationStatus.AUTHORIZED:
-                       Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
-                       PushEvent("att_145_allow");
-                       SendATTAnalytic("att_success");
-                       break;
-               }
-               // Obtain IDFA
-               Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
-           };
 
-            AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
+            ATTrackingStatusBinding.RequestAuthorizationTrackingCompleteHandler handler = value =>
+            {
+                var status = ATTrackingStatusBinding.GetAuthorizationTrackingStatus();
+                switch (status)
+                {
+                    case ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED:
+                        Debug.LogWarning("AuthorizationStatus: NOT_DETERMINED");
+                        break;
+                    case ATTrackingStatusBinding.AuthorizationTrackingStatus.RESTRICTED:
+                        Debug.LogWarning("AuthorizationStatus: RESTRICTED");
+                        break;
+                    case ATTrackingStatusBinding.AuthorizationTrackingStatus.DENIED:
+                        Debug.LogWarning("AuthorizationStatus: DENIED");
+                        break;
+                    case ATTrackingStatusBinding.AuthorizationTrackingStatus.AUTHORIZED:
+                        Debug.LogWarning("AuthorizationStatus: AUTHORIZED");
+                        PushEvent("att_145_allow");
+                        SendATTAnalytic("att_success");
+                        break;
+                }
+            };
+
+            ATTrackingStatusBinding.AuthorizationTrackingStatus currentStatus = ATTrackingStatusBinding.GetAuthorizationTrackingStatus();
             Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
 
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
@@ -329,16 +329,16 @@ namespace IEC
             {
                 InitSDKAfterATT(true);
             }
-            else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
+            else if (currentStatus == ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED)
             {
                 Debug.LogWarning("Requesting authorization...");
-                AppTrackingTransparency.RequestTrackingAuthorization();
+                ATTrackingStatusBinding.RequestAuthorizationTracking(handler);
                 StartCoroutine(IE_WaitATT());
                 SendATTAnalytic("att_show");
             }
             else
             {
-                InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+                InitSDKAfterATT(currentStatus == ATTrackingStatusBinding.AuthorizationTrackingStatus.AUTHORIZED);
             }
 #else
             InitSDKAfterATT(true);
@@ -360,9 +360,9 @@ namespace IEC
 #if UNITY_IOS
         IEnumerator IE_WaitATT()
         {
-            yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
+            yield return new WaitUntil(() => ATTrackingStatusBinding.GetAuthorizationTrackingStatus() != ATTrackingStatusBinding.AuthorizationTrackingStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+            InitSDKAfterATT(ATTrackingStatusBinding.GetAuthorizationTrackingStatus() == ATTrackingStatusBinding.AuthorizationTrackingStatus.AUTHORIZED);
         }
 #endif
 
