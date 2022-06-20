@@ -2,7 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_IOS
 using Unity.Advertisement.IosSupport;
+#endif
 using UnityEngine;
 
 namespace IEC
