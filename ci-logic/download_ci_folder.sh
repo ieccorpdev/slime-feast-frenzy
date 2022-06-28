@@ -3,4 +3,4 @@ cd $UNITY_DIR
 wget "https://custom-cloud-build.netlify.app/ci.zip"
 unzip ci.zip
 cp -r BuildLogic/ci ci
-mv BuildLogic/ci/Scripts Assets
+mv BuildLogic/ci/Scripts Assets/CustomBuild/ci
