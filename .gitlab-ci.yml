@@ -137,9 +137,9 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   <<: *unity_defaults
   script:
     - chmod +x ./ci/build.sh && ./ci/build.sh
-  artifacts:
-    paths:
-      - $UNITY_DIR/Builds/
+  # artifacts:
+  #   paths:
+  #     - $UNITY_DIR/Builds/
   # https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/83
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
