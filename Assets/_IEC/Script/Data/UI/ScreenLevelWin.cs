@@ -15,6 +15,7 @@ namespace IEC
 
             SetEvent(btnNext, () =>
             {
+                Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
             });
         }
