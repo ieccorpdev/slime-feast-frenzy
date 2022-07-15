@@ -20,10 +20,9 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
-                    var position = (string)param.sender;
-                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, position, () =>
+                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                     {
-                        EventController.RaiseEvent(EventList.GamePlay.MAIN_MENU);
+                        EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
