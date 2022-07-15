@@ -20,9 +20,10 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
-                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                    var position = (string)param.sender;
+                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, position, () =>
                     {
-                        EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                        EventController.RaiseEvent(EventList.GamePlay.MAIN_MENU);
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
@@ -61,14 +62,15 @@ namespace IEC
             Debug.LogWarning("Screen.safeArea.height: " + Screen.safeArea.height);
             Debug.LogWarning("screen height: " + Screen.height);
             Debug.LogWarning("canvasScaler ref height: " + UI.canvasScaler.referenceResolution.y);
-            var ratio = UI.canvasScaler.referenceResolution.y / Screen.safeArea.height;
+            var ratio = UI.canvasScaler.referenceResolution.y / Screen.height;
             bannerHeight *= ratio;
+            bannerHeight += 10;
             Debug.LogWarning("scaleBannerHeight: " + bannerHeight);
 
             var listBannerAdsUI = UI.GetComponentsInChildren<BannerAdsUI>(true);
             foreach (var bannerAds in listBannerAdsUI)
             {
-                UpdateWhiteBannerSize(bannerAds.RectTransform, bannerHeight);
+                bannerAds.SetSize(bannerHeight);
             }
         }
 
@@ -81,14 +83,6 @@ namespace IEC
             activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
 
             return new Vector2(metrics.Get<float>("xdpi"), metrics.Get<float>("ydpi"));
-        }
-
-        void UpdateWhiteBannerSize(RectTransform rectBannerAds, float bannerHeight)
-        {
-            var sizeDelta = rectBannerAds.sizeDelta;
-            sizeDelta.y = bannerHeight;
-            sizeDelta.y = Mathf.Clamp(sizeDelta.y, 100, 300);
-            rectBannerAds.sizeDelta = sizeDelta;
         }
     }
 }

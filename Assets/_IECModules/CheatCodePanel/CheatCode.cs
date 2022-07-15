@@ -634,7 +634,7 @@ namespace _IECModules
                 cheatCodeParam => { cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}"; }
             );
             
-            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double)};
+            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double), typeof(string)};
             classObj.GetType().GetFields().Where(f => checkFieldType.Contains(f.FieldType)).ToList().ForEach(
                 field =>
                 {
@@ -681,6 +681,15 @@ namespace _IECModules
                             }
                             onChange?.Invoke();
                         }, new InputParam {value = fieldValue});
+                    }
+                    else if (fieldType == typeof(string))
+                    {
+                        AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
+                        {
+                            var valueStr = param.inputParams[0].value.ToString();
+                            field.SetValue(classObj, valueStr);
+                            onChange?.Invoke();
+                        }, new InputParam { value = fieldValue });
                     }
                 });
         }

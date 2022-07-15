@@ -14,7 +14,7 @@ namespace IEC
         public bool isHaveAnim = true;
         public bool isShowBlackPanel = true;
         string TweenID => $"Anim{gameObject.GetInstanceID()}";
-        float TWEEN_TIME = 0.5f;
+        float TWEEN_TIME = 0.3f;
 
         protected virtual void Awake()
         {
@@ -41,7 +41,7 @@ namespace IEC
                 mainPanel.transform.localScale = Vector3.zero;
                 mainPanel.transform.DOScale(scale, TWEEN_TIME)
                     .SetId(TweenID)
-                    .SetEase(Ease.OutBack)
+                    .SetEase(Ease.InQuad)
                     .OnComplete(() =>
                     {
                         onShowDone.Invoke();
