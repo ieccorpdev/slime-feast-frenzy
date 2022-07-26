@@ -15,6 +15,8 @@ namespace IEC
 
         public string lastVersion;
         public string lastPlayTime;
+        public int session;
+        public bool IsFirstTime => session == 1;
         public bool isNoAds;
         public int gold;
 

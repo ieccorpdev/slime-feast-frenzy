@@ -64,7 +64,7 @@ namespace UnityEngine.UI
         protected override void OnEnable()
         {
             base.OnEnable();
-            //m_DelayedSetDirty = true;
+            m_DelayedSetDirty = true;
         }
 
         protected override void OnDisable()
@@ -74,7 +74,7 @@ namespace UnityEngine.UI
             base.OnDisable();
         }
 
-        protected virtual void Update()
+        public virtual void Update()
         {
             if (m_DelayedSetDirty)
             {
@@ -97,6 +97,7 @@ namespace UnityEngine.UI
             if (!IsActive())
                 return;
 
+            m_DelayedSetDirty = false;
             m_Tracker.Clear();
 
             switch (m_AspectMode)

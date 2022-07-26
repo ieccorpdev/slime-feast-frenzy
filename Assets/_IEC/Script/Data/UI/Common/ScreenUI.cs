@@ -41,6 +41,7 @@ namespace IEC
         public virtual void LocateScreen()
         {
             Pool.Set(GetType(), this);
+            IsShow = gameObject.activeSelf;
         }
 
         public virtual void Show()

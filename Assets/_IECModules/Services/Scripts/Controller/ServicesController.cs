@@ -2,6 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+#if(PluginFacebook)
+using Facebook.Unity;
+#endif
+using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -26,7 +31,6 @@ namespace IEC
         const string SERVICE_DATA_KEY = "ServiceData";
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         public const string SERVER_URL_KEY = "ServerUrl";
-
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
@@ -48,10 +52,9 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#if PluginOgury
-        OguryModule m_OguryModule;
-#endif
 
+        private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
+        public Action<string> onPushEvent;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -92,22 +95,11 @@ namespace IEC
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
-                    if(m_ServiceData.isNoAds)
-                    {
-                        break;
-                    }
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-#if PluginOgury
-                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
-                    {
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                    }
-#else
                     SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-#endif
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -207,14 +199,6 @@ namespace IEC
             m_SetUpFacebook = new SetUpSdkMock();
             m_SetUpFirebase = new SetUpSdkMock();
 
-#if (PluginFacebook)
-            m_SetUpFacebook = new SetUpFacebookModule();
-            m_SetUpFacebook.Init((isLoaded) =>
-            {
-                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
-            });
-#endif
-
 #if (PluginFirebase)
             m_SetUpFirebase = new SetUpFirebaseModule();
             m_SetUpFirebase.Init((isLoaded) =>
@@ -280,7 +264,20 @@ namespace IEC
 #endif
 
 #if (PluginFirebaseAnalytic)
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase);
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
+                        .Where(x =>
+                        {
+                            if(Application.platform == RuntimePlatform.Android)
+                                return !x.android.isPushEventFirebase;
+                            return !x.iOS.isPushEventFirebase;
+                        })
+                        .Select(x => x.gameEvent).ToList();
+                }
+                
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
                 m_ListAnalytics.Add(m_FirebaseAnalytic);
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
@@ -352,6 +349,7 @@ namespace IEC
                 analytic.Init();
             }
 
+            this.config.SetActiveAbByVersion();
             foreach (var config in config.abTestConfigs)
             {
                 SetUpAbTest(config, this.config.bundleVersion);
@@ -382,7 +380,26 @@ namespace IEC
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    if (Application.platform == RuntimePlatform.Android)
+                        return x.android.isAdjustRev;
+                    return x.iOS.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
             m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+#if (PluginFacebook)
+            m_SetUpFacebook = new SetUpFacebookModule();
+            m_SetUpFacebook.Init((isLoaded) =>
+            {
+                FB.Mobile.SetAdvertiserTrackingEnabled(isHaveIDFA);
+                FB.Mobile.SetAdvertiserIDCollectionEnabled(isHaveIDFA);
+                RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
+            });
 #endif
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
@@ -450,6 +467,8 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
+            m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
 
@@ -506,24 +525,17 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
-#if PluginOgury
-                m_OguryModule = new OguryModule();
-                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
-#endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
                 applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
                 {
                     if (result)
                     {
-                        applovinAds.Load(AdsEnum.BANNER_BOTTOM, null);
-                        applovinAds.Load(AdsEnum.INTERSTITIAL, null);
-                        applovinAds.Load(AdsEnum.REWARD, null);
                         RaiseInitEvent(EventList.Service.INIT_AD_DONE);
                     }
                 },
                 PushEvent);
-                m_ApplovinAds = applovinAds;
+                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
                 m_Ads = applovinAds;
 #endif
 
@@ -545,7 +557,7 @@ namespace IEC
             }
         }
 
-        void SaveData()
+        public void SaveData()
         {
             Init();
             DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
@@ -579,7 +591,12 @@ namespace IEC
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
-                PushEvent(abTest.KeyName, 1, new Dictionary<string, object>
+                var abVersion = s.Split('_')[2].Remove(0, 1);
+                var isNumber = int.TryParse(abVersion, out int version);
+                var eventValue = (isNumber) ? version : 1;
+                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                Debug.LogWarning("AbTest event value:" + eventValue);
+                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
                     {"version", s}
                 });
@@ -610,6 +627,7 @@ namespace IEC
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
             param["Dy"] = m_Retention.GetCountDay();
+            param["cumulative_revenue"] = m_ServiceData.revTotalAd;
 
             if (m_ServiceData.dictCustomParams != null && m_ServiceData.dictCustomParams.ContainsKey(eventName))
             {
@@ -624,6 +642,44 @@ namespace IEC
             {
                 analytic.PushEvent(eventName, value, param);
             }
+
+            var fullAdCount = m_EventCount.GetCount("show_full_ad");
+            var rewardCount = m_EventCount.GetCount("show_reward_ad");
+            if (eventName.Equals("show_full_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.INTER, fullAdCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
+
+            if (eventName.Equals("show_reward_ad"))
+            {
+                PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
+                PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
+            }
+
+            if (onPushEvent == null)
+            {
+                onPushEvent = (s =>
+                {
+                    if (s != "show_full_ad" && s != "show_reward_ad") return;
+                    var count = m_EventCount.GetCount("show_full_ad")
+                                + m_EventCount.GetCount("show_reward_ad");
+                    if (count % 10 == 0)
+                    {
+                        PushFBLogPurchase();
+                    }
+                });
+            }
+            onPushEvent?.Invoke(eventName);
+
+        }
+
+        public void PushFBLogPurchase()
+        {
+#if (PluginFacebook)
+            if(FB.IsInitialized) 
+                FB.LogPurchase(GetValueToSum(),"USD");
+#endif
         }
 
         public void PushCachedEvents()
@@ -670,7 +726,7 @@ namespace IEC
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     var milestone = GetMilestone(fullAdCount);
-                    if (fullAdCount % milestone == 0 && fullAdCount > 0)
+                    if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
                         PushEvent("inter_" + fullAdCount);
                     }
@@ -739,7 +795,7 @@ namespace IEC
 
                         var rewardCount = m_EventCount.GetCount("show_reward_ad");
                         var milestone = GetMilestone(rewardCount) / 2;
-                        if (rewardCount % milestone == 0 && rewardCount > 0)
+                        if (rewardCount % milestone == 0 && rewardCount > 0 && rewardCount < 100)
                         {
                             PushEvent("reward_" + rewardCount);
                         }
@@ -903,7 +959,7 @@ namespace IEC
         public void SendEmail()
         {
             SaveLogToFile();
-            string email = "support@iecglobal.com.au";
+            string email = config.emailSupport;
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
             {
@@ -1115,25 +1171,12 @@ namespace IEC
             var delaySec = new WaitForSecondsRealtime(3f);
             while (true)
             {
-                Ads().Load(AdsEnum.INTERSTITIAL, null);
                 Ads().Load(AdsEnum.REWARD, null);
-#if PluginOgury
-                m_OguryModule?.LoadThumbnail((eventArg) =>
+
+                if (!m_ServiceData.isNoAds)
                 {
-                    if (eventArg == AdsEventArgs.DONE)
-                    {
-                        if (m_ServiceData.isNoAds)
-                        {
-                            return;
-                        }
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                        m_OguryModule.ShowThumbnail((eventArgs) =>
-                        {
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                        });
-                    }
-                });
-#endif
+                    Ads().Load(AdsEnum.INTERSTITIAL, null);
+                }
                 yield return delaySec;
             }
         }
@@ -1156,21 +1199,66 @@ namespace IEC
         }
 
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
-#if PluginApplovin
-        private ApplovinModule m_ApplovinAds;
-#endif
+        
+        public void SetRevAllAd(float value)
+        {
+            m_ServiceData.revTotalAd = value;
+        }
+        
+        public float GetRevAllAd()
+        {
+            return m_ServiceData.revTotalAd;
+        }
+        
         public float GetValueToSum()
         {
             var valueToSum = 0f;
-#if PluginApplovin
-            if (m_ApplovinAds == null) return 0;
             var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
             Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ApplovinAds.RevAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ApplovinAds.RevAd);
-#endif
+            valueToSum = m_ServiceData.revTotalAd - lastTotalRev;
+            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
+        }
+
+        public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
+        {
+            //Deprecated
+            return;
+            m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        private void InitMilestoneAd()
+        {
+            if(config.adjustEventConfig == null) return;
+            m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
+        }
+
+        void PushEventMilestoneAd(RevAdType adType, int count)
+        {
+            if(count <= 0) return;
+            if(!m_DictListMilestoneAd.ContainsKey(adType)) return;
+            var listMilestone = m_DictListMilestoneAd[adType];
+            if(listMilestone == null) return;
+            var prefix = m_ServiceData.GetPrefixEvent(adType);
+            for (int i = 0; i < listMilestone.Count; i++)
+            {
+                var milestone = listMilestone[i];
+                var eventName = prefix + milestone.ToString();
+                if (count % milestone == 0)
+                {
+                    var valueToSum = m_ServiceData.GetValueToSumRevAd(adType, milestone);
+                    Debug.Log($"{eventName} valueToSum:{valueToSum}");
+                    Debug.Log($"{eventName} lastRev:{m_ServiceData.GetDictMilestoneAd(adType)[milestone]}");
+                    PushEvent(eventName, valueToSum);
+                    m_ServiceData.SetValueToSumRevAd(adType, milestone);
+                }
+            }
+        }
+
+        public int GetEventCount(string eventName)
+        {
+            return m_EventCount.GetCount(eventName);
         }
     }
 }

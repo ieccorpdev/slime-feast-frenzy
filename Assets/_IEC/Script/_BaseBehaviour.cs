@@ -17,5 +17,10 @@ namespace IEC
         protected static UIGroup UI => Pool.Get<UIGroup>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();
+
+        public void SetActive(bool isActive)
+        {
+            gameObject.SetActive(isActive);
+        }
     }
 }

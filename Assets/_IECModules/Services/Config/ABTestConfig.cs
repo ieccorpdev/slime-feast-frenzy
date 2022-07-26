@@ -39,4 +39,9 @@ public class ABTestConfig : ScriptableObject
         UnityEditor.EditorUtility.SetDirty(this);
 #endif
     }
+
+    public string GetLastAbName()
+    {
+        return ListEventsAB.LastOrDefault();
+    }
 }

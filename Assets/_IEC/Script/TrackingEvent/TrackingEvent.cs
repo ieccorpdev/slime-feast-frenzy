@@ -54,7 +54,19 @@ namespace IEC.TrackingEvent
         public override string Name => "play_level_first_time";
     }
 
-    public class GameOver : Level
+    public class ResultLevel : Level
+    {
+        public override string Name => "RESULT_LEVEL";
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["time"] = DataGame.TimeFinishLevel;
+            return dict;
+        }
+    }
+
+    public class GameOver : ResultLevel
     {
         public override string Name => "game_over";
 
@@ -62,8 +74,24 @@ namespace IEC.TrackingEvent
         {
             var dict = base.GetParams();
             dict["time"] = DataGame.TimeFinishLevel;
-            dict["isWin"] = DataGamePlay.IsWin;
+            dict["result"] = DataGamePlay.IsWin;
             return dict;
         }
     }
+
+    public class ClickBtnReplay : Level
+    {
+        public override string Name => "click_btn_replay";
+    }
+
+    public class ClickBtnRetry : Level
+    {
+        public override string Name => "click_btn_retry";
+    }
+    
+    public class ClickBtnNext : Level
+    {
+        public override string Name => "click_btn_next";
+    }
+
 }

@@ -59,6 +59,11 @@ namespace IEC
             m_RNG = new System.Random(seed);
         }
 
+        public bool BinaryChoice()
+        {
+            return RangeFromTo(0, 1) == 1;
+        }
+
         public int RangeFromTo(int min, int max)
         {
             return Range(min, max + 1);

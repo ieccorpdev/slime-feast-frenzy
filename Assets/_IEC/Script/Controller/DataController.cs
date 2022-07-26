@@ -16,7 +16,7 @@ namespace IEC
         [SerializeField]
         private PlayerSecret m_PlayerSecret;
 
-        ServicesController m_ServicesController;
+        private bool m_IsNeedSaveData;
 
         public void LocateController()
         {
@@ -33,7 +33,10 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.SAVE_DATA:
-                    SaveData();
+                    m_IsNeedSaveData = true;
+                    break;
+                case EventList.GamePlay.APPLY_AB_TEST:
+                    m_GameData = Pool.Get<Game>();
                     break;
             }
         }
@@ -49,16 +52,15 @@ namespace IEC
         public void BehaviourStart()
         {
             EventController.RaiseEvent(EventList.NONE);
-            int emptyConfig = Pool.Get<GameConfig>().emptyConfig.configData;
-            Debug.Log("emptyConfig : " + emptyConfig);
         }
 
         public void SaveData()
         {
+            m_IsNeedSaveData = false;
             if (Game.isDebugReset) return;
             PlayerData.SaveLastPlayTime();
             Services.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
-            Services.DataSecure().Save();
+            Services.SaveData();
         }
 
         void LoadData()
@@ -67,6 +69,7 @@ namespace IEC
             Pool.Set(playerData);
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();
+            m_PlayerSecret.session++;
 
             // check update version
             m_PlayerSecret.lastVersion = Application.version;
@@ -84,6 +87,14 @@ namespace IEC
         public void BehaviourQuitApp()
         {
             SaveData();
+        }
+
+        void LateUpdate()
+        {
+            if (m_IsNeedSaveData)
+            {
+                SaveData();
+            }
         }
     }
 }

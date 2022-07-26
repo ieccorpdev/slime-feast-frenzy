@@ -15,7 +15,6 @@ namespace IEC
         public CanvasScaler canvasScaler;
         public EventSystem eventSystem;
 
-        public RectTransform bottomAds;
         public TMP_Text textHello;
         
         public ScreenInGame ScreenInGame => Pool.Get<ScreenInGame>();
