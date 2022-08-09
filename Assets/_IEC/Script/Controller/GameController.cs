@@ -53,8 +53,7 @@ namespace IEC
         void OnNewGame()
         {
             Game.SetTimeStartLevel();
-            PlayerData.levelTracking = PlayerData.level;
-
+            
             PushPlayLevelEvent();
 
             GamePlay.SetNewLevel(PlayerData.level);
@@ -73,18 +72,25 @@ namespace IEC
 
         void PushPlayLevelEvent()
         {
-            var level = PlayerData.levelTracking;
-            Services.PushEvent(new TrackingEvent.PlayLevel());
+            PlayerData.countPlayLevel++;
+            PlayerData.levelTracking = PlayerData.level;
 
+            var level = PlayerData.levelTracking;
+            
             if (PlayerData.levelFirstTime != level)
             {
                 PlayerData.levelFirstTime = level;
+                PlayerData.countPlayLevel = 1;
                 Services.PushEvent(new TrackingEvent.PlayLevelFirstTime());
                 Services.SetUserProperty("Level", level.ToString());
             }
 
+            Services.PushEvent(new TrackingEvent.PlayLevel());
+
             if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
                 Services.PushEvent($"play_level_{level}");
+
+            EventController.RaiseEvent(EventList.SAVE_DATA);
         }
     }
 }

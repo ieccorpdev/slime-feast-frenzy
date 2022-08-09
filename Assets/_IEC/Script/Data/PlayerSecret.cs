@@ -23,6 +23,7 @@ namespace IEC
         public int level = 1;
         public int levelTracking = 1;
         public int levelFirstTime = 0;
+        public int countPlayLevel = 0;
 
         public void AddLevel()
         {
