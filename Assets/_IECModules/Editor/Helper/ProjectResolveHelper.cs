@@ -294,7 +294,7 @@ namespace _IECModules
             
             // #if UNITY_2021_3_OR_NEWER
 
-            var templatePath = "Assets/_IECModules/Template/AdditionalLibrary.androidlib";
+            var templatePath = "Assets/_IECModules/Template/AdditionalLibrary.androidlib.template";
             var libraryPath = "Assets/Plugins/Android/AdditionalLibrary.androidlib";
             
             if (Directory.Exists("Assets/Plugins/Android/res"))
