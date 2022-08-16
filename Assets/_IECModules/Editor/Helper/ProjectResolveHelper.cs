@@ -299,12 +299,12 @@ namespace _IECModules
             
             if (Directory.Exists("Assets/Plugins/Android/res"))
             {
-                Directory.Delete("Assets/Plugins/Android/res");
+                Directory.Delete("Assets/Plugins/Android/res", true);
             }
             
             if (Directory.Exists("Assets/Plugins/Android/myLibrary.androidlib"))
             {
-                Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib");
+                Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib", true);
             }
 
             if (Directory.Exists(libraryPath))
