@@ -22,5 +22,13 @@ namespace IEC
         {
             gameObject.SetActive(isActive);
         }
+
+        public void SetActive(GameObject gameObject, bool isActive)
+        {
+            if (gameObject != null)
+            {
+                gameObject.SetActive(isActive);
+            }
+        }
     }
 }

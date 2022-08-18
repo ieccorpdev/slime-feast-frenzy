@@ -259,6 +259,8 @@ namespace _IECModules
             config.IsActive = true;
             config.IsOnlyNewInstall = true;
             config.IsOverride = false;
+            config.platform = platform;
+
             var listAb = new List<string>();
             for (int i = 0; i < abCount; i++)
             {
