@@ -3,7 +3,6 @@ using System.Linq;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using NaughtyAttributes;
 using System.Reflection;
 
 namespace IEC
@@ -166,6 +165,10 @@ namespace IEC
             Game.timeDelayFullAds = 30f;
         }
 
+        void ResultAllAbTest()
+        {
+        }
+
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
         {
             return new Dictionary<int, Func<int, int, bool>>
@@ -174,10 +177,6 @@ namespace IEC
                 //{ 20210718, (date, version) => date == 20210714 },
                 //{ 20210718, null },
             };
-        }
-
-        void ResultAllAbTest()
-        {
         }
 
         /*  Example AB Test Result & Update Function
