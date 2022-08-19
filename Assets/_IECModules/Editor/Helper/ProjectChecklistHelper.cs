@@ -209,7 +209,7 @@ namespace _IECModules
             }
         }
 
-        public static void UpdateAbVersion(string setAbString, string platform = "")
+        public static void UpdateAbVersion(string setAbString, string platform = "", string overwriteAbName = "")
         {
             LoadServicesConfig();
 
@@ -239,6 +239,8 @@ namespace _IECModules
             });
 
             var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
+            config = (config == null && !string.IsNullOrEmpty(overwriteAbName)) ?
+                listConfig.Where(x => x.KeyName == overwriteAbName).FirstOrDefault() : config;
             if (config == null)
             {
                 Debug.Log("create new AB config " + abName);
@@ -269,6 +271,9 @@ namespace _IECModules
 
             config.ListEventsAB = listAb.ToArray();
             config.SetDefaultRatioAndAB();
+
+            string assetPath = AssetDatabase.GetAssetPath(config.GetInstanceID());
+            AssetDatabase.RenameAsset(assetPath, abName);
 
             EditorUtility.SetDirty(config);
             EditorUtility.SetDirty(servicesConfig);
