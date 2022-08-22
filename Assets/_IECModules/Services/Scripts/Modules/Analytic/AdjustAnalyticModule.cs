@@ -1,4 +1,4 @@
-﻿#if (PluginAdjust)
+#if (PluginAdjust)
 
 using System.Collections;
 using System.Collections.Generic;
@@ -52,7 +52,7 @@ namespace IEC
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
-            var adjustLog = $"Push Adjust Event:{DictEvent[eventName]}";
+            var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
                 adjustEvent.setRevenue(value, "USD");
