@@ -63,7 +63,9 @@ namespace IEC
 
         public float revInterNReward;
         public Dictionary<int, float> dictMilestoneRewardNInter;
-        
+
+        public float lastRevFBPurchase;
+
         public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
@@ -151,6 +153,15 @@ namespace IEC
         void InitRevMilestone(AdjustAnalyticEventConfig config)
         {
             ListRevMilestones = (config != null) ? config.GetListRevAllAdCentMilestone() : m_ListSetup;
+        }
+
+        public float GetRevFBPurchaseValueToSum()
+        {
+            Debug.Log("Last Rev For Purchase:" + lastRevFBPurchase);
+            var valueToSum = revTotalAd - lastRevFBPurchase;
+            lastRevFBPurchase = revTotalAd;
+            Debug.Log("Value to sum purchase:" + valueToSum);
+            return valueToSum;
         }
     }
     
