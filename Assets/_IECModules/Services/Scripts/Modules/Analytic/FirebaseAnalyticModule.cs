@@ -133,6 +133,10 @@ namespace IEC
                         var firebaseParam = new Parameter(key, (bool)param[key] ? 1 : 0);
                         firebaseParams.Add(firebaseParam);
                     }
+                    else
+                    {
+                        Debug.LogWarning("Firebase doesn't support this type");
+                    }
 
                 }
             }
