@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using _IECModules;
 
 namespace IEC
 {
     public class GameController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
+        private List<int> m_ListLevelAdjust = new List<int>();
+        private List<int> m_ListLevelFirstTimeAdjust = new List<int>();
         public void LocateController()
         {
             Controllers.Add(this);
@@ -47,14 +50,18 @@ namespace IEC
 
         public void BehaviourStart()
         {
+            if (Services.config.adjustEventConfig != null)
+            {
+                m_ListLevelAdjust = Services.config.adjustEventConfig.GetListPlayLevel();
+                m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
+            }
             EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 
         void OnNewGame()
         {
             Game.SetTimeStartLevel();
-            PlayerData.levelTracking = PlayerData.level;
-
+            
             PushPlayLevelEvent();
 
             GamePlay.SetNewLevel(PlayerData.level);
@@ -73,18 +80,29 @@ namespace IEC
 
         void PushPlayLevelEvent()
         {
-            var level = PlayerData.levelTracking;
-            Services.PushEvent(new TrackingEvent.PlayLevel());
+            PlayerData.countPlayLevel++;
+            PlayerData.levelTracking = PlayerData.level;
 
+            var level = PlayerData.levelTracking;
+            
             if (PlayerData.levelFirstTime != level)
             {
                 PlayerData.levelFirstTime = level;
+                PlayerData.countPlayLevel = 1;
                 Services.PushEvent(new TrackingEvent.PlayLevelFirstTime());
+                if (m_ListLevelFirstTimeAdjust.Contains(level))
+                {
+                    Services.PushEvent($"play_level_first_time_{level}");
+                }
                 Services.SetUserProperty("Level", level.ToString());
             }
 
-            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0)
+            Services.PushEvent(new TrackingEvent.PlayLevel());
+
+            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0 || m_ListLevelAdjust.Contains(level))
                 Services.PushEvent($"play_level_{level}");
+
+            EventController.RaiseEvent(EventList.SAVE_DATA);
         }
     }
 }
