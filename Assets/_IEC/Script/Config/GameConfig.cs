@@ -9,7 +9,7 @@ namespace IEC
     /// object contain references to all other configs (hard fixed data)
     /// </summary>
     [CreateAssetMenu(menuName = "Game/GameConfig")]
-    public class GameConfig : ScriptableObject
+    public class GameConfig : BaseConfig
     {
         public _EmptyConfig emptyConfig;
     }
