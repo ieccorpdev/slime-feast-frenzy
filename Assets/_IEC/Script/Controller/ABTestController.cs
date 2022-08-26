@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace IEC
 {
@@ -35,8 +36,7 @@ namespace IEC
         public void BehaviourStart()
         {
             var serviceAbTest = Services.ABTest();
-            var abTestConfigs = Services.config.abTestConfigs;
-            var listAbTestConfig = Services.config.abTestConfigs.ToList();
+            var listAbTestConfig = Services.config.GetListAbTestConfig();
             var abIndex = listAbTestConfig.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
 
             var forceSetAb = "ForceSetAB";
@@ -45,6 +45,8 @@ namespace IEC
             abIndex = (forceSetAbIndex >= 0) ? forceSetAbIndex : abIndex;
 
             var abConfig = listAbTestConfig.ElementAtOrDefault(abIndex);
+
+            PresetAllAbTest();
 
             if (abConfig == null)
             {
@@ -58,22 +60,22 @@ namespace IEC
                 cheatCodeParam =>
                 {
                     var cheatAbIndex = cheatCodeParam.dropdownParam.value;
-                    Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
-                    ApplyAbTest(cheatAbIndex);
+                    Services.DataSecure().SetString(forceSetAb, listAbTestConfig[cheatAbIndex].KeyName);
+                    ApplyAbTest(listAbTestConfig[cheatAbIndex]);
                 },
-                abTestConfigs.Select(x => x.KeyName).ToList(),
+                listAbTestConfig.Select(x => x.KeyName).ToList(),
                 abIndex
             );
 
-            ApplyAbTest(abIndex);
+            ApplyAbTest(abConfig);
         }
 
-        void ApplyAbTest(int abIndex)
+        void ApplyAbTest(ABTestConfig abConfig)
         {
             Pool.Set(new Game());
             var serviceAbTest = Services.ABTest();
-            var listAbTestConfig = Services.config.abTestConfigs.ToList();
-            var abConfig = (abIndex >= 0) ? listAbTestConfig[abIndex] : null;
+            var listAbTestConfig = Services.config.GetListAbTestConfig();
+            var abIndex = listAbTestConfig.IndexOf(abConfig);
 
             if (abConfig == null)
             {
@@ -82,20 +84,14 @@ namespace IEC
             }
 
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
-            var abEventName = abConfig.ListEventsAB[abValue];
-            var listResultAb = GetListResultAction();
-            var listUpdateAb = GetListUpdateAbAction();
             var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
 
-            var listAbTestDate = listAbTestConfig.Select((x, i) =>
-                new ABTestDate()
-                {
-                    config = x,
-                    date = int.Parse(x.KeyName.Split('_').Last())
-                })
-                .ToList();
-            var curTestDate = listAbTestDate[abIndex];
-            curTestDate.version = int.Parse(abEventName.Split('v').Last());
+            var allMethods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
+            var listResultAb = GetListAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
+            var listUpdateAb = GetListAction(ABTestConfig.UPDATE_PREFIX, allMethods, listAbTestConfig);
+
+            var curTestDate = abConfig.GetAbTestDate(abValue);
+            var activeDate = listAbTestConfig.FindLast(x => x.IsActive).GetAbTestDate(0);
 
             if (listUpdateAb.Count != listAbTestConfig.Count)
             {
@@ -103,21 +99,23 @@ namespace IEC
                 return;
             }
 
-            var isOverride = curTestDate.IsOverrideResult(dictOverride, out var overrideDate);
+            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, out var overrideDate);
 
+            var param = new object[] { };
             for (int i = 0; i < listResultAb.Count; i++)
             {
-                var testDate = listAbTestDate[i];
+                var testDate = listAbTestConfig[i].GetAbTestDate(0);
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
-                    listResultAb[i].Invoke();
+                    listResultAb[i].Invoke(this, param);
                 }
             }
 
+            param = new object[] { abValue };
             if (curTestDate.IsApplyUpdate(overrideDate))
             {
                 var updateAbAction = listUpdateAb[abIndex];
-                updateAbAction.Invoke(abValue);
+                updateAbAction.Invoke(this, param);
             }
 
             ResultAllAbTest();
@@ -143,7 +141,7 @@ namespace IEC
             {
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                ApplyAbTest(abIndex);
+                ApplyAbTest(abTestConfig);
                 ResultAllAbTest();
             };
 
@@ -153,7 +151,23 @@ namespace IEC
                 value = abValue
             };
         }
+
+        List<MethodInfo> GetListAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
+        {
+            var dictMethods = allMethods.Where(m => m.Name.StartsWith(prefix)).ToDictionary(m => m.Name, m => m);
+            return listAbTest.Select(x => dictMethods[x.GetAbTestAction(prefix)]).ToList();
+        }
+
 #endregion
+
+        void PresetAllAbTest()
+        {
+            Game.timeDelayFullAds = 30f;
+        }
+
+        void ResultAllAbTest()
+        {
+        }
 
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
         {
@@ -165,37 +179,9 @@ namespace IEC
             };
         }
 
-        void ResultAllAbTest()
-        {
-            ResultAbFullAds();
-        }
-
-        List<Action> GetListResultAction()
-        {
-            return new List<Action>()
-            {
-                //ResultAbFullAds,
-                //ResultAb20210423,
-            };
-        }
-
-        List<Action<int>> GetListUpdateAbAction()
-        {
-            return new List<Action<int>>()
-            {
-                //UpdateAbFullAds,
-                //UpdateAb20210423,
-            };
-        }
-
-        void ResultAbFullAds()
-        {
-            Game.timeDelayFullAds = 30f;
-        }
-
-        void UpdateAbFullAds(int abValue)
-        {
-            Game.timeDelayFullAds = (abValue == 0) ? 30f : 60f;
-        }
+        /*  Example AB Test Result & Update Function
+        void ResultAb20150101() {}
+        void UpdateAb20150101(int abValue) {}
+        */
     }
 }

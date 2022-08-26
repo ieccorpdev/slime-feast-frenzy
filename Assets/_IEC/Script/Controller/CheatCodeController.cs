@@ -31,6 +31,11 @@ namespace IEC
 
         public void BehaviourStart()
         {
+            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopRight | CheatCode.PositionActivate.BotLeft;
+            ModuleController.cheatCode.topOffset = 0f;
+            Reporter.topOffset = 0f;
+            ShowFPS.topOffset = 0f;
+
             ModuleController.cheatCode.AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
             {
                 Game.isDebugReset = true;
