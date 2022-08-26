@@ -46,11 +46,10 @@ namespace IEC
 
             var abConfig = listAbTestConfig.ElementAtOrDefault(abIndex);
 
-            PresetAllAbTest();
-
             if (abConfig == null)
             {
                 Debug.LogError("No AB Test");
+                PresetAllAbTest();
                 ResultAllAbTest();
                 EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
                 return;
@@ -73,6 +72,8 @@ namespace IEC
         void ApplyAbTest(ABTestConfig abConfig)
         {
             Pool.Set(new Game());
+            PresetAllAbTest();
+
             var serviceAbTest = Services.ABTest();
             var listAbTestConfig = Services.config.GetListAbTestConfig();
             var abIndex = listAbTestConfig.IndexOf(abConfig);
