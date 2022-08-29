@@ -31,6 +31,29 @@ namespace IEC
 
         public void BehaviourStart()
         {
+            ModuleController.cheatCode.AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
+            {
+                Game.isDebugReset = true;
+                PlayerPrefs.DeleteAll();
+                Application.Quit();
+
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
+            {
+                Game.isDebugReset = true;
+                Services.DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+                Services.DataSecure().Save();
+                Application.Quit();
+
+#if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+#endif
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());

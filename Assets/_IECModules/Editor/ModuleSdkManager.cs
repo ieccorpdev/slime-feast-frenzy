@@ -183,13 +183,15 @@ namespace _IECModules
             //    SdkHelper.ListApplovinVersion,
             //    GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
-            var applovinSdkLoaded = !string.IsNullOrEmpty(SdkHelper.ApplovinLatestDownloadLink);
+            var applovinSdkLoaded = SdkHelper.ApplovinMaxLoader.LoadVersionFromCache();
             CreateGuiButton($"Applovin SDK {(applovinSdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
             {
-                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinLatestDownloadLink);
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinMaxLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
-
+            SdkHelper.ApplovinMaxLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.ApplovinMaxLoader.versionSelect,
+                SdkHelper.ApplovinMaxLoader.ListSDKVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 
             var ogurySdkLoaded = SdkHelper.OgurySdkLoader.LoadVersionFromCache();

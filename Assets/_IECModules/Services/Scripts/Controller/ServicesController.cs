@@ -665,7 +665,9 @@ namespace IEC
                 onPushEvent = (s =>
                 {
                     if (s != "show_full_ad" && s != "show_reward_ad") return;
-                    if (fullAdCount + rewardCount % 10 == 0)
+                    var count = m_EventCount.GetCount("show_full_ad")
+                                + m_EventCount.GetCount("show_reward_ad");
+                    if (count % 10 == 0)
                     {
                         PushFBLogPurchase();
                     }
@@ -1213,13 +1215,13 @@ namespace IEC
         
         public float GetValueToSum()
         {
-            var valueToSum = 0f;
-            var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
-            Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ServiceData.revTotalAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
-            Debug.Log("Value to sum purchase:" + valueToSum);
-            return valueToSum;
+            if (PlayerPrefs.HasKey(LAST_TOTAL_REV))
+            {
+                m_ServiceData.lastRevFBPurchase = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
+                PlayerPrefs.DeleteKey(LAST_TOTAL_REV);
+            }
+
+            return m_ServiceData.GetRevFBPurchaseValueToSum();
         }
 
         public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)

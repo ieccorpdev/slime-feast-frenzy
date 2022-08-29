@@ -40,10 +40,19 @@ namespace _IECModules
 
         public bool LoadVersionFromCache()
         {
+            // Debug.Log(this);
             if (ListVersionFromServer != null) return true;
             var data = PlayerPrefs.GetString(VersionCacheKey);
             if (string.IsNullOrEmpty(data)) return false;
             ListVersionFromServer = JsonConvert.DeserializeObject<string[]>(data);
+            var tempListFromServer = ListVersionFromServer.ToList();
+            tempListFromServer.AddRange(ListVersionDefault.Except(ListVersionFromServer));
+            ListVersionFromServer = tempListFromServer
+                .OrderByDescending(x => new Version(x
+                        .Split(' ')[0]
+                        .Split('-')[0])
+                )
+                .ToArray();
             return true;
         }
     }

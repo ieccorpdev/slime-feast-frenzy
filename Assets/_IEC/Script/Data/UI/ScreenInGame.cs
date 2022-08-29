@@ -24,6 +24,7 @@ namespace IEC
             SetEvent(btnRestart, () =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
+                Services.PushEvent(new TrackingEvent.ClickBtnReplay());
             });
             
             SetEvent(btnLevelWin, () =>
