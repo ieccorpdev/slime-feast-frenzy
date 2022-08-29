@@ -9,7 +9,8 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
-#region COMMON
+        #region COMMON
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -94,12 +95,6 @@ namespace IEC
             var curTestDate = abConfig.GetAbTestDate(abValue);
             var activeDate = listAbTestConfig.FindLast(x => x.IsActive).GetAbTestDate(0);
 
-            if (listUpdateAb.Count != listAbTestConfig.Count)
-            {
-                Debug.LogError("List Update AB Action Not Equal List AB Test");
-                return;
-            }
-
             var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, out var overrideDate);
 
             var param = new object[] { };
@@ -108,7 +103,7 @@ namespace IEC
                 var testDate = listAbTestConfig[i].GetAbTestDate(0);
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
-                    listResultAb[i].Invoke(this, param);
+                    listResultAb[i]?.Invoke(this, param);
                 }
             }
 
@@ -116,7 +111,7 @@ namespace IEC
             if (curTestDate.IsApplyUpdate(overrideDate))
             {
                 var updateAbAction = listUpdateAb[abIndex];
-                updateAbAction.Invoke(this, param);
+                updateAbAction?.Invoke(this, param);
             }
 
             ResultAllAbTest();
@@ -156,10 +151,17 @@ namespace IEC
         List<MethodInfo> GetListAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
         {
             var dictMethods = allMethods.Where(m => m.Name.StartsWith(prefix)).ToDictionary(m => m.Name, m => m);
-            return listAbTest.Select(x => dictMethods[x.GetAbTestAction(prefix)]).ToList();
+            return listAbTest.Select(x => GetMethodInfo(dictMethods, x.GetAbTestAction(prefix))).ToList();
         }
 
-#endregion
+        MethodInfo GetMethodInfo(Dictionary<string, MethodInfo> dictMethods, string abTestActionName)
+        {
+            if (dictMethods.TryGetValue(abTestActionName, out var value))
+                return value;
+            return null;
+        }
+
+        #endregion
 
         void PresetAllAbTest()
         {
