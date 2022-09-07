@@ -11,7 +11,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            NotificationBehaviour.Init();
+            // NotificationBehaviour.Init();
         }
 
         public bool IsActive()
@@ -34,11 +34,15 @@ namespace IEC
             }
         }
 
+        private bool m_IsInitNoti;
+
         void RequestNotification()
         {
             if (PlayerData.level > 3)
             {
+                if(!m_IsInitNoti) NotificationBehaviour.Init();
                 NotificationBehaviour.Notification.RequestAuthorization();
+                m_IsInitNoti = true;
             }
         }
     }

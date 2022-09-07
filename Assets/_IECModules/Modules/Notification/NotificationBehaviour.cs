@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using IEC;
 namespace _IECModules
 {
     public class NotificationBehaviour : BaseBehaviour
@@ -43,6 +43,7 @@ namespace _IECModules
         void RegisterNotification()
         {
             if (Data == null) return;
+            if (Pool.Get<PlayerSecret>().level < 4) return;
             Notification.CancelAllNotification();
             if (Notification.CheatCodeShowNotificationTime != 0)
             {
