@@ -66,7 +66,8 @@ public class ServicesConfig : ScriptableObject
     public List<RemoteConfigData> remoteConfigs;
     [Header("Email Support")]
     public string emailSupport;
-    
+    public string privacyPolicy;
+
     [Header("SDK Version")]
     public string firebaseSDKVersion;
     public string firebaseRemoteSDKVersion;

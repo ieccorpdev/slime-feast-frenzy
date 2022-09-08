@@ -18,6 +18,7 @@ namespace _IECModules
             ProductName,
             ProductDisplayName,
             SupportEmail,
+            PrivacyPolicy,
             BundleID,
             KeyStoreName,
             KanboardSwimlane,
@@ -76,6 +77,7 @@ namespace _IECModules
             {"Tên game", ChecklistItemName.ProductName},
             {"Display Name", ChecklistItemName.ProductDisplayName},
             {"Support Email", ChecklistItemName.SupportEmail},
+            {"Privacy Policy", ChecklistItemName.PrivacyPolicy},
             {"BundleID", ChecklistItemName.BundleID},
             {"Keystore Name", ChecklistItemName.KeyStoreName},
             {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
@@ -322,6 +324,11 @@ namespace _IECModules
                         var supportEmail = checklistItemValue;
                         LogEditorHelper.AddLog($"Support Email: {supportEmail}");
                         servicesConfig.emailSupport = supportEmail;
+                        break;
+                    case ChecklistItemName.PrivacyPolicy:
+                        var privacyPolicy = checklistItemValue;
+                        LogEditorHelper.AddLog($"Privacy Policy: {privacyPolicy}");
+                        servicesConfig.privacyPolicy = privacyPolicy;
                         break;
                     case ChecklistItemName.BundleID:
                         var bundleId = checklistItemValue;
