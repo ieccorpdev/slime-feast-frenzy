@@ -985,6 +985,14 @@ namespace IEC
             UT.Mail.Compose(mail, "Support");
         }
 
+        public void OpenPrivacyPolicyURL()
+        {
+            var url = config.privacyPolicy;
+            if (string.IsNullOrWhiteSpace(url)) return;
+
+            Application.OpenURL(url);
+        }
+
         void SaveLogToFile()
         {
             try
