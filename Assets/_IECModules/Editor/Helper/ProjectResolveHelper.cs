@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using IEC.Linq;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -125,9 +126,6 @@ namespace _IECModules
                 var baseTemplateFileName = $"{manifestAndMainTemplateDirectory}baseProjectTemplate.gradle";
                 var androidManifestFileName = $"{manifestAndMainTemplateDirectory}AndroidManifest.xml";
 
-                var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
-                var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
-
                 if (File.Exists(mainTemplateFileName))
                 {
                     LogEditorHelper.AddLogWarning("mainTemplate.gradle already exists");
@@ -161,16 +159,18 @@ namespace _IECModules
                     LogEditorHelper.AddLog("baseProjectTemplate.gradle created");
                 }
 
-                if (File.Exists(networkSecurityConfigFileName))
-                {
-                    LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
-                }
-                else
-                {
-                    Directory.CreateDirectory(networkSecurityConfigDirectory);
-                    FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
-                    LogEditorHelper.AddLog("network_security_config created");
-                }
+                // if (File.Exists(networkSecurityConfigFileName))
+                // {
+                //     LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
+                // }
+                // else
+                // {
+                //     Directory.CreateDirectory(networkSecurityConfigDirectory);
+                //     FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
+                //     LogEditorHelper.AddLog("network_security_config created");
+                // }
+                
+                CopyAndroidLibConfig();
 
                 if (File.Exists(androidManifestFileName))
                 {
@@ -265,25 +265,82 @@ namespace _IECModules
                 }
 
                 var androidManifestNetworkSecurityConfigString = "android:networkSecurityConfig=\"@xml/network_security_config\"";
-                if (!androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
+                if (androidManifestFileContent.Contains(androidManifestNetworkSecurityConfigString))
                 {
-                    var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
-                    var applicationTagReplaced = applicationTag.Replace(
-                        ">",
-                        $" {androidManifestNetworkSecurityConfigString}>");
-                    androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                    // var applicationTag = androidManifestFileContent.GetBetweenString("<application", ">");
+                    // var applicationTagReplaced = applicationTag.Replace(
+                    //     ">",
+                    //     $" {androidManifestNetworkSecurityConfigString}>");
+                    // androidManifestFileContent = androidManifestFileContent.Replace(applicationTag, applicationTagReplaced);
+                    androidManifestFileContent = androidManifestFileContent.Replace(androidManifestNetworkSecurityConfigString, "");
                     File.WriteAllText(androidManifestFileName, androidManifestFileContent);
-                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestNetworkSecurityConfigString}");
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Removed: {androidManifestNetworkSecurityConfigString}");
                 }
                 else
                 {
-                    LogEditorHelper.AddLog("network_security_config already enabled in AndroidManifest.xml");
+                    // LogEditorHelper.AddLog("network_security_config already enabled in AndroidManifest.xml");
                 }
             }
             catch (Exception e)
             {
                 LogEditorHelper.AddLogError($"UpdateMainTemplateAndAndroidManifest\n{e.Message}\n{e.StackTrace}");
             }
+        }
+
+        private static void CopyAndroidLibConfig()
+        {
+            var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
+            var networkSecurityConfigFileName = $"{networkSecurityConfigDirectory}network_security_config.xml";
+            
+            // #if UNITY_2021_3_OR_NEWER
+
+            var templatePath = "Assets/_IECModules/Template/AdditionalLibrary.androidlib.template";
+            var libraryPath = "Assets/Plugins/Android/AdditionalLibrary.androidlib";
+            
+            if (Directory.Exists("Assets/Plugins/Android/res"))
+            {
+                Directory.Delete("Assets/Plugins/Android/res", true);
+            }
+            
+            if (Directory.Exists("Assets/Plugins/Android/myLibrary.androidlib"))
+            {
+                Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib", true);
+            }
+
+            if (Directory.Exists(libraryPath))
+            {
+                LogEditorHelper.AddLogWarning("Additional Library already exists");
+            }
+            else
+            {
+                Directory.CreateDirectory(libraryPath);
+                var allDirs = 
+                    Directory.GetDirectories(templatePath, "*", SearchOption.AllDirectories);
+                foreach (var dir in allDirs)
+                {
+                    var dirCreate = dir.Replace(templatePath, libraryPath);
+                    Directory.CreateDirectory(dirCreate);
+                }
+                
+                var allFiles = Directory.GetFiles(templatePath, "*", SearchOption.AllDirectories);
+                foreach (var file in allFiles)
+                {
+                    var fileCreate = file.Replace(templatePath, libraryPath);
+                    File.Copy(file, fileCreate, true);
+                }
+            }
+            // #else
+            // if (File.Exists(networkSecurityConfigFileName))
+            // {
+            //     LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
+            // }
+            // else
+            // {
+            //     Directory.CreateDirectory(networkSecurityConfigDirectory);
+            //     FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
+            //     LogEditorHelper.AddLog("network_security_config created");
+            // }
+            // #endif
         }
 
         private static void UpdateJetifierInMainTemplate()
