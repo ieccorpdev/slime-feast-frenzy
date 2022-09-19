@@ -17,6 +17,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         SetFirebaseVersion();
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
+        ProjectResolveHelper.GooglePlayServicesForceResolve();
     }
 
     private void SetPlatformVersion()
