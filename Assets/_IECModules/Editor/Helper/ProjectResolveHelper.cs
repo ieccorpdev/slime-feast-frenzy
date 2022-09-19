@@ -449,7 +449,7 @@ namespace _IECModules
             }
         }
 
-        private static void GooglePlayServicesForceResolve()
+        public static void GooglePlayServicesForceResolve()
         {
             LogEditorHelper.AddLog("Android Play Service Start Force Resolve");
 
