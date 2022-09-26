@@ -66,6 +66,8 @@ namespace IEC
 
         public float lastRevFBPurchase;
 
+        public Dictionary<float, float> dictMilestoneCentRev;
+
         public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
@@ -144,7 +146,9 @@ namespace IEC
             {
                 if (milestone.IsEnoughRev(revTotalAd))
                 {
-                    var valueToSum = milestone.RaiseRev(revTotalAd);
+                    var lastRev = dictMilestoneCentRev[milestone.step];
+                    var valueToSum = milestone.RaiseRev(revTotalAd, lastRev);
+                    dictMilestoneCentRev[milestone.step] = revTotalAd;
                     m_PushEventAction?.Invoke(milestone.eventName,valueToSum ,null);
                 }
             }
@@ -153,6 +157,15 @@ namespace IEC
         void InitRevMilestone(AdjustAnalyticEventConfig config)
         {
             ListRevMilestones = (config != null) ? config.GetListRevAllAdCentMilestone() : m_ListSetup;
+            if (dictMilestoneCentRev == null) dictMilestoneCentRev = new Dictionary<float, float>();
+            foreach (var milestone in ListRevMilestones)
+            {
+                if (!dictMilestoneCentRev.ContainsKey(milestone.step))
+                {
+                    dictMilestoneCentRev[milestone.step] = 0;
+                }
+                milestone.InitRev(dictMilestoneCentRev[milestone.step]);
+            }
         }
 
         public float GetRevFBPurchaseValueToSum()
@@ -171,15 +184,20 @@ namespace IEC
         public float step;
 
         public float value;
-
-        public float lastRev;
             
         public string eventName;
+        
         public RevMilestone(string eventName,float step)
         {
             this.eventName = eventName;
             this.step = step;
             if (value < step) value = step;
+        }
+
+        public void InitRev(float savedRev)
+        {
+            var multi = (int)(savedRev / step);
+            value = (multi + 1) * step;
         }
 
         public bool IsEnoughRev(float revCheck)
@@ -191,12 +209,11 @@ namespace IEC
             return true;
         }
 
-        public float RaiseRev(float rev)
+        public float RaiseRev(float rev, float lastRev)
         {
             var valueToSum = rev - lastRev;
             Debug.Log($"{eventName} lastRev: {lastRev}");
             Debug.Log($"{eventName} valueToSum: {valueToSum}");
-            lastRev = rev;
             return valueToSum;
         }
     }
