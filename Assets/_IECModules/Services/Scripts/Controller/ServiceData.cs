@@ -198,6 +198,10 @@ namespace IEC
         {
             var multi = (int)(savedRev / step);
             value = (multi + 1) * step;
+            
+            Debug.LogWarning("Init Rev:" + eventName);
+            Debug.LogWarning("Init Last Rev:" + savedRev);
+            Debug.LogWarning("Init new milestone:" + value);
         }
 
         public bool IsEnoughRev(float revCheck)
