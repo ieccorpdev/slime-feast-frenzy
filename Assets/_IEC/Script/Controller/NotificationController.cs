@@ -11,7 +11,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            if (PlayerData.level > 3)
+            if (PlayerData.level > 4)
             {
                 NotificationBehaviour.Init();
                 m_IsInitNoti = true;
@@ -42,7 +42,7 @@ namespace IEC
 
         void RequestNotification()
         {
-            if (PlayerData.level > 3)
+            if (PlayerData.level > 4)
             {
                 if (!m_IsInitNoti) NotificationBehaviour.Init();
                 NotificationBehaviour.Notification.RequestAuthorization();
