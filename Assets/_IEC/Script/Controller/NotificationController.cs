@@ -9,9 +9,11 @@ namespace IEC
     {
         public NotificationBehaviour NotificationBehaviour => ModuleController.notificationBehaviour;
 
+        private int m_LevelNoti => Application.platform == RuntimePlatform.Android ? 4 : 0;
+
         public void BehaviourStart()
         {
-            if (PlayerData.level > 4)
+            if (PlayerData.level >= m_LevelNoti)
             {
                 NotificationBehaviour.Init();
                 m_IsInitNoti = true;
@@ -42,7 +44,7 @@ namespace IEC
 
         void RequestNotification()
         {
-            if (PlayerData.level > 4)
+            if (PlayerData.level >= m_LevelNoti + 1)
             {
                 if (!m_IsInitNoti) NotificationBehaviour.Init();
                 NotificationBehaviour.Notification.RequestAuthorization();
