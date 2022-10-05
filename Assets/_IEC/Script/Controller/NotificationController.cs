@@ -9,7 +9,7 @@ namespace IEC
     {
         public NotificationBehaviour NotificationBehaviour => ModuleController.notificationBehaviour;
 
-        private int m_LevelNoti => Application.platform == RuntimePlatform.Android ? 4 : 0;
+        private int m_LevelNoti = 4;
 
         public void BehaviourStart()
         {
