@@ -18,6 +18,7 @@ namespace _IECModules
             ProductName,
             ProductDisplayName,
             SupportEmail,
+            PrivacyPolicy,
             BundleID,
             KeyStoreName,
             KanboardSwimlane,
@@ -76,6 +77,7 @@ namespace _IECModules
             {"Tên game", ChecklistItemName.ProductName},
             {"Display Name", ChecklistItemName.ProductDisplayName},
             {"Support Email", ChecklistItemName.SupportEmail},
+            {"Privacy Policy", ChecklistItemName.PrivacyPolicy},
             {"BundleID", ChecklistItemName.BundleID},
             {"Keystore Name", ChecklistItemName.KeyStoreName},
             {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
@@ -201,7 +203,7 @@ namespace _IECModules
                 }
 
                 PlayerSettings.bundleVersion = lastVersionString;
-                UpdateAbVersion(lastAbString);
+                UpdateAbVersion(lastAbString, servicesConfig.platform);
             }
             else
             {
@@ -209,12 +211,11 @@ namespace _IECModules
             }
         }
 
-        public static void UpdateAbVersion(string setAbString)
+        public static void UpdateAbVersion(string setAbString, string platform = "", string overwriteAbName = "")
         {
             LoadServicesConfig();
 
             var listConfig = servicesConfig.abTestConfigs.ToList();
-            var platformVersion = servicesConfig.GetPlatformVersion();
             var splits = setAbString.Split('_');
             if (splits.Length != 3)
             {
@@ -227,7 +228,11 @@ namespace _IECModules
             var verRootNumber = (verNumber / 10) * 10;
             var abCount = verNumber % 10 + 1;
 
-            platformVersion.abTest = abName;
+            if (servicesConfig.isVersionByPlatform)
+            {
+                var platformVersion = servicesConfig.GetPlatformVersion(platform);
+                platformVersion.abTest = abName;
+            }
 
             listConfig.ForEach(x =>
             {
@@ -236,6 +241,8 @@ namespace _IECModules
             });
 
             var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
+            config = (config == null && !string.IsNullOrEmpty(overwriteAbName)) ?
+                listConfig.Where(x => x.KeyName == overwriteAbName).FirstOrDefault() : config;
             if (config == null)
             {
                 Debug.Log("create new AB config " + abName);
@@ -253,9 +260,11 @@ namespace _IECModules
 
             config.name = abName;
             config.KeyName = abName;
-            config.IsActive = false;
+            config.IsActive = true;
             config.IsOnlyNewInstall = true;
             config.IsOverride = false;
+            config.platform = platform;
+
             var listAb = new List<string>();
             for (int i = 0; i < abCount; i++)
             {
@@ -264,6 +273,9 @@ namespace _IECModules
 
             config.ListEventsAB = listAb.ToArray();
             config.SetDefaultRatioAndAB();
+
+            string assetPath = AssetDatabase.GetAssetPath(config.GetInstanceID());
+            AssetDatabase.RenameAsset(assetPath, abName);
 
             EditorUtility.SetDirty(config);
             EditorUtility.SetDirty(servicesConfig);
@@ -312,6 +324,11 @@ namespace _IECModules
                         var supportEmail = checklistItemValue;
                         LogEditorHelper.AddLog($"Support Email: {supportEmail}");
                         servicesConfig.emailSupport = supportEmail;
+                        break;
+                    case ChecklistItemName.PrivacyPolicy:
+                        var privacyPolicy = checklistItemValue;
+                        LogEditorHelper.AddLog($"Privacy Policy: {privacyPolicy}");
+                        servicesConfig.privacyPolicy = privacyPolicy;
                         break;
                     case ChecklistItemName.BundleID:
                         var bundleId = checklistItemValue;

@@ -8,6 +8,7 @@
 /[Bb]uild/
 /[Bb]uilds/
 /[Ll]ogs/
+/[Uu]ser[Ss]ettings/
 /[Mm]emoryCaptures/
 /[Rr]ecordings/
 
@@ -55,10 +56,19 @@ sysinfo.txt
 
 # Builds
 *.apk
+*.aab
 *.unitypackage
+*.app
 
 # Crashlytics generated file
 crashlytics-build.properties
+
+# Packed Addressables
+/[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
+
+# Temporary auto-generated Android Assets
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
+/[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # =============== #
 # Appodeal #

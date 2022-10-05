@@ -52,11 +52,9 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
-#if PluginOgury
-        OguryModule m_OguryModule;
-#endif
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
+        public Action<string> onPushEvent;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -101,14 +99,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-#if PluginOgury
-                    if (m_OguryModule == null || !m_OguryModule.IsThumbnailShowing())
-                    {
-                        SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                    }
-#else
                     SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-#endif
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -476,7 +467,8 @@ namespace IEC
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
-            m_ServiceData.Init(PushEvent);
+            m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
 
@@ -532,18 +524,6 @@ namespace IEC
                 ecpmAds.SetUseEcpm(AdsEnum.REWARD, false);
 
                 m_Ads = ecpmAds;
-#endif
-#if PluginOgury
-                m_OguryModule = new OguryModule();
-                m_OguryModule.Init(config.OguryConfig, isAcceptConsent, false);
-                m_OguryModule.onThumbnailClose = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                };
-                m_OguryModule.onThumbnailDisplay = () =>
-                {
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                };
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
@@ -642,12 +622,22 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            PushEvent(eventName, null, value, param);
+        }
+
+        public void PushEvent(string eventName, string position, float value = 1, Dictionary<string, object> param = null)
+        {
             PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
             param["Dy"] = m_Retention.GetCountDay();
             param["cumulative_revenue"] = m_ServiceData.revTotalAd;
+
+            if (!string.IsNullOrEmpty(position))
+            {
+                param["position"] = position;
+            }
 
             if (m_ServiceData.dictCustomParams != null && m_ServiceData.dictCustomParams.ContainsKey(eventName))
             {
@@ -676,15 +666,30 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.REWARD, rewardCount);
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
-            
+
+            if (onPushEvent == null)
+            {
+                onPushEvent = (s =>
+                {
+                    if (s != "show_full_ad" && s != "show_reward_ad") return;
+                    var count = m_EventCount.GetCount("show_full_ad")
+                                + m_EventCount.GetCount("show_reward_ad");
+                    if (count % 10 == 0)
+                    {
+                        PushFBLogPurchase();
+                    }
+                });
+            }
+            onPushEvent?.Invoke(eventName);
+
+        }
+
+        public void PushFBLogPurchase()
+        {
 #if (PluginFacebook)
-            if (!eventName.Equals("show_full_ad") && !eventName.Equals("show_reward_ad")) return;
-            var countAd = fullAdCount + rewardCount;
-            if(countAd % 10 != 0) return;
             if(FB.IsInitialized) 
                 FB.LogPurchase(GetValueToSum(),"USD");
 #endif
-
         }
 
         public void PushCachedEvents()
@@ -708,9 +713,14 @@ namespace IEC
             return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
         }
 
-        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
+        public void ShowFullAds(string position, Action closeCallback = null)
         {
-            if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
+            ShowFullAds(closeCallback, null, null, position);
+        }
+
+        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null, string position = null)
+        {
+            if (config.IsNoAds || m_ServiceData.isNoAds)
             {
                 Debug.Log("show full ads");
                 SafeInvoke(closeCallback);
@@ -721,7 +731,7 @@ namespace IEC
             {
                 if (param.isSuccess)
                 {
-                    PushEvent("show_full_ad");
+                    PushEvent("show_full_ad", position);
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
@@ -751,7 +761,12 @@ namespace IEC
             return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();
         }
 
-        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
+        public void ShowFullAdsWithTime(float timeCondition, string position, Action closeCallback = null)
+        {
+            ShowFullAdsWithTime(timeCondition, closeCallback, null, position);
+        }
+
+        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null, string position = null)
         {
             if (config.IsNoAds || m_ServiceData.isNoAds)
             {
@@ -761,7 +776,7 @@ namespace IEC
 
             if (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition)
             {
-                ShowFullAds(closeCallback, canShowCallback);
+                ShowFullAds(closeCallback, canShowCallback, null, position);
                 return true;
             }
 
@@ -945,18 +960,23 @@ namespace IEC
             m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
-                Application.RequestAdvertisingIdentifierAsync((string advertisingId, bool trackingEnabled, string error) =>
+                try
                 {
-                    Debug.Log("advertisingId " + advertisingId + " , " + trackingEnabled + " , " + error);
-                    if (!string.IsNullOrWhiteSpace(advertisingId))
-                    {
-                        m_UserIDFA = advertisingId;
-                    }
-                });
+                    var up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
+                    var currentActivity = up.GetStatic<AndroidJavaObject> ("currentActivity");
+                    var client = new AndroidJavaClass ("com.google.android.gms.ads.identifier.AdvertisingIdClient");
+                    var adInfo = client.CallStatic<AndroidJavaObject> ("getAdvertisingIdInfo", currentActivity);
+     
+                    m_UserIDFA = adInfo.Call<string> ("getId").ToString();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning(e);
+                }
             }
             else
             {
-                Debug.Log("advertisingId " + m_UserIDFA);
+                Debug.LogWarning("advertisingId " + m_UserIDFA);
             }
         }
         
@@ -988,6 +1008,14 @@ namespace IEC
                 .SetBody(message)
                 .AddAttachment(Application.persistentDataPath + @"/log.txt");
             UT.Mail.Compose(mail, "Support");
+        }
+
+        public void OpenPrivacyPolicyURL()
+        {
+            var url = config.privacyPolicy;
+            if (string.IsNullOrWhiteSpace(url)) return;
+
+            Application.OpenURL(url);
         }
 
         void SaveLogToFile()
@@ -1181,23 +1209,6 @@ namespace IEC
                 if (!m_ServiceData.isNoAds)
                 {
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
-#if PluginOgury
-                    m_OguryModule?.LoadThumbnail((eventArg) =>
-                    {
-                        if (eventArg == AdsEventArgs.DONE)
-                        {
-                            if (m_ServiceData.isNoAds)
-                            {
-                                return;
-                            }
-                            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
-                            m_OguryModule.ShowThumbnail((eventArgs) =>
-                            {
-                                SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
-                            });
-                        }
-                    });
-#endif
                 }
                 yield return delaySec;
             }
@@ -1234,18 +1245,26 @@ namespace IEC
         
         public float GetValueToSum()
         {
-            var valueToSum = 0f;
-            var lastTotalRev = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
-            Debug.Log("Last Rev For Purchase:" + lastTotalRev);
-            valueToSum = m_ServiceData.revTotalAd - lastTotalRev;
-            PlayerPrefs.SetFloat(LAST_TOTAL_REV, m_ServiceData.revTotalAd);
-            Debug.Log("Value to sum purchase:" + valueToSum);
-            return valueToSum;
+            if (PlayerPrefs.HasKey(LAST_TOTAL_REV))
+            {
+                m_ServiceData.lastRevFBPurchase = PlayerPrefs.GetFloat(LAST_TOTAL_REV, 0f);
+                PlayerPrefs.DeleteKey(LAST_TOTAL_REV);
+            }
+
+            return m_ServiceData.GetRevFBPurchaseValueToSum();
         }
 
         public void AddListMilestoneAd(RevAdType adType, List<int> listMilestone)
         {
+            //Deprecated
+            return;
             m_DictListMilestoneAd[adType] = listMilestone;
+        }
+
+        private void InitMilestoneAd()
+        {
+            if(config.adjustEventConfig == null) return;
+            m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
         }
 
         void PushEventMilestoneAd(RevAdType adType, int count)
@@ -1268,6 +1287,11 @@ namespace IEC
                     m_ServiceData.SetValueToSumRevAd(adType, milestone);
                 }
             }
+        }
+
+        public int GetEventCount(string eventName)
+        {
+            return m_EventCount.GetCount(eventName);
         }
     }
 }

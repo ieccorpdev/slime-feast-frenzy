@@ -16,6 +16,7 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Version by platform")]
     [Tooltip("android or ios")]
+    public bool isVersionByPlatform;
     public string platform = "android";
     public VersionConfig versionAndroid;
     public VersionConfig versionIOS;
@@ -65,7 +66,8 @@ public class ServicesConfig : ScriptableObject
     public List<RemoteConfigData> remoteConfigs;
     [Header("Email Support")]
     public string emailSupport;
-    
+    public string privacyPolicy;
+
     [Header("SDK Version")]
     public string firebaseSDKVersion;
     public string firebaseRemoteSDKVersion;
@@ -109,8 +111,19 @@ public class ServicesConfig : ScriptableObject
         return remoteConfigs;
     }
 
+    public List<ABTestConfig> GetListAbTestConfig()
+    {
+        if (isVersionByPlatform)
+        {
+            return abTestConfigs.Where(ab => ab.IsPlatform(platform)).ToList();
+        }
+        return abTestConfigs.ToList();
+    }
+
     public void SetActiveAbByVersion()
     {
+        if (!isVersionByPlatform) return;
+
         var versionConfig = GetPlatformVersion();
 
         foreach (var ab in abTestConfigs)
@@ -120,6 +133,11 @@ public class ServicesConfig : ScriptableObject
     }
 
     public VersionConfig GetPlatformVersion()
+    {
+        return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
+    }
+
+    public VersionConfig GetPlatformVersion(string platform)
     {
         return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
     }
@@ -135,6 +153,6 @@ public class ServicesConfig : ScriptableObject
     public class VersionConfig
     {
         public string version = "1.0.0";
-        public string abTest = "20220414";
+        public string abTest = "AB_20220414";
     }
 }

@@ -39,9 +39,6 @@ namespace _IECModules
 
         public const string EXTERNAL_PACKAGE_MANAGER_URL =
             "https://github.com/googlesamples/unity-jar-resolver/raw/{0}/external-dependency-manager-{1}.unitypackage";
-
-        public const string APPLOVIN_LATEST_SDK_URL =
-            "https://dash.applovin.com/docs/v1/unity_integration_manager?plugin_version=latest";
         
         public const string EXTERNAL_DEPENDENCY_PKG = "com.google.external-dependency-manager";
         public const string FIREBASE_APP_CORE = "com.google.firebase.app";
@@ -134,6 +131,7 @@ namespace _IECModules
         public static readonly AdjustSdkLoader AdjustSdkLoader = new AdjustSdkLoader();
         public static readonly KochavaSdkLoader KochavaSdkLoader = new KochavaSdkLoader();
         public static readonly OgurySdkLoader OgurySdkLoader = new OgurySdkLoader();
+        public static readonly ApplovinMaxLoader ApplovinMaxLoader = new ApplovinMaxLoader();
 
         public static void LoadSdkVersions()
         {
@@ -141,8 +139,9 @@ namespace _IECModules
             AdjustSdkLoader.Init();
             KochavaSdkLoader.Init();
             OgurySdkLoader.Init();
+            ApplovinMaxLoader.Init();
             
-            LoadApplovinLatestVersion();
+            // LoadApplovinLatestVersion();
             
             foreach (var pkg in DictGitlabPluginVersion.Values)
             {
@@ -154,30 +153,6 @@ namespace _IECModules
             {
                 pkg.LoadPKGVersionList();
             }
-
-        }
-        public static void LoadApplovinVersionList()
-        {
-            // PlayerPrefs.DeleteKey(APPLOVIN_VERSION_CACHE);
-            // var httpRequest = new HTTPRequest(
-            //         new Uri("https://api.bintray.com/packages/applovin/Unity/applovin-max-unity-plugin"),
-            //         (originalRequest, response) =>
-            //         {
-            //             PlayerPrefs.SetString(APPLOVIN_VERSION_CACHE, response.DataAsText);
-            //         })
-            //     .Send();
-        }
-
-        public static void LoadApplovinLatestVersion()
-        {
-            var httpRequest = new HTTPRequest(
-                new Uri(APPLOVIN_LATEST_SDK_URL),
-                (originalRequest, response) =>
-                {
-                    var dataTxt = response.DataAsText;
-                    var json = JSON.Parse(dataTxt);
-                    ApplovinLatestDownloadLink = json["AppLovinMax"]["DownloadUrl"];
-                }).Send();
         }
         
         public static void AddDependency(string pkgName, string version)

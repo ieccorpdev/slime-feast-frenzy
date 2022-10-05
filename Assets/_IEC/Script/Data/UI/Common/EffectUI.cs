@@ -126,6 +126,7 @@ namespace IEC
         {
             var groupCanvas = GetComponent<CanvasGroup>();
             var sequence = DOTween.Sequence();
+            groupCanvas.alpha = from;
             sequence.Append(groupCanvas.DOFade(from, 0))
                     .Append(groupCanvas.DOFade(to, time).SetEase(ease));
             return sequence;

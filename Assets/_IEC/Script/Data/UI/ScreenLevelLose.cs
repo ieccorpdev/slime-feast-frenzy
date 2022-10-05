@@ -15,6 +15,7 @@ namespace IEC
 
             SetEvent(btnRetry, () =>
             {
+                Services.PushEvent(new TrackingEvent.ClickBtnRetry());
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
             });
         }

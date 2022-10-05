@@ -5,6 +5,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Diagnostics;
 using UnityEngine.UI;
 
 namespace _IECModules
@@ -62,6 +63,13 @@ namespace _IECModules
             TopRight = 1 << 1,
             BotLeft = 1 << 2,
             BotRight = 1 << 3
+        }
+
+        public enum CheatCodeExceptionType
+        {
+            Exception,
+            OutOfRange,
+            Null
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
@@ -136,7 +144,32 @@ namespace _IECModules
             {
                 ResetPlayerData();
             });
-            
+
+            var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
+            {
+                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+            }, listCrashCategory);
+
+            var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Create Exception!!!!!", param =>
+            {
+                var exceptionType = (CheatCodeExceptionType)Enum.Parse(typeof(CheatCodeExceptionType), listExceptionType[param.dropdownParam.value]);
+                switch (exceptionType)
+                {
+                    case CheatCodeExceptionType.Exception:
+                        throw new Exception("Cheat Code Exception");
+                    case CheatCodeExceptionType.OutOfRange:
+                        var a = new int[3];
+                        var b = a[3];
+                        break;
+                    case CheatCodeExceptionType.Null:
+                        SpriteRenderer sprite = null;
+                        var c = sprite.sprite;
+                        break;
+                }
+            }, listExceptionType);
+
             AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
             {
                 ResetPlayerDataWithoutChangeAb();
@@ -408,6 +441,7 @@ namespace _IECModules
                                     var inputParam = cheatCodeParam.inputParams[j];
 
                                     currentX = currentX - inputFieldWidth;
+                                    inputParam.value = inputParam.value == null ? string.Empty : inputParam.value;
                                     inputParam.value = GUI.TextField(
                                         new Rect(currentX, buttonRect.y,
                                             inputFieldWidth, ButtonSize.y),
@@ -601,7 +635,7 @@ namespace _IECModules
                 cheatCodeParam => { cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}"; }
             );
             
-            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double)};
+            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double), typeof(string)};
             classObj.GetType().GetFields().Where(f => checkFieldType.Contains(f.FieldType)).ToList().ForEach(
                 field =>
                 {
@@ -648,6 +682,15 @@ namespace _IECModules
                             }
                             onChange?.Invoke();
                         }, new InputParam {value = fieldValue});
+                    }
+                    else if (fieldType == typeof(string))
+                    {
+                        AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
+                        {
+                            var valueStr = param.inputParams[0].value.ToString();
+                            field.SetValue(classObj, valueStr);
+                            onChange?.Invoke();
+                        }, new InputParam { value = fieldValue });
                     }
                 });
         }

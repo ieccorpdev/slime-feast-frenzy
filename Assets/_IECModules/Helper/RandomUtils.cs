@@ -48,6 +48,7 @@ namespace IEC
     public class RandomPro
     {
         private System.Random m_RNG;
+        private List<int> m_ListIndex = new List<int>();
 
         public RandomPro()
         {
@@ -57,6 +58,11 @@ namespace IEC
         public RandomPro(int seed)
         {
             m_RNG = new System.Random(seed);
+        }
+
+        public bool BinaryChoice()
+        {
+            return RangeFromTo(0, 1) == 1;
         }
 
         public int RangeFromTo(int min, int max)
@@ -101,6 +107,45 @@ namespace IEC
             rs.y = Range(-1f, 1f);
             rs.z = Range(-1f, 1f);
             return rs;
+        }
+
+        public int WeightRandom(List<float> listWeight)
+        {
+            var random = Range(0, listWeight.Sum());
+            var sum = 0f;
+            for (var i = 0; i < listWeight.Count; i++)
+            {
+                sum += listWeight[i];
+                if (random < sum) return i;
+            }
+            return 0;
+        }
+
+        public KeyValuePair<T, float> WeightRandom<T>(Dictionary<T, float> dictWeight)
+        {
+            var listWeight = dictWeight.Values.ToList();
+            var index = WeightRandom(listWeight);
+            return dictWeight.ElementAt(index);
+        }
+
+        public T SampleWhere<T>(IList<T> list, System.Func<T, bool> filter)
+        {
+            m_ListIndex.Clear();
+            var count = list.Count;
+            for (int i = 0; i < count; i++)
+            {
+                m_ListIndex.Add(i);
+            }
+            Shuffle(m_ListIndex);
+            for (int i = 0; i < count; i++)
+            {
+                var index = m_ListIndex[i];
+                if (filter(list[index]))
+                {
+                    return list[index];
+                }
+            }
+            return default(T);
         }
     }
 }

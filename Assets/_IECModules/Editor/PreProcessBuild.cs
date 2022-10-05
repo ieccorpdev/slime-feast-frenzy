@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using _IECModules;
@@ -15,13 +16,32 @@ public class PreProcessBuild : IPreprocessBuildWithReport
     {
         SetFirebaseVersion();
         SetPlatformVersion();
+        UpdateVersionCodeFromEnvironment();
     }
 
     private void SetPlatformVersion()
     {
         ProjectChecklistHelper.LoadServicesConfig();
-        var platformVersion = ProjectChecklistHelper.servicesConfig.GetPlatformVersion();
-        PlayerSettings.bundleVersion = platformVersion.version;
+        if (ProjectChecklistHelper.servicesConfig.isVersionByPlatform)
+        {
+            var platform = EditorUserBuildSettings.activeBuildTarget == BuildTarget.iOS ? "ios" : "android";
+            var platformVersion = ProjectChecklistHelper.servicesConfig.GetPlatformVersion(platform);
+            PlayerSettings.bundleVersion = platformVersion.version;
+        }
+    }
+
+    private void UpdateVersionCodeFromEnvironment()
+    {
+        var versionCodePrefixStr = Environment.GetEnvironmentVariable("VERSION_CODE_OFFSET");
+        if(string.IsNullOrWhiteSpace(versionCodePrefixStr)) return;
+        
+        var versionCodePrefix = int.Parse(versionCodePrefixStr);
+        var buildNumber = PlayerSettings.Android.bundleVersionCode;
+        buildNumber += versionCodePrefix;
+        
+        Debug.LogWarning($"Setting build number (with offset) to: {buildNumber}");
+        PlayerSettings.Android.bundleVersionCode = buildNumber;
+        PlayerSettings.iOS.buildNumber = buildNumber.ToString();
     }
 
     private void SetFirebaseVersion()
