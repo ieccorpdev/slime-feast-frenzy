@@ -251,6 +251,16 @@ namespace _IECModules
                     LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {androidManifestMultidexString}");
                 }
 
+                var xmlnsTool = "xmlns:tools=\"http://schemas.android.com/tools\"";
+                if (!androidManifestFileContent.Contains(xmlnsTool))
+                {
+                    var manifestTag = androidManifestFileContent.GetBetweenString("<manifest", ">");
+                    var manifestTagReplaced = manifestTag.Replace(">", $" {xmlnsTool}>");
+                    androidManifestFileContent = androidManifestFileContent.Replace(manifestTag, manifestTagReplaced);
+                    File.WriteAllText(androidManifestFileName, androidManifestFileContent);
+                    LogEditorHelper.AddLog($"AndroidManifest.xml Updated: {xmlnsTool}");
+                }
+
                 if (multiDexAlreadyEnabled)
                 {
                     LogEditorHelper.AddLog("MultiDex already enabled in mainTemplate.gradle and AndroidManifest.xml");
@@ -449,7 +459,7 @@ namespace _IECModules
             }
         }
 
-        private static void GooglePlayServicesForceResolve()
+        public static void GooglePlayServicesForceResolve()
         {
             LogEditorHelper.AddLog("Android Play Service Start Force Resolve");
 
