@@ -9,6 +9,7 @@ namespace _IECModules
     {
         public NotificationData Data => SingleCreateIfNotExist(() => Resources.Load<NotificationData>("NotificationData"));
 
+        private bool m_IsInit;
         public BaseNotification Notification => SingleCreateIfNotExist(() =>
         {
 #if (PluginNotification)
@@ -38,12 +39,12 @@ namespace _IECModules
         public void Init()
         {
             Notification.Init();
+            m_IsInit = true;
         }
 
         void RegisterNotification()
         {
-            if (Data == null) return;
-            if (Pool.Get<PlayerSecret>().level < 4) return;
+            if (Data == null || !m_IsInit) return;
             Notification.CancelAllNotification();
             if (Notification.CheatCodeShowNotificationTime != 0)
             {
