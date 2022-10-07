@@ -35,10 +35,10 @@ namespace _IECModules
             config.interstitialID = config.interstitialID.Trim();
             config.rewardID = config.rewardID.Trim();
 
-            Debug.LogWarning("Applovin App ID:" + config.appID);
-            Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
-            Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
-            Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
+            Debug.LogWarning("IronSource App ID:" + config.appID);
+            // Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
+            // Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
+            // Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
 
             this.pushEventAction = pushEventAction;
             
@@ -58,6 +58,7 @@ namespace _IECModules
                 InitBanner();
                 InitializeInterstitialAds();
                 InitializeRewardedAds();
+                Debug.LogWarning("Init IronSource Done");
                 afterInitCallback?.Invoke(true);
             };
 
