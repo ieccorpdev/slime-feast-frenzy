@@ -563,6 +563,20 @@ namespace IEC
                     m_Ads = ironSourceAds;
                 }
 #endif
+                if (listMediation.Count > 1)
+                {
+                    ModuleController.cheatCode.AddCheatCodeButton($"Choose Mediation:{m_ServiceData.mediation}",
+                        param =>
+                        {
+                            var serviceData = Pool.Get<ServiceData>();
+                            serviceData.mediation += 1;
+                            if (serviceData.mediation == Mediation.Count)
+                            {
+                                serviceData.mediation = 0;
+                            }
+                            param.buttonText = $"Choose Mediation:{serviceData.mediation}";
+                        });
+                }
 
                 Debug.Log("Ads:" + m_Ads);
                 m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () =>
