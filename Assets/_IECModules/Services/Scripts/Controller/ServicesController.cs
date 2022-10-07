@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using _IECModules;
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
@@ -525,18 +526,42 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
+                var listMediation = new List<Mediation>();
+#if(PluginApplovin)
+                listMediation.Add(Mediation.Applovin);
+#endif
+#if(PluginIronSource)
+                listMediation.Add(Mediation.IronSource);
+#endif                
 #if (PluginApplovin)
-                var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
                 {
-                    if (result)
+                    var applovinAds = new ApplovinModule();
+                    applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                        {
+                            if (result)
+                            {
+                                RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                            }
+                        },
+                        PushEvent);
+                    applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
+                    m_Ads = applovinAds;
+                }
+#endif
+#if(PluginIronSource)
+                if (m_ServiceData.mediation == Mediation.IronSource || listMediation.Count <= 1)
+                {
+                    var ironSourceAds = new IronSourceModule();
+                    ironSourceAds.Init(config.IronSourceConfig, true,true, (result) =>
                     {
-                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
-                    }
-                },
-                PushEvent);
-                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
-                m_Ads = applovinAds;
+                        if (result)
+                        {
+                            RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                        }
+                    }, PushEvent);
+                    m_Ads = ironSourceAds;
+                }
 #endif
 
                 Debug.Log("Ads:" + m_Ads);

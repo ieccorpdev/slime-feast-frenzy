@@ -13,6 +13,13 @@ namespace IEC
         REWARD,
         INTER_N_REWARD,
     }
+
+    public enum Mediation
+    {
+        Applovin,
+        IronSource,
+        Count
+    }
     [System.Serializable]
     public class ServiceData
     {
@@ -20,6 +27,8 @@ namespace IEC
         public bool isNoAdsReward;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
+
+        public Mediation mediation;
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif

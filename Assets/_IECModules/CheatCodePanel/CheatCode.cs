@@ -215,6 +215,19 @@ namespace _IECModules
                 PlayerPrefs.SetInt(AdjustAnalyticModule.ADJUST_SANDBOX, sandBoxEnable);
             });
 #endif
+#if PluginApplovin && PluginIronSource
+            ModuleController.cheatCode.AddCheatCodeButton($"Choose Mediation:{Pool.Get<ServiceData>().mediation}",
+                param =>
+                {
+                    var serviceData = Pool.Get<ServiceData>();
+                    serviceData.mediation += 1;
+                    if (serviceData.mediation == Mediation.Count)
+                    {
+                        serviceData.mediation = 0;
+                    }
+                    param.buttonText = $"Choose Mediation:{serviceData.mediation}";
+                });
+#endif
 //            AddTestButton();
         }
 

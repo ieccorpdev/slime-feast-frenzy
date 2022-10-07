@@ -19,6 +19,9 @@ namespace _IECModules
 
         private IronSourceBannerPosition m_BannerAdsPos = IronSourceBannerPosition.BOTTOM;
         
+        int m_LoadFullAdCount = 0;
+        int m_LoadRewardCount = 0;
+        
         Action<string, float, Dictionary<string, object>> pushEventAction;
         public Action<AdsEnum, float> onAdRevenueAction;
         
@@ -40,6 +43,7 @@ namespace _IECModules
             this.pushEventAction = pushEventAction;
             
             IronSource.Agent.setConsent(isAcceptConsent);
+            
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
@@ -50,6 +54,7 @@ namespace _IECModules
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
             {
                 m_IsInit = true;
+                IronSource.Agent.validateIntegration();
                 InitBanner();
                 InitializeInterstitialAds();
                 InitializeRewardedAds();
@@ -201,7 +206,7 @@ namespace _IECModules
             return metrics.Get<float>("ydpi") / 160f;
         }
         
-        #region bannerAds
+#region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -236,13 +241,6 @@ namespace _IECModules
 
         void InitBanner()
         {
-            // MaxSdkCallbacks.Banner.OnAdClickedEvent += BannerAd_OnAdClicked;
-            // MaxSdkCallbacks.Banner.OnAdLoadedEvent += BannerAd_OnAdLoaded;
-            // MaxSdkCallbacks.Banner.OnAdLoadFailedEvent += BannerAd_OnAdFailedToLoad;
-            // MaxSdkCallbacks.Banner.OnAdCollapsedEvent += BannerAd_OnAdCollapsed;
-            // MaxSdkCallbacks.Banner.OnAdExpandedEvent += BannerAd_OnAdExpanded;
-            // MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
-
             IronSourceEvents.onBannerAdLoadedEvent += BannerAd_OnAdLoaded;
             IronSourceEvents.onBannerAdLoadFailedEvent += BannerAd_OnAdFailedToLoad;
             IronSourceEvents.onBannerAdClickedEvent += BannerAd_OnAdClicked;
@@ -279,6 +277,240 @@ namespace _IECModules
         void BannerAd_OnAdClicked()
         {
             Debug.Log("BannerAd_OnAdClicked");
+        }
+
+#endregion
+#region full ads
+
+        bool IsFullAdsLoaded()
+        {
+            return IronSource.Agent.isInterstitialReady() &&
+                Application.internetReachability != NetworkReachability.NotReachable;
+        }
+
+        void LoadFullAds(Action<AdsEventArgs> loadCallback)
+        {
+            if (string.IsNullOrEmpty(m_Config.interstitialID))
+            {
+                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                return;
+            }
+
+            var adsState = m_FullAdsState;
+            adsState.onLoad = loadCallback;
+
+            if (adsState.isLoading)
+            {
+                return;
+            }
+
+            if (IsFullAdsLoaded())
+            {
+                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
+                return;
+            }
+
+            adsState.isLoading = true;
+            adsState.isLoaded = false;
+            adsState.isWaitToShow = false;
+            m_FullAdsState = adsState;
+
+            IronSource.Agent.loadInterstitial();
+        }
+
+        void ShowFullAds(Action<AdsEventArgs> showCallback)
+        {
+            var adsState = m_FullAdsState;
+            adsState.isWaitToShow = true;
+
+            if (IsFullAdsLoaded())
+            {
+                adsState.onShow = showCallback;
+                IronSource.Agent.showInterstitial();
+            }
+            else
+            {
+                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
+            }
+        }
+
+        private void InterstitialAd_OnAdLoaded()
+        {
+            AdsStateData.DebugLog("InterstitialAd_OnAdLoaded");
+            var adsState = m_FullAdsState;
+            adsState.isLoaded = true;
+            adsState.isLoading = false;
+            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
+        }
+
+        private void InterstitialAd_OnAdFailedToLoad(IronSourceError error)
+        {
+            var adsState = m_FullAdsState;
+            AdsStateData.DebugLog($"InterstitialAd_OnAdFailedToLoad : {error.getErrorCode()}-{error.getDescription()}");
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.FAIL);
+
+            if (m_LoadFullAdCount < 3)
+            {
+                m_LoadFullAdCount++;
+                Debug.Log("Reload full ad after failed to load:" + m_LoadFullAdCount);
+                Load(AdsEnum.INTERSTITIAL, null);
+            }
+        }
+
+        private void InterstitialAd_OnAdClosed()
+        {
+            AdsStateData.DebugLog("InterstitialAd_OnAdClosed");
+            var adsState = m_FullAdsState;
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            adsState.onShow = AdsStateData.SafeInvoke(adsState.onShow, AdsEventArgs.DONE);
+
+            if (m_IsAutoReload)
+            {
+                Load(AdsEnum.INTERSTITIAL, null);
+            }
+        }
+
+        private void InterstitialAd_OnAdFailedToDisplay(IronSourceError error)
+        {
+            AdsStateData.DebugLog("InterstitialAd_OnAdFailedToDisplay");
+            var adsState = m_FullAdsState;
+            adsState.onShow = AdsStateData.SafeInvoke(adsState.onShow, AdsEventArgs.FAIL);
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            if (m_IsAutoReload)
+            {
+                Load(AdsEnum.INTERSTITIAL, null);
+            }
+        }
+
+        private void InterstitialAd_ClickedEvent()
+        {
+            AdsStateData.DebugLog("InterstitialAd_ClickedEvent");
+            AdsStateData.SafeInvoke(m_FullAdsState.onClick);
+        }
+
+        private void InitializeInterstitialAds()
+        {
+            IronSourceEvents.onInterstitialAdReadyEvent += InterstitialAd_OnAdLoaded;
+            IronSourceEvents.onInterstitialAdLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
+            IronSourceEvents.onInterstitialAdShowFailedEvent += InterstitialAd_OnAdFailedToDisplay;
+            IronSourceEvents.onInterstitialAdClosedEvent += InterstitialAd_OnAdClosed;
+        }
+
+#endregion
+#region rewardAds
+
+        bool IsRewardLoaded()
+        {
+            return IronSource.Agent.isRewardedVideoAvailable() &&
+                Application.internetReachability != NetworkReachability.NotReachable;
+        }
+
+        void LoadRewardAds(Action<AdsEventArgs> loadCallback)
+        {
+            if (string.IsNullOrEmpty(m_Config.rewardID))
+            {
+                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                return;
+            }
+
+            var adsState = m_RewardAdsState;
+            adsState.onLoad = loadCallback;
+
+            if (adsState.isLoading)
+            {
+                return;
+            }
+
+            if (IsRewardLoaded())
+            {
+                return;
+            }
+
+            adsState.isLoading = true;
+            adsState.isLoaded = false;
+            m_RewardAdsState = adsState;
+
+        }
+
+        void ShowRewardAds(Action<AdsEventArgs> showCallback)
+        {
+            var adsState = m_RewardAdsState;
+
+            if (IsRewardLoaded())
+            {
+                adsState.onShow = showCallback;
+                IronSource.Agent.showRewardedVideo();
+            }
+            else
+            {
+                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL_NOT_LOADED);
+            }
+        }
+
+        private void RewardedAdsView_OnAdFailedToShow(IronSourceError error)
+        {
+            m_RewardAdsState.isLoading = false;
+            m_RewardAdsState.isLoaded = false;
+            AdsStateData.DebugLog($"RewardedAdsView_OnAdFailedToShow : {error.getErrorCode()}-{error.getDescription()}");
+            m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.FAIL);
+        }
+
+        private void RewardedAdsView_OnUserEarnedReward(IronSourcePlacement placement)
+        {
+            m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.DONE_NO_SKIP);
+        }
+
+        private void RewardedAdsView_OnAdFailedToLoad(IronSourceError error)
+        {
+            AdsStateData.DebugLog($"RewardedAdsView_OnAdFailedToLoad : {error.getErrorCode()}-{error.getDescription()}");
+            m_RewardAdsState.isLoading = false;
+            m_RewardAdsState.isLoaded = false;
+            m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.FAIL);
+
+            if (m_LoadRewardCount < 3)
+            {
+                m_LoadRewardCount++;
+                Debug.Log("Reload reward after failed to load:" + m_LoadRewardCount);
+                Load(AdsEnum.REWARD, null);
+            }
+        }
+
+        private void RewardedAdsView_OnAdLoaded()
+        {
+            AdsStateData.DebugLog("RewardedAdsView_OnAdLoaded");
+            m_RewardAdsState.isLoaded = true;
+            m_RewardAdsState.isLoading = false;
+            m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.DONE);
+        }
+
+        private void RewardedAdsView_OnAdClosed()
+        {
+            AdsStateData.DebugLog("RewardedAdsView_OnAdClosed");
+            m_RewardAdsState.isLoading = false;
+            m_RewardAdsState.isLoaded = false;
+            if (m_IsAutoReload)
+            {
+                Load(AdsEnum.REWARD, null);
+            }
+            else
+            {
+                m_RewardAdsState.isLoaded = false;
+            }
+        }
+
+        private void InitializeRewardedAds()
+        {
+            // Attach callback
+            IronSourceEvents.onRewardedVideoAdReadyEvent += RewardedAdsView_OnAdLoaded;
+            IronSourceEvents.onRewardedVideoAdLoadFailedEvent += RewardedAdsView_OnAdFailedToLoad;
+            IronSourceEvents.onRewardedVideoAdShowFailedEvent += RewardedAdsView_OnAdFailedToShow;
+            IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedAdsView_OnAdClosed;
+            IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedAdsView_OnUserEarnedReward;
+            // MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
 #endregion
