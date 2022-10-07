@@ -89,6 +89,7 @@ namespace _IECModules
             {
                 if (FileUtil.DeleteFileOrDirectory(path))
                 {
+                    FileUtil.DeleteFileOrDirectory($"{path}.meta");
                     LogEditorHelper.AddLog($"DELETED: {path}");
                 }
             });
@@ -310,11 +311,13 @@ namespace _IECModules
             if (Directory.Exists("Assets/Plugins/Android/res"))
             {
                 Directory.Delete("Assets/Plugins/Android/res", true);
+                File.Delete("Assets/Plugins/Android/res.meta");
             }
             
             if (Directory.Exists("Assets/Plugins/Android/myLibrary.androidlib"))
             {
                 Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib", true);
+                File.Delete("Assets/Plugins/Android/myLibrary.androidlib");
             }
 
             if (Directory.Exists(libraryPath))
