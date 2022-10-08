@@ -48,7 +48,7 @@ namespace _IECModules
             {
                 IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
                 IronSource.Agent.init (config.appID, IronSourceAdUnits.INTERSTITIAL);
-                IronSource.Agent.init (config.appID, IronSourceAdUnits.BANNER);
+                IronSource.Agent.init (config.appID, IronSourceAdUnits.REWARDED_VIDEO);
             }
 
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
