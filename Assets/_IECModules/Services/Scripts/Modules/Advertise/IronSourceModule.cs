@@ -211,7 +211,7 @@ namespace _IECModules
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
-            if (string.IsNullOrEmpty(m_Config.bannerID))
+            if (string.IsNullOrEmpty(m_Config.appID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
@@ -291,7 +291,7 @@ namespace _IECModules
 
         void LoadFullAds(Action<AdsEventArgs> loadCallback)
         {
-            if (string.IsNullOrEmpty(m_Config.interstitialID))
+            if (string.IsNullOrEmpty(m_Config.appID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
@@ -412,7 +412,7 @@ namespace _IECModules
 
         void LoadRewardAds(Action<AdsEventArgs> loadCallback)
         {
-            if (string.IsNullOrEmpty(m_Config.rewardID))
+            if (string.IsNullOrEmpty(m_Config.appID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
