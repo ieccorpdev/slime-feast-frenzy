@@ -1,5 +1,6 @@
 #if (PluginAdjust)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using com.adjust.sdk;
@@ -16,7 +17,7 @@ namespace IEC
 
         public const string ADJUST_SANDBOX = "ADJUST_SAND_BOX";
 
-        public AdjustAnalyticModule(string androidID, string iosID)
+        public AdjustAnalyticModule(string androidID, string iosID, Action<string> deferredDeeplinkCallback = null)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             Debug.LogWarning("Adjust AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
@@ -28,6 +29,10 @@ namespace IEC
             adjustConfig.setSendInBackground(false);
             adjustConfig.setEventBufferingEnabled(false);
             adjustConfig.setLaunchDeferredDeeplink(false);
+            adjustConfig.setDeferredDeeplinkDelegate(deferredlink =>
+            {
+                deferredDeeplinkCallback?.Invoke(deferredlink);
+            });
             Adjust.start(adjustConfig);
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
         }

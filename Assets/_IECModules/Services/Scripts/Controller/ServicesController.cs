@@ -379,7 +379,26 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            var deferredDeeplinkCallback = new Action<string>(deferredLink =>
+            {
+                Debug.LogWarning("Adjust Deeplink: " + deferredLink);
+                if (string.IsNullOrEmpty(deferredLink)) return;
+                if (deferredLink.Contains("applovin"))
+                {
+                    m_ServiceData.mediation = Mediation.Applovin;
+                }
+                else if (deferredLink.Contains("ironsource"))
+                {
+                    m_ServiceData.mediation = Mediation.IronSource;
+                }
+            });
+            if(m_ServiceData.mediation == Mediation.None && !config.isUseAdjustDeeplink)
+            {
+                m_ServiceData.mediation = Mediation.Applovin;
+            }
+
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID,
+                config.isUseAdjustDeeplink ? deferredDeeplinkCallback : null);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             if (config.adjustEventConfig != null)
             {
@@ -473,7 +492,7 @@ namespace IEC
             Pool.Set(m_ServiceData);
         }
 
-        void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
+        public void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
         {
             bool isNoAds = config.IsNoAds || Application.isEditor;
 
@@ -532,7 +551,8 @@ namespace IEC
 #endif
 #if(PluginIronSource)
                 listMediation.Add(Mediation.IronSource);
-#endif                
+#endif           
+                if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
 #if (PluginApplovin)
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
                 {

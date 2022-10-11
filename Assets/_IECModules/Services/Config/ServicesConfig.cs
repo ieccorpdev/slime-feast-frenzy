@@ -56,6 +56,7 @@ public class ServicesConfig : ScriptableObject
     [Header("Adjust")]
     public PlatformConfig adjustConfig;
     public AdjustAnalyticEventConfig adjustEventConfig;
+    public bool isUseAdjustDeeplink;
 
     [Header("RemoteCustomEventFirebase")]
     public RemoteConfigData remoteCustomEventFirebase;

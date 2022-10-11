@@ -16,6 +16,7 @@ namespace IEC
 
     public enum Mediation
     {
+        None,
         Applovin,
         IronSource,
         Count
@@ -28,7 +29,7 @@ namespace IEC
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
 
-        public Mediation mediation;
+        public Mediation mediation = Mediation.None;
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
