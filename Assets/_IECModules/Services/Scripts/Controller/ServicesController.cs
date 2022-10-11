@@ -488,6 +488,10 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            if (!m_IsNewInstall && m_ServiceData.mediation == Mediation.None)
+            {
+                m_ServiceData.mediation = Mediation.Applovin;
+            }
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
@@ -551,7 +555,7 @@ namespace IEC
 #endif
 #if(PluginIronSource)
                 listMediation.Add(Mediation.IronSource);
-#endif           
+#endif
                 if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
 #if (PluginApplovin)
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
