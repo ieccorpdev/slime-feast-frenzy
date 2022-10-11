@@ -196,6 +196,11 @@ namespace IEC
             {
                 m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
             }
+            
+            if (!m_IsNewInstall && m_ServiceData.mediation == Mediation.None)
+            {
+                m_ServiceData.mediation = Mediation.Applovin;
+            }
 
             m_SetUpFacebook = new SetUpSdkMock();
             m_SetUpFirebase = new SetUpSdkMock();
@@ -488,10 +493,6 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
-            if (!m_IsNewInstall && m_ServiceData.mediation == Mediation.None)
-            {
-                m_ServiceData.mediation = Mediation.Applovin;
-            }
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
         }
