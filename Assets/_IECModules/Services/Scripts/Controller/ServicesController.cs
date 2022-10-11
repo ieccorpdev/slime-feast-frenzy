@@ -396,6 +396,8 @@ namespace IEC
                 {
                     m_ServiceData.mediation = Mediation.IronSource;
                 }
+                
+                InitAdsAfterGDPR(true, true);
             });
             if(m_ServiceData.mediation == Mediation.None && !config.isUseAdjustDeeplink)
             {
