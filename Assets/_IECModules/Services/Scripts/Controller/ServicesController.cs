@@ -388,27 +388,44 @@ namespace IEC
 #if (PluginAdjust)
             var deferredDeeplinkCallback = new Action<string>(deferredLink =>
             {
+                var isLateDeeplink = m_ServiceData.mediation != Mediation.None;
                 Debug.LogWarning("Adjust Deeplink: " + deferredLink);
                 if (string.IsNullOrEmpty(deferredLink)) return;
+                var deeplinkMediation = Mediation.None;
                 if (deferredLink.Contains("applovin"))
                 {
-                    m_ServiceData.mediation = Mediation.Applovin;
+                    deeplinkMediation = Mediation.Applovin;
                 }
                 else if (deferredLink.Contains("ironsource"))
                 {
-                    m_ServiceData.mediation = Mediation.IronSource;
+                    deeplinkMediation = Mediation.IronSource;
                 }
 
-                var abMediation = config.abMediation;
-                if (abMediation != null && abMediation.IsActive)
+                if (!isLateDeeplink)
                 {
-                    abMediation.IsForceValue = true;
-                    abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
-                    PushEventAb(abMediation);
+                    m_ServiceData.mediation = deeplinkMediation;
+                    var abMediation = config.abMediation;
+                    if (abMediation != null && abMediation.IsActive)
+                    {
+                        abMediation.IsForceValue = true;
+                        abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
+                        PushEventAb(abMediation);
+                    }
+                    PushEvent("deeplink_mediation_success",1,new Dictionary<string, object>()
+                    {
+                        ["mediation"] = deeplinkMediation.ToString()
+                    });
+                    InitAdsAfterGDPR(true, true);
                 }
-                
+                else
+                {
+                    PushEvent("deeplink_mediation_late", 1, new Dictionary<string, object>()
+                    {
+                        ["deeplinkMediation"] = deeplinkMediation.ToString(),
+                        ["appliedMediation"] = m_ServiceData.mediation.ToString()
+                    });
+                }
                 isDoneDeeplink = true;
-                InitAdsAfterGDPR(true, true);
             });
 
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID, deferredDeeplinkCallback);
