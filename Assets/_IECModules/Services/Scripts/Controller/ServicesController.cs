@@ -569,7 +569,7 @@ namespace IEC
 #endif
                 if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
                 
-                if(!m_IsInitAd) return;
+                if(m_IsInitAd) return;
                 m_IsInitAd = true;
 #if (PluginApplovin)
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
