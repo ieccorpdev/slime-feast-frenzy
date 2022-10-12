@@ -396,7 +396,14 @@ namespace IEC
                 {
                     m_ServiceData.mediation = Mediation.IronSource;
                 }
-                
+
+                var abMediation = config.abMediation;
+                if (abMediation != null && abMediation.IsActive)
+                {
+                    abMediation.IsForceValue = true;
+                    abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
+                    PushEventAb(abMediation);
+                }
                 InitAdsAfterGDPR(true, true);
             });
             if(m_ServiceData.mediation == Mediation.None && !config.isUseAdjustDeeplink)
@@ -656,18 +663,29 @@ namespace IEC
         {
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
-                Debug.Log("AB Test event:" + s);
-                var abVersion = s.Split('_')[2].Remove(0, 1);
-                var isNumber = int.TryParse(abVersion, out int version);
-                var eventValue = (isNumber) ? version : 1;
-                if(!isNumber) Debug.LogError("Version Ab is not a number");
-                Debug.LogWarning("AbTest event value:" + eventValue);
-                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
+                var abMediation = config.abMediation;
+                if (abMediation != null && abMediation.IsActive && abTest.KeyName == abMediation.KeyName)
                 {
-                    {"version", s}
-                });
-                SetUserProperty("AB_Version", s);
+                    return;
+                }
+                PushEventAb(abTest);
             });
+        }
+
+        public void PushEventAb(ABTestConfig abTest)
+        {
+            var abValue = m_ABTest.GetValue(abTest.KeyName, 0);
+            var s = abTest.ListEventsAB[abValue];
+            var abVersion = s.Split('_')[2].Remove(0, 1);
+            var isNumber = int.TryParse(abVersion, out int version);
+            var eventValue = (isNumber) ? version : 1;
+            if(!isNumber) Debug.LogError("Version Ab is not a number");
+            Debug.LogWarning("AbTest event value:" + eventValue);
+            PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
+            {
+                {"version", s}
+            });
+            SetUserProperty("AB_Version", s);
         }
 
         public void PushEventIapKochava(string packName, float price)

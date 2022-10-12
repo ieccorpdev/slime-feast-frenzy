@@ -23,6 +23,8 @@ public class ServicesConfig : ScriptableObject
 
     [Header("Analytic AB Test")]
     public ABTestConfig[] abTestConfigs;
+
+    public ABTestConfig abMediation;
     public bool IsTestNoAnalytic;
 
     [Header("Daily Mission")]
