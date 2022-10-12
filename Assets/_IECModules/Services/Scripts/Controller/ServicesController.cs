@@ -36,6 +36,7 @@ namespace IEC
         [SerializeField]
         private ServiceData m_ServiceData;
         private bool m_IsRewardLoaded;
+        private bool m_IsInitAd = false;
 
         bool isInit = false;
         bool isInitAllServices = false;
@@ -567,6 +568,9 @@ namespace IEC
                 listMediation.Add(Mediation.IronSource);
 #endif
                 if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
+                
+                if(m_IsInitAd) return;
+                m_IsInitAd = true;
 #if (PluginApplovin)
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
                 {
