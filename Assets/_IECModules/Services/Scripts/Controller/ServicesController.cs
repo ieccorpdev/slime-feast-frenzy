@@ -38,6 +38,7 @@ namespace IEC
         private bool m_IsRewardLoaded;
         private bool m_IsInitAd = false;
 
+        public bool isDoneDeeplink = false;
         bool isInit = false;
         bool isInitAllServices = false;
         bool isInitAwake = false;
@@ -405,15 +406,12 @@ namespace IEC
                     abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
                     PushEventAb(abMediation);
                 }
+                
+                isDoneDeeplink = true;
                 InitAdsAfterGDPR(true, true);
             });
-            if(m_ServiceData.mediation == Mediation.None && !config.isUseAdjustDeeplink)
-            {
-                m_ServiceData.mediation = Mediation.Applovin;
-            }
 
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID,
-                config.isUseAdjustDeeplink ? deferredDeeplinkCallback : null);
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID, deferredDeeplinkCallback);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             if (config.adjustEventConfig != null)
             {
