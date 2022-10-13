@@ -89,6 +89,7 @@ namespace IEC
             {
                 PlayerData.levelFirstTime = level;
                 PlayerData.countPlayLevel = 1;
+                PlayerData.sessionStartLevel = PlayerData.session;
                 Services.PushEvent(new TrackingEvent.PlayLevelFirstTime());
                 if (m_ListLevelFirstTimeAdjust.Contains(level))
                 {
