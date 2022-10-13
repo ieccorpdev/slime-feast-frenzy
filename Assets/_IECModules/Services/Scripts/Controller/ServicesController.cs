@@ -415,6 +415,7 @@ namespace IEC
                     {
                         ["mediation"] = deeplinkMediation.ToString()
                     });
+                    Debug.LogWarning("deeplink_mediation_success:" + deeplinkMediation);
                     InitAdsAfterGDPR(true, true);
                 }
                 else
@@ -424,6 +425,7 @@ namespace IEC
                         ["deeplinkMediation"] = deeplinkMediation.ToString(),
                         ["appliedMediation"] = m_ServiceData.mediation.ToString()
                     });
+                    Debug.LogWarning($"deeplink_mediation_late: Deeplink-{deeplinkMediation},Applied-{m_ServiceData.mediation}");
                 }
                 isDoneDeeplink = true;
             });
