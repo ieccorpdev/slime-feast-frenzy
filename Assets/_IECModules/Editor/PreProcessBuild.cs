@@ -32,6 +32,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         }
 
         var gradlePropContent = File.ReadAllText(gradlePath);
+        if (gradlePropContent.Contains("android.enableDexingArtifactTransform")) return;
         gradlePropContent += "\n" + "android.enableDexingArtifactTransform=false";
         File.WriteAllText(gradlePath, gradlePropContent);
 #endif
