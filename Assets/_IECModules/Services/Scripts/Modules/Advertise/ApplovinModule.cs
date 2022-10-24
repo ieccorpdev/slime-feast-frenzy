@@ -18,10 +18,12 @@ namespace IEC
 
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
-        
+        int m_LoadAOACount = 0;
+
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
+        AdsStateData m_AOAAdsState = new AdsStateData();
 
         MaxSdkBase.BannerPosition m_BannerAdsPos = MaxSdkBase.BannerPosition.BottomCenter;
 
@@ -36,11 +38,13 @@ namespace IEC
             config.bannerID = config.bannerID.Trim();
             config.interstitialID = config.interstitialID.Trim();
             config.rewardID = config.rewardID.Trim();
+            config.aoaID = config.aoaID.Trim();
 
             Debug.LogWarning("Applovin App ID:" + config.appID);
             Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
             Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
             Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
+            Debug.LogWarning("Applovin AOA ID:" + config.aoaID);
 
             this.pushEventAction = pushEventAction;
 
@@ -61,6 +65,7 @@ namespace IEC
                     InitBanner();
                     InitializeInterstitialAds();
                     InitializeRewardedAds();
+                    InitializeAOAAds();
                     afterInitCallback?.Invoke(true);
                 };
             }
@@ -87,6 +92,8 @@ namespace IEC
                     return m_Config.interstitialID;
                 case AdsEnum.REWARD:
                     return m_Config.rewardID;
+                case AdsEnum.AOA:
+                    return m_Config.aoaID;
             }
 
             return "ApplovinAds";
@@ -128,6 +135,8 @@ namespace IEC
                     return IsFullAdsLoaded();
                 case AdsEnum.REWARD:
                     return IsRewardLoaded();
+                case AdsEnum.AOA:
+                    return IsAOAAdsLoaded();
             }
 
             return false;
@@ -151,6 +160,9 @@ namespace IEC
                     break;
                 case AdsEnum.REWARD:
                     LoadRewardAds(loadCallback);
+                    break;
+                case AdsEnum.AOA:
+                    LoadAOAAds(loadCallback);
                     break;
             }
         }
@@ -182,6 +194,9 @@ namespace IEC
                     break;
                 case AdsEnum.REWARD:
                     ShowRewardAds(showCallback);
+                    break;
+                case AdsEnum.AOA:
+                    ShowAOAAds(showCallback);
                     break;
             }
         }
@@ -517,7 +532,131 @@ namespace IEC
             MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
-#endregion
+        #endregion
+
+        #region AOA Ads
+
+        bool IsAOAAdsLoaded()
+        {
+            return MaxSdk.IsAppOpenAdReady(m_Config.aoaID) &&
+                Application.internetReachability != NetworkReachability.NotReachable;
+        }
+
+        void LoadAOAAds(Action<AdsEventArgs> loadCallback)
+        {
+            if (string.IsNullOrEmpty(m_Config.aoaID))
+            {
+                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                return;
+            }
+
+            var adsState = m_AOAAdsState;
+            adsState.onLoad = loadCallback;
+
+            if (adsState.isLoading)
+            {
+                return;
+            }
+
+            if (IsAOAAdsLoaded())
+            {
+                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.DONE);
+                return;
+            }
+
+            adsState.isLoading = true;
+            adsState.isLoaded = false;
+            adsState.isWaitToShow = false;
+            m_AOAAdsState = adsState;
+
+            MaxSdk.LoadAppOpenAd(m_Config.aoaID);
+        }
+
+        void ShowAOAAds(Action<AdsEventArgs> showCallback)
+        {
+            var adsState = m_AOAAdsState;
+            adsState.isWaitToShow = true;
+
+            if (IsAOAAdsLoaded())
+            {
+                adsState.onShow = showCallback;
+                MaxSdk.ShowAppOpenAd(m_Config.aoaID);
+            }
+            else
+            {
+                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
+            }
+        }
+
+        private void AOAAd_OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        {
+            AdsStateData.DebugLog("AOAAd_OnAdLoaded");
+            var adsState = m_AOAAdsState;
+            adsState.isLoaded = true;
+            adsState.isLoading = false;
+            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
+        }
+
+        private void AOAAd_OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
+        {
+            var adsState = m_AOAAdsState;
+            AdsStateData.DebugLog("AOAAd_OnAdFailedToLoad : " + errorInfo.Code);
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.FAIL);
+
+            if (m_LoadAOACount < 3)
+            {
+                m_LoadAOACount++;
+                Debug.Log("Reload AOA ad after failed to load:" + m_LoadAOACount);
+                Load(AdsEnum.AOA, null);
+            }
+        }
+
+        private void AOAAd_OnAdClosed(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        {
+            AdsStateData.DebugLog("AOAAd_OnAdClosed");
+            var adsState = m_AOAAdsState;
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            adsState.onShow = AdsStateData.SafeInvoke(adsState.onShow, AdsEventArgs.DONE);
+
+            if (m_IsAutoReload)
+            {
+                Load(AdsEnum.AOA, null);
+            }
+        }
+
+        private void AOAAd_OnAdFailedToDisplay(string adUnitId, MaxSdkBase.ErrorInfo errorInfo, MaxSdkBase.AdInfo adInfo)
+        {
+            AdsStateData.DebugLog("AOAAd_OnAdFailedToDisplay");
+            var adsState = m_AOAAdsState;
+            adsState.onShow = AdsStateData.SafeInvoke(adsState.onShow, AdsEventArgs.FAIL);
+            adsState.isLoaded = false;
+            adsState.isLoading = false;
+            if (m_IsAutoReload)
+            {
+                Load(AdsEnum.AOA, null);
+            }
+        }
+
+        private void AOAAd_OnAdLeavingApplication(object sender, EventArgs e)
+        {
+            AdsStateData.DebugLog("AOAAd_OnAdLeavingApplication");
+            AdsStateData.SafeInvoke(m_AOAAdsState.onClick);
+        }
+
+        public void InitializeAOAAds()
+        {
+            MaxSdkCallbacks.AppOpen.OnAdLoadedEvent += AOAAd_OnAdLoaded;
+            MaxSdkCallbacks.AppOpen.OnAdLoadFailedEvent += AOAAd_OnAdFailedToLoad;
+            MaxSdkCallbacks.AppOpen.OnAdDisplayFailedEvent += AOAAd_OnAdFailedToDisplay;
+            MaxSdkCallbacks.AppOpen.OnAdHiddenEvent += AOAAd_OnAdClosed;
+            MaxSdkCallbacks.AppOpen.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
+        }
+
+        #endregion
+
         private void OnAdRevenuePaidEvent(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             double revenue = adInfo.Revenue;
@@ -557,6 +696,10 @@ namespace IEC
             {
                 adType = AdsEnum.REWARD;
             }
+            else if (adUnitId.Equals(m_Config.aoaID))
+            {
+                adType = AdsEnum.AOA;
+            }
             
             onAdRevenueAction?.Invoke(adType,(float)revenue);
 
@@ -577,6 +720,10 @@ namespace IEC
             else if (adUnitId.Equals(m_Config.rewardID))
             {
                 return "rev_reward_ad";
+            }
+            else if (adUnitId.Equals(m_Config.aoaID))
+            {
+                return "rev_aoa_ad";
             }
             else
             {

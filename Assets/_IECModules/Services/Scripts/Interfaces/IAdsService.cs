@@ -21,7 +21,8 @@ namespace IEC
         BANNER_TOP,
         BANNER_BOTTOM,
         INTERSTITIAL,
-        REWARD
+        REWARD,
+        AOA
     }
 
     [Serializable]
@@ -38,6 +39,7 @@ namespace IEC
         public string interstitialID;
         public string bannerID;
         public string rewardID;
+        public string aoaID;
     }
 
     [Serializable]
