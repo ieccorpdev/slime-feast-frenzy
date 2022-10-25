@@ -765,6 +765,43 @@ namespace IEC
             return false;
         }
 
+        public void ShowAOAAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
+        {
+            if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
+            {
+                Debug.Log("show aoa ads");
+                SafeInvoke(closeCallback);
+                return;
+            }
+            m_Ads.Show(AdsEnum.AOA, param =>
+            {
+                if (param.isSuccess)
+                {
+                    PushEvent("show_aoa_ad");
+#if (PluginKochava)
+                    m_KochavaAnalytic?.PushEventFullAd();
+#endif
+#if (PluginAdjust)
+                    m_AdjustAnalytic?.PushEventAOAAd();
+#endif
+                    lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+                    //var fullAdCount = m_EventCount.GetCount("show_full_ad");
+                    //var milestone = GetMilestone(fullAdCount);
+                    //if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
+                    //{
+                    //    PushEvent("inter_" + fullAdCount);
+                    //}
+                    SafeInvoke(canShowCallback);
+                }
+                else
+                {
+                    SafeInvoke(cantShowCallback);
+                }
+
+                SafeInvoke(closeCallback);
+            });
+        }
+
         public void ShowRewardAds(Action closeCallback, Action skipCallback = null, bool isResetInterCD = true)
         {
             var serviceData = Pool.Get<ServiceData>();
@@ -1198,6 +1235,7 @@ namespace IEC
                 if (!m_ServiceData.isNoAds)
                 {
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
+                    Ads().Load(AdsEnum.AOA, null);
                 }
                 yield return delaySec;
             }

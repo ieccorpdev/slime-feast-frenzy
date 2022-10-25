@@ -64,6 +64,9 @@ namespace IEC
         public float revInterNReward;
         public Dictionary<int, float> dictMilestoneRewardNInter;
 
+        public float revAOAAd;
+        public Dictionary<int, float> dictMilestoneAOA;
+
         public float lastRevFBPurchase;
 
         public Dictionary<float, float> dictMilestoneCentRev;
@@ -139,6 +142,10 @@ namespace IEC
                    revBannerAd += revenue;
                    Debug.Log("Rev Banner:" + revBannerAd);
                    break;
+                case AdsEnum.AOA:
+                    revAOAAd += revenue;
+                    Debug.Log("Rev AOA: " + revAOAAd);
+                    break;
             }
             Debug.Log("Total Rev:" + revTotalAd);
             
