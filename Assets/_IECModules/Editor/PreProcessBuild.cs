@@ -11,12 +11,21 @@ using UnityEngine;
 public class PreProcessBuild : IPreprocessBuildWithReport
 {
     public int callbackOrder => 0;
+    private const int ANDROID_TARGET_SDK = 31;
 
     public void OnPreprocessBuild(BuildReport report)
     {
         SetFirebaseVersion();
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
+        SetTargetSdkAndroid();
+    }
+
+    private void SetTargetSdkAndroid()
+    {
+#if UNITY_ANDROID
+        PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions)ANDROID_TARGET_SDK;
+#endif
     }
 
     private void SetPlatformVersion()

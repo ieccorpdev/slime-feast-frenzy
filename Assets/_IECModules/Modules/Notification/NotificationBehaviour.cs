@@ -2,13 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using IEC;
 namespace _IECModules
 {
     public class NotificationBehaviour : BaseBehaviour
     {
         public NotificationData Data => SingleCreateIfNotExist(() => Resources.Load<NotificationData>("NotificationData"));
 
+        private bool m_IsInit;
         public BaseNotification Notification => SingleCreateIfNotExist(() =>
         {
 #if (PluginNotification)
@@ -38,11 +39,12 @@ namespace _IECModules
         public void Init()
         {
             Notification.Init();
+            m_IsInit = true;
         }
 
         void RegisterNotification()
         {
-            if (Data == null) return;
+            if (Data == null || !m_IsInit) return;
             Notification.CancelAllNotification();
             if (Notification.CheatCodeShowNotificationTime != 0)
             {

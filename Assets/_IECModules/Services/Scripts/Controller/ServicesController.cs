@@ -937,21 +937,35 @@ namespace IEC
         private string m_UserIDFA;
         void RequestUserIdfa()
         {
-            m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
-                Application.RequestAdvertisingIdentifierAsync((string advertisingId, bool trackingEnabled, string error) =>
+#if UNITY_ANDROID
+                try
                 {
-                    Debug.Log("advertisingId " + advertisingId + " , " + trackingEnabled + " , " + error);
-                    if (!string.IsNullOrWhiteSpace(advertisingId))
+                    var up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
+                    var currentActivity = up.GetStatic<AndroidJavaObject> ("currentActivity");
+                    var client = new AndroidJavaClass ("com.google.android.gms.ads.identifier.AdvertisingIdClient");
+                    var adInfo = client.CallStatic<AndroidJavaObject> ("getAdvertisingIdInfo", currentActivity);
+     
+                    m_UserIDFA = adInfo.Call<string> ("getId").ToString();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogWarning(e);
+                }
+#else
+                Application.RequestAdvertisingIdentifierAsync(
+                    (string advertisingId, bool trackingEnabled, string error) =>
                     {
+                        Debug.Log("advertisingId " + advertisingId + " " + trackingEnabled + " " + error);
                         m_UserIDFA = advertisingId;
                     }
-                });
+                );
+#endif
             }
             else
             {
-                Debug.Log("advertisingId " + m_UserIDFA);
+                Debug.LogWarning("advertisingId " + m_UserIDFA);
             }
         }
         
@@ -983,6 +997,14 @@ namespace IEC
                 .SetBody(message)
                 .AddAttachment(Application.persistentDataPath + @"/log.txt");
             UT.Mail.Compose(mail, "Support");
+        }
+
+        public void OpenPrivacyPolicyURL()
+        {
+            var url = config.privacyPolicy;
+            if (string.IsNullOrWhiteSpace(url)) return;
+
+            Application.OpenURL(url);
         }
 
         void SaveLogToFile()
