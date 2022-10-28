@@ -196,7 +196,7 @@ namespace _IECModules
         {
             if (Application.platform != RuntimePlatform.Android)
             {
-                return MaxSdkUtils.GetScreenDensity();
+                return Screen.dpi / 160f;
             }
             AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
