@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using _IECModules;
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
@@ -35,7 +36,9 @@ namespace IEC
         [SerializeField]
         private ServiceData m_ServiceData;
         private bool m_IsRewardLoaded;
+        private bool m_IsInitAd = false;
 
+        public bool isDoneDeeplink = false;
         bool isInit = false;
         bool isInitAllServices = false;
         bool isInitAwake = false;
@@ -194,6 +197,11 @@ namespace IEC
             if (m_IsNewInstall)
             {
                 m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
+            }
+            
+            if (!m_IsNewInstall && m_ServiceData.mediation == Mediation.None)
+            {
+                m_ServiceData.mediation = Mediation.Applovin;
             }
 
             m_SetUpFacebook = new SetUpSdkMock();
@@ -378,7 +386,51 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            var deferredDeeplinkCallback = new Action<string>(deferredLink =>
+            {
+                var isLateDeeplink = m_ServiceData.mediation != Mediation.None;
+                Debug.LogWarning("Adjust Deeplink: " + deferredLink);
+                if (string.IsNullOrEmpty(deferredLink)) return;
+                var deeplinkMediation = Mediation.None;
+                if (deferredLink.Contains("applovin"))
+                {
+                    deeplinkMediation = Mediation.Applovin;
+                }
+                else if (deferredLink.Contains("ironsource"))
+                {
+                    deeplinkMediation = Mediation.IronSource;
+                }
+
+                if (!isLateDeeplink)
+                {
+                    m_ServiceData.mediation = deeplinkMediation;
+                    var abMediation = config.abMediation;
+                    if (abMediation != null && abMediation.IsActive)
+                    {
+                        abMediation.IsForceValue = true;
+                        abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
+                        PushEventAb(abMediation);
+                    }
+                    PushEvent("deeplink_mediation_success",1,new Dictionary<string, object>()
+                    {
+                        ["mediation"] = deeplinkMediation.ToString()
+                    });
+                    Debug.LogWarning("deeplink_mediation_success:" + deeplinkMediation);
+                    InitAdsAfterGDPR(true, true);
+                }
+                else
+                {
+                    PushEvent("deeplink_mediation_late", 1, new Dictionary<string, object>()
+                    {
+                        ["deeplinkMediation"] = deeplinkMediation.ToString(),
+                        ["appliedMediation"] = m_ServiceData.mediation.ToString()
+                    });
+                    Debug.LogWarning($"deeplink_mediation_late: Deeplink-{deeplinkMediation},Applied-{m_ServiceData.mediation}");
+                }
+                isDoneDeeplink = true;
+            });
+
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID, deferredDeeplinkCallback);
             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             if (config.adjustEventConfig != null)
             {
@@ -472,7 +524,7 @@ namespace IEC
             Pool.Set(m_ServiceData);
         }
 
-        void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
+        public void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
         {
             bool isNoAds = config.IsNoAds || Application.isEditor;
 
@@ -525,19 +577,61 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
-#if (PluginApplovin)
-                var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
-                {
-                    if (result)
-                    {
-                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
-                    }
-                },
-                PushEvent);
-                applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
-                m_Ads = applovinAds;
+                var listMediation = new List<Mediation>();
+#if(PluginApplovin)
+                listMediation.Add(Mediation.Applovin);
 #endif
+#if(PluginIronSource)
+                listMediation.Add(Mediation.IronSource);
+#endif
+                if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
+                
+                if(m_IsInitAd) return;
+                m_IsInitAd = true;
+#if (PluginApplovin)
+                if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
+                {
+                    var applovinAds = new ApplovinModule();
+                    applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                        {
+                            if (result)
+                            {
+                                RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                            }
+                        },
+                        PushEvent);
+                    applovinAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
+                    m_Ads = applovinAds;
+                }
+#endif
+#if(PluginIronSource)
+                if (m_ServiceData.mediation == Mediation.IronSource || listMediation.Count <= 1)
+                {
+                    var ironSourceAds = new IronSourceModule();
+                    ironSourceAds.Init(config.IronSourceConfig, true,true, (result) =>
+                    {
+                        if (result)
+                        {
+                            RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                        }
+                    }, PushEvent);
+                    m_Ads = ironSourceAds;
+                }
+#endif
+                if (listMediation.Count > 1)
+                {
+                    ModuleController.cheatCode.AddCheatCodeButton($"Choose Mediation:{m_ServiceData.mediation}",
+                        param =>
+                        {
+                            var serviceData = Pool.Get<ServiceData>();
+                            serviceData.mediation += 1;
+                            if (serviceData.mediation == Mediation.Count)
+                            {
+                                serviceData.mediation = 0;
+                            }
+                            param.buttonText = $"Choose Mediation:{serviceData.mediation}";
+                        });
+                }
 
                 Debug.Log("Ads:" + m_Ads);
                 m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () =>
@@ -590,18 +684,29 @@ namespace IEC
         {
             m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
             {
-                Debug.Log("AB Test event:" + s);
-                var abVersion = s.Split('_')[2].Remove(0, 1);
-                var isNumber = int.TryParse(abVersion, out int version);
-                var eventValue = (isNumber) ? version : 1;
-                if(!isNumber) Debug.LogError("Version Ab is not a number");
-                Debug.LogWarning("AbTest event value:" + eventValue);
-                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
+                var abMediation = config.abMediation;
+                if (abMediation != null && abMediation.IsActive && abTest.KeyName == abMediation.KeyName)
                 {
-                    {"version", s}
-                });
-                SetUserProperty("AB_Version", s);
+                    return;
+                }
+                PushEventAb(abTest);
             });
+        }
+
+        public void PushEventAb(ABTestConfig abTest)
+        {
+            var abValue = m_ABTest.GetValue(abTest.KeyName, 0);
+            var s = abTest.ListEventsAB[abValue];
+            var abVersion = s.Split('_')[2].Remove(0, 1);
+            var isNumber = int.TryParse(abVersion, out int version);
+            var eventValue = (isNumber) ? version : 1;
+            if(!isNumber) Debug.LogError("Version Ab is not a number");
+            Debug.LogWarning("AbTest event value:" + eventValue);
+            PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
+            {
+                {"version", s}
+            });
+            SetUserProperty("AB_Version", s);
         }
 
         public void PushEventIapKochava(string packName, float price)

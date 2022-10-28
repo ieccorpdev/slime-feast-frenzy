@@ -19,6 +19,23 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
         SetTargetSdkAndroid();
+        AddGradlePropertiesIronSource();
+    }
+
+    private void AddGradlePropertiesIronSource()
+    {
+#if PluginIronSource
+        var gradlePath = $"{Application.dataPath}/Plugins/Android/gradleTemplate.properties";
+        if (!File.Exists(gradlePath))
+        {
+            Debug.LogError("Gradle properties not found");
+        }
+
+        var gradlePropContent = File.ReadAllText(gradlePath);
+        if (gradlePropContent.Contains("android.enableDexingArtifactTransform")) return;
+        gradlePropContent += "\n" + "android.enableDexingArtifactTransform=false";
+        File.WriteAllText(gradlePath, gradlePropContent);
+#endif
     }
 
     private void SetTargetSdkAndroid()

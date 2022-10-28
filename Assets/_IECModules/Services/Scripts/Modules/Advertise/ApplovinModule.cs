@@ -61,6 +61,7 @@ namespace IEC
                     InitBanner();
                     InitializeInterstitialAds();
                     InitializeRewardedAds();
+                    Debug.LogWarning("Init Applovin Done");
                     afterInitCallback?.Invoke(true);
                 };
             }
