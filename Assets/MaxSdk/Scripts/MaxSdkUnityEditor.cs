@@ -189,6 +189,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
     public static SdkConfiguration GetSdkConfiguration()
     {
         var sdkConfiguration = new SdkConfiguration();
+        sdkConfiguration.IsSuccessfullyInitialized = _isInitialized;
         sdkConfiguration.ConsentDialogState = ConsentDialogState.Unknown;
 #if UNITY_EDITOR
         sdkConfiguration.AppTrackingStatus = AppTrackingStatus.Authorized;
@@ -1309,7 +1310,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
 
     private static IEnumerator ExecuteAction(float seconds, Action action)
     {
-        yield return new WaitForSeconds(seconds);
+        yield return new WaitForSecondsRealtime(seconds);
 
         action();
     }

@@ -334,7 +334,8 @@ extern "C"
 
         return cStringCopy([MAUnityAdManager serializeParameters: @{@"consentDialogState" : consentDialogStateStr,
                                                                     @"countryCode" : _sdk.configuration.countryCode,
-                                                                    @"appTrackingStatus" : appTrackingStatus}]);
+                                                                    @"appTrackingStatus" : appTrackingStatus,
+                                                                    @"isSuccessfullyInitialized" : ([_sdk isInitialized] ? @"true" : @"false")}]);
     }
     
     void _MaxSetHasUserConsent(bool hasUserConsent)

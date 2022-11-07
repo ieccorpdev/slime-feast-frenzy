@@ -97,6 +97,11 @@ public abstract class MaxSdkBase
     public class SdkConfiguration
     {
         /// <summary>
+        /// Whether or not the SDK has been initialized successfully.
+        /// </summary>
+        public bool IsSuccessfullyInitialized;
+
+        /// <summary>
         /// Get the consent dialog state for this user. If no such determination could be made, `ALConsentDialogStateUnknown` will be returned.
         /// </summary>
         public ConsentDialogState ConsentDialogState;
@@ -117,6 +122,7 @@ public abstract class MaxSdkBase
         {
             var sdkConfiguration = new SdkConfiguration();
 
+            sdkConfiguration.IsSuccessfullyInitialized = MaxSdkUtils.GetBoolFromDictionary(eventProps, "isSuccessfullyInitialized");
             sdkConfiguration.CountryCode = MaxSdkUtils.GetStringFromDictionary(eventProps, "countryCode", "");
 
             var consentDialogStateStr = MaxSdkUtils.GetStringFromDictionary(eventProps, "consentDialogState", "");
@@ -301,7 +307,7 @@ public abstract class MaxSdkBase
     public class WaterfallInfo
     {
         public String Name { get; private set; }
-        public String TestName { get; private set;}
+        public String TestName { get; private set; }
         public List<NetworkResponseInfo> NetworkResponses { get; private set; }
         public long LatencyMillis { get; private set; }
 
@@ -326,10 +332,10 @@ public abstract class MaxSdkBase
 
         public override string ToString()
         {
-            return "[MediatedNetworkInfo: name = " + Name + 
-                    ", testName = " + TestName +
-                    ", latency = " + LatencyMillis +
-                    ", networkResponse = " + NetworkResponses + "]";
+            return "[MediatedNetworkInfo: name = " + Name +
+                   ", testName = " + TestName +
+                   ", latency = " + LatencyMillis +
+                   ", networkResponse = " + NetworkResponses + "]";
         }
     }
 

@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"5.2.2"
+#define VERSION @"5.3.0"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
@@ -186,7 +186,8 @@ static ALUnityBackgroundCallback backgroundCallback;
         [MAUnityAdManager forwardUnityEventWithArgs: @{@"name" : @"OnSdkInitializedEvent",
                                                        @"consentDialogState" : consentDialogStateStr,
                                                        @"countryCode" : configuration.countryCode,
-                                                       @"appTrackingStatus" : appTrackingStatus}];
+                                                       @"appTrackingStatus" : appTrackingStatus,
+                                                       @"isSuccessfullyInitialized" : ([self.sdk isInitialized] ? @"true" : @"false")}];
     }];
     
     return self.sdk;
