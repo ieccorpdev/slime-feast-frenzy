@@ -595,7 +595,6 @@ namespace IEC
             adsState.isLoaded = true;
             adsState.isLoading = false;
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
-            EventController.RaiseEvent(EventList.Service.LOAD_AOA_ADS_DONE);
         }
 
         private void AOAAd_OnAdFailedToLoad(string adUnitId, MaxSdkBase.ErrorInfo errorInfo)
