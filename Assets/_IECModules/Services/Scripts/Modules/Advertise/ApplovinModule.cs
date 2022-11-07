@@ -68,6 +68,7 @@ namespace IEC
                     InitializeRewardedAds();
                     afterInitCallback?.Invoke(true);
                 };
+                Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
             }
 
             m_Config = config;
