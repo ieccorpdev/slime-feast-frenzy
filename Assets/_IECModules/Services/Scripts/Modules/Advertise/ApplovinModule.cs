@@ -41,7 +41,7 @@ namespace IEC
             config.bannerID = config.bannerID.Trim();
             config.interstitialID = config.interstitialID.Trim();
             config.rewardID = config.rewardID.Trim();
-           
+
             Debug.LogWarning("Applovin App ID:" + config.appID);
             Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
             Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
@@ -67,8 +67,8 @@ namespace IEC
                     InitializeInterstitialAds();
                     InitializeRewardedAds();
                     afterInitCallback?.Invoke(true);
+                    Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
                 };
-                Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
             }
 
             m_Config = config;
@@ -83,6 +83,11 @@ namespace IEC
             Debug.LogWarning("Amazon Banner ID:" + amzConfig.bannerID);
             Debug.LogWarning("Amazon Inter ID:" + amzConfig.interstitialID);
             Debug.LogWarning("Amazon Reward ID:" + amzConfig.rewardID);
+
+            if (string.IsNullOrEmpty(amzConfig.appID.Trim()) == false)
+            {
+                Amazon.Initialize(amzConfig.appID);
+            }
             m_amazonConfig = amzConfig;
         }
 
@@ -160,15 +165,12 @@ namespace IEC
             {
                 case AdsEnum.BANNER_BOTTOM:
                 case AdsEnum.BANNER_TOP:
-                    LoadBannerAds(loadCallback, adsType);
-                    RequestBannerAmazon(loadCallback);
+                    RequestBannerAmazon(loadCallback, adsType);
                     break;
                 case AdsEnum.INTERSTITIAL:
-                    LoadFullAds(loadCallback);
                     RequestInterstitialAmazon(loadCallback);
                     break;
                 case AdsEnum.REWARD:
-                    LoadRewardAds(loadCallback);
                     RequestRewardedVideoAmazon(loadCallback);
                     break;
             }
@@ -274,7 +276,7 @@ namespace IEC
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
-        public void RequestBannerAmazon(Action<AdsEventArgs> loadCallback)
+        public void RequestBannerAmazon(Action<AdsEventArgs> loadCallback, AdsEnum adsType)
         {
             var maxBannerAdId = m_Config.bannerID;
             if (string.IsNullOrEmpty(m_Config.bannerID) || string.IsNullOrEmpty(m_amazonConfig.bannerID))
@@ -289,21 +291,14 @@ namespace IEC
             bannerAdRequest.onFailedWithError += (adError) =>
             {
                 MaxSdk.SetBannerLocalExtraParameter(maxBannerAdId, "amazon_ad_error", adError.GetAdError());
-                CreateMaxBannerAd();
+                LoadBannerAds(loadCallback, adsType);
             };
             bannerAdRequest.onSuccess += (adResponse) =>
             {
                 MaxSdk.SetBannerLocalExtraParameter(maxBannerAdId, "amazon_ad_response", adResponse.GetResponse());
-                CreateMaxBannerAd();
+                LoadBannerAds(loadCallback, adsType);
             };
-
             bannerAdRequest.LoadAd();
-        }
-
-        private void CreateMaxBannerAd()
-        {
-            MaxSdk.CreateBanner(m_Config.bannerID, MaxSdkBase.BannerPosition.BottomCenter);
-            MaxSdk.SetBannerPlacement(m_Config.bannerID, "MY_BANNER_PLACEMENT");
         }
 
         private void BannerAd_OnAdExpanded(string adUnitId, MaxSdkBase.AdInfo adInfo)
@@ -401,18 +396,18 @@ namespace IEC
                 interstitialAdRequest.onSuccess += (adResponse) =>
                 {
                     MaxSdk.SetInterstitialLocalExtraParameter(maxInterstitialAdId, "amazon_ad_response", adResponse.GetResponse());
-                    MaxSdk.LoadInterstitial(maxInterstitialAdId);
+                    LoadFullAds(loadCallback);
                 };
                 interstitialAdRequest.onFailedWithError += (adError) =>
                 {
                     MaxSdk.SetInterstitialLocalExtraParameter(maxInterstitialAdId, "amazon_ad_error", adError.GetAdError());
-                    MaxSdk.LoadInterstitial(maxInterstitialAdId);
+                    LoadFullAds(loadCallback);
                 };
                 interstitialAdRequest.LoadAd();
             }
             else
             {
-                MaxSdk.LoadInterstitial(maxInterstitialAdId);
+                LoadFullAds(loadCallback);
             }
         }
 
@@ -537,18 +532,18 @@ namespace IEC
                 rewardedVideoAdRequest.onSuccess += (adResponse) =>
                 {
                     MaxSdk.SetRewardedAdLocalExtraParameter(maxRewardedAdId, "amazon_ad_response", adResponse.GetResponse());
-                    MaxSdk.LoadRewardedAd(maxRewardedAdId);
+                    LoadRewardAds(loadCallback);
                 };
                 rewardedVideoAdRequest.onFailedWithError += (adError) =>
                 {
                     MaxSdk.SetRewardedAdLocalExtraParameter(maxRewardedAdId, "amazon_ad_error", adError.GetAdError());
-                    MaxSdk.LoadRewardedAd(maxRewardedAdId);
+                    LoadRewardAds(loadCallback);
                 };
                 rewardedVideoAdRequest.LoadAd();
             }
             else
             {
-                MaxSdk.LoadRewardedAd(maxRewardedAdId);
+                LoadRewardAds(loadCallback);
             }
         }
 
