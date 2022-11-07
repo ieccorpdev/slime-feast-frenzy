@@ -80,9 +80,9 @@ namespace IEC
             amzConfig.interstitialID = amzConfig.interstitialID.Trim();
             amzConfig.rewardID = amzConfig.rewardID.Trim();
 
-            Debug.LogWarning("Amazon Banner ID:" + config.bannerID);
-            Debug.LogWarning("Amazon Inter ID:" + config.interstitialID);
-            Debug.LogWarning("Amazon Reward ID:" + config.rewardID);
+            Debug.LogWarning("Amazon Banner ID:" + amzConfig.bannerID);
+            Debug.LogWarning("Amazon Inter ID:" + amzConfig.interstitialID);
+            Debug.LogWarning("Amazon Reward ID:" + amzConfig.rewardID);
             m_amazonConfig = amzConfig;
         }
 
