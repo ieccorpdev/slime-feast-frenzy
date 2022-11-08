@@ -29,10 +29,12 @@ namespace IEC
 
         Action<string, float, Dictionary<string, object>> pushEventAction;
         public Action<AdsEnum, float> onAdRevenueAction;
-        private APSInterstitialAdRequest interstitialAdRequest;
+#if (PluginMaxAmazonNetwork)
         private APSBannerAdRequest bannerAdRequest;
+        private APSVideoAdRequest interstitialVideoAdRequest;
         private APSVideoAdRequest rewardedVideoAdRequest;
-        private bool isFirstLoadInter, isFirstLoadReward;
+        private bool isFirstLoadInter = true, isFirstLoadReward = true;
+#endif
 
         public void Init(AdsConfig adsConfig, AmazonConfig amazonConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
@@ -49,6 +51,30 @@ namespace IEC
 
             this.pushEventAction = pushEventAction;
 
+#if (PluginMaxAmazonNetwork)
+            var amzConfig = (Application.platform == RuntimePlatform.Android) ? amazonConfig.android : amazonConfig.ios;
+            amzConfig.appID = amzConfig.appID.Trim();
+            amzConfig.bannerID = amzConfig.bannerID.Trim();
+            amzConfig.interstitialID = amzConfig.interstitialID.Trim();
+            amzConfig.rewardID = amzConfig.rewardID.Trim();
+
+            Debug.LogWarning("Amazon AppID:" + amzConfig.appID);
+            Debug.LogWarning("Amazon Banner ID:" + amzConfig.bannerID);
+            Debug.LogWarning("Amazon Inter ID:" + amzConfig.interstitialID);
+            Debug.LogWarning("Amazon Reward ID:" + amzConfig.rewardID);
+
+            if (string.IsNullOrEmpty(amzConfig.appID.Trim()) == false)
+            {
+                Amazon.Initialize(amzConfig.appID);
+                Amazon.EnableTesting(false);
+                Amazon.EnableLogging(true);
+                Amazon.UseGeoLocation(true);
+                Amazon.SetMRAIDPolicy(Amazon.MRAIDPolicy.CUSTOM);
+                Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
+                Amazon.SetMRAIDSupportedVersions(new string[] { "1.0", "2.0", "3.0" });
+            }
+            m_amazonConfig = amzConfig;
+#endif
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 MaxSdk.SetSdkKey(config.appID);
@@ -67,28 +93,12 @@ namespace IEC
                     InitializeInterstitialAds();
                     InitializeRewardedAds();
                     afterInitCallback?.Invoke(true);
-                    Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
                 };
             }
 
             m_Config = config;
             m_IsAutoReload = isAutoReload;
             m_IsAcceptConsent = isAcceptConsent;
-
-            var amzConfig = (Application.platform == RuntimePlatform.Android) ? amazonConfig.android : amazonConfig.ios;
-            amzConfig.bannerID = amzConfig.bannerID.Trim();
-            amzConfig.interstitialID = amzConfig.interstitialID.Trim();
-            amzConfig.rewardID = amzConfig.rewardID.Trim();
-
-            Debug.LogWarning("Amazon Banner ID:" + amzConfig.bannerID);
-            Debug.LogWarning("Amazon Inter ID:" + amzConfig.interstitialID);
-            Debug.LogWarning("Amazon Reward ID:" + amzConfig.rewardID);
-
-            if (string.IsNullOrEmpty(amzConfig.appID.Trim()) == false)
-            {
-                Amazon.Initialize(amzConfig.appID);
-            }
-            m_amazonConfig = amzConfig;
         }
 
         public double GetEcpm(AdsEnum adsType)
@@ -161,6 +171,7 @@ namespace IEC
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL);
                 return;
             }
+#if (PluginMaxAmazonNetwork)
             switch (adsType)
             {
                 case AdsEnum.BANNER_BOTTOM:
@@ -174,6 +185,21 @@ namespace IEC
                     RequestRewardedVideoAmazon(loadCallback);
                     break;
             }
+#else
+             switch (adsType)
+            {
+                case AdsEnum.BANNER_BOTTOM:
+                case AdsEnum.BANNER_TOP:
+                    LoadBannerAds(loadCallback, adsType);
+                    break;
+                case AdsEnum.INTERSTITIAL:
+                    LoadFullAds(loadCallback);
+                    break;
+                case AdsEnum.REWARD:
+                    LoadRewardAds(loadCallback);
+                    break;
+            }
+#endif
         }
 
         public void SetOnClick(AdsEnum adsType, Action clickCallback)
@@ -276,6 +302,7 @@ namespace IEC
             MaxSdkCallbacks.Banner.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
+#if(PluginMaxAmazonNetwork)
         public void RequestBannerAmazon(Action<AdsEventArgs> loadCallback, AdsEnum adsType)
         {
             var maxBannerAdId = m_Config.bannerID;
@@ -285,8 +312,8 @@ namespace IEC
                 return;
             }
             if (bannerAdRequest != null) bannerAdRequest.DestroyFetchManager();
-            var width = 300;
-            var height = Int32.Parse(GetBannerHeight().ToString());
+            var width = 320;
+            var height = 50;
             bannerAdRequest = new APSBannerAdRequest(width, height, m_amazonConfig.bannerID);
             bannerAdRequest.onFailedWithError += (adError) =>
             {
@@ -298,9 +325,10 @@ namespace IEC
                 MaxSdk.SetBannerLocalExtraParameter(maxBannerAdId, "amazon_ad_response", adResponse.GetResponse());
                 LoadBannerAds(loadCallback, adsType);
             };
+
             bannerAdRequest.LoadAd();
         }
-
+#endif
         private void BannerAd_OnAdExpanded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             Debug.Log("BannerAd_OnAdExpanded");
@@ -380,6 +408,7 @@ namespace IEC
                 AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
             }
         }
+#if(PluginMaxAmazonNetwork)
 
         public void RequestInterstitialAmazon(Action<AdsEventArgs> loadCallback)
         {
@@ -391,26 +420,27 @@ namespace IEC
             }
             if (isFirstLoadInter)
             {
+                // APS LoadAd only needs to be called once.
                 isFirstLoadInter = false;
-                interstitialAdRequest = new APSInterstitialAdRequest(m_amazonConfig.interstitialID);
-                interstitialAdRequest.onSuccess += (adResponse) =>
+                interstitialVideoAdRequest = new APSVideoAdRequest(320, 480, m_amazonConfig.interstitialID);
+                interstitialVideoAdRequest.onSuccess += (adResponse) =>
                 {
                     MaxSdk.SetInterstitialLocalExtraParameter(maxInterstitialAdId, "amazon_ad_response", adResponse.GetResponse());
                     LoadFullAds(loadCallback);
                 };
-                interstitialAdRequest.onFailedWithError += (adError) =>
+                interstitialVideoAdRequest.onFailedWithError += (adError) =>
                 {
                     MaxSdk.SetInterstitialLocalExtraParameter(maxInterstitialAdId, "amazon_ad_error", adError.GetAdError());
                     LoadFullAds(loadCallback);
                 };
-                interstitialAdRequest.LoadAd();
+                interstitialVideoAdRequest.LoadAd();
             }
             else
             {
                 LoadFullAds(loadCallback);
             }
         }
-
+#endif
         private void InterstitialAd_OnAdLoaded(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
             AdsStateData.DebugLog("InterstitialAd_OnAdLoaded");
@@ -515,6 +545,7 @@ namespace IEC
 
             MaxSdk.LoadRewardedAd(m_Config.rewardID);
         }
+#if(PluginMaxAmazonNetwork)
 
         public void RequestRewardedVideoAmazon(Action<AdsEventArgs> loadCallback)
         {
@@ -546,7 +577,7 @@ namespace IEC
                 LoadRewardAds(loadCallback);
             }
         }
-
+#endif
         void ShowRewardAds(Action<AdsEventArgs> showCallback)
         {
             var adsState = m_RewardAdsState;
