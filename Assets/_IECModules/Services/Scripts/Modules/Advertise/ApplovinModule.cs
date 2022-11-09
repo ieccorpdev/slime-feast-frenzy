@@ -67,8 +67,8 @@ namespace IEC
             {
                 Amazon.Initialize(amzConfig.appID);
                 Amazon.EnableTesting(false);
-                Amazon.EnableLogging(true);
-                Amazon.UseGeoLocation(true);
+                Amazon.EnableLogging(false);
+                Amazon.UseGeoLocation(false);
                 Amazon.SetMRAIDPolicy(Amazon.MRAIDPolicy.CUSTOM);
                 Amazon.SetAdNetworkInfo(new AdNetworkInfo(DTBAdNetwork.MAX));
                 Amazon.SetMRAIDSupportedVersions(new string[] { "1.0", "2.0", "3.0" });
