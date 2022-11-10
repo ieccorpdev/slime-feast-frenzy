@@ -24,6 +24,7 @@ namespace IEC
             if (m_State == SdkState.Initialized)
             {
                 Debug.LogError("Call Init Firebase but initialized");
+                Debug.LogWarning("Firebase App ID:" + FirebaseApp.DefaultInstance.Options.AppId);
                 if (callback != null)
                 {
                     callback.Invoke(true);
@@ -48,6 +49,7 @@ namespace IEC
                 if (dependencyStatus == Firebase.DependencyStatus.Available)
                 {
                     m_State = SdkState.Initialized;
+                    Debug.LogWarning("Firebase App ID:" + FirebaseApp.DefaultInstance.Options.AppId);
                     if (m_CallBack != null)
                     {
                         m_CallBack.Invoke(true);
