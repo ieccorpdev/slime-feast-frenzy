@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using _IECModules;
+using StartApp;
 
 namespace IEC
 {
@@ -101,6 +102,13 @@ namespace IEC
                 {
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("StartIO test Ads: " + Game.isTestAdsStartIO, param =>
+            {
+                AdSdk.Instance.SetTestAdsEnabled(true);
+                Game.isTestAdsStartIO = !Game.isTestAdsStartIO;
+                param.buttonText = "StartIO test Ads: " + Game.isTestAdsStartIO;
             });
         }
 
