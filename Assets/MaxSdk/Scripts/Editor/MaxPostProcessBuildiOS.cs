@@ -152,15 +152,19 @@ namespace AppLovinMax.Scripts.Editor
         {
             var dynamicLibraryPathsPresentInProject = DynamicLibraryPathsToEmbed.Where(dynamicLibraryPath => Directory.Exists(Path.Combine(buildPath, dynamicLibraryPath))).ToList();
             var podsDirectory = Path.Combine(buildPath, "Pods");
-            foreach (var dynamicLibraryToSearch in DynamicLibrariesToSearchToEmbed)
+            // Check that the Pods directory exists (it might not if a publisher is building with Generate Podfile setting disabled in EDM).
+            if (Directory.Exists(podsDirectory))
             {
-                // both .framework and .xcframework are directories, not files
-                var directories = Directory.GetDirectories(podsDirectory, dynamicLibraryToSearch, SearchOption.AllDirectories);
-                if (directories.Length <= 0) continue;
+                foreach (var dynamicLibraryToSearch in DynamicLibrariesToSearchToEmbed)
+                {
+                    // both .framework and .xcframework are directories, not files
+                    var directories = Directory.GetDirectories(podsDirectory, dynamicLibraryToSearch, SearchOption.AllDirectories);
+                    if (directories.Length <= 0) continue;
 
-                var index = directories[0].LastIndexOf("Pods");
-                var relativePath = directories[0].Substring(index);
-                dynamicLibraryPathsPresentInProject.Add(relativePath);
+                    var index = directories[0].LastIndexOf("Pods");
+                    var relativePath = directories[0].Substring(index);
+                    dynamicLibraryPathsPresentInProject.Add(relativePath);
+                }
             }
 
             if (dynamicLibraryPathsPresentInProject.Count <= 0) return;
