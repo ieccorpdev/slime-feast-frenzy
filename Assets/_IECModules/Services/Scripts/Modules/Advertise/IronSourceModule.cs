@@ -13,19 +13,19 @@ namespace _IECModules
         bool m_IsAutoReload;
         bool m_IsAcceptConsent;
         bool m_IsInit = false;
-        
+
         AdsStateData m_FullAdsState = new AdsStateData();
         AdsStateData m_RewardAdsState = new AdsStateData();
 
         private IronSourceBannerPosition m_BannerAdsPos = IronSourceBannerPosition.BOTTOM;
-        
+
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
-        
+
         Action<string, float, Dictionary<string, object>> pushEventAction;
         public Action<AdsEnum, float> onAdRevenueAction;
-        
-        
+
+
         public void Init(AdsConfig adsConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback,
             Action<string, float, Dictionary<string, object>> pushEventAction)
         {
@@ -41,14 +41,14 @@ namespace _IECModules
             // Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
 
             this.pushEventAction = pushEventAction;
-            
+
             IronSource.Agent.setConsent(isAcceptConsent);
-            
+
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
-                IronSource.Agent.init (config.appID, IronSourceAdUnits.INTERSTITIAL);
-                IronSource.Agent.init (config.appID, IronSourceAdUnits.REWARDED_VIDEO);
+                IronSource.Agent.init(config.appID, IronSourceAdUnits.INTERSTITIAL);
+                IronSource.Agent.init(config.appID, IronSourceAdUnits.REWARDED_VIDEO);
             }
 
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
@@ -72,7 +72,7 @@ namespace _IECModules
             return 0;
             // throw new NotImplementedException();
         }
-        
+
         public string GetInfo(AdsEnum adsType)
         {
             switch (adsType)
@@ -88,13 +88,14 @@ namespace _IECModules
 
             return "IronSource";
         }
-        
+
         public void Hide(AdsEnum adsType)
         {
             if (!m_IsInit)
             {
                 return;
             }
+
             switch (adsType)
             {
                 case AdsEnum.BANNER_BOTTOM:
@@ -103,12 +104,12 @@ namespace _IECModules
                     break;
             }
         }
-        
+
         public bool IsAcceptGDPR()
         {
             return m_IsAcceptConsent;
         }
-        
+
         public bool IsLoaded(AdsEnum adsType)
         {
             if (!m_IsInit)
@@ -137,6 +138,7 @@ namespace _IECModules
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL);
                 return;
             }
+
             switch (adsType)
             {
                 case AdsEnum.BANNER_BOTTOM:
@@ -159,7 +161,7 @@ namespace _IECModules
                 return;
             }
         }
-        
+
         public void Show(AdsEnum adsType, Action<AdsEventArgs> showCallback)
         {
             if (!m_IsInit)
@@ -198,16 +200,18 @@ namespace _IECModules
             {
                 return Screen.dpi / 160f;
             }
+
             AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
             AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
 
             AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
-            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
+            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay")
+                .Call("getMetrics", metrics);
 
             return metrics.Get<float>("ydpi") / 160f;
         }
-        
-#region bannerAds
+
+        #region bannerAds
 
         void LoadBannerAds(Action<AdsEventArgs> loadCallback, AdsEnum bannerPos)
         {
@@ -248,19 +252,20 @@ namespace _IECModules
             IronSourceEvents.onBannerAdScreenPresentedEvent += BannerAd_ScreenPresentedEvent;
             IronSourceEvents.onBannerAdScreenDismissedEvent += BannerAd_ScreenDismissedEvent;
             IronSourceEvents.onBannerAdLeftApplicationEvent += BannerAd_LeftApplicationEvent;
+            IronSourceEvents.onImpressionDataReadyEvent += ImpressionSuccessEvent;
         }
 
-        void BannerAd_ScreenPresentedEvent () 
+        void BannerAd_ScreenPresentedEvent()
         {
             Debug.Log("BannerAd_ScreenPresentedEvent");
         }
-        
-        void BannerAd_ScreenDismissedEvent() 
+
+        void BannerAd_ScreenDismissedEvent()
         {
             Debug.Log("BannerAd_ScreenDismissedEvent");
         }
-        
-        void BannerAd_LeftApplicationEvent() 
+
+        void BannerAd_LeftApplicationEvent()
         {
             Debug.Log("BannerAd_LeftApplicationEvent");
         }
@@ -280,13 +285,14 @@ namespace _IECModules
             Debug.Log("BannerAd_OnAdClicked");
         }
 
-#endregion
-#region full ads
+        #endregion
+
+        #region full ads
 
         bool IsFullAdsLoaded()
         {
             return IronSource.Agent.isInterstitialReady() &&
-                Application.internetReachability != NetworkReachability.NotReachable;
+                   Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         void LoadFullAds(Action<AdsEventArgs> loadCallback)
@@ -399,15 +405,17 @@ namespace _IECModules
             IronSourceEvents.onInterstitialAdLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
             IronSourceEvents.onInterstitialAdShowFailedEvent += InterstitialAd_OnAdFailedToDisplay;
             IronSourceEvents.onInterstitialAdClosedEvent += InterstitialAd_OnAdClosed;
+            IronSourceEvents.onImpressionDataReadyEvent += ImpressionSuccessEvent;
         }
 
-#endregion
-#region rewardAds
+        #endregion
+
+        #region rewardAds
 
         bool IsRewardLoaded()
         {
             return IronSource.Agent.isRewardedVideoAvailable() &&
-                Application.internetReachability != NetworkReachability.NotReachable;
+                   Application.internetReachability != NetworkReachability.NotReachable;
         }
 
         void LoadRewardAds(Action<AdsEventArgs> loadCallback)
@@ -456,7 +464,8 @@ namespace _IECModules
         {
             m_RewardAdsState.isLoading = false;
             m_RewardAdsState.isLoaded = false;
-            AdsStateData.DebugLog($"RewardedAdsView_OnAdFailedToShow : {error.getErrorCode()}-{error.getDescription()}");
+            AdsStateData.DebugLog(
+                $"RewardedAdsView_OnAdFailedToShow : {error.getErrorCode()}-{error.getDescription()}");
             m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.FAIL);
         }
 
@@ -467,7 +476,8 @@ namespace _IECModules
 
         private void RewardedAdsView_OnAdFailedToLoad(IronSourceError error)
         {
-            AdsStateData.DebugLog($"RewardedAdsView_OnAdFailedToLoad : {error.getErrorCode()}-{error.getDescription()}");
+            AdsStateData.DebugLog(
+                $"RewardedAdsView_OnAdFailedToLoad : {error.getErrorCode()}-{error.getDescription()}");
             m_RewardAdsState.isLoading = false;
             m_RewardAdsState.isLoaded = false;
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.FAIL);
@@ -511,10 +521,78 @@ namespace _IECModules
             IronSourceEvents.onRewardedVideoAdShowFailedEvent += RewardedAdsView_OnAdFailedToShow;
             IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedAdsView_OnAdClosed;
             IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedAdsView_OnUserEarnedReward;
+            IronSourceEvents.onImpressionDataReadyEvent += ImpressionSuccessEvent;
             // MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
-#endregion
+        #endregion
+
+        private void ImpressionSuccessEvent(IronSourceImpressionData impressionData)
+        {
+            double? revenue = impressionData.revenue;
+
+            // Miscellaneous data
+            string
+                countryCode =
+                    impressionData
+                        .country; // "US" for the United States, etc - Note: Do not confuse this with currency code which is "USD" in most cases!
+            string
+                networkName =
+                    impressionData.adNetwork; // Display name of the network that showed the ad (e.g. "AdColony")
+            string adUnitIdentifier = impressionData.auctionId; // The MAX Ad Unit ID
+            string adUnit = impressionData.adUnit;
+            string placement = impressionData.placement; // The placement this ad's postbacks are tied to
+
+            Debug.LogWarning(impressionData.ToString());
+
+            var dict = new Dictionary<string, object>
+            {
+                ["revenue"] = revenue,
+                ["ad_auction_id"] = adUnitIdentifier,
+                ["network_name"] = networkName
+            };
+            var eventName = EventName(adUnit);
+            var dictParamAll = new Dictionary<string, object>
+            {
+                ["ad_type"] = eventName,
+                ["network_name"] = networkName
+            };
+
+            var adType = AdsEnum.BANNER_BOTTOM;
+            if (adUnit.Equals("interstitial"))
+            {
+                adType = AdsEnum.INTERSTITIAL;
+            }
+            else if (adUnit.Equals("rewarded_video"))
+            {
+                adType = AdsEnum.REWARD;
+            }
+
+            onAdRevenueAction?.Invoke(adType, (float) revenue);
+
+            pushEventAction?.Invoke(eventName, (float) revenue, dict);
+            pushEventAction?.Invoke("rev_all_ad", (float) revenue, dictParamAll);
+        }
+
+        private string EventName(string adUnit)
+        {
+            if (adUnit.Equals("banner"))
+            {
+                return "rev_banner_ad";
+            }
+            else if (adUnit.Equals("interstitial"))
+            {
+                return "rev_full_ad";
+            }
+            else if (adUnit.Equals("rewarded_video"))
+            {
+                return "rev_reward_ad";
+            }
+            else
+            {
+                return "rev";
+            }
+        }
     }
 }
 #endif
