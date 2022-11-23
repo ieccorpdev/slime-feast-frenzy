@@ -405,7 +405,6 @@ namespace _IECModules
             IronSourceEvents.onInterstitialAdLoadFailedEvent += InterstitialAd_OnAdFailedToLoad;
             IronSourceEvents.onInterstitialAdShowFailedEvent += InterstitialAd_OnAdFailedToDisplay;
             IronSourceEvents.onInterstitialAdClosedEvent += InterstitialAd_OnAdClosed;
-            IronSourceEvents.onImpressionDataReadyEvent += ImpressionSuccessEvent;
         }
 
         #endregion
@@ -521,7 +520,6 @@ namespace _IECModules
             IronSourceEvents.onRewardedVideoAdShowFailedEvent += RewardedAdsView_OnAdFailedToShow;
             IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedAdsView_OnAdClosed;
             IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedAdsView_OnUserEarnedReward;
-            IronSourceEvents.onImpressionDataReadyEvent += ImpressionSuccessEvent;
             // MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
