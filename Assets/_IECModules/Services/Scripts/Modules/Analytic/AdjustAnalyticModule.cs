@@ -78,11 +78,6 @@ namespace IEC
             return;
             if (IsDisable) return;
         }
-
-        public void PushEventAOAAd()
-        {
-            return;
-        }
     }
 }
 
