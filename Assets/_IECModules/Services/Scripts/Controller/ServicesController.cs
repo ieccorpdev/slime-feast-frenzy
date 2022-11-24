@@ -55,8 +55,6 @@ namespace IEC
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
-
-        private bool m_IsLoadAOAAds;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -767,11 +765,6 @@ namespace IEC
             return false;
         }
 
-        public bool IsCanShowAOAAds()
-        {
-            return m_Ads.IsLoaded(AdsEnum.AOA);
-        }
-
         public void ShowAOAAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
         {
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
@@ -791,7 +784,7 @@ namespace IEC
 #if (PluginAdjust)
                     m_AdjustAnalytic?.PushEventAOAAd();
 #endif
-                    //lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
+                    lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     //var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     //var milestone = GetMilestone(fullAdCount);
                     //if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
@@ -1232,25 +1225,8 @@ namespace IEC
             bannerAds.SetBannerHeight(GetBannerHeight(scaler));
         }
 
-        void LoadAOAAds()
-        {
-            if (!m_IsLoadAOAAds) return;
-            Ads().Load(AdsEnum.AOA, null);
-        }
-
-        public void SetLoadAOAAds(bool isLoadAds)
-        {
-            m_IsLoadAOAAds = isLoadAds;
-        }
-
         IEnumerator IE_LoadAd()
         {
-            if (!m_ServiceData.isNoAds && m_IsLoadAOAAds)
-            {
-                LoadAOAAds();
-                yield return new WaitForSecondsRealtime(5f);
-            }
-
             var delaySec = new WaitForSecondsRealtime(3f);
             while (true)
             {
@@ -1258,8 +1234,8 @@ namespace IEC
 
                 if (!m_ServiceData.isNoAds)
                 {
-                    LoadAOAAds();
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
+                    Ads().Load(AdsEnum.AOA, null);
                 }
                 yield return delaySec;
             }

@@ -18,6 +18,8 @@ namespace IEC
 
             public const string SHOW_INTER_DONE = "Service.SHOW_INTER_DONE";
             public const string SHOW_REWARD = "Service.SHOW_REWARD";
+
+            public const string LOAD_AOA_ADS_DONE = "Service.LOAD_AOA_ADS_DONE";
         }
 
         public static class Leaderboard
