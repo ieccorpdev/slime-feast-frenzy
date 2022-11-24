@@ -5,6 +5,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using UnityEngine.Diagnostics;
 using UnityEngine.UI;
 
 namespace _IECModules
@@ -62,6 +63,13 @@ namespace _IECModules
             TopRight = 1 << 1,
             BotLeft = 1 << 2,
             BotRight = 1 << 3
+        }
+
+        public enum CheatCodeExceptionType
+        {
+            Exception,
+            OutOfRange,
+            Null
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
@@ -131,6 +139,41 @@ namespace _IECModules
             {
                 value = 2
             });
+            
+            AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
+            {
+                ResetPlayerData();
+            });
+
+            var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
+            {
+                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+            }, listCrashCategory);
+
+            var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Create Exception!!!!!", param =>
+            {
+                var exceptionType = (CheatCodeExceptionType)Enum.Parse(typeof(CheatCodeExceptionType), listExceptionType[param.dropdownParam.value]);
+                switch (exceptionType)
+                {
+                    case CheatCodeExceptionType.Exception:
+                        throw new Exception("Cheat Code Exception");
+                    case CheatCodeExceptionType.OutOfRange:
+                        var a = new int[3];
+                        var b = a[3];
+                        break;
+                    case CheatCodeExceptionType.Null:
+                        SpriteRenderer sprite = null;
+                        var c = sprite.sprite;
+                        break;
+                }
+            }, listExceptionType);
+
+            AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
+            {
+                ResetPlayerDataWithoutChangeAb();
+            });
 
             var verboseLogging = PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0);
             AddCheatCodeButton($"Applovin Verbose Log: {verboseLogging}", param =>
@@ -162,6 +205,15 @@ namespace _IECModules
                 {
                     if (MaxSdk.IsInitialized()) MaxSdk.ShowMediationDebugger();
                 });
+#endif
+#if PluginAdjust
+            var sandBoxEnable = PlayerPrefs.GetInt(AdjustAnalyticModule.ADJUST_SANDBOX, 0);
+            AddCheatCodeButton($"Adjust Sandbox: {sandBoxEnable}", param =>
+            {
+                sandBoxEnable = 1 - sandBoxEnable;
+                param.buttonText = $"Adjust Sandbox: {sandBoxEnable}";
+                PlayerPrefs.SetInt(AdjustAnalyticModule.ADJUST_SANDBOX, sandBoxEnable);
+            });
 #endif
 //            AddTestButton();
         }
@@ -235,12 +287,12 @@ namespace _IECModules
             var cornerSize = 0.2f;
             var isClickActivate = false;
 
-            var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
+            var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize - topOffset);
             var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
             var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
             var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
 
-            //isClickActivate |= ((positionActivate & PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
+            isClickActivate |= ((positionActivate & PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
             isClickActivate |= ((positionActivate & PositionActivate.TopRight) != 0 && isClickTop && isClickRight);
             isClickActivate |= ((positionActivate & PositionActivate.BotLeft) != 0 && isClickBot && isClickLeft);
             isClickActivate |= ((positionActivate & PositionActivate.BotRight) != 0 && isClickBot && isClickRight);
@@ -248,7 +300,14 @@ namespace _IECModules
             if (isClickActivate)
             {
                 m_TestIndex++;
-                if (m_TestIndex != 8 && (m_TestIndex != 3 || !m_HaveInputPassword && !Application.isEditor)) return;
+                if (m_TestIndex != 8 && (m_TestIndex != 3 || !m_HaveInputPassword && !Application.isEditor))
+                {
+                    if (!m_HaveInputPassword)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.Hide);
+                    }
+                    return;
+                }
                 m_TestIndex = 0;
 
                 if (m_HaveInputPassword || Application.isEditor)
@@ -271,7 +330,7 @@ namespace _IECModules
             InitGuiParams();
             var offset = topOffset * Screen.height;
             var screenWidth = Screen.width;
-            var screenHeight = Screen.height - offset;
+            var screenHeight = Screen.height;
             var screenWidthCenter = (float) screenWidth / 2;
 
             switch (showCheatCodeState)
@@ -575,7 +634,7 @@ namespace _IECModules
                 cheatCodeParam => { cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}"; }
             );
             
-            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double)};
+            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double), typeof(string)};
             classObj.GetType().GetFields().Where(f => checkFieldType.Contains(f.FieldType)).ToList().ForEach(
                 field =>
                 {
@@ -623,6 +682,15 @@ namespace _IECModules
                             onChange?.Invoke();
                         }, new InputParam {value = fieldValue});
                     }
+                    else if (fieldType == typeof(string))
+                    {
+                        AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
+                        {
+                            var valueStr = param.inputParams[0].value.ToString();
+                            field.SetValue(classObj, valueStr);
+                            onChange?.Invoke();
+                        }, new InputParam { value = fieldValue });
+                    }
                 });
         }
         public bool ToggleClassParam(string className)
@@ -651,6 +719,29 @@ namespace _IECModules
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
+        }
+
+        public void ResetPlayerData()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            PlayerPrefs.DeleteAll();
+            Application.Quit();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
+        }
+        
+        public void ResetPlayerDataWithoutChangeAb()
+        {
+            Pool.Get<Game>().isDebugReset = true;
+            Controllers.Get<ServicesController>().DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+            Controllers.Get<ServicesController>().DataSecure().Save();
+            Application.Quit();
+            
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
     }
 }

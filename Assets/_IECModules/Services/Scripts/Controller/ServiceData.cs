@@ -40,9 +40,9 @@ namespace IEC
             dictCustomParams[eventName] = funcParams;
         }
 
-        public void Init(Action<string, float, Dictionary<string, object>> pushEventAction)
+        public void Init(AdjustAnalyticEventConfig config, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
-            InitRevMilestone();
+            InitRevMilestone(config);
             m_PushEventAction = pushEventAction;
             if (dictMilestoneBanner == null) dictMilestoneBanner = new Dictionary<int, float>();
             if (dictMilestoneInter == null) dictMilestoneInter = new Dictionary<int, float>();
@@ -63,7 +63,11 @@ namespace IEC
 
         public float revInterNReward;
         public Dictionary<int, float> dictMilestoneRewardNInter;
-        
+
+        public float lastRevFBPurchase;
+
+        public Dictionary<float, float> dictMilestoneCentRev;
+
         public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
@@ -142,28 +146,35 @@ namespace IEC
             {
                 if (milestone.IsEnoughRev(revTotalAd))
                 {
-                    var valueToSum = milestone.RaiseRev(revTotalAd);
+                    var lastRev = dictMilestoneCentRev[milestone.step];
+                    var valueToSum = milestone.RaiseRev(revTotalAd, lastRev);
+                    dictMilestoneCentRev[milestone.step] = revTotalAd;
                     m_PushEventAction?.Invoke(milestone.eventName,valueToSum ,null);
                 }
             }
         }
 
-        void InitRevMilestone()
+        void InitRevMilestone(AdjustAnalyticEventConfig config)
         {
-            if (ListRevMilestones == null)
-                ListRevMilestones = new List<RevMilestone>();
-
-            if (ListRevMilestones.Count < m_ListSetup.Count)
+            ListRevMilestones = (config != null) ? config.GetListRevAllAdCentMilestone() : m_ListSetup;
+            if (dictMilestoneCentRev == null) dictMilestoneCentRev = new Dictionary<float, float>();
+            foreach (var milestone in ListRevMilestones)
             {
-                var listExistEvent = ListRevMilestones.Select(x => x.eventName).ToList();
-                foreach (var e in m_ListSetup)
+                if (!dictMilestoneCentRev.ContainsKey(milestone.step))
                 {
-                    if (!listExistEvent.Contains(e.eventName))
-                    {
-                        ListRevMilestones.Add(e);
-                    }
+                    dictMilestoneCentRev[milestone.step] = 0;
                 }
+                milestone.InitRev(dictMilestoneCentRev[milestone.step]);
             }
+        }
+
+        public float GetRevFBPurchaseValueToSum()
+        {
+            Debug.Log("Last Rev For Purchase:" + lastRevFBPurchase);
+            var valueToSum = revTotalAd - lastRevFBPurchase;
+            lastRevFBPurchase = revTotalAd;
+            Debug.Log("Value to sum purchase:" + valueToSum);
+            return valueToSum;
         }
     }
     
@@ -173,15 +184,24 @@ namespace IEC
         public float step;
 
         public float value;
-
-        public float lastRev;
             
         public string eventName;
+        
         public RevMilestone(string eventName,float step)
         {
             this.eventName = eventName;
             this.step = step;
             if (value < step) value = step;
+        }
+
+        public void InitRev(float savedRev)
+        {
+            var multi = (int)(savedRev / step);
+            value = (multi + 1) * step;
+            
+            Debug.LogWarning("Init Rev:" + eventName);
+            Debug.LogWarning("Init Last Rev:" + savedRev);
+            Debug.LogWarning("Init new milestone:" + value);
         }
 
         public bool IsEnoughRev(float revCheck)
@@ -193,12 +213,11 @@ namespace IEC
             return true;
         }
 
-        public float RaiseRev(float rev)
+        public float RaiseRev(float rev, float lastRev)
         {
             var valueToSum = rev - lastRev;
             Debug.Log($"{eventName} lastRev: {lastRev}");
             Debug.Log($"{eventName} valueToSum: {valueToSum}");
-            lastRev = rev;
             return valueToSum;
         }
     }

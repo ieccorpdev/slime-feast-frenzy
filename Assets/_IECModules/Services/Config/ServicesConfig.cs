@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using IEC;
 
@@ -10,8 +11,15 @@ public class ServicesConfig : ScriptableObject
     [Header("Project Checklist URL")]
     public string projectChecklistUrl;
     
-    [Header("Bundle Version")]
+    [Header("[Deprecate] Bundle Version")]
     public int bundleVersion;
+
+    [Header("Version by platform")]
+    [Tooltip("android or ios")]
+    public bool isVersionByPlatform;
+    public string platform = "android";
+    public VersionConfig versionAndroid;
+    public VersionConfig versionIOS;
 
     [Header("Analytic AB Test")]
     public ABTestConfig[] abTestConfigs;
@@ -58,7 +66,8 @@ public class ServicesConfig : ScriptableObject
     public List<RemoteConfigData> remoteConfigs;
     [Header("Email Support")]
     public string emailSupport;
-    
+    public string privacyPolicy;
+
     [Header("SDK Version")]
     public string firebaseSDKVersion;
     public string firebaseRemoteSDKVersion;
@@ -102,10 +111,39 @@ public class ServicesConfig : ScriptableObject
         return remoteConfigs;
     }
 
+    public void SetActiveAbByVersion()
+    {
+        if (!isVersionByPlatform) return;
+
+        var versionConfig = GetPlatformVersion();
+
+        foreach (var ab in abTestConfigs)
+        {
+            ab.IsActive = (ab.KeyName == versionConfig.abTest);
+        }
+    }
+
+    public VersionConfig GetPlatformVersion()
+    {
+        return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
+    }
+
+    public VersionConfig GetPlatformVersion(string platform)
+    {
+        return platform.ToLower() == "ios" ? versionIOS : versionAndroid;
+    }
+
     [Serializable]
     public class PlatformConfig
     {
         public string androidID;
         public string iosID;
+    }
+
+    [Serializable]
+    public class VersionConfig
+    {
+        public string version = "1.0.0";
+        public string abTest = "AB_20220414";
     }
 }

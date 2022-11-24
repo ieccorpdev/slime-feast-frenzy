@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ShowFPS : MonoBehaviour
 {
+    public static float topOffset;
     float deltaTime = 0.0f;
 
     void Update()
@@ -13,10 +14,11 @@ public class ShowFPS : MonoBehaviour
     void OnGUI()
     {
         int w = Screen.width, h = Screen.height;
+        var offsetY = topOffset * Screen.height;
 
         GUIStyle style = new GUIStyle();
 
-        Rect rect = new Rect(0, 0, w, h * 2 / 100);
+        Rect rect = new Rect(0, 0 + offsetY, w, h * 2 / 100);
         style.alignment = TextAnchor.UpperLeft;
         style.fontSize = h * 2 / 100;
         float msec = deltaTime * 1000.0f;

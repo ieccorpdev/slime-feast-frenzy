@@ -18,6 +18,7 @@ namespace _IECModules
             ProductName,
             ProductDisplayName,
             SupportEmail,
+            PrivacyPolicy,
             BundleID,
             KeyStoreName,
             KanboardSwimlane,
@@ -76,6 +77,7 @@ namespace _IECModules
             {"Tên game", ChecklistItemName.ProductName},
             {"Display Name", ChecklistItemName.ProductDisplayName},
             {"Support Email", ChecklistItemName.SupportEmail},
+            {"Privacy Policy", ChecklistItemName.PrivacyPolicy},
             {"BundleID", ChecklistItemName.BundleID},
             {"Keystore Name", ChecklistItemName.KeyStoreName},
             {"Kanboard Swimlane", ChecklistItemName.KanboardSwimlane},
@@ -201,7 +203,7 @@ namespace _IECModules
                 }
 
                 PlayerSettings.bundleVersion = lastVersionString;
-                UpdateAbVersion(lastAbString);
+                UpdateAbVersion(lastAbString, servicesConfig.platform);
             }
             else
             {
@@ -209,7 +211,7 @@ namespace _IECModules
             }
         }
 
-        public static void UpdateAbVersion(string setAbString)
+        public static void UpdateAbVersion(string setAbString, string platform = "")
         {
             LoadServicesConfig();
 
@@ -225,6 +227,12 @@ namespace _IECModules
             var verNumber = int.Parse(splits[2].Split('v')[1]);
             var verRootNumber = (verNumber / 10) * 10;
             var abCount = verNumber % 10 + 1;
+
+            if (servicesConfig.isVersionByPlatform)
+            {
+                var platformVersion = servicesConfig.GetPlatformVersion(platform);
+                platformVersion.abTest = abName;
+            }
 
             listConfig.ForEach(x =>
             {
@@ -263,6 +271,7 @@ namespace _IECModules
             config.SetDefaultRatioAndAB();
 
             EditorUtility.SetDirty(config);
+            EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
@@ -308,6 +317,11 @@ namespace _IECModules
                         var supportEmail = checklistItemValue;
                         LogEditorHelper.AddLog($"Support Email: {supportEmail}");
                         servicesConfig.emailSupport = supportEmail;
+                        break;
+                    case ChecklistItemName.PrivacyPolicy:
+                        var privacyPolicy = checklistItemValue;
+                        LogEditorHelper.AddLog($"Privacy Policy: {privacyPolicy}");
+                        servicesConfig.privacyPolicy = privacyPolicy;
                         break;
                     case ChecklistItemName.BundleID:
                         var bundleId = checklistItemValue;

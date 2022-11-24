@@ -121,10 +121,6 @@ namespace IEC
             {
                 Debug.unityLogger.filterLogType = LogType.Log;
             }
-            else
-            {
-                Debug.unityLogger.filterLogType = LogType.Warning;
-            }
 
             CameraHelper.SetMainCam(Camera.main);
             Application.targetFrameRate = 60;

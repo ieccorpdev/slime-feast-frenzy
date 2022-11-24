@@ -45,6 +45,24 @@ public class BaseBehaviour : MonoBehaviour
         return (T) CreateIfNotExistDictionary[dictKey];
     }
 
+    public void SetSingleCreateIfNotExist<T>(T obj, string customName = null)
+    {
+        var dictKey = typeof(T).ToString();
+        if (!string.IsNullOrEmpty(customName)) dictKey = customName;
+        CreateIfNotExistDictionary[dictKey] = obj;
+    }
+
+    public T GetSingleCreate<T>(string customName = null) where T : Object
+    {
+        var dictKey = typeof(T).ToString();
+        if (!string.IsNullOrEmpty(customName)) dictKey = customName;
+        if (CreateIfNotExistDictionary.TryGetValue(dictKey, out var obj))
+        {
+            return (T)obj;
+        }
+        return null;
+    }
+
     protected void SingleClear<T>()
     {
         var type = typeof(T);
@@ -57,5 +75,23 @@ public class BaseBehaviour : MonoBehaviour
         {
             FindDictionary.Remove(type);
         }
+    }
+
+    protected void SingleClear(string customName)
+    {
+        if (CreateIfNotExistDictionary.ContainsKey(customName))
+        {
+            CreateIfNotExistDictionary.Remove(customName);
+        }
+    }
+
+    protected void SingleClearCreateIfNotExist()
+    {
+        CreateIfNotExistDictionary.Clear();
+    }
+
+    protected void SingleClearFind()
+    {
+        FindDictionary.Clear();
     }
 }

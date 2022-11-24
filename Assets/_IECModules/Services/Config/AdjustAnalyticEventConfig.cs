@@ -3,6 +3,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using IEC;
+
 [CreateAssetMenu(fileName = "AdjustAnalyticEventConfig", menuName = "Services/AdjustAnalyticEventConfig")]
 public class AdjustAnalyticEventConfig : ScriptableObject
 {
@@ -18,9 +20,16 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public class Param
     {
         public string gameEvent;
-        public string adjustAndroidEventId;
-        public string adjustIosEventId;
-        public bool isPushEventToFirebase;
+        public PlatformParam android;
+        public PlatformParam iOS;
+    }
+
+    [Serializable]
+    public class PlatformParam
+    {
+        public string adjustEventId;
+        public bool isPushEventFirebase;
+        public bool isAdjustRev;
     }
 
     [NaughtyAttributes.Button]
@@ -31,27 +40,48 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         if (data == null || data.Count == 0) return;
         var androidIndex = data[0].IndexOf("Adjust Android");
         var iosIndex = data[0].IndexOf("Adjust iOS");
-        var firebaseIndex = data[0].IndexOf("Firebase");
+        var firebaseIndexAndroid = data[0].IndexOf("Firebase Android");
+        var firebaseIndexIOS = data[0].IndexOf("Firebase iOS");
+        var adjustRevAndroid = data[0].IndexOf("Adjust in app revenue Android");
+        var adjustRevIOS = data[0].IndexOf("Adjust in app revenue iOS");
         for (int i = 1; i < data.Count; i++)
         {
             var eventMap = data[i];
             var gameEvent = eventMap[0].Trim();
-            var adjustAndroidEventId = (androidIndex >=0 && androidIndex < eventMap.Count) ? eventMap[androidIndex].Trim() : string.Empty;
-            var adjustIosEventId = (iosIndex >= 0 && iosIndex < eventMap.Count) ? eventMap[iosIndex].Trim() : string.Empty;
-            var isFirebase = (firebaseIndex >= 0 && firebaseIndex < eventMap.Count) && eventMap[firebaseIndex] == "TRUE"; 
+            var adjustEventIdAndroid = GetValue(androidIndex, eventMap);
+            var adjustEventIdIOS = GetValue(iosIndex, eventMap);
+            var isFirebaseAndroid = GetValue(firebaseIndexAndroid, eventMap) == "TRUE";
+            var isFirebaseIOS = GetValue(firebaseIndexIOS, eventMap) == "TRUE";
+            var isAdjustRevAndroid = GetValue(adjustRevAndroid, eventMap) == "TRUE";
+            var isAdjustRevIOS = GetValue(adjustRevIOS, eventMap) == "TRUE";
             if (string.IsNullOrEmpty(gameEvent))
             {
                 continue;
             }
             var param = new Param
             {
-                gameEvent = gameEvent, 
-                adjustAndroidEventId = adjustAndroidEventId, 
-                adjustIosEventId = adjustIosEventId,
-                isPushEventToFirebase = isFirebase
+                gameEvent = gameEvent,
+                android = new PlatformParam
+                {
+                    adjustEventId = adjustEventIdAndroid,
+                    isPushEventFirebase = isFirebaseAndroid,
+                    isAdjustRev = isAdjustRevAndroid
+                },
+                iOS = new PlatformParam
+                {
+                    adjustEventId = adjustEventIdIOS,
+                    isPushEventFirebase = isFirebaseIOS,
+                    isAdjustRev = isAdjustRevIOS
+
+                }
             };
             listData.Add(param);
         }
+    }
+
+    private string GetValue(int index, List<string> listValue)
+    {
+        return (index >= 0 && index < listValue.Count) ? listValue[index].Trim() : string.Empty;
     }
 
     public Dictionary<string, string> GetDictEvent()
@@ -60,11 +90,11 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         foreach (var data in listData)
         {
 #if UNITY_ANDROID
-            var adjustEvent = data.adjustAndroidEventId;
+            var adjustEvent = data.android.adjustEventId;
 #else
-            var adjustEvent = data.adjustIosEventId;
+            var adjustEvent = data.iOS.adjustEventId;
 #endif
-            if(string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
+            if (string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
         return dict;
@@ -89,5 +119,72 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         Debug.Log("Data downloaded:\n" + uwr.downloadHandler.text);
 
         return jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
+    }
+
+    public List<int> GetListPlayLevel()
+    {
+        return GetListValueEvent("play_level_");
+    }
+
+    public List<int> GetListPlayLevelFirstTime()
+    {
+        return GetListValueEvent("play_level_first_time_");
+    }
+
+    public Dictionary<RevAdType, List<int>> GetListMilestone()
+    {
+        var dict = new Dictionary<RevAdType, List<int>>
+        {
+            [RevAdType.INTER] = GetListValueEvent("rev_inter_"),
+            [RevAdType.BANNER] = GetListValueEvent("rev_banner_"),
+            [RevAdType.REWARD] = GetListValueEvent("rev_reward_"),
+            [RevAdType.INTER_N_REWARD] = GetListValueEvent("rev_inter_n_reward_")
+        };
+       
+       
+       foreach (var key in dict.Keys)
+       {
+           var listMilestoneStr = string.Empty;
+           var listMilestone = dict[key];
+           listMilestoneStr = listMilestone.Aggregate(listMilestoneStr, (current, value) => current + $"{value},");
+           if(!string.IsNullOrEmpty(listMilestoneStr)) listMilestoneStr = listMilestoneStr.Remove(listMilestoneStr.Length - 1);
+           Debug.LogWarning($"{key.ToString()}:{listMilestoneStr}");
+       }
+
+       return dict;
+    }
+
+    public List<RevMilestone> GetListRevAllAdCentMilestone()
+    {
+        var list =  GetListValueEvent("rev_all_ad_", "_cent")
+            .Select(x => new RevMilestone($"rev_all_ad_{x}_cent", x / 100f))
+            .ToList();
+        
+        foreach (var revMilestone in list)
+        {
+            Debug.LogWarning($"{revMilestone.eventName}:{revMilestone.step}");
+        }
+
+        return list;
+    }
+
+    private bool TryGetValueEvent(string origin, string first, string end, out int result)
+    {
+        return int.TryParse(StringHelper.GetBetweenString(origin, first, end, false), out result);
+    }
+
+    private List<int> GetListValueEvent(string prefix, string end = "")
+    {
+        if (end == "") end = string.Empty;
+        var listResult = new List<int>();
+        foreach (var data in listData)
+        {
+            var eventName = data.gameEvent;
+            if (eventName.Contains(prefix) && TryGetValueEvent(eventName, prefix, end, out var result))
+            {
+                listResult.Add(result);
+            }
+        }
+        return listResult;
     }
 }

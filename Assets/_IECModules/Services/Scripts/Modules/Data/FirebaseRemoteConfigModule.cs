@@ -19,7 +19,7 @@ namespace IEC
         Dictionary<string, RemoteConfigData> m_DictData = new Dictionary<string, RemoteConfigData>();
         Dictionary<string, ConfigValue> m_DictValue = new Dictionary<string, ConfigValue>();
 
-        public FirebaseRemoteConfigModule(IJsonService jsonService, ISetUpSdkService firebaseSetUp, IDataService localData, bool isTest, List<RemoteConfigData> data)
+        public FirebaseRemoteConfigModule(IJsonService jsonService, ISetUpSdkService firebaseSetUp, IDataService localData, bool isTest, RemoteConfigData[] data)
         {
             m_JsonService = jsonService;
             m_FirebaseSetUp = firebaseSetUp;
@@ -41,21 +41,20 @@ namespace IEC
         {
             if (!IsFirebaseReady()) return;
 
-            FirebaseRemoteConfig.DefaultInstance.FetchAsync(new System.TimeSpan(0)).ContinueWithOnMainThread(taskFetch =>
+            var firebaseConfigInstance = FirebaseRemoteConfig.DefaultInstance;
+            firebaseConfigInstance.FetchAsync(new System.TimeSpan(0)).ContinueWithOnMainThread(taskFetch =>
             {
-                var info = FirebaseRemoteConfig.DefaultInstance.Info;
+                var info = firebaseConfigInstance.Info;
                 switch (info.LastFetchStatus)
                 {
                     case LastFetchStatus.Success:
-                        //FirebaseRemoteConfig.ActivateFetched();
-                        FirebaseRemoteConfig.DefaultInstance.FetchAndActivateAsync();
+                        firebaseConfigInstance.ActivateAsync();
                         Debug.Log(String.Format("Remote data loaded and ready (last fetch time {0}).", info.FetchTime));
 
-                        foreach (var key in FirebaseRemoteConfig.DefaultInstance.Keys)
+                        foreach (var key in firebaseConfigInstance.Keys)
                         {
-                            var value = FirebaseRemoteConfig.DefaultInstance.GetValue(key);
+                            var value = firebaseConfigInstance.GetValue(key);
                             m_DictValue[key] = value;
-                            Debug.Log("Remote " + key + ":" + value);
                         }
 
                         foreach (var key in m_DictData.Keys)

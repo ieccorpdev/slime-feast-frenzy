@@ -41,8 +41,8 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
 
-        CheckAddSmaatoSKAdNetworkID(path);
-        CheckAddInmobiSKAdNetworkID(path);
+        //CheckAddSmaatoSKAdNetworkID(path);
+        //CheckAddInmobiSKAdNetworkID(path);
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();

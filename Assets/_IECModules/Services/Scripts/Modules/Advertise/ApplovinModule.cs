@@ -1,4 +1,4 @@
-﻿#if (PluginApplovin)
+#if (PluginApplovin)
 using System;
 using System.Collections;
 using System.Collections.Generic;
