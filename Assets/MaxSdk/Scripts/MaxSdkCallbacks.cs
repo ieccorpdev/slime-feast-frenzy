@@ -6,30 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using AppLovinMax.ThirdParty.MiniJson;
+using AppLovinMax.ThirdParty.MiniJson; 
 
 public class MaxSdkCallbacks : MonoBehaviour
 {
-#if UNITY_EDITOR
-    private static MaxSdkCallbacks instance;
-#endif
-
-    public static MaxSdkCallbacks Instance
-    {
-#if UNITY_EDITOR
-        get
-        {
-            if (instance != null) return instance;
-
-            instance = new GameObject("MaxSdkCallbacks", typeof(MaxSdkCallbacks)).GetComponent<MaxSdkCallbacks>();
-            DontDestroyOnLoad(instance);
-
-            return instance;
-        }
-#else
-        get; private set;
-#endif
-    }
+    public static MaxSdkCallbacks Instance { get; private set; }
 
     // Fired when the SDK has finished initializing
     private static Action<MaxSdkBase.SdkConfiguration> _onSdkInitializedEvent;
@@ -118,7 +99,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
 
         /**
-         * Fired when an interstitial ad is displayed (may not be received by Unity until the interstitial ad closes).
+         * Fired when an rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          */
         public static event Action<string, MaxSdkBase.AdInfo> OnAdDisplayedEvent
         {
@@ -195,122 +176,6 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
     }
 
-    private static Action<string, MaxSdkBase.AdInfo> _onAppOpenAdLoadedEvent;
-    private static Action<string, MaxSdkBase.ErrorInfo> _onAppOpenAdLoadFailedEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onAppOpenAdDisplayedEvent;
-    private static Action<string, MaxSdkBase.ErrorInfo, MaxSdkBase.AdInfo> _onAppOpenAdFailedToDisplayEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onAppOpenAdClickedEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onAppOpenAdRevenuePaidEvent;
-    private static Action<string, MaxSdkBase.AdInfo> _onAppOpenAdHiddenEvent;
-
-    public class AppOpen
-    {
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdLoadedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdLoadedEvent");
-                _onAppOpenAdLoadedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdLoadedEvent");
-                _onAppOpenAdLoadedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.ErrorInfo> OnAdLoadFailedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdLoadFailedEvent");
-                _onAppOpenAdLoadFailedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdLoadFailedEvent");
-                _onAppOpenAdLoadFailedEvent -= value;
-            }
-        }
-
-        /**
-         * Fired when an app open ad is displayed (may not be received by Unity until the app open ad closes).
-         */
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdDisplayedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdDisplayedEvent");
-                _onAppOpenAdDisplayedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdDisplayedEvent");
-                _onAppOpenAdDisplayedEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.ErrorInfo, MaxSdkBase.AdInfo> OnAdDisplayFailedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdDisplayFailedEvent");
-                _onAppOpenAdFailedToDisplayEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdDisplayFailedEvent");
-                _onAppOpenAdFailedToDisplayEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdClickedEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdClickedEvent");
-                _onAppOpenAdClickedEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdClickedEvent");
-                _onAppOpenAdClickedEvent -= value;
-            }
-        }
-
-        /// <summary>
-        /// Fired when an app open ad impression was validated and revenue will be paid.
-        /// Executed on a background thread to avoid any delays in execution.
-        /// </summary>
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdRevenuePaidEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdRevenuePaidEvent");
-                _onAppOpenAdRevenuePaidEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdRevenuePaidEvent");
-                _onAppOpenAdRevenuePaidEvent -= value;
-            }
-        }
-
-        public static event Action<string, MaxSdkBase.AdInfo> OnAdHiddenEvent
-        {
-            add
-            {
-                LogSubscribedToEvent("OnAppOpenAdHiddenEvent");
-                _onAppOpenAdHiddenEvent += value;
-            }
-            remove
-            {
-                LogUnsubscribedToEvent("OnAppOpenAdHiddenEvent");
-                _onAppOpenAdHiddenEvent -= value;
-            }
-        }
-    }
-
     private static Action<string, MaxSdkBase.AdInfo> _onRewardedAdLoadedEventV2;
     private static Action<string, MaxSdkBase.ErrorInfo> _onRewardedAdLoadFailedEventV2;
     private static Action<string, MaxSdkBase.AdInfo> _onRewardedAdDisplayedEventV2;
@@ -351,7 +216,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
 
         /**
-         * Fired when a rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
+         * Fired when an rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          */
         public static event Action<string, MaxSdkBase.AdInfo> OnAdDisplayedEvent
         {
@@ -482,8 +347,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
 
         /**
-         * Fired when a rewarded interstitial ad is displayed (may not be received by Unity until
-         * the rewarded interstitial ad closes).
+         * Fired when an rewarded ad is displayed (may not be received by Unity until the rewarded ad closes).
          */
         public static event Action<string, MaxSdkBase.AdInfo> OnAdDisplayedEvent
         {
@@ -1230,7 +1094,6 @@ public class MaxSdkCallbacks : MonoBehaviour
         }
     }
 
-#if !UNITY_EDITOR
     void Awake()
     {
         if (Instance == null)
@@ -1239,7 +1102,6 @@ public class MaxSdkCallbacks : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
-#endif
 
     public void ForwardEvent(string eventPropsStr)
     {
@@ -1399,36 +1261,6 @@ public class MaxSdkCallbacks : MonoBehaviour
             {
                 InvokeEvent(_onInterstitialAdRevenuePaidEvent, adUnitIdentifier, adInfo);
             }
-            else if (eventName == "OnAppOpenAdLoadedEvent")
-            {
-                InvokeEvent(_onAppOpenAdLoadedEvent, adUnitIdentifier, adInfo);
-            }
-            else if (eventName == "OnAppOpenAdLoadFailedEvent")
-            {
-                var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onAppOpenAdLoadFailedEvent, adUnitIdentifier, errorInfo);
-            }
-            else if (eventName == "OnAppOpenAdHiddenEvent")
-            {
-                InvokeEvent(_onAppOpenAdHiddenEvent, adUnitIdentifier, adInfo);
-            }
-            else if (eventName == "OnAppOpenAdDisplayedEvent")
-            {
-                InvokeEvent(_onAppOpenAdDisplayedEvent, adUnitIdentifier, adInfo);
-            }
-            else if (eventName == "OnAppOpenAdFailedToDisplayEvent")
-            {
-                var errorInfo = new MaxSdkBase.ErrorInfo(eventProps);
-                InvokeEvent(_onAppOpenAdFailedToDisplayEvent, adUnitIdentifier, errorInfo, adInfo);
-            }
-            else if (eventName == "OnAppOpenAdClickedEvent")
-            {
-                InvokeEvent(_onAppOpenAdClickedEvent, adUnitIdentifier, adInfo);
-            }
-            else if (eventName == "OnAppOpenAdRevenuePaidEvent")
-            {
-                InvokeEvent(_onAppOpenAdRevenuePaidEvent, adUnitIdentifier, adInfo);
-            }
             else if (eventName == "OnRewardedAdLoadedEvent")
             {
                 InvokeEvent(_onRewardedAdLoadedEvent, adUnitIdentifier);
@@ -1532,7 +1364,7 @@ public class MaxSdkCallbacks : MonoBehaviour
 #if UNITY_EDITOR
     public static void EmitSdkInitializedEvent()
     {
-        if (_onSdkInitializedEvent == null) return;
+        if(_onSdkInitializedEvent == null) return;
 
         var sdkConfiguration = new MaxSdkBase.SdkConfiguration();
         sdkConfiguration.IsSuccessfullyInitialized = true;

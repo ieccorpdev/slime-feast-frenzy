@@ -640,7 +640,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 didAddLabels = true;
             }
 
-            var exportPathLabel = "al_max_export_path-" + assetPath.Replace(pluginParentDir, "").Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var exportPathLabel = "al_max_export_path-" + assetPath.Replace(pluginParentDir, "");
             if (!labels.Contains(exportPathLabel))
             {
                 labelsToAdd.Add(exportPathLabel);
