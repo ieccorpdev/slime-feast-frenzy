@@ -75,9 +75,15 @@ public class PostProcessBuildIOS : MonoBehaviour
             pbxProject.SetBuildProperty(pbxProject.ProjectGuid(), "ENABLE_BITCODE", "NO");
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
+            
+            //Fix upload ipa xcode 14
+            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
+            //
             pbxProject.WriteToFile(projectPath);
+            
         }
 
+        //Fix build xcode 14
         void SigningPod()
         {
             var appFilePath = path + "/fastlane/Appfile";
@@ -92,6 +98,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             podPbx.SetTeamId(id, teamId);
             podPbx.WriteToFile(podProjPath);
         }
+        //
 
         void CopyFastlaneConfig()
         {
