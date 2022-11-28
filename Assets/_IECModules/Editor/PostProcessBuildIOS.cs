@@ -40,12 +40,14 @@ public class PostProcessBuildIOS : MonoBehaviour
         File.WriteAllText(plistPath, plist.WriteToString());
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
-
+        var podProjPath = path + "/Pods/Pods.xcodeproj/project.pbxproj";
+        
         //CheckAddSmaatoSKAdNetworkID(path);
         //CheckAddInmobiSKAdNetworkID(path);
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
+        SigningPod();
         EditCloudSaveCapability();
 
         void EditCloudSaveCapability()
@@ -70,9 +72,25 @@ public class PostProcessBuildIOS : MonoBehaviour
         {
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(projectPath);
+            pbxProject.SetBuildProperty(pbxProject.ProjectGuid(), "ENABLE_BITCODE", "NO");
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
             pbxProject.WriteToFile(projectPath);
+        }
+
+        void SigningPod()
+        {
+            var appFilePath = path + "/fastlane/Appfile";
+            var appFileContent = File.ReadAllText(appFilePath);
+            var teamId = appFileContent.Split(new[] {"team_id"}, StringSplitOptions.None)[2]
+                .GetBetweenString("(\"", "\")",false);
+            Debug.Log("teamId:" + teamId);
+            var podPbx = new PBXProject();
+            podPbx.ReadFromFile(podProjPath);
+            var id = podPbx.TargetGuidByName("FBSDKCoreKit-FacebookSDKStrings");
+            Debug.Log(id);
+            podPbx.SetTeamId(id, teamId);
+            podPbx.WriteToFile(podProjPath);
         }
 
         void CopyFastlaneConfig()
