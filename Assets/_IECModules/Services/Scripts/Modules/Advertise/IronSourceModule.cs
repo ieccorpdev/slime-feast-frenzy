@@ -46,9 +46,10 @@ namespace _IECModules
 
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
-                IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
-                IronSource.Agent.init(config.appID, IronSourceAdUnits.INTERSTITIAL);
-                IronSource.Agent.init(config.appID, IronSourceAdUnits.REWARDED_VIDEO);
+                IronSource.Agent.init(config.appID);
+                // IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
+                // IronSource.Agent.init(config.appID, IronSourceAdUnits.INTERSTITIAL);
+                // IronSource.Agent.init(config.appID, IronSourceAdUnits.REWARDED_VIDEO);
             }
 
             IronSourceEvents.onSdkInitializationCompletedEvent += () =>
