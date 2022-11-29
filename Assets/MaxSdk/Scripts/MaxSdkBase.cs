@@ -11,29 +11,7 @@ public abstract class MaxSdkBase
     protected static readonly MaxUserSegment SharedUserSegment = new MaxUserSegment();
     protected static readonly MaxTargetingData SharedTargetingData = new MaxTargetingData();
 
-    /// <summary>
-    /// This enum represents whether or not the consent dialog should be shown for this user.
-    /// The state where no such determination could be made is represented by <see cref="ConsentDialogState.Unknown"/>.
-    ///
-    /// NOTE: This version of the iOS consent flow has been deprecated and is only available on UNITY_ANDROID as of MAX Unity Plugin v4.0.0 + iOS SDK v7.0.0, please refer to our documentation for enabling the new consent flow.
-    /// </summary>
-    public enum ConsentDialogState
-    {
-        /// <summary>
-        /// The consent dialog state could not be determined. This is likely due to SDK failing to initialize.
-        /// </summary>
-        Unknown,
 
-        /// <summary>
-        /// This user should be shown a consent dialog.
-        /// </summary>
-        Applies,
-
-        /// <summary>
-        /// This user should not be shown a consent dialog.
-        /// </summary>
-        DoesNotApply
-    }
 
 #if UNITY_EDITOR || UNITY_IPHONE || UNITY_IOS
     /// <summary>
@@ -102,11 +80,6 @@ public abstract class MaxSdkBase
         public bool IsSuccessfullyInitialized;
 
         /// <summary>
-        /// Get the consent dialog state for this user. If no such determination could be made, `ALConsentDialogStateUnknown` will be returned.
-        /// </summary>
-        public ConsentDialogState ConsentDialogState;
-
-        /// <summary>
         /// Get the country code for this user.
         /// </summary>
         public string CountryCode;
@@ -117,6 +90,9 @@ public abstract class MaxSdkBase
         /// </summary>
         public AppTrackingStatus AppTrackingStatus;
 #endif
+
+        [Obsolete("This API has been deprecated and will be removed in a future release.")]
+        public ConsentDialogState ConsentDialogState;
 
         public static SdkConfiguration Create(IDictionary<string, object> eventProps)
         {
@@ -202,6 +178,11 @@ public abstract class MaxSdkBase
         /// This error code indicates that MAX returned eligible ads from mediated networks, but all ads failed to load. See the adLoadFailureInfo field in the error object for more details.
         /// </summary>
         AdLoadFailed = -5001,
+
+        /// <summary>
+        /// This error code represents an error that was encountered when showing an ad.
+        /// </summary>
+        AdDisplayFailed = -4205,
 
         /// <summary>
         /// This error code indicates that the ad request failed due to a generic network error. See the message field in the error object for more details.
@@ -365,17 +346,17 @@ public abstract class MaxSdkBase
 
         public override string ToString()
         {
-            var stringBuilder = new StringBuilder("[NetworkResponseInfo: adLoadState = " + AdLoadState +
-                                                  ", mediatedNetwork = " + MediatedNetwork +
-                                                  ", credentials = " + Credentials);
+            var stringBuilder = new StringBuilder("[NetworkResponseInfo: adLoadState = ").Append(AdLoadState);
+            stringBuilder.Append(", mediatedNetwork = ").Append(MediatedNetwork);
+            stringBuilder.Append(", credentials = ").Append(Credentials);
 
             switch (AdLoadState)
             {
                 case MaxAdLoadState.FailedToLoad:
-                    stringBuilder.Append(", error = " + Error);
+                    stringBuilder.Append(", error = ").Append(Error);
                     break;
                 case MaxAdLoadState.AdLoaded:
-                    stringBuilder.Append(", latency = " + LatencyMillis);
+                    stringBuilder.Append(", latency = ").Append(LatencyMillis);
                     break;
             }
 
@@ -412,22 +393,33 @@ public abstract class MaxSdkBase
     {
         public ErrorCode Code { get; private set; }
         public string Message { get; private set; }
+        public int MediatedNetworkErrorCode { get; private set; }
+        public string MediatedNetworkErrorMessage { get; private set; }
         public string AdLoadFailureInfo { get; private set; }
         public WaterfallInfo WaterfallInfo { get; private set; }
 
         public ErrorInfo(IDictionary<string, object> errorInfoDictionary)
         {
-            Message = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "errorMessage", "");
-            AdLoadFailureInfo = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "adLoadFailureInfo", "");
             Code = (ErrorCode) MaxSdkUtils.GetIntFromDictionary(errorInfoDictionary, "errorCode", -1);
+            Message = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "errorMessage", "");
+            MediatedNetworkErrorCode = MaxSdkUtils.GetIntFromDictionary(errorInfoDictionary, "mediatedNetworkErrorCode", (int) ErrorCode.Unspecified);
+            MediatedNetworkErrorMessage = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "mediatedNetworkErrorMessage", "");
+            AdLoadFailureInfo = MaxSdkUtils.GetStringFromDictionary(errorInfoDictionary, "adLoadFailureInfo", "");
             WaterfallInfo = new WaterfallInfo(MaxSdkUtils.GetDictionaryFromDictionary(errorInfoDictionary, "waterfallInfo", new Dictionary<string, object>()));
         }
 
         public override string ToString()
         {
-            return "[ErrorInfo code: " + Code +
-                   ", message: " + Message +
-                   ", adLoadFailureInfo: " + AdLoadFailureInfo + "]";
+            var stringbuilder = new StringBuilder("[ErrorInfo code: ").Append(Code);
+            stringbuilder.Append(", message: ").Append(Message);
+
+            if (Code == ErrorCode.AdDisplayFailed)
+            {
+                stringbuilder.Append(", mediatedNetworkCode: ").Append(MediatedNetworkErrorCode);
+                stringbuilder.Append(", mediatedNetworkMessage: ").Append(MediatedNetworkErrorMessage);
+            }
+
+            return stringbuilder.Append(", adLoadFailureInfo: ").Append(AdLoadFailureInfo).Append("]").ToString();
         }
     }
 
@@ -480,6 +472,14 @@ public abstract class MaxSdkBase
         var height = MaxSdkUtils.GetFloatFromDictionary(rectDict, "height", 0);
 
         return new Rect(originX, originY, width, height);
+    }
+
+    [Obsolete("This API has been deprecated and will be removed in a future release.")]
+    public enum ConsentDialogState
+    {
+        Unknown,
+        Applies,
+        DoesNotApply
     }
 }
 
