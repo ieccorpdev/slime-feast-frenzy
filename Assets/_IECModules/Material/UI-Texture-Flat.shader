@@ -99,7 +99,7 @@ Shader "UI/Texture-Flat"
             fixed4 frag(v2f IN) : SV_Target
             {
                 half4 color = IN.color;
-                color.a = tex2D(_MainTex, IN.texcoord).a;
+                color.a *= tex2D(_MainTex, IN.texcoord).a;
 
                 #ifdef UNITY_UI_CLIP_RECT
                 color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
