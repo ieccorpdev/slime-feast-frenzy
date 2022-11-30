@@ -46,6 +46,7 @@ namespace _IECModules
 
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
+                IronSource.Agent.setManualLoadRewardedVideo(true);
                 IronSource.Agent.init(config.appID);
                 // IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
                 // IronSource.Agent.init(config.appID, IronSourceAdUnits.INTERSTITIAL);
@@ -292,7 +293,7 @@ namespace _IECModules
 
         bool IsFullAdsLoaded()
         {
-            return IronSource.Agent.isInterstitialReady() &&
+            return m_FullAdsState.isLoaded &&
                    Application.internetReachability != NetworkReachability.NotReachable;
         }
 
@@ -331,7 +332,7 @@ namespace _IECModules
             var adsState = m_FullAdsState;
             adsState.isWaitToShow = true;
 
-            if (IsFullAdsLoaded())
+            if (IsFullAdsLoaded() && IronSource.Agent.isInterstitialReady())
             {
                 adsState.onShow = showCallback;
                 IronSource.Agent.showInterstitial();
@@ -414,7 +415,7 @@ namespace _IECModules
 
         bool IsRewardLoaded()
         {
-            return IronSource.Agent.isRewardedVideoAvailable() &&
+            return m_RewardAdsState.isLoaded &&
                    Application.internetReachability != NetworkReachability.NotReachable;
         }
 
@@ -442,14 +443,14 @@ namespace _IECModules
             adsState.isLoading = true;
             adsState.isLoaded = false;
             m_RewardAdsState = adsState;
-
+            IronSource.Agent.loadRewardedVideo();
         }
 
         void ShowRewardAds(Action<AdsEventArgs> showCallback)
         {
             var adsState = m_RewardAdsState;
 
-            if (IsRewardLoaded())
+            if (IsRewardLoaded() && IronSource.Agent.isRewardedVideoAvailable())
             {
                 adsState.onShow = showCallback;
                 IronSource.Agent.showRewardedVideo();
@@ -460,7 +461,7 @@ namespace _IECModules
             }
         }
 
-        private void RewardedAdsView_OnAdFailedToShow(IronSourceError error)
+        private void RewardedAdsView_OnAdFailedToShow(IronSourceError error, IronSourceAdInfo adInfo)
         {
             m_RewardAdsState.isLoading = false;
             m_RewardAdsState.isLoaded = false;
@@ -469,7 +470,7 @@ namespace _IECModules
             m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.FAIL);
         }
 
-        private void RewardedAdsView_OnUserEarnedReward(IronSourcePlacement placement)
+        private void RewardedAdsView_OnUserEarnedReward(IronSourcePlacement placement, IronSourceAdInfo adInfo)
         {
             m_RewardAdsState.onShow = AdsStateData.SafeInvoke(m_RewardAdsState.onShow, AdsEventArgs.DONE_NO_SKIP);
         }
@@ -490,7 +491,7 @@ namespace _IECModules
             }
         }
 
-        private void RewardedAdsView_OnAdLoaded()
+        private void RewardedAdsView_OnAdLoaded(IronSourceAdInfo adInfo)
         {
             AdsStateData.DebugLog("RewardedAdsView_OnAdLoaded");
             m_RewardAdsState.isLoaded = true;
@@ -498,7 +499,7 @@ namespace _IECModules
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.DONE);
         }
 
-        private void RewardedAdsView_OnAdClosed()
+        private void RewardedAdsView_OnAdClosed(IronSourceAdInfo adInfo)
         {
             AdsStateData.DebugLog("RewardedAdsView_OnAdClosed");
             m_RewardAdsState.isLoading = false;
@@ -516,11 +517,11 @@ namespace _IECModules
         private void InitializeRewardedAds()
         {
             // Attach callback
-            IronSourceEvents.onRewardedVideoAdReadyEvent += RewardedAdsView_OnAdLoaded;
-            IronSourceEvents.onRewardedVideoAdLoadFailedEvent += RewardedAdsView_OnAdFailedToLoad;
-            IronSourceEvents.onRewardedVideoAdShowFailedEvent += RewardedAdsView_OnAdFailedToShow;
-            IronSourceEvents.onRewardedVideoAdClosedEvent += RewardedAdsView_OnAdClosed;
-            IronSourceEvents.onRewardedVideoAdRewardedEvent += RewardedAdsView_OnUserEarnedReward;
+            IronSourceRewardedVideoEvents.onAdReadyEvent += RewardedAdsView_OnAdLoaded;
+            IronSourceRewardedVideoEvents.onAdLoadFailedEvent += RewardedAdsView_OnAdFailedToLoad;
+            IronSourceRewardedVideoEvents.onAdShowFailedEvent += RewardedAdsView_OnAdFailedToShow;
+            IronSourceRewardedVideoEvents.onAdClosedEvent += RewardedAdsView_OnAdClosed;
+            IronSourceRewardedVideoEvents.onAdRewardedEvent += RewardedAdsView_OnUserEarnedReward;
             // MaxSdkCallbacks.Rewarded.OnAdRevenuePaidEvent += OnAdRevenuePaidEvent;
         }
 
