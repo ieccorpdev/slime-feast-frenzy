@@ -1480,8 +1480,6 @@ public class MaxSdkUnityEditor : MaxSdkBase
 
     internal static void SetTargetingDataPhoneNumber(string phoneNumber) { }
 
-    internal static void SetTargetingDataZipCode(string zipCode) { }
-
     internal static void SetTargetingDataKeywords(string[] keywords) { }
 
     internal static void SetTargetingDataInterests(string[] interests) { }

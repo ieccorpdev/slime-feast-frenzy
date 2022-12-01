@@ -1444,14 +1444,6 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
     [DllImport("__Internal")]
-    private static extern void _MaxSetTargetingDataZipCode(string zipCode);
-
-    internal static void SetTargetingDataZipCode(string zipCode)
-    {
-        _MaxSetTargetingDataZipCode(zipCode);
-    }
-
-    [DllImport("__Internal")]
     private static extern void _MaxSetTargetingDataKeywords(string[] keywords, int size);
 
     internal static void SetTargetingDataKeywords(string[] keywords)

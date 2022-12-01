@@ -377,12 +377,6 @@ extern "C"
         _sdk.targetingData.phoneNumber = NSSTRING(phoneNumber);
     }
 
-    void _MaxSetTargetingDataZipCode(const char *zipCode)
-    {
-        if ( !isPluginInitialized() ) return;
-        _sdk.targetingData.zipCode = NSSTRING(zipCode);
-    }
-
     void _MaxSetTargetingDataKeywords(char **keywords, int size)
     {
         NSArray<NSString *> *keywordsArray = keywords ? toStringArray(keywords, size) : nil;

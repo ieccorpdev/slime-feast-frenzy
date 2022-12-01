@@ -255,6 +255,7 @@ public abstract class MaxSdkBase
         public double Revenue { get; private set; }
         public string RevenuePrecision { get; private set; }
         public WaterfallInfo WaterfallInfo { get; private set; }
+        public string DspName { get; private set; }
 
         public AdInfo(IDictionary<string, object> adInfoDictionary)
         {
@@ -267,6 +268,7 @@ public abstract class MaxSdkBase
             Revenue = MaxSdkUtils.GetDoubleFromDictionary(adInfoDictionary, "revenue", -1);
             RevenuePrecision = MaxSdkUtils.GetStringFromDictionary(adInfoDictionary, "revenuePrecision");
             WaterfallInfo = new WaterfallInfo(MaxSdkUtils.GetDictionaryFromDictionary(adInfoDictionary, "waterfallInfo", new Dictionary<string, object>()));
+            DspName = MaxSdkUtils.GetStringFromDictionary(adInfoDictionary, "dspName");
         }
 
         public override string ToString()
@@ -278,7 +280,8 @@ public abstract class MaxSdkBase
                    ", creativeIdentifier: " + CreativeIdentifier +
                    ", placement: " + Placement +
                    ", revenue: " + Revenue +
-                   ", revenuePrecision: " + RevenuePrecision + "]";
+                   ", revenuePrecision: " + RevenuePrecision +
+                   ", dspName: " + DspName + "]";
         }
     }
 
