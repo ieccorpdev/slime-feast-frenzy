@@ -26,6 +26,14 @@ namespace _IECModules
             "Assets/ExternalDependencyManager",
             "Assets/PlayServicesResolver"
         };
+
+        public static List<string> listLib = new List<string>
+        {
+            "AdditionalLibrary",
+            "MaxMediationGoogle",
+            "MaxMediationGoogleAdManager"
+        };
+        
         private static GUIStyle m_WarningTextStyle;
         private static string m_WarningString;
         private static DirectoryInfo m_DirectoryInfo = new FileInfo(EditorApplication.applicationPath).Directory;
@@ -65,7 +73,7 @@ namespace _IECModules
             RemoveUnityAdsPackage();
             EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
-            GooglePlayServicesForceResolve();
+            // GooglePlayServicesForceResolve();
             UpdateJetifierInMainTemplate();
             ModifyPermissions(listPermissionRemove,PermissionAction.Remove);
             ModifyPermissions(listPermissionNecessary,PermissionAction.Add);
@@ -298,6 +306,57 @@ namespace _IECModules
             }
         }
 
+        private static void CopyLib(string libName)
+        {
+            string pluginPath, templatePath, libraryPath;
+
+            switch (libName)
+            {
+                case "MaxMediationGoogle":
+                    pluginPath = "Assets/MaxSdk/Mediation/Google";
+                    break;
+                case "MaxMediationGoogleAdManager":
+                    pluginPath = "Assets/MaxSdk/Mediation/GoogleAdManager";
+                    break;
+                case "AdditionalLibrary":
+                    pluginPath = "Assets/Plugin/Android";
+                    break;
+                default:
+                    pluginPath = "";
+                    break;
+            }
+            
+            templatePath = $"Assets/_IECModules/Template/{libName}.androidlib.template";
+            libraryPath = $"Assets/Plugins/Android/{libName}.androidlib";
+            
+            if(!Directory.Exists(pluginPath)) return;
+
+            if (Directory.Exists(libraryPath))
+            {
+                Directory.Delete(libraryPath, true);
+                if (File.Exists($"{libraryPath}.meta"))
+                {
+                    File.Delete($"{libraryPath}.meta");
+                }
+            }
+            
+            Directory.CreateDirectory(libraryPath);
+            var allDirs = 
+                Directory.GetDirectories(templatePath, "*", SearchOption.AllDirectories);
+            foreach (var dir in allDirs)
+            {
+                var dirCreate = dir.Replace(templatePath, libraryPath);
+                Directory.CreateDirectory(dirCreate);
+            }
+                
+            var allFiles = Directory.GetFiles(templatePath, "*", SearchOption.AllDirectories);
+            foreach (var file in allFiles)
+            {
+                var fileCreate = file.Replace(templatePath, libraryPath);
+                File.Copy(file, fileCreate, true);
+            }
+        }
+
         private static void CopyAndroidLibConfig()
         {
             var networkSecurityConfigDirectory = "Assets/Plugins/Android/res/xml/";
@@ -319,41 +378,8 @@ namespace _IECModules
                 Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib", true);
                 File.Delete("Assets/Plugins/Android/myLibrary.androidlib");
             }
-
-            if (Directory.Exists(libraryPath))
-            {
-                LogEditorHelper.AddLogWarning("Additional Library already exists");
-            }
-            else
-            {
-                Directory.CreateDirectory(libraryPath);
-                var allDirs = 
-                    Directory.GetDirectories(templatePath, "*", SearchOption.AllDirectories);
-                foreach (var dir in allDirs)
-                {
-                    var dirCreate = dir.Replace(templatePath, libraryPath);
-                    Directory.CreateDirectory(dirCreate);
-                }
-                
-                var allFiles = Directory.GetFiles(templatePath, "*", SearchOption.AllDirectories);
-                foreach (var file in allFiles)
-                {
-                    var fileCreate = file.Replace(templatePath, libraryPath);
-                    File.Copy(file, fileCreate, true);
-                }
-            }
-            // #else
-            // if (File.Exists(networkSecurityConfigFileName))
-            // {
-            //     LogEditorHelper.AddLogWarning("network_security_config.xml already exists");
-            // }
-            // else
-            // {
-            //     Directory.CreateDirectory(networkSecurityConfigDirectory);
-            //     FileUtil.CopyFileOrDirectory("Assets/_IECModules/Template/template.network_security_config.xml", networkSecurityConfigFileName);
-            //     LogEditorHelper.AddLog("network_security_config created");
-            // }
-            // #endif
+            
+            listLib.Foreach(CopyLib);
         }
 
         private static void UpdateJetifierInMainTemplate()

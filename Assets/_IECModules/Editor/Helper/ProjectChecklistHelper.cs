@@ -154,9 +154,7 @@ namespace _IECModules
         public static void ApplySdkSetting(string googleDocsUrl)
         {
             var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(googleDocsUrl);
-
             var getServicesConfigResult = LoadServicesConfig();
-
             if (servicesConfig != null)
             {
                 LogEditorHelper.AddLog("Service Config Load Success: " + getServicesConfigResult);
@@ -168,7 +166,6 @@ namespace _IECModules
             }
 
             servicesConfig.projectChecklistUrl = googleDocsUrl;
-
             ApplySdkSetting(googleDocsData);
         }
 
@@ -367,22 +364,7 @@ namespace _IECModules
                     case ChecklistItemName.FacebookID:
                         var facebookId = checklistItemValue;
                         LogEditorHelper.AddLog($"Facebook ID: {facebookId}");
-                        if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
-                        {
-                            var instance = EditorWindow.CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
-                            var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
-                            if (!Directory.Exists(path1))
-                                Directory.CreateDirectory(path1);
-                            var path2 =
- Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
-                            AssetDatabase.CreateAsset(instance, path2);
-                        }
-                        Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
-                        Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {facebookId};
-                        Facebook.Unity.Settings.FacebookSettings.AppLabels =
- new List<string> {PlayerSettings.productName};
-                        EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
-                        Facebook.Unity.Editor.ManifestMod.GenerateManifest();
+                        servicesConfig.fbAppId = facebookId;
                         break;
 #endif
                     case ChecklistItemName.UnityProjectID:
@@ -502,13 +484,12 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.AdmobIDIOS:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob IOS ID: {checklistItemValue}");
-                        AppLovinSettings.Instance.AdMobIosAppId = checklistItemValue;
-                        AppLovinSettings.Instance.SaveAsync();
+                        servicesConfig.admobAppIOSId = checklistItemValue;
+                        
                         break;
                     case ChecklistItemName.AdmobIDAndroid:
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob Android ID: {checklistItemValue}");
-                        AppLovinSettings.Instance.AdMobAndroidAppId = checklistItemValue;
-                        AppLovinSettings.Instance.SaveAsync();
+                        servicesConfig.admobAppAndroidId = checklistItemValue;
                         break;
 #endif
 #if PluginOgury
@@ -578,6 +559,43 @@ namespace _IECModules
             EditorUtility.SetDirty(AppLovinSettings.Instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+#endif
+        }
+        
+        public static void SetFBId()
+        {
+#if PluginFacebook
+            if (servicesConfig == null || string.IsNullOrEmpty(servicesConfig.fbAppId.Trim()))
+            {
+                Debug.LogError("ServiceConfig or facebook id is null");
+                return;
+            }
+            var facebookId = servicesConfig.fbAppId;
+            if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
+            {
+                var instance = EditorWindow.CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
+                var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
+                if (!Directory.Exists(path1))
+                    Directory.CreateDirectory(path1);
+                var path2 =
+                    Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
+                AssetDatabase.CreateAsset(instance, path2);
+            }
+            Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
+            Facebook.Unity.Settings.FacebookSettings.AppIds = new List<string> {facebookId};
+            Facebook.Unity.Settings.FacebookSettings.AppLabels =
+                new List<string> {PlayerSettings.productName};
+            EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
+            Facebook.Unity.Editor.ManifestMod.GenerateManifest();
+#endif
+        }
+
+        public static void SetAdmobAppId()
+        {
+#if PluginApplovin
+            AppLovinSettings.Instance.AdMobIosAppId = servicesConfig.admobAppIOSId;
+            AppLovinSettings.Instance.AdMobAndroidAppId = servicesConfig.admobAppAndroidId;
+            AppLovinSettings.Instance.SaveAsync();
 #endif
         }
     }

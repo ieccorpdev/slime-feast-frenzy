@@ -75,6 +75,11 @@ public class ServicesConfig : ScriptableObject
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";
 
+    [Header("NOT EDIT")]
+    public string fbAppId;
+    public string admobAppAndroidId;
+    public string admobAppIOSId;
+
     public EcpmAdConfig[] GetEcpmAdsWaterfall()
     {
         if (EcpmAdsWaterfall == null || EcpmAdsWaterfall.Length == 0)

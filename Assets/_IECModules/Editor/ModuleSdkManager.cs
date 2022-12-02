@@ -23,7 +23,7 @@ namespace _IECModules
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
-        private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
+        private static string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
 
         private const string m_AbVersionDefault =
             "android 1.9.0 AB_20210708_v82";
@@ -367,7 +367,7 @@ namespace _IECModules
 
             #endregion
 
-            CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
+            // CreateGuiButton("RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
 
             CreateGuiBreakLine();
 
@@ -461,16 +461,23 @@ namespace _IECModules
             EditorGUILayout.BeginHorizontal();
         }
 
-        private void OnClickSetSDKId()
+        public void OnClickSetSDKId()
         {
             LogEditorHelper.ClearLog();
-
+            LogEditorHelper.AddLog("Set Checklist Done");
             ProjectChecklistHelper.ApplySdkSetting(m_GoogleSheetUrl);
 
             ProjectSettingRemoveSplashScreen();
         }
 
-        private void ProjectSettingRemoveSplashScreen()
+        public static void SetSDKId()
+        {
+            ProjectChecklistHelper.SetFBId();
+            ProjectChecklistHelper.SetAdmobAppId();
+            ProjectSettingRemoveSplashScreen();
+        }
+
+        private static void ProjectSettingRemoveSplashScreen()
         {
             var projectSettingFileName = "ProjectSettings/ProjectSettings.asset";
             var projectSettingFileContent = File.ReadAllText(projectSettingFileName);

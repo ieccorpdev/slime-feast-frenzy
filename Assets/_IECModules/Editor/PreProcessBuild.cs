@@ -15,6 +15,9 @@ public class PreProcessBuild : IPreprocessBuildWithReport
 
     public void OnPreprocessBuild(BuildReport report)
     {
+        ProjectChecklistHelper.LoadServicesConfig();
+        ModuleSdkManager.SetSDKId();
+        ProjectResolveHelper.ResolveProject();
         SetFirebaseVersion();
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
