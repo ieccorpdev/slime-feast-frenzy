@@ -40,6 +40,7 @@ public class ServicesConfig : ScriptableObject
     public AdsConfig ApplovinConfig;
     public AdsConfig IronSourceConfig;
     public OguryAdsConfig OguryConfig;
+    public AmazonConfig AmazonConfig;
 
     [Header("Iap Config")]
     public bool IapTestFree;
@@ -109,6 +110,15 @@ public class ServicesConfig : ScriptableObject
             remoteConfigs.Add(remoteCustomEventFirebase);
         }
         return remoteConfigs;
+    }
+
+    public List<ABTestConfig> GetListAbTestConfig()
+    {
+        if (isVersionByPlatform)
+        {
+            return abTestConfigs.Where(ab => ab.IsPlatform(platform)).ToList();
+        }
+        return abTestConfigs.ToList();
     }
 
     public void SetActiveAbByVersion()
