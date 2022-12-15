@@ -137,6 +137,7 @@ namespace _IECModules
                         case RequestType.SearchRequest:
                             {
                                 var detailRequest = (SearchRequest)request;
+                                LogEditorHelper.AddLog("Search done");
                                 currentRequest.onSearchRequestDone?.Invoke(detailRequest);
                             }
                             break;

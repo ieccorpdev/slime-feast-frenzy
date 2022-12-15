@@ -50,6 +50,7 @@ namespace _IECModules
         public const string GOOGLE_PLAY_CORE = "com.google.play.core";
         public const string NOTIFICATION_PKG = "com.unity.mobile.notifications";
         public const string I2_LOCALIZATION_PKG = "com.i2.localization";
+        public const string IEC_PLUGIN = "com.iec.plugin";
 
         public static string FacebookAudienceNetworkSdkUrlByVersion(string version = "6.2.1") =>
             string.Format(FACEBOOK_AUDIENCE_NETWORK_SDK_BASE_URL, version);
@@ -124,7 +125,8 @@ namespace _IECModules
                 [I2_LOCALIZATION_PKG] = new GitlabPackageInfo
                 {
                     id = I2_LOCALIZATION_PKG
-                }
+                },
+                [IEC_PLUGIN] = new GitlabPackageInfo{id = IEC_PLUGIN}
             };
 
         public static readonly FacebookSdkLoader FacebookSdkLoader = new FacebookSdkLoader();
@@ -163,6 +165,18 @@ namespace _IECModules
             var jsonNode = JSON.Parse(manifestFileContent);
             jsonNode["dependencies"][pkgName] = version;
             File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        }
+
+        public static void RemovePackageLog(string pkgName)
+        {
+            var packageLog = "Packages/packages-lock.json";
+            var packageLogContent = File.ReadAllText(packageLog);
+            var jsonNode = JSON.Parse(packageLogContent);
+            if(jsonNode["dependencies"].HasKey(pkgName))
+            {
+                jsonNode["dependencies"].Remove(pkgName);
+            }
+            File.WriteAllText(packageLog, jsonNode.ToString(2));
         }
 
         public static void AddRegistries(RegistryManifest registry)
@@ -221,6 +235,8 @@ namespace _IECModules
         public List<string> nonContrainDependencies;
         public List<string> constrainDependencies;
 
+        public bool isIECPlugin => id == SdkHelper.IEC_PLUGIN;
+
         public void SetDependencies(List<string> constrainDependencies = null,
             List<string> nonContrainDependencies = null)
         {
@@ -235,6 +251,8 @@ namespace _IECModules
             var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/branches";
             var versions = new List<string>();
             var requestUrl100 = url + "?per_page=100";
+            var listExclude = new List<string>();
+            if (isIECPlugin) listExclude = new List<string> { "deleted", "deprecated" };
             var httpRequest = new HTTPRequest(new Uri(requestUrl100), (request, response) =>
             {
                 var numPage = int.Parse(response.Headers["x-total-pages"][0]);
@@ -253,11 +271,13 @@ namespace _IECModules
                         var version = data[i]["name"].Value;
                         if (version != "master" && version != "main")
                         {
+                            if(listExclude.Count > 0 && listExclude.Any(x => version.Contains(x))) continue;
                             versions.Add(version);
                         }
                     }
-
-                    versions = versions.OrderByDescending(x => new Version(x)).ToList();
+        
+                    versions = (isIECPlugin ? versions.OrderByDescending(x => x) :
+                        versions.OrderByDescending(x => new Version(x))).ToList();
                     // Debug.Log(id);
                     // foreach (var version in versions)
                     // {
@@ -317,7 +337,9 @@ namespace _IECModules
 
         string GetGitlabUrlByVersion(string version)
         {
-            return $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
+            return isIECPlugin ? 
+                $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git?path=/Assets#{version}" 
+                : $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
         }
 
         public virtual void InstallDependencies(string pluginVersion)
@@ -348,6 +370,7 @@ namespace _IECModules
 
         public override void InstallPKG(string version)
         {
+            if(isIECPlugin) SdkHelper.RemovePackageLog(id);
             SdkHelper.AddDependency(id,version);
         }
     }
@@ -361,7 +384,7 @@ namespace _IECModules
 
         public string[] listVersion =>
             listVersionLoad == null ||
-            listVersionLoad.Length <= listDefaultVerion.Length
+            listVersionLoad.Length < listDefaultVerion.Length
                 ? listDefaultVerion
                 : listVersionLoad;
 
