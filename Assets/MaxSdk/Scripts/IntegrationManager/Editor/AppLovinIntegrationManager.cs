@@ -287,54 +287,55 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         public IEnumerator LoadPluginData(Action<PluginData> callback)
         {
             var url = string.Format("https://dash.applovin.com/docs/v1/unity_integration_manager?plugin_version={0}", GetPluginVersionForUrl());
-            var www = UnityWebRequest.Get(url);
-
+            using (var www = UnityWebRequest.Get(url))
+            {
 #if UNITY_2017_2_OR_NEWER
-            var operation = www.SendWebRequest();
+                var operation = www.SendWebRequest();
 #else
-            var operation = www.Send();
+                var operation = www.Send();
 #endif
 
-            while (!operation.isDone) yield return new WaitForSeconds(0.1f); // Just wait till www is done. Our coroutine is pretty rudimentary.
+                while (!operation.isDone) yield return new WaitForSeconds(0.1f); // Just wait till www is done. Our coroutine is pretty rudimentary.
 
 #if UNITY_2020_1_OR_NEWER
-            if (www.result != UnityWebRequest.Result.Success)
+                if (www.result != UnityWebRequest.Result.Success)
 #elif UNITY_2017_2_OR_NEWER
-            if (www.isNetworkError || www.isHttpError)
+                if (www.isNetworkError || www.isHttpError)
 #else
-            if (www.isError)
+                if (www.isError)
 #endif
-            {
-                callback(null);
-            }
-            else
-            {
-                PluginData pluginData;
-                try
                 {
-                    pluginData = JsonUtility.FromJson<PluginData>(www.downloadHandler.text);
+                    callback(null);
                 }
-                catch (Exception exception)
+                else
                 {
-                    Console.WriteLine(exception);
-                    pluginData = null;
-                }
-
-                if (pluginData != null)
-                {
-                    // Get current version of the plugin
-                    var appLovinMax = pluginData.AppLovinMax;
-                    UpdateCurrentVersions(appLovinMax, PluginParentDirectory);
-
-                    // Get current versions for all the mediation networks.
-                    var mediationPluginParentDirectory = MediationSpecificPluginParentDirectory;
-                    foreach (var network in pluginData.MediatedNetworks)
+                    PluginData pluginData;
+                    try
                     {
-                        UpdateCurrentVersions(network, mediationPluginParentDirectory);
+                        pluginData = JsonUtility.FromJson<PluginData>(www.downloadHandler.text);
                     }
-                }
+                    catch (Exception exception)
+                    {
+                        Console.WriteLine(exception);
+                        pluginData = null;
+                    }
 
-                callback(pluginData);
+                    if (pluginData != null)
+                    {
+                        // Get current version of the plugin
+                        var appLovinMax = pluginData.AppLovinMax;
+                        UpdateCurrentVersions(appLovinMax, PluginParentDirectory);
+
+                        // Get current versions for all the mediation networks.
+                        var mediationPluginParentDirectory = MediationSpecificPluginParentDirectory;
+                        foreach (var network in pluginData.MediatedNetworks)
+                        {
+                            UpdateCurrentVersions(network, mediationPluginParentDirectory);
+                        }
+                    }
+
+                    callback(pluginData);
+                }
             }
         }
 
@@ -425,15 +426,13 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 #if UNITY_2017_2_OR_NEWER
             var operation = webRequest.SendWebRequest();
 #else
-        var operation = webRequest.Send();
+            var operation = webRequest.Send();
 #endif
-
             while (!operation.isDone)
             {
                 yield return new WaitForSeconds(0.1f); // Just wait till webRequest is completed. Our coroutine is pretty rudimentary.
                 CallDownloadPluginProgressCallback(network.DisplayName, operation.progress, operation.isDone);
             }
-
 
 #if UNITY_2020_1_OR_NEWER
             if (webRequest.result != UnityWebRequest.Result.Success)
@@ -451,6 +450,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 AssetDatabase.ImportPackage(path, true);
             }
 
+            webRequest.Dispose();
             webRequest = null;
         }
 
@@ -640,7 +640,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 didAddLabels = true;
             }
 
-            var exportPathLabel = "al_max_export_path-" + assetPath.Replace(pluginParentDir, "");
+            var exportPathLabel = "al_max_export_path-" + assetPath.Replace(pluginParentDir, "").Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             if (!labels.Contains(exportPathLabel))
             {
                 labelsToAdd.Add(exportPathLabel);

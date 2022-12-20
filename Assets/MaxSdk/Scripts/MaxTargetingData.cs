@@ -109,18 +109,6 @@ public class MaxTargetingData
     }
 
     /// <summary>
-    /// The zip or postal code of the user.
-    /// Set this property to <c>null</c> to clear this value.
-    /// </summary>
-    public string ZipCode
-    {
-        set
-        {
-            MaxSdk.SetTargetingDataZipCode(value);
-        }
-    }
-
-    /// <summary>
     /// The keywords describing the application.
     /// Set this property to <c>null</c> to clear this value.
     /// </summary>
