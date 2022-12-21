@@ -79,7 +79,7 @@ namespace _IECModules
             GenerateGameObjectOguryCallback();
             DeleteObsoleteResolver();
             CheckAddDefineAmazon();
-            // UpdateApplovinQualityService();
+            UpdateApplovinQualityService();
         }
 
         private static void CheckAddDefineAmazon()
