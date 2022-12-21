@@ -81,7 +81,7 @@ namespace _IECModules
             var allDir = Directory.GetDirectories(packageCache);
             var listIecPluginFound = allDir.Where(x => x.Contains("com.iec.plugin")).ToList();
             if(listIecPluginFound.Count == 0) return;
-            var iecPluginPath = packageCache + $"/{listIecPluginFound[0]}";
+            var iecPluginPath = listIecPluginFound[0];
             var allIecDir = Directory.GetDirectories(iecPluginPath);
             var isHaveAmazon = allIecDir.Any(x => x.Contains("Amazon"));
             if (isHaveAmazon)
