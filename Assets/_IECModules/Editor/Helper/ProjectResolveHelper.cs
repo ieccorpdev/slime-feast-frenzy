@@ -164,8 +164,6 @@ namespace _IECModules
             templatePath = $"Assets/_IECModules/Template/{libName}.androidlib.template";
             libraryPath = $"Assets/Plugins/Android/{libName}.androidlib";
             
-            if(!Directory.Exists(pluginPath)) return;
-
             if (Directory.Exists(libraryPath))
             {
                 Directory.Delete(libraryPath, true);
