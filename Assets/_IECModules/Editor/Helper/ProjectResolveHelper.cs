@@ -49,6 +49,8 @@ namespace _IECModules
         public static string TemplateFolderPath => m_TemplateFolderPath ?? (m_TemplateFolderPath
                                                        = listTemplatePathCheck.FirstOrDefault(Directory.Exists));
 
+        private static string m_IecPluginPackageCachePath;
+
         public static void EditorOnGUI()
         {
             if (m_WarningTextStyle == null)
@@ -69,6 +71,7 @@ namespace _IECModules
         public static void ResolveProject()
         {
             //EnableJetifier();
+            GetIecPluginPackageCachePath();
             RemoveUnityAdsPackage();
             EnableJetifierNew();
             UpdateMainTemplateAndAndroidManifest();
@@ -80,16 +83,36 @@ namespace _IECModules
             DeleteObsoleteResolver();
             CheckAddDefineAmazon();
             UpdateApplovinQualityService();
+            CopyLinkDll();
         }
 
-        private static void CheckAddDefineAmazon()
+        private static void GetIecPluginPackageCachePath()
         {
             var packageCache = "Library/PackageCache";
             var allDir = Directory.GetDirectories(packageCache);
             var listIecPluginFound = allDir.Where(x => x.Contains("com.iec.plugin")).ToList();
             if(listIecPluginFound.Count == 0) return;
-            var iecPluginPath = listIecPluginFound[0];
-            var allIecDir = Directory.GetDirectories(iecPluginPath);
+             m_IecPluginPackageCachePath = listIecPluginFound[0];
+             Debug.Log("IEC Plugin Cache Path:" + m_IecPluginPackageCachePath);
+        }
+
+        private static void CopyLinkDll()
+        {
+#if PluginFacebook
+            var facebookPath = "Assets/FacebookSDK";
+            if (!Directory.Exists(facebookPath))
+            {
+                Directory.CreateDirectory(facebookPath);
+            }
+            var facebookLinkPath = $"{m_IecPluginPackageCachePath}/FacebookSDK/link.xml";
+            File.Copy(facebookLinkPath,$"{facebookPath}/link.xml", true);
+#endif
+            
+        }
+
+        private static void CheckAddDefineAmazon()
+        {
+            var allIecDir = Directory.GetDirectories(m_IecPluginPackageCachePath);
             var isHaveAmazon = allIecDir.Any(x => x.Contains("Amazon"));
             if (isHaveAmazon)
             {
