@@ -2,9 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-#if UNITY_IOS
-using Unity.Advertisement.IosSupport;
-#endif
 using UnityEngine;
 
 namespace IEC
@@ -24,7 +21,7 @@ namespace IEC
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
 #if UNITY_IOS
-        public ATTrackingStatusBinding.AuthorizationTrackingStatus? attStatus;
+        public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
 
         [NonSerialized] public Dictionary<string, Func<Dictionary<string, object>>> dictCustomParams;
