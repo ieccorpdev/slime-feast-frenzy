@@ -85,8 +85,9 @@ namespace IEC
                 return;
             }
 
+            var listAbTestDate = listAbTestConfig.Select(x => x.Date).ToList();
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
-            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 
             var allMethods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
             var listResultAb = GetListAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
