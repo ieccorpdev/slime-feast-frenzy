@@ -70,14 +70,6 @@ namespace _IECModules
             OguryAndroidBannerID,
             OguryAndroidRewardID,
             OguryAndroidThumbnailID,
-            AmazonAndroidID,
-            AmazonAndroidInterID,
-            AmazonAndroidBannerID,
-            AmazonAndroidRewardID,
-            AmazonIOSID,
-            AmazonIOSInterID,
-            AmazonIOSBannerID,
-            AmazonIOSRewardID
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -136,15 +128,7 @@ namespace _IECModules
             {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID},
             {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID},
             {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID},
-            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID},
-            {"Amazon Android ID", ChecklistItemName.AmazonAndroidID},
-            {"Amazon Android Inter ID", ChecklistItemName.AmazonAndroidInterID},
-            {"Amazon Android Banner ID", ChecklistItemName.AmazonAndroidBannerID},
-            {"Amazon Android Reward ID", ChecklistItemName.AmazonAndroidRewardID},
-            {"Amazon iOS ID", ChecklistItemName.AmazonIOSID},
-            {"Amazon iOS Inter ID", ChecklistItemName.AmazonIOSInterID},
-            {"Amazon iOS Banner ID", ChecklistItemName.AmazonIOSBannerID},
-            {"Amazon iOS Reward ID", ChecklistItemName.AmazonIOSRewardID},
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -532,46 +516,6 @@ namespace _IECModules
                         if(!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Admob Android ID: {checklistItemValue}");
                         AppLovinSettings.Instance.AdMobAndroidAppId = checklistItemValue;
                         AppLovinSettings.Instance.SaveAsync();
-                        break;
-#endif
-#if PluginMaxAmazonNetwork
-                    case ChecklistItemName.AmazonIOSID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon IOS ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.ios.appID = checklistItemValue;
-#if UNITY_IOS
-                        // UpdateAmazonQualityService(checklistItemValue);
-#endif
-                        break;
-                    case ChecklistItemName.AmazonAndroidID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon Android ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.android.appID = checklistItemValue;
-#if UNITY_ANDROID
-                        // UpdateAmazonQualityService(checklistItemValue);
-#endif
-                        break;
-                    case ChecklistItemName.AmazonIOSInterID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon IOS Inter ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.ios.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AmazonIOSBannerID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon IOS Banner ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.ios.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AmazonIOSRewardID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon IOS Reward ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.ios.rewardID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AmazonAndroidInterID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon Android Inter ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.android.interstitialID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AmazonAndroidBannerID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon Android Banner ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.android.bannerID = checklistItemValue;
-                        break;
-                    case ChecklistItemName.AmazonAndroidRewardID:
-                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Amazon Android Reward ID: {checklistItemValue}");
-                        servicesConfig.AmazonConfig.android.rewardID = checklistItemValue;
                         break;
 #endif
 #if PluginOgury

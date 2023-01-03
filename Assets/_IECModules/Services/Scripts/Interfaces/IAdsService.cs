@@ -53,13 +53,6 @@ namespace IEC
         public OguryAdsPlatformConfig ios;
     }
 
-    [Serializable]
-    public class AmazonConfig
-    {
-        public AdsPlatformConfig android;
-        public AdsPlatformConfig ios;
-    }
-
     public class AdsStateData
     {
         public Action<AdsEventArgs> onLoad;
