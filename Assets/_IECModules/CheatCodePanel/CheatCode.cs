@@ -220,7 +220,7 @@ namespace _IECModules
 
         private void Start()
         {
-#if PluginApplovin
+#if PluginApplovin || PluginIronSource
             AddCheatCodeButtonWithInput("Set Rev all ad",
                 param =>
                 {
