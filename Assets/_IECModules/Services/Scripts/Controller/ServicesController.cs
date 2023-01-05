@@ -615,6 +615,7 @@ namespace IEC
                             RaiseInitEvent(EventList.Service.INIT_AD_DONE);
                         }
                     }, PushEvent);
+                    ironSourceAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
                     m_Ads = ironSourceAds;
                 }
 #endif
