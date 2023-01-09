@@ -7,6 +7,59 @@
       "dependencies": {},
       "hash": "8a8fa5a9659a6d63f196391c71e06c4286c8acd7"
     },
+    "com.google.android.appbundle": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.android.appbundle.git#1.5.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4a85af6626e6b9127adc3aa32f130bd05761b8f4"
+    },
+    "com.google.external-dependency-manager": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.175",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "c35e93a9be120708bd29190a5787483ebc361607"
+    },
+    "com.google.firebase.analytics": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#9.1.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.firebase.app": "9.1.0"
+      },
+      "hash": "a869da5818ce0c6eb1794f375d92798add8a930b"
+    },
+    "com.google.firebase.app": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#9.1.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.171"
+      },
+      "hash": "f2e32eef6fa1d29ceee0b4b69d8854d1fee7ca35"
+    },
+    "com.google.play.common": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.common.git#1.5.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a68976d18b01e0fe23c65a986cba53b8ef21569f"
+    },
+    "com.google.play.core": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.core.git#1.5.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6bf6f5acafafb49cab5a5ac3673d533e885ea9dc"
+    },
+    "com.google.play.review": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.review.git#1.5.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "4a962d12e860f9bde6be1156742150fa2d9de4d2"
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -67,6 +120,15 @@
       "depth": 0,
       "source": "registry",
       "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.mobile.notifications": {
+      "version": "2.1.0",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.androidjni": "1.0.0"
+      },
       "url": "https://packages.unity.com"
     },
     "com.unity.multiplayer-hlapi": {
