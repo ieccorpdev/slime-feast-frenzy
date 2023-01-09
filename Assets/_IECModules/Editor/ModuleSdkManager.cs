@@ -342,8 +342,32 @@ namespace _IECModules
             // });
             // CreateGuiBreakLine();
             // #endregion
+            
+            CreateGuiLabel("2. Sync SDK", m_StyleHeader1);
+            var iecPlugin = SdkHelper.DictGitlabPluginVersion[SdkHelper.IEC_PLUGIN];
+            var iecPluginLoaded = iecPlugin.LoadPKGVersionFromCache();
+            CreateGuiButton(
+                $"IEC Plugin {(iecPluginLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+                {
+                    if (!iecPluginLoaded)
+                    {
+                        return;
+                    }
 
-            CreateGuiLabel("2. Project Resolver", m_StyleHeader1);
+                    iecPlugin.Install();
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
+                    
+                });
+
+            iecPlugin.versionSelected = EditorGUILayout.Popup("", iecPlugin.versionSelected,
+                iecPlugin.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+            
+            CreateGuiLabel("3. Project Resolver", m_StyleHeader1);
 
             #region External Dependency Manager
 
@@ -373,7 +397,7 @@ namespace _IECModules
 
             ProjectResolveHelper.EditorOnGUI();
 
-            CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
+            CreateGuiLabel("4. Update Project Checklist", m_StyleHeader1);
 
             if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
@@ -382,7 +406,7 @@ namespace _IECModules
             }
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
-            CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
+            CreateGuiLabel("5. Update AB Test Version", m_StyleHeader1);
 
             if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
                 GUILayout.Height(buttonSize.y)))
@@ -394,9 +418,11 @@ namespace _IECModules
                 {
                     var platform = split[0];
                     var platformVersion = config.GetPlatformVersion(platform);
-                    platformVersion.version = split[1];
+                    var version = split[1];
+                    var overwriteAbName = (platformVersion.version == version) ? platformVersion.abTest : "";
+                    platformVersion.version = version;
                     var lastAbString = split[2];
-                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform);
+                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform, overwriteAbName);
                 }
                 else
                 {
