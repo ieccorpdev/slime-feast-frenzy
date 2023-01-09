@@ -126,7 +126,13 @@ namespace _IECModules
                 {
                     id = I2_LOCALIZATION_PKG
                 },
-                [IEC_PLUGIN] = new GitlabPackageInfo{id = IEC_PLUGIN}
+                [IEC_PLUGIN] = new GitlabPackageInfo{
+                    id = IEC_PLUGIN,
+                    nonContrainDependencies = new List<string>
+                    {
+                        EXTERNAL_DEPENDENCY_PKG
+                    }
+                }
             };
 
         public static readonly FacebookSdkLoader FacebookSdkLoader = new FacebookSdkLoader();
