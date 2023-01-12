@@ -47,6 +47,7 @@ namespace _IECModules
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 IronSource.Agent.setManualLoadRewardedVideo(true);
+				IronSource.Agent.SetPauseGame(true);
                 IronSource.Agent.init(config.appID);
                 // IronSource.Agent.init(config.appID, IronSourceAdUnits.BANNER);
                 // IronSource.Agent.init(config.appID, IronSourceAdUnits.INTERSTITIAL);
