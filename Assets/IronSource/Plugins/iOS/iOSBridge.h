@@ -12,7 +12,7 @@
 #import "InterstitialLevelPlayCallbacksWrapper.h"
 #import "BannerLevelPlayCallbacksWrapper.h"
 
-static NSString *  UnityGitHash = @"ef7455f";
+static NSString *  UnityGitHash = @"1ec2fc4";
 typedef void (*ISUnityBackgroundCallback)(const char* args);
 typedef void (*ISUnityPauseGame)(const bool gamePause);
 
