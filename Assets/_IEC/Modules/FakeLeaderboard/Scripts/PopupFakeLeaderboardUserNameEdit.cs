@@ -56,7 +56,6 @@ namespace IEC.FakeLeaderboard
                 //    m_panelWarning.transform.DOShakePosition(1, 10);
                 return;
             }
-            
             // Controllers.Get<ServicesController>().PushEvent(new IEC.TrackingEvent.ClickLeaderboardNameEditOk());
             m_panelMain.Controller.UpdateUsername(m_inputName.text);
             m_panelMain.LoadData();
