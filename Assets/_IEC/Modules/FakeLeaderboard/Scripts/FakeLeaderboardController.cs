@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace IEC.FakeLeaderboard
 {
     public class FakeLeaderboardController : _BaseBehaviour, IController, IEventAwake, IEventPauseApp
     {
+        [BoxGroup("Auto Load, NOT EDIT")]
         public FakeLeaderboardDataSave leaderDataSave; //=> leaderDataSave;
         private const string FAKE_LB_DATA_SAVE = "FakeLeaderboardController.FAKE_LB_DATA_SAVE";
+        [BoxGroup("Auto Load, NOT EDIT")]
         public FakeLeaderboardDataConfig dataConfig;
 
         public void BehaviourAwake()
