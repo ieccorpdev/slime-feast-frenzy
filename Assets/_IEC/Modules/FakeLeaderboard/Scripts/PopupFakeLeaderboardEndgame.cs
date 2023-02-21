@@ -102,6 +102,7 @@ namespace IEC.FakeLeaderboard
 
         IEnumerator DoPromote(bool isPromote = false)
         {
+            yield return new WaitForEndOfFrame();
             var _scroll = m_transNewRankParent.parent.GetComponent<ScrollRect>();
             _scroll.normalizedPosition = new Vector2(0, 0);
 
