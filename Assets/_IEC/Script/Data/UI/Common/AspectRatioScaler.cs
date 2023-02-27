@@ -1,6 +1,7 @@
 ﻿using UnityEngine.EventSystems;
-
-namespace UnityEngine.UI
+using UnityEngine;
+using UnityEngine.UI;
+namespace IEC
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(RectTransform))]
