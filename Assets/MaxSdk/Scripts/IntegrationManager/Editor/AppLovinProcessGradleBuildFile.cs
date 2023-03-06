@@ -155,45 +155,46 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         {
             var postJson = string.Format("{{\"sdk_key\" : \"{0}\"}}", sdkKey);
             var bodyRaw = Encoding.UTF8.GetBytes(postJson);
+            // Upload handler is automatically disposed when UnityWebRequest is disposed
             var uploadHandler = new UploadHandlerRaw(bodyRaw);
             uploadHandler.contentType = "application/json";
 
-            var unityWebRequest = new UnityWebRequest("https://api2.safedk.com/v1/build/cred")
+            using (var unityWebRequest = new UnityWebRequest("https://api2.safedk.com/v1/build/cred"))
             {
-                method = UnityWebRequest.kHttpVerbPOST,
-                uploadHandler = uploadHandler,
-                downloadHandler = new DownloadHandlerBuffer()
-            };
+                unityWebRequest.method = UnityWebRequest.kHttpVerbPOST;
+                unityWebRequest.uploadHandler = uploadHandler;
+                unityWebRequest.downloadHandler = new DownloadHandlerBuffer();
 
 #if UNITY_2017_2_OR_NEWER
-            var operation = unityWebRequest.SendWebRequest();
+                var operation = unityWebRequest.SendWebRequest();
 #else
-            var operation = webRequest.Send();
+                var operation = webRequest.Send();
 #endif
 
-            // Wait for the download to complete or the request to timeout.
-            while (!operation.isDone) { }
+                // Wait for the download to complete or the request to timeout.
+                while (!operation.isDone) { }
 
 #if UNITY_2020_1_OR_NEWER
-            if (unityWebRequest.result != UnityWebRequest.Result.Success)
+                if (unityWebRequest.result != UnityWebRequest.Result.Success)
 #elif UNITY_2017_2_OR_NEWER
-            if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
 #else
-            if (webRequest.isError)
+                if (webRequest.isError)
 #endif
-            {
-                MaxSdkLogger.UserError("Failed to retrieve API Key for SDK Key: " + sdkKey + "with error: " + unityWebRequest.error);
-                return new AppLovinQualityServiceData();
-            }
+                {
+                    MaxSdkLogger.UserError("Failed to retrieve API Key for SDK Key: " + sdkKey + "with error: " + unityWebRequest.error);
+                    return new AppLovinQualityServiceData();
+                }
 
-            try
-            {
-                return JsonUtility.FromJson<AppLovinQualityServiceData>(unityWebRequest.downloadHandler.text);
-            }
-            catch (Exception exception)
-            {
-                MaxSdkLogger.UserError("Failed to parse API Key." + exception);
-                return new AppLovinQualityServiceData();
+                try
+                {
+                    return JsonUtility.FromJson<AppLovinQualityServiceData>(unityWebRequest.downloadHandler.text);
+                }
+                catch (Exception exception)
+                {
+                    MaxSdkLogger.UserError("Failed to parse API Key." + exception);
+                    return new AppLovinQualityServiceData();
+                }
             }
         }
 
