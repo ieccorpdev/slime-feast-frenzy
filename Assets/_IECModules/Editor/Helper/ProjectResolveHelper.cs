@@ -102,11 +102,16 @@ namespace _IECModules
             PackageManagerHelper.Remove("com.unity.ads", null, true);
         }
 
-        private static void UpdateApplovinQualityService()
+        public static void UpdateApplovinQualityService()
         {
 #if PluginApplovin
             LogEditorHelper.AddLog("AppLovin Disable Quality Service");
             AppLovinSettings.Instance.QualityServiceEnabled = true;
+#if UNITY_ANDROID
+            AppLovinSettings.Instance.SdkKey = ProjectChecklistHelper.servicesConfig.ApplovinConfig.android.appID;
+#elif UNITY_IOS
+            AppLovinSettings.Instance.SdkKey = ProjectChecklistHelper.servicesConfig.ApplovinConfig.ios.appID;
+#endif
             EditorUtility.SetDirty(AppLovinSettings.Instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
