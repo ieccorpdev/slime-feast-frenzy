@@ -161,7 +161,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             "z4gj7hsk7h.skadnetwork"
         };
         
-        AddMissingSKAdNetworkID(listAmazonMissing);
+        AddMissingSKAdNetworkID(listAmazonMissing, path);
     }
     
     public static void CheckAddSmaatoSKAdNetworkID(string path = "")
