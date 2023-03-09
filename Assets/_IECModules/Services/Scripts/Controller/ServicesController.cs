@@ -1282,5 +1282,7 @@ namespace IEC
         {
             return m_EventCount.GetCount(eventName);
         }
+
+        public bool IsNewInstall => m_IsNewInstall;
     }
 }
