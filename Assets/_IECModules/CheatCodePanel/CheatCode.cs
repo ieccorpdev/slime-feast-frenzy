@@ -7,6 +7,9 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Diagnostics;
 using UnityEngine.UI;
+#if PuginStartIONetwork
+using StartApp;
+#endif
 
 namespace _IECModules
 {
@@ -215,7 +218,18 @@ namespace _IECModules
                 PlayerPrefs.SetInt(AdjustAnalyticModule.ADJUST_SANDBOX, sandBoxEnable);
             });
 #endif
-//            AddTestButton();
+            //            AddTestButton();
+
+#if PuginStartIONetwork
+            var startIOEnable = PlayerPrefs.GetInt("StartIOTest") == 1? true: false;
+            ModuleController.cheatCode.AddCheatCodeButton("StartIO test Ads: " + startIOEnable, param =>
+            {
+                startIOEnable = !startIOEnable;
+                PlayerPrefs.SetInt("StartIOTest", startIOEnable ? 1 : 0);
+                AdSdk.Instance.SetTestAdsEnabled(true);
+                param.buttonText = "StartIO test Ads: " + startIOEnable;
+            });
+#endif
         }
 
         private void Start()

@@ -29,7 +29,5 @@ namespace IEC
         {
             timeEndLevel = System.DateTime.Now;
         }
-
-        public bool isTestAdsStartIO;
     }
 }
