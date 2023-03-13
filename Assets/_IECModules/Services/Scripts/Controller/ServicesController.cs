@@ -592,7 +592,7 @@ namespace IEC
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
                 {
                     var applovinAds = new ApplovinModule();
-                    applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                    applovinAds.Init(config.ApplovinConfig, config.AmazonConfig,true, true, (result) =>
                         {
                             if (result)
                             {
