@@ -1042,9 +1042,9 @@ namespace IEC
         private string m_UserIDFA;
         void RequestUserIdfa()
         {
-            m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
+#if UNITY_ANDROID
                 try
                 {
                     var up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
@@ -1058,6 +1058,15 @@ namespace IEC
                 {
                     Debug.LogWarning(e);
                 }
+#else
+                Application.RequestAdvertisingIdentifierAsync(
+                    (string advertisingId, bool trackingEnabled, string error) =>
+                    {
+                        Debug.Log("advertisingId " + advertisingId + " " + trackingEnabled + " " + error);
+                        m_UserIDFA = advertisingId;
+                    }
+                );
+#endif
             }
             else
             {

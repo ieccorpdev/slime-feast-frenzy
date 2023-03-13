@@ -19,6 +19,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
         SetTargetSdkAndroid();
+        ProjectResolveHelper.UpdateApplovinQualityService();
         AddGradlePropertiesIronSource();
     }
 
