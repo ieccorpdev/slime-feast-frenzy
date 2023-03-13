@@ -291,7 +291,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)rewardedVideoDidClose {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     [self centerBanner];
     UnitySendMessage(IRONSOURCE_EVENTS, "onRewardedVideoAdClosed", "");
 }
@@ -323,7 +325,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)rewardedVideoLevelPlayDidCloseWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     UnitySendMessage(IRONSOURCE_REWARDED_VIDEO_EVENTS, "onAdClosed",[self getAdInfoData:adInfo].UTF8String);
 }
 
@@ -405,7 +409,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)rewardedVideoDidClose:(NSString *)instanceId {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     [self centerBanner];
     UnitySendMessage(IRONSOURCE_EVENTS, "onRewardedVideoAdClosedDemandOnly", MakeStringCopy(instanceId));
 }
@@ -472,7 +478,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)interstitialDidClose {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     [self centerBanner];
     UnitySendMessage(IRONSOURCE_EVENTS, "onInterstitialAdClosed", "");
 }
@@ -499,7 +507,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)interstitialLevelPlayDidCloseWithAdInfo:(nonnull ISAdInfo *)adInfo {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     UnitySendMessage(IRONSOURCE_INTERSTITIAL_EVENTS, "onAdClosed", [self getAdInfoData:adInfo].UTF8String);
 }
 
@@ -550,7 +560,9 @@ char *const IRONSOURCE_BANNER_EVENTS = "IronSourceBannerEvents";
 }
 
 - (void)interstitialDidClose:(NSString *)instanceId {
-    UnityPause(0);
+    if (pauseGame) {
+        UnityPause(0);
+    }
     [self centerBanner];
     UnitySendMessage(IRONSOURCE_EVENTS, "onInterstitialAdClosedDemandOnly", MakeStringCopy(instanceId));
 }
