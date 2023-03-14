@@ -44,6 +44,7 @@ public class ServicesConfig : ScriptableObject
     public AdsConfig IronSourceConfig;
     public OguryAdsConfig OguryConfig;
     public AmazonConfig AmazonConfig;
+    public AmazonConfig AmazonConfigIS;
 
     [Header("Iap Config")]
     public bool IapTestFree;

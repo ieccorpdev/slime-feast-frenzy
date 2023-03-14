@@ -610,7 +610,7 @@ namespace IEC
                 if (m_ServiceData.mediation == Mediation.IronSource || listMediation.Count <= 1)
                 {
                     var ironSourceAds = new IronSourceModule();
-                    ironSourceAds.Init(config.IronSourceConfig,config.AmazonConfig, true,true, (result) =>
+                    ironSourceAds.Init(config.IronSourceConfig,config.AmazonConfigIS, true,true, (result) =>
                     {
                         if (result)
                         {
