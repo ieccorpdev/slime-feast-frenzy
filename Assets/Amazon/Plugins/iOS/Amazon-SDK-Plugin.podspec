@@ -11,6 +11,7 @@ Pod::Spec.new do |s|
   
   s.dependency 'AmazonPublisherServicesSDK'
   s.pod_target_xcconfig = {
+    'ENABLE_BITCODE' => 'NO',
     'OTHER_CPLUSPLUSFLAGS' => '-fcxx-modules',
   }
 end

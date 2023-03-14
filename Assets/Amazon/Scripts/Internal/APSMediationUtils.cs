@@ -11,16 +11,21 @@ namespace AmazonAds {
             APSIronSourceNetworkInterstitialInputData ironSourceInputData = new APSIronSourceNetworkInterstitialInputData();
 #if UNITY_ANDROID
             ironSourceInputData.bidInfo = adResponse.GetBidInfo();
-#else
-            ironSourceInputData.mediationHints = adResponse.GetMediationHints();
+
 #endif
             ironSourceInputData.pricePointEncoded = adResponse.GetPricePoint();
             ironSourceInputData.uuid = amazonSlotId;
-
             APSIronSourceInterstitialNetworkData networkData = new APSIronSourceInterstitialNetworkData();
             networkData.interstitial = ironSourceInputData;
 
+#if UNITY_IOS
+            string mediationHints = "\"mediationHints\" :" + adResponse.GetMediationHints();
+            string jsonData = "{ \"interstitial\" :" + JsonUtility.ToJson(ironSourceInputData);
+            jsonData = jsonData.Remove(jsonData.Length - 1);
+            jsonData = jsonData + ", " + mediationHints + "}}";
+#else
             string jsonData = "{ \"interstitial\" :" + JsonUtility.ToJson(ironSourceInputData) + "}";
+#endif
             return jsonData;
 
         }
@@ -30,8 +35,6 @@ namespace AmazonAds {
             APSIronSourceNetworkBannerInputData ironSourceInputData = new APSIronSourceNetworkBannerInputData();
 #if UNITY_ANDROID
             ironSourceInputData.bidInfo = adResponse.GetBidInfo();
-#else
-            ironSourceInputData.mediationHints = adResponse.GetMediationHints();
 #endif
             ironSourceInputData.pricePointEncoded = adResponse.GetPricePoint();
             ironSourceInputData.uuid = amazonSlotId;
@@ -41,7 +44,14 @@ namespace AmazonAds {
             APSIronSourceBannerNetworkData networkData = new APSIronSourceBannerNetworkData();
             networkData.banner = ironSourceInputData;
 
+#if UNITY_IOS
+            string mediationHints = "\"mediationHints\" :" + adResponse.GetMediationHints();
+            string jsonData = "{ \"banner\" :" + JsonUtility.ToJson(ironSourceInputData);
+            jsonData = jsonData.Remove(jsonData.Length - 1);
+            jsonData = jsonData + ", " + mediationHints + "}}";
+#else
             string jsonData = "{ \"banner\" :" + JsonUtility.ToJson(ironSourceInputData) + "}";
+#endif            
             return jsonData;
         }
 
@@ -51,8 +61,7 @@ namespace AmazonAds {
             public string pricePointEncoded;
 #if UNITY_ANDROID
             public string bidInfo;
-#else
-            public string mediationHints;
+
 #endif
         }
 
@@ -60,8 +69,7 @@ namespace AmazonAds {
         {
 #if UNITY_ANDROID
             public string bidInfo;
-#else
-            public String mediationHints;
+
 #endif
             public string pricePointEncoded;
             public string uuid;
