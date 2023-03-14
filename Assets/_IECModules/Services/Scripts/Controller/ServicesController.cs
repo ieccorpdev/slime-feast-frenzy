@@ -536,6 +536,18 @@ namespace IEC
             }
             else
             {
+                var listMediation = new List<Mediation>();
+#if(PluginApplovin)
+                listMediation.Add(Mediation.Applovin);
+#endif
+#if(PluginIronSource)
+                listMediation.Add(Mediation.IronSource);
+#endif
+                if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
+                
+                if(m_IsInitAd) return;
+                m_IsInitAd = true;
+                
 #if (PluginFacebookAudienceNetwork)
 #if UNITY_IOS
                 Debug.LogWarning($"AudienceNetwork SDK Version: {AudienceNetwork.SdkVersion.Build}");
@@ -577,17 +589,7 @@ namespace IEC
 
                 m_Ads = ecpmAds;
 #endif
-                var listMediation = new List<Mediation>();
-#if(PluginApplovin)
-                listMediation.Add(Mediation.Applovin);
-#endif
-#if(PluginIronSource)
-                listMediation.Add(Mediation.IronSource);
-#endif
-                if(listMediation.Count > 1 && m_ServiceData.mediation == Mediation.None) return;
-                
-                if(m_IsInitAd) return;
-                m_IsInitAd = true;
+
 #if (PluginApplovin)
                 if (m_ServiceData.mediation == Mediation.Applovin || listMediation.Count <= 1)
                 {
