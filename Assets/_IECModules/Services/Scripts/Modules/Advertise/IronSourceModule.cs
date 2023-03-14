@@ -311,9 +311,9 @@ namespace _IECModules
 #if(PluginMaxAmazonNetwork)
         public void RequestBannerAmazon(Action<AdsEventArgs> loadCallback, AdsEnum adsType)
         {
-            if (string.IsNullOrEmpty(m_Config.appID) || string.IsNullOrEmpty(m_amazonConfig.bannerID))
+            if (string.IsNullOrEmpty(m_amazonConfig.bannerID))
             {
-                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                LoadBannerAds(loadCallback, adsType);
                 return;
             }
             if (bannerAdRequest != null) bannerAdRequest.DestroyFetchManager();
@@ -426,9 +426,9 @@ namespace _IECModules
 
         public void RequestInterstitialAmazon(Action<AdsEventArgs> loadCallback)
         {
-            if (string.IsNullOrEmpty(m_Config.appID) || string.IsNullOrEmpty(m_amazonConfig.interstitialID))
+            if (string.IsNullOrEmpty(m_amazonConfig.interstitialID))
             {
-                AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                LoadFullAds(loadCallback);
                 return;
             }
             if (isFirstLoadInter)
