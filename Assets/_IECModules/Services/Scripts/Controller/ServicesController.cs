@@ -201,7 +201,7 @@ namespace IEC
             
             if (!m_IsNewInstall && m_ServiceData.mediation == Mediation.None)
             {
-                m_ServiceData.mediation = Mediation.Applovin;
+                m_ServiceData.mediation = config.defaultMediation;
             }
 
             m_SetUpFacebook = new SetUpSdkMock();
@@ -408,7 +408,7 @@ namespace IEC
                     if (abMediation != null && abMediation.IsActive)
                     {
                         abMediation.IsForceValue = true;
-                        abMediation.ForceValue = (m_ServiceData.mediation == Mediation.Applovin) ? 0 : 1;
+                        abMediation.ForceValue = (m_ServiceData.mediation == config.defaultMediation) ? 0 : 1;
                         PushEventAb(abMediation);
                     }
                     PushEvent("deeplink_mediation_success",1,new Dictionary<string, object>()

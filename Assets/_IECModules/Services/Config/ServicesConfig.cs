@@ -25,6 +25,7 @@ public class ServicesConfig : ScriptableObject
     public ABTestConfig[] abTestConfigs;
 
     public ABTestConfig abMediation;
+    public Mediation defaultMediation;
     public bool IsTestNoAnalytic;
 
     [Header("Daily Mission")]
