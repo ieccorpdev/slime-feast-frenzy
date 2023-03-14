@@ -608,13 +608,14 @@ namespace IEC
                 if (m_ServiceData.mediation == Mediation.IronSource || listMediation.Count <= 1)
                 {
                     var ironSourceAds = new IronSourceModule();
-                    ironSourceAds.Init(config.IronSourceConfig, true,true, (result) =>
+                    ironSourceAds.Init(config.IronSourceConfig,config.AmazonConfig, true,true, (result) =>
                     {
                         if (result)
                         {
                             RaiseInitEvent(EventList.Service.INIT_AD_DONE);
                         }
                     }, PushEvent);
+                    ironSourceAds.onAdRevenueAction = m_ServiceData.OnAdRevenue;
                     m_Ads = ironSourceAds;
                 }
 #endif
