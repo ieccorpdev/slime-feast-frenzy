@@ -576,6 +576,7 @@ namespace IEC
             adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
             adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
             adRevenue.setAdRevenuePlacement(adInfo.Placement);
+            Debug.LogWarning($"[Adjust ad track] revenue: {adRevenue.revenue}-{adRevenue.currency} | network: {adRevenue.adRevenueNetwork} | adUnit: {adRevenue.adRevenueUnit}");
             Adjust.trackAdRevenue(adRevenue);
 #endif
         }
