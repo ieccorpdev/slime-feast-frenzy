@@ -44,6 +44,9 @@ public class PostProcessBuildIOS : MonoBehaviour
         
         //CheckAddSmaatoSKAdNetworkID(path);
         //CheckAddInmobiSKAdNetworkID(path);
+#if PluginMaxAmazonNetwork
+        CheckMissingAmazonSKAdId(path);
+#endif
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
@@ -145,6 +148,22 @@ public class PostProcessBuildIOS : MonoBehaviour
             }
         }
     }
+
+    private static void CheckMissingAmazonSKAdId(string path)
+    {
+        var listAmazonMissing = new List<string>()
+        {
+            "bvpn9ufa9b.skadnetwork",
+            "gvmwg8q7h5.skadnetwork",
+            "hjevpa356n.skadnetwork",
+            "pu4na253f3.skadnetwork",
+            "yrqqpx2mcb.skadnetwork",
+            "z4gj7hsk7h.skadnetwork"
+        };
+        
+        AddMissingSKAdNetworkID(listAmazonMissing, path);
+    }
+    
     public static void CheckAddSmaatoSKAdNetworkID(string path = "")
     {
 #if PluginApplovin
