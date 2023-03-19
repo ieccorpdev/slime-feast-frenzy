@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using IEC;
 using UnityEditor;
+using UnityEditor.Android;
+using UnityEditor.iOS;
 using UnityEngine;
 
 namespace _IECModules
@@ -12,6 +14,8 @@ namespace _IECModules
     {
         public static ServicesConfig servicesConfig;
         public static string configFolderPath;
+        public static string keyStoreName, keyStoreLink;
+        public static string iconLink;
 
         public enum ChecklistItemName
         {
@@ -70,6 +74,8 @@ namespace _IECModules
             OguryAndroidBannerID,
             OguryAndroidRewardID,
             OguryAndroidThumbnailID,
+            KeystoreLink,
+            IconLink
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -128,7 +134,9 @@ namespace _IECModules
             {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID},
             {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID},
             {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID},
-            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID}
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID},
+            {"Keystore Link", ChecklistItemName.KeystoreLink},
+            {"Icon Link", ChecklistItemName.IconLink}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -347,6 +355,12 @@ namespace _IECModules
                         // }
                         break;
                     case ChecklistItemName.KeyStoreName:
+                        keyStoreName = checklistItemValue;
+                        bool fileExists = FileHelper.FileKeystoreExist(keyStoreName);
+                        if (fileExists)
+                            LogEditorHelper.AddLog($"Keystore Name: {keyStoreName}, File exists");
+                        else
+                            LogEditorHelper.AddLogError($"Keystore Name: {keyStoreName} NOT exist!!");
                         // Stop auto creating keystore
                         // if(!string.IsNullOrEmpty(checklistItemValue)) KeystoreHelper.CreateKeyStore(checklistItemValue);
                         break;
@@ -560,10 +574,17 @@ namespace _IECModules
                         servicesConfig.OguryConfig.android.thumbnailID = checklistItemValue;
                         break;
 #endif
+                    case ChecklistItemName.KeystoreLink:
+                        keyStoreLink = checklistItemValue;
+                        break;
+                    case ChecklistItemName.IconLink:
+                        iconLink = checklistItemValue;
+                        break;
                 }
             }
 
-
+            UpdateKeystore();
+            UpdateIcon();
             EditorUtility.SetDirty(servicesConfig);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -586,6 +607,81 @@ namespace _IECModules
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 #endif
+        }
+
+        public static void UpdateKeystore()
+        {
+            var fileHelperDownloadInstance = FileHelper.Instance;
+            bool fileKeystoreExists = FileHelper.FileKeystoreExist(keyStoreName);
+            if (!fileKeystoreExists)
+            {
+                if (fileHelperDownloadInstance == null)
+                {
+                    LogEditorHelper.AddLogError($"not found FileHelper,cancel download keystore");
+                    return;
+                }
+                LogEditorHelper.AddLogWarning($"Try to download keystore...");
+                if (string.IsNullOrEmpty(keyStoreLink))
+                    LogEditorHelper.AddLogError($"Not found Keystore Link on Checklist");
+                else
+                    fileHelperDownloadInstance.DownloadFile(keyStoreLink, FileHelper.KeystorePath(keyStoreName), (result, mes) =>
+                    {
+                        if (result)
+                        {
+                            LogEditorHelper.AddLogWarning($"Download keystore: Success to " + mes);
+                        }
+                        else
+                            LogEditorHelper.AddLogError($"Download keystore Error :" + mes);
+                    });
+            }
+
+        }
+
+        public static void UpdateIcon()
+        {
+            if (!ModuleSdkManager.UpdateIcon) return;
+            LogEditorHelper.AddLogWarning($"Download icon " + iconLink);
+
+            var fileHelperDownloadIconInstance = FileHelper.Instance;
+            if (string.IsNullOrEmpty(iconLink))
+            { LogEditorHelper.AddLogError($"Not found Icon Link on Checklist,cancel download Icon"); return; }
+            if (fileHelperDownloadIconInstance == null)
+            {
+                LogEditorHelper.AddLogError($"Not found FileHelper,cancel download Icon");
+                return;
+            }
+            fileHelperDownloadIconInstance.DownloadFile(iconLink, FileHelper.IconSampleFullPath, (result, mes) =>
+            {
+                if (result)
+                {
+                    LogEditorHelper.AddLogWarning($"Download Icon: Success to " + mes);
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
+                    Texture2D iconTexture = (Texture2D)AssetDatabase.LoadAssetAtPath(FileHelper.IconSamplePath, typeof(Texture2D));
+                    EditorGUIUtility.PingObject(iconTexture);
+                    SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Legacy);
+                    SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Adaptive);
+                    SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Round);
+                    SetIcon(iconTexture, BuildTargetGroup.iOS, iOSPlatformIconKind.Application);
+                    SetIcon(iconTexture, BuildTargetGroup.iOS, iOSPlatformIconKind.Settings);
+                    LogEditorHelper.AddLogWarning($"Apply Icon for Build Settings : Done");
+
+                }
+                else
+                    LogEditorHelper.AddLogError($"Download Icon Error :" + mes);
+            });
+        }
+
+        private static void SetIcon(Texture2D icon, BuildTargetGroup buildTarget, PlatformIconKind kind)
+        {
+            PlatformIcon[] icons = PlayerSettings.GetPlatformIcons(buildTarget, kind);
+            foreach (var item in icons)
+            {
+                item.SetTexture(icon, 0);
+                if (item.layerCount > 1)
+                    item.SetTexture(icon, 1);
+            }
+            PlayerSettings.SetPlatformIcons(buildTarget, kind, icons);
         }
     }
 }
