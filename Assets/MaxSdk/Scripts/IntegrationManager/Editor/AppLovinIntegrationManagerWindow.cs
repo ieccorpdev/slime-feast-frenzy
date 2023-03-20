@@ -7,7 +7,6 @@
 //
 
 using System;
-using System.Collections;
 using System.IO;
 using System.Linq;
 using UnityEditor;
@@ -37,7 +36,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private Vector2 scrollPosition;
         private static readonly Vector2 windowMinSize = new Vector2(750, 750);
         private const float actionFieldWidth = 60f;
-        private const float upgradeAllButtonWidth = 80f;
         private const float networkFieldMinWidth = 100f;
         private const float versionFieldMinWidth = 190f;
         private const float privacySettingLabelWidth = 200f;
@@ -51,7 +49,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
         private static GUILayoutOption privacySettingFieldWidthOption = GUILayout.Width(400);
         private static readonly GUILayoutOption fieldWidth = GUILayout.Width(actionFieldWidth);
-        private static readonly GUILayoutOption upgradeAllButtonFieldWidth = GUILayout.Width(upgradeAllButtonWidth);
 
         private static readonly Color darkModeTextColor = new Color(0.29f, 0.6f, 0.8f);
 
@@ -67,7 +64,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
         private bool isPluginMoved;
         private bool shouldMarkNewLocalizations;
         private bool shouldShowGoogleWarning;
-        private bool networkButtonsEnabled = true;
 
         private AppLovinEditorCoroutine loadDataCoroutine;
         private Texture2D uninstallIcon;
@@ -194,12 +190,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 DrawPluginDetails();
 
                 // Draw mediated networks
-                using (new EditorGUILayout.HorizontalScope(GUILayout.ExpandHeight(false)))
-                {
-                    EditorGUILayout.LabelField("Mediated Networks", titleLabelStyle);
-                    DrawUpgradeAllButton();
-                }
-
+                EditorGUILayout.LabelField("Mediated Networks", titleLabelStyle);
                 DrawMediatedNetworks();
 
                 // Draw AppLovin Quality Service settings
@@ -315,10 +306,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
 
                     GUILayout.Space(5);
                 }
-
-#if !UNITY_2018_2_OR_NEWER
-                EditorGUILayout.HelpBox("AppLovin MAX Unity plugin will soon require Unity 2018.2 or newer to function. Please upgrade to a newer Unity version.", MessageType.Warning);
-#endif
             }
 
             GUILayout.Space(5);
@@ -391,7 +378,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                         DrawNetworkDetailRow(network);
                     }
 
-                    GUILayout.Space(10);
+                    GUILayout.Space(5);
                 }
             }
 
@@ -461,7 +448,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                     GUILayout.Label(new GUIContent {image = warningIcon, tooltip = "You may see unexpected errors if you use different versions of the AdMob and Google Ad Manager adapter SDKs."}, iconStyle);
                 }
 
-                GUI.enabled = networkButtonsEnabled && isActionEnabled;
+                GUI.enabled = isActionEnabled;
                 if (GUILayout.Button(new GUIContent(action), fieldWidth))
                 {
                     // Download the plugin.
@@ -471,7 +458,7 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                 GUI.enabled = true;
                 GUILayout.Space(2);
 
-                GUI.enabled = networkButtonsEnabled && isInstalled;
+                GUI.enabled = isInstalled;
                 if (GUILayout.Button(new GUIContent {image = uninstallIcon, tooltip = "Uninstall"}, iconStyle))
                 {
                     EditorUtility.DisplayProgressBar("Integration Manager", "Deleting " + network.Name + "...", 0.5f);
@@ -532,22 +519,28 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
                         GUILayout.EndHorizontal();
                     }
                 }
-            }
-        }
+                // Snap requires SCAppStoreAppID to be set starting adapter version 2.0.0.0 or newer. Show a text field for the publisher to input the App ID.
+                else if (network.Name.Equals("SNAP_NETWORK") &&
+                         MaxSdkUtils.CompareVersions(network.CurrentVersions.Ios, AppLovinSettings.SnapAppStoreAppIdMinVersion) != VersionComparisonResult.Lesser)
+                {
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    using (new EditorGUILayout.VerticalScope("box"))
+                    {
+                        GUILayout.Space(2);
+                        GUILayout.BeginHorizontal();
+                        GUILayout.Space(4);
+                        EditorGUILayout.LabelField(new GUIContent("App Store App ID (iOS)"), networkWidthOption);
+                        GUILayout.Space(4);
+                        AppLovinSettings.Instance.SnapAppStoreAppId = EditorGUILayout.IntField(AppLovinSettings.Instance.SnapAppStoreAppId);
+                        GUILayout.Space(4);
+                        GUILayout.EndHorizontal();
+                        GUILayout.Space(2);
+                    }
 
-        /// <summary>
-        /// Draws the upgrade all button
-        /// </summary>
-        private void DrawUpgradeAllButton()
-        {
-            GUI.enabled = NetworksRequireUpgrade();
-            if (GUILayout.Button(new GUIContent("Upgrade All"), upgradeAllButtonFieldWidth))
-            {
-                AppLovinEditorCoroutine.StartCoroutine(UpgradeAllNetworks());
+                    GUILayout.EndHorizontal();
+                }
             }
-
-            GUI.enabled = true;
-            GUILayout.Space(10);
         }
 
         private void DrawQualityServiceSettings()
@@ -616,8 +609,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             GUILayout.Space(10);
             using (new EditorGUILayout.VerticalScope("box"))
             {
-                GUILayout.Space(4);
-                EditorGUILayout.HelpBox("Consent Flow has been deprecated and will be removed in a future release.", MessageType.Warning);
                 GUILayout.Space(4);
                 GUILayout.BeginHorizontal();
                 GUILayout.Space(4);
@@ -856,42 +847,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {
                 shouldShowGoogleWarning = false;
             }
-        }
-
-        /// <summary>
-        /// Upgrades all outdated networks
-        /// </summary>
-        private IEnumerator UpgradeAllNetworks()
-        {
-            networkButtonsEnabled = false;
-            EditorApplication.LockReloadAssemblies();
-            var networks = pluginData.MediatedNetworks;
-            foreach (var network in networks)
-            {
-                var comparison = network.CurrentToLatestVersionComparisonResult;
-                // A newer version is available
-                if (!string.IsNullOrEmpty(network.CurrentVersions.Unity) && comparison == VersionComparisonResult.Lesser)
-                {
-                    yield return AppLovinIntegrationManager.Instance.DownloadPlugin(network, false);
-                }
-            }
-            
-            EditorApplication.UnlockReloadAssemblies();
-            networkButtonsEnabled = true;
-
-            // The pluginData becomes stale after the networks have been updated, and we should re-load it.
-            Load();
-        }
-
-        /// <summary>
-        /// Returns whether any network adapter needs to be upgraded
-        /// </summary>
-        private bool NetworksRequireUpgrade()
-        {
-            if (pluginData == null || pluginData.AppLovinMax.CurrentVersions == null) return false;
-
-            var networks = pluginData.MediatedNetworks;
-            return networks.Any(network => !string.IsNullOrEmpty(network.CurrentVersions.Unity) && network.CurrentToLatestVersionComparisonResult == VersionComparisonResult.Lesser);
         }
 
         #endregion

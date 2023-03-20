@@ -169,24 +169,6 @@ public class MaxSdkUnityEditor : MaxSdkBase
     }
 
     /// <summary>
-    /// Present the mediation debugger UI.
-    ///
-    /// Please call this method after the SDK has initialized.
-    /// </summary>
-    public static void ShowCreativeDebugger()
-    {
-        if (!_isInitialized)
-        {
-            MaxSdkLogger.UserWarning("The creative debugger cannot be shown before the MAX SDK has been initialized."
-                                     + "\nCall 'MaxSdk.InitializeSdk();' and listen for 'MaxSdkCallbacks.OnSdkInitializedEvent' before showing the mediation debugger.");
-        }
-        else
-        {
-            MaxSdkLogger.UserWarning("The creative debugger cannot be shown in the Unity Editor. Please export the project to Android or iOS first.");
-        }
-    }
-
-    /// <summary>
     /// Returns the arbitrary ad value for a given ad unit identifier with key. Returns null if no ad is loaded.
     /// </summary>
     /// <param name="adUnitIdentifier"></param>
@@ -210,9 +192,7 @@ public class MaxSdkUnityEditor : MaxSdkBase
     {
         var sdkConfiguration = new SdkConfiguration();
         sdkConfiguration.IsSuccessfullyInitialized = _isInitialized;
-#pragma warning disable 0618
         sdkConfiguration.ConsentDialogState = ConsentDialogState.Unknown;
-#pragma warning restore 0618
 #if UNITY_EDITOR
         sdkConfiguration.AppTrackingStatus = AppTrackingStatus.Authorized;
 #endif
