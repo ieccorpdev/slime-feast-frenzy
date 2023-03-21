@@ -19,11 +19,13 @@ namespace _IECModules
         }
 
         public const string VERSION = "1.3.0";
+        public static bool UpdateIcon;
 
         private const string m_GoogleSheetUrlDefault =
             "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
 
         private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
+
 
         private const string m_AbVersionDefault =
             "android 1.9.0 AB_20210708_v82";
@@ -382,6 +384,11 @@ namespace _IECModules
             }
             m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Label("Update icon", GUILayout.Width(90));
+            UpdateIcon = EditorGUILayout.Toggle(UpdateIcon);
+
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
             if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
@@ -512,7 +519,7 @@ namespace _IECModules
                 return;
             }
 
-            if(!Directory.Exists(Application.dataPath + "/OgurySdk/Editor"))
+            if (!Directory.Exists(Application.dataPath + "/OgurySdk/Editor"))
             {
                 Directory.CreateDirectory(Application.dataPath + "/OgurySdk/Editor");
             }
