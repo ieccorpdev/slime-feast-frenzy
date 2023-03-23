@@ -117,7 +117,7 @@ namespace _IECModules
             if (isHaveAmazon)
             {
                 //TODO: Add symbol amazon
-                // ScriptingDefineSymbolEditor.AddDefineSymbol();
+                ScriptingDefineSymbolEditor.AddDefineSymbol(ModuleSdkManager.PluginDefineSymbol.PluginMaxAmazonNetwork);
             }
         }
 

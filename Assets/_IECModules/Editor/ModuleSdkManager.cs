@@ -62,7 +62,8 @@ namespace _IECModules
             PluginByteDanceChinaIOS,
             PluginNotification,
             PluginOgury,
-            PluginLocalization
+            PluginLocalization,
+            PluginMaxAmazonNetwork
         }
 
         private void Awake()
