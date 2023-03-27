@@ -4,8 +4,12 @@ using System.IO;
 using System.Linq;
 using IEC;
 using UnityEditor;
+#if UNITY_ANDROID
 using UnityEditor.Android;
+#endif
+#if UNITY_IOS
 using UnityEditor.iOS;
+#endif
 using UnityEngine;
 
 namespace _IECModules
@@ -652,11 +656,15 @@ namespace _IECModules
                     AssetDatabase.Refresh();
                     Texture2D iconTexture = (Texture2D)AssetDatabase.LoadAssetAtPath(FileHelper.IconSamplePath, typeof(Texture2D));
                     EditorGUIUtility.PingObject(iconTexture);
+#if UNITY_ANDROID
                     SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Legacy);
                     SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Adaptive);
                     SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Round);
+#endif
+#if UNITY_IOS
                     SetIcon(iconTexture, BuildTargetGroup.iOS, iOSPlatformIconKind.Application);
                     SetIcon(iconTexture, BuildTargetGroup.iOS, iOSPlatformIconKind.Settings);
+#endif
                     LogEditorHelper.AddLogWarning($"Apply Icon for Build Settings : Done");
 
                 }
