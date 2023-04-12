@@ -89,5 +89,9 @@ namespace IEC
         {
             DOTween.Kill(TweenID);
         }
+        public virtual void OnEventRaise(string gameEvent, EventParam param)
+        {
+
+        }
     }
 }
