@@ -18,8 +18,10 @@ namespace IEC
             // 2 : completed
             public Dictionary<int, int> dayChallenge = new Dictionary<int, int>();
         }
+
         public int currentYear = -1;
         public Dictionary<int, MonthChallenge> monthChallenge = new Dictionary<int, MonthChallenge>();
+
         public void SetupNewMonthChallenge()
         {
             if (currentYear == DateTime.Now.Year) return;
@@ -36,18 +38,23 @@ namespace IEC
                 monthChallenge[i] = month;
             }
         }
+
         public int GetCountCompletedOfMonth(int month)
         {
             var monthData = monthChallenge[month];
             int countMonth = 0;
-            for (int i = 0; i < monthData.dayChallenge.Count; i++)
+            Debug.LogError(monthData.dayChallenge.Count);
+            foreach (var dayChallenge in monthData.dayChallenge)
             {
-                if (monthData.dayChallenge[i] == 2)
+                if (dayChallenge.Value == 2)
                 {
                     countMonth++;
                 }
             }
-           // int CountMonth = monthData.dayChallenge.Count(x => x.Value == 2);
+
+           
+
+            // int CountMonth = monthData.dayChallenge.Count(x => x.Value == 2);
             return countMonth;
         }
     }
