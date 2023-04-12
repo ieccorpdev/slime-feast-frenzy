@@ -688,6 +688,16 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
+            var dictParamImpression = new Dictionary<string, object>
+            {
+                ["ad_platform"] = "AppLovin",
+                ["ad_source"] = adInfo.NetworkName,
+                ["ad_unit_name"] = adInfo.AdUnitIdentifier,
+                ["ad_format"] = adInfo.AdFormat,
+                ["value"] = adInfo.Revenue,
+                ["currency"] = "USD"
+            };
+
             var adType = AdsEnum.BANNER_BOTTOM;
             if (adUnitId.Equals(m_Config.interstitialID))
             {
@@ -702,6 +712,7 @@ namespace IEC
 
             pushEventAction?.Invoke(eventName, (float)revenue, dict);
             pushEventAction?.Invoke("rev_all_ad", (float)revenue, dictParamAll);
+            pushEventAction?.Invoke("ad_impression", (float)revenue, dictParamImpression);
         }
 
         private string EventName(string adUnitId)
