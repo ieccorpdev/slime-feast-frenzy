@@ -13,9 +13,6 @@ public class iOSAgent : IronSourceIAgent
 	private static extern void CFSetPluginData(string pluginType, string pluginVersion, string pluginFrameworkVersion);
 
 	[DllImport("__Internal")]
-	private static extern void CFSetMediationSegment(string segment);
-
-	[DllImport("__Internal")]
 	private static extern string CFGetAdvertiserId();
 
 	[DllImport("__Internal")]
@@ -181,6 +178,11 @@ public class iOSAgent : IronSourceIAgent
 	[DllImport("__Internal")]
 	private static extern void CFSetAdRevenueData(string dataSource, string impressionData);
 
+	//******************* TestSuite API *******************//
+
+	[DllImport("__Internal")]
+	private static extern void CFLaunchTestSuite();
+
 	public iOSAgent()
 	{
 	}
@@ -192,11 +194,6 @@ public class iOSAgent : IronSourceIAgent
 	public void onApplicationPause(bool pause)
 	{
 
-	}
-
-	public void setMediationSegment(string segment)
-	{
-		CFSetMediationSegment(segment);
 	}
 
 	public string getAdvertiserId()
@@ -498,7 +495,13 @@ public class iOSAgent : IronSourceIAgent
 		CFSetAdRevenueData(dataSource, json);
 	}
 
+	//******************* TestSuite API *******************//
 
+	public void launchTestSuite()
+	{
+		Debug.Log("iOSAgent: launching TestSuite");
+		CFLaunchTestSuite();
+	}
 
 	#endregion
 }

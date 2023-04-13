@@ -21,10 +21,6 @@ public class UnsupportedPlatformAgent : IronSourceIAgent
     {
     }
 
-    public void setMediationSegment(string segment)
-    {
-
-    }
 
     public string getAdvertiserId()
     {
@@ -302,6 +298,13 @@ public class UnsupportedPlatformAgent : IronSourceIAgent
     {
 
     }
+
+	//******************* TestSuite API *******************//
+
+	public void launchTestSuite()
+	{
+		Debug.Log("Unsupported Platform");
+	}
 
 
 
