@@ -40,12 +40,17 @@ public class PostProcessBuildIOS : MonoBehaviour
         File.WriteAllText(plistPath, plist.WriteToString());
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
-
-        CheckAddSmaatoSKAdNetworkID(path);
-        CheckAddInmobiSKAdNetworkID(path);
+        var podProjPath = path + "/Pods/Pods.xcodeproj/project.pbxproj";
+        
+        //CheckAddSmaatoSKAdNetworkID(path);
+        //CheckAddInmobiSKAdNetworkID(path);
+#if PluginMaxAmazonNetwork
+        CheckMissingAmazonSKAdId(path);
+#endif
         EditGoogleInfoPlistAddTargetMembership();
         CopyFastlaneConfig();
         EditPBX();
+        SigningPod();
         EditCloudSaveCapability();
 
         void EditCloudSaveCapability()
@@ -70,10 +75,33 @@ public class PostProcessBuildIOS : MonoBehaviour
         {
             PBXProject pbxProject = new PBXProject();
             pbxProject.ReadFromFile(projectPath);
+            pbxProject.SetBuildProperty(pbxProject.ProjectGuid(), "ENABLE_BITCODE", "NO");
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
+            
+            //Fix upload ipa xcode 14
+            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
+            //
             pbxProject.WriteToFile(projectPath);
+            
         }
+
+        //Fix build xcode 14
+        void SigningPod()
+        {
+            var appFilePath = path + "/fastlane/Appfile";
+            var appFileContent = File.ReadAllText(appFilePath);
+            var teamId = appFileContent.Split(new[] {"team_id"}, StringSplitOptions.None)[2]
+                .GetBetweenString("(\"", "\")",false);
+            Debug.Log("teamId:" + teamId);
+            var podPbx = new PBXProject();
+            podPbx.ReadFromFile(podProjPath);
+            var id = podPbx.TargetGuidByName("FBSDKCoreKit-FacebookSDKStrings");
+            Debug.Log(id);
+            podPbx.SetTeamId(id, teamId);
+            podPbx.WriteToFile(podProjPath);
+        }
+        //
 
         void CopyFastlaneConfig()
         {
@@ -120,6 +148,22 @@ public class PostProcessBuildIOS : MonoBehaviour
             }
         }
     }
+
+    private static void CheckMissingAmazonSKAdId(string path)
+    {
+        var listAmazonMissing = new List<string>()
+        {
+            "bvpn9ufa9b.skadnetwork",
+            "gvmwg8q7h5.skadnetwork",
+            "hjevpa356n.skadnetwork",
+            "pu4na253f3.skadnetwork",
+            "yrqqpx2mcb.skadnetwork",
+            "z4gj7hsk7h.skadnetwork"
+        };
+        
+        AddMissingSKAdNetworkID(listAmazonMissing, path);
+    }
+    
     public static void CheckAddSmaatoSKAdNetworkID(string path = "")
     {
 #if PluginApplovin
