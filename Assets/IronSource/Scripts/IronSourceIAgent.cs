@@ -6,6 +6,8 @@ public interface IronSourceIAgent
 
 	void onApplicationPause(bool pause);
 
+	void setMediationSegment(string segment);
+
 	string getAdvertiserId();
 
 	void validateIntegration();
@@ -121,10 +123,6 @@ public interface IronSourceIAgent
 	//******************* ILRD API *******************//
 
 	void setAdRevenueData(string dataSource, Dictionary<string, string> impressionData);
-
-	//******************* TestSuite API *******************//
-
-	void launchTestSuite();
 }
 
 public static class dataSource

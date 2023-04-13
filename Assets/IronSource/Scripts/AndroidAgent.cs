@@ -46,6 +46,11 @@ public class AndroidAgent : IronSourceIAgent
 		}
 	}
 
+	public void setMediationSegment (string segment)
+	{
+		getBridge ().Call ("setMediationSegment", segment);
+	}
+
 	public string getAdvertiserId ()
 	{
 		return getBridge ().Call<string> ("getAdvertiserId");
@@ -322,14 +327,6 @@ public class AndroidAgent : IronSourceIAgent
 	{
 		string json = IronSourceJSON.Json.Serialize(impressionData);
 		getBridge().Call("setAdRevenueData", dataSource, json);
-	}
-
-	//******************* TestSuite API *******************//
-
-	public void launchTestSuite()
-	{
-		Debug.Log("AndroidAgent: launching TestSuite");
-		getBridge().Call("launchTestSuite");
 	}
 
 #endregion
