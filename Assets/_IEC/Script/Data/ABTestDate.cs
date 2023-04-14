@@ -1,8 +1,5 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System;
-using UnityEngine;
 
 namespace IEC
 {
@@ -36,8 +33,7 @@ namespace IEC
         {
             foreach (var key in dictOverrideDate.Keys)
             {
-                if (key > activeDate.date) continue;
-                if (date <= key)
+                if (date <= key && key <= activeDate.date)
                 {
                     var ignoreFunc = dictOverrideDate[key];
                     if (ignoreFunc == null || ignoreFunc.Invoke(date, version) == false)

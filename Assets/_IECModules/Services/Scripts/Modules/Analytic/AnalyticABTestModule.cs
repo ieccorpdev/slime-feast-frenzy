@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Diagnostics;
@@ -36,6 +35,11 @@ namespace IEC
             }
 
             return null;
+        }
+
+        public void SetValue(string keyNameAB, int value)
+        {
+            m_Data.SetInt(keyNameAB, value);
         }
 
         public bool HasValue(string keyNameAB)
