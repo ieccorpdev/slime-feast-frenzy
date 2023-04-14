@@ -11,6 +11,18 @@ namespace IEC
 
         public int dailyChallengeChoosingMonth = -1;
         public int dailyChallengeChoosingDay = -1;
+        public bool isInDailyMode;
+        #endregion
+
+        #region Logic ON/Off DailyChallenge
+        public void PlayDailyChallenge()
+        {
+            isInDailyMode = true;
+        }
+        public void CompleteDailyChallenge()
+        {
+            
+        }
 
         #endregion
         public const string PLAYER_DATA_DAILYCHALLENGE_KEY = "PlayerDataDailyChallenge";

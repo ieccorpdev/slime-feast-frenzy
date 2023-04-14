@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -93,5 +94,25 @@ namespace IEC.TrackingEvent
     {
         public override string Name => "click_btn_next";
     }
-
+    
+    public class DailyChallengeBase : Game
+    {
+        public override Dictionary<string, object> GetParams()
+        {
+            var param = base.GetParams();
+            var date = DateTime.Now;
+            if (Controllers.Get<DailyChallengeController>().dailyChallengeChoosingMonth > 0 && Controllers.Get<DailyChallengeController>().dailyChallengeChoosingDay > 0)
+            {
+                date = new DateTime(Pool.Get<PlayerSecretDailyChallenge>().currentYear,  Controllers.Get<DailyChallengeController>().dailyChallengeChoosingMonth,
+                    Controllers.Get<DailyChallengeController>().dailyChallengeChoosingDay);
+            }
+            var levelDate = date.ToString("yyyyMMdd");
+            param["level_date"] = levelDate;
+            return param;
+        }
+    }
+    public class WinDailyChallenges : DailyChallengeBase
+    {
+        public override string Name => "win_daily_challenges";
+    }
 }

@@ -8,6 +8,9 @@ namespace IEC
     {
         private List<int> m_ListLevelAdjust = new List<int>();
         private List<int> m_ListLevelFirstTimeAdjust = new List<int>();
+        DailyChallengeController dailyChallengeController => Controllers.Get<DailyChallengeController>();
+        private PlayerSecretDailyChallenge playerDataDailyChallenge => Pool.Get<PlayerSecretDailyChallenge>();
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -41,6 +44,7 @@ namespace IEC
                     GamePlay.SetFinishPlay();
                     break;
             }
+
             UI.OnEventRaise(gameEvent, param);
         }
 
@@ -56,13 +60,14 @@ namespace IEC
                 m_ListLevelAdjust = Services.config.adjustEventConfig.GetListPlayLevel();
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
             }
+
             EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 
         void OnNewGame()
         {
             Game.SetTimeStartLevel();
-            
+
             PushPlayLevelEvent();
 
             GamePlay.SetNewLevel(PlayerData.level);
@@ -75,6 +80,18 @@ namespace IEC
             {
                 PlayerData.AddLevel();
             }
+
+            if (dailyChallengeController.isInDailyMode)
+            {
+                // playerDataDailyChallenge.isTutColorTubeDaily = true;
+                bool isShowDailyEffect = playerDataDailyChallenge
+                    .monthChallenge[dailyChallengeController.dailyChallengeChoosingMonth]
+                    .dayChallenge[dailyChallengeController.dailyChallengeChoosingDay] < 2;
+                playerDataDailyChallenge.monthChallenge[dailyChallengeController.dailyChallengeChoosingMonth]
+                    .dayChallenge[dailyChallengeController.dailyChallengeChoosingDay] = 2;
+                Services.PushEvent(new TrackingEvent.WinDailyChallenges());
+            }
+
             EventController.RaiseEvent(EventList.SAVE_DATA);
             Services.PushEvent(new TrackingEvent.GameOver());
         }
@@ -85,7 +102,7 @@ namespace IEC
             PlayerData.levelTracking = PlayerData.level;
 
             var level = PlayerData.levelTracking;
-            
+
             if (PlayerData.levelFirstTime != level)
             {
                 PlayerData.levelFirstTime = level;
@@ -95,12 +112,14 @@ namespace IEC
                 {
                     Services.PushEvent($"play_level_first_time_{level}");
                 }
+
                 Services.SetUserProperty("Level", level.ToString());
             }
 
             Services.PushEvent(new TrackingEvent.PlayLevel());
 
-            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0 || m_ListLevelAdjust.Contains(level))
+            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0 ||
+                m_ListLevelAdjust.Contains(level))
                 Services.PushEvent($"play_level_{level}");
 
             EventController.RaiseEvent(EventList.SAVE_DATA);

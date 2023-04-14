@@ -17,6 +17,13 @@ namespace IEC
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
+                if (Controllers.Get<DailyChallengeController>().isInDailyMode)
+                {
+                    UI.GroupPopup.popupDailyChallenge.Show();
+                    UI.GroupPopup.popupDailyChallenge.ShowEffectStar();
+                }
+
+                Controllers.Get<DailyChallengeController>().isInDailyMode = false;
             });
         }
     }

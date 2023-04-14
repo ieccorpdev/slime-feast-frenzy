@@ -76,6 +76,11 @@ namespace IEC
             {
                 if (m_IsLockClick) return;
                 dailyChallengeController.dailyChallengeChoosingMonth = m_MonthIndex;
+                dailyChallengeController.PlayDailyChallenge();
+                Hide();
+                
+                
+             
                 // Controllers.Get<ServicesController>().PushEvent(new ClickBtnPlayDaily());
                 // Controllers.Get<GameController>().OnClickPlayDailyChallenge();
             });

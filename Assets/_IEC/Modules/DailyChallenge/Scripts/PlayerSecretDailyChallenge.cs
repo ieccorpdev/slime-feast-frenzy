@@ -43,7 +43,6 @@ namespace IEC
         {
             var monthData = monthChallenge[month];
             int countMonth = 0;
-            Debug.LogError(monthData.dayChallenge.Count);
             foreach (var dayChallenge in monthData.dayChallenge)
             {
                 if (dayChallenge.Value == 2)
