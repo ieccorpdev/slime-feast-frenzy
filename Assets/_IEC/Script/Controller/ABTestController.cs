@@ -86,6 +86,7 @@ namespace IEC
             }
 
             var listAbTestDate = listAbTestConfig.Select(x => x.Date).ToList();
+            var dictAbTest = listAbTestConfig.ToDictionary(x => x.Date, x => x);
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
             var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 
@@ -96,9 +97,35 @@ namespace IEC
             var dictUpdateAb = GetDictAction(ABTestConfig.UPDATE_PREFIX, allMethods, listAbTestConfig);
 
             var curTestDate = abConfig.GetAbTestDate(abValue);
-            var activeDate = listAbTestConfig.FindLast(x => x.IsActive).GetAbTestDate(0);
+            var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
+            var activeDate = activeAb.GetAbTestDate(0);
 
-            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, out var overrideDate);
+            var semiOverrideKey = "Override.";
+            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date))
+            {
+                var checkOverride = activeAb.CheckSemiOverride();
+                serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
+
+                string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
+                string newVersion = "AB_" + activeDate.date + "_v" + activeDate.version;
+                string eventName = checkOverride == 1 ? "Override_AB_" : "NonOverride_AB_";
+                eventName += activeDate.date;
+
+                Services.PushEvent(eventName, 0,
+                    new Dictionary<string, object>
+                    {
+                        { "new_version", newVersion },
+                        { "old_version", oldVersion },
+                        { "levelUpdate", PlayerData.level }
+                    });
+            }
+            var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
+            {
+                if (!dictAbTest[kv.Key].isSemiOverride) return true;
+                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 0);
+                return checkOverride == 1;
+            });
+            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
 
             var param = new object[] { };
             for (int i = 0; i < listAbTestConfig.Count; i++)
@@ -107,37 +134,13 @@ namespace IEC
                 var testDate = ab.GetAbTestDate(0);
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
-                    var isGetOverride = true;
-                    if (testDate.date == overrideDate && ab.isSemiOverride)
+                    if (i < listResultAbAction.Count)
                     {
-                        var saveKey = "Override." + ab.KeyName;
-                        if (!serviceAbTest.HasValue(saveKey))
-                        {
-                            serviceAbTest.SetValue(saveKey, ab.CheckSemiOverride());
-
-                            string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
-                            string newVersion = "AB_" + testDate.date + "_v" + testDate.version;
-
-                            Services.PushEvent("Override_AB_" + overrideDate, 0,
-                                new Dictionary<string, object>
-                                {
-                                    { "new_version", newVersion },
-                                    { "old_version", oldVersion },
-                                    { "levelUpdate", PlayerData.level }
-                                });
-                        }
-                        isGetOverride = serviceAbTest.GetValue(saveKey, 0) == 1;
+                        listResultAbAction[i].Invoke();
                     }
-                    if (isGetOverride)
+                    else
                     {
-                        if (i < listResultAbAction.Count)
-                        {
-                            listResultAbAction[i].Invoke();
-                        }
-                        else
-                        {
-                            dictResultAb[ab]?.Invoke(this, param);
-                        }
+                        dictResultAb[ab]?.Invoke(this, param);
                     }
                 }
             }
@@ -209,6 +212,7 @@ namespace IEC
         {
             return new List<Action>()
             {
+                //ResultAb20150101,
             };
         }
 
@@ -216,6 +220,7 @@ namespace IEC
         {
             return new List<Action<int>>()
             {
+                //UpdateAb20150101,
             };
         }
 

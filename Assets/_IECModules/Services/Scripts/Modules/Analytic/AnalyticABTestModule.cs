@@ -63,7 +63,7 @@ namespace IEC
                 return data;
             }
 
-            return defaultValue;
+            return m_Data.GetInt(keyNameAB, defaultValue);
         }
 
         int GetRandomIndexByRatioList(int[] ratio, int itemLength)
