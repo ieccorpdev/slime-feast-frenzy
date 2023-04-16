@@ -6,9 +6,11 @@ namespace IEC
 {
     public class GroupPopup : BaseBehaviour
     {
-       //Example public PopupSetting PopupSetting => SingleGetChild<PopupSetting>();
+        //Example public PopupSetting PopupSetting => SingleGetChild<PopupSetting>();
         public List<BasePopup> ListPopup =>
             SingleCreateIfNotExist(() => GetComponentsInChildren<BasePopup>(true).ToList());
+
+        public PopupDailyChallenge DailyChallenge => SingleGetChild<PopupDailyChallenge>(true);
 
     }
 }

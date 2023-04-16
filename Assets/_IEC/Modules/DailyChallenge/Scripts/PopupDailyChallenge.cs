@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using DG.Tweening;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using DG.Tweening;
-using IEC.TrackingEvent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,13 +11,16 @@ namespace IEC
 {
     public class PopupDailyChallenge : BasePopup
     {
-        DailyChallengeController dailyChallengeController => Controllers.Get<DailyChallengeController>();
+        public int choosingMonth = -1;
+        public int choosingDay = -1;
+        public bool isInDailyMode;
 
-        private List<DayChallenge> m_ListDay =>
+        public bool IsChooseChallenge => choosingMonth > 0 && choosingDay > 0;
+
+        List<DayChallenge> ListDay =>
             SingleCreateIfNotExist(() => GetComponentsInChildren<DayChallenge>().ToList());
 
-        private PlayerSecretDailyChallenge playerDataDailyChallenge => Pool.Get<PlayerSecretDailyChallenge>();
-        private Game Game => Pool.Get<Game>();
+        public PlayerSecretDailyChallenge DataDailyChallenge => Pool.Get<PlayerSecretDailyChallenge>();
 
         [SerializeField] private TMP_Text m_MonthTxt;
         [SerializeField] private TMP_Text m_StarProgressTxt;
@@ -30,7 +31,7 @@ namespace IEC
         [SerializeField] private Button m_BtnClose;
         [SerializeField] private Image m_EffectStar;
 
-        private List<string> m_DateStr = new List<string> {"M", "T", "W", "T", "F", "S", "S"};
+        private List<string> m_DateStr = new List<string> { "M", "T", "W", "T", "F", "S", "S" };
 
         private int m_FirstDayOfWeek;
         private int m_DayOfMonth;
@@ -53,11 +54,11 @@ namespace IEC
             {
                 if (m_IsLockClick) return;
                 m_MonthIndex++;
-                dailyChallengeController.dailyChallengeChoosingDay = 1;
-                dailyChallengeController.dailyChallengeChoosingMonth = m_MonthIndex;
+                choosingDay = 1;
+                choosingMonth = m_MonthIndex;
                 if (m_MonthIndex == DateTime.Now.Month)
                 {
-                    dailyChallengeController.dailyChallengeChoosingDay = DateTime.Now.Day;
+                    choosingDay = DateTime.Now.Day;
                 }
 
                 UpdateChallenge();
@@ -67,33 +68,31 @@ namespace IEC
             {
                 if (m_IsLockClick) return;
                 m_MonthIndex--;
-                dailyChallengeController.dailyChallengeChoosingMonth = m_MonthIndex;
-                dailyChallengeController.dailyChallengeChoosingDay = 1;
+                choosingMonth = m_MonthIndex;
+                choosingDay = 1;
                 UpdateChallenge();
             });
 
             m_BtnPlay.onClick.AddListener(() =>
             {
                 if (m_IsLockClick) return;
-                dailyChallengeController.dailyChallengeChoosingMonth = m_MonthIndex;
-                dailyChallengeController.PlayDailyChallenge();
+                choosingMonth = m_MonthIndex;
+                isInDailyMode = true;
                 Hide();
-                
-                
-             
+
                 // Controllers.Get<ServicesController>().PushEvent(new ClickBtnPlayDaily());
                 // Controllers.Get<GameController>().OnClickPlayDailyChallenge();
             });
 
             m_BtnClose.onClick.AddListener(Hide);
 
-            m_ListDay.ForEach(x =>
+            ListDay.ForEach(x =>
             {
                 x.SetClick(() =>
                 {
                     if (m_IsLockClick) return;
-                    dailyChallengeController.dailyChallengeChoosingDay = x.day;
-                    dailyChallengeController.dailyChallengeChoosingMonth = m_MonthIndex;
+                    choosingDay = x.day;
+                    choosingMonth = m_MonthIndex;
                     UpdateChallenge();
                 });
             });
@@ -103,7 +102,7 @@ namespace IEC
 
         public override void Show()
         {
-            playerDataDailyChallenge.SetupNewMonthChallenge();
+            DataDailyChallenge.SetupNewMonthChallenge();
             UpdateChallenge();
             m_EffectStar.gameObject.SetActive(false);
             base.Show();
@@ -115,23 +114,33 @@ namespace IEC
             base.Hide();
         }
 
+        public DateTime GetLevelDate()
+        {
+            var date = DateTime.Now;
+            if (IsChooseChallenge)
+            {
+                date = new DateTime(DataDailyChallenge.currentYear, choosingMonth, choosingDay);
+            }
+            return date;
+        }
+
         void UpdateChallenge()
         {
             m_NowDay = DateTime.Now;
-            if (dailyChallengeController.dailyChallengeChoosingMonth < 0)
-                dailyChallengeController.dailyChallengeChoosingMonth = DateTime.Now.Month;
-            if (dailyChallengeController.dailyChallengeChoosingDay < 0)
-                dailyChallengeController.dailyChallengeChoosingDay = DateTime.Now.Day;
-            if (m_MonthIndex < 0) m_MonthIndex = dailyChallengeController.dailyChallengeChoosingMonth;
-            m_MonthData = playerDataDailyChallenge.monthChallenge[m_MonthIndex];
+            if (choosingMonth < 0)
+                choosingMonth = DateTime.Now.Month;
+            if (choosingDay < 0)
+                choosingDay = DateTime.Now.Day;
+            if (m_MonthIndex < 0) m_MonthIndex = choosingMonth;
+            m_MonthData = DataDailyChallenge.months[m_MonthIndex];
             m_FirstDayOfWeek = GetDayOfWeekIndex(1);
-            m_DayOfMonth = DateTime.DaysInMonth(playerDataDailyChallenge.currentYear, m_MonthIndex);
+            m_DayOfMonth = DateTime.DaysInMonth(DataDailyChallenge.currentYear, m_MonthIndex);
 
             UpdateCalendar();
 
-            m_MonthTxt.text = new DateTime(playerDataDailyChallenge.currentYear, m_MonthIndex, 1)
+            m_MonthTxt.text = new DateTime(DataDailyChallenge.currentYear, m_MonthIndex, 1)
                 .ToString("MMMM yyyy", new CultureInfo("en-US"));
-            var countCompleted = playerDataDailyChallenge.GetCountCompletedOfMonth(m_MonthIndex);
+            var countCompleted = DataDailyChallenge.GetCountCompletedOfMonth(m_MonthIndex);
             m_StarProgressTxt.text = $"{countCompleted}/{m_DayOfMonth}";
             var fillAmount = 1f * countCompleted / m_DayOfMonth;
             var amount = fillAmount * (m_EndAmount - m_StartAmount) + m_StartAmount;
@@ -144,9 +153,9 @@ namespace IEC
 
         private void UpdateCalendar()
         {
-            for (int i = 0; i < m_ListDay.Count; i++)
+            for (int i = 0; i < ListDay.Count; i++)
             {
-                var dayChallenge = m_ListDay[i];
+                var dayChallenge = ListDay[i];
                 if (i < 7)
                 {
                     dayChallenge.SetDayOfWeek(m_DateStr[i]);
@@ -158,9 +167,9 @@ namespace IEC
                 else if (i < 7 + m_FirstDayOfWeek + m_DayOfMonth)
                 {
                     var day = i - m_FirstDayOfWeek - 6;
-                    var state = m_MonthData.dayChallenge[day];
-                    var isChoose = day == dailyChallengeController.dailyChallengeChoosingDay &&
-                                   dailyChallengeController.dailyChallengeChoosingMonth == m_MonthIndex;
+                    var state = m_MonthData.days[day];
+                    var isChoose = day == choosingDay &&
+                                   choosingMonth == m_MonthIndex;
                     dayChallenge.SetCompleted(state == 2);
                     dayChallenge.SetDay(day);
                     dayChallenge.SetChoose(isChoose);
@@ -178,11 +187,10 @@ namespace IEC
 
         int GetDayOfWeekIndex(int day)
         {
-            var dayOfWeek = (int) (new DateTime(playerDataDailyChallenge.currentYear, m_MonthIndex, day).DayOfWeek);
+            var dayOfWeek = (int)(new DateTime(DataDailyChallenge.currentYear, m_MonthIndex, day).DayOfWeek);
             dayOfWeek = (dayOfWeek + 6) % 7;
             return dayOfWeek;
         }
-
 
         public void ShowEffectStar()
         {

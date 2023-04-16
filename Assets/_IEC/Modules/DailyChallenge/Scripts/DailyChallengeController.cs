@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -7,27 +5,11 @@ namespace IEC
     public class DailyChallengeController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart,
         IEventPauseApp, IEventQuitApp
     {
-        #region Game Dailychallenge
 
-        public int dailyChallengeChoosingMonth = -1;
-        public int dailyChallengeChoosingDay = -1;
-        public bool isInDailyMode;
-        #endregion
-
-        #region Logic ON/Off DailyChallenge
-        public void PlayDailyChallenge()
-        {
-            isInDailyMode = true;
-        }
-        public void CompleteDailyChallenge()
-        {
-            
-        }
-
-        #endregion
         public const string PLAYER_DATA_DAILYCHALLENGE_KEY = "PlayerDataDailyChallenge";
         [SerializeField] private PlayerSecretDailyChallenge m_PlayerSecretDailyChallenge;
         private bool m_IsNeedSaveData;
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -42,6 +24,7 @@ namespace IEC
         {
             SaveData();
         }
+
         public void BehaviourPauseApp(bool isPause)
         {
             if (isPause)
@@ -49,6 +32,7 @@ namespace IEC
                 SaveData();
             }
         }
+
         public void BehaviourStart()
         {
             EventController.RaiseEvent(EventList.NONE);
@@ -68,6 +52,46 @@ namespace IEC
                     break;
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
+                case EventList.GamePlay.LEVEL_WIN:
+                    OnGameOver();
+                    break;
+                case EventList.GamePlay.LEVEL_LOSE:
+                    OnGameOver();
+                    break;
+                case EventList.GamePlay.END_LEVEL_ADS:
+                    ShowPopup();
+                    break;
+            }
+        }
+
+        void ShowPopup()
+        {
+            var popup = UI.GroupPopup.DailyChallenge;
+            if (popup.isInDailyMode)
+            {
+                popup.Show();
+                popup.ShowEffectStar();
+            }
+
+            popup.isInDailyMode = false;
+        }
+
+        void OnGameOver()
+        {
+            var popupChallenge = UI.GroupPopup.DailyChallenge;
+            var dataChallenge = popupChallenge.DataDailyChallenge;
+            if (popupChallenge.isInDailyMode)
+            {
+                bool isShowDailyEffect = dataChallenge
+                    .months[popupChallenge.choosingMonth]
+                    .days[popupChallenge.choosingDay] < 2;
+
+                dataChallenge.months[popupChallenge.choosingMonth]
+                    .days[popupChallenge.choosingDay] = 2;
+
+                Services.PushEvent(new TrackingEvent.WinDailyChallenges());
+
+                SaveData();
             }
         }
 
@@ -79,6 +103,7 @@ namespace IEC
             m_PlayerSecretDailyChallenge = Pool.Get<PlayerSecretDailyChallenge>();
             Debug.Log("Application.version " + Application.version);
         }
+
         public void SaveData()
         {
             m_IsNeedSaveData = false;
@@ -86,6 +111,7 @@ namespace IEC
             Services.DataSecure().SetObject(PLAYER_DATA_DAILYCHALLENGE_KEY, Pool.Get<PlayerSecretDailyChallenge>());
             Services.SaveData();
         }
+
         void LateUpdate()
         {
             if (m_IsNeedSaveData)

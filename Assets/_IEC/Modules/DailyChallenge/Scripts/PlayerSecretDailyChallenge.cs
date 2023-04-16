@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 namespace IEC
 {
@@ -16,11 +15,11 @@ namespace IEC
             // 0 : not completed
             // 1 : complete step 1
             // 2 : completed
-            public Dictionary<int, int> dayChallenge = new Dictionary<int, int>();
+            public Dictionary<int, int> days = new Dictionary<int, int>();
         }
 
         public int currentYear = -1;
-        public Dictionary<int, MonthChallenge> monthChallenge = new Dictionary<int, MonthChallenge>();
+        public Dictionary<int, MonthChallenge> months = new Dictionary<int, MonthChallenge>();
 
         public void SetupNewMonthChallenge()
         {
@@ -32,29 +31,17 @@ namespace IEC
                 var dayInMonths = DateTime.DaysInMonth(currentYear, i);
                 for (int j = 1; j <= dayInMonths; j++)
                 {
-                    month.dayChallenge[j] = 0;
+                    month.days[j] = 0;
                 }
 
-                monthChallenge[i] = month;
+                months[i] = month;
             }
         }
 
         public int GetCountCompletedOfMonth(int month)
         {
-            var monthData = monthChallenge[month];
-            int countMonth = 0;
-            foreach (var dayChallenge in monthData.dayChallenge)
-            {
-                if (dayChallenge.Value == 2)
-                {
-                    countMonth++;
-                }
-            }
-
-           
-
-            // int CountMonth = monthData.dayChallenge.Count(x => x.Value == 2);
-            return countMonth;
+            var monthData = months[month];
+            return monthData.days.Count(kv => kv.Value == 2);
         }
     }
 }

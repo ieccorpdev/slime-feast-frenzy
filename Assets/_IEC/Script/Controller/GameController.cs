@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using _IECModules;
 
 namespace IEC
 {
@@ -79,17 +78,6 @@ namespace IEC
             if (GamePlay.IsWin)
             {
                 PlayerData.AddLevel();
-            }
-
-            if (dailyChallengeController.isInDailyMode)
-            {
-                // playerDataDailyChallenge.isTutColorTubeDaily = true;
-                bool isShowDailyEffect = playerDataDailyChallenge
-                    .monthChallenge[dailyChallengeController.dailyChallengeChoosingMonth]
-                    .dayChallenge[dailyChallengeController.dailyChallengeChoosingDay] < 2;
-                playerDataDailyChallenge.monthChallenge[dailyChallengeController.dailyChallengeChoosingMonth]
-                    .dayChallenge[dailyChallengeController.dailyChallengeChoosingDay] = 2;
-                Services.PushEvent(new TrackingEvent.WinDailyChallenges());
             }
 
             EventController.RaiseEvent(EventList.SAVE_DATA);
