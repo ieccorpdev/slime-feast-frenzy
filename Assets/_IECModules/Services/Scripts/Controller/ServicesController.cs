@@ -416,7 +416,7 @@ namespace IEC
                         ["mediation"] = deeplinkMediation.ToString()
                     });
                     Debug.LogWarning("deeplink_mediation_success:" + deeplinkMediation);
-                    InitAdsAfterGDPR(true, true);
+                    InitAdsAfterGDPR(true, isHaveIDFA);
                 }
                 else
                 {
