@@ -13,8 +13,10 @@ namespace IEC
 
         int GetValue(string keyNameAB, int defaultValue);
 
+        void SetValue(string keyNameAB, int value);
+
         ABTestConfig GetConfig(string keyNameAB);
-        
+
     }
 
 }
