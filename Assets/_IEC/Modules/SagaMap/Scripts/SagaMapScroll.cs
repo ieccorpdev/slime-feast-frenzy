@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class SagaMapScroll : MonoBehaviour, IEnhancedScrollerDelegate
 {
-    public PopupSagaMap popup;
+    public PopupSagaMapScreen popup;
     public EnhancedScroller scroll;
     public RectTransform cloud;
     public GameObject lastTxt;

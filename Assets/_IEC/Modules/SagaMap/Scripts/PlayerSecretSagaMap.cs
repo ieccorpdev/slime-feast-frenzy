@@ -5,7 +5,7 @@ using UnityEngine;
 namespace IEC
 {
     [System.Serializable]
-    public class PlayerSecretSagaMap : IData
+    public class PlayerSecretSagaMap
     {
         public List<int> listBonusLevelPlayed = new List<int>();
         public int unlockLevel;

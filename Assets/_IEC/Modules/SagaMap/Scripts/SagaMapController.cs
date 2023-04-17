@@ -7,9 +7,11 @@ namespace IEC
     public class SagaMapController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart,
         IEventPauseApp, IEventQuitApp
     {
-        public bool m_IsHaveBossLevel { get; private set;}
-        public bool m_IsHaveBonusLevel { get; private set; }
-        public int m_BossLevelSpacing { get; private set; }
+        public bool m_IsHaveBossLevel;//=>Game.isHaveBossLevel;
+
+        public bool m_IsHaveBonusLevel;//=>Game.isHaveBonusLevel;
+
+        public int m_BossLevelSpacing;
 
         public const string PLAYER_DATA_SAGAMAP_KEY = "PlayerDataSagaMap";
         [SerializeField] private PlayerSecretSagaMap m_SagaMapPlayerSecret;
@@ -49,8 +51,11 @@ namespace IEC
         {
             switch (gameEvent)
             {
-                case EventList.SAVE_DATA:
-                    m_IsNeedSaveData = true;
+                case EventList.GamePlay.LEVEL_WIN:
+                    OnGameOver(true);
+                    break;
+                case EventList.GamePlay.LEVEL_LOSE:
+                    OnGameOver(false);
                     break;
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
@@ -67,17 +72,21 @@ namespace IEC
         }
         public void SaveData()
         {
-            m_IsNeedSaveData = false;
             if (Game.isDebugReset) return;
             Services.DataSecure().SetObject(PLAYER_DATA_SAGAMAP_KEY, Pool.Get<PlayerSecretSagaMap>());
             Services.SaveData();
         }
-        void LateUpdate()
+
+        void OnGameOver(bool isWin)
         {
-            if (m_IsNeedSaveData)
-            {
-                SaveData();
-            }
+            if (!isWin)
+                return;
+            m_SagaMapPlayerSecret.SetUnlockLevel();
+            if (!IsBonusLevel(PlayerData.level + 1))
+                return;
+            m_SagaMapPlayerSecret.AddListBonusLevel(PlayerData.level);
+
+
         }
 
         public bool IsBonusLevel(int level)
@@ -93,13 +102,6 @@ namespace IEC
             }
 
             return false;
-        }
-
-        public void SetParam(bool isHaveBonusLevel, bool isHaveBossLevel, int bossLevelSpacing)
-        {
-            m_BossLevelSpacing = bossLevelSpacing;
-            m_IsHaveBonusLevel = isHaveBonusLevel;
-            m_IsHaveBossLevel = isHaveBossLevel;
         }
     }
 }

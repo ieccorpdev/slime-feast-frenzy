@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using IEC;
+using IEC.TrackingEvent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Game = IEC.Game;
 
-public class PopupSagaMap : BasePopup
+public class PopupSagaMapScreen : BasePopup
 {
     public SagaPath sagaPathPrefab;
     public SagaMapScroll scrollView;
@@ -50,11 +52,11 @@ public class PopupSagaMap : BasePopup
         btnPlay.onClick.AddListener(() =>
         {
             Hide();
-           //m_PlayerData.isInBonusLevel = m_IsSelectBonusLevel;
+            //Pool.Get<PlayerSecret>().isInBonusLevel = m_IsSelectBonusLevel;
             Pool.Get<PlayerSecret>().level = m_LevelSelect;
             EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-            //Controllers.Get<ServicesController>().PushEvent(
-            //    new ClickBtnPlaySaga(m_IsSelectBonusLevel ? m_LevelSelect : m_LevelSelect + 1, m_IsSelectBonusLevel));
+            Controllers.Get<ServicesController>().PushEvent(
+                new ClickBtnPlaySaga(m_IsSelectBonusLevel ? m_LevelSelect : m_LevelSelect + 1, m_IsSelectBonusLevel));
         });
     }
 
