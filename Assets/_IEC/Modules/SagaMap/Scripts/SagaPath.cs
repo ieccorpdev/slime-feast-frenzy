@@ -5,28 +5,33 @@ using System.Linq;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 
-public class SagaPath : EnhancedScrollerCellView
+namespace IEC
 {
-    public int id;
-    public List<ItemMap> listItem;
-    public List<RectTransform> listPathExtend; 
-
-    public void SetData(int index, Action<int> nodeClick = null, Action<int> nodeChildClick = null)
+    public class SagaPath : EnhancedScrollerCellView
     {
-        id = index;
-        for (int i = 0; i < listItem.Count; i++)
-        {
-            listItem[i].SetData(index * listItem.Count + i, nodeClick, nodeChildClick);
-        }
+        public int id;
+        public List<ItemMap> listItem;
+        public List<RectTransform> listPathExtend;
 
-        var ratio = 1f * Screen.height / Screen.width;
-        var size_16_9 = 280f;
-        var size = ratio / (16f / 9) * size_16_9;
-        foreach (var t in listPathExtend)
+        public void SetData(int index, Action<int> nodeClick = null, Action<int> nodeChildClick = null)
         {
-            var sizeDelta = t.sizeDelta;
-            sizeDelta.y = size;
-            t.sizeDelta = sizeDelta;
+            id = index;
+            for (int i = 0; i < listItem.Count; i++)
+            {
+                listItem[i].SetData(index * listItem.Count + i, nodeClick, nodeChildClick);
+            }
+
+            var ratio = 1f * Screen.height / Screen.width;
+            var size_16_9 = 280f;
+            var size = ratio / (16f / 9) * size_16_9;
+            foreach (var t in listPathExtend)
+            {
+                var sizeDelta = t.sizeDelta;
+                sizeDelta.y = size;
+                t.sizeDelta = sizeDelta;
+            }
         }
     }
+
 }
+
