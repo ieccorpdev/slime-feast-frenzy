@@ -32,10 +32,11 @@ namespace IEC
             return date >= overrideDate;
         }
 
-        public bool IsOverrideResult(Dictionary<int, Func<int, int, bool>> dictOverrideDate, out int overrideDate)
+        public bool IsOverrideResult(ABTestDate activeDate, Dictionary<int, Func<int, int, bool>> dictOverrideDate, out int overrideDate)
         {
             foreach (var key in dictOverrideDate.Keys)
             {
+                if (key > activeDate.date) continue;
                 if (date <= key)
                 {
                     var ignoreFunc = dictOverrideDate[key];

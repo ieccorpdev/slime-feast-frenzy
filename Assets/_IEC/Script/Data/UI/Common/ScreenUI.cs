@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 namespace IEC
 {
-    public class ScreenUI : _BaseBehaviour
+    public class ScreenUI : ScreenBehaviour
     {
         public virtual bool IS_PAUSE_GAME => true;
 
@@ -89,7 +89,7 @@ namespace IEC
             onHaveFocus.Invoke(false);
         }
 
-        public virtual void SetActive(bool isActive)
+        public override void SetActive(bool isActive)
         {
             IsShow = isActive;
             IsFocus = isActive;
@@ -124,7 +124,7 @@ namespace IEC
             }
         }
 
-        protected void SetEvent(UnityEngine.UI.Button button, System.Action action)
+        public override void SetEvent(Button button, System.Action action)
         {
             if (button != null)
             {
