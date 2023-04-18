@@ -1,6 +1,4 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace IEC.TrackingEvent
 {
@@ -9,6 +7,7 @@ namespace IEC.TrackingEvent
         public override string Name => "click_btn_play_saga";
         public bool isBonus;
         public int level;
+
         public override Dictionary<string, object> GetParams()
         {
             var dict = base.GetParams();

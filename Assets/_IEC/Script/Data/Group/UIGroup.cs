@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using TMPro;
-using NaughtyAttributes;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace IEC
 {
@@ -16,19 +14,21 @@ namespace IEC
         public EventSystem eventSystem;
 
         public TMP_Text textHello;
-        
+
         public ScreenInGame ScreenInGame => Pool.Get<ScreenInGame>();
         public ScreenLevelWin ScreenLevelWin => Pool.Get<ScreenLevelWin>();
         public ScreenLevelLose ScreenLevelLose => Pool.Get<ScreenLevelLose>();
         public ScreenShopTest ScreenShopTest => Pool.Get<ScreenShopTest>();
 
-        public List<ScreenUI> ListScreen => 
+        public List<ScreenUI> ListScreen =>
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
+
+        public PopupSagaMapScreen PopupSagaMap => SingleGetChild<PopupSagaMapScreen>(true);
 
         public void LocateGroup()
         {
             Pool.Set(this);
-            
+
             foreach (var screen in ListScreen)
             {
                 screen.LocateScreen();

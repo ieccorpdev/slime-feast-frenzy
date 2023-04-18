@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
-using IEC;
-using TMPro;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,13 +7,17 @@ namespace IEC
 {
     public class SagaMapScroll : MonoBehaviour, IEnhancedScrollerDelegate
     {
+        [HideInInspector]
         public PopupSagaMapScreen popup;
+
         public EnhancedScroller scroll;
         public RectTransform cloud;
         public GameObject lastTxt;
-        private PlayerSecretSagaMap m_PlayerData => Pool.Get<PlayerSecretSagaMap>();
+
+        PlayerSecretSagaMap PlayerData => Pool.Get<PlayerSecretSagaMap>();
 
         [SerializeField] private Vector2 m_ContentCapPos;
+
         public void ReloadData()
         {
             StartCoroutine(IE_WaitResetPos());
@@ -29,7 +29,7 @@ namespace IEC
             if (scroll.Delegate == null)
             {
                 scroll.Delegate = this;
-                Debug.LogWarning("reset layout");
+                //Debug.LogWarning("reset layout");
                 var layout = scroll.Container.GetComponent<HorizontalOrVerticalLayoutGroup>();
                 layout.childAlignment = TextAnchor.LowerCenter;
                 scroll.Container.pivot = new Vector2(0.5f, 0f);
@@ -43,8 +43,8 @@ namespace IEC
             }
             yield return null;
             cloud.transform.SetAsLastSibling();
-            scroll.JumpToDataIndex(GetNumberOfCells(scroll) - 1 - m_PlayerData.unlockLevel / 5);
-            if ((m_PlayerData.unlockLevel + 1) % 5 == 0)
+            scroll.JumpToDataIndex(GetNumberOfCells(scroll) - 1 - PlayerData.unlockLevel / 5);
+            if ((PlayerData.unlockLevel + 1) % 5 == 0)
             {
                 var anchorPos = scroll.Container.anchoredPosition;
                 anchorPos -= 400f * Vector2.up;
@@ -77,7 +77,7 @@ namespace IEC
 
         public int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return (m_PlayerData.unlockLevel + 50) / 5;
+            return (PlayerData.unlockLevel + 50) / 5;
         }
 
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)

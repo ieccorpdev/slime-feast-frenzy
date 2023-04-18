@@ -1,14 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using IEC;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace IEC
 {
-    public class ItemMap : MonoBehaviour
+    public class ItemMap : _BaseBehaviour
     {
         [Header("Background")]
         [SerializeField] private Image m_Bg;
@@ -31,26 +28,25 @@ namespace IEC
         [SerializeField] private GameObject m_Child;
         [SerializeField] private GameObject m_Boss;
 
-        private PlayerSecretSagaMap m_PlayerData => Pool.Get<PlayerSecretSagaMap>();
-        private SagaMapController m_Controller => Pool.Get<SagaMapController>();
+        PlayerSecretSagaMap PlayerDataSagaMap => Pool.Get<PlayerSecretSagaMap>();
 
         public void SetData(int level, Action<int> click = null, Action<int> childClick = null)
         {
             m_Btn.onClick.RemoveAllListeners();
             m_ChildBtn.onClick.RemoveAllListeners();
             m_Txt.text = $"{level + 1}";
-            m_Child.SetActive(m_Controller.IsBonusLevel(level + 2));
-            var isLevelLocked = level > m_PlayerData.unlockLevel;
-            var isLevelBonusLocked = level > m_PlayerData.unlockLevel - 1;
-            m_Bg.sprite = isLevelLocked ? m_GrayBg : level == m_PlayerData.unlockLevel ? m_YellowBg : m_BlueBg;
+            m_Child.SetActive(PlayerDataSagaMap.IsBonusLevel(level + 2));
+            var isLevelLocked = level > PlayerDataSagaMap.unlockLevel;
+            var isLevelBonusLocked = level > PlayerDataSagaMap.unlockLevel - 1;
+            m_Bg.sprite = isLevelLocked ? m_GrayBg : level == PlayerDataSagaMap.unlockLevel ? m_YellowBg : m_BlueBg;
             m_ChildBg.sprite = isLevelBonusLocked
                 ? m_GrayBg
-                : m_PlayerData.listBonusLevelPlayed.Contains(level) ? m_BlueBg : m_RedBg;
+                : PlayerDataSagaMap.listBonusLevelPlayed.Contains(level) ? m_BlueBg : m_RedBg;
             m_ChildTxt.text = "?";
 
             m_Txt.color = (m_Bg.sprite == m_YellowBg) ? m_TxtColorYellow : Color.white;
 
-            m_Boss.SetActive(m_Controller.IsBossLevel(level + 1));
+            m_Boss.SetActive(PlayerDataSagaMap.IsBossLevel(level + 1));
 
             m_Btn.onClick.AddListener(() =>
             {
