@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace IEC
@@ -17,6 +17,8 @@ namespace IEC
         private PlayerSecret m_PlayerSecret;
 
         private bool m_IsNeedSaveData;
+
+        private readonly Dictionary<string, object> m_DictAutoSave = new Dictionary<string, object>();
 
         public void LocateController()
         {
@@ -54,13 +56,29 @@ namespace IEC
             EventController.RaiseEvent(EventList.NONE);
         }
 
+        public void SetAutoSaveObject(string saveDataKey, object obj)
+        {
+            m_DictAutoSave[saveDataKey] = obj;
+        }
+
         public void SaveData()
         {
             m_IsNeedSaveData = false;
             if (Game.isDebugReset) return;
             PlayerData.SaveLastPlayTime();
             Services.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
+
+            foreach (var kv in m_DictAutoSave)
+            {
+                Services.DataSecure().SetObject(kv.Key, kv.Value);
+            }
+
             Services.SaveData();
+        }
+
+        public T LoadData<T>(string saveDataKey) where T : class, new()
+        {
+            return Services.DataSecure().GetObject<T>(saveDataKey, Pool.Get<T>());
         }
 
         void LoadData()
