@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Diagnostics;
@@ -38,6 +37,11 @@ namespace IEC
             return null;
         }
 
+        public void SetValue(string keyNameAB, int value)
+        {
+            m_Data.SetInt(keyNameAB, value);
+        }
+
         public bool HasValue(string keyNameAB)
         {
             return m_Data.HasKey(keyNameAB);
@@ -59,7 +63,7 @@ namespace IEC
                 return data;
             }
 
-            return defaultValue;
+            return m_Data.GetInt(keyNameAB, defaultValue);
         }
 
         int GetRandomIndexByRatioList(int[] ratio, int itemLength)

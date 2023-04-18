@@ -1,9 +1,9 @@
 ﻿using _IECModules;
-using System.Linq;
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace IEC
 {
@@ -86,33 +86,77 @@ namespace IEC
             }
 
             var listAbTestDate = listAbTestConfig.Select(x => x.Date).ToList();
+            var dictAbTest = listAbTestConfig.ToDictionary(x => x.Date, x => x);
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
             var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 
             var allMethods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
-            var listResultAb = GetListAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
-            var listUpdateAb = GetListAction(ABTestConfig.UPDATE_PREFIX, allMethods, listAbTestConfig);
+            var listResultAbAction = GetListResultAbAction();
+            var listUpdateAbAction = GetListUpdateAbAction();
+            var dictResultAb = GetDictAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
+            var dictUpdateAb = GetDictAction(ABTestConfig.UPDATE_PREFIX, allMethods, listAbTestConfig);
 
             var curTestDate = abConfig.GetAbTestDate(abValue);
-            var activeDate = listAbTestConfig.FindLast(x => x.IsActive).GetAbTestDate(0);
+            var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
+            var activeDate = activeAb.GetAbTestDate(0);
 
-            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, out var overrideDate);
+            var semiOverrideKey = "Override.";
+            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date))
+            {
+                var checkOverride = activeAb.CheckSemiOverride();
+                serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
+
+                string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
+                string newVersion = "AB_" + activeDate.date + "_v" + activeDate.version;
+                string eventName = checkOverride == 1 ? "Override_AB_" : "NonOverride_AB_";
+                eventName += activeDate.date;
+
+                Services.PushEvent(eventName, 0,
+                    new Dictionary<string, object>
+                    {
+                        { "new_version", newVersion },
+                        { "old_version", oldVersion },
+                        { "levelUpdate", PlayerData.level }
+                    });
+            }
+            var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
+            {
+                if (!dictAbTest[kv.Key].isSemiOverride) return true;
+                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 0);
+                return checkOverride == 1;
+            });
+            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
 
             var param = new object[] { };
-            for (int i = 0; i < listResultAb.Count; i++)
+            for (int i = 0; i < listAbTestConfig.Count; i++)
             {
-                var testDate = listAbTestConfig[i].GetAbTestDate(0);
+                var ab = listAbTestConfig[i];
+                var testDate = ab.GetAbTestDate(0);
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
-                    listResultAb[i]?.Invoke(this, param);
+                    if (i < listResultAbAction.Count)
+                    {
+                        listResultAbAction[i].Invoke();
+                    }
+                    else
+                    {
+                        dictResultAb[ab]?.Invoke(this, param);
+                    }
                 }
             }
 
-            param = new object[] { abValue };
             if (curTestDate.IsApplyUpdate(overrideDate))
             {
-                var updateAbAction = listUpdateAb[abIndex];
-                updateAbAction?.Invoke(this, param);
+                if (abIndex < listUpdateAbAction.Count)
+                {
+                    listUpdateAbAction[abIndex].Invoke(abValue);
+                }
+                else
+                {
+                    param = new object[] { abValue };
+                    var updateAbAction = dictUpdateAb[abConfig];
+                    updateAbAction?.Invoke(this, param);
+                }
             }
 
             ResultAllAbTest();
@@ -149,10 +193,10 @@ namespace IEC
             };
         }
 
-        List<MethodInfo> GetListAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
+        Dictionary<ABTestConfig, MethodInfo> GetDictAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
         {
             var dictMethods = allMethods.Where(m => m.Name.StartsWith(prefix)).ToDictionary(m => m.Name, m => m);
-            return listAbTest.Select(x => GetMethodInfo(dictMethods, x.GetAbTestAction(prefix))).ToList();
+            return listAbTest.ToDictionary(x => x, x => GetMethodInfo(dictMethods, x.GetAbTestAction(prefix)));
         }
 
         MethodInfo GetMethodInfo(Dictionary<string, MethodInfo> dictMethods, string abTestActionName)
@@ -163,6 +207,22 @@ namespace IEC
         }
 
         #endregion
+
+        List<Action> GetListResultAbAction()
+        {
+            return new List<Action>()
+            {
+                //ResultAb20150101,
+            };
+        }
+
+        List<Action<int>> GetListUpdateAbAction()
+        {
+            return new List<Action<int>>()
+            {
+                //UpdateAb20150101,
+            };
+        }
 
         void PresetAllAbTest()
         {
