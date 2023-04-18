@@ -63,6 +63,7 @@ namespace IEC.TrackingEvent
         {
             var dict = base.GetParams();
             dict["time"] = DataGame.TimeFinishLevel;
+            dict["session_count"] = DataPlayer.LevelSessionCount;
             return dict;
         }
     }
@@ -74,7 +75,6 @@ namespace IEC.TrackingEvent
         public override Dictionary<string, object> GetParams()
         {
             var dict = base.GetParams();
-            dict["time"] = DataGame.TimeFinishLevel;
             dict["result"] = DataGamePlay.IsWin;
             return dict;
         }

@@ -11,12 +11,12 @@ namespace IEC
     [System.Serializable]
     public class PlayerSecret : IData
     {
-        public const string DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
-
-        public string lastVersion;
         public long lastTickPlayTime;
+        public long startTickPlayTime;
+        public string lastVersion;
         public int session;
         public bool IsFirstTime => session == 1;
+
         public bool isNoAds;
         public int gold;
 
@@ -25,6 +25,9 @@ namespace IEC
         public int levelFirstTime = 0;
         public int countPlayLevel = 0;
 
+        public int sessionStartLevel;
+        public int LevelSessionCount => session - sessionStartLevel + 1;
+
         public void AddLevel()
         {
             level += 1;
@@ -32,7 +35,8 @@ namespace IEC
 
         public void SaveLastPlayTime()
         {
-            lastTickPlayTime = DateTime.Now.Ticks;
+            lastTickPlayTime = Math.Max(lastTickPlayTime, startTickPlayTime);
+            startTickPlayTime = Math.Max(lastTickPlayTime, DateTime.Now.Ticks);
         }
 
         public DateTime GetLastPlayDateTime()

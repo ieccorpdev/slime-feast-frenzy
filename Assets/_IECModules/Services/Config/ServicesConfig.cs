@@ -111,6 +111,15 @@ public class ServicesConfig : ScriptableObject
         return remoteConfigs;
     }
 
+    public List<ABTestConfig> GetListAbTestConfig()
+    {
+        if (isVersionByPlatform)
+        {
+            return abTestConfigs.Where(ab => ab.IsPlatform(platform)).ToList();
+        }
+        return abTestConfigs.ToList();
+    }
+
     public void SetActiveAbByVersion()
     {
         if (!isVersionByPlatform) return;

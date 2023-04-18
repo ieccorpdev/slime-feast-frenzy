@@ -401,9 +401,11 @@ namespace _IECModules
                 {
                     var platform = split[0];
                     var platformVersion = config.GetPlatformVersion(platform);
-                    platformVersion.version = split[1];
+                    var version = split[1];
+                    var overwriteAbName = (platformVersion.version == version) ? platformVersion.abTest : "";
+                    platformVersion.version = version;
                     var lastAbString = split[2];
-                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform);
+                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform, overwriteAbName);
                 }
                 else
                 {
@@ -436,10 +438,11 @@ namespace _IECModules
             var config = ProjectChecklistHelper.servicesConfig;
             var platformVersion = config.GetPlatformVersion();
             var version = string.IsNullOrWhiteSpace(platformVersion.version) ? PlayerSettings.bundleVersion : platformVersion.version;
-            var abName = "AB_" + platformVersion.abTest;
-            var abTest = config.abTestConfigs.LastOrDefault(ab => ab.KeyName == abName);
+            var abName = platformVersion.abTest;
+            var abTest = config.GetListAbTestConfig().LastOrDefault(ab => ab.KeyName == abName);
             var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
-            m_AbVersionString = "android " + version + " " + abVerStr;
+            var platform = config.isVersionByPlatform ? config.platform.ToLower() : "android";
+            m_AbVersionString = platform + " " + version + " " + abVerStr;
         }
 
         private void CreateGuiButton(string text, Action onClickButton) =>

@@ -1,14 +1,16 @@
 ﻿using _IECModules;
-using System.Linq;
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using UnityEngine;
 
 namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
-#region COMMON
+        #region COMMON
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -35,8 +37,7 @@ namespace IEC
         public void BehaviourStart()
         {
             var serviceAbTest = Services.ABTest();
-            var abTestConfigs = Services.config.abTestConfigs;
-            var listAbTestConfig = Services.config.abTestConfigs.ToList();
+            var listAbTestConfig = Services.config.GetListAbTestConfig();
             var abIndex = listAbTestConfig.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
 
             var forceSetAb = "ForceSetAB";
@@ -49,6 +50,7 @@ namespace IEC
             if (abConfig == null)
             {
                 Debug.LogError("No AB Test");
+                PresetAllAbTest();
                 ResultAllAbTest();
                 EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
                 return;
@@ -58,22 +60,24 @@ namespace IEC
                 cheatCodeParam =>
                 {
                     var cheatAbIndex = cheatCodeParam.dropdownParam.value;
-                    Services.DataSecure().SetString(forceSetAb, abTestConfigs[cheatAbIndex].KeyName);
-                    ApplyAbTest(cheatAbIndex);
+                    Services.DataSecure().SetString(forceSetAb, listAbTestConfig[cheatAbIndex].KeyName);
+                    ApplyAbTest(listAbTestConfig[cheatAbIndex]);
                 },
-                abTestConfigs.Select(x => x.KeyName).ToList(),
+                listAbTestConfig.Select(x => x.KeyName).ToList(),
                 abIndex
             );
 
-            ApplyAbTest(abIndex);
+            ApplyAbTest(abConfig);
         }
 
-        void ApplyAbTest(int abIndex)
+        void ApplyAbTest(ABTestConfig abConfig)
         {
             Pool.Set(new Game());
+            PresetAllAbTest();
+
             var serviceAbTest = Services.ABTest();
-            var listAbTestConfig = Services.config.abTestConfigs.ToList();
-            var abConfig = (abIndex >= 0) ? listAbTestConfig[abIndex] : null;
+            var listAbTestConfig = Services.config.GetListAbTestConfig();
+            var abIndex = listAbTestConfig.IndexOf(abConfig);
 
             if (abConfig == null)
             {
@@ -81,43 +85,78 @@ namespace IEC
                 return;
             }
 
+            var listAbTestDate = listAbTestConfig.Select(x => x.Date).ToList();
+            var dictAbTest = listAbTestConfig.ToDictionary(x => x.Date, x => x);
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
-            var abEventName = abConfig.ListEventsAB[abValue];
-            var listResultAb = GetListResultAction();
-            var listUpdateAb = GetListUpdateAbAction();
-            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).ToDictionary(x => x.Key, x => x.Value);
+            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 
-            var listAbTestDate = listAbTestConfig.Select((x, i) =>
-                new ABTestDate()
-                {
-                    config = x,
-                    date = int.Parse(x.KeyName.Split('_').Last())
-                })
-                .ToList();
-            var curTestDate = listAbTestDate[abIndex];
-            curTestDate.version = int.Parse(abEventName.Split('v').Last());
+            var allMethods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
+            var listResultAbAction = GetListResultAbAction();
+            var listUpdateAbAction = GetListUpdateAbAction();
+            var dictResultAb = GetDictAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
+            var dictUpdateAb = GetDictAction(ABTestConfig.UPDATE_PREFIX, allMethods, listAbTestConfig);
 
-            if (listUpdateAb.Count != listAbTestConfig.Count)
+            var curTestDate = abConfig.GetAbTestDate(abValue);
+            var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
+            var activeDate = activeAb.GetAbTestDate(0);
+
+            var semiOverrideKey = "Override.";
+            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date))
             {
-                Debug.LogError("List Update AB Action Not Equal List AB Test");
-                return;
+                var checkOverride = activeAb.CheckSemiOverride();
+                serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
+
+                string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
+                string newVersion = "AB_" + activeDate.date + "_v" + activeDate.version;
+                string eventName = checkOverride == 1 ? "Override_AB_" : "NonOverride_AB_";
+                eventName += activeDate.date;
+
+                Services.PushEvent(eventName, 0,
+                    new Dictionary<string, object>
+                    {
+                        { "new_version", newVersion },
+                        { "old_version", oldVersion },
+                        { "levelUpdate", PlayerData.level }
+                    });
             }
-
-            var isOverride = curTestDate.IsOverrideResult(dictOverride, out var overrideDate);
-
-            for (int i = 0; i < listResultAb.Count; i++)
+            var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
             {
-                var testDate = listAbTestDate[i];
+                if (!dictAbTest[kv.Key].isSemiOverride) return true;
+                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 0);
+                return checkOverride == 1;
+            });
+            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
+
+            var param = new object[] { };
+            for (int i = 0; i < listAbTestConfig.Count; i++)
+            {
+                var ab = listAbTestConfig[i];
+                var testDate = ab.GetAbTestDate(0);
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
-                    listResultAb[i].Invoke();
+                    if (i < listResultAbAction.Count)
+                    {
+                        listResultAbAction[i].Invoke();
+                    }
+                    else
+                    {
+                        dictResultAb[ab]?.Invoke(this, param);
+                    }
                 }
             }
 
             if (curTestDate.IsApplyUpdate(overrideDate))
             {
-                var updateAbAction = listUpdateAb[abIndex];
-                updateAbAction.Invoke(abValue);
+                if (abIndex < listUpdateAbAction.Count)
+                {
+                    listUpdateAbAction[abIndex].Invoke(abValue);
+                }
+                else
+                {
+                    param = new object[] { abValue };
+                    var updateAbAction = dictUpdateAb[abConfig];
+                    updateAbAction?.Invoke(this, param);
+                }
             }
 
             ResultAllAbTest();
@@ -143,7 +182,7 @@ namespace IEC
             {
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
-                ApplyAbTest(abIndex);
+                ApplyAbTest(abTestConfig);
                 ResultAllAbTest();
             };
 
@@ -153,7 +192,46 @@ namespace IEC
                 value = abValue
             };
         }
-#endregion
+
+        Dictionary<ABTestConfig, MethodInfo> GetDictAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
+        {
+            var dictMethods = allMethods.Where(m => m.Name.StartsWith(prefix)).ToDictionary(m => m.Name, m => m);
+            return listAbTest.ToDictionary(x => x, x => GetMethodInfo(dictMethods, x.GetAbTestAction(prefix)));
+        }
+
+        MethodInfo GetMethodInfo(Dictionary<string, MethodInfo> dictMethods, string abTestActionName)
+        {
+            if (dictMethods.TryGetValue(abTestActionName, out var value))
+                return value;
+            return null;
+        }
+
+        #endregion
+
+        List<Action> GetListResultAbAction()
+        {
+            return new List<Action>()
+            {
+                //ResultAb20150101,
+            };
+        }
+
+        List<Action<int>> GetListUpdateAbAction()
+        {
+            return new List<Action<int>>()
+            {
+                //UpdateAb20150101,
+            };
+        }
+
+        void PresetAllAbTest()
+        {
+            Game.timeDelayFullAds = 30f;
+        }
+
+        void ResultAllAbTest()
+        {
+        }
 
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
         {
@@ -165,37 +243,9 @@ namespace IEC
             };
         }
 
-        void ResultAllAbTest()
-        {
-            ResultAbFullAds();
-        }
-
-        List<Action> GetListResultAction()
-        {
-            return new List<Action>()
-            {
-                //ResultAbFullAds,
-                //ResultAb20210423,
-            };
-        }
-
-        List<Action<int>> GetListUpdateAbAction()
-        {
-            return new List<Action<int>>()
-            {
-                //UpdateAbFullAds,
-                //UpdateAb20210423,
-            };
-        }
-
-        void ResultAbFullAds()
-        {
-            Game.timeDelayFullAds = 30f;
-        }
-
-        void UpdateAbFullAds(int abValue)
-        {
-            Game.timeDelayFullAds = (abValue == 0) ? 30f : 60f;
-        }
+        /*  Example AB Test Result & Update Function
+        void ResultAb20150101() {}
+        void UpdateAb20150101(int abValue) {}
+        */
     }
 }

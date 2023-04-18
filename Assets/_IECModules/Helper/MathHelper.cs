@@ -1,14 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MathHelper
 {
+    public static float Lerp(float from, float to, float rel)
+    {
+        return ((1 - rel) * from) + (rel * to);
+    }
+
+    public static float InvLerp(float from, float to, float value)
+    {
+        return (value - from) / (to - from);
+    }
+
+    public static float Remap(float origFrom, float origTo, float targetFrom, float targetTo, float value)
+    {
+        float rel = InvLerp(origFrom, origTo, value);
+        return Lerp(targetFrom, targetTo, rel);
+    }
+
     public static int ClampInt(int value, int min, int max)
     {
-		value = (value < min) ? min : value;
+        value = (value < min) ? min : value;
         value = (value > max) ? max : value;
-		return value;
+        return value;
     }
 
     public static Vector3 DivideVector(Vector3 a, Vector3 b)
