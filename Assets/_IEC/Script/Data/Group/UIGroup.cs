@@ -23,7 +23,7 @@ namespace IEC
         public List<ScreenUI> ListScreen =>
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
 
-        public PopupSagaMapScreen PopupSagaMap => SingleGetChild<PopupSagaMapScreen>(true);
+        public PopupSagaMapScreen PopupSagaMap => Pool.Get<PopupSagaMapScreen>();
 
         public void LocateGroup()
         {
