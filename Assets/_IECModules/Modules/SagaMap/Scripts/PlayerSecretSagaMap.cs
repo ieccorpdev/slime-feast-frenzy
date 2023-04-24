@@ -27,17 +27,12 @@ namespace IEC
 
         public bool IsBonusLevel(int level)
         {
-            return IsHaveBossLevel && level > 3 && (level - 1) % 5 == 0;
+            return IsHaveBonusLevel && level > 3 && (level - 1) % 5 == 0;
         }
 
         public bool IsBossLevel(int level)
         {
-            if (IsHaveBonusLevel)
-            {
-                return (level - 5) % BossLevelSpacing == 0;
-            }
-
-            return false;
+            return IsHaveBossLevel && (level - 5) % BossLevelSpacing == 0;
         }
     }
 }
