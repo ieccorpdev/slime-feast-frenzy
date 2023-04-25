@@ -43,8 +43,8 @@ namespace IEC.FakeLeaderboard
 
         private void OnEnable()
         {
-            if (m_panelMain != null && m_panelMain.Controller.leaderDataSave.userData != null)
-                m_inputName.text = m_panelMain.Controller.leaderDataSave.userData.name;
+            if (m_panelMain != null && m_panelMain.Controller.dataSave.userData != null)
+                m_inputName.text = m_panelMain.Controller.dataSave.userData.name;
             OnEndEditEvent("");
         }
         private void OnClickOKEvent()

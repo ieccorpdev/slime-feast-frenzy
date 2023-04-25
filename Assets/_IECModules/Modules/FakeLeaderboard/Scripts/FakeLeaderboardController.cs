@@ -9,8 +9,8 @@ namespace IEC.FakeLeaderboard
     public class FakeLeaderboardController : _BaseBehaviour, IController, IEventAwake, IEventPauseApp
     {
         [BoxGroup("Auto Load, NOT EDIT")]
-        public FakeLeaderboardDataSave leaderDataSave; //=> leaderDataSave;
-        private const string FAKE_LB_DATA_SAVE = "FakeLeaderboardController.FAKE_LB_DATA_SAVE";
+        public FakeLeaderboardDataSave dataSave; //=> leaderDataSave;
+       
         [BoxGroup("Auto Load, NOT EDIT")]
         public FakeLeaderboardDataConfig dataConfig;
 
@@ -32,31 +32,31 @@ namespace IEC.FakeLeaderboard
 
         private void InitDataOnStartApp()
         {
-            leaderDataSave = Services.DataSecure()
-                .GetObject(FAKE_LB_DATA_SAVE, new FakeLeaderboardDataSave());
+            dataSave = Services.DataSecure()
+                .GetObject(FakeLeaderboardConstants.FAKE_LB_DATA_SAVE, new FakeLeaderboardDataSave());
 
             dataConfig = Resources.Load<FakeLeaderboardDataConfig>("Config/FakeLeaderboardDataConfig");
             
-            if (leaderDataSave.userData == null)
-                leaderDataSave.userData = new FakeLeaderboardUserData(true);
-            leaderDataSave.userData.nationalID = GetCurrentCountryID();
+            if (dataSave.userData == null)
+                dataSave.userData = new FakeLeaderboardUserData(true);
+            dataSave.userData.nationalID = GetCurrentCountryID();
             //init top3
-            if (leaderDataSave.top3 == null || leaderDataSave.top3.Count != 3)
+            if (dataSave.top3 == null || dataSave.top3.Count != 3)
             {
-                leaderDataSave.top3 = new List<FakeLeaderboardUserData>();
-                leaderDataSave.top3.Add(new FakeLeaderboardUserData()
+                dataSave.top3 = new List<FakeLeaderboardUserData>();
+                dataSave.top3.Add(new FakeLeaderboardUserData()
                 {
                     name = "500bruh",
                     trophy = 22678,
                     nationalID = dataConfig.GeneratorNewNational().index
                 });
-                leaderDataSave.top3.Add(new FakeLeaderboardUserData()
+                dataSave.top3.Add(new FakeLeaderboardUserData()
                 {
                     name = "Romeo8989",
                     trophy = 22969,
                     nationalID = dataConfig.GeneratorNewNational().index
                 });
-                leaderDataSave.top3.Add(new FakeLeaderboardUserData()
+                dataSave.top3.Add(new FakeLeaderboardUserData()
                 {
                     name = "Tenor",
                     trophy = 23571,
@@ -66,14 +66,14 @@ namespace IEC.FakeLeaderboard
             }
 
             //init OtherPlayer:
-            if (leaderDataSave.otherPlayers == null)
+            if (dataSave.otherPlayers == null)
             {
                 //NUll, generate new ranking list;
-                leaderDataSave.otherPlayers = new List<FakeLeaderboardUserData>();
+                dataSave.otherPlayers = new List<FakeLeaderboardUserData>();
                 List<int> trophies = dataConfig.GeneratorTrophiesList();
                 for (int i = 0; i < trophies.Count; i++)
                 {
-                    leaderDataSave.otherPlayers.Add(new FakeLeaderboardUserData()
+                    dataSave.otherPlayers.Add(new FakeLeaderboardUserData()
                     {
                         trophy = trophies[i]
                     });
@@ -81,9 +81,9 @@ namespace IEC.FakeLeaderboard
             }
 
             //fake userData
-            for (int i = 0; i < leaderDataSave.otherPlayers.Count; i++)
+            for (int i = 0; i < dataSave.otherPlayers.Count; i++)
             {
-                FakeLeaderboardUserData user = leaderDataSave.otherPlayers[i];
+                FakeLeaderboardUserData user = dataSave.otherPlayers[i];
                 user.name = dataConfig.GeneratorNewName();
                 user.nationalID = dataConfig.GeneratorNewNational().index;
             }
@@ -95,20 +95,20 @@ namespace IEC.FakeLeaderboard
 
             //Debug.LogError(leaderDataSave.lastTime.ToString());
             bool needUpdateScore = false;
-            var lastTime = leaderDataSave.lastTime;
+            var lastTime = dataSave.lastTime;
             var now = System.DateTime.Now;
-            if (leaderDataSave.lastTime.Year > 1 && now.Year == lastTime.Year && now.DayOfYear > lastTime.DayOfYear)
+            if (dataSave.lastTime.Year > 1 && now.Year == lastTime.Year && now.DayOfYear > lastTime.DayOfYear)
             {
                 needUpdateScore = true;
             }
 
-            leaderDataSave.lastTime = now;
+            dataSave.lastTime = now;
             if (!needUpdateScore) return;
             Debug.Log("Update top3 score");
-            leaderDataSave.top3.Find(x => x.name.Equals("Tenor")).trophy += Random.Range(5, 11);
-            leaderDataSave.top3.Find(x => x.name.Equals("Romeo8989")).trophy += Random.Range(4, 7);
-            leaderDataSave.top3.Find(x => x.name.Equals("500bruh")).trophy += Random.Range(2, 5);
-            leaderDataSave.top3 = leaderDataSave.top3.OrderBy(x => x.trophy).ToList();
+            dataSave.top3.Find(x => x.name.Equals("Tenor")).trophy += Random.Range(5, 11);
+            dataSave.top3.Find(x => x.name.Equals("Romeo8989")).trophy += Random.Range(4, 7);
+            dataSave.top3.Find(x => x.name.Equals("500bruh")).trophy += Random.Range(2, 5);
+            dataSave.top3 = dataSave.top3.OrderBy(x => x.trophy).ToList();
         }
 
 
@@ -117,8 +117,8 @@ namespace IEC.FakeLeaderboard
             Debug.Log(PlayerData.level + " is bonus " + isBonusLevel + " blind Mode " + isBlindMode + "_daily mode:" + isInDailyMode);
             if (PlayerData.level <= 2) return 0; //skip tutorial
             if (isInDailyMode) return 0; //skip daily mode
-            if (leaderDataSave.userData == null)
-                leaderDataSave.userData = new FakeLeaderboardUserData(true);
+            if (dataSave.userData == null)
+                dataSave.userData = new FakeLeaderboardUserData(true);
             int trophyAdd = 1;
             if (isBonusLevel)
                 trophyAdd = 2;
@@ -127,7 +127,7 @@ namespace IEC.FakeLeaderboard
 
             if (PlayerData.level == 3 || PlayerData.level == 4 || PlayerData.level == 6 || PlayerData.level == 7)
                 trophyAdd = 2;
-            leaderDataSave.userData.trophy += trophyAdd;
+            dataSave.userData.trophy += trophyAdd;
             return trophyAdd;
         }
 
@@ -138,12 +138,12 @@ namespace IEC.FakeLeaderboard
 
         public LeaderboardRankData UserRank()
         {
-            return dataConfig.TrophyToRank(leaderDataSave.userData.trophy);
+            return dataConfig.TrophyToRank(dataSave.userData.trophy);
         }
 
         public int UserPosition()
         {
-            return leaderDataSave.IndexOfPlayer;
+            return dataSave.IndexOfPlayer;
         }
 
         public NationalData NationalByID(int id)
@@ -155,17 +155,17 @@ namespace IEC.FakeLeaderboard
         public void UpdateUsername(string userName)
         {
 
-            if (leaderDataSave.userData == null)
-                leaderDataSave.userData = new FakeLeaderboardUserData(true);
+            if (dataSave.userData == null)
+                dataSave.userData = new FakeLeaderboardUserData(true);
             if (userName.Trim().Length > 0)
-                leaderDataSave.userData.name = userName;
+                dataSave.userData.name = userName;
         }
 
 
         public void UpdateMyUserCellView(FakeLeaderboardCellView m_cellMy)
         {
             //  leaderDataSave.userData.index = UserPosition();
-            m_cellMy.LoadData(leaderDataSave.userData);
+            m_cellMy.LoadData(dataSave.userData);
         }
 
 
@@ -249,7 +249,7 @@ namespace IEC.FakeLeaderboard
             if (isPause)
             {
                 if(Game.isDebugReset) return;
-                Services.DataSecure().SetObject(FAKE_LB_DATA_SAVE, leaderDataSave);
+                Services.DataSecure().SetObject(FakeLeaderboardConstants.FAKE_LB_DATA_SAVE, dataSave);
                 Services.SaveData();
             }
         }

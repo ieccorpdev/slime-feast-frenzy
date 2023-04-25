@@ -45,7 +45,7 @@ namespace IEC.FakeLeaderboard
         {
             m_panelMain = panelMain;
 
-            m_datas = panelMain.Controller.leaderDataSave.playersToShowOnListView;
+            m_datas = panelMain.Controller.dataSave.playersToShowOnListView;
             m_enhanScrollerDelegate = new ExtendEnhancedScrollerDelegate<FakeLeaderboardCellView>();
             m_enhanScrollerDelegate.Init(cellSize, m_datas.Count, m_cellPrefab, OnSetDataEvent);
             m_enhanScroller.Delegate = m_enhanScrollerDelegate;
@@ -55,14 +55,14 @@ namespace IEC.FakeLeaderboard
             for (int i = 0; i < m_cellTop3.Count; i++)
             {
                 //      panelMain.Controller.leaderDataSave.top3ContainPlayer[i].index = m_cellTop3.Count - i;
-                var currentUser = panelMain.Controller.leaderDataSave.top3ContainPlayer[i];
+                var currentUser = panelMain.Controller.dataSave.top3ContainPlayer[i];
 
-                m_cellTop3[i].LoadData(currentUser, false,currentUser.Equals(panelMain.Controller.leaderDataSave.userData));
+                m_cellTop3[i].LoadData(currentUser, false,currentUser.Equals(panelMain.Controller.dataSave.userData));
             }
 
             m_panelMain.Controller.UpdateMyUserCellView(m_cellMy);
 
-            m_MyUserData = panelMain.Controller.leaderDataSave.userData;
+            m_MyUserData = panelMain.Controller.dataSave.userData;
 
             var m_MyUserRankData = panelMain.Controller.UserRank();
             if (m_MyUserRankData.rankName != FakeLeaderboardRankType.Unrank)

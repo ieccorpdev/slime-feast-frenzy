@@ -76,7 +76,7 @@ namespace IEC.FakeLeaderboard
             for (int i = -2; i <= 8; i++)
             {
                 if (i == 0) continue;
-                var userOther = Controller.leaderDataSave.playerByIndex(usePosition + i);
+                var userOther = Controller.dataSave.playerByIndex(usePosition + i);
                 //if (userOther != null)
                 //    userOther.index = usePosition + i;
                 m_otherUserRankCellViews[indexView].LoadData(userOther, true);
