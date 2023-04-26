@@ -8,12 +8,13 @@ namespace IEC
     {
         public TMP_Text textLevel;
         public Button button;
+        public Image imageState;
 
-        public int level;
+        public virtual int Level {get; private set; }
 
         public virtual void SetData(int level)
         {
-            this.level = level;
+            Level = level;
 
             gameObject.name = $"SagaMapItem-{level}";
             textLevel.text = $"{level}";
@@ -23,6 +24,19 @@ namespace IEC
             {
                 Debug.Log($"Click SagaMapItem {level}");
             });
+        }
+
+        public virtual void SetLevelState(bool isLock, bool isCurrentPlay)
+        {
+            if (imageState != null)
+            {
+                if (isLock)
+                    imageState.color = Color.gray;
+                else if (isCurrentPlay)
+                    imageState.color = Color.yellow;
+                else
+                    imageState.color = Color.green;
+            }
         }
     }
 

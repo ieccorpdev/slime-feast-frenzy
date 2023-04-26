@@ -10,7 +10,9 @@ namespace IEC.MapScroller
         public GameObject header;
         public GameObject footer;
 
-        Image TestImage => GetComponent<Image>();
+        public virtual int ScrollIndex { get; protected set; }
+
+        Image TestImage => SingleGet<Image>();
 
         List<Color> m_TestColors = new List<Color>()
         {
@@ -19,8 +21,13 @@ namespace IEC.MapScroller
 
         public virtual void SetData(int scrollIndex)
         {
-            gameObject.name = $"BigItem-{scrollIndex}";
-            TestImage.color = m_TestColors[scrollIndex % m_TestColors.Count];
+            ScrollIndex = scrollIndex;
+            
+            if (TestImage != null)
+            {
+                gameObject.name = $"BigItem-{scrollIndex}";
+                TestImage.color = m_TestColors[scrollIndex % m_TestColors.Count];
+            }
         }
 
         public virtual void SetHeader(bool isActive)

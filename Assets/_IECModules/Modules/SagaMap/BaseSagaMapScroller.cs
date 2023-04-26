@@ -10,7 +10,10 @@ namespace IEC
     {
         public Vector2 standardFullSize = new Vector2(1080, 1920);
 
-        [Button]
+        public bool IsHaveLevelProgress { get; protected set; }
+        public int CurrentLevel { get; protected set; }
+        public int MaxUnlockLevel { get; protected set; }
+        
         public override void InitScroller()
         {
             var numberLevelPerPath = 5;
@@ -25,6 +28,30 @@ namespace IEC
         {
             var scale = AspectRatioScaler.GetScale(RectTransform.rect.size, standardFullSize);
             return base.GetCellViewSize(scroller, dataIndex) * scale;
+        }
+
+        public override EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        {
+            var sagaPath = base.GetCellView(scroller, dataIndex, cellIndex) as BaseSagaPath;
+            if (IsHaveLevelProgress)
+            {
+                sagaPath.SetLevelProgress(CurrentLevel, MaxUnlockLevel);
+            }
+            return sagaPath;
+        }
+
+        [Button]
+        public void TestSetLevelProgress()
+        {
+            SetLevelProgress(8, 12);
+            InitScroller();
+        }
+
+        public virtual void SetLevelProgress(int currentLevel, int maxUnlockLevel)
+        {
+            IsHaveLevelProgress = true;
+            CurrentLevel = currentLevel;
+            MaxUnlockLevel = maxUnlockLevel;
         }
     }
 

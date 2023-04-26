@@ -6,14 +6,16 @@ namespace IEC
 {
     public class BaseSagaPath : BaseMapBigItem
     {
-        public int scrollIndex;
         public List<BaseSagaPathItem> listItem;
+
+        public virtual int MinLevel => ScrollIndex * listItem.Count + 1;
+        public virtual int MaxLevel => ScrollIndex * listItem.Count + listItem.Count;
 
         public override void SetData(int scrollIndex)
         {
+            ScrollIndex = scrollIndex;
             gameObject.name = $"SagaPath-{scrollIndex}";
 
-            this.scrollIndex = scrollIndex;
             for (int i = 0; i < listItem.Count; i++)
             {
                 var level = scrollIndex * listItem.Count + i + 1;
@@ -25,6 +27,16 @@ namespace IEC
         public void UpdateListItem()
         {
             listItem = GetComponentsInChildren<BaseSagaPathItem>().ToList();
+        }
+
+        public virtual void SetLevelProgress(int currentLevel, int maxUnlockLevel)
+        {
+            var scrollIndex = ScrollIndex;
+            for (int i = 0; i < listItem.Count; i++)
+            {
+                var level = scrollIndex * listItem.Count + i + 1;
+                listItem[i].SetLevelState(level > maxUnlockLevel, level == currentLevel);
+            }
         }
     }
 

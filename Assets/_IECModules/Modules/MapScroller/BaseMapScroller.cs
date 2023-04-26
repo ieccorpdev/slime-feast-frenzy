@@ -28,7 +28,6 @@ namespace IEC.MapScroller
             }
         }
 
-        [Button]
         public virtual void InitScroller()
         {
             InitScroller(DEFAULT_NUMBER_BIGITEM, 0);
