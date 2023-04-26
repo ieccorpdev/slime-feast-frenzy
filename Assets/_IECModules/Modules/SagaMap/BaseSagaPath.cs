@@ -1,5 +1,6 @@
 using IEC.MapScroller;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IEC
 {
@@ -18,6 +19,12 @@ namespace IEC
                 var level = scrollIndex * listItem.Count + i + 1;
                 listItem[i].SetData(level);
             }
+        }
+
+        [NaughtyAttributes.Button]
+        public void UpdateListItem()
+        {
+            listItem = GetComponentsInChildren<BaseSagaPathItem>().ToList();
         }
     }
 
