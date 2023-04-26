@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace IEC.MapScroller
 {
-    public class MapScroller : _BaseBehaviour, IEnhancedScrollerDelegate
+    public class BaseMapScroller : _BaseBehaviour, IEnhancedScrollerDelegate
     {
         public EnhancedScroller Scroller => SingleGet<EnhancedScroller>();
 
-        public MapBigItem prefabBigItem;
+        public BaseMapBigItem prefabBigItem;
 
         public bool isAutoInit = true;
 
@@ -63,7 +63,7 @@ namespace IEC.MapScroller
 
         public virtual EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
-            var cellView = scroller.GetCellView(prefabBigItem) as MapBigItem;
+            var cellView = scroller.GetCellView(prefabBigItem) as BaseMapBigItem;
             var trueIndex = IndexLastData - dataIndex;
 
             cellView.SetHeader(trueIndex == 0);

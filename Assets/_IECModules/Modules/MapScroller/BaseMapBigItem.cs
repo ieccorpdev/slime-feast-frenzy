@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace IEC.MapScroller
 {
-    public class MapBigItem : EnhancedScrollerCellView
+    public class BaseMapBigItem : EnhancedScrollerCellView
     {
         public GameObject header;
         public GameObject footer;
