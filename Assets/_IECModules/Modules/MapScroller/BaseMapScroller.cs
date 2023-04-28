@@ -12,6 +12,7 @@ namespace IEC.MapScroller
         public BaseMapBigItem prefabBigItem;
 
         public bool isAutoInit = true;
+        public bool isReverseScroll = true;
 
         public int numberBigItem = DEFAULT_NUMBER_BIGITEM;
         public int IndexLastData => numberBigItem - 1;
@@ -53,18 +54,34 @@ namespace IEC.MapScroller
             StartCoroutine(IEnumDelayJump(trueIndex));
         }
 
+        public int GetTrueIndex(int scrollIndex)
+        {
+            return ConvertIndex(scrollIndex);
+        }
+
+        public int GetScrollIndex(int trueIndex)
+        {
+            return ConvertIndex(trueIndex);
+        }
+
+        int ConvertIndex(int index)
+        {
+            if (isReverseScroll)
+                return IndexLastData - index;
+            return index;
+        }
+
         protected IEnumerator IEnumDelayJump(int trueIndex)
         {
             yield return null;
 
-            var index = IndexLastData - trueIndex;
-            Scroller.JumpToDataIndex(index);
+            Scroller.JumpToDataIndex(GetScrollIndex(trueIndex));
         }
 
         public virtual EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = scroller.GetCellView(prefabBigItem) as BaseMapBigItem;
-            var trueIndex = IndexLastData - dataIndex;
+            var trueIndex = GetTrueIndex(dataIndex);
 
             cellView.SetHeader(trueIndex == 0);
             cellView.SetFooter(trueIndex == IndexLastData);
