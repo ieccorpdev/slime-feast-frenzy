@@ -1,4 +1,5 @@
 using EnhancedUI.EnhancedScroller;
+using NaughtyAttributes;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ namespace IEC.MapScroller
         public GameObject footer;
 
         public virtual int ScrollIndex { get; protected set; }
+        public EnhancedScroller Scroller { get; protected set; }
 
         Image TestImage => SingleGet<Image>();
 
@@ -38,6 +40,11 @@ namespace IEC.MapScroller
         public virtual void SetFooter(bool isActive)
         {
             SetActive(footer, isActive);
+        }
+
+        public void SetScroller(EnhancedScroller scroller)
+        {
+            Scroller = scroller;
         }
     }
 }

@@ -94,6 +94,7 @@ namespace IEC.MapScroller
             var cellView = scroller.GetCellView(prefabBigItem) as BaseMapBigItem;
             var trueIndex = GetTrueIndex(dataIndex);
 
+            cellView.SetScroller(Scroller);
             cellView.SetHeader(trueIndex == 0);
             cellView.SetFooter(trueIndex == IndexLastData);
             cellView.SetData(trueIndex);

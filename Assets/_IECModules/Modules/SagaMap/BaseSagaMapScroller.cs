@@ -13,15 +13,23 @@ namespace IEC
         public bool IsHaveLevelProgress { get; protected set; }
         public int CurrentLevel { get; protected set; }
         public int MaxUnlockLevel { get; protected set; }
-        
+
+        public int NumberLevelPerPath => ((BaseSagaPath)prefabBigItem).listItem.Count;
+        public int MaxLevelNeedToShow { get; protected set; }
+        public int NumberOfPath => MaxLevelNeedToShow / NumberLevelPerPath + (MaxLevelNeedToShow % NumberLevelPerPath > 0 ? 1 : 0);
+        public int NumberLevelOnMap => NumberOfPath * NumberLevelPerPath;
+
         public override void InitScroller()
         {
-            var numberLevelPerPath = 5;
-            var numberLevelAhead = 50;
-            var numberOfPath = (PlayerData.level + numberLevelAhead) / numberLevelPerPath;
-            var indexJumpTo = PlayerData.level / numberLevelPerPath;
+            if (IsHaveLevelProgress)
+            {
+                InitScroller(NumberOfPath);
+                JumpToLevelProgress();
+                return;
+            }
 
-            InitScroller(numberOfPath, indexJumpTo);
+            MaxLevelNeedToShow = Mathf.Max(MaxLevelNeedToShow, NumberLevelPerPath);
+            InitScroller(NumberOfPath);
         }
 
         public override float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
@@ -43,15 +51,31 @@ namespace IEC
         [Button]
         public void TestSetLevelProgress()
         {
-            SetLevelProgress(8, 12);
+            SetLevelProgress(8, 15, 16);
             InitScroller();
         }
 
-        public virtual void SetLevelProgress(int currentLevel, int maxUnlockLevel)
+        public virtual void SetLevelProgress(int currentLevel, int maxUnlockLevel, int maxLevelNeedToShow)
         {
             IsHaveLevelProgress = true;
             CurrentLevel = currentLevel;
             MaxUnlockLevel = maxUnlockLevel;
+            MaxLevelNeedToShow = maxLevelNeedToShow;
+        }
+
+        public virtual void JumpToLevelProgress()
+        {
+            var numberLevelPerPath = NumberLevelPerPath;
+            var indexJumpTo = (MaxUnlockLevel - 1) / numberLevelPerPath;
+
+            var pathMinLevel = indexJumpTo * numberLevelPerPath + 1;
+            var pathMaxLevel = indexJumpTo * numberLevelPerPath + numberLevelPerPath;
+
+            var offset = MathHelper.Remap(pathMinLevel, pathMaxLevel, 0.2f, -0.4f, MaxUnlockLevel);
+
+            //Debug.Log($"{indexJumpTo} {offset}");
+
+            JumpToIndex(indexJumpTo, offset);
         }
     }
 
