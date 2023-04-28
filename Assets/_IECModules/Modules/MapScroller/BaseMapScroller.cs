@@ -35,7 +35,7 @@ namespace IEC.MapScroller
             InitScroller(DEFAULT_NUMBER_BIGITEM, 0);
         }
 
-        public virtual void InitScroller(int numberBigItem, int jumpIndex)
+        public virtual void InitScroller(int numberBigItem, int jumpIndex, float cellOffset = 0f)
         {
             if (numberBigItem == 0)
             {
@@ -46,20 +46,20 @@ namespace IEC.MapScroller
             Scroller.Delegate = this;
             Scroller.ReloadData();
 
-            JumpToIndex(jumpIndex);
+            JumpToIndex(jumpIndex, cellOffset);
         }
 
-        public virtual void JumpToIndex(int trueIndex)
+        public virtual void JumpToIndex(int trueIndex, float cellOffset = 0f)
         {
-            StartCoroutine(IEnumDelayJump(trueIndex));
+            StartCoroutine(IEnumDelayJump(trueIndex, cellOffset));
         }
 
-        public int GetTrueIndex(int scrollIndex)
+        int GetTrueIndex(int scrollIndex)
         {
             return ConvertIndex(scrollIndex);
         }
 
-        public int GetScrollIndex(int trueIndex)
+        int GetScrollIndex(int trueIndex)
         {
             return ConvertIndex(trueIndex);
         }
@@ -71,11 +71,11 @@ namespace IEC.MapScroller
             return index;
         }
 
-        protected IEnumerator IEnumDelayJump(int trueIndex)
+        protected virtual IEnumerator IEnumDelayJump(int trueIndex, float cellOffset = 0f)
         {
             yield return null;
 
-            Scroller.JumpToDataIndex(GetScrollIndex(trueIndex));
+            Scroller.JumpToDataIndex(GetScrollIndex(trueIndex), 0f, cellOffset);
         }
 
         public virtual EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
