@@ -11,7 +11,8 @@ namespace IEC.MapScroller
 
         public BaseMapBigItem prefabBigItem;
 
-        public bool isAutoInit = true;
+        public bool isAutoInit = false;
+        public bool isReverseScroll = true;
 
         public int numberBigItem = DEFAULT_NUMBER_BIGITEM;
         public int IndexLastData => numberBigItem - 1;
@@ -33,7 +34,7 @@ namespace IEC.MapScroller
             InitScroller(DEFAULT_NUMBER_BIGITEM, 0);
         }
 
-        public virtual void InitScroller(int numberBigItem, int jumpIndex)
+        public virtual void InitScroller(int numberBigItem, int jumpIndex, float cellOffset = 0f)
         {
             if (numberBigItem == 0)
             {
@@ -44,26 +45,42 @@ namespace IEC.MapScroller
             Scroller.Delegate = this;
             Scroller.ReloadData();
 
-            JumpToIndex(jumpIndex);
+            JumpToIndex(jumpIndex, cellOffset);
         }
 
-        public virtual void JumpToIndex(int trueIndex)
+        public virtual void JumpToIndex(int trueIndex, float cellOffset = 0f)
         {
-            StartCoroutine(IEnumDelayJump(trueIndex));
+            StartCoroutine(IEnumDelayJump(trueIndex, cellOffset));
         }
 
-        protected IEnumerator IEnumDelayJump(int trueIndex)
+        int GetTrueIndex(int scrollIndex)
+        {
+            return ConvertIndex(scrollIndex);
+        }
+
+        int GetScrollIndex(int trueIndex)
+        {
+            return ConvertIndex(trueIndex);
+        }
+
+        int ConvertIndex(int index)
+        {
+            if (isReverseScroll)
+                return IndexLastData - index;
+            return index;
+        }
+
+        protected virtual IEnumerator IEnumDelayJump(int trueIndex, float cellOffset = 0f)
         {
             yield return null;
 
-            var index = IndexLastData - trueIndex;
-            Scroller.JumpToDataIndex(index);
+            Scroller.JumpToDataIndex(GetScrollIndex(trueIndex), 0f, cellOffset);
         }
 
         public virtual EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             var cellView = scroller.GetCellView(prefabBigItem) as BaseMapBigItem;
-            var trueIndex = IndexLastData - dataIndex;
+            var trueIndex = GetTrueIndex(dataIndex);
 
             cellView.SetHeader(trueIndex == 0);
             cellView.SetFooter(trueIndex == IndexLastData);
