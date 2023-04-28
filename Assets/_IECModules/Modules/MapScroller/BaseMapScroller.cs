@@ -11,7 +11,7 @@ namespace IEC.MapScroller
 
         public BaseMapBigItem prefabBigItem;
 
-        public bool isAutoInit = true;
+        public bool isAutoInit = false;
         public bool isReverseScroll = true;
 
         public int numberBigItem = DEFAULT_NUMBER_BIGITEM;
