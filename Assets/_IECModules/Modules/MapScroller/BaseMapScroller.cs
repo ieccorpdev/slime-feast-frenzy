@@ -35,6 +35,18 @@ namespace IEC.MapScroller
             InitScroller(DEFAULT_NUMBER_BIGITEM, 0);
         }
 
+        public virtual void InitScroller(int numberBigItem)
+        {
+            if (numberBigItem == 0)
+            {
+                Debug.LogError("InitScroller numberBigItem = 0");
+                numberBigItem = DEFAULT_NUMBER_BIGITEM;
+            }
+            this.numberBigItem = numberBigItem;
+            Scroller.Delegate = this;
+            Scroller.ReloadData();
+        }
+
         public virtual void InitScroller(int numberBigItem, int jumpIndex, float cellOffset = 0f)
         {
             if (numberBigItem == 0)
