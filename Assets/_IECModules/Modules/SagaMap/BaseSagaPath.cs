@@ -2,7 +2,7 @@ using IEC.MapScroller;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace IEC
+namespace IEC.SagaMap
 {
     public class BaseSagaPath : BaseMapBigItem
     {

@@ -3,7 +3,7 @@ using IEC.MapScroller;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IEC
+namespace IEC.SagaMap
 {
     public class BaseSagaMapScroller : BaseMapScroller
     {
