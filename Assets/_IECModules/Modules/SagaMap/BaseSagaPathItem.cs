@@ -38,6 +38,17 @@ namespace IEC
                     imageState.color = Color.green;
             }
         }
+
+        public virtual float GetJumpOffset()
+        {
+            var rectTrans = GetComponent<RectTransform>();
+            var parent = rectTrans.parent.GetComponent<RectTransform>();
+            var parentSize = parent.rect.size;
+
+            var itemOffset = (parentSize.y * 0.5f - rectTrans.anchoredPosition.y) / parentSize.y;
+            var cellOffset = itemOffset - 0.5f;
+            return cellOffset;
+        }
     }
 
 }

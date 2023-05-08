@@ -1,6 +1,5 @@
 using EnhancedUI.EnhancedScroller;
 using IEC.MapScroller;
-using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -48,13 +47,6 @@ namespace IEC
             return sagaPath;
         }
 
-        [Button]
-        public void TestSetLevelProgress()
-        {
-            SetLevelProgress(8, 15, 16);
-            InitScroller();
-        }
-
         public virtual void SetLevelProgress(int currentLevel, int maxUnlockLevel, int maxLevelNeedToShow)
         {
             IsHaveLevelProgress = true;
@@ -69,9 +61,9 @@ namespace IEC
             var indexJumpTo = (MaxUnlockLevel - 1) / numberLevelPerPath;
 
             var pathMinLevel = indexJumpTo * numberLevelPerPath + 1;
-            var pathMaxLevel = indexJumpTo * numberLevelPerPath + numberLevelPerPath;
 
-            var offset = MathHelper.Remap(pathMinLevel, pathMaxLevel, 0.2f, -0.4f, MaxUnlockLevel);
+            var prefabSagaPath = prefabBigItem as BaseSagaPath;
+            var offset = prefabSagaPath.GetJumpOffset(MaxUnlockLevel - pathMinLevel);
 
             //Debug.Log($"{indexJumpTo} {offset}");
 

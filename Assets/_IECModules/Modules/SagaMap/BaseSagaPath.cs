@@ -38,6 +38,11 @@ namespace IEC
                 listItem[i].SetLevelState(level > maxUnlockLevel, level == currentLevel);
             }
         }
+
+        public virtual float GetJumpOffset(int itemIndex)
+        {
+            return listItem[itemIndex].GetJumpOffset();
+        }
     }
 
 }
