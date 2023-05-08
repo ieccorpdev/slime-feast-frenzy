@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace IEC
+namespace IEC.SagaMap
 {
     public class BaseSagaPathItem : _BaseBehaviour
     {
