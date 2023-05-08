@@ -18,6 +18,12 @@ namespace IEC.SagaMap
         public int NumberOfPath => MaxLevelNeedToShow / NumberLevelPerPath + (MaxLevelNeedToShow % NumberLevelPerPath > 0 ? 1 : 0);
         public int NumberLevelOnMap => NumberOfPath * NumberLevelPerPath;
 
+        public override void TestInit()
+        {
+            SetLevelProgress(12, 21, 30);
+            InitScroller();
+        }
+
         public override void InitScroller()
         {
             if (IsHaveLevelProgress)
