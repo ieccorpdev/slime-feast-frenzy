@@ -793,6 +793,11 @@ namespace IEC
                 SafeInvoke(closeCallback);
                 return;
             }
+            if (!IsRewardLoaded())
+            {
+                Pool.Get<ToastGroup>().Notify.ShowAdsNotReady();
+                return;
+            }
             Debug.Log("Show reward ads");
             if (m_Ads.IsLoaded(AdsEnum.REWARD))
             {
