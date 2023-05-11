@@ -55,6 +55,7 @@ namespace IEC
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
+        public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -98,8 +99,8 @@ namespace IEC
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
-                    Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                    Ads().Load(bannerPos, null);
+                    SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -856,11 +857,11 @@ namespace IEC
             if (m_ServiceData.isNoAds && isActive) return;
             if (isActive)
             {
-                Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                Ads().Show(bannerType, null);
             }
             else
             {
-                Ads().Hide(AdsEnum.BANNER_BOTTOM);
+                Ads().Hide(bannerType);
             }
         }
 
