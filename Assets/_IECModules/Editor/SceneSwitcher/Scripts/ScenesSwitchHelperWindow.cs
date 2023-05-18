@@ -270,7 +270,7 @@ namespace IEC
                 OpenSceneMode.Single);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Game Scene 08 #7")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Game Scene 08 #8")]
         public static void SwitchToGameScene08()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
@@ -286,7 +286,7 @@ namespace IEC
                 OpenSceneMode.Single);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Game Scene 09 #7")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Game Scene 09 #9")]
         public static void SwitchToGameScene09()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
@@ -306,140 +306,140 @@ namespace IEC
 
         #region Prefab Link
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 0 %1")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 1 #&1")]
         public static void SwitchToPrefab_0()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 0;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 1 %2")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 2 #&2")]
         public static void SwitchToPrefab_1()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 1;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 2 %3")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 3 #&3")]
         public static void SwitchToPrefab_2()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 2;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 3 %4")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 4 #&4")]
         public static void SwitchToPrefab_3()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 3;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 4 %5")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 5 #&5")]
         public static void SwitchToPrefab_4()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 4;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 5 %6")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 6 #&6")]
         public static void SwitchToPrefab_5()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 5;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 6 %7")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 7 #&7")]
         public static void SwitchToPrefab_6()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 6;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 7 %8")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 8 #&8")]
         public static void SwitchToPrefab_7()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 7;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 8 %9")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 9 #&9")]
         public static void SwitchToPrefab_8()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 8;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
             AssetDatabase.OpenAsset(_scenesContainer.PrefabAsset[indexPrefab]);
         }
 
-        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 9 %0")]
+        [MenuItem(_developerName + "/" + _productName + "/Switch to Prefab 10 #&0")]
         public static void SwitchToPrefab_9()
         {
             if (!_scenesContainer.activeSceneSwitched) return;
             int indexPrefab = 9;
             if (!HasPrefab(indexPrefab))
             {
-                Debug.LogError("[PrefabSwtich] Cannot find Prefab!. Please add this Prefab!");
+                Debug.LogError("[PrefabSwitch] Cannot find Prefab!. Please add this Prefab!");
                 return;
             }
 
@@ -455,6 +455,7 @@ namespace IEC
             _scenesContainer.activeSceneSwitched = EditorGUILayout.Toggle("Active Scene Switch", active);
             if (_scenesContainer == null)
                 return;
+            EditorGUILayout.LabelField("---Scene Support---");
             for (int i = 0; i < _scenesContainer.SceneAssets.Count; i++)
             {
                 string sceneNumber = (i + 1).ToString();
@@ -465,31 +466,31 @@ namespace IEC
                         label = "Game Scene (Shift + G)";
                         break;
                     case 1:
-                        label = "Game Scene 01 (Shift + 1)";
+                        label = "Game Scene 1 (Shift + 1)";
                         break;
                     case 2:
-                        label = "Game Scene 02 (Shift + 2)";
+                        label = "Game Scene 2 (Shift + 2)";
                         break;
                     case 3:
-                        label = "Game Scene 03 (Shift + 3)";
+                        label = "Game Scene 3 (Shift + 3)";
                         break;
                     case 4:
-                        label = "Game Scene 04 (Shift + 4)";
+                        label = "Game Scene 4 (Shift + 4)";
                         break;
                     case 5:
-                        label = "Game Scene 05 (Shift + 5)";
+                        label = "Game Scene 5 (Shift + 5)";
                         break;
                     case 6:
-                        label = "Game Scene 06 (Shift + 6)";
+                        label = "Game Scene 6 (Shift + 6)";
                         break;
                     case 7:
-                        label = "Game Scene 07 (Shift + 7)";
+                        label = "Game Scene 7 (Shift + 7)";
                         break;
                     case 8:
-                        label = "Game Scene 08 (Shift + 8)";
+                        label = "Game Scene 8 (Shift + 8)";
                         break;
                     case 9:
-                        label = "Game Scene 08 (Shift + 8)";
+                        label = "Game Scene 9 (Shift + 9)";
                         break;
                     default:
                         label = "";
@@ -505,10 +506,11 @@ namespace IEC
                 }
             }
 
+            EditorGUILayout.LabelField("---Prefab Support---");
             //Prefab Faster.
             for (int i = 0; i < _scenesContainer.PrefabAsset.Count; i++)
             {
-                string label = "Prefab " + (i) + " (Shift+" + (i + 1) % 10 + ")";
+                string label = "Prefab " + (i+1) + " (Shift + Alt +" + (i + 1) % 10 + ")";
                 ;
                 GameObject newAsset = EditorGUILayout.ObjectField(new GUIContent(label),
                     _scenesContainer.PrefabAsset[i], typeof(GameObject), false) as GameObject;
