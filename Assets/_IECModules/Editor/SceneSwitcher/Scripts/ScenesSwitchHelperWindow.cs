@@ -453,6 +453,8 @@ namespace IEC
             EditorGUILayout.HelpBox("Need active to use ",MessageType.Info);
             bool active = _scenesContainer.activeSceneSwitched;
             _scenesContainer.activeSceneSwitched = EditorGUILayout.Toggle("Active Scene Switch", active);
+            EditorUtility.SetDirty(_scenesContainer);
+            
             if (_scenesContainer == null)
                 return;
             EditorGUILayout.LabelField("---Scene Support---");
