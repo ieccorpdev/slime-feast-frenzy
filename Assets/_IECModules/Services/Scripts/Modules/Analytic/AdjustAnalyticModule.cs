@@ -29,6 +29,7 @@ namespace IEC
             adjustConfig.setEventBufferingEnabled(false);
             adjustConfig.setLaunchDeferredDeeplink(false);
             Adjust.start(adjustConfig);
+            EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
         }
 
@@ -77,6 +78,13 @@ namespace IEC
         {
             return;
             if (IsDisable) return;
+        }
+
+        public void EnableThirdPartySharing()
+        {
+            AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(true);
+            Adjust.trackThirdPartySharing(adjustThirdPartySharing);
+            Debug.LogWarning("Adjust enable third party sharing");
         }
     }
 }
