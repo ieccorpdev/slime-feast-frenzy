@@ -81,11 +81,21 @@ public class MyVideoPlayer : MonoBehaviour
         if (Input.GetMouseButtonUp(0))
         {
             Vector3 pos = Input.mousePosition;
+            Vector3 worldPosition = Camera.main.ScreenToWorldPoint(pos);
             Collider2D hitCollider = Physics2D.OverlapPoint(Camera.main.ScreenToWorldPoint(pos));
             
             if (hitCollider != null && hitCollider.CompareTag(btnPause.tag))
             {
                 BtnPlayVideo();
+                if(worldPosition.x < 0){
+                    handAnim[0].SetActive(true);
+                    handAnim[0].transform.position = new Vector3(worldPosition.x, worldPosition.y - 2.75f, 0);
+                }
+                else{
+                    handAnim[1].SetActive(true);
+                    handAnim[1].transform.position = new Vector3(worldPosition.x, worldPosition.y - 2.75f, 0);
+                }
+                
             }
             if (hitCollider != null && hitCollider.CompareTag(btnPlay.tag))
             {
