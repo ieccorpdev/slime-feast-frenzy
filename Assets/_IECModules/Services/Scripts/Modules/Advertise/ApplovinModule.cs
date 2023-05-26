@@ -3,6 +3,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if (PluginAdjust)
+using com.adjust.sdk;
+#endif
 
 namespace IEC
 {
@@ -562,6 +565,20 @@ namespace IEC
 
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
+            AdjustTrackAdRevenue(adUnitId, adInfo);
+        }
+
+        void AdjustTrackAdRevenue(string adUnitId, MaxSdkBase.AdInfo adInfo)
+        {
+#if (PluginAdjust)
+            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAppLovinMAX);
+            adRevenue.setRevenue(adInfo.Revenue, "USD");
+            adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
+            adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
+            adRevenue.setAdRevenuePlacement(adInfo.Placement);
+            Debug.LogWarning($"[Adjust ad track] revenue: {adRevenue.revenue}-{adRevenue.currency} | network: {adRevenue.adRevenueNetwork} | adUnit: {adRevenue.adRevenueUnit}");
+            Adjust.trackAdRevenue(adRevenue);
+#endif
         }
 
         private string EventName(string adUnitId)
