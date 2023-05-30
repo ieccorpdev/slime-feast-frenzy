@@ -1,6 +1,8 @@
 #if UNITY_EDITOR
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -25,7 +27,16 @@ namespace _IECModules
         {
             return System.IO.File.Exists(filePath);
         }
-
+        public static void DeleteAllKeystore(string exception)
+        {
+            DirectoryInfo dic = new DirectoryInfo(ProjectPath);
+            FileInfo[] files = dic.GetFiles("*.keystore");
+            foreach (var file in files)
+            {
+                 if (!file.Name.Contains(exception+".keystore"))
+                file.Delete();
+            }
+        }
 
         public static bool FileKeystoreExist(string keyStoreName)
         {
@@ -39,23 +50,53 @@ namespace _IECModules
 
         IEnumerator DoDownloadFile(string url, string savePath, System.Action<bool, string> OnDownloadDone)
         {
-            //  Debug.Log("Start download f");
-            var uwr = new UnityWebRequest(url, UnityWebRequest.kHttpVerbGET);
-            // string savePath = Path.Combine(Application.persistentDataPath, "unity3d.html");
-            uwr.downloadHandler = new DownloadHandlerFile(savePath);
-            yield return uwr.SendWebRequest();
-            if (uwr.result != UnityWebRequest.Result.Success)
+            yield return null;
+            using (WebClient webClient = new WebClient())
             {
-                Debug.LogError(uwr.error);
-                OnDownloadDone?.Invoke(false, uwr.error);
+                webClient.DownloadFileCompleted += (sender, args) =>
+                {
+                    if (args.Error != null)
+                    {
+                        Debug.LogError(args.Error.ToString());
+                        OnDownloadDone?.Invoke(false, args.Error.ToString());
+                    }
+                    else
+                    {
+                        OnDownloadDone?.Invoke(true, savePath);
+                    }
+                };
+                webClient.DownloadFileAsync(new System.Uri(url), savePath);
             }
-            else
-            {
-                Debug.Log("File successfully downloaded and saved to " + savePath);
-                OnDownloadDone?.Invoke(true, savePath);
-            }
-        }
 
+            //{
+            //    yield return www.Send();
+            //    if (www.isNetworkError || www.isHttpError)
+            //    {
+            //        Debug.Log(www.error);
+            //        OnDownloadDone?.Invoke(false, www.error);
+            //    }
+            //    else
+            //    {
+            //        OnDownloadDone?.Invoke(true, savePath);
+            //    }
+
+            //}
+            //    //  Debug.Log("Start download f");
+            //    var uwr = new UnityWebRequest(url, UnityWebRequest.kHttpVerbGET);
+            //// string savePath = Path.Combine(Application.persistentDataPath, "unity3d.html");
+            //uwr.downloadHandler = new DownloadHandlerFile(savePath);
+            //yield return uwr.SendWebRequest();
+            //if (uwr.result != UnityWebRequest.Result.Success)
+            //{
+            //    Debug.LogError(uwr.error);
+            //    OnDownloadDone?.Invoke(false, uwr.error);
+            //}
+            //else
+            //{
+            //    Debug.Log("File successfully downloaded and saved to " + savePath);
+            //    OnDownloadDone?.Invoke(true, savePath);
+            //}
+        }
 
     }
 }
