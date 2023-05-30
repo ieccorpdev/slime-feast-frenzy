@@ -11,6 +11,8 @@ namespace IEC
     {
         #region COMMON
 
+        const string SEMI_OVERRIDE_KEY = "Override.";
+
         public void LocateController()
         {
             Controllers.Add(this);
@@ -100,30 +102,12 @@ namespace IEC
             var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
             var activeDate = activeAb.GetAbTestDate(0);
 
-            var semiOverrideKey = "Override.";
-            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date)
-                && dictOverride.ContainsKey(activeDate.date) && !dictOverride[activeDate.date].Invoke(curTestDate.date, curTestDate.version))
-            {
-                var checkOverride = activeAb.CheckSemiOverride();
-                serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
+            CheckSemiOverride(curTestDate, activeDate, activeAb, dictOverride);
 
-                string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
-                string newVersion = "AB_" + activeDate.date + "_v" + checkOverride;
-                string eventName = "Override_AB_";
-                eventName += activeDate.date;
-
-                Services.PushEvent(eventName, 0,
-                    new Dictionary<string, object>
-                    {
-                        { "new_version", newVersion },
-                        { "old_version", oldVersion },
-                        { "levelUpdate", PlayerData.level }
-                    });
-            }
             var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
             {
                 if (!dictAbTest[kv.Key].isSemiOverride) return true;
-                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 1);
+                var checkOverride = serviceAbTest.GetValue(SEMI_OVERRIDE_KEY + kv.Key, 1);
                 return checkOverride == 1;
             });
             var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
@@ -167,6 +151,35 @@ namespace IEC
             Game.abVersion = curTestDate.version;
 
             EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
+        }
+
+        void CheckSemiOverride(ABTestDate curTestDate, ABTestDate activeDate, ABTestConfig activeAb, Dictionary<int, Func<int, int, bool>> dictOverride)
+        {
+            var serviceAbTest = Services.ABTest();
+
+            if (serviceAbTest.HasValue(SEMI_OVERRIDE_KEY + activeDate.date)) return;
+            if (!dictOverride.ContainsKey(activeDate.date)) return;
+
+            var ignoreFunc = dictOverride[activeDate.date];
+            var isIgnore = ignoreFunc != null && ignoreFunc.Invoke(curTestDate.date, curTestDate.version);
+
+            if (isIgnore) return;
+
+            var checkOverride = activeAb.CheckSemiOverride();
+            serviceAbTest.SetValue(SEMI_OVERRIDE_KEY + activeDate.date, checkOverride);
+
+            string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
+            string newVersion = "AB_" + activeDate.date + "_v" + checkOverride;
+            string eventName = "Override_AB_";
+            eventName += activeDate.date;
+
+            Services.PushEvent(eventName, 0,
+                new Dictionary<string, object>
+                {
+                        { "new_version", newVersion },
+                        { "old_version", oldVersion },
+                        { "levelUpdate", PlayerData.level }
+                });
         }
 
         void AddCheatCodeVersionAB(ABTestConfig abTestConfig, int abIndex, int abValue)
