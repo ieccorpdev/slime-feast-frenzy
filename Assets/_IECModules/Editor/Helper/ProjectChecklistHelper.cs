@@ -623,16 +623,16 @@ namespace _IECModules
                     LogEditorHelper.AddLogError($"Not found Keystore Link on Checklist");
                 else
                 {
-                   
+
                     fileHelperDownloadInstance.DownloadFile(keyStoreLink, FileHelper.KeystorePath(keyStoreName), (result, mes) =>
-                   {
-                       if (result)
-                       {
-                           LogEditorHelper.AddLogWarning($"Download keystore: Success to " + mes);
-                       }
-                       else
-                           LogEditorHelper.AddLogError($"Download keystore Error :" + mes);
-                   });
+                    {
+                        if (result)
+                        {
+                            LogEditorHelper.AddLogWarning($"Download keystore: Success to " + mes);
+                        }
+                        else
+                            LogEditorHelper.AddLogError($"Download keystore Error :" + mes);
+                    });
                 }
             }
 
@@ -645,7 +645,10 @@ namespace _IECModules
 
             var fileHelperDownloadIconInstance = FileHelper.Instance;
             if (string.IsNullOrEmpty(iconLink))
-            { LogEditorHelper.AddLogError($"Not found Icon Link on Checklist,cancel download Icon"); return; }
+            { 
+                LogEditorHelper.AddLogError($"Not found Icon Link on Checklist,cancel download Icon"); 
+                return; 
+            }
             if (fileHelperDownloadIconInstance == null)
             {
                 LogEditorHelper.AddLogError($"Not found FileHelper,cancel download Icon");
@@ -671,9 +674,6 @@ namespace _IECModules
                         UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath(FileHelper.IconSamplePath, typeof(UnityEngine.Object));
                         Selection.activeObject = obj;
                         EditorGUIUtility.PingObject(obj);
-
-                        //Selection.activeObject = iconTexture;
-                        //EditorGUIUtility.PingObject(iconTexture);
                     }
                     catch (Exception ex)
                     {

@@ -29,11 +29,11 @@ namespace _IECModules
         }
         public static void DeleteAllKeystore(string exception)
         {
-            DirectoryInfo dic = new DirectoryInfo(ProjectPath);
-            FileInfo[] files = dic.GetFiles("*.keystore");
+            DirectoryInfo dir = new DirectoryInfo(ProjectPath);
+            FileInfo[] files = dir.GetFiles("*.keystore");
             foreach (var file in files)
             {
-                 if (!file.Name.Contains(exception+".keystore"))
+                if (file.Name.Contains(exception + ".keystore")) continue;
                 file.Delete();
             }
         }
@@ -67,35 +67,6 @@ namespace _IECModules
                 };
                 webClient.DownloadFileAsync(new System.Uri(url), savePath);
             }
-
-            //{
-            //    yield return www.Send();
-            //    if (www.isNetworkError || www.isHttpError)
-            //    {
-            //        Debug.Log(www.error);
-            //        OnDownloadDone?.Invoke(false, www.error);
-            //    }
-            //    else
-            //    {
-            //        OnDownloadDone?.Invoke(true, savePath);
-            //    }
-
-            //}
-            //    //  Debug.Log("Start download f");
-            //    var uwr = new UnityWebRequest(url, UnityWebRequest.kHttpVerbGET);
-            //// string savePath = Path.Combine(Application.persistentDataPath, "unity3d.html");
-            //uwr.downloadHandler = new DownloadHandlerFile(savePath);
-            //yield return uwr.SendWebRequest();
-            //if (uwr.result != UnityWebRequest.Result.Success)
-            //{
-            //    Debug.LogError(uwr.error);
-            //    OnDownloadDone?.Invoke(false, uwr.error);
-            //}
-            //else
-            //{
-            //    Debug.Log("File successfully downloaded and saved to " + savePath);
-            //    OnDownloadDone?.Invoke(true, savePath);
-            //}
         }
 
     }
