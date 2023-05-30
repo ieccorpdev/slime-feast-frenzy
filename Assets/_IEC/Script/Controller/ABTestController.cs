@@ -107,8 +107,8 @@ namespace IEC
                 serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
 
                 string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
-                string newVersion = "AB_" + activeDate.date + "_v" + activeDate.version;
-                string eventName = checkOverride == 1 ? "Override_AB_" : "NonOverride_AB_";
+                string newVersion = "AB_" + activeDate.date + "_v" + checkOverride;
+                string eventName = "Override_AB_";
                 eventName += activeDate.date;
 
                 Services.PushEvent(eventName, 0,
@@ -122,7 +122,7 @@ namespace IEC
             var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
             {
                 if (!dictAbTest[kv.Key].isSemiOverride) return true;
-                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 0);
+                var checkOverride = serviceAbTest.GetValue(semiOverrideKey + kv.Key, 1);
                 return checkOverride == 1;
             });
             var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
