@@ -101,7 +101,8 @@ namespace IEC
             var activeDate = activeAb.GetAbTestDate(0);
 
             var semiOverrideKey = "Override.";
-            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date))
+            if (abConfig != activeAb && activeAb.isSemiOverride && !serviceAbTest.HasValue(semiOverrideKey + activeDate.date)
+                && dictOverride.ContainsKey(activeDate.date) && !dictOverride[activeDate.date].Invoke(curTestDate.date, curTestDate.version))
             {
                 var checkOverride = activeAb.CheckSemiOverride();
                 serviceAbTest.SetValue(semiOverrideKey + activeDate.date, checkOverride);
