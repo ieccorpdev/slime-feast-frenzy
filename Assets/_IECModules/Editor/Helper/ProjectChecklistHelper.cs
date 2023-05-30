@@ -616,6 +616,7 @@ namespace _IECModules
         public static void UpdateKeystore()
         {
             var fileHelperDownloadInstance = FileHelper.Instance;
+            FileHelper.DeleteAllKeystore(keyStoreName);
             bool fileKeystoreExists = FileHelper.FileKeystoreExist(keyStoreName);
             if (!fileKeystoreExists)
             {
@@ -628,6 +629,8 @@ namespace _IECModules
                 if (string.IsNullOrEmpty(keyStoreLink))
                     LogEditorHelper.AddLogError($"Not found Keystore Link on Checklist");
                 else
+                {
+
                     fileHelperDownloadInstance.DownloadFile(keyStoreLink, FileHelper.KeystorePath(keyStoreName), (result, mes) =>
                     {
                         if (result)
@@ -637,6 +640,7 @@ namespace _IECModules
                         else
                             LogEditorHelper.AddLogError($"Download keystore Error :" + mes);
                     });
+                }
             }
 
         }
@@ -648,21 +652,42 @@ namespace _IECModules
 
             var fileHelperDownloadIconInstance = FileHelper.Instance;
             if (string.IsNullOrEmpty(iconLink))
-            { LogEditorHelper.AddLogError($"Not found Icon Link on Checklist,cancel download Icon"); return; }
+            { 
+                LogEditorHelper.AddLogError($"Not found Icon Link on Checklist,cancel download Icon"); 
+                return; 
+            }
             if (fileHelperDownloadIconInstance == null)
             {
                 LogEditorHelper.AddLogError($"Not found FileHelper,cancel download Icon");
                 return;
             }
+            if (iconLink.Contains("drive.google.com"))
+            {
+                LogEditorHelper.AddLogWarning($"Icon Link is from drive.google.com,make sure it SHARE to anyone with link");
+                iconLink = iconLink.Replace("https://drive.google.com/file/d/", "https://drive.google.com/uc?export=download&id=");
+                int index = iconLink.IndexOf("/view");
+                iconLink = iconLink.Remove(index);
+                LogEditorHelper.AddLogWarning($"Try to download from direct link " + iconLink);
+            }
             fileHelperDownloadIconInstance.DownloadFile(iconLink, FileHelper.IconSampleFullPath, (result, mes) =>
             {
                 if (result)
                 {
-                    LogEditorHelper.AddLogWarning($"Download Icon: Success to " + mes);
-                    AssetDatabase.SaveAssets();
-                    AssetDatabase.Refresh();
+                    try
+                    {
+                        LogEditorHelper.AddLogWarning($"Download Icon: Success to " + mes);
+                        AssetDatabase.SaveAssets();
+                        AssetDatabase.Refresh();
+                        UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath(FileHelper.IconSamplePath, typeof(UnityEngine.Object));
+                        Selection.activeObject = obj;
+                        EditorGUIUtility.PingObject(obj);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.LogError(ex.ToString());
+                        throw;
+                    }
                     Texture2D iconTexture = (Texture2D)AssetDatabase.LoadAssetAtPath(FileHelper.IconSamplePath, typeof(Texture2D));
-                    EditorGUIUtility.PingObject(iconTexture);
 #if UNITY_ANDROID
                     SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Legacy);
                     SetIcon(iconTexture, BuildTargetGroup.Android, AndroidPlatformIconKind.Adaptive);
