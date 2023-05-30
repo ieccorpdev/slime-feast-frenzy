@@ -21,7 +21,7 @@ namespace IEC
         public ScreenLevelWin ScreenLevelWin => Pool.Get<ScreenLevelWin>();
         public ScreenLevelLose ScreenLevelLose => Pool.Get<ScreenLevelLose>();
         public ScreenShopTest ScreenShopTest => Pool.Get<ScreenShopTest>();
-        public GroupPopup GroupPopup => SingleGetChild<GroupPopup>();
+
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
 
@@ -108,10 +108,6 @@ namespace IEC
         public int CountScreenShowing()
         {
             return ListScreen.Count(s => s.IsShow);
-        }
-        public void OnEventRaise(string gameEvent, EventParam param)
-        {
-            GroupPopup.ListPopup.ForEach(x => x.OnEventRaise(gameEvent, param));
         }
     }
 }

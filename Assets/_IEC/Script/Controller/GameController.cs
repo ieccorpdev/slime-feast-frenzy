@@ -41,7 +41,6 @@ namespace IEC
                     GamePlay.SetFinishPlay();
                     break;
             }
-            UI.OnEventRaise(gameEvent, param);
         }
 
         public void BehaviourAwake()
