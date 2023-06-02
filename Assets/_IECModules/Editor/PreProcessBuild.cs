@@ -20,6 +20,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         UpdateVersionCodeFromEnvironment();
         SetTargetSdkAndroid();
         ProjectResolveHelper.UpdateApplovinQualityService();
+        SkipPermission();
     }
 
     private void SetTargetSdkAndroid()
@@ -64,5 +65,17 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         ProjectChecklistHelper.servicesConfig.firebaseRemoteSDKVersion = manifestJson["dependencies"]["com.google.firebase.remote-config"].ToString();
 #endif
 #endif
+    }
+
+    private void SkipPermission()
+    {
+        var androidManifestPath = "Assets/Plugins/Android/AndroidManifest.xml";
+        if(!File.Exists(androidManifestPath)) return;
+        var androidManifestContent = File.ReadAllText("Assets/Plugins/Android/AndroidManifest.xml");
+        if(androidManifestContent.Contains("unityplayer.SkipPermissionsDialog")) return;
+        var applicationTag = androidManifestContent.GetBetweenString("<application", "</application>", false);
+        var applicationTagReplace = applicationTag +"\t" + "<meta-data android:name=\"unityplayer.SkipPermissionsDialog\" android:value=\"true\"/>" + "\n\t";
+        androidManifestContent = androidManifestContent.Replace(applicationTag, applicationTagReplace);
+        File.WriteAllText(androidManifestPath, androidManifestContent);
     }
 }
