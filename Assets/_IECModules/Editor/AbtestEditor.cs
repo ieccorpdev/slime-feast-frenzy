@@ -44,25 +44,7 @@ public class AbtestEditor : EditorWindow
         m_abName = EditorGUILayout.TextField(m_abName);
         if (GUILayout.Button("Test", EditorStyles.miniButton))
         {
-            Debug.LogError(FolderScriptPath);
-            string abSampleContent = File.ReadAllText(ABtesetSamplePath);
-            Debug.LogError(abSampleContent);
-            string abContent = File.ReadAllText(ABtesetPath);
-            List<int> indexFound = AllIndexesOf(abContent, " ResultAb");
-            foreach (var item in indexFound)
-            {
-                Debug.LogError(abContent.Substring(item, 17));
-            }
-            List<int> indexFound2 = AllIndexesOf(abContent, "}");
-            int indexOfEndClass = indexFound2[indexFound2.Count - 2];
-            abContent = abContent.Remove(indexOfEndClass, abContent.Length - indexOfEndClass);
-
-            abSampleContent = abSampleContent.Replace("{0}", m_abName);
-            abContent += abSampleContent;
-            //abContent += "\n}\n}";
-            File.WriteAllText(ABtesetPath, abContent);
-            AssetDatabase.Refresh();
-            // Debug.LogError(abContent);
+            AutoRenderCode(m_abName);
         }
         EditorGUILayout.EndVertical();
     }
@@ -79,5 +61,28 @@ public class AbtestEditor : EditorWindow
                 return indexes;
             indexes.Add(index);
         }
+    }
+
+
+    public static void AutoRenderCode(string abName)
+    {
+        Debug.LogError(FolderScriptPath);
+        string abSampleContent = File.ReadAllText(ABtesetSamplePath);
+        Debug.LogError(abSampleContent);
+        string abContent = File.ReadAllText(ABtesetPath);
+        List<int> indexFound = AllIndexesOf(abContent, " ResultAb");
+        foreach (var item in indexFound)
+        {
+            Debug.LogError(abContent.Substring(item, 17));
+        }
+        List<int> indexFound2 = AllIndexesOf(abContent, "}");
+        int indexOfEndClass = indexFound2[indexFound2.Count - 2];
+        abContent = abContent.Remove(indexOfEndClass, abContent.Length - indexOfEndClass);
+
+        abSampleContent = abSampleContent.Replace("{0}", abName);
+        abContent += abSampleContent;
+        File.WriteAllText(ABtesetPath, abContent);
+        AssetDatabase.Refresh();
+
     }
 }
