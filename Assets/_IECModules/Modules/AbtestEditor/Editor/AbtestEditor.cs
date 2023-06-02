@@ -66,21 +66,26 @@ public class AbtestEditor : EditorWindow
 
     public static void AutoRenderCode(string abName)
     {
-        Debug.LogError(FolderScriptPath);
         string abSampleContent = File.ReadAllText(ABtesetSamplePath);
-        Debug.LogError(abSampleContent);
         string abContent = File.ReadAllText(ABtesetPath);
         List<int> indexFound = AllIndexesOf(abContent, " ResultAb");
         foreach (var item in indexFound)
         {
             Debug.LogError(abContent.Substring(item, 17));
         }
-        List<int> indexFound2 = AllIndexesOf(abContent, "}");
-        int indexOfEndClass = indexFound2[indexFound2.Count - 2];
-        abContent = abContent.Remove(indexOfEndClass, abContent.Length - indexOfEndClass);
+
+        //List<int> indexFound2 = AllIndexesOf(abContent, "}");
+        //int indexOfEndClass = indexFound2[indexFound2.Count - 2];
+        //abContent = abContent.Remove(indexOfEndClass, abContent.Length - indexOfEndClass);
 
         abSampleContent = abSampleContent.Replace("{0}", abName);
-        abContent += abSampleContent;
+
+        //abContent += abSampleContent;
+
+        int indexOfABtest = abContent.IndexOf("#region AbTest") + "#region AbTest".Length;
+        abContent = abContent.Insert(indexOfABtest, "\n" + abSampleContent);
+
+
         File.WriteAllText(ABtesetPath, abContent);
         AssetDatabase.Refresh();
 
