@@ -10,6 +10,7 @@ public class AdjustManager : MonoBehaviour
     public void Awake()
     {  
         var adjustConfig = new AdjustConfig(config.adjustId, AdjustEnvironment.Production, true);
+        Debug.LogWarning("Adjust ID:" + config.adjustId);
         adjustConfig.setLogLevel(AdjustLogLevel.Suppress);
         adjustConfig.setSendInBackground(false);
         adjustConfig.setEventBufferingEnabled(false);

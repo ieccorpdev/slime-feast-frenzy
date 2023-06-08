@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Facebook.Unity;
+using Facebook.Unity.Settings;
+
 public class FacebookManager : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -21,6 +23,7 @@ public class FacebookManager : MonoBehaviour
         if (FB.IsInitialized) {
             // Signal an app activation App Event
             FB.ActivateApp();
+            Debug.LogWarning("Facebook ID:" + FacebookSettings.AppId);
             // Continue with Facebook SDK
             // ...
         } else {
