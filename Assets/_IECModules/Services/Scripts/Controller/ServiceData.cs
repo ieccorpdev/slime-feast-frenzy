@@ -68,6 +68,9 @@ namespace IEC
 
         public Dictionary<float, float> dictMilestoneCentRev;
 
+        public float lastRevInterAds;
+        public string versionAB;
+
         public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {
             var dictMilestone = GetDictMilestoneAd(adType);
@@ -133,6 +136,7 @@ namespace IEC
                    revInterNReward += revenue;
                    Debug.Log("Rev Inter:" + revInterAd);
                    Debug.Log("Rev Reward & Inter:" + revInterNReward);
+                   lastRevInterAds = revenue;
                    break;
                case AdsEnum.BANNER_TOP:
                case AdsEnum.BANNER_BOTTOM:
