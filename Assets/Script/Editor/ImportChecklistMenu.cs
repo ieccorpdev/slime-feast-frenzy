@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using _IECModules;
 using Facebook.Unity.Settings;
 using Google;
 using UnityEngine;
@@ -11,6 +12,9 @@ public class ImportChecklistMenu : EditorWindow
 {
     private string m_ChecklistUrl;
     private string URL_SAVE = "ImportChecklistMenu.URL_SAVE";
+
+    private GoogleSheetToCSV m_GoogleToCSV;
+    private DownloadFile m_DownloadFile;
 
     [MenuItem("IEC/Import Checklist")]
     static void ShowImportCheckList()
@@ -24,6 +28,16 @@ public class ImportChecklistMenu : EditorWindow
         {
             m_ChecklistUrl = PlayerPrefs.GetString(URL_SAVE,
                 "https://docs.google.com/spreadsheets/d/1K22AuAIobys30hme-1Nw6o9KdsjVMKGjUP0sBd_xsq4/edit#gid=927018210");
+        }
+
+        if (m_GoogleToCSV == null)
+        {
+            m_GoogleToCSV = FindObjectOfType<GoogleSheetToCSV>();
+        }
+
+        if (m_DownloadFile == null)
+        {
+            m_DownloadFile = FindObjectOfType<DownloadFile>();
         }
 
         m_ChecklistUrl = EditorGUILayout.TextField("Checklist Url", m_ChecklistUrl);
@@ -41,10 +55,11 @@ public class ImportChecklistMenu : EditorWindow
     private void SetIdFromChecklist()
     {
         var configId = AssetDatabase.LoadAssetAtPath<IdConfig>("Assets/Script/Config/IdConfig.asset");
-        GoogleSheetUtility.DownLoadCsvEditor(m_ChecklistUrl, true, data =>
+        var keystoreName = string.Empty;
+        m_GoogleToCSV.DownLoadCsv(m_ChecklistUrl, true, data =>
         {
             var rowCount = data.Count;
-            for (int i = 0; i < data.Count; i++)
+            for (int i = 0; i < rowCount; i++)
             {
                 var row = data[i];
                 var fieldCount = row.Count;
@@ -53,6 +68,7 @@ public class ImportChecklistMenu : EditorWindow
                 if (fieldCount > 1)
                 {
                     value = row[1];
+                    value = value.Trim();
                 }
 
                 switch (field)
@@ -93,6 +109,11 @@ public class ImportChecklistMenu : EditorWindow
                         configId.emailSupport = value;
                         break;
                     case "Keystore Link":
+                        DownloadKeystore(value, keystoreName);
+                        break;
+                    case "Keystore Name":
+                        LogEditorHelper.AddLog($"Keystore Name:{value}");
+                        keystoreName = value;
                         break;
                     case "BundleID":
                         var bundleId = value;
@@ -104,7 +125,29 @@ public class ImportChecklistMenu : EditorWindow
                 }
             }
 
-            GoogleSheetUtility.SetDirty(configId);
+            EditorUtility.SetDirty(configId);
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        });
+    }
+
+    void DownloadKeystore(string keystoreLink, string keystoreName)
+    {
+        if (string.IsNullOrEmpty(keystoreLink))
+        {
+            LogEditorHelper.AddLogError("Missing keystore link");
+            return;
+        }
+        
+        if (string.IsNullOrEmpty(keystoreName))
+        {
+            LogEditorHelper.AddLogError("Missing keystore name");
+            return;
+        }
+        LogEditorHelper.AddLog($"Download Keystore:{keystoreLink}");
+        m_DownloadFile.Download(keystoreLink, $"{Directory.GetCurrentDirectory()}\\{keystoreName}.keystore", (r, s) =>
+        {
+            LogEditorHelper.AddLog(r ? "Download keystore done" : "Download keystore error");
         });
     }
 }
