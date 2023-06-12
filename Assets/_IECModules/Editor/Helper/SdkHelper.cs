@@ -348,30 +348,23 @@ namespace _IECModules
                 : $"https://gitlab.com/{SdkHelper.GITLAB_GROUP_NAME}/{id}.git#{version}";
         }
 
-        public virtual void InstallDependencies(string pluginVersion)
+        public virtual void InstallDependencies(string version)
         {
-            if (constrainDependencies != null || nonContrainDependencies != null)
+            var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/files/package.json/raw?ref={version}";
+            var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
             {
-                LogEditorHelper.AddLog($"Begin install dependencies");
-            }
-
-            if (constrainDependencies != null)
-            {
-                foreach (var constrainDependency in constrainDependencies)
+                var dataItem = JSONNode.Parse(response.DataAsText);
+                if (dataItem.HasKey("dependencies"))
                 {
-                    var dependency = SdkHelper.DictGitlabPluginVersion[constrainDependency];
-                    dependency.Install(pluginVersion);
+                    var dependencies = JsonConvert.DeserializeObject<Dictionary<string,string>>(dataItem["dependencies"].ToString());
+                    foreach (var key in dependencies.Keys)
+                    {
+                        var dependency = SdkHelper.DictGitlabPluginVersion[key];
+                        var versionDependency = dependencies[key];
+                        dependency.Install(versionDependency);
+                    }
                 }
-            }
-
-            if (nonContrainDependencies != null)
-            {
-                foreach (var nonContrainDependency in nonContrainDependencies)
-                {
-                    var dependency = SdkHelper.DictGitlabPluginVersion[nonContrainDependency];
-                    dependency.InstallHighestVersion();
-                }
-            }
+            }).Send();
         }
 
         public override void InstallPKG(string version)
