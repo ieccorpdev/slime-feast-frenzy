@@ -69,7 +69,9 @@ namespace IEC
         public Dictionary<float, float> dictMilestoneCentRev;
 
         public float lastRevInterAds;
-        public string versionAB;
+        public string abVersion;
+        public string abVersionName;
+        
 
         public float GetValueToSumRevAd(RevAdType adType, int milestone)
         {

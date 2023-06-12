@@ -602,7 +602,8 @@ namespace IEC
                     {"version", s}
                 });
                 SetUserProperty("AB_Version", s);
-                m_ServiceData.versionAB = eventValue.ToString();
+                m_ServiceData.abVersion = eventValue.ToString();
+                m_ServiceData.abVersionName = s;
             });
         }
 
