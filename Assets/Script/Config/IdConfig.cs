@@ -8,4 +8,5 @@ public class IdConfig : ScriptableObject
 {
     public string adjustId;
     public string emailSupport;
+    public string projectChecklistUrl;
 }

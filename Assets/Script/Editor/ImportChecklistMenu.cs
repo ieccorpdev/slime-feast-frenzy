@@ -54,8 +54,9 @@ public class ImportChecklistMenu : EditorWindow
 
     private void SetIdFromChecklist()
     {
-        var configId = AssetDatabase.LoadAssetAtPath<IdConfig>("Assets/Script/Config/IdConfig.asset");
+        var configId = AssetDatabase.LoadAssetAtPath<IdConfig>("Assets/Script/Config/ServicesConfig.asset");
         var keystoreName = string.Empty;
+        configId.projectChecklistUrl = m_ChecklistUrl;
         m_GoogleToCSV.DownLoadCsv(m_ChecklistUrl, true, data =>
         {
             var rowCount = data.Count;
