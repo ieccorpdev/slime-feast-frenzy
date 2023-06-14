@@ -23,7 +23,7 @@ public class FacebookManager : MonoBehaviour
         if (FB.IsInitialized) {
             // Signal an app activation App Event
             FB.ActivateApp();
-            Debug.LogWarning("Facebook ID:" + FacebookSettings.AppId);
+            Debug.LogWarning("Facebook ID:" + FB.AppId);
             // Continue with Facebook SDK
             // ...
         } else {
