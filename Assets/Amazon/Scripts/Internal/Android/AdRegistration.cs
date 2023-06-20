@@ -83,7 +83,7 @@ namespace AmazonAds.Android {
         }
 
         public bool IsLocationEnabled () {
-            return adRegistration.CallStatic<bool> ("іsLocationEnabled");
+            return adRegistration.CallStatic<bool> ("isLocationEnabled");
         }
 
         public String GetVersion () {
