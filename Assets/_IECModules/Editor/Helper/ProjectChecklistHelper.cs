@@ -70,6 +70,8 @@ namespace _IECModules
             OguryAndroidBannerID,
             OguryAndroidRewardID,
             OguryAndroidThumbnailID,
+            AdvertyAndroidID,
+            AdvertyIOSID,
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -128,7 +130,9 @@ namespace _IECModules
             {"Ogury Android Inter ID", ChecklistItemName.OguryAndroidInterID},
             {"Ogury Android Banner ID", ChecklistItemName.OguryAndroidBannerID},
             {"Ogury Android Reward ID", ChecklistItemName.OguryAndroidRewardID},
-            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID}
+            {"Ogury Android Thumbnail ID", ChecklistItemName.OguryAndroidThumbnailID},
+            {"Adverty Android ID", ChecklistItemName.AdvertyAndroidID },
+            {"Adverty IOS ID", ChecklistItemName.AdvertyIOSID }
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -551,6 +555,20 @@ namespace _IECModules
                     case ChecklistItemName.OguryAndroidThumbnailID:
                         if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Ogury Android Thumbnail ID: {checklistItemValue}");
                         servicesConfig.OguryConfig.android.thumbnailID = checklistItemValue;
+                        break;
+#endif
+#if PluginAdverty
+                    case ChecklistItemName.AdvertyAndroidID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adverty Android ID: {checklistItemValue}");
+                        Adverty.AdvertySettings.APIKey = checklistItemValue;
+                        Adverty.AdvertySettings.IsLazyLoadAllowed = false;
+                        EditorUtility.SetDirty(Adverty.AdvertySettings.Instance);
+                        break;
+                    case ChecklistItemName.AdvertyIOSID:
+                        if (!string.IsNullOrEmpty(checklistItemValue)) LogEditorHelper.AddLog($"Adverty IOS ID: {checklistItemValue}");
+                        Adverty.AdvertySettings.APIKey = checklistItemValue;
+                        Adverty.AdvertySettings.IsLazyLoadAllowed = false;
+                        EditorUtility.SetDirty(Adverty.AdvertySettings.Instance);
                         break;
 #endif
                 }

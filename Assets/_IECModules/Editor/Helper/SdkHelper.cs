@@ -132,6 +132,7 @@ namespace _IECModules
         public static readonly KochavaSdkLoader KochavaSdkLoader = new KochavaSdkLoader();
         public static readonly OgurySdkLoader OgurySdkLoader = new OgurySdkLoader();
         public static readonly ApplovinMaxLoader ApplovinMaxLoader = new ApplovinMaxLoader();
+        public static readonly AdvertySdkLoader AdvertySdkLoader = new AdvertySdkLoader();
 
         public static void LoadSdkVersions()
         {
@@ -140,6 +141,7 @@ namespace _IECModules
             KochavaSdkLoader.Init();
             OgurySdkLoader.Init();
             ApplovinMaxLoader.Init();
+            AdvertySdkLoader.Init();
             
             // LoadApplovinLatestVersion();
             

@@ -62,7 +62,8 @@ namespace _IECModules
             PluginByteDanceChinaIOS,
             PluginNotification,
             PluginOgury,
-            PluginLocalization
+            PluginLocalization,
+            PluginAdverty
         }
 
         private void Awake()
@@ -327,6 +328,21 @@ namespace _IECModules
             });
             localizationPkg.versionSelected = EditorGUILayout.Popup("", localizationPkg.versionSelected,
                 localizationPkg.listVersion,
+                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+            CreateGuiBreakLine();
+
+            #endregion
+
+            #region Adverty
+
+            var advertySdkLoaded = SdkHelper.AdvertySdkLoader.LoadVersionFromCache();
+            CreateGuiButton($"Adverty SDK {(advertySdkLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AdvertySdkLoader.SdkSelectVersionUrl);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdverty);
+            });
+            SdkHelper.AdvertySdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.AdvertySdkLoader.versionSelect,
+                SdkHelper.AdvertySdkLoader.ListSDKVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
 

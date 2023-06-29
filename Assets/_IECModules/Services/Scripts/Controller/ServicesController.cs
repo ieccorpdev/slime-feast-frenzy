@@ -345,6 +345,10 @@ namespace IEC
             InitSDKAfterATT(true);
 #endif
 
+#if PluginAdverty
+            m_Adverty.Init();
+#endif
+
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.Init();
@@ -1283,5 +1287,20 @@ namespace IEC
         {
             return m_EventCount.GetCount(eventName);
         }
+
+        #region Adverty
+
+#if PluginAdverty
+        AdvertyModule m_Adverty = new AdvertyModule();
+#endif
+
+        public void SetAdvertyMainCamera(Camera camera)
+        {
+#if PluginAdverty
+            m_Adverty.SetMainCamera(camera);
+#endif
+        }
+
+        #endregion
     }
 }

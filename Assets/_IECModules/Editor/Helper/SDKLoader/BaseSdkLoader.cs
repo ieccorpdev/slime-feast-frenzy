@@ -50,7 +50,8 @@ namespace _IECModules
             ListVersionFromServer = tempListFromServer
                 .OrderByDescending(x => new Version(x
                         .Split(' ')[0]
-                        .Split('-')[0])
+                        .Split('-')[0]
+                        .Split('f')[0])
                 )
                 .ToArray();
             return true;
