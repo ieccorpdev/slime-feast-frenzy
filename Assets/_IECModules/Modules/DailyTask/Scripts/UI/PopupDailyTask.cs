@@ -75,7 +75,7 @@ namespace IEC.DailyTask
             m_timeToReset = Controller.TimeToReset();
             List<DailyTaskConfig> tasks = Controller.GetAllCurrentTask();
             if (m_taskRows == null || m_taskRows.Length == 0)
-                m_taskRows = m_tasksNormalParent.GetComponentsInChildren<PopupDailyTaskRow>();
+                m_taskRows = m_tasksNormalParent.GetComponentsInChildren<PopupDailyTaskRow>(true);
             foreach (var item in m_taskRows)
             {
                 item.gameObject.SetActive(false);

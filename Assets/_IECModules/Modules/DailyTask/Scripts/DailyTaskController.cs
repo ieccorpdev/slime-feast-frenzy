@@ -14,6 +14,37 @@ namespace IEC.DailyTask
         public PopupDailyTask PopupDailyTask; //=> UI.popupDailyTask;
         public GameObject NotifDailyTask; //=> UI.screenInGame.NotifDailyTask
 
+        #region NeedHandle
+        public void ClaimTaskReward(DailyTaskConfig task)
+        {
+            //add Gem
+            Debug.LogError("Handle Add Gem " + task.rewardGem);
+            //add gold
+            Debug.LogError("Handle Add Gold " + task.rewardMoney);
+            //Save:
+            EventController.RaiseEvent(EventList.SAVE_DATA);
+        }
+
+        public DateTime TimeToReset()
+        {
+            var timeNow = DateTime.Now;
+            var timeReset = timeNow.Date.AddHours(12);//12h today
+            if (timeReset < timeNow)
+            {
+                timeReset = timeReset.AddDays(1); //12h tomorrow
+                                                  //  UI.popupDailyTask.UpdateUI();
+            }
+
+            if (timeReset != DataSave.deadlineDate)
+            {
+                DataSave.deadlineDate = timeReset;
+                ResetTasks();
+
+            }
+            return timeReset;
+        }
+        #endregion
+
         #region Implement
         public void LocateController()
         {
@@ -213,34 +244,7 @@ namespace IEC.DailyTask
             EventController.RaiseEvent(EventList.SAVE_DATA);
             //Update Task Complete:
         }
-        public void ClaimTaskReward(DailyTaskConfig task)
-        {
-            //add Gem
-            Debug.LogError("Handle Add Gem "+task.rewardGem);
-            //add gold
-            Debug.LogError("Handle Add Gold " + task.rewardMoney);
-            //Save:
-            EventController.RaiseEvent(EventList.SAVE_DATA);
-        }
-
-        public DateTime TimeToReset()
-        {
-            var timeNow = DateTime.Now;
-            var timeReset = timeNow.Date.AddHours(12);//12h today
-            if (timeReset < timeNow)
-            {
-                timeReset = timeReset.AddDays(1); //12h tomorrow
-                                                  //  UI.popupDailyTask.UpdateUI();
-            }
-
-            if (timeReset != DataSave.deadlineDate)
-            {
-                DataSave.deadlineDate = timeReset;
-                ResetTasks();
-
-            }
-            return timeReset;
-        }
+ 
 
         #endregion
     }
