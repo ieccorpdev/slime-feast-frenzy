@@ -223,8 +223,8 @@ namespace _IECModules
                 Adverty.AdvertySettings.SandboxMode = !Adverty.AdvertySettings.SandboxMode;
                 param.buttonText = "Sand Box Adverty: " + Adverty.AdvertySettings.SandboxMode;
             });
-        }
 #endif
+        }
 
         private void Start()
         {
