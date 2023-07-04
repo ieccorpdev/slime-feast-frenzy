@@ -6,6 +6,7 @@ namespace com.adjust.sdk
     {
         public const string AdjustUrlStrategyChina = "china";
         public const string AdjustUrlStrategyIndia = "india";
+        public const string AdjustUrlStrategyCn = "cn";
 
         public const string AdjustDataResidencyEU = "data-residency-eu";
         public const string AdjustDataResidencyTR = "data-residency-tr";
@@ -18,6 +19,7 @@ namespace com.adjust.sdk
         public const string AdjustAdRevenueSourceAdmost = "admost_sdk";
         public const string AdjustAdRevenueSourceUnity = "unity_sdk";
         public const string AdjustAdRevenueSourceHeliumChartboost = "helium_chartboost_sdk";
+        public const string AdjustAdRevenueSourcePublisher = "publisher_sdk";
 
         internal string appToken;
         internal string sceneName;
@@ -34,6 +36,8 @@ namespace com.adjust.sdk
         internal bool? isDeviceKnown;
         internal bool? sendInBackground;
         internal bool? eventBufferingEnabled;
+        internal bool? coppaCompliantEnabled;
+        internal bool? playStoreKidsAppEnabled;
         internal bool? allowSuppressLogLevel;
         internal bool? needsCost;
         internal bool launchDeferredDeeplink;
@@ -46,16 +50,19 @@ namespace com.adjust.sdk
         internal Action<AdjustSessionFailure> sessionFailureDelegate;
         internal Action<AdjustAttribution> attributionChangedDelegate;
         internal Action<int> conversionValueUpdatedDelegate;
+        internal Action<int, string, bool> skad4ConversionValueUpdatedDelegate;
 
         // Android specific members
+        internal string processName;
         internal bool? readImei;
         internal bool? preinstallTrackingEnabled;
-        internal string processName;
+        internal string preinstallFilePath;
         // iOS specific members
         internal bool? allowiAdInfoReading;
         internal bool? allowAdServicesInfoReading;
         internal bool? allowIdfaReading;
         internal bool? skAdNetworkHandling;
+        internal bool? linkMeEnabled;
         // Windows specific members
         internal Action<String> logDelegate;
 
@@ -106,6 +113,16 @@ namespace com.adjust.sdk
             this.eventBufferingEnabled = eventBufferingEnabled;
         }
 
+        public void setCoppaCompliantEnabled(bool coppaCompliantEnabled)
+        {
+            this.coppaCompliantEnabled = coppaCompliantEnabled;
+        }
+
+        public void setPlayStoreKidsAppEnabled(bool playStoreKidsAppEnabled)
+        {
+            this.playStoreKidsAppEnabled = playStoreKidsAppEnabled;
+        }
+
         public void setNeedsCost(bool needsCost)
         {
             this.needsCost = needsCost;
@@ -134,6 +151,11 @@ namespace com.adjust.sdk
         public void deactivateSKAdNetworkHandling()
         {
             this.skAdNetworkHandling = true;
+        }
+
+        public void setLinkMeEnabled(bool linkMeEnabled)
+        {
+            this.linkMeEnabled = linkMeEnabled;
         }
 
         public void setDeferredDeeplinkDelegate(Action<string> deferredDeeplinkDelegate, string sceneName = "Adjust")
@@ -208,9 +230,20 @@ namespace com.adjust.sdk
             this.sceneName = sceneName;
         }
 
+        public void setSkad4ConversionValueUpdatedDelegate(Action<int, string, bool> skad4ConversionValueUpdatedDelegate, string sceneName = "Adjust")
+        {
+            this.skad4ConversionValueUpdatedDelegate = skad4ConversionValueUpdatedDelegate;
+            this.sceneName = sceneName;
+        }
+
         public Action<int> getConversionValueUpdatedDelegate()
         {
             return this.conversionValueUpdatedDelegate;
+        }
+
+        public Action<int, string, bool> getSkad4ConversionValueUpdatedDelegate()
+        {
+            return this.skad4ConversionValueUpdatedDelegate;
         }
 
         public void setAppSecret(long secretId, long info1, long info2, long info3, long info4)
@@ -253,6 +286,11 @@ namespace com.adjust.sdk
         public void setPreinstallTrackingEnabled(bool preinstallTrackingEnabled)
         {
             this.preinstallTrackingEnabled = preinstallTrackingEnabled;
+        }
+
+        public void setPreinstallFilePath(string preinstallFilePath)
+        {
+            this.preinstallFilePath = preinstallFilePath;
         }
 
         // Windows specific methods.

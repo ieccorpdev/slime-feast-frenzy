@@ -8,7 +8,7 @@ namespace com.adjust.sdk
 #if UNITY_ANDROID
     public class AdjustAndroid
     {
-        private const string sdkPrefix = "unity4.29.7";
+        private const string sdkPrefix = "unity4.33.0";
         private static bool launchDeferredDeeplink = true;
         private static AndroidJavaClass ajcAdjust = new AndroidJavaClass("com.adjust.sdk.Adjust");
         private static AndroidJavaObject ajoCurrentActivity = new AndroidJavaClass("com.unity3d.player.UnityPlayer").GetStatic<AndroidJavaObject>("currentActivity");
@@ -80,6 +80,18 @@ namespace com.adjust.sdk
                 ajoAdjustConfig.Call("setEventBufferingEnabled", ajoIsEnabled);
             }
 
+            // Check COPPA setting.
+            if (adjustConfig.coppaCompliantEnabled != null)
+            {
+                ajoAdjustConfig.Call("setCoppaCompliantEnabled", adjustConfig.coppaCompliantEnabled.Value);
+            }
+
+            // Check Play Store Kids Apps setting.
+            if (adjustConfig.playStoreKidsAppEnabled != null)
+            {
+                ajoAdjustConfig.Call("setPlayStoreKidsAppEnabled", adjustConfig.playStoreKidsAppEnabled.Value);
+            }
+
             // Check if user enabled tracking in the background.
             if (adjustConfig.sendInBackground != null)
             {
@@ -96,6 +108,12 @@ namespace com.adjust.sdk
             if (adjustConfig.preinstallTrackingEnabled != null)
             {
                 ajoAdjustConfig.Call("setPreinstallTrackingEnabled", adjustConfig.preinstallTrackingEnabled.Value);
+            }
+
+            // Check if user has set custom preinstall file path.
+            if (adjustConfig.preinstallFilePath != null)
+            {
+                ajoAdjustConfig.Call("setPreinstallFilePath", adjustConfig.preinstallFilePath);
             }
 
             // Check if user has set user agent value.
@@ -134,6 +152,11 @@ namespace com.adjust.sdk
                 {
                     AndroidJavaObject ajoUrlStrategyIndia = new AndroidJavaClass("com.adjust.sdk.AdjustConfig").GetStatic<AndroidJavaObject>("URL_STRATEGY_INDIA");
                     ajoAdjustConfig.Call("setUrlStrategy", ajoUrlStrategyIndia);
+                }
+                else if (adjustConfig.urlStrategy == AdjustConfig.AdjustUrlStrategyCn)
+                {
+                    AndroidJavaObject ajoUrlStrategyCn = new AndroidJavaClass("com.adjust.sdk.AdjustConfig").GetStatic<AndroidJavaObject>("URL_STRATEGY_CN");
+                    ajoAdjustConfig.Call("setUrlStrategy", ajoUrlStrategyCn);
                 }
                 else if (adjustConfig.urlStrategy == AdjustConfig.AdjustDataResidencyEU)
                 {
@@ -353,6 +376,8 @@ namespace com.adjust.sdk
                 }
                 adjustAttribution.costCurrency = ajoAttribution.Get<string>(AdjustUtils.KeyCostCurrency) == "" ?
                     null : ajoAttribution.Get<string>(AdjustUtils.KeyCostCurrency);
+                adjustAttribution.fbInstallReferrer = ajoAttribution.Get<string>(AdjustUtils.KeyFbInstallReferrer) == "" ?
+                    null : ajoAttribution.Get<string>(AdjustUtils.KeyFbInstallReferrer);
                 return adjustAttribution;
             }
             catch (Exception) {}
@@ -561,6 +586,17 @@ namespace com.adjust.sdk
                 }
             }
 
+            if (thirdPartySharing.partnerSharingSettings != null)
+            {
+                foreach (KeyValuePair<string, List<string>> entry in thirdPartySharing.partnerSharingSettings)
+                {
+                    for (int i = 0; i < entry.Value.Count;)
+                    {
+                        ajoAdjustThirdPartySharing.Call("addPartnerSharingSetting", entry.Key, entry.Value[i++], bool.Parse(entry.Value[i++]));
+                    }
+                }
+            }
+
             ajcAdjust.CallStatic("trackThirdPartySharing", ajoAdjustThirdPartySharing);
         }
 
@@ -659,6 +695,8 @@ namespace com.adjust.sdk
                 }
                 adjustAttribution.costCurrency = attribution.Get<string>(AdjustUtils.KeyCostCurrency) == "" ?
                     null : attribution.Get<string>(AdjustUtils.KeyCostCurrency);
+                adjustAttribution.fbInstallReferrer = attribution.Get<string>(AdjustUtils.KeyFbInstallReferrer) == "" ?
+                    null : attribution.Get<string>(AdjustUtils.KeyFbInstallReferrer);
                 callback(adjustAttribution);
             }
         }

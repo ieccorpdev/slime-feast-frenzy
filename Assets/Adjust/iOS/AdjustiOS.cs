@@ -8,7 +8,7 @@ namespace com.adjust.sdk
 #if UNITY_IOS
     public class AdjustiOS
     {
-        private const string sdkPrefix = "unity4.29.7";
+        private const string sdkPrefix = "unity4.33.0";
 
         [DllImport("__Internal")]
         private static extern void _AdjustLaunchApp(
@@ -29,7 +29,9 @@ namespace com.adjust.sdk
             int allowAdServicesInfoReading,
             int allowIdfaReading,
             int deactivateSkAdNetworkHandling,
+            int linkMeEnabled,
             int needsCost,
+            int coppaCompliant,
             long secretId,
             long info1,
             long info2,
@@ -43,7 +45,8 @@ namespace com.adjust.sdk
             int isSessionSuccessCallbackImplemented,
             int isSessionFailureCallbackImplemented,
             int isDeferredDeeplinkCallbackImplemented,
-            int isConversionValueUpdatedCallbackImplemented);
+            int isConversionValueUpdatedCallbackImplemented,
+            int isSkad4ConversionValueUpdatedCallbackImplemented);
 
         [DllImport("__Internal")]
         private static extern void _AdjustTrackEvent(
@@ -139,7 +142,7 @@ namespace com.adjust.sdk
             string jsonPartnerParameters);
 
         [DllImport("__Internal")]
-        private static extern void _AdjustTrackThirdPartySharing(int enabled, string jsonGranularOptions);
+        private static extern void _AdjustTrackThirdPartySharing(int enabled, string jsonGranularOptions, string jsonPartnerSharingSettings);
 
         [DllImport("__Internal")]
         private static extern void _AdjustTrackMeasurementConsent(int enabled);
@@ -167,6 +170,15 @@ namespace com.adjust.sdk
         private static extern void _AdjustUpdateConversionValue(int conversionValue);
 
         [DllImport("__Internal")]
+        private static extern void _AdjustUpdateConversionValueWithCallback(int conversionValue, string sceneName);
+
+        [DllImport("__Internal")]
+        private static extern void _AdjustUpdateConversionValueWithCallbackSkad4(int conversionValue, string coarseValue, int lockedWindow, string sceneName);
+
+        [DllImport("__Internal")]
+        private static extern void _AdjustCheckForNewAttStatus();
+
+        [DllImport("__Internal")]
         private static extern int _AdjustGetAppTrackingAuthorizationStatus();
 
         [DllImport("__Internal")]
@@ -174,6 +186,9 @@ namespace com.adjust.sdk
 
         [DllImport("__Internal")]
         private static extern void _AdjustTrackSubsessionEnd();
+
+        [DllImport("__Internal")]
+        private static extern string _AdjustGetLastDeeplink();
 
         public AdjustiOS() {}
 
@@ -202,7 +217,9 @@ namespace com.adjust.sdk
             int allowSuppressLogLevel = AdjustUtils.ConvertBool(adjustConfig.allowSuppressLogLevel);
             int launchDeferredDeeplink = AdjustUtils.ConvertBool(adjustConfig.launchDeferredDeeplink);
             int deactivateSkAdNetworkHandling = AdjustUtils.ConvertBool(adjustConfig.skAdNetworkHandling);
+            int linkMeEnabled = AdjustUtils.ConvertBool(adjustConfig.linkMeEnabled);
             int needsCost = AdjustUtils.ConvertBool(adjustConfig.needsCost);
+            int coppaCompliant = AdjustUtils.ConvertBool(adjustConfig.coppaCompliantEnabled);
             int isAttributionCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getAttributionChangedDelegate() != null);
             int isEventSuccessCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getEventSuccessDelegate() != null);
             int isEventFailureCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getEventFailureDelegate() != null);
@@ -210,6 +227,7 @@ namespace com.adjust.sdk
             int isSessionFailureCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getSessionFailureDelegate() != null);
             int isDeferredDeeplinkCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getDeferredDeeplinkDelegate() != null);
             int isConversionValueUpdatedCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getConversionValueUpdatedDelegate() != null);
+            int isSkad4ConversionValueUpdatedCallbackImplemented = AdjustUtils.ConvertBool(adjustConfig.getSkad4ConversionValueUpdatedDelegate() != null);
 
             _AdjustLaunchApp(
                 appToken,
@@ -229,7 +247,9 @@ namespace com.adjust.sdk
                 allowAdServicesInfoReading,
                 allowIdfaReading,
                 deactivateSkAdNetworkHandling,
+                linkMeEnabled,
                 needsCost,
+                coppaCompliant,
                 secretId,
                 info1,
                 info2,
@@ -243,7 +263,8 @@ namespace com.adjust.sdk
                 isSessionSuccessCallbackImplemented,
                 isSessionFailureCallbackImplemented,
                 isDeferredDeeplinkCallbackImplemented,
-                isConversionValueUpdatedCallbackImplemented);
+                isConversionValueUpdatedCallbackImplemented,
+                isSkad4ConversionValueUpdatedCallbackImplemented);
         }
 
         public static void TrackEvent(AdjustEvent adjustEvent)
@@ -379,8 +400,14 @@ namespace com.adjust.sdk
                 jsonGranularOptions.Add(entry.Key);
                 jsonGranularOptions.Add(AdjustUtils.ConvertListToJson(entry.Value));
             }
+            List<string> jsonPartnerSharingSettings = new List<string>();
+            foreach (KeyValuePair<string, List<string>> entry in thirdPartySharing.partnerSharingSettings)
+            {
+                jsonPartnerSharingSettings.Add(entry.Key);
+                jsonPartnerSharingSettings.Add(AdjustUtils.ConvertListToJson(entry.Value));
+            }
 
-            _AdjustTrackThirdPartySharing(enabled, AdjustUtils.ConvertListToJson(jsonGranularOptions));
+            _AdjustTrackThirdPartySharing(enabled, AdjustUtils.ConvertListToJson(jsonGranularOptions), AdjustUtils.ConvertListToJson(jsonPartnerSharingSettings));
         }
 
         public static void TrackMeasurementConsent(bool enabled)
@@ -397,6 +424,23 @@ namespace com.adjust.sdk
         public static void UpdateConversionValue(int conversionValue)
         {
             _AdjustUpdateConversionValue(conversionValue);
+        }
+
+        public static void UpdateConversionValue(int conversionValue, string sceneName)
+        {
+            string cSceneName = sceneName != null ? sceneName : "ADJ_INVALID";
+            _AdjustUpdateConversionValueWithCallback(conversionValue, cSceneName);
+        }
+
+        public static void UpdateConversionValue(int conversionValue, string coarseValue, bool lockedWindow, string sceneName)
+        {
+            string cSceneName = sceneName != null ? sceneName : "ADJ_INVALID";
+            _AdjustUpdateConversionValueWithCallbackSkad4(conversionValue, coarseValue, AdjustUtils.ConvertBool(lockedWindow), cSceneName);
+        }
+
+        public static void CheckForNewAttStatus()
+        {
+            _AdjustCheckForNewAttStatus();
         }
 
         public static int GetAppTrackingAuthorizationStatus()
@@ -444,6 +488,11 @@ namespace com.adjust.sdk
 
             var attribution = new AdjustAttribution(attributionString);
             return attribution;
+        }
+
+        public static string GetLastDeeplink()
+        {
+            return _AdjustGetLastDeeplink();
         }
 
         // Used for testing only.

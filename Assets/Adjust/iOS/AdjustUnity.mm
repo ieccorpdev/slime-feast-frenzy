@@ -10,18 +10,16 @@
 #import "ADJEvent.h"
 #import "ADJConfig.h"
 #import "AdjustUnity.h"
+#import "AdjustUnityAppDelegate.h"
 #import "AdjustUnityDelegate.h"
 
 @implementation AdjustUnity
 
 #pragma mark - Object lifecycle methods
 
-- (id)init {
-    self = [super init];
-    if (nil == self) {
-        return nil;
-    }
-    return self;
++ (void)load {
+    // Swizzle AppDelegate on the load. It should be done as early as possible.
+    [AdjustUnityAppDelegate swizzleAppDelegateCallbacks];
 }
 
 @end
@@ -101,7 +99,9 @@ extern "C"
                           int allowAdServicesInfoReading,
                           int allowIdfaReading,
                           int deactivateSkAdNetworkHandling,
+                          int linkMeEnabled,
                           int needsCost,
+                          int coppaCompliant,
                           int64_t secretId,
                           int64_t info1,
                           int64_t info2,
@@ -115,7 +115,8 @@ extern "C"
                           int isSessionSuccessCallbackImplemented,
                           int isSessionFailureCallbackImplemented,
                           int isDeferredDeeplinkCallbackImplemented,
-                          int isConversionValueUpdatedCallbackImplemented) {
+                          int isConversionValueUpdatedCallbackImplemented,
+                          int isSkad4ConversionValueUpdatedCallbackImplemented) {
         NSString *stringAppToken = isStringValid(appToken) == true ? [NSString stringWithUTF8String:appToken] : nil;
         NSString *stringEnvironment = isStringValid(environment) == true ? [NSString stringWithUTF8String:environment] : nil;
         NSString *stringSdkPrefix = isStringValid(sdkPrefix) == true ? [NSString stringWithUTF8String:sdkPrefix] : nil;
@@ -146,7 +147,8 @@ extern "C"
             || isSessionSuccessCallbackImplemented
             || isSessionFailureCallbackImplemented
             || isDeferredDeeplinkCallbackImplemented
-            || isConversionValueUpdatedCallbackImplemented) {
+            || isConversionValueUpdatedCallbackImplemented
+            || isSkad4ConversionValueUpdatedCallbackImplemented) {
             [adjustConfig setDelegate:
                 [AdjustUnityDelegate getInstanceWithSwizzleOfAttributionCallback:isAttributionCallbackImplemented
                                                             eventSuccessCallback:isEventSuccessCallbackImplemented
@@ -155,6 +157,7 @@ extern "C"
                                                           sessionFailureCallback:isSessionFailureCallbackImplemented
                                                         deferredDeeplinkCallback:isDeferredDeeplinkCallbackImplemented
                                                   conversionValueUpdatedCallback:isConversionValueUpdatedCallbackImplemented
+                                             skad4ConversionValueUpdatedCallback:isSkad4ConversionValueUpdatedCallbackImplemented
                                                     shouldLaunchDeferredDeeplink:launchDeferredDeeplink
                                                         withAdjustUnitySceneName:stringSceneName]];
         }
@@ -194,6 +197,11 @@ extern "C"
             [adjustConfig setAllowIdfaReading:(BOOL)allowIdfaReading];
         }
 
+        // Enable LinkMe feature.
+        if (linkMeEnabled != -1) {
+            [adjustConfig setLinkMeEnabled:(BOOL)linkMeEnabled];
+        }
+
         // Device known.
         if (isDeviceKnown != -1) {
             [adjustConfig setIsDeviceKnown:(BOOL)isDeviceKnown];
@@ -207,6 +215,11 @@ extern "C"
         // Cost data in attribution callback.
         if (needsCost != -1) {
             [adjustConfig setNeedsCost:(BOOL)needsCost];
+        }
+
+        // COPPA compliance.
+        if (coppaCompliant != -1) {
+            [adjustConfig setCoppaCompliantEnabled:(BOOL)coppaCompliant];
         }
 
         // User agent.
@@ -230,6 +243,8 @@ extern "C"
                 [adjustConfig setUrlStrategy:ADJUrlStrategyChina];
             } else if ([stringUrlStrategy isEqualToString:@"india"]) {
                 [adjustConfig setUrlStrategy:ADJUrlStrategyIndia];
+            } else if ([stringUrlStrategy isEqualToString:@"cn"]) {
+                [adjustConfig setUrlStrategy:ADJUrlStrategyCn];
             } else if ([stringUrlStrategy isEqualToString:@"data-residency-eu"]) {
                 [adjustConfig setUrlStrategy:ADJDataResidencyEU];
             } else if ([stringUrlStrategy isEqualToString:@"data-residency-tr"]) {
@@ -615,7 +630,7 @@ extern "C"
 
         // Transaction date.
         if (transactionDate != NULL) {
-            NSTimeInterval transactionDateInterval = [[NSString stringWithUTF8String:transactionDate] doubleValue];
+            NSTimeInterval transactionDateInterval = [[NSString stringWithUTF8String:transactionDate] doubleValue] / 1000.0;
             NSDate *oTransactionDate = [NSDate dateWithTimeIntervalSince1970:transactionDateInterval];
             [subscription setTransactionDate:oTransactionDate];
         }
@@ -652,7 +667,7 @@ extern "C"
         [Adjust trackSubscription:subscription];
     }
 
-    void _AdjustTrackThirdPartySharing(int enabled, const char* jsonGranularOptions) {
+    void _AdjustTrackThirdPartySharing(int enabled, const char* jsonGranularOptions, const char* jsonPartnerSharingSettings) {
         NSNumber *nEnabled = enabled >= 0 ? [NSNumber numberWithInt:enabled] : nil;
         ADJThirdPartySharing *adjustThirdPartySharing = [[ADJThirdPartySharing alloc] initWithIsEnabledNumberBool:nEnabled];
 
@@ -670,8 +685,29 @@ extern "C"
                         // in here we have partner and key-value pair for it
                         for (int j = 0; j < [partnerGranularOptions count];) {
                             [adjustThirdPartySharing addGranularOption:partnerName
-                                                     key:partnerGranularOptions[j++]
-                                                     value:partnerGranularOptions[j++]];
+                                                                   key:partnerGranularOptions[j++]
+                                                                 value:partnerGranularOptions[j++]];
+                        }
+                    }
+                }
+            }
+        }
+        NSArray *arrayPartnerSharingSettings = convertArrayParameters(jsonPartnerSharingSettings);
+        if (arrayPartnerSharingSettings != nil) {
+            NSUInteger count = [arrayPartnerSharingSettings count];
+            for (int i = 0; i < count;) {
+                NSString *partnerName = arrayPartnerSharingSettings[i++];
+                NSString *sharingSettings = arrayPartnerSharingSettings[i++];
+                // sharingSettings is now NSString which pretty much contains array of partner key-value pairs
+                if (sharingSettings != nil) {
+                    NSData *dataJson = [sharingSettings dataUsingEncoding:NSUTF8StringEncoding];
+                    NSArray *partnerSharingSettings = [NSJSONSerialization JSONObjectWithData:dataJson options:0 error:nil];
+                    if (partnerSharingSettings != nil) {
+                        // in here we have partner and key-value pair for it
+                        for (int j = 0; j < [partnerSharingSettings count];) {
+                            [adjustThirdPartySharing addPartnerSharingSetting:partnerName
+                                                                          key:partnerSharingSettings[j++]
+                                                                        value:[partnerSharingSettings[j++] boolValue]];
                         }
                     }
                 }
@@ -703,8 +739,61 @@ extern "C"
         [Adjust updateConversionValue:conversionValue];
     }
 
+    void _AdjustUpdateConversionValueWithCallback(int conversionValue, const char* sceneName) {
+        NSString *stringSceneName = isStringValid(sceneName) == true ? [NSString stringWithUTF8String:sceneName] : nil;
+        [Adjust updatePostbackConversionValue:conversionValue completionHandler:^(NSError * _Nullable error) {
+            if (stringSceneName == nil) {
+                return;
+            }
+            NSString *errorString = [error description];
+            const char* errorChar = [errorString UTF8String];
+            UnitySendMessage([stringSceneName UTF8String], "GetNativeSkadCompletionDelegate", errorChar);
+        }];
+    }
+
+    void _AdjustUpdateConversionValueWithCallbackSkad4(int conversionValue, const char* coarseValue, int lockWindow, const char* sceneName) {
+        NSString *stringSceneName = isStringValid(sceneName) == true ? [NSString stringWithUTF8String:sceneName] : nil;
+        if (coarseValue != NULL) {
+            NSString *stringCoarseValue = [NSString stringWithUTF8String:coarseValue];
+            BOOL bLockWindow = (BOOL)lockWindow;
+            [Adjust updatePostbackConversionValue:conversionValue
+                                      coarseValue:stringCoarseValue
+                                       lockWindow:bLockWindow
+                                completionHandler:^(NSError * _Nullable error) {
+                if (stringSceneName == nil) {
+                    return;
+                }
+                NSString *errorString = [error description];
+                const char* errorChar = [errorString UTF8String];
+                UnitySendMessage([stringSceneName UTF8String], "GetNativeSkad4CompletionDelegate", errorChar);
+            }];
+        }
+    }
+
+    void _AdjustCheckForNewAttStatus() {
+        [Adjust checkForNewAttStatus];
+    }
+
     int _AdjustGetAppTrackingAuthorizationStatus() {
         return [Adjust appTrackingAuthorizationStatus];
+    }
+
+    char* _AdjustGetLastDeeplink() {
+        NSURL *lastDeeplink = [Adjust lastDeeplink];
+        if (nil == lastDeeplink) {
+            return NULL;
+        }
+        NSString *lastDeeplinkString = [lastDeeplink absoluteString];
+        if (nil == lastDeeplinkString) {
+            return NULL;
+        }
+        const char* lastDeeplinkCString = [lastDeeplinkString UTF8String];
+        if (NULL == lastDeeplinkCString) {
+            return NULL;
+        }
+
+        char* lastDeeplinkCStringCopy = strdup(lastDeeplinkCString);
+        return lastDeeplinkCStringCopy;
     }
 
     void _AdjustSetTestOptions(const char* baseUrl,
