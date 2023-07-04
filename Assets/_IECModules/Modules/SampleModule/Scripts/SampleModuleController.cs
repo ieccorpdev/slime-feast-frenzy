@@ -45,8 +45,8 @@ namespace IEC.SampleModule
         {
             //Load DataSave:
             DataController Data = Controllers.Get<DataController>();
-            DataSave = Data.LoadData<SampleModuleDataSave>(SampleModuleConstants.PLAYER_DATA_SAVE_KEY);
-            Data.SetAutoSaveObject(SampleModuleConstants.PLAYER_DATA_SAVE_KEY, DataSave);
+            DataSave = Data.LoadData<SampleModuleDataSave>(SampleModuleConstants.PLAYER_DATA);
+            Data.SetAutoSaveObject(SampleModuleConstants.PLAYER_DATA, DataSave);
             //Load Config:
             DataConfig = Resources.Load<SampleModuleConfig>(SampleModuleConstants.CONFIG_PATH);
         }
