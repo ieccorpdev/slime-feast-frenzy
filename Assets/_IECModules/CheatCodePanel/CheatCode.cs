@@ -215,8 +215,16 @@ namespace _IECModules
                 PlayerPrefs.SetInt(AdjustAnalyticModule.ADJUST_SANDBOX, sandBoxEnable);
             });
 #endif
-//            AddTestButton();
+            //AddTestButton();
+
+#if PluginAdverty
+            AddCheatCodeButton("Sand Box Adverty: " + Adverty.AdvertySettings.SandboxMode, param =>
+            {
+                Adverty.AdvertySettings.SandboxMode = !Adverty.AdvertySettings.SandboxMode;
+                param.buttonText = "Sand Box Adverty: " + Adverty.AdvertySettings.SandboxMode;
+            });
         }
+#endif
 
         private void Start()
         {
