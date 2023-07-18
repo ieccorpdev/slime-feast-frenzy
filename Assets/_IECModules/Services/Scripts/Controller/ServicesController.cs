@@ -971,9 +971,9 @@ namespace IEC
         }
         
         [NaughtyAttributes.Button]
-        public void SendEmail()
+        public void SendEmail(string additionalData = null)
         {
-            SaveLogToFile();
+            SaveLogToFile(additionalData);
             string email = config.emailSupport;
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
@@ -1008,7 +1008,7 @@ namespace IEC
             Application.OpenURL(url);
         }
 
-        void SaveLogToFile()
+        void SaveLogToFile(string additionalData)
         {
             try
             {
@@ -1025,6 +1025,14 @@ namespace IEC
                 // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
                 Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                
+                if (!string.IsNullOrWhiteSpace(additionalData))
+                {
+                    var dataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                      SimpleEncryption.EncryptString(additionalData);
+                    content += $"\n\nAdditional Data:\n{dataEncrypt}";
+                    Debug.Log($"additionalDataEncrypt:\n{dataEncrypt}");
+                }
                 txtWrite.Write(content);
                 txtWrite.Close();
             }
