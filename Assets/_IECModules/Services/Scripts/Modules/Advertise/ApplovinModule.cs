@@ -311,9 +311,15 @@ namespace IEC
         public void RequestBannerAmazon(Action<AdsEventArgs> loadCallback, AdsEnum adsType)
         {
             var maxBannerAdId = m_Config.bannerID;
-            if (string.IsNullOrEmpty(m_Config.bannerID) || string.IsNullOrEmpty(m_amazonConfig.bannerID))
+            if (string.IsNullOrEmpty(m_Config.bannerID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                return;
+            }
+
+            if(string.IsNullOrEmpty(m_amazonConfig.bannerID))
+            {
+                LoadBannerAds(loadCallback, adsType);
                 return;
             }
             if (bannerAdRequest != null) bannerAdRequest.DestroyFetchManager();
@@ -418,9 +424,14 @@ namespace IEC
         public void RequestInterstitialAmazon(Action<AdsEventArgs> loadCallback)
         {
             var maxInterstitialAdId = m_Config.interstitialID;
-            if (string.IsNullOrEmpty(m_Config.interstitialID) || string.IsNullOrEmpty(m_amazonConfig.interstitialID))
+            if (string.IsNullOrEmpty(m_Config.interstitialID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
+                return;
+            }
+            if(string.IsNullOrEmpty(m_amazonConfig.interstitialID))
+            {
+                LoadFullAds(loadCallback);
                 return;
             }
             if (isFirstLoadInter)
@@ -555,11 +566,18 @@ namespace IEC
         public void RequestRewardedVideoAmazon(Action<AdsEventArgs> loadCallback)
         {
             var maxRewardedAdId = m_Config.rewardID;
-            if (string.IsNullOrEmpty(m_Config.rewardID) || string.IsNullOrEmpty(m_amazonConfig.rewardID))
+            if (string.IsNullOrEmpty(m_Config.rewardID))
             {
                 AdsStateData.SafeInvoke(loadCallback, AdsEventArgs.FAIL_NO_ID);
                 return;
             }
+            
+            if(string.IsNullOrEmpty(m_amazonConfig.rewardID))
+            {
+                LoadRewardAds(loadCallback);
+                return;
+            }
+
             if (isFirstLoadReward)
             {
                 // APS LoadAd only needs to be called once.
@@ -700,8 +718,8 @@ namespace IEC
             {
                 adType = AdsEnum.REWARD;
             }
-			onAdRevenueAction?.Invoke(adType, (float)revenue);
-			
+
+            onAdRevenueAction?.Invoke(adType, (float)revenue);
             pushEventAction?.Invoke(eventName, (float) revenue, dict);
             pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
             AdjustTrackAdRevenue(adUnitId, adInfo);
@@ -715,7 +733,7 @@ namespace IEC
             adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
             adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
             adRevenue.setAdRevenuePlacement(adInfo.Placement);
-            Debug.LogWarning($"[Adjust ad track] revenue: {adRevenue.revenue}-{adRevenue.currency} | network: {adRevenue.adRevenueNetwork} | adUnit: {adRevenue.adRevenueUnit}");
+            Debug.LogWarning($"[Adjust ad track] revenue: {adInfo.Revenue}-{"USD"} | network: {adInfo.NetworkName} | adUnit: {adInfo.AdUnitIdentifier}");
             Adjust.trackAdRevenue(adRevenue);
 #endif
         }
