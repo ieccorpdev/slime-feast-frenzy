@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using AppLovinMax.Internal.API;
 using AppLovinMax.ThirdParty.MiniJson;
 
 public class MaxSdkCallbacks : MonoBehaviour
@@ -49,6 +50,7 @@ public class MaxSdkCallbacks : MonoBehaviour
 
     // Fire when the MaxVariableService has finished loading the latest set of variables.
     private static Action _onVariablesUpdatedEvent;
+    [System.Obsolete("This API has been deprecated. Please use our SDK's initialization callback to retrieve variables instead.")]
     public static event Action OnVariablesUpdatedEvent
     {
         add
@@ -180,7 +182,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onInterstitialAdRevenuePaidEvent -= value;
             }
         }
-        
+
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
@@ -198,7 +200,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onInterstitialAdReviewCreativeIdGeneratedEvent -= value;
             }
         }
-        
+
         public static event Action<string, MaxSdkBase.AdInfo> OnAdHiddenEvent
         {
             add
@@ -432,7 +434,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onRewardedAdRevenuePaidEvent -= value;
             }
         }
-        
+
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
@@ -583,7 +585,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onRewardedInterstitialAdRevenuePaidEvent -= value;
             }
         }
-        
+
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
@@ -696,7 +698,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onBannerAdRevenuePaidEvent -= value;
             }
         }
-        
+
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
@@ -809,7 +811,7 @@ public class MaxSdkCallbacks : MonoBehaviour
                 _onMRecAdRevenuePaidEvent -= value;
             }
         }
-        
+
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
@@ -856,7 +858,7 @@ public class MaxSdkCallbacks : MonoBehaviour
             }
         }
     }
-    
+
     private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdLoadedEvent;
     private static Action<string, MaxSdkBase.ErrorInfo> _onCrossPromoAdLoadFailedEvent;
     private static Action<string, MaxSdkBase.AdInfo> _onCrossPromoAdClickedEvent;
@@ -1359,6 +1361,10 @@ public class MaxSdkCallbacks : MonoBehaviour
         {
             InvokeEvent(_onSdkConsentDialogDismissedEvent, eventName);
         }
+        else if (eventName == "OnSdkConsentFlowCompletedEvent")
+        {
+            CFService.NotifyConsentFlowCompletedIfNeeded(eventProps);
+        }
         // Ad Events
         else
         {
@@ -1654,14 +1660,7 @@ public class MaxSdkCallbacks : MonoBehaviour
     {
         if (_onSdkInitializedEvent == null) return;
 
-        var sdkConfiguration = new MaxSdkBase.SdkConfiguration();
-        sdkConfiguration.IsSuccessfullyInitialized = true;
-        sdkConfiguration.ConsentDialogState = MaxSdkBase.ConsentDialogState.Unknown;
-        sdkConfiguration.AppTrackingStatus = MaxSdkBase.AppTrackingStatus.Authorized;
-        var currentRegion = RegionInfo.CurrentRegion;
-        sdkConfiguration.CountryCode = currentRegion != null ? currentRegion.TwoLetterISORegionName : "US";
-
-        _onSdkInitializedEvent(sdkConfiguration);
+        _onSdkInitializedEvent(MaxSdkBase.SdkConfiguration.CreateEmpty());
     }
 #endif
 
@@ -1719,4 +1718,104 @@ public class MaxSdkCallbacks : MonoBehaviour
     {
         MaxSdkLogger.D("Listener has been removed from callback: " + eventName);
     }
+
+#if UNITY_EDITOR && UNITY_2019_2_OR_NEWER
+    /// <summary>
+    /// Resets static event handlers so they still get reset even if Domain Reloading is disabled
+    /// </summary>
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetOnDomainReload()
+    {
+        _onSdkInitializedEvent = null;
+        _onVariablesUpdatedEvent = null;
+        _onSdkConsentDialogDismissedEvent = null;
+
+        _onInterstitialAdLoadedEventV2 = null;
+        _onInterstitialAdLoadFailedEventV2 = null;
+        _onInterstitialAdDisplayedEventV2 = null;
+        _onInterstitialAdFailedToDisplayEventV2 = null;
+        _onInterstitialAdClickedEventV2 = null;
+        _onInterstitialAdRevenuePaidEvent = null;
+        _onInterstitialAdReviewCreativeIdGeneratedEvent = null;
+        _onInterstitialAdHiddenEventV2 = null;
+
+        _onAppOpenAdLoadedEvent = null;
+        _onAppOpenAdLoadFailedEvent = null;
+        _onAppOpenAdDisplayedEvent = null;
+        _onAppOpenAdFailedToDisplayEvent = null;
+        _onAppOpenAdClickedEvent = null;
+        _onAppOpenAdRevenuePaidEvent = null;
+        _onAppOpenAdHiddenEvent = null;
+
+        _onRewardedAdLoadedEventV2 = null;
+        _onRewardedAdLoadFailedEventV2 = null;
+        _onRewardedAdDisplayedEventV2 = null;
+        _onRewardedAdFailedToDisplayEventV2 = null;
+        _onRewardedAdClickedEventV2 = null;
+        _onRewardedAdRevenuePaidEvent = null;
+        _onRewardedAdReviewCreativeIdGeneratedEvent = null;
+        _onRewardedAdReceivedRewardEventV2 = null;
+        _onRewardedAdHiddenEventV2 = null;
+
+        _onRewardedInterstitialAdLoadedEvent = null;
+        _onRewardedInterstitialAdLoadFailedEvent = null;
+        _onRewardedInterstitialAdDisplayedEvent = null;
+        _onRewardedInterstitialAdFailedToDisplayEvent = null;
+        _onRewardedInterstitialAdClickedEvent = null;
+        _onRewardedInterstitialAdRevenuePaidEvent = null;
+        _onRewardedInterstitialAdReviewCreativeIdGeneratedEvent = null;
+        _onRewardedInterstitialAdReceivedRewardEvent = null;
+        _onRewardedInterstitialAdHiddenEvent = null;
+
+        _onBannerAdLoadedEventV2 = null;
+        _onBannerAdLoadFailedEventV2 = null;
+        _onBannerAdClickedEventV2 = null;
+        _onBannerAdRevenuePaidEvent = null;
+        _onBannerAdReviewCreativeIdGeneratedEvent = null;
+        _onBannerAdExpandedEventV2 = null;
+        _onBannerAdCollapsedEventV2 = null;
+
+        _onMRecAdLoadedEventV2 = null;
+        _onMRecAdLoadFailedEventV2 = null;
+        _onMRecAdClickedEventV2 = null;
+        _onMRecAdRevenuePaidEvent = null;
+        _onMRecAdReviewCreativeIdGeneratedEvent = null;
+        _onMRecAdExpandedEventV2 = null;
+        _onMRecAdCollapsedEventV2 = null;
+
+        _onCrossPromoAdLoadedEvent = null;
+        _onCrossPromoAdLoadFailedEvent = null;
+        _onCrossPromoAdClickedEvent = null;
+        _onCrossPromoAdRevenuePaidEvent = null;
+        _onCrossPromoAdExpandedEvent = null;
+        _onCrossPromoAdCollapsedEvent = null;
+
+        _onBannerAdLoadedEvent = null;
+        _onBannerAdLoadFailedEvent = null;
+        _onBannerAdClickedEvent = null;
+        _onBannerAdExpandedEvent = null;
+        _onBannerAdCollapsedEvent = null;
+
+        _onMRecAdLoadedEvent = null;
+        _onMRecAdLoadFailedEvent = null;
+        _onMRecAdClickedEvent = null;
+        _onMRecAdExpandedEvent = null;
+        _onMRecAdCollapsedEvent = null;
+
+        _onInterstitialAdLoadedEvent = null;
+        _onInterstitialLoadFailedEvent = null;
+        _onInterstitialAdDisplayedEvent = null;
+        _onInterstitialAdFailedToDisplayEvent = null;
+        _onInterstitialAdClickedEvent = null;
+        _onInterstitialAdHiddenEvent = null;
+
+        _onRewardedAdLoadedEvent = null;
+        _onRewardedAdLoadFailedEvent = null;
+        _onRewardedAdDisplayedEvent = null;
+        _onRewardedAdFailedToDisplayEvent = null;
+        _onRewardedAdClickedEvent = null;
+        _onRewardedAdReceivedRewardEvent = null;
+        _onRewardedAdHiddenEvent = null;
+    }
+#endif
 }
