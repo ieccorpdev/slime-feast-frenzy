@@ -709,6 +709,16 @@ namespace IEC
                 ["network_name"] = networkName
             };
 
+            var dictParamImpression = new Dictionary<string, object>
+            {
+                ["ad_platform"] = "AppLovin",
+                ["ad_source"] = adInfo.NetworkName,
+                ["ad_unit_name"] = adInfo.AdUnitIdentifier,
+                ["ad_format"] = adInfo.AdFormat,
+                ["value"] = adInfo.Revenue,
+                ["currency"] = "USD"
+            };
+
             var adType = AdsEnum.BANNER_BOTTOM;
             if (adUnitId.Equals(m_Config.interstitialID))
             {
@@ -720,8 +730,10 @@ namespace IEC
             }
 
             onAdRevenueAction?.Invoke(adType, (float)revenue);
-            pushEventAction?.Invoke(eventName, (float) revenue, dict);
-            pushEventAction?.Invoke("rev_all_ad",(float)revenue,dictParamAll);
+            pushEventAction?.Invoke(eventName, (float)revenue, dict);
+            pushEventAction?.Invoke("rev_all_ad", (float)revenue, dictParamAll);
+            pushEventAction?.Invoke("ad_impression", (float)revenue, dictParamImpression);
+            
             AdjustTrackAdRevenue(adUnitId, adInfo);
         }
 
@@ -733,7 +745,7 @@ namespace IEC
             adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
             adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
             adRevenue.setAdRevenuePlacement(adInfo.Placement);
-            Debug.LogWarning($"[Adjust ad track] revenue: {adRevenue.revenue}-{adRevenue.currency} | network: {adRevenue.adRevenueNetwork} | adUnit: {adRevenue.adRevenueUnit}");
+            Debug.LogWarning($"[Adjust ad track] revenue: {adInfo.Revenue}-{"USD"} | network: {adInfo.NetworkName} | adUnit: {adInfo.AdUnitIdentifier}");
             Adjust.trackAdRevenue(adRevenue);
 #endif
         }
