@@ -26,8 +26,8 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   before_script:
     # - for i in $(git rev-list $CI_COMMIT_BEFORE_SHA..HEAD); do git log --format=%B -n 1 $i; done
     # - aaaaa
-    - chmod +x ./ci-logic/download_ci_folder.sh && ./ci-logic/download_ci_folder.sh
-    - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
+    - ./ci-logic/download_ci_folder.ps1
+    - sh ./ci/before_script.sh
 
 
 .cache: &cache
@@ -66,7 +66,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   stage: build_and_test
   <<: *unity_defaults
   script:
-    - chmod +x ./ci/test.sh && ./ci/test.sh
+    - sh ./ci/test.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -102,7 +102,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
     # We could use an image with these two depencencies only and only do the saxonb-xslt command on
     # previous job's artifacts
     - apt-get update && apt-get install -y default-jre libsaxonb-java
-    - chmod +x ./ci/test.sh && ./ci/test.sh
+    - sh ./ci/test.sh
     - saxonb-xslt -s $UNITY_DIR/$TEST_PLATFORM-results.xml -xsl $CI_PROJECT_DIR/ci/nunit-transforms/nunit3-junit.xslt >$UNITY_DIR/$TEST_PLATFORM-junit-results.xml
   artifacts:
     when: always
@@ -136,7 +136,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   stage: build_and_test
   <<: *unity_defaults
   script:
-    - chmod +x ./ci/build.sh && ./ci/build.sh
+    - sh ./ci/build.sh
   # artifacts:
   #   paths:
   #     - $UNITY_DIR/Builds/
@@ -197,7 +197,7 @@ build-android-il2cpp:
   <<: *build
   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
   after_script:
-    - chmod +x ./ci/get_manifest_info.sh && ./ci/get_manifest_info.sh
+    - sh ./ci/get_manifest_info.sh
   # rules:
   #   - if: $CI_COMMIT_BRANCH =~ $BUILD_CONFIG
   #     when: always
@@ -211,9 +211,9 @@ build-failed-handle:
   script:
     - >
       if [ ! -d "$UNITY_DIR/ci" ]; then
-        chmod +x ./ci-logic/download_ci_folder.sh && ./ci-logic/download_ci_folder.sh
+        sh ./ci-logic/download_ci_folder.sh
       fi
-    - chmod +x ./ci/build_failed_handle.sh && ./ci/build_failed_handle.sh
+    - sh ./ci/build_failed_handle.sh
   needs:
     - job: build-android-il2cpp
   when: on_failure
