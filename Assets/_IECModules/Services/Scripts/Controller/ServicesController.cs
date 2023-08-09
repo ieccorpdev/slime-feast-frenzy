@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if(PluginCMP)
+using GoogleMobileAds.Ump.Api;
+#endif
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
@@ -21,6 +24,9 @@ using System.Runtime.InteropServices;
 using Balaso;
 #endif
 
+#if PluginCMP
+
+#endif
 
 namespace IEC
 {
@@ -341,6 +347,23 @@ namespace IEC
             {
                 InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
+
+#elif (PluginCMP)
+            var debugSettings = new ConsentDebugSettings
+            {
+                DebugGeography = DebugGeography.EEA,
+                TestDeviceHashedIds = new List<string>
+                {
+                    PlayerPrefs.GetString(CheatCode.CMP_DEVICE_HASHED_ID, "");
+                }
+                
+            };
+            var requestParameters = new ConsentRequestParameters
+            {
+                TagForUnderAgeOfConsent = false,
+                ConsentDebugSettings = debugSettings
+            };
+            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
 #else
             InitSDKAfterATT(true);
 #endif
@@ -364,6 +387,65 @@ namespace IEC
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
             InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+        }
+#endif
+#if (PluginCMP)
+        IEnumerator IE_WaitConsent()
+        {
+            yield return new WaitUntil(() => ConsentInformation.ConsentStatus == ConsentStatus.Obtained);
+            InitAdsAfterGDPR(true, true);
+        }
+
+        private Coroutine m_CheckConsentStatus;
+        void OnConsentInfoUpdated(FormError error)
+        {
+            if (error != null)
+            {
+                // Handle the error.
+                Debug.LogError(error);
+                InitSDKAfterATT(true);
+                return;
+            }
+
+            // If the error is null, the consent information state was updated.
+            // You are now ready to check if a form is available.
+            if (ConsentInformation.IsConsentFormAvailable())
+            {
+                LoadForm();
+            }
+        }
+        
+        void LoadForm()
+        {
+            ConsentForm.Load((form, loadError) =>
+            {
+                if (loadError != null)
+                {
+                    // Handle the error.
+                    InitSDKAfterATT(true);
+                    Debug.LogError(loadError);
+                    return;
+                }
+
+                // The consent form was loaded.
+                // Save the consent form for future requests.
+                m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
+                // You are now ready to show the form.
+                if(ConsentInformation.ConsentStatus == ConsentStatus.Required)
+                {
+                    form.Show(showError =>
+                    {
+                        if (showError == null) return;
+                        StopCoroutine(m_CheckConsentStatus);
+                        // Handle the error.
+                        InitSDKAfterATT(true);
+                        Debug.LogError(showError);
+
+                        // Handle dismissal by reloading form.
+                        // LoadForm();
+                    });
+                }
+            });
         }
 #endif
 
