@@ -260,6 +260,11 @@ namespace IEC
 
         public void OnInitializeFailed(InitializationFailureReason error)
         {
+            throw new NotImplementedException();
+        }
+
+        public void OnInitializeFailed(InitializationFailureReason error, string message)
+        {
             Debug.LogError("Unity IAP Module Init failed:" + error.ToString());
         }
 
