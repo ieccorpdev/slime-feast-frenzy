@@ -354,7 +354,7 @@ namespace IEC
                 DebugGeography = DebugGeography.EEA,
                 TestDeviceHashedIds = new List<string>
                 {
-                    PlayerPrefs.GetString(CheatCode.CMP_DEVICE_HASHED_ID, "");
+                    PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
                 }
                 
             };
