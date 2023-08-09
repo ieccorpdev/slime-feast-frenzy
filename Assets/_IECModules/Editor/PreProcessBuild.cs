@@ -11,7 +11,7 @@ using UnityEngine;
 public class PreProcessBuild : IPreprocessBuildWithReport
 {
     public int callbackOrder => 0;
-    private const int ANDROID_TARGET_SDK = 31;
+    private const int ANDROID_TARGET_SDK = 33;
 
     public void OnPreprocessBuild(BuildReport report)
     {
