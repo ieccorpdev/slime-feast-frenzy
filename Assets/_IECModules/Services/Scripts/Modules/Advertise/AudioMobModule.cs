@@ -9,8 +9,6 @@ namespace IEC
         bool m_IsInit = false;
         bool m_AdsAvailable;
 
-        AdsStateData m_AudioAdsState = new AdsStateData();
-
         public void Init(Action<bool> afterInitCallback)
         {
 
@@ -28,44 +26,35 @@ namespace IEC
             m_IsInit = true;
             afterInitCallback?.Invoke(true);
         }
-  
-        public void Show(AdsEnum adsType, Action<AdsEventArgs> showCallback)
+
+        public void Hide()
+        {
+            AudioMobPlugin.Instance.StopAd();
+        }
+
+        public void Show(AdsEnum adsType, Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback)
         {
             if (!m_IsInit)
             {
-                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
                 return;
             }
 
             switch (adsType)
             {
                 case AdsEnum.AUDIO:
-                    ShowAudio(showCallback);
+                    ShowAudio(startCallback, closeCallback);
                     break;
                 default:
                     break;
             }
         }
 
-        private void ShowAudio(Action<AdsEventArgs> showCallback)
+        private void ShowAudio(Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback)
         {
-            var adsState = m_AudioAdsState;
-            adsState.isWaitToShow = true;
-
-            //if (m_AdsAvailable)
-            //{
-            //    adsState.onShow = showCallback;
-            //    AudioMobPlugin.Instance.RequestAndPlayAd();
-            //}
-            //else
-            //{
-            //    AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
-            //}
-
-            adsState.onShow = showCallback;
+            AudioMobPlugin.Instance.OnAdPlaybackStarted = startCallback;
+            AudioMobPlugin.Instance.OnAdPlaybackCompleted = closeCallback;
             AudioMobPlugin.Instance.RequestAndPlayAd();
         }
     }
 }
-
 #endif

@@ -833,7 +833,7 @@ namespace IEC
             }
         }
 
-        public void ShowAudioAds(Action closeCallback = null, Action skipCallback = null)
+        public void ShowAudioAds(Action startCallback = null, Action closeCallback = null, Action skipCallback = null)
         {
 #if (PluginAudioMob)
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
@@ -843,22 +843,33 @@ namespace IEC
                 return;
             }
 
-            m_AudioMob.Show(AdsEnum.AUDIO, (param) =>
-            {
-                if (param.isSuccess)
+            m_AudioMob.Show(AdsEnum.AUDIO,
+                startParam =>
                 {
-                    PushEvent("show_audio_ad", 1);
-                }
+                    SafeInvoke(startCallback);
+                },
+                closeParam =>
+                {
+                    if (closeParam == AudioMob.AdPlaybackResult.Finished)
+                    {
+                        SafeInvoke(closeCallback);
+                    }
+                    else if (closeParam == AudioMob.AdPlaybackResult.Skipped)
+                    {
+                        SafeInvoke(skipCallback);
+                    }
+                    else
+                    {
+                        SafeInvoke(closeCallback);
+                    }
+                });
+#endif
+        }
 
-                if ((!param.isSuccess) || param.isSkip)
-                {
-                    SafeInvoke(skipCallback);
-                }
-                else
-                {
-                    SafeInvoke(closeCallback);
-                }
-            });   
+        public void HideAudioAds()
+        {
+#if (PluginAudioMob)
+            m_AudioMob.Hide();
 #endif
         }
 
