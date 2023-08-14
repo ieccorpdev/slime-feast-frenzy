@@ -1,9 +1,6 @@
 #if (PluginAudioMob)
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using AudioMob;
-using UnityEngine;
 
 namespace IEC
 {
@@ -25,7 +22,7 @@ namespace IEC
 
             AudioMobPlugin.Instance.GetAdAvailability((response) =>
             {
-                m_AdsAvailable = response.AdsAvailable;
+                m_AdsAvailable = response.AdsAvailable; // ALWAYS RETURN FALSE?
             });
 
             m_IsInit = true;
@@ -54,16 +51,19 @@ namespace IEC
         {
             var adsState = m_AudioAdsState;
             adsState.isWaitToShow = true;
-           
-            if (m_AdsAvailable)
-            {
-                adsState.onShow = showCallback;
-                AudioMobPlugin.Instance.RequestAndPlayAd();
-            }
-            else
-            {
-                AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
-            }
+
+            //if (m_AdsAvailable)
+            //{
+            //    adsState.onShow = showCallback;
+            //    AudioMobPlugin.Instance.RequestAndPlayAd();
+            //}
+            //else
+            //{
+            //    AdsStateData.SafeInvoke(showCallback, AdsEventArgs.FAIL);
+            //}
+
+            adsState.onShow = showCallback;
+            AudioMobPlugin.Instance.RequestAndPlayAd();
         }
     }
 }
