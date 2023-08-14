@@ -548,6 +548,7 @@ namespace IEC
                         RaiseInitEvent(EventList.Service.INIT_AD_DONE);
                     }
                 });
+                m_AudioMob = audioMob;
 #endif
 
                 Debug.Log("Ads:" + m_Ads);
