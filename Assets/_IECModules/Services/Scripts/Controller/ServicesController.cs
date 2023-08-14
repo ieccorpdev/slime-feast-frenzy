@@ -413,6 +413,10 @@ namespace IEC
             {
                 LoadForm();
             }
+            else
+            {
+                InitSDKAfterATT(true);
+            }
         }
         
         void LoadForm()
