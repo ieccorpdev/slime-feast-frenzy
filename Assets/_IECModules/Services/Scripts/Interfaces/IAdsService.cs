@@ -21,7 +21,8 @@ namespace IEC
         BANNER_TOP,
         BANNER_BOTTOM,
         INTERSTITIAL,
-        REWARD
+        REWARD,
+        AUDIO
     }
 
     [Serializable]

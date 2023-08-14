@@ -540,6 +540,16 @@ namespace IEC
                 m_Ads = applovinAds;
 #endif
 
+#if (PluginAudioMob)
+                var audioMob = new AudioMobModule();
+                audioMob.Init((result) => {
+                    if (result)
+                    {
+                        RaiseInitEvent(EventList.Service.INIT_AD_DONE);
+                    }
+                });
+#endif
+
                 Debug.Log("Ads:" + m_Ads);
                 m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () =>
                 {
@@ -820,6 +830,35 @@ namespace IEC
             {
                 SafeInvoke(skipCallback);
             }
+        }
+
+        public void ShowAudioAds(Action closeCallback = null, Action skipCallback = null)
+        {
+#if (PluginAudioMob)
+            if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
+            {
+                Debug.Log("show audio ads");
+                SafeInvoke(closeCallback);
+                return;
+            }
+
+            m_AudioMob.Show(AdsEnum.AUDIO, (param) =>
+            {
+                if (param.isSuccess)
+                {
+                    PushEvent("show_audio_ad", 1);
+                }
+
+                if ((!param.isSuccess) || param.isSkip)
+                {
+                    SafeInvoke(skipCallback);
+                }
+                else
+                {
+                    SafeInvoke(closeCallback);
+                }
+            });   
+#endif
         }
 
         void SafeInvoke(Action action)
@@ -1169,6 +1208,10 @@ namespace IEC
 
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
+#endif
+
+#if (PluginAudioMob)
+        AudioMobModule m_AudioMob;
 #endif
         #endregion
 
