@@ -1,10 +1,6 @@
-#if UNITY_IOS
-
 using System.Runtime.InteropServices;
 
-/// <summary>
-/// This class has been deprecated and will be removed in a future release
-/// </summary>
+#if UNITY_IOS
 public class MaxUserServiceiOS
 {
     private static readonly MaxUserServiceiOS _instance = new MaxUserServiceiOS();

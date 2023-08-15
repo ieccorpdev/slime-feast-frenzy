@@ -5,7 +5,7 @@
 
 #import "MAUnityAdManager.h"
 
-#define VERSION @"5.11.1"
+#define VERSION @"5.5.7"
 
 #define KEY_WINDOW [UIApplication sharedApplication].keyWindow
 #define DEVICE_SPECIFIC_ADVIEW_AD_FORMAT ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) ? MAAdFormat.leader : MAAdFormat.banner
@@ -168,22 +168,15 @@ static ALUnityBackgroundCallback backgroundCallback;
 
 #pragma mark - Plugin Initialization
 
-- (ALSdk *)initializeSdkWithSettings:(ALSdkSettings *)settings
-                  backgroundCallback:(ALUnityBackgroundCallback)unityBackgroundCallback
-                andCompletionHandler:(ALSdkInitializationCompletionHandler)completionHandler
+- (ALSdk *)initializeSdkWithAdUnitIdentifiers:(NSString *)serializedAdUnitIdentifiers
+                                     metaData:(NSString *)serializedMetaData
+                           backgroundCallback:(ALUnityBackgroundCallback)unityBackgroundCallback
+                         andCompletionHandler:(ALSdkInitializationCompletionHandler)completionHandler
 {
     backgroundCallback = unityBackgroundCallback;
     NSDictionary *infoDict = [[NSBundle mainBundle] infoDictionary];
     NSString *sdkKey = infoDict[@"AppLovinSdkKey"];
-    if ( [sdkKey al_isValidString] )
-    {
-        self.sdk = [ALSdk sharedWithKey: sdkKey settings: settings];
-    }
-    else
-    {
-        self.sdk = [ALSdk sharedWithSettings: settings];
-    }
-    
+    self.sdk = [ALSdk sharedWithKey: sdkKey settings: [self generateSDKSettingsForAdUnitIdentifiers: serializedAdUnitIdentifiers metaData: serializedMetaData]];
     self.sdk.variableService.delegate = self;
     [self.sdk setPluginVersion: [@"Max-Unity-" stringByAppendingString: VERSION]];
     self.sdk.mediationProvider = @"max";
@@ -198,8 +191,7 @@ static ALUnityBackgroundCallback backgroundCallback;
                                                        @"consentDialogState" : consentDialogStateStr,
                                                        @"countryCode" : configuration.countryCode,
                                                        @"appTrackingStatus" : appTrackingStatus,
-                                                       @"isSuccessfullyInitialized" : @([self.sdk isInitialized]),
-                                                       @"isTestModeEnabled" : @([configuration isTestModeEnabled])}];
+                                                       @"isSuccessfullyInitialized" : ([self.sdk isInitialized] ? @"true" : @"false")}];
     }];
     
     return self.sdk;
@@ -549,7 +541,7 @@ static ALUnityBackgroundCallback backgroundCallback;
 
 - (void)trackEvent:(NSString *)event parameters:(NSString *)parameters
 {
-    NSDictionary<NSString *, id> *deserializedParameters = [MAUnityAdManager deserializeParameters: parameters];
+    NSDictionary<NSString *, id> *deserializedParameters = [self deserializeParameters: parameters];
     [self.sdk.eventService trackEvent: event parameters: deserializedParameters];
 }
 
@@ -622,7 +614,6 @@ static ALUnityBackgroundCallback backgroundCallback;
     }
     
     networkResponseDict[@"credentials"] = response.credentials;
-    networkResponseDict[@"isBidding"] = @([response isBidding]);
     
     MAError *error = response.error;
     if ( error )
@@ -1085,9 +1076,7 @@ static ALUnityBackgroundCallback backgroundCallback;
     
     NSMutableDictionary<NSString *, id> *args = [self defaultAdEventParametersForName: name withAd: ad];
     args[@"adReviewCreativeId"] = creativeIdentifier;
-    
-    // Forward the event in background for fullscreen ads so that the user gets the callback even while the ad is playing.
-    [MAUnityAdManager forwardUnityEventWithArgs: args forwardInBackground: [adFormat isFullscreenAd]];
+    [MAUnityAdManager forwardUnityEventWithArgs: args];
 }
 
 - (NSMutableDictionary<NSString *, id> *)defaultAdEventParametersForName:(NSString *)name withAd:(MAAd *)ad
@@ -1104,11 +1093,6 @@ static ALUnityBackgroundCallback backgroundCallback;
 {
     max_unity_dispatch_on_main_thread(^{
         [self log: @"Creating %@ with ad unit identifier \"%@\" and position: \"%@\"", adFormat, adUnitIdentifier, adViewPosition];
-        
-        if ( self.adViews[adUnitIdentifier] )
-        {
-            [self log: @"Trying to create a %@ that was already created. This will cause the current ad to be hidden.", adFormat.label];
-        }
         
         // Retrieve ad view from the map
         MAAdView *adView = [self retrieveAdViewForAdUnitIdentifier: adUnitIdentifier adFormat: adFormat atPosition: adViewPosition withOffset: offset];
@@ -1503,16 +1487,6 @@ static ALUnityBackgroundCallback backgroundCallback;
 }
 
 - (void)log:(NSString *)format, ...
-{
-    va_list valist;
-    va_start(valist, format);
-    NSString *message = [[NSString alloc] initWithFormat: format arguments: valist];
-    va_end(valist);
-    
-    NSLog(@"[%@] [%@] %@", SDK_TAG, TAG, message);
-}
-
-+ (void)log:(NSString *)format, ...
 {
     va_list valist;
     va_start(valist, format);
@@ -1963,7 +1937,7 @@ static ALUnityBackgroundCallback backgroundCallback;
     return [[NSString alloc] initWithData: jsonData encoding: NSUTF8StringEncoding];
 }
 
-+ (NSDictionary<NSString *, id> *)deserializeParameters:(NSString *)serialized
+- (NSDictionary<NSString *, id> *)deserializeParameters:(NSString *)serialized
 {
     if ( serialized.length > 0 )
     {
@@ -1997,30 +1971,33 @@ static ALUnityBackgroundCallback backgroundCallback;
     }
 }
 
+- (ALSdkSettings *)generateSDKSettingsForAdUnitIdentifiers:(NSString *)serializedAdUnitIdentifiers metaData:(NSString *)serializedMetaData
+{
+    ALSdkSettings *settings = [[ALSdkSettings alloc] init];
+    settings.initializationAdUnitIdentifiers = [serializedAdUnitIdentifiers componentsSeparatedByString: @","];
+    
+    NSDictionary<NSString *, id> *unityMetaData = [self deserializeParameters: serializedMetaData];
+    
+    // Set the meta data to settings.
+    if ( ALSdk.versionCode >= 61201 )
+    {
+        NSMutableDictionary<NSString *, NSString *> *metaDataDict = [settings valueForKey: @"metaData"];
+        for ( NSString *key in unityMetaData )
+        {
+            metaDataDict[key] = unityMetaData[key];
+        }
+        
+        return settings;
+    }
+    
+    return settings;
+}
+
 #pragma mark - User Service
 
 - (void)didDismissUserConsentDialog
 {
     [MAUnityAdManager forwardUnityEventWithArgs: @{@"name" : @"OnSdkConsentDialogDismissedEvent"}];
-}
-
-#pragma mark - Consent Flow
-
-- (void)startConsentFlow
-{
-    [self.sdk.cfService scfWithCompletionHander:^(ALCFError * _Nullable error) {
-        
-        NSMutableDictionary<NSString *, id> *args = [NSMutableDictionary dictionaryWithCapacity: 3];
-        args[@"name"] = @"OnSdkConsentFlowCompletedEvent";
-        
-        if ( error )
-        {
-            args[@"code"] = @(error.code);
-            args[@"message"] = error.message;
-        }
-        
-        [MAUnityAdManager forwardUnityEventWithArgs: args];
-    }];
 }
 
 #pragma mark - Variable Service (Deprecated)
