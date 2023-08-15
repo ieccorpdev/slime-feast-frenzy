@@ -38,7 +38,7 @@ namespace _IECModules
             LoadVersionFromServer();
         }
 
-        public bool LoadVersionFromCache()
+        public virtual bool LoadVersionFromCache()
         {
             // Debug.Log(this);
             if (ListVersionFromServer != null) return true;

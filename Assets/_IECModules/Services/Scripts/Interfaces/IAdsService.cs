@@ -61,6 +61,14 @@ namespace IEC
         public AdsPlatformConfig ios;
     }
 
+    [Serializable]
+    public class AudioMobConfig
+    {
+        public string apiKey;
+        public UnityEngine.GameObject audioMobPluginPrefab;
+    }
+
+
     public class AdsStateData
     {
         public Action<AdsEventArgs> onLoad;

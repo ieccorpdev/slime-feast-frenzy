@@ -39,7 +39,7 @@ namespace _IECModules
                 // var byteArray = File.ReadAllBytes("Assets/facebook.zip");
                 // LogEditorHelper.AddLog($"Assets/facebook.zip: {byteArray.Length} bytes");
 
-                if (url.EndsWith(".unitypackage"))
+                if (url.Contains(".unitypackage"))
                 {
                     ImportPackage(response.Data, url);
                 }

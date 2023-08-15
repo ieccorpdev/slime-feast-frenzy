@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using IEC;
+using AudioMob;
 
 [CreateAssetMenu(fileName = "ServicesConfig", menuName = "Services/ServicesConfig")]
 public class ServicesConfig : ScriptableObject
@@ -41,6 +42,7 @@ public class ServicesConfig : ScriptableObject
     public AdsConfig IronSourceConfig;
     public OguryAdsConfig OguryConfig;
     public AmazonConfig AmazonConfig;
+    public AudioMobConfig AudioMobConfig;
 
     [Header("Iap Config")]
     public bool IapTestFree;

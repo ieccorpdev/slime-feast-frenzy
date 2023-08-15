@@ -542,7 +542,11 @@ namespace IEC
 
 #if (PluginAudioMob)
                 var audioMob = new AudioMobModule();
-                audioMob.Init((result) => {
+                audioMob.Init(config.AudioMobConfig,
+                () => {
+                    PrefabHelper.Clone(config.AudioMobConfig.audioMobPluginPrefab);
+                },
+                (result) => {
                     if (result)
                     {
                         RaiseInitEvent(EventList.Service.INIT_AD_DONE);

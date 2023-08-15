@@ -62,7 +62,8 @@ namespace _IECModules
             PluginByteDanceChinaIOS,
             PluginNotification,
             PluginOgury,
-            PluginLocalization
+            PluginLocalization,
+            PluginAudioMob
         }
 
         private void Awake()
@@ -204,6 +205,19 @@ namespace _IECModules
 
             SdkHelper.OgurySdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.OgurySdkLoader.versionSelect,
                 SdkHelper.OgurySdkLoader.ListSDKVersion,
+                GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
+
+            CreateGuiBreakLine();
+
+            var audioMobSdkLoaded = SdkHelper.AudioMobSdkLoader.LoadVersionFromCache();
+            CreateGuiButton($"AudioMob SDK {(audioMobSdkLoaded? "Load Done" : $"Loading {loadingDotText}")}", () =>
+            {
+                ImportUnityPackageHelper.DownloadPackage(SdkHelper.AudioMobSdkLoader.SdkSelectVersionUrl);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAudioMob);
+            });
+
+            SdkHelper.AudioMobSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.AudioMobSdkLoader.versionSelect,
+                SdkHelper.AudioMobSdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
             CreateGuiBreakLine();

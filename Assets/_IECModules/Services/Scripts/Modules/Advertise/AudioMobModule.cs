@@ -1,6 +1,7 @@
 #if (PluginAudioMob)
 using System;
 using AudioMob;
+using AudioMob.Unmanaged;
 
 namespace IEC
 {
@@ -9,8 +10,12 @@ namespace IEC
         bool m_IsInit = false;
         bool m_AdsAvailable;
 
-        public void Init(Action<bool> afterInitCallback)
+        public void Init(AudioMobConfig audioMobConfig, Action initPluginCallback, Action<bool> afterInitCallback)
         {
+            AudioMobSettings.Instance.ApiKey = audioMobConfig.apiKey;
+            AudioMobPluginInitialization.InitializePlugin();
+
+            initPluginCallback?.Invoke();
 
             if (AudioMobPlugin.Instance == null)
             {
