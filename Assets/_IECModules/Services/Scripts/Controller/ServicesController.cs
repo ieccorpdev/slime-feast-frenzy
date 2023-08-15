@@ -351,6 +351,8 @@ namespace IEC
 #elif (PluginCMP)
             var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
             
+            Debug.LogWarning("CMP Test Id:" + deviceTestId);
+            
             var requestParameters = new ConsentRequestParameters
             {
                 TagForUnderAgeOfConsent = false
@@ -358,6 +360,7 @@ namespace IEC
             
             if (!string.IsNullOrWhiteSpace(deviceTestId))
             {
+                Debug.LogWarning("Enable CMP Test");
                 var debugSettings = new ConsentDebugSettings
                 {
                     DebugGeography = DebugGeography.EEA,
