@@ -349,20 +349,26 @@ namespace IEC
             }
 
 #elif (PluginCMP)
-            var debugSettings = new ConsentDebugSettings
-            {
-                DebugGeography = DebugGeography.EEA,
-                TestDeviceHashedIds = new List<string>
-                {
-                    PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
-                }
-                
-            };
+            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
+            
             var requestParameters = new ConsentRequestParameters
             {
-                TagForUnderAgeOfConsent = false,
-                ConsentDebugSettings = debugSettings
+                TagForUnderAgeOfConsent = false
             };
+            
+            if (!string.IsNullOrWhiteSpace(deviceTestId))
+            {
+                var debugSettings = new ConsentDebugSettings
+                {
+                    DebugGeography = DebugGeography.EEA,
+                    TestDeviceHashedIds = new List<string>
+                    {
+                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
+                    }
+                
+                };
+                requestParameters.ConsentDebugSettings = debugSettings;
+            }
             ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
 #else
             InitSDKAfterATT(true);
