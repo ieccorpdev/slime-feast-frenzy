@@ -842,7 +842,6 @@ namespace IEC
 #if (PluginAudioMob)
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
             {
-                Debug.Log("show audio ads");
                 SafeInvoke(closeCallback);
                 return;
             }
@@ -850,6 +849,7 @@ namespace IEC
             m_AudioMob.Show(AdsEnum.AUDIO,
                 startParam =>
                 {
+                    startCallback += () => PushEvent("show_audio_ads");
                     SafeInvoke(startCallback);
                 },
                 closeParam =>
