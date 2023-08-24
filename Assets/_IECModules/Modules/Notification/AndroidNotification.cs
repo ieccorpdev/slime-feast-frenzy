@@ -13,6 +13,7 @@ namespace _IECModules
         {
             base.Init();
 
+            var permissionRequest = new PermissionRequest();
             AndroidNotificationCenter.CancelAllNotifications();
 
             m_AndroidNotificationChannel = new AndroidNotificationChannel
