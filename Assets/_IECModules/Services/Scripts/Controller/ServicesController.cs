@@ -402,7 +402,7 @@ namespace IEC
         IEnumerator IE_WaitConsent()
         {
             yield return new WaitUntil(() => ConsentInformation.ConsentStatus == ConsentStatus.Obtained);
-            InitAdsAfterGDPR(true, true);
+            InitSDKAfterATT(true);
         }
 
         private Coroutine m_CheckConsentStatus;
