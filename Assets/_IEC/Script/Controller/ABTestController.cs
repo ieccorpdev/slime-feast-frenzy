@@ -70,6 +70,13 @@ namespace IEC
             );
 
             ApplyAbTest(abConfig);
+            if (listAbTestConfig.Exists(x => x.isHaveCountryTest))
+            {
+                Services.Location().RequestInfo(isHaveData =>
+                {
+                    ApplyAbTest(abConfig);
+                });
+            }
         }
 
         void ApplyAbTest(ABTestConfig abConfig)

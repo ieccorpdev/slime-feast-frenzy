@@ -30,6 +30,9 @@ namespace IEC
         public bool isSemiOverride;
         public float percentOverride;
 
+        [Header("Test Specific Country")]
+        public bool isHaveCountryTest;
+
         public int Date => int.Parse(KeyName.Split('_').Last());
 
         public int CheckSemiOverride()
