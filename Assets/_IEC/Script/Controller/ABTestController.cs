@@ -51,11 +51,10 @@ namespace IEC
 
             if (abConfig == null)
             {
-                Debug.LogError("No AB Test");
-                PresetAllAbTest();
-                ResultAllAbTest();
-                EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
-                return;
+                Debug.LogError("No AB Test, Use Latest AB Test");
+                abIndex = listAbTestConfig.FindLastIndex(x => x.IsActive);
+                abConfig = listAbTestConfig.ElementAtOrDefault(abIndex);
+                Services.SetUpAbTest(abConfig, true);
             }
 
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("AB Test Config",

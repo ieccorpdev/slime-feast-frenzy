@@ -586,19 +586,24 @@ namespace IEC
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
-        public void SetUpAbTest(ABTestConfig abTest, int versionCode)
+        void SetUpAbTest(ABTestConfig abTest)
         {
-            m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
+            SetUpAbTest(abTest, m_IsNewInstall);
+        }
+
+        public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
+        {
+            m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
                 var abVersion = s.Split('_')[2].Remove(0, 1);
                 var isNumber = int.TryParse(abVersion, out int version);
                 var eventValue = (isNumber) ? version : 1;
-                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                if (!isNumber) Debug.LogError("Version Ab is not a number");
                 Debug.LogWarning("AbTest event value:" + eventValue);
                 PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
-                    {"version", s}
+                    { "version", s }
                 });
                 SetUserProperty("AB_Version", s);
             });
