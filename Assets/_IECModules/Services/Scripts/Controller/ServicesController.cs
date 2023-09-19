@@ -745,11 +745,16 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    var milestone = GetMilestone(fullAdCount);
+                    if (fullAdCount > 0 && fullAdCount < 100)
+                    {
+                        EventController.RaiseEvent(EventList.Service.PUSH_SHOW_INTER,new EventParam {p0 = (long)fullAdCount});
+                    }
+                    
+                    /*var milestone = GetMilestone(fullAdCount);
                     if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
                         PushEvent("inter_" + fullAdCount);
-                    }
+                    }*/
                     SafeInvoke(canShowCallback);
                 }
                 else
