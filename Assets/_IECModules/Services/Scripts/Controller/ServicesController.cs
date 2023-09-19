@@ -251,7 +251,7 @@ namespace IEC
             m_LeaderBoard = new LeaderBoardMock();
 
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
-            m_ABTest = new AnalyticABTestModule(DataNormal());
+            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
 
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
@@ -350,9 +350,9 @@ namespace IEC
             }
 
             this.config.SetActiveAbByVersion();
-            foreach (var config in config.abTestConfigs)
+            foreach (var abTest in config.abTestConfigs)
             {
-                SetUpAbTest(config, this.config.bundleVersion);
+                SetUpAbTest(abTest);
             }
 
         }
