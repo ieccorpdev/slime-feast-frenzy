@@ -82,6 +82,9 @@ public class PostProcessBuildIOS : MonoBehaviour
             //Fix upload ipa xcode 14
             pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
             //
+            // Add AdServices framework
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "AdServices.xcframework", false);
+            //
             pbxProject.WriteToFile(projectPath);
             
         }
