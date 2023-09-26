@@ -56,6 +56,11 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
+
+        public bool isAudioAdsRequested;
+        public bool isAudioAdsPlaying;
+        public bool isAudioAdsPaused;
+        public bool isAudioAdsSkippable;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -542,11 +547,8 @@ namespace IEC
 
 #if (PluginAudioMob)
                 var audioMob = new AudioMobModule();
-                audioMob.Init(config.AudioMobConfig,
-                () => {
-                    PrefabHelper.Clone(config.AudioMobConfig.audioMobPluginPrefab);
-                },
-                (result) => {
+                audioMob.Init((result) =>
+                {
                     if (result)
                     {
                         RaiseInitEvent(EventList.Service.INIT_AD_DONE);
@@ -837,7 +839,8 @@ namespace IEC
             }
         }
 
-        public void ShowAudioAds(Action startCallback = null, Action closeCallback = null, Action skipCallback = null)
+        public void ShowAudioAds(Action startCallback = null, Action closeCallback = null, Action skipCallback = null,
+            Action pauseCallback = null, Action resumeCallback = null)
         {
 #if (PluginAudioMob)
             if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
@@ -847,9 +850,19 @@ namespace IEC
             }
 
             m_AudioMob.Show(AdsEnum.AUDIO,
+                () =>
+                {
+                    isAudioAdsRequested = true;
+                },
                 startParam =>
                 {
-                    startCallback += () => PushEvent("show_audio_ads");
+                    isAudioAdsRequested = true;
+                    startCallback += () =>
+                    {
+                        PushEvent("show_audio_ads");
+                        isAudioAdsPlaying = true;
+                        isAudioAdsSkippable = false;
+                    };
                     SafeInvoke(startCallback);
                 },
                 closeParam =>
@@ -866,6 +879,25 @@ namespace IEC
                     {
                         SafeInvoke(closeCallback);
                     }
+
+                    isAudioAdsPlaying = false;
+                    isAudioAdsPaused = false;
+                    isAudioAdsSkippable = false;
+                    isAudioAdsRequested = false;
+                },
+                pauseParam =>
+                {
+                    pauseCallback += () => isAudioAdsPaused = true;
+                    SafeInvoke(pauseCallback);
+                },
+                () =>
+                {
+                    pauseCallback += () => isAudioAdsPaused = false;
+                    SafeInvoke(resumeCallback);
+                },
+                () =>
+                {
+                    isAudioAdsSkippable = true;
                 });
 #endif
         }

@@ -1,7 +1,6 @@
 #if (PluginAudioMob)
 using System;
 using AudioMob;
-using AudioMob.Unmanaged;
 
 namespace IEC
 {
@@ -10,12 +9,8 @@ namespace IEC
         bool m_IsInit = false;
         bool m_AdsAvailable;
 
-        public void Init(AudioMobConfig audioMobConfig, Action initPluginCallback, Action<bool> afterInitCallback)
+        public void Init(Action<bool> afterInitCallback)
         {
-            AudioMobSettings.Instance.ApiKey = audioMobConfig.apiKey;
-            AudioMobPluginInitialization.InitializePlugin();
-
-            initPluginCallback?.Invoke();
 
             if (AudioMobPlugin.Instance == null)
             {
@@ -37,7 +32,23 @@ namespace IEC
             AudioMobPlugin.Instance.StopAd();
         }
 
-        public void Show(AdsEnum adsType, Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback)
+        public void Pause()
+        {
+            AudioMobPlugin.Instance.PauseAd();
+        }
+
+        public void Resume()
+        {
+            AudioMobPlugin.Instance.ResumePausedAd();
+        }
+
+        public void SetPauseOnStart(Action<IAudioAd> callback)
+        {
+            AudioMobPlugin.Instance.OnAdPlaybackStarted += callback;
+        }
+
+        public void Show(AdsEnum adsType, Action requestedCallback, Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback,
+            Action<AdPauseReason> pauseCallback, Action resumeCallback, Action skippableCallback)
         {
             if (!m_IsInit)
             {
@@ -47,18 +58,33 @@ namespace IEC
             switch (adsType)
             {
                 case AdsEnum.AUDIO:
-                    ShowAudio(startCallback, closeCallback);
+                    ShowAudio(requestedCallback, startCallback, closeCallback, pauseCallback, resumeCallback, skippableCallback);
                     break;
                 default:
                     break;
             }
         }
 
-        private void ShowAudio(Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback)
+        private void ShowAudio(Action requestedCallback, Action<IAudioAd> startCallback, Action<AdPlaybackResult> closeCallback,
+            Action<AdPauseReason> pauseCallback, Action resumeCallback, Action skippableCallback)
         {
-            AudioMobPlugin.Instance.OnAdPlaybackStarted = startCallback;
-            AudioMobPlugin.Instance.OnAdPlaybackCompleted = closeCallback;
+            AudioMobPlugin.Instance.OnAdPlaybackStarted += startCallback;
+            AudioMobPlugin.Instance.OnAdPlaybackCompleted += closeCallback;
+            AudioMobPlugin.Instance.OnAdPaused += pauseCallback;
+            AudioMobPlugin.Instance.OnAdResumed += resumeCallback;
+            AudioMobPlugin.Instance.OnSkipButtonAvailable += skippableCallback;
+            AudioMobPlugin.Instance.OnAdPlaybackCompleted += ResetEvents;
             AudioMobPlugin.Instance.RequestAndPlayAd();
+            requestedCallback?.Invoke();
+        }
+
+        private void ResetEvents(AdPlaybackResult result)
+        {
+            AudioMobPlugin.Instance.OnAdPlaybackStarted = null;
+            AudioMobPlugin.Instance.OnAdPlaybackCompleted = null;
+            AudioMobPlugin.Instance.OnAdPaused = null;
+            AudioMobPlugin.Instance.OnAdResumed = null;
+            AudioMobPlugin.Instance.OnSkipButtonAvailable = null;
         }
     }
 }
