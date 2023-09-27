@@ -905,7 +905,11 @@ namespace IEC
         public void HideAudioAds()
         {
 #if (PluginAudioMob)
-            m_AudioMob.Hide();
+            m_AudioMob?.Hide();
+            isAudioAdsPlaying = false;
+            isAudioAdsPaused = false;
+            isAudioAdsRequested = false;
+            isAudioAdsSkippable = false;
 #endif
         }
 
