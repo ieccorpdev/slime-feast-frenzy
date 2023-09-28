@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using IEC;
 using UnityEngine;
@@ -75,6 +76,7 @@ namespace _IECModules
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
         [Range(0f, 1f)]
         public float topOffset = 0f;
+        [SerializeField] private string m_IDFAGoogleSheetUrl;
 
         private ShowCheatCodeState m_ShowCheatCodeState;
 
@@ -87,6 +89,8 @@ namespace _IECModules
 
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
+        private bool m_IsIDFAValid;
+        
 
         private int m_TestIndex;
         private bool m_HaveInputPassword;
@@ -112,6 +116,7 @@ namespace _IECModules
         {
             m_BackgroundTexture = Texture2D.whiteTexture;
             m_TextureStyle = new GUIStyle {normal = new GUIStyleState {background = m_BackgroundTexture}};
+            
 
             var reporter = GetComponentInChildren<Reporter>(true);
             AddCheatCodeButton("Show Reporter", param =>
@@ -216,6 +221,39 @@ namespace _IECModules
             });
 #endif
 //            AddTestButton();
+            CheckIDFA();
+
+        }
+
+        private void CheckIDFA()
+        {
+            // var googleDocsData = UnityWebRequestDownloadHelper.DownloadCsvFromAuthUrl(m_IDFAGoogleSheetUrl);
+            // var idfaList = new List<string>();
+            //     
+            // foreach (var row in googleDocsData)
+            // {
+            //     if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
+            //         idfaList.Add(row[0]);
+            // }
+            
+            // string idfa = "";
+            // Application.RequestAdvertisingIdentifierAsync(
+            //     (string advertisingId, bool trackingEnabled, string error) =>
+            //     { Debug.LogError("advertisingId " + advertisingId + " " + trackingEnabled + " " + error); }
+            // );
+// #if UNITY_IOS
+// #elif UNITY_ANDROID
+//             AndroidJavaClass up = new AndroidJavaClass  ("com.unity3d.player.UnityPlayer");
+//             AndroidJavaObject currentActivity = up.GetStatic<AndroidJavaObject> ("currentActivity");
+//             AndroidJavaClass client = new AndroidJavaClass ("com.google.android.gms.ads.identifier.AdvertisingIdClient");
+//             AndroidJavaObject adInfo = client.CallStatic<AndroidJavaObject> ("getAdvertisingIdInfo",currentActivity);
+//
+//             idfa = adInfo.Call<string> ("getId").ToString();
+//             // Adjust.getGoogleAdId((string googleAdId) => idfa = googleAdId);
+//             Debug.LogError("IDFA: " + idfa);
+// #endif
+            // if (idfaList.Contains(idfa))
+            //     m_IsIDFAValid = true;
         }
 
         private void Start()
@@ -313,6 +351,10 @@ namespace _IECModules
                 if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                }
+                else if (m_IsIDFAValid)
+                {
+                    SetCheatCodeState((ShowCheatCodeState.ShowCheatCode));
                 }
                 else
                 {
