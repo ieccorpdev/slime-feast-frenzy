@@ -83,7 +83,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
             //
             // Add AdServices framework
-            pbxProject.AddFrameworkToProject(mainTargetGuid, "AdServices.framework", true);
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "AdServices.framework", false);
             //
             pbxProject.WriteToFile(projectPath);
             
