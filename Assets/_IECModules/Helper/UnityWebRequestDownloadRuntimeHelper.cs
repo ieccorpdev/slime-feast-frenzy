@@ -23,7 +23,6 @@ namespace _IECModules
                 Debug.LogError("Download Error");
             }
 
-            Debug.LogError(uwr.downloadHandler.text);
             return jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
         }
     }

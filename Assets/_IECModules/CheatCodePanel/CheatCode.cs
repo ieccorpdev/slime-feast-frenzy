@@ -89,7 +89,7 @@ namespace _IECModules
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
         private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
-        private List<string> m_IDFAList;
+        // private List<string> m_IDFAList;
         private bool m_IsIDFAValid;
         
 
@@ -227,14 +227,18 @@ namespace _IECModules
 
         private void GetIDFAList()
         { 
-            m_IDFAList = new List<string>();
+            var idfaList = new List<string>();
             var googleDocsData = UnityWebRequestDownloadRuntimeHelper.DownloadCsvFromAuthUrl(IDFA_GOOGLE_SHEET_URL);
 
             foreach (var row in googleDocsData)
             {
                 if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
-                    m_IDFAList.Add(row[3]);
+                    idfaList.Add(row[3]);
             }
+            
+            Pool.Get<ServicesController>().RequestUserIdfa();
+            if (idfaList.Contains(Pool.Get<ServicesController>().UserIDFA))
+                m_IsIDFAValid = true;
         }
 
         private void Start()
@@ -329,13 +333,13 @@ namespace _IECModules
                 }
                 m_TestIndex = 0;
 
+                Pool.Get<ServicesController>().RequestUserIdfa();
                 if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                 }
-                else if (m_IsIDFAValid || m_IDFAList.Contains(Pool.Get<ServicesController>().UserIDFA))
+                else if (m_IsIDFAValid)
                 {
-                    m_IsIDFAValid = true;
                     SetCheatCodeState((ShowCheatCodeState.ShowCheatCode));
                 }
                 else
