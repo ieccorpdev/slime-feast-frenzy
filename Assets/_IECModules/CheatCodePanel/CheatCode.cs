@@ -89,10 +89,14 @@ namespace _IECModules
 
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
+
         private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
-        private List<string> m_IDFAList;
-        private bool m_IsIDFAValid;
-        
+        private List<string> m_IDFAList = new List<string>();
+        private bool m_IsCheckCheatIDFA;
+        private bool m_IsCheatIDFA;
+
+        protected static ServicesController Services => Controllers.Get<ServicesController>();
+
 
         private int m_TestIndex;
         private bool m_HaveInputPassword;
@@ -318,29 +322,30 @@ namespace _IECModules
                 }
                 m_TestIndex = 0;
 
+                if (!Services.IsHaveIDFA)
+                {
+                    Services.RequestUserIdfa();
+                }
                 
-                if (m_HaveInputPassword || Application.isEditor)
+                if (m_IsCheatIDFA || m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                 }
                 else
                 {
-                    if (m_IsIDFAValid)
+                    if (!m_IsCheckCheatIDFA && Services.IsHaveIDFA)
+                    {
+                        m_IsCheatIDFA = m_IDFAList.Contains(Services.UserIDFA);
+                        m_IsCheckCheatIDFA = true;
+                    }
+
+                    if (m_IsCheatIDFA)
                     {
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                     }
                     else
                     {
-                        Pool.Get<ServicesController>().RequestUserIdfa();
-                        if (m_IDFAList.Contains(Pool.Get<ServicesController>().UserIDFA))
-                        {
-                            m_IsIDFAValid = true;
-                            SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
-                        }
-                        else
-                        {
-                            SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
-                        }
+                        SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
                     }
                 }
             }
@@ -746,18 +751,17 @@ namespace _IECModules
             return otpPassword.PadLeft(6, '0');
         }
         
-        public IEnumerator GetIDFAListCoroutine(string url)
+        IEnumerator GetIDFAListCoroutine(string url)
         {
-            m_IDFAList = new List<string>();
-            var jsoner = new IEC.JsonDotNetModule();
+            var jsoner = new JsonDotNetModule();
         
             using (var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url))
             {
                 yield return uwr.SendWebRequest();
 
-                if (uwr.isNetworkError || uwr.isHttpError)
+                if (uwr.error != null)
                 {
-                    Debug.LogError("Fail to get csv");
+                    Debug.LogError("GetIDFAListCoroutine Fail to get csv: " + uwr.error);
                 }
                 else
                 {
@@ -770,7 +774,7 @@ namespace _IECModules
                     }
                     
                     foreach (var idfa in m_IDFAList)
-                        Debug.LogError(idfa);
+                        Debug.Log("GetIDFAListCoroutine: " + idfa);
                 }
             }
         }
