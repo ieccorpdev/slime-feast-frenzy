@@ -96,6 +96,7 @@ namespace _IECModules
         private bool m_IsCheatIDFA;
 
         protected static ServicesController Services => Controllers.Get<ServicesController>();
+        protected static Game Game => Pool.Get<Game>();
 
 
         private int m_TestIndex;
@@ -778,7 +779,7 @@ namespace _IECModules
 
         public void ResetPlayerData()
         {
-            Pool.Get<Game>().isDebugReset = true;
+            Game.isDebugReset = true;
             PlayerPrefs.DeleteAll();
             Application.Quit();
 
@@ -789,9 +790,9 @@ namespace _IECModules
         
         public void ResetPlayerDataWithoutChangeAb()
         {
-            Pool.Get<Game>().isDebugReset = true;
-            Controllers.Get<ServicesController>().DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
-            Controllers.Get<ServicesController>().DataSecure().Save();
+            Game.isDebugReset = true;
+            Services.DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+            Services.DataSecure().Save();
             Application.Quit();
             
 #if UNITY_EDITOR
