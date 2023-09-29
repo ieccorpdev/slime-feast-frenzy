@@ -325,7 +325,6 @@ namespace _IECModules
                 }
                 else
                 {
-                    SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
                     if (m_IsIDFAValid)
                     {
                         SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -337,6 +336,10 @@ namespace _IECModules
                         {
                             m_IsIDFAValid = true;
                             SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                        }
+                        else
+                        {
+                            SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
                         }
                     }
                 }
