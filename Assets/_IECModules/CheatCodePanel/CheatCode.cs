@@ -772,9 +772,6 @@ namespace _IECModules
                         if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
                             m_IDFAList.Add(row[3]);
                     }
-                    
-                    foreach (var idfa in m_IDFAList)
-                        Debug.Log("GetIDFAListCoroutine: " + idfa);
                 }
             }
         }
