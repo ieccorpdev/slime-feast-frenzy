@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace _IECModules
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
         private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
-        // private List<string> m_IDFAList;
+        private List<string> m_IDFAList;
         private bool m_IsIDFAValid;
         
 
@@ -222,23 +223,7 @@ namespace _IECModules
             });
 #endif
 //            AddTestButton();
-            GetIDFAList();
-        }
-
-        private void GetIDFAList()
-        { 
-            var idfaList = new List<string>();
-            var googleDocsData = UnityWebRequestDownloadRuntimeHelper.DownloadCsvFromAuthUrl(IDFA_GOOGLE_SHEET_URL);
-
-            foreach (var row in googleDocsData)
-            {
-                if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
-                    idfaList.Add(row[3]);
-            }
-            
-            Pool.Get<ServicesController>().RequestUserIdfa();
-            if (idfaList.Contains(Pool.Get<ServicesController>().UserIDFA))
-                m_IsIDFAValid = true;
+            StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
         }
 
         private void Start()
@@ -333,18 +318,27 @@ namespace _IECModules
                 }
                 m_TestIndex = 0;
 
-                Pool.Get<ServicesController>().RequestUserIdfa();
+                
                 if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                 }
-                else if (m_IsIDFAValid)
-                {
-                    SetCheatCodeState((ShowCheatCodeState.ShowCheatCode));
-                }
                 else
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
+                    if (m_IsIDFAValid)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                    }
+                    else
+                    {
+                        Pool.Get<ServicesController>().RequestUserIdfa();
+                        if (m_IDFAList.Contains(Pool.Get<ServicesController>().UserIDFA))
+                        {
+                            m_IsIDFAValid = true;
+                            SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                        }
+                    }
                 }
             }
             else
@@ -747,6 +741,35 @@ namespace _IECModules
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
+        }
+        
+        public IEnumerator GetIDFAListCoroutine(string url)
+        {
+            m_IDFAList = new List<string>();
+            var jsoner = new IEC.JsonDotNetModule();
+        
+            using (var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.isNetworkError || uwr.isHttpError)
+                {
+                    Debug.LogError("Fail to get csv");
+                }
+                else
+                {
+                    var googleDocsData = jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
+
+                    foreach (var row in googleDocsData)
+                    {
+                        if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
+                            m_IDFAList.Add(row[3]);
+                    }
+                    
+                    foreach (var idfa in m_IDFAList)
+                        Debug.LogError(idfa);
+                }
+            }
         }
 
         public void ResetPlayerData()
