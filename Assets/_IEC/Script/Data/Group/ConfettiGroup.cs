@@ -11,6 +11,7 @@ namespace IEC
         public Vector2 areaY;
         public float radiusNoOverlap;
 
+        public ParticleSystem mainVfx;
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -25,6 +26,7 @@ namespace IEC
         public void StopConfetti()
         {
             StopAllCoroutines();
+            return;
             foreach (Transform child in transform)
             {
                 if (child.gameObject.TryGetComponent<ParticleSystem>(out var ps))
@@ -37,11 +39,13 @@ namespace IEC
         [Button]
         public void ShowConfetti()
         {
-            StartCoroutine(IEShowConfetti());
+            //StartCoroutine(IEShowConfetti());
+            mainVfx.Play();
         }
 
         IEnumerator IEShowConfetti()
         {
+            
             var listPos = new List<Vector3>();
             foreach (Transform child in transform)
             {
