@@ -101,6 +101,7 @@ namespace _IECModules
 
         private int m_TestIndex;
         private bool m_HaveInputPassword;
+        private bool m_IsGetIDFAListFirstTime;
         private Vector2 m_ScrollviewVector2;
 
         string m_PasswordInputEditString = "";
@@ -228,7 +229,6 @@ namespace _IECModules
             });
 #endif
 //            AddTestButton();
-            StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
         }
 
         private void Start()
@@ -320,6 +320,12 @@ namespace _IECModules
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
                     return;
+                }
+
+                if (!m_IsGetIDFAListFirstTime)
+                {
+                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    m_IsGetIDFAListFirstTime = true;
                 }
                 m_TestIndex = 0;
 
