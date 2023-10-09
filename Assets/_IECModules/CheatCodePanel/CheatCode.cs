@@ -94,6 +94,8 @@ namespace _IECModules
         private List<string> m_IDFAList = new List<string>();
         private bool m_IsCheckCheatIDFA;
         private bool m_IsCheatIDFA;
+        private bool m_IsFinishedGetIDFA;
+        private bool m_IsGetIDFAListFirstTime;
 
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         protected static Game Game => Pool.Get<Game>();
@@ -101,7 +103,6 @@ namespace _IECModules
 
         private int m_TestIndex;
         private bool m_HaveInputPassword;
-        private bool m_IsGetIDFAListFirstTime;
         private Vector2 m_ScrollviewVector2;
 
         string m_PasswordInputEditString = "";
@@ -340,7 +341,7 @@ namespace _IECModules
                 }
                 else
                 {
-                    if (!m_IsCheckCheatIDFA && Services.IsHaveIDFA)
+                    if (!m_IsCheckCheatIDFA && Services.IsHaveIDFA && m_IsFinishedGetIDFA)
                     {
                         m_IsCheatIDFA = m_IDFAList.Contains(Services.UserIDFA);
                         m_IsCheckCheatIDFA = true;
@@ -780,6 +781,8 @@ namespace _IECModules
                             m_IDFAList.Add(row[3]);
                     }
                 }
+                
+                m_IsFinishedGetIDFA = true;
             }
         }
 
