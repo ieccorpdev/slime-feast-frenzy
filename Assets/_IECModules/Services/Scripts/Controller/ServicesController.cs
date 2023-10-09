@@ -937,6 +937,8 @@ namespace IEC
         const string USER_IDFA = "UserIDFA";
         private string m_UserIDFA;
         public string UserIDFA => m_UserIDFA;
+        public bool IsHaveIDFA => !string.IsNullOrEmpty(m_UserIDFA);
+
         public void RequestUserIdfa()
         {
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
