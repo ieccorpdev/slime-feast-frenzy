@@ -16,7 +16,7 @@ public static class UnityEditorHelper
 
     public static UnityWebRequest GetWebRequestCsvFromAuthUrl(string url)
     {
-        var hostUrl = "https://us-central1-united-data.cloudfunctions.net/google-sheets-middleman";
+        var hostUrl = "https://us-central1-united-data.cloudfunctions.net/google-sheets-middleman-2";
         var dictContent = new Dictionary<string, string>
         {
             ["token"] = "WinterWolf2020",
