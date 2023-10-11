@@ -91,11 +91,6 @@ namespace _IECModules
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
 
         private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
-        private List<string> m_IDFAList = new List<string>();
-        private bool m_IsCheckCheatIDFA;
-        private bool m_IsCheatIDFA;
-        private bool m_IsFinishedGetIDFA;
-        private bool m_IsGetIDFAListFirstTime;
 
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         protected static Game Game => Pool.Get<Game>();
@@ -323,11 +318,6 @@ namespace _IECModules
                     return;
                 }
 
-                if (!m_IsGetIDFAListFirstTime)
-                {
-                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
-                    m_IsGetIDFAListFirstTime = true;
-                }
                 m_TestIndex = 0;
 
                 if (!Services.IsHaveIDFA)
@@ -335,26 +325,14 @@ namespace _IECModules
                     Services.RequestUserIdfa();
                 }
                 
-                if (m_IsCheatIDFA || m_HaveInputPassword || Application.isEditor)
+                if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                 }
                 else
                 {
-                    if (!m_IsCheckCheatIDFA && Services.IsHaveIDFA && m_IsFinishedGetIDFA)
-                    {
-                        m_IsCheatIDFA = m_IDFAList.Contains(Services.UserIDFA);
-                        m_IsCheckCheatIDFA = true;
-                    }
-
-                    if (m_IsCheatIDFA)
-                    {
-                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
-                    }
-                    else
-                    {
-                        SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
-                    }
+                    SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
+                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
                 }
             }
             else
@@ -774,15 +752,23 @@ namespace _IECModules
                 else
                 {
                     var googleDocsData = jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
+                    var listIDFA = new List<string>();
 
                     foreach (var row in googleDocsData)
                     {
                         if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
-                            m_IDFAList.Add(row[3]);
+                            listIDFA.Add(row[3]);
+                    }
+
+                    yield return new WaitUntil(() => Services.IsHaveIDFA);
+
+                    m_HaveInputPassword = m_HaveInputPassword || listIDFA.Contains(Services.UserIDFA);
+
+                    if (m_HaveInputPassword)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                     }
                 }
-                
-                m_IsFinishedGetIDFA = true;
             }
         }
 
