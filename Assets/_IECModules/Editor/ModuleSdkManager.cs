@@ -401,9 +401,11 @@ namespace _IECModules
                 {
                     var platform = split[0];
                     var platformVersion = config.GetPlatformVersion(platform);
-                    platformVersion.version = split[1];
+                    var version = split[1];
+                    var overwriteAbName = (platformVersion.version == version) ? platformVersion.abTest : "";
+                    platformVersion.version = version;
                     var lastAbString = split[2];
-                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform);
+                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform, overwriteAbName);
                 }
                 else
                 {

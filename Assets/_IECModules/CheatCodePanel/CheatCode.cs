@@ -457,6 +457,7 @@ namespace _IECModules
                                     var inputParam = cheatCodeParam.inputParams[j];
 
                                     currentX = currentX - inputFieldWidth;
+                                    inputParam.value = inputParam.value == null ? string.Empty : inputParam.value;
                                     inputParam.value = GUI.TextField(
                                         new Rect(currentX, buttonRect.y,
                                             inputFieldWidth, ButtonSize.y),

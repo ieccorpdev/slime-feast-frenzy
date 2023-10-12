@@ -528,7 +528,7 @@ namespace IEC
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                applovinAds.Init(config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
                 {
                     if (result)
                     {
@@ -623,12 +623,22 @@ namespace IEC
 
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
+            PushEvent(eventName, null, value, param);
+        }
+
+        public void PushEvent(string eventName, string position, float value = 1, Dictionary<string, object> param = null)
+        {
             PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
             param["count"] = m_EventCount.IncreaseCount(eventName);
             param["Dx"] = m_Retention.GetCountDate();
             param["Dy"] = m_Retention.GetCountDay();
             param["cumulative_revenue"] = m_ServiceData.revTotalAd;
+
+            if (!string.IsNullOrEmpty(position))
+            {
+                param["position"] = position;
+            }
 
             if (m_ServiceData.dictCustomParams != null && m_ServiceData.dictCustomParams.ContainsKey(eventName))
             {
@@ -704,9 +714,14 @@ namespace IEC
             return m_Ads.IsLoaded(AdsEnum.INTERSTITIAL);
         }
 
-        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null)
+        public void ShowFullAds(string position, Action closeCallback = null)
         {
-            if (config.IsNoAds || Application.isEditor || m_ServiceData.isNoAds)
+            ShowFullAds(closeCallback, null, null, position);
+        }
+
+        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null, string position = null)
+        {
+            if (config.IsNoAds || m_ServiceData.isNoAds)
             {
                 Debug.Log("show full ads");
                 SafeInvoke(closeCallback);
@@ -717,7 +732,7 @@ namespace IEC
             {
                 if (param.isSuccess)
                 {
-                    PushEvent("show_full_ad");
+                    PushEvent("show_full_ad", position);
 #if (PluginKochava)
                     m_KochavaAnalytic?.PushEventFullAd();
 #endif
@@ -752,7 +767,12 @@ namespace IEC
             return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();
         }
 
-        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null)
+        public void ShowFullAdsWithTime(float timeCondition, string position, Action closeCallback = null)
+        {
+            ShowFullAdsWithTime(timeCondition, closeCallback, null, position);
+        }
+
+        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null, string position = null)
         {
             if (config.IsNoAds || m_ServiceData.isNoAds)
             {
@@ -762,7 +782,7 @@ namespace IEC
 
             if (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition)
             {
-                ShowFullAds(closeCallback, canShowCallback);
+                ShowFullAds(closeCallback, canShowCallback, null, position);
                 return true;
             }
 
