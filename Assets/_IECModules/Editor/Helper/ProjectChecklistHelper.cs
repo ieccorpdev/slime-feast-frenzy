@@ -85,7 +85,7 @@ namespace _IECModules
             AmazonIOSID,
             AmazonIOSInterID,
             AmazonIOSBannerID,
-            AmazonIOSRewardID
+            AmazonIOSRewardID,
             KeystoreLink,
             IconLink
         }
