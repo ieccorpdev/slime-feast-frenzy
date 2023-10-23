@@ -7,7 +7,7 @@ stages:
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' and other secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 variables:
-  BUILD_NAME: AndroidBuild
+  BUILD_NAME: IOSBuild
   UNITY_ACTIVATION_FILE: ./unity3d.alf
   IMAGE: unityci/editor # https://hub.docker.com/r/unityci/editor
   IMAGE_VERSION: "0.15" # https://github.com/game-ci/docker/releases
@@ -18,7 +18,7 @@ variables:
   STATUS_SUCCESS: "success"
   STATUS_FAILED: "failed"
   STATUS_STARTED: "started"
-  CI_FOLDER_URL: "https://custom-cloud-build.netlify.app/ci.zip"
+  CI_FOLDER_URL: "https://ios--custom-cloud-build.netlify.app/ci.zip"
 
 image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 
@@ -73,7 +73,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   # https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/83
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
-    - gitlab-org
+    - IOS
   coverage: /<Linecoverage>(.*?)</Linecoverage>/
 
 # Tests without junit reporting results in GitLab
@@ -95,6 +95,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 # https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/151
 
 .test-with-junit-reports: &test-with-junit-reports
+
   stage: build_and_test
   <<: *unity_defaults
   script:
@@ -117,7 +118,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   # https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/83
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
-    - gitlab-org
+    - IOS
   coverage: /<Linecoverage>(.*?)</Linecoverage>/
 
 # test-playmode-with-junit-reports:
@@ -137,13 +138,15 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   <<: *unity_defaults
   script:
     - chmod +x ./ci/build.sh && ./ci/build.sh
+    #- cd $UNITY_DIR/Builds/iOS/$BUILD_NAME
+    #- fastlane beta
   # artifacts:
   #   paths:
   #     - $UNITY_DIR/Builds/
   # https://gitlab.com/gableroux/unity3d-gitlab-ci-example/-/issues/83
   # you may need to remove or replace these to fit your need if you are using your own runners
   tags:
-    - gitlab-org
+    - IOS
 
 # build-StandaloneLinux64:
 #   <<: *build
@@ -193,32 +196,32 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 #     BUILD_TARGET: Android
 #     BUILD_APP_BUNDLE: "false"
 
-build-android-il2cpp:
-  <<: *build
-  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
-  after_script:
-    - chmod +x ./ci/get_manifest_info.sh && ./ci/get_manifest_info.sh
-  # rules:
-  #   - if: $CI_COMMIT_BRANCH =~ $BUILD_CONFIG
-  #     when: always
-  variables:
-    BUILD_TARGET: Android
-    BUILD_APP_BUNDLE: "true"
-    SCRIPTING_BACKEND: IL2CPP
+#build-android-il2cpp:
+#  <<: *build
+#  image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
+#  after_script:
+#    - chmod +x ./ci/get_manifest_info.sh && ./ci/get_manifest_info.sh
+#  # rules:
+#  #   - if: $CI_COMMIT_BRANCH =~ $BUILD_IOS_CONFIG
+#  #     when: always
+#  variables:
+#    BUILD_TARGET: Android
+#    BUILD_APP_BUNDLE: "true"
+#    SCRIPTING_BACKEND: IL2CPP
 
-build-failed-handle:
-  stage: check_failed
-  script:
-    - >
-      if [ ! -d "$UNITY_DIR/ci" ]; then
-        chmod +x ./ci-logic/download_ci_folder.sh && ./ci-logic/download_ci_folder.sh
-      fi
-    - chmod +x ./ci/build_failed_handle.sh && ./ci/build_failed_handle.sh
-  needs:
-    - job: build-android-il2cpp
-  when: on_failure
-  # rules:
-  # - if: $CI_COMMIT_BRANCH =~ $BUILD_CONFIG
+#build-failed-handle:
+#  stage: check_failed
+#  script:
+#    - >
+#      if [ ! -d "$UNITY_DIR/ci" ]; then
+#        chmod +x ./ci-logic/download_ci_folder.sh && ./ci-logic/download_ci_folder.sh
+#      fi
+#    - chmod +x ./ci/build_failed_handle.sh && ./ci/build_failed_handle.sh
+#  needs:
+#    - job: build-android-il2cpp
+#  when: on_failure
+#  # rules:
+#  # - if: $CI_COMMIT_BRANCH =~ $BUILD_IOS_CONFIG
 
 #deploy-android:
 #  stage: deploy
@@ -231,21 +234,32 @@ build-failed-handle:
 #    - fastlane supply --aab "${BUILD_NAME}.aab" --track internal --package_name com.youcompany.yourgame --json_key ./gpc_token.json
 #  needs: ["build-android"]
 
-# build-ios-xcode:
-#   <<: *build
-#   image: $IMAGE:$UNITY_VERSION-ios-$IMAGE_VERSION
-#   variables:
-#     BUILD_TARGET: iOS
-
+build-ios-xcode:
+   <<: *build
+   image: $IMAGE:$UNITY_VERSION-ios-$IMAGE_VERSION
+   variables:
+     BUILD_TARGET: IOS
+     
+build-failed-handle:
+  stage: check_failed
+  script:
+    - >
+      if [ ! -d "$UNITY_DIR/ci" ]; then
+        chmod +x ./ci-logic/download_ci_folder.sh && ./ci-logic/download_ci_folder.sh
+      fi
+    - chmod +x ./ci/build_failed_handle.sh && ./ci/build_failed_handle.sh
+  needs:
+    - job: build-ios-xcode
+  when: on_failure
+  # rules:
+  # - if: $CI_COMMIT_BRANCH =~ $BUILD_CONFIG     
 #build-and-deploy-ios:
 #  stage: deploy
 #  script:
 #    - cd $UNITY_DIR/Builds/iOS/$BUILD_NAME
-#    - pod install
-#    - fastlane ios beta
+#    - fastlane beta
 #  tags:
-#    - ios
-#    - mac
+#    - IOS
 #  needs: ["build-ios-xcode"]
 
 pages:
@@ -261,7 +275,7 @@ pages:
 
 workflow:
   rules:
-    - if: '$CI_COMMIT_BRANCH !~ $BUILD_CONFIG'
+    - if: '$CI_COMMIT_BRANCH !~ $BUILD_IOS_CONFIG'
       when: never
     - if: $CI_MERGE_REQUEST_ID
       when: never
