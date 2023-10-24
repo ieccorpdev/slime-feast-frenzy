@@ -28,6 +28,7 @@ namespace IEC.ModuleManager
                 : listVersionLoad;
 
         private string m_Cache => id + "_cache";
+        private string m_CacheArray => id + "_cacheArray";
         private JArray m_DataArray;
         
         private string BaseUrlSdk => 
@@ -84,6 +85,7 @@ namespace IEC.ModuleManager
                 
                 // Debug.LogError(JsonUtility.ToJson(versions));
                 PlayerPrefs.SetString(m_Cache, JsonConvert.SerializeObject(versions));
+                PlayerPrefs.SetString(m_CacheArray, JsonConvert.SerializeObject(data));
                 versionSelected = 0;
                 LoadPKGVersionFromCache();
             });
@@ -123,17 +125,17 @@ namespace IEC.ModuleManager
         {
             if (listVersionLoad != null) return true;
             var data = PlayerPrefs.GetString(m_Cache);
+            var dataArray = PlayerPrefs.GetString(m_CacheArray);
             if (string.IsNullOrEmpty(data)) return false;
 
             listVersionLoad = JsonConvert.DeserializeObject<string[]>(data);
+            m_DataArray = JsonConvert.DeserializeObject<JArray>(dataArray);
             return true;
         }
 
         public void DownloadModule(string version)
         {
-            var currentDir = Directory.GetCurrentDirectory();
             var webRequest = UnityWebRequest.Get(GetUrl(version));
-            var path = Path.Combine(currentDir, "module.zip");
             var downloadHandler = new DownloadHandlerBuffer();
             webRequest.downloadHandler = downloadHandler;
             webRequest.SetRequestHeader("PRIVATE-TOKEN", m_AccessToken);
@@ -144,78 +146,98 @@ namespace IEC.ModuleManager
                 EditorUtility.DisplayProgressBar("Download Module", "", 1f);
                 if (webRequest.result == UnityWebRequest.Result.Success)
                 {
-                    EditorUtility.DisplayProgressBar("Extract Module", "", 0f);
-                    var pathModule = currentDir + "/module";
-                    if (Directory.Exists(pathModule)) Directory.Delete(pathModule, true);
-                    ZipUtils.ExtractZipFile(webRequest.downloadHandler.data, pathModule);
-                    EditorUtility.DisplayProgressBar("Copy Module", "", 0f);
-                    var pathAssetsModule = Directory.GetDirectories(pathModule)[0] + "/Assets";
-                    var pathAsset = currentDir + "/Assets";
-                    var directories = Directory.GetDirectories(pathAssetsModule);
-                    var directoriesInfo = new DirectoryInfo(pathAssetsModule).GetDirectories();
-                    var moduleDirs = Directory.GetDirectories(pathAssetsModule);
-                    
-                    var oldPackageFile = new FileInfo(Path.Combine(pathAssetsModule, "package.json"));
-                    if (oldPackageFile.Exists)
+                    try
                     {
-                        oldPackageFile.Delete();
+                        UnzipAndAddModule(version, webRequest.downloadHandler.data);
                     }
-                    
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
-
-                    var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
-                    foreach (var dir in directories)
+                    catch (Exception e)
                     {
-                        var dirName = GetBetweenString(dir, pathAssetsModule, string.Empty, false);
-                        if (Directory.Exists(pathAsset + dirName)) Directory.Delete(pathAsset + dirName, true);
-                        var lowerName = dirName.ToLower();
-                        if (lowerName.Contains("amazon"))
-                        {
-                            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginMaxAmazonNetwork);
-                        }
+                        Debug.LogError(e);
+                        EditorUtility.ClearProgressBar();
                     }
-
-                    var files = Directory.GetFiles(pathAssetsModule);
-                    foreach (var file in files)
-                    {
-                        var fileName = GetBetweenString(file, pathAssetsModule, string.Empty, false);
-                        if (File.Exists(pathAsset + fileName)) File.Delete(pathAsset + fileName);
-                    }
-
-                    CopyAll(pathAssetsModule, pathAsset);
-                    EditorUtility.ClearProgressBar();
-                    AssetDatabase.Refresh();
-                    Directory.Delete(pathModule, true);
-
-                    var packageFile = Path.Combine(pathAsset, "package.json");
-                    FileInfo fi = new FileInfo(packageFile);
-
-                    JToken packageJson = new JObject();
-                    if (fi.Exists)
-                    {
-                        using StreamReader sr = fi.OpenText();
-                        string s = sr.ReadToEnd();
-                        packageJson = JToken.Parse(s);
-                    }
-
-                    using StreamWriter sw = fi.CreateText();
-                    var versionData = m_DataArray.FirstOrDefault(x => x["name"].Value<string>() == version);
-
-                    versionData["folders"] = JArray.FromObject(listModuleDirs);
-                    packageJson["sdk"] = versionData;
-
-                    var json = JsonPrettify(packageJson.JsonSerialize());
-                    sw.Write(json);
-                    sw.Close();
                 }
                 else
                 {
                     EditorUtility.ClearProgressBar();
                 }
             });
+        }
+
+        void UnzipAndAddModule(string version, byte[] webData)
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var path = Path.Combine(currentDir, "module.zip");
+            EditorUtility.DisplayProgressBar("Extract Module", "", 0f);
+            var pathModule = currentDir + "/module";
+            if (Directory.Exists(pathModule)) Directory.Delete(pathModule, true);
+            ZipUtils.ExtractZipFile(webData, pathModule);
+            EditorUtility.DisplayProgressBar("Copy Module", "", 0f);
+            var pathAssetsModule = Directory.GetDirectories(pathModule)[0] + "/Assets";
+            var pathAsset = currentDir + "/Assets";
+            var directoriesInfo = new DirectoryInfo(pathAssetsModule).GetDirectories();
+            
+            var oldPackageFile = new FileInfo(Path.Combine(pathAssetsModule, "package.json"));
+            if (oldPackageFile.Exists)
+            {
+                oldPackageFile.Delete();
+            }
+            
+            var packageFile = Path.Combine(pathAsset, "package.json");
+            FileInfo fi = new FileInfo(packageFile);
+
+            JToken packageJson = new JObject();
+            if (fi.Exists)
+            {
+                using StreamReader sr = fi.OpenText();
+                string s = sr.ReadToEnd();
+                packageJson = JToken.Parse(s);
+            }
+            
+            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
+            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
+            ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginMaxAmazonNetwork);
+
+            if (packageJson["sdk"] != null)
+            {
+                var listOldFolders = packageJson["sdk"]["folders"].ToObject<List<string>>();
+                foreach (var dir in listOldFolders)
+                {
+                    var dirName = Path.Combine(pathAsset, dir);
+                    if (Directory.Exists(dirName)) 
+                        Directory.Delete(dirName, true);
+                }
+            }
+
+            var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
+            if (listModuleDirs.Exists(x => x.ToLower().Contains("amazon")))
+            {
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginMaxAmazonNetwork);
+            }
+
+            var files = Directory.GetFiles(pathAssetsModule);
+            foreach (var file in files)
+            {
+                var fileName = GetBetweenString(file, pathAssetsModule, string.Empty, false);
+                if (File.Exists(pathAsset + fileName)) File.Delete(pathAsset + fileName);
+            }
+
+            CopyAll(pathAssetsModule, pathAsset);
+            EditorUtility.ClearProgressBar();
+            AssetDatabase.Refresh();
+            Directory.Delete(pathModule, true);
+
+            Debug.Log("version: " + version);;
+            using StreamWriter sw = fi.CreateText();
+            var versionData = m_DataArray.FirstOrDefault(x => x["name"].Value<string>() == version);
+
+            versionData["folders"] = JArray.FromObject(listModuleDirs);
+            packageJson["sdk"] = versionData;
+
+            var json = JsonPrettify(packageJson.JsonSerialize());
+            sw.Write(json);
+            sw.Close();
         }
         
         static string JsonPrettify(string json)
