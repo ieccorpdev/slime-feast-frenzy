@@ -28,6 +28,7 @@ namespace IEC.ModuleManager
                 : listVersionLoad;
 
         private string m_Cache => id + "_cache";
+        private JArray m_DataArray;
         
         private string BaseUrlSdk => 
             $"{GITLAB_API}/projects/{GITLAB_GROUP_NAME}%2F{id}/repository/";
@@ -56,6 +57,7 @@ namespace IEC.ModuleManager
             var numPage = int.Parse(request.GetResponseHeader("x-total-pages"));
             var listPageUrl = new List<string>();
             var data = JsonConvert.DeserializeObject<JArray>(request.downloadHandler.text);
+            m_DataArray = data;
             for (int i = 2; i <= numPage; i++)
             {
                 listPageUrl.Add($"{requestUrl100}&page={i}");
@@ -150,12 +152,15 @@ namespace IEC.ModuleManager
                     var pathAssetsModule = Directory.GetDirectories(pathModule)[0] + "/Assets";
                     var pathAsset = currentDir + "/Assets";
                     var directories = Directory.GetDirectories(pathAssetsModule);
+                    var directoriesInfo = new DirectoryInfo(pathAssetsModule).GetDirectories();
+                    var moduleDirs = Directory.GetDirectories(pathAssetsModule);
                     
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
-                    
+
+                    var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
                     foreach (var dir in directories)
                     {
                         var dirName = GetBetweenString(dir, pathAssetsModule, string.Empty, false);
@@ -178,12 +183,39 @@ namespace IEC.ModuleManager
                     EditorUtility.ClearProgressBar();
                     AssetDatabase.Refresh();
                     Directory.Delete(pathModule, true);
+
+                    var packageFile = Path.Combine(pathAsset, "package.json");
+                    FileInfo fi = new FileInfo(packageFile);
+                    
+                    if (fi.Exists)
+                    {
+                        fi.Delete();
+                    }
+
+                    using StreamWriter sw = fi.CreateText();
+                    var versionData = m_DataArray.FirstOrDefault(x => x["name"].Value<string>() == version);
+
+                    versionData["folders"] = JArray.FromObject(listModuleDirs);
+
+                    var json = JsonPrettify(versionData.JsonSerialize());
+                    sw.Write(json);
+                    sw.Close();
                 }
                 else
                 {
                     EditorUtility.ClearProgressBar();
                 }
             });
+        }
+        
+        static string JsonPrettify(string json)
+        {
+            using var stringReader = new StringReader(json);
+            using var stringWriter = new StringWriter();
+            var jsonReader = new JsonTextReader(stringReader);
+            var jsonWriter = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
+            jsonWriter.WriteToken(jsonReader);
+            return stringWriter.ToString();
         }
         
         static string GetBetweenString(string original, string start, string end,
