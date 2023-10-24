@@ -155,6 +155,12 @@ namespace IEC.ModuleManager
                     var directoriesInfo = new DirectoryInfo(pathAssetsModule).GetDirectories();
                     var moduleDirs = Directory.GetDirectories(pathAssetsModule);
                     
+                    var oldPackageFile = new FileInfo(Path.Combine(pathAssetsModule, "package.json"));
+                    if (oldPackageFile.Exists)
+                    {
+                        oldPackageFile.Delete();
+                    }
+                    
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
                     ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
@@ -186,18 +192,22 @@ namespace IEC.ModuleManager
 
                     var packageFile = Path.Combine(pathAsset, "package.json");
                     FileInfo fi = new FileInfo(packageFile);
-                    
+
+                    JToken packageJson = new JObject();
                     if (fi.Exists)
                     {
-                        fi.Delete();
+                        using StreamReader sr = fi.OpenText();
+                        string s = sr.ReadToEnd();
+                        packageJson = JToken.Parse(s);
                     }
 
                     using StreamWriter sw = fi.CreateText();
                     var versionData = m_DataArray.FirstOrDefault(x => x["name"].Value<string>() == version);
 
                     versionData["folders"] = JArray.FromObject(listModuleDirs);
+                    packageJson["sdk"] = versionData;
 
-                    var json = JsonPrettify(versionData.JsonSerialize());
+                    var json = JsonPrettify(packageJson.JsonSerialize());
                     sw.Write(json);
                     sw.Close();
                 }
