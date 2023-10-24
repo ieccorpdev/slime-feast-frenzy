@@ -33,7 +33,7 @@ namespace IEC.ModuleManager
             $"{GITLAB_API}/projects/{GITLAB_GROUP_NAME}%2F{id}/repository/";
 
         private string GetUrl(string version) =>
-            BaseUrlSdk + "archive.zip?sha={version}&path=Assets/";
+            BaseUrlSdk + $"archive.zip?sha={version}&path=Assets/";
 
         public void LoadSdkVersions()
         {
@@ -150,9 +150,15 @@ namespace IEC.ModuleManager
                     var pathAssetsModule = Directory.GetDirectories(pathModule)[0] + "/Assets";
                     var pathAsset = currentDir + "/Assets";
                     var directories = Directory.GetDirectories(pathAssetsModule);
+                    
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
+                    
                     foreach (var dir in directories)
                     {
-                        var dirName = dir.GetBetweenString(pathAssetsModule, string.Empty, false);
+                        var dirName = GetBetweenString(dir, pathAssetsModule, string.Empty, false);
                         if (Directory.Exists(pathAsset + dirName)) Directory.Delete(pathAsset + dirName, true);
                         var lowerName = dirName.ToLower();
                         if (lowerName.Contains("amazon"))
@@ -164,7 +170,7 @@ namespace IEC.ModuleManager
                     var files = Directory.GetFiles(pathAssetsModule);
                     foreach (var file in files)
                     {
-                        var fileName = file.GetBetweenString(pathAssetsModule, string.Empty, false);
+                        var fileName = GetBetweenString(file, pathAssetsModule, string.Empty, false);
                         if (File.Exists(pathAsset + fileName)) File.Delete(pathAsset + fileName);
                     }
 
@@ -175,8 +181,22 @@ namespace IEC.ModuleManager
                 }
                 else
                 {
+                    EditorUtility.ClearProgressBar();
                 }
             });
+        }
+        
+        static string GetBetweenString(string original, string start, string end,
+            bool includeStartEndString = true)
+        {
+            var pFrom = original.IndexOf(start, StringComparison.Ordinal);
+            var pTo = original.IndexOf(end, pFrom + start.Length, StringComparison.Ordinal);
+            if (end == string.Empty || end == "") pTo = original.Length;
+
+            if (pFrom == -1 || pTo == -1) return "";
+            return includeStartEndString
+                ? original.Substring(pFrom, pTo - pFrom + end.Length)
+                : original.Substring(pFrom + start.Length, pTo - pFrom - start.Length);
         }
 
         private void CopyAll(string source, string target)

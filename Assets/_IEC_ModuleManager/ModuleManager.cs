@@ -68,10 +68,6 @@ namespace IEC.ModuleManager
                     {
                         return;
                     }
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-                    ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
                     IECSdk.DownloadModule(IECSdk.listVersion[IECSdk.versionSelected]);
                 });
 
