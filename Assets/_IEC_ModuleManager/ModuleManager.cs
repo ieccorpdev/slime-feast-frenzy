@@ -35,7 +35,7 @@ namespace IEC.ModuleManager
         public static void ShowWindow()
         {
             //Show existing window instance. If one doesn't exist, make one.
-            GetWindow(typeof(ModuleManager), false, $"IEC Module Download");
+            GetWindow(typeof(ModuleManager), false, $"IEC Module Manager");
         }
 
         private static readonly GitModule IECSdk = new GitModule
