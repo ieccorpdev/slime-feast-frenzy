@@ -86,7 +86,7 @@ namespace IEC.ModuleManager
 
             IECSdk.versionSelected = EditorGUILayout.Popup("", IECSdk.versionSelected,
                 IECSdk.ListVersion,
-                GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
+                GUILayout.Width(200), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
         }
         
