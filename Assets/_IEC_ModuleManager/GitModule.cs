@@ -19,6 +19,10 @@ namespace IEC.ModuleManager
         private string m_AccessToken = "glpat-dMxZF-pqZGsF3fns2uNu";
 
         public string CurrentVersion { get; private set; }
+        public string CurrentCommit { get; private set; }
+        public string CurrentCommitTitle { get; private set; }
+        public string CurrentCommitDate { get; private set; }
+        
         public string[] ListVersion { get; private set; }
 
         private Dictionary<string, JToken> m_DictData = null;
@@ -75,7 +79,7 @@ namespace IEC.ModuleManager
                 ListVersion = m_DictData.Keys.OrderByDescending(x => x).ToArray();
                 
                 versionSelected = 0;
-                CurrentVersion = GetCurrentVersion();
+                SetCurrentVersionInfo();
 
                 if (ListVersion.Contains(CurrentVersion))
                 {
@@ -174,12 +178,17 @@ namespace IEC.ModuleManager
             return packageJson;
         }
 
-        string GetCurrentVersion()
+        void SetCurrentVersionInfo()
         {
             JToken packageJson = GetPackageJson();
             if (packageJson["sdk"] == null)
-                return null;
-            return packageJson["sdk"]["name"].Value<string>();
+                return;
+            var sdk = packageJson["sdk"];
+            var commit = sdk["commit"];
+            CurrentVersion = sdk["name"].Value<string>();
+            CurrentCommit = commit["short_id"].Value<string>();
+            CurrentCommitTitle = commit["title"].Value<string>();
+            CurrentCommitDate = commit["committed_date"].Value<string>();
         }
 
         void UnzipAndAddModule(string version, byte[] webData, JToken versionData)

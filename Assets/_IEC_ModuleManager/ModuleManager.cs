@@ -66,6 +66,14 @@ namespace IEC.ModuleManager
             // m_AccessToken = EditorGUILayout.TextField(m_AccessToken,GUILayout.Width(200f));
             GUILayout.Label("Current version: " + IECSdk.CurrentVersion, GUILayout.Width(500f));
             CreateGuiBreakLine();
+            GUILayout.Label("Commit ID: " + IECSdk.CurrentCommit, GUILayout.Width(500f));
+            CreateGuiBreakLine();
+            GUILayout.Label("Commit Title: " + IECSdk.CurrentCommitTitle, GUILayout.Width(500f));
+            CreateGuiBreakLine();
+            GUILayout.Label("Commit Date: " + IECSdk.CurrentCommitDate, GUILayout.Width(500f));
+            CreateGuiBreakLine();
+            GUILayout.Label("More info can be found at Assets/package.json", GUILayout.Width(500f));
+            CreateGuiBreakLine();
             CreateGuiButton(
                 $"IEC Plugin {(isVersionsLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
                 {
