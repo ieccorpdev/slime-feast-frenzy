@@ -31,7 +31,6 @@ namespace IEC.ModuleManager
         private static Vector2 buttonSize = new Vector2(300, 20);
         private static Vector2 dropdownSize = new Vector2(60, 20);
         
-        
         [MenuItem("IEC/Module Manager")]
         public static void ShowWindow()
         {
@@ -43,6 +42,7 @@ namespace IEC.ModuleManager
         {
             id = "com.iec.plugin"
         };
+        
         private void Awake()
         {
             IECSdk.LoadSdkVersions();
@@ -57,22 +57,27 @@ namespace IEC.ModuleManager
 
             CreateGuiLabel("1. Sync SDK", m_StyleHeader1);
             // Debug.LogError(IECSdk);
-            var iecPluginLoaded = IECSdk.LoadPKGVersionFromCache();
+            var isVersionsLoaded = IECSdk.IsVersionsLoaded;
+            if (!isVersionsLoaded)
+            {
+                IECSdk.LoadSdkVersions();
+            }
             // GUILayout.Label("Access Token:", GUILayout.Width(100f));
             // m_AccessToken = EditorGUILayout.TextField(m_AccessToken,GUILayout.Width(200f));
+            GUILayout.Label("Current version: " + IECSdk.CurrentVersion, GUILayout.Width(500f));
             CreateGuiBreakLine();
             CreateGuiButton(
-                $"IEC Plugin {(iecPluginLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+                $"IEC Plugin {(isVersionsLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
                 {
-                    if (!iecPluginLoaded)
+                    if (!isVersionsLoaded)
                     {
                         return;
                     }
-                    IECSdk.DownloadModule(IECSdk.listVersion[IECSdk.versionSelected]);
+                    IECSdk.DownloadModule(IECSdk.ListVersion[IECSdk.versionSelected]);
                 });
 
             IECSdk.versionSelected = EditorGUILayout.Popup("", IECSdk.versionSelected,
-                IECSdk.listVersion,
+                IECSdk.ListVersion,
                 GUILayout.Width(100), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
         }

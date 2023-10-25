@@ -18,19 +18,12 @@ namespace IEC.ModuleManager
         
         private string m_AccessToken = "glpat-dMxZF-pqZGsF3fns2uNu";
 
-        string[] listDefaultVerion = new string[] {"1.0"};
-        string[] listVersionLoad;
+        public string CurrentVersion { get; private set; }
+        public string[] ListVersion { get; private set; }
 
-        public string[] listVersion =>
-            listVersionLoad == null ||
-            listVersionLoad.Length < listDefaultVerion.Length
-                ? listDefaultVerion
-                : listVersionLoad;
+        private Dictionary<string, JToken> m_DictData = null;
+        private bool m_IsLoadingVersion = false;
 
-        private string m_Cache => id + "_cache";
-        private string m_CacheArray => id + "_cacheArray";
-        private JArray m_DataArray;
-        
         private string BaseUrlSdk => 
             $"{GITLAB_API}/projects/{GITLAB_GROUP_NAME}%2F{id}/repository/";
 
@@ -39,10 +32,11 @@ namespace IEC.ModuleManager
 
         public void LoadSdkVersions()
         {
-            PlayerPrefs.DeleteKey(m_Cache);
+            if (m_IsLoadingVersion) 
+                return;
+            m_IsLoadingVersion = true;
             var url = BaseUrlSdk + "branches";
-            Debug.Log(url);
-            var versions = new List<string>();
+            
             var requestUrl100 = url + "?per_page=100";
             var listExclude = new List<string> {"deleted", "deprecated"};
             var request = new UnityWebRequest(new Uri(requestUrl100));
@@ -58,7 +52,7 @@ namespace IEC.ModuleManager
             var numPage = int.Parse(request.GetResponseHeader("x-total-pages"));
             var listPageUrl = new List<string>();
             var data = JsonConvert.DeserializeObject<JArray>(request.downloadHandler.text);
-            m_DataArray = data;
+            
             for (int i = 2; i <= numPage; i++)
             {
                 listPageUrl.Add($"{requestUrl100}&page={i}");
@@ -66,28 +60,30 @@ namespace IEC.ModuleManager
 
             RequestListUrl(listPageUrl, 0, data, () =>
             {
-                for (int i = 0; i < data.Count; i++)
-                {
-                    var version = (data[i]["name"] ?? "master").Value<string>();
-                    if (version != "master" && version != "main")
+                m_DictData = data.ToDictionary(x => x["name"].Value<string>(), x => x);
+                m_DictData = m_DictData.Where(kvp =>
                     {
-                        if (listExclude.Count > 0 && listExclude.Any(x => version.Contains(x))) continue;
-                        versions.Add(version);
-                    }
-                }
+                        var version = kvp.Key;
+                        if (version == "master" || version == "main") 
+                            return false;
+                        if (listExclude.Count > 0 && Enumerable.Any(listExclude, x => version.Contains(x))) 
+                            return false;
+                        return true;
+                    })
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                versions = versions.OrderByDescending(x => x).ToList();
-                // Debug.Log(id);
-                // foreach (var version in versions)
-                // {
-                //     Debug.Log(version);
-                // }
+                ListVersion = m_DictData.Keys.OrderByDescending(x => x).ToArray();
                 
-                // Debug.LogError(JsonUtility.ToJson(versions));
-                PlayerPrefs.SetString(m_Cache, JsonConvert.SerializeObject(versions));
-                PlayerPrefs.SetString(m_CacheArray, JsonConvert.SerializeObject(data));
                 versionSelected = 0;
-                LoadPKGVersionFromCache();
+                CurrentVersion = GetCurrentVersion();
+
+                if (ListVersion.Contains(CurrentVersion))
+                {
+                    versionSelected = ListVersion.ToList().IndexOf(CurrentVersion);
+                }
+                
+                m_IsLoadingVersion = false;
+                Debug.Log($"Load done {ListVersion.Length} versions");
             });
         }
 
@@ -106,6 +102,13 @@ namespace IEC.ModuleManager
                 {
                 }
 
+                if (request.error != null)
+                {
+                    Debug.LogError(request.error);
+                    RequestListUrl(listUrl, index + 1, data, callback);
+                    return;
+                }
+
                 //Debug.Log(request.downloadHandler.text);
                 var dataItem = JsonConvert.DeserializeObject<JArray>(request.downloadHandler.text);
                 foreach (var t in dataItem)
@@ -121,17 +124,7 @@ namespace IEC.ModuleManager
             }
         }
 
-        public bool LoadPKGVersionFromCache()
-        {
-            if (listVersionLoad != null) return true;
-            var data = PlayerPrefs.GetString(m_Cache);
-            var dataArray = PlayerPrefs.GetString(m_CacheArray);
-            if (string.IsNullOrEmpty(data)) return false;
-
-            listVersionLoad = JsonConvert.DeserializeObject<string[]>(data);
-            m_DataArray = JsonConvert.DeserializeObject<JArray>(dataArray);
-            return true;
-        }
+        public bool IsVersionsLoaded => m_DictData != null;
 
         public void DownloadModule(string version)
         {
@@ -148,7 +141,8 @@ namespace IEC.ModuleManager
                 {
                     try
                     {
-                        UnzipAndAddModule(version, webRequest.downloadHandler.data);
+                        var data = m_DictData[version];
+                        UnzipAndAddModule(version, webRequest.downloadHandler.data, data);
                     }
                     catch (Exception e)
                     {
@@ -163,7 +157,32 @@ namespace IEC.ModuleManager
             });
         }
 
-        void UnzipAndAddModule(string version, byte[] webData)
+        JToken GetPackageJson()
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var pathAsset = currentDir + "/Assets";
+            var packageFile = Path.Combine(pathAsset, "package.json");
+            FileInfo fi = new FileInfo(packageFile);
+            JToken packageJson = new JObject();
+            if (fi.Exists)
+            {
+                using StreamReader sr = fi.OpenText();
+                string s = sr.ReadToEnd();
+                packageJson = JToken.Parse(s);
+                sr.Close();
+            }
+            return packageJson;
+        }
+
+        string GetCurrentVersion()
+        {
+            JToken packageJson = GetPackageJson();
+            if (packageJson["sdk"] == null)
+                return null;
+            return packageJson["sdk"]["name"].Value<string>();
+        }
+
+        void UnzipAndAddModule(string version, byte[] webData, JToken versionData)
         {
             var currentDir = Directory.GetCurrentDirectory();
             var path = Path.Combine(currentDir, "module.zip");
@@ -182,16 +201,7 @@ namespace IEC.ModuleManager
                 oldPackageFile.Delete();
             }
             
-            var packageFile = Path.Combine(pathAsset, "package.json");
-            FileInfo fi = new FileInfo(packageFile);
-
-            JToken packageJson = new JObject();
-            if (fi.Exists)
-            {
-                using StreamReader sr = fi.OpenText();
-                string s = sr.ReadToEnd();
-                packageJson = JToken.Parse(s);
-            }
+            JToken packageJson = GetPackageJson();
             
             ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
             ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
@@ -224,20 +234,22 @@ namespace IEC.ModuleManager
             }
 
             CopyAll(pathAssetsModule, pathAsset);
-            EditorUtility.ClearProgressBar();
-            AssetDatabase.Refresh();
-            Directory.Delete(pathModule, true);
-
-            Debug.Log("version: " + version);;
+            
+            var packageFile = Path.Combine(pathAsset, "package.json");
+            FileInfo fi = new FileInfo(packageFile);
             using StreamWriter sw = fi.CreateText();
-            var versionData = m_DataArray.FirstOrDefault(x => x["name"].Value<string>() == version);
-
             versionData["folders"] = JArray.FromObject(listModuleDirs);
             packageJson["sdk"] = versionData;
 
             var json = JsonPrettify(packageJson.JsonSerialize());
             sw.Write(json);
             sw.Close();
+            
+            EditorUtility.ClearProgressBar();
+            AssetDatabase.Refresh();
+            Directory.Delete(pathModule, true);
+            CurrentVersion = version;
+            Debug.Log($"Done Set Version {version}");
         }
         
         static string JsonPrettify(string json)
