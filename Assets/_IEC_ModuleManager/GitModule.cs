@@ -257,7 +257,7 @@ namespace IEC.ModuleManager
             EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
             Directory.Delete(pathModule, true);
-            CurrentVersion = version;
+            SetCurrentVersionInfo();
             Debug.Log($"Done Set Version {version}");
         }
         
