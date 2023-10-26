@@ -262,7 +262,10 @@ namespace IEC
         {
             Debug.LogError("Unity IAP Module Init failed:" + error.ToString());
         }
-
+        public void OnInitializeFailed(InitializationFailureReason error, string message)
+        {
+              Debug.LogError("Unity IAP Module Init failed:" + error.ToString()+"\n"+message);
+        }
         public PurchaseProcessingResult ProcessPurchase(PurchaseEventArgs args)
         {
             var productId = args.purchasedProduct.definition.id;

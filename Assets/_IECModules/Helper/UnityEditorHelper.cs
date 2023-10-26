@@ -16,7 +16,7 @@ public static class UnityEditorHelper
     public static UnityWebRequest GetWebRequestCsvFromAuthUrl(string url)
     {
         var jsoner = new IEC.JsonDotNetModule();
-        var hostUrl = "passive.discordbot.game.ieccorp.vn:3002/sheet";
+        var hostUrl = "https://us-central1-united-data.cloudfunctions.net/google-sheets-middleman-2";
         var dictContent = new Dictionary<string, string>
         {
             ["token"] = "WinterWolf2020",

@@ -11,12 +11,23 @@ using UnityEngine;
 public class PreProcessBuild : IPreprocessBuildWithReport
 {
     public int callbackOrder => 0;
+    private const int ANDROID_TARGET_SDK = 33;
 
     public void OnPreprocessBuild(BuildReport report)
     {
         SetFirebaseVersion();
         SetPlatformVersion();
         UpdateVersionCodeFromEnvironment();
+        SetTargetSdkAndroid();
+        ProjectResolveHelper.UpdateApplovinQualityService();
+        AddPermissionManifest();
+    }
+
+    private void SetTargetSdkAndroid()
+    {
+#if UNITY_ANDROID
+        PlayerSettings.Android.targetSdkVersion = (AndroidSdkVersions)ANDROID_TARGET_SDK;
+#endif
     }
 
     private void SetPlatformVersion()
@@ -54,5 +65,32 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         ProjectChecklistHelper.servicesConfig.firebaseRemoteSDKVersion = manifestJson["dependencies"]["com.google.firebase.remote-config"].ToString();
 #endif
 #endif
+    }
+
+    private void AddPermissionManifest()
+    {
+        var androidManifestPath = "Assets/Plugins/Android/AndroidManifest.xml";
+        if(!File.Exists(androidManifestPath)) return;
+        var androidManifestContent = File.ReadAllText("Assets/Plugins/Android/AndroidManifest.xml");
+        if (!androidManifestContent.Contains("unityplayer.SkipPermissionsDialog"))
+        {
+            var applicationTag = androidManifestContent.GetBetweenString("<application", "</application>", false);
+            var applicationTagReplace = applicationTag +"\t" + "<meta-data android:name=\"unityplayer.SkipPermissionsDialog\" android:value=\"true\"/>" + "\n\t";
+            androidManifestContent = androidManifestContent.Replace(applicationTag, applicationTagReplace);
+
+        }
+
+        if (!androidManifestContent.Contains("android.permission.POST_NOTIFICATIONS"))
+        {
+            // <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+            var permisionNoti = "\t" + "<uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\" />" + "\n\t";
+        
+            var manifestTag = androidManifestContent.GetBetweenString("<manifest", "</manifest", false);
+            var manifestTagReplace = manifestTag + permisionNoti;
+            androidManifestContent =  androidManifestContent.Replace(manifestTag, manifestTagReplace); 
+        }
+       
+        
+        File.WriteAllText(androidManifestPath, androidManifestContent);
     }
 }

@@ -55,6 +55,7 @@ namespace IEC
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
+        public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -98,8 +99,8 @@ namespace IEC
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
-                    Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                    Ads().Load(bannerPos, null);
+                    SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -251,7 +252,7 @@ namespace IEC
             m_LeaderBoard = new LeaderBoardMock();
 
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
-            m_ABTest = new AnalyticABTestModule(DataNormal());
+            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
 
             if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
             {
@@ -350,9 +351,9 @@ namespace IEC
             }
 
             this.config.SetActiveAbByVersion();
-            foreach (var config in config.abTestConfigs)
+            foreach (var abTest in config.abTestConfigs)
             {
-                SetUpAbTest(config, this.config.bundleVersion);
+                SetUpAbTest(abTest);
             }
 
         }
@@ -527,7 +528,7 @@ namespace IEC
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                applovinAds.Init(config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
                 {
                     if (result)
                     {
@@ -586,19 +587,24 @@ namespace IEC
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
-        public void SetUpAbTest(ABTestConfig abTest, int versionCode)
+        void SetUpAbTest(ABTestConfig abTest)
         {
-            m_ABTest.SetUpTest(abTest, versionCode, m_IsNewInstall, (s) =>
+            SetUpAbTest(abTest, m_IsNewInstall);
+        }
+
+        public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
+        {
+            m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
                 var abVersion = s.Split('_')[2].Remove(0, 1);
                 var isNumber = int.TryParse(abVersion, out int version);
                 var eventValue = (isNumber) ? version : 1;
-                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                if (!isNumber) Debug.LogError("Version Ab is not a number");
                 Debug.LogWarning("AbTest event value:" + eventValue);
                 PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
-                    {"version", s}
+                    { "version", s }
                 });
                 SetUserProperty("AB_Version", s);
             });
@@ -740,11 +746,16 @@ namespace IEC
 #endif
                     lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
-                    var milestone = GetMilestone(fullAdCount);
+                    if (fullAdCount > 0 && fullAdCount < 100)
+                    {
+                        EventController.RaiseEvent(EventList.Service.PUSH_SHOW_INTER,new EventParam {p0 = (long)fullAdCount});
+                    }
+                    
+                    /*var milestone = GetMilestone(fullAdCount);
                     if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
                         PushEvent("inter_" + fullAdCount);
-                    }
+                    }*/
                     SafeInvoke(canShowCallback);
                 }
                 else
@@ -791,6 +802,11 @@ namespace IEC
             if (Application.isEditor || config.IsNoAds || serviceData.isNoAdsReward)
             {
                 SafeInvoke(closeCallback);
+                return;
+            }
+            if (!IsRewardLoaded())
+            {
+                Pool.Get<ToastGroup>().Notify.ShowAdsNotReady();
                 return;
             }
             Debug.Log("Show reward ads");
@@ -876,11 +892,11 @@ namespace IEC
             if (m_ServiceData.isNoAds && isActive) return;
             if (isActive)
             {
-                Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                Ads().Show(bannerType, null);
             }
             else
             {
-                Ads().Hide(AdsEnum.BANNER_BOTTOM);
+                Ads().Hide(bannerType);
             }
         }
 
@@ -955,11 +971,14 @@ namespace IEC
 #endif
         const string USER_IDFA = "UserIDFA";
         private string m_UserIDFA;
-        void RequestUserIdfa()
+        public string UserIDFA => m_UserIDFA;
+        public bool IsHaveIDFA => !string.IsNullOrEmpty(m_UserIDFA);
+
+        public void RequestUserIdfa()
         {
-            m_UserIDFA = PlayerPrefs.GetString(USER_IDFA, null);
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
+#if UNITY_ANDROID
                 try
                 {
                     var up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
@@ -973,6 +992,15 @@ namespace IEC
                 {
                     Debug.LogWarning(e);
                 }
+#else
+                Application.RequestAdvertisingIdentifierAsync(
+                    (string advertisingId, bool trackingEnabled, string error) =>
+                    {
+                        Debug.Log("advertisingId " + advertisingId + " " + trackingEnabled + " " + error);
+                        m_UserIDFA = advertisingId;
+                    }
+                );
+#endif
             }
             else
             {
@@ -1293,5 +1321,7 @@ namespace IEC
         {
             return m_EventCount.GetCount(eventName);
         }
+
+        public bool IsNewInstall => m_IsNewInstall;
     }
 }

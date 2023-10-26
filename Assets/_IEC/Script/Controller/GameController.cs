@@ -8,6 +8,7 @@ namespace IEC
     {
         private List<int> m_ListLevelAdjust = new List<int>();
         private List<int> m_ListLevelFirstTimeAdjust = new List<int>();
+        public List<int> ListEventInterAdjust = new List<int>();
         public void LocateController()
         {
             Controllers.Add(this);
@@ -40,6 +41,16 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_SKIP:
                     GamePlay.SetFinishPlay();
                     break;
+                case EventList.Service.PUSH_SHOW_INTER:
+                    if (param.p0 != null)
+                    {
+                        long countShowInter = (long) param.p0;
+                        if (ListEventInterAdjust.Contains((int)countShowInter))
+                        {
+                            Controllers.Get<ServicesController>().PushEvent("inter_" + countShowInter);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -54,6 +65,7 @@ namespace IEC
             {
                 m_ListLevelAdjust = Services.config.adjustEventConfig.GetListPlayLevel();
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
+                ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
             }
             EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
@@ -89,6 +101,7 @@ namespace IEC
             {
                 PlayerData.levelFirstTime = level;
                 PlayerData.countPlayLevel = 1;
+                PlayerData.sessionStartLevel = PlayerData.session;
                 Services.PushEvent(new TrackingEvent.PlayLevelFirstTime());
                 if (m_ListLevelFirstTimeAdjust.Contains(level))
                 {

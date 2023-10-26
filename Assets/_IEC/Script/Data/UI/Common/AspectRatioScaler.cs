@@ -116,29 +116,35 @@ namespace UnityEngine.UI
 
                     Vector2 parentSize = GetParentSize();
 
-                    var scale = Vector3.one;
-                    scale.x = parentSize.x / m_ParentOriginSize.x;
-                    scale.y = parentSize.y / m_ParentOriginSize.y;
-                    var min = Mathf.Min(scale.x, scale.y);
-                    scale.x = min;
-                    scale.y = min;
+                    var scale = GetScale(parentSize, m_ParentOriginSize);
+                    var scaleVector = Vector3.one * scale;
+
                     rectTransform.localScale = Vector3.one;
                     m_LastParentSize = parentSize;
 
                     if (m_IsScaleScrollGrid)
                     {
                         var scroll = gameObject.GetComponent<GridLayoutGroup>();
-                        scroll.cellSize = m_CellSizeOrigin * min;
-                        scroll.spacing = m_CellSpaceOrigin * min;
+                        scroll.cellSize = m_CellSizeOrigin * scale;
+                        scroll.spacing = m_CellSpaceOrigin * scale;
                     }
                     else
                     {
-                        rectTransform.localScale = scale;
+                        rectTransform.localScale = scaleVector;
                     }
 
                     break;
                 }
             }
+        }
+
+        public static float GetScale(Vector2 currentSize, Vector2 originSize)
+        {
+            var scale = Vector3.one;
+            scale.x = currentSize.x / originSize.x;
+            scale.y = currentSize.y / originSize.y;
+            var min = Mathf.Min(scale.x, scale.y);
+            return min;
         }
 
         private Vector2 GetParentSize()

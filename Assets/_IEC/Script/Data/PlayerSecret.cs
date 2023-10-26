@@ -25,6 +25,9 @@ namespace IEC
         public int levelFirstTime = 0;
         public int countPlayLevel = 0;
 
+        public int sessionStartLevel;
+        public int LevelSessionCount => session - sessionStartLevel + 1;
+
         public void AddLevel()
         {
             level += 1;

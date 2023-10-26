@@ -89,6 +89,7 @@ namespace _IECModules
             {
                 if (FileUtil.DeleteFileOrDirectory(path))
                 {
+                    FileUtil.DeleteFileOrDirectory($"{path}.meta");
                     LogEditorHelper.AddLog($"DELETED: {path}");
                 }
             });
@@ -101,11 +102,16 @@ namespace _IECModules
             PackageManagerHelper.Remove("com.unity.ads", null, true);
         }
 
-        private static void UpdateApplovinQualityService()
+        public static void UpdateApplovinQualityService()
         {
 #if PluginApplovin
             LogEditorHelper.AddLog("AppLovin Disable Quality Service");
             AppLovinSettings.Instance.QualityServiceEnabled = true;
+#if UNITY_ANDROID
+            AppLovinSettings.Instance.SdkKey = ProjectChecklistHelper.servicesConfig.ApplovinConfig.android.appID;
+#elif UNITY_IOS
+            AppLovinSettings.Instance.SdkKey = ProjectChecklistHelper.servicesConfig.ApplovinConfig.ios.appID;
+#endif
             EditorUtility.SetDirty(AppLovinSettings.Instance);
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -310,11 +316,13 @@ namespace _IECModules
             if (Directory.Exists("Assets/Plugins/Android/res"))
             {
                 Directory.Delete("Assets/Plugins/Android/res", true);
+                File.Delete("Assets/Plugins/Android/res.meta");
             }
             
             if (Directory.Exists("Assets/Plugins/Android/myLibrary.androidlib"))
             {
                 Directory.Delete("Assets/Plugins/Android/myLibrary.androidlib", true);
+                File.Delete("Assets/Plugins/Android/myLibrary.androidlib");
             }
 
             if (Directory.Exists(libraryPath))

@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using IEC;
 using UnityEngine;
@@ -88,6 +90,12 @@ namespace _IECModules
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
 
+        private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
+
+        protected static ServicesController Services => Controllers.Get<ServicesController>();
+        protected static Game Game => Pool.Get<Game>();
+
+
         private int m_TestIndex;
         private bool m_HaveInputPassword;
         private Vector2 m_ScrollviewVector2;
@@ -112,6 +120,7 @@ namespace _IECModules
         {
             m_BackgroundTexture = Texture2D.whiteTexture;
             m_TextureStyle = new GUIStyle {normal = new GUIStyleState {background = m_BackgroundTexture}};
+            
 
             var reporter = GetComponentInChildren<Reporter>(true);
             AddCheatCodeButton("Show Reporter", param =>
@@ -308,8 +317,14 @@ namespace _IECModules
                     }
                     return;
                 }
+
                 m_TestIndex = 0;
 
+                if (!Services.IsHaveIDFA)
+                {
+                    Services.RequestUserIdfa();
+                }
+                
                 if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -317,6 +332,7 @@ namespace _IECModules
                 else
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
+                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
                 }
             }
             else
@@ -721,10 +737,45 @@ namespace _IECModules
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
         }
+        
+        IEnumerator GetIDFAListCoroutine(string url)
+        {
+            var jsoner = new JsonDotNetModule();
+        
+            using (var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.error != null)
+                {
+                    Debug.LogError("GetIDFAListCoroutine Fail to get csv: " + uwr.error);
+                }
+                else
+                {
+                    var googleDocsData = jsoner.FromJson<List<List<string>>>(uwr.downloadHandler.text);
+                    var listIDFA = new List<string>();
+
+                    foreach (var row in googleDocsData)
+                    {
+                        if (row.Count >= 1 && !string.IsNullOrWhiteSpace(row[0]))
+                            listIDFA.Add(row[3]);
+                    }
+
+                    yield return new WaitUntil(() => Services.IsHaveIDFA);
+
+                    m_HaveInputPassword = m_HaveInputPassword || listIDFA.Contains(Services.UserIDFA);
+
+                    if (m_HaveInputPassword)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                    }
+                }
+            }
+        }
 
         public void ResetPlayerData()
         {
-            Pool.Get<Game>().isDebugReset = true;
+            Game.isDebugReset = true;
             PlayerPrefs.DeleteAll();
             Application.Quit();
 
@@ -735,9 +786,9 @@ namespace _IECModules
         
         public void ResetPlayerDataWithoutChangeAb()
         {
-            Pool.Get<Game>().isDebugReset = true;
-            Controllers.Get<ServicesController>().DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
-            Controllers.Get<ServicesController>().DataSecure().Save();
+            Game.isDebugReset = true;
+            Services.DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
+            Services.DataSecure().Save();
             Application.Quit();
             
 #if UNITY_EDITOR

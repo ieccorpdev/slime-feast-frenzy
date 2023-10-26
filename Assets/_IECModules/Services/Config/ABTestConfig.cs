@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using NaughtyAttributes;
+using System;
 using System.Linq;
 using UnityEngine;
-using NaughtyAttributes;
 
 namespace IEC
 {
@@ -28,7 +26,16 @@ namespace IEC
         public string customResultAction;
         public string customUpdateAction;
 
+        [Header("Test Old User")]
+        public bool isSemiOverride;
+        public float percentOverride;
+
         public int Date => int.Parse(KeyName.Split('_').Last());
+
+        public int CheckSemiOverride()
+        {
+            return (percentOverride > 0 && UnityEngine.Random.Range(0, 100f) <= percentOverride) ? 1 : 0;
+        }
 
         [Button]
         public void SetDefaultRatioAndAB()
