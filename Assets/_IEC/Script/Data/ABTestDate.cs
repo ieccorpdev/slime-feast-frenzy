@@ -1,8 +1,5 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System;
-using UnityEngine;
 
 namespace IEC
 {
@@ -32,13 +29,13 @@ namespace IEC
             return date >= overrideDate;
         }
 
-        public bool IsOverrideResult(ABTestDate activeDate, Dictionary<int, Func<int, int, bool>> dictOverrideDate, out int overrideDate)
+        public bool IsOverrideResult(ABTestDate activeDate, Dictionary<int, Func<int, int, bool>> dictOverrideDate, Dictionary<int, bool> dictApplyOverride, out int overrideDate)
         {
             foreach (var key in dictOverrideDate.Keys)
             {
-                if (key > activeDate.date) continue;
-                if (date <= key)
+                if (date <= key && key <= activeDate.date)
                 {
+                    if (!dictApplyOverride[key]) continue;
                     var ignoreFunc = dictOverrideDate[key];
                     if (ignoreFunc == null || ignoreFunc.Invoke(date, version) == false)
                     {

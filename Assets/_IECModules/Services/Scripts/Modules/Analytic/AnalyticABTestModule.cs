@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 
@@ -10,19 +10,18 @@ namespace IEC
     {
         IDataService m_Data;
         Dictionary<string, ABTestConfig> m_Configs;
-        bool m_IsNewInstall;
 
-        public AnalyticABTestModule(IDataService dataService)
+        public AnalyticABTestModule(IDataService dataService, ABTestConfig[] abTestConfigs)
         {
             m_Data = dataService;
-            m_Configs = new Dictionary<string, ABTestConfig>();
+            m_Configs = abTestConfigs.ToDictionary(x => x.KeyName, x => x);
         }
 
         public bool IsActive(string keyNameAB)
         {
-            if (m_Configs.ContainsKey(keyNameAB))
+            if (m_Configs.TryGetValue(keyNameAB, out var config))
             {
-                return m_Configs[keyNameAB].IsActive;
+                return config.IsActive;
             }
 
             return false;
@@ -30,12 +29,17 @@ namespace IEC
 
         public ABTestConfig GetConfig(string keyNameAB)
         {
-            if (m_Configs.ContainsKey(keyNameAB))
+            if (m_Configs.TryGetValue(keyNameAB, out var config))
             {
-                return m_Configs[keyNameAB];
+                return config;
             }
 
             return null;
+        }
+
+        public void SetValue(string keyNameAB, int value)
+        {
+            m_Data.SetInt(keyNameAB, value);
         }
 
         public bool HasValue(string keyNameAB)
@@ -45,9 +49,8 @@ namespace IEC
 
         public int GetValue(string keyNameAB, int defaultValue)
         {
-            if (m_Configs.ContainsKey(keyNameAB))
+            if (m_Configs.TryGetValue(keyNameAB, out var config))
             {
-                var config = m_Configs[keyNameAB];
                 if (config.IsForceValue)
                 {
                     return config.ForceValue;
@@ -59,7 +62,7 @@ namespace IEC
                 return data;
             }
 
-            return defaultValue;
+            return m_Data.GetInt(keyNameAB, defaultValue);
         }
 
         int GetRandomIndexByRatioList(int[] ratio, int itemLength)
@@ -91,7 +94,7 @@ namespace IEC
             return UnityEngine.Random.Range(0, itemLength);
         }
 
-        public void SetUpTest(ABTestConfig config, int versionCode, bool isNewInstall, Action<string> actionLog)
+        public void SetUpTest(ABTestConfig config, bool isNewInstall, Action<string> actionLog)
         {
             string AB = "AB ";
             bool isError = false;
@@ -100,13 +103,6 @@ namespace IEC
                 isError = true;
                 Debug.LogError(AB + "Key name is empty");
             }
-
-            if (m_Configs.ContainsKey(config.KeyName))
-            {
-                isError = true;
-                Debug.LogError(AB + "Duplicate key name");
-            }
-
 
             var listEvent = new HashSet<string>();
             for (int i = 0; i < config.ListEventsAB.Length; i++)
@@ -160,8 +156,6 @@ namespace IEC
                 return;
             }
 
-            m_Configs[config.KeyName] = config;
-
             if (config.IsActive == false ||
                 config.ListEventsAB == null ||
                 config.ListEventsAB.Length == 0)
@@ -174,28 +168,9 @@ namespace IEC
                 return;
             }
 
-            bool isNeedSetUp = false;
             string versionKey = "Ver" + config.KeyName;
-
-            if (config.IsOverride &&
-                m_Data.HasKey(versionKey) &&
-                versionCode > m_Data.GetInt(versionKey, versionCode))
-            {
-                isNeedSetUp = true;
-            }
-
-            //Debug.Log(config.KeyName + ":" + m_Data.HasKey(config.KeyName));
-            if (m_Data.HasKey(config.KeyName))
-            {
-                //Debug.Log("Have key name");
-                isNeedSetUp = false;
-            }
-            else
-            {
-                //Debug.Log("No have key name");
-                isNeedSetUp = true;
-            }
-
+            var isNeedSetUp = !m_Data.HasKey(config.KeyName);
+            
             if (isNeedSetUp)
             {
                 int randValue = GetRandomIndexByRatioList(config.ListRandomRatio, config.ListEventsAB.Length);
@@ -210,7 +185,7 @@ namespace IEC
                 }
 
                 m_Data.SetInt(config.KeyName, randValue);
-                m_Data.SetInt(versionKey, versionCode);
+                m_Data.SetInt(versionKey, 1);
 
                 actionLog(config.ListEventsAB[randValue]);
 

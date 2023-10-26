@@ -24,11 +24,15 @@ namespace IEC
             var isEnableSandBox = PlayerPrefs.GetInt(ADJUST_SANDBOX, 0) == 1;
             
             var adjustConfig = new AdjustConfig(appID, (isEnableSandBox) ? AdjustEnvironment.Sandbox : AdjustEnvironment.Production, true);
+#if UNITY_ANDROID
+            adjustConfig.setPreinstallTrackingEnabled(true);
+#endif
             adjustConfig.setLogLevel(AdjustLogLevel.Suppress);
             adjustConfig.setSendInBackground(false);
             adjustConfig.setEventBufferingEnabled(false);
             adjustConfig.setLaunchDeferredDeeplink(false);
             Adjust.start(adjustConfig);
+            EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
         }
 
@@ -77,6 +81,13 @@ namespace IEC
         {
             return;
             if (IsDisable) return;
+        }
+
+        public void EnableThirdPartySharing()
+        {
+            AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(true);
+            Adjust.trackThirdPartySharing(adjustThirdPartySharing);
+            Debug.LogWarning("Adjust enable third party sharing");
         }
     }
 }

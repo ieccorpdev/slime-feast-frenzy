@@ -130,7 +130,10 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     {
         return GetListValueEvent("play_level_first_time_");
     }
-
+    public List<int> GetListInter()
+    {
+        return GetListValueEvent("inter_","","rev_inter");
+    }
     public Dictionary<RevAdType, List<int>> GetListMilestone()
     {
         var dict = new Dictionary<RevAdType, List<int>>
@@ -173,13 +176,17 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         return int.TryParse(StringHelper.GetBetweenString(origin, first, end, false), out result);
     }
 
-    private List<int> GetListValueEvent(string prefix, string end = "")
+    private List<int> GetListValueEvent(string prefix, string end = "",string ignore = "")
     {
         if (end == "") end = string.Empty;
         var listResult = new List<int>();
         foreach (var data in listData)
         {
             var eventName = data.gameEvent;
+            if (ignore != "" && eventName.Contains(ignore))
+            {
+                continue;
+            }
             if (eventName.Contains(prefix) && TryGetValueEvent(eventName, prefix, end, out var result))
             {
                 listResult.Add(result);
