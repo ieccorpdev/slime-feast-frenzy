@@ -4,6 +4,7 @@ apply plugin: 'com.android.library'
 **APPLY_PLUGINS**
 
 dependencies {
+	implementation 'androidx.multidex:multidex:2.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 **DEPS**}
 
@@ -24,6 +25,7 @@ android {
         }
         versionCode **VERSIONCODE**
         versionName '**VERSIONNAME**'
+        multiDexEnabled true
         consumerProguardFiles 'proguard-unity.txt'**USER_PROGUARD**
     }
 
