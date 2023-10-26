@@ -55,6 +55,7 @@ namespace IEC
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
+        public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -98,8 +99,8 @@ namespace IEC
 #if UNITY_IOS
                     //ShowWhiteBanner();
 #endif
-                    Ads().Load(AdsEnum.BANNER_BOTTOM, null);
-                    SetActiveBanner(AdsEnum.BANNER_BOTTOM, true);
+                    Ads().Load(bannerPos, null);
+                    SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
                     break;
             }
@@ -527,7 +528,7 @@ namespace IEC
 #endif
 #if (PluginApplovin)
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, true, true, (result) =>
+                applovinAds.Init(config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
                 {
                     if (result)
                     {
@@ -891,11 +892,11 @@ namespace IEC
             if (m_ServiceData.isNoAds && isActive) return;
             if (isActive)
             {
-                Ads().Show(AdsEnum.BANNER_BOTTOM, null);
+                Ads().Show(bannerType, null);
             }
             else
             {
-                Ads().Hide(AdsEnum.BANNER_BOTTOM);
+                Ads().Hide(bannerType);
             }
         }
 
@@ -970,7 +971,10 @@ namespace IEC
 #endif
         const string USER_IDFA = "UserIDFA";
         private string m_UserIDFA;
-        void RequestUserIdfa()
+        public string UserIDFA => m_UserIDFA;
+        public bool IsHaveIDFA => !string.IsNullOrEmpty(m_UserIDFA);
+
+        public void RequestUserIdfa()
         {
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
