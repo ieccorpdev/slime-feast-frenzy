@@ -236,6 +236,12 @@ namespace IEC.ModuleManager
 
             var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
 
+            var listSymbols = dictDefineSymbol.Values.Distinct().ToList();
+            foreach (var symbol in listSymbols)
+            {
+                ScriptingDefineSymbolEditor.RemoveDefineSymbol(symbol);
+            }
+
             foreach (var kv in dictDefineSymbol)
             {
                 var pathCheck = Path.Combine(pathAssetsModule, kv.Key);
