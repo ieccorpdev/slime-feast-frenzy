@@ -33,6 +33,17 @@ namespace IEC.ModuleManager
 
         private string GetUrl(string version) =>
             BaseUrlSdk + $"archive.zip?sha={version}&path=Assets/";
+        
+        private Dictionary<string, PluginDefineSymbol> dictDefineSymbol =
+            new Dictionary<string, PluginDefineSymbol>()
+            {
+                { "FacebookSDK", PluginDefineSymbol.PluginFacebook },
+                { "AudienceNetwork", PluginDefineSymbol.PluginFacebookAudienceNetwork },
+                { "Adjust", PluginDefineSymbol.PluginAdjust },
+                { "MaxSdk", PluginDefineSymbol.PluginApplovin },
+                { "Amazon", PluginDefineSymbol.PluginMaxAmazonNetwork },
+                { @"MaxSdk\MEDIATION\StartIO", PluginDefineSymbol.PuginStartIONetwork },
+            };
 
         public void LoadSdkVersions()
         {
@@ -211,12 +222,6 @@ namespace IEC.ModuleManager
             }
             
             JToken packageJson = GetPackageJson();
-            
-            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebookAudienceNetwork);
-            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
-            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
-            ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginAdjust);
-            ScriptingDefineSymbolEditor.RemoveDefineSymbol(PluginDefineSymbol.PluginMaxAmazonNetwork);
 
             if (packageJson["sdk"] != null)
             {
@@ -230,9 +235,14 @@ namespace IEC.ModuleManager
             }
 
             var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
-            if (listModuleDirs.Exists(x => x.ToLower().Contains("amazon")))
+
+            foreach (var kv in dictDefineSymbol)
             {
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginMaxAmazonNetwork);
+                var pathCheck = Path.Combine(pathAssetsModule, kv.Key);
+                if (Directory.Exists(pathCheck))
+                {
+                    ScriptingDefineSymbolEditor.AddDefineSymbol(kv.Value);
+                }
             }
 
             var files = Directory.GetFiles(pathAssetsModule);

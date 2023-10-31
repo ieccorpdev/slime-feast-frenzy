@@ -21,7 +21,8 @@ namespace IEC.ModuleManager
         PluginNotification,
         PluginOgury,
         PluginLocalization,
-        PluginMaxAmazonNetwork
+        PluginMaxAmazonNetwork,
+        PuginStartIONetwork,
     }
     
     public class ModuleManager : EditorWindow
