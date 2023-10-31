@@ -22,7 +22,7 @@ platform :ios do
     update_build_number
     build_app(workspace: "Unity-iPhone.xcworkspace", scheme: "Unity-iPhone", xcargs: "-allowProvisioningUpdates", export_xcargs: "-allowProvisioningUpdates")
     upload_to_testflight
-    #post_to_webhook
+    post_to_webhook
   end
   lane :update_sign do
     update_code_signing_settings(
