@@ -30,7 +30,7 @@ namespace IEC
         [Header("Test Old User")]
         public bool isSemiOverride;
         public float percentOverride;
-        [Header("Country Apply")]
+        [Header("Apply Country ")]
         public List<Country> applyCountry = new List<Country> {Country.All};
         public int Date => int.Parse(KeyName.Split('_').Last());
 
