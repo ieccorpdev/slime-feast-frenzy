@@ -29,6 +29,10 @@ namespace IEC
             {
                 case EventList.NONE:
                     break;
+                case EventList.GamePlay.APPLY_AB_TEST_LOCATION:
+                    Debug.Log("APPLY_AB_TEST_LOCATION");
+                    OnHandleAB();
+                    break;
             }
         }
 
@@ -37,6 +41,11 @@ namespace IEC
         }
 
         public void BehaviourStart()
+        {
+            //  OnHandleAB();
+        }
+
+        void OnHandleAB()
         {
             var serviceAbTest = Services.ABTest();
             var listAbTestConfig = Services.config.GetListAbTestConfig();
@@ -89,9 +98,11 @@ namespace IEC
             var listAbTestDate = listAbTestConfig.Select(x => x.Date).ToList();
             var dictAbTest = listAbTestConfig.ToDictionary(x => x.Date, x => x);
             var abValue = serviceAbTest.GetValue(abConfig.KeyName, 0);
-            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key).Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
+            var dictOverride = GetDictOverrideResult().OrderByDescending(x => x.Key)
+                .Where(x => listAbTestDate.Contains(x.Key)).ToDictionary(x => x.Key, x => x.Value);
 
-            var allMethods = GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
+            var allMethods = GetType()
+                .GetMethods(BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
             var listResultAbAction = GetListResultAbAction();
             var listUpdateAbAction = GetListUpdateAbAction();
             var dictResultAb = GetDictAction(ABTestConfig.RESULT_PREFIX, allMethods, listAbTestConfig);
@@ -109,14 +120,15 @@ namespace IEC
                 var checkOverride = serviceAbTest.GetValue(SEMI_OVERRIDE_KEY + kv.Key, 1);
                 return checkOverride == 1;
             });
-            var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
+            var isOverride =
+                curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
 
             var param = new object[] { };
             for (int i = 0; i < listAbTestConfig.Count; i++)
             {
                 var ab = listAbTestConfig[i];
                 var testDate = ab.GetAbTestDate(0);
-                if (testDate.IsApplyResult(curTestDate, overrideDate))
+                if (testDate.IsApplyResult(curTestDate, overrideDate) && isApplyCountry(ab))
                 {
                     if (i < listResultAbAction.Count)
                     {
@@ -152,7 +164,29 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
         }
 
-        void CheckSemiOverride(ABTestDate curTestDate, ABTestDate activeDate, ABTestConfig activeAb, Dictionary<int, Func<int, int, bool>> dictOverride)
+        bool isApplyCountry(ABTestConfig abConfig)
+        {
+            if (abConfig.applyCountry.Count == 0)
+            {
+                return true;
+            }
+
+            string countryCode = Services.Location().GetCountryCode();
+            Debug.Log("countryCode:" + countryCode);
+            for (int i = 0; i < abConfig.applyCountry.Count; i++)
+            {
+                if ((abConfig.applyCountry[i] == ABTestConfig.Country.All) ||
+                    (countryCode == abConfig.applyCountry[i].ToString()))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        void CheckSemiOverride(ABTestDate curTestDate, ABTestDate activeDate, ABTestConfig activeAb,
+            Dictionary<int, Func<int, int, bool>> dictOverride)
         {
             var serviceAbTest = Services.ABTest();
 
@@ -206,7 +240,8 @@ namespace IEC
             };
         }
 
-        Dictionary<ABTestConfig, MethodInfo> GetDictAction(string prefix, List<MethodInfo> allMethods, List<ABTestConfig> listAbTest)
+        Dictionary<ABTestConfig, MethodInfo> GetDictAction(string prefix, List<MethodInfo> allMethods,
+            List<ABTestConfig> listAbTest)
         {
             var dictMethods = allMethods.Where(m => m.Name.StartsWith(prefix)).ToDictionary(m => m.Name, m => m);
             return listAbTest.ToDictionary(x => x, x => GetMethodInfo(dictMethods, x.GetAbTestAction(prefix)));
@@ -260,5 +295,6 @@ namespace IEC
         void ResultAb20150101() {}
         void UpdateAb20150101(int abValue) {}
         */
+        
     }
 }

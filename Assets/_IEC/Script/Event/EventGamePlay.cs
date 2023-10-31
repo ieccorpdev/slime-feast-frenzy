@@ -16,6 +16,8 @@ namespace IEC
             public const string LEVEL_SKIP = "GamePlay.LEVEL_SKIP";
 
             public const string END_LEVEL_ADS = "GamePlay.END_LEVEL_ADS";
+            
+            public const string APPLY_AB_TEST_LOCATION = "GamePlay.APPLY_AB_TEST_LOCATION";
         }
     }
 }

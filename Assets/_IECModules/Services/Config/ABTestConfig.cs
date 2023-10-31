@@ -1,5 +1,6 @@
 ﻿using NaughtyAttributes;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -29,7 +30,8 @@ namespace IEC
         [Header("Test Old User")]
         public bool isSemiOverride;
         public float percentOverride;
-
+        [Header("Country Apply")]
+        public List<Country> applyCountry = new List<Country> {Country.All};
         public int Date => int.Parse(KeyName.Split('_').Last());
 
         public int CheckSemiOverride()
@@ -113,5 +115,13 @@ namespace IEC
                 version = GetVersion(abValue)
             };
         }
+        public enum Country
+        {
+            All,
+            US,
+            IN,
+            VN
+        }
     }
+   
 }

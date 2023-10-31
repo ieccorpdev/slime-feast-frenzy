@@ -10,7 +10,7 @@ namespace IEC
     {
         const string REQUEST_INFO_URL = "http://extreme-ip-lookup.com/json/";
         const string REQUEST_INFO_URL_2 = "http://apigame.ieccorp.vn/helper/get_country";
-
+        const string REQUEST_INFO_URL_3 = "http://ip-api.com/json/";
         MonoBehaviour m_Coroutiner;
         IJsonService m_Jsoner;
 
@@ -34,7 +34,7 @@ namespace IEC
 
         IEnumerator IERequestInfo(Action<bool> callback)
         {
-            var www = UnityWebRequest.Get(REQUEST_INFO_URL);
+            var www = UnityWebRequest.Get(REQUEST_INFO_URL_3);
             yield return www.SendWebRequest();
             if (www.isNetworkError || www.isHttpError)
             {

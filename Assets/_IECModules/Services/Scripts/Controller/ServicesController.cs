@@ -463,6 +463,10 @@ namespace IEC
             }
 
             m_Location = new UserLocationIP(this, m_Json);
+            m_Location.RequestInfo((isHaveData) =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST_LOCATION);
+            });
             m_TimeServer = new TimeServerModule(this, m_Json);
             m_EventCount = new EventCountModule(m_DataNormal);
             m_Retention = new RetentionModule(m_DataNormal, m_TimeServer);
