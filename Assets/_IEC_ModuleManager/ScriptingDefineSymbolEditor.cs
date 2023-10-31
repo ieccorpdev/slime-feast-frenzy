@@ -31,6 +31,7 @@ namespace IEC.ModuleManager
 
         public static void SetListDefineSymbol(List<string> allDefines)
         {
+            allDefines.Sort();
             var defineStr = string.Join(";", allDefines.ToArray());
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, defineStr);
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, defineStr);
