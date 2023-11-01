@@ -1,4 +1,5 @@
 using System;
+using _IECModules;
 using UnityEditor;
 using UnityEngine;
 
@@ -71,6 +72,9 @@ namespace IEC.ModuleManager
             
             CreateGuiLabel("2. Package SDK", m_StyleHeader1);
             ShowGitModule(IecPackage);
+            CreateGuiBreakLine();
+            
+            CreateGuiButton("3. RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
             CreateGuiBreakLine();
         }
 

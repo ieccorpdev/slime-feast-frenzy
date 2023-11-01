@@ -53,6 +53,32 @@ namespace IEC.ModuleManager
                 { "Amazon", PluginDefineSymbol.PluginMaxAmazonNetwork },
                 { @"MaxSdk\MEDIATION\StartIO", PluginDefineSymbol.PuginStartIONetwork },
             };
+        
+        private Dictionary<string, PluginDefineSymbol> dictPackageDefineSymbol =
+            new Dictionary<string, PluginDefineSymbol>()
+            {
+                { SdkHelper.FIREBASE_APP_CORE, PluginDefineSymbol.PluginFirebase },
+                { SdkHelper.FIREBASE_ANALYTIC_PKG, PluginDefineSymbol.PluginFirebaseAnalytic },
+                { SdkHelper.FIREBASE_REMOTE_CONFIG_PKG, PluginDefineSymbol.PluginFirebaseRemote },
+                { SdkHelper.IN_APP_RATING_PKG, PluginDefineSymbol.PluginInAppRating },
+                { SdkHelper.NOTIFICATION_PKG, PluginDefineSymbol.PluginNotification },
+                { SdkHelper.I2_LOCALIZATION_PKG, PluginDefineSymbol.PluginLocalization },
+            };
+
+        private List<string> listPackageSDK =
+            new List<string>()
+            {
+                SdkHelper.EXTERNAL_DEPENDENCY_PKG,
+                SdkHelper.FIREBASE_APP_CORE,
+                SdkHelper.FIREBASE_REMOTE_CONFIG_PKG,
+                SdkHelper.FIREBASE_ANALYTIC_PKG,
+                SdkHelper.IN_APP_RATING_PKG,
+                SdkHelper.ANDROID_APPBUNDLE,
+                SdkHelper.GOOGLE_PLAY_COMMON,
+                SdkHelper.GOOGLE_PLAY_CORE,
+                SdkHelper.NOTIFICATION_PKG,
+                SdkHelper.I2_LOCALIZATION_PKG,
+            };
 
         public void LoadSdkVersions()
         {
@@ -96,7 +122,7 @@ namespace IEC.ModuleManager
                     })
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                ListVersion = m_DictData.Keys.OrderByDescending(x => x).ToArray();
+                ListVersion = m_DictData.Keys.OrderBy(x => x).ToArray();
                 
                 versionSelected = 0;
                 SetCurrentVersionInfo();
@@ -235,6 +261,7 @@ namespace IEC.ModuleManager
             EditorUtility.ClearProgressBar();
             AssetDatabase.Refresh();
             Directory.Delete(pathModule, true);
+            EditorApplication.ExecuteMenuItem("Assets/Refresh");
             Debug.Log($"Done UnzipAndAddModule {version}");
         }
 
@@ -313,43 +340,52 @@ namespace IEC.ModuleManager
             var pathModule = currentDir + "/module";
             var pathModulePackage = Directory.GetDirectories(pathModule)[0] + "/Packages";
             var pathAsset = currentDir + "/Assets";
+            var pathPackage = currentDir + "/Packages";
 
             JToken packageJson = GetPackageJson();
-            JToken manifestJson = GetJsonFromFile(Path.Combine(pathModulePackage, "manifest.json"));
+            JToken moduleManifest = GetJsonFromFile(Path.Combine(pathModulePackage, "manifest.json"));
+            JToken manifest = GetJsonFromFile(Path.Combine(pathPackage, "manifest.json"));
             
-            // handle packages
-            var dependencies = manifestJson["dependencies"];
-            var edm = dependencies["com.google.external-dependency-manager"];
-            var firebase = dependencies["com.google.firebase.app"];
-            var firebaseAnalytic = dependencies["com.google.firebase.analytics"];
-
-            if (edm != null)
+            var moduleDependencies = moduleManifest["dependencies"];
+            var dependencies = manifest["dependencies"];
+            
+            foreach (var packageName in listPackageSDK)
             {
-                var ver = edm.Value<string>().Split('#').Last();
-                var edmPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
-                ProjectResolveHelper.DeleteObsoleteResolver();
-                edmPkg.Install(ver);
+                var curData = dependencies[packageName] as JProperty;
+                var newData = moduleDependencies[packageName];
+                if (curData != null)
+                {
+                    curData.Remove();
+                    if (dictPackageDefineSymbol.TryGetValue(packageName, out var s))
+                    {
+                        ScriptingDefineSymbolEditor.RemoveDefineSymbol(s);
+                    }
+                }
+                if (newData != null)
+                {
+                    dependencies[packageName] = newData;
+                    if (dictPackageDefineSymbol.TryGetValue(packageName, out var s))
+                    {
+                        ScriptingDefineSymbolEditor.AddDefineSymbol(s);
+                    }
+                }
             }
 
-            if (firebaseAnalytic != null)
-            {
-                var ver = firebaseAnalytic.Value<string>().Split('#').Last();
-                var firebaseAnalyticPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBASE_ANALYTIC_PKG];
-                firebaseAnalyticPkg.Install(ver);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
-                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
-            }
-            
-            var packageFile = Path.Combine(pathAsset, "package.json");
-            FileInfo fi = new FileInfo(packageFile);
-            using StreamWriter sw = fi.CreateText();
             packageJson[jsonID] = versionData;
             
-            var json = JsonPrettify(packageJson.JsonSerialize());
-            sw.Write(json);
-            sw.Close();
+            WriteJsonToFile(Path.Combine(pathPackage, "manifest.json"), manifest);
+            WriteJsonToFile(Path.Combine(pathAsset, "package.json"), packageJson);
             
             SetCurrentVersionInfo();
+        }
+
+        void WriteJsonToFile(string filePath, JToken data)
+        {
+            FileInfo fi = new FileInfo(filePath);
+            using StreamWriter sw = fi.CreateText();
+            var json = JsonPrettify(data.JsonSerialize());
+            sw.Write(json);
+            sw.Close();
         }
         
         static string JsonPrettify(string json)
