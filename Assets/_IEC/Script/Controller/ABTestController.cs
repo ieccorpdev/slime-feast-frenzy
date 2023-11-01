@@ -42,7 +42,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            //  OnHandleAB();
+            OnHandleAB();
         }
 
         void OnHandleAB()
@@ -128,7 +128,7 @@ namespace IEC
             {
                 var ab = listAbTestConfig[i];
                 var testDate = ab.GetAbTestDate(0);
-                if (testDate.IsApplyResult(curTestDate, overrideDate) && isApplyCountry(ab))
+                if (testDate.IsApplyResult(curTestDate, overrideDate) && IsApplyCountry(ab))
                 {
                     if (i < listResultAbAction.Count)
                     {
@@ -141,7 +141,7 @@ namespace IEC
                 }
             }
 
-            if (curTestDate.IsApplyUpdate(overrideDate))
+            if (curTestDate.IsApplyUpdate(overrideDate) && IsApplyCountry(listAbTestConfig[abIndex]))
             {
                 if (abIndex < listUpdateAbAction.Count)
                 {
@@ -164,7 +164,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.APPLY_AB_TEST);
         }
 
-        bool isApplyCountry(ABTestConfig abConfig)
+        bool IsApplyCountry(ABTestConfig abConfig)
         {
             if (abConfig.applyCountry.Count == 0)
             {
