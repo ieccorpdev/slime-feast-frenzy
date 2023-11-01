@@ -39,56 +39,77 @@ namespace IEC.ModuleManager
             GetWindow(typeof(ModuleManager), false, $"IEC Module Manager");
         }
 
-        private static readonly GitModule IECSdk = new GitModule
+        private static readonly GitModule IecSdk = new GitModule
         {
-            id = "com.iec.plugin"
+            id = "com.iec.plugin",
+            jsonID = "sdk",
+            isAddAsset = true,
+            isAddPackage = false
+        };
+        
+        private static readonly GitModule IecPackage = new GitModule
+        {
+            id = "iec-package",
+            jsonID = "package",
+            isAddAsset = false,
+            isAddPackage = true
         };
         
         private void Awake()
         {
-            IECSdk.LoadSdkVersions();
+            IecSdk.LoadSdkVersions();
+            IecPackage.LoadSdkVersions();
         }
 
         private void OnGUI()
         {
             InitGuiParams();
+
+            CreateGuiLabel("1. Asset SDK", m_StyleHeader1);
+            ShowGitModule(IecSdk);
+            CreateGuiBreakLine();
+            
+            CreateGuiLabel("2. Package SDK", m_StyleHeader1);
+            ShowGitModule(IecPackage);
+            CreateGuiBreakLine();
+        }
+
+        void ShowGitModule(GitModule gitModule)
+        {
             var loadingDotText = "";
             var loadingDotCount = DateTime.Now.Second % 3 + 1;
             for (var i = 0; i < loadingDotCount; i++) loadingDotText += ".";
-
-            CreateGuiLabel("1. Sync SDK", m_StyleHeader1);
-            // Debug.LogError(IECSdk);
-            var isVersionsLoaded = IECSdk.IsVersionsLoaded;
+            
+            var isVersionsLoaded = gitModule.IsVersionsLoaded;
             if (!isVersionsLoaded)
             {
-                IECSdk.LoadSdkVersions();
+                gitModule.LoadSdkVersions();
             }
             // GUILayout.Label("Access Token:", GUILayout.Width(100f));
             // m_AccessToken = EditorGUILayout.TextField(m_AccessToken,GUILayout.Width(200f));
-            GUILayout.Label("Current version: " + IECSdk.CurrentVersion, GUILayout.Width(500f));
+            GUILayout.Label("Current version: " + gitModule.CurrentVersion, GUILayout.Width(500f));
             CreateGuiBreakLine();
-            GUILayout.Label("Commit ID: " + IECSdk.CurrentCommit, GUILayout.Width(500f));
+            GUILayout.Label("Commit ID: " + gitModule.CurrentCommit, GUILayout.Width(500f));
             CreateGuiBreakLine();
-            GUILayout.Label("Commit Title: " + IECSdk.CurrentCommitTitle, GUILayout.Width(500f));
+            GUILayout.Label("Commit Title: " + gitModule.CurrentCommitTitle, GUILayout.Width(500f));
             CreateGuiBreakLine();
-            GUILayout.Label("Commit Date: " + IECSdk.CurrentCommitDate, GUILayout.Width(500f));
+            GUILayout.Label("Commit Date: " + gitModule.CurrentCommitDate, GUILayout.Width(500f));
             CreateGuiBreakLine();
             GUILayout.Label("More info can be found at Assets/package.json", GUILayout.Width(500f));
             CreateGuiBreakLine();
             CreateGuiButton(
-                $"IEC Plugin {(isVersionsLoaded ? "Load Done" : $"Loading {loadingDotText}")}", () =>
+                $"{(isVersionsLoaded ? "Click this to install" : $"Loading {loadingDotText}")}", () =>
                 {
                     if (!isVersionsLoaded)
                     {
                         return;
                     }
-                    IECSdk.DownloadModule(IECSdk.ListVersion[IECSdk.versionSelected]);
+                    gitModule.DownloadModule(gitModule.ListVersion[gitModule.versionSelected]);
                 });
 
-            IECSdk.versionSelected = EditorGUILayout.Popup("", IECSdk.versionSelected,
-                IECSdk.ListVersion,
+            gitModule.versionSelected = EditorGUILayout.Popup("", gitModule.versionSelected,
+                gitModule.ListVersion,
                 GUILayout.Width(200), GUILayout.Height(dropdownSize.y));
-            CreateGuiBreakLine();
         }
         
         private void InitGuiParams()

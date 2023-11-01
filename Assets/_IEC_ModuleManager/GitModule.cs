@@ -13,7 +13,10 @@ namespace IEC.ModuleManager
     {
         const string GITLAB_API = "https://gitlab.com/api/v4";
         const string GITLAB_GROUP_NAME = "iecgames%2Funity-module-sdk";
-        public string id;
+        public string id = "com.iec.plugin";
+        public string jsonID = "sdk";
+        public bool isAddAsset;
+        public bool isAddPackage;
         public int versionSelected;
         
         private string m_AccessToken = "glpat-caUzdnAjgtdU4qzQ1AEx";
@@ -31,10 +34,14 @@ namespace IEC.ModuleManager
         private string BaseUrlSdk => 
             $"{GITLAB_API}/projects/{GITLAB_GROUP_NAME}%2F{id}/repository/";
 
-        private string GetUrl(string version) =>
-            BaseUrlSdk + $"archive.zip?sha={version}&path=Assets/";
+        private string GetUrl(string version)
+        {
+            var subFolder = isAddAsset ? "Assets" : "";
+            subFolder = isAddPackage ? "Packages" : subFolder;
+            return BaseUrlSdk + $"archive.zip?sha={version}&path={subFolder}/";
+        }
         
-        private Dictionary<string, PluginDefineSymbol> dictDefineSymbol =
+        private Dictionary<string, PluginDefineSymbol> dictAssetDefineSymbol =
             new Dictionary<string, PluginDefineSymbol>()
             {
                 { "FacebookSDK", PluginDefineSymbol.PluginFacebook },
@@ -81,7 +88,7 @@ namespace IEC.ModuleManager
                         var version = kvp.Key;
                         if (version == "master" || version == "main") 
                             return false;
-                        if (listExclude.Count > 0 && Enumerable.Any(listExclude, x => version.Contains(x))) 
+                        if (listExclude.Count > 0 && listExclude.Any(x => version.Contains(x))) 
                             return false;
                         return true;
                     })
@@ -98,7 +105,7 @@ namespace IEC.ModuleManager
                 }
                 
                 m_IsLoadingVersion = false;
-                Debug.Log($"Load done {ListVersion.Length} versions");
+                //Debug.Log($"Load done {ListVersion.Length} versions");
             });
         }
 
@@ -192,9 +199,9 @@ namespace IEC.ModuleManager
         void SetCurrentVersionInfo()
         {
             JToken packageJson = GetPackageJson();
-            if (packageJson["sdk"] == null)
+            if (packageJson[jsonID] == null)
                 return;
-            var sdk = packageJson["sdk"];
+            var sdk = packageJson[jsonID];
             var commit = sdk["commit"];
             CurrentVersion = sdk["name"].Value<string>();
             CurrentCommit = commit["short_id"].Value<string>();
@@ -211,6 +218,23 @@ namespace IEC.ModuleManager
             if (Directory.Exists(pathModule)) Directory.Delete(pathModule, true);
             ZipUtils.ExtractZipFile(webData, pathModule);
             EditorUtility.DisplayProgressBar("Copy Module", "", 0f);
+            
+            if (isAddAsset)
+                AddAssetSdk(version, versionData);
+            
+            if (isAddPackage)
+                AddFromPackage(version, versionData);
+            
+            EditorUtility.ClearProgressBar();
+            AssetDatabase.Refresh();
+            Directory.Delete(pathModule, true);
+            Debug.Log($"Done UnzipAndAddModule {version}");
+        }
+
+        void AddAssetSdk(string version, JToken versionData)
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var pathModule = currentDir + "/module";
             var pathAssetsModule = Directory.GetDirectories(pathModule)[0] + "/Assets";
             var pathAsset = currentDir + "/Assets";
             var directoriesInfo = new DirectoryInfo(pathAssetsModule).GetDirectories();
@@ -223,9 +247,9 @@ namespace IEC.ModuleManager
             
             JToken packageJson = GetPackageJson();
 
-            if (packageJson["sdk"] != null)
+            if (packageJson[jsonID] != null)
             {
-                var listOldFolders = packageJson["sdk"]["folders"].ToObject<List<string>>();
+                var listOldFolders = packageJson[jsonID]["folders"].ToObject<List<string>>();
                 foreach (var dir in listOldFolders)
                 {
                     var dirName = Path.Combine(pathAsset, dir);
@@ -236,13 +260,13 @@ namespace IEC.ModuleManager
 
             var listModuleDirs = directoriesInfo.Select(x => x.Name).ToList();
 
-            var listSymbols = dictDefineSymbol.Values.Distinct().ToList();
+            var listSymbols = dictAssetDefineSymbol.Values.Distinct().ToList();
             foreach (var symbol in listSymbols)
             {
                 ScriptingDefineSymbolEditor.RemoveDefineSymbol(symbol);
             }
 
-            foreach (var kv in dictDefineSymbol)
+            foreach (var kv in dictAssetDefineSymbol)
             {
                 var pathCheck = Path.Combine(pathAssetsModule, kv.Key);
                 if (Directory.Exists(pathCheck))
@@ -255,7 +279,10 @@ namespace IEC.ModuleManager
             foreach (var file in files)
             {
                 var fileName = GetBetweenString(file, pathAssetsModule, string.Empty, false);
-                if (File.Exists(pathAsset + fileName)) File.Delete(pathAsset + fileName);
+                if (File.Exists(pathAsset + fileName))
+                {
+                    File.Delete(pathAsset + fileName);
+                }
             }
 
             CopyAll(pathAssetsModule, pathAsset);
@@ -264,17 +291,36 @@ namespace IEC.ModuleManager
             FileInfo fi = new FileInfo(packageFile);
             using StreamWriter sw = fi.CreateText();
             versionData["folders"] = JArray.FromObject(listModuleDirs);
-            packageJson["sdk"] = versionData;
+            packageJson[jsonID] = versionData;
 
             var json = JsonPrettify(packageJson.JsonSerialize());
             sw.Write(json);
             sw.Close();
             
-            EditorUtility.ClearProgressBar();
-            AssetDatabase.Refresh();
-            Directory.Delete(pathModule, true);
             SetCurrentVersionInfo();
-            Debug.Log($"Done Set Version {version}");
+        }
+
+        void AddFromPackage(string version, JToken versionData)
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var pathModule = currentDir + "/module";
+            var pathModulePackage = Directory.GetDirectories(pathModule)[0] + "/Packages";
+            var pathAsset = currentDir + "/Assets";
+            
+            JToken packageJson = GetPackageJson();
+            
+            // handle packages
+            
+            var packageFile = Path.Combine(pathAsset, "package.json");
+            FileInfo fi = new FileInfo(packageFile);
+            using StreamWriter sw = fi.CreateText();
+            packageJson[jsonID] = versionData;
+            
+            var json = JsonPrettify(packageJson.JsonSerialize());
+            sw.Write(json);
+            sw.Close();
+            
+            SetCurrentVersionInfo();
         }
         
         static string JsonPrettify(string json)
