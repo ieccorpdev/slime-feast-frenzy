@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using _IECModules;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
+
 namespace IEC.ModuleManager
 {
     public class GitModule
@@ -178,13 +180,10 @@ namespace IEC.ModuleManager
                 }
             });
         }
-
-        JToken GetPackageJson()
+        
+        JToken GetJsonFromFile(string filePath)
         {
-            var currentDir = Directory.GetCurrentDirectory();
-            var pathAsset = currentDir + "/Assets";
-            var packageFile = Path.Combine(pathAsset, "package.json");
-            FileInfo fi = new FileInfo(packageFile);
+            FileInfo fi = new FileInfo(filePath);
             JToken packageJson = new JObject();
             if (fi.Exists)
             {
@@ -194,6 +193,14 @@ namespace IEC.ModuleManager
                 sr.Close();
             }
             return packageJson;
+        }
+
+        JToken GetPackageJson()
+        {
+            var currentDir = Directory.GetCurrentDirectory();
+            var pathAsset = currentDir + "/Assets";
+            var packageFile = Path.Combine(pathAsset, "package.json");
+            return GetJsonFromFile(packageFile);
         }
 
         void SetCurrentVersionInfo()
@@ -220,7 +227,7 @@ namespace IEC.ModuleManager
             EditorUtility.DisplayProgressBar("Copy Module", "", 0f);
             
             if (isAddAsset)
-                AddAssetSdk(version, versionData);
+                AddFromAsset(version, versionData);
             
             if (isAddPackage)
                 AddFromPackage(version, versionData);
@@ -231,7 +238,7 @@ namespace IEC.ModuleManager
             Debug.Log($"Done UnzipAndAddModule {version}");
         }
 
-        void AddAssetSdk(string version, JToken versionData)
+        void AddFromAsset(string version, JToken versionData)
         {
             var currentDir = Directory.GetCurrentDirectory();
             var pathModule = currentDir + "/module";
@@ -306,10 +313,32 @@ namespace IEC.ModuleManager
             var pathModule = currentDir + "/module";
             var pathModulePackage = Directory.GetDirectories(pathModule)[0] + "/Packages";
             var pathAsset = currentDir + "/Assets";
-            
+
             JToken packageJson = GetPackageJson();
+            JToken manifestJson = GetJsonFromFile(Path.Combine(pathModulePackage, "manifest.json"));
             
             // handle packages
+            var dependencies = manifestJson["dependencies"];
+            var edm = dependencies["com.google.external-dependency-manager"];
+            var firebase = dependencies["com.google.firebase.app"];
+            var firebaseAnalytic = dependencies["com.google.firebase.analytics"];
+
+            if (edm != null)
+            {
+                var ver = edm.Value<string>().Split('#').Last();
+                var edmPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.EXTERNAL_DEPENDENCY_PKG];
+                ProjectResolveHelper.DeleteObsoleteResolver();
+                edmPkg.Install(ver);
+            }
+
+            if (firebaseAnalytic != null)
+            {
+                var ver = firebaseAnalytic.Value<string>().Split('#').Last();
+                var firebaseAnalyticPkg = SdkHelper.DictGitlabPluginVersion[SdkHelper.FIREBASE_ANALYTIC_PKG];
+                firebaseAnalyticPkg.Install(ver);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebase);
+                ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFirebaseAnalytic);
+            }
             
             var packageFile = Path.Combine(pathAsset, "package.json");
             FileInfo fi = new FileInfo(packageFile);
