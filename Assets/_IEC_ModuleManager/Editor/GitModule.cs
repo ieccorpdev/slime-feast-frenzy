@@ -63,6 +63,7 @@ namespace IEC.ModuleManager
                 { SdkHelper.IN_APP_RATING_PKG, PluginDefineSymbol.PluginInAppRating },
                 { SdkHelper.NOTIFICATION_PKG, PluginDefineSymbol.PluginNotification },
                 { SdkHelper.I2_LOCALIZATION_PKG, PluginDefineSymbol.PluginLocalization },
+                { "com.unity.purchasing", PluginDefineSymbol.PluginUnityIAP },
             };
 
         private List<string> listPackageSDK =
@@ -78,6 +79,7 @@ namespace IEC.ModuleManager
                 SdkHelper.GOOGLE_PLAY_CORE,
                 SdkHelper.NOTIFICATION_PKG,
                 SdkHelper.I2_LOCALIZATION_PKG,
+                "com.unity.purchasing",
             };
 
         public void LoadSdkVersions()
