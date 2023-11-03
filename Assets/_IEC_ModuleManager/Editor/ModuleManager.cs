@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using _IECModules;
 using UnityEditor;
 using UnityEngine;
@@ -33,6 +34,11 @@ namespace IEC.ModuleManager
         private static Vector2 buttonSize = new Vector2(300, 20);
         private static Vector2 dropdownSize = new Vector2(60, 20);
         
+        private const string m_GoogleSheetUrlDefault =
+            "https://docs.google.com/spreadsheets/d/1L7XrEic88trSrhg3drmlA5X5YkbP5ZMxRx3u1gUWcYg/edit#gid=927018210";
+
+        private string m_GoogleSheetUrl = m_GoogleSheetUrlDefault;
+        
         [MenuItem("IEC/Module Manager")]
         public static void ShowWindow()
         {
@@ -60,6 +66,11 @@ namespace IEC.ModuleManager
         {
             IecSdk.LoadSdkVersions();
             IecPackage.LoadSdkVersions();
+            
+            ProjectChecklistHelper.LoadServicesConfig();
+            if (ProjectChecklistHelper.servicesConfig != null &&
+                !string.IsNullOrEmpty(ProjectChecklistHelper.servicesConfig.projectChecklistUrl))
+                m_GoogleSheetUrl = ProjectChecklistHelper.servicesConfig.projectChecklistUrl;
         }
 
         private void OnGUI()
@@ -74,7 +85,20 @@ namespace IEC.ModuleManager
             ShowGitModule(IecPackage);
             CreateGuiBreakLine();
             
-            CreateGuiButton("3. RESOLVE PROJECT!", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
+            CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
+            if (GUILayout.Button("Click to UPDATE", 
+                    GUILayout.Width(buttonSize.x), 
+                    GUILayout.Height(buttonSize.y)))
+            {
+                ProjectChecklistHelper.ApplySdkSetting(m_GoogleSheetUrl);
+                ProjectSettingRemoveSplashScreen();
+            }
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+
+            CreateGuiBreakLine();
+            
+            CreateGuiLabel("4. RESOLVE PROJECT!", m_StyleHeader1);
+            CreateGuiButton("Click to RESOLVE", ProjectResolveHelper.ResolveProject, buttonSize.x * 1.3f);
             CreateGuiBreakLine();
         }
 
@@ -102,7 +126,7 @@ namespace IEC.ModuleManager
             GUILayout.Label("More info can be found at Assets/package.json", GUILayout.Width(500f));
             CreateGuiBreakLine();
             CreateGuiButton(
-                $"{(isVersionsLoaded ? "Click this to install" : $"Loading {loadingDotText}")}", () =>
+                $"{(isVersionsLoaded ? "Click to INSTALL" : $"Loading {loadingDotText}")}", () =>
                 {
                     if (!isVersionsLoaded)
                     {
@@ -114,6 +138,15 @@ namespace IEC.ModuleManager
             gitModule.versionSelected = EditorGUILayout.Popup("", gitModule.versionSelected,
                 gitModule.ListVersion,
                 GUILayout.Width(200), GUILayout.Height(dropdownSize.y));
+        }
+        
+        private void ProjectSettingRemoveSplashScreen()
+        {
+            var projectSettingFileName = "ProjectSettings/ProjectSettings.asset";
+            var projectSettingFileContent = File.ReadAllText(projectSettingFileName);
+            projectSettingFileContent =
+                projectSettingFileContent.Replace("m_ShowUnitySplashScreen: 1", "m_ShowUnitySplashScreen: 0");
+            File.WriteAllText(projectSettingFileName, projectSettingFileContent);
         }
         
         private void InitGuiParams()
