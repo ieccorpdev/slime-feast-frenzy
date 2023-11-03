@@ -78,10 +78,12 @@ namespace IEC.ModuleManager
             InitGuiParams();
 
             CreateGuiLabel("1. Asset SDK", m_StyleHeader1);
+            CreateGuiLabel("(Support Adjust, AudienceNetwork, Facebook, Applovin Max, Amazon)", m_StyleHeader2);
             ShowGitModule(IecSdk);
             CreateGuiBreakLine();
             
             CreateGuiLabel("2. Package SDK", m_StyleHeader1);
+            CreateGuiLabel("(Support EDM, Firebase, Notification, InAppRating, InAppPurchase, Localization)", m_StyleHeader2);
             ShowGitModule(IecPackage);
             CreateGuiBreakLine();
             
