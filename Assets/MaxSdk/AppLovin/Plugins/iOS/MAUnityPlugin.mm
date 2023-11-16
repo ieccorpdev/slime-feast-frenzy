@@ -70,10 +70,81 @@ extern "C"
         NSMutableArray<NSString *> *array = [NSMutableArray arrayWithCapacity: size];
         for ( int i = 0; i < size; i++ )
         {
-            [array addObject: NSSTRING(arrayPointer[i])];
+            NSString *element = NSSTRING(arrayPointer[i]);
+            if ( element )
+            {
+                [array addObject: element];
+            }
         }
         
         return array;
+    }
+    
+    void setPendingExtraParametersIfNeeded(ALSdkSettings *settings)
+    {
+        NSDictionary *extraParameters;
+        @synchronized ( _extraParametersToSetLock )
+        {
+            if ( _extraParametersToSet.count <= 0 ) return;
+            
+            extraParameters = [NSDictionary dictionaryWithDictionary: _extraParametersToSet];
+            [_extraParametersToSet removeAllObjects];
+        }
+        
+        for ( NSString *key in extraParameters.allKeys )
+        {
+            [settings setExtraParameterForKey: key value: extraParameters[key]];
+        }
+    }
+    
+    ALSdkSettings * generateSDKSettings(const char *serializedAdUnitIdentifiers, const char *serializedMetaData)
+    {
+        ALSdkSettings *settings = [[ALSdkSettings alloc] init];
+        
+        setPendingExtraParametersIfNeeded( settings );
+        
+        if ( _testDeviceIdentifiersToSet )
+        {
+            settings.testDeviceAdvertisingIdentifiers = _testDeviceIdentifiersToSet;
+            _testDeviceIdentifiersToSet = nil;
+        }
+        
+        if ( _verboseLoggingToSet != nil )
+        {
+            settings.verboseLoggingEnabled = _verboseLoggingToSet.boolValue;
+            _verboseLoggingToSet = nil;
+        }
+
+        if ( _creativeDebuggerEnabledToSet != nil )
+        {
+            settings.creativeDebuggerEnabled = _creativeDebuggerEnabledToSet.boolValue;
+            _creativeDebuggerEnabledToSet = nil;
+        }
+
+        if ( _exceptionHandlerEnabledToSet != nil )
+        {
+            settings.exceptionHandlerEnabled = _exceptionHandlerEnabledToSet.boolValue;
+            _exceptionHandlerEnabledToSet = nil;
+        }
+        
+        if ( _locationCollectionEnabledToSet != nil )
+        {
+            settings.locationCollectionEnabled = _locationCollectionEnabledToSet.boolValue;
+            _locationCollectionEnabledToSet = nil;
+        }
+        
+        settings.initializationAdUnitIdentifiers = [[NSString stringWithUTF8String: serializedAdUnitIdentifiers] componentsSeparatedByString: @","];
+        
+        NSDictionary<NSString *, id> *unityMetaData = [MAUnityAdManager deserializeParameters: [NSString stringWithUTF8String: serializedMetaData]];
+        
+        // Set the meta data to settings.
+        NSMutableDictionary<NSString *, NSString *> *metaDataDict = [settings valueForKey: @"metaData"];
+        for ( NSString *key in unityMetaData )
+        {
+            metaDataDict[key] = unityMetaData[key];
+        }
+        
+        return settings;
     }
 
     ALGender getAppLovinGender(NSString *genderString)
@@ -112,24 +183,6 @@ extern "C"
         return ALAdContentRatingNone;
     }
     
-    void setPendingExtraParametersIfNeeded(ALSdkSettings *settings)
-    {
-        NSDictionary *extraParameters;
-        @synchronized ( _extraParametersToSetLock )
-        {
-            if ( _extraParametersToSet.count <= 0 ) return;
-            
-            extraParameters = [NSDictionary dictionaryWithDictionary: _extraParametersToSet];
-            [_extraParametersToSet removeAllObjects];
-        }
-        
-        for ( NSString *key in extraParameters.allKeys )
-        {
-            [settings setExtraParameterForKey: key value: extraParameters[key]];
-        }
-    }
-    
-    
     void _MaxSetSdkKey(const char *sdkKey)
     {
         maybeInitializePlugin();
@@ -146,10 +199,9 @@ extern "C"
     {
         maybeInitializePlugin();
         
-        _sdk = [_adManager initializeSdkWithAdUnitIdentifiers: NSSTRING(serializedAdUnitIdentifiers)
-                                                     metaData: NSSTRING(serializedMetaData)
-                                           backgroundCallback: backgroundCallback
-                                         andCompletionHandler:^(ALSdkConfiguration *configuration) {
+        _sdk = [_adManager initializeSdkWithSettings: generateSDKSettings(serializedAdUnitIdentifiers, serializedMetaData)
+                                  backgroundCallback: backgroundCallback
+                                andCompletionHandler:^(ALSdkConfiguration *configuration) {
             _sdkConfiguration = configuration;
             _isSdkInitialized = true;
         }];
@@ -166,37 +218,7 @@ extern "C"
             _userSegmentNameToSet = nil;
         }
         
-        if ( _testDeviceIdentifiersToSet )
-        {
-            _sdk.settings.testDeviceAdvertisingIdentifiers = _testDeviceIdentifiersToSet;
-            _testDeviceIdentifiersToSet = nil;
-        }
-        
-        if ( _verboseLoggingToSet )
-        {
-            _sdk.settings.verboseLoggingEnabled = _verboseLoggingToSet.boolValue;
-            _verboseLoggingToSet = nil;
-        }
-
-        if ( _creativeDebuggerEnabledToSet )
-        {
-            _sdk.settings.creativeDebuggerEnabled = _creativeDebuggerEnabledToSet.boolValue;
-            _creativeDebuggerEnabledToSet = nil;
-        }
-
-        if ( _exceptionHandlerEnabledToSet )
-        {
-            _sdk.settings.exceptionHandlerEnabled = _exceptionHandlerEnabledToSet.boolValue;
-            _exceptionHandlerEnabledToSet = nil;
-        }
-        
-        if ( _locationCollectionEnabledToSet )
-        {
-            _sdk.settings.locationCollectionEnabled = _locationCollectionEnabledToSet.boolValue;
-            _locationCollectionEnabledToSet = nil;
-        }
-        
-        if ( _targetingYearOfBirth )
+        if ( _targetingYearOfBirth != nil )
         {
             _sdk.targetingData.yearOfBirth = _targetingYearOfBirth.intValue <= 0 ? nil : _targetingYearOfBirth;
             _targetingYearOfBirth = nil;
@@ -208,7 +230,7 @@ extern "C"
             _targetingGender = nil;
         }
         
-        if ( _targetingMaximumAdContentRating )
+        if ( _targetingMaximumAdContentRating != nil )
         {
             _sdk.targetingData.maximumAdContentRating = getAppLovinAdContentRating(_targetingMaximumAdContentRating.intValue);
             _targetingMaximumAdContentRating = nil;
@@ -237,8 +259,6 @@ extern "C"
             _sdk.targetingData.interests = _targetingInterests;
             _targetingInterests = nil;
         }
-        
-        setPendingExtraParametersIfNeeded( _sdk.settings );
     }
     
     bool _MaxIsInitialized()
@@ -282,6 +302,17 @@ extern "C"
         [_sdk showMediationDebugger];
     }
 
+    void _MaxShowCreativeDebugger()
+    {
+        if ( !_sdk )
+        {
+            NSLog(@"[%@] Failed to show creative debugger - please ensure the AppLovin MAX Unity Plugin has been initialized by calling 'MaxSdk.InitializeSdk();'!", TAG);
+            return;
+        }
+        
+        [_sdk showCreativeDebugger];
+    }
+    
     void _MaxShowConsentDialog()
     {
         NSLog(@"[%@] Failed to show consent dialog - Unavailable on iOS, please use the consent flow: https://dash.applovin.com/documentation/mediation/unity/getting-started/consent-flow", TAG);
@@ -405,7 +436,13 @@ extern "C"
     {
         if ( !_sdk )
         {
-            logUninitializedAccessError("_MaxClearAllTargetingData");
+            _targetingYearOfBirth = nil;
+            _targetingGender = nil;
+            _targetingMaximumAdContentRating = nil;
+            _targetingEmail = nil;
+            _targetingPhoneNumber = nil;
+            _targetingKeywords = nil;
+            _targetingInterests = nil;
             return;
         }
         
@@ -420,13 +457,16 @@ extern "C"
             return cStringCopy(@"");
         }
         
+        NSString *consentFlowUserGeographyStr = @(_sdk.configuration.consentFlowUserGeography).stringValue;
         NSString *consentDialogStateStr = @(_sdk.configuration.consentDialogState).stringValue;
         NSString *appTrackingStatus = @(_sdk.configuration.appTrackingTransparencyStatus).stringValue; // Deliberately name it `appTrackingStatus` to be a bit more generic (in case Android introduces a similar concept)
 
-        return cStringCopy([MAUnityAdManager serializeParameters: @{@"consentDialogState" : consentDialogStateStr,
+        return cStringCopy([MAUnityAdManager serializeParameters: @{@"consentFlowUserGeography" : consentFlowUserGeographyStr,
+                                                                    @"consentDialogState" : consentDialogStateStr,
                                                                     @"countryCode" : _sdk.configuration.countryCode,
                                                                     @"appTrackingStatus" : appTrackingStatus,
-                                                                    @"isSuccessfullyInitialized" : ([_sdk isInitialized] ? @"true" : @"false")}]);
+                                                                    @"isSuccessfullyInitialized" : @([_sdk isInitialized]),
+                                                                    @"isTestModeEnabled" : @([_sdk.configuration isTestModeEnabled])}]);
     }
     
     void _MaxSetHasUserConsent(bool hasUserConsent)
@@ -871,20 +911,6 @@ extern "C"
         
         [_adManager trackEvent: NSSTRING(event) parameters: NSSTRING(parameters)];
     }
-        
-    bool _MaxGetBool(const char *key, bool defaultValue)
-    {
-        if ( !_sdk ) return defaultValue;
-        
-        return [_sdk.variableService boolForKey: NSSTRING(key) defaultValue: defaultValue];
-    }
-    
-    const char * _MaxGetString(const char *key, const char *defaultValue)
-    {
-        if ( !_sdk ) return defaultValue;
-        
-        return cStringCopy([_sdk.variableService stringForKey: NSSTRING(key) defaultValue: NSSTRING(defaultValue)]);
-    }
     
     bool _MaxIsTablet()
     {
@@ -894,6 +920,19 @@ extern "C"
     bool _MaxIsPhysicalDevice()
     {
         return !ALUtils.simulator;
+    }
+
+    int _MaxGetAdditionalConsentStatus(int atpIdentifier)
+    {
+        NSNumber *consentStatus = [ALUtils additionalConsentStatusForATPIdentifier: atpIdentifier];
+        if ( consentStatus )
+        {
+            return [consentStatus intValue];
+        }
+       else
+       {
+           return -1;
+       }
     }
     
     static const char * cStringCopy(NSString *string)
@@ -950,9 +989,9 @@ extern "C"
         {
             return [_sdk.settings isVerboseLoggingEnabled];
         }
-        else if ( _verboseLoggingToSet )
+        else if ( _verboseLoggingToSet != nil )
         {
-            return _verboseLoggingToSet;
+            return _verboseLoggingToSet.boolValue;
         }
 
         return false;
@@ -961,16 +1000,7 @@ extern "C"
     void _MaxSetTestDeviceAdvertisingIdentifiers(char **advertisingIdentifiers, int size)
     {
         NSArray<NSString *> *advertisingIdentifiersArray = toStringArray(advertisingIdentifiers, size);
-        
-        if ( _sdk )
-        {
-            _sdk.settings.testDeviceAdvertisingIdentifiers = advertisingIdentifiersArray;
-            _testDeviceIdentifiersToSet = nil;
-        }
-        else
-        {
-            _testDeviceIdentifiersToSet = advertisingIdentifiersArray;
-        }
+        _testDeviceIdentifiersToSet = advertisingIdentifiersArray;
     }
 
     void _MaxSetCreativeDebuggerEnabled(bool enabled)
@@ -1035,6 +1065,28 @@ extern "C"
             }
         }
     }
+    
+    void _MaxShowCmpForExistingUser()
+    {
+        if (!isPluginInitialized())
+        {
+            logUninitializedAccessError("_MaxShowCmpForExistingUser");
+            return;
+        }
+        
+        [_adManager showCMPForExistingUser];
+    }
+    
+    bool _MaxHasSupportedCmp()
+    {
+        if (!isPluginInitialized())
+        {
+            logUninitializedAccessError("_MaxHasSupportedCmp");
+            return false;
+        }
+        
+        return [_sdk.cmpService hasSupportedCMP];
+    }
 
     float _MaxGetAdaptiveBannerHeight(const float width)
     {
@@ -1044,14 +1096,6 @@ extern "C"
     void logUninitializedAccessError(char *callingMethod)
     {
         NSLog(@"[%@] Failed to execute: %s - please ensure the AppLovin MAX Unity Plugin has been initialized by calling 'MaxSdk.InitializeSdk();'!", TAG, callingMethod);
-    }
-
-    [[deprecated("This API has been deprecated. Please use our SDK's initialization callback to retrieve variables instead.")]]
-    void _MaxLoadVariables()
-    {
-        if (!isPluginInitialized()) return;
-        
-        [_adManager loadVariables];
     }
 }
 

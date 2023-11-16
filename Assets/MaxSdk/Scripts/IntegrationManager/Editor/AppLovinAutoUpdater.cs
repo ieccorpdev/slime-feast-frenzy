@@ -36,7 +36,6 @@ namespace AppLovinMax.Scripts.IntegrationManager.Editor
             {"IRONSOURCE_NETWORK", "android_7.0.1.1.1_ios_7.0.1.0.1"},
             {"MYTARGET_NETWORK", "android_5.9.1.2_ios_5.7.5.1"},
             {"SMAATO_NETWORK", "android_21.5.2.5_ios_21.5.2.3"},
-            {"TAPJOY_NETWORK", "android_12.6.1.5_ios_12.6.1.6"},
             {"TIKTOK_NETWORK", "android_3.1.0.1.6_ios_3.2.5.1.1"},
             {"UNITY_NETWORK", "android_3.4.8.2_ios_3.4.8.2"},
             {"VERIZON_NETWORK", "android_1.6.0.5_ios_1.7.1.1"},
