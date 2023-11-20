@@ -5,6 +5,10 @@ apply plugin: 'com.android.library'
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Maticoo SDK
+    implementation 'io.github.maticooads:maticoo-android-sdk:1.4.1'
+    // Maticoo Adapter
+    implementation 'io.github.maticooads:maticoo-adapter-max:1.0.6'
 **DEPS**}
 
 android {
