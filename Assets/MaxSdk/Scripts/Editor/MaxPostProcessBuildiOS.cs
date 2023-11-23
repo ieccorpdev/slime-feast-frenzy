@@ -40,54 +40,43 @@ namespace AppLovinMax.Scripts.Editor
         private const string AppLovinMaxResourcesDirectoryName = "AppLovinMAXResources";
         private const string AppLovinAdvertisingAttributionEndpoint = "https://postbacks-app.com";
 
-        private static readonly List<string> AtsRequiringNetworks = new List<string>
+        private const string AppLovinSettingsPlistFileName = "AppLovin-Settings.plist";
+        private const string KeyConsentFlowInfo = "ConsentFlowInfo";
+        private const string KeyConsentFlowEnabled = "ConsentFlowEnabled";
+        private const string KeyConsentFlowTermsOfService = "ConsentFlowTermsOfService";
+        private const string KeyConsentFlowPrivacyPolicy = "ConsentFlowPrivacyPolicy";
+        private const string KeyConsentFlowDebugUserGeography = "ConsentFlowDebugUserGeography";
+
+        private static readonly List<string> DynamicLibrariesToEmbed = new List<string>
         {
-            "AdColony",
-            "ByteDance",
-            "Fyber",
-            "Google",
-            "GoogleAdManager",
-            "HyprMX",
-            "InMobi",
-            "IronSource",
-            "Smaato"
+            "DTBiOSSDK.xcframework",
+            "FBAEMKit.xcframework",
+            "FBSDKCoreKit_Basics.xcframework",
+            "FBSDKCoreKit.xcframework",
+            "FBSDKGamingServicesKit.xcframework",
+            "FBSDKLoginKit.xcframework",
+            "FBSDKShareKit.xcframework",
+            "HyprMX.xcframework",
+            "LinkedinAudienceNetwork.xcframework",
+            "IASDKCore.xcframework",
+            "MobileFuseSDK.xcframework",
+            "OMSDK_Appodeal.xcframework",
+            "OMSDK_Ogury.xcframework",
+            "OMSDK_Pubnativenet.xcframework",
+            "OMSDK_Smaato.xcframework"
         };
-
-        private static List<string> DynamicLibrariesToEmbed
-        {
-            get
-            {
-                var dynamicLibrariesToEmbed = new List<string>()
-                {
-                    "FBSDKCoreKit_Basics.xcframework",
-                    "HyprMX.xcframework",
-                    "OMSDK_Appodeal.xcframework",
-                    "OMSDK_Ogury.xcframework",
-                    "OMSDK_Pubnativenet.xcframework",
-                    "OMSDK_Smaato.xcframework"
-                };
-
-                if (ShouldEmbedSnapSdk())
-                {
-                    dynamicLibrariesToEmbed.Add("SAKSDK.framework");
-                    dynamicLibrariesToEmbed.Add("SAKSDK.xcframework");
-                }
-
-                return dynamicLibrariesToEmbed;
-            }
-        }
 
         private static List<string> SwiftLanguageNetworks
         {
             get
             {
                 var swiftLanguageNetworks = new List<string>();
-                if (IsAdapterInstalled("Facebook", "6.9.0.0"))
+                if (AppLovinIntegrationManager.IsAdapterInstalled("Facebook", "6.9.0.0"))
                 {
                     swiftLanguageNetworks.Add("Facebook");
                 }
 
-                if (IsAdapterInstalled("UnityAds", "4.4.0.0"))
+                if (AppLovinIntegrationManager.IsAdapterInstalled("UnityAds", "4.4.0.0"))
                 {
                     swiftLanguageNetworks.Add("UnityAds");
                 }
@@ -127,17 +116,27 @@ namespace AppLovinMax.Scripts.Editor
 #endif
             EmbedDynamicLibrariesIfNeeded(buildPath, project, unityMainTargetGuid);
 
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionDe, "de", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionEn, "en", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionEs, "es", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionFr, "fr", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionJa, "ja", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionKo, "ko", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionZhHans, "zh-Hans", buildPath, project, unityMainTargetGuid);
-            LocalizeUserTrackingDescriptionIfNeeded(AppLovinSettings.Instance.UserTrackingUsageDescriptionZhHant, "zh-Hant", buildPath, project, unityMainTargetGuid);
+            var internalSettingsEnabled = AppLovinInternalSettings.Instance.ConsentFlowEnabled;
+            var userTrackingUsageDescriptionDe = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionDe : AppLovinSettings.Instance.UserTrackingUsageDescriptionDe;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionDe, "de", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionEn = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionEn : AppLovinSettings.Instance.UserTrackingUsageDescriptionEn;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionEn, "en", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionEs = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionEs : AppLovinSettings.Instance.UserTrackingUsageDescriptionEs;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionEs, "es", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionFr = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionFr : AppLovinSettings.Instance.UserTrackingUsageDescriptionFr;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionFr, "fr", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionJa = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionJa : AppLovinSettings.Instance.UserTrackingUsageDescriptionJa;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionJa, "ja", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionKo = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionKo : AppLovinSettings.Instance.UserTrackingUsageDescriptionKo;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionKo, "ko", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionZhHans = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionZhHans : AppLovinSettings.Instance.UserTrackingUsageDescriptionZhHans;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionZhHans, "zh-Hans", buildPath, project, unityMainTargetGuid);
+            var userTrackingUsageDescriptionZhHant = internalSettingsEnabled ? AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionZhHant : AppLovinSettings.Instance.UserTrackingUsageDescriptionZhHant;
+            LocalizeUserTrackingDescriptionIfNeeded(userTrackingUsageDescriptionZhHant, "zh-Hant", buildPath, project, unityMainTargetGuid);
 
             AddSwiftSupportIfNeeded(buildPath, project, unityFrameworkTargetGuid);
             EmbedSwiftStandardLibrariesIfNeeded(buildPath, project, unityMainTargetGuid);
+            AddYandexSettingsIfNeeded(project, unityMainTargetGuid);
 
             project.WriteToFile(projectPath);
         }
@@ -175,11 +174,7 @@ namespace AppLovinMax.Scripts.Editor
             }
 #else
             string runpathSearchPaths;
-#if UNITY_2018_2_OR_NEWER
             runpathSearchPaths = project.GetBuildPropertyForAnyConfig(targetGuid, "LD_RUNPATH_SEARCH_PATHS");
-#else
-            runpathSearchPaths = "$(inherited)";          
-#endif
             runpathSearchPaths += string.IsNullOrEmpty(runpathSearchPaths) ? "" : " ";
 
             // Check if runtime search paths already contains the required search paths for dynamic libraries.
@@ -188,12 +183,6 @@ namespace AppLovinMax.Scripts.Editor
             runpathSearchPaths += "@executable_path/Frameworks";
             project.SetBuildProperty(targetGuid, "LD_RUNPATH_SEARCH_PATHS", runpathSearchPaths);
 #endif
-
-            if (ShouldEmbedSnapSdk())
-            {
-                // Needed to build successfully on Xcode 12+, as Snap was build with latest Xcode but not as an xcframework
-                project.AddBuildProperty(targetGuid, "VALIDATE_WORKSPACE", "YES");
-            }
         }
 
         private static void LocalizeUserTrackingDescriptionIfNeeded(string localizedUserTrackingDescription, string localeCode, string buildPath, PBXProject project, string targetGuid)
@@ -206,8 +195,7 @@ namespace AppLovinMax.Scripts.Editor
             var infoPlistStringsFilePath = Path.Combine(localeSpecificDirectoryPath, "InfoPlist.strings");
 
             // Check if localization has been disabled between builds, and remove them as needed.
-            var settings = AppLovinSettings.Instance;
-            if (!settings.ConsentFlowEnabled || !settings.UserTrackingUsageLocalizationEnabled || string.IsNullOrEmpty(localizedUserTrackingDescription))
+            if (ShouldRemoveLocalization(localizedUserTrackingDescription))
             {
                 if (!File.Exists(infoPlistStringsFilePath)) return;
 
@@ -264,6 +252,17 @@ namespace AppLovinMax.Scripts.Editor
             project.AddFileToBuild(targetGuid, guid);
         }
 
+        private static bool ShouldRemoveLocalization(string localizedUserTrackingDescription)
+        {
+            if (string.IsNullOrEmpty(localizedUserTrackingDescription)) return true;
+
+            var settings = AppLovinSettings.Instance;
+            var internalSettings = AppLovinInternalSettings.Instance;
+
+            return (!internalSettings.ConsentFlowEnabled || !internalSettings.UserTrackingUsageLocalizationEnabled)
+                && !settings.ConsentFlowEnabled || !settings.UserTrackingUsageLocalizationEnabled;
+        }
+
         private static void AddSwiftSupportIfNeeded(string buildPath, PBXProject project, string targetGuid)
         {
             var swiftFileRelativePath = "Classes/MAXSwiftSupport.swift";
@@ -297,12 +296,7 @@ namespace AppLovinMax.Scripts.Editor
             project.AddFileToBuild(targetGuid, swiftFileGuid);
 
             // Add Swift version property if needed
-#if UNITY_2018_2_OR_NEWER
             var swiftVersion = project.GetBuildPropertyForAnyConfig(targetGuid, "SWIFT_VERSION");
-#else
-            // Assume that swift version is not set on older versions of Unity.
-            const string swiftVersion = "";
-#endif
             if (string.IsNullOrEmpty(swiftVersion))
             {
                 project.SetBuildProperty(targetGuid, "SWIFT_VERSION", "5.0");
@@ -349,17 +343,26 @@ namespace AppLovinMax.Scripts.Editor
             var plist = new PlistDocument();
             plist.ReadFromFile(plistPath);
 
+            SetSdkKeyIfNeeded(plist);
             SetAttributionReportEndpointIfNeeded(plist);
 
-#if UNITY_2018_2_OR_NEWER
             EnableVerboseLoggingIfNeeded(plist);
-#endif
-            EnableConsentFlowIfNeeded(plist);
+            AddGoogleApplicationIdIfNeeded(plist);
+
+            AddSdkSettingsIfNeeded(plist, path);
+            EnableTermsFlowIfNeeded(plist);
             AddSkAdNetworksInfoIfNeeded(plist);
-            UpdateAppTransportSecuritySettingsIfNeeded(plist);
-            AddSnapAppStoreAppIdIfNeeded(plist);
 
             plist.WriteToFile(plistPath);
+        }
+
+        private static void SetSdkKeyIfNeeded(PlistDocument plist)
+        {
+            var sdkKey = AppLovinSettings.Instance.SdkKey;
+            if (string.IsNullOrEmpty(sdkKey)) return;
+
+            const string AppLovinVerboseLoggingOnKey = "AppLovinSdkKey";
+            plist.root.SetString(AppLovinVerboseLoggingOnKey, sdkKey);
         }
 
         private static void SetAttributionReportEndpointIfNeeded(PlistDocument plist)
@@ -381,7 +384,6 @@ namespace AppLovinMax.Scripts.Editor
             }
         }
 
-#if UNITY_2018_2_OR_NEWER
         private static void EnableVerboseLoggingIfNeeded(PlistDocument plist)
         {
             if (!EditorPrefs.HasKey(MaxSdkLogger.KeyVerboseLoggingEnabled)) return;
@@ -397,13 +399,109 @@ namespace AppLovinMax.Scripts.Editor
                 plist.root.values.Remove(AppLovinVerboseLoggingOnKey);
             }
         }
+
+        private static void AddGoogleApplicationIdIfNeeded(PlistDocument plist)
+        {
+            if (!AppLovinIntegrationManager.IsAdapterInstalled("Google") && !AppLovinIntegrationManager.IsAdapterInstalled("GoogleAdManager")) return;
+
+            const string googleApplicationIdentifier = "GADApplicationIdentifier";
+            var appId = AppLovinSettings.Instance.AdMobIosAppId;
+            // Log error if the App ID is not set.
+            if (string.IsNullOrEmpty(appId) || !appId.StartsWith("ca-app-pub-"))
+            {
+                Debug.LogError("[AppLovin MAX] Google App ID is not set. Please enter a valid app ID within the AppLovin Integration Manager window.");
+                return;
+            }
+
+            plist.root.SetString(googleApplicationIdentifier, appId);
+        }
+
+        private static void AddYandexSettingsIfNeeded(PBXProject project, string unityMainTargetGuid)
+        {
+            if (!AppLovinIntegrationManager.IsAdapterInstalled("Yandex")) return;
+
+            if (MaxSdkUtils.CompareVersions(PlayerSettings.iOS.targetOSVersionString, "12.0") == MaxSdkUtils.VersionComparisonResult.Lesser)
+            {
+                Debug.LogWarning("Your iOS target version is under the minimum required version by Yandex. Please update it to 12.0 or newer in your ProjectSettings and rebuild your project.");
+                return;
+            }
+
+            project.SetBuildProperty(unityMainTargetGuid, "GENERATE_INFOPLIST_FILE", "NO");
+        }
+
+        private static void AddSdkSettingsIfNeeded(PlistDocument infoPlist, string buildPath)
+        {
+            // Right now internal settings is only needed for Consent Flow. Remove this setting once we add more settings.
+            if (!AppLovinInternalSettings.Instance.ConsentFlowEnabled) return;
+
+            var sdkSettingsPlistPath = Path.Combine(buildPath, AppLovinSettingsPlistFileName);
+            var sdkSettingsPlist = new PlistDocument();
+            if (File.Exists(sdkSettingsPlistPath))
+            {
+                sdkSettingsPlist.ReadFromFile(sdkSettingsPlistPath);
+            }
+
+            EnableConsentFlowIfNeeded(sdkSettingsPlist, infoPlist);
+
+            sdkSettingsPlist.WriteToFile(sdkSettingsPlistPath);
+
+            var projectPath = PBXProject.GetPBXProjectPath(buildPath);
+            var project = new PBXProject();
+            project.ReadFromFile(projectPath);
+
+#if UNITY_2019_3_OR_NEWER
+            var unityMainTargetGuid = project.GetUnityMainTargetGuid();
+#else
+            var unityMainTargetGuid = project.TargetGuidByName(UnityMainTargetName);
 #endif
 
-        private static void EnableConsentFlowIfNeeded(PlistDocument plist)
+            var guid = project.AddFile(AppLovinSettingsPlistFileName, AppLovinSettingsPlistFileName, PBXSourceTree.Source);
+            project.AddFileToBuild(unityMainTargetGuid, guid);
+            project.WriteToFile(projectPath);
+        }
+
+        private static void EnableConsentFlowIfNeeded(PlistDocument applovinSettingsPlist, PlistDocument infoPlist)
         {
-            // Check if consent flow is enabled. No need to update info.plist if consent flow is disabled.
+            var consentFlowEnabled = AppLovinInternalSettings.Instance.ConsentFlowEnabled;
+            var userTrackingUsageDescription = AppLovinInternalSettings.Instance.UserTrackingUsageDescriptionEn;
+            var privacyPolicyUrl = AppLovinInternalSettings.Instance.ConsentFlowPrivacyPolicyUrl;
+            if (string.IsNullOrEmpty(userTrackingUsageDescription) || string.IsNullOrEmpty(privacyPolicyUrl))
+            {
+                AppLovinIntegrationManager.ShowBuildFailureDialog("You cannot use the AppLovin SDK's consent flow without defining a Privacy Policy URL and the `User Tracking Usage Description` in the AppLovin Integration Manager. \n\n" +
+                                                                  "Both values must be included to enable the SDK's consent flow.");
+
+                // No need to update the info.plist here. Default consent flow state will be determined on the SDK side.
+                return;
+            }
+
+            var consentFlowInfoRoot = applovinSettingsPlist.root.CreateDict(KeyConsentFlowInfo);
+            consentFlowInfoRoot.SetBoolean(KeyConsentFlowEnabled, consentFlowEnabled);
+            consentFlowInfoRoot.SetString(KeyConsentFlowPrivacyPolicy, privacyPolicyUrl);
+
+            var termsOfServiceUrl = AppLovinInternalSettings.Instance.ConsentFlowTermsOfServiceUrl;
+            if (MaxSdkUtils.IsValidString(termsOfServiceUrl))
+            {
+                consentFlowInfoRoot.SetString(KeyConsentFlowTermsOfService, termsOfServiceUrl);
+            }
+
+            var debugUserGeography = AppLovinInternalSettings.Instance.DebugUserGeography;
+            if (debugUserGeography == MaxSdkBase.ConsentFlowUserGeography.Gdpr)
+            {
+                consentFlowInfoRoot.SetString(KeyConsentFlowDebugUserGeography, "gdpr");
+            }
+
+            infoPlist.root.SetString("NSUserTrackingUsageDescription", userTrackingUsageDescription);
+        }
+
+        private static void EnableTermsFlowIfNeeded(PlistDocument plist)
+        {
+            // Check if terms flow is enabled. No need to update info.plist if consent flow is disabled.
             var consentFlowEnabled = AppLovinSettings.Instance.ConsentFlowEnabled;
             if (!consentFlowEnabled) return;
+
+            // Check if terms flow is enabled for this format.
+            var consentFlowPlatform = AppLovinSettings.Instance.ConsentFlowPlatform;
+            if (consentFlowPlatform != Platform.All && consentFlowPlatform != Platform.iOS) return;
 
             var userTrackingUsageDescription = AppLovinSettings.Instance.UserTrackingUsageDescriptionEn;
             var privacyPolicyUrl = AppLovinSettings.Instance.ConsentFlowPrivacyPolicyUrl;
@@ -489,7 +587,7 @@ namespace AppLovinMax.Scripts.Editor
 
         private static SkAdNetworkData GetSkAdNetworkData()
         {
-            var uriBuilder = new UriBuilder("https://dash.applovin.com/docs/v1/unity_integration_manager/sk_ad_networks_info");
+            var uriBuilder = new UriBuilder("https://unity.applovin.com/max/1.0/skadnetwork_ids");
 
             // Get the list of installed ad networks to be passed up
             var maxMediationDirectory = PluginMediationDirectory;
@@ -500,26 +598,20 @@ namespace AppLovinMax.Scripts.Editor
                 var adNetworks = string.Join(",", installedNetworks);
                 if (!string.IsNullOrEmpty(adNetworks))
                 {
-                    uriBuilder.Query += string.Format("adnetworks={0}", adNetworks);
+                    uriBuilder.Query += string.Format("ad_networks={0}", adNetworks);
                 }
             }
 
             using (var unityWebRequest = UnityWebRequest.Get(uriBuilder.ToString()))
             {
-#if UNITY_2017_2_OR_NEWER
                 var operation = unityWebRequest.SendWebRequest();
-#else
-                var operation = unityWebRequest.Send();
-#endif
                 // Wait for the download to complete or the request to timeout.
                 while (!operation.isDone) { }
 
 #if UNITY_2020_1_OR_NEWER
                 if (unityWebRequest.result != UnityWebRequest.Result.Success)
-#elif UNITY_2017_2_OR_NEWER
-                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
 #else
-                if (unityWebRequest.isError)
+                if (unityWebRequest.isNetworkError || unityWebRequest.isHttpError)
 #endif
                 {
                     MaxSdkLogger.UserError("Failed to retrieve SKAdNetwork IDs with error: " + unityWebRequest.error);
@@ -536,86 +628,6 @@ namespace AppLovinMax.Scripts.Editor
                     return new SkAdNetworkData();
                 }
             }
-        }
-
-        private static void UpdateAppTransportSecuritySettingsIfNeeded(PlistDocument plist)
-        {
-            var mediationDir = PluginMediationDirectory;
-            var projectHasAtsRequiringNetworks = AtsRequiringNetworks.Any(atsRequiringNetwork => Directory.Exists(Path.Combine(mediationDir, atsRequiringNetwork)));
-            if (!projectHasAtsRequiringNetworks) return;
-
-            var root = plist.root.values;
-            PlistElement atsRoot;
-            root.TryGetValue("NSAppTransportSecurity", out atsRoot);
-
-            if (atsRoot == null || atsRoot.GetType() != typeof(PlistElementDict))
-            {
-                // Add the missing App Transport Security settings for publishers if needed. 
-                MaxSdkLogger.UserDebug("Adding App Transport Security settings...");
-                atsRoot = plist.root.CreateDict("NSAppTransportSecurity");
-                atsRoot.AsDict().SetBoolean("NSAllowsArbitraryLoads", true);
-            }
-
-            var atsRootDict = atsRoot.AsDict().values;
-            // Check if both NSAllowsArbitraryLoads and NSAllowsArbitraryLoadsInWebContent are present and remove NSAllowsArbitraryLoadsInWebContent if both are present.
-            if (atsRootDict.ContainsKey("NSAllowsArbitraryLoads") && atsRootDict.ContainsKey("NSAllowsArbitraryLoadsInWebContent"))
-            {
-                MaxSdkLogger.UserDebug("Removing NSAllowsArbitraryLoadsInWebContent");
-                atsRootDict.Remove("NSAllowsArbitraryLoadsInWebContent");
-            }
-        }
-
-        private static void AddSnapAppStoreAppIdIfNeeded(PlistDocument plist)
-        {
-            var snapDependencyPath = Path.Combine(PluginMediationDirectory, "Snap/Editor/Dependencies.xml");
-            if (!File.Exists(snapDependencyPath)) return;
-
-            // App Store App ID is only needed for iOS versions 2.0.0.0 or newer.
-            var currentVersion = AppLovinIntegrationManager.GetCurrentVersions(snapDependencyPath);
-            var iosVersionComparison = MaxSdkUtils.CompareVersions(currentVersion.Ios, AppLovinSettings.SnapAppStoreAppIdMinVersion);
-            if (iosVersionComparison == MaxSdkUtils.VersionComparisonResult.Lesser) return;
-
-            if (AppLovinSettings.Instance.SnapAppStoreAppId <= 0)
-            {
-                MaxSdkLogger.UserError("Snap App Store App ID is not set. Please enter a valid App ID within the AppLovin Integration Manager window.");
-                return;
-            }
-
-            plist.root.SetInteger("SCAppStoreAppID", AppLovinSettings.Instance.SnapAppStoreAppId);
-        }
-
-        /// <summary>
-        /// Checks whether or not an adapter with the given version or newer exists.
-        /// </summary>
-        /// <param name="adapterName">The name of the network (the root adapter folder name in "MaxSdk/Mediation/" folder.</param>
-        /// <param name="version">The min adapter version to check for. Can be <c>null</c> if we want to check for any version.</param>
-        /// <returns><c>true</c> if an adapter with the min version is installed.</returns>
-        private static bool IsAdapterInstalled(string adapterName, string version = null)
-        {
-            var dependencyFilePath = Path.Combine(PluginMediationDirectory, adapterName + "/Editor/Dependencies.xml");
-            if (!File.Exists(dependencyFilePath)) return false;
-
-            // If version is null, we just need the adapter installed. We don't have to check for a specific version.
-            if (version == null) return true;
-
-            var currentVersion = AppLovinIntegrationManager.GetCurrentVersions(dependencyFilePath);
-            var iosVersionComparison = MaxSdkUtils.CompareVersions(currentVersion.Ios, version);
-            return iosVersionComparison != MaxSdkUtils.VersionComparisonResult.Lesser;
-        }
-
-        private static bool ShouldEmbedSnapSdk()
-        {
-            var snapDependencyPath = Path.Combine(PluginMediationDirectory, "Snap/Editor/Dependencies.xml");
-            if (!File.Exists(snapDependencyPath)) return false;
-
-            // Return true for UNITY_2019_3_OR_NEWER because app will crash on launch unless embedded.
-#if UNITY_2019_3_OR_NEWER
-            return true;
-#else
-            var currentVersion = AppLovinIntegrationManager.GetCurrentVersions(snapDependencyPath);
-            var iosVersionComparison = MaxSdkUtils.CompareVersions(currentVersion.Ios, "1.0.7.2");
-            return iosVersionComparison != MaxSdkUtils.VersionComparisonResult.Lesser;
-#endif
         }
 
 #if UNITY_2019_3_OR_NEWER
