@@ -325,7 +325,8 @@ namespace _IECModules
 
                 if (!m_IsGetIDFAListFirstTime)
                 {
-                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    //StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    GetIDFAList();
                     m_IsGetIDFAListFirstTime = true;
                 }
                 m_TestIndex = 0;
@@ -758,7 +759,16 @@ namespace _IECModules
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
         }
-        
+
+        void GetIDFAList()
+        {
+            var jsoner = new JsonDotNetModule();
+            var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
+            m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
+            Debug.LogError(m_IDFAList.JsonSerialize());
+            m_IsFinishedGetIDFA = true;
+        }
+
         IEnumerator GetIDFAListCoroutine(string url)
         {
             var jsoner = new JsonDotNetModule();
