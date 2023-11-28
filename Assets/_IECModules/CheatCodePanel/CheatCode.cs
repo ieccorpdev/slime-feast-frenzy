@@ -762,6 +762,7 @@ namespace _IECModules
 
         void GetIDFAList()
         {
+            if (Application.isEditor) return;
             var jsoner = new JsonDotNetModule();
             var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
             m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
