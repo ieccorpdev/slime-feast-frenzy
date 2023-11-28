@@ -765,7 +765,7 @@ namespace _IECModules
             var jsoner = new JsonDotNetModule();
             var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
             m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
-            Debug.LogError(m_IDFAList.JsonSerialize());
+            // Debug.LogError(m_IDFAList.JsonSerialize());
             m_IsFinishedGetIDFA = true;
         }
 
