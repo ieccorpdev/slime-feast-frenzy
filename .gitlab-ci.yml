@@ -138,6 +138,7 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
   <<: *unity_defaults
   script:
     - chmod +x ./ci/build.sh && ./ci/build.sh
+    - chmod +x ./ci/ios_push_success.sh && ./ci/ios_push_success.sh
     #- cd $UNITY_DIR/Builds/iOS/$BUILD_NAME
     #- fastlane beta
   # artifacts:
@@ -237,8 +238,8 @@ image: $IMAGE:$UNITY_VERSION-base-$IMAGE_VERSION
 build-ios-xcode:
    <<: *build
    image: $IMAGE:$UNITY_VERSION-ios-$IMAGE_VERSION
-   after_script:
-    - chmod +x ./ci/ios_push_success.sh && ./ci/ios_push_success.sh
+   #after_script:
+   # - chmod +x ./ci/ios_push_success.sh && ./ci/ios_push_success.sh
    variables:
      BUILD_TARGET: IOS
      
