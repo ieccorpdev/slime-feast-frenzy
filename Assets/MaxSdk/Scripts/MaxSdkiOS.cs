@@ -18,11 +18,6 @@ public class MaxSdkiOS : MaxSdkBase
     }
 
 #if UNITY_IOS
-    public static MaxVariableServiceiOS VariableService
-    {
-        get { return MaxVariableServiceiOS.Instance; }
-    }
-
     public static MaxUserServiceiOS UserService
     {
         get { return MaxUserServiceiOS.Instance; }
@@ -1365,6 +1360,12 @@ public class MaxSdkiOS : MaxSdkBase
     /// <param name="advertisingIdentifiers">String list of advertising identifiers from devices to receive test ads.</param>
     public static void SetTestDeviceAdvertisingIdentifiers(string[] advertisingIdentifiers)
     {
+        if (IsInitialized())
+        {
+            MaxSdkLogger.UserError("Test Device Advertising Identifiers must be set before SDK initialization.");
+            return;
+        }
+
         _MaxSetTestDeviceAdvertisingIdentifiers(advertisingIdentifiers, advertisingIdentifiers.Length);
     }
 
@@ -1484,14 +1485,7 @@ public class MaxSdkiOS : MaxSdkBase
     [MonoPInvokeCallback(typeof(ALUnityBackgroundCallback))]
     internal static void BackgroundCallback(string propsStr)
     {
-        try
-        {
-            MaxSdkCallbacks.Instance.ForwardEvent(propsStr);
-        }
-        catch (Exception exception)
-        {
-            MaxSdkLogger.UserError("Unable to notify ad delegate due to exception: " + exception.Message);
-        }
+        HandleBackgroundCallback(propsStr);
     }
 
     #endregion

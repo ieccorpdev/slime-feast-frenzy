@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
-using AppLovinMax.Internal.API;
 using AppLovinMax.ThirdParty.MiniJson;
 
 public class MaxSdkCallbacks : MonoBehaviour
@@ -45,23 +44,6 @@ public class MaxSdkCallbacks : MonoBehaviour
         {
             LogUnsubscribedToEvent("OnSdkInitializedEvent");
             _onSdkInitializedEvent -= value;
-        }
-    }
-
-    // Fire when the MaxVariableService has finished loading the latest set of variables.
-    private static Action _onVariablesUpdatedEvent;
-    [System.Obsolete("This API has been deprecated. Please use our SDK's initialization callback to retrieve variables instead.")]
-    public static event Action OnVariablesUpdatedEvent
-    {
-        add
-        {
-            LogSubscribedToEvent("OnVariablesUpdatedEvent");
-            _onVariablesUpdatedEvent += value;
-        }
-        remove
-        {
-            LogUnsubscribedToEvent("OnVariablesUpdatedEvent");
-            _onVariablesUpdatedEvent -= value;
         }
     }
 
@@ -186,6 +168,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
+        /// Executed on a background thread to avoid any delays in execution.
         /// </summary>
         public static event Action<string, string, MaxSdkBase.AdInfo> OnAdReviewCreativeIdGeneratedEvent
         {
@@ -438,6 +421,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
+        /// Executed on a background thread to avoid any delays in execution.
         /// </summary>
         public static event Action<string, string, MaxSdkBase.AdInfo> OnAdReviewCreativeIdGeneratedEvent
         {
@@ -589,6 +573,7 @@ public class MaxSdkCallbacks : MonoBehaviour
         /// <summary>
         /// Fired when an Ad Review Creative ID has been generated.
         /// The parameters returned are the adUnitIdentifier, adReviewCreativeId, and adInfo in that respective order.
+        /// Executed on a background thread to avoid any delays in execution.
         /// </summary>
         public static event Action<string, string, MaxSdkBase.AdInfo> OnAdReviewCreativeIdGeneratedEvent
         {
@@ -1343,27 +1328,28 @@ public class MaxSdkCallbacks : MonoBehaviour
         var eventProps = Json.Deserialize(eventPropsStr) as Dictionary<string, object>;
         if (eventProps == null)
         {
-            MaxSdkLogger.E("Failed to forward event for serialized event data: " + eventPropsStr);
+            MaxSdkLogger.E("Failed to forward event due to invalid event data");
             return;
         }
 
         var eventName = MaxSdkUtils.GetStringFromDictionary(eventProps, "name", "");
-        if (eventName == "OnSdkInitializedEvent")
+        if (eventName == "OnInitialCallbackEvent")
+        {
+            MaxSdkLogger.D("Initial background callback.");
+        }
+        else if (eventName == "OnSdkInitializedEvent")
         {
             var sdkConfiguration = MaxSdkBase.SdkConfiguration.Create(eventProps);
             InvokeEvent(_onSdkInitializedEvent, sdkConfiguration, eventName);
-        }
-        else if (eventName == "OnVariablesUpdatedEvent")
-        {
-            InvokeEvent(_onVariablesUpdatedEvent, eventName);
         }
         else if (eventName == "OnSdkConsentDialogDismissedEvent")
         {
             InvokeEvent(_onSdkConsentDialogDismissedEvent, eventName);
         }
-        else if (eventName == "OnSdkConsentFlowCompletedEvent")
+        else if (eventName == "OnCmpCompletedEvent")
         {
-            CFService.NotifyConsentFlowCompletedIfNeeded(eventProps);
+            var errorProps = MaxSdkUtils.GetDictionaryFromDictionary(eventProps, "error");
+            MaxCmpService.NotifyCompletedIfNeeded(errorProps);
         }
         // Ad Events
         else
@@ -1727,7 +1713,6 @@ public class MaxSdkCallbacks : MonoBehaviour
     private static void ResetOnDomainReload()
     {
         _onSdkInitializedEvent = null;
-        _onVariablesUpdatedEvent = null;
         _onSdkConsentDialogDismissedEvent = null;
 
         _onInterstitialAdLoadedEventV2 = null;
