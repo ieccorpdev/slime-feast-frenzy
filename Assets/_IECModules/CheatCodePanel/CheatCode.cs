@@ -9,6 +9,9 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.Diagnostics;
 using UnityEngine.UI;
+#if PuginStartIONetwork
+using StartApp;
+#endif
 
 namespace _IECModules
 {
@@ -225,6 +228,16 @@ namespace _IECModules
             });
 #endif
 //            AddTestButton();
+#if PuginStartIONetwork
+            var startIOEnable = PlayerPrefs.GetInt("StartIOTest") == 1? true: false;
+            ModuleController.cheatCode.AddCheatCodeButton("StartIO test Ads: " + startIOEnable, param =>
+            {
+                startIOEnable = !startIOEnable;
+                PlayerPrefs.SetInt("StartIOTest", startIOEnable ? 1 : 0);
+                AdSdk.Instance.SetTestAdsEnabled(true);
+                param.buttonText = "StartIO test Ads: " + startIOEnable;
+            });
+#endif
         }
 
         private void Start()
@@ -332,7 +345,8 @@ namespace _IECModules
                 else
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
-                    StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    //StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    GetIDFAList();
                 }
             }
             else
@@ -737,7 +751,20 @@ namespace _IECModules
             var otpPassword = systemRandom.Next(1000000).ToString();
             return otpPassword.PadLeft(6, '0');
         }
-        
+
+        void GetIDFAList()
+        {
+            if (Application.isEditor) return;
+            var jsoner = new JsonDotNetModule();
+            var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
+            var listIDFA = jsoner.FromJson<List<string>>(idfaDataStr.text);
+            m_HaveInputPassword = m_HaveInputPassword || listIDFA.Contains(Services.UserIDFA);
+            if (m_HaveInputPassword)
+            {
+                SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+            }
+        }
+
         IEnumerator GetIDFAListCoroutine(string url)
         {
             var jsoner = new JsonDotNetModule();
