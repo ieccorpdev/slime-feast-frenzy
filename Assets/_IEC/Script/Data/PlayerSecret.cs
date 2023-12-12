@@ -28,6 +28,20 @@ namespace IEC
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
 
+        public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+
+        public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
+        {
+            if (!dictUserVersion.ContainsKey(version) && !isForceSet) 
+            {
+                dictUserVersion[version] = abVersion;
+            }
+            if (isForceSet)
+            {
+                dictUserVersion[version] = abVersion;
+            }
+        }
+
         public void AddLevel()
         {
             level += 1;
