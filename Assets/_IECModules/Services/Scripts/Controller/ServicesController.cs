@@ -254,11 +254,7 @@ namespace IEC
             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
             m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
 
-            if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
-            {
-                m_ListAnalytics.Add(new AnalyticEventMock());
-            }
-            else
+            m_ListAnalytics.Add(new AnalyticEventMock());
             {
 #if (PluginFacebook)
                 m_ListAnalytics.Add(new FBAnalyticEvent());
