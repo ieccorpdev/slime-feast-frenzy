@@ -299,6 +299,54 @@ namespace IEC
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
 #endif
+
+            RequestCMP();
+
+            foreach (var analytic in m_ListAnalytics)
+            {
+                analytic.Init();
+            }
+
+            this.config.SetActiveAbByVersion();
+            foreach (var config in config.abTestConfigs)
+            {
+                SetUpAbTest(config, this.config.bundleVersion);
+            }
+
+        }
+
+        public void RequestCMP()
+        {
+#if (PluginCMP)
+            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
+            
+            Debug.LogWarning("CMP Test Id:" + deviceTestId);
+            
+            var requestParameters = new ConsentRequestParameters
+            {
+                TagForUnderAgeOfConsent = false
+            };
+            
+            if (!string.IsNullOrWhiteSpace(deviceTestId))
+            {
+                Debug.LogWarning("Enable CMP Test");
+                var debugSettings = new ConsentDebugSettings
+                {
+                    DebugGeography = DebugGeography.EEA,
+                    TestDeviceHashedIds = new List<string>
+                    {
+                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
+                    }
+                
+                };
+                requestParameters.ConsentDebugSettings = debugSettings;
+            }
+            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
+#endif
+        }
+
+        public void RequestATT()
+        {
 #if UNITY_IOS
             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
            {
@@ -347,47 +395,9 @@ namespace IEC
             {
                 InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
-
-#elif (PluginCMP)
-            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
-            
-            Debug.LogWarning("CMP Test Id:" + deviceTestId);
-            
-            var requestParameters = new ConsentRequestParameters
-            {
-                TagForUnderAgeOfConsent = false
-            };
-            
-            if (!string.IsNullOrWhiteSpace(deviceTestId))
-            {
-                Debug.LogWarning("Enable CMP Test");
-                var debugSettings = new ConsentDebugSettings
-                {
-                    DebugGeography = DebugGeography.EEA,
-                    TestDeviceHashedIds = new List<string>
-                    {
-                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
-                    }
-                
-                };
-                requestParameters.ConsentDebugSettings = debugSettings;
-            }
-            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
 #else
             InitSDKAfterATT(true);
 #endif
-
-            foreach (var analytic in m_ListAnalytics)
-            {
-                analytic.Init();
-            }
-
-            this.config.SetActiveAbByVersion();
-            foreach (var config in config.abTestConfigs)
-            {
-                SetUpAbTest(config, this.config.bundleVersion);
-            }
-
         }
 
 #if UNITY_IOS
@@ -402,7 +412,7 @@ namespace IEC
         IEnumerator IE_WaitConsent()
         {
             yield return new WaitUntil(() => ConsentInformation.ConsentStatus == ConsentStatus.Obtained);
-            InitSDKAfterATT(true);
+            RequestATT();
         }
 
         private Coroutine m_CheckConsentStatus;
@@ -412,7 +422,7 @@ namespace IEC
             {
                 // Handle the error.
                 Debug.LogError(error);
-                InitSDKAfterATT(true);
+                RequestATT();
                 return;
             }
 
@@ -424,7 +434,7 @@ namespace IEC
             }
             else
             {
-                InitSDKAfterATT(true);
+                RequestATT();
             }
         }
         
@@ -435,7 +445,7 @@ namespace IEC
                 if (loadError != null)
                 {
                     // Handle the error.
-                    InitSDKAfterATT(true);
+                    RequestATT();
                     Debug.LogError(loadError);
                     return;
                 }
@@ -451,7 +461,7 @@ namespace IEC
                         if (showError == null) return;
                         StopCoroutine(m_CheckConsentStatus);
                         // Handle the error.
-                        InitSDKAfterATT(true);
+                        RequestATT();
                         Debug.LogError(showError);
 
                         // Handle dismissal by reloading form.
