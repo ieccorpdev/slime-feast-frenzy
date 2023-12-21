@@ -299,6 +299,21 @@ namespace IEC
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
 #endif
+#if PluginAdjust
+            m_AdjustAnalytic = new AdjustAnalyticModule();
+            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    if (Application.platform == RuntimePlatform.Android)
+                        return x.android.isAdjustRev;
+                    return x.iOS.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
 
             RequestCMP();
 
@@ -341,7 +356,10 @@ namespace IEC
                 };
                 requestParameters.ConsentDebugSettings = debugSettings;
             }
+            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
             ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
+#else
+            RequestATT();
 #endif
         }
 
@@ -409,9 +427,11 @@ namespace IEC
         }
 #endif
 #if (PluginCMP)
+
+        bool m_IsCMPDontShow = false;
         IEnumerator IE_WaitConsent()
         {
-            yield return new WaitUntil(() => ConsentInformation.ConsentStatus == ConsentStatus.Obtained);
+            yield return new WaitUntil(() => (m_IsCMPDontShow || (ConsentInformation.ConsentStatus == ConsentStatus.Obtained)));
             RequestATT();
         }
 
@@ -422,7 +442,7 @@ namespace IEC
             {
                 // Handle the error.
                 Debug.LogError(error);
-                RequestATT();
+                m_IsCMPDontShow = true;
                 return;
             }
 
@@ -434,7 +454,7 @@ namespace IEC
             }
             else
             {
-                RequestATT();
+                m_IsCMPDontShow = true;
             }
         }
         
@@ -445,23 +465,20 @@ namespace IEC
                 if (loadError != null)
                 {
                     // Handle the error.
-                    RequestATT();
+                    m_IsCMPDontShow = true;
                     Debug.LogError(loadError);
                     return;
                 }
 
                 // The consent form was loaded.
                 // Save the consent form for future requests.
-                m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
                 // You are now ready to show the form.
                 if(ConsentInformation.ConsentStatus == ConsentStatus.Required)
                 {
                     form.Show(showError =>
                     {
                         if (showError == null) return;
-                        StopCoroutine(m_CheckConsentStatus);
-                        // Handle the error.
-                        RequestATT();
+                        m_IsCMPDontShow = true;
                         Debug.LogError(showError);
 
                         // Handle dismissal by reloading form.
@@ -484,19 +501,7 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
-            if (config.adjustEventConfig != null)
-            {
-                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
-                {
-                    if (Application.platform == RuntimePlatform.Android)
-                        return x.android.isAdjustRev;
-                    return x.iOS.isAdjustRev;
-                }).Select(x => x.gameEvent).ToList();
-                m_AdjustAnalytic.SetListEventRev(listRevEvent);
-            }
-            m_ListAnalytics.Add(m_AdjustAnalytic);
+            m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID);
 #endif
 #if (PluginFacebook)
             m_SetUpFacebook = new SetUpFacebookModule();
