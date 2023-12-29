@@ -149,7 +149,7 @@ namespace _IECModules
             var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
             {
-                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+                UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
             }, listCrashCategory);
 
             var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
