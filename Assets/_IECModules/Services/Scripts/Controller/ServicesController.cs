@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if(PluginCMP)
+using GoogleMobileAds.Ump.Api;
+#endif
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
@@ -21,6 +24,9 @@ using System.Runtime.InteropServices;
 using Balaso;
 #endif
 
+#if PluginCMP
+
+#endif
 
 namespace IEC
 {
@@ -289,6 +295,72 @@ namespace IEC
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
 #endif
+#if PluginAdjust
+            m_AdjustAnalytic = new AdjustAnalyticModule();
+            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    if (Application.platform == RuntimePlatform.Android)
+                        return x.android.isAdjustRev;
+                    return x.iOS.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
+
+            RequestCMP();
+
+            foreach (var analytic in m_ListAnalytics)
+            {
+                analytic.Init();
+            }
+
+            this.config.SetActiveAbByVersion();
+            foreach (var config in config.abTestConfigs)
+            {
+                SetUpAbTest(config, this.config.bundleVersion);
+            }
+
+        }
+
+        public void RequestCMP()
+        {
+#if (PluginCMP)
+            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
+            
+            Debug.LogWarning("CMP Test Id:" + deviceTestId);
+            
+            var requestParameters = new ConsentRequestParameters
+            {
+                TagForUnderAgeOfConsent = false
+            };
+            
+            if (!string.IsNullOrWhiteSpace(deviceTestId))
+            {
+                Debug.LogWarning("Enable CMP Test");
+                var debugSettings = new ConsentDebugSettings
+                {
+                    DebugGeography = DebugGeography.EEA,
+                    TestDeviceHashedIds = new List<string>
+                    {
+                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
+                    }
+                
+                };
+                requestParameters.ConsentDebugSettings = debugSettings;
+            }
+            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
+            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
+#else
+            RequestATT();
+#endif
+        }
+
+        public void RequestATT()
+        {
 #if UNITY_IOS
             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
            {
@@ -362,6 +434,68 @@ namespace IEC
             InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
         }
 #endif
+#if (PluginCMP)
+
+        bool m_IsCMPDontShow = false;
+        IEnumerator IE_WaitConsent()
+        {
+            yield return new WaitUntil(() => (m_IsCMPDontShow || (ConsentInformation.ConsentStatus == ConsentStatus.Obtained)));
+            RequestATT();
+        }
+
+        private Coroutine m_CheckConsentStatus;
+        void OnConsentInfoUpdated(FormError error)
+        {
+            if (error != null)
+            {
+                // Handle the error.
+                Debug.LogError(error);
+                m_IsCMPDontShow = true;
+                return;
+            }
+
+            // If the error is null, the consent information state was updated.
+            // You are now ready to check if a form is available.
+            if (ConsentInformation.IsConsentFormAvailable())
+            {
+                LoadForm();
+            }
+            else
+            {
+                m_IsCMPDontShow = true;
+            }
+        }
+        
+        void LoadForm()
+        {
+            ConsentForm.Load((form, loadError) =>
+            {
+                if (loadError != null)
+                {
+                    // Handle the error.
+                    m_IsCMPDontShow = true;
+                    Debug.LogError(loadError);
+                    return;
+                }
+
+                // The consent form was loaded.
+                // Save the consent form for future requests.
+                // You are now ready to show the form.
+                if(ConsentInformation.ConsentStatus == ConsentStatus.Required)
+                {
+                    form.Show(showError =>
+                    {
+                        if (showError == null) return;
+                        m_IsCMPDontShow = true;
+                        Debug.LogError(showError);
+
+                        // Handle dismissal by reloading form.
+                        // LoadForm();
+                    });
+                }
+            });
+        }
+#endif
 
         void InitSDKAfterATT(bool isHaveIDFA)
         {
@@ -375,19 +509,7 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
-            if (config.adjustEventConfig != null)
-            {
-                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
-                {
-                    if (Application.platform == RuntimePlatform.Android)
-                        return x.android.isAdjustRev;
-                    return x.iOS.isAdjustRev;
-                }).Select(x => x.gameEvent).ToList();
-                m_AdjustAnalytic.SetListEventRev(listRevEvent);
-            }
-            m_ListAnalytics.Add(m_AdjustAnalytic);
+            m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID);
 #endif
 #if (PluginFacebook)
             m_SetUpFacebook = new SetUpFacebookModule();

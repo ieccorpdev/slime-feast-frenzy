@@ -16,7 +16,12 @@ namespace IEC
 
         public const string ADJUST_SANDBOX = "ADJUST_SAND_BOX";
 
-        public AdjustAnalyticModule(string androidID, string iosID)
+        public void Init()
+        {
+
+        }
+
+        public void InitAdjust(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             Debug.LogWarning("Adjust AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
@@ -34,11 +39,6 @@ namespace IEC
             Adjust.start(adjustConfig);
             EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
-        }
-
-        public void Init()
-        {
-
         }
 
         public void SetListEventRev(List<string> listEventRev)
