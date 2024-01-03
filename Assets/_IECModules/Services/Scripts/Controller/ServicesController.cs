@@ -312,18 +312,6 @@ namespace IEC
 #endif
 
             RequestCMP();
-
-            foreach (var analytic in m_ListAnalytics)
-            {
-                analytic.Init();
-            }
-
-            this.config.SetActiveAbByVersion();
-            foreach (var config in config.abTestConfigs)
-            {
-                SetUpAbTest(config, this.config.bundleVersion);
-            }
-
         }
 
         public void RequestCMP()
@@ -412,17 +400,6 @@ namespace IEC
 #else
             InitSDKAfterATT(true);
 #endif
-
-            foreach (var analytic in m_ListAnalytics)
-            {
-                analytic.Init();
-            }
-
-            this.config.SetActiveAbByVersion();
-            foreach (var abTest in config.abTestConfigs)
-            {
-                SetUpAbTest(abTest);
-            }
 
         }
 
@@ -520,7 +497,23 @@ namespace IEC
                 RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
             });
 #endif
+
+            InitAnalyticAndSetupAbTest();
             InitAdsAfterGDPR(true, isHaveIDFA);
+        }
+
+        void InitAnalyticAndSetupAbTest()
+        {
+            foreach (var analytic in m_ListAnalytics)
+            {
+                analytic.Init();
+            }
+
+            this.config.SetActiveAbByVersion();
+            foreach (var abTest in config.abTestConfigs)
+            {
+                SetUpAbTest(abTest);
+            }
         }
 
         public void SendATTAnalytic(string eventName)
@@ -712,6 +705,11 @@ namespace IEC
 
         public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
         {
+            if (abTest == null)
+            {
+                Debug.LogError("AB Test config is null");
+                return;
+            }
             m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
