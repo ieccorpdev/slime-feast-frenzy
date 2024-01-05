@@ -311,6 +311,11 @@ namespace IEC
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
 
+            if (Application.isEditor)
+            {
+                InitSDKAfterATT(true);
+                return;
+            }
             RequestCMP();
         }
 
