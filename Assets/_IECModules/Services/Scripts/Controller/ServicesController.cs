@@ -312,12 +312,14 @@ namespace IEC
 #endif
 
             RequestCMP();
-            
+
             InitAnalyticAndSetupAbTest();
         }
 
         public void RequestCMP()
         {
+            if (Application.isEditor)
+                return;
 #if (PluginCMP)
             var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
             
