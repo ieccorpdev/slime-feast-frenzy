@@ -311,12 +311,9 @@ namespace IEC
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
 
-            if (Application.isEditor)
-            {
-                InitSDKAfterATT(true);
-                return;
-            }
             RequestCMP();
+            
+            InitAnalyticAndSetupAbTest();
         }
 
         public void RequestCMP()
@@ -503,7 +500,6 @@ namespace IEC
             });
 #endif
 
-            InitAnalyticAndSetupAbTest();
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
