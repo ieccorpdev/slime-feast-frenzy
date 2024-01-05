@@ -51,7 +51,7 @@ namespace IEC.ModuleManager
                 { "Adjust", PluginDefineSymbol.PluginAdjust },
                 { "MaxSdk", PluginDefineSymbol.PluginApplovin },
                 { "Amazon", PluginDefineSymbol.PluginMaxAmazonNetwork },
-                { @"MaxSdk\MEDIATION\StartIO", PluginDefineSymbol.PuginStartIONetwork },
+                { "StartIO", PluginDefineSymbol.PluginStartIONetwork },
             };
         
         private Dictionary<string, PluginDefineSymbol> dictPackageDefineSymbol =
