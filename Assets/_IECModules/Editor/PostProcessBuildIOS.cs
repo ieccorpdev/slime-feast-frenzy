@@ -163,7 +163,9 @@ public class PostProcessBuildIOS : MonoBehaviour
             "yrqqpx2mcb.skadnetwork",
             "z4gj7hsk7h.skadnetwork",
             "su67r6k2v3.skadnetwork",
-            "h65wbv5k3f.skadnetwork"
+            "h65wbv5k3f.skadnetwork",
+            "z24wtl6j62.skadnetwork",
+            "k6y4y55b64.skadnetwork",
         };
         
         AddMissingSKAdNetworkID(listMissing, path);
