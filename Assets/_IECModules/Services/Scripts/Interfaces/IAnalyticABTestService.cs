@@ -17,6 +17,7 @@ namespace IEC
 
         ABTestConfig GetConfig(string keyNameAB);
 
+        int GetOldUserAbTestValue(ABTestConfig config);
     }
 
 }

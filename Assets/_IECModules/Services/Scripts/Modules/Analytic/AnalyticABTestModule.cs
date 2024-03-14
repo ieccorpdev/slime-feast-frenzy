@@ -193,5 +193,11 @@ namespace IEC
                 Debug.Log("AB Value: " + randValue);
             }
         }
+
+        public int GetOldUserAbTestValue(ABTestConfig config)
+        {
+            int randValue = GetRandomIndexByRatioList(config.ListRandomRatio, config.ListEventsAB.Length);
+            return randValue;
+        }
     }
 }

@@ -12,6 +12,7 @@ namespace IEC
         #region COMMON
 
         const string SEMI_OVERRIDE_KEY = "Override.";
+        UserVersionData UserVersion => Pool.Get<UserVersionData>();
 
         public void LocateController()
         {
@@ -101,15 +102,26 @@ namespace IEC
             var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
             var activeDate = activeAb.GetAbTestDate(0);
             var isNewAbDate = curTestDate.config.KeyName != activeDate.config.KeyName;
-            PlayerData.AddUserVersion(Application.version, isNewAbDate ? activeDate.FullVersion : curTestDate.FullVersion);
 
             CheckSemiOverride(curTestDate, activeDate, activeAb, dictOverride);
 
             var dictApplyOverride = dictOverride.ToDictionary(kv => kv.Key, kv =>
             {
-                if (!dictAbTest[kv.Key].isSemiOverride) return true;
-                var checkOverride = serviceAbTest.GetValue(SEMI_OVERRIDE_KEY + kv.Key, 1);
-                return checkOverride == 1;
+                //return true;
+                var oldUserOverrideValue = serviceAbTest.GetValue(SEMI_OVERRIDE_KEY + kv.Key, 0);
+                var checkOverrideOldUser = oldUserOverrideValue != 0;
+                if (activeAb.isSemiOverride)
+                {
+                    if (UserVersion.IsEmpty()) return true;
+                    if (UserVersion.LastVersion().Date() == kv.Key) return true;
+                    if (UserVersion.LastVersion().Date() < kv.Key && !checkOverrideOldUser) return false;
+                    return checkOverrideOldUser;
+                }
+                else
+                {
+                    if (!dictAbTest[kv.Key].isSemiOverride) return true;
+                    return checkOverrideOldUser;
+                }
             });
             var isOverride = curTestDate.IsOverrideResult(activeDate, dictOverride, dictApplyOverride, out var overrideDate);
 
@@ -118,6 +130,8 @@ namespace IEC
             {
                 var ab = listAbTestConfig[i];
                 var testDate = ab.GetAbTestDate(0);
+                var oldUserOverrideValue = serviceAbTest.GetValue(SEMI_OVERRIDE_KEY + ab.Date, 0);
+                var checkOverrideOldUser = oldUserOverrideValue != 0;
                 if (testDate.IsApplyResult(curTestDate, overrideDate))
                 {
                     if (i < listResultAbAction.Count)
@@ -128,6 +142,24 @@ namespace IEC
                     {
                         dictResultAb[ab]?.Invoke(this, param);
                     }
+                    var isLastConfig = i == listAbTestConfig.Count - 1;
+                    if (isOverride)
+                    {
+                        UserVersion.AddUserVersion(new IEC.UserVersion()
+                        {
+                            version = UserVersionData.ApplicationVersion,
+                            abFullName = ab.ListEventsAB[0]
+                        }, true);
+                    }
+                    if (checkOverrideOldUser && isLastConfig)
+                    {
+                        listUpdateAbAction[i].Invoke(oldUserOverrideValue);
+                        UserVersion.AddUserVersion(new IEC.UserVersion()
+                        {
+                            version = UserVersionData.ApplicationVersion,
+                            abFullName = ab.ListEventsAB[oldUserOverrideValue]
+                        }, true);
+                    }
                 }
             }
 
@@ -136,6 +168,11 @@ namespace IEC
                 if (abIndex < listUpdateAbAction.Count)
                 {
                     listUpdateAbAction[abIndex].Invoke(abValue);
+                    UserVersion.AddUserVersion(new IEC.UserVersion()
+                    {
+                        version = UserVersionData.ApplicationVersion,
+                        abFullName = curTestDate.config.ListEventsAB[abValue]
+                    }, true);
                 }
                 else
                 {
@@ -166,12 +203,11 @@ namespace IEC
 
             if (isIgnore) return;
 
-            var checkOverride = activeAb.CheckSemiOverride();
+            var checkOverride = serviceAbTest.GetOldUserAbTestValue(activeAb);
             serviceAbTest.SetValue(SEMI_OVERRIDE_KEY + activeDate.date, checkOverride);
 
             string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
             string newVersion = "AB_" + activeDate.date + "_v" + checkOverride;
-            PlayerData.AddUserVersion(Application.version, newVersion, true);
             string eventName = "Override_AB_";
             eventName += activeDate.date;
 

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace IEC
@@ -67,6 +68,7 @@ namespace IEC
             if (Game.isDebugReset) return;
             PlayerData.SaveLastPlayTime();
             Services.DataSecure().SetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
+            Services.DataSecure().SetObject(UserVersionData.KEY, Pool.Get<UserVersionData>());
 
             foreach (var kv in m_DictAutoSave)
             {
@@ -85,6 +87,10 @@ namespace IEC
         {
             var playerData = Services.DataSecure().GetObject(PLAYER_DATA_KEY, Pool.Get<PlayerSecret>());
             Pool.Set(playerData);
+            var userVerData = Services.DataSecure().GetObject(UserVersionData.KEY, Pool.Get<UserVersionData>());
+            Pool.Set(userVerData);
+
+            //InitUserVersionData();
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();
             m_PlayerSecret.session++;
@@ -92,6 +98,29 @@ namespace IEC
             // check update version
             m_PlayerSecret.lastVersion = Application.version;
             Debug.Log("Application.version " + Application.version);
+        }
+
+        void InitUserVersionData()
+        {
+            var serviceAbTest = Services.ABTest();
+            var listAbTestConfig = Services.config.GetListAbTestConfig();
+            var abIndex = listAbTestConfig.FindLastIndex(x => serviceAbTest.HasValue(x.KeyName));
+
+            var forceSetAb = "ForceSetAB";
+            var forceSetAbName = Services.DataSecure().GetString(forceSetAb, "No Force Set");
+            var forceSetAbIndex = listAbTestConfig.FindLastIndex(x => x.KeyName == forceSetAbName);
+            abIndex = (forceSetAbIndex >= 0) ? forceSetAbIndex : abIndex;
+
+            var abConfig = listAbTestConfig.ElementAtOrDefault(abIndex);
+            var userVerData = Pool.Get<UserVersionData>();
+            if (userVerData.IsEmpty() && abConfig != null && abConfig.Date < 20240121) // Just example
+            {
+                userVerData.AddUserVersion(new UserVersion()
+                {
+                    version = "15.0.0",
+                    abFullName = "AB_20240107_v580"
+                });
+            }
         }
 
         public void BehaviourPauseApp(bool pause)

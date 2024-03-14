@@ -107,6 +107,15 @@ namespace IEC
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
             });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Show User Version", param =>
+            {
+                var userVerData = Pool.Get<UserVersionData>();
+                foreach (var userVer in userVerData.listInfo)
+                {
+                    Debug.LogError(userVer.JsonSerialize());
+                }
+            });
         }
 
         public void BehaviourUpdate(float deltaTime)
