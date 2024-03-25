@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using NaughtyAttributes;
 using UnityEngine;
 using Random = System.Random;
 
@@ -11,10 +12,16 @@ namespace IEC.ClickEffectModule
     {
         public Transform vfxHolder;
         public Camera cameraVFXClick;
+        [Header("Config")]
         public ModeClickEffectScreen modeClick;
         public bool turnOn = true;
-        [Header("Prefab Effect Click Screen")] public EffectClickData effectClickScreen;
-        [Header("Using By List")] public ClickEffectRandomListType typeClickEffectRandomEffect;
+        [ShowIf("modeClick",ModeClickEffectScreen.Single)]
+        [Header("Prefab Effect Click Screen")] 
+        public EffectClickData effectClickScreen;
+        [ShowIf("modeClick",ModeClickEffectScreen.List)]
+        [Header("List Prefab Effect Click Screen")] 
+        public ClickEffectRandomListType typeRandomEffect;
+        [ShowIf("modeClick",ModeClickEffectScreen.List)]
         public List<EffectClickData> listEffectClickScreen;
         private Sequence _sequence;
         private int count = 0;
@@ -60,7 +67,7 @@ namespace IEC.ClickEffectModule
 
         private int GetIndexList()
         {
-            switch (typeClickEffectRandomEffect)
+            switch (typeRandomEffect)
             {
                 case ClickEffectRandomListType.Random:
                     return UnityEngine.Random.Range(0, listEffectClickScreen.Count);
