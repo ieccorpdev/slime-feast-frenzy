@@ -195,6 +195,7 @@ namespace IEC
         {
             var serviceAbTest = Services.ABTest();
 
+            if (curTestDate.date == activeDate.date) return;
             if (serviceAbTest.HasValue(SEMI_OVERRIDE_KEY + activeDate.date)) return;
             if (!dictOverride.ContainsKey(activeDate.date)) return;
 
