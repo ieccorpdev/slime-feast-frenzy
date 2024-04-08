@@ -18,6 +18,7 @@ namespace _IECModules
     public class CheatCode : MonoBehaviour
     {
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        public const string CMP_DEVICE_HASHED_ID = "CMP_DEVICE_HASHED_ID";
         public class CheatCodeParam
         {
             public CheatCodeType type;
@@ -160,7 +161,7 @@ namespace _IECModules
             var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
             {
-                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+                UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
             }, listCrashCategory);
 
             var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
@@ -211,6 +212,16 @@ namespace _IECModules
             },new InputParam{
                 value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_reward_ad")
             });
+#if(PluginCMP)
+            AddCheatCodeButtonWithInput("Set CMP Hashed Id", param =>
+            {
+                var id = param.inputParams[0].value.ToString();
+                PlayerPrefs.SetString(CMP_DEVICE_HASHED_ID, id);
+            }, new InputParam
+            {
+                value = "test_id"
+            });
+#endif
 #if PluginApplovin
             ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
                 cheatCodeParam =>
