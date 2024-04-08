@@ -1,6 +1,6 @@
 echo "download-ci-folder"
 cd $UNITY_DIR
-wget "https://custom-cloud-build.netlify.app/ci.zip"
+wget "https://custom-gradle-7-java-11--custom-cloud-build.netlify.app/ci.zip"
 unzip ci.zip
 cp -r BuildLogic/ci ci
 mkdir Assets/CustomBuild
