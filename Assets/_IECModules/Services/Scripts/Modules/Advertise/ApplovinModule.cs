@@ -322,7 +322,7 @@ namespace IEC
                 LoadBannerAds(loadCallback, adsType);
                 return;
             }
-            if (bannerAdRequest != null) bannerAdRequest.DestroyFetchManager();
+            //if (bannerAdRequest != null) bannerAdRequest.DestroyFetchManager();
             var width = 320;
             var height = 50;
             bannerAdRequest = new APSBannerAdRequest(width, height, m_amazonConfig.bannerID);
