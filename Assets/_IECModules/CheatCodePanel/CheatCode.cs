@@ -768,6 +768,7 @@ namespace _IECModules
             if (Application.isEditor) return;
             var jsoner = new JsonDotNetModule();
             var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
+            if (idfaDataStr == null) return;
             var listIDFA = jsoner.FromJson<List<string>>(idfaDataStr.text);
             m_HaveInputPassword = m_HaveInputPassword || listIDFA.Contains(Services.UserIDFA);
             if (m_HaveInputPassword)
