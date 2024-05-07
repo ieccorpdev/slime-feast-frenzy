@@ -64,7 +64,7 @@ namespace IEC
             PlayerPrefs.Save();
         }
 
-        public void Load(Action callback)
+        public void Load(Action<bool> callback)
         {
         }
 

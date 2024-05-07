@@ -63,7 +63,7 @@ namespace IEC
 			SecurityPlayerPrefs.Save ();
 		}
 
-        public void Load(Action callback)
+        public void Load(Action<bool> callback)
         {
         }
 

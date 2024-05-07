@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using IEC;
+using NaughtyAttributes;
 
 [CreateAssetMenu(fileName = "ServicesConfig", menuName = "Services/ServicesConfig")]
 public class ServicesConfig : ScriptableObject
@@ -64,7 +65,8 @@ public class ServicesConfig : ScriptableObject
 
     [Header("RemoteConfig")]
     public bool isTestRemoteConfig;
-    public List<RemoteConfigData> remoteConfigs;
+    public RemoteConfigResource remoteConfigResource;
+    public ulong remoteConfigTimeout;
     [Header("Email Support")]
     public string emailSupport;
     public string privacyPolicy;
@@ -98,18 +100,9 @@ public class ServicesConfig : ScriptableObject
         return EcpmAdsWaterfall;
     }
 
-    public List<RemoteConfigData> GetRemoteConfigs()
+    public RemoteConfigData[] GetRemoteConfigs(bool isClear = false)
     {
-        if (remoteConfigs == null)
-        {
-            remoteConfigs = new List<RemoteConfigData>();
-        }
-
-        if(remoteCustomEventFirebase != null && !remoteConfigs.Contains(remoteCustomEventFirebase))
-        {
-            remoteConfigs.Add(remoteCustomEventFirebase);
-        }
-        return remoteConfigs;
+        return remoteConfigResource.GetAllListConfigData(isClear).ToArray();
     }
 
     public List<ABTestConfig> GetListAbTestConfig()

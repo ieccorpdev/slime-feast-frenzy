@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,8 +9,28 @@ namespace IEC
     public class RemoteConfigData : ScriptableObject
     {
         public string keyName;
-        public string remoteKeyAndroid;
-        public string remoteKeyIOS;
         public string testValue;
+        public string defaultValue;
+        //public RemoteDataType type;
+
+        public T GetDefault<T>()
+        {
+            try
+            {
+                return (T)Convert.ChangeType(defaultValue, typeof(T));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return default;
+            }
+        }
     }
+}
+
+public enum RemoteDataType
+{
+    String,
+    Int,
+    Bool
 }

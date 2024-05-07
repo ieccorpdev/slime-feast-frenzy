@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace IEC
 {
 	public enum DataType { Normal, Secure }
@@ -28,10 +30,9 @@ namespace IEC
 
 		void Save ();
 
-        void Load(System.Action callback);
+        void Load(System.Action<bool> callback);
 
         bool HasKey(string key);
-
 	}
 
 }

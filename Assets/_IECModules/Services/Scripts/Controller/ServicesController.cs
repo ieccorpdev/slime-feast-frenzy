@@ -94,11 +94,27 @@ namespace IEC
                     break;
                 case EventList.Service.FIREBASE_LOADED:
                     PushCachedEvents();
-                    m_DataRemote.Load(() =>
+                    m_DataRemote.Load((isSuccess) =>
                     {
-                        RaiseInitEvent(EventList.Service.REMOTE_CONFIG_LOADED);
+                        EventController.RaiseEvent(EventList.Service.REMOTE_CONFIG_LOADED, new EventParam(this, isSuccess));
                         SetPushCustomEventFirebase();
-
+                        if (isSuccess)
+                        {
+                            var time = 0;
+                            #if PluginFirebaseRemote
+                            time = ((FirebaseRemoteConfigModule) m_DataRemote).FetchTime;
+                            #endif
+                            Debug.LogWarning("Firebase Remote Load Success:" + time);
+                            PushEvent("remote_load_success", 1, new Dictionary<string, object>
+                            {
+                                ["time"] = time
+                            });
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Firebase Remote Load Failed");
+                            PushEvent("remote_load_failed");
+                        }
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
@@ -285,10 +301,9 @@ namespace IEC
                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
 #endif
             }
-
-            m_DataRemote = m_DataNormal;
+            
 #if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs(true), config.remoteConfigTimeout);
             SetPushCustomEventFirebase();
             Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
 #endif
@@ -512,11 +527,14 @@ namespace IEC
                 analytic.Init();
             }
 
+            
+#if !AbTestFirebase
             this.config.SetActiveAbByVersion();
             foreach (var abTest in config.abTestConfigs)
             {
                 SetUpAbTest(abTest);
             }
+#endif
         }
 
         public void SendATTAnalytic(string eventName)
