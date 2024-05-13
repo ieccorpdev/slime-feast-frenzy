@@ -42,6 +42,10 @@ public class PostProcessBuildIOS : MonoBehaviour
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
         var podProjPath = path + "/Pods/Pods.xcodeproj/project.pbxproj";
         
+        
+        PBXProject pbxProject = new PBXProject();
+        pbxProject.ReadFromFile(projectPath);
+        
         //CheckAddSmaatoSKAdNetworkID(path);
         //CheckAddInmobiSKAdNetworkID(path);
 #if PluginMaxAmazonNetwork
@@ -52,12 +56,14 @@ public class PostProcessBuildIOS : MonoBehaviour
         EditPBX();
         SigningPod();
         EditCloudSaveCapability();
+        
+#if PluginGameCenter
+        pbxProject.AddCapability(pbxProject.GetUnityMainTargetGuid(), PBXCapabilityType.GameCenter);
+#endif
 
         void EditCloudSaveCapability()
         {
             if(!Directory.Exists(Application.dataPath + "/Extensions/CloudOnce")) return;
-            PBXProject pbxProject = new PBXProject();
-            pbxProject.ReadFromFile(projectPath);
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             var entitlementsFileName = pbxProject.GetBuildPropertyForAnyConfig(mainTargetGuid, "CODE_SIGN_ENTITLEMENTS") ?? Application.productName + ".entitlements";
             ProjectCapabilityManager projectCapabilityManager = new ProjectCapabilityManager(projectPath,
@@ -73,8 +79,6 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         void EditPBX()
         {
-            PBXProject pbxProject = new PBXProject();
-            pbxProject.ReadFromFile(projectPath);
             pbxProject.SetBuildProperty(pbxProject.ProjectGuid(), "ENABLE_BITCODE", "NO");
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
