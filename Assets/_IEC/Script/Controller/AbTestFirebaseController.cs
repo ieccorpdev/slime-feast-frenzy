@@ -1,4 +1,4 @@
-#if AbTestFirebase
+// #if AbTestFirebase
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,8 +47,6 @@ namespace IEC
         
         private void ApplyRemoteConfig()
         {
-            // TODO
-            // RemoteData[s_RemoteResource.levelDifficult.keyName]
             var isOldUser = Services.DataNormal().GetBool(OLD_USER_NO_REMOTE, false);
             if (isOldUser || (!m_IsOverrideAb && !Services.IsNewInstall))
             {
@@ -56,9 +54,19 @@ namespace IEC
                 Debug.LogWarning($"[ABRCT] AB OVERRIDE {m_OverrideConfig.keyName} - reason: {reason}");
                 ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote(new List<string>(){m_OverrideConfig.keyName});
             }
+            
+            
+            //Setup feature
+            SetupFeature();
+        }
+
+        void SetupFeature()
+        {
+            /* Example
             Game.levelDifficultyVersion = RemoteData.GetInt(s_RemoteResource.levelDifficult.keyName, s_RemoteResource.levelDifficult.GetDefault<int>());
             Game.sagaBackHomeLevel = RemoteData.GetInt(s_RemoteResource.homeActivation.keyName, s_RemoteResource.homeActivation.GetDefault<int>());
             Game.shopActivationLevel = RemoteData.GetInt(s_RemoteResource.shopActivation.keyName, s_RemoteResource.shopActivation.GetDefault<int>());
+            */
         }
 
         public void BehaviourAwake()
@@ -153,7 +161,7 @@ namespace IEC
                 var param = new Dictionary<string, object>
                 {
                     ["new_version"] = abShortVersion,
-                    ["old_version"] = list.Last(),
+                    ["old_version"] = lastAb,
                     ["list_version"] = listVersion
                 };
                 Services.PushEvent($"Override_AB_{split[1]}", 1, param);
@@ -167,4 +175,4 @@ namespace IEC
         }
     }
 }
-#endif
+// #endif
