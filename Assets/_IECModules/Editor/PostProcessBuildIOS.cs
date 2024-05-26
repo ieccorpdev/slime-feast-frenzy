@@ -55,13 +55,9 @@ public class PostProcessBuildIOS : MonoBehaviour
         CopyFastlaneConfig();
         EditPBX();
         SigningPod();
-        EditCloudSaveCapability();
-        
-#if PluginGameCenter
-        pbxProject.AddCapability(pbxProject.GetUnityMainTargetGuid(), PBXCapabilityType.GameCenter);
-#endif
+        EditCapability();
 
-        void EditCloudSaveCapability()
+        void EditCapability()
         {
             if(!Directory.Exists(Application.dataPath + "/Extensions/CloudOnce")) return;
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
@@ -73,8 +69,17 @@ public class PostProcessBuildIOS : MonoBehaviour
 
             var entitleRead = File.ReadAllText(path + "/" + entitlementsFileName);
             entitleRead = entitleRead.Replace("<string>iCloud.$(CFBundleIdentifier)</string>", "");
+
+            var entitlements = new PlistDocument();
+            entitlements.ReadFromString(entitleRead);
+            var entitlementsDict = entitlements.root;
+
+#if PluginGameCenter
+            entitlementsDict.SetBoolean("com.apple.developer.game-center", true);
+#endif
+
             Debug.LogWarning(entitleRead);
-            File.WriteAllText(path + "/" + entitlementsFileName, entitleRead);
+            File.WriteAllText(entitlementsPath, entitlements.WriteToString());
         }
 
         void EditPBX()
