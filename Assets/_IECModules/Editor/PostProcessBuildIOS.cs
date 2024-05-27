@@ -79,7 +79,7 @@ public class PostProcessBuildIOS : MonoBehaviour
 #endif
 
             Debug.LogWarning(entitleRead);
-            File.WriteAllText(entitlementsPath, entitlements.WriteToString());
+            File.WriteAllText(path + "/" + entitlementsFileName, entitlements.WriteToString());
         }
 
         void EditPBX()
