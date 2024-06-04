@@ -93,6 +93,7 @@ namespace IEC
             var abConfigValue = Services.Json().FromJson<FirebaseAbConfig>(RemoteData.GetString(abConfig.keyName, abConfig.defaultValue));
             var abVersion = abConfigValue.version;
             m_IsOverrideAb = abConfigValue.isOverride;
+            if (serviceData.listSavedAbVersion == null) serviceData.listSavedAbVersion = new List<string>();
             var count = serviceData.listSavedAbVersion.Count;
             var list = serviceData.listSavedAbVersion;
 
