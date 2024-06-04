@@ -51,7 +51,7 @@ namespace IEC
             {
                 var reason = isOldUser ? "old user" : "overrideAB";
                 Debug.LogWarning($"[ABRCT] AB OVERRIDE - reason: {reason}");
-                ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
+                // ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
             }
             
             
