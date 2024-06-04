@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using _IECModules;
+#if PluginFacebook
 using Facebook.Unity.Settings;
+#endif
 using Google;
 using UnityEngine;
 using UnityEditor;
@@ -76,9 +78,12 @@ public class ImportChecklistMenu : EditorWindow
                 {
                     case "Display Name":
                         LogEditorHelper.AddLog($"Product Name: {value}");
+                        #if PluginFacebook
                         FacebookSettings.AppLabels = new List<string> {value};
+                        #endif
                         PlayerSettings.productName = value;
                         break;
+#if PluginFacebook
                     case "Facebook ID":
                         var facebookId = value;
                         LogEditorHelper.AddLog($"Facebook ID: {facebookId}");
@@ -101,6 +106,7 @@ public class ImportChecklistMenu : EditorWindow
                         EditorUtility.SetDirty(Facebook.Unity.Settings.FacebookSettings.Instance);
                         Facebook.Unity.Editor.ManifestMod.GenerateManifest();
                         break;
+#endif
                     case "Adjust Android ID":
                         LogEditorHelper.AddLog($"Adjust ID Android: {value}");
                         configId.adjustId = value;
