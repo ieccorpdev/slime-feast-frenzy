@@ -14,8 +14,6 @@ namespace IEC
         private bool m_IsRemoteLoadDoneOrTimeout = false;
         private bool m_IsFirebaseLoaded = false;
         private bool m_IsOverrideAb = false;
-        
-        private RemoteConfigData m_OverrideConfig => s_RemoteResource.isOverrideAb;
 
         private const string OLD_USER_NO_REMOTE = "AbTestFirebaseController.OLD_USER_NO_REMOTE";
 
@@ -52,8 +50,8 @@ namespace IEC
             if (isOldUser || (!m_IsOverrideAb && !Services.IsNewInstall))
             {
                 var reason = isOldUser ? "old user" : "overrideAB";
-                Debug.LogWarning($"[ABRCT] AB OVERRIDE {m_OverrideConfig.keyName} - reason: {reason}");
-                ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote(new List<string>(){m_OverrideConfig.keyName});
+                Debug.LogWarning($"[ABRCT] AB OVERRIDE - reason: {reason}");
+                ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
             }
             
             
@@ -92,8 +90,9 @@ namespace IEC
             var str = "Processing Ab Version Event";
             var serviceData = Pool.Get<ServiceData>();
 
-            var abVersion = RemoteData.GetString(abConfig.keyName, abConfig.defaultValue);
-            m_IsOverrideAb = RemoteData.GetBool(m_OverrideConfig.keyName, m_OverrideConfig.GetDefault<bool>());
+            var abConfigValue = Services.Json().FromJson<FirebaseAbConfig>(RemoteData.GetString(abConfig.keyName, abConfig.defaultValue));
+            var abVersion = abConfigValue.version;
+            m_IsOverrideAb = abConfigValue.isOverride;
             var count = serviceData.listSavedAbVersion.Count;
             var list = serviceData.listSavedAbVersion;
 
