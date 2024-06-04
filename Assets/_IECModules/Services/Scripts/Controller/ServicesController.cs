@@ -100,7 +100,7 @@ namespace IEC
                         SetPushCustomEventFirebase();
                         if (isSuccess)
                         {
-                            var time = 0;
+                            var time = 0f;
                             #if PluginFirebaseRemote
                             time = ((FirebaseRemoteConfigModule) m_DataRemote).FetchTime;
                             #endif
