@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using IEC;
+using Newtonsoft.Json;
 using UnityEditor;
 #if UNITY_ANDROID
 using UnityEditor.Android;
@@ -237,6 +238,26 @@ namespace _IECModules
             {
                 Debug.LogError("Project Checklist is missing URL link to AB Test List");
             }
+        }
+
+        public static void UpdateDefaultAbFirebase(string setAbString, bool isOverride)
+        {
+            LoadServicesConfig();
+            if (servicesConfig.remoteConfigResource == null)
+            {
+                Debug.LogError("Remote Config Resource null");
+                return;
+            }
+
+            if (servicesConfig.remoteConfigResource.abConfig == null)
+            {
+                Debug.LogError("Remote AbVersion null");
+                return;
+            }
+
+            var firebaseAbConfig = new FirebaseAbConfig { version = setAbString, isOverride = isOverride };
+            servicesConfig.remoteConfigResource.abConfig.defaultValue = JsonConvert.SerializeObject(firebaseAbConfig);
+            EditorUtility.SetDirty(servicesConfig.remoteConfigResource.abConfig);
         }
 
         public static void UpdateAbVersion(string setAbString, string platform = "", string overwriteAbName = "")

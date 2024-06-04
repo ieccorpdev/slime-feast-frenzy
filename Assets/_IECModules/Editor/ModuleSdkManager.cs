@@ -28,7 +28,7 @@ namespace _IECModules
 
 
         private const string m_AbVersionDefault =
-            "android 1.9.0 AB_20210708_v82";
+            "1.0.0 AB_20210708_v10 false";
 
         private string m_AbVersionString = m_AbVersionDefault;
 
@@ -78,7 +78,7 @@ namespace _IECModules
             SdkHelper.RemoveRegistries(GoogleRegistry);
             SdkHelper.LoadSdkVersions();
 
-            SetAbVersionString();
+            // SetAbVersionString();
 
             Debug.Log("Module Awake");
         }
@@ -105,7 +105,7 @@ namespace _IECModules
             EditorGUILayout.BeginHorizontal();
 
             if (GUILayout.Button($"Show Debug Buttons: {m_ShowDebugButton}", GUILayout.Width(buttonSize.x),
-                GUILayout.Height(buttonSize.y)))
+                    GUILayout.Height(buttonSize.y)))
             {
                 m_ShowDebugButton = !m_ShowDebugButton;
             }
@@ -125,9 +125,7 @@ namespace _IECModules
 
                 GUILayout.Space(20);
                 CreateGuiButton("Test Add Dependencies",
-                    () =>
-                    {
-                    }, 220);
+                    () => { }, 220);
             }
 
             CreateGuiLabel("1. Install SDK", m_StyleHeader1);
@@ -141,7 +139,8 @@ namespace _IECModules
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginFacebook);
             });
 
-            SdkHelper.FacebookSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.FacebookSdkLoader.versionSelect,
+            SdkHelper.FacebookSdkLoader.versionSelect = EditorGUILayout.Popup("",
+                SdkHelper.FacebookSdkLoader.versionSelect,
                 SdkHelper.FacebookSdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
@@ -154,7 +153,8 @@ namespace _IECModules
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginKochava);
             });
 
-            SdkHelper.KochavaSdkLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.KochavaSdkLoader.versionSelect,
+            SdkHelper.KochavaSdkLoader.versionSelect = EditorGUILayout.Popup("",
+                SdkHelper.KochavaSdkLoader.versionSelect,
                 SdkHelper.KochavaSdkLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
 
@@ -191,7 +191,8 @@ namespace _IECModules
                 ImportUnityPackageHelper.DownloadPackage(SdkHelper.ApplovinMaxLoader.SdkSelectVersionUrl);
                 ScriptingDefineSymbolEditor.AddDefineSymbol(PluginDefineSymbol.PluginApplovin);
             });
-            SdkHelper.ApplovinMaxLoader.versionSelect = EditorGUILayout.Popup("", SdkHelper.ApplovinMaxLoader.versionSelect,
+            SdkHelper.ApplovinMaxLoader.versionSelect = EditorGUILayout.Popup("",
+                SdkHelper.ApplovinMaxLoader.versionSelect,
                 SdkHelper.ApplovinMaxLoader.ListSDKVersion,
                 GUILayout.Width(220), GUILayout.Height(dropdownSize.y));
             CreateGuiBreakLine();
@@ -378,11 +379,13 @@ namespace _IECModules
             CreateGuiLabel("3. Update Project Checklist", m_StyleHeader1);
 
             if (GUILayout.Button("Update from Google Docs", GUILayout.Width(buttonSize.x),
-                GUILayout.Height(buttonSize.y)))
+                    GUILayout.Height(buttonSize.y)))
             {
                 OnClickSetSDKId();
             }
-            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+
+            m_GoogleSheetUrl = EditorGUILayout.TextField(m_GoogleSheetUrl,
+                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
@@ -392,36 +395,23 @@ namespace _IECModules
             CreateGuiLabel("4. Update AB Test Version", m_StyleHeader1);
 
             if (GUILayout.Button("Update AB string directly", GUILayout.Width(buttonSize.x),
-                GUILayout.Height(buttonSize.y)))
+                    GUILayout.Height(buttonSize.y)))
             {
-                var config = ProjectChecklistHelper.servicesConfig;
                 var split = m_AbVersionString.Split(' ');
-                config.isVersionByPlatform = split.Length == 3;
-                if (config.isVersionByPlatform)
-                {
-                    var platform = split[0];
-                    var platformVersion = config.GetPlatformVersion(platform);
-                    var version = split[1];
-                    var overwriteAbName = (platformVersion.version == version) ? platformVersion.abTest : "";
-                    platformVersion.version = version;
-                    var lastAbString = split[2];
-                    ProjectChecklistHelper.UpdateAbVersion(lastAbString, platform, overwriteAbName);
-                }
-                else
-                {
-                    // example: "1.9.0 AB_20210708_v82"
-                    var version = split[0];
-                    var abString = split[1];
-                    PlayerSettings.bundleVersion = version;
-                    ProjectChecklistHelper.UpdateAbVersion(abString);
-                }
-                EditorUtility.SetDirty(config);
+                // example: "1.9.0 AB_20210708_v82"
+                var version = split[0];
+                var abString = split[1];
+                var isOverride = bool.Parse(split[2]); 
+                PlayerSettings.bundleVersion = version;
+                ProjectChecklistHelper.UpdateDefaultAbFirebase(abString, isOverride);
             }
-            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString, GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
+
+            m_AbVersionString = EditorGUILayout.TextField(m_AbVersionString,
+                GUILayout.Width(EditorGUIUtility.currentViewWidth - buttonSize.x * 1.1f));
 
             CreateGuiBreakLine();
             if (GUILayout.Button("Update AB from Project Checklist", GUILayout.Width(buttonSize.x),
-                GUILayout.Height(buttonSize.y)))
+                    GUILayout.Height(buttonSize.y)))
             {
                 ProjectChecklistHelper.UpdateAbVersionFromChecklist(m_GoogleSheetUrl);
             }
@@ -437,10 +427,14 @@ namespace _IECModules
         {
             var config = ProjectChecklistHelper.servicesConfig;
             var platformVersion = config.GetPlatformVersion();
-            var version = string.IsNullOrWhiteSpace(platformVersion.version) ? PlayerSettings.bundleVersion : platformVersion.version;
+            var version = string.IsNullOrWhiteSpace(platformVersion.version)
+                ? PlayerSettings.bundleVersion
+                : platformVersion.version;
             var abName = platformVersion.abTest;
             var abTest = config.GetListAbTestConfig().LastOrDefault(ab => ab.KeyName == abName);
-            var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
+            var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName()))
+                ? "AB_20210708_v82"
+                : abTest.GetLastAbName();
             var platform = config.isVersionByPlatform ? config.platform.ToLower() : "android";
             m_AbVersionString = platform + " " + version + " " + abVerStr;
         }
@@ -526,6 +520,7 @@ namespace _IECModules
             {
                 Directory.CreateDirectory(Application.dataPath + "/OgurySdk/Editor");
             }
+
             var sourcePath = Application.dataPath + "/_IECModules/Plugins/Ogury";
             var dependenciesPath = sourcePath + "/OgurySdkDependencies.xml";
             File.Copy(dependenciesPath, Application.dataPath + "/OgurySdk/Editor/OgurySdkDependencies.xml", true);

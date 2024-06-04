@@ -10,10 +10,6 @@ namespace IEC
     public class RemoteConfigResource : BaseConfig
     {
         public RemoteConfigData abConfig;
-        public RemoteConfigData isOverrideAb;
-        public RemoteConfigData levelDifficult;
-        public RemoteConfigData homeActivation;
-        public RemoteConfigData shopActivation;
 
         private List<RemoteConfigData> m_ListData = new List<RemoteConfigData>();
         public List<RemoteConfigData> GetAllListConfigData(bool isNeedClear = false)

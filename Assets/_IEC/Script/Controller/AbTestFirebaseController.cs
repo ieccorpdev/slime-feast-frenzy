@@ -1,4 +1,4 @@
-// #if AbTestFirebase
+#if AbTestFirebase
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,7 +18,8 @@ namespace IEC
         private RemoteConfigData m_OverrideConfig => s_RemoteResource.isOverrideAb;
 
         private const string OLD_USER_NO_REMOTE = "AbTestFirebaseController.OLD_USER_NO_REMOTE";
-        
+
+        private IDataService RemoteData => Services.DataRemote();
         public void LocateController()
         {
             Controllers.Add(this);
@@ -71,9 +72,6 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            Game.timeDelayFullAds = 30f;
-            Game.levelDifficultyVersion = 2;
-            Game.isHaveGoldBonus = true;
             screenLoading.hideAction = new Action(() =>
             {
                 m_IsRemoteLoadDoneOrTimeout = true;
@@ -175,4 +173,10 @@ namespace IEC
         }
     }
 }
-// #endif
+#endif
+
+public class FirebaseAbConfig
+{
+    public string version;
+    public bool isOverride;
+}
