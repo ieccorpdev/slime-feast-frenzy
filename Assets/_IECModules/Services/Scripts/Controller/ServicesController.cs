@@ -641,8 +641,9 @@ namespace IEC
                 m_Ads = ecpmAds;
 #endif
 #if (PluginApplovin)
+                var listHackConfig = config.listApplovinHackConfig;
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
+                applovinAds.Init(listHackConfig, config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
                 {
                     if (result)
                     {

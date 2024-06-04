@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 #if (PluginAdjust)
 using com.adjust.sdk;
 #endif
@@ -17,6 +18,8 @@ namespace IEC
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
 
         AdsPlatformConfig m_Config;
+        List<AdsPlatformConfig> m_ListHackConfig = new List<AdsPlatformConfig>();
+        Dictionary<AdsEnum, int> m_DictHackIdIndex = new Dictionary<AdsEnum, int>();
         AdsPlatformConfig m_amazonConfig;
         double m_Ecpm;
         bool m_IsAutoReload;
@@ -25,6 +28,39 @@ namespace IEC
 
         int m_LoadFullAdCount = 0;
         int m_LoadRewardCount = 0;
+        List<string> m_ListAdsUnit = new List<string>();
+
+        bool IsHaveApplovinHack(AdsEnum adsType)
+        {
+            return GetListHackId(adsType).Count > 0;
+        }
+
+        public List<string> GetListHackId(AdsEnum adsType)
+        {
+            if (adsType == AdsEnum.INTERSTITIAL) return m_ListHackConfig.FindAll(x => !string.IsNullOrEmpty(x.interstitialID)).Select(x => x.interstitialID).ToList();
+            else if (adsType == AdsEnum.REWARD) return m_ListHackConfig.FindAll(x => !string.IsNullOrEmpty(x.rewardID)).Select(x => x.rewardID).ToList();
+            else return m_ListHackConfig.FindAll(x => !string.IsNullOrEmpty(x.bannerID)).Select(x => x.bannerID).ToList();
+        }
+
+        void DisableB2BAdUnitIds(AdsEnum adsEnum)
+        {
+            var listId = GetListHackId(adsEnum);
+            if (listId.Count <= 0) return;
+            var idStr = string.Join(",", listId.ToArray());
+            MaxSdk.SetExtraParameter("disable_b2b_ad_unit_ids", $"{idStr}");
+        }
+
+        void DisableAutoRetries(AdsEnum adsEnum)
+        {
+            var listId = GetListHackId(adsEnum);
+            if (listId.Count <= 0) return;
+            foreach (var id in listId)
+            {
+                if (adsEnum == AdsEnum.INTERSTITIAL) MaxSdk.SetInterstitialExtraParameter(id, "disable_auto_retries", "true");
+                else if (adsEnum == AdsEnum.REWARD) MaxSdk.SetRewardedAdExtraParameter(id, "disable_auto_retries", "true");
+                else MaxSdk.SetBannerExtraParameter(id, "disable_auto_retries", "true");
+            }
+        }
 
         //AdsStateData m_BannerAdsState = new AdsStateData();
         AdsStateData m_FullAdsState = new AdsStateData();
@@ -41,7 +77,7 @@ namespace IEC
         private bool isFirstLoadInter = true, isFirstLoadReward = true;
 #endif
 
-        public void Init(AdsConfig adsConfig, AmazonConfig amazonConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
+        public void Init(List<AdsConfigWithName> listHackConfig, AdsConfig adsConfig, AmazonConfig amazonConfig, bool isAcceptConsent, bool isAutoReload, Action<bool> afterInitCallback, Action<string, float, Dictionary<string, object>> pushEventAction)
         {
             var config = (Application.platform == RuntimePlatform.Android) ? adsConfig.android : adsConfig.ios;
             config.appID = config.appID.Trim();
@@ -53,6 +89,36 @@ namespace IEC
             Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
             Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
             Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
+
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                listHackConfig = new List<AdsConfigWithName>();
+            }
+
+            foreach (var hackConfig in listHackConfig)
+            {
+                var platformHackConfig = (Application.platform == RuntimePlatform.Android) ? hackConfig.adsConfig.android : hackConfig.adsConfig.ios;
+                platformHackConfig.appID = platformHackConfig.appID.Trim();
+                platformHackConfig.bannerID = platformHackConfig.bannerID.Trim();
+                platformHackConfig.interstitialID = platformHackConfig.interstitialID.Trim();
+                platformHackConfig.rewardID = platformHackConfig.rewardID.Trim();
+
+                Debug.LogWarning($"Applovin Hack App ID {hackConfig.name}: {platformHackConfig.appID}");
+                Debug.LogWarning($"Applovin Hack Banner ID {hackConfig.name}: {platformHackConfig.bannerID}");
+                Debug.LogWarning($"Applovin Hack Inter ID {hackConfig.name}: {platformHackConfig.interstitialID}");
+                Debug.LogWarning($"Applovin Hack Reward ID {hackConfig.name}: {platformHackConfig.rewardID}");
+                m_ListHackConfig.Add(platformHackConfig);
+                AddListAdsUnit(platformHackConfig.bannerID);
+                AddListAdsUnit(platformHackConfig.interstitialID);
+                AddListAdsUnit(platformHackConfig.rewardID);
+            }
+
+            if (listHackConfig.Count == 0)
+            {
+                AddListAdsUnit(config.bannerID);
+                AddListAdsUnit(config.interstitialID);
+                AddListAdsUnit(config.rewardID);
+            }
 
             this.pushEventAction = pushEventAction;
 
@@ -80,6 +146,11 @@ namespace IEC
             }
             m_amazonConfig = amzConfig;
 #endif
+
+            DisableB2BAdUnitIds(AdsEnum.INTERSTITIAL);
+            DisableB2BAdUnitIds(AdsEnum.REWARD);
+            DisableB2BAdUnitIds(AdsEnum.BANNER_TOP);
+
             if (string.IsNullOrEmpty(config.appID.Trim()) == false)
             {
                 MaxSdk.SetSdkKey(config.appID);
@@ -88,7 +159,8 @@ namespace IEC
                     MaxSdk.SetVerboseLogging(true);
                 }
 
-                MaxSdk.InitializeSdk();
+                Debug.LogWarning($"Enable ads units: {m_ListAdsUnit.JsonSerialize()}");
+                MaxSdk.InitializeSdk(m_ListAdsUnit.ToArray());
 
                 MaxSdkCallbacks.OnSdkInitializedEvent += (MaxSdkBase.SdkConfiguration sdkConfiguration) =>
                 {
@@ -98,12 +170,28 @@ namespace IEC
                     InitializeInterstitialAds();
                     InitializeRewardedAds();
                     afterInitCallback?.Invoke(true);
+                    DisableAutoRetries(AdsEnum.INTERSTITIAL);
+                    DisableAutoRetries(AdsEnum.REWARD);
+                    DisableAutoRetries(AdsEnum.BANNER_TOP);
                 };
             }
 
-            m_Config = config;
+            //m_Config = config;
+            m_Config = new AdsPlatformConfig()
+            {
+                appID = config.appID,
+                interstitialID = IsHaveApplovinHack(AdsEnum.INTERSTITIAL) ? GetListHackId(AdsEnum.INTERSTITIAL)[0] : config.interstitialID,
+                rewardID = IsHaveApplovinHack(AdsEnum.REWARD) ? GetListHackId(AdsEnum.REWARD)[0] : config.rewardID,
+                bannerID = IsHaveApplovinHack(AdsEnum.BANNER_TOP) ? GetListHackId(AdsEnum.BANNER_TOP)[0] : config.bannerID
+            };
             m_IsAutoReload = isAutoReload;
             m_IsAcceptConsent = isAcceptConsent;
+        }
+
+        bool IsInterUnit(string adUnit)
+        {
+            if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL)) return m_ListHackConfig.Exists(x => adUnit.Equals(x.interstitialID));
+            return adUnit.Equals(m_Config.interstitialID);
         }
 
         public double GetEcpm(AdsEnum adsType)
@@ -401,6 +489,7 @@ namespace IEC
             adsState.isWaitToShow = false;
             m_FullAdsState = adsState;
 
+            ShowLogApplovinHack($"Load ads id: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
             MaxSdk.LoadInterstitial(m_Config.interstitialID);
         }
 
@@ -413,6 +502,12 @@ namespace IEC
             {
                 adsState.onShow = showCallback;
                 MaxSdk.ShowInterstitial(m_Config.interstitialID);
+                if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL))
+                {
+                    ShowLogApplovinHack($"Show ads id: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
+                    m_DictHackIdIndex[AdsEnum.INTERSTITIAL] = 0;
+                    m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
+                }
             }
             else
             {
@@ -463,6 +558,7 @@ namespace IEC
             var adsState = m_FullAdsState;
             adsState.isLoaded = true;
             adsState.isLoading = false;
+            ShowLogApplovinHack($"InterstitialAd_OnAdLoaded: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
         }
 
@@ -473,6 +569,17 @@ namespace IEC
             adsState.isLoaded = false;
             adsState.isLoading = false;
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.FAIL);
+
+            if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL))
+            {
+                m_DictHackIdIndex[AdsEnum.INTERSTITIAL] += 1;
+                if (m_DictHackIdIndex[AdsEnum.INTERSTITIAL] >= GetListHackId(AdsEnum.INTERSTITIAL).Count)
+                {
+                    m_DictHackIdIndex[AdsEnum.INTERSTITIAL] = 0;
+                }
+                ShowLogApplovinHack($"InterstitialAd_OnAdFailedToLoad: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
+                m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
+            }
 
             if (m_LoadFullAdCount < 3)
             {
@@ -559,6 +666,7 @@ namespace IEC
             adsState.isLoaded = false;
             m_RewardAdsState = adsState;
 
+            ShowLogApplovinHack($"Load ads id: {m_Config.rewardID}", AdsEnum.REWARD);
             MaxSdk.LoadRewardedAd(m_Config.rewardID);
         }
 #if(PluginMaxAmazonNetwork)
@@ -609,6 +717,12 @@ namespace IEC
             {
                 adsState.onShow = showCallback;
                 MaxSdk.ShowRewardedAd(m_Config.rewardID);
+                if (IsHaveApplovinHack(AdsEnum.REWARD))
+                {
+                    ShowLogApplovinHack($"Show ads id: {m_Config.rewardID}", AdsEnum.REWARD);
+                    m_DictHackIdIndex[AdsEnum.REWARD] = 0;
+                    m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
+                }
             }
             else
             {
@@ -636,6 +750,17 @@ namespace IEC
             m_RewardAdsState.isLoaded = false;
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.FAIL);
 
+            if (IsHaveApplovinHack(AdsEnum.REWARD))
+            {
+                m_DictHackIdIndex[AdsEnum.REWARD] += 1;
+                if (m_DictHackIdIndex[AdsEnum.REWARD] >= GetListHackId(AdsEnum.REWARD).Count)
+                {
+                    m_DictHackIdIndex[AdsEnum.REWARD] = 0;
+                }
+                ShowLogApplovinHack($"RewardedAdsView_OnAdFailedToLoad: {m_Config.rewardID}", AdsEnum.REWARD);
+                m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
+            }
+
             if (m_LoadRewardCount < 3)
             {
                 m_LoadRewardCount++;
@@ -649,6 +774,7 @@ namespace IEC
             AdsStateData.DebugLog("RewardedAdsView_OnAdLoaded");
             m_RewardAdsState.isLoaded = true;
             m_RewardAdsState.isLoading = false;
+            ShowLogApplovinHack($"RewardedAdsView_OnAdLoaded: {m_Config.rewardID}", AdsEnum.REWARD);
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.DONE);
         }
 
@@ -720,7 +846,7 @@ namespace IEC
             };
 
             var adType = AdsEnum.BANNER_BOTTOM;
-            if (adUnitId.Equals(m_Config.interstitialID))
+            if (IsInterUnit(adUnitId))
             {
                 adType = AdsEnum.INTERSTITIAL;
             }
@@ -755,7 +881,7 @@ namespace IEC
             {
                 return "rev_banner_ad";
             }
-            else if (adUnitId.Equals(m_Config.interstitialID))
+            else if (IsInterUnit(adUnitId))
             {
                 return "rev_full_ad";
             }
@@ -773,6 +899,18 @@ namespace IEC
         {
             m_LoadFullAdCount = 0;
             m_LoadRewardCount = 0;
+        }
+
+        void ShowLogApplovinHack(string log, AdsEnum adsEnum)
+        {
+            if (!IsHaveApplovinHack(adsEnum)) return;
+            Debug.Log($"[Applovin Hack {adsEnum}] {log}");
+        }
+
+        public void AddListAdsUnit(string adsUnit)
+        {
+            if (m_ListAdsUnit.Exists(x => x.Equals(adsUnit))) return;
+            m_ListAdsUnit.Add(adsUnit);
         }
     }
 }
