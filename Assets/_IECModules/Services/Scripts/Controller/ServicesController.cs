@@ -107,7 +107,12 @@ namespace IEC
 #endif
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
+#if PluginApplovin
+                    StartCoroutine(IE_LoadAd(AdsEnum.INTERSTITIAL));
+                    StartCoroutine(IE_LoadAd(AdsEnum.REWARD));
+#else
                     StartCoroutine(IE_LoadAd());
+#endif
                     break;
             }
         }
@@ -1328,7 +1333,7 @@ namespace IEC
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
 #endif
-        #endregion
+#endregion
 
         int GetIntDeviceVerion(string version)
         {
@@ -1360,6 +1365,32 @@ namespace IEC
                 }
                 yield return delaySec;
             }
+        }
+
+        IEnumerator IE_LoadAd(AdsEnum adsEnum)
+        {
+#if PluginApplovin
+            var applovinAds = (ApplovinModule)m_Ads;
+            if (applovinAds == null) yield break;
+            var delaySec = new WaitForSecondsRealtime(applovinAds.IsHaveApplovinHack(adsEnum) ? 20 : 3);
+            while (true)
+            {
+                if (adsEnum == AdsEnum.INTERSTITIAL)
+                {
+                    if (!m_ServiceData.isNoAds)
+                    {
+                        Ads().Load(adsEnum, null);
+                    }
+                }
+                else
+                {
+                    Ads().Load(adsEnum, null);
+                }
+                yield return delaySec;
+            }
+#else
+            yield break;
+#endif
         }
         
         public void ResetTimeShowFullAds()

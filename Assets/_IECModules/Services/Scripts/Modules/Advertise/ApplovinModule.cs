@@ -30,7 +30,7 @@ namespace IEC
         int m_LoadRewardCount = 0;
         List<string> m_ListAdsUnit = new List<string>();
 
-        bool IsHaveApplovinHack(AdsEnum adsType)
+        public bool IsHaveApplovinHack(AdsEnum adsType)
         {
             return GetListHackId(adsType).Count > 0;
         }
