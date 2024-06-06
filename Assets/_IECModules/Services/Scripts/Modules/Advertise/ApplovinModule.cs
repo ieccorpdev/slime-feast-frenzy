@@ -30,6 +30,19 @@ namespace IEC
         int m_LoadRewardCount = 0;
         List<string> m_ListAdsUnit = new List<string>();
 
+        public void CheckResetHackIdIndex(AdsEnum adsEnum)
+        {
+            if (!m_DictHackIdIndex.ContainsKey(adsEnum))
+            {
+                m_DictHackIdIndex[adsEnum] = 0;
+            }
+            m_DictHackIdIndex[adsEnum] += 1;
+            if (m_DictHackIdIndex[adsEnum] >= GetListHackId(adsEnum).Count)
+            {
+                m_DictHackIdIndex[adsEnum] = 0;
+            }
+        }
+
         public bool IsHaveApplovinHack(AdsEnum adsType)
         {
             return GetListHackId(adsType).Count > 0;
@@ -572,11 +585,7 @@ namespace IEC
 
             if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL))
             {
-                m_DictHackIdIndex[AdsEnum.INTERSTITIAL] += 1;
-                if (m_DictHackIdIndex[AdsEnum.INTERSTITIAL] >= GetListHackId(AdsEnum.INTERSTITIAL).Count)
-                {
-                    m_DictHackIdIndex[AdsEnum.INTERSTITIAL] = 0;
-                }
+                CheckResetHackIdIndex(AdsEnum.INTERSTITIAL);
                 ShowLogApplovinHack($"InterstitialAd_OnAdFailedToLoad: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
                 m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
             }
@@ -752,11 +761,7 @@ namespace IEC
 
             if (IsHaveApplovinHack(AdsEnum.REWARD))
             {
-                m_DictHackIdIndex[AdsEnum.REWARD] += 1;
-                if (m_DictHackIdIndex[AdsEnum.REWARD] >= GetListHackId(AdsEnum.REWARD).Count)
-                {
-                    m_DictHackIdIndex[AdsEnum.REWARD] = 0;
-                }
+                CheckResetHackIdIndex(AdsEnum.REWARD);
                 ShowLogApplovinHack($"RewardedAdsView_OnAdFailedToLoad: {m_Config.rewardID}", AdsEnum.REWARD);
                 m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
             }
