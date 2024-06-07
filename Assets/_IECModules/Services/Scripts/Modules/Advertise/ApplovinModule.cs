@@ -207,6 +207,12 @@ namespace IEC
             return adUnit.Equals(m_Config.interstitialID);
         }
 
+        bool IsRewardUnit(string adUnit)
+        {
+            if (IsHaveApplovinHack(AdsEnum.REWARD)) return m_ListHackConfig.Exists(x => adUnit.Equals(x.rewardID));
+            return adUnit.Equals(m_Config.rewardID);
+        }
+
         public double GetEcpm(AdsEnum adsType)
         {
             return 0;
@@ -855,7 +861,7 @@ namespace IEC
             {
                 adType = AdsEnum.INTERSTITIAL;
             }
-            else if (adUnitId.Equals(m_Config.rewardID))
+            else if (IsRewardUnit(adUnitId))
             {
                 adType = AdsEnum.REWARD;
             }
@@ -890,7 +896,7 @@ namespace IEC
             {
                 return "rev_full_ad";
             }
-            else if (adUnitId.Equals(m_Config.rewardID))
+            else if (IsRewardUnit(adUnitId)) 
             {
                 return "rev_reward_ad";
             }
