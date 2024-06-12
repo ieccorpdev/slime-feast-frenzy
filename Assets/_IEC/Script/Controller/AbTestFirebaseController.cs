@@ -90,7 +90,8 @@ namespace IEC
             var str = "Processing Ab Version Event";
             var serviceData = Pool.Get<ServiceData>();
 
-            var abConfigValue = Services.Json().FromJson<FirebaseAbConfig>(RemoteData.GetString(abConfig.keyName, abConfig.defaultValue));
+            var abConfigStr = RemoteData.GetString(abConfig.keyName, abConfig.defaultValue);
+            var abConfigValue = Services.Json().FromJson<FirebaseAbConfig>(abConfigStr);
             var abVersion = abConfigValue.version;
             m_IsOverrideAb = abConfigValue.isOverride;
             if (serviceData.listSavedAbVersion == null) serviceData.listSavedAbVersion = new List<string>();
@@ -164,7 +165,7 @@ namespace IEC
                 };
                 Services.PushEvent($"Override_AB_{split[1]}", 1, param);
                 Debug.LogWarning($"{str} Result: OVERRIDE_USER");
-                RemoteData.SetString(abConfig.keyName, abVersion);
+                RemoteData.SetString(abConfig.keyName, abConfigStr);
                 RemoteData.Save();
                 return;
             }
