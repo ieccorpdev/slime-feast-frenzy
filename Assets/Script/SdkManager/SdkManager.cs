@@ -26,33 +26,33 @@ public class SdkManager : MonoBehaviour
 
     private void Update()
     {
-        if (!Input.GetMouseButtonUp(0)) return;
-
-        var cornerSize = 0.2f;
-        var isClickActivate = false;
-
-        var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
-        var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
-        var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
-        var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
-
-        isClickActivate |= ((positionActivate & PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
-        isClickActivate |= ((positionActivate & PositionActivate.TopRight) != 0 && isClickTop && isClickRight);
-        isClickActivate |= ((positionActivate & PositionActivate.BotLeft) != 0 && isClickBot && isClickLeft);
-        isClickActivate |= ((positionActivate & PositionActivate.BotRight) != 0 && isClickBot && isClickRight);
-
-        if (isClickActivate)
-        {
-            m_TestIndex++;
-            if (m_TestIndex == 8)
-            {
-                Reporter.doShow();
-                m_TestIndex = 0;
-            }
-        }
-        else
-        {
-            m_TestIndex = 0;
-        }
+        // if (!Input.GetMouseButtonUp(0)) return;
+        //
+        // var cornerSize = 0.2f;
+        // var isClickActivate = false;
+        //
+        // var isClickTop = Input.mousePosition.y > Screen.height * (1 - cornerSize);
+        // var isClickBot = Input.mousePosition.y < Screen.height * cornerSize;
+        // var isClickRight = Input.mousePosition.x > Screen.width * (1 - cornerSize);
+        // var isClickLeft = Input.mousePosition.x < Screen.width * cornerSize;
+        //
+        // isClickActivate |= ((positionActivate & PositionActivate.TopLeft) != 0 && isClickTop && isClickLeft);
+        // isClickActivate |= ((positionActivate & PositionActivate.TopRight) != 0 && isClickTop && isClickRight);
+        // isClickActivate |= ((positionActivate & PositionActivate.BotLeft) != 0 && isClickBot && isClickLeft);
+        // isClickActivate |= ((positionActivate & PositionActivate.BotRight) != 0 && isClickBot && isClickRight);
+        //
+        // if (isClickActivate)
+        // {
+        //     m_TestIndex++;
+        //     if (m_TestIndex == 8)
+        //     {
+        //         Reporter.doShow();
+        //         m_TestIndex = 0;
+        //     }
+        // }
+        // else
+        // {
+        //     m_TestIndex = 0;
+        // }
     }
 }
