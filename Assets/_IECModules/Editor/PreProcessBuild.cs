@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using _IECModules;
 using SimpleJSON;
 using UnityEditor;
@@ -21,6 +22,7 @@ public class PreProcessBuild : IPreprocessBuildWithReport
         SetTargetSdkAndroid();
         ProjectResolveHelper.UpdateApplovinQualityService();
         AddPermissionManifest();
+        AddStartIOVersion();
     }
 
     private void SetTargetSdkAndroid()
@@ -92,5 +94,61 @@ public class PreProcessBuild : IPreprocessBuildWithReport
        
         
         File.WriteAllText(androidManifestPath, androidManifestContent);
+    }
+    
+    private void AddStartIOVersion()
+    {
+        // Path to the config asset
+        string assetPath = "Assets/Resources/StartIOConfig.asset";
+
+        // Check if the Resources folder exists, if not, create it
+        if (!AssetDatabase.IsValidFolder("Assets/Resources"))
+        {
+            AssetDatabase.CreateFolder("Assets", "Resources");
+        }
+
+        // Load config
+        StartIOConfig startIOConfig = AssetDatabase.LoadAssetAtPath<StartIOConfig>(assetPath);
+
+        // If config doesn't exist, create a new one
+        if (startIOConfig == null)
+        {
+            startIOConfig = ScriptableObject.CreateInstance<StartIOConfig>();
+            AssetDatabase.CreateAsset(startIOConfig, assetPath);
+            AssetDatabase.SaveAssets();
+        }
+        
+        // Check if AdSdk script is exist in project
+        var adSdkPath = "Assets/Plugins/API/AdSdk.cs";
+        if (!File.Exists(adSdkPath))
+        {
+            startIOConfig.isHaveStartIO = false;
+        }
+        else
+        {
+            startIOConfig.isHaveStartIO = true;
+            
+            // Read all lines from the file
+            string[] lines = File.ReadAllLines(adSdkPath);
+
+            // Find the line that contains "WrapperVersion"
+            string line = lines.FirstOrDefault(l => l.Contains("WrapperVersion"));
+
+            if (line != null)
+            {
+                // Split the line by '=' and then by ';'
+                string[] parts = line.Split(new[] { '=', ';' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // The second part should be the value of WrapperVersion, trimmed of any whitespace
+                if (parts.Length >= 2)
+                {
+                    startIOConfig.startIOVersion = parts[1].Trim();
+                }
+            }
+        }
+
+        // Modify the ScriptableObject
+        EditorUtility.SetDirty(startIOConfig);
+        AssetDatabase.SaveAssets();
     }
 }

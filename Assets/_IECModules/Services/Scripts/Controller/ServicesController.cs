@@ -402,6 +402,7 @@ namespace IEC
                 RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
             });
 #endif
+            LogStartIOVersion();
             InitAdsAfterGDPR(true, isHaveIDFA);
         }
 
@@ -471,6 +472,26 @@ namespace IEC
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
+        }
+
+        void LogStartIOVersion()
+        {
+            if (Application.isEditor)
+                return;
+            
+            StartIOConfig startIOConfig = Resources.Load<StartIOConfig>("StartIOConfig");
+
+            if (startIOConfig != null)
+            {
+                if (startIOConfig.isHaveStartIO)
+                    Debug.LogWarning("StartIO Versiom: " + startIOConfig.startIOVersion);
+                else
+                    Debug.LogWarning("Doesn't have StartIO");
+            }
+            else
+            {
+                Debug.LogWarning("Doesn't have StartIO or SOMETHING GOES WRONG WHEN BUILD");
+            }
         }
 
         void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
