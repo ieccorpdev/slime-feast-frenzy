@@ -124,7 +124,7 @@ namespace IEC
                     m_IsOverrideAb = true;
                 }
                 Debug.LogWarning($"{str} Result: NEW_USER");
-                RemoteData.SetString(abConfig.keyName, abVersion);
+                RemoteData.SetString(abConfig.keyName, abConfigStr);
                 RemoteData.Save();
                 return;
             }
