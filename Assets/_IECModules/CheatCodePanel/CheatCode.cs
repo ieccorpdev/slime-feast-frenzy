@@ -13,6 +13,11 @@ using UnityEngine.UI;
 using StartApp;
 #endif
 
+#if AbTestFirebase
+using UnityToolbag;
+using Firebase.Installations;
+#endif
+
 namespace _IECModules
 {
     public class CheatCode : MonoBehaviour
@@ -147,6 +152,19 @@ namespace _IECModules
                 param.buttonText = "Debug Log: " + (Debug.unityLogger.filterLogType == LogType.Log ? "enabled" : "disabled");
                 PlayerPrefs.SetInt(ModuleController.LOG_ENABLED_KEY, Debug.unityLogger.filterLogType == LogType.Log ? 1 : 0);
             });
+            
+#if AbTestFirebase
+            AddCheatCodeButton("Copy Installation token", cheatCodeParam =>
+            {
+                FirebaseInstallations.DefaultInstance.GetTokenAsync(forceRefresh: false).ContinueWith(
+                    task => {
+                        if (!(task.IsCanceled || task.IsFaulted) && task.IsCompleted) {
+                            Debug.LogWarning($"Installations token {task.Result}");
+                            task.Result.CopyToClipboard();
+                        }
+                    });
+            });
+#endif
 
             AddCheatCodeButtonWithInput("Time Scale", param => { Time.timeScale = float.Parse(param.inputParams[0].value.ToString()); }, new InputParam
             {
