@@ -39,6 +39,5 @@ platform :ios do
     update_build_number
     build_app(workspace: "Unity-iPhone.xcworkspace", scheme: "Unity-iPhone", xcargs: "-allowProvisioningUpdates", export_xcargs: "-allowProvisioningUpdates",
         export_method: "ad-hoc", output_name: "app.ipa")
-    install_on_device(device_id: options[:deviceId], ipa: "./app.ipa")
   end
 end
