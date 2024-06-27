@@ -126,12 +126,9 @@ namespace IEC
                 AddListAdsUnit(platformHackConfig.rewardID);
             }
 
-            if (listHackConfig.Count == 0)
-            {
-                AddListAdsUnit(config.bannerID);
-                AddListAdsUnit(config.interstitialID);
-                AddListAdsUnit(config.rewardID);
-            }
+            AddNormalAdsUnit(config.bannerID, AdsEnum.BANNER_TOP);
+            AddNormalAdsUnit(config.interstitialID, AdsEnum.INTERSTITIAL);
+            AddNormalAdsUnit(config.rewardID, AdsEnum.REWARD);
 
             this.pushEventAction = pushEventAction;
 
@@ -921,7 +918,14 @@ namespace IEC
         public void AddListAdsUnit(string adsUnit)
         {
             if (m_ListAdsUnit.Exists(x => x.Equals(adsUnit))) return;
+            if (string.IsNullOrEmpty(adsUnit)) return;
             m_ListAdsUnit.Add(adsUnit);
+        }
+
+        public void AddNormalAdsUnit(string adsUnit, AdsEnum adsEnum)
+        {
+            if (IsHaveApplovinHack(adsEnum)) return;
+            AddListAdsUnit(adsUnit);
         }
     }
 }
