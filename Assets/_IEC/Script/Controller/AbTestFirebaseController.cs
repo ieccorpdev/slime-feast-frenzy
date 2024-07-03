@@ -51,7 +51,7 @@ namespace IEC
             {
                 var reason = isOldUser ? "old user" : "overrideAB";
                 Debug.LogWarning($"[ABRCT] AB OVERRIDE - reason: {reason}");
-                // ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
+                ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
             }
             
             
@@ -136,7 +136,8 @@ namespace IEC
                 {
                     Services.DataNormal().SetBool(OLD_USER_NO_REMOTE, true);
                     Services.DataNormal().Save();
-                    list.Add(abVersion);
+                    var defaultVersion = Services.Json().FromJson<FirebaseAbConfig>(abConfig.defaultValue).version;
+                    list.Add(defaultVersion);
                 }
                 
                 if(!m_IsOverrideAb) return;

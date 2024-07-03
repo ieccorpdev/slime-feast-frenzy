@@ -283,11 +283,10 @@ namespace IEC
             return obj;
         }
 
-        public void DefaultOverrideRemote(List<string> ignoreKeys)
+        public void DefaultOverrideRemote()
         {
             foreach (var d in m_FirebaseDefault)
             {
-                if (ignoreKeys.Contains(d.Key)) continue;
                 SetString(GetSaveKey(d.Key), d.Value.ToString());
                 m_DictValue[d.Key] = d.Value.ToString();
             }
