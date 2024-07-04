@@ -17,7 +17,7 @@ namespace IEC
             if (IsDisable) return;
         }
 
-        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
+        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null, UnityEngine.Purchasing.Product product = null)
         {
             if (IsDisable) return;
             Debug.Log($"AnalyticMockEvent {eventName}: {JsonConvert.SerializeObject(param)}");

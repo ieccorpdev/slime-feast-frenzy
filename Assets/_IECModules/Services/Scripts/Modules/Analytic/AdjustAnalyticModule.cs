@@ -52,7 +52,7 @@ namespace IEC
             if (IsDisable) return;
         }
 
-        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
+        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null, UnityEngine.Purchasing.Product product = null)
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
@@ -61,6 +61,10 @@ namespace IEC
             {
                 adjustEvent.setRevenue(value, "USD");
                 adjustLog += $"__Rev:{value}";
+            }
+            if (product != null)
+            {
+                AdjustVerifyIAP.SetupIAPEvent(adjustEvent,product);
             }
             Adjust.trackEvent(adjustEvent);
             Debug.Log(adjustLog);
@@ -88,6 +92,51 @@ namespace IEC
             AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(true);
             Adjust.trackThirdPartySharing(adjustThirdPartySharing);
             Debug.LogWarning("Adjust enable third party sharing");
+        }
+
+
+    }
+
+    public class AdjustVerifyIAP
+    {
+        [System.Serializable]
+        public class PurchaseReceipt
+        {
+            public string Store;
+            public string TransactionID;
+            public string Payload;
+        }
+        [System.Serializable]
+        public class ReceiptPayload
+        {
+            public string json;
+            public string signature;
+            public string[] skuDetails;
+        }
+        [System.Serializable]
+        public class ReceiptPayloadJson
+        {
+            public string orderId;
+            public string packageName;
+            public string productId;
+            public string purchaseToken;
+        }
+
+        public static void SetupIAPEvent(AdjustEvent adjustEvent, UnityEngine.Purchasing.Product product)
+        {
+            var receipt = product.receipt;
+            PurchaseReceipt purchaseReceipt = JsonUtility.FromJson<PurchaseReceipt>(receipt);
+            var payload = JsonUtility.FromJson<ReceiptPayload>(purchaseReceipt.Payload);
+            var payloadJson = JsonUtility.FromJson<ReceiptPayloadJson>(payload.json);
+
+            adjustEvent.setProductId(payloadJson.productId); // Android & iOS
+#if UNITY_IOS
+            adjustEvent.setTransactionId(purchaseReceipt.TransactionID); // iOS only
+            adjustEvent.setReceipt(receipt); // iOS only
+#endif
+#if UNITY_ANDROID
+            adjustEvent.setPurchaseToken(payloadJson.purchaseToken); // Android only
+#endif
         }
     }
 }

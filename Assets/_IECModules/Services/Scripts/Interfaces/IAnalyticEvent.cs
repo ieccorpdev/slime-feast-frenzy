@@ -5,7 +5,7 @@ namespace IEC
     {
         void Init();
         void PushCachedEvents();
-        void PushEvent(string eventName, float value = 1f, Dictionary<string, object> param = null);
+        void PushEvent(string eventName, float value = 1f, Dictionary<string, object> param = null, UnityEngine.Purchasing.Product product = null);
         void SetUserProperty(string name, string property);
         bool IsDisable { get; set; }
     }
