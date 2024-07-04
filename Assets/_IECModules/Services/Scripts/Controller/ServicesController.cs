@@ -750,7 +750,7 @@ namespace IEC
             PushEvent(eventName, null, value, param);
         }
 
-        public void PushEvent(string eventName, string position, float value = 1, Dictionary<string, object> param = null)
+        public void PushEvent(string eventName, string position, float value = 1, Dictionary<string, object> param = null, UnityEngine.Purchasing.Product product = null)
         {
             PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
@@ -775,7 +775,7 @@ namespace IEC
 
             foreach (var analytic in m_ListAnalytics)
             {
-                analytic.PushEvent(eventName, value, param);
+                analytic.PushEvent(eventName, value, param, product);
             }
 
             var fullAdCount = m_EventCount.GetCount("show_full_ad");
