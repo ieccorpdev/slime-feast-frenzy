@@ -287,7 +287,7 @@ namespace IEC
         {
             foreach (var d in m_FirebaseDefault)
             {
-                SetString(GetSaveKey(d.Key), d.Value.ToString());
+                SetString(d.Key, d.Value.ToString());
                 m_DictValue[d.Key] = d.Value.ToString();
             }
             Save();
