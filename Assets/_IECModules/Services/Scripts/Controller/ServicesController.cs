@@ -273,9 +273,7 @@ namespace IEC
                     listIgnoredEvent = config.adjustEventConfig.listData
                         .Where(x =>
                         {
-                            if(Application.platform == RuntimePlatform.Android)
-                                return !x.android.isPushEventFirebase;
-                            return !x.iOS.isPushEventFirebase;
+                            return !x.param.isPushEventFirebase;
                         })
                         .Select(x => x.gameEvent).ToList();
                 }
@@ -302,9 +300,7 @@ namespace IEC
             {
                 var listRevEvent = config.adjustEventConfig.listData.Where(x =>
                 {
-                    if (Application.platform == RuntimePlatform.Android)
-                        return x.android.isAdjustRev;
-                    return x.iOS.isAdjustRev;
+                    return x.param.isAdjustRev;
                 }).Select(x => x.gameEvent).ToList();
                 m_AdjustAnalytic.SetListEventRev(listRevEvent);
             }

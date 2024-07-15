@@ -9,8 +9,7 @@ using IEC;
 public class AdjustAnalyticEventConfig : ScriptableObject
 {
     [Header("Config")]
-    public PlatformConfigUrl androidConfigUrl;
-    public PlatformConfigUrl iosConfigUrl;
+    public PlatformConfigUrl configUrl;
 
     [Header("Data")]
     public List<Param> listData = new List<Param>();
@@ -19,8 +18,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public class Param
     {
         public string gameEvent;
-        public PlatformParam android;
-        public PlatformParam iOS;
+        public PlatformParam param;
     }
 
     [Serializable]
@@ -44,17 +42,13 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public void LoadData()
     {
         listData.Clear();
-        var dataDefaultAndroid = DownloadCsvFromAuthUrl(androidConfigUrl.defaultEventUrl);
-        var dataDefaultIos = DownloadCsvFromAuthUrl(iosConfigUrl.defaultEventUrl);
+        var dataDefault = DownloadCsvFromAuthUrl(configUrl.defaultEventUrl);
 
-        var dataMktAndroid = DownloadCsvFromAuthUrl(androidConfigUrl.marketingEventUrl);
-        var dataMktIos = DownloadCsvFromAuthUrl(iosConfigUrl.marketingEventUrl);
+        var dataMkt = DownloadCsvFromAuthUrl(configUrl.marketingEventUrl);
 
-        UpdateData(dataDefaultAndroid, true);
-        UpdateData(dataDefaultIos, false);
+        UpdateData(dataDefault, true);
 
-        UpdateData(dataMktAndroid, true);
-        UpdateData(dataMktIos, false);
+        UpdateData(dataMkt, false);
 
 #if UNITY_EDITOR
         UnityEditor.EditorUtility.SetDirty(this);
@@ -62,7 +56,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
 #endif
     }
 
-    void UpdateData(List<List<string>> sheetData, bool isAndroid)
+    void UpdateData(List<List<string>> sheetData, bool isDefault)
     {
         if (sheetData == null || sheetData.Count == 0) return;
         var adjustIndex = sheetData[0].IndexOf("Adjust");
@@ -87,11 +81,10 @@ public class AdjustAnalyticEventConfig : ScriptableObject
             var param = new PlatformParam
             {
                 adjustEventId = adjustEventId,
-                isPushEventFirebase = isFirebase,
+                isPushEventFirebase = isDefault || isFirebase,
                 isAdjustRev = isAdjustRev
             };
-            if (isAndroid) data.android = param;
-            else data.iOS = param;
+            data.param = param;
         }
     }
 
@@ -105,11 +98,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         var dict = new Dictionary<string, string>();
         foreach (var data in listData)
         {
-#if UNITY_ANDROID
-            var adjustEvent = data.android.adjustEventId;
-#else
-            var adjustEvent = data.iOS.adjustEventId;
-#endif
+            var adjustEvent = data.param.adjustEventId;
             if (string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
