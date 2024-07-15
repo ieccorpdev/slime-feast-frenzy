@@ -273,7 +273,7 @@ namespace IEC
                     listIgnoredEvent = config.adjustEventConfig.listData
                         .Where(x =>
                         {
-                            return !x.param.isPushEventFirebase;
+                            return !x.PlatformParam.isPushEventFirebase;
                         })
                         .Select(x => x.gameEvent).ToList();
                 }
@@ -300,7 +300,7 @@ namespace IEC
             {
                 var listRevEvent = config.adjustEventConfig.listData.Where(x =>
                 {
-                    return x.param.isAdjustRev;
+                    return x.PlatformParam.isAdjustRev;
                 }).Select(x => x.gameEvent).ToList();
                 m_AdjustAnalytic.SetListEventRev(listRevEvent);
             }

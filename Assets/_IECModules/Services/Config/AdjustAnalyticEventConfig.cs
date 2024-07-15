@@ -19,6 +19,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     {
         public string gameEvent;
         public PlatformParam param;
+
+        public PlatformParam PlatformParam => param;
     }
 
     [Serializable]
@@ -98,7 +100,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         var dict = new Dictionary<string, string>();
         foreach (var data in listData)
         {
-            var adjustEvent = data.param.adjustEventId;
+            var adjustEvent = data.PlatformParam.adjustEventId;
             if (string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
