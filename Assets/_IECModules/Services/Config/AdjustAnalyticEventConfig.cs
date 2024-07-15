@@ -9,9 +9,8 @@ using IEC;
 public class AdjustAnalyticEventConfig : ScriptableObject
 {
     [Header("Config")]
-    public string adjustEventConfigUrl;
-    // public string gameNameAndroid;
-    // public string gameNameIos;
+    public PlatformConfigUrl androidConfigUrl;
+    public PlatformConfigUrl iosConfigUrl;
 
     [Header("Data")]
     public List<Param> listData = new List<Param>();
@@ -32,50 +31,67 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public bool isAdjustRev;
     }
 
+    [Serializable]
+    public class PlatformConfigUrl
+    {
+        public string defaultEventUrl;
+        [Header("Marketing config")]
+        public string appVersion;
+        public string marketingEventUrl;
+    }
+
     [NaughtyAttributes.Button]
     public void LoadData()
     {
         listData.Clear();
-        var data = DownloadCsvFromAuthUrl(adjustEventConfigUrl);
-        if (data == null || data.Count == 0) return;
-        var androidIndex = data[0].IndexOf("Adjust Android");
-        var iosIndex = data[0].IndexOf("Adjust iOS");
-        var firebaseIndexAndroid = data[0].IndexOf("Firebase Android");
-        var firebaseIndexIOS = data[0].IndexOf("Firebase iOS");
-        var adjustRevAndroid = data[0].IndexOf("Adjust in app revenue Android");
-        var adjustRevIOS = data[0].IndexOf("Adjust in app revenue iOS");
-        for (int i = 1; i < data.Count; i++)
-        {
-            var eventMap = data[i];
-            var gameEvent = eventMap[0].Trim();
-            var adjustEventIdAndroid = GetValue(androidIndex, eventMap);
-            var adjustEventIdIOS = GetValue(iosIndex, eventMap);
-            var isFirebaseAndroid = GetValue(firebaseIndexAndroid, eventMap) == "TRUE";
-            var isFirebaseIOS = GetValue(firebaseIndexIOS, eventMap) == "TRUE";
-            var isAdjustRevAndroid = GetValue(adjustRevAndroid, eventMap) == "TRUE";
-            var isAdjustRevIOS = GetValue(adjustRevIOS, eventMap) == "TRUE";
-            if (string.IsNullOrEmpty(gameEvent))
-            {
-                continue;
-            }
-            var param = new Param
-            {
-                gameEvent = gameEvent,
-                android = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdAndroid,
-                    isPushEventFirebase = isFirebaseAndroid,
-                    isAdjustRev = isAdjustRevAndroid
-                },
-                iOS = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdIOS,
-                    isPushEventFirebase = isFirebaseIOS,
-                    isAdjustRev = isAdjustRevIOS
+        var dataDefaultAndroid = DownloadCsvFromAuthUrl(androidConfigUrl.defaultEventUrl);
+        var dataDefaultIos = DownloadCsvFromAuthUrl(iosConfigUrl.defaultEventUrl);
 
-                }
+        var dataMktAndroid = DownloadCsvFromAuthUrl(androidConfigUrl.marketingEventUrl);
+        var dataMktIos = DownloadCsvFromAuthUrl(iosConfigUrl.marketingEventUrl);
+
+        UpdateData(dataDefaultAndroid, true);
+        UpdateData(dataDefaultIos, false);
+
+        UpdateData(dataMktAndroid, true);
+        UpdateData(dataMktIos, false);
+
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+#endif
+    }
+
+    void UpdateData(List<List<string>> sheetData, bool isAndroid)
+    {
+        if (sheetData == null || sheetData.Count == 0) return;
+        var adjustIndex = sheetData[0].IndexOf("Adjust");
+        var firebaseIndex = sheetData[0].IndexOf("Firebase");
+        var adjustRev = sheetData[0].IndexOf("Adjust in app revenue");
+        for (int i = 1; i < sheetData.Count; i++)
+        {
+            var eventMap = sheetData[i];
+            var gameEvent = eventMap[0].Trim();
+            var adjustEventId = GetValue(adjustIndex, eventMap);
+            var isFirebase = GetValue(firebaseIndex, eventMap) == "TRUE";
+            var isAdjustRev = GetValue(adjustRev, eventMap) == "TRUE";
+            if (string.IsNullOrEmpty(gameEvent)) continue;
+            if (!listData.Exists(x => x.gameEvent == gameEvent))
+            {
+                listData.Add(new Param
+                {
+                    gameEvent = gameEvent
+                });
+            }
+            var data = listData.Find(x => x.gameEvent == gameEvent);
+            var param = new PlatformParam
+            {
+                adjustEventId = adjustEventId,
+                isPushEventFirebase = isFirebase,
+                isAdjustRev = isAdjustRev
             };
-            listData.Add(param);
+            if (isAndroid) data.android = param;
+            else data.iOS = param;
         }
     }
 
