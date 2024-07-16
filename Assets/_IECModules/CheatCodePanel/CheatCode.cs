@@ -346,6 +346,17 @@ namespace _IECModules
                     {
                         m_IsCheatIDFA = m_IDFAList.Contains(Services.UserIDFA);
                         m_IsCheckCheatIDFA = true;
+                        if (m_IsCheatIDFA == false)
+                        {
+                            IdfaOnlineForCheatCode.CheckContainInOnlineIDFA(Services.UserIDFA, isCheatIdfa =>
+                            {
+                                if (isCheatIdfa)
+                                {
+                                    m_IsCheatIDFA = true;
+                                    SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                                }
+                            });
+                        }
                     }
 
                     if (m_IsCheatIDFA)
@@ -765,7 +776,14 @@ namespace _IECModules
             if (Application.isEditor) return;
             var jsoner = new JsonDotNetModule();
             var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
-            m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
+            if (idfaDataStr != null && string.IsNullOrEmpty(idfaDataStr.text) == false)
+            {
+                m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
+            }
+            else
+            {
+                m_IDFAList = new List<string>();
+            }
             // Debug.LogError(m_IDFAList.JsonSerialize());
             m_IsFinishedGetIDFA = true;
         }

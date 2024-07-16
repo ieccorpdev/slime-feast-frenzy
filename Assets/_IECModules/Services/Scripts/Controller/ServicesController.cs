@@ -943,6 +943,9 @@ namespace IEC
         {
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
+#if UNITY_EDITOR
+                m_UserIDFA = "f28127e4-63c4-46f4-bb85-2e7875f6daf9";
+#endif
 #if UNITY_ANDROID
                 try
                 {
