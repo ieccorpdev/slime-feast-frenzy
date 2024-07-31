@@ -46,14 +46,14 @@ namespace IEC
         
         private void ApplyRemoteConfig()
         {
-            var isOldUser = Services.DataNormal().GetBool(OLD_USER_NO_REMOTE, false);
-            if (isOldUser || (!m_IsOverrideAb && !Services.IsNewInstall))
-            {
-                var reason = isOldUser ? "old user" : "overrideAB";
-                Debug.LogWarning($"[ABRCT] AB OVERRIDE - reason: {reason}");
-                ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote();
-            }
-            
+            // bỏ tính năng block update của user cũ - ThanhND2
+            // var isOldUser = Services.DataNormal().GetBool(OLD_USER_NO_REMOTE, false);
+            // if (isOldUser || (!m_IsOverrideAb && !Services.IsNewInstall))
+            // {
+            //     var reason = isOldUser ? "old user" : "overrideAB";
+            //     Debug.LogWarning($"[AB FIREBASE] AB OVERRIDE - reason: {reason}");
+            //     ((FirebaseRemoteConfigModule)RemoteData).DefaultOverrideRemote(new List<string>());
+            // }
             
             //Setup feature
             SetupFeature();
