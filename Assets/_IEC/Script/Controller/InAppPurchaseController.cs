@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Purchasing;
 
 namespace IEC
 {
@@ -51,5 +53,13 @@ namespace IEC
                 //Should call common analytic tracking IAP
             }
         }
+        
+        public static ProductCatalogItem GetProductById(string id)
+        {
+            var productCatalog = ProductCatalog.LoadDefaultCatalog();
+            return  productCatalog.allProducts.FirstOrDefault(x => x.id == id);
+        }
+        
+        public static float GetProductPrice(string id) => (float)GetProductById(id).googlePrice.value;
     }
 }

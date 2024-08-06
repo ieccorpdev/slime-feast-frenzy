@@ -222,6 +222,9 @@ namespace IEC
 #if (PluginReceiptVerify)
             m_ReceiptVerify = new ReceiptVerifyOffline();
 #endif
+#if (PluginReceiptVerifyAdjust)
+            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this);
+#endif
 #if (PluginUnityIAP)
             var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
             m_IAP = iapUnity;
