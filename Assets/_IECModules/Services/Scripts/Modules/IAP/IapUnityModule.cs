@@ -21,6 +21,7 @@ namespace IEC
         private Action<string, bool> purchaseVerifyAction;
         Dictionary<string, Action<bool>> receiveProductActions = new Dictionary<string, Action<bool>>();
         bool isPurchasing = false;
+        bool isRestore = false;
 
         Action<bool> onRestoreDone;
         Action initializedCallback;
@@ -117,6 +118,7 @@ namespace IEC
         void IapProductResult(string productID, bool isSuccess, bool isRestore)
         {
             Debug.LogWarningFormat("IapProductResult {0} {1} {2}", productID, isSuccess, isRestore);
+            this.isRestore = isRestore;
             if (isSuccess) dataService.SetBool(productID, isSuccess);
 
             purchaseResultAction?.Invoke(productID, isSuccess, isRestore);
@@ -271,7 +273,7 @@ namespace IEC
             var productId = args.purchasedProduct.definition.id;
             SafeInvoke(m_LogSuccess1, productId);
 
-            receiptVerify.CheckReceipt(args.purchasedProduct, isValid =>
+            receiptVerify.CheckReceipt(args.purchasedProduct, isRestore, isValid =>
             {
                 Debug.LogWarning("CheckReceipt isValid: " + isValid + " | ProductId: " + productId);
                     // Unlock the appropriate content here.

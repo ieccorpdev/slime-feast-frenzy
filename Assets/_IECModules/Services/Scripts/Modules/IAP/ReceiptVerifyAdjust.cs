@@ -131,9 +131,14 @@ namespace IEC
         }
 
 
-        public override void CheckReceipt(Product product, /*bool isRestore,*/ Action<bool> callback)
+        public override void CheckReceipt(Product product, bool isRestore, Action<bool> callback)
         {
-            //bool validPurchaseOffline = IsValidOffline(product);
+            if (isRestore)
+            {
+                callback.Invoke(true);
+                return;
+            }
+            
 #if UNITY_EDITOR
             callback.Invoke(true);
             return;
@@ -185,7 +190,7 @@ namespace IEC
             VerifyPaymentIOS(purchaseReceipt.Payload, adjust, product, callback);
         }
 
-        void VerifyPayment(ReceiptData receipt, AdjustData adjust, Action<bool> callpack)
+        void VerifyPayment(ReceiptData receipt, AdjustData adjust, Action<bool> callback)
         {
             var dataCheck = new VerifyPaymentData()
             {
@@ -194,11 +199,13 @@ namespace IEC
                 // itemCode = data.productId
             };
 
+            Debug.Log("Recipe Verify Adjust Data Check: " + jsonConverter.ToJson(dataCheck));
+
             monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(URL_VERIFY, jsonConverter.ToJson(dataCheck),
                 (res) =>
                 {
                     bool isValid = VerifyPaymentHandle(res);
-                    callpack.Invoke(isValid);
+                    callback.Invoke(isValid);
                 }));
         }
 

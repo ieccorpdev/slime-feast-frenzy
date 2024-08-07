@@ -11,7 +11,7 @@ namespace IEC
     public class ReceiptMock : IReceiptVerifyService
     {
 #if (PluginUnityIAP)
-        public void CheckReceipt(Product product, Action<bool> callback)
+        public void CheckReceipt(Product product, bool isRestore, Action<bool> callback)
         {
             callback?.Invoke(true);
         }
