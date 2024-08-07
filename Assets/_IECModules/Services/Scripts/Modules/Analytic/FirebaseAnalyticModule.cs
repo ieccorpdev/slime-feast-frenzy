@@ -7,7 +7,7 @@ using Firebase.Analytics;
 
 namespace IEC
 {
-    public class FirebaseAnalyticModule : IAnalyticEvent
+    public class FirebaseAnalyticModule : BaseAnalyticModule, IAnalyticEvent
     {
         List<AnalyticEventData> m_ListCachedEvents = new List<AnalyticEventData>();
         ISetUpSdkService m_FirebaseSDK;
@@ -29,6 +29,11 @@ namespace IEC
             {
                 return;
             }
+        }
+
+        public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
+        {
+            InitEventConfig(adjustAnalyticEventConfig);
         }
 
         public void PushCachedEvents()
@@ -72,6 +77,7 @@ namespace IEC
             }
             
             if(m_ListIgnoredEvent != null && m_ListIgnoredEvent.Contains(eventName)) return;
+            if (CheckPushedUniqueEvent(eventName, AnalyticDataParamType.Firebase)) return;
             
             var newName = eventName.Replace(' ', '_').Replace('-', '_');
 

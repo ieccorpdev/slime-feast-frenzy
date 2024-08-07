@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class AdjustAnalyticModule : IAnalyticEvent
+    public class AdjustAnalyticModule : BaseAnalyticModule, IAnalyticEvent
     {
         public bool IsDisable { get; set; }
 
@@ -19,6 +19,11 @@ namespace IEC
         public void Init()
         {
 
+        }
+
+        public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
+        {
+            InitEventConfig(adjustAnalyticEventConfig);
         }
 
         public void InitAdjust(string androidID, string iosID)
@@ -55,6 +60,7 @@ namespace IEC
         public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
+            if (CheckPushedUniqueEvent(eventName, AnalyticDataParamType.Adjust)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
             var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))

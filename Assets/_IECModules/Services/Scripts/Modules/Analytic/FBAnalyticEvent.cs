@@ -6,7 +6,7 @@ using UnityEngine;
 using Facebook.Unity;
 namespace IEC
 {
-    public class FBAnalyticEvent : IAnalyticEvent
+    public class FBAnalyticEvent : BaseAnalyticModule, IAnalyticEvent
     {
         List<AnalyticEventData> m_ListCachedEvents = new List<AnalyticEventData>();
 
@@ -15,6 +15,11 @@ namespace IEC
         public void Init()
         {
 
+        }
+
+        public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
+        {
+            InitEventConfig(adjustAnalyticEventConfig);
         }
 
         public void PushCachedEvents()
