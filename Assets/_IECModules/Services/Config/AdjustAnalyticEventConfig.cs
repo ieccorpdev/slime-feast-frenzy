@@ -29,6 +29,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public string adjustEventId;
         public bool isPushEventFirebase;
         public bool isAdjustRev;
+        public bool isUnique;
     }
 
     [Serializable]
@@ -84,7 +85,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
             {
                 adjustEventId = adjustEventId,
                 isPushEventFirebase = isDefault || isFirebase,
-                isAdjustRev = isAdjustRev
+                isAdjustRev = isAdjustRev,
+                isUnique = data.gameEvent.Contains("unique")
             };
             data.param = param;
         }
@@ -166,8 +168,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
 
     public List<RevMilestone> GetListRevAllAdCentMilestone()
     {
-        var list =  GetListValueEvent("rev_all_ad_", "_cent")
-            .Select(x => new RevMilestone($"rev_all_ad_{x}_cent", x / 100f))
+        var list =  GetListValueEventWithEvent("rev_all_ad_", "_cent")
+            .Select(x => new RevMilestone(x.eventName, x.value / 100f))
             .ToList();
         
         foreach (var revMilestone in list)
@@ -181,6 +183,21 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     private bool TryGetValueEvent(string origin, string first, string end, out int result)
     {
         return int.TryParse(StringHelper.GetBetweenString(origin, first, end, false), out result);
+    }
+
+    private List<(int value, string eventName)> GetListValueEventWithEvent(string prefix, string end = "")
+    {
+        if (end == "") end = string.Empty;
+        var listResult = new List<(int value, string eventName)>();
+        foreach (var data in listData)
+        {
+            var eventName = data.gameEvent;
+            if (eventName.Contains(prefix) && TryGetValueEvent(eventName, prefix, end, out var result))
+            {
+                listResult.Add((result, eventName));
+            }
+        }
+        return listResult;
     }
 
     private List<int> GetListValueEvent(string prefix, string end = "",string ignore = "")
@@ -200,5 +217,10 @@ public class AdjustAnalyticEventConfig : ScriptableObject
             }
         }
         return listResult;
+    }
+
+    public Param GetEventParam(string eventName)
+    {
+        return listData.Find(x => x.gameEvent == eventName);
     }
 }

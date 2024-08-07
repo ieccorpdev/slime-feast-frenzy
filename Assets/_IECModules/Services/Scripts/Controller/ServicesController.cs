@@ -40,6 +40,7 @@ namespace IEC
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
+        [SerializeField] private AnalyticSaveData m_AnalyticSaveData;
         private bool m_IsRewardLoaded;
 
         bool isInit = false;
@@ -108,6 +109,9 @@ namespace IEC
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
+                    break;
+                case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
+                    SaveData();
                     break;
             }
         }
@@ -509,6 +513,7 @@ namespace IEC
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.Init();
+                analytic.Init(config.adjustEventConfig);
             }
 
             this.config.SetActiveAbByVersion();
@@ -582,8 +587,10 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            m_AnalyticSaveData = DataSecure().GetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, new AnalyticSaveData());
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
+            Pool.Set(m_AnalyticSaveData);
         }
 
         void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
@@ -675,6 +682,7 @@ namespace IEC
         {
             Init();
             DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
+            DataSecure().SetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, m_AnalyticSaveData);
             m_DataNormal.Save();
             m_DataSecure.Save();
         }
