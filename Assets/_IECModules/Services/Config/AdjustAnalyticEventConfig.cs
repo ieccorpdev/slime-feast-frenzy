@@ -86,7 +86,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
                 adjustEventId = adjustEventId,
                 isPushEventFirebase = isDefault || isFirebase,
                 isAdjustRev = isAdjustRev,
-                isUnique = data.gameEvent.Contains("uniquie")
+                isUnique = data.gameEvent.Contains("unique")
             };
             data.param = param;
         }
