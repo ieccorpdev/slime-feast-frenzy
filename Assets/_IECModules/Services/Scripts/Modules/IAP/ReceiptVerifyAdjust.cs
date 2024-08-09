@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using _IECModules;
 using com.adjust.sdk;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -17,6 +18,7 @@ namespace IEC
         private AdjustAnalyticModule adjustAnalyticModule;
         private IJsonService jsonConverter;
         private MonoBehaviour monoBehaviour;
+        private bool isDebugEditor;
 
         private ServicesController Services => Controllers.Get<ServicesController>();
         private string AdjustVerifyUrl => Services.config.IapAdjustVerifyUrl;
@@ -128,6 +130,15 @@ namespace IEC
             this.adjustAnalyticModule = adjustAnalyticModule;
             this.jsonConverter = jsonConverter;
             this.monoBehaviour = monoBehaviour;
+
+#if UNITY_EDITOR
+            ModuleController.cheatCode.AddCheatCodeButton("Toggle Adjust Verify Editor Debug", cheatCodeParam =>
+            {
+                isDebugEditor = !isDebugEditor;
+                cheatCodeParam.buttonText = "Adjust Verify Debug: " + isDebugEditor;
+            });
+#endif
+            
         }
 
 
@@ -140,7 +151,10 @@ namespace IEC
             }
             
 #if UNITY_EDITOR
-            // VerifyPayment(product, callback); // Enable this line to test in editor
+            if (isDebugEditor)
+            {
+                VerifyPayment(product, callback);
+            }
             callback.Invoke(true);
             return;
 #endif
