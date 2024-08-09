@@ -220,45 +220,6 @@ namespace IEC
                 }
             });
 #endif
-            m_IAP = new InAppPurchaseMock(m_DataSecure);
-            m_ReceiptVerify = new ReceiptMock();
-
-#if (PluginReceiptVerify)
-            m_ReceiptVerify = new ReceiptVerifyOffline();
-#endif
-#if (PluginReceiptVerifyAdjust)
-            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this);
-#endif
-#if (PluginUnityIAP)
-            var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
-            m_IAP = iapUnity;
-            iapUnity.SetCallbackAnalytic(
-            (p) =>
-            {
-                PushEvent("iap_debug_open", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_success_1", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_success_2", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
-            });
-            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
-            {
-                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
-                var param = new Dictionary<string, object>
-                {
-                    ["productID"] = productID
-                };
-                PushEvent(eventName,1,param);
-            } );
-#endif
             m_Ads = new AdsMock(false);
 
             m_Login = new LoginMock();
@@ -313,7 +274,46 @@ namespace IEC
             }
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
+            m_IAP = new InAppPurchaseMock(m_DataSecure);
+            m_ReceiptVerify = new ReceiptMock();
 
+#if (PluginReceiptVerify)
+            m_ReceiptVerify = new ReceiptVerifyOffline();
+#endif
+#if (PluginReceiptVerifyAdjust)
+            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this);
+#endif
+#if (PluginUnityIAP)
+            var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
+            m_IAP = iapUnity;
+            iapUnity.SetCallbackAnalytic(
+            (p) =>
+            {
+                PushEvent("iap_debug_open", 1, new Dictionary<string, object>() { { "package", p } });
+            },
+            (p) =>
+            {
+                PushEvent("iap_debug_success_1", 1, new Dictionary<string, object>() { { "package", p } });
+            },
+            (p) =>
+            {
+                PushEvent("iap_debug_success_2", 1, new Dictionary<string, object>() { { "package", p } });
+            },
+            (p) =>
+            {
+                PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
+            });
+            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
+            {
+                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
+                var param = new Dictionary<string, object>
+                {
+                    ["productID"] = productID
+                };
+                PushEvent(eventName,1,param);
+            } );
+#endif
+            
             RequestCMP();
 
             InitAnalyticAndSetupAbTest();

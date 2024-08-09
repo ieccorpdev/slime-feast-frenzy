@@ -14,12 +14,12 @@ namespace IEC
 {
     public class ReceiptVerifyAdjust : ReceiptVerifyOffline
     {
-        // Change url for corresponding account (i.e. `iga` for GMA account)
-        static string URL_VERIFY = "https://ww-iap-verify-service-ffld4ohaya-uc.a.run.app/api/iga/verify-payment";
-
         private AdjustAnalyticModule adjustAnalyticModule;
         private IJsonService jsonConverter;
         private MonoBehaviour monoBehaviour;
+
+        private ServicesController Services => Controllers.Get<ServicesController>();
+        private string AdjustVerifyUrl => Services.config.IapAdjustVerifyUrl;
 
         [Serializable]
         public class UserDeviceInfo
@@ -131,15 +131,16 @@ namespace IEC
         }
 
 
-        public override void CheckReceipt(Product product, bool isRestore, Action<bool> callback)
+        public override void CheckReceipt(Product product, bool isPurchasing, Action<bool> callback)
         {
-            if (isRestore)
+            if (!isPurchasing)
             {
                 callback.Invoke(true);
                 return;
             }
             
 #if UNITY_EDITOR
+            // VerifyPayment(product, callback); // Enable this line to test in editor
             callback.Invoke(true);
             return;
 #endif
@@ -164,18 +165,16 @@ namespace IEC
 #if UNITY_EDITOR
             ReceiptData checkingObjectEditor = new ReceiptData()
             {
-                packageName = "test",
+                packageName = UnityEditor.PlayerSettings.applicationIdentifier,
+                productId = product.definition.id,
             };
 
             VerifyPayment(checkingObjectEditor, adjust, callback);
             return;
 #endif
-            // Debug.LogError(purchaseReceipt.Payload);
 #if UNITY_ANDROID
             var payload = jsonConverter.FromJson<ReceiptPayload>(purchaseReceipt.Payload);
-            //  Debug.LogError(payload.json);
             var payloadJson = jsonConverter.FromJson<ReceiptPayloadJson>(payload.json);
-            // Debug.LogError(payloadJson.orderId);
             ReceiptData checkingObject = new ReceiptData()
             {
                 packageName = payloadJson.packageName,
@@ -196,34 +195,45 @@ namespace IEC
             {
                 receipt = receipt,
                 adjust = adjust,
-                // itemCode = data.productId
             };
 
-            Debug.Log("Recipe Verify Adjust Data Check: " + jsonConverter.ToJson(dataCheck));
+            Debug.Log("Verify Adjust Data: " + jsonConverter.ToJson(dataCheck));
 
-            monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(URL_VERIFY, jsonConverter.ToJson(dataCheck),
-                (res) =>
-                {
-                    bool isValid = VerifyPaymentHandle(res);
-                    callback.Invoke(isValid);
-                }));
+            if (!string.IsNullOrEmpty(AdjustVerifyUrl))
+            {
+                monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(AdjustVerifyUrl, jsonConverter.ToJson(dataCheck),
+                    (res) =>
+                    {
+                        // bool isValid = VerifyPaymentHandle(res);
+                        // callback.Invoke(isValid);
+                    }));
+            }
+                
+            callback.Invoke(true);
         }
 
         void VerifyPaymentIOS(string iosPayment, AdjustData adjust, UnityEngine.Purchasing.Product product,
-            Action<bool> callpack)
+            Action<bool> callback)
         {
             var dataCheck = new VerifyPaymentIosData()
             {
                 receipt = iosPayment,
                 adjust = adjust,
-                // itemCode = product.definition.id
             };
-            monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(URL_VERIFY, jsonConverter.ToJson(dataCheck),
-                (res) =>
-                {
-                    bool isValid = VerifyPaymentHandle(res);
-                    callpack.Invoke(isValid);
-                }));
+            
+            Debug.Log("Verify Adjust Data (ios): " + jsonConverter.ToJson(dataCheck));
+            
+            if (!string.IsNullOrEmpty(AdjustVerifyUrl))
+            {
+                monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(AdjustVerifyUrl, jsonConverter.ToJson(dataCheck),
+                    (res) =>
+                    {
+                        // bool isValid = VerifyPaymentHandle(res);
+                        // callback.Invoke(isValid);
+                    }));
+            }
+                
+            callback.Invoke(true);
         }
 
         IEnumerator DoPostData<T>(string url, string bodyJsonString, Action<T> callback) where T : class
@@ -232,6 +242,7 @@ namespace IEC
             var bodyRaw = Encoding.UTF8.GetBytes(bodyJsonString);
             request.uploadHandler = new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = new DownloadHandlerBuffer();
+            request.timeout = 10; // If request take more than 10s, it will be canceled
             SetRequestHeader(request);
             yield return request.SendWebRequest();
             T res = HandleResponse<T>(request);
@@ -309,13 +320,13 @@ namespace IEC
             AdjustData adjust = new AdjustData
             {
                 idfa = services.IsHaveIDFA ? services.UserIDFA : Adjust.getIdfa(),
-                app_token = adjustAnalyticModule.AppID,
+                app_token = (Application.platform == RuntimePlatform.Android) ? services.config.adjustConfig.androidID : services.config.adjustConfig.iosID,
                 event_token = adjustAnalyticModule.GetIAPEventId(),
                 adid = Adjust.getAdid(),
                 user_agent = services.Json().ToJson(deviceInfo),
                 ip_address = GetLocalIPAddress(),
                 created_at = DateTime.UtcNow,
-                revenue = InAppPurchaseController.GetProductPrice(product.definition.id),
+                revenue = product == null ? 0 : InAppPurchaseController.GetProductPrice(product.definition.id),
                 currency = "USD",
             };
 

@@ -32,7 +32,7 @@ namespace IEC
             this.jsonConverter = jsonConverter;
         }
 
-        public override void CheckReceipt(Product product, bool isRestore, Action<bool> callback)
+        public override void CheckReceipt(Product product, bool isPurchasing, Action<bool> callback)
         {
             bool validPurchase = IsValidOffline(product);
 

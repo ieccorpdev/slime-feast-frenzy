@@ -45,6 +45,7 @@ public class ServicesConfig : ScriptableObject
     [Header("Iap Config")]
     public bool IapTestFree;
     public IapConfig IapConfig;
+    public string IapAdjustVerifyUrl;
 
     [Header("LeaderBoard")]
     public string DtaAppId;
