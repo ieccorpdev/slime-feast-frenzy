@@ -62,6 +62,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     void UpdateData(List<List<string>> sheetData, bool isDefault)
     {
         if (sheetData == null || sheetData.Count == 0) return;
+        sheetData[0].ForEach(x => x.Trim());
         var adjustIndex = sheetData[0].IndexOf("Adjust");
         var firebaseIndex = sheetData[0].IndexOf("Firebase");
         var adjustRev = sheetData[0].IndexOf("Adjust in app revenue");
