@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Purchasing;
 #if (PluginUnityIAP)
 using UnityEngine.Purchasing;
 #endif
@@ -89,6 +90,20 @@ namespace IEC
         {
             if (string.IsNullOrWhiteSpace(productId)) return;
             recieveProductActions[productId] = callback;
+        }
+
+        public Product GetProductById(string id)
+        {
+            return default(Product);
+        }
+
+        public decimal GetProductPrice(string id)
+        {
+            return 0; 
+        }
+
+        public void AddProducts(HashSet<ProductDefinition> additionalProducts, Action successCallback, Action<InitializationFailureReason> failCallback)
+        {
         }
     }
 }

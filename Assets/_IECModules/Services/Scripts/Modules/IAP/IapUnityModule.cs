@@ -528,6 +528,21 @@ namespace IEC
 
             return null;
         }
+
+        public Product GetProductById(string id)
+        {
+            return controller.products.WithID(id);
+        }
+
+        public decimal GetProductPrice(string id)
+        {
+            return controller.products.WithID(id).metadata.localizedPrice;
+        }
+
+        public void AddProducts(HashSet<ProductDefinition> additionalProducts, Action successCallback, Action<InitializationFailureReason> failCallback)
+        {
+            this.controller.FetchAdditionalProducts(additionalProducts, successCallback, failCallback);
+        }
     }
 }
 #endif
