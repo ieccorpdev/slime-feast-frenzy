@@ -57,10 +57,15 @@ namespace IEC
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
             var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
+            var currencyCode = "USD";
+            if(param.ContainsKey("currencyCode"))
+            {
+                currencyCode = param["currencyCode"];
+            }
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
-                adjustEvent.setRevenue(value, "USD");
-                adjustLog += $"__Rev:{value}";
+                adjustEvent.setRevenue(value, currencyCode);
+                adjustLog += $"__Rev:{value} | Currency:{currencyCode}";
             }
             Adjust.trackEvent(adjustEvent);
             Debug.Log(adjustLog);
