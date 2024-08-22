@@ -58,7 +58,7 @@ namespace IEC
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
             var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
             var currencyCode = "USD";
-            if(param.Contains("currencyCode"))
+            if(param.ContainsKey("currencyCode"))
             {
                 currencyCode = param["currencyCode"];
             }
