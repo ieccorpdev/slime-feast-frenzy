@@ -52,15 +52,15 @@ namespace IEC
             if (IsDisable) return;
         }
 
-        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null)
+        public void PushEvent(string eventName, float value = 1, Dictionary<string, object> param = null, string isoCurrencyCode = "USD")
         {
             if (IsDisable || DictEvent == null || !DictEvent.ContainsKey(eventName)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
             var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
-                adjustEvent.setRevenue(value, "USD");
-                adjustLog += $"__Rev:{value}";
+                adjustEvent.setRevenue(value, isoCurrencyCode);
+                adjustLog += $"__Rev:{value} | Currency:{isoCurrencyCode}";
             }
             Adjust.trackEvent(adjustEvent);
             Debug.Log(adjustLog);
