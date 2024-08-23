@@ -60,7 +60,7 @@ namespace IEC
             var currencyCode = "USD";
             if(param.ContainsKey("currencyCode"))
             {
-                currencyCode = param["currencyCode"];
+                currencyCode = param["currencyCode"].ToString();
             }
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
