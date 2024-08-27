@@ -315,8 +315,10 @@ namespace IEC
             m_ListAnalytics.Add(m_AdjustAnalytic);
 #endif
 
-            RequestCMP();
+            // RequestCMP();
 
+            RequestATT();
+            
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.Init();
@@ -330,9 +332,14 @@ namespace IEC
 
         }
 
-        public void RequestCMP()
+        public void RequestCMP(bool isAcceptATT = true)
         {
 #if (PluginCMP)
+            if (!isAcceptATT)
+            {
+                InitSDKAfterATT(false);
+                return;
+            }
             var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
             
             Debug.LogWarning("CMP Test Id:" + deviceTestId);
@@ -356,10 +363,10 @@ namespace IEC
                 };
                 requestParameters.ConsentDebugSettings = debugSettings;
             }
-            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
+            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent(isAcceptATT));
             ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
 #else
-            RequestATT();
+            InitSDKAfterATT(isAcceptATT);
 #endif
         }
 
@@ -400,7 +407,7 @@ namespace IEC
 
             if (!isNeedShowAtt)
             {
-                InitSDKAfterATT(true);
+                RequestCMP();
             }
             else if (currentStatus == AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED)
             {
@@ -411,10 +418,10 @@ namespace IEC
             }
             else
             {
-                InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+                RequestCMP(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
             }
 #else
-            InitSDKAfterATT(true);
+            RequestCMP(true);
 #endif
         }
 
@@ -423,16 +430,16 @@ namespace IEC
         {
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
-            InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+            RequestCMP(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
         }
 #endif
 #if (PluginCMP)
 
         bool m_IsCMPDontShow = false;
-        IEnumerator IE_WaitConsent()
+        IEnumerator IE_WaitConsent(bool isAcceptATT = true)
         {
             yield return new WaitUntil(() => (m_IsCMPDontShow || (ConsentInformation.ConsentStatus == ConsentStatus.Obtained)));
-            RequestATT();
+            InitSDKAfterATT(isAcceptATT);
         }
 
         private Coroutine m_CheckConsentStatus;
