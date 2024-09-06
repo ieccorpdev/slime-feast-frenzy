@@ -10,6 +10,15 @@ namespace IEC
     [System.Serializable]
     public class Game : IData
     {
+        #region Hybrid
+
+        public HybridComponent hybrid = new HybridComponent
+        {
+            currentTab = Tab.Tab3
+        };
+
+        #endregion
+        
         public bool isDebugReset;
         public int emptyData;
         public int abVersion;

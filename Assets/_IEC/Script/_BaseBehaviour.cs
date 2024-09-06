@@ -17,6 +17,8 @@ namespace IEC
         protected static UIGroup UI => Pool.Get<UIGroup>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();
+
+        protected static HybridConfig HybridConfig => Config.hybridConfig;
 		public virtual void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);

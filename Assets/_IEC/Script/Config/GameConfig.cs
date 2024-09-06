@@ -12,5 +12,6 @@ namespace IEC
     public class GameConfig : BaseConfig
     {
         public _EmptyConfig emptyConfig;
+        public HybridConfig hybridConfig;
     }
 }
