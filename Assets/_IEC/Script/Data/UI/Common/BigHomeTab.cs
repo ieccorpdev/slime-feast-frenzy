@@ -10,6 +10,7 @@ namespace IEC
     {
         [SerializeField] private TMP_Text m_TabName;
         private LayoutElement m_Layout => SingleGet<LayoutElement>();
+        private RectTransform m_Rect => SingleGet<RectTransform>();
 
         public void SetTabName()
         {
@@ -19,6 +20,16 @@ namespace IEC
         public void SetSize(int numTab)
         {
             m_Layout.minWidth = numTab < 5 ? 0 : 130f;
+        }
+
+        public Vector2 GetSize()
+        {
+            return m_Rect.sizeDelta;
+        }
+
+        public float GetPosX()
+        {
+            return m_Rect.anchoredPosition.x;
         }
     }
 }
