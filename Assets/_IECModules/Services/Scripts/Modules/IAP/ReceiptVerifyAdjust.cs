@@ -331,6 +331,19 @@ namespace IEC
         {
             var services = Controllers.Get<ServicesController>();
             var deviceInfo = new UserDeviceInfo();
+
+            var currency = "USD";
+            var revenue = 0f;
+            if (product != null)
+            {
+                var localizedPrice = services.IAP().GetLocalizePrice(product.definition.id);
+                if (localizedPrice != null)
+                {
+                    currency = localizedPrice.IsoCode;
+                    revenue = float.Parse(localizedPrice.LocalPrice);
+                }
+            }
+            
             AdjustData adjust = new AdjustData
             {
                 idfa = services.IsHaveIDFA ? services.UserIDFA : Adjust.getIdfa(),
@@ -340,8 +353,8 @@ namespace IEC
                 user_agent = services.Json().ToJson(deviceInfo),
                 ip_address = GetLocalIPAddress(),
                 created_at = DateTime.UtcNow,
-                revenue = product == null ? 0 : InAppPurchaseController.GetProductPrice(product.definition.id),
-                currency = "USD",
+                revenue = revenue,
+                currency = currency,
             };
 
             return adjust;
