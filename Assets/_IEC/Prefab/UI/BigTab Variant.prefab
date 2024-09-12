@@ -68,8 +68,9 @@ MonoBehaviour:
       m_Calls: []
   m_text: Home
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: ecfeb7d445689ae4383f075548b18e80, type: 2}
+  m_sharedMaterial: {fileID: -1081373604102784450, guid: ecfeb7d445689ae4383f075548b18e80,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -93,8 +94,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
-  m_fontSizeBase: 50
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -282,6 +283,16 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 70
       objectReference: {fileID: 0}
+    - target: {fileID: 6338464986888976258, guid: bf2ac54414ddbf8429fdfe4b88f3f532,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6731912798769040761, guid: bf2ac54414ddbf8429fdfe4b88f3f532,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7869543805693835140, guid: bf2ac54414ddbf8429fdfe4b88f3f532,
         type: 3}
       propertyPath: m_Name
@@ -290,6 +301,12 @@ PrefabInstance:
     m_RemovedComponents:
     - {fileID: 7863947863039125449, guid: bf2ac54414ddbf8429fdfe4b88f3f532, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: bf2ac54414ddbf8429fdfe4b88f3f532, type: 3}
+--- !u!1 &1708350359936886667 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6731912798769040761, guid: bf2ac54414ddbf8429fdfe4b88f3f532,
+    type: 3}
+  m_PrefabInstance: {fileID: 5393562601470438130}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2877788039826611574 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7869543805693835140, guid: bf2ac54414ddbf8429fdfe4b88f3f532,
@@ -310,6 +327,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   m_Icon: {fileID: 8967267444185984779}
+  m_Lock: {fileID: 1708350359936886667}
   m_TabName: {fileID: 6640719473753557786}
 --- !u!114 &5150554961082392245
 MonoBehaviour:

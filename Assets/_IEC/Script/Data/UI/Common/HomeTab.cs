@@ -10,9 +10,10 @@ namespace IEC
 {
     public class HomeTab : _BaseBehaviour
     {
-        public Tab type;
+        public TabType type;
         public Action onClick;
         [SerializeField] private Image m_Icon;
+        [SerializeField] private GameObject m_Lock;
         private Button m_Btn => SingleGet<Button>();
         private bool m_IsLock;
 
@@ -34,6 +35,8 @@ namespace IEC
         public void SetLock(bool isLock)
         {
             m_IsLock = isLock;
+            m_Icon.gameObject.SetActive(!isLock);
+            m_Lock.SetActive(isLock);
         }
     }
 }

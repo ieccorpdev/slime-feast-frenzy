@@ -40,12 +40,12 @@ namespace IEC
             for (int i = 0; i < tabCount; i++)
             {
                 var tab = m_ListTab[i];
-                tab.type = (Tab) i;
+                tab.type = HybridConfig.listTabConfig[i].type;
                 tab.onClick = () =>
                 {
                     Game.hybrid.currentTab = tab.type;
-                    var index = (int) tab.type;
-                    m_BigTab.transform.SetSiblingIndex((int)tab.type);
+                    var index = tab.transform.GetSiblingIndex();
+                    m_BigTab.transform.SetSiblingIndex(index);
                     m_ListTab.Remove(m_BigTab);
                     m_ListTab.Insert(index, m_BigTab);
                     SetTabSprite();
@@ -61,6 +61,8 @@ namespace IEC
             }));
             m_ListTab[tabCount / 2].onClick.Invoke();
             m_IsStart = false;
+            
+            m_ListTab.ForEach(x => x.SetLock(false));
         }
 
         IEnumerator IE_WaitRebuild(Action callback)

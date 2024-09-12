@@ -12,10 +12,7 @@ namespace IEC
     {
         #region Hybrid
 
-        public HybridComponent hybrid = new HybridComponent
-        {
-            currentTab = Tab.Tab3
-        };
+        public HybridGame hybrid = new HybridGame();
 
         #endregion
         

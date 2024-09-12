@@ -26,16 +26,16 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    GamePlay.SetGameState(UI.ScreenInGame);
+                    // GamePlay.SetGameState(UI.ScreenInGame);
                     OnNewGame();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    GamePlay.SetGameState(UI.ScreenLevelWin);
+                    // GamePlay.SetGameState(UI.ScreenLevelWin);
                     OnGameOver();
                     Pool.Get<ConfettiGroup>().ShowConfetti();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
-                    GamePlay.SetGameState(UI.ScreenLevelLose);
+                    // GamePlay.SetGameState(UI.ScreenLevelLose);
                     OnGameOver();
                     break;
                 case EventList.GamePlay.LEVEL_SKIP:

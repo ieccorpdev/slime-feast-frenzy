@@ -10,17 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 72cf6b18b8ec6b6498561c3cfcbc3300, type: 3}
-  m_Name: ABTest
+  m_Name: NeedRemoveWhenSetupFirstAB
   m_EditorClassIdentifier: 
-  KeyName: ABTest
-  IsActive: 0
+  KeyName: AB_20190731
+  IsActive: 1
   IsOnlyNewInstall: 1
   IsOverride: 0
   ListEventsAB:
   - AB_20190731_v0
-  - AB_20190731_v1
-  - AB_20190731_v2
-  ListRandomRatio: 010000000100000001000000
+  ListRandomRatio: 01000000
   DefaultValue: -1
   IsForceValue: 0
   ForceValue: 0
+  platform: 
+  customResultAction: 
+  customUpdateAction: 
+  isSemiOverride: 0
+  percentOverride: 0

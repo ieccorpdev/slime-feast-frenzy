@@ -10,9 +10,9 @@ namespace IEC
     {
         public List<TabConfig> listTabConfig;
 
-        private Dictionary<Tab, TabConfig> m_DictConfigByType;
+        private Dictionary<TabType, TabConfig> m_DictConfigByType;
 
-        public TabConfig GetConfig(Tab type)
+        public TabConfig GetConfig(TabType type)
         {
             if (m_DictConfigByType == null)
             {
@@ -26,7 +26,7 @@ namespace IEC
     [System.Serializable]
     public class TabConfig
     {
-        public Tab type;
+        public TabType type;
         public Sprite sprite;
     }
 }

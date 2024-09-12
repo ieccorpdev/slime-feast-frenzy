@@ -7,7 +7,7 @@ namespace IEC
     public class GamePlayGroup : _BaseBehaviour, IGroup
     {
         public ScreenUI GameState { get; private set; }
-        public bool IsWin => GameState == UI.ScreenLevelWin;
+        public bool IsWin => false;
 
         public Camera mainCamera;
         public Camera uiCamera;

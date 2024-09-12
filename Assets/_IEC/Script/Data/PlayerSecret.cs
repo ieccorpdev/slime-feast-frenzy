@@ -24,11 +24,16 @@ namespace IEC
         public int levelTracking = 1;
         public int levelFirstTime = 0;
         public int countPlayLevel = 0;
+        public bool isSound = true;
+        public bool isMusic = true;
+        public bool isVibrate = true;
 
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
 
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+        
+        public HybridData hybridData = new HybridData();
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {

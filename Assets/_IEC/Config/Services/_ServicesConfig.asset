@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectChecklistUrl: 
   bundleVersion: 1
+  isVersionByPlatform: 0
   platform: android
   versionAndroid:
     version: 1.0.0
@@ -21,7 +22,8 @@ MonoBehaviour:
   versionIOS:
     version: 1.0.0
     abTest: 20220414
-  abTestConfigs: []
+  abTestConfigs:
+  - {fileID: 11400000, guid: 33795bb1a53c52143815051694171648, type: 2}
   IsTestNoAnalytic: 0
   dailyMissionConfigs: []
   IsNoAds: 0
@@ -59,6 +61,30 @@ MonoBehaviour:
       bannerID: bd8c00962e9193ba
       rewardID: dfd0d05e74b1ff73
   IronSourceConfig:
+    android:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+    ios:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+  OguryConfig:
+    android:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+      thumbnailID: 
+    ios:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+      thumbnailID: 
+  AmazonConfig:
     android:
       appID: 
       interstitialID: 
@@ -161,12 +187,18 @@ MonoBehaviour:
   kochavaConfig:
     androidID: kogang-clash-apmr
     iosID: kocrowd-clash-ios-vh51e23a
+  adjustConfig:
+    androidID: 
+    iosID: 
+  adjustEventConfig: {fileID: 0}
   remoteCustomEventFirebase: {fileID: 11400000, guid: a2fecc6666d0f3342895fb0757df0ce7,
     type: 2}
   isTestRemoteConfig: 0
   remoteConfigs:
   - {fileID: 11400000, guid: 1fa7f467c7c997a40b12b112a97ce8c6, type: 2}
   - {fileID: 11400000, guid: ef7fab1319b105144be4441b0d9d02c5, type: 2}
+  emailSupport: 
+  privacyPolicy: 
   firebaseSDKVersion: 
   firebaseRemoteSDKVersion: 
   GDPR_KEY: Gdpr
