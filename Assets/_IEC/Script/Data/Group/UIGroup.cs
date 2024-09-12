@@ -18,10 +18,16 @@ namespace IEC
         public TMP_Text textHello;
 
         public PopupSetting PopupSetting => Pool.Get<PopupSetting>();
+        public ScreenLoading ScreenLoading => Pool.Get<ScreenLoading>();
         
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
 
+        public List<ScreenUI> ListAdditiveScreen =>
+            SingleCreateIfNotExist("ListAdditiveScreen", () => new List<ScreenUI>());
+
+        public List<ScreenUI> AllScreen =>
+            SingleCreateIfNotExist("AllScreen", () => new List<ScreenUI>());
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -58,6 +64,58 @@ namespace IEC
         public void HideAllScreens()
         {
             ListScreen.ForEach(s => HideScreen(s, false));
+        }
+        
+        public void LocateAdditiveGroup()
+        {
+            ListAdditiveScreen.Clear();
+            var additives = FindObjectsOfType<AdditiveUIGroup>();
+            foreach (var add in additives)
+            {
+                add.LocateGroup();
+                ListAdditiveScreen.AddRange(add.ListScreen);
+            }
+            SetEvent(ListAdditiveScreen);
+            AllScreen.Clear();
+            AllScreen.AddRange(ListScreen);
+            AllScreen.AddRange(ListAdditiveScreen);
+        }
+        
+        void SetEvent(List<ScreenUI> list)
+        {
+            foreach (var screen in list)
+            {
+                screen.onShow.AddListener(() =>
+                {
+                    var allScreens = AllScreen;
+                    screen.SetShowOrder(GetNextTopShowOrder(allScreens));
+                    GamePlay.SetGameState(screen);
+                    foreach (var s in allScreens)
+                    {
+                        if (s.IsShow && s != screen)
+                            s.LostFocus();
+                    }
+                });
+
+                screen.onHideDone.AddListener(() =>
+                {
+                    var allScreens = AllScreen;
+                    var topScreen = allScreens
+                        .Where(s => s.IsShow)
+                        .OrderByDescending(s => s.ShowOrder)
+                        .FirstOrDefault();
+                    if (topScreen != null)
+                    {
+                        GamePlay.SetGameState(topScreen);
+                        topScreen.HaveFocus();
+                    }
+                });
+            }
+        }
+        
+        int GetNextTopShowOrder(List<ScreenUI> listScreen)
+        {
+            return listScreen.Max(s => s.ShowOrder) + 1;
         }
 
         public void ShowScreen(ScreenUI screen)

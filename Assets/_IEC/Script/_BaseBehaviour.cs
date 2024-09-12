@@ -8,6 +8,8 @@ namespace IEC
     {
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         
+        protected static SceneController Scene => Controllers.Get<SceneController>();
+        
         protected static Game Game => Pool.Get<Game>();
         
         protected static GamePlayGroup GamePlay => Pool.Get<GamePlayGroup>();

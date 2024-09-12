@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using IEC.Common.Event;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
 {
-    public class BottomBar : _BaseBehaviour
+    public class BottomBar : ScreenBehaviour
     {
         [SerializeField] private BigHomeTab m_BigTab;
         [SerializeField] private RectTransform m_ChooseTab;
@@ -17,7 +18,19 @@ namespace IEC
         private List<HomeTab> m_ListTab = new ();
 
         private bool m_IsStart = true;
+        private int m_TabCount;
+        private void Awake()
+        {
+            Init();
+        }
+
         private void Start()
+        {
+            m_ListTab[m_TabCount / 2].onClick.Invoke();
+            m_IsStart = false;
+        }
+
+        private void Init()
         {
             var tabShow = HybridConfig.listTabConfig.Count - 1;
             var listHomeTab = GetComponentsInChildren<HomeTab>(true).ToList();
@@ -36,8 +49,8 @@ namespace IEC
             }
             m_ListTab.Add(m_BigTab);
 
-            var tabCount = m_ListTab.Count;
-            for (int i = 0; i < tabCount; i++)
+            m_TabCount = m_ListTab.Count;
+            for (int i = 0; i < m_TabCount; i++)
             {
                 var tab = m_ListTab[i];
                 tab.type = HybridConfig.listTabConfig[i].type;
@@ -51,22 +64,22 @@ namespace IEC
                     SetTabSprite();
                     m_BigTab.SetTabName();
                     var isStart = m_IsStart;
+                    EventController.RaiseEvent(EventList.GamePlay.ON_CHOOSE_TAB, new EventParam(this));
                     StartCoroutine(IE_WaitRebuild(() => ChangeTabUI(!isStart)));
                 };
             }
-            m_BigTab.SetSize(tabCount);
+            m_BigTab.SetSize(m_TabCount);
             StartCoroutine(IE_WaitRebuild(() =>
             {
+                // Debug.LogError(m_BigTab.GetSize().x);
                 m_ChooseTab.sizeDelta = new Vector2(m_BigTab.GetSize().x, m_ChooseTab.sizeDelta.y);
             }));
-            m_ListTab[tabCount / 2].onClick.Invoke();
-            m_IsStart = false;
-            
             m_ListTab.ForEach(x => x.SetLock(false));
         }
 
         IEnumerator IE_WaitRebuild(Action callback)
         {
+            LayoutRebuilder.ForceRebuildLayoutImmediate(m_Layout);
             yield return null;
             callback?.Invoke();
         }

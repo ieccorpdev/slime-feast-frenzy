@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class EventController : MonoBehaviour
+    public class EventController : _BaseBehaviour
     {
         private static EventController s_Instance;
         private static StaticObjectsContainer s_StaticObjects;
@@ -262,6 +262,7 @@ namespace IEC
                     m_Listeners[i].OnEventRaise(gameEvent, param);
                 }
             }
+            Scene.SendEvent(gameEvent, param);
         }
 
         public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())

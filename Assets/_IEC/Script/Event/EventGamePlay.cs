@@ -16,6 +16,10 @@ namespace IEC
             public const string LEVEL_SKIP = "GamePlay.LEVEL_SKIP";
 
             public const string END_LEVEL_ADS = "GamePlay.END_LEVEL_ADS";
+            public const string GO_MAIN = "GamePlay.GO_HOME";
+            public const string SETUP_NEW_SCENE = "GamePlay.SETUP_NEW_SCENE";
+            public const string SHOW_LOADING = "GamePlay.SHOW_LOADING";
+            public const string ON_CHOOSE_TAB = "GamePlay.ON_CHOOSE_TAB";
         }
     }
 }

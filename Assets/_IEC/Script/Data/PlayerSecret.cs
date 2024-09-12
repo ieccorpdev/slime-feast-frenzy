@@ -17,7 +17,7 @@ namespace IEC
         public int session;
         public bool IsFirstTime => session == 1;
 
-        public bool isNoAds;
+        public bool isNoAds => Pool.Get<ServiceData>().isNoAds;
         public int gold;
 
         public int level = 1;

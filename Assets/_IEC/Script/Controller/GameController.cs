@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using _IECModules;
 
@@ -67,7 +68,11 @@ namespace IEC
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
                 ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
             }
-            EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            UI.ScreenLoading.ShowLoading(0.5f, () =>
+            {
+                Scene.SendEvent(EventList.GamePlay.GO_MAIN);
+            });
+            // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 
         void OnNewGame()

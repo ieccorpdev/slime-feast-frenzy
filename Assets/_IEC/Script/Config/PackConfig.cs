@@ -12,6 +12,7 @@ namespace IEC
         public string packName;
         public string badge;
         public List<ResourceConfig> resources;
+        public bool isHaveNoAds;
 
         private Dictionary<ResourceType, int> m_DictResources;
 
