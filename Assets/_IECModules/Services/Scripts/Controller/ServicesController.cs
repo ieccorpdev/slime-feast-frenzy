@@ -62,6 +62,8 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
+
+        private float m_DeltaTime;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -108,6 +110,7 @@ namespace IEC
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
 #if PluginApplovin
+                    AssignFPS();
                     StartCoroutine(IE_LoadAd(AdsEnum.INTERSTITIAL));
                     StartCoroutine(IE_LoadAd(AdsEnum.REWARD));
 #else
@@ -180,6 +183,7 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             UnityToolbag.Dispatcher.Update();
+            m_DeltaTime += (UnityEngine.Time.unscaledDeltaTime - m_DeltaTime) * 0.1f;
         }
 
         public void BehaviourPauseApp(bool isPaused)
@@ -1392,6 +1396,14 @@ namespace IEC
             yield break;
 #endif
         }
+
+        private void AssignFPS()
+        {
+            var applovinAds = (ApplovinModule)m_Ads;
+            applovinAds?.AssignFPS(GetCurrentFPS());
+        }
+
+        private float GetCurrentFPS() => 1f / m_DeltaTime;
         
         public void ResetTimeShowFullAds()
         {

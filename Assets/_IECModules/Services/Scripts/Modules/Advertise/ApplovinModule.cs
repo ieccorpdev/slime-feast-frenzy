@@ -30,17 +30,48 @@ namespace IEC
         int m_LoadRewardCount = 0;
         List<string> m_ListAdsUnit = new List<string>();
 
+        private float m_MinFPS;
+        private float m_MaxFPS;
+        private float m_CurrentFPS;
+
         public void CheckResetHackIdIndex(AdsEnum adsEnum)
         {
             if (!m_DictHackIdIndex.ContainsKey(adsEnum))
             {
-                m_DictHackIdIndex[adsEnum] = 0;
+                m_DictHackIdIndex[adsEnum] = GetFirstResetIndex();
             }
             m_DictHackIdIndex[adsEnum] += 1;
-            if (m_DictHackIdIndex[adsEnum] >= GetListHackId(adsEnum).Count)
+            if (m_DictHackIdIndex[adsEnum] >= GetTotalHackId())
             {
-                m_DictHackIdIndex[adsEnum] = 0;
+                m_DictHackIdIndex[adsEnum] = GetFirstResetIndex();
             }
+        }
+
+        private int GetTotalHackId()
+        {
+            if (m_CurrentFPS >= m_MaxFPS)
+                return 3;
+            if (m_MinFPS < m_CurrentFPS && m_CurrentFPS < m_MaxFPS)
+                return 2;
+            return 1;
+        }
+
+        private int GetFirstResetIndex()
+        {
+            return GetTotalHackId() switch
+            {
+                1 => 2,
+                2 => 1,
+                3 => 0,
+                _ => 0
+            };
+        }
+
+        public void AssignFPS(float current, float min = 50, float max = 55)
+        {
+            m_CurrentFPS = current;
+            m_MinFPS = min;
+            m_MaxFPS = max;
         }
 
         public bool IsHaveApplovinHack(AdsEnum adsType)
@@ -102,11 +133,6 @@ namespace IEC
             Debug.LogWarning("Applovin Banner ID:" + config.bannerID);
             Debug.LogWarning("Applovin Inter ID:" + config.interstitialID);
             Debug.LogWarning("Applovin Reward ID:" + config.rewardID);
-
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                listHackConfig = new List<AdsConfigWithName>();
-            }
 
             foreach (var hackConfig in listHackConfig)
             {
