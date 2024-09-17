@@ -99,6 +99,7 @@ namespace IEC
         [Serializable]
         public class VerifyPaymentIosData
         {
+            public string packageName;
             public string receipt;
             public AdjustData adjust;
             // public string itemCode;
@@ -231,6 +232,7 @@ namespace IEC
         {
             var dataCheck = new VerifyPaymentIosData()
             {
+                packageName = Application.identifier,
                 receipt = iosPayment,
                 adjust = adjust,
             };
