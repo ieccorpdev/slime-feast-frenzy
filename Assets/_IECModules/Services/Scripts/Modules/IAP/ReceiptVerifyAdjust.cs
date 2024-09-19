@@ -99,6 +99,9 @@ namespace IEC
         [Serializable]
         public class VerifyPaymentIosData
         {
+#if UNITY_IOS
+            public string idfv;
+#endif
             public string packageName;
             public string receipt;
             public AdjustData adjust;
@@ -232,6 +235,9 @@ namespace IEC
         {
             var dataCheck = new VerifyPaymentIosData()
             {
+#if UNITY_IOS
+                idfv = UnityEngine.iOS.Device.vendorIdentifier,
+#endif
                 packageName = Application.identifier,
                 receipt = iosPayment,
                 adjust = adjust,
