@@ -20,6 +20,7 @@ namespace IEC
             public const string SETUP_NEW_SCENE = "GamePlay.SETUP_NEW_SCENE";
             public const string SHOW_LOADING = "GamePlay.SHOW_LOADING";
             public const string ON_CHOOSE_TAB = "GamePlay.ON_CHOOSE_TAB";
+            public const string UPDATE_RESOURCE_UI = "GamePlay.UPDATE_RESOURCE_UI";
         }
     }
 }

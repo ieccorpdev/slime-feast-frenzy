@@ -70,7 +70,8 @@ namespace IEC
             }
             UI.ScreenLoading.ShowLoading(0.5f, () =>
             {
-                Scene.SendEvent(EventList.GamePlay.GO_MAIN);
+                // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
+                EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
             });
             // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }

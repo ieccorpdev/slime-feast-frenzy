@@ -92,7 +92,8 @@ namespace IEC
             RemoveDuplicateEventSystem(activeScene);
             LocateGroupFromScene(activeScene);
             UI.LocateAdditiveGroup();
-            SendEvent(EventList.GamePlay.SETUP_NEW_SCENE);
+            // SendEvent(EventList.GamePlay.SETUP_NEW_SCENE);
+            EventController.RaiseEvent(EventList.GamePlay.SETUP_NEW_SCENE);
             yield return new WaitForEndOfFrame();
             action?.Invoke();
         }
