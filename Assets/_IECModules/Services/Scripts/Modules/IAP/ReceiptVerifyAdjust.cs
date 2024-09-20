@@ -74,6 +74,7 @@ namespace IEC
         public class AdjustData
         {
             public string idfa;
+            public string idfv = "";
             public string event_token;
             public string app_token;
             public string adid;
@@ -99,9 +100,6 @@ namespace IEC
         [Serializable]
         public class VerifyPaymentIosData
         {
-#if UNITY_IOS
-            public string idfv;
-#endif
             public string packageName;
             public string receipt;
             public AdjustData adjust;
@@ -235,9 +233,6 @@ namespace IEC
         {
             var dataCheck = new VerifyPaymentIosData()
             {
-#if UNITY_IOS
-                idfv = UnityEngine.iOS.Device.vendorIdentifier,
-#endif
                 packageName = Application.identifier,
                 receipt = iosPayment,
                 adjust = adjust,
@@ -355,6 +350,9 @@ namespace IEC
             AdjustData adjust = new AdjustData
             {
                 idfa = services.IsHaveIDFA ? services.UserIDFA : Adjust.getIdfa(),
+#if UNITY_IOS
+                idfv = UnityEngine.iOS.Device.vendorIdentifier,
+#endif
                 app_token = (Application.platform == RuntimePlatform.Android) ? services.config.adjustConfig.androidID : services.config.adjustConfig.iosID,
                 event_token = adjustAnalyticModule.GetIAPEventId(),
                 adid = Adjust.getAdid(),
