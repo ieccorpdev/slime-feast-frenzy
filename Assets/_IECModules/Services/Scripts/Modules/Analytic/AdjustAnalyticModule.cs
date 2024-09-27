@@ -66,10 +66,15 @@ namespace IEC
             if (CheckPushedUniqueEvent(eventName, AnalyticDataParamType.Adjust)) return;
             var adjustEvent = new AdjustEvent(DictEvent[eventName]);
             var adjustLog = $"Push Adjust Event:{eventName}__{DictEvent[eventName]}";
+            var currencyCode = "USD";
+            if(param.ContainsKey("currencyCode"))
+            {
+                currencyCode = param["currencyCode"].ToString();
+            }
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
-                adjustEvent.setRevenue(value, "USD");
-                adjustLog += $"__Rev:{value}";
+                adjustEvent.setRevenue(value, currencyCode);
+                adjustLog += $"__Rev:{value} | Currency:{currencyCode}";
             }
             Adjust.trackEvent(adjustEvent);
             Debug.Log(adjustLog);
