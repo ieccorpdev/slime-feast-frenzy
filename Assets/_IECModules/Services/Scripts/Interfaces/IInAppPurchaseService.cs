@@ -44,6 +44,7 @@ namespace IEC
         public string LocalPrice;
         public string IsoCode;
         public string LocalPriceWithSymbol;
+        public float LocalPriceValue;
 
         public LocalizePriceInfo(decimal price, string isoCode, string localPriceWithSymbol, bool isNewFormat)
         {
@@ -58,6 +59,7 @@ namespace IEC
 
             this.IsoCode = isoCode;
             this.LocalPriceWithSymbol = localPriceWithSymbol;
+            this.LocalPriceValue = (float)price;
         }
 
         static string GetStringFormat(float number)
