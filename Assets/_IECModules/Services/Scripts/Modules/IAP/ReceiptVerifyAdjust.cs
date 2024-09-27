@@ -343,7 +343,7 @@ namespace IEC
                 if (localizedPrice != null)
                 {
                     currency = localizedPrice.IsoCode;
-                    revenue = float.Parse(localizedPrice.LocalPrice);
+                    revenue = localizedPrice.LocalPriceValue;
                 }
             }
             
