@@ -48,7 +48,7 @@ namespace IEC
                 }
             }
             m_ListTab.Add(m_BigTab);
-
+            m_BigTab.transform.SetAsLastSibling();
             m_TabCount = m_ListTab.Count;
             for (int i = 0; i < m_TabCount; i++)
             {
@@ -88,7 +88,7 @@ namespace IEC
         {
             for (int i = 0; i < m_ListTab.Count; i++)
             {
-                m_ListTab[i].SetData(HybridConfig.listTabConfig[i]);
+                m_ListTab[i].SetData(HybridConfig.listTabConfig[i], m_ListTab[i] == m_BigTab);
             }
         }
 

@@ -27,6 +27,7 @@ namespace IEC
     public class TabConfig
     {
         public TabType type;
-        public Sprite sprite;
+        public Sprite spriteOn;
+        public Sprite spriteOff;
     }
 }

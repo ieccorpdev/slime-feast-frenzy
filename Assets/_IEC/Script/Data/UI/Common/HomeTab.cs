@@ -26,10 +26,10 @@ namespace IEC
             });
         }
 
-        public void SetData(TabConfig config)
+        public void SetData(TabConfig config, bool isOn)
         {
             type = config.type;
-            m_Icon.sprite = config.sprite;
+            m_Icon.sprite = isOn ? config.spriteOn : config.spriteOff;
         }
 
         public void SetLock(bool isLock)
