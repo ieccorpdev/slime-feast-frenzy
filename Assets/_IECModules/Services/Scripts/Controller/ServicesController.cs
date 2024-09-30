@@ -64,6 +64,7 @@ namespace IEC
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
 
         private float m_DeltaTime;
+        private float m_InitAdDone;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -110,9 +111,11 @@ namespace IEC
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
 #if PluginApplovin
-                    AssignFPS();
-                    StartCoroutine(IE_LoadAd(AdsEnum.INTERSTITIAL));
-                    StartCoroutine(IE_LoadAd(AdsEnum.REWARD));
+                    AssignVariables();
+                    LoadAd(AdsEnum.INTERSTITIAL);
+                    LoadAd(AdsEnum.REWARD);
+                    //StartCoroutine(IE_LoadAd(AdsEnum.INTERSTITIAL));
+                    //StartCoroutine(IE_LoadAd(AdsEnum.REWARD));
 #else
                     StartCoroutine(IE_LoadAd());
 #endif
@@ -183,7 +186,10 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             UnityToolbag.Dispatcher.Update();
+#if PluginApplovin
             m_DeltaTime += (UnityEngine.Time.unscaledDeltaTime - m_DeltaTime) * 0.1f;
+            AssignFPS();
+#endif
         }
 
         public void BehaviourPauseApp(bool isPaused)
@@ -1396,12 +1402,50 @@ namespace IEC
             yield break;
 #endif
         }
+        
+        private void LoadAdType(AdsEnum adsEnum)
+        {
+            switch (adsEnum)
+            {
+                case AdsEnum.INTERSTITIAL:
+                    if (!m_ServiceData.isNoAds)
+                    {
+                        Ads().Load(adsEnum, null);
+                    }
+                    break;
+                default:
+                    Ads().Load(adsEnum, null);
+                    break;
+            }
+        }
+
+#if PluginApplovin
+
+        private void LoadAd(AdsEnum adsEnum)
+        {
+            var applovinAds = (ApplovinModule)m_Ads;
+            if (applovinAds == null) return;
+            if (applovinAds.IsHaveApplovinHack(adsEnum))
+                LoadAdType(adsEnum);
+            else
+                StartCoroutine(IE_LoadAd(adsEnum));
+        }
 
         private void AssignFPS()
         {
+            if (!m_InitAdDone) return;
             var applovinAds = (ApplovinModule)m_Ads;
             applovinAds?.AssignFPS(GetCurrentFPS());
         }
+
+        private void AssignVariables()
+        {
+            var applovinAds = (ApplovinModule)m_Ads;
+            applovinAds?.AssignFPSLimit(50, 55);
+            m_InitAdDone = true;
+            AssignFPS();
+        }
+#endif
 
         private float GetCurrentFPS() => 1f / m_DeltaTime;
         

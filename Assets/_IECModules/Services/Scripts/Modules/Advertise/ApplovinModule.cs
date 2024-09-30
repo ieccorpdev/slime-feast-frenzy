@@ -10,6 +10,7 @@ using System.Linq;
 #if (PluginAdjust)
 using com.adjust.sdk;
 #endif
+using DG.Tweening;
 
 namespace IEC
 {
@@ -33,32 +34,31 @@ namespace IEC
         private float m_MinFPS;
         private float m_MaxFPS;
         private float m_CurrentFPS;
+        private readonly Dictionary<AdsEnum, float> m_DictLoadHackFPS = new Dictionary<AdsEnum, float>();
+        private const float DELAY_LOAD_TIME = 5;
 
         public void CheckResetHackIdIndex(AdsEnum adsEnum)
         {
             if (!m_DictHackIdIndex.ContainsKey(adsEnum))
             {
-                m_DictHackIdIndex[adsEnum] = GetFirstResetIndex();
+                AssignLoadHackConfig(adsEnum);
+                return;
             }
+            
             m_DictHackIdIndex[adsEnum] += 1;
-            if (m_DictHackIdIndex[adsEnum] >= GetTotalHackId())
+            var totalHackId = GetTotalHackId(adsEnum);
+            var maxHackId = totalHackId == 2 ? totalHackId + 1 : totalHackId;
+            if (m_DictHackIdIndex[adsEnum] >= maxHackId)
             {
-                m_DictHackIdIndex[adsEnum] = GetFirstResetIndex();
+                AssignLoadHackConfig(adsEnum);
             }
         }
 
-        private int GetTotalHackId()
-        {
-            if (m_CurrentFPS >= m_MaxFPS)
-                return 3;
-            if (m_MinFPS < m_CurrentFPS && m_CurrentFPS < m_MaxFPS)
-                return 2;
-            return 1;
-        }
+        private int GetTotalHackId(AdsEnum adsEnum) => m_DictLoadHackFPS[adsEnum] >= m_MaxFPS ? 3 : m_DictLoadHackFPS[adsEnum] >= m_MinFPS ? 2 : 1;
 
-        private int GetFirstResetIndex()
+        private int GetResetIndex(AdsEnum adsEnum)
         {
-            return GetTotalHackId() switch
+            return GetTotalHackId(adsEnum) switch
             {
                 1 => 2,
                 2 => 1,
@@ -67,9 +67,24 @@ namespace IEC
             };
         }
 
-        public void AssignFPS(float current, float min = 50, float max = 55)
+        private void RemoveDictionaryKey(AdsEnum adsEnum)
         {
-            m_CurrentFPS = current;
+            if (!IsHaveApplovinHack(adsEnum)) return;
+            if (m_DictHackIdIndex.ContainsKey(adsEnum))
+                m_DictHackIdIndex.Remove(adsEnum);
+        }
+
+        private void AssignLoadHackConfig(AdsEnum adsEnum)
+        {
+            m_DictLoadHackFPS[adsEnum] = m_CurrentFPS;
+            Debug.Log($"Current Load Hack {adsEnum} FPS: {m_DictLoadHackFPS[adsEnum]}");
+            m_DictHackIdIndex[adsEnum] = GetResetIndex(adsEnum);
+        }
+
+        public void AssignFPS(float current) => m_CurrentFPS = current;
+
+        public void AssignFPSLimit(float min, float max)
+        {
             m_MinFPS = min;
             m_MaxFPS = max;
         }
@@ -531,6 +546,7 @@ namespace IEC
             adsState.isWaitToShow = false;
             m_FullAdsState = adsState;
 
+            ConfigWhenLoadAds(AdsEnum.INTERSTITIAL);
             ShowLogApplovinHack($"Load ads id: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
             MaxSdk.LoadInterstitial(m_Config.interstitialID);
         }
@@ -547,8 +563,8 @@ namespace IEC
                 if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL))
                 {
                     ShowLogApplovinHack($"Show ads id: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
-                    m_DictHackIdIndex[AdsEnum.INTERSTITIAL] = 0;
-                    m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
+                    //m_DictHackIdIndex[AdsEnum.INTERSTITIAL] = 0;
+                    //m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
                 }
             }
             else
@@ -600,6 +616,7 @@ namespace IEC
             var adsState = m_FullAdsState;
             adsState.isLoaded = true;
             adsState.isLoading = false;
+            RemoveDictionaryKey(AdsEnum.INTERSTITIAL);
             ShowLogApplovinHack($"InterstitialAd_OnAdLoaded: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
             adsState.onLoad = AdsStateData.SafeInvoke(adsState.onLoad, AdsEventArgs.DONE);
         }
@@ -614,9 +631,12 @@ namespace IEC
 
             if (IsHaveApplovinHack(AdsEnum.INTERSTITIAL))
             {
-                CheckResetHackIdIndex(AdsEnum.INTERSTITIAL);
+                //CheckResetHackIdIndex(AdsEnum.INTERSTITIAL);
                 ShowLogApplovinHack($"InterstitialAd_OnAdFailedToLoad: {m_Config.interstitialID}", AdsEnum.INTERSTITIAL);
-                m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
+                //m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.INTERSTITIAL]].interstitialID;
+                Debug.Log("Reload full ad after failed to load");
+                Load(AdsEnum.INTERSTITIAL, null);
+                return;
             }
 
             if (m_LoadFullAdCount < 3)
@@ -637,7 +657,7 @@ namespace IEC
 
             if (m_IsAutoReload)
             {
-                Load(AdsEnum.INTERSTITIAL, null);
+                Load(AdsEnum.INTERSTITIAL, null, DELAY_LOAD_TIME);
             }
         }
 
@@ -704,6 +724,7 @@ namespace IEC
             adsState.isLoaded = false;
             m_RewardAdsState = adsState;
 
+            ConfigWhenLoadAds(AdsEnum.REWARD);
             ShowLogApplovinHack($"Load ads id: {m_Config.rewardID}", AdsEnum.REWARD);
             MaxSdk.LoadRewardedAd(m_Config.rewardID);
         }
@@ -758,8 +779,8 @@ namespace IEC
                 if (IsHaveApplovinHack(AdsEnum.REWARD))
                 {
                     ShowLogApplovinHack($"Show ads id: {m_Config.rewardID}", AdsEnum.REWARD);
-                    m_DictHackIdIndex[AdsEnum.REWARD] = 0;
-                    m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
+                    //m_DictHackIdIndex[AdsEnum.REWARD] = 0;
+                    //m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
                 }
             }
             else
@@ -790,9 +811,12 @@ namespace IEC
 
             if (IsHaveApplovinHack(AdsEnum.REWARD))
             {
-                CheckResetHackIdIndex(AdsEnum.REWARD);
+                //CheckResetHackIdIndex(AdsEnum.REWARD);
                 ShowLogApplovinHack($"RewardedAdsView_OnAdFailedToLoad: {m_Config.rewardID}", AdsEnum.REWARD);
-                m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
+                //m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[AdsEnum.REWARD]].rewardID;
+                Debug.Log("Reload reward after failed to load");
+                Load(AdsEnum.REWARD, null);
+                return;
             }
 
             if (m_LoadRewardCount < 3)
@@ -808,6 +832,7 @@ namespace IEC
             AdsStateData.DebugLog("RewardedAdsView_OnAdLoaded");
             m_RewardAdsState.isLoaded = true;
             m_RewardAdsState.isLoading = false;
+            RemoveDictionaryKey(AdsEnum.REWARD);
             ShowLogApplovinHack($"RewardedAdsView_OnAdLoaded: {m_Config.rewardID}", AdsEnum.REWARD);
             m_RewardAdsState.onLoad = AdsStateData.SafeInvoke(m_RewardAdsState.onLoad, AdsEventArgs.DONE);
         }
@@ -819,7 +844,7 @@ namespace IEC
             m_RewardAdsState.isLoaded = false;
             if (m_IsAutoReload)
             {
-                Load(AdsEnum.REWARD, null);
+                Load(AdsEnum.REWARD, null, DELAY_LOAD_TIME);
             }
             else
             {
@@ -939,6 +964,37 @@ namespace IEC
         {
             if (!IsHaveApplovinHack(adsEnum)) return;
             Debug.Log($"[Applovin Hack {adsEnum}] {log}");
+        }
+
+        private void ConfigWhenLoadAds(AdsEnum adsEnum)
+        {
+            if (!IsHaveApplovinHack(adsEnum)) return;
+            CheckResetHackIdIndex(adsEnum);
+            switch (adsEnum)
+            {
+                case AdsEnum.INTERSTITIAL:
+                    m_Config.interstitialID = m_ListHackConfig[m_DictHackIdIndex[adsEnum]].interstitialID;
+                    break;
+                case AdsEnum.REWARD:
+                    m_Config.rewardID = m_ListHackConfig[m_DictHackIdIndex[adsEnum]].rewardID;
+                    break;
+                case AdsEnum.BANNER_TOP:
+                case AdsEnum.BANNER_BOTTOM:
+                    m_Config.bannerID = m_ListHackConfig[m_DictHackIdIndex[adsEnum]].bannerID;
+                    break;
+            }
+        }
+
+        private void Load(AdsEnum adsEnum, Action<AdsEventArgs> loadCallback, float delay)
+        {
+            if (!IsHaveApplovinHack(adsEnum))
+            {
+                Load(adsEnum, loadCallback);
+                return;
+            }
+            
+            DOTween.Kill("ApplovinHack" + adsEnum);
+            DOVirtual.DelayedCall(delay, () => Load(adsEnum, loadCallback)).SetEase(Ease.Linear).SetId("ApplovinHack" + adsEnum);
         }
 
         public void AddListAdsUnit(string adsUnit)
