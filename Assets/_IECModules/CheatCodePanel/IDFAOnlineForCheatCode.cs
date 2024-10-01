@@ -60,7 +60,7 @@ namespace _IECModules
         
         public static IEnumerator IEDownloadOnlineIDFA(Action<string> onComplete)
         {
-            UnityWebRequest webRequest = UnityWebRequest.Get(GOOGLE_SHEET_IDFA);
+            /*UnityWebRequest webRequest = UnityWebRequest.Get(GOOGLE_SHEET_IDFA);
             yield return webRequest.SendWebRequest();
             if (webRequest.result != UnityWebRequest.Result.Success)
             {
@@ -70,6 +70,21 @@ namespace _IECModules
             else
             {
                 onComplete?.Invoke(webRequest.downloadHandler.text);
+            }*/
+            using (var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(GOOGLE_SHEET_IDFA))
+            {
+                yield return uwr.SendWebRequest();
+
+                if (uwr.error != null)
+                {
+                    Debug.LogError("Fail to get Google Sheet IDFA: " + uwr.error);
+                    onComplete?.Invoke("");
+                }
+                else
+                {
+                    onComplete?.Invoke(uwr.downloadHandler.text);
+                }
+                
             }
         }
         private static List<string> GetAllIdfaFromCsv(string textSource)
@@ -105,6 +120,7 @@ namespace _IECModules
         }
 
         private const string LOCAL_IDFA_KEY = "cheatcode_idfa_list";
-        private const string GOOGLE_SHEET_IDFA = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vT7lRe3WZRtd-0lfL_Z7uJSpGfI5hpVIKR0U8y4itYCJUVoH_ZefViy5T9w9pndO74XD9_7JeXQzKVf/pub?gid=1696717826&single=true&output=csv";
+        //private const string GOOGLE_SHEET_IDFA = @"https://docs.google.com/spreadsheets/d/e/2PACX-1vT7lRe3WZRtd-0lfL_Z7uJSpGfI5hpVIKR0U8y4itYCJUVoH_ZefViy5T9w9pndO74XD9_7JeXQzKVf/pub?gid=1696717826&single=true&output=csv";
+        private const string GOOGLE_SHEET_IDFA = @"https://docs.google.com/spreadsheets/d/1JinmC7AFbGJWkCBLXZ9bIOA6IE-kX3AnRxbTneZnQK8/edit?gid=430675318#gid=430675318";
     }
 }
