@@ -16,9 +16,6 @@ namespace IEC
         public EventSystem eventSystem;
 
         public TMP_Text textHello;
-
-        public PopupSetting PopupSetting => Pool.Get<PopupSetting>();
-        public ScreenLoading ScreenLoading => Pool.Get<ScreenLoading>();
         
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());

@@ -68,7 +68,7 @@ namespace IEC
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
                 ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
             }
-            UI.ScreenLoading.ShowLoading(0.5f, () =>
+            Locator.ScreenLoading.ShowLoading(0.5f, () =>
             {
                 // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
                 EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);

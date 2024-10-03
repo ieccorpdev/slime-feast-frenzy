@@ -26,7 +26,7 @@ namespace IEC
             });
             SetEvent(m_BtnSetting, () =>
             {
-                UI.ShowScreen(UI.PopupSetting);
+                UI.ShowScreen(Locator.PopupSetting);
             });
         }
 
