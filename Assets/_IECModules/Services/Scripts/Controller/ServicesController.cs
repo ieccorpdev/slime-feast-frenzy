@@ -40,6 +40,7 @@ namespace IEC
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
+        [SerializeField] private AnalyticSaveData m_AnalyticSaveData;
         private bool m_IsRewardLoaded;
 
         bool isInit = false;
@@ -108,6 +109,9 @@ namespace IEC
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
+                    break;
+                case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
+                    SaveData();
                     break;
             }
         }
@@ -216,11 +220,68 @@ namespace IEC
                 }
             });
 #endif
+            m_Ads = new AdsMock(false);
+
+            m_Login = new LoginMock();
+            m_LeaderBoard = new LeaderBoardMock();
+
+            m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
+            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
+
+            m_ListAnalytics.Add(new AnalyticEventMock());
+            {
+#if (PluginFacebook)
+                m_ListAnalytics.Add(new FBAnalyticEvent());
+#endif
+
+#if (PluginFirebaseAnalytic)
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
+                        .Where(x =>
+                        {
+                            return !x.PlatformParam.isPushEventFirebase;
+                        })
+                        .Select(x => x.gameEvent).ToList();
+                }
+                
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
+                m_ListAnalytics.Add(m_FirebaseAnalytic);
+                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
+#endif
+            }
+
+            m_DataRemote = m_DataNormal;
+#if (PluginFirebaseRemote)
+            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+            SetPushCustomEventFirebase();
+            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
+#endif
+#if PluginByteDanceChinaIOS
+            _initByteDance(config.appId, config.appName);
+#endif
+#if PluginAdjust
+            m_AdjustAnalytic = new AdjustAnalyticModule();
+            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    return x.PlatformParam.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
             m_IAP = new InAppPurchaseMock(m_DataSecure);
             m_ReceiptVerify = new ReceiptMock();
 
 #if (PluginReceiptVerify)
             m_ReceiptVerify = new ReceiptVerifyOffline();
+#endif
+#if (PluginReceiptVerifyAdjust)
+            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this);
 #endif
 #if (PluginUnityIAP)
             var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
@@ -252,65 +313,7 @@ namespace IEC
                 PushEvent(eventName,1,param);
             } );
 #endif
-            m_Ads = new AdsMock(false);
-
-            m_Login = new LoginMock();
-            m_LeaderBoard = new LeaderBoardMock();
-
-            m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
-            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
-
-            m_ListAnalytics.Add(new AnalyticEventMock());
-            {
-#if (PluginFacebook)
-                m_ListAnalytics.Add(new FBAnalyticEvent());
-#endif
-
-#if (PluginFirebaseAnalytic)
-                var listIgnoredEvent = new List<string>();
-                if(config.adjustEventConfig != null)
-                {
-                    listIgnoredEvent = config.adjustEventConfig.listData
-                        .Where(x =>
-                        {
-                            if(Application.platform == RuntimePlatform.Android)
-                                return !x.android.isPushEventFirebase;
-                            return !x.iOS.isPushEventFirebase;
-                        })
-                        .Select(x => x.gameEvent).ToList();
-                }
-                
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
-                m_ListAnalytics.Add(m_FirebaseAnalytic);
-                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
-            }
-
-            m_DataRemote = m_DataNormal;
-#if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
-            SetPushCustomEventFirebase();
-            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
-#endif
-#if PluginByteDanceChinaIOS
-            _initByteDance(config.appId, config.appName);
-#endif
-#if PluginAdjust
-            m_AdjustAnalytic = new AdjustAnalyticModule();
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
-            if (config.adjustEventConfig != null)
-            {
-                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
-                {
-                    if (Application.platform == RuntimePlatform.Android)
-                        return x.android.isAdjustRev;
-                    return x.iOS.isAdjustRev;
-                }).Select(x => x.gameEvent).ToList();
-                m_AdjustAnalytic.SetListEventRev(listRevEvent);
-            }
-            m_ListAnalytics.Add(m_AdjustAnalytic);
-#endif
-
+            
             RequestCMP();
 
             InitAnalyticAndSetupAbTest();
@@ -510,6 +513,7 @@ namespace IEC
             foreach (var analytic in m_ListAnalytics)
             {
                 analytic.Init();
+                analytic.Init(config.adjustEventConfig);
             }
 
             this.config.SetActiveAbByVersion();
@@ -583,8 +587,10 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            m_AnalyticSaveData = DataSecure().GetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, new AnalyticSaveData());
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
+            Pool.Set(m_AnalyticSaveData);
         }
 
         void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
@@ -676,6 +682,7 @@ namespace IEC
         {
             Init();
             DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
+            DataSecure().SetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, m_AnalyticSaveData);
             m_DataNormal.Save();
             m_DataSecure.Save();
         }
@@ -1097,6 +1104,9 @@ namespace IEC
         {
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
+#if UNITY_EDITOR
+                m_UserIDFA = "f28127e4-63c4-46f4-bb85-2e7875f6daf9";
+#endif
 #if UNITY_ANDROID
                 try
                 {

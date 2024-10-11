@@ -37,6 +37,12 @@ namespace IEC
         LocalizePriceInfo GetLocalizePrice(string productID, bool isNewFormat = true);
 
         bool IsInitialized();
+
+        UnityEngine.Purchasing.Product GetProductById(string id);
+
+        decimal GetProductPrice(string id);
+
+        void AddProducts(HashSet<UnityEngine.Purchasing.ProductDefinition> additionalProducts, Action successCallback, Action<UnityEngine.Purchasing.InitializationFailureReason> failCallback);
     }
 
     public class LocalizePriceInfo
@@ -44,6 +50,7 @@ namespace IEC
         public string LocalPrice;
         public string IsoCode;
         public string LocalPriceWithSymbol;
+        public float LocalPriceValue;
 
         public LocalizePriceInfo(decimal price, string isoCode, string localPriceWithSymbol, bool isNewFormat)
         {
@@ -58,6 +65,7 @@ namespace IEC
 
             this.IsoCode = isoCode;
             this.LocalPriceWithSymbol = localPriceWithSymbol;
+            this.LocalPriceValue = (float)price;
         }
 
         static string GetStringFormat(float number)
