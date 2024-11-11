@@ -2,6 +2,8 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.Callbacks;
 #if UNITY_IOS
+using _IECModules;
+using IEC;
 using UnityEditor.iOS.Xcode;
 #endif
 using System.IO;
@@ -41,11 +43,11 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         var projectPath = path + "/Unity-iPhone.xcodeproj/project.pbxproj";
         var podProjPath = path + "/Pods/Pods.xcodeproj/project.pbxproj";
-        
-        
+
+
         PBXProject pbxProject = new PBXProject();
         pbxProject.ReadFromFile(projectPath);
-        
+
         //CheckAddSmaatoSKAdNetworkID(path);
         //CheckAddInmobiSKAdNetworkID(path);
 #if PluginMaxAmazonNetwork
@@ -59,16 +61,29 @@ public class PostProcessBuildIOS : MonoBehaviour
 
         void EditCapability()
         {
-            if(!Directory.Exists(Application.dataPath + "/Extensions/CloudOnce")) return;
+            if (!Directory.Exists(Application.dataPath + "/Extensions/CloudOnce")) return;
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
-            var entitlementsFileName = pbxProject.GetBuildPropertyForAnyConfig(mainTargetGuid, "CODE_SIGN_ENTITLEMENTS") ?? Application.productName + ".entitlements";
+            var entitlementsFileName =
+                pbxProject.GetBuildPropertyForAnyConfig(mainTargetGuid, "CODE_SIGN_ENTITLEMENTS") ??
+                Application.productName + ".entitlements";
             ProjectCapabilityManager projectCapabilityManager = new ProjectCapabilityManager(projectPath,
-              entitlementsFileName, "Unity-iPhone", mainTargetGuid);
-            projectCapabilityManager.AddiCloud(true, true, true, false, new string[] { $"iCloud.{Application.identifier}.cloud.save" });
+                entitlementsFileName, "Unity-iPhone", mainTargetGuid);
+            projectCapabilityManager.AddiCloud(true, true, true, false,
+                new string[] { $"iCloud.{Application.identifier}.cloud.save" });
             projectCapabilityManager.WriteToFile();
 
             var entitleRead = File.ReadAllText(path + "/" + entitlementsFileName);
             entitleRead = entitleRead.Replace("<string>iCloud.$(CFBundleIdentifier)</string>", "");
+
+            ProjectChecklistHelper.LoadServicesConfig();
+            if (ProjectChecklistHelper.servicesConfig != null &&
+                !string.IsNullOrWhiteSpace(ProjectChecklistHelper.servicesConfig.teamIdCloudSave))
+            {
+                Debug.LogError("Change Team ID");
+                entitleRead = entitleRead.Replace(
+                    "<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>",
+                    $"<string>{ProjectChecklistHelper.servicesConfig.teamIdCloudSave}.$(CFBundleIdentifier)</string>");
+            }
 
             var entitlements = new PlistDocument();
             entitlements.ReadFromString(entitleRead);
@@ -77,7 +92,7 @@ public class PostProcessBuildIOS : MonoBehaviour
 #if PluginGameCenter
             entitlementsDict.SetBoolean("com.apple.developer.game-center", true);
 #endif
-
+            Debug.LogWarning(Controllers.Get<ServicesController>().config.teamIdCloudSave);
             Debug.LogWarning(entitleRead);
             File.WriteAllText(path + "/" + entitlementsFileName, entitlements.WriteToString());
         }
@@ -87,16 +102,17 @@ public class PostProcessBuildIOS : MonoBehaviour
             pbxProject.SetBuildProperty(pbxProject.ProjectGuid(), "ENABLE_BITCODE", "NO");
             var mainTargetGuid = pbxProject.GetUnityMainTargetGuid();
             pbxProject.SetBuildProperty(mainTargetGuid, "ENABLE_BITCODE", "NO");
-            
+
             //Fix upload ipa xcode 14
-            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
+            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(),
+                "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
             //Fix upload ipa xcode 15
-            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "MARKETING_VERSION", PlayerSettings.bundleVersion);
+            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "MARKETING_VERSION",
+                PlayerSettings.bundleVersion);
             // Add AdServices framework
             pbxProject.AddFrameworkToProject(mainTargetGuid, "AdServices.framework", true );
             //
             pbxProject.WriteToFile(projectPath);
-            
         }
 
         //Fix build xcode 14
@@ -104,8 +120,8 @@ public class PostProcessBuildIOS : MonoBehaviour
         {
             var appFilePath = path + "/fastlane/Appfile";
             var appFileContent = File.ReadAllText(appFilePath);
-            var teamId = appFileContent.Split(new[] {"team_id"}, StringSplitOptions.None)[2]
-                .GetBetweenString("(\"", "\")",false);
+            var teamId = appFileContent.Split(new[] { "team_id" }, StringSplitOptions.None)[2]
+                .GetBetweenString("(\"", "\")", false);
             Debug.Log("teamId:" + teamId);
             var podPbx = new PBXProject();
             podPbx.ReadFromFile(podProjPath);
@@ -140,24 +156,26 @@ public class PostProcessBuildIOS : MonoBehaviour
                 var pbxProjectStr = File.ReadAllText(projectPath);
 
                 // get first Resources only
-                var stringPBXResourcesBuildPhase = pbxProjectStr.GetBetweenString("/* Begin PBXResourcesBuildPhase section */", "}");
+                var stringPBXResourcesBuildPhase =
+                    pbxProjectStr.GetBetweenString("/* Begin PBXResourcesBuildPhase section */", "}");
                 if (!stringPBXResourcesBuildPhase.Contains("GoogleService-Info.plist in Resources"))
                 {
                     var googlePlistFileGuid = pbxProject.FindFileGuidByProjectPath("GoogleService-Info.plist");
 
                     var randomGenerateGuid = Guid.NewGuid().ToString().Replace("-", "").ToUpper().Substring(0, 24);
 
-                    var newStringPBXResourcesBuildPhase = stringPBXResourcesBuildPhase.Replace("/* Data in Resources */,",
+                    var newStringPBXResourcesBuildPhase = stringPBXResourcesBuildPhase.Replace(
+                        "/* Data in Resources */,",
                         $"/* Data in Resources */,\n\t\t\t\t{randomGenerateGuid} /* GoogleService-Info.plist in Resources */,");
 
-                    pbxProjectStr = pbxProjectStr.Replace(stringPBXResourcesBuildPhase, newStringPBXResourcesBuildPhase);
+                    pbxProjectStr =
+                        pbxProjectStr.Replace(stringPBXResourcesBuildPhase, newStringPBXResourcesBuildPhase);
                     pbxProjectStr = pbxProjectStr.Replace(" /* Il2CppGenericClassTable.c */; };",
                         $" /* Il2CppGenericClassTable.c */; }};\n\t\t{randomGenerateGuid} /* GoogleService-Info.plist in Resources */ = {{isa = PBXBuildFile; fileRef = {googlePlistFileGuid} /* GoogleService-Info.plist */; }};");
                     File.WriteAllText(projectPath, pbxProjectStr);
 
                     Debug.Log("GoogleService-Info.plist Target Memeber ship enabled");
                 }
-
             }
         }
     }
@@ -175,20 +193,21 @@ public class PostProcessBuildIOS : MonoBehaviour
             "su67r6k2v3.skadnetwork",
             "h65wbv5k3f.skadnetwork"
         };
-        
+
         AddMissingSKAdNetworkID(listMissing, path);
     }
-    
+
     public static void CheckAddSmaatoSKAdNetworkID(string path = "")
     {
 #if PluginApplovin
-        if(!File.Exists(Application.dataPath + "/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml")) return;
-        const string smaatoGuideUrl = "https://developers.smaato.com/publishers/nextgen-sdk-ios-integration/#skadnetwork-setup-ios";
+        if (!File.Exists(Application.dataPath + "/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml")) return;
+        const string smaatoGuideUrl =
+            "https://developers.smaato.com/publishers/nextgen-sdk-ios-integration/#skadnetwork-setup-ios";
         new HTTPRequest(new Uri(smaatoGuideUrl), (originalRequest, response) =>
         {
             var smaatoSKAdNetworkItems = response.DataAsText.GetBetweenString("SKAdNetworkItems", "&lt;/array&gt;")
                 .Replace("&lt;", "<").Replace("&gt;", ">")
-                .Split(new[] {"<string>"}, StringSplitOptions.None)
+                .Split(new[] { "<string>" }, StringSplitOptions.None)
                 .ToList();
             smaatoSKAdNetworkItems.RemoveAt(0);
             smaatoSKAdNetworkItems = smaatoSKAdNetworkItems.Select(x => x.Substring(0, 10)).ToList();
@@ -198,10 +217,11 @@ public class PostProcessBuildIOS : MonoBehaviour
 
 #endif
     }
+
     public static void CheckAddInmobiSKAdNetworkID(string path = "")
     {
 #if PluginApplovin
-        if(!File.Exists(Application.dataPath + "/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml")) return;
+        if (!File.Exists(Application.dataPath + "/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml")) return;
         const string inmobiSkAdNetworkJsonUrl = "https://www.inmobi.com/skadnetworkids.json";
         new HTTPRequest(new Uri(inmobiSkAdNetworkJsonUrl), (originalRequest, response) =>
         {
@@ -211,7 +231,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             {
                 inmobiSKAdNetworkItems.Add(inmobiSKAdNetworkJsonItems[i]["skadnetwork_id"].ToString().Substring(2, 10));
             }
-                
+
             AddMissingSKAdNetworkID(inmobiSKAdNetworkItems, path);
         }).Send();
 
@@ -228,13 +248,15 @@ public class PostProcessBuildIOS : MonoBehaviour
         var plistSKAdNetworkItemsArray = rootDict.values["SKAdNetworkItems"].AsArray();
 
         var missingSKAdId = missingSkAdNetworkItems.Where(smaatoId =>
-                !plistSKAdNetworkItemsArray.values.Any(x => x.AsDict().values["SKAdNetworkIdentifier"].AsString().Contains(smaatoId)))
+                !plistSKAdNetworkItemsArray.values.Any(x =>
+                    x.AsDict().values["SKAdNetworkIdentifier"].AsString().Contains(smaatoId)))
             .ToList();
-            
-        if(missingSKAdId.Count == 0) return;
+
+        if (missingSKAdId.Count == 0) return;
         Debug.LogWarning($"{missingSKAdId.Count} SKAdnetworkID Missing: {missingSKAdId.JsonSerialize()}");
-            
-        missingSKAdId.ForEach(missingId => plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
+
+        missingSKAdId.ForEach(missingId =>
+            plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
         File.WriteAllText(plistPath, plist.WriteToString());
     }
 #endif
