@@ -92,7 +92,6 @@ public class PostProcessBuildIOS : MonoBehaviour
 #if PluginGameCenter
             entitlementsDict.SetBoolean("com.apple.developer.game-center", true);
 #endif
-            Debug.LogWarning(Controllers.Get<ServicesController>().config.teamIdCloudSave);
             Debug.LogWarning(entitleRead);
             File.WriteAllText(path + "/" + entitlementsFileName, entitlements.WriteToString());
         }
