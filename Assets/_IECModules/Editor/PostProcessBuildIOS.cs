@@ -178,65 +178,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             }
         }
     }
-
-    private static void CheckMissingSKAdId(string path)
-    {
-        var listMissing = new List<string>()
-        {
-            "bvpn9ufa9b.skadnetwork",
-            "gvmwg8q7h5.skadnetwork",
-            "hjevpa356n.skadnetwork",
-            "pu4na253f3.skadnetwork",
-            "yrqqpx2mcb.skadnetwork",
-            "z4gj7hsk7h.skadnetwork",
-            "su67r6k2v3.skadnetwork",
-            "h65wbv5k3f.skadnetwork"
-        };
-
-        AddMissingSKAdNetworkID(listMissing, path);
-    }
-
-    public static void CheckAddSmaatoSKAdNetworkID(string path = "")
-    {
-#if PluginApplovin
-        if (!File.Exists(Application.dataPath + "/MaxSdk/Mediation/Smaato/Editor/Dependencies.xml")) return;
-        const string smaatoGuideUrl =
-            "https://developers.smaato.com/publishers/nextgen-sdk-ios-integration/#skadnetwork-setup-ios";
-        new HTTPRequest(new Uri(smaatoGuideUrl), (originalRequest, response) =>
-        {
-            var smaatoSKAdNetworkItems = response.DataAsText.GetBetweenString("SKAdNetworkItems", "&lt;/array&gt;")
-                .Replace("&lt;", "<").Replace("&gt;", ">")
-                .Split(new[] { "<string>" }, StringSplitOptions.None)
-                .ToList();
-            smaatoSKAdNetworkItems.RemoveAt(0);
-            smaatoSKAdNetworkItems = smaatoSKAdNetworkItems.Select(x => x.Substring(0, 10)).ToList();
-
-            AddMissingSKAdNetworkID(smaatoSKAdNetworkItems, path);
-        }).Send();
-
-#endif
-    }
-
-    public static void CheckAddInmobiSKAdNetworkID(string path = "")
-    {
-#if PluginApplovin
-        if (!File.Exists(Application.dataPath + "/MaxSdk/Mediation/InMobi/Editor/Dependencies.xml")) return;
-        const string inmobiSkAdNetworkJsonUrl = "https://www.inmobi.com/skadnetworkids.json";
-        new HTTPRequest(new Uri(inmobiSkAdNetworkJsonUrl), (originalRequest, response) =>
-        {
-            var inmobiSKAdNetworkJsonItems = JSON.Parse(response.DataAsText)["skadnetwork_ids"].AsArray;
-            var inmobiSKAdNetworkItems = new List<string>();
-            for (var i = 0; i < inmobiSKAdNetworkJsonItems.Count; i++)
-            {
-                inmobiSKAdNetworkItems.Add(inmobiSKAdNetworkJsonItems[i]["skadnetwork_id"].ToString().Substring(2, 10));
-            }
-
-            AddMissingSKAdNetworkID(inmobiSKAdNetworkItems, path);
-        }).Send();
-
-#endif
-    }
-
+    
     public static void AddMissingSKAdNetworkID(List<string> missingSkAdNetworkItems, string path = "")
     {
         var plistPath = Path.Combine(path, "Info.plist");
@@ -257,6 +199,102 @@ public class PostProcessBuildIOS : MonoBehaviour
         missingSKAdId.ForEach(missingId =>
             plistSKAdNetworkItemsArray.AddDict().SetString("SKAdNetworkIdentifier", missingId));
         File.WriteAllText(plistPath, plist.WriteToString());
+    }
+
+    private static void CheckMissingSKAdId(string path)
+    {
+        var listMissing = new List<string>()
+        {
+            "bvpn9ufa9b.skadnetwork",
+            "gvmwg8q7h5.skadnetwork",
+            "hjevpa356n.skadnetwork",
+            "pu4na253f3.skadnetwork",
+            "yrqqpx2mcb.skadnetwork",
+            "z4gj7hsk7h.skadnetwork",
+            "su67r6k2v3.skadnetwork",
+            "h65wbv5k3f.skadnetwork",
+            "24t9a8vw3c.skadnetwork",
+            "24zw6aqk47.skadnetwork",
+            "275upjj5gd.skadnetwork",
+            "294l99pt4k.skadnetwork",
+            "32z4fx6l9h.skadnetwork",
+            "3l6bd9hu43.skadnetwork",
+            "424m5254lk.skadnetwork",
+            "44jx6755aq.skadnetwork",
+            "44n7hlldy6.skadnetwork",
+            "4883q3dtq.skadnetwork",
+            "523jb4fst2.skadnetwork",
+            "52fl2v3hgk.skadnetwork",
+            "54nzkqm89y.skadnetwork",
+            "5l3tpt7t6e.skadnetwork",
+            "5lm9lj6jb7.skadnetwork",
+            "5tjdwbrq8w.skadnetwork",
+            "6964rstnh4.skadnetwork",
+            "6g9af3uyq4.skadnetwork",
+            "6p4ks3rnbw.skadnetwork",
+            "6v7lgmsu45.skadnetwork",
+            "6xzpug9s2p8.skadnetwork",
+            "737z793b9f.skadnetwork",
+            "74b6s63p6l.skadnetwork",
+            "7953jerfzd.skadnetwork",
+            "79pbpufp6p.skadnetwork",
+            "7fmhfwg9en.skadnetwork",
+            "7rz58n8ntl.skadnetwork",
+            "84993kbrcf.skadnetwork",
+            "89z7zv988g.skadnetwork",
+            "8m87ys6875.skadnetwork",
+            "97r2b46745.skadnetwork",
+            "9b89h5y424.skadnetwork",
+            "9nlqeag3gk.skadnetwork",
+            "9rd848q2bz.skadnetwork",
+            "9vvzujtq5s.skadnetwork",
+            "9yg77x724h.skadnetwork",
+            "a7xqa6mtl2.skadnetwork",
+            "av6w8kgt66.skadnetwork",
+            "b9bk5wbcq9.skadnetwork",
+            "bxvub5ada5.skadnetwork",
+            "c3frkrj4fj.skadnetwork",
+            "cg4yq2srnc.skadnetwork",
+            "cj5566h2ga.skadnetwork",
+            "cs644xg564.skadnetwork",
+            "ejvt5qm6ak.skadnetwork",
+            "f73kdq92p3.skadnetwork",
+            "feyaarzu9v.skadnetwork",
+            "g28c52eehv.skadnetwork",
+            "g2y4y55b64.skadnetwork",
+            "ggvn48r87g.skadnetwork",
+            "glqzh8vgby.skadnetwork",
+            "hb56zgv37p.skadnetwork",
+            "k674qkevps.skadnetwork",
+            "kbmxgpxpgc.skadnetwork",
+            "m297p6643m.skadnetwork", 
+            "m5mvw97r93.skadnetwork",
+            "m8dbw4sv7c.skadnetwork",
+            "mls7yz5dvl.skadnetwork",
+            "mp6xlyr22a.skadnetwork",
+            "mtkv5xtk9e.skadnetwork",
+            "n66cz3y3bx.skadnetwork",
+            "n9x2a789qt.skadnetwork",
+            "nzq8sh4pbs.skadnetwork",
+            "prcb7njmu6.skadnetwork",
+            "pwdxu55a5a.skadnetwork",
+            "qqp299437r.skadnetwork",
+            "qu637u8glc.skadnetwork",
+            "r45fhb6rf7.skadnetwork",
+            "rvh3l7un93.skadnetwork",
+            "rx5hdcabgc.skadnetwork",
+            "tl55sbb4fm.skadnetwork",
+            "u679fj5vs4.skadnetwork",
+            "vcra2ehyfk.skadnetwork",
+            "vhf287vqwu.skadnetwork",
+            "w9q455wk68.skadnetwork",
+            "wg4vff78zm.skadnetwork",
+            "x44k69ngh6.skadnetwork",
+            "xy9t38ct57.skadnetwork",
+            "zmvfpc5aq8.skadnetwork" 
+        };
+
+        AddMissingSKAdNetworkID(listMissing, path);
     }
 #endif
 }
