@@ -333,7 +333,7 @@ public class PostProcessBuildIOS : MonoBehaviour
             "fz2k2k5tej.skadnetwork",
             "jk2fsx2rgz.skadnetwork",
             "k6y4y55b64.skadnetwork",
-            "In5gz23vtd.skadnetwork",
+            "ln5gz23vtd.skadnetwork",
             "Ir83yxwka7.skadnetwork",
             "mj797d8u6f.skadnetwork",
             "nu4557a4je.skadnetwork",
@@ -461,7 +461,11 @@ public class PostProcessBuildIOS : MonoBehaviour
             "y5ghdn5j9k.skadnetwork",
             "yclnxrl5pm.skadnetwork",
             "ydx93a7ass.skadnetwork",
-            "zq4921623r.skadnetwork"
+            "zq4921623r.skadnetwork",
+            "2tdux39lx8.skadnetwork",
+            "8w3np9l82g.skadnetwork",
+            "h5jmj969g5.skadnetwork",
+            "r26jy69rpl.skadnetwork"
         };
 
         AddMissingSKAdNetworkID(listMissing, path);
