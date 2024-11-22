@@ -72,6 +72,8 @@ public class ServicesConfig : ScriptableObject
     [Header("SDK Version")]
     public string firebaseSDKVersion;
     public string firebaseRemoteSDKVersion;
+    [Header("Team ID Cloud Save")] 
+    public string teamIdCloudSave;
 
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";
