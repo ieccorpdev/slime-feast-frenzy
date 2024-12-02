@@ -7,6 +7,7 @@ namespace IEC
     public class _BaseBehaviour : BaseBehaviour
     {
         protected static ServicesController Services => Controllers.Get<ServicesController>();
+        protected static DataController Data => Controllers.Get<DataController>();
         
         protected static SceneController Scene => Controllers.Get<SceneController>();
         

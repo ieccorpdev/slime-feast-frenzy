@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using NaughtyAttributes;
 using UnityEngine;
 
 namespace IEC
@@ -11,7 +13,12 @@ namespace IEC
         public string bundleId;
         public string packName;
         public string badge;
+
+        [NaughtyAttributes.InfoBox(
+            "Resource Unlimited Live need to be set in seconds, otherwise it need a function to convert to seconds",
+            EInfoBoxType.Warning)]
         public List<ResourceConfig> resources;
+
         public bool isHaveNoAds;
 
         private Dictionary<ResourceType, int> m_DictResources;
@@ -25,6 +32,7 @@ namespace IEC
         }
     }
 
+    [Serializable]
     public class ResourceConfig
     {
         public ResourceType type;

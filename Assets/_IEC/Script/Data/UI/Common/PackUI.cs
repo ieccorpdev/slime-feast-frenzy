@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
@@ -32,11 +33,28 @@ namespace IEC
                     Pool.Get<ServiceData>().isNoAds = true;
                 }
                 UpdateUI();
-                if (isRestore) return;
+                // if (isRestore) return;
+                var goldAdd = 0;
+                var listResourceType = m_Config.resources.Select(x => x.type).ToList();
                 m_Config.resources.ForEach(x =>
                 {
                     PlayerData.hybridData.AddResource(x.type, x.value);
+                    if (x.type == ResourceType.Gold)
+                    {
+                        goldAdd = (int)x.value;
+                    }
                 });
+                Locator.Service.PopupPurchaseSuccess.SetResourceCallBack(listResourceType)
+                    .AddActionClose(listResource =>
+                    {
+                        if (listResource.Contains(ResourceType.Gold))
+                        {
+                            Locator.Service.MoneyPanel.EffectCoinClaim(new Vector2(350, -1050), goldAdd,
+                                PlayerData.hybridData.GetResourceCount(ResourceType.Gold), () => { });
+                        }
+                    }).Show();
+                
+                Data.SaveData();
             }); 
                 
             m_BtnBuy.onClick.AddListener(() =>
