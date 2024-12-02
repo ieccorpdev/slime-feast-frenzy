@@ -10,6 +10,9 @@ namespace IEC
         private List<int> m_ListLevelAdjust = new List<int>();
         private List<int> m_ListLevelFirstTimeAdjust = new List<int>();
         public List<int> ListEventInterAdjust = new List<int>();
+        private bool m_IsUpdateTimeResume;
+        private bool m_IsPlayWithUnlimitedLives;
+        private LifeConfig m_LifeConfig => Config.hybridConfig.lifeConfig;
         public void LocateController()
         {
             Controllers.Add(this);
@@ -68,7 +71,7 @@ namespace IEC
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
                 ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
             }
-            Locator.ScreenLoading.ShowLoading(0.5f, () =>
+            Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
             {
                 // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
                 EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
@@ -78,10 +81,19 @@ namespace IEC
 
         void OnNewGame()
         {
+            var lifeCount = PlayerData.hybridData.GetResourceCount(ResourceType.Live);
             Game.SetTimeStartLevel();
-            
+            m_IsPlayWithUnlimitedLives = PlayerData.hybridData.IsUnlitmitedLives();
+            if (!m_IsPlayWithUnlimitedLives)
+            {
+                if (lifeCount == m_LifeConfig.maxLife)
+                {
+                    PlayerData.hybridData.timeRefillLeft = m_LifeConfig.timeRefill;
+                }
+            }
+            PlayerData.hybridData.AddResource(ResourceType.Live, -1);
             PushPlayLevelEvent();
-
+            
             GamePlay.SetNewLevel(PlayerData.level);
         }
 
@@ -90,6 +102,7 @@ namespace IEC
             Game.SetTimeEndLevel();
             if (GamePlay.IsWin)
             {
+                PlayerData.hybridData.AddResource(ResourceType.Live, 1);
                 PlayerData.AddLevel();
             }
             EventController.RaiseEvent(EventList.SAVE_DATA);
@@ -122,6 +135,53 @@ namespace IEC
                 Services.PushEvent($"play_level_{level}");
 
             EventController.RaiseEvent(EventList.SAVE_DATA);
+        }
+        
+        private void UpdateTimeLeftApplicationResume()
+        {
+            m_IsUpdateTimeResume = true;
+            var lastTime = new DateTime(PlayerData.startTickPlayTime);
+            var timeSpanSec = (int)((DateTime.Now - lastTime).TotalSeconds);
+
+            PlayerData.hybridData.AddResource(ResourceType.UnlimitedLive, -timeSpanSec);
+
+            if (timeSpanSec < PlayerData.hybridData.timeRefillLeft)
+            {
+                PlayerData.hybridData.timeRefillLeft -= timeSpanSec;
+            }
+            else
+            {
+                var remainSec = timeSpanSec - PlayerData.hybridData.timeRefillLeft;
+                PlayerData.hybridData.AddResource(ResourceType.Live, 1);
+                while (remainSec > m_LifeConfig.timeRefill)
+                {
+                    remainSec -= m_LifeConfig.timeRefill;
+                    PlayerData.hybridData.AddResource(ResourceType.Live, 1);
+                }
+
+                PlayerData.hybridData.timeRefillLeft = m_LifeConfig.timeRefill - remainSec;
+            }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI,
+                new EventParam { p0 = ResourceType.Live });
+            m_IsUpdateTimeResume = false;
+        }
+        
+        private void UpdateTimeLifePerSec()
+        {
+            if (m_IsUpdateTimeResume) return;
+            if (PlayerData.hybridData.GetResourceCount(ResourceType.UnlimitedLive) > 0)
+            {
+                PlayerData.hybridData.AddResource(ResourceType.UnlimitedLive, -1);
+            }
+            if (PlayerData.hybridData.GetResourceCount(ResourceType.Live) >= m_LifeConfig.maxLife) return;
+            PlayerData.hybridData.timeRefillLeft--;
+            if (PlayerData.hybridData.timeRefillLeft <= 0)
+            {
+                PlayerData.hybridData.timeRefillLeft = Config.hybridConfig.lifeConfig.timeRefill;
+                PlayerData.hybridData.AddResource(ResourceType.Live, 1);
+            }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI,
+                new EventParam { p0 = ResourceType.Live });
         }
     }
 }

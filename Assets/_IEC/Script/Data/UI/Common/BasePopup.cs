@@ -27,7 +27,8 @@ namespace IEC
             IsShow = true;
             IsFocus = true;
             gameObject.SetActive(true);
-            blackPanel.SetActive(isShowBlackPanel);
+            if (blackPanel != null)
+                blackPanel.SetActive(isShowBlackPanel);
 
             mainPanel.transform.localScale = Vector3.one;
             if (mainPanel.gameObject.TryGetComponent<AspectRatioScaler>(out var scaler))

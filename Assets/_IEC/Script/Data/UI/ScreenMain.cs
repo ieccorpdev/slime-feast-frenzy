@@ -11,7 +11,7 @@ namespace IEC
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
-        [SerializeField] private GameObject m_Shop, m_Home, m_Tab2, m_Tab4, m_Tab5;
+        [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_Tab2, m_Tab4, m_Tab5;
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private void Awake()
@@ -23,10 +23,20 @@ namespace IEC
                 HideAllTab();
                 // Debug.LogError(Game.hybrid.currentTab);
                 m_DictTab[Game.hybrid.currentTab].SetActive(true);
+                if (Game.hybrid.currentTab == TabType.Shop)
+                {
+                    Locator.Service.MoneyPanel.Show();
+                    m_ResourceUI.SetActive(false);
+                }
+                else
+                {
+                    Locator.Service.MoneyPanel.Hide();
+                    m_ResourceUI.SetActive(true);
+                }
             });
             SetEvent(m_BtnSetting, () =>
             {
-                UI.ShowScreen(Locator.PopupSetting);
+                UI.ShowScreen(Locator.Service.PopupSetting);
             });
         }
 
