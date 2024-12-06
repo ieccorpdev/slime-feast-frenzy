@@ -255,14 +255,16 @@ namespace IEC
 
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
-            for (int i = 0; i < m_Listeners.Length; i++)
+            Scene.SendEvent(gameEvent, param, () =>
             {
-                if (m_Listeners[i].IsActive())
+                for (int i = 0; i < m_Listeners.Length; i++)
                 {
-                    m_Listeners[i].OnEventRaise(gameEvent, param);
+                    if (m_Listeners[i].IsActive())
+                    {
+                        m_Listeners[i].OnEventRaise(gameEvent, param);
+                    }
                 }
-            }
-            Scene.SendEvent(gameEvent, param);
+            });
         }
 
         public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())

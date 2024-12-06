@@ -1,5 +1,6 @@
 using DG.Tweening;
 using IEC.Common.Event;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace IEC
         {
             Controllers.Add(this);
         }
-        
+
         public bool IsActive()
         {
             return gameObject.activeSelf;
@@ -58,16 +59,18 @@ namespace IEC
             DOVirtual.DelayedCall(delayTime, () => SendEvent(eventName, param));
         }
 
-        public void SendEvent(string eventName, EventParam param = new EventParam())
+        public void SendEvent(string eventName, EventParam param = new EventParam(), Action onLoadSceneDone = null)
         {
             if (m_DictEventNeedLoadScene.TryGetValue(eventName, out string sceneName))
             {
                 RunWithScene(sceneName, () =>
                 {
+                    onLoadSceneDone?.Invoke();
                     EventRx.SendEvent(eventName, param);
                 });
                 return;
             }
+            onLoadSceneDone?.Invoke();
             EventRx.SendEvent(eventName, param);
         }
 
