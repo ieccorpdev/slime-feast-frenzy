@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace IEC
 {
@@ -20,6 +21,10 @@ namespace IEC
         public bool isNoAdsReward;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
+        public string firstVersion;
+        [FormerlySerializedAs("lastVersion")] public string currentVersion;
+        public string installTime;
+        public string updateTime;
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif

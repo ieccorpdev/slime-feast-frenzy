@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
@@ -19,6 +20,7 @@ namespace IEC
         private IJsonService jsonConverter;
         private MonoBehaviour monoBehaviour;
         private bool isDebugEditor;
+        private ServiceData serviceData;
 
         private ServicesController Services => Controllers.Get<ServicesController>();
         private string AdjustVerifyUrl => Services.config.IapAdjustVerifyUrl;
@@ -94,7 +96,17 @@ namespace IEC
         {
             public ReceiptData receipt;
             public AdjustData adjust;
+            public UserData userData;
             // public string itemCode;
+        }
+        
+        [Serializable]
+        public class UserData
+        {
+            public string firstVersion;
+            public string currentVersion;
+            public string installTime;
+            public string updateTime;
         }
 
         [Serializable]
@@ -127,11 +139,22 @@ namespace IEC
             public int itemId;
         }
 
-        public ReceiptVerifyAdjust(AdjustAnalyticModule adjustAnalyticModule, IJsonService jsonConverter, MonoBehaviour monoBehaviour)
+        public ReceiptVerifyAdjust(AdjustAnalyticModule adjustAnalyticModule, IJsonService jsonConverter, MonoBehaviour monoBehaviour, ServiceData serviceData)
         {
             this.adjustAnalyticModule = adjustAnalyticModule;
             this.jsonConverter = jsonConverter;
             this.monoBehaviour = monoBehaviour;
+            this.serviceData = serviceData;
+            if (string.IsNullOrEmpty(serviceData.firstVersion))
+            {
+                serviceData.firstVersion = serviceData.currentVersion = Application.version.Trim();
+                serviceData.installTime = serviceData.updateTime = DateTime.Now.ToShortDateString();
+            }
+            else if (!Application.version.Trim().Equals(serviceData.currentVersion))
+            {
+                serviceData.currentVersion = Application.version.Trim();
+                serviceData.updateTime = DateTime.Now.ToShortDateString();
+            }
 
 #if UNITY_EDITOR
             ModuleController.cheatCode.AddCheatCodeButton("Toggle Adjust Verify Editor Debug", cheatCodeParam =>
@@ -211,6 +234,13 @@ namespace IEC
             {
                 receipt = receipt,
                 adjust = adjust,
+                userData = new UserData
+                {
+                    firstVersion = serviceData.firstVersion,
+                    currentVersion = serviceData.currentVersion,
+                    installTime = serviceData.installTime,
+                    updateTime = serviceData.updateTime
+                }
             };
 
             Debug.Log("Verify Adjust Data: " + jsonConverter.ToJson(dataCheck));
