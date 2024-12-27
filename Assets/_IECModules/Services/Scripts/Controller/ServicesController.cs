@@ -3,12 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using com.adjust.sdk;
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
+using SimpleJSON;
+using UnityEditor;
 using UnityEngine;
+using UnityEngine.iOS;
 using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
@@ -24,7 +28,8 @@ using Balaso;
 
 namespace IEC
 {
-    public class ServicesController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart, IEventUpdate, IEventPauseApp, IEventQuitApp
+    public class ServicesController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart,
+        IEventUpdate, IEventPauseApp, IEventQuitApp
     {
         #region properties
 
@@ -32,8 +37,7 @@ namespace IEC
         const string SERVICE_FIRST_TIME = "ServiceFirstTime";
         public const string SERVER_URL_KEY = "ServerUrl";
         public ServicesConfig config;
-        [SerializeField]
-        private ServiceData m_ServiceData;
+        [SerializeField] private ServiceData m_ServiceData;
         private bool m_IsRewardLoaded;
 
         bool isInit = false;
@@ -56,6 +60,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
+
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -92,7 +97,6 @@ namespace IEC
                     {
                         RaiseInitEvent(EventList.Service.REMOTE_CONFIG_LOADED);
                         SetPushCustomEventFirebase();
-
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
@@ -109,7 +113,7 @@ namespace IEC
         public void BehaviourAwake()
         {
             if (isInitAwake) return;
-            
+
             Application.logMessageReceived += (condition, trace, type) =>
             {
                 var log = new Logs
@@ -121,7 +125,7 @@ namespace IEC
                 };
                 SaveLog.AddLog(log);
             };
-            
+
             UnityToolbag.Dispatcher.Awake();
             Init();
 #if UNITY_IOS
@@ -158,12 +162,10 @@ namespace IEC
             {
                 EventController.RaiseEvent(sEvent, new EventParam(this));
             }
+
             m_InitEvents.Clear();
 
-            m_IAP.ConnectInit(() =>
-            {
-                RaiseInitEvent(EventList.Service.INIT_IAP_DONE);
-            });
+            m_IAP.ConnectInit(() => { RaiseInitEvent(EventList.Service.INIT_IAP_DONE); });
         }
 
         public void BehaviourUpdate(float deltaTime)
@@ -286,7 +288,8 @@ namespace IEC
 
             m_DataRemote = m_DataNormal;
 #if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+            m_DataRemote =
+ new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
             SetPushCustomEventFirebase();
             Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
 #endif
@@ -294,7 +297,8 @@ namespace IEC
             _initByteDance(config.appId, config.appName);
 #endif
 #if UNITY_IOS
-            AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
+            AppTrackingTransparency.OnAuthorizationRequestDone +=
+ (AppTrackingTransparency.AuthorizationStatus status) =>
            {
                switch (status)
                {
@@ -317,7 +321,8 @@ namespace IEC
                Debug.LogWarning(string.Format("IDFA: {0}", AppTrackingTransparency.IdentifierForAdvertising()));
            };
 
-            AppTrackingTransparency.AuthorizationStatus currentStatus = AppTrackingTransparency.TrackingAuthorizationStatus;
+            AppTrackingTransparency.AuthorizationStatus currentStatus =
+ AppTrackingTransparency.TrackingAuthorizationStatus;
             Debug.LogWarning(string.Format("Current authorization status: {0}", currentStatus.ToString()));
 
             var deviceVer = UnityEngine.iOS.Device.systemVersion;
@@ -355,7 +360,6 @@ namespace IEC
             {
                 SetUpAbTest(config, this.config.bundleVersion);
             }
-
         }
 
 #if UNITY_IOS
@@ -380,7 +384,8 @@ namespace IEC
 #endif
 #if (PluginAdjust)
             m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            m_AdjustAnalytic.DictEvent =
+ (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             if (config.adjustEventConfig != null)
             {
                 var listRevEvent = config.adjustEventConfig.listData.Where(x =>
@@ -419,9 +424,9 @@ namespace IEC
 
             StartCoroutine(ISendATTAnalytic(endPoint, formData));
         }
+
         IEnumerator ISendATTAnalytic(string url, WWWForm formData)
         {
-
             var www = UnityWebRequest.Post(url, formData);
             yield return www.SendWebRequest();
         }
@@ -541,10 +546,7 @@ namespace IEC
 #endif
 
                 Debug.Log("Ads:" + m_Ads);
-                m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () =>
-                {
-                    PushEvent("click_banner_ads");
-                });
+                m_Ads.SetOnClick(AdsEnum.BANNER_BOTTOM, () => { PushEvent("click_banner_ads"); });
 
                 RequestUserIdfa();
             }
@@ -577,13 +579,14 @@ namespace IEC
                 scale = 1.2f;
                 // hotfix for iPhone X, iPhone X GSM, iPhone XS
                 if (SystemInfo.deviceModel == "iPhone10,3"
-                || SystemInfo.deviceModel == "iPhone10,6"
-                || SystemInfo.deviceModel == "iPhone11,2"
-                )
+                    || SystemInfo.deviceModel == "iPhone10,6"
+                    || SystemInfo.deviceModel == "iPhone11,2"
+                   )
                 {
                     scale = 1f;
                 }
             }
+
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
@@ -595,11 +598,11 @@ namespace IEC
                 var abVersion = s.Split('_')[2].Remove(0, 1);
                 var isNumber = int.TryParse(abVersion, out int version);
                 var eventValue = (isNumber) ? version : 1;
-                if(!isNumber) Debug.LogError("Version Ab is not a number");
+                if (!isNumber) Debug.LogError("Version Ab is not a number");
                 Debug.LogWarning("AbTest event value:" + eventValue);
                 PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
                 {
-                    {"version", s}
+                    { "version", s }
                 });
                 SetUserProperty("AB_Version", s);
             });
@@ -626,7 +629,8 @@ namespace IEC
             PushEvent(eventName, null, value, param);
         }
 
-        public void PushEvent(string eventName, string position, float value = 1, Dictionary<string, object> param = null)
+        public void PushEvent(string eventName, string position, float value = 1,
+            Dictionary<string, object> param = null)
         {
             PushCachedEvents();
             if (param == null) param = new Dictionary<string, object>();
@@ -681,8 +685,8 @@ namespace IEC
                     }
                 });
             }
-            onPushEvent?.Invoke(eventName);
 
+            onPushEvent?.Invoke(eventName);
         }
 
         public void PushFBLogPurchase()
@@ -719,7 +723,8 @@ namespace IEC
             ShowFullAds(closeCallback, null, null, position);
         }
 
-        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null, Action cantShowCallback = null, string position = null)
+        public void ShowFullAds(Action closeCallback = null, Action canShowCallback = null,
+            Action cantShowCallback = null, string position = null)
         {
             if (config.IsNoAds || m_ServiceData.isNoAds)
             {
@@ -743,9 +748,10 @@ namespace IEC
                     var fullAdCount = m_EventCount.GetCount("show_full_ad");
                     if (fullAdCount > 0 && fullAdCount < 100)
                     {
-                        EventController.RaiseEvent(EventList.Service.PUSH_SHOW_INTER,new EventParam {p0 = (long)fullAdCount});
+                        EventController.RaiseEvent(EventList.Service.PUSH_SHOW_INTER,
+                            new EventParam { p0 = (long)fullAdCount });
                     }
-                    
+
                     /*var milestone = GetMilestone(fullAdCount);
                     if (fullAdCount % milestone == 0 && fullAdCount > 0 && fullAdCount < 100)
                     {
@@ -764,7 +770,8 @@ namespace IEC
 
         public bool IsCanShowFullAdsWithTime(float timeCondition)
         {
-            return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();
+            return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) &&
+                   IsCanShowFullAds();
         }
 
         public void ShowFullAdsWithTime(float timeCondition, string position, Action closeCallback = null)
@@ -772,7 +779,8 @@ namespace IEC
             ShowFullAdsWithTime(timeCondition, closeCallback, null, position);
         }
 
-        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null, string position = null)
+        public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null,
+            string position = null)
         {
             if (config.IsNoAds || m_ServiceData.isNoAds)
             {
@@ -799,6 +807,7 @@ namespace IEC
                 SafeInvoke(closeCallback);
                 return;
             }
+
             Debug.Log("Show reward ads");
             if (m_Ads.IsLoaded(AdsEnum.REWARD))
             {
@@ -861,6 +870,7 @@ namespace IEC
             {
                 return m_IsRewardLoaded;
             }
+
             return Ads().IsLoaded(AdsEnum.REWARD);
         }
 
@@ -918,7 +928,7 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Service.COUNT_ONE_SEC, new EventParam(this));
             }
         }
-        
+
 #if PluginInAppRating
 #if UNITY_ANDROID
         private ReviewManager m_Review;
@@ -971,12 +981,12 @@ namespace IEC
 #if UNITY_ANDROID
                 try
                 {
-                    var up = new AndroidJavaClass ("com.unity3d.player.UnityPlayer");
-                    var currentActivity = up.GetStatic<AndroidJavaObject> ("currentActivity");
-                    var client = new AndroidJavaClass ("com.google.android.gms.ads.identifier.AdvertisingIdClient");
-                    var adInfo = client.CallStatic<AndroidJavaObject> ("getAdvertisingIdInfo", currentActivity);
-     
-                    m_UserIDFA = adInfo.Call<string> ("getId").ToString();
+                    var up = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+                    var currentActivity = up.GetStatic<AndroidJavaObject>("currentActivity");
+                    var client = new AndroidJavaClass("com.google.android.gms.ads.identifier.AdvertisingIdClient");
+                    var adInfo = client.CallStatic<AndroidJavaObject>("getAdvertisingIdInfo", currentActivity);
+
+                    m_UserIDFA = adInfo.Call<string>("getId").ToString();
                 }
                 catch (Exception e)
                 {
@@ -997,7 +1007,10 @@ namespace IEC
                 Debug.LogWarning("advertisingId " + m_UserIDFA);
             }
         }
-        
+
+        private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
+        private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
+        private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
         [NaughtyAttributes.Button]
         public void SendEmail()
         {
@@ -1017,14 +1030,160 @@ namespace IEC
             var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
             // message = MyEscapeURL(message);
-            
+
             message += newLine + "Hello, " + newLine;
             Debug.Log("message SendEmail: " + message);
             var mail = new UT.MailMessage()
                 .AddTo(email)
                 .SetSubject(title)
                 .SetBody(message)
-                .AddAttachment(Application.persistentDataPath + @"/log.txt");
+                .AddAttachment(m_LogFilePath);
+            UT.Mail.Compose(mail, "Support");
+        }
+
+        public void FeedbackDiscord(string email, string contentFeedback)
+        {
+            var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
+            string adjustDeviceId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
+            adjustDeviceId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
+#if PluginAdjust
+            try
+            {
+                adjustDeviceId = Adjust.getAdid();
+                var adjustAttribution = Adjust.getAttribution();
+                adjustCampaign = adjustAttribution.campaign;
+                adjustNetwork = adjustAttribution.network;
+                adjustCreative = adjustAttribution.creative;
+            }
+#endif
+#if PluginFirebase
+        
+#endif
+            SaveLogToFile(true);
+            StartCoroutine(IE_SendFeedbackDiscord());
+
+            IEnumerator IE_SendFeedbackDiscord()
+            {
+                var url = config.discordWebhook;
+                var data = new
+                {
+                    content = contentFeedback,
+                    embeds = new[]
+                    {
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Email",
+                                    value = email
+                                },
+                                new
+                                {
+                                    name = "Platform",
+                                    value = isIOS ? "iOS" : "Android",
+                                },
+                                new
+                                {
+                                    name = "App Version",
+                                    value = Application.version
+                                },
+                                new
+                                {
+                                    name = "AB Version",
+                                    value = Controllers.Get<ABTestController>().CurAbTestDate
+                                }
+                            }
+                        },
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "IDFA",
+                                    value = m_UserIDFA
+                                },
+                                new
+                                {
+                                    name = "IDFV",
+                                    value = (isIOS) ? Device.vendorIdentifier : ""
+                                }
+                            }
+                        },
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Network",
+                                    value = adjustNetwork
+                                },
+                                new
+                                {
+                                    name = "Campaign",
+                                    value = adjustCampaign
+                                },
+                                new
+                                {
+                                    name = "Creative",
+                                    value = adjustCreative
+                                }
+                            }
+                        }
+                    }
+                };
+                var formData = new List<IMultipartFormSection>
+                {
+                    new MultipartFormDataSection(data.ToString()),
+                    new MultipartFormFileSection("Log file", m_LogFilePath),
+                    new MultipartFormFileSection("PlayerData file", m_PlayerDataFilePath),
+                    new MultipartFormFileSection("ServiceData file", m_ServiceDataFilePath)
+                };
+
+                var uwr = UnityWebRequest.Post(url, formData);
+                yield return uwr.SendWebRequest();
+
+                if (uwr.error != null)
+                {
+                    Debug.Log("Error While Sending: " + uwr.error);
+                    SendMail(contentFeedback);
+                }
+                else
+                {
+                    Debug.Log("Received: " + uwr.downloadHandler.text);
+                }
+            }
+        }
+
+        private void SendMail(string contentFeedback)
+        {
+            string email = config.emailSupport;
+            string title = string.Empty;
+            if (Application.platform == RuntimePlatform.Android)
+            {
+                title = Application.productName + " Android Support";
+            }
+            else
+            {
+                title = Application.productName + " IOS Support";
+            }
+
+            var newLine = "\n";
+            string message = Application.productName + " version: " + Application.version + newLine;
+            message += newLine + "Hello, " + newLine;
+            message += contentFeedback;
+            Debug.Log("message SendEmail: " + message);
+            var mail = new UT.MailMessage()
+                .AddTo(email)
+                .SetSubject(title)
+                .SetBody(message)
+                .AddAttachment(m_LogFilePath);
             UT.Mail.Compose(mail, "Support");
         }
 
@@ -1036,29 +1195,60 @@ namespace IEC
             Application.OpenURL(url);
         }
 
-        void SaveLogToFile()
+        void SaveLogToFile(bool isSeparate = false)
         {
             try
             {
                 var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
                 var saveLog = Json().ToJson(SaveLog.GetLog());
-                var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-                var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
                 var content = $"IDFA:{m_UserIDFA}" +
-                    $"\n\nLog:\n{saveLog}" +
-                    $"\n\nPlayerData:\n{playerDataEncrypt}" +
-                    $"\n\nServiceData:\n{serviceDataEncrypt}";
-                // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
-                Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
-                Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                              $"\n\nLog:\n{saveLog}";
+                if (!isSeparate)
+                {
+                    var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                            SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                    var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                             SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                    content +=
+                        $"\n\nPlayerData:\n{playerDataEncrypt}" +
+                        $"\n\nServiceData:\n{serviceDataEncrypt}";
+                    Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
+                    Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+                }
+
                 txtWrite.Write(content);
                 txtWrite.Close();
             }
             catch
             {
                 Debug.LogWarning("Log file is in use");
+            }
+
+            if (!isSeparate) return;
+            try
+            {
+                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/playerData.txt");
+                var content = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                              SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                txtWrite.Write(content);
+                txtWrite.Close();
+            }
+            catch
+            {
+                Debug.LogWarning("PlayerData file is in use");
+            }
+
+            try
+            {
+                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/serviceData.txt");
+                var content = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                              SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                txtWrite.Write(content);
+                txtWrite.Close();
+            }
+            catch
+            {
+                Debug.LogWarning("ServiceData file is in use");
             }
         }
 
@@ -1128,6 +1318,7 @@ namespace IEC
         }
 
         IAdsService m_Ads;
+
         public IAdsService Ads()
         {
             Init();
@@ -1185,6 +1376,7 @@ namespace IEC
         }
 
         IReceiptVerifyService m_ReceiptVerify;
+
         public IReceiptVerifyService ReceiptVerify()
         {
             Init();
@@ -1198,6 +1390,7 @@ namespace IEC
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
 #endif
+
         #endregion
 
         int GetIntDeviceVerion(string version)
@@ -1228,10 +1421,11 @@ namespace IEC
                 {
                     Ads().Load(AdsEnum.INTERSTITIAL, null);
                 }
+
                 yield return delaySec;
             }
         }
-        
+
         public void ResetTimeShowFullAds()
         {
             lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
@@ -1246,21 +1440,22 @@ namespace IEC
                 var div = number / milestone;
                 if (div < 10) break;
             }
+
             return milestone;
         }
 
         private const string LAST_TOTAL_REV = "ServicesController.LAST_TOTAL_REV";
-        
+
         public void SetRevAllAd(float value)
         {
             m_ServiceData.revTotalAd = value;
         }
-        
+
         public float GetRevAllAd()
         {
             return m_ServiceData.revTotalAd;
         }
-        
+
         public float GetValueToSum()
         {
             if (PlayerPrefs.HasKey(LAST_TOTAL_REV))
@@ -1281,16 +1476,16 @@ namespace IEC
 
         private void InitMilestoneAd()
         {
-            if(config.adjustEventConfig == null) return;
+            if (config.adjustEventConfig == null) return;
             m_DictListMilestoneAd = config.adjustEventConfig.GetListMilestone();
         }
 
         void PushEventMilestoneAd(RevAdType adType, int count)
         {
-            if(count <= 0) return;
-            if(!m_DictListMilestoneAd.ContainsKey(adType)) return;
+            if (count <= 0) return;
+            if (!m_DictListMilestoneAd.ContainsKey(adType)) return;
             var listMilestone = m_DictListMilestoneAd[adType];
-            if(listMilestone == null) return;
+            if (listMilestone == null) return;
             var prefix = m_ServiceData.GetPrefixEvent(adType);
             for (int i = 0; i < listMilestone.Count; i++)
             {
