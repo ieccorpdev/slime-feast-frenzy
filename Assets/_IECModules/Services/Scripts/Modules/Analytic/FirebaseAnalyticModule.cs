@@ -31,6 +31,17 @@ namespace IEC
             }
         }
 
+        public void RequestPseudoId(Action<string> onDone)
+        {
+            FirebaseAnalytics.GetAnalyticsInstanceIdAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    onDone?.Invoke(task.Result);
+                }
+            });
+        }
+
         public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
         {
             InitEventConfig(adjustAnalyticEventConfig);

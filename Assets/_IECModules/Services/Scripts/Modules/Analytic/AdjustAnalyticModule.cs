@@ -18,6 +18,18 @@ namespace IEC
         public const string ADJUST_SANDBOX = "ADJUST_SAND_BOX";
         private const string ADJUST_IN_APP_PURCHASE = "adjust_in_app_purchase";
 
+        public string AdId
+        {
+            get;
+            private set;
+        }
+
+        public AdjustAttribution Attribution
+        {
+            get;
+            private set;
+        }
+
         public void Init()
         {
 
@@ -28,7 +40,7 @@ namespace IEC
             InitEventConfig(adjustAnalyticEventConfig);
         }
 
-        public void InitAdjust(string androidID, string iosID)
+        public void InitAdjust(string androidID, string iosID, AdjustAttribution> onDone)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             AppID = appID;
@@ -47,6 +59,7 @@ namespace IEC
             Adjust.start(adjustConfig);
             EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
+            onDone?.Invoke(Adjust.getAdid(), Adjust.getAttribution());
         }
 
         public void SetListEventRev(List<string> listEventRev)
