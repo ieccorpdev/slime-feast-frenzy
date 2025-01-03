@@ -7,12 +7,66 @@
       "dependencies": {},
       "hash": "8a8fa5a9659a6d63f196391c71e06c4286c8acd7"
     },
+    "com.google.android.appbundle": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.android.appbundle.git#1.9.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a734c8602dc9c4a8d94777e4920c8bbbe48a0da8"
+    },
     "com.google.external-dependency-manager": {
       "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.177",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "20dc810bdc86de9a6506651e4d397b7a87a015a9"
+    },
+    "com.google.firebase.analytics": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#11.6.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.firebase.app": "11.6.0"
+      },
+      "hash": "8c3d0cae9ca3b897091f5da37042a9c9aef2cfd1"
+    },
+    "com.google.firebase.app": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#11.6.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.177"
+      },
+      "hash": "a7a0d893a14a4f0ca57f454586773b21f20cda04"
+    },
+    "com.google.play.common": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.common.git#1.9.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.android.appbundle": "1.9.0"
+      },
+      "hash": "aaf56ba228de2debc08b9b0fc3dbc86b39c300e7"
+    },
+    "com.google.play.core": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.core.git#1.8.4",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.android.appbundle": "1.9.0",
+        "com.google.external-dependency-manager": "1.2.172"
+      },
+      "hash": "cc55f4bcb69797e1b742778bbd4ff780b18af0c4"
+    },
+    "com.google.play.review": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.review.git#1.8.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.play.common": "1.9.1",
+        "com.google.play.core": "1.8.4"
+      },
+      "hash": "f2ca4f08e6bfc32afce8330daa3b83b7c534b49a"
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -91,15 +145,14 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.9.3",
+      "version": "4.12.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.services.core": "1.8.1",
+        "com.unity.services.core": "1.12.5",
         "com.unity.modules.androidjni": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.unityanalytics": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
