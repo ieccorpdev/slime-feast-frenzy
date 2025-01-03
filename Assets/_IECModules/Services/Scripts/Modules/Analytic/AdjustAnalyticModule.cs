@@ -1,5 +1,6 @@
-#if (PluginAdjust)
+// #if (PluginAdjust)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using com.adjust.sdk;
@@ -16,7 +17,19 @@ namespace IEC
 
         public const string ADJUST_SANDBOX = "ADJUST_SAND_BOX";
 
-        public AdjustAnalyticModule(string androidID, string iosID)
+        public string AdId
+        {
+            get;
+            private set;
+        }
+
+        public AdjustAttribution Attribution
+        {
+            get;
+            private set;
+        }
+
+        public AdjustAnalyticModule(string androidID, string iosID, Action<string, AdjustAttribution> onDone)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             Debug.LogWarning("Adjust AppID: " + (string.IsNullOrWhiteSpace(appID) ? "null" : appID));
@@ -34,6 +47,7 @@ namespace IEC
             Adjust.start(adjustConfig);
             EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
+            onDone?.Invoke(Adjust.getAdid(), Adjust.getAttribution());
         }
 
         public void Init()
@@ -92,4 +106,4 @@ namespace IEC
     }
 }
 
-#endif
+// #endif

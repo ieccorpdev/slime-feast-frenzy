@@ -1,9 +1,12 @@
 ﻿#if (PluginFirebaseAnalytic)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Firebase;
 using UnityEngine;
 using Firebase.Analytics;
+using Firebase.Extensions;
 
 namespace IEC
 {
@@ -29,6 +32,17 @@ namespace IEC
             {
                 return;
             }
+        }
+
+        public void RequestPseudoId(Action<string> onDone)
+        {
+            FirebaseAnalytics.GetAnalyticsInstanceIdAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    onDone?.Invoke(task.Result);
+                }
+            });
         }
 
         public void PushCachedEvents()

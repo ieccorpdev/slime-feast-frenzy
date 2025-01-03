@@ -60,6 +60,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
+        private UserServiceData m_UserServiceData = new UserServiceData();
 
         #endregion
 
@@ -98,6 +99,12 @@ namespace IEC
                         RaiseInitEvent(EventList.Service.REMOTE_CONFIG_LOADED);
                         SetPushCustomEventFirebase();
                     });
+#if PluginFirebaseAnalytic
+                    ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
+                    {
+                        m_UserServiceData.firebasePseudoId = pseudoId;
+                    });
+#endif
                     break;
                 case EventList.Service.INIT_AD_DONE:
 #if UNITY_IOS
@@ -383,7 +390,14 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
+            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID,
+                (adId, attr) =>
+                {
+                    m_UserServiceData.adjustId = adId;
+                    m_UserServiceData.adjustCampaign = attr.campaign;
+                    m_UserServiceData.adjustCreative = attr.creative;
+                    m_UserServiceData.adjustNetwork = attr.network;
+                });
             m_AdjustAnalytic.DictEvent =
  (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
             if (config.adjustEventConfig != null)
@@ -1011,6 +1025,7 @@ namespace IEC
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
         private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
         private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
+
         [NaughtyAttributes.Button]
         public void SendEmail()
         {
@@ -1044,20 +1059,20 @@ namespace IEC
         public void FeedbackDiscord(string email, string contentFeedback)
         {
             var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
-            string adjustDeviceId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
-            adjustDeviceId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
+            string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
+            adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
-            try
+            adjustId = m_AdjustAnalytic.AdId;
+            var adjustAttribution = m_AdjustAnalytic.Attribution;
+            if(adjustAttribution != null)
             {
-                adjustDeviceId = Adjust.getAdid();
-                var adjustAttribution = Adjust.getAttribution();
                 adjustCampaign = adjustAttribution.campaign;
                 adjustNetwork = adjustAttribution.network;
                 adjustCreative = adjustAttribution.creative;
             }
 #endif
-#if PluginFirebase
-        
+#if PluginFirebaseAnalytic
+            firebasePseudoId = m_UserServiceData.firebasePseudoId;
 #endif
             SaveLogToFile(true);
             StartCoroutine(IE_SendFeedbackDiscord());
@@ -1111,6 +1126,16 @@ namespace IEC
                                 {
                                     name = "IDFV",
                                     value = (isIOS) ? Device.vendorIdentifier : ""
+                                },
+                                new
+                                {
+                                    name = "Adjust ID",
+                                    value = adjustId
+                                },
+                                new
+                                {
+                                    name = "Pseudo UID",
+                                    value = firebasePseudoId
                                 }
                             }
                         },
@@ -1508,5 +1533,10 @@ namespace IEC
         }
 
         public bool IsNewInstall => m_IsNewInstall;
+    }
+    
+    public class UserServiceData
+    {
+        public string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
     }
 }
