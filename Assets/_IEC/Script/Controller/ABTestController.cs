@@ -199,7 +199,7 @@ namespace IEC
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
                 CurAbTestDate = abTestConfig.ListEventsAB[abValue];
-                ApplyAbTest(abIndex);
+                ApplyAbTest(abTestConfig);
                 ResultAllAbTest();
             };
 
