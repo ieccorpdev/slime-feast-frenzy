@@ -106,6 +106,7 @@ namespace IEC
                     ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
                     {
                         m_UserServiceInfo.firebasePseudoId = pseudoId;
+                        Debug.LogWarning("Firebase Pseudo Id:" + pseudoId);
                     });
 #endif
                     break;
@@ -504,9 +505,13 @@ namespace IEC
                 (adId, attr) =>
                 {
                     m_UserServiceInfo.adjustId = adId;
+                    Debug.LogWarning("Adjust Info:" + adId);
                     m_UserServiceInfo.adjustCampaign = attr.campaign;
+                    Debug.LogWarning("Adjust Campaign:" + attr.campaign);
                     m_UserServiceInfo.adjustCreative = attr.creative;
+                    Debug.LogWarning("Adjust Creative:" + attr.creative);
                     m_UserServiceInfo.adjustNetwork = attr.network;
+                    Debug.LogWarning("Adjust Network:" + attr.network);
                 });
 #endif
 #if (PluginFacebook)
