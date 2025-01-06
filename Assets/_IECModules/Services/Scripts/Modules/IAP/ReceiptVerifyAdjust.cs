@@ -107,6 +107,7 @@ namespace IEC
             public string currentVersion;
             public string installTime;
             public string updateTime;
+            public string pseudoId;
         }
 
         [Serializable]
@@ -200,6 +201,7 @@ namespace IEC
             var receipt = product.receipt;
             PurchaseReceipt purchaseReceipt = jsonConverter.FromJson<PurchaseReceipt>(receipt);
             AdjustData adjust = GetAdjustData(product);
+            adjust.adid = serviceData.userServiceInfo.adjustId;
 
 #if UNITY_EDITOR
             ReceiptData checkingObjectEditor = new ReceiptData()
@@ -239,7 +241,8 @@ namespace IEC
                     firstVersion = serviceData.firstVersion,
                     currentVersion = serviceData.currentVersion,
                     installTime = serviceData.installTime,
-                    updateTime = serviceData.updateTime
+                    updateTime = serviceData.updateTime,
+                    pseudoId = serviceData.userServiceInfo.firebasePseudoId
                 }
             };
 

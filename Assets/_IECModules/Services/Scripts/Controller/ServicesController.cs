@@ -63,7 +63,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
-        private UserServiceInfo m_UserServiceInfo = new UserServiceInfo();
+        private UserServiceInfo m_UserServiceInfo => m_ServiceData.userServiceInfo;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -1537,7 +1537,6 @@ namespace IEC
             Init();
             return m_ReceiptVerify;
         }
-
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif
@@ -1660,10 +1659,5 @@ namespace IEC
         }
 
         public bool IsNewInstall => m_IsNewInstall;
-        
-        public class UserServiceInfo
-        {
-            public string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
-        }
     }
 }

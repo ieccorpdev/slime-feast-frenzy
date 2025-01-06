@@ -25,6 +25,7 @@ namespace IEC
         [FormerlySerializedAs("lastVersion")] public string currentVersion;
         public string installTime;
         public string updateTime;
+        public UserServiceInfo userServiceInfo;
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
@@ -225,5 +226,10 @@ namespace IEC
             Debug.Log($"{eventName} valueToSum: {valueToSum}");
             return valueToSum;
         }
+    }
+    
+    public class UserServiceInfo
+    {
+        public string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
     }
 }

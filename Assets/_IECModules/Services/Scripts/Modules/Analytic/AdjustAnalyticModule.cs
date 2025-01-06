@@ -1,5 +1,6 @@
 #if (PluginAdjust)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using com.adjust.sdk;
@@ -40,7 +41,7 @@ namespace IEC
             InitEventConfig(adjustAnalyticEventConfig);
         }
 
-        public void InitAdjust(string androidID, string iosID, AdjustAttribution> onDone)
+        public void InitAdjust(string androidID, string iosID, Action<string, AdjustAttribution> onDone)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             AppID = appID;
