@@ -1,9 +1,11 @@
 ﻿#if (PluginFirebaseAnalytic)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Analytics;
+using Firebase.Extensions;
 
 namespace IEC
 {
