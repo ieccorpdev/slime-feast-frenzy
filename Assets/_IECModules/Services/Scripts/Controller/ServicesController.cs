@@ -105,7 +105,7 @@ namespace IEC
 #if PluginFirebaseAnalytic
                     ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
                     {
-                        m_UserServiceData.firebasePseudoId = pseudoId;
+                        m_UserServiceInfo.firebasePseudoId = pseudoId;
                     });
 #endif
                     break;
@@ -503,10 +503,10 @@ namespace IEC
             m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID,
                 (adId, attr) =>
                 {
-                    m_UserServiceData.adjustId = adId;
-                    m_UserServiceData.adjustCampaign = attr.campaign;
-                    m_UserServiceData.adjustCreative = attr.creative;
-                    m_UserServiceData.adjustNetwork = attr.network;
+                    m_UserServiceInfo.adjustId = adId;
+                    m_UserServiceInfo.adjustCampaign = attr.campaign;
+                    m_UserServiceInfo.adjustCreative = attr.creative;
+                    m_UserServiceInfo.adjustNetwork = attr.network;
                 });
 #endif
 #if (PluginFacebook)
@@ -1200,7 +1200,7 @@ namespace IEC
             }
 #endif
 #if PluginFirebaseAnalytic
-            firebasePseudoId = m_UserServiceData.firebasePseudoId;
+            firebasePseudoId = m_UserServiceInfo.firebasePseudoId;
 #endif
             SaveLogToFile(true);
             StartCoroutine(IE_SendFeedbackDiscord());
