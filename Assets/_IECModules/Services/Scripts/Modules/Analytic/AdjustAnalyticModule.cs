@@ -19,18 +19,6 @@ namespace IEC
         public const string ADJUST_SANDBOX = "ADJUST_SAND_BOX";
         private const string ADJUST_IN_APP_PURCHASE = "adjust_in_app_purchase";
 
-        public string AdId
-        {
-            get;
-            private set;
-        }
-
-        public AdjustAttribution Attribution
-        {
-            get;
-            private set;
-        }
-
         public void Init()
         {
 

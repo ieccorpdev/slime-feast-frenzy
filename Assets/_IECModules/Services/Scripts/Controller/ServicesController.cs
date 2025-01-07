@@ -1195,14 +1195,10 @@ namespace IEC
             string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
-            adjustId = m_AdjustAnalytic.AdId;
-            var adjustAttribution = m_AdjustAnalytic.Attribution;
-            if(adjustAttribution != null)
-            {
-                adjustCampaign = adjustAttribution.campaign;
-                adjustNetwork = adjustAttribution.network;
-                adjustCreative = adjustAttribution.creative;
-            }
+            adjustId = m_UserServiceInfo.adId;
+            adjustCampaign = m_UserServiceInfo.campaign;
+            adjustNetwork = m_UserServiceInfo.network;
+            adjustCreative = m_UserServiceInfo.creative;
 #endif
 #if PluginFirebaseAnalytic
             firebasePseudoId = m_UserServiceInfo.firebasePseudoId;
