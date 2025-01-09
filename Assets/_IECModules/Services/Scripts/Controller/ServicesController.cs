@@ -1163,32 +1163,9 @@ namespace IEC
         public void SendEmail()
         {
             SaveLogToFile();
-            string email = config.emailSupport;
-            string title = string.Empty;
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                title = Application.productName + " Android Support";
-            }
-            else
-            {
-                title = Application.productName + " IOS Support";
-            }
-
-            var userIDFA = m_UserIDFA;
-            var newLine = "\n";
-            string message = Application.productName + " version: " + Application.version + newLine;
-            // message = MyEscapeURL(message);
-
-            message += newLine + "Hello, " + newLine;
-            Debug.Log("message SendEmail: " + message);
-            var mail = new UT.MailMessage()
-                .AddTo(email)
-                .SetSubject(title)
-                .SetBody(message)
-                .AddAttachment(m_LogFilePath);
-            UT.Mail.Compose(mail, "Support");
+            SendMail("");
         }
-        
+
         public void FeedbackDiscord(string email, string contentFeedback)
         {
             var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
@@ -1203,7 +1180,7 @@ namespace IEC
 #if PluginFirebaseAnalytic
             firebasePseudoId = m_UserServiceInfo.firebasePseudoId;
 #endif
-            SaveLogToFile(true);
+            SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());
 
             IEnumerator IE_SendFeedbackDiscord()
@@ -1353,60 +1330,36 @@ namespace IEC
             Application.OpenURL(url);
         }
 
-        void SaveLogToFile(bool isSeparate = false)
+        void SaveLogToFile()
         {
             try
             {
                 var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
                 var saveLog = Json().ToJson(SaveLog.GetLog());
-                var content = $"IDFA:{m_UserIDFA}" +
-                              $"\n\nLog:\n{saveLog}";
-                if (!isSeparate)
-                {
-                    var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                            SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-                    var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                             SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
-                    content +=
-                        $"\n\nPlayerData:\n{playerDataEncrypt}" +
-                        $"\n\nServiceData:\n{serviceDataEncrypt}";
-                    Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
-                    Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-                }
+                
 
+                var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
+                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                var content =
+                    $"\n\nPlayerData:\n{playerDataEncrypt}" +
+                    $"\n\nServiceData:\n{serviceDataEncrypt}";
+                Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
+                Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+
+                content += $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
+                
+                content += $"IDFA:{m_UserIDFA}" +
+                              $"\n\nLog:\n{saveLog}";
+                
+                
                 txtWrite.Write(content);
                 txtWrite.Close();
             }
             catch
             {
                 Debug.LogWarning("Log file is in use");
-            }
-
-            if (!isSeparate) return;
-            try
-            {
-                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/playerData.txt");
-                var content = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                              SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
-                txtWrite.Write(content);
-                txtWrite.Close();
-            }
-            catch
-            {
-                Debug.LogWarning("PlayerData file is in use");
-            }
-
-            try
-            {
-                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/serviceData.txt");
-                var content = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                              SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
-                txtWrite.Write(content);
-                txtWrite.Close();
-            }
-            catch
-            {
-                Debug.LogWarning("ServiceData file is in use");
             }
         }
 

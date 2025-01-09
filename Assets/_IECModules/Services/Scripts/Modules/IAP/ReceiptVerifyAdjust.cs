@@ -1,4 +1,4 @@
-﻿// #if (PluginUnityIAP && PluginReceiptVerify && PluginReceiptVerifyAdjust)
+﻿#if (PluginUnityIAP && PluginReceiptVerify && PluginReceiptVerifyAdjust)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -435,4 +435,4 @@ namespace IEC
     }
 }
 
-// #endif
+#endif
