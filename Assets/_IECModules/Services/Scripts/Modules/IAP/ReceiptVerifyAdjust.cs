@@ -123,7 +123,7 @@ namespace IEC
         [Serializable]
         public class Response
         {
-            public string statusCode;
+            public int statusCode;
             public string messenger;
         }
 
@@ -254,6 +254,10 @@ namespace IEC
                 monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(AdjustVerifyUrl, jsonConverter.ToJson(dataCheck),
                     (res) =>
                     {
+                        if (res.statusCode == 200)
+                        {
+                            serviceData.AddIapVerified(receipt.productId);
+                        }
                         // bool isValid = VerifyPaymentHandle(res);
                         // callback.Invoke(isValid);
                     }));
@@ -287,6 +291,10 @@ namespace IEC
                 monoBehaviour.StartCoroutine(DoPostData<VerifyPaymentResponse>(AdjustVerifyUrl, jsonConverter.ToJson(dataCheck),
                     (res) =>
                     {
+                        if (res.statusCode == 200)
+                        {
+                            serviceData.AddIapVerified(product.definition.id);
+                        }
                         // bool isValid = VerifyPaymentHandle(res);
                         // callback.Invoke(isValid);
                     }));

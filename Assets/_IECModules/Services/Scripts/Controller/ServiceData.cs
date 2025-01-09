@@ -26,6 +26,9 @@ namespace IEC
         public string installTime;
         public string updateTime;
         public UserServiceInfo userServiceInfo;
+        
+        Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
+        
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
@@ -181,6 +184,15 @@ namespace IEC
             lastRevFBPurchase = revTotalAd;
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
+        }
+
+        public void AddIapVerified(string packageId)
+        {
+            if (!dictIapBought.ContainsKey(packageId))
+            {
+                dictIapBought[packageId] = 0;
+            }
+            dictIapBought[packageId]++;
         }
     }
     
