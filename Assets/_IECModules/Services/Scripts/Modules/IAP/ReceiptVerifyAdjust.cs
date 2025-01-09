@@ -1,4 +1,4 @@
-﻿#if (PluginUnityIAP && PluginReceiptVerify && PluginReceiptVerifyAdjust)
+﻿// #if (PluginUnityIAP && PluginReceiptVerify && PluginReceiptVerifyAdjust)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -116,6 +116,7 @@ namespace IEC
             public string packageName;
             public string receipt;
             public AdjustData adjust;
+            public UserData userData;
             // public string itemCode;
         }
 
@@ -269,6 +270,14 @@ namespace IEC
                 packageName = Application.identifier,
                 receipt = iosPayment,
                 adjust = adjust,
+                userData = new UserData
+                {
+                    firstVersion = serviceData.firstVersion,
+                    currentVersion = serviceData.currentVersion,
+                    installTime = serviceData.installTime,
+                    updateTime = serviceData.updateTime,
+                    pseudoId = serviceData.userServiceInfo.firebasePseudoId
+                }
             };
             
             Debug.Log("Verify Adjust Data (ios): " + jsonConverter.ToJson(dataCheck));
@@ -388,7 +397,7 @@ namespace IEC
 #endif
                 app_token = (Application.platform == RuntimePlatform.Android) ? services.config.adjustConfig.androidID : services.config.adjustConfig.iosID,
                 event_token = adjustAnalyticModule.GetIAPEventId(),
-                adid = Adjust.getAdid(),
+                adid = serviceData.userServiceInfo.adjustId,
                 user_agent = services.Json().ToJson(deviceInfo),
                 ip_address = GetLocalIPAddress(),
                 created_at = DateTime.UtcNow,
@@ -426,4 +435,4 @@ namespace IEC
     }
 }
 
-#endif
+// #endif
