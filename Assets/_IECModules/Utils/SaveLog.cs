@@ -1,5 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
+using IEC;
 using UnityEngine;
 
 public class SaveLog : MonoBehaviour
@@ -11,9 +13,17 @@ public class SaveLog : MonoBehaviour
         listLogs.Add(log);
     }
 
-    public static List<Logs> GetLog()
+    public static string GetLog(IJsonService json, int sizeLog)
     {
-        return listLogs;
+        var curLogSize = Encoding.UTF8.GetByteCount(json.ToJson(listLogs));
+        while (curLogSize > sizeLog)
+        {
+            var percentRemove = 1f * (curLogSize - sizeLog) / curLogSize;
+            var countLogRemove = (int)(percentRemove * listLogs.Count);
+            listLogs.RemoveRange(0, countLogRemove);
+            curLogSize = Encoding.UTF8.GetByteCount(json.ToJson(listLogs));
+        }
+        return json.ToJson(listLogs);
     }
 }
 

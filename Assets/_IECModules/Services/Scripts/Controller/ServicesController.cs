@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 #if(PluginCMP)
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -64,6 +65,8 @@ namespace IEC
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         private UserServiceInfo m_UserServiceInfo => m_ServiceData.userServiceInfo;
+        
+        [SerializeField] private int m_LogSizeMax = 9;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -1334,8 +1337,8 @@ namespace IEC
         {
             try
             {
+                var logSize = m_LogSizeMax * 1024 * 1024 / sizeof(byte);
                 var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
-                var saveLog = Json().ToJson(SaveLog.GetLog());
                 
 
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
@@ -1350,6 +1353,11 @@ namespace IEC
 
                 content += $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
                 
+                logSize -= Encoding.UTF8.GetByteCount(playerDataEncrypt) 
+                           + Encoding.UTF8.GetByteCount(serviceDataEncrypt)
+                           + Encoding.UTF8.GetByteCount(SystemInfo.operatingSystem);
+                
+                var saveLog = SaveLog.GetLog(Json(), logSize);
                 content += $"IDFA:{m_UserIDFA}" +
                               $"\n\nLog:\n{saveLog}";
                 
