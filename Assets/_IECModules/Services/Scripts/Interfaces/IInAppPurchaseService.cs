@@ -37,6 +37,12 @@ namespace IEC
         LocalizePriceInfo GetLocalizePrice(string productID, bool isNewFormat = true);
 
         bool IsInitialized();
+
+        UnityEngine.Purchasing.Product GetProductById(string id);
+
+        decimal GetProductPrice(string id);
+
+        void AddProducts(HashSet<UnityEngine.Purchasing.ProductDefinition> additionalProducts, Action successCallback, Action<UnityEngine.Purchasing.InitializationFailureReason> failCallback);
     }
 
     public class LocalizePriceInfo

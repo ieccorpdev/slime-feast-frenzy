@@ -87,7 +87,8 @@ namespace _IECModules
             AmazonIOSBannerID,
             AmazonIOSRewardID,
             KeystoreLink,
-            IconLink
+            IconLink,
+            DiscordWebhook
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -156,7 +157,8 @@ namespace _IECModules
             {"Amazon iOS Banner ID", ChecklistItemName.AmazonIOSBannerID},
             {"Amazon iOS Reward ID", ChecklistItemName.AmazonIOSRewardID},
             {"Keystore Link", ChecklistItemName.KeystoreLink},
-            {"Icon Link", ChecklistItemName.IconLink}
+            {"Icon Link", ChecklistItemName.IconLink},
+            {"Discord Webhook", ChecklistItemName.DiscordWebhook}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -639,6 +641,9 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.IconLink:
                         iconLink = checklistItemValue;
+                        break;
+                    case ChecklistItemName.DiscordWebhook:
+                        servicesConfig.discordWebhook = checklistItemValue;
                         break;
                 }
             }
