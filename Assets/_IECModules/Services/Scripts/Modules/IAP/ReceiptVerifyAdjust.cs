@@ -202,7 +202,6 @@ namespace IEC
             var receipt = product.receipt;
             PurchaseReceipt purchaseReceipt = jsonConverter.FromJson<PurchaseReceipt>(receipt);
             AdjustData adjust = GetAdjustData(product);
-            adjust.adid = serviceData.userServiceInfo.adjustId;
 
 #if UNITY_EDITOR
             ReceiptData checkingObjectEditor = new ReceiptData()
@@ -243,7 +242,7 @@ namespace IEC
                     currentVersion = serviceData.currentVersion,
                     installTime = serviceData.installTime,
                     updateTime = serviceData.updateTime,
-                    pseudoId = serviceData.userServiceInfo.firebasePseudoId
+                    pseudoId = serviceData.firebasePseudoId
                 }
             };
 
@@ -280,7 +279,7 @@ namespace IEC
                     currentVersion = serviceData.currentVersion,
                     installTime = serviceData.installTime,
                     updateTime = serviceData.updateTime,
-                    pseudoId = serviceData.userServiceInfo.firebasePseudoId
+                    pseudoId = serviceData.firebasePseudoId
                 }
             };
             
@@ -405,12 +404,12 @@ namespace IEC
 #endif
                 app_token = (Application.platform == RuntimePlatform.Android) ? services.config.adjustConfig.androidID : services.config.adjustConfig.iosID,
                 event_token = adjustAnalyticModule.GetIAPEventId(),
-                adid = serviceData.userServiceInfo.adjustId,
+                adid = Adjust.getAdid(),
                 user_agent = services.Json().ToJson(deviceInfo),
                 ip_address = GetLocalIPAddress(),
                 created_at = DateTime.UtcNow,
                 revenue = revenue,
-                currency = currency,
+                currency = currency
             };
 
             return adjust;

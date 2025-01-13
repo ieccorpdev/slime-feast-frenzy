@@ -25,6 +25,7 @@ namespace IEC
         [FormerlySerializedAs("lastVersion")] public string currentVersion;
         public string installTime;
         public string updateTime;
+        public string firebasePseudoId;
         
         Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
         

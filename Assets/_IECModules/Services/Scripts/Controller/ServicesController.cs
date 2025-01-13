@@ -108,7 +108,7 @@ namespace IEC
 #if PluginFirebaseAnalytic
                     ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
                     {
-                        m_FirebasePseudoId = pseudoId;
+                        m_ServiceData.firebasePseudoId = pseudoId;
                         Debug.LogWarning("Firebase Pseudo Id:" + pseudoId);
                     });
 #endif
@@ -1174,7 +1174,7 @@ namespace IEC
             }
 #endif
 #if PluginFirebaseAnalytic
-            firebasePseudoId = m_FirebasePseudoId;
+            firebasePseudoId = m_SerivceData.firebasePseudoId;
 #endif
             SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());
