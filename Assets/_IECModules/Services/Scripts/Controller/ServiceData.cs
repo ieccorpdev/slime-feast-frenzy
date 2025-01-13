@@ -25,7 +25,6 @@ namespace IEC
         [FormerlySerializedAs("lastVersion")] public string currentVersion;
         public string installTime;
         public string updateTime;
-        public UserServiceInfo userServiceInfo;
         
         Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
         
@@ -238,10 +237,5 @@ namespace IEC
             Debug.Log($"{eventName} valueToSum: {valueToSum}");
             return valueToSum;
         }
-    }
-    
-    public class UserServiceInfo
-    {
-        public string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
     }
 }

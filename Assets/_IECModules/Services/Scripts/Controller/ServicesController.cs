@@ -9,6 +9,9 @@ using GoogleMobileAds.Ump.Api;
 #if(PluginFacebook)
 using Facebook.Unity;
 #endif
+#if PluginAdjust
+using com.adjust.sdk;
+#endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEngine;
@@ -63,7 +66,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
-        private UserServiceInfo m_UserServiceInfo => m_ServiceData.userServiceInfo;
+        private string m_FirebasePseudoId;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -105,7 +108,7 @@ namespace IEC
 #if PluginFirebaseAnalytic
                     ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
                     {
-                        m_UserServiceInfo.firebasePseudoId = pseudoId;
+                        m_FirebasePseudoId = pseudoId;
                         Debug.LogWarning("Firebase Pseudo Id:" + pseudoId);
                     });
 #endif
@@ -501,18 +504,7 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID,
-                (adId, attr) =>
-                {
-                    m_UserServiceInfo.adjustId = adId;
-                    Debug.LogWarning("Adjust Info:" + adId);
-                    m_UserServiceInfo.adjustCampaign = attr.campaign;
-                    Debug.LogWarning("Adjust Campaign:" + attr.campaign);
-                    m_UserServiceInfo.adjustCreative = attr.creative;
-                    Debug.LogWarning("Adjust Creative:" + attr.creative);
-                    m_UserServiceInfo.adjustNetwork = attr.network;
-                    Debug.LogWarning("Adjust Network:" + attr.network);
-                });
+            m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID);
 #endif
 #if (PluginFacebook)
             m_SetUpFacebook = new SetUpFacebookModule();
@@ -1172,13 +1164,17 @@ namespace IEC
             string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
-            adjustId = m_UserServiceInfo.adjustId;
-            adjustCampaign = m_UserServiceInfo.adjustCampaign;
-            adjustNetwork = m_UserServiceInfo.adjustNetwork;
-            adjustCreative = m_UserServiceInfo.adjustCreative;
+            adjustId = Adjust.getAdid();
+            var adjustCampain = Adjust.getAttribution();
+            if(adjustCampain != null)
+            {
+                adjustCampaign = adjustCampain.campaign;
+                adjustNetwork = adjustCampain.network;
+                adjustCreative = adjustCampain.creative;
+            }
 #endif
 #if PluginFirebaseAnalytic
-            firebasePseudoId = m_UserServiceInfo.firebasePseudoId;
+            firebasePseudoId = m_FirebasePseudoId;
 #endif
             SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());

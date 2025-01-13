@@ -29,7 +29,7 @@ namespace IEC
             InitEventConfig(adjustAnalyticEventConfig);
         }
 
-        public void InitAdjust(string androidID, string iosID, Action<string, AdjustAttribution> onDone)
+        public void InitAdjust(string androidID, string iosID)
         {
             var appID = (Application.platform == RuntimePlatform.Android) ? androidID : iosID;
             AppID = appID;
@@ -48,7 +48,6 @@ namespace IEC
             Adjust.start(adjustConfig);
             EnableThirdPartySharing();
             Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
-            onDone?.Invoke(Adjust.getAdid(), Adjust.getAttribution());
         }
 
         public void SetListEventRev(List<string> listEventRev)
