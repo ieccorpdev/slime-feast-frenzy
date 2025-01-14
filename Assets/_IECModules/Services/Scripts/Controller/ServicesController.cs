@@ -1174,7 +1174,7 @@ namespace IEC
             }
 #endif
 #if PluginFirebaseAnalytic
-            firebasePseudoId = m_SerivceData.firebasePseudoId;
+            firebasePseudoId = m_ServiceData.firebasePseudoId;
 #endif
             SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());
