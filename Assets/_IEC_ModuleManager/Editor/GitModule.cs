@@ -21,7 +21,7 @@ namespace IEC.ModuleManager
         public bool isAddPackage;
         public int versionSelected;
         
-        private string m_AccessToken = "glpat-caUzdnAjgtdU4qzQ1AEx";
+        private string m_AccessToken = "glpat-GazGQAKY7QSQAZPzsFpE";
 
         public string CurrentVersion { get; private set; }
         public string CurrentCommit { get; private set; }
