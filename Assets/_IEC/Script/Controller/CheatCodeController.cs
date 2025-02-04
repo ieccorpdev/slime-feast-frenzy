@@ -107,6 +107,19 @@ namespace IEC
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
             });
+
+            #region Build City
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Screw BuildingCity", param =>
+            {
+                int screwCB = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.screwCityBuild = screwCB;
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.screwCityBuild
+            });
+
+            #endregion
         }
 
         public void BehaviourUpdate(float deltaTime)

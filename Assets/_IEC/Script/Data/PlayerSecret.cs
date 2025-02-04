@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.NiceVibrations;
 using UnityEngine;
 
 namespace IEC
@@ -58,6 +59,48 @@ namespace IEC
             if (lastTickPlayTime == 0) return DateTime.Now;
             return new DateTime(lastTickPlayTime);
         }
+        
+        public void AfterInit()
+        {
+            SetupNewBuildCityData();
+        }
+        
+        #region CityBuild
+        
+        public int currentCityBuild;
+        public int screwCityBuild = 0;
+        public bool isVibrateOn;//Change to true vibrate
+        public void Vibrate(HapticTypes hapticType)
+        {
+            if (!isVibrateOn) return;
+            MMVibrationManager.Haptic(hapticType);
+        }
+        public Dictionary<int, CityData> buildCityData = new Dictionary<int, CityData>();
+        public class CityData
+        {
+            public bool isDone;
+            public Dictionary<int, int> itemCity = new Dictionary<int, int>();
+        }
 
+        public void AddScrewBuildCity(int value)
+        {
+            screwCityBuild += value;
+        }
+        public void SetupNewBuildCityData()
+        {
+            if (buildCityData.Count > 0) return;
+            for (int i = 0; i <= 99; i++)
+            {
+                CityData itemCity = new CityData();
+                for (int j = 0; j <= 10; j++)
+                {
+                    itemCity.itemCity[j] = 0;
+                }
+
+                buildCityData[i] = itemCity;
+            }
+        }
+
+        #endregion
     }
 }

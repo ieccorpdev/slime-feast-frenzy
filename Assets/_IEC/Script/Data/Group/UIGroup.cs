@@ -24,7 +24,9 @@ namespace IEC
 
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
-
+        
+        [Header("Build City")]
+        public BuildCity buildCityUI;
         public void LocateGroup()
         {
             Pool.Set(this);

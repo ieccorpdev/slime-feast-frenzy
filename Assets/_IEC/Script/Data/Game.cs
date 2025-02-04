@@ -15,7 +15,6 @@ namespace IEC
         public int abVersion;
 
         public float timeDelayFullAds;
-
         public System.DateTime timeStartLevel;
         public System.DateTime timeEndLevel;
         public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;

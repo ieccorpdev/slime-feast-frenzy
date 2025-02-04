@@ -12,5 +12,8 @@ namespace IEC
     public class GameConfig : BaseConfig
     {
         public _EmptyConfig emptyConfig;
+        [Header("BuildCity")]
+
+        public BuildCityConfig buildCityConfig;
     }
 }

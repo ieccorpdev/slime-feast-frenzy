@@ -85,6 +85,7 @@ namespace IEC
             if (GamePlay.IsWin)
             {
                 PlayerData.AddLevel();
+                PlayerData.screwCityBuild += Config.buildCityConfig.screwAddEndgame;
             }
             EventController.RaiseEvent(EventList.SAVE_DATA);
             Services.PushEvent(new TrackingEvent.GameOver());
