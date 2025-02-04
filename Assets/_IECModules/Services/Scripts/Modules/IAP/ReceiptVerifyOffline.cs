@@ -8,7 +8,7 @@ namespace IEC
 {
     public class ReceiptVerifyOffline : IReceiptVerifyService
     {
-        public virtual void CheckReceipt(Product product, Action<bool> callback)
+        public virtual void CheckReceipt(Product product, bool isPurchasing, Action<bool> callback)
         {
             callback(IsValidOffline(product));
         }

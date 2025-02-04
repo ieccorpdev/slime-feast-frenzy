@@ -9,10 +9,9 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
-        #region COMMON
-
+        public string CurAbTestDate;
+#region COMMON
         const string SEMI_OVERRIDE_KEY = "Override.";
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -194,10 +193,12 @@ namespace IEC
                 cheatCode = ModuleController.cheatCode.GetCheatCodeParam(cheatCodeName);
             }
 
+            CurAbTestDate = abTestConfig.ListEventsAB[abValue];
             cheatCode.action = cheatCodeParam =>
             {
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
+                CurAbTestDate = abTestConfig.ListEventsAB[abValue];
                 ApplyAbTest(abTestConfig);
                 ResultAllAbTest();
             };
