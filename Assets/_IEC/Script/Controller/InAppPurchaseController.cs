@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Purchasing;
 
 namespace IEC
 {
@@ -49,7 +51,16 @@ namespace IEC
             if (isSuccess)
             {
                 //Should call common analytic tracking IAP
+                Services.PushEvent(CustomIapAdjustName(productId));
+
             }
+        }
+
+        public string CustomIapAdjustName(string id)
+        {
+            string result = "iap_" + id;
+            result = result.Replace(".", "_");
+            return result;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace IEC
 {
@@ -20,6 +21,14 @@ namespace IEC
         public bool isNoAdsReward;
         public bool isInterFallbackForReward;
         public TimeCheckType timeCheckType;
+        public string firstVersion;
+        [FormerlySerializedAs("lastVersion")] public string currentVersion;
+        public string installTime;
+        public string updateTime;
+        public string firebasePseudoId;
+        
+        Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
+        
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
 #endif
@@ -175,6 +184,15 @@ namespace IEC
             lastRevFBPurchase = revTotalAd;
             Debug.Log("Value to sum purchase:" + valueToSum);
             return valueToSum;
+        }
+
+        public void AddIapVerified(string packageId)
+        {
+            if (!dictIapBought.ContainsKey(packageId))
+            {
+                dictIapBought[packageId] = 0;
+            }
+            dictIapBought[packageId]++;
         }
     }
     

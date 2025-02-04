@@ -6,7 +6,7 @@ using UnityEditor;
 
 public class ScreenShotTaker : EditorWindow
 {
-    [MenuItem("IEC/Take ScreenShot")]
+    [MenuItem("IEC/Take ScreenShot %F7")]
     public static void Init()
     {
         string name = "ScrenShot_";
