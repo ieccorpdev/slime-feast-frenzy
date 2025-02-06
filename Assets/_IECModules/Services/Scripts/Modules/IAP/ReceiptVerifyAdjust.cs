@@ -147,16 +147,6 @@ namespace IEC
             this.jsonConverter = jsonConverter;
             this.monoBehaviour = monoBehaviour;
             this.serviceData = serviceData;
-            if (string.IsNullOrEmpty(serviceData.firstVersion))
-            {
-                serviceData.firstVersion = serviceData.currentVersion = Application.version.Trim();
-                serviceData.installTime = serviceData.updateTime = DateTime.Now.ToShortDateString();
-            }
-            else if (!Application.version.Trim().Equals(serviceData.currentVersion))
-            {
-                serviceData.currentVersion = Application.version.Trim();
-                serviceData.updateTime = DateTime.Now.ToShortDateString();
-            }
 
 #if UNITY_EDITOR
             ModuleController.cheatCode.AddCheatCodeButton("Toggle Adjust Verify Editor Debug", cheatCodeParam =>
