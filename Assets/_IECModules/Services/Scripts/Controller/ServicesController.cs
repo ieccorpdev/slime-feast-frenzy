@@ -598,6 +598,16 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            if (string.IsNullOrEmpty(m_ServiceData.firstVersion))
+            {
+                m_ServiceData.firstVersion = m_ServiceData.currentVersion = Application.version.Trim();
+                m_ServiceData.installTime = m_ServiceData.updateTime = DateTime.Now.ToShortDateString();
+            }
+            else if (!Application.version.Trim().Equals(m_ServiceData.currentVersion))
+            {
+                m_ServiceData.currentVersion = Application.version.Trim();
+                m_ServiceData.updateTime = DateTime.Now.ToShortDateString();
+            }
             m_AnalyticSaveData = DataSecure().GetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, new AnalyticSaveData());
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
