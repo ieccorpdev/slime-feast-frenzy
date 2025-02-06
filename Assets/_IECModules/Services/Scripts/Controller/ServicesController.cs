@@ -601,12 +601,12 @@ namespace IEC
             if (string.IsNullOrEmpty(m_ServiceData.firstVersion))
             {
                 m_ServiceData.firstVersion = m_ServiceData.currentVersion = Application.version.Trim();
-                m_ServiceData.installTime = m_ServiceData.updateTime = DateTime.Now.ToShortDateString();
+                m_ServiceData.installTime = m_ServiceData.updateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
             else if (!Application.version.Trim().Equals(m_ServiceData.currentVersion))
             {
                 m_ServiceData.currentVersion = Application.version.Trim();
-                m_ServiceData.updateTime = DateTime.Now.ToShortDateString();
+                m_ServiceData.updateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
             m_AnalyticSaveData = DataSecure().GetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, new AnalyticSaveData());
             InitMilestoneAd();
