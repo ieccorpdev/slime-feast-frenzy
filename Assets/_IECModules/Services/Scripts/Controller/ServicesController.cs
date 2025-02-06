@@ -605,6 +605,14 @@ namespace IEC
             }
             else if (!Application.version.Trim().Equals(m_ServiceData.currentVersion))
             {
+                if (!m_ServiceData.installTime.Contains("Z"))
+                {
+                    var isCanParse = DateTime.TryParse(m_ServiceData.installTime, out DateTime installTime);
+                    if (isCanParse)
+                    {
+                        m_ServiceData.installTime = installTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                    }
+                }
                 m_ServiceData.currentVersion = Application.version.Trim();
                 m_ServiceData.updateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
             }
