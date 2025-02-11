@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _IEC;
 using IEC;
 using UnityEngine;
 
@@ -11,5 +12,6 @@ public static partial class Locator
         //"Home Main"
         public static HomeScreenTab HomeScreenTab => Pool.Get<HomeScreenTab>();
         public static PopupAvatar PopupAvatar=> Pool.Get<PopupAvatar>();
-                                                 } 
+        public static PopupLuckyWheel PopupLuckyWheel=> Pool.Get<PopupLuckyWheel>();
+     } 
 }

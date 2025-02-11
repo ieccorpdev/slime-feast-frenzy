@@ -91,7 +91,7 @@ namespace IEC
             PlayerData.playerName = playerName.text;
             PlayerData.playerAvatarSpriteName = CurrentSelectedAvatar.avatarImage.sprite.name;
             //Meomew
-            Locator.Main.HomeScreenTab.UpdatePlayerAvatar();
+            Locator.Main.HomeScreenTab.UpdateMainHome();
             OnHideClick();
         }
     }

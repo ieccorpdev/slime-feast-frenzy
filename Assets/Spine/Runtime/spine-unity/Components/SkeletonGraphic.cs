@@ -93,7 +93,6 @@ namespace Spine.Unity {
 		/// <summary>Offset relative to the pivot position, before potential layout scale is applied.</summary>
 		[SerializeField] protected Vector2 pivotOffset = Vector2.zero;
 		[SerializeField] protected float referenceScale = 1f;
-		[SerializeField] protected float layoutScale = 1f;
 #if UNITY_EDITOR
 		protected LayoutMode previousLayoutScaleMode = LayoutMode.None;
 		[SerializeField] protected Vector2 rectTransformSize = Vector2.zero;
@@ -743,9 +742,8 @@ namespace Spine.Unity {
 				SetRectTransformSize(submeshGraphic, size);
 				submeshGraphic.rectTransform.pivot = p;
 			}
+
 			this.referenceSize = size;
-			referenceScale = referenceScale * layoutScale;
-			layoutScale = 1f;
 		}
 
 		public static void SetRectTransformSize (Graphic target, Vector2 size) {
@@ -945,7 +943,7 @@ namespace Spine.Unity {
 			meshScale = (canvas == null) ? 100 : canvas.referencePixelsPerUnit;
 			if (layoutScaleMode != LayoutMode.None) {
 				meshScale *= referenceScale;
-				layoutScale = GetLayoutScale(layoutScaleMode);
+				float layoutScale = GetLayoutScale(layoutScaleMode);
 				if (!EditReferenceRect) {
 					meshScale *= layoutScale;
 				}
@@ -1045,7 +1043,7 @@ namespace Spine.Unity {
 			meshScale = (canvas == null) ? 100 : canvas.referencePixelsPerUnit;
 			if (layoutScaleMode != LayoutMode.None) {
 				meshScale *= referenceScale;
-				layoutScale = GetLayoutScale(layoutScaleMode);
+				float layoutScale = GetLayoutScale(layoutScaleMode);
 				if (!EditReferenceRect) {
 					meshScale *= layoutScale;
 				}

@@ -27,9 +27,8 @@
  * SPINE RUNTIMES, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *****************************************************************************/
 
-// Optimization option: Allows faster BuildMeshWithArrays call and avoids calling SetTriangles at the cost of
-// checking for mesh differences (vertex counts, member-wise attachment list compare) every frame.
-#define SPINE_TRIANGLECHECK
+// Not for optimization. Do not disable.
+#define SPINE_TRIANGLECHECK // Avoid calling SetTriangles at the cost of checking for mesh differences (vertex counts, memberwise attachment list compare) every frame.
 //#define SPINE_DEBUG
 
 using System;

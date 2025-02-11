@@ -303,7 +303,7 @@ namespace Spine.Unity {
 		[SerializeField] protected Transform physicsMovementRelativeTo = null;
 
 		/// <summary>Used for applying Transform translation to skeleton PhysicsConstraints.</summary>
-		protected Vector3 lastPosition;
+		protected Vector2 lastPosition;
 		/// <summary>Used for applying Transform rotation to skeleton PhysicsConstraints.</summary>
 		protected float lastRotation;
 
@@ -520,8 +520,8 @@ namespace Spine.Unity {
 		public virtual void ApplyTransformMovementToPhysics () {
 			if (Application.isPlaying) {
 				if (physicsPositionInheritanceFactor != Vector2.zero) {
-					Vector3 position = GetPhysicsTransformPosition();
-					Vector3 positionDelta = position - lastPosition;
+					Vector2 position = GetPhysicsTransformPosition();
+					Vector2 positionDelta = position - lastPosition;
 
 					positionDelta = transform.InverseTransformVector(positionDelta);
 					if (physicsMovementRelativeTo != null) {
@@ -541,7 +541,7 @@ namespace Spine.Unity {
 			}
 		}
 
-		protected Vector3 GetPhysicsTransformPosition () {
+		protected Vector2 GetPhysicsTransformPosition () {
 			if (physicsMovementRelativeTo == null) {
 				return transform.position;
 			} else {

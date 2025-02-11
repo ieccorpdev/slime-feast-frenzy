@@ -147,7 +147,6 @@ namespace Spine {
 				Reset();
 				goto case Physics.Update; // Fall through.
 			case Physics.Update:
-				Skeleton skeleton = this.skeleton;
 				float delta = Math.Max(skeleton.time - lastTime, 0);
 				remaining += delta;
 				lastTime = skeleton.time;
@@ -158,24 +157,21 @@ namespace Spine {
 					ux = bx;
 					uy = by;
 				} else {
-					float a = remaining, i = inertia, t = data.step, f = skeleton.data.referenceScale, d = -1;
-					float qx = data.limit * delta, qy = qx * Math.Abs(skeleton.ScaleY);
-					qx *= Math.Abs(skeleton.ScaleX);
-
+					float a = this.remaining, i = inertia, q = data.limit * delta, t = data.step, f = skeleton.data.referenceScale;
 					if (x || y) {
 						if (x) {
 							float u = (ux - bx) * i;
-							xOffset += u > qx ? qx : u < -qx ? -qx : u;
+							xOffset += u > q ? q : u < -q ? -q : u;
 							ux = bx;
 						}
 						if (y) {
 							float u = (uy - by) * i;
-							yOffset += u > qy ? qy : u < -qy ? -qy : u;
+							yOffset += u > q ? q : u < -q ? -q : u;
 							uy = by;
 						}
 						if (a >= t) {
-							d = (float)Math.Pow(damping, 60 * t);
 							float m = massInverse * t, e = strength, w = wind * f, g = (Bone.yDown ? -gravity : gravity) * f;
+							float d = (float)Math.Pow(damping, 60 * t);
 							do {
 								if (x) {
 									xVelocity += (w - xOffset * e) * m;
@@ -196,14 +192,14 @@ namespace Spine {
 					if (rotateOrShearX || scaleX) {
 						float ca = (float)Math.Atan2(bone.c, bone.a), c, s, mr = 0;
 						float dx = cx - bone.worldX, dy = cy - bone.worldY;
-						if (dx > qx)
-							dx = qx;
-						else if (dx < -qx)
-							dx = -qx;
-						if (dy > qy)
-							dy = qy;
-						else if (dy < -qy)
-							dy = -qy;
+						if (dx > q)
+							dx = q;
+						else if (dx < -q)
+							dx = -q;
+						if (dy > q)
+							dy = q;
+						else if (dy < -q)
+							dy = -q;
 						if (rotateOrShearX) {
 							mr = (data.rotate + data.shearX) * mix;
 							float r = (float)Math.Atan2(dy + ty, dx + tx) - ca - rotateOffset * mr;
@@ -221,10 +217,10 @@ namespace Spine {
 							float r = l * bone.WorldScaleX;
 							if (r > 0) scaleOffset += (dx * c + dy * s) * i / r;
 						}
-						a = remaining;
+						a = this.remaining;
 						if (a >= t) {
-							if (d == -1) d = (float)Math.Pow(damping, 60 * t);
-							float m = massInverse * t, e = strength, w = wind, g = (Bone.yDown ? -gravity : gravity), h = l / f;
+							float m = massInverse * t, e = strength, w = wind, g = (Bone.yDown ? -gravity : gravity);
+							float d = (float)Math.Pow(damping, 60 * t), h = l / f;
 							while (true) {
 								a -= t;
 								if (scaleX) {
@@ -245,7 +241,7 @@ namespace Spine {
 							}
 						}
 					}
-					remaining = a;
+					this.remaining = a;
 				}
 				cx = bone.worldX;
 				cy = bone.worldY;
@@ -299,7 +295,7 @@ namespace Spine {
 		}
 
 		/// <summary>The bone constrained by this physics constraint.</summary>
-		public Bone Bone { get { return bone; } set { bone = value; } }
+		public Bone Bone { get {return bone;} set { bone = value; } }
 		public float Inertia { get { return inertia; } set { inertia = value; } }
 		public float Strength { get { return strength; } set { strength = value; } }
 		public float Damping { get { return damping; } set { damping = value; } }

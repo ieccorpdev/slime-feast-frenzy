@@ -15,5 +15,8 @@ namespace IEC
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
+        [Header("Lucky Wheel Config")]
+        public DataRewardLuckyWheelConfig dataRewardLuckyWheelConfig;
+        
     }
 }

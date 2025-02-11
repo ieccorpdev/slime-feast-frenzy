@@ -63,12 +63,30 @@ namespace IEC
             if (lastTickPlayTime == 0) return DateTime.Now;
             return new DateTime(lastTickPlayTime);
         }
-
+        public void AfterInit()
+        {
+            SetDataLuckyWheel();
+        }
         #region Player Avatar Profile
 
         public string playerAvatarSpriteName;
         public string playerName;    
 
+        #endregion
+        
+        #region LuckyWheel
+
+        public DateTime lastTimeOpenWheel;
+        public int numberSpinWheelAdsLeft;
+
+        public void SetDataLuckyWheel()
+        {
+            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
+            {
+                lastTimeOpenWheel = DateTime.Now;
+                numberSpinWheelAdsLeft = Pool.Get<GameConfig>().dataRewardLuckyWheelConfig.numberSpinAdsEachDay;
+            }
+        }
         #endregion
     }
 }
