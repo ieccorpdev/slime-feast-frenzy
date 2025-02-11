@@ -24,6 +24,13 @@ namespace IEC
             public const string ON_ADD_ANALYTIC_SAVE_DATA = "Service.ON_ADD_ANALYTIC_SAVE_DATA";
         }
 
+        public static class Setting
+        {
+            public const string SETTING_MUSIC = "Setting.SETTING_MUSIC";
+            public const string SETTING_SOUND = "Setting.SETTING_SOUND";
+            public const string SETTING_VIBRATES = "Setting.SETTING_VIBRATES";
+        }
+
         public static class Leaderboard
         {
             public const string SHOW_LEADERBOARD = "Leaderboard.SHOW_LEADERBOARD";
