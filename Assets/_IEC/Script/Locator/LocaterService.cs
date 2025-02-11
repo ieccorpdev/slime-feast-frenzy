@@ -14,5 +14,6 @@ public static partial class Locator
         public static PopupPurchaseFail PopupPurchaseFail => Pool.Get<PopupPurchaseFail>();
         public static PopupRestorePurchaseFail PopupRestorePurchaseFail => Pool.Get<PopupRestorePurchaseFail>();
         public static PopupRestorePurchaseSuccess PopupRestorePurchaseSuccess => Pool.Get<PopupRestorePurchaseSuccess>();
+
     }
 }

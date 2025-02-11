@@ -10,7 +10,7 @@ namespace IEC
         Shop,
         Tab2,
         Home,
-        Tab4,
+        LeaderBoard,
         Tab5
     }
 

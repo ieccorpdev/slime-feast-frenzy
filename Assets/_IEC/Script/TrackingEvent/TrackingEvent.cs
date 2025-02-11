@@ -93,5 +93,21 @@ namespace IEC.TrackingEvent
     {
         public override string Name => "click_btn_next";
     }
+    public class ClickBtnTracking : Level
+    {
+        public override string Name => "click_btn";
+        private string btn_name;
 
+        public ClickBtnTracking(string position)
+        {
+            btn_name = position;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["btn_name"] = btn_name;
+            return dict;
+        }
+    }
 }

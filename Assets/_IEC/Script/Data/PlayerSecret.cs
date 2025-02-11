@@ -64,5 +64,11 @@ namespace IEC
             return new DateTime(lastTickPlayTime);
         }
 
+        #region Player Avatar Profile
+
+        public string playerAvatarSpriteName;
+        public string playerName;    
+
+        #endregion
     }
 }

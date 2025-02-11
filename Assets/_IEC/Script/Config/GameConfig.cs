@@ -13,5 +13,7 @@ namespace IEC
     {
         public _EmptyConfig emptyConfig;
         public HybridConfig hybridConfig;
+        [Header(" Player Avatar Profile")]
+        public PlayerAvatarConfig playerAvatarConfig;
     }
 }
