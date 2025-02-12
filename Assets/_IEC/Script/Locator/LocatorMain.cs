@@ -14,5 +14,6 @@ public static partial class Locator
         public static PopupAvatar PopupAvatar=> Pool.Get<PopupAvatar>();
         public static PopupLuckyWheel PopupLuckyWheel=> Pool.Get<PopupLuckyWheel>();
         public static PopupNoAds PopupNoAds=> Pool.Get<PopupNoAds>();
+        public static PopupStarterPack PopupStarterPack=> Pool.Get<PopupStarterPack>();
      } 
 }

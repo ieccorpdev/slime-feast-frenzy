@@ -88,5 +88,11 @@ namespace IEC
             }
         }
         #endregion
+
+        #region Started Pack IAP
+
+        public bool isBoughtStarterPack;
+
+        #endregion
     }
 }

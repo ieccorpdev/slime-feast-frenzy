@@ -63,7 +63,7 @@ namespace IEC
             {
                 Services.IAP().PurchaseProduct(m_Config.bundleId);
             });
-            m_PackName.text = m_Config.packName;
+            if(m_PackName) m_PackName.text = m_Config.packName;
         }
 
         protected void SetLocalizePrice()

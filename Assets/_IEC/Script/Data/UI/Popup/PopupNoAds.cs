@@ -17,6 +17,7 @@ namespace _IEC
             configBundle.OnPurchaseSuccess += () =>
             {
                 noThanksBtn.gameObject.SetActive(false);
+                Hide();
             };
         }
         public override void Show()
