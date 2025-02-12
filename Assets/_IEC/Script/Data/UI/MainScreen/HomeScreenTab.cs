@@ -93,6 +93,7 @@ public class HomeScreenTab : ScreenNavigateUI
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
         dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
         UpdatePiggyBankButton();
+        EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
     }
     
 }

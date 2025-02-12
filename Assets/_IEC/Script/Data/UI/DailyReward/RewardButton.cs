@@ -112,7 +112,7 @@ namespace _IEC
             switch (Reward)
             {
                 case ResourceType.Gold:
-                    PlayerData.gold += RewardAmount;
+                    PlayerData.AddGold(RewardAmount);
                     break;
             }
         }

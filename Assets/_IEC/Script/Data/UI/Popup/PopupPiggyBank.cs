@@ -29,7 +29,7 @@ namespace _IEC
 
         public void BuySuccessPiggybank()
         {
-            PlayerData.gold += PlayerData.piggyBankGold;
+            PlayerData.AddGold(PlayerData.piggyBankGold);
             Hide();
             ResetPiggyBank();
             Locator.Main.HomeScreenTab.UpdateMainHome();

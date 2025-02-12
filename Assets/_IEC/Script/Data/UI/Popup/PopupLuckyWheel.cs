@@ -95,7 +95,7 @@ namespace _IEC
             switch (itr.typeReward)
             {
                 case ResourceType.Gold:
-                    PlayerData.gold += itr.rewardAmount;
+                    PlayerData.AddGold(itr.rewardAmount);
                     break;
                 case ResourceType.UnlimitedLive:
                     //PlayerData.AddTimeUnlimitedLife(itr.rewardAmount);

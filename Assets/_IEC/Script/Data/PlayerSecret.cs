@@ -87,6 +87,17 @@ namespace IEC
                 numberSpinWheelAdsLeft = Pool.Get<GameConfig>().dataRewardLuckyWheelConfig.numberSpinAdsEachDay;
             }
         }
+
+        #region Resource Currency
+
+        public void AddGold(int value)
+        {
+            gold += value;
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+        }
+        //Custome another type currency here
+
+        #endregion
         #endregion
 
         #region Started Pack IAP
