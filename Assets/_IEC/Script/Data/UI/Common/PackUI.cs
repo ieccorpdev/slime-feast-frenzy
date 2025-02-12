@@ -16,6 +16,8 @@ namespace IEC
         [SerializeField]
         protected Button m_BtnBuy;
 
+        public Action OnPurchaseSuccess;
+        public Action OnPurchaseFail;
         [SerializeField] protected TMP_Text m_TxtPrice, m_PackName;
 
         protected virtual void Awake()
@@ -53,7 +55,7 @@ namespace IEC
                                 PlayerData.hybridData.GetResourceCount(ResourceType.Gold), () => { });
                         }
                     }).Show();
-                
+                OnPurchaseSuccess?.Invoke();
                 Data.SaveData();
             }); 
                 

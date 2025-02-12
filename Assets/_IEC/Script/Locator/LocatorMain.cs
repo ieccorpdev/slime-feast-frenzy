@@ -13,5 +13,6 @@ public static partial class Locator
         public static HomeScreenTab HomeScreenTab => Pool.Get<HomeScreenTab>();
         public static PopupAvatar PopupAvatar=> Pool.Get<PopupAvatar>();
         public static PopupLuckyWheel PopupLuckyWheel=> Pool.Get<PopupLuckyWheel>();
+        public static PopupNoAds PopupNoAds=> Pool.Get<PopupNoAds>();
      } 
 }

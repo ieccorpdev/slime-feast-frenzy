@@ -14,6 +14,8 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image avatarImage;
     [Header("LuckyWheel")] 
     public Button luckyWheel;
+    [Header("NoAdsPack")] 
+    public Button noAdsPack;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,12 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupLuckyWheel.Show();
+            });       
+        SetEvent(noAdsPack,
+            () =>
+            {
+                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
+                Locator.Main.PopupNoAds.Show();
             });
     }
 
@@ -46,6 +54,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         luckyWheel.gameObject.SetActive(PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlock);
+        noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
     }
     
 }

@@ -66,7 +66,7 @@ namespace _IEC
             iconReward.sprite = result.dataReward.icon;
             iconReward.SetNativeSize();
             iconReward.gameObject.transform.localScale = Vector3.one * 1.7f;
-            if(result.dataReward.dataReward.typeReward == BonusDataReward.UnlimitedLives)
+            if(result.dataReward.dataReward.typeReward == ResourceType.UnlimitedLive)
             {
                 valueReward.text = result.dataReward.dataReward.rewardAmount + "m";
             }
@@ -94,10 +94,10 @@ namespace _IEC
             var itr = curentResult.dataReward.dataReward;
             switch (itr.typeReward)
             {
-                case BonusDataReward.Gold:
+                case ResourceType.Gold:
                     PlayerData.gold += itr.rewardAmount;
                     break;
-                case BonusDataReward.UnlimitedLives:
+                case ResourceType.UnlimitedLive:
                     //PlayerData.AddTimeUnlimitedLife(itr.rewardAmount);
                     break;
             }

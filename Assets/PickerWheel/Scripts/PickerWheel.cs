@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.Events;
 using System.Collections.Generic;
+using IEC;
 using NaughtyAttributes;
 using TMPro;
 
@@ -136,7 +137,7 @@ namespace EasyUI.PickerWheelUI
 
             pieceTrns.GetChild(0).GetComponent<Image>().sprite = piece.Icon;
             //pieceTrns.GetChild(1).GetComponent<Text>().text = piece.Label;
-            pieceTrns.GetChild(1).GetComponent<TextMeshProUGUI>().text = piece.dataReward.dataReward.typeReward == BonusDataReward.UnlimitedLives ? (piece.Amount.ToString() + "m") : ("x" + piece.Amount.ToString());
+            pieceTrns.GetChild(1).GetComponent<TextMeshProUGUI>().text = piece.dataReward.dataReward.typeReward == ResourceType.UnlimitedLive ? (piece.Amount.ToString() + "m") : ("x" + piece.Amount.ToString());
             var pos = wheelPiecesParent.position;
             pieceTrns.RotateAround(pos, Vector3.back, pieceAngle * index);
         }

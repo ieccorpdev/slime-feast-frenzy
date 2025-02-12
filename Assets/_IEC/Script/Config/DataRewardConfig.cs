@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IEC;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Game/RewardConfig")]
@@ -20,19 +21,13 @@ public class Rewards
 public class Reward
 {
     public int rewardAmount;
-    public BonusDataReward typeReward;
+    public ResourceType typeReward;
     public Reward()
     {
     }
-    public Reward(int rewardAmount, BonusDataReward typeReward)
+    public Reward(int rewardAmount, ResourceType typeReward)
     {
         this.rewardAmount = rewardAmount;
         this.typeReward = typeReward;
     }
-}
-//must containt all reward type of game here
-public enum BonusDataReward
-{
-    Gold,
-    UnlimitedLives,
 }

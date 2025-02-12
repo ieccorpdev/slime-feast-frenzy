@@ -63,22 +63,7 @@ namespace IEC
         public override void Hide()
         {
             base.Hide();
-            //var dataPack = GetProductById(idPack);
-            //ProductCatalogPayout product = new ProductCatalogPayout();
-            //bool packHaveGold = false;
-            //foreach (var pack in dataPack.Payouts)
-            //{
-            //    if (pack.subtype == "Gold")
-            //    {
-            //        product = pack;
-            //        packHaveGold = true;
-            //        break;
-            //    }
-            //}
-            //if (packHaveGold)
-            //{
-            //    UI.fxCoin.ShowEffect((int)product.quantity);
-            //}
+            Locator.Main.HomeScreenTab.UpdateMainHome();
         }
 
         public static ProductCatalogItem GetProductById(string id)
