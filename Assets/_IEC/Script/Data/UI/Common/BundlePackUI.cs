@@ -8,7 +8,9 @@ namespace IEC
 {
     public class BundlePackUI : PackUI
     {
-        [SerializeField] private TMP_Text m_TxtResource1, m_TxtResource2, m_TxtResource3, m_TxtResource4, m_TxtResource5, m_TxtResource6;
+        [Header("Custom Resource")]
+        [SerializeField] private TMP_Text m_TxtResource1;
+        [SerializeField] private TMP_Text m_TxtResource2, m_TxtResource3, m_TxtResource4, m_TxtResource5, m_TxtResource6;
 
         private Dictionary<ResourceType, TMP_Text> m_DictAmountResource = new Dictionary<ResourceType, TMP_Text>();
 

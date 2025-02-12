@@ -94,5 +94,11 @@ namespace IEC
         public bool isBoughtStarterPack;
 
         #endregion
+
+        #region PiggyBank
+
+        public int piggyBankGold;
+
+        #endregion
     }
 }

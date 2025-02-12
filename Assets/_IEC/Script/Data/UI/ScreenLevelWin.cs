@@ -17,6 +17,7 @@ namespace IEC
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS);
+                Locator.Main.PopupPiggyBank.AddGoldToPiggyBank(10);//CustomGold here
             });
         }
     }

@@ -107,6 +107,16 @@ namespace IEC
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
             });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Piggy Bank Gold", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                Locator.Main.PopupPiggyBank.AddGoldToPiggyBank(gc);
+                Locator.Main.PopupPiggyBank.UpdatePopup();
+                Locator.Main.HomeScreenTab.UpdateMainHome();
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
         }
 
         public void BehaviourUpdate(float deltaTime)

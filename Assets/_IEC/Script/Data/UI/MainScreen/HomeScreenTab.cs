@@ -5,6 +5,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
+using TMPro;
 
 
 public class HomeScreenTab : ScreenNavigateUI
@@ -18,6 +19,11 @@ public class HomeScreenTab : ScreenNavigateUI
     public Button noAdsPack;
     [Header("Started Package")] 
     public Button startedPackageBtn;
+    [Header("Piggy Bank")] 
+    public Button btnPiggyBank;
+    public Image piggyBankProgressBarFill;
+    public Image piggyBankNotiImage;
+    public TextMeshProUGUI piggyBankValue;
     // Start is called before the first frame update
     void Start()
     {
@@ -44,6 +50,12 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupStarterPack.Show();
+            });        
+        SetEvent(btnPiggyBank,
+            () =>
+            {
+                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
+                Locator.Main.PopupPiggyBank.Show();
             });
     }
 
@@ -57,13 +69,20 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         UpdateMainHome();
     }
-
+    public void UpdatePiggyBankButton()
+    {
+        piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
+        piggyBankNotiImage.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull);
+        piggyBankValue.text = PlayerData.piggyBankGold.ToString();
+        //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
+    }
     public void UpdateMainHome()
     {
         avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         luckyWheel.gameObject.SetActive(PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlock);
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
+        UpdatePiggyBankButton();
     }
     
 }
