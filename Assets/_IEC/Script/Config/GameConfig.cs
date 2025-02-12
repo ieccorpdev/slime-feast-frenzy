@@ -18,7 +18,9 @@ namespace IEC
         [Header("Lucky Wheel Config")]
         public DataRewardLuckyWheelConfig dataRewardLuckyWheelConfig;   
         [Header("PiggyBank Config")]
-        public DataPiggyBank dataPiggyBank;
+        public DataPiggyBank dataPiggyBank;   
+        [Header("Daily Reward Config")]
+        public DataDailyReward dataDailyRewardConfig;
         
     }
 }

@@ -24,6 +24,9 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image piggyBankProgressBarFill;
     public Image piggyBankNotiImage;
     public TextMeshProUGUI piggyBankValue;
+    [Header("Daily Reward")] 
+    public  Button btnDailyReward;
+    public Image dailyRewardNotiImage;
     // Start is called before the first frame update
     void Start()
     {
@@ -57,6 +60,12 @@ public class HomeScreenTab : ScreenNavigateUI
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupPiggyBank.Show();
             });
+        SetEvent(btnDailyReward,
+            () =>
+            {
+                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
+                Locator.Main.PopupDailyReward.Show();
+            });
     }
 
     // Update is called once per frame
@@ -82,6 +91,7 @@ public class HomeScreenTab : ScreenNavigateUI
         luckyWheel.gameObject.SetActive(PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlock);
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
+        dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
         UpdatePiggyBankButton();
     }
     

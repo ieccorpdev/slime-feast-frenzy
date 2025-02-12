@@ -100,5 +100,27 @@ namespace IEC
         public int piggyBankGold;
 
         #endregion
+
+        #region Daily Reward
+
+        [Header("Daily Reward")] 
+        public int currentDailyAdReward = 0;
+        public DateTime lastTimeOpenDailyReward;
+        public long mainRewardCooldownTickTime;
+        public Dictionary<int, bool> adRewardsClaimed = new Dictionary<int, bool>();
+        public double GetEndTimeDay(out string outputString)
+        {
+            outputString = "";
+            DateTime now = DateTime.Now;
+            DateTime endOfDay = DateTime.Today.AddDays(1);
+            TimeSpan time = endOfDay - now;
+            var hour = time.Hours;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = time.Minutes < 10 ? $"0{time.Minutes}" : time.Minutes.ToString();
+            outputString = $"{hours}h {minutes}m";
+            return time.TotalSeconds;
+        }
+        #endregion
+
     }
 }

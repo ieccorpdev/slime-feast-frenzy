@@ -110,4 +110,34 @@ namespace IEC.TrackingEvent
             return dict;
         }
     }
+    public class SFApostition : Level
+    {
+        public string position = "";
+        public override string Name => "sfa_position";
+        public override Dictionary<string, object> GetParams()
+        {
+            var param = base.GetParams();
+            param["position"] = position;
+            return param;
+        }
+        public SFApostition(string position)
+        {
+            this.position = position;
+        }
+    }
+    public class SRApostition : Level
+    {
+        public string position = "";
+        public override string Name => "sra_position";
+        public override Dictionary<string, object> GetParams()
+        {
+            var param = base.GetParams();
+            param["position"] = position;
+            return param;
+        }
+        public SRApostition(string position)
+        {
+            this.position = position;
+        }
+    }
 }
