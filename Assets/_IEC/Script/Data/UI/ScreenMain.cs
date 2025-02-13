@@ -12,6 +12,7 @@ namespace IEC
     {
         [SerializeField] private Button m_BtnSetting;
         [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_Tab2, m_Tab4, m_Tab5;
+        public RectTransform topBar, bottomBar;
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private ScreenNavigateUI _currentScreen;

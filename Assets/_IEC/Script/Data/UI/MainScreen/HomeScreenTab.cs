@@ -5,11 +5,13 @@ using IEC;
 using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
+using DG.Tweening;
 using TMPro;
 
 
 public class HomeScreenTab : ScreenNavigateUI
 {
+    public RectTransform rightButtonBar, leftButtonBar;
     [Header("Avatar Button")] 
     public Button avatarButton;
     public Image avatarImage;
@@ -29,6 +31,14 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image dailyRewardNotiImage;
     [Header("Play")] 
     public Button playButton;
+
+    [Header("City Build")] 
+    public Button buildButton;
+    public BuildCity buildCityUI;
+    
+    private List<UIMoveOutAnimation> _listObjMoveOut = new();
+    private Sequence _uiAnimSequence;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -73,7 +83,110 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             });
+        
+        SetEvent(buildButton,
+            () =>
+            {
+                DoMoveOutAllObj(
+                    () =>
+                    {
+                        Locator.Main.HomeScreenTab.buildCityUI.Show();
+                    });
+            });
+        
+        InitMoveOutAnimation();
     }
+    
+    #region Change Screen Anim
+        
+        private void InitMoveOutAnimation()
+        {
+            _listObjMoveOut = new List<UIMoveOutAnimation>();
+            _listObjMoveOut.Add(new UIMoveOutAnimation(leftButtonBar,UIElementMoveDir.LEFT)); 
+            
+            _listObjMoveOut.Add(new UIMoveOutAnimation(rightButtonBar,UIElementMoveDir.RIGHT));
+            
+            _listObjMoveOut.Add(new UIMoveOutAnimation(buildButton.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
+            _listObjMoveOut.Add(new UIMoveOutAnimation(playButton.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
+
+
+            foreach (RectTransform child in Locator.Main.ScreenMain.bottomBar.transform)
+            {
+                _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.DOWN));
+            }
+            
+            foreach (RectTransform child in Locator.Main.ScreenMain.topBar.transform)
+            {
+                _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.UP));
+            }
+            // _listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.bottomBar.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
+            //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
+            
+        }
+        
+        private void DoMoveOutAllObj(Action onComplete = null)
+        {
+            DOTween.Kill(_uiAnimSequence);
+
+            _uiAnimSequence = DOTween.Sequence();
+
+            float delay = 0f;
+
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    for (int i = 0; i < _listObjMoveOut.Count; i++)
+                    {
+                        _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
+                    }
+                });
+
+
+            delay += 0.3f;
+            
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    onComplete?.Invoke();
+                });
+
+            _uiAnimSequence.Play();
+        }
+        
+        public void DoMoveBackAllObj(Action onComplete = null)
+        {
+            DOTween.Kill(_uiAnimSequence);
+            
+            foreach (var obj in _listObjMoveOut)
+            {
+                obj.SetObjPosOut();
+            }
+
+            _uiAnimSequence = DOTween.Sequence();
+            
+            float delay = 0f;
+
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    for (int i = 0; i < _listObjMoveOut.Count; i++)
+                    {
+                        _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}");
+                    }
+                });
+            
+            delay += 0.3f;
+
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    onComplete?.Invoke();
+                });
+
+            _uiAnimSequence.Play();
+        }
+        
+        #endregion
 
     // Update is called once per frame
     void Update()

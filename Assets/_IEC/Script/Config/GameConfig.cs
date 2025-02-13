@@ -21,6 +21,8 @@ namespace IEC
         public DataPiggyBank dataPiggyBank;   
         [Header("Daily Reward Config")]
         public DataDailyReward dataDailyRewardConfig;
-        
+        [Header("City Build")] 
+        public BuildCityConfig buildCityConfig;
+
     }
 }

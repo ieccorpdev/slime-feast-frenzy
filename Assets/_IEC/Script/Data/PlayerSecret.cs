@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using MoreMountains.NiceVibrations;
 using UnityEngine;
 
 namespace IEC
@@ -66,7 +67,48 @@ namespace IEC
         public void AfterInit()
         {
             SetDataLuckyWheel();
+            SetupNewBuildCityData();
         }
+        
+        public void Vibrate(HapticTypes hapticType)
+        {
+            if (!isVibrate) return;
+            MMVibrationManager.Haptic(hapticType);
+        }
+        
+        
+        #region City build
+        public int currentCityBuild;
+        public int screwCityBuild = 0;
+        public Dictionary<int, CityData> buildCityData = new Dictionary<int, CityData>();
+        
+        public class CityData
+        {
+            public bool isDone;
+            public Dictionary<int, int> itemCity = new Dictionary<int, int>();
+        }
+        
+        public void AddScrewBuildCity(int value)
+        {
+            screwCityBuild += value;
+        }
+        public void SetupNewBuildCityData()
+        {
+            if (buildCityData.Count > 0) return;
+            for (int i = 0; i <= 99; i++)
+            {
+                CityData itemCity = new CityData();
+                for (int j = 0; j <= 10; j++)
+                {
+                    itemCity.itemCity[j] = 0;
+                }
+
+                buildCityData[i] = itemCity;
+            }
+        }
+        
+        #endregion
+        
         #region Player Avatar Profile
 
         public string playerAvatarSpriteName;
