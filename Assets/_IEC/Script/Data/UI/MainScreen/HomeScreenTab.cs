@@ -27,6 +27,8 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] 
     public  Button btnDailyReward;
     public Image dailyRewardNotiImage;
+    [Header("Play")] 
+    public Button playButton;
     // Start is called before the first frame update
     void Start()
     {
@@ -65,6 +67,11 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupDailyReward.Show();
+            });
+        SetEvent(playButton,
+            () =>
+            {
+                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             });
     }
 
