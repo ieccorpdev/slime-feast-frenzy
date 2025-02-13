@@ -44,6 +44,11 @@ namespace IEC
                         m_ResourceUI.SetActive(true);
                         break;
                 }
+
+                if (Game.hybrid.currentTab != TabType.Home)
+                {
+                    Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
+                }
                 
                 m_DictTab[Game.hybrid.currentTab].SetActive(true);
                 var screen = m_DictTab[Game.hybrid.currentTab].GetComponent<ScreenNavigateUI>();
@@ -57,12 +62,21 @@ namespace IEC
                     {
                         _currentScreen.MoveLeftHide();
                         screen.SetPosRight();
-                        screen.MoveMiddleShow();
+                        //screen.MoveMiddleShow();
                     }
                     else if (_currentScreen.tabType > Game.hybrid.currentTab)
                     {
                         _currentScreen.MoveRightHide();
                         screen.SetPosLeft();
+                        //screen.MoveMiddleShow();
+                    }
+
+                    if (Game.hybrid.currentTab == TabType.Home)
+                    {
+                        screen.MoveMiddleShow(()=>{Locator.Main.HomeScreenTab.buildCityUI.ShowScale();});
+                    }
+                    else
+                    {
                         screen.MoveMiddleShow();
                     }
                 }
