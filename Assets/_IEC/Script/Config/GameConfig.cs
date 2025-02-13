@@ -11,6 +11,7 @@ namespace IEC
     [CreateAssetMenu(menuName = "Game/GameConfig")]
     public class GameConfig : BaseConfig
     {
+        public int maxHealth = 5;
         public _EmptyConfig emptyConfig;
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]

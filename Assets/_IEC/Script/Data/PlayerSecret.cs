@@ -35,6 +35,8 @@ namespace IEC
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
         
         public HybridData hybridData = new HybridData();
+        
+        private GameConfig Config => Pool.Get<GameConfig>();
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
@@ -76,6 +78,143 @@ namespace IEC
             MMVibrationManager.Haptic(hapticType);
         }
         
+                #region PlayerL ife
+        public int playerLife = 5;
+        public DateTime timeStartCountAddLife = DateTime.Now;
+        public DateTime timeStartUnlimitedLife = DateTime.MinValue;
+        public DateTime timeEndUnlimitedLife = DateTime.MinValue;
+        public float realTimeUnlimidtedLife;
+        public string playerProfileName = "";
+        public int playerProfileIconId;
+        public bool levelPending;//check player quit in game
+        public bool isKilledAppInGamePlay;
+        public void DecreasePlayerLife()
+        {
+            if (playerLife == Config.maxHealth)
+            {
+                if (timeStartCountAddLife < DateTime.Now)
+                {
+                    timeStartCountAddLife = DateTime.Now;
+                }
+            }
+
+            if (!IsInUnlimitedLife())
+            {
+                playerLife -= 1;
+            }
+        }
+
+        public bool IsInUnlimitedLife()
+        {
+            return (DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife && realTimeUnlimidtedLife > 0);
+        }
+        public void AddTimeUnlimitedLife(int minutes)
+        {
+
+            if (DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife)
+            {
+                //Add more time 
+                timeEndUnlimitedLife = timeEndUnlimitedLife.AddMinutes(minutes);
+            }
+            else
+            {
+                //Start new 
+                timeStartUnlimitedLife = DateTime.Now;
+
+                timeEndUnlimitedLife = timeStartUnlimitedLife.AddMinutes(minutes);
+            }
+            if(realTimeUnlimidtedLife < 0) realTimeUnlimidtedLife = 0;
+            realTimeUnlimidtedLife += minutes * 60;
+        }
+
+        public string GetTimeLeftUnlimidtedLife()
+        {
+            TimeSpan diffTime =timeEndUnlimitedLife - DateTime.Now;
+            if (diffTime.TotalSeconds < 0 || realTimeUnlimidtedLife < 0)
+            {
+                //cheat player
+                return "00:00";
+            }
+            TimeSpan time = timeEndUnlimitedLife - DateTime.Now;
+            if (realTimeUnlimidtedLife < diffTime.TotalSeconds)
+            {
+                time = DateTime.Now.AddSeconds((int)realTimeUnlimidtedLife) - DateTime.Now;
+            }
+            string outputString = "";
+            
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+
+        public void CheckPlayerAddLifeByTime()
+        {
+            TimeSpan diffTime = DateTime.Now - timeStartCountAddLife;
+            if (levelPending && playerLife > 0 )
+            {
+                //ReducePlayer life when quit in time
+                levelPending = false;
+                if(!IsInUnlimitedLife()) playerLife--;
+                Debug.LogWarning("Decrease life by quit in game Play");
+            }
+            while (playerLife < Config.maxHealth)
+            {
+                diffTime = DateTime.Now - timeStartCountAddLife;
+                if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= 30)
+                {
+                    timeStartCountAddLife = timeStartCountAddLife.AddMinutes(30);
+                    AddPlayerLife();
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        public void AddPlayerLife()
+        {
+            playerLife++;
+        }
+        public string GetTimeToNextLife()
+        {
+            CheckPlayerAddLifeByTime();
+            if (playerLife >= Config.maxHealth)
+            {
+                return "MAX";
+            }
+            else
+            {
+                TimeSpan diffTime = DateTime.Now - timeStartCountAddLife;
+                if (diffTime.Ticks < 0)
+                {
+                    //cheat player
+                    return "00:00";
+                }
+                TimeSpan timeLeft = new TimeSpan(0, 0, 30, 0) - diffTime;
+                if (timeLeft.Ticks < 0) timeLeft = TimeSpan.Zero;
+                return new DateTime(timeLeft.Ticks).ToString("mm:ss");
+            }
+        }
+
+        public void RaiseToMaxHealth()
+        {
+            playerLife = Config.maxHealth;
+        }
+
+        #endregion
         
         #region City build
         public int currentCityBuild;

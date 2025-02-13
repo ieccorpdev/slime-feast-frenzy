@@ -15,7 +15,7 @@ public class UICurrency : _BaseBehaviour
         gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_UI, UpdateCurrency);
     }
     
-    public void UpdateCurrency()
+    public virtual void UpdateCurrency()
     {
         int value = 0;
         switch (typeCurrency)
