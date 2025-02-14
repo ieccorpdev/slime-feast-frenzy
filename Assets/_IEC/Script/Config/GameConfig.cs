@@ -12,6 +12,7 @@ namespace IEC
     public class GameConfig : BaseConfig
     {
         public int maxHealth = 5;
+        public int goldToRefill = 250;
         public _EmptyConfig emptyConfig;
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]

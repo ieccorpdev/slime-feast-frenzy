@@ -41,6 +41,12 @@ namespace _IEC
             UpdatePopup();
         }
 
+        public override void Hide()
+        {
+            base.Hide();
+            Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
+        }
+
         public void UpdatePopup()
         {
             SetFullState();

@@ -58,6 +58,7 @@ namespace _IEC
         public override void Hide()
         {
             base.Hide();
+            Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
         }
 
         void OnWheelSpinEnd(WheelPiece result)

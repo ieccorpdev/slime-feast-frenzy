@@ -42,6 +42,7 @@ namespace IEC
         public override void Hide()
         {
             base.Hide();
+            Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
             if (actionOneTimeClosePopup != null)
             {
                 actionOneTimeClosePopup.Invoke();

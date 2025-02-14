@@ -43,6 +43,12 @@ namespace IEC
             currentPlayerAvatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         }
 
+        public override void Hide()
+        {
+            base.Hide();
+            Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
+        }
+
         public void Init()
         {
 
