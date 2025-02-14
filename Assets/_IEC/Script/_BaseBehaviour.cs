@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using IEC.Wind.Leaderboard;
 using UnityEngine;
 
 namespace IEC
@@ -10,7 +11,7 @@ namespace IEC
         protected static DataController Data => Controllers.Get<DataController>();
         
         protected static SceneController Scene => Controllers.Get<SceneController>();
-        
+
         protected static Game Game => Pool.Get<Game>();
         
         protected static GamePlayGroup GamePlay => Pool.Get<GamePlayGroup>();
@@ -42,5 +43,9 @@ namespace IEC
                 component.gameObject.SetActive(isActive);
             }
         }
+        //("LeaderBoard")
+        protected static LeaderboardController LeaderboardController => Controllers.Get<LeaderboardController>();
+        protected static LeaderboardConfig LeaderboardConfig => Pool.Get<LeaderboardConfig>();
+        protected static LeaderboardSaveData LeaderboardData => Pool.Get<LeaderboardSaveData>();
     }
 }

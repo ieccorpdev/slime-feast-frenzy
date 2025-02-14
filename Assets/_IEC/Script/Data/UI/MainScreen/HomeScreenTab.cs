@@ -208,9 +208,10 @@ public class HomeScreenTab : ScreenNavigateUI
         
     }
 
-    private void OnEnable()
+    public override void Show()
     {
         UpdateMainHome();
+        Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
     }
     public void UpdatePiggyBankButton()
     {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _IEC;
 using IEC;
+using IEC.Wind.Leaderboard;
 using UnityEngine;
 
 public static partial class Locator
@@ -18,5 +19,10 @@ public static partial class Locator
         public static PopupPiggyBank PopupPiggyBank=> Pool.Get<PopupPiggyBank>();
         public static PopupDailyReward PopupDailyReward=> Pool.Get<PopupDailyReward>();
         public static PopupOutOfLive PopupOutOfLive => Pool.Get<PopupOutOfLive>();
+        //LeaderBoardMain 
+        public static PopupLeaderboard PopupLeaderboard => Pool.Get<PopupLeaderboard>();
+        public static PopupLeaderboardFinished PopupLeaderboardFinished => Pool.Get<PopupLeaderboardFinished>();
+        public static PopupDoubleMedal PopupDoubleMedal => Pool.Get<PopupDoubleMedal>();
+        public static PopupEditInfo PopupEditInfo => Pool.Get<PopupEditInfo>();
     } 
 }

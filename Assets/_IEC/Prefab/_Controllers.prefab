@@ -96,13 +96,15 @@ MonoBehaviour:
     emptyData: 0
     abVersion: 0
     timeDelayFullAds: 0
+    isHaveLeaderboard: 0
+    isHaveAnimMedal: 0
   m_PlayerSecret:
     lastTickPlayTime: 0
     startTickPlayTime: 0
     lastVersion: 
     session: 0
-    isNoAds: 0
     gold: 0
+    ticket: 0
     level: 1
     levelTracking: 1
     levelFirstTime: 0
@@ -111,6 +113,24 @@ MonoBehaviour:
     isMusic: 1
     isVibrate: 1
     sessionStartLevel: 0
+    hybridData:
+      timeRefillLeft: 0
+      timeUnlimitedLive: 0
+    playerLife: 5
+    realTimeUnlimidtedLife: 0
+    playerProfileName: 
+    playerProfileIconId: 0
+    levelPending: 0
+    isKilledAppInGamePlay: 0
+    currentCityBuild: 0
+    screwCityBuild: 0
+    playerAvatarSpriteName: 
+    playerName: 
+    numberSpinWheelAdsLeft: 0
+    isBoughtStarterPack: 0
+    piggyBankGold: 0
+    currentDailyAdReward: 0
+    mainRewardCooldownTickTime: 0
 --- !u!1 &4215909082928199806
 GameObject:
   m_ObjectHideFlags: 0
@@ -155,6 +175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849e38224d425f64d8193760d3f97568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurAbTestDate: 
 --- !u!1 &4676664891199191331
 GameObject:
   m_ObjectHideFlags: 0
@@ -196,6 +217,7 @@ Transform:
   - {fileID: 7372786481711302875}
   - {fileID: 7372786483039441346}
   - {fileID: 492248341815844419}
+  - {fileID: 7231015714312045029}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -571,6 +593,11 @@ MonoBehaviour:
     isNoAdsReward: 0
     isInterFallbackForReward: 0
     timeCheckType: 0
+    firstVersion: 
+    currentVersion: 
+    installTime: 
+    updateTime: 
+    firebasePseudoId: 
     revTotalAd: 0
     revInterAd: 0
     revRewardAd: 0
@@ -578,7 +605,62 @@ MonoBehaviour:
     revInterNReward: 0
     lastRevFBPurchase: 0
     ListRevMilestones: []
+  m_AnalyticSaveData:
+    listParam: []
   bannerPos: 1
+--- !u!1 &8629161221061699756
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7231015714312045029}
+  - component: {fileID: 4690031278041813292}
+  m_Layer: 0
+  m_Name: LeaderBoard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7231015714312045029
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629161221061699756}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4676664891199191328}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4690031278041813292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8629161221061699756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f393eb12b0180349a1fb91368b5a1b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leaderboardSaveData:
+    medalMultiply: 1
+    avatarId: 0
+    myData:
+      name: Player467356
+      medal: 0
+    currentRankView: 5
+    candidateDatas: []
+  leaderboardConfig: {fileID: 11400000, guid: dc3a14a99c960714b8675de940be5ddc, type: 2}
 --- !u!1001 &903597283278176471
 PrefabInstance:
   m_ObjectHideFlags: 0

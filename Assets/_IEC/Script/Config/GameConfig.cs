@@ -25,6 +25,26 @@ namespace IEC
         public DataDailyReward dataDailyRewardConfig;
         [Header("City Build")] 
         public BuildCityConfig buildCityConfig;
+        [Header("LeaderBoard")]
+        public List<RewardSprite> rewardSprites;
+        public List<Sprite> goldSprites = new List<Sprite>();
+        public Sprite GetSpriteByReward(ResourceType type)
+        {
+            return rewardSprites.Find(d => d.type == type).icon;
+        }
+        public Sprite GetGoldSprite(int gold)
+        {
+            if (gold >= 1500) return goldSprites[3];
+            if (gold >= 1000) return goldSprites[2];
+            if (gold >= 500) return goldSprites[1];
+            return goldSprites[0];
+        }
+    }
+    [System.Serializable]
+    public class RewardSprite
+    {
+        public ResourceType type;
+        public Sprite icon;
 
     }
 }

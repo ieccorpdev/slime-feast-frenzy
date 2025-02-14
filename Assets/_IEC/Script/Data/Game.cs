@@ -35,5 +35,8 @@ namespace IEC
         {
             timeEndLevel = System.DateTime.Now;
         }
+
+        public bool isHaveLeaderboard = true;
+        public bool isHaveAnimMedal;
     }
 }

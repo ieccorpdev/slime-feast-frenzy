@@ -69,16 +69,9 @@ namespace IEC
                         _currentScreen.MoveRightHide();
                         screen.SetPosLeft();
                         //screen.MoveMiddleShow();
-                    }
-
-                    if (Game.hybrid.currentTab == TabType.Home)
-                    {
-                        screen.MoveMiddleShow(()=>{Locator.Main.HomeScreenTab.buildCityUI.ShowScale();});
-                    }
-                    else
-                    {
-                        screen.MoveMiddleShow();
-                    }
+                    }   
+                    screen.Show();
+                    screen.MoveMiddleShow();
                 }
 
                 _currentScreen = screen;
@@ -98,6 +91,7 @@ namespace IEC
             m_DictTab[TabType.LeaderBoard] = m_Tab4;
             m_DictTab[TabType.Tab5] = m_Tab5;
             HideAllTab();
+            PlayAnimCollectedLeaderBoardRank();
         }
 
         private void HideAllTab()
@@ -106,6 +100,16 @@ namespace IEC
             m_ListTabObj.ForEach(obj => obj.SetActive(false));
         }
 
+        public void PlayAnimCollectedLeaderBoardRank()
+        {
+            if (Game.isHaveAnimMedal)
+            {
+                Game.isHaveAnimMedal = false;
+                //meomew update after finish collection anim , may be in show ? 
+                //UI.medalEffect.AnimReward(LeaderboardConfig.GetSpirteCurrentLeague(), Vector3.zero, UI.menu.btnLeaderboard.transform.position);
+            }
+        }
+        
         #region Player Avatar Profile
 
         public void UpdatePlayerAvatar()
@@ -114,5 +118,7 @@ namespace IEC
         }
 
         #endregion
+        
+        
     }
 }

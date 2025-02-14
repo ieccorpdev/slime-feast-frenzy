@@ -20,7 +20,7 @@ namespace IEC
 
         public bool isNoAds => Pool.Get<ServiceData>().isNoAds;
         public int gold;
-
+        public int ticket;
         public int level = 1;
         public int levelTracking = 1;
         public int levelFirstTime = 0;
@@ -78,7 +78,16 @@ namespace IEC
             MMVibrationManager.Haptic(hapticType);
         }
         
-                #region PlayerL ife
+        public void AddReward(ResourceType type, int amount)
+        {
+            switch (type)
+            {
+                case ResourceType.Gold:
+                    AddGold(amount);
+                    break;
+            }
+        }
+        #region Player Life
         public int playerLife = 5;
         public DateTime timeStartCountAddLife = DateTime.Now;
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;

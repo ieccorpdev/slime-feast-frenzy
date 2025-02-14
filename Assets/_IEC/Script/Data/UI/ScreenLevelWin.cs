@@ -15,7 +15,10 @@ namespace IEC
         public Button btnNext;
 
         private int _goldRewardAmount = 10;
-
+        [Header("Medal Leaderboard")]
+        public GameObject medalObj;
+        public Image medalImage;
+        public TextMeshProUGUI txtMedalAmount;
         private void Start()
         {
             listButtonHideOnClick.Add(btnNext);
@@ -87,6 +90,15 @@ namespace IEC
             //Add reward //
             EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
 
+        }
+        public void SetMedalReward(int medal)
+        {
+            medalObj.gameObject.SetActive(Game.isHaveLeaderboard);
+
+            if (!Game.isHaveLeaderboard) return;
+
+            medalImage.sprite = LeaderboardConfig.GetSpirteCurrentLeague();
+            txtMedalAmount.text = "" + medal;
         }
     }
 }
