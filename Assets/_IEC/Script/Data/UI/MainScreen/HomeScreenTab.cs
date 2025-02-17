@@ -46,42 +46,36 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupAvatar.Show();
             });      
         SetEvent(luckyWheel,
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupLuckyWheel.Show();
             });       
         SetEvent(noAdsPack,
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupNoAds.Show();
             });       
         SetEvent(startedPackageBtn,
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupStarterPack.Show();
             });        
         SetEvent(btnPiggyBank,
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupPiggyBank.Show();
             });
         SetEvent(btnDailyReward,
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                 Locator.Main.PopupDailyReward.Show();
             });
         SetEvent(playButton,
@@ -89,7 +83,6 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                 {
-                    Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
                     Locator.Main.PopupOutOfLive.Show();
                 }
                 else

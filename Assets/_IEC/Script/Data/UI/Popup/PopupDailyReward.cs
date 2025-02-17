@@ -98,7 +98,6 @@ namespace _IEC
             base.Hide();
             UpdatePlayerGold();
             Locator.Main.HomeScreenTab.UpdateMainHome();
-            Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
         }
 
         void UpdatePlayerGold()
