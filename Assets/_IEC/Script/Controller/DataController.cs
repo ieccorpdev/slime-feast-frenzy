@@ -96,14 +96,24 @@ namespace IEC
 
         public void BehaviourPauseApp(bool pause)
         {
+            SetPraramUserQuit(pause);
             if (pause)
             {
                 SaveData();
             }
         }
+        private static void SetPraramUserQuit(bool isPause)
+        {
+            if (Scene.CurrentScene != SceneName.GAME)
+            {
+                PlayerData.levelPending = isPause;
+                PlayerData.isKilledAppGamePlay = isPause;
+            }
+        }
 
         public void BehaviourQuitApp()
         {
+            SetPraramUserQuit(true);
             SaveData();
         }
 
