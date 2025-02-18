@@ -96,7 +96,7 @@ namespace IEC
         public string playerProfileName = "";
         public int playerProfileIconId;
         public bool levelPending;//check player quit in game
-        public bool isKilledAppInGamePlay;
+        public bool isKilledAppGamePlay;
         public void DecreasePlayerLife()
         {
             if (playerLife == Config.maxHealth)
