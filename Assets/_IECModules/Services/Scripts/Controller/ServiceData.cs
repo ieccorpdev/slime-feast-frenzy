@@ -23,6 +23,7 @@ namespace IEC
         public TimeCheckType timeCheckType;
         public string firstVersion;
         [FormerlySerializedAs("lastVersion")] public string currentVersion;
+        public string curAbTestDate;
         public string installTime;
         public string updateTime;
         public string firebasePseudoId;
