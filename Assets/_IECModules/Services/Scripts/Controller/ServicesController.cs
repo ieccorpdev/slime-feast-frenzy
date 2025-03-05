@@ -1232,7 +1232,7 @@ namespace IEC
                                 new
                                 {
                                     name = "AB Version",
-                                    value = Controllers.Get<ABTestController>().CurAbTestDate
+                                    value = m_ServiceData.curAbTestDate
                                 }
                             }
                         },
