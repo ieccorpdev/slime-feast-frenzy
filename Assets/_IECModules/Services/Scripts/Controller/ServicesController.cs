@@ -828,19 +828,19 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
 
-            if (onPushEvent == null)
-            {
-                onPushEvent = (s =>
-                {
-                    if (s != "show_full_ad" && s != "show_reward_ad") return;
-                    var count = m_EventCount.GetCount("show_full_ad")
-                                + m_EventCount.GetCount("show_reward_ad");
-                    if (count % 10 == 0)
-                    {
-                        PushFBLogPurchase();
-                    }
-                });
-            }
+            // if (onPushEvent == null)
+            // {
+            //     onPushEvent = (s =>
+            //     {
+            //         if (s != "show_full_ad" && s != "show_reward_ad") return;
+            //         var count = m_EventCount.GetCount("show_full_ad")
+            //                     + m_EventCount.GetCount("show_reward_ad");
+            //         if (count % 10 == 0)
+            //         {
+            //             PushFBLogPurchase();
+            //         }
+            //     });
+            // }
             onPushEvent?.Invoke(eventName);
 
         }
@@ -1232,7 +1232,7 @@ namespace IEC
                                 new
                                 {
                                     name = "AB Version",
-                                    value = Controllers.Get<ABTestController>().CurAbTestDate
+                                    value = m_ServiceData.curAbTestDate
                                 }
                             }
                         },

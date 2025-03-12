@@ -23,11 +23,12 @@ namespace IEC
         public TimeCheckType timeCheckType;
         public string firstVersion;
         [FormerlySerializedAs("lastVersion")] public string currentVersion;
+        public string curAbTestDate;
         public string installTime;
         public string updateTime;
         public string firebasePseudoId;
         
-        Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
+        public Dictionary<string, int> dictIapBought = new Dictionary<string, int>();
         
 #if UNITY_IOS
         public Balaso.AppTrackingTransparency.AuthorizationStatus? attStatus;
