@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using _IECModules;
 #if PluginFirebaseAnalytic
 using Firebase.Analytics;
 #endif
@@ -10,18 +12,42 @@ namespace IEC
 {
     public class InternalEvent
     {
-        public void Push(string eventName, Dictionary<string, object> eventParams)
+        private class Param
         {
-            var timestamp = DateTime.Now.Ticks;
-            var userId = Pool.Get<ServiceData>().firebasePseudoId;
-            var appVersion = Application.version;
-            var appId = Application.identifier;
-            var sessionId = string.Empty;
+            public string key;
+            public object value;
+        }
+        private class EventBody
+        {
+            public long timestamp => DateTime.Now.Ticks;
+            public string userId => Pool.Get<ServiceData>().firebasePseudoId;
+            public string appVersion => Application.version;
+            public List<Param> eventParameters = new List<Param>();
+            public string sessionId;
+
+        }
+        const string URL = "https://event-api.haleinteractive.vn/api/events";
+        private static EventBody m_Body = new EventBody();
+        public static void Push(string eventName, Dictionary<string, object> eventParams = null)
+        {
+            m_Body.eventParameters.Clear();
+            if (eventParams != null)
+            {
+                m_Body.eventParameters = eventParams.Select(x=> new Param { key = x.Key, value = x.Value }).ToList();
+            }
+            
+            var action = new Action(() =>
+            {
+                NetworkBase.Post(URL, m_Body);
+            });
 #if PluginFirebaseAnalytic
             (FirebaseAnalyticModule)Controllers.Get<ServicesController>().RequestSessionId(s =>
             {
-                
+                m_Body.sessionId = s;
+                action.Invoke();
             })
+#else   
+            action.Invoke();
 #endif
         }
     }
