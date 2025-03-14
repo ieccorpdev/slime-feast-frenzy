@@ -19,7 +19,9 @@ namespace IEC
         }
         private class EventBody
         {
-            public long timestamp => DateTime.Now.Ticks;
+            public string appId => Application.identifier;
+            public string eventName;
+            public long timestamp => DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             public string userId => Pool.Get<ServiceData>().firebasePseudoId;
             public string appVersion => Application.version;
             public List<Param> eventParameters = new List<Param>();
@@ -30,6 +32,7 @@ namespace IEC
         private static EventBody m_Body = new EventBody();
         public static void Push(string eventName, Dictionary<string, object> eventParams = null)
         {
+            m_Body.eventName = eventName;
             m_Body.eventParameters.Clear();
             if (eventParams != null)
             {
