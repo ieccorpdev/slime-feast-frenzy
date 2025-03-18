@@ -18,6 +18,7 @@ namespace _IECModules
     public class CheatCode : MonoBehaviour
     {
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
+        public const string CMP_DEVICE_HASHED_ID = "CMP_DEVICE_HASHED_ID";
         public class CheatCodeParam
         {
             public CheatCodeType type;
@@ -94,6 +95,11 @@ namespace _IECModules
         public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
 
         private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
+        private List<string> m_IDFAList = new List<string>();
+        private bool m_IsCheckCheatIDFA;
+        private bool m_IsCheatIDFA;
+        private bool m_IsFinishedGetIDFA;
+        private bool m_IsGetIDFAListFirstTime;
 
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         protected static Game Game => Pool.Get<Game>();
@@ -160,7 +166,7 @@ namespace _IECModules
             var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
             {
-                Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+                UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
             }, listCrashCategory);
 
             var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
@@ -211,6 +217,16 @@ namespace _IECModules
             },new InputParam{
                 value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_reward_ad")
             });
+#if(PluginCMP)
+            AddCheatCodeButtonWithInput("Set CMP Hashed Id", param =>
+            {
+                var id = param.inputParams[0].value.ToString();
+                PlayerPrefs.SetString(CMP_DEVICE_HASHED_ID, id);
+            }, new InputParam
+            {
+                value = "test_id"
+            });
+#endif
 #if PluginApplovin
             ModuleController.cheatCode.AddCheatCodeButton("Applovin MAX Mediation Debugger",
                 cheatCodeParam =>
@@ -331,6 +347,12 @@ namespace _IECModules
                     return;
                 }
 
+                if (!m_IsGetIDFAListFirstTime)
+                {
+                    //StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
+                    GetIDFAList();
+                    m_IsGetIDFAListFirstTime = true;
+                }
                 m_TestIndex = 0;
 
                 if (!Services.IsHaveIDFA)
@@ -344,9 +366,31 @@ namespace _IECModules
                 }
                 else
                 {
-                    SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
-                    //StartCoroutine(GetIDFAListCoroutine(IDFA_GOOGLE_SHEET_URL));
-                    GetIDFAList();
+                    if (!m_IsCheckCheatIDFA && Services.IsHaveIDFA && m_IsFinishedGetIDFA)
+                    {
+                        m_IsCheatIDFA = m_IDFAList.Contains(Services.UserIDFA);
+                        m_IsCheckCheatIDFA = true;
+                        if (m_IsCheatIDFA == false)
+                        {
+                            IdfaOnlineForCheatCode.CheckContainInOnlineIDFA(Services.UserIDFA, isCheatIdfa =>
+                            {
+                                if (isCheatIdfa)
+                                {
+                                    m_IsCheatIDFA = true;
+                                    SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                                }
+                            });
+                        }
+                    }
+
+                    if (m_IsCheatIDFA)
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                    }
+                    else
+                    {
+                        SetCheatCodeState(ShowCheatCodeState.ShowPasswordInput);
+                    }
                 }
             }
             else
@@ -757,12 +801,16 @@ namespace _IECModules
             if (Application.isEditor) return;
             var jsoner = new JsonDotNetModule();
             var idfaDataStr = (TextAsset)Resources.Load("PrebuildData");
-            var listIDFA = jsoner.FromJson<List<string>>(idfaDataStr.text);
-            m_HaveInputPassword = m_HaveInputPassword || listIDFA.Contains(Services.UserIDFA);
-            if (m_HaveInputPassword)
+            if (idfaDataStr != null && string.IsNullOrEmpty(idfaDataStr.text) == false)
             {
-                SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+                m_IDFAList = jsoner.FromJson<List<string>>(idfaDataStr.text);
             }
+            else
+            {
+                m_IDFAList = new List<string>();
+            }
+            // Debug.LogError(m_IDFAList.JsonSerialize());
+            m_IsFinishedGetIDFA = true;
         }
 
         IEnumerator GetIDFAListCoroutine(string url)

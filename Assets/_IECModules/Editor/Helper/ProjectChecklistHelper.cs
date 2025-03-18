@@ -87,7 +87,8 @@ namespace _IECModules
             AmazonIOSBannerID,
             AmazonIOSRewardID,
             KeystoreLink,
-            IconLink
+            IconLink,
+            DiscordWebhook
         }
 
         private static Dictionary<string, ChecklistItemName> _checklistKey = new Dictionary<string, ChecklistItemName>
@@ -156,7 +157,8 @@ namespace _IECModules
             {"Amazon iOS Banner ID", ChecklistItemName.AmazonIOSBannerID},
             {"Amazon iOS Reward ID", ChecklistItemName.AmazonIOSRewardID},
             {"Keystore Link", ChecklistItemName.KeystoreLink},
-            {"Icon Link", ChecklistItemName.IconLink}
+            {"Icon Link", ChecklistItemName.IconLink},
+            {"Discord Webhook", ChecklistItemName.DiscordWebhook}
         };
 
         public static Dictionary<ChecklistItemName, string> dictionaryCheckListValue =
@@ -168,7 +170,7 @@ namespace _IECModules
             {
                 var assets = AssetDatabase.FindAssets("t:ServicesConfig");
                 var servicesConfigPath = AssetDatabase.GUIDToAssetPath(assets[0]);
-                configFolderPath = Path.GetDirectoryName(servicesConfigPath);
+                configFolderPath = System.IO.Path.GetDirectoryName(servicesConfigPath);
                 servicesConfig = AssetDatabase.LoadAssetAtPath<ServicesConfig>(servicesConfigPath);
                 return servicesConfigPath;
             }
@@ -411,11 +413,11 @@ namespace _IECModules
                         if (Facebook.Unity.Settings.FacebookSettings.NullableInstance == null)
                         {
                             var instance = EditorWindow.CreateInstance<Facebook.Unity.Settings.FacebookSettings>();
-                            var path1 = Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
+                            var path1 = System.IO.Path.Combine(Application.dataPath, "FacebookSDK/SDK/Resources");
                             if (!Directory.Exists(path1))
                                 Directory.CreateDirectory(path1);
                             var path2 =
- Path.Combine(Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
+ System.IO.Path.Combine(System.IO.Path.Combine("Assets", "FacebookSDK/SDK/Resources"), "FacebookSettings.asset");
                             AssetDatabase.CreateAsset(instance, path2);
                         }
                         Selection.activeObject = Facebook.Unity.Settings.FacebookSettings.Instance;
@@ -639,6 +641,9 @@ namespace _IECModules
                         break;
                     case ChecklistItemName.IconLink:
                         iconLink = checklistItemValue;
+                        break;
+                    case ChecklistItemName.DiscordWebhook:
+                        servicesConfig.discordWebhook = checklistItemValue;
                         break;
                 }
             }

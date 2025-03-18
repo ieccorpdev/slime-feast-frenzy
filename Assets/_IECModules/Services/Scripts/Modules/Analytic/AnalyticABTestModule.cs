@@ -150,7 +150,7 @@ namespace IEC
             {
                 if (!Application.isEditor)
                 {
-                    Utils.ForceCrash(ForcedCrashCategory.Abort);
+                    UnityEngine.Diagnostics.Utils.ForceCrash(ForcedCrashCategory.Abort);
                 }
 
                 return;

@@ -5,11 +5,16 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class AnalyticEventMock : IAnalyticEvent
+    public class AnalyticEventMock : BaseAnalyticModule, IAnalyticEvent
     {
         public bool IsDisable { get; set; }
         public void Init()
         {
+        }
+
+        public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
+        {
+            InitEventConfig(adjustAnalyticEventConfig);
         }
 
         public void PushCachedEvents()

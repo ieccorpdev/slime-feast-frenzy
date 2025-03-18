@@ -3,8 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+#if(PluginCMP)
+using GoogleMobileAds.Ump.Api;
+#endif
 #if(PluginFacebook)
 using Facebook.Unity;
+#endif
+#if PluginAdjust
+using com.adjust.sdk;
 #endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
@@ -21,6 +27,9 @@ using System.Runtime.InteropServices;
 using Balaso;
 #endif
 
+#if PluginCMP
+
+#endif
 
 namespace IEC
 {
@@ -34,6 +43,7 @@ namespace IEC
         public ServicesConfig config;
         [SerializeField]
         private ServiceData m_ServiceData;
+        [SerializeField] private AnalyticSaveData m_AnalyticSaveData;
         private bool m_IsRewardLoaded;
 
         bool isInit = false;
@@ -56,6 +66,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
+        private string m_FirebasePseudoId;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -94,6 +105,13 @@ namespace IEC
                         SetPushCustomEventFirebase();
 
                     });
+#if PluginFirebaseAnalytic
+                    ((FirebaseAnalyticModule)m_FirebaseAnalytic).RequestPseudoId(pseudoId =>
+                    {
+                        m_ServiceData.firebasePseudoId = pseudoId;
+                        Debug.LogWarning("Firebase Pseudo Id:" + pseudoId);
+                    });
+#endif
                     break;
                 case EventList.Service.INIT_AD_DONE:
 #if UNITY_IOS
@@ -102,6 +120,9 @@ namespace IEC
                     Ads().Load(bannerPos, null);
                     SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
+                    break;
+                case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
+                    SaveData();
                     break;
             }
         }
@@ -210,11 +231,68 @@ namespace IEC
                 }
             });
 #endif
+            m_Ads = new AdsMock(false);
+
+            m_Login = new LoginMock();
+            m_LeaderBoard = new LeaderBoardMock();
+
+            m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
+            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
+
+            m_ListAnalytics.Add(new AnalyticEventMock());
+            {
+#if (PluginFacebook)
+                m_ListAnalytics.Add(new FBAnalyticEvent());
+#endif
+
+#if (PluginFirebaseAnalytic)
+                var listIgnoredEvent = new List<string>();
+                if(config.adjustEventConfig != null)
+                {
+                    listIgnoredEvent = config.adjustEventConfig.listData
+                        .Where(x =>
+                        {
+                            return !x.PlatformParam.isPushEventFirebase;
+                        })
+                        .Select(x => x.gameEvent).ToList();
+                }
+                
+                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
+                m_ListAnalytics.Add(m_FirebaseAnalytic);
+                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
+#endif
+            }
+
+            m_DataRemote = m_DataNormal;
+#if (PluginFirebaseRemote)
+            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+            SetPushCustomEventFirebase();
+            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
+#endif
+#if PluginByteDanceChinaIOS
+            _initByteDance(config.appId, config.appName);
+#endif
+#if PluginAdjust
+            m_AdjustAnalytic = new AdjustAnalyticModule();
+            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+            if (config.adjustEventConfig != null)
+            {
+                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+                {
+                    return x.PlatformParam.isAdjustRev;
+                }).Select(x => x.gameEvent).ToList();
+                m_AdjustAnalytic.SetListEventRev(listRevEvent);
+            }
+            m_ListAnalytics.Add(m_AdjustAnalytic);
+#endif
             m_IAP = new InAppPurchaseMock(m_DataSecure);
             m_ReceiptVerify = new ReceiptMock();
 
 #if (PluginReceiptVerify)
             m_ReceiptVerify = new ReceiptVerifyOffline();
+#endif
+#if (PluginReceiptVerifyAdjust)
+            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this, m_ServiceData);
 #endif
 #if (PluginUnityIAP)
             var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
@@ -246,53 +324,49 @@ namespace IEC
                 PushEvent(eventName,1,param);
             } );
 #endif
-            m_Ads = new AdsMock(false);
+            
+            RequestCMP();
 
-            m_Login = new LoginMock();
-            m_LeaderBoard = new LeaderBoardMock();
+            InitAnalyticAndSetupAbTest();
+        }
 
-            m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
-            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
-
-            if (config.IapTestFree || config.IsTestNoAnalytic || Application.isEditor)
+        public void RequestCMP()
+        {
+            if (Application.isEditor)
+                return;
+#if (PluginCMP)
+            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
+            
+            Debug.LogWarning("CMP Test Id:" + deviceTestId);
+            
+            var requestParameters = new ConsentRequestParameters
             {
-                m_ListAnalytics.Add(new AnalyticEventMock());
-            }
-            else
+                TagForUnderAgeOfConsent = false
+            };
+            
+            if (!string.IsNullOrWhiteSpace(deviceTestId))
             {
-#if (PluginFacebook)
-                m_ListAnalytics.Add(new FBAnalyticEvent());
-#endif
-
-#if (PluginFirebaseAnalytic)
-                var listIgnoredEvent = new List<string>();
-                if(config.adjustEventConfig != null)
+                Debug.LogWarning("Enable CMP Test");
+                var debugSettings = new ConsentDebugSettings
                 {
-                    listIgnoredEvent = config.adjustEventConfig.listData
-                        .Where(x =>
-                        {
-                            if(Application.platform == RuntimePlatform.Android)
-                                return !x.android.isPushEventFirebase;
-                            return !x.iOS.isPushEventFirebase;
-                        })
-                        .Select(x => x.gameEvent).ToList();
-                }
+                    DebugGeography = DebugGeography.EEA,
+                    TestDeviceHashedIds = new List<string>
+                    {
+                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
+                    }
                 
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
-                m_ListAnalytics.Add(m_FirebaseAnalytic);
-                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
+                };
+                requestParameters.ConsentDebugSettings = debugSettings;
             }
+            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
+            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
+#else
+            RequestATT();
+#endif
+        }
 
-            m_DataRemote = m_DataNormal;
-#if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
-            SetPushCustomEventFirebase();
-            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
-#endif
-#if PluginByteDanceChinaIOS
-            _initByteDance(config.appId, config.appName);
-#endif
+        public void RequestATT()
+        {
 #if UNITY_IOS
             AppTrackingTransparency.OnAuthorizationRequestDone += (AppTrackingTransparency.AuthorizationStatus status) =>
            {
@@ -345,17 +419,6 @@ namespace IEC
             InitSDKAfterATT(true);
 #endif
 
-            foreach (var analytic in m_ListAnalytics)
-            {
-                analytic.Init();
-            }
-
-            this.config.SetActiveAbByVersion();
-            foreach (var abTest in config.abTestConfigs)
-            {
-                SetUpAbTest(abTest);
-            }
-
         }
 
 #if UNITY_IOS
@@ -364,6 +427,68 @@ namespace IEC
             yield return new WaitUntil(() => AppTrackingTransparency.TrackingAuthorizationStatus != AppTrackingTransparency.AuthorizationStatus.NOT_DETERMINED);
             Debug.LogWarning("Init ad after ATT");
             InitSDKAfterATT(AppTrackingTransparency.TrackingAuthorizationStatus == AppTrackingTransparency.AuthorizationStatus.AUTHORIZED);
+        }
+#endif
+#if (PluginCMP)
+
+        bool m_IsCMPDontShow = false;
+        IEnumerator IE_WaitConsent()
+        {
+            yield return new WaitUntil(() => (m_IsCMPDontShow || (ConsentInformation.ConsentStatus == ConsentStatus.Obtained)));
+            RequestATT();
+        }
+
+        private Coroutine m_CheckConsentStatus;
+        void OnConsentInfoUpdated(FormError error)
+        {
+            if (error != null)
+            {
+                // Handle the error.
+                Debug.LogError(error);
+                m_IsCMPDontShow = true;
+                return;
+            }
+
+            // If the error is null, the consent information state was updated.
+            // You are now ready to check if a form is available.
+            if (ConsentInformation.IsConsentFormAvailable())
+            {
+                LoadForm();
+            }
+            else
+            {
+                m_IsCMPDontShow = true;
+            }
+        }
+        
+        void LoadForm()
+        {
+            ConsentForm.Load((form, loadError) =>
+            {
+                if (loadError != null)
+                {
+                    // Handle the error.
+                    m_IsCMPDontShow = true;
+                    Debug.LogError(loadError);
+                    return;
+                }
+
+                // The consent form was loaded.
+                // Save the consent form for future requests.
+                // You are now ready to show the form.
+                if(ConsentInformation.ConsentStatus == ConsentStatus.Required)
+                {
+                    form.Show(showError =>
+                    {
+                        if (showError == null) return;
+                        m_IsCMPDontShow = true;
+                        Debug.LogError(showError);
+
+                        // Handle dismissal by reloading form.
+                        // LoadForm();
+                    });
+                }
+            });
         }
 #endif
 
@@ -379,19 +504,7 @@ namespace IEC
             m_ListAnalytics.Add(m_KochavaAnalytic);
 #endif
 #if (PluginAdjust)
-            m_AdjustAnalytic = new AdjustAnalyticModule(config.adjustConfig.androidID, config.adjustConfig.iosID);
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
-            if (config.adjustEventConfig != null)
-            {
-                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
-                {
-                    if (Application.platform == RuntimePlatform.Android)
-                        return x.android.isAdjustRev;
-                    return x.iOS.isAdjustRev;
-                }).Select(x => x.gameEvent).ToList();
-                m_AdjustAnalytic.SetListEventRev(listRevEvent);
-            }
-            m_ListAnalytics.Add(m_AdjustAnalytic);
+            m_AdjustAnalytic.InitAdjust(config.adjustConfig.androidID, config.adjustConfig.iosID);
 #endif
 #if (PluginFacebook)
             m_SetUpFacebook = new SetUpFacebookModule();
@@ -402,7 +515,23 @@ namespace IEC
                 RaiseInitEvent(EventList.Service.FACEBOOK_LOADED);
             });
 #endif
+
             InitAdsAfterGDPR(true, isHaveIDFA);
+        }
+
+        void InitAnalyticAndSetupAbTest()
+        {
+            foreach (var analytic in m_ListAnalytics)
+            {
+                analytic.Init();
+                analytic.Init(config.adjustEventConfig);
+            }
+
+            this.config.SetActiveAbByVersion();
+            foreach (var abTest in config.abTestConfigs)
+            {
+                SetUpAbTest(abTest);
+            }
         }
 
         public void SendATTAnalytic(string eventName)
@@ -469,8 +598,28 @@ namespace IEC
 
             m_ServiceData = DataSecure().GetObject(SERVICE_DATA_KEY, new ServiceData());
             m_ServiceData.Init(config.adjustEventConfig, PushEvent);
+            if (string.IsNullOrEmpty(m_ServiceData.firstVersion))
+            {
+                m_ServiceData.firstVersion = m_ServiceData.currentVersion = Application.version.Trim();
+                m_ServiceData.installTime = m_ServiceData.updateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            }
+            else if (!Application.version.Trim().Equals(m_ServiceData.currentVersion))
+            {
+                if (!m_ServiceData.installTime.Contains("Z"))
+                {
+                    var isCanParse = DateTime.TryParse(m_ServiceData.installTime, out DateTime installTime);
+                    if (isCanParse)
+                    {
+                        m_ServiceData.installTime = installTime.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                    }
+                }
+                m_ServiceData.currentVersion = Application.version.Trim();
+                m_ServiceData.updateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ssZ");
+            }
+            m_AnalyticSaveData = DataSecure().GetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, new AnalyticSaveData());
             InitMilestoneAd();
             Pool.Set(m_ServiceData);
+            Pool.Set(m_AnalyticSaveData);
         }
 
         void InitAdsAfterGDPR(bool isAcceptConsent, bool isAlowAppTracking)
@@ -562,6 +711,7 @@ namespace IEC
         {
             Init();
             DataSecure().SetObject(SERVICE_DATA_KEY, m_ServiceData);
+            DataSecure().SetObject(BaseAnalyticModule.ANALYTIC_DATA_KEY, m_AnalyticSaveData);
             m_DataNormal.Save();
             m_DataSecure.Save();
         }
@@ -594,6 +744,11 @@ namespace IEC
 
         public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
         {
+            if (abTest == null)
+            {
+                Debug.LogError("AB Test config is null");
+                return;
+            }
             m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
             {
                 Debug.Log("AB Test event:" + s);
@@ -673,19 +828,19 @@ namespace IEC
                 PushEventMilestoneAd(RevAdType.INTER_N_REWARD, fullAdCount + rewardCount);
             }
 
-            if (onPushEvent == null)
-            {
-                onPushEvent = (s =>
-                {
-                    if (s != "show_full_ad" && s != "show_reward_ad") return;
-                    var count = m_EventCount.GetCount("show_full_ad")
-                                + m_EventCount.GetCount("show_reward_ad");
-                    if (count % 10 == 0)
-                    {
-                        PushFBLogPurchase();
-                    }
-                });
-            }
+            // if (onPushEvent == null)
+            // {
+            //     onPushEvent = (s =>
+            //     {
+            //         if (s != "show_full_ad" && s != "show_reward_ad") return;
+            //         var count = m_EventCount.GetCount("show_full_ad")
+            //                     + m_EventCount.GetCount("show_reward_ad");
+            //         if (count % 10 == 0)
+            //         {
+            //             PushFBLogPurchase();
+            //         }
+            //     });
+            // }
             onPushEvent?.Invoke(eventName);
 
         }
@@ -978,6 +1133,9 @@ namespace IEC
         {
             if (string.IsNullOrWhiteSpace(m_UserIDFA))
             {
+#if UNITY_EDITOR
+                m_UserIDFA = "f28127e4-63c4-46f4-bb85-2e7875f6daf9";
+#endif
 #if UNITY_ANDROID
                 try
                 {
@@ -1008,10 +1166,152 @@ namespace IEC
             }
         }
         
+        private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
+        private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
+        private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
         [NaughtyAttributes.Button]
         public void SendEmail()
         {
             SaveLogToFile();
+            SendMail("");
+        }
+
+        public void FeedbackDiscord(string email, string contentFeedback)
+        {
+            var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
+            string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
+            adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
+#if PluginAdjust
+            adjustId = Adjust.getAdid();
+            var adjustCampain = Adjust.getAttribution();
+            if(adjustCampain != null)
+            {
+                adjustCampaign = adjustCampain.campaign;
+                adjustNetwork = adjustCampain.network;
+                adjustCreative = adjustCampain.creative;
+            }
+#endif
+#if PluginFirebaseAnalytic
+            firebasePseudoId = m_ServiceData.firebasePseudoId;
+#endif
+            SaveLogToFile();
+            StartCoroutine(IE_SendFeedbackDiscord());
+
+            IEnumerator IE_SendFeedbackDiscord()
+            {
+                var url = config.discordWebhook;
+                var idfv = "";
+                #if UNITY_IOS
+                idfv = UnityEngine.iOS.Device.vendorIdentifier;
+                #endif
+                var data = new
+                {
+                    content = contentFeedback,
+                    embeds = new[]
+                    {
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Email",
+                                    value = email
+                                },
+                                new
+                                {
+                                    name = "Platform",
+                                    value = isIOS ? "iOS" : "Android",
+                                },
+                                new
+                                {
+                                    name = "App Version",
+                                    value = Application.version
+                                },
+                                new
+                                {
+                                    name = "AB Version",
+                                    value = m_ServiceData.curAbTestDate
+                                }
+                            }
+                        },
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "IDFA",
+                                    value = m_UserIDFA
+                                },
+                                new
+                                {
+                                    name = "IDFV",
+                                    value = idfv
+                                },
+                                new
+                                {
+                                    name = "Adjust ID",
+                                    value = adjustId
+                                },
+                                new
+                                {
+                                    name = "Pseudo UID",
+                                    value = firebasePseudoId
+                                }
+                            }
+                        },
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Network",
+                                    value = adjustNetwork
+                                },
+                                new
+                                {
+                                    name = "Campaign",
+                                    value = adjustCampaign
+                                },
+                                new
+                                {
+                                    name = "Creative",
+                                    value = adjustCreative
+                                }
+                            }
+                        }
+                    }
+                };
+                var formData = new List<IMultipartFormSection>
+                {
+                    new MultipartFormDataSection(data.ToString()),
+                    new MultipartFormFileSection("Log file", m_LogFilePath),
+                    new MultipartFormFileSection("PlayerData file", m_PlayerDataFilePath),
+                    new MultipartFormFileSection("ServiceData file", m_ServiceDataFilePath)
+                };
+
+                var uwr = UnityWebRequest.Post(url, formData);
+                yield return uwr.SendWebRequest();
+
+                if (uwr.error != null)
+                {
+                    Debug.Log("Error While Sending: " + uwr.error);
+                    SendMail(contentFeedback);
+                }
+                else
+                {
+                    Debug.Log("Received: " + uwr.downloadHandler.text);
+                }
+            }
+        }
+        
+        private void SendMail(string contentFeedback)
+        {
             string email = config.emailSupport;
             string title = string.Empty;
             if (Application.platform == RuntimePlatform.Android)
@@ -1023,18 +1323,16 @@ namespace IEC
                 title = Application.productName + " IOS Support";
             }
 
-            var userIDFA = m_UserIDFA;
             var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
-            // message = MyEscapeURL(message);
-            
             message += newLine + "Hello, " + newLine;
+            message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
             var mail = new UT.MailMessage()
                 .AddTo(email)
                 .SetSubject(title)
                 .SetBody(message)
-                .AddAttachment(Application.persistentDataPath + @"/log.txt");
+                .AddAttachment(m_LogFilePath);
             UT.Mail.Compose(mail, "Support");
         }
 
@@ -1052,17 +1350,24 @@ namespace IEC
             {
                 var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
                 var saveLog = Json().ToJson(SaveLog.GetLog());
+                
+
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
                 var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
-                var content = $"IDFA:{m_UserIDFA}" +
-                    $"\n\nLog:\n{saveLog}" +
+                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
+                var content =
                     $"\n\nPlayerData:\n{playerDataEncrypt}" +
                     $"\n\nServiceData:\n{serviceDataEncrypt}";
-                // Debug.Log("playerDataEncryptKey:" + playerDataEncryptKey);
                 Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
+
+                content += $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
+                
+                content += $"IDFA:{m_UserIDFA}" +
+                              $"\n\nLog:\n{saveLog}";
+                
+                
                 txtWrite.Write(content);
                 txtWrite.Close();
             }
@@ -1200,7 +1505,6 @@ namespace IEC
             Init();
             return m_ReceiptVerify;
         }
-
 #if (PluginKochava)
         KochavaAnalyticModule m_KochavaAnalytic;
 #endif

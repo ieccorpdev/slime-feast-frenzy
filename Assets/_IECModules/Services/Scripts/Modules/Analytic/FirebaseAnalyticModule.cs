@@ -1,13 +1,15 @@
 ﻿#if (PluginFirebaseAnalytic)
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Firebase.Analytics;
+using Firebase.Extensions;
 
 namespace IEC
 {
-    public class FirebaseAnalyticModule : IAnalyticEvent
+    public class FirebaseAnalyticModule : BaseAnalyticModule, IAnalyticEvent
     {
         List<AnalyticEventData> m_ListCachedEvents = new List<AnalyticEventData>();
         ISetUpSdkService m_FirebaseSDK;
@@ -29,6 +31,22 @@ namespace IEC
             {
                 return;
             }
+        }
+
+        public void RequestPseudoId(Action<string> onDone)
+        {
+            FirebaseAnalytics.GetAnalyticsInstanceIdAsync().ContinueWithOnMainThread(task =>
+            {
+                if (task.IsCompletedSuccessfully)
+                {
+                    onDone?.Invoke(task.Result);
+                }
+            });
+        }
+
+        public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
+        {
+            InitEventConfig(adjustAnalyticEventConfig);
         }
 
         public void PushCachedEvents()
@@ -72,6 +90,7 @@ namespace IEC
             }
             
             if(m_ListIgnoredEvent != null && m_ListIgnoredEvent.Contains(eventName)) return;
+            if (CheckPushedUniqueEvent(eventName, AnalyticDataParamType.Firebase)) return;
             
             var newName = eventName.Replace(' ', '_').Replace('-', '_');
 

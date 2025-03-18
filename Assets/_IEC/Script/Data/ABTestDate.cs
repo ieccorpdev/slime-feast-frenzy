@@ -15,6 +15,8 @@ namespace IEC
         public int date;
         public int version;
 
+        public string FullVersion => $"{config.KeyName}_v{version}";
+
         public bool IsApplyResult(ABTestDate curTest, int overrideDate)
         {
             if (overrideDate >= 0 && date <= overrideDate)

@@ -9,9 +9,7 @@ using IEC;
 public class AdjustAnalyticEventConfig : ScriptableObject
 {
     [Header("Config")]
-    public string adjustEventConfigUrl;
-    // public string gameNameAndroid;
-    // public string gameNameIos;
+    public PlatformConfigUrl configUrl;
 
     [Header("Data")]
     public List<Param> listData = new List<Param>();
@@ -20,8 +18,9 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     public class Param
     {
         public string gameEvent;
-        public PlatformParam android;
-        public PlatformParam iOS;
+        public PlatformParam param;
+
+        public PlatformParam PlatformParam => param;
     }
 
     [Serializable]
@@ -30,52 +29,67 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public string adjustEventId;
         public bool isPushEventFirebase;
         public bool isAdjustRev;
+        public bool isUnique;
+    }
+
+    [Serializable]
+    public class PlatformConfigUrl
+    {
+        public string defaultEventUrl;
+        [Header("Marketing config")]
+        public string appVersion;
+        public string marketingEventUrl;
     }
 
     [NaughtyAttributes.Button]
     public void LoadData()
     {
         listData.Clear();
-        var data = DownloadCsvFromAuthUrl(adjustEventConfigUrl);
-        if (data == null || data.Count == 0) return;
-        var androidIndex = data[0].IndexOf("Adjust Android");
-        var iosIndex = data[0].IndexOf("Adjust iOS");
-        var firebaseIndexAndroid = data[0].IndexOf("Firebase Android");
-        var firebaseIndexIOS = data[0].IndexOf("Firebase iOS");
-        var adjustRevAndroid = data[0].IndexOf("Adjust in app revenue Android");
-        var adjustRevIOS = data[0].IndexOf("Adjust in app revenue iOS");
-        for (int i = 1; i < data.Count; i++)
-        {
-            var eventMap = data[i];
-            var gameEvent = eventMap[0].Trim();
-            var adjustEventIdAndroid = GetValue(androidIndex, eventMap);
-            var adjustEventIdIOS = GetValue(iosIndex, eventMap);
-            var isFirebaseAndroid = GetValue(firebaseIndexAndroid, eventMap) == "TRUE";
-            var isFirebaseIOS = GetValue(firebaseIndexIOS, eventMap) == "TRUE";
-            var isAdjustRevAndroid = GetValue(adjustRevAndroid, eventMap) == "TRUE";
-            var isAdjustRevIOS = GetValue(adjustRevIOS, eventMap) == "TRUE";
-            if (string.IsNullOrEmpty(gameEvent))
-            {
-                continue;
-            }
-            var param = new Param
-            {
-                gameEvent = gameEvent,
-                android = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdAndroid,
-                    isPushEventFirebase = isFirebaseAndroid,
-                    isAdjustRev = isAdjustRevAndroid
-                },
-                iOS = new PlatformParam
-                {
-                    adjustEventId = adjustEventIdIOS,
-                    isPushEventFirebase = isFirebaseIOS,
-                    isAdjustRev = isAdjustRevIOS
+        var dataDefault = DownloadCsvFromAuthUrl(configUrl.defaultEventUrl);
 
-                }
+        var dataMkt = DownloadCsvFromAuthUrl(configUrl.marketingEventUrl);
+
+        UpdateData(dataDefault, true);
+
+        UpdateData(dataMkt, false);
+
+#if UNITY_EDITOR
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.AssetDatabase.SaveAssets();
+#endif
+    }
+
+    void UpdateData(List<List<string>> sheetData, bool isDefault)
+    {
+        if (sheetData == null || sheetData.Count == 0) return;
+        sheetData[0].ForEach(x => x.Trim());
+        var adjustIndex = sheetData[0].IndexOf("Adjust");
+        var firebaseIndex = sheetData[0].IndexOf("Firebase");
+        var adjustRev = sheetData[0].IndexOf("Adjust in app revenue");
+        for (int i = 1; i < sheetData.Count; i++)
+        {
+            var eventMap = sheetData[i];
+            var gameEvent = eventMap[0].Trim();
+            var adjustEventId = GetValue(adjustIndex, eventMap);
+            var isFirebase = GetValue(firebaseIndex, eventMap) == "TRUE";
+            var isAdjustRev = GetValue(adjustRev, eventMap) == "TRUE";
+            if (string.IsNullOrEmpty(gameEvent)) continue;
+            if (!listData.Exists(x => x.gameEvent == gameEvent))
+            {
+                listData.Add(new Param
+                {
+                    gameEvent = gameEvent
+                });
+            }
+            var data = listData.Find(x => x.gameEvent == gameEvent);
+            var param = new PlatformParam
+            {
+                adjustEventId = adjustEventId,
+                isPushEventFirebase = isDefault || isFirebase,
+                isAdjustRev = isAdjustRev,
+                isUnique = data.gameEvent.Contains("unique")
             };
-            listData.Add(param);
+            data.param = param;
         }
     }
 
@@ -89,11 +103,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         var dict = new Dictionary<string, string>();
         foreach (var data in listData)
         {
-#if UNITY_ANDROID
-            var adjustEvent = data.android.adjustEventId;
-#else
-            var adjustEvent = data.iOS.adjustEventId;
-#endif
+            var adjustEvent = data.PlatformParam.adjustEventId;
             if (string.IsNullOrEmpty(data.gameEvent) || string.IsNullOrEmpty(adjustEvent)) continue;
             dict[data.gameEvent] = adjustEvent;
         }
@@ -159,8 +169,8 @@ public class AdjustAnalyticEventConfig : ScriptableObject
 
     public List<RevMilestone> GetListRevAllAdCentMilestone()
     {
-        var list =  GetListValueEvent("rev_all_ad_", "_cent")
-            .Select(x => new RevMilestone($"rev_all_ad_{x}_cent", x / 100f))
+        var list =  GetListValueEventWithEvent("rev_all_ad_", "_cent")
+            .Select(x => new RevMilestone(x.eventName, x.value / 100f))
             .ToList();
         
         foreach (var revMilestone in list)
@@ -174,6 +184,21 @@ public class AdjustAnalyticEventConfig : ScriptableObject
     private bool TryGetValueEvent(string origin, string first, string end, out int result)
     {
         return int.TryParse(StringHelper.GetBetweenString(origin, first, end, false), out result);
+    }
+
+    private List<(int value, string eventName)> GetListValueEventWithEvent(string prefix, string end = "")
+    {
+        if (end == "") end = string.Empty;
+        var listResult = new List<(int value, string eventName)>();
+        foreach (var data in listData)
+        {
+            var eventName = data.gameEvent;
+            if (eventName.Contains(prefix) && TryGetValueEvent(eventName, prefix, end, out var result))
+            {
+                listResult.Add((result, eventName));
+            }
+        }
+        return listResult;
     }
 
     private List<int> GetListValueEvent(string prefix, string end = "",string ignore = "")
@@ -193,5 +218,10 @@ public class AdjustAnalyticEventConfig : ScriptableObject
             }
         }
         return listResult;
+    }
+
+    public Param GetEventParam(string eventName)
+    {
+        return listData.Find(x => x.gameEvent == eventName);
     }
 }
