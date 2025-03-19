@@ -67,6 +67,7 @@ namespace IEC
 
         public override void Show()
         {
+            Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             base.Show();
             btnSetting.gameObject.SetActive(PlayerData.level > 1);
             UpdateUIHelper();

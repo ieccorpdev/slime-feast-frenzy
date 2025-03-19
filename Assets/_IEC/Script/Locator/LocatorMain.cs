@@ -10,6 +10,7 @@ public static partial class Locator
     public static class Main
     {
         public static ScreenMain ScreenMain => Pool.Get<ScreenMain>();
+        
         //"Home Main"
         public static HomeScreenTab HomeScreenTab => Pool.Get<HomeScreenTab>();
         public static PopupAvatar PopupAvatar=> Pool.Get<PopupAvatar>();

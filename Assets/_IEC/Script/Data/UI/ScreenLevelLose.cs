@@ -82,6 +82,7 @@ namespace IEC
         }
         public override void Show()
         {
+            Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
             UpdateUI();
             base.Show();
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);

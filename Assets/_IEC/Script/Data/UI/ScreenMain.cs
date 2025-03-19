@@ -5,6 +5,7 @@ using System.Linq;
 using DG.Tweening;
 using IEC.Common.Event;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -18,8 +19,8 @@ namespace IEC
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private ScreenNavigateUI _currentScreen;
-
-        public UICurrency goldCurrencyDisplay;
+        
+        public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
         
         [Header("Avatar Button")] 
         public Button avatarButton;
@@ -43,24 +44,28 @@ namespace IEC
                 {
                     case (TabType.Shop):
                         //Locator.Service.MoneyPanel.Show();
-                        m_ResourceUI.SetActive(true);
+                        //m_ResourceUI.SetActive(true);
+                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
                         m_BtnSetting.gameObject.SetActive(true);
                         Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_shop_iap"));
                         break;
                     case (TabType.Home):
                         //Locator.Service.MoneyPanel.Hide();
-                        m_ResourceUI.SetActive(true);
+                        //m_ResourceUI.SetActive(true);
+                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
                         m_BtnSetting.gameObject.SetActive(true);
                         break;     
                     case (TabType.LeaderBoard):
-                        m_ResourceUI.SetActive(false);
+                        //m_ResourceUI.SetActive(false);
+                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
                         m_BtnSetting.gameObject.SetActive(false);
                         Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_leaderboard"));
                         EventController.RaiseEvent(EventList.WindLeaderboard.CHANGE_AVATAR);
                         break;
                     default:
                         Locator.Service.MoneyPanel.Hide();
-                        m_ResourceUI.SetActive(true);
+                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+                        //m_ResourceUI.SetActive(true);
                         break;
                 }
 
@@ -193,22 +198,22 @@ namespace IEC
 
         private void AddRewardGoldToClaim(int amount, float delay = 0f)
         {
-            goldCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) - amount);
-            goldCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
+            GoldCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) - amount);
+            GoldCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
                 ResourceType.Gold, 
                 Vector2.zero, 
-                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.goldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.GoldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
                 () =>
                 {
-                    goldCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
+                    GoldCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
                     //goldCurrencyDisplay.UpdateCurrency();
                     EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
                 },
                 () =>
                 {
-                    goldCurrencyDisplay.ForceUpdateCurrencyText(goldCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)amount / effectRewardClaim.maxSpawn));
+                    GoldCurrencyDisplay.ForceUpdateCurrencyText(GoldCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)amount / effectRewardClaim.maxSpawn));
                 },
                 delay
             );

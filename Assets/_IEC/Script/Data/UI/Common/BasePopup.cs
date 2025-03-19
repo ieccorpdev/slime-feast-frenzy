@@ -14,6 +14,7 @@ namespace IEC
         public bool isHaveAnim = true;
         public bool isHaveAnimClose = true;
         public bool isShowBlackPanel = true;
+        public bool isShowTopResourceBar = false;
         protected Ease showEase = Ease.OutBack;
         string TweenID => $"Anim{gameObject.GetInstanceID()}";
         protected float TWEEN_TIME = 0.2f;
@@ -23,6 +24,8 @@ namespace IEC
         protected string AudioEventOpen = EventList.Audio.POPUP_OPEN;
         protected string AudioEventClose = EventList.Audio.POPUP_CLOSE;
 
+        private bool isResoucreBarShownBeforeShowPopup = false;
+
         protected virtual void Awake()
         {
             SetEvent(btnClose, OnHideClick);
@@ -30,6 +33,9 @@ namespace IEC
 
         public override void Show()
         {
+            HandleShowTopResourceBar();
+            
+            if(GamePlay) GamePlay.userInput.CanClick = false;
             DOTween.Kill(TweenID);
             IsShow = true;
             IsFocus = true;
@@ -117,6 +123,27 @@ namespace IEC
         private void OnDestroy()
         {
             DOTween.Kill(TweenID);
+        }
+
+        private void HandleShowTopResourceBar()
+        {
+            isResoucreBarShownBeforeShowPopup = Locator.Service.GameResourceDisplay.IsShow;
+            if (isShowTopResourceBar)
+            {
+                Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+            }
+            else
+            {
+                Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
+            }
+        }
+
+        private void HandleHideTopResourceBar()
+        {
+            if (!isResoucreBarShownBeforeShowPopup)
+            {
+                Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+            }
         }
     }
 }

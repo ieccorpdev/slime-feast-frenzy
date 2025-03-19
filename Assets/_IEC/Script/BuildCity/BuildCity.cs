@@ -252,9 +252,6 @@ public class BuildCity : _BaseBehaviour
 
     public void ShowTutBuildCity()
     {
-        if (!Game.isUsingBuildV2Flow)
-            return;
-        
         if (PlayerData.shownFirstTimeBuildCityTut)
             return;
         

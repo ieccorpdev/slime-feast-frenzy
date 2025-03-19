@@ -132,11 +132,11 @@ namespace _IEC
                 //     Locator.Main.ScreenMain.DoAnimLatestAvailableReward();
             }
             
-            if (Game.isUsingLuckySpinV2Flow && listDataReward.Find(reward => reward.typeReward == ResourceType.UnlimitedLive) != null)
-            {
-                Hide();
-                return;
-            }
+            // if (listDataReward.Find(reward => reward.typeReward == ResourceType.UnlimitedLive) != null)
+            // {
+            //     Hide();
+            //     return;
+            // }
             
             listDataReward.Clear();
         }

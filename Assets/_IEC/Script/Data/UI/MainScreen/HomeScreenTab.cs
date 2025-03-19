@@ -128,7 +128,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(buildButton,
             () =>
             {
-                DoMoveOutAllObj(0.2f,
+                DoMoveOutAllObj(0.3f,
                     () =>
                     {
                         Locator.Main.HomeScreenTab.buildCityUI.Show();
@@ -139,29 +139,6 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateMainHome();
         
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-        
-        if (Game.isUsingLuckySpinV2Flow 
-            && PlayerData.playerLife == 0 
-            && !PlayerData.firstSpinTutorial 
-            && PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlockV2)
-        {
-            Locator.Main.PopupLuckyWheel.Show();
-        }
-        
-        if (Game.isUsingBuildV2Flow
-            && PlayerData.level >= Config.buildCityConfig.levelUnlock
-            && buildCityUI.CanBuildCity
-            && (!PlayerData.shownFirstTimeBuildCityTut || PlayerData.screwCityBuild >= buildCityUI.ScrewNeedFinishIsland))
-        {
-            
-            DoMoveOutAllObj(0f,
-                () =>
-                {
-                    buildCityUI.Show(false);
-                });
-
-            return;
-        }
                 
         DoMoveBackAllObj();
     }
@@ -176,17 +153,16 @@ public class HomeScreenTab : ScreenNavigateUI
             _listObjMoveOut.Add(new UIMoveOutAnimation(rightButtonBar,UIElementMoveDir.RIGHT));
             
             _listObjMoveOut.Add(new UIMoveOutAnimation(bottomBar,UIElementMoveDir.DOWN));
-
-
+            
             foreach (RectTransform child in Locator.Main.ScreenMain.bottomBar.transform)
             {
                 _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.DOWN));
             }
             
-            foreach (RectTransform child in Locator.Main.ScreenMain.topBar.transform)
-            {
-                _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.UP));
-            }
+            // foreach (RectTransform child in Locator.Main.ScreenMain.topBar.transform)
+            // {
+            //     _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.UP));
+            // }
             // _listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.bottomBar.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
             //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
             
@@ -215,6 +191,8 @@ public class HomeScreenTab : ScreenNavigateUI
                         DOTween.Kill($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
                         _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}",timeAnim);
                     }
+                    
+                    Locator.Service.GameResourceDisplay.DoMoveOutAnim();
                 });
 
 
@@ -287,6 +265,8 @@ public class HomeScreenTab : ScreenNavigateUI
                     {
                         _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}",0.2f);
                     }
+                    
+                    Locator.Service.GameResourceDisplay.DoMoveBackAnim();
                 });
             
             delay += 0.3f;
@@ -364,9 +344,7 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     private void UpdateLuckyWheel()
     {
-        int levelUnlock = Game.isUsingLuckySpinV2Flow
-            ? Config.dataRewardLuckyWheelConfig.levelUnlockV2
-            : Config.dataRewardLuckyWheelConfig.levelUnlock;
+        int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
         luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
         luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }

@@ -25,11 +25,6 @@ namespace IEC
         public int levelStartInterAds = 4;
 
         public bool isUsingHardLevel;
-        public bool isUsingExtraLvlFollow;
-        public bool isUsingLuckySpinV2Flow;
-        public bool isUsingBuildV2Flow;
-        public bool isUsingConnectedBox;
-        public bool isUsingCustomLoopLevelFlow;
 
         public bool isOverrideHardLevelConfig;
         public bool isAllowSkipHardLevelAds;

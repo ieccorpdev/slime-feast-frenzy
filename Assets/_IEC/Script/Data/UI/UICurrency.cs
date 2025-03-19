@@ -43,9 +43,13 @@ public class UICurrency : _BaseBehaviour
         switch (typeCurrency)
         {
             case ResourceType.Gold:
+                if (Locator.Main.PopupGoldOffer.IsShow)
+                    return;
                 Locator.Main.PopupGoldOffer.Show();
                 break;
             case ResourceType.Live:
+                if (Locator.Main.PopupOutOfLive.IsShow)
+                    return;
                 if (!PlayerData.IsInUnlimitedLife() && PlayerData.playerLife < Config.maxHealth)
                 {
                     Locator.Main.PopupOutOfLive.Show();

@@ -66,7 +66,7 @@ namespace IEC
         }
         public override void Show()
         {
-            //Update Fill Icon
+            Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
             base.Show();
             baseGoldRewardText.text = _goldRewardAmount.ToString();
             bonusRewardWheel.InitWheel();
