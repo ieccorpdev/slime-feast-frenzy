@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class EventController : MonoBehaviour
+    public class EventController : _BaseBehaviour
     {
         private static EventController s_Instance;
         private static StaticObjectsContainer s_StaticObjects;
@@ -122,7 +122,7 @@ namespace IEC
                 Debug.unityLogger.filterLogType = LogType.Log;
             }
 
-            CameraHelper.SetMainCam(Camera.main);
+            //CameraHelper.SetMainCam(Camera.main);
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
 
@@ -255,13 +255,16 @@ namespace IEC
 
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
-            for (int i = 0; i < m_Listeners.Length; i++)
+            Scene.SendEvent(gameEvent, param, () =>
             {
-                if (m_Listeners[i].IsActive())
+                for (int i = 0; i < m_Listeners.Length; i++)
                 {
-                    m_Listeners[i].OnEventRaise(gameEvent, param);
+                    if (m_Listeners[i].IsActive())
+                    {
+                        m_Listeners[i].OnEventRaise(gameEvent, param);
+                    }
                 }
-            }
+            });
         }
 
         public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())

@@ -20,9 +20,42 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
+                    if (Game.IsMultiCard)
+                    {
+                        if (PlayerData.level >= 4)
+                        {
+                            Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                            {
+                                if (PlayerData.IsHardLevel())
+                                {
+                                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
+                                }
+                                else
+                                {
+                                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                                }
+
+                                Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));
+                            });
+                        }
+                        else
+                        {
+                            if (PlayerData.IsHardLevel())
+                            {
+                                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
+                            }
+                            else
+                            {
+                                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                            }
+                        }
+                        return;
+                    }
+
                     Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                     {
                         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                        Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
@@ -56,7 +89,7 @@ namespace IEC
                 Debug.LogWarning("native xdpi: " + nativeDPI.x);
                 Debug.LogWarning("native ydpi: " + nativeDPI.y);
             }
-            
+
             Debug.LogWarning("bannerHeight: " + bannerHeight);
             Debug.LogWarning("Screen.safeArea.height: " + Screen.safeArea.height);
             Debug.LogWarning("screen height: " + Screen.height);

@@ -3,8 +3,9 @@
 #pragma warning disable 0414 // private field assigned but not used.
 #pragma warning disable 0618 // obslolete
 #pragma warning disable 0108 
-#pragma warning disable 0162 
+#pragma warning disable 0162
 
+using IEC;
 using UnityEngine;
 
 
@@ -15,28 +16,20 @@ using UnityEngine;
 /// 
 /// As a note, this is made as MonoBehaviour because we need Coroutines.
 /// </summary>
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
+public class Singleton<T> : _BaseBehaviour where T : _BaseBehaviour
 {
 	private static T _instance;
 
 	private static object _lock = new object();
 
-	public static T instance
-	{
-		get
-		{
-			return Instance;
-		}
-	}
-
 	public static T Instance
 	{
 		get
 		{
-			if (applicationIsQuitting) {
+			//if (applicationIsQuitting) {
 
-				return null;
-			}
+			//	return null;
+			//}
 
 			lock(_lock)
 			{

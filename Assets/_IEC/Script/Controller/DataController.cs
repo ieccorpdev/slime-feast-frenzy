@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace IEC
 {
@@ -88,7 +89,7 @@ namespace IEC
 
             m_PlayerSecret = Pool.Get<PlayerSecret>();
             m_PlayerSecret.session++;
-
+            m_PlayerSecret.AfterInit();
             // check update version
             m_PlayerSecret.lastVersion = Application.version;
             Debug.Log("Application.version " + Application.version);
@@ -96,14 +97,25 @@ namespace IEC
 
         public void BehaviourPauseApp(bool pause)
         {
+            SetPraramUserQuit(pause);
             if (pause)
             {
                 SaveData();
             }
         }
+        private static void SetPraramUserQuit(bool isPause)
+        {
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.name == SceneName.GAME)
+            {
+                PlayerData.levelPending = isPause;
+                PlayerData.isKilledAppGamePlay = isPause;
+            }
+        }
 
         public void BehaviourQuitApp()
         {
+            SetPraramUserQuit(true);
             SaveData();
         }
 
