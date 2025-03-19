@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -30,6 +31,6 @@ namespace IEC
             //     m_Purchased.SetActive(PlayerData.isNoAds);
             m_BtnBuy.gameObject.SetActive(!PlayerData.isNoAds);
         }
-
+        
     }
 }
