@@ -12,13 +12,18 @@ using TMPro;
 public class HomeScreenTab : ScreenNavigateUI
 {
     public RectTransform rightButtonBar, leftButtonBar;
+    public RectTransform comingSoonProgressBar;
     [Header("Avatar Button")] 
     public Button avatarButton;
     public Image avatarImage;
     [Header("LuckyWheel")] 
     public Button luckyWheel;
+    public Image luckyWheelNotiImage;
     [Header("NoAdsPack")] 
     public Button noAdsPack;
+    [Header("LifeOfferPack")] 
+    public Button lifeOfferPack;
+    public Image lifeOfferNotiImage; 
     [Header("Started Package")] 
     public Button startedPackageBtn;
     [Header("Piggy Bank")] 
@@ -27,18 +32,22 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image piggyBankNotiImage;
     public TextMeshProUGUI piggyBankValue;
     [Header("Daily Reward")] 
-    public  Button btnDailyReward;
+    public Button btnDailyReward;
     public Image dailyRewardNotiImage;
-    [Header("Play")] 
+    [Header("Play")]
+    public RectTransform bottomBar;
     public Button playButton;
+    public TextMeshProUGUI playButtonText;
+    public Button playHardButton;
+    public TextMeshProUGUI playHardButtonText;
 
     [Header("City Build")] 
     public Button buildButton;
     public BuildCity buildCityUI;
-    
+    public Image notiCityBuild;
     private List<UIMoveOutAnimation> _listObjMoveOut = new();
     private Sequence _uiAnimSequence;
-    
+
     // Start is called before the first frame update
     void Start()
     {
@@ -59,6 +68,12 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupNoAds.Show();
+            });       
+        SetEvent(lifeOfferPack,
+            () =>
+            {
+                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
+                Locator.Main.PopupLifeOffer.Show();
             });       
         SetEvent(startedPackageBtn,
             () =>
@@ -87,14 +102,33 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
                 else
                 {
-                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                    //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                    DoMoveOutAllObj(0.3f,
+                        () =>
+                        {
+                            Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+                            GameController.OpenScene(GameScene.Game);
+                        });
+                }
+            });
+        
+        SetEvent(playHardButton,
+            () =>
+            {
+                if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
+                {
+                    Locator.Main.PopupOutOfLive.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupHardLevel.Show();
                 }
             });
         
         SetEvent(buildButton,
             () =>
             {
-                DoMoveOutAllObj(
+                DoMoveOutAllObj(0.2f,
                     () =>
                     {
                         Locator.Main.HomeScreenTab.buildCityUI.Show();
@@ -102,6 +136,34 @@ public class HomeScreenTab : ScreenNavigateUI
             });
         
         InitMoveOutAnimation();
+        UpdateMainHome();
+        
+        EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+        
+        if (Game.isUsingLuckySpinV2Flow 
+            && PlayerData.playerLife == 0 
+            && !PlayerData.firstSpinTutorial 
+            && PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlockV2)
+        {
+            Locator.Main.PopupLuckyWheel.Show();
+        }
+        
+        if (Game.isUsingBuildV2Flow
+            && PlayerData.level >= Config.buildCityConfig.levelUnlock
+            && buildCityUI.CanBuildCity
+            && (!PlayerData.shownFirstTimeBuildCityTut || PlayerData.screwCityBuild >= buildCityUI.ScrewNeedFinishIsland))
+        {
+            
+            DoMoveOutAllObj(0f,
+                () =>
+                {
+                    buildCityUI.Show(false);
+                });
+
+            return;
+        }
+                
+        DoMoveBackAllObj();
     }
     
     #region Change Screen Anim
@@ -113,8 +175,7 @@ public class HomeScreenTab : ScreenNavigateUI
             
             _listObjMoveOut.Add(new UIMoveOutAnimation(rightButtonBar,UIElementMoveDir.RIGHT));
             
-            _listObjMoveOut.Add(new UIMoveOutAnimation(buildButton.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
-            _listObjMoveOut.Add(new UIMoveOutAnimation(playButton.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
+            _listObjMoveOut.Add(new UIMoveOutAnimation(bottomBar,UIElementMoveDir.DOWN));
 
 
             foreach (RectTransform child in Locator.Main.ScreenMain.bottomBar.transform)
@@ -130,26 +191,52 @@ public class HomeScreenTab : ScreenNavigateUI
             //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
             
         }
+
+        public void DoMoveOutAllObjNoAnim()
+        {
+            for (int i = 0; i < _listObjMoveOut.Count; i++)
+            {
+                _listObjMoveOut[i].SetObjPosOut();
+            }
+            comingSoonProgressBar.transform.localScale = new Vector3(0, 1, 1);
+        }
         
-        private void DoMoveOutAllObj(Action onComplete = null)
+        public void DoMoveOutAllObj(float timeAnim,Action onComplete = null, float delay = 0f)
         {
             DOTween.Kill(_uiAnimSequence);
 
             _uiAnimSequence = DOTween.Sequence();
-
-            float delay = 0f;
 
             _uiAnimSequence.InsertCallback(delay,
                 () =>
                 {
                     for (int i = 0; i < _listObjMoveOut.Count; i++)
                     {
-                        _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
+                        DOTween.Kill($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
+                        _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}",timeAnim);
                     }
                 });
 
 
-            delay += 0.3f;
+            delay += 0.1f;
+            
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    DOTween.Kill(comingSoonProgressBar);
+                    comingSoonProgressBar.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
+                });
+            
+            delay += 0.4f;
+            //
+            // _uiAnimSequence.InsertCallback(delay,
+            //     () =>
+            //     {
+            //         buildCityUI.HideScale();
+            //     });
+
+
+            // delay += 0.6f;
             
             _uiAnimSequence.InsertCallback(delay,
                 () =>
@@ -160,7 +247,7 @@ public class HomeScreenTab : ScreenNavigateUI
             _uiAnimSequence.Play();
         }
         
-        public void DoMoveBackAllObj(Action onComplete = null)
+        public void DoMoveBackAllObj(float delayTime = 0f, Action onComplete = null)
         {
             DOTween.Kill(_uiAnimSequence);
             
@@ -168,17 +255,37 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 obj.SetObjPosOut();
             }
+            
+            //buildCityUI.HideScale(false);
+            comingSoonProgressBar.transform.localScale = new Vector3(0, 1, 1);
 
             _uiAnimSequence = DOTween.Sequence();
             
-            float delay = 0f;
+            float delay = delayTime;
+            
+            // _uiAnimSequence.InsertCallback(delay,
+            //     () =>
+            //     {
+            //         //buildCityUI.ShowScale();
+            //         buildCityUI.InitBuildCity();
+            //     });
+            //
+            // delay += 0.2f;
+            
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    comingSoonProgressBar.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
+                });
 
+            delay += 0.3f;
+            
             _uiAnimSequence.InsertCallback(delay,
                 () =>
                 {
                     for (int i = 0; i < _listObjMoveOut.Count; i++)
                     {
-                        _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}");
+                        _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}",0.2f);
                     }
                 });
             
@@ -201,27 +308,72 @@ public class HomeScreenTab : ScreenNavigateUI
         
     }
 
+    public void OnEnable()
+    {
+        //UpdateMainHome();
+
+    }
+    
     public override void Show()
     {
         UpdateMainHome();
-        Locator.Main.HomeScreenTab.buildCityUI.ShowScale();
+        
     }
     public void UpdatePiggyBankButton()
     {
+        btnPiggyBank.gameObject.SetActive(PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked); // Add unlock tut later
         piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
-        piggyBankNotiImage.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull);
+        piggyBankNotiImage.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
         piggyBankValue.text = PlayerData.piggyBankGold.ToString();
+        if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
+        {
+            PlayerData.wasShowPiggyBankFirstTime = true;
+            btnPiggyBank.onClick.Invoke();
+        }
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
+    }
+
+    public void UpdateBuildCity()
+    {
+        buildButton.gameObject.SetActive(PlayerData.level>= Config.buildCityConfig.levelUnlock);
+        notiCityBuild.gameObject.SetActive(PlayerData.screwCityBuild > 0 && PlayerData.currentCityBuild < Config.buildCityConfig.dataCity.Count);
+        //buildCityUI.ShowScale();
     }
     public void UpdateMainHome()
     {
         avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
-        luckyWheel.gameObject.SetActive(PlayerData.level >= Config.dataRewardLuckyWheelConfig.levelUnlock);
+        
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
-        dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
+        UpdateDailyReward();
+        UpdateLuckyWheel();
         UpdatePiggyBankButton();
+        UpdateBuildCity();
+        UpdateLifeOffer();
+        playButtonText.text = "Level " + PlayerData.level;
+        playHardButtonText.text = "Level " + PlayerData.level;
+        LeaderboardController.StartTournament();//Once when start home game
+        playButton.gameObject.SetActive(!PlayerData.IsHardLevel());
+        playHardButton.gameObject.SetActive(PlayerData.IsHardLevel());
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
     }
-    
+
+    private void UpdateLifeOffer()
+    {
+        lifeOfferNotiImage.gameObject.SetActive(PlayerData.playerLife <= 0 && !PlayerData.dailyShowLifeOfferPack);
+    }
+    private void UpdateLuckyWheel()
+    {
+        int levelUnlock = Game.isUsingLuckySpinV2Flow
+            ? Config.dataRewardLuckyWheelConfig.levelUnlockV2
+            : Config.dataRewardLuckyWheelConfig.levelUnlock;
+        luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
+        luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
+    }
+    private void UpdateDailyReward()
+    {
+        dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
+        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock);
+    }
+
 }

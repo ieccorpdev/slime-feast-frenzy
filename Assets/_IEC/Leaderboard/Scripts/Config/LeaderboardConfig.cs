@@ -9,6 +9,8 @@ namespace IEC.Wind.Leaderboard
     [CreateAssetMenu(menuName = "Game/LeaderboardConfig")]
     public class LeaderboardConfig : BaseConfig
     {
+        public int numMedalGetOnWin = 25;
+        public int levelUnlock = 20;
         [Header("NAME CONFIG")]
         [SerializeField]
         string nameInput;
@@ -21,7 +23,14 @@ namespace IEC.Wind.Leaderboard
         [Header("SPRITE CONFIG")]
         public List<Sprite> rankSprites = new List<Sprite>();
         public List<Sprite> leagueSprites = new List<Sprite>();
+        public List<Sprite> leagueSpritesLevelWin = new List<Sprite>();
+        public List<Sprite> leagueIconRank = new List<Sprite>();
+        public List<Sprite> textLeagueSprites = new List<Sprite>();
         public List<Sprite> frameSprites = new List<Sprite>();
+        public List<Sprite> rewardBoxImage = new List<Sprite>();
+        public Sprite playerFrameSprites;
+        public Sprite botLeagueFrameSprite;
+        public Sprite playerLeagueFrameSprite;
         [Header("COLOR CONFIG")]
         public List<ColorRankConfig> lstColor = new List<ColorRankConfig>();
         [Button]
@@ -75,11 +84,35 @@ namespace IEC.Wind.Leaderboard
         public Sprite GetSpirteCurrentLeague()
         {
             return leagueSprites[(int)Pool.Get<LeaderboardSaveData>().currentRankView];
+        }      
+        public Sprite GetSpirteCurrentLeagueLevelWin()
+        {
+            return leagueSpritesLevelWin[(int)Pool.Get<LeaderboardSaveData>().currentRankView];
+        }      
+        public Sprite GetSpriteCurrentTextLeague()
+        {
+            return textLeagueSprites[(int)Pool.Get<LeaderboardSaveData>().currentRankView];
+        }      
+        public Sprite GetLeagueIconRank()
+        {
+            return leagueIconRank[(int)Pool.Get<LeaderboardSaveData>().currentRankView];
         }
-        public Sprite GetSpirteRank(int rank)
+        public Sprite GetSpriteRank(int rank)
         {
             rank = Mathf.Clamp(rank, 1, rankSprites.Count);
             return rankSprites[rank - 1];
+        }
+        public Sprite GetBoxRewardSprite(int rank){
+            switch (rank)
+            {
+                case 1:
+                    return rewardBoxImage[0];
+                case 2:
+                    return rewardBoxImage[1];
+                case 3:
+                    return rewardBoxImage[2];
+            }
+            return rewardBoxImage[3];
         }
         public RankRewardData GetRewardData(LeaderboardRankType rankType)
         {
@@ -89,7 +122,7 @@ namespace IEC.Wind.Leaderboard
 
     public enum LeaderboardRankType
     {
-        Legend, Platinum, Gold, Silver, Bronze, Iron
+        Sage, Legend, Grandmaster, Master, Apprentice, Novice
     }
     public enum LeaderboardBotType
     {
@@ -113,7 +146,10 @@ namespace IEC.Wind.Leaderboard
         public int GetRandMedal(LeaderboardBotType botType)
         {
             BotData bot = botDatas.FirstOrDefault(x => x.botType == botType);
-            return Random.Range(bot.minMedal, bot.maxMedal);
+
+            var result = Random.Range(bot.minMedal, bot.maxMedal);
+            result -= result % 5;
+            return result;
         }
 
         public int Total => countRankUp + countSafe + countRankDown;

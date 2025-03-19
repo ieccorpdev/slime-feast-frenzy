@@ -19,6 +19,9 @@ namespace IEC
 
         private bool m_IsStart = true;
         private int m_TabCount;
+
+        public BigHomeTab BigHomeTab => m_BigTab;
+        
         private void Awake()
         {
             Init();
@@ -54,17 +57,21 @@ namespace IEC
             {
                 var tab = m_ListTab[i];
                 tab.type = HybridConfig.listTabConfig[i].type;
+                tab.Init();
                 tab.onClick = () =>
                 {
+                    var lastTabType = Game.hybrid.currentTab;
                     Game.hybrid.currentTab = tab.type;
                     var index = tab.transform.GetSiblingIndex();
                     m_BigTab.transform.SetSiblingIndex(index);
                     m_ListTab.Remove(m_BigTab);
                     m_ListTab.Insert(index, m_BigTab);
-                    SetTabSprite();
+                    SetTabSprite(lastTabType);
                     m_BigTab.SetTabName();
+                    m_BigTab.SetAnimationSpineOn();
                     var isStart = m_IsStart;
                     EventController.RaiseEvent(EventList.GamePlay.ON_CHOOSE_TAB, new EventParam(this));
+                    EventController.RaiseEvent(EventList.Audio.HOME_PAGE_NAV_SLIDE);
                     StartCoroutine(IE_WaitRebuild(() => ChangeTabUI(!isStart)));
                 };
             }
@@ -84,11 +91,11 @@ namespace IEC
             callback?.Invoke();
         }
         
-        private void SetTabSprite()
+        private void SetTabSprite(TabType lastTabType)
         {
             for (int i = 0; i < m_ListTab.Count; i++)
             {
-                m_ListTab[i].SetData(HybridConfig.listTabConfig[i], m_ListTab[i] == m_BigTab);
+                m_ListTab[i].SetData(HybridConfig.listTabConfig[i], m_ListTab[i] == m_BigTab,lastTabType);
             }
         }
 
@@ -101,6 +108,19 @@ namespace IEC
             }
 
             m_ChooseTab.DOAnchorPosX(m_BigTab.GetPosX(), 0.2f).SetEase(Ease.OutQuad);
+        }
+
+        public HomeTab GetTab(TabType tabType)
+        {
+            return m_ListTab.Find(tab => tab.type == tabType);
+        }
+
+        public void SetOnlyTabShowNoti(TabType tabType)
+        {
+            foreach (var tab in m_ListTab)
+            {
+                tab.SetActiveNoti(tab.type == tabType);
+            }
         }
     }
 }

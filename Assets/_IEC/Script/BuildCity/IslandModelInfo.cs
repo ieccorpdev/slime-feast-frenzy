@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -11,7 +12,7 @@ public class IslandModelInfo : _BaseBehaviour
     // Start is called before the first frame update
     public List<IslandItem> listObjectIsland;
     public int direction = 1;
-    private int speedRotate = 2;
+    private float speedRotate = 2;
     public int blockLeft = 30;
     public int blockRight = 330;
     public int offset = 30;
@@ -25,13 +26,22 @@ public class IslandModelInfo : _BaseBehaviour
     public List<MeshRenderer> islandMesh;
     public List<SkinnedMeshRenderer> islandSkinMesh;
     private Tween punchTween;
-
-    private int _amountNeedToCompleteIsland => idIsland == 0 ? 150 : (200 + (idIsland) * 150); //idIsland starts from 0
+    public bool isCompleteIsland;
+    private int _amountNeedToCompleteIsland => Config.buildCityConfig.GetBaseScrewCompleteIsland(idIsland);//idIsland starts from 0
+    private bool useCustomScrew => Config.buildCityConfig.useCustomScrewIsland;
     private List<int> _amountNeedEachObject = new List<int>();
+
+    public int AmountLeftToCompleteIsland { get; private set; } = 0;
     
     void Start()
     {
+        speedRotate = Config.buildCityConfig.speedRotateIsland;
         //LoadDataIsland();
+    }
+
+    public void OnEnable()
+    {
+        isCompleteIsland = false;
     }
 
     public void StopMovingIsland(bool stt )
@@ -84,7 +94,9 @@ public class IslandModelInfo : _BaseBehaviour
             else
             {
                 listObjectIsland[i].panelInfoItem.gameObject.SetActive(true);
-                listObjectIsland[i].panelInfoItem.UpdateNumberScrewNeed(NumberScrewNeedComplete(i));
+                int valueNeed = NumberScrewNeedComplete(i);
+                listObjectIsland[i].panelInfoItem.UpdateNumberScrewNeed(valueNeed);
+                AmountLeftToCompleteIsland += valueNeed;
             }
             listPercentage.Add(percentageComplete);
         }
@@ -143,23 +155,22 @@ public class IslandModelInfo : _BaseBehaviour
     {
         currentModalSelected = i;
         currentSelectedObj = listObjectIsland[i].gameObject;
-        //maxScrewCanSpend = dataConfig.numberScrewNeedUnlockItem[i] - PlayerData.buildCityData[idIsland].itemCity[i];
-        maxScrewCanSpend = NumberScrewNeedComplete(i);
+        maxScrewCanSpend = useCustomScrew ? dataConfig.numberScrewNeedUnlockItem[i] - PlayerData.buildCityData[idIsland].itemCity[i] : NumberScrewNeedComplete(i);
     }
 
     private float PercentageComplete(int indexModel)
     {
         int NumScrew = PlayerData.buildCityData[idIsland].itemCity[indexModel];
-        //int targetScrew = dataConfig.numberScrewNeedUnlockItem[indexModel];
-        int targetScrew = _amountNeedEachObject[indexModel];
+        int targetScrew = useCustomScrew
+            ? dataConfig.numberScrewNeedUnlockItem[indexModel]
+            : _amountNeedEachObject[indexModel];
         float percentageComplete = (float) NumScrew / (float) targetScrew;
         return percentageComplete;
     }
     private int NumberScrewNeedComplete(int indexModel)
     {
         int NumScrew = PlayerData.buildCityData[idIsland].itemCity[indexModel];
-        //int targetScrew = dataConfig.numberScrewNeedUnlockItem[indexModel];
-        int targetScrew = _amountNeedEachObject[indexModel];
+        int targetScrew =useCustomScrew ? dataConfig.numberScrewNeedUnlockItem[indexModel] : _amountNeedEachObject[indexModel];
         return targetScrew-NumScrew;
     }
     void StartPunchScaleLoop(GameObject obj)
@@ -167,7 +178,6 @@ public class IslandModelInfo : _BaseBehaviour
         if (punchTween == null || !punchTween.IsPlaying())
         {
             Vector3 currentScale = obj.transform.localScale;
-            //punchTween = obj.gameObject.transform.DOPunchScale((Vector3.down + Vector3.left)*0.05f, 0.1f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo); // Loop infinitely with a Yoyo type
             punchTween = obj.gameObject.transform.DOPunchScale(Vector3.one *0.1f, 0.15f).SetEase(Ease.InBounce); // Loop infinitely with a Yoyo type
         }
     }
@@ -184,17 +194,25 @@ public class IslandModelInfo : _BaseBehaviour
         }
     }
 
+    public bool LastIsland()
+    {
+        return currentModalSelected == listObjectIsland.Count - 1;
+    }
     public void CompleteItem()
     {
         //Effect
+
+        if (isCompleteIsland)
+            return;
+
      if (currentModalSelected == listObjectIsland.Count-1)
      {
+         isCompleteIsland = true;
          //CompleteIsland
          TweenControl.GetInstance().DelayCall(transform, 1.0f, () =>
          {
              Locator.Main.HomeScreenTab.buildCityUI.ShowRewardCity();
          });
-
      }
      else
      {
@@ -247,7 +265,15 @@ public class IslandModelInfo : _BaseBehaviour
                 result.Add(q + 1);
             }
         }
-
         return result;
+    }
+
+    public void LockIsland()
+    {
+        foreach (var objIsland in listObjectIsland)
+        {
+            objIsland.gameObject.SetActive(false);
+        }
+        SetIslandActiveMaterial(false);
     }
 }

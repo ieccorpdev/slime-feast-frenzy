@@ -2,6 +2,7 @@ using _IEC;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,32 +12,46 @@ namespace IEC
     {
         public Action actionOneTimeClosePopup;
         
-        public SpineAnimOT anim;
+        public List<Transform> listRewardImg = new();
+
+        public Button buyAdsBtn;
+        
+        //public SpineAnimOT anim;
         
         public Button btnX;
 
-        public BundlePackUI configBundle;
+        public PackUI configBundle;
+        
+        public Sequence _showAnimSequence;
         protected override void Awake()
         {
             base.Awake();
             configBundle.OnPurchaseSuccess += () =>
             {
                 PlayerData.isBoughtStarterPack = true;
+                PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
                 //Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);//Disable banner Ads
                 Locator.Main.HomeScreenTab.UpdateMainHome();
                 Hide();
                 Services.SaveData();
             };
             SetEvent(btnX, OnHideClick);
+            AudioEventOpen = EventList.Audio.STARTER_PACK_POPUP_OPEN;
+            
+            onShow.AddListener(SetScaleAnim);
+            onShowDone.AddListener(DoAnimationOpen);
         }
 
         public override void Show()
         {
             base.Show();
-            anim.SetAnimation("1-Starter_Pack_In", false, () =>
-            {
-                anim.SetAnimation("2-Starter_Pack_Idle", true);
-            });
+            // anim.SetAnimation("1-Starter_Pack_In", false, () =>
+            // {
+            //     anim.SetAnimation("2-Starter_Pack_Idle", true);
+            // });
+            configBundle.UpdateUI();
+            // SetScaleAnim();
+            // DoAnimationOpen();
         }
 
         public override void Hide()
@@ -47,6 +62,43 @@ namespace IEC
                 actionOneTimeClosePopup.Invoke();
                 actionOneTimeClosePopup = null;
             }
+        }
+        
+        public void SetScaleAnim()
+        {
+            buyAdsBtn.gameObject.transform.localScale = Vector3.zero;
+            //noThanksBtn.gameObject.transform.localScale = Vector3.zero;
+
+            foreach (Transform img in listRewardImg)
+            {
+                img.localScale = Vector3.zero;
+            }
+        }
+        
+        public void DoAnimationOpen()
+        {
+            DOTween.Kill(_showAnimSequence);
+            _showAnimSequence = DOTween.Sequence();
+
+            float delay = 0.1f;
+            
+            foreach (Transform img in listRewardImg)
+            {
+                _showAnimSequence.InsertCallback(delay,
+                    () =>
+                    {
+                        TweenControl.GetInstance().ScaleFromZero(img.gameObject,0.2f);
+                    });
+                delay += 0.1f;
+            }
+            
+            delay += 0.1f;
+            _showAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    TweenControl.GetInstance().ScaleFromZero(buyAdsBtn.gameObject,0.5f);
+                });
+            //TweenControl.GetInstance().ScaleFromZero(noThanksBtn.gameObject,0.5f);
         }
     }
 }

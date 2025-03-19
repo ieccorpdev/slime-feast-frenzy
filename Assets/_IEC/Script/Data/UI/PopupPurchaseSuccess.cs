@@ -63,7 +63,10 @@ namespace IEC
         public override void Hide()
         {
             base.Hide();
-            Locator.Main.HomeScreenTab.UpdateMainHome();
+            if (Locator.Main.HomeScreenTab != null)
+            {
+                Locator.Main.HomeScreenTab.UpdateMainHome();
+            }
         }
 
         public static ProductCatalogItem GetProductById(string id)

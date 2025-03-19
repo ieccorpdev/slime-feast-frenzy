@@ -11,11 +11,21 @@ namespace IEC
         [SerializeField] private TMP_Text m_TabName;
         private LayoutElement m_Layout => SingleGet<LayoutElement>();
         private RectTransform m_Rect => SingleGet<RectTransform>();
-
         public void SetTabName()
         {
-            m_TabName.text = type.ToString();
+            string name = "";
+            switch (type)
+            {
+                case TabType.LeaderBoard:
+                    name = "Leaderboard";
+                    break;
+                default:
+                    name = type.ToString();
+                    break;
+            }
+            m_TabName.text = name;
         }
+
 
         public void SetSize(int numTab)
         {

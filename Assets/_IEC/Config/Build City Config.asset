@@ -12,60 +12,151 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8555cd9f47385ae4fb81ff46e42d23a9, type: 3}
   m_Name: Build City Config
   m_EditorClassIdentifier: 
+  levelUnlock: 10
   islandActive: {fileID: 2100000, guid: 8b1d8477954f3d145b870f68c63ce85b, type: 2}
   islandActive_2: {fileID: 2100000, guid: bb0d4d58e7a0afa4a8eacddf6cfca339, type: 2}
   islandOff: {fileID: 2100000, guid: 2dea14dd0edb3d249aa222a3071d822e, type: 2}
-  screwAddEndgame: 10
+  screwAddEndgame: 15
+  speedRotateIsland: 0.5
+  useCustomScrewIsland: 1
   dataCity:
   - idCity: 0
     cityName: Beacon's Embrace
-    numberScrewNeedUnlockItem: 640000007d0000009600000096000000e1000000
+    numberScrewNeedUnlockItem: 1e0000001e0000001e0000001e0000001e000000
     listReward:
-    - rewardAmount: 50
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 8
     - rewardAmount: 100
       typeCityReward: 0
   - idCity: 1
     cityName: Enchanted Kingdom
-    numberScrewNeedUnlockItem: 96000000c8000000fa0000002c0100005e010000
+    numberScrewNeedUnlockItem: 3c00000046000000500000005a00000064000000
     listReward:
-    - rewardAmount: 100
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 9
     - rewardAmount: 150
       typeCityReward: 0
   - idCity: 2
     cityName: Whispering Campground
-    numberScrewNeedUnlockItem: 96000000c8000000fa0000002c0100005e010000
+    numberScrewNeedUnlockItem: 3c0000005000000064000000780000008c000000
     listReward:
-    - rewardAmount: 150
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 7
     - rewardAmount: 200
       typeCityReward: 0
   - idCity: 3
     cityName: Peaceful Farmstead
-    numberScrewNeedUnlockItem: 2c0100005e01000090010000c2010000f4010000
+    numberScrewNeedUnlockItem: 780000008c000000a0000000b4000000c8000000
     listReward:
-    - rewardAmount: 200
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 7
     - rewardAmount: 250
       typeCityReward: 0
   - idCity: 4
     cityName: Sentinel's Fortress
-    numberScrewNeedUnlockItem: 2c01000090010000c2010000f401000026020000
+    numberScrewNeedUnlockItem: 6400000096000000c8000000fa0000002c010000
     listReward:
-    - rewardAmount: 200
-      typeCityReward: 0
-    - rewardAmount: 250
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 1
+      typeCityReward: 7
     - rewardAmount: 300
       typeCityReward: 0
   - idCity: 5
     cityName: Radiant Desert
-    numberScrewNeedUnlockItem: 9001000090010000900100009001000084030000
+    numberScrewNeedUnlockItem: 64000000c80000002c01000090010000f4010000
     listReward:
-    - rewardAmount: 300
-      typeCityReward: 0
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
     - rewardAmount: 400
       typeCityReward: 0
-    - rewardAmount: 500
+  - idCity: 6
+    cityName: Blazing HQ
+    numberScrewNeedUnlockItem: 64000000c80000002c01000090010000f4010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 7
+    cityName: Canal Craze
+    numberScrewNeedUnlockItem: 6400000096000000c8000000c8000000fa000000fa0000005e010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 8
+    cityName: Fall Fantasy
+    numberScrewNeedUnlockItem: 64000000c80000002c01000090010000f4010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 9
+    cityName: Kings Quarters
+    numberScrewNeedUnlockItem: 64000000c80000002c01000090010000f4010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 10
+    cityName: Sky High Terminal
+    numberScrewNeedUnlockItem: 64000000c80000002c01000090010000f4010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 11
+    cityName: Transit Adventure
+    numberScrewNeedUnlockItem: 3200000096000000fa000000fa0000005e010000c2010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
+      typeCityReward: 0
+  - idCity: 12
+    cityName: Belgian Charm
+    numberScrewNeedUnlockItem: 6400000096000000c8000000c8000000fa000000fa0000005e010000
+    listReward:
+    - rewardAmount: 1
+      typeCityReward: 7
+    - rewardAmount: 1
+      typeCityReward: 8
+    - rewardAmount: 1
+      typeCityReward: 9
+    - rewardAmount: 400
       typeCityReward: 0

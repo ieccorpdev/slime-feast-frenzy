@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using _IECModules;
 
 namespace IEC
@@ -68,6 +69,43 @@ namespace IEC
             {
                 value = PlayerData.level
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level Hard with id", param =>
+            {
+                int level = int.Parse(param.inputParams[0].value.ToString());
+                if (Game.isUsingHardLevel)
+                {
+                    PlayerData.currentHardLevel = level;
+                    GameController.OpenScene(GameScene.Game,
+                        () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL); },
+                        false);
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Set Level Hard", param =>
+            {
+                if (Game.isUsingHardLevel)
+                {
+                    GameController.OpenScene(GameScene.Game,
+                        () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL); },
+                        false);
+                }
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Set Next Level Hard", param =>
+            {
+                if (Game.isUsingHardLevel)
+                {
+                    PlayerData.currentHardLevel++;
+                    GameController.OpenScene(GameScene.Game,
+                        () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL); },
+                        false);
+                }
+            });
+            
 
             ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_WIN", cheatCodeParam =>
             {
@@ -86,6 +124,18 @@ namespace IEC
                 data.isNoAdsReward = data.isNoAds;
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Spin Lucky Wheel", param =>
+            {
+                int id = int.Parse(param.inputParams[0].value.ToString());
+                if (Locator.Main.PopupLuckyWheel.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupLuckyWheel.SpinWheel(id);
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 0
             });
 
             ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
@@ -116,6 +166,62 @@ namespace IEC
             }, new CheatCode.InputParam
             {
                 value = 0
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Player Gold", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.AddCurrency(ResourceType.Gold, gc);
+            }, new CheatCode.InputParam
+            {
+                value = 500
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Brick Build City", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.screwCityBuild += gc;
+            }, new CheatCode.InputParam
+            {
+                value = 500
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Medal LeaderBoard", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                LeaderboardController.leaderboardSaveData.AddMedal(gc);
+            }, new CheatCode.InputParam
+            {
+                value = 100
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set UnlimitedLife Time ( Minutes)", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.SetTimeUnlimitedLife(gc);
+            }, new CheatCode.InputParam
+            {
+                value = 10
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Life", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.playerLife = gc;
+            }, new CheatCode.InputParam
+            {
+                value = 5
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Time Next Life", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.SetTimeToNextLife(gc);
+            }, new CheatCode.InputParam
+            {
+                value = 5
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Time Left StartedPack NoAds (s)", param =>
+            {
+                int time = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(time);
+            }, new CheatCode.InputParam
+            {
+                value = (PlayerData.timeEndStaredPack - DateTime.Now).Seconds
             });
         }
 

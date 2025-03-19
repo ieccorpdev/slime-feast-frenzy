@@ -16,6 +16,12 @@ namespace IEC
         public TMP_Text txtGold => m_TxtMoney;
         public RectTransform recIconCoin => m_TransCoinIcon;
 
+        protected override void Awake()
+        {
+            base.Awake();
+            isPlayAudioPopup = false;
+        }
+
         public override void Show()
         {
             if (isShop)

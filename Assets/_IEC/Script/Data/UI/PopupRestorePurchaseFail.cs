@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using UnityEngine.UI;
 
@@ -5,10 +6,17 @@ namespace IEC
 {
     public class PopupRestorePurchaseFail : BasePopup
     {
+        public Button OkButton;
+
+        public void Start()
+        {
+            SetEvent(OkButton,Hide);
+        }
+    
         public override void Show()
         {
             base.Show();
-            DOVirtual.DelayedCall(2f, Hide);
+            //DOVirtual.DelayedCall(2f, Hide);
         }
     }
 }

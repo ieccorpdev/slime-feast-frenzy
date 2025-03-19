@@ -13,8 +13,8 @@ namespace IEC.TrackingEvent
         private IEC.PlayerSecret m_DataPlayer;
         public IEC.PlayerSecret DataPlayer => m_DataPlayer ?? Pool.Get<IEC.PlayerSecret>();
 
-        private IEC.GamePlayGroup m_DataGamePlay;
-        public IEC.GamePlayGroup DataGamePlay => m_DataGamePlay ?? Pool.Get<IEC.GamePlayGroup>();
+        private IEC.InGamePlayGroup m_DataGamePlay;
+        public IEC.InGamePlayGroup DataGamePlay => m_DataGamePlay ?? Pool.Get<IEC.InGamePlayGroup>();
 
         private IEC.GameConfig m_DataConfig;
         public IEC.GameConfig DataConfig => m_DataConfig ?? Pool.Get<IEC.GameConfig>();
@@ -31,6 +31,94 @@ namespace IEC.TrackingEvent
     {
         public override string Name => "unlock_cheat";
     }
+    public class ClickBtnTracking : Level
+    {
+        public override string Name => "click_btn";
+        private string btn_name;
+
+        public ClickBtnTracking(string position)
+        {
+            btn_name = position;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["btn_name"] = btn_name;
+            return dict;
+        }
+    }
+    public class ClickSpinLuckyWheel : Level
+    {
+        public override string Name => "click_spin";
+        private string goldCost;
+
+        public ClickSpinLuckyWheel(string c)
+        {
+            goldCost = c;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["gold_cost"] = goldCost;
+            return dict;
+        }
+    }   
+    public class ClickPlayHomeScreen : Level
+    {
+        public override string Name => "click_play_homescreen";
+        private string gold_balance;
+
+        public ClickPlayHomeScreen(string g)
+        {
+            gold_balance = g;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["gold_balance"] = gold_balance;
+            return dict;
+        }
+    }
+    public class BuySuccessIAP : Level
+    {
+        public override string Name => "buy_success";
+        private string packName;
+
+        public BuySuccessIAP(string namePack)
+        {
+            packName = namePack;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["pack_name"] = packName;
+            return dict;
+        }
+    }    
+    public class UserHelper : Level
+    {
+        public override string Name => "use_helper";
+        private string helperType;
+        private string costType;
+
+        public UserHelper(string hType,string cType)
+        {
+            helperType = hType;
+            costType = cType;
+        }
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["helper_type"] = helperType;
+            dict["cost_type"] = costType;
+            return dict;
+        }
+    }
 
     public abstract class Level : Game
     {
@@ -40,6 +128,7 @@ namespace IEC.TrackingEvent
         {
             var dict = base.GetParams();
             dict["level"] = DataPlayer.levelTracking;
+            dict["level_prop"] = DataGame.crLevelType.ToString();
             return dict;
         }
     }
@@ -63,6 +152,18 @@ namespace IEC.TrackingEvent
             var dict = base.GetParams();
             dict["time"] = DataGame.TimeFinishLevel;
             dict["session_count"] = DataPlayer.LevelSessionCount;
+            return dict;
+        }
+    }   
+    public class PlayLevelDetail : Level
+    {
+        public override string Name => "play_level_detail";
+
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["time"] = DataGame.TimeFinishLevel;
+            dict["result"] = DataGamePlay.IsWin;
             return dict;
         }
     }
@@ -92,23 +193,6 @@ namespace IEC.TrackingEvent
     public class ClickBtnNext : Level
     {
         public override string Name => "click_btn_next";
-    }
-    public class ClickBtnTracking : Level
-    {
-        public override string Name => "click_btn";
-        private string btn_name;
-
-        public ClickBtnTracking(string position)
-        {
-            btn_name = position;
-        }
-
-        public override Dictionary<string, object> GetParams()
-        {
-            var dict = base.GetParams();
-            dict["btn_name"] = btn_name;
-            return dict;
-        }
     }
     public class SFApostition : Level
     {
@@ -140,4 +224,29 @@ namespace IEC.TrackingEvent
             this.position = position;
         }
     }
+    public class RatingClick : Level
+    {
+        public override Dictionary<string, object> GetParams()
+        {
+            var dict = base.GetParams();
+            dict["level_show"] = DataPlayer.level;
+            return dict;
+        }
+    }
+    
+    public class RatingClickClose : RatingClick
+    {
+        public override string Name => "click_rating_btn_close";
+    }
+
+    public class RatingClickLoveIt : RatingClick
+    {
+        public override string Name => "click_rating_btn_love_it";
+    }
+
+    public class RatingClickNoThank : RatingClick
+    {
+        public override string Name => "click_rating_btn_no_thank";
+    }
+
 }

@@ -23,7 +23,7 @@ namespace IEC
             {
                 currencyTMP.gameObject.SetActive(false);
                 infinityLifeImage.gameObject.SetActive(true);
-                lifeCountDownText.text = PlayerData.GetTimeLeftUnlimidtedLife();
+                lifeCountDownText.text = PlayerData.GetTimeLeftUnlimitedLife();
             }
             else
             {
@@ -32,6 +32,7 @@ namespace IEC
                 currencyTMP.text = PlayerData.playerLife.ToString();
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
+            addButton.gameObject.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
         }
     }
 }

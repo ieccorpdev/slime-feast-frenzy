@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: -50.9}
-  m_SizeDelta: {x: 200, y: 70.0667}
+  m_SizeDelta: {x: 314.23, y: 70.0667}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6361448294967767973
 CanvasRenderer:
@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Home
+  m_text: Leader board
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ecfeb7d445689ae4383f075548b18e80, type: 2}
   m_sharedMaterial: {fileID: -1081373604102784450, guid: ecfeb7d445689ae4383f075548b18e80,
@@ -94,12 +94,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
+  m_fontSize: 56.25
   m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 60
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 4096
@@ -327,8 +327,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 0
   m_Icon: {fileID: 8967267444185984779}
+  m_IconNoti: {fileID: 0}
   m_Lock: {fileID: 1708350359936886667}
+  iconSpine: {fileID: 0}
   m_TabName: {fileID: 6640719473753557786}
+  shopIconSpine: {fileID: 0}
+  homeIconSpine: {fileID: 0}
+  leaderBoardIconSpine: {fileID: 0}
 --- !u!114 &5150554961082392245
 MonoBehaviour:
   m_ObjectHideFlags: 0

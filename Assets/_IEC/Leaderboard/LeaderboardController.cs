@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NaughtyAttributes;
 using UnityEngine;
+using Random = System.Random;
 
 namespace IEC.Wind.Leaderboard
 {
@@ -17,7 +18,8 @@ namespace IEC.Wind.Leaderboard
         {
             Controllers.Add(this);
         }
-        
+
+        private bool wasStart = false;
         public bool IsActive()
         {
             return gameObject.activeSelf;
@@ -29,20 +31,26 @@ namespace IEC.Wind.Leaderboard
             {
                 case EventList.WindLeaderboard.CHANGE_AVATAR:
                     Locator.Main.PopupLeaderboard.UpdateUI();
+                    Locator.Main.PopupEditInfo.UpdateUI();
                     break;
                 case EventList.WindLeaderboard.CHANGE_NAME:
                     Locator.Main.PopupLeaderboard.UpdateUI();
                     Locator.Main.PopupLeaderboard.ReloadData();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
-                    if (Game.isHaveLeaderboard)
+                    if (Game.isHaveLeaderboard && PlayerData.level >= LeaderboardConfig.levelUnlock)
                     {
-                        int medal = 20; 
+                        int medal = leaderboardConfig.numMedalGetOnWin; 
                         medal *= LeaderboardData.medalMultiply;
-
                         Locator.Game.ScreenLevelWin.SetMedalReward(medal);
+                        Locator.Game.ScreenLevelWinHard.SetMedalReward(medal);
                         LeaderboardData.AddMedal(medal);
                         Game.isHaveAnimMedal = true;
+                    }
+                    else
+                    {
+                        Locator.Game.ScreenLevelWin.DeactiveMedalObj();
+                        Locator.Game.ScreenLevelWinHard.DeactiveMedalObj();
                     }
                     CheckEndTournamentAndInit();
                     break;
@@ -60,7 +68,7 @@ namespace IEC.Wind.Leaderboard
 
         public void BehaviourStart()
         {
-            StartTournament();
+            //StartTournament();
         }
 
         public void InitData()
@@ -88,6 +96,11 @@ namespace IEC.Wind.Leaderboard
             {
                 bots[i].botType = LeaderboardBotType.Up;
             }
+
+            foreach (var bot in bots)
+            {
+                bot.avatarId = UnityEngine.Random.Range(0, LeaderboardConfig.avatarSprites.Count);
+            }
             bots.Shuffle();
             var temps = bots.Take(3).ToList();
             temps[0].botType = LeaderboardBotType.Rank1;
@@ -98,7 +111,13 @@ namespace IEC.Wind.Leaderboard
 
         public void StartTournament()
         {
-            CheckEndTournamentAndInit();
+            if (!wasStart)
+            {
+                //Delay call, call from home Scene,
+                wasStart = true;
+                CheckEndTournamentAndInit();
+            }
+
         }
         public void CheckEndTournamentAndInit()
         {
@@ -194,13 +213,14 @@ namespace IEC.Wind.Leaderboard
             if (typeFinish == TypeFinish.Down || typeFinish == TypeFinish.Up)
                 leaderboardSaveData.UpDownRank(typeFinish == TypeFinish.Up);
 
-            foreach(var rw in rewards)
-            {
-                PlayerData.AddReward(rw.type, rw.amount);
-            }
+            //foreach(var rw in rewards)
+            //{
+            //    PlayerData.AddReward(rw.type, rw.amount);
+            //}
             //UI.ScreenInGame.UpdateButtonHelper();
             //Locator.Main.HomeScreenTab.ScreenHome.UpdateUILeaderboard();
-            Locator.Main.PopupLeaderboardFinished.SetData(rankType, typeFinish, rewards);
+            Locator.Main.ClaimLeaderBoardFinish.SetData(rankType, typeFinish, rewards);
+            Locator.Main.ClaimLeaderBoardFinish.ShowingRewardPanel();
         }
 
         public TimeSpan GetTimeLeaderboardRemain()
@@ -215,15 +235,15 @@ namespace IEC.Wind.Leaderboard
             string txt = "";
             if (time.TotalDays > 1)
             {
-                txt = time.ToString("d'd'h'h'");
+                txt = time.ToString("d'd 'h'h'");
             }
             else if (time.TotalHours > 1)
             {
-                txt = time.ToString("h'h'm'm'");
+                txt = time.ToString("h'h 'm'm'");
             }
             else
             {
-                txt = time.ToString("m'm's's'");
+                txt = time.ToString("m'm 's's'");
             }
             return txt;
         }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 
 namespace IEC.Wind.Leaderboard
@@ -20,18 +22,25 @@ namespace IEC.Wind.Leaderboard
         public Button editInfoBtn;
         public Button rankInfoBtn;
 
-        public TextMeshProUGUI leagueText;
+        public Image leagueImgText;
         public Image leagueImg;
 
         public TextMeshProUGUI timeX2MedalTxt;
         public TextMeshProUGUI timeRemainTxt;
+        public TextMeshProUGUI lockLeaderBoardText;
 
         public RankItem botRankItem;
         public RankItem playerRankItem;
-
-        public PopupRankInfo rankInfo;
+        
         LeagueRankData leagueData;
         List<UserData> allUsers = new List<UserData>();
+        public GameObject lockObj;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            isPlayAudioPopup = false;
+        }
 
         private void Start()
         {
@@ -52,40 +61,67 @@ namespace IEC.Wind.Leaderboard
             });
             SetEvent(rankInfoBtn, () =>
             {
-                rankInfo.Show();
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("leaderboard_info"));
+                Locator.Main.PopupRankInfo.Show();
             });
+            scroller.OnBeingDrag+=DisableRewardPopupMini ;
         }
 
+        public void DisableRewardPopupMini()
+        {
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_LEADERBOARD);
+        }
         public override void Show()
         {
             base.Show();
+            Locator.Main.PopupRankInfo.Hide();
             LeaderboardController.CheckEndTournamentAndInit();
             Init();
-            UpdateUILeague();
-            UpdateUI();
-            ReloadData();
-            JumpToPlayer();
+            leagueImgText.SetNativeSize();
+            if (Game.isHaveLeaderboard && PlayerData.level >= LeaderboardConfig.levelUnlock)
+            {
+                lockObj.gameObject.SetActive(false);
+                scroller.gameObject.SetActive(true);
+                UpdateUILeague();
+                UpdateUI();
+                ReloadData();
+            }
+            else
+            {
+                SetTextLockLeaderBoard();
+                lockObj.gameObject.SetActive(true);
+                scroller.gameObject.SetActive(false);
+            }
+            
+            //JumpToPlayer();
         }
 
+        public void SetTextLockLeaderBoard()
+        {
+            lockLeaderBoardText.text = "Unlock At Level " + LeaderboardConfig.levelUnlock;
+        }
         private void UpdateUILeague()
         {
             leagueImg.sprite = LeaderboardConfig.GetSpirteCurrentLeague();
-            leagueText.text = LeaderboardData.currentRankView.ToString().ToUpper() + " LEAGUE";
+            leagueImgText.sprite = LeaderboardConfig.GetSpriteCurrentTextLeague();
+            leagueImgText.SetNativeSize();
         }
 
         public void UpdateUI()
         {
             avatar.sprite = LeaderboardConfig.avatarSprites[LeaderboardData.avatarId];
             userNameTxt.text = LeaderboardData.myData.name;
-            if (LeaderboardData.medalMultiply <= 1)
-            {
-                timeX2MedalTxt.text = "30min";
-                medalX2Btn.interactable = true;
-            }
-            else
-            {
-                medalX2Btn.interactable = false;
-            }
+            //if (LeaderboardData.medalMultiply <= 1)
+            //{
+            //    timeX2MedalTxt.text = "30min";
+            //    medalX2Btn.interactable = true;
+            //}
+            //else
+            //{
+            //    medalX2Btn.interactable = false;
+            //}
+            //MeoMew temporary disable
+            medalX2Btn.interactable = false;
         }
 
         public void Init()
@@ -162,6 +198,7 @@ namespace IEC.Wind.Leaderboard
         public void ReloadData()
         {
             scroller.ReloadData();
+            JumpToPlayer();
         }
         public void JumpToLast()
         {
@@ -179,7 +216,7 @@ namespace IEC.Wind.Leaderboard
         {
             Init();
             int index = allUsers.FindIndex(x => x.isPlayer);
-            scroller.JumpToDataIndex(index, 0, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
+            scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
         private int GetTypeByRank(int rank)
         {
@@ -198,6 +235,11 @@ namespace IEC.Wind.Leaderboard
                 timeX2MedalTxt.text = new DateTime(timeRemain.Ticks).ToString("mm:ss");
             }
             timeRemainTxt.text = LeaderboardController.GetTimeRemainText();
+            var timeE = LeaderboardController.GetTimeLeaderboardRemain();
+            if (timeE <= TimeSpan.Zero)
+            {
+                LeaderboardController.CheckEndTournamentAndInit();
+            }
         }
     }
 }

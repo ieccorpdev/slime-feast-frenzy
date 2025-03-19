@@ -6,12 +6,15 @@ public static partial class Locator
 {
     public static class Service
     {
-        public static PopupSetting PopupSetting => Pool.Get<PopupSetting>();
+        public static PopupSettingIngame PopupSettingIngame => Pool.Get<PopupSettingIngame>();
+        public static PopupSettingInHome PopupSettingInHome => Pool.Get<PopupSettingInHome>();
+        public static PopupRating PopupRating => Pool.Get<PopupRating>();
         public static ScreenLoading ScreenLoading => Pool.Get<ScreenLoading>();
         public static MoneyPanel MoneyPanel => Pool.Get<MoneyPanel>();
         public static GroupFxCoin GroupFxCoin => Pool.Get<GroupFxCoin>();
         public static PopupPurchaseSuccess PopupPurchaseSuccess => Pool.Get<PopupPurchaseSuccess>();
         public static PopupPurchaseFail PopupPurchaseFail => Pool.Get<PopupPurchaseFail>();
+        public static PopupLoadingPurchaseIap PopupLoadingPurchaseIap => Pool.Get<PopupLoadingPurchaseIap>();
         public static PopupRestorePurchaseFail PopupRestorePurchaseFail => Pool.Get<PopupRestorePurchaseFail>();
         public static PopupRestorePurchaseSuccess PopupRestorePurchaseSuccess => Pool.Get<PopupRestorePurchaseSuccess>();
 

@@ -1900,11 +1900,12 @@ namespace EnhancedUI.EnhancedScroller
             _initialized = true;
         }
 
-		/// <summary>
+        /// <summary>
         /// This event is fired when the user begins dragging on the scroller.
-		/// We can disable looping or snapping while dragging if desired.
-		/// <param name="data">The event data for the drag</param>
+        /// We can disable looping or snapping while dragging if desired.
+        /// <param name="data">The event data for the drag</param>
         /// </summary>
+        public Action OnBeingDrag;
 		public void OnBeginDrag(PointerEventData data)
 		{
             _dragFingerCount++;
@@ -1923,6 +1924,7 @@ namespace EnhancedUI.EnhancedScroller
 			{
 				loop = false;
 			}
+            OnBeingDrag?.Invoke();
 		}
 
 		/// <summary>

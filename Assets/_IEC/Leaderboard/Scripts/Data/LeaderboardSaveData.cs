@@ -17,7 +17,7 @@ namespace IEC.Wind.Leaderboard
         public int medalMultiply = 1;
         public int avatarId = 0;
         public LeadboardCandidateData myData = new LeadboardCandidateData();
-        public LeaderboardRankType currentRankView = LeaderboardRankType.Iron;
+        public LeaderboardRankType currentRankView = LeaderboardRankType.Novice;
         public List<LeadboardBotData> candidateDatas = new List<LeadboardBotData>();
 
         public void SetCurrentRankView(LeaderboardRankType rank)
@@ -104,11 +104,13 @@ namespace IEC.Wind.Leaderboard
     {
         public string name = "Player467356";
         public int medal = 0;
+        public int avatarId;
     }
     [System.Serializable]
     public class LeadboardBotData : LeadboardCandidateData
     {
         public LeaderboardBotType botType;
+
     }
     [System.Serializable]
     public class UserData

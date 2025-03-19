@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using IEC.Common.Event;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,13 +13,22 @@ namespace IEC
     {
         [SerializeField] private Button m_BtnSetting;
         [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_Tab2, m_Tab4, m_Tab5;
-        public RectTransform topBar, bottomBar;
+        public RectTransform topBar; 
+        public BottomBar bottomBar;
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private ScreenNavigateUI _currentScreen;
+
+        public UICurrency goldCurrencyDisplay;
+        
         [Header("Avatar Button")] 
         public Button avatarButton;
         public Image avatarImage;
+
+        [Header("Claim reward effect")] 
+        public EffectRewardClaim effectRewardClaim;
+        private Stack<RewardClaimData> listClaimRewardData = new();
+        
         private void Awake()
         {
             Init();
@@ -32,12 +42,21 @@ namespace IEC
                 switch (Game.hybrid.currentTab)
                 {
                     case (TabType.Shop):
-                        Locator.Service.MoneyPanel.Show();
-                        m_ResourceUI.SetActive(false);
+                        //Locator.Service.MoneyPanel.Show();
+                        m_ResourceUI.SetActive(true);
+                        m_BtnSetting.gameObject.SetActive(true);
+                        Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_shop_iap"));
                         break;
                     case (TabType.Home):
-                        Locator.Service.MoneyPanel.Hide();
+                        //Locator.Service.MoneyPanel.Hide();
                         m_ResourceUI.SetActive(true);
+                        m_BtnSetting.gameObject.SetActive(true);
+                        break;     
+                    case (TabType.LeaderBoard):
+                        m_ResourceUI.SetActive(false);
+                        m_BtnSetting.gameObject.SetActive(false);
+                        Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_leaderboard"));
+                        EventController.RaiseEvent(EventList.WindLeaderboard.CHANGE_AVATAR);
                         break;
                     default:
                         Locator.Service.MoneyPanel.Hide();
@@ -45,10 +64,10 @@ namespace IEC
                         break;
                 }
 
-                if (Game.hybrid.currentTab != TabType.Home)
-                {
-                    Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
-                }
+                // if (Game.hybrid.currentTab != TabType.Home)
+                // {
+                //     Locator.Main.HomeScreenTab.buildCityUI.HiddenBuildCity();
+                // }
                 
                 m_DictTab[Game.hybrid.currentTab].SetActive(true);
                 var screen = m_DictTab[Game.hybrid.currentTab].GetComponent<ScreenNavigateUI>();
@@ -78,7 +97,7 @@ namespace IEC
             });
             SetEvent(m_BtnSetting, () =>
             {
-                UI.ShowScreen(Locator.Service.PopupSetting);
+                UI.ShowScreen(Locator.Service.PopupSettingInHome);
             });
         }
 
@@ -92,8 +111,14 @@ namespace IEC
             m_DictTab[TabType.Tab5] = m_Tab5;
             HideAllTab();
             PlayAnimCollectedLeaderBoardRank();
+            CheckBannerHome();
         }
 
+        public void CheckBannerHome()
+        {
+            //MeoMew remove ads banner in home
+            Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
+        }
         private void HideAllTab()
         {
             if (m_ListTabObj.Count == 0) m_ListTabObj = m_DictTab.Values.ToList();
@@ -119,6 +144,109 @@ namespace IEC
 
         #endregion
         
+        #region Claim Reward Effect
+
+        public void AddRewardClaimEffect(ResourceType resourceType, int amount)
+        {
+            switch (resourceType)
+            {
+                case ResourceType.Gold:
+                    AddRewardGoldToClaim(amount);
+                    break;
+                case ResourceType.HelperClear:
+                    AddRewardHelperToClaim(resourceType, amount, 0.1f);
+                    break;
+                case ResourceType.HelperUndo:
+                    AddRewardHelperToClaim(resourceType, amount, 0.2f);
+                    break;
+                case ResourceType.HelperShuffle:
+                    AddRewardHelperToClaim(resourceType, amount, 0.3f);
+                    break;
+            }
+        }
         
+        private void AddRewardHelperToClaim(ResourceType helperType, int amount, float delay = 0f)
+        {
+            RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
+                ? Locator.Main.HomeScreenTab.playButton.GetComponent<RectTransform>()
+                : bottomBar.GetTab(TabType.Home).IconTransform
+                ;
+            
+            AddCustomRewardToClaimEffect(
+                helperType, 
+                Vector2.zero, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay
+            );
+        }
+
+        private void AddRewardGoldToClaim(int amount, float delay = 0f)
+        {
+            goldCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) - amount);
+            goldCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
+            AddCustomRewardToClaimEffect(
+                ResourceType.Gold, 
+                Vector2.zero, 
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.goldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                () =>
+                {
+                    goldCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
+                    //goldCurrencyDisplay.UpdateCurrency();
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                },
+                () =>
+                {
+                    goldCurrencyDisplay.ForceUpdateCurrencyText(goldCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)amount / effectRewardClaim.maxSpawn));
+                },
+                delay
+            );
+        }
+
+        public void AddCustomRewardToClaimEffect(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        {
+            listClaimRewardData.Push(new RewardClaimData(rewardType, posSpawn, posEnd, addAmount, onComplete,onEndMove, delay));
+        }
+
+        public void DoAnimAllAvailableReward()
+        {
+            while (listClaimRewardData.Count > 0)
+            {
+                // var rewardData = listClaimRewardData.Pop();
+                //
+                // effectRewardClaim.SpawnEffect(rewardData);
+                DoAnimLatestAvailableReward();
+            }
+        }
+
+        public void DoAnimLatestAvailableReward()
+        {
+            var rewardData = listClaimRewardData.Pop();
+            
+            effectRewardClaim.SpawnEffect(rewardData);
+        }
+
+        #endregion
+        public bool OnMainHomeScreen()
+        {
+            if (_currentScreen == null) return false;
+            return _currentScreen.tabType == TabType.Home;
+        }
+        public bool BuildCityCheckShow()
+        {
+            if (_currentScreen == null) return true;
+            return _currentScreen.tabType == TabType.Home;
+        }
     }
 }

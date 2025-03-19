@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using MoreMountains.NiceVibrations;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace IEC
 {
@@ -19,24 +20,40 @@ namespace IEC
         public bool IsFirstTime => session == 1;
 
         public bool isNoAds => Pool.Get<ServiceData>().isNoAds;
-        public int gold;
         public int ticket;
         public int level = 1;
+        public int lastFeatureCount = 0;
         public int levelTracking = 1;
         public int levelFirstTime = 0;
+        public Dictionary<LevelType, int> levelFirstTimeTracking;
         public int countPlayLevel = 0;
-        public bool isSound = true;
-        public bool isMusic = true;
-        public bool isVibrate = true;
+
+        public bool isPlayLevelHardFirstTime = true;
+        public int currentHardLevel = 0;
+        public int currentCountLoseHardLevel = 0; // To check for showing skip option
+        public int lastHardLevel = 0;
+
+        public bool isDiscountedPackBought;
+        public bool isClickedRate;
+        
+        public DateTime lastTimeCollectFreeAdsGoldPack;
 
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
-
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+        [Header("CCJ")]
+        public bool isMusicOn = true;
+        public bool isSoundOn = true;
+        public bool isVibrateOn = true;
+        [Header("Tutorial")]
+        public bool passHelperStack;
+        public bool passHelperClear;
         
         public HybridData hybridData = new HybridData();
         
         private GameConfig Config => Pool.Get<GameConfig>();
+
+        private Game Game => Pool.Get<Game>();
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
@@ -66,15 +83,29 @@ namespace IEC
             if (lastTickPlayTime == 0) return DateTime.Now;
             return new DateTime(lastTickPlayTime);
         }
+
         public void AfterInit()
         {
-            SetDataLuckyWheel();
+            InitCurrency();
+            ResetDataDay();
             SetupNewBuildCityData();
+            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
+            {
+                ClearAndInitTrackingLevelType();
+            }
         }
-        
+
+        public void ClearAndInitTrackingLevelType()
+        {
+            levelFirstTimeTracking = new Dictionary<LevelType, int>();
+            foreach (LevelType type in (LevelType[]) Enum.GetValues(typeof(LevelType)))
+            {
+                levelFirstTimeTracking.Add(type,0);
+            }
+        }
         public void Vibrate(HapticTypes hapticType)
         {
-            if (!isVibrate) return;
+            if (!isVibrateOn) return;
             MMVibrationManager.Haptic(hapticType);
         }
         
@@ -83,11 +114,31 @@ namespace IEC
             switch (type)
             {
                 case ResourceType.Gold:
-                    AddGold(amount);
+                    AddCurrency(ResourceType.Gold,amount);
                     break;
             }
         }
+
+        public bool IsHardLevel()
+        {
+            int levelStart = Game.isOverrideHardLevelConfig
+                ? Game.levelStartHardLevelOverride
+                : Config.levelStartHardLevel;
+            
+            if (Game.isUsingHardLevel && level >= levelStart)
+            {
+                // if (level == Config.levelStartHardLevel && isFirstTimePlayHardLevel)
+                //     return true;
+                
+                if (level - lastHardLevel >= Config.stepBetweenHardLevels)
+                    return true;
+            }
+
+            return false;
+        }
+        
         #region Player Life
+        [Header("Player Life")]
         public int playerLife = 5;
         public DateTime timeStartCountAddLife = DateTime.Now;
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;
@@ -97,6 +148,8 @@ namespace IEC
         public int playerProfileIconId;
         public bool levelPending;//check player quit in game
         public bool isKilledAppGamePlay;
+
+        public bool dailyShowLifeOfferPack;
         public void DecreasePlayerLife()
         {
             if (playerLife == Config.maxHealth)
@@ -110,12 +163,15 @@ namespace IEC
             if (!IsInUnlimitedLife())
             {
                 playerLife -= 1;
+                playerLife = playerLife < 0 ? 0 : playerLife;
             }
         }
 
         public bool IsInUnlimitedLife()
         {
-            return (DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife && realTimeUnlimidtedLife > 0);
+            bool passLevelLife = level < Config.levelUnlockLife;
+            bool inUnlimitedLife = DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife && realTimeUnlimidtedLife > 0;
+            return passLevelLife || inUnlimitedLife;
         }
         public void AddTimeUnlimitedLife(int minutes)
         {
@@ -135,14 +191,18 @@ namespace IEC
             if(realTimeUnlimidtedLife < 0) realTimeUnlimidtedLife = 0;
             realTimeUnlimidtedLife += minutes * 60;
         }
-
-        public string GetTimeLeftUnlimidtedLife()
+        public void SetTimeUnlimitedLife(int minutes)
+        {
+            timeStartUnlimitedLife = DateTime.Now; 
+            timeEndUnlimitedLife = timeStartUnlimitedLife.AddMinutes(minutes);
+        }
+        public string GetTimeLeftUnlimitedLife()
         {
             TimeSpan diffTime =timeEndUnlimitedLife - DateTime.Now;
             if (diffTime.TotalSeconds < 0 || realTimeUnlimidtedLife < 0)
             {
                 //cheat player
-                return "00:00";
+                return "MAX";
             }
             TimeSpan time = timeEndUnlimitedLife - DateTime.Now;
             if (realTimeUnlimidtedLife < diffTime.TotalSeconds)
@@ -175,15 +235,15 @@ namespace IEC
             {
                 //ReducePlayer life when quit in time
                 levelPending = false;
-                if(!IsInUnlimitedLife()) playerLife--;
+                if(!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
             while (playerLife < Config.maxHealth)
             {
                 diffTime = DateTime.Now - timeStartCountAddLife;
-                if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= 30)
+                if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= Config.timeRefillLife)
                 {
-                    timeStartCountAddLife = timeStartCountAddLife.AddMinutes(30);
+                    timeStartCountAddLife = timeStartCountAddLife.AddMinutes(Config.timeRefillLife);
                     AddPlayerLife();
                 }
                 else
@@ -191,6 +251,10 @@ namespace IEC
                     break;
                 }
             }
+        }
+        public void SetTimeToNextLife(int minues)
+        {
+            timeStartCountAddLife = DateTime.Now.AddMinutes(-minues);
         }
 
         public void AddPlayerLife()
@@ -212,7 +276,7 @@ namespace IEC
                     //cheat player
                     return "00:00";
                 }
-                TimeSpan timeLeft = new TimeSpan(0, 0, 30, 0) - diffTime;
+                TimeSpan timeLeft = new TimeSpan(0, 0, Config.timeRefillLife, 0) - diffTime;
                 if (timeLeft.Ticks < 0) timeLeft = TimeSpan.Zero;
                 return new DateTime(timeLeft.Ticks).ToString("mm:ss");
             }
@@ -226,6 +290,9 @@ namespace IEC
         #endregion
         
         #region City build
+
+        [Header("City Build")] 
+        public bool shownFirstTimeBuildCityTut;
         public int currentCityBuild;
         public int screwCityBuild = 0;
         public Dictionary<int, CityData> buildCityData = new Dictionary<int, CityData>();
@@ -258,47 +325,154 @@ namespace IEC
         #endregion
         
         #region Player Avatar Profile
-
+        [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
         public string playerName;    
 
         #endregion
         
         #region LuckyWheel
-
+        [Header("LuckyWheel")]
         public DateTime lastTimeOpenWheel;
-        public int numberSpinWheelAdsLeft;
-
-        public void SetDataLuckyWheel()
+        //public int numberSpinWheelAdsLeft;//Disable, pay by ads or gold 
+        public bool firstSpinTutorial;
+        public bool luckWheelDailyFreeSpin;
+        public int luckWheelDailyAdsSpin;
+        public int luckWheelGoldTimeSpin;
+        public void ResetDataDay()
         {
+            //Another param need reset each 24 day come here
             if (lastTimeOpenWheel.Day != DateTime.Now.Day)
             {
                 lastTimeOpenWheel = DateTime.Now;
-                numberSpinWheelAdsLeft = Pool.Get<GameConfig>().dataRewardLuckyWheelConfig.numberSpinAdsEachDay;
+                luckWheelDailyFreeSpin = true;
+                luckWheelDailyAdsSpin = 0;
+                dailyShowPiggyBank = false;
+                dailyShowLifeOfferPack = false;
             }
         }
 
-        #region Resource Currency
 
-        public void AddGold(int value)
+        #endregion
+
+        #region Currency
+
+        private Func<int, int, int> add = (x, y) => x + y;
+        
+        //[ShowInInspector]
+        //Using different
+        public Dictionary<ResourceType, int> playerCurrencies = new Dictionary<ResourceType, int>();
+
+        public void InitCurrency()
         {
-            gold += value;
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+            if (playerCurrencies == null)
+            {
+                playerCurrencies = new Dictionary<ResourceType, int>();
+            }
+
+            foreach (var obj in Enum.GetValues(typeof(ResourceType)))
+            {
+                if (!playerCurrencies.ContainsKey((ResourceType)obj))
+                {
+                    playerCurrencies[(ResourceType)obj] = 0;
+                }
+            }
         }
-        //Custome another type currency here
+
+        public int GetPlayerCurrencyCount(ResourceType currencyType)
+        {
+            return playerCurrencies.TryGetValue(currencyType, out int value) ? value : -1;
+        }
+
+        public void AddCurrency(ResourceType currencyType, int amount, bool isUpdateUI = true)
+        {
+            if (currencyType == ResourceType.UnlimitedLive)
+            {
+                AddTimeUnlimitedLife(amount);
+            }
+            else if (playerCurrencies.ContainsKey(currencyType))
+            {
+                playerCurrencies[currencyType] += amount;
+            }
+            
+            if(isUpdateUI)
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+        }
+
+        public bool SubtractCurrency(ResourceType currencyType, int amount)
+        {
+            if (playerCurrencies.ContainsKey(currencyType))
+            {
+                if (playerCurrencies[currencyType] < amount)
+                {
+                    return false;
+                }
+
+                playerCurrencies[currencyType] -= amount;
+                switch (currencyType)
+                {
+                    case ResourceType.Gold:
+                        //AddAchievementProgress(AchievementType.SPEND_DIAMOND, amount);
+                        break;
+                }
+            }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+            return true;
+        }
+
+        public bool CanSpendCurrency(ResourceType currencyType, int amount)
+        {
+            if (playerCurrencies.ContainsKey(currencyType))
+            {
+                return playerCurrencies[currencyType] >= amount;
+            }
+
+            return false;
+        }
+        public void SetCurrency(ResourceType currencyType, int amount)
+        {
+            if (playerCurrencies.ContainsKey(currencyType))
+            {
+                playerCurrencies[currencyType] = amount;
+            }
+        }
 
         #endregion
-        #endregion
-
-        #region Started Pack IAP
+        
+        #region IAP
 
         public bool isBoughtStarterPack;
+        public DateTime timeEndStaredPack = DateTime.MinValue;
+        public List<string> listBundlePurchased = new List<string>();
 
+        public bool WasBuyIapPackNonConsume(string bundleId)
+        {
+            return listBundlePurchased.Contains(bundleId);
+        }
+        public void AddBundleIAPPurchased(string bundleId)
+        {
+            if (!WasBuyIapPackNonConsume(bundleId))
+            {
+                listBundlePurchased.Add(bundleId);
+            }
+            //Cache bundle buy once to 
+        }
         #endregion
 
         #region PiggyBank
 
         public int piggyBankGold;
+        public bool wasShowPiggyBankFirstTime;
+        public bool dailyShowPiggyBank;
+        public void AddGoldToPiggyBank(int value)
+        {
+            piggyBankGold += value;
+        }
+        public void CollectPiggyBankGold()
+        {
+            AddCurrency(ResourceType.Gold, piggyBankGold);
+            piggyBankGold = 0;
+        }
 
         #endregion
 
@@ -308,6 +482,7 @@ namespace IEC
         public int currentDailyAdReward = 0;
         public DateTime lastTimeOpenDailyReward;
         public long mainRewardCooldownTickTime;
+        public bool claimMainReward;
         public Dictionary<int, bool> adRewardsClaimed = new Dictionary<int, bool>();
         public double GetEndTimeDay(out string outputString)
         {
@@ -322,6 +497,35 @@ namespace IEC
             return time.TotalSeconds;
         }
         #endregion
+        
+        #region Add Helper Popup
 
+        public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();
+
+        public DateTime lastTimeResetAdsRewardHelper;
+
+        public void ResetAdsRewardHelper()
+        {
+            adRewardUsedAddHelper.Clear();
+            
+            lastTimeResetAdsRewardHelper = DateTime.Today;
+        }
+
+        public void UseAdRewardAddHelper(ResourceType helperType)
+        {
+            if (!adRewardUsedAddHelper.TryAdd(helperType, 0))
+            {
+                adRewardUsedAddHelper[helperType]++;
+            }
+        }
+
+        public int GetUsedAdRewardAddHelper(ResourceType helperType)
+        {
+            adRewardUsedAddHelper.TryAdd(helperType, 0);
+
+            return adRewardUsedAddHelper[helperType];
+        }
+
+        #endregion
     }
 }

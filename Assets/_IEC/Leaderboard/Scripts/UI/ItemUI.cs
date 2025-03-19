@@ -14,7 +14,7 @@ namespace IEC
         public void SetData(Sprite sprite, string txt)
         {
             img.sprite = sprite;
-            quantityText.text = txt;
+            quantityText.text = "x" + txt;
         }
     }
 }

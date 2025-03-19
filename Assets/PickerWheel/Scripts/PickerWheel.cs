@@ -23,15 +23,6 @@ namespace EasyUI.PickerWheelUI
         [SerializeField] private Transform wheelPiecesParent;
 
         [Space]
-        [Header("Sounds :")]
-        [SerializeField]
-        private AudioSource audioSource;
-
-        [SerializeField] private AudioClip tickAudioClip;
-        [SerializeField][Range(0f, 1f)] private float volume = .5f;
-        [SerializeField][Range(-3f, 3f)] private float pitch = 1f;
-
-        [Space]
         [Header("Picker wheel settings :")]
         [Range(1, 20)]
         public int spinDuration = 8;
@@ -47,7 +38,7 @@ namespace EasyUI.PickerWheelUI
         // Events
         private UnityAction onSpinStartEvent;
         private UnityAction<WheelPiece> onSpinEndEvent;
-
+        public List<RewardsLuckyWheel> listRewardLuckyWheel;
 
         private bool _isSpinning = false;
 
@@ -86,31 +77,23 @@ namespace EasyUI.PickerWheelUI
             CalculateWeightsAndIndices();
             if (nonZeroChancesIndices.Count == 0)
                 Debug.LogError("You can't set all pieces chance to zero");
-            SetupAudio();
         }
-        private void SetupAudio()
-        {
-            audioSource.clip = tickAudioClip;
-            audioSource.volume = volume;
-            audioSource.pitch = pitch;
-        }
-
         [Button("Load Data Wheel")]
-        private void LoadDataWheel()
+        public void LoadDataWheel()
         {
-            int numberPicec = dataWheel.listRewardLuckyWheel.Count;
+            int numberPicec = listRewardLuckyWheel.Count;
             wheelPieces = new WheelPiece[numberPicec];
             for (int i = 0; i < wheelPieces.Length; i++)
             {
                 WheelPiece data = new WheelPiece();
-                data.Icon = dataWheel.listRewardLuckyWheel[i].icon;
+                data.Icon = listRewardLuckyWheel[i].icon;
                 data.Label = "";
-                data.Amount = dataWheel.listRewardLuckyWheel[i].dataReward.rewardAmount;
-                data.Chance = dataWheel.listRewardLuckyWheel[i].percentageRandom;
-                data.dataReward = dataWheel.listRewardLuckyWheel[i];
+                data.Amount = listRewardLuckyWheel[i].dataReward.rewardAmount;
+                data.Chance = listRewardLuckyWheel[i].percentageRandom;
+                data.dataReward = listRewardLuckyWheel[i];
                 wheelPieces[i] = data;
             }
-
+            CalculateWeightsAndIndices();
         }
         private void Generate()
         {
@@ -134,8 +117,9 @@ namespace EasyUI.PickerWheelUI
         {
             WheelPiece piece = wheelPieces[index];
             Transform pieceTrns = InstantiatePiece().transform;
-
-            pieceTrns.GetChild(0).GetComponent<Image>().sprite = piece.Icon;
+            var img = pieceTrns.GetChild(0).GetComponent<Image>();
+            img.sprite = piece.Icon;
+            img.SetNativeSize();
             //pieceTrns.GetChild(1).GetComponent<Text>().text = piece.Label;
             pieceTrns.GetChild(1).GetComponent<TextMeshProUGUI>().text = piece.dataReward.dataReward.typeReward == ResourceType.UnlimitedLive ? (piece.Amount.ToString() + "m") : ("x" + piece.Amount.ToString());
             var pos = wheelPiecesParent.position;
@@ -147,7 +131,7 @@ namespace EasyUI.PickerWheelUI
             return Instantiate(wheelPiecePrefab, wheelPiecesParent.transform.position, Quaternion.identity, wheelPiecesParent);
         }
         [Button("Spin")]
-        public void Spin()
+        public void Spin(int debugSpinNum = -1)
         {
             if (!_isSpinning)
             {
@@ -155,7 +139,9 @@ namespace EasyUI.PickerWheelUI
                 if (onSpinStartEvent != null)
                     onSpinStartEvent.Invoke();
 
-                int index = GetRandomPieceIndex();
+                int index = debugSpinNum != -1 ? debugSpinNum : GetRandomPieceIndex();
+
+                index = Mathf.Clamp(index ,0, wheelPieces.Length - 1);
                 WheelPiece piece = wheelPieces[index];
 
                 if (piece.Chance == 0 && nonZeroChancesIndices.Count != 0)
@@ -189,7 +175,8 @@ namespace EasyUI.PickerWheelUI
                         {
                             if (isIndicatorOnTheLine)
                             {
-                                audioSource.PlayOneShot(audioSource.clip);
+                                //audioSource.PlayOneShot(audioSource.clip);
+                                EventController.RaiseEvent(EventList.Audio.LUCKY_WHEEL_TICK);
                             }
 
                             prevAngle = currentAngle;
@@ -203,6 +190,8 @@ namespace EasyUI.PickerWheelUI
                         _isSpinning = false;
                         if (onSpinEndEvent != null)
                             onSpinEndEvent.Invoke(piece);
+                        
+                        //EventController.RaiseEvent(EventList.Audio.LUCKY_WHEEL_END);
 
                         //onSpinStartEvent = null;
                         //onSpinEndEvent = null;
@@ -238,6 +227,7 @@ namespace EasyUI.PickerWheelUI
 
         private void CalculateWeightsAndIndices()
         {
+            accumulatedWeight = 0;
             for (int i = 0; i < wheelPieces.Length; i++)
             {
                 WheelPiece piece = wheelPieces[i];

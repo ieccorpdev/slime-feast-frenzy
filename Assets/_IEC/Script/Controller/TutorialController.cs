@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.VipProHackerUITutorial;
 using UnityEngine;
 
 namespace IEC
@@ -7,10 +8,23 @@ namespace IEC
     public class TutorialController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         Dictionary<string, EventYieldWait> m_DictYieldWait = new Dictionary<string, EventYieldWait>();
+        public GameObject darkBackGround;
+        public HighLightCanvas tutorialCanvas => Pool.Get<HighLightCanvas>();
+        public Transform hand;
 
         public void LocateController()
         {
             Controllers.Add(this);
+        }
+
+        public void BehaviourAwake()
+        {
+            darkBackGround.gameObject.SetActive(false);
+            hand.gameObject.SetActive(false);
+        }
+
+        public void BehaviourStart()
+        {
         }
 
         public bool IsActive()
@@ -25,6 +39,9 @@ namespace IEC
                 case EventList.GamePlay.NEW_GAME:
                     OnNewGame();
                     break;
+                case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
+                    OnNewGame();
+                    break;
             }
 
             if (m_DictYieldWait.TryGetValue(gameEvent, out var yieldWait))
@@ -34,23 +51,29 @@ namespace IEC
             }
         }
 
-        public void BehaviourAwake()
-        {
-        }
-
-        public void BehaviourStart()
-        {
-        }
 
         void OnNewGame()
         {
-            //HideTutorial();
 
-            // Condition show tutorial
-            //if (!Game.isHaveTutorial) return;
-            if (PlayerData.level > 1) return;
+        }
 
-            StartCoroutine(IEnumTemplateTutorial());
+
+        public void SetStatusAllPanelTutorial(bool stt)
+        {
+            darkBackGround.gameObject.SetActive(stt);
+            tutorialCanvas.imgDark.gameObject.SetActive(stt);
+            SetStatusHand(false);
+        }
+
+        public void ActiveHandAndSetPos(Vector3 pos)
+        {
+            SetStatusHand(true);
+            hand.transform.position = pos + Vector3.up;
+        }
+
+        public void SetStatusHand(bool stt)
+        {
+            hand.gameObject.SetActive(stt);
         }
 
         IEnumerator IEnumTemplateTutorial()
@@ -88,10 +111,7 @@ namespace IEC
 
         public override bool keepWaiting
         {
-            get
-            {
-                return isKeepWaiting;
-            }
+            get { return isKeepWaiting; }
         }
 
         public EventYieldWait()

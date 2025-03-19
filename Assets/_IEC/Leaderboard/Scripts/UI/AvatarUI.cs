@@ -29,7 +29,7 @@ namespace IEC
         }
         public void SetChosen(bool chosen)
         {
-            chosenObj.SetActive(chosen);
+            //chosenObj.SetActive(chosen);
             tickObj.SetActive(chosen);
         }
     }

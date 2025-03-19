@@ -46,7 +46,7 @@ namespace IEC
 
         private void HandleClick()
         {
-            //Services.PushEvent(new TrackingEvent.ClickBtnTracking("btn_setting_" + settingType));
+            Services.PushEvent(new TrackingEvent.ClickBtnTracking("btn_setting_" + settingType));
             SetButton(!IsSettingOn());
         }
 
@@ -56,8 +56,8 @@ namespace IEC
 
             DOTween.Kill(_tween_ID);
             
-            onText.gameObject.SetActive(isOn);
-            offText.gameObject.SetActive(!isOn);
+            // onText.gameObject.SetActive(isOn);
+            // offText.gameObject.SetActive(!isOn);
 
             offHandle.anchoredPosition = _offPos;
             onHandle.anchoredPosition = _onPos;
@@ -68,8 +68,8 @@ namespace IEC
             var initPos = moveObj.anchoredPosition;
             
             background.sprite = isOn ? backgroundOnSprite : backgroundOffSprite;
-            onText.gameObject.SetActive(isOn);
-            offText.gameObject.SetActive(!isOn);
+            // onText.gameObject.SetActive(isOn);
+            // offText.gameObject.SetActive(!isOn);
             
             moveObj.DOAnchorPos(endValue: targetObj.anchoredPosition, duration: 0.15f)
                 .SetId(_tween_ID)
@@ -94,28 +94,27 @@ namespace IEC
             offHandle.gameObject.SetActive(!isOn);
             onHandle.gameObject.SetActive(isOn);
                     
-            onText.gameObject.SetActive(isOn);
-            offText.gameObject.SetActive(!isOn);
+            // onText.gameObject.SetActive(isOn);
+            // offText.gameObject.SetActive(!isOn);
 
             background.sprite = isOn ? backgroundOnSprite : backgroundOffSprite;
         }
         
         private void ChangeSetting(bool isOn)
         {
-            //MeoMew need custom function sound and music after.
             switch (settingType)
             {
                 case SettingType.Music:
-                    PlayerData.isMusic = isOn;
-                    EventController.RaiseEvent(EventList.Setting.SETTING_MUSIC);
+                    PlayerData.isMusicOn = isOn;
+                    EventController.RaiseEvent(EventList.GamePlay.SETTING_MUSIC);
                     break;
                 case SettingType.Sound:
-                    PlayerData.isSound = isOn;
-                    EventController.RaiseEvent(EventList.Setting.SETTING_SOUND);
+                    PlayerData.isSoundOn = isOn;
+                    EventController.RaiseEvent(EventList.GamePlay.SETTING_SOUND);
                     break;
                 case SettingType.Vibrate:
-                    PlayerData.isVibrate = isOn;
-                    EventController.RaiseEvent(EventList.Setting.SETTING_VIBRATES);
+                    PlayerData.isVibrateOn = isOn;
+                    EventController.RaiseEvent(EventList.GamePlay.SETTING_VIBRATES);
                     break;
             }
         }
@@ -124,9 +123,9 @@ namespace IEC
         {
             return settingType switch
             {
-                SettingType.Music => PlayerData.isMusic,
-                SettingType.Sound => PlayerData.isSound,
-                SettingType.Vibrate => PlayerData.isVibrate,
+                SettingType.Music => PlayerData.isMusicOn,
+                SettingType.Sound => PlayerData.isSoundOn,
+                SettingType.Vibrate => PlayerData.isVibrateOn,
                 _ => false
             };
         }

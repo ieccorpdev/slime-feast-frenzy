@@ -9,8 +9,8 @@ namespace IEC.Wind.Leaderboard
 {
     public class PopupEditInfo : BasePopup
     {
-        public Button tabName, tabAvatar;
-
+        public Button tabName, tabAvatar,editButton;
+        public Image avatarMain;
         public Sprite tabOn, tabOff;
         public Color tabOnColorTxt, tabOffColorTxt;
 
@@ -32,8 +32,12 @@ namespace IEC.Wind.Leaderboard
 
             SetEvent(tabName, OnClickTabName);
             SetEvent(tabAvatar, OnClickTabAvatar);
+            //OnClickTabAvatar();
+            SetEvent(editButton, ()=>
+            {
+                m_inputName.ActivateInputField();
+            });
 
-            OnClickTabAvatar();
         }
         public override void Show()
         {
@@ -79,6 +83,11 @@ namespace IEC.Wind.Leaderboard
                 avatarUis[i].SetChosen(i == LeaderboardData.avatarId);
                 avatarUis[i].gameObject.SetActive(true);
             }
+        }
+
+        public void UpdateUI()
+        {
+            avatarMain.sprite = LeaderboardConfig.avatarSprites[LeaderboardData.avatarId];
         }
         private void OnEndEditEvent(string arg0)
         {

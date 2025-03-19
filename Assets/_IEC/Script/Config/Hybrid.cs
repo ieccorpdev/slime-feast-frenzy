@@ -22,7 +22,11 @@ namespace IEC
         Item1,
         Item2,
         Item3,
-        UnlimitedLive
+        UnlimitedLive,
+        HelperClear,
+        HelperUndo,
+        HelperShuffle,
+        HelperExpand,
     }
 
     [Serializable]

@@ -18,7 +18,6 @@ public class FillShaderEditor : MonoBehaviour
 
     void Awake()
     {
-        Debug.Log(name, this.gameObject);
         UpdateShaderBounds();
 
         var islandItem = transform.parent.GetComponent<IslandItem>();
@@ -72,31 +71,44 @@ public class FillShaderEditor : MonoBehaviour
         float fillHeight = Mathf.Lerp(minHeight, maxHeight, fillAmount);
         return fillHeight >= maxHeight;
     }
-
-    [Button]
+    
     void UpdateShaderBounds()
     {
-        if (!rend) return;
-        if (!rend.sharedMaterial) return;
-        
-        if (!mesh) return;
+        if (BaseShaderBound(out var localUp)) return;
+
+        // Use MaterialPropertyBlock to avoid creating new materials
+        mpb = new MaterialPropertyBlock();
+        rend.GetPropertyBlock(mpb);
+        mpb.SetVector("_LocalUp", localUp);
+        mpb.SetFloat("_MinHeight", minHeight);
+        mpb.SetFloat("_MaxHeight", maxHeight);
+        rend.SetPropertyBlock(mpb);
+    }
+
+    private bool BaseShaderBound(out Vector3 localUp)
+    {
+        localUp = Vector3.up;
+        if (!rend) return true;
+        if (!rend.sharedMaterial) return true;
+
+        if (!mesh) return true;
 
         if (IsFullyFilled())
-            return;
-        
+            return true;
+
         material = rend.sharedMaterial;
 
         // Compute true local up vector based on world up
-        Vector3 localUp = transform.InverseTransformDirection(Vector3.up).normalized;
+        localUp = transform.InverseTransformDirection(Vector3.up).normalized;
         material.SetVector("_LocalUp", localUp);
 
         // Find actual min/max along the local up axis by iterating all vertices
         Vector3[] vertices = mesh.vertices;
         minHeight = float.MaxValue;
         maxHeight = float.MinValue;
-        
+
         int vertexCount = vertices.Length;
-        
+
         for (int i = 0; i < vertexCount; i++)
         {
             float height = Vector3.Dot(vertices[i], localUp);
@@ -109,17 +121,21 @@ public class FillShaderEditor : MonoBehaviour
         {
             (minHeight, maxHeight) = (maxHeight, minHeight);
         }
-        
+
         // Add a slight offset to ensure full fill
         float offset = (maxHeight - minHeight) * 0.01f; // 1% of the object's height
-        maxHeight += offset; 
+        maxHeight += offset;
+        return false;
+    }
 
-        // Use MaterialPropertyBlock to avoid creating new materials
-        mpb = new MaterialPropertyBlock();
-        rend.GetPropertyBlock(mpb);
-        mpb.SetVector("_LocalUp", localUp);
-        mpb.SetFloat("_MinHeight", minHeight);
-        mpb.SetFloat("_MaxHeight", maxHeight);
-        rend.SetPropertyBlock(mpb);
+    [Button]
+    void SetShareShaderBound()
+    {
+        if (BaseShaderBound(out var localUp)) return;
+        
+        //Set Direction to shader base
+        rend.sharedMaterial.SetVector("_LocalUp", localUp);
+        rend.sharedMaterial.SetFloat("_MinHeight", minHeight);
+        rend.sharedMaterial.SetFloat("_MaxHeight", maxHeight);
     }
 }

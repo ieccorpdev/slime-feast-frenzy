@@ -11,6 +11,7 @@ namespace IEC
             public const string FACEBOOK_LOADED = "Service.FACEBOOK_LOADED";
             public const string INIT_AD_DONE = "Service.INIT_AD_DONE";
             public const string INIT_IAP_DONE = "Service.INIT_IAP_DONE";
+            public const string UPDATE_IAP = "Service.UPDATE_IAP";
             public const string COUNT_ONE_SEC = "Service.COUNT_ONE_SEC";
 
             public const string REMOTE_CONFIG_LOADED = "Service.REMOTE_CONFIG_LOADED";

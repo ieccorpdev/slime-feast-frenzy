@@ -16,7 +16,7 @@ namespace _IEC
         public Button ClaimButton;
         public Image rewardIcon;
         public TextMeshProUGUI amountText;
-        
+        public string id;
         [Header("Cooldown Timer")]
         public bool haveCooldown;
         public int cooldownTimeInMinutes = 60;
@@ -44,7 +44,7 @@ namespace _IEC
 
         public void UpdateButton(Reward rewardData)
         {
-            rewardIcon.sprite = Config.dataDailyRewardConfig.GetRewardSprite(rewardData.typeReward);
+            rewardIcon.sprite = Config.GetRewardSprite(rewardData);
             rewardIcon.SetNativeSize();
             amountText.text = "x" + rewardData.rewardAmount.ToString();
 
@@ -85,7 +85,7 @@ namespace _IEC
                 PlayerData.mainRewardCooldownTickTime = DateTime.Now.AddMinutes(cooldownTimeInMinutes).Ticks;
                 EventController.RaiseEvent(EventList.SAVE_DATA);
             }
-            
+            //Locator.Main.HomeScreenTab.UpdateMainHome();
             onClaim?.Invoke(this);
         }
 
@@ -101,7 +101,7 @@ namespace _IEC
                 
                 Services.ShowRewardAds(() =>
                 {
-                    Services.PushEvent(new SRApostition("claimDailyRewardWithAd"));
+                    Services.PushEvent(new SRApostition("claimDailyRewardWithAd_"+id));
                     ClaimReward();
                 }, null, true);
             }
@@ -109,12 +109,7 @@ namespace _IEC
 
         void HandleRewardClaim()
         {
-            switch (Reward)
-            {
-                case ResourceType.Gold:
-                    PlayerData.AddGold(RewardAmount);
-                    break;
-            }
+            PlayerData.AddCurrency(Reward,RewardAmount, false);
         }
 
         public void ResetButton()

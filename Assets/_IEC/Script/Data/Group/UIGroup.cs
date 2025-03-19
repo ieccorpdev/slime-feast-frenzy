@@ -17,6 +17,9 @@ namespace IEC
 
         public TMP_Text textHello;
         
+        public ScreenShopTest ScreenShopTest => Pool.Get<ScreenShopTest>();
+        public PopupFeature PopupFeature => Pool.Get<PopupFeature>();
+
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
 

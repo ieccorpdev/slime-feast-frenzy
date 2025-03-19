@@ -122,7 +122,7 @@ namespace IEC
                 Debug.unityLogger.filterLogType = LogType.Log;
             }
 
-            CameraHelper.SetMainCam(Camera.main);
+            //CameraHelper.SetMainCam(Camera.main);
             Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
 

@@ -12,46 +12,172 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 414f0ac02c93fb54b91bc8a64d883c1c, type: 3}
   m_Name: Data Reward Lucky Wheel Config
   m_EditorClassIdentifier: 
-  numberSpinAdsEachDay: 2
-  levelUnlock: 1
+  numberSpinAdsEachDay: 1
+  levelUnlock: 10
+  levelUnlockV2: 11
+  goldStart: 50
+  goldPerSpin: 25
   listRewardLuckyWheel:
-  - icon: {fileID: 21300000, guid: 0cfd99aba0fa0da42adce933be6585a7, type: 3}
-    percentageRandom: 25
+  - icon: {fileID: 21300000, guid: 821e79306ae798f4da86be1d3d447fd4, type: 3}
+    percentageRandom: 47
     dataReward:
       rewardAmount: 20
       typeReward: 0
-  - icon: {fileID: 21300000, guid: 0cfd99aba0fa0da42adce933be6585a7, type: 3}
+  - icon: {fileID: 21300000, guid: c0c3d3f2cb0a6b54e86c47ef1f6a2879, type: 3}
     percentageRandom: 15
     dataReward:
-      rewardAmount: 30
-      typeReward: 0
-  - icon: {fileID: 21300000, guid: 5286007fd7656514ba2ab6922463b7c5, type: 3}
-    percentageRandom: 13
-    dataReward:
-      rewardAmount: 50
-      typeReward: 0
-  - icon: {fileID: 21300000, guid: 5286007fd7656514ba2ab6922463b7c5, type: 3}
+      rewardAmount: 1
+      typeReward: 8
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
     percentageRandom: 12
-    dataReward:
-      rewardAmount: 75
-      typeReward: 0
-  - icon: {fileID: 21300000, guid: 6c371fc631d7bf84086af24b0c875f88, type: 3}
-    percentageRandom: 11
     dataReward:
       rewardAmount: 100
       typeReward: 0
-  - icon: {fileID: 21300000, guid: 6c371fc631d7bf84086af24b0c875f88, type: 3}
+  - icon: {fileID: 21300000, guid: 98f561b0ca5668845b20d9fc60e633be, type: 3}
     percentageRandom: 10
     dataReward:
-      rewardAmount: 150
-      typeReward: 0
-  - icon: {fileID: 21300000, guid: f3faed8315d33814d872a225e7c949eb, type: 3}
-    percentageRandom: 9
+      rewardAmount: 1
+      typeReward: 9
+  - icon: {fileID: 21300000, guid: d96fa0d29b5bd5a4f9b40bfb70ee1d61, type: 3}
+    percentageRandom: 7
     dataReward:
       rewardAmount: 200
       typeReward: 0
-  - icon: {fileID: 21300000, guid: f3faed8315d33814d872a225e7c949eb, type: 3}
-    percentageRandom: 5
+  - icon: {fileID: 21300000, guid: 296a8e0da30120c4a9058185d55d41d2, type: 3}
+    percentageRandom: 4
     dataReward:
       rewardAmount: 250
       typeReward: 0
+  - icon: {fileID: 21300000, guid: 9e584edc521da6747b647cb481f08176, type: 3}
+    percentageRandom: 3
+    dataReward:
+      rewardAmount: 1
+      typeReward: 7
+  - icon: {fileID: 21300000, guid: 5364c7c60124d6c4389162f97c87b595, type: 3}
+    percentageRandom: 2
+    dataReward:
+      rewardAmount: 60
+      typeReward: 6
+  listRewardTutorial:
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 20
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: c0c3d3f2cb0a6b54e86c47ef1f6a2879, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 8
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 100
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 98f561b0ca5668845b20d9fc60e633be, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 9
+  - icon: {fileID: 21300000, guid: d96fa0d29b5bd5a4f9b40bfb70ee1d61, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 200
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 296a8e0da30120c4a9058185d55d41d2, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 250
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 9e584edc521da6747b647cb481f08176, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 7
+  - icon: {fileID: 21300000, guid: 5364c7c60124d6c4389162f97c87b595, type: 3}
+    percentageRandom: 100
+    dataReward:
+      rewardAmount: 60
+      typeReward: 6
+  listRewardOverrideABTest:
+  - icon: {fileID: 21300000, guid: 821e79306ae798f4da86be1d3d447fd4, type: 3}
+    percentageRandom: 47
+    dataReward:
+      rewardAmount: 20
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: c0c3d3f2cb0a6b54e86c47ef1f6a2879, type: 3}
+    percentageRandom: 15
+    dataReward:
+      rewardAmount: 1
+      typeReward: 8
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
+    percentageRandom: 12
+    dataReward:
+      rewardAmount: 100
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 98f561b0ca5668845b20d9fc60e633be, type: 3}
+    percentageRandom: 10
+    dataReward:
+      rewardAmount: 1
+      typeReward: 9
+  - icon: {fileID: 21300000, guid: d96fa0d29b5bd5a4f9b40bfb70ee1d61, type: 3}
+    percentageRandom: 7
+    dataReward:
+      rewardAmount: 200
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 296a8e0da30120c4a9058185d55d41d2, type: 3}
+    percentageRandom: 4
+    dataReward:
+      rewardAmount: 500
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 9e584edc521da6747b647cb481f08176, type: 3}
+    percentageRandom: 3
+    dataReward:
+      rewardAmount: 1
+      typeReward: 7
+  - icon: {fileID: 21300000, guid: 5364c7c60124d6c4389162f97c87b595, type: 3}
+    percentageRandom: 2
+    dataReward:
+      rewardAmount: 60
+      typeReward: 6
+  listRewardTutorialOverrideABTest:
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 20
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: c0c3d3f2cb0a6b54e86c47ef1f6a2879, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 8
+  - icon: {fileID: 21300000, guid: dfef6afcd0e5b0d4486573a230a783c9, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 100
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 98f561b0ca5668845b20d9fc60e633be, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 9
+  - icon: {fileID: 21300000, guid: d96fa0d29b5bd5a4f9b40bfb70ee1d61, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 200
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 296a8e0da30120c4a9058185d55d41d2, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 500
+      typeReward: 0
+  - icon: {fileID: 21300000, guid: 9e584edc521da6747b647cb481f08176, type: 3}
+    percentageRandom: 0
+    dataReward:
+      rewardAmount: 1
+      typeReward: 7
+  - icon: {fileID: 21300000, guid: 5364c7c60124d6c4389162f97c87b595, type: 3}
+    percentageRandom: 100
+    dataReward:
+      rewardAmount: 60
+      typeReward: 6

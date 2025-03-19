@@ -2,14 +2,18 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Building_3
-  m_Shader: {fileID: 4800000, guid: 4535bb380c58aca47b7dabef1a7f6983, type: 3}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_VERTEX_ONLY _FULLRANGE_HARD_RAMP _USE8NEIGHBOURHOOD_ON
+  m_Shader: {fileID: 4800000, guid: e35907917ffb2ca4aba08902433925d9, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _ALPHAPREMULTIPLY_VERTEX_ONLY
+  - _FULLRANGE_HARD_RAMP
+  - _USE8NEIGHBOURHOOD_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -65,6 +69,7 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
     - PixelSnap: 0
     - _BaseY: -2.15
@@ -82,8 +87,9 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _Hue: 0
-    - _MaxHeight: 2.42
+    - _MaxHeight: 1.710292
     - _Metallic: 0
+    - _MinHeight: -0.8716606
     - _Mode: 0
     - _OcclusionStrength: 1
     - _OutlineMipLevel: 0
@@ -111,6 +117,7 @@ Material:
     - _Center: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LocalUp: {r: 0, g: 1, b: 0, a: 0}
     - _OutlineColor: {r: 1, g: 1, b: 0, a: 1}
     - _OverlayColor: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

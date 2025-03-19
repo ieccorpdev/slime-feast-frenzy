@@ -28,12 +28,18 @@ public class PrefabHelper
     {
         return Clone(prefab).GetComponent<T>();
     }
-
+    public static T GetObjectPool<T>(GameObject prefab)
+    {
+        return GetObjectPool(prefab).GetComponent<T>();
+    }
     public static GameObject Clone(GameObject prefab)
     {
         return prefab.Spawn();
+    }   
+    public static GameObject GetObjectPool(GameObject prefab)
+    {
+        return prefab.GetObjectPool();
     }
-
     public static GameObject Clone(GameObject prefab, Transform parent)
     {
         return prefab.Spawn(parent);

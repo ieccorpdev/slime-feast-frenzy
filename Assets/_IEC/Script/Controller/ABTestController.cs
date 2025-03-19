@@ -247,6 +247,7 @@ namespace IEC
 
         void ResultAllAbTest()
         {
+            Game.IsMultiCard = true;
         }
 
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()
@@ -263,5 +264,12 @@ namespace IEC
         void ResultAb20150101() {}
         void UpdateAb20150101(int abValue) {}
         */
+        void ResultAb20250123()
+        {
+
+        }
+        void UpdateAb20250123(int abValue)
+        {
+        }
     }
 }

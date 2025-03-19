@@ -5,9 +5,8 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class PopupRankInfo : _BaseBehaviour
+    public class PopupRankInfo : BasePopup
     {
-        public Button btnClose;
         public GameObject glowObj;
         public List<Transform> lstRanks = new List<Transform>();
         private void Start()
@@ -19,7 +18,7 @@ namespace IEC
             int index = (int)LeaderboardData.currentRankView;
             glowObj.transform.position = lstRanks[index].transform.position;
         }
-        public void Show()
+        public override void Show()
         {
             gameObject.SetActive(true);
             int index = (int)LeaderboardData.currentRankView;

@@ -25,18 +25,18 @@ namespace IEC
         {
             return Vector3.Distance(target.anchoredPosition, defaultPos) < 1f;
         }
-        public void MoveOut(string idTwween,Action onComplete = null)
+        public void MoveOut(string idTwween,float timeAnim = 0.3f,Action onComplete = null)
         {
-            target.DOAnchorPos(GetDestinationPos(), 0.3f)
+            target.DOAnchorPos(GetDestinationPos(), timeAnim)
                 .SetEase(Ease.InQuad)
                 .OnComplete(() =>
                 {
                     onComplete?.Invoke();
                 }).SetId(idTwween);
         }
-        public void MoveBack(string idTwween,Action onComplete = null)
+        public void MoveBack(string idTwween,float timeAnim = 0.3f,Action onComplete = null)
         {
-            target.DOAnchorPos(defaultPos, 0.3f)
+            target.DOAnchorPos(defaultPos, timeAnim)
                 .SetEase(Ease.OutQuad)
                 .OnComplete(() =>
                 {
@@ -49,10 +49,15 @@ namespace IEC
             target.anchoredPosition = GetDestinationPos();
         }
 
-        public void SetOutMoveBack(string idTwween,Action onComplete = null)
+        public void SetObjDefaultPos()
+        {
+            target.anchoredPosition = defaultPos;
+        }
+
+        public void SetOutMoveBack(string idTwween,float timeAnim,Action onComplete = null)
         {
             target.anchoredPosition = GetDestinationPos();
-            MoveBack(idTwween,onComplete);
+            MoveBack(idTwween,timeAnim,onComplete);
         }
         public Vector3 GetDestinationPos()
         {

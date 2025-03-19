@@ -68,9 +68,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Got It
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: da3fe97396e1bfc43a1cfcb85391308e, type: 2}
-  m_sharedMaterial: {fileID: -9199339135717756740, guid: da3fe97396e1bfc43a1cfcb85391308e,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -212,9 +211,10 @@ MonoBehaviour:
   blackPanel: {fileID: 1030909185079180481}
   mainPanel: {fileID: 3609152173416458256}
   isHaveAnim: 1
+  isHaveAnimClose: 1
   isShowBlackPanel: 1
-  isLockClick: 0
-  getBtn: {fileID: 6229943256595039522}
+  showEase: 5
+  getBtn: {fileID: 0}
   medalImg: {fileID: 6821560515258772196}
   eventImg: {fileID: 3951436565324473370}
   adsObj: {fileID: 2696115286809309623}
@@ -605,9 +605,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: x2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: da3fe97396e1bfc43a1cfcb85391308e, type: 2}
-  m_sharedMaterial: {fileID: -9199339135717756740, guid: da3fe97396e1bfc43a1cfcb85391308e,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -741,9 +740,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: DOUBLE MEDAL
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: da3fe97396e1bfc43a1cfcb85391308e, type: 2}
-  m_sharedMaterial: {fileID: -9199339135717756740, guid: da3fe97396e1bfc43a1cfcb85391308e,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -877,9 +875,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Double Medal reward received for 30 minutes
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: da3fe97396e1bfc43a1cfcb85391308e, type: 2}
-  m_sharedMaterial: {fileID: -9199339135717756740, guid: da3fe97396e1bfc43a1cfcb85391308e,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1443,7 +1440,6 @@ GameObject:
   - component: {fileID: 8242575990157014891}
   - component: {fileID: 4918459934892908166}
   - component: {fileID: 5705214654217874077}
-  - component: {fileID: 6229943256595039522}
   m_Layer: 5
   m_Name: Button-Get
   m_TagString: Untagged
@@ -1556,20 +1552,6 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &6229943256595039522
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9200474315352653821}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9d892906914284b4081db9359b3be01e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  adsObj: {fileID: 2696115286809309623}
-  ticket: {fileID: 9063739698800118255}
 --- !u!1001 &5127910222583831419
 PrefabInstance:
   m_ObjectHideFlags: 0

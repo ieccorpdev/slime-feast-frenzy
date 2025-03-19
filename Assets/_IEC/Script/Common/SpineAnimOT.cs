@@ -170,7 +170,12 @@ public class SpineAnimOT : MonoBehaviour
         Awake();
     }
 
-    void AddCallBack(string anim, Action callBack)
+    public void RemoveAllCallBack()
+    {
+        callBackStartDic.Clear();
+        callBackEndDic.Clear();
+    }
+    public void AddCallBack(string anim, Action callBack)
     {
         if (callBackEndDic.ContainsKey(anim))
         {

@@ -19,6 +19,8 @@ namespace _IEC
 
         public int CurrentGoldClaimed { get; private set; } = 0;
 
+        private Dictionary<ResourceType, int> listRewardByType = new();
+
         public bool RewardAvailable
         {
             get
@@ -28,11 +30,10 @@ namespace _IEC
                     if (!PlayerData.adRewardsClaimed.ContainsKey(i))
                         return true;
                 }
-
-                if (PlayerData.mainRewardCooldownTickTime - DateTime.Now.Ticks <= 0)
-                    return true;
-
-                return false;
+                return !PlayerData.claimMainReward;
+                //if (PlayerData.mainRewardCooldownTickTime - DateTime.Now.Ticks <= 0)
+                //    return true;
+                ///return false;
             }
         }
 
@@ -76,13 +77,23 @@ namespace _IEC
             
             if(btn.Reward == ResourceType.Gold)
                 CurrentGoldClaimed += btn.RewardAmount;
+
+            if (!listRewardByType.TryAdd(btn.Reward, btn.RewardAmount))
+            {
+                listRewardByType[btn.Reward] += btn.RewardAmount;
+            }
             
             EventController.RaiseEvent(EventList.SAVE_DATA);
         }
 
         void OnMainRewardClaim(RewardButton btn)
         {
-            CurrentGoldClaimed += btn.RewardAmount;
+            PlayerData.claimMainReward = true;
+            if (!listRewardByType.TryAdd(btn.Reward, btn.RewardAmount))
+            {
+                listRewardByType[btn.Reward] += btn.RewardAmount;
+            }
+            EventController.RaiseEvent(EventList.SAVE_DATA);
         }
 
         public override void Show()
@@ -96,8 +107,20 @@ namespace _IEC
         public override void Hide()
         {
             base.Hide();
-            UpdatePlayerGold();
+            //UpdatePlayerGold();
             Locator.Main.HomeScreenTab.UpdateMainHome();
+
+            SpawnClaimRewardEffect();
+        }
+
+        private void SpawnClaimRewardEffect()
+        {
+            foreach (var reward in listRewardByType)
+            {
+                Locator.Main.ScreenMain.AddRewardClaimEffect(reward.Key, reward.Value);
+            }
+            Locator.Main.ScreenMain.DoAnimAllAvailableReward();
+            listRewardByType.Clear();
         }
 
         void UpdatePlayerGold()
@@ -125,6 +148,7 @@ namespace _IEC
             {
                 //if (adRewards[i].RewardClaimed)
                 adRewards[i].UpdateButton(Config.dataDailyRewardConfig.dailyRewards[i]);
+                adRewards[i].id = (i+1).ToString();
                 if (PlayerData.adRewardsClaimed.ContainsKey(i) && PlayerData.adRewardsClaimed[i] && i <= CurrentAdReward)
                 {
                     adRewards[i].SetButtonState(RewardButtonState.Claimed);
@@ -140,13 +164,14 @@ namespace _IEC
                     adRewards[i].SetButtonState(RewardButtonState.Unavailable);
                 }
             }
+            mainReward.SetButtonState(PlayerData.claimMainReward ? RewardButtonState.Claimed : RewardButtonState.Available);
         }
 
         void UpdateDailyRewardCountdown()
         {
             string endTime = "";
             PlayerData.GetEndTimeDay(out endTime);
-            dailyCountdownText.text = $"RESETS IN " + endTime;
+            dailyCountdownText.text = $"Reset in " + endTime;
             
             if(PlayerData.lastTimeOpenDailyReward != DateTime.Today)
                 OnResetDailyReward();
@@ -156,6 +181,8 @@ namespace _IEC
         {
             PlayerData.currentDailyAdReward = 0;
             PlayerData.adRewardsClaimed.Clear();
+            PlayerData.claimMainReward = false;
+            
             PlayerData.lastTimeOpenDailyReward = DateTime.Today;
             EventController.RaiseEvent(EventList.SAVE_DATA);
             
@@ -164,7 +191,7 @@ namespace _IEC
             {
                 btn.ResetButton();
             }
-            
+            mainReward.ResetButton();
             UpdateUI();
         }
     }

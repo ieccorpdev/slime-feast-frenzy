@@ -13,6 +13,7 @@ public class HoldingButton : _BaseBehaviour, IPointerDownHandler, IPointerUpHand
     [Range(0.0f, 1.0f)]
     public float seconds = 0.5f;
     public bool stackWhenHold = false;
+    public bool doPunchAnimOnHold = true;
     public UnityEvent onPressedOverSeconds;
     public bool buttonPressed;
     private float time = 0;
@@ -45,7 +46,7 @@ public class HoldingButton : _BaseBehaviour, IPointerDownHandler, IPointerUpHand
     public void StopHolding()
     {
         buttonPressed = false;
-        if (punchTween != null && punchTween.IsPlaying())
+        if (punchTween != null && punchTween.IsPlaying() && punchTween.active)
         {
             punchTween.Kill(); // Stop the tween
         }
@@ -89,6 +90,9 @@ public class HoldingButton : _BaseBehaviour, IPointerDownHandler, IPointerUpHand
     
     void StartPunchScaleLoop()
     {
+        if (!doPunchAnimOnHold)
+            return;
+        
         if (punchTween == null || !punchTween.IsPlaying())
         {
             punchTween = gameObject.transform.DOPunchScale((Vector3.down + Vector3.left)*0.05f, 0.1f).SetEase(Ease.InOutSine).SetLoops(-1, LoopType.Yoyo).SetId($"PunchScaleLoop{gameObject.GetInstanceID()}"); // Loop infinitely with a Yoyo type

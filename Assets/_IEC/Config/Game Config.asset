@@ -12,34 +12,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9257bdeb20d91f74da19e262828713ae, type: 3}
   m_Name: Game Config
   m_EditorClassIdentifier: 
+  baseLevelAssetFile: BaseLevel.asset
+  customLevelAssetFile: Level_Custom_V1.asset
+  hardLevelAssetFile: HardLevels.asset
+  listLevelLoopOverride:
+  - 03152025_Loop1.asset
+  - 03152025_Loop2.asset
   maxHealth: 5
+  levelUnlockLife: 10
+  timeRefillLife: 15
   goldToRefill: 250
+  goldToAddOneLife: 100
+  goldLevelWin: 10
+  levelWinBackHome: 10
+  levelShowInter: 4
   emptyConfig: {fileID: 11400000, guid: 231ec135209542c40aa5d332c3cdfd5e, type: 2}
+  helperConfig: {fileID: 11400000, guid: 08b92ab374140074a908b245d4419fbf, type: 2}
   hybridConfig: {fileID: 11400000, guid: bd9b5bf7c657dd74ea98bafda3afd8d6, type: 2}
   playerAvatarConfig: {fileID: 11400000, guid: e85e193b70060164cb1a6c9fed61e1e5, type: 2}
   dataRewardLuckyWheelConfig: {fileID: 11400000, guid: a00b1c60d63b0664f81dd834986b65cd,
     type: 2}
-  dataPiggyBank: {fileID: 11400000, guid: 2b05c790a61d69740b6ad7a2aaeeaeec, type: 2}
+  dataPiggyBankConfig: {fileID: 11400000, guid: 33f3d599213947c48a0c96f44f912dfc,
+    type: 2}
   dataDailyRewardConfig: {fileID: 11400000, guid: f24955c5f5a76854fa48900f0d80cf03,
     type: 2}
+  brickWinReward: 15
   buildCityConfig: {fileID: 11400000, guid: 2b6ab9017486fde4d902ab21a7b040e9, type: 2}
-  rewardSprites:
+  defaultRewardSprites:
   - type: 0
-    icon: {fileID: 21300000, guid: 0cfd99aba0fa0da42adce933be6585a7, type: 3}
-  - type: 1
-    icon: {fileID: 21300000, guid: 97b4734326856ae40a3dd5a4a34cd7df, type: 3}
+    icon: {fileID: 21300000, guid: d1e232d63d3da5047aaad61af72b02de, type: 3}
   - type: 2
-    icon: {fileID: 21300000, guid: d796e2e0ce32a004e8e9143e94bc5bad, type: 3}
-  - type: 3
-    icon: {fileID: 21300000, guid: b4e576e34348fd64ba199208f800dbb1, type: 3}
-  - type: 4
-    icon: {fileID: 21300000, guid: 50a996744b25fd34ea58a2967e88dfb8, type: 3}
-  - type: 5
-    icon: {fileID: 21300000, guid: c091fe2fc73c03445b1ca332ffe7cd2d, type: 3}
+    icon: {fileID: 21300000, guid: 15c80d280377cad4fb6c34a4bae2f601, type: 3}
   - type: 6
-    icon: {fileID: 21300000, guid: 287f86b855787764f94195dd1d717725, type: 3}
+    icon: {fileID: 21300000, guid: 9247f6deddab7d140a609c79cee7db4c, type: 3}
+  - type: 7
+    icon: {fileID: 21300000, guid: 5e42d99a3fc9e0946803cbec67f34bcc, type: 3}
+  - type: 8
+    icon: {fileID: 21300000, guid: af1118b74e7270644b862537b82a67d4, type: 3}
+  - type: 9
+    icon: {fileID: 21300000, guid: 19fbe1b41ca798046a8904bf750aa83b, type: 3}
   goldSprites:
-  - {fileID: 21300000, guid: 0cfd99aba0fa0da42adce933be6585a7, type: 3}
-  - {fileID: 21300000, guid: 5286007fd7656514ba2ab6922463b7c5, type: 3}
-  - {fileID: 21300000, guid: 6c371fc631d7bf84086af24b0c875f88, type: 3}
-  - {fileID: 21300000, guid: f3faed8315d33814d872a225e7c949eb, type: 3}
+  - {fileID: 21300000, guid: d1e232d63d3da5047aaad61af72b02de, type: 3}
+  - {fileID: 21300000, guid: 528bfa65bcdae504ba8f0a4c4cc99512, type: 3}
+  - {fileID: 21300000, guid: 5681e75d00c4dec4da49cd92a8d63964, type: 3}
+  - {fileID: 21300000, guid: d134148b3d16dde42ad1a233c2e75cbb, type: 3}
+  levelBeginnerPackWin: 120000001e00000032000000
+  levelNoAdsPackWin: 19000000280000003c00000064000000
+  listAllIapPackConfig:
+  - {fileID: 11400000, guid: e7bbf96fbf085744ebb29bea8041da77, type: 2}
+  - {fileID: 11400000, guid: 767914f5dbdf0e54092a9fea47b17eac, type: 2}
+  - {fileID: 11400000, guid: 9e3001f31117f3e42baceb83dbea8c75, type: 2}
+  - {fileID: 11400000, guid: 28e2991a41fb55746b5368277e67c2da, type: 2}
+  - {fileID: 11400000, guid: 937ed1d8922d94c4bba5d84f7249b4e6, type: 2}
+  - {fileID: 11400000, guid: ff3fea66b1d2a0a499918764625fd389, type: 2}
+  - {fileID: 11400000, guid: 75c95beba12e67647b602e49a0622e2b, type: 2}
+  - {fileID: 11400000, guid: 63d18b48a84de0444b9ad9bce164c683, type: 2}
+  - {fileID: 11400000, guid: f38feb91fc021774e96caa97169e673b, type: 2}
+  - {fileID: 11400000, guid: 995ea122a5a066343b36438838059fae, type: 2}
+  - {fileID: 11400000, guid: be78dea869336ca4c8399af6235f463a, type: 2}
+  - {fileID: 11400000, guid: 9debcb6219a497447828b354f1d84408, type: 2}
+  - {fileID: 11400000, guid: 5088a3780da874f45ab7cb876f4cf984, type: 2}
+  - {fileID: 11400000, guid: c55088700b4939e48908aba21880155d, type: 2}
+  - {fileID: 11400000, guid: f8de64eec49690347bf78283811edc39, type: 2}
+  - {fileID: 11400000, guid: f66e54e2d6e8a494cbf9499877d94798, type: 2}
+  - {fileID: 11400000, guid: f792c59b41266c4478a7908d09dc6aa3, type: 2}
+  usingLevelGDV1: 1
+  levelStartHardLevel: 76
+  loseBeforeAllowSkipHardLevel: 1
+  stepBetweenHardLevels: 10
+  amountGoldRewardMultiply: 2
+  popupAddHelperConfig: {fileID: 11400000, guid: 3aab09cb50a2051488ed38b0eb2b1490,
+    type: 2}
+  dataEffectRewardClaimConfig: {fileID: 11400000, guid: ada35550eac0bc640be05170a8a20e60,
+    type: 2}

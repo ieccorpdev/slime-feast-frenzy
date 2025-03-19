@@ -22,12 +22,18 @@ namespace IEC
                     break;
                 case EventList.GamePlay.NEW_GAME:
                     UI.ShowScreen(Locator.Game.ScreenInGame);
-                    // UI.ShowScreen(UI.ScreenInGame);
-                    // UI.ScreenInGame.SetLevel(PlayerData.level);
+                    Locator.Game.ScreenInGame.SetLevel(PlayerData.level);
+                    break;
+                case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
+                    UI.ShowScreen(Locator.Game.ScreenInGame);
+                    Locator.Game.ScreenInGame.SetLevelHard();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     // UI.ShowScreen(UI.ScreenLevelWin);
-                    UI.ShowScreen(Locator.Game.ScreenLevelWin);
+                    if(GamePlay.IsInLevelHard)
+                        UI.ShowScreen(Locator.Game.ScreenLevelWinHard);
+                    else
+                        UI.ShowScreen(Locator.Game.ScreenLevelWin);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     // UI.ShowScreen(UI.ScreenLevelLose);

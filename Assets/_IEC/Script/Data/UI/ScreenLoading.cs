@@ -13,6 +13,11 @@ namespace IEC
     {
         [SerializeField] private Image m_Progress;
 
+        public void Awake()
+        {
+            EncryptedAssetModule.LoadPackage(this);
+        }
+
         public void ShowLoading(float timeShow, Action loadingDoneCallback = null)
         {
             base.Show();
@@ -24,5 +29,11 @@ namespace IEC
                 loadingDoneCallback?.Invoke();
             });
         }
+        public void ShowLoading()
+        {
+            base.Show();
+            m_Progress.fillAmount = 0;
+        }
     }
+    
 }

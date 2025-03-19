@@ -32,7 +32,8 @@ public class BuildCity : _BaseBehaviour
     [Header("cityContinue new")] public TextMeshProUGUI nameCityEndingTMP_2;
     public Button nextButton;
     public Button backButton;
-    [Header("Reward")] public CityBuildRewardPanel cityReward;
+    [Header("Reward")]
+    public ClaimBonusRewardPanel cityReward;
     [Header("Data")] public List<IslandModelInfo> listAllIsland; //Move to prefab and create after
     public IslandModelInfo currentIsland;
     public UIBuildCityState currentState;
@@ -42,6 +43,12 @@ public class BuildCity : _BaseBehaviour
     public List<GameObject> poolingScrewFlying;
 
     [Header("SelectedCity")] public GameObject poolCity;
+
+    [Header("Tutorial")] 
+    public GameObject tutDarkBG;
+    public Animator tutAnimator;
+    public HoldingButton tutAllBGHoldBtn;
+    
 
     public int idSelectedIsland = 0;
     private float distanceEachIsland = 35;
@@ -56,12 +63,30 @@ public class BuildCity : _BaseBehaviour
     private Sequence _completedBuildSequence;
 
     private Vector3 _initCamPos;
-    private Vector3 _buildCamPos => _initCamPos + Vector3.down * 10f;
+    private Vector3 _buildCamPos => _initCamPos + Vector3.down * 7f;
+    public bool CanBuildCity => PlayerData.currentCityBuild < Config.buildCityConfig.dataCity.Count;
 
+    public int ScrewNeedFinishIsland => currentIsland.AmountLeftToCompleteIsland;
+    
     public void OnExitBuildCity()
     {
         Locator.Main.HomeScreenTab.DoMoveBackAllObj();
     }
+
+    public void OnPressPlayBuildCity()
+    {
+
+            if (PlayerData.playerLife > 0 || PlayerData.IsInUnlimitedLife())
+            {
+                GameController.OpenScene(GameScene.Game);
+            }
+            else
+            {
+                Locator.Main.HomeScreenTab.DoMoveBackAllObj(0,
+                    () => { Locator.Main.HomeScreenTab.playButton.onClick.Invoke(); });
+            }
+    }
+    
     
     #region Change Screen Anim
         
@@ -115,7 +140,17 @@ public class BuildCity : _BaseBehaviour
 
         _uiAnimSequence.Play();
     }
-    
+
+    public void DoMoveBackAllObjNoAnim()
+    {
+        foreach (var obj in _listObjMoveOut)
+        {
+            obj.SetObjDefaultPos();
+        }
+        buildCityCamera.transform.position = _buildCamPos;
+        nameCityEndingTMP_2.transform.localScale = Vector3.one;
+    }
+
     public void DoMoveBackAllObj(Action onComplete = null)
     {
         DOTween.Kill(_uiAnimSequence);
@@ -135,7 +170,7 @@ public class BuildCity : _BaseBehaviour
                 buildCityCamera.transform.DOMove(_buildCamPos, 0.2f).SetEase(Ease.OutQuad);
             });
         
-        delay += 0.3f;
+        delay += 0.2f;
 
         nameCityEndingTMP_2.transform.localScale = Vector3.zero;
         _uiAnimSequence.InsertCallback(delay,
@@ -143,13 +178,13 @@ public class BuildCity : _BaseBehaviour
             {
                 for (int i = 0; i < _listObjMoveOut.Count; i++)
                 {
-                    _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}");
+                    _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}",0.2f);
                 }
 
                 nameCityEndingTMP_2.transform.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutQuad);
             });
         
-        delay += 0.3f;
+        delay += 0.2f;
 
         _uiAnimSequence.InsertCallback(delay,
             () =>
@@ -166,25 +201,37 @@ public class BuildCity : _BaseBehaviour
     {
         _initCamPos = buildCityCamera.transform.position;
         
-        InitMoveOutAnimation();
-    }
-
-    void Start()
-    {
-        CreatePool();
-        ChangeStateUI();
-        currentState = UIBuildCityState.NONE;
         continueBtn.onClick.AddListener(OnContinueClickBtn);
-        backHomeButton.onClick.AddListener(OnContinueClickBtn);
+        backHomeButton.onClick.AddListener(OnBackHomeClickBtn);
         holdToBuildBtn.onClick.AddListener(OnHoldingBuildCity);
         nextRewardBtn.onClick.AddListener(OnCompleteCity);
         backButton.onClick.AddListener(MoveBackIsland);
         nextButton.onClick.AddListener(MoveNextIsland);
+        
+        InitMoveOutAnimation();
+        
+        HideTutBuildCity();
+    }
+
+    void Start()
+    {
+        InitBuildCity();
+    }
+
+    public void InitBuildCity()
+    {
+        CreatePool();
+        ChangeStateUI();
+        currentState = GetStateIsLock();
         InitPositionAllIsland();
         ShowScale();
         MoveToCurrentIsland();
     }
 
+    public UIBuildCityState GetStateIsLock()
+    {
+        return PlayerData.level < Config.buildCityConfig.levelUnlock ? UIBuildCityState.LOCK : UIBuildCityState.NONE;
+    }
     // void Update()
     // {
     //     if (Input.GetKeyDown(KeyCode.S))
@@ -203,19 +250,76 @@ public class BuildCity : _BaseBehaviour
     //     }
     // }
 
+    public void ShowTutBuildCity()
+    {
+        if (!Game.isUsingBuildV2Flow)
+            return;
+        
+        if (PlayerData.shownFirstTimeBuildCityTut)
+            return;
+        
+        PlayerData.shownFirstTimeBuildCityTut = true;
+        
+        tutDarkBG.gameObject.SetActive(true);
+        tutAnimator.gameObject.SetActive(true);
+        tutAllBGHoldBtn.gameObject.SetActive(true);
+        
+        backHomeButton.gameObject.SetActive(false);
+
+        tutAnimator.Play("BuildCityTutPress");
+    }
+
+    public void HideTutBuildCity()
+    {
+        tutDarkBG.gameObject.SetActive(false);
+        tutAnimator.gameObject.SetActive(false);
+        tutAllBGHoldBtn.gameObject.SetActive(false);
+        
+        backHomeButton.gameObject.SetActive(true);
+        
+    }
+    
     public void OnHoldingBuildCity()
     {
+
+        if (tutAnimator.gameObject.activeInHierarchy)
+        {
+            if (tutDarkBG.gameObject.activeInHierarchy)
+            {
+                tutDarkBG.gameObject.SetActive(false);
+                //tutAnimator.Play("BuildCityTutHold");
+            }
+        }
+        
         if (PlayerData.screwCityBuild > 0 && currentIsland.maxScrewCanSpend > 0 && canSpendScrew)
         {
             Vector3 target = currentIsland.currentSelectedObj.GetComponent<IslandItem>().GetCenterObject();
-            SpawnObjectScrew(GetRandomPositionInSphere(target, 1f));
+            SpawnObjectScrew(target);
+            EventController.RaiseEvent(EventList.Audio.BUILD);
         }
 
+        if (currentIsland.maxScrewCanSpend <= 0 && currentIsland.LastIsland() && !currentIsland.isCompleteIsland && CanBuildCity)
+        {
+            HideTutBuildCity();
+            currentIsland.CompleteItem();
+            return;
+        }
+        
         if (PlayerData.screwCityBuild <= 0)
         {
             holdToBuildBtn.GetComponent<HoldingButton>().StopHolding();
-            currentState = UIBuildCityState.CONTINUECITY;
-            ChangeStateUI();
+
+            if (tutAnimator.gameObject.activeInHierarchy)
+            {
+                HideTutBuildCity();
+            }
+            
+            //MeoMew add code block when complete with correct screw need 
+            if (!currentIsland.isCompleteIsland)
+            {
+                currentState = UIBuildCityState.CONTINUECITY;
+                ChangeStateUI();
+            }
         }
     }
 
@@ -224,34 +328,56 @@ public class BuildCity : _BaseBehaviour
     [Button()]
     public void ShowRewardCity()
     {
-        //MeoMew Disable, no reward when write this code
-        // currentState = UIBuildCityState.GETREWARD;
-        // ChangeStateUI();
-        // BuildCityDataConfig dataConfig = Config.buildCityConfig.dataCity.Find(x => x.idCity == currentIsland.idIsland);
-        // cityReward.SetupRewardPanel(dataConfig);
-        // cityReward.ShowingRewardPanel();
-        OnClaimReward();
+        currentState = UIBuildCityState.GETREWARD;
+        ChangeStateUI();
+        BuildCityDataConfig dataConfig = Config.buildCityConfig.dataCity.Find(x => x.idCity == currentIsland.idIsland);
+        cityReward.SetupRewardPanel(ConvertDataCityReward(dataConfig),OnClaimReward); 
+        cityReward.ShowingRewardPanel();
+        //OnClaimReward();
     }
-
+    public List<Reward> ConvertDataCityReward(BuildCityDataConfig dataConfig)
+    {
+        List<Reward> listReward = new List<Reward>();
+        foreach (var ctR in dataConfig.listReward)
+        {
+            //Convert
+            Reward nrw = new Reward(ctR.rewardAmount,ctR.typeCityReward);
+            listReward.Add(nrw);
+        }
+        return listReward;
+    }
     public void SpawnObjectScrew(Vector3 destination)
     {
         PlayerData.screwCityBuild -= 1;
         currentIsland.maxScrewCanSpend -= 1;
-        GameObject screwFly = GetFlyScrewInPool();
-        screwFly.transform.position = holdToBuildBtn.transform.position;
-        screwFly.transform.rotation = UnityEngine.Random.rotation;
-        var m_props = new MaterialPropertyBlock();
-        m_props.SetVector("_Offset", new Vector4(0.223f * 0, -0.1f * UnityEngine.Random.Range(0, 10), 0, 0));
-        screwFly.GetComponent<MeshRenderer>().SetPropertyBlock(m_props);
-        bool lastScrew = currentIsland.maxScrewCanSpend == 0;
-        screwFly.transform.DOJump(destination, 5f, 1, defaultTimeEffect).OnComplete(() =>
+        var des1 =   GetRandomPositionInSphere(destination, 1f);
+        SpawnScrewFly(des1,true);
+        TweenControl.GetInstance().DelayCall(transform,0.1f, () =>
         {
-            currentIsland.AddScrewToCurrentObject(lastScrew);
-            screwFly.gameObject.SetActive(false);
-            //TweenControl.GetInstance().ScaleFromOne(screwFly, 0.1f, () => { screwFly.gameObject.SetActive(false);});
+            var des2 =   GetRandomPositionInSphere(destination, 2f);
+            SpawnScrewFly(des2,false);
+        });
+        TweenControl.GetInstance().DelayCall(transform,0.2f, () =>
+        {
+            var des3 =   GetRandomPositionInSphere(destination, 3f);
+            SpawnScrewFly(des3,false);
         });
         PlayerData.buildCityData[currentIsland.idIsland].itemCity[currentIsland.currentModalSelected] += 1;
         currentScrewTMP.text = PlayerData.screwCityBuild.ToString();
+    }
+
+    private void SpawnScrewFly(Vector3 destination, bool realScrew)
+    {
+        GameObject screwFly = GetFlyScrewInPool();
+        screwFly.transform.position = holdToBuildBtn.transform.position;
+        screwFly.transform.rotation = UnityEngine.Random.rotation;
+        //screwFly.GetComponent<MeshRenderer>().sharedMaterial = Config.cubeColorConfig.GetRandomMaterial();
+        bool lastScrew = currentIsland.maxScrewCanSpend == 0;
+        screwFly.transform.DOJump(destination, 5f, 1, defaultTimeEffect).OnComplete(() =>
+        {
+            if(realScrew) currentIsland.AddScrewToCurrentObject(lastScrew);
+            screwFly.gameObject.SetActive(false);
+        });
     }
 
     public void ChangeAnimIsland(bool stt)
@@ -275,13 +401,29 @@ public class BuildCity : _BaseBehaviour
         DoHideCompletedBuildUI(
             () => 
             {
-                currentState = UIBuildCityState.CONTINUECITY;
+                if (!CanBuildCity)
+                {
+                    //Complete last city 
+                    currentState = UIBuildCityState.CONTINUECITY;
+                }
+                else
+                {
+                    if (currentState == UIBuildCityState.COMPLETECITY)
+                    {
+                        currentState = PlayerData.screwCityBuild > 0
+                            ? UIBuildCityState.BUILDCITY
+                            : UIBuildCityState.CONTINUECITY;
+                    }
+                    else
+                    {
+                        currentState = PlayerData.screwCityBuild >0 ? UIBuildCityState.BUILDCITY : UIBuildCityState.COMPLETECITY;
+                    }
+                }
                 SpawnCurrentCity();
                 ChangeStateUI();
-                PlayerData.Vibrate(HapticTypes.Failure);
+                PlayerData.Vibrate(HapticTypes.MediumImpact);
             });
     }
-
 
     public GameObject GetFlyScrewInPool()
     {
@@ -316,13 +458,19 @@ public class BuildCity : _BaseBehaviour
 
         int idCity = PlayerData.currentCityBuild;
         if (idCity >= listAllIsland.Count - 1) idCity = listAllIsland.Count - 2; // setComingSoon
-        TweenControl.GetInstance().DelayCall(gameObject.transform, delayTime,
-            () => { listAllIsland[idCity].gameObject.SetActive(true); });
+        Tween sequence = DOTween.Sequence()
+            .AppendInterval(delayTime) // Đợi delayTime giây
+            .AppendCallback(() => listAllIsland[idCity].gameObject.SetActive(true))
+            .SetId($"Tween_Island_{gameObject.GetInstanceID()}"); // Gán ID cho sequence
+
         currentIsland = listAllIsland[idCity];
         idSelectedIsland = idCity;
         SetStatusAnotherIsLand();
         MoveToCurrentIsland();
-
+        if (PlayerData.level < Config.buildCityConfig.levelUnlock)
+        {
+            currentIsland.LockIsland();
+        }
     }
 
     public void DeactiveBuildCity()
@@ -372,15 +520,17 @@ public class BuildCity : _BaseBehaviour
         {
             case UIBuildCityState.NONE:
                 break;
+            case UIBuildCityState.LOCK:
+                break;
             case UIBuildCityState.BUILDCITY:
                 holdToBuild.gameObject.SetActive(true);
+                cityContinue.gameObject.SetActive(false);
                 break;
             case UIBuildCityState.COMPLETECITY:
                 break;
             case UIBuildCityState.CONTINUECITY:
                 cityContinue.gameObject.SetActive(true);
-                //TweenControl.GetInstance().ScaleFromOne(cityNameContinue.gameObject, defaultTimeEffect);
-                TweenControl.GetInstance().ScaleFromOne(continueBtn.gameObject, defaultTimeEffect);
+                ContinueButtonScaleFromZero();
                 break;
         }
 
@@ -389,14 +539,77 @@ public class BuildCity : _BaseBehaviour
         MoveToCurrentIsland();
     }
 
-
-    public void ShowScale()
+    private void ContinueButtonScaleFromZero()
     {
-        currentState = UIBuildCityState.NONE;
+        if (PlayerData.screwCityBuild > 0 && CanBuildCity)
+        {
+            holdToBuild.SetActive(true);
+            continueBtn.gameObject.transform.localScale = Vector3.zero;
+            holdToBuild.gameObject.transform.localScale = Vector3.zero;
+            holdToBuild.transform.DOScale(Vector3.one, defaultTimeEffect)
+                .SetId($"BUILD_BUTTON_SCALE{gameObject.GetInstanceID()}").SetEase(Ease.OutBack);
+            return;
+        }
+        
+        if (continueBtn != null)
+        {
+            continueBtn.gameObject.transform.localScale = Vector3.zero;
+            continueBtn.transform.DOScale(Vector3.one, defaultTimeEffect)
+                .SetId($"CONTINUE_BUTTON_SCALE{gameObject.GetInstanceID()}").SetEase(Ease.OutBack);
+        }
+    }
+
+
+    public void ShowScale(bool haveAnim = true)
+    {
+        if (!Locator.Main.ScreenMain.BuildCityCheckShow())
+        {
+            //Block show on another screen 
+            return;
+        }
+        currentState = GetStateIsLock();
         SpawnCurrentCity();
         ChangeStateUI();
-        TweenControl.GetInstance().ScaleFromZero(currentIsland.gameObject, 1f);
+        if (currentIsland !=null)
+        {
+            if (haveAnim)
+            {
+                currentIsland.gameObject.transform.localScale = Vector3.zero;
+                currentIsland.transform.DOScale(Vector3.one, defaultTimeEffect)
+                    .SetId($"ISLAND_SCALE{gameObject.GetInstanceID()}").SetEase(Ease.OutBack);
+            }
+            else
+            {
+                currentIsland.gameObject.transform.localScale = Vector3.one;
+            }
+        }
         this.gameObject.SetActive(true);
+    }
+    
+    public void HideScale(bool haveAnim = true)
+    {
+        // if (!Locator.Main.ScreenMain.BuildCityCheckShow())
+        // {
+        //     //Block show on another screen 
+        //     return;
+        // }
+        // currentState = GetStateIsLock();
+        // SpawnCurrentCity();
+        // ChangeStateUI();
+        if (currentIsland !=null)
+        {
+            if (haveAnim)
+            {
+                currentIsland.gameObject.transform.localScale = Vector3.one;
+                currentIsland.transform.DOScale(Vector3.zero, defaultTimeEffect)
+                    .SetId($"ISLAND_SCALE{gameObject.GetInstanceID()}").SetEase(Ease.InBack);
+            }
+            else
+            {
+                currentIsland.gameObject.transform.localScale = Vector3.zero;
+            }
+        }
+        //this.gameObject.SetActive(true);
     }
     public void HiddenBuildCity()
     {
@@ -404,7 +617,7 @@ public class BuildCity : _BaseBehaviour
         ChangeStateUI();
         this.gameObject.SetActive(false);
     }
-    public void Show()
+    public void Show(bool doAnim = true)
     {
         if (PlayerData.screwCityBuild > 0 && PlayerData.currentCityBuild < listAllIsland.Count - 1)
         {
@@ -419,7 +632,12 @@ public class BuildCity : _BaseBehaviour
 
         ChangeStateUI();
         
-        DoMoveBackAllObj();
+        if(doAnim)
+            DoMoveBackAllObj();
+        else
+            DoMoveBackAllObjNoAnim();
+        
+        ShowTutBuildCity();
     }
 
     public void ChangeStateUI()
@@ -441,19 +659,21 @@ public class BuildCity : _BaseBehaviour
                 ChangeAnimIsland(true);
                 break;
             case UIBuildCityState.BUILDCITY:
+                cityContinue.gameObject.SetActive(false);
                 holdToBuild.gameObject.SetActive(true);
                 backHomeButton.gameObject.SetActive(true);
                 nameCityTMP.text = dataConfig.cityName;
                 currentScrewTMP.text = PlayerData.screwCityBuild.ToString();
                 break;
             case UIBuildCityState.COMPLETECITY:
-                DoShowCompletedBuild();
-                //TweenControl.GetInstance().ScaleFromZero(titleComplete.gameObject, defaultTimeEffect);
+                holdToBuild.gameObject.SetActive(false);
+                DoShowCompletedBuild(); 
                 break;
             case UIBuildCityState.GETREWARD:
                 cityReward.gameObject.SetActive(true);
                 break;
             case UIBuildCityState.CONTINUECITY:
+                holdToBuild.gameObject.SetActive(false);
                 cityContinue.gameObject.SetActive(true);
                 backHomeButton.gameObject.SetActive(true);
                 //cityNameContinue.gameObject.SetActive(false);
@@ -464,8 +684,7 @@ public class BuildCity : _BaseBehaviour
                 nameCityEndingTMP_2.text = dataConfig.cityName;
                 SetButtonLeftRight();
                 nameCityEndingTMP_2.gameObject.SetActive(true);
-                TweenControl.GetInstance().ScaleFromZero(continueBtn.gameObject, defaultTimeEffect);
-
+                ContinueButtonScaleFromZero();
                 break;
         }
     }
@@ -474,17 +693,37 @@ public class BuildCity : _BaseBehaviour
     {
         if (!inAction)
         {
+            Locator.Main.HomeScreenTab.UpdateMainHome();
             DoMoveOutAllObj(
                 () =>
                 {
                     inAction = true;
                     HiddenUI();
-                    TweenControl.GetInstance().DelayCall(transform, defaultTimeEffect / 2, () =>
-                    {
-                        //Back To Home Action
-                        //UI.screenHome.OnBackFromCityBuild();
-                        OnExitBuildCity();
-                    });
+                    Tween sequence = DOTween.Sequence()
+                        //.AppendInterval(defaultTimeEffect / 2) // Đợi nửa thời gian hiệu ứng
+                        .AppendInterval(defaultTimeEffect)
+                        .AppendCallback(OnExitBuildCity) // Gọi hàm OnExitBuildCity()
+                        //.AppendCallback(OnPressPlayBuildCity)
+                        .SetId("Tween_ExitBuildCity"); // Gán ID cho sequence
+                    PlayerData.Vibrate(HapticTypes.Failure);
+                });
+        }
+    }
+    
+    public void OnBackHomeClickBtn()
+    {
+        if (!inAction)
+        {
+            Locator.Main.HomeScreenTab.UpdateMainHome();
+            DoMoveOutAllObj(
+                () =>
+                {
+                    inAction = true;
+                    HiddenUI();
+                    Tween sequence = DOTween.Sequence()
+                        .AppendInterval(defaultTimeEffect / 2) // Đợi nửa thời gian hiệu ứng
+                        .AppendCallback(OnExitBuildCity) // Gọi hàm OnExitBuildCity()
+                        .SetId("Tween_ExitBuildCity"); // Gán ID cho sequence
                     PlayerData.Vibrate(HapticTypes.Failure);
                 });
         }
@@ -529,6 +768,11 @@ public class BuildCity : _BaseBehaviour
         ValidateIdSelectedIsland();
         if (poolCity != null)
             poolCity.transform.DOMoveX((currentIsland.idIsland) * distanceEachIsland, timeMoveIsland);
+        foreach (var island in listAllIsland)
+        {
+            //Coming soon island 999
+            island.gameObject.SetActive(island.idIsland == currentIsland.idIsland || island.idIsland > 500); 
+        }
     }
 
     void MoveNextIsland()
@@ -575,6 +819,12 @@ public class BuildCity : _BaseBehaviour
             nameCityEndingTMP_2.text = ReturnComingSoonData().cityName;
             poolCity.transform.DOMoveX(idSelectedIsland * distanceEachIsland, timeMoveIsland);
         }
+
+        var island = listAllIsland.Find(x => x.idIsland == idSelectedIsland);
+        if (island != null)
+        {
+            island.gameObject.SetActive(true);
+        }
     }
 
     void MoveBackIsland()
@@ -591,11 +841,8 @@ public class BuildCity : _BaseBehaviour
 
     private void DoShowCompletedBuild(Action onComplete = null)
     {
+        EventController.RaiseEvent(EventList.Audio.COMPLETE_ISLAND);
         cityCompleteReward.gameObject.SetActive(true);
-        // TweenControl.GetInstance().ScaleFromZero(completedTitle.gameObject, 0.1f);
-        // TweenControl.GetInstance().ScaleFromZero(completedLightAura.gameObject, 0.2f);
-        // TweenControl.GetInstance().ScaleFromZero(nextRewardBtn.gameObject, defaultTimeEffect);
-
         completedTitle.localScale = Vector3.zero;
         completedLightAura.localScale = Vector3.zero;
         nextRewardBtn.transform.localScale = Vector3.zero;
@@ -682,6 +929,13 @@ public class BuildCity : _BaseBehaviour
 
         _completedBuildSequence.Play();
     }
+
+    public void OnDestroy()
+    {
+        DOTween.Kill($"ISLAND_SCALE{gameObject.GetInstanceID()}");
+        DOTween.Kill($"Tween_Island_{gameObject.GetInstanceID()}");
+        DOTween.Kill($"Tween_ExitBuildCity");
+    }
 }
 
 public enum UIBuildCityState
@@ -690,5 +944,6 @@ public enum UIBuildCityState
     BUILDCITY,
     COMPLETECITY,
     GETREWARD,
-    CONTINUECITY
+    CONTINUECITY,
+    LOCK
 }

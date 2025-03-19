@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace IEC
 {
@@ -104,7 +105,8 @@ namespace IEC
         }
         private static void SetPraramUserQuit(bool isPause)
         {
-            if (Scene.CurrentScene != SceneName.GAME)
+            Scene scene = SceneManager.GetActiveScene();
+            if (scene.name == SceneName.GAME)
             {
                 PlayerData.levelPending = isPause;
                 PlayerData.isKilledAppGamePlay = isPause;

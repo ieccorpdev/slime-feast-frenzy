@@ -118,7 +118,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(bannerPos, null);
-                    SetActiveBanner(bannerPos, true);
+                    //SetActiveBanner(bannerPos, true);
                     StartCoroutine(IE_LoadAd());
                     break;
                 case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
@@ -934,7 +934,8 @@ namespace IEC
 
         public bool ShowFullAdsWithTime(float timeCondition, Action closeCallback = null, Action canShowCallback = null, string position = null)
         {
-            if (config.IsNoAds || m_ServiceData.isNoAds)
+            //MeoMew add skip ads 
+            if (config.IsNoAds || m_ServiceData.isNoAds || Pool.Get<PlayerSecret>().level < Pool.Get<Game>().levelStartInterAds || (Pool.Get<PlayerSecret>().timeEndStaredPack - DateTime.Now).Ticks > 0)
             {
                 SafeInvoke(closeCallback);
                 return false;

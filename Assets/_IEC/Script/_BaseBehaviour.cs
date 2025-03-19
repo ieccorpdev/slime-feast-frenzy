@@ -14,7 +14,7 @@ namespace IEC
 
         protected static Game Game => Pool.Get<Game>();
         
-        protected static GamePlayGroup GamePlay => Pool.Get<GamePlayGroup>();
+        protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
         
         protected static PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
         

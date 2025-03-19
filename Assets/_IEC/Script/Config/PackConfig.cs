@@ -15,7 +15,7 @@ namespace IEC
         public string badge;
 
         [NaughtyAttributes.InfoBox(
-            "Resource Unlimited Live need to be set in seconds, otherwise it need a function to convert to seconds",
+            "Resource Unlimited Live need to be set in Minutes",
             EInfoBoxType.Warning)]
         public List<ResourceConfig> resources;
 
