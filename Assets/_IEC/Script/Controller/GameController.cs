@@ -107,8 +107,8 @@ namespace IEC
                 m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
                 ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
             }
-            Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
-            {
+            // Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
+            // {
                 // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
                 if (PlayerData.level < Config.levelWinBackHome)
                 {
@@ -120,7 +120,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
                 }
   
-            });
+            //});
             // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 

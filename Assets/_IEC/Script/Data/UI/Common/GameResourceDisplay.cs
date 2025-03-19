@@ -19,6 +19,8 @@ public class GameResourceDisplay : MonoBehaviour
     {
         Pool.Set(GetType(), this);
         InitMoveOutAnimation();
+        ToggleDisplayAllResources(false);
+        SetAllObjPosOut();
     }
 
     public UICurrency GetDisplay(ResourceType resourceType)
@@ -44,7 +46,7 @@ public class GameResourceDisplay : MonoBehaviour
     public void HideDisplayUnderBG()
     {
         //darkBG.SetActive(true);
-        canvas.sortingOrder = 0;
+        canvas.sortingOrder = -1;
     }
 
     public void ToggleDisplayOneResource(ResourceType resourceType, bool isShow = true)
@@ -68,6 +70,14 @@ public class GameResourceDisplay : MonoBehaviour
         foreach (var obj in _listObjMoveOut)
         {
             obj.SetObjDefaultPos();
+        }
+    }
+
+    private void SetAllObjPosOut()
+    {
+        foreach (var obj in _listObjMoveOut)
+        {
+            obj.SetObjPosOut();
         }
     }
 
