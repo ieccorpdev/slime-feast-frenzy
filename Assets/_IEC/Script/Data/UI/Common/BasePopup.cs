@@ -34,8 +34,6 @@ namespace IEC
         public override void Show()
         {
             HandleShowTopResourceBar();
-            
-            if(GamePlay) GamePlay.userInput.CanClick = false;
             DOTween.Kill(TweenID);
             IsShow = true;
             IsFocus = true;
