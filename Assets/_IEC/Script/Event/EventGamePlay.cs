@@ -17,6 +17,8 @@ namespace IEC
             public const string LEVEL_WIN = "GamePlay.LEVEL_WIN";
             public const string LEVEL_LOSE = "GamePlay.LEVEL_LOSE";
             public const string LEVEL_SKIP = "GamePlay.LEVEL_SKIP";
+            public const string LEVEL_CONTINUE = "GamePlay.LEVEL_CONTINUE";
+            public const string LEVEL_CLEAR = "GamePlay.LEVEL_CLEAR";
 
             public const string END_LEVEL_ADS = "GamePlay.END_LEVEL_ADS";
             public const string GO_MAIN = "GamePlay.GO_HOME";
@@ -40,6 +42,48 @@ namespace IEC
             public const string SET_UNMUTE_BACKGROUND_MUSIC_HOME = "GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_HOME";
             
             public const string UPDATE_HELPER_UI = "GamePlay.UPDATE_HELPER_UI";
+            //Swallowhole
+            public const string GOLD_CHANGE = "GamePlay.GOLD_CHANGE";
+            public const string LIVES_TO_PLAY_CHANGE = "GamePlay.LIVES_TO_PLAY_CHANGE";
+            public const string COLLECT_ITEM = "GamePlay.COLLECT_ITEM";
+            public const string COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI = "GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI";
+            public const string COLLECT_SPECIAL_ITEM_FOR_UI = "Gameplay.COLLECT_SPECIAL_ITEM_FOR_UI";
+
+            public const string UPDATE_CAMERA_TARGET = "Gameplay.UPDATE_CAMERA_TARGET";
+            public const string TIMER_TIME_OUT = "Gameplay.TIMER_TIME_OUT";
+            public const string USER_USE_HELPER = "Gameplay.USER_USE_HELPER";
+            public const string TURN_ON_COMPASS_DIRECTOR = "Gameplay.TURN_ON_COMPASS_DIRECTOR";
+
+            public const string PAUSE_GAME = "Gameplay.PAUSE_GAME";
+            public const string RESUME_GAME = "Gameplay.RESUME_GAME";
+
+            public const string UPDATE_CURRENCY_UI = "Gameplay.UPDATE_CURRENCY_UI";
+            public const string ADD_TIME_FOR_TIMER = "Gameplay.ADD_TIME_FOR_TIMER";
+            public const string REVIVE_GAME = "Gameplay.REVIVE_GAME";
+            
+            public const string COMPLETE_HELPER = "Gameplay.COMPLETE_FROZEN_TIME_HELPER";
+
+            public const string IAP_PRODUCT_REQUEST = "GamePlay.IAP_PRODUCT_REQUEST";
+            public const string IAP_PURCHASE_SUCCESS = "Gameplay.IAP_PURCHASE_SUCCESS";
+            public const string IAP_PURCHASE_FAIL = "Gameplay.IAP_PURCHASE_FAIL";
+
+            public const string START_TUTORIAL = "Gameplay.START_TUTORIAL";
+            public const string HELPER_TUTORIAL = "Gameplay.HELPER_TUTORIAL";
+
+            public const string ON_SOUND_SETTINGS = "Gameplay.ON_SOUND_SETTINGS";
+            
+            public const string USE_BOOSTER = "Gameplay.USE_BOOSTER";
+            public const string UPDATE_BOOSTER_UI = "Gameplay.UPDATE_BOOSTER_UI";
+
+            public const string ON_BOOSTER_COLLECTED = "Gameplay.ON_BOOSTER_COLLECTED";
+            public const string SHOW_ANIM_SPAWN_BOOSTER = "Gameplay.SHOW_ANIM_SPAWN_BOOSTER";
+            public const string SPAWN_BOOSTER_ITEM = "Gameplay.SPAWN_BOOSTER_ITEM";
+
+            public const string CHEAT_SPECIAL_OBJECT = "Gameplay.CHEAT_SPECIAL_OBJECT";
+         
+
+            public const string ON_LEVEL_LOADED = "Gameplay.ON_LEVEL_LOADED";
+            public const string ON_LEVEL_DEBUG_LOADED = "Gameplay.ON_LEVEL_DEBUG_LOADED";
         }
         public static class Tutorial
         {

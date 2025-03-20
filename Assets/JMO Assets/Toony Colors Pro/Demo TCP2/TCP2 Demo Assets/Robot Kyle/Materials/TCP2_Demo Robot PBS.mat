@@ -10,7 +10,7 @@ Material:
   m_Name: TCP2_Demo Robot PBS
   m_Shader: {fileID: 4800000, guid: 80412fe88398cd147be3aacebe2c3fe3, type: 3}
   m_ShaderKeywords: OUTLINES TCP2_COLORS_AS_NORMALS TCP2_DISABLE_WRAPPED_LIGHT TCP2_SPEC_TOON
-    TCP2_STYLIZED_FRESNEL TCP2_UV_NORMALS_FULL _EMISSION _NORMALMAP
+    TCP2_STYLIZED_FRESNEL _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -25,7 +25,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: d13af914022d95848adfec9d2951e5ae, type: 3}
+        m_Texture: {fileID: 2800000, guid: 91a092c0b3cf7d04ba06bf3873446b4b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Cube:
@@ -74,18 +74,15 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _DstBlendOutline: 10
-    - _EnableOutline: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.7
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _NormalsSource: 1
-    - _NormalsUVType: 0
     - _OcclusionStrength: 1
     - _Offset1: 0
     - _Offset2: 0
-    - _Outline: 0.4
+    - _Outline: 0.3
     - _Parallax: 0.02
     - _RampSmooth: 0.15
     - _RampSmoothAdd: 0.5
@@ -122,3 +119,4 @@ Material:
     - _RimDir: {r: 0, g: 0, b: 1, a: 0}
     - _SColor: {r: 0.23484801, g: 0.43726364, b: 0.716, a: 1}
     - _SpecColor: {r: 0.60294116, g: 0.60294116, b: 0.60294116, a: 1}
+  m_BuildTextureStacks: []

@@ -189,7 +189,37 @@ MonoBehaviour:
     isDebugReset: 0
     emptyData: 0
     abVersion: 0
+    levelCreative: 0
+    isHaveBooster: 0
     timeDelayFullAds: 0
+    levelVersion: 0
+    enableSound: 0
+    enableVibration: 0
+    enableDaily: 0
+    enableLevelProgress: 0
+    isUsingHardLevel: 0
+    enableTreasureHunt: 0
+    enableRewardForDaily: 0
+    isImmortal: 0
+    isUsingGroundExtend: 0
+    itemVersion: 0
+    levelStartInterAds: 4
+    enablePiggyBank: 0
+    isHaveProfileAndLeaderboard: 0
+    isUsingExtraLvlFollow: 0
+    isUsingLuckySpinV2Flow: 0
+    isUsingBuildV2Flow: 0
+    isUsingConnectedBox: 0
+    isUsingCustomLoopLevelFlow: 0
+    isOverrideHardLevelConfig: 0
+    isAllowSkipHardLevelAds: 0
+    levelStartHardLevelOverride: 31
+    loseBeforeAllowSkipHardLevelOverride: 2
+    isUsePopupRefillHelper: 0
+    isOverrideHelperCostData: 0
+    isOverrideDataRewardLuckyWheel: 0
+    crLevelType: 0
+    timeSkipAdsStartPackage: 20
     inTutorial: 0
     inTutorialLevel1: 0
     inTutorialLevel2: 0
@@ -208,7 +238,12 @@ MonoBehaviour:
     levelTracking: 1
     levelFirstTime: 0
     countPlayLevel: 0
+    isPlayLevelHardFirstTime: 1
+    currentHardLevel: 0
+    currentCountLoseHardLevel: 0
+    lastHardLevel: 0
     isDiscountedPackBought: 0
+    isClickedRate: 0
     sessionStartLevel: 0
     isMusicOn: 0
     isSoundOn: 0
@@ -218,13 +253,25 @@ MonoBehaviour:
     hybridData:
       timeRefillLeft: 0
       timeUnlimitedLive: 0
-    listUserMove: []
+    helperData:
+      numberMagnet: 0
+      numberCompass: 0
+      numberFrozenTime: 0
+      numberScaleUp: 0
+      isCompleteMagnetTutorial: 0
+      isCompleteCompassTutorial: 0
+      isCompleteFrozenTimeTutorial: 0
+      isCompleteScaleUpTutorial: 0
+    boosterData:
+      boosterDataModels: []
     playerLife: 5
     realTimeUnlimidtedLife: 0
     playerProfileName: 
     playerProfileIconId: 0
     levelPending: 0
     isKilledAppGamePlay: 0
+    dailyShowLifeOfferPack: 0
+    shownFirstTimeBuildCityTut: 0
     currentCityBuild: 0
     screwCityBuild: 0
     playerAvatarSpriteName: 
@@ -234,7 +281,10 @@ MonoBehaviour:
     luckWheelDailyAdsSpin: 0
     luckWheelGoldTimeSpin: 0
     isBoughtStarterPack: 0
+    listBundlePurchased: []
     piggyBankGold: 0
+    wasShowPiggyBankFirstTime: 0
+    dailyShowPiggyBank: 0
     currentDailyAdReward: 0
     mainRewardCooldownTickTime: 0
     claimMainReward: 0
@@ -380,7 +430,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 849e38224d425f64d8193760d3f97568, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurAbTestDate: 
 --- !u!1 &4676664891199191331
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,7 +440,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4676664891199191328}
   - component: {fileID: 1496480152203517633}
-  - component: {fileID: 2012742546}
   m_Layer: 0
   m_Name: _Controllers
   m_TagString: Untagged
@@ -442,18 +490,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsDontDestroy: 0
---- !u!114 &2012742546
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4676664891199191331}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4616e8bb04f0304ba54ebcf9eb7e1ab, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4682934140386485128
 GameObject:
   m_ObjectHideFlags: 0
@@ -816,6 +852,7 @@ MonoBehaviour:
     timeCheckType: 0
     firstVersion: 
     currentVersion: 
+    curAbTestDate: 
     installTime: 
     updateTime: 
     firebasePseudoId: 

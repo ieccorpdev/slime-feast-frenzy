@@ -101,15 +101,7 @@ namespace IEC
         
         void OnNoThanksButtonClick()
         {
-            //+1 because when win level add 1
-            if (Game.isLevelSFAAdjustment && PlayerData.level < Game.levelSFAAdjust+1)//now 8 
-            {
-                bonusRewardWheel.StopWheel();
-            
-                ActionCompletePopup();
-            }
-            else
-            {
+
                 Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                 {
                     bonusRewardWheel.StopWheel();
@@ -117,8 +109,7 @@ namespace IEC
                 }, () =>
                 {
                     Services.PushEvent(new IEC.TrackingEvent.SFApostition($"skip_win_bonus_reward"));
-                });  
-            }
+                });
         }
         
         private void ActionCompletePopup()

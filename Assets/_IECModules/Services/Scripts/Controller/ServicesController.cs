@@ -921,7 +921,15 @@ namespace IEC
                 SafeInvoke(closeCallback);
             });
         }
-
+        public bool ShowFullAdsWithTimeAndCondition(bool condition, float timeCondition, Action closeCallback = null, Action canShowCallback = null, string position = null)
+        {
+            if (condition) 
+            {
+                return ShowFullAdsWithTime(timeCondition, closeCallback, canShowCallback, position);
+            }
+            closeCallback?.Invoke();
+            return false;
+        }
         public bool IsCanShowFullAdsWithTime(float timeCondition)
         {
             return (lastFullAdsTime < 0 || UnityEngine.Time.realtimeSinceStartup - lastFullAdsTime >= timeCondition) && IsCanShowFullAds();

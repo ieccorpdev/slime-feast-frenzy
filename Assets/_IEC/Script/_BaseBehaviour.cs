@@ -19,6 +19,7 @@ namespace IEC
         protected static PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
         
         protected static UIGroup UI => Pool.Get<UIGroup>();
+        protected static Joystick Joystick => Pool.Get<Joystick>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();
 

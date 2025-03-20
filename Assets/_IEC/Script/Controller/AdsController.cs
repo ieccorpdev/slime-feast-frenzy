@@ -20,38 +20,6 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
-                    if (Game.IsMultiCard)
-                    {
-                        if (PlayerData.level >= 4)
-                        {
-                            Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                            {
-                                if (PlayerData.IsHardLevel())
-                                {
-                                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
-                                }
-                                else
-                                {
-                                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                                }
-
-                                Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));
-                            });
-                        }
-                        else
-                        {
-                            if (PlayerData.IsHardLevel())
-                            {
-                                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
-                            }
-                            else
-                            {
-                                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                            }
-                        }
-                        return;
-                    }
-
                     Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                     {
                         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);

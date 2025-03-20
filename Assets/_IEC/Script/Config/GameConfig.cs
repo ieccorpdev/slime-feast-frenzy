@@ -1,9 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
+using _IEC.Features.Booster;
+using _IEC.Features.Common.Config;
+using _IEC.Features.Gameplay;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace IEC
 {
@@ -11,14 +11,8 @@ namespace IEC
     /// object contain references to all other configs (hard fixed data)
     /// </summary>
     [CreateAssetMenu(menuName = "Game/GameConfig")]
-    public class GameConfig : BaseConfig
+    public class GameConfig : ScriptableObject
     {
-        [Header("Game level data")] 
-        public string baseLevelAssetFile;
-        public string customLevelAssetFile;
-        public string hardLevelAssetFile;
-        public List<string> listLevelLoopOverride;
-        
         [Space(10)]
         public int maxHealth = 5;
         public int levelUnlockLife = 10;
@@ -27,9 +21,26 @@ namespace IEC
         public int goldToAddOneLife = 100;
         public int goldLevelWin = 10;
         public int levelWinBackHome = 10;
-        public int levelShowInter = 4;
-        public _EmptyConfig emptyConfig;
-        public HelperConfigData helperConfig;
+        
+        [Header("SwallowHole")]
+        public GamePlayConfig gamePlayConfig;
+        public GameplayItemPrefabConfig itemPrefabConfig;
+        public LevelConfig levelConfig;
+        public ThemeConfig themeConfig;
+        public PrefabConfig prefabConfig;
+        //public HomeConfig homeConfig;
+        public MapUnlockConfig mapUnlockConfig;
+        //public SoundConfig soundConfig;
+        //public BoosterConfig boosterConfig;
+        //public MagicPouchConfig magicPouchConfig;
+        //public RatingConfig ratingConfig;
+        //public DailyRewardConfig dailyRewardConfig;
+        //public TreasureHuntProgressConfig treasureHuntProgressConfig;
+        //public StarProgressRewardConfig starProgressRewardConfig;
+        //public LevelProgressRewardConfig levelProgressRewardConfig;
+        public GameplayDebugConfig gameplayDebugConfig;
+        //public PiggyBankConfig piggyBankConfig;
+        //public ProfileConfig profileConfig;
         
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]
@@ -40,7 +51,6 @@ namespace IEC
         public DataPiggyBankConfig dataPiggyBankConfig;   
         [Header("Daily Reward Config")]
         public DataDailyReward dataDailyRewardConfig;
-
         [Header("City Build")] 
         public int brickWinReward = 15;
         public BuildCityConfig buildCityConfig;
@@ -89,36 +99,12 @@ namespace IEC
         {
             return listAllIapPackConfig.FirstOrDefault(x => x.bundleId == id);
         }
-        public string GetLevelDataAssetBundle(bool custom)
+        [System.Serializable]
+        public class RewardSprite
         {
-            if (usingLevelGDV1 && custom)
-            {
-                return customLevelAssetFile;
-            }
+            public ResourceType type;
+            public Sprite icon;
 
-            return baseLevelAssetFile;
         }
-
-        public List<string> GetListLevelLoop()
-        {
-            return listLevelLoopOverride;
-        }
-
-        public string GetLevelHardDataAssetBundle()
-        {
-            if (Pool.Get<Game>().isUsingHardLevel)
-            {
-                return hardLevelAssetFile;
-            }
-            return baseLevelAssetFile;
-        }
-        
-    }
-    [System.Serializable]
-    public class RewardSprite
-    {
-        public ResourceType type;
-        public Sprite icon;
-
     }
 }

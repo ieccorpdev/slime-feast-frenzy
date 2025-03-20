@@ -4,6 +4,8 @@ using UnityEngine;
 using _IECModules;
 using System.Linq;
 using System.Threading.Tasks;
+using _IEC.Features.Common.Extension;
+using _IEC.Features.Gameplay;
 using DG.Tweening;
 using MoreMountains.NiceVibrations;
 
@@ -128,6 +130,11 @@ namespace IEC
         {
             Game.SetTimeStartLevel();
             GamePlay.SetNewLevel(PlayerData.level);
+            Locator.Game.ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
+            Locator.Game.ScreenInGame.Show();
+            GamePlay.StartGamePlay();
+            GamePlay.SetGameState(Locator.Game.ScreenInGame);
+            this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             PushPlayLevelEvent();
         }
 

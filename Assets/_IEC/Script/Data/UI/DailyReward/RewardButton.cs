@@ -44,8 +44,8 @@ namespace _IEC
 
         public void UpdateButton(Reward rewardData)
         {
-            rewardIcon.sprite = Config.GetRewardSprite(rewardData);
-            rewardIcon.SetNativeSize();
+            //rewardIcon.sprite = Config.GetRewardSprite(rewardData);
+            //rewardIcon.SetNativeSize();
             amountText.text = "x" + rewardData.rewardAmount.ToString();
 
             Reward = rewardData.typeReward;

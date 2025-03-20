@@ -27,6 +27,12 @@ namespace IEC
         HelperUndo,
         HelperShuffle,
         HelperExpand,
+        ScaleUp,
+        Magnet,
+        Compass,
+        FrozenTime,     
+        BonusTime,
+        BonusExp
     }
 
     [Serializable]

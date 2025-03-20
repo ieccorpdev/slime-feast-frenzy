@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Booster;
+using _IEC.Features.Gameplay;
 using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -50,7 +52,7 @@ namespace IEC
         public bool passHelperClear;
         
         public HybridData hybridData = new HybridData();
-        
+
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
@@ -118,7 +120,10 @@ namespace IEC
                     break;
             }
         }
-
+        #region GamePlay
+        public PlayerHelperData helperData;
+        public BoosterData boosterData;
+        #endregion
         public bool IsHardLevel()
         {
             int levelStart = Game.isOverrideHardLevelConfig

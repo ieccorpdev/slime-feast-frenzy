@@ -247,7 +247,6 @@ namespace IEC
 
         void ResultAllAbTest()
         {
-            Game.IsMultiCard = true;
         }
 
         Dictionary<int, Func<int, int, bool>> GetDictOverrideResult()

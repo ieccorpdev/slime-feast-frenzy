@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 6680070126861946854}
   - component: {fileID: 8016866223364408888}
   - component: {fileID: 2193816813073316390}
-  - component: {fileID: 4888243102290525062}
+  - component: {fileID: 8061964346669637655}
   m_Layer: 29
   m_Name: RwHeper1
   m_TagString: Untagged
@@ -155,7 +155,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4888243102290525062
+--- !u!114 &8061964346669637655
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,12 +164,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 752705120054317342}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeReward: 7
+  typeReward: 3
   haveData: 0
-  valueReward: {fileID: 6116676813442870263}
+  valueReward: {fileID: 0}
   targetAnchorPos: {x: 0, y: 0, z: 0}
 --- !u!1 &759019736083618426
 GameObject:
@@ -676,13 +676,14 @@ MonoBehaviour:
   isHaveAnim: 1
   isHaveAnimClose: 1
   isShowBlackPanel: 1
+  isShowTopResourceBar: 0
   listRewardUI:
-  - {fileID: 1513039067215721261}
-  - {fileID: 4888243102290525062}
-  - {fileID: 446798685652242956}
-  - {fileID: 6466432549730541291}
-  - {fileID: 3861096024430004356}
-  - {fileID: 2278171475318284213}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   chestAnim: {fileID: 8946676779653231468}
   tapToClaim: {fileID: 2366955837486108442}
   textTapToClaim: {fileID: 4311399787899834032}
@@ -822,7 +823,7 @@ GameObject:
   - component: {fileID: 6873390492844033627}
   - component: {fileID: 519665642001905596}
   - component: {fileID: 1267704431377581876}
-  - component: {fileID: 446798685652242956}
+  - component: {fileID: 5995510388746871972}
   m_Layer: 29
   m_Name: RwHelper2
   m_TagString: Untagged
@@ -890,7 +891,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &446798685652242956
+--- !u!114 &5995510388746871972
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -899,12 +900,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2149786389669453167}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeReward: 8
+  typeReward: 4
   haveData: 0
-  valueReward: {fileID: 4560175821775568095}
+  valueReward: {fileID: 0}
   targetAnchorPos: {x: 0, y: 0, z: 0}
 --- !u!1 &2150035162537116385
 GameObject:
@@ -2387,7 +2388,7 @@ GameObject:
   - component: {fileID: 3341270729515369891}
   - component: {fileID: 2658092259340290684}
   - component: {fileID: 5105277205082383745}
-  - component: {fileID: 1513039067215721261}
+  - component: {fileID: 64208726392991442}
   m_Layer: 29
   m_Name: RwGold
   m_TagString: Untagged
@@ -2455,7 +2456,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1513039067215721261
+--- !u!114 &64208726392991442
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2464,12 +2465,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3762660335771346592}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   typeReward: 0
   haveData: 0
-  valueReward: {fileID: 3213864485465952882}
+  valueReward: {fileID: 0}
   targetAnchorPos: {x: 0, y: 0, z: 0}
 --- !u!1 &3876395450433852239
 GameObject:
@@ -4127,7 +4128,7 @@ GameObject:
   - component: {fileID: 299204486277171248}
   - component: {fileID: 4938434219081654716}
   - component: {fileID: 6035031702532589678}
-  - component: {fileID: 3861096024430004356}
+  - component: {fileID: 7418097572016551630}
   m_Layer: 29
   m_Name: RwLife
   m_TagString: Untagged
@@ -4195,7 +4196,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3861096024430004356
+--- !u!114 &7418097572016551630
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4204,7 +4205,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6455803336479680007}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   typeReward: 2
@@ -4374,7 +4375,7 @@ GameObject:
   - component: {fileID: 8417352813335804106}
   - component: {fileID: 8295408077666341716}
   - component: {fileID: 5895323698072954118}
-  - component: {fileID: 6466432549730541291}
+  - component: {fileID: 4117927728686089560}
   m_Layer: 29
   m_Name: RwHelper3
   m_TagString: Untagged
@@ -4442,7 +4443,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &6466432549730541291
+--- !u!114 &4117927728686089560
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4451,12 +4452,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 6983167790242221461}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeReward: 9
+  typeReward: 5
   haveData: 0
-  valueReward: {fileID: 2751253788939654203}
+  valueReward: {fileID: 0}
   targetAnchorPos: {x: 0, y: 0, z: 0}
 --- !u!1 &7071633026071131694
 GameObject:
@@ -5124,7 +5125,7 @@ GameObject:
   - component: {fileID: 8670901487918271376}
   - component: {fileID: 4391237694008255423}
   - component: {fileID: 7708470096459243698}
-  - component: {fileID: 2278171475318284213}
+  - component: {fileID: 8503391842382462030}
   m_Layer: 29
   m_Name: CityRwInfinityLife
   m_TagString: Untagged
@@ -5192,7 +5193,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2278171475318284213
+--- !u!114 &8503391842382462030
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -5201,12 +5202,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 8473113948590968365}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 445c8c9251a7e3243b04a421188526b9, type: 3}
+  m_Script: {fileID: 11500000, guid: 9b233266d12e22b4cab22538e8e1a3e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   typeReward: 6
   haveData: 0
-  valueReward: {fileID: 4379735197890310488}
+  valueReward: {fileID: 0}
   targetAnchorPos: {x: 0, y: 0, z: 0}
 --- !u!1 &8779111942665400766
 GameObject:

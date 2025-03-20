@@ -1,7 +1,6 @@
-﻿
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using _IEC.Features.Gameplay;
 using UnityEngine;
 
 namespace IEC
@@ -9,12 +8,17 @@ namespace IEC
     public class GamePlayGroup : _BaseBehaviour, IGroup
     {
         public ScreenUI GameState { get; private set; }
-        public bool IsWin => false;
+        public bool IsWin => GameState == Locator.Game.ScreenLevelWin;
 
         public Camera mainCamera;
         public Camera uiCamera;
+        public Camera homeCamera;
 
+        public GameObject ingameDebugConsole;
 
+        public LevelController levelController;
+
+        
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -24,19 +28,18 @@ namespace IEC
         {
             GameState = screen;
         }
-
-        void Start()
-        {
-
-        }
-
+        
         public void SetNewLevel(int level)
         {
+
         }
 
-        public void SetFinishPlay()
+
+        public void OnShowScreenHome()
         {
-            EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
+            homeCamera.gameObject.SetActive(true);
+            SetNewLevel(PlayerData.level);
         }
+        
     }
 }

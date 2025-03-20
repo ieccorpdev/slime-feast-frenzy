@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using _IEC.Features.Gameplay;
 using UnityEngine;
 
 namespace IEC
@@ -16,15 +14,63 @@ namespace IEC
         public HybridGame hybrid = new HybridGame();
 
         #endregion
-        
         public bool isDebugReset;
         public int emptyData;
         public int abVersion;
-        private bool isMultiCard = false;
+        public bool levelCreative;
+        public bool isHaveBooster = false;
         public float timeDelayFullAds;
-        public int levelStartInterAds = 4;
-
+        public int levelVersion = 1;
+        public bool enableLevelProgress;
         public bool isUsingHardLevel;
+        public bool enableTreasureHunt;
+
+        public bool enableRewardForDaily;
+
+        public bool isImmortal;
+
+        public bool isUsingGroundExtend = true ;
+        public int itemVersion;
+        public int levelStartInterAds = 4;
+        
+        public bool ShowFullAdsCondition
+        {
+            get
+            {
+#if UNITY_ANDROID
+                return Pool.Get<PlayerSecret>().level > 6;
+#endif
+
+#if UNITY_IOS
+                return Pool.Get<PlayerSecret>().level > 6;
+#endif
+            }
+        }
+
+        public System.DateTime timeStartLevel;
+        public System.DateTime timeEndLevel;
+        public bool enablePiggyBank;
+        
+        public bool isHaveProfileAndLeaderboard;
+        
+        public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;
+
+        public void SetTimeStartLevel()
+        {
+            timeStartLevel = System.DateTime.Now;
+        }
+
+        public void SetTimeEndLevel()
+        {
+            timeEndLevel = System.DateTime.Now;
+        }
+        ////
+        ///         public bool isUsingHardLevel;
+        public bool isUsingExtraLvlFollow;
+        public bool isUsingLuckySpinV2Flow;
+        public bool isUsingBuildV2Flow;
+        public bool isUsingConnectedBox;
+        public bool isUsingCustomLoopLevelFlow;
 
         public bool isOverrideHardLevelConfig;
         public bool isAllowSkipHardLevelAds;
@@ -36,36 +82,6 @@ namespace IEC
         public bool isOverrideHelperCostData;
 
         public bool isOverrideDataRewardLuckyWheel;
-
-        [Header("Adjust")]
-        public bool isLevelSFAAdjustment;
-        [HideInInspector]public int deaultLevelSFA = 5;
-        [HideInInspector]public int levelSFAAdjust = 8;
-        
-        public System.DateTime timeStartLevel;
-        public System.DateTime timeEndLevel;
-        public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;
-
-        public bool IsMultiCard
-        {
-            get
-            {
-                return isMultiCard;
-            }
-            set => isMultiCard = value;
-        }
-        
-
-        public void SetTimeStartLevel()
-        {
-            timeStartLevel = System.DateTime.Now;
-        }
-
-        public void SetTimeEndLevel()
-        {
-            timeEndLevel = System.DateTime.Now;
-        }
-
         [Header("Tracking")]
         public LevelType crLevelType = LevelType.NONE;
         [Header("IAP")] 
@@ -78,13 +94,5 @@ namespace IEC
         public int levelTutorialStack = 3;
         public bool isHaveLeaderboard = true;
         public bool isHaveAnimMedal;
-    }
-
-    public enum LevelType
-    {
-        NONE,
-        NORMAL,
-        NEW_NORMAL,
-        HARD,
     }
 }
