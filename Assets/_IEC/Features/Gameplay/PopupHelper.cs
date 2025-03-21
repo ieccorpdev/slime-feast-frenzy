@@ -33,19 +33,18 @@ namespace _IEC.Features.Gameplay
             btnClose.onClick.AddListener(()=>callback?.Invoke(Result.Cancel));
             SetEvent(btnBuy, () =>
             {
-                //if (CurrentCoinCount >= Price)
-                //{
-                //    Services.PushEvent(new CoinSpend(_paramByHelperId[helperId]));
-                //    PlayerData.currencyData.ConsumeCurrency(CurrencyType.Coin,Price); 
-                //    PlayerData.helperData.CollectHelper(helperId,NumberBuyingResult);
-                //    callback?.Invoke(Result.Buy);
-                //    Hide();
-                //}
-                //else
-                //{
-                //    UI.PopUpIAP.iapPosition = IAPPosition.HelperShop;
-                //    UI.ShowScreen(UI.PopUpIAP);
-                //}
+                if (CurrentCoinCount >= Price)
+                {
+                    //Services.PushEvent(new CoinSpend(_paramByHelperId[helperId]));
+                    PlayerData.SubtractCurrency(ResourceType.Gold, Price);
+                    PlayerData.helperData.CollectHelper(helperId,NumberBuyingResult);
+                    callback?.Invoke(Result.Buy);
+                    Hide();
+                }
+                else
+                {
+                    Locator.Main.PopupGoldOffer.Show();
+                }
                 //SoundController.PlayClickBtnAudio();
             });
             UpdateUI();

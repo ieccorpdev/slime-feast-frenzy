@@ -191,11 +191,11 @@ namespace _IEC.Features.Gameplay
                 ChangeState(State.Addable);
             }
             //Services.PushEvent(new UseItem(_paramTrackingById[helperId]));
-            //ChangeState(State.Playing);
+            ChangeState(State.Playing);
             //PlaySoundHelper(SoundController.dictSoundStartByHelperId, helperId);
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
-            //UI.ScreenInGame.GetGameplayTimer().StartTimer();
+            Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
         }
 
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
