@@ -28,7 +28,11 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
-	
+	[Header("Character")]
+	[SerializeField]private Transform characterGraphics;
+	[SerializeField]private Transform holePipe;
+	[SerializeField]private Animator characterAnimator;
+
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
@@ -123,6 +127,7 @@ public class Hole : _BaseBehaviour
 			});
 		});
 		SetXp(0,false);
+
 	}
 
 	public void SetSize(float targetSize,bool isLerpSize,Action callback)
@@ -243,6 +248,7 @@ public class Hole : _BaseBehaviour
 		m_Xp = 0;
 		xpBar.SetAmount(m_Xp,false);
 		SetLevel(1);
+		ResetCharacter();
 	}
 
 	public void HideLevelText()
@@ -255,10 +261,31 @@ public class Hole : _BaseBehaviour
 		txtLevel.gameObject.SetActive(true);
 	}
 
+	public void OnNewGame()
+	{
+		AnimationTurnHole();
+		txtLevel.gameObject.SetActive(true);
+	}
 	private void TurnOffAllVfx()
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+	}
+
+	public void ResetCharacter()
+	{
+		Debug.LogError("ResetCharacter");
+		holePipe.transform.localScale = Vector3.zero;
+		holePipe.gameObject.SetActive(false);
+		characterGraphics.transform.localScale = Vector3.one;
+		characterAnimator.Play("Slime_Idle");
+	}
+	public void AnimationTurnHole()
+	{
+		Debug.LogError("AnimationTurnHole");
+		holePipe.gameObject.SetActive(true);
+		characterAnimator.SetTrigger("Trans");
+		holePipe.DOScale(Vector3.one, 1.0f);
 	}
 
 	public float GetWorldRadius()

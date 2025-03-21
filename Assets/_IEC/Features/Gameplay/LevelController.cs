@@ -138,7 +138,7 @@ namespace _IEC.Features.Gameplay
         public void StartPlay()
         {
             allItemHolder.gameObject.SetActive(true);
-            playerHole.ShowLevelText();
+            playerHole.OnNewGame();
             ChangeState(State.Play);
             if (PlayerData.level == 1)
             {
