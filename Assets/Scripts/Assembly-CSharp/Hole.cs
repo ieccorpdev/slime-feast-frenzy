@@ -274,7 +274,6 @@ public class Hole : _BaseBehaviour
 
 	public void ResetCharacter()
 	{
-		Debug.LogError("ResetCharacter");
 		holePipe.transform.localScale = Vector3.zero;
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
@@ -282,7 +281,6 @@ public class Hole : _BaseBehaviour
 	}
 	public void AnimationTurnHole()
 	{
-		Debug.LogError("AnimationTurnHole");
 		holePipe.gameObject.SetActive(true);
 		characterAnimator.SetTrigger("Trans");
 		holePipe.DOScale(Vector3.one, 1.0f);

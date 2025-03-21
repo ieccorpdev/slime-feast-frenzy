@@ -45,6 +45,7 @@ namespace IEC
             btnPause.onClick.AddListener(() =>
             {
                 if(GamePlay.levelController.CurrentState == LevelController.State.Lose) return;
+                Locator.Game.PopupSettingIngame.Show();
                 //SoundController.PlayClickBtnAudio();
                 //popupPauseGame.Show();
             });

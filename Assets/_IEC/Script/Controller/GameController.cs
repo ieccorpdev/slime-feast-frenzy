@@ -254,8 +254,18 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
-                        onLoadDone?.Invoke();
-                        if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+                        if (scene != GameScene.Game)
+                        {
+                            onLoadDone?.Invoke();
+                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+                        }
+                    }, () =>
+                    {
+                        if (scene == GameScene.Game)
+                        {
+                            onLoadDone?.Invoke();
+                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+                        }
                     });
                 });
             }

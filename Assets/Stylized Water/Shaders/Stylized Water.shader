@@ -93,7 +93,11 @@
             {
                 "LightMode" = "Always" 
             }
-
+            Stencil
+            {
+                Ref 2  // Use the property value as the stencil reference
+                Comp greater // Only render where the stencil buffer is equal to the reference value
+            }
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag

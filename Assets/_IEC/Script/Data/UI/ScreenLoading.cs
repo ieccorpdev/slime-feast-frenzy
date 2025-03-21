@@ -18,10 +18,11 @@ namespace IEC
             EncryptedAssetModule.LoadPackage(this);
         }
 
-        public void ShowLoading(float timeShow, Action loadingDoneCallback = null)
+        public void ShowLoading(float timeShow, Action loadingDoneCallback = null,Action onLoadingCallBack = null)
         {
             base.Show();
             m_Progress.fillAmount = 0;
+            onLoadingCallBack?.Invoke();
             m_Progress.DOFillAmount(1F, timeShow + 0.1f).SetEase(Ease.OutQuad)
                 .OnComplete(
                     ()=>
