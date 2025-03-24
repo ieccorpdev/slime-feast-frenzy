@@ -333,6 +333,7 @@ namespace _IEC.Features.Gameplay
             {
                 var number = levelConfigModel.levelBoomData.number;
                 var cacheAllItems = allItemInMap.ToList();
+                if (allItemInMap.Count <= 0) return res;
                 for (int i = 0; i < number; i++)
                 {
                     float scale = RandomHelper.RangeWithSeed(levelBombData.seedScale + i,

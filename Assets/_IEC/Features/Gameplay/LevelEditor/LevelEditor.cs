@@ -650,13 +650,18 @@ namespace IEC
             theme = currentLevelData.theme;
             levelBombData = currentLevelData.levelBoomData;
             isOverrideBombData = currentLevelData.levelBoomData.isOverrideBombData;
+            List<_IEC.Features.Gameplay.ItemData> testItm = new List<_IEC.Features.Gameplay.ItemData>();
+            foreach (var im in currentLevelData.levelSpawnData.listItemSpawns)
+            {
+                foreach (var imm in im.listSpawnDatas)
+                {
+                    testItm.Add(imm.ToItemData(im.id));
+                }
 
-            // m_AllItems = LevelHelper.SpawnAllItem(
-            //     currentLevelData.levelSpawnData.listItemSpawns.ConvertAll(x => x.ToItemData()),
-            //     itemHolder, levelConfig, itemConfig, 0);
-
-            // var groundExtend = Instantiate(prefabGroundExtend, groundHolder);
-            // groundExtend.ResizeLevelGroundDirectly(new EventLevelLoad(m_AllItems, theme));
+            }
+            m_AllItems = LevelHelper.SpawnAllItem( testItm, itemHolder, levelConfig, itemConfig, 0);
+            //groundExtend groundExtend = Instantiate(prefabGroundExtend, groundHolder);
+             //groundExtend.ResizeLevelGroundDirectly(new EventLevelLoad(m_AllItems, theme));
             LevelHelper.SpawnMap(currentLevelData, groundHolder, themeConfig);
 
             m_AllBombs = LevelHelper.SpawnAllBomb(currentLevelData, m_AllItems, itemHolder, prefabConfig);
@@ -685,13 +690,18 @@ namespace IEC
                 levelData.levelBoomData = new LevelBoomData(isOverrideBombData, GetListBombDatas());
             else
                 levelData.levelBoomData = new LevelBoomData(levelBombData);
-
-            // m_AllItems =
-            //     LevelHelper.SpawnAllItem(levelData.levelSpawnData.listItemSpawns.ConvertAll(x => x.ToItemData()),
-            //         itemHolder, levelConfig, itemConfig, 0);
-
-            // var groundExtend = Instantiate(prefabGroundExtend, groundHolder);
-            // groundExtend.ResizeLevelGroundDirectly(new EventLevelLoad(m_AllItems, theme));
+            List<_IEC.Features.Gameplay.ItemData> testItm = new List<_IEC.Features.Gameplay.ItemData>();
+            foreach (var im in currentLevelData.levelSpawnData.listItemSpawns)
+            {
+                foreach (var imm in im.listSpawnDatas)
+                {
+                    testItm.Add(imm.ToItemData(im.id));
+                }
+            }
+            m_AllItems = LevelHelper.SpawnAllItem( testItm, itemHolder, levelConfig, itemConfig, 0);
+            //groundExtend groundExtend = Instantiate(prefabGroundExtend, groundHolder);
+            //groundExtend.ResizeLevelGroundDirectly(new EventLevelLoad(m_AllItems, theme));
+            LevelHelper.SpawnMap(currentLevelData, groundHolder, themeConfig);
 
             // this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, theme));
             if (isOverrideMapPrefab)
