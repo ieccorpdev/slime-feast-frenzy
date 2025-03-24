@@ -323,7 +323,7 @@ namespace _IEC.Features.Gameplay
         }
 
         [Button]
-        void Dcm()
+        void ReplaceCoinAnimal()
         {
             foreach (var level in listLevelDatas)
             {
