@@ -51,7 +51,7 @@ namespace IEC
         }
         
         
-        private void ResizeLevelGround(object param)
+        public void ResizeLevelGround(object param)
         {
             if (!Game.isUsingGroundExtend)
             {
@@ -106,24 +106,31 @@ namespace IEC
             platform.transform.position = boundsCenter;
 
             var platformExtend = platform.transform.Find("PlatformExtend").gameObject; //dont do this
-            platformExtend.transform.parent = null;
-            
-            platform.transform.localScale = new Vector3(
-                extendedSize.x,
-                platform.transform.localScale.y, // Keep original height
-                extendedSize.z
-            );
+            if (platformExtend != null)
+            {
+                //MeoMew block
+                if (!Application.isPlaying)
+                {
+                    platformExtend.transform.parent = null;
+                }
 
-            var tempExtendScale = new Vector3(1, platformExtend.transform.localScale.y, 1);
-            tempExtendScale.x = platform.transform.localScale.x - 0.15f;
-            tempExtendScale.z = platform.transform.localScale.z - 0.15f;
-            platformExtend.transform.localScale = tempExtendScale;
-            platformExtend.transform.parent = platform.transform;
+                platform.transform.localScale = new Vector3(
+                    extendedSize.x,
+                    platform.transform.localScale.y, // Keep original height
+                    extendedSize.z
+                );
+
+                var tempExtendScale = new Vector3(1, platformExtend.transform.localScale.y, 1);
+                tempExtendScale.x = platform.transform.localScale.x - 0.15f;
+                tempExtendScale.z = platform.transform.localScale.z - 0.15f;
+                platformExtend.transform.localScale = tempExtendScale;
+                platformExtend.transform.parent = platform.transform;
             
-            var vector3 = platformExtend.transform.localPosition;
-            vector3.x = 0;
-            vector3.z = 0;
-            platformExtend.transform.localPosition = vector3;
+                var vector3 = platformExtend.transform.localPosition;
+                vector3.x = 0;
+                vector3.z = 0;
+                platformExtend.transform.localPosition = vector3;
+            }
 
         }
 

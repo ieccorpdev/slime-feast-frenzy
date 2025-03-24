@@ -614,7 +614,8 @@ namespace IEC
         [FoldoutGroup(LevelEditorConstants.REFERENCES_AND_CONFIG)]
         public Transform groundHolder;
         [FoldoutGroup(LevelEditorConstants.REFERENCES_AND_CONFIG)]
-        public GroundExtend prefabGroundExtend;
+        //public GroundExtend prefabGroundExtend;
+        public GroundExtend groundExtendObj;
         [FoldoutGroup(LevelEditorConstants.REFERENCES_AND_CONFIG)]
         public MapEditor mapEditor;
 
@@ -660,13 +661,12 @@ namespace IEC
 
             }
             m_AllItems = LevelHelper.SpawnAllItem( testItm, itemHolder, levelConfig, itemConfig, 0);
-            //groundExtend groundExtend = Instantiate(prefabGroundExtend, groundHolder);
-             //groundExtend.ResizeLevelGroundDirectly(new EventLevelLoad(m_AllItems, theme));
+            groundExtendObj.ResizeLevelGround(new EventLevelLoad(m_AllItems, theme));
             LevelHelper.SpawnMap(currentLevelData, groundHolder, themeConfig);
 
             m_AllBombs = LevelHelper.SpawnAllBomb(currentLevelData, m_AllItems, itemHolder, prefabConfig);
             m_CurrentLevelData = LevelHelper.CreateLevelData(currentLevelData, level);
-            LoadMapEditorFromMapData();
+            //LoadMapEditorFromMapData();
         }
 
         [ResponsiveButtonGroup] [Button]
