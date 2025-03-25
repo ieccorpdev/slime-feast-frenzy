@@ -26,6 +26,9 @@ namespace IEC
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public int level = 1;
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        public LevelDataSO levelDataSo;
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         [ValueDropdown(nameof(GetAllThemes))]
@@ -219,8 +222,8 @@ namespace IEC
         //     Debug.Log($"Created asset at: {assetPath}");
         // }
 
-        [FoldoutGroup(LevelEditorConstants.CREATIVE)]
-        public string creativeName = "CreativeLevel_";
+        // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
+        // public string creativeName = "CreativeLevel_";
 
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         [ValueDropdown(nameof(GetAllItemIds))] [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
@@ -637,7 +640,15 @@ namespace IEC
         public void LoadLevelFromProject()
         {
             // currentLevelData = isLevelCreative ? levelConfig.GetLevelDataCreative(level) : levelConfig.GetLevelDataToys(level);
-            currentLevelData = levelConfig.GetLevelDataToysSO(level);
+            if (levelDataSo != null)
+            {
+                currentLevelData = levelDataSo;
+            }
+            else
+            {
+                currentLevelData = levelConfig.GetLevelDataToysSO(level);
+            }
+
             if (currentLevelData == null)
             {
                 Debug.LogError("Level Data is null");
@@ -672,7 +683,14 @@ namespace IEC
         [ResponsiveButtonGroup] [Button]
         void ReloadLevel()
         {
-            currentLevelData = levelConfig.GetLevelDataToysSO(level);
+            if (levelDataSo != null)
+            {
+                currentLevelData = levelDataSo;
+            }
+            else
+            {
+                currentLevelData = levelConfig.GetLevelDataToysSO(level);
+            }
             var levelData = ScriptableObject.CreateInstance<LevelDataSO>();
             if (currentLevelData == null)
             {
