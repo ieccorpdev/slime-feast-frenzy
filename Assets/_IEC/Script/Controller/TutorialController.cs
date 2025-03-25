@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _IEC.Features.VipProHackerUITutorial;
 using UnityEngine;
 
@@ -54,7 +55,20 @@ namespace IEC
 
         void OnNewGame()
         {
-
+            if (PlayerData.level == 1)
+            {
+                Locator.Game.ScreenInGame.OnStartTutorial(GamePlay.GetLevelController().GetHolePlayer().transform);
+            }
+            else
+            {
+                Locator.Game.ScreenInGame.DeActiveStartGameTutorial();
+                var helperConfig =
+                    Config.gamePlayConfig.helperConfigs.FirstOrDefault(x => x.unlockLevel == PlayerData.level);
+                if (helperConfig != null && PlayerData.helperData.IsCompleteTutorial(helperConfig.id) == false)
+                {
+                    Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);
+                }
+            }
         }
 
 

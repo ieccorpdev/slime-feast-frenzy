@@ -9,7 +9,7 @@ namespace _IEC.Features.VipProHackerUITutorial
     {
         public Image imgDark;
         public Canvas myCanvas;
-        public RectTransform handTut;
+        public GameObject handTut;
         public int CanvasSortingOrder => myCanvas.sortingOrder;
         private Canvas m_TempCanvas;
         private GraphicRaycaster m_GraphicRaycaster;
@@ -17,10 +17,6 @@ namespace _IEC.Features.VipProHackerUITutorial
         private bool m_OldIsOverrideSorting;
         private int m_OldRenderSorting;
         private Canvas m_OldCanvas;
-        [Header("Custom")] 
-        public GameObject tapToCollectTut;
-        public GameObject needSpaceTut;
-        public GameObject clearHelperTut;
         public void Awake()
         {
             Pool.Set(this);
@@ -39,17 +35,12 @@ namespace _IEC.Features.VipProHackerUITutorial
             m_CurrentHighLightUI = rectTransform;
             imgDark.gameObject.SetActive(true);
             var currentCanvas = rectTransform.GetComponent<Canvas>();
-
             var currentGraphicTarget = rectTransform.GetComponent<GraphicRaycaster>();
             if (currentCanvas == null)
             {
                 m_TempCanvas = rectTransform.gameObject.AddComponent<Canvas>();
                 m_TempCanvas.overrideSorting = true;
                 m_TempCanvas.sortingOrder = CanvasSortingOrder + 1;
-                TweenControl.GetInstance().DelayCall(transform,Time.deltaTime*2, () =>
-                {
-                    m_TempCanvas.overrideSorting = true;
-                });
             }
             else
             {
@@ -75,24 +66,22 @@ namespace _IEC.Features.VipProHackerUITutorial
 
             if (isUsingHandTut)
             {
-                handTut.gameObject.SetActive(true);
-                //if (positionOffset != null)
-                //{
-                //    handTut.transform.position = rectTransform.transform.position;
-                //    handTut.GetComponent<RectTransform>().anchoredPosition += positionOffset.Value;
-                //}
-                //else
-                //{
-                //    handTut.position = rectTransform.position;
-                //}
+                handTut.SetActive(true);
+                if (positionOffset != null)
+                {
+                    handTut.transform.position = rectTransform.transform.position;
+                    handTut.GetComponent<RectTransform>().anchoredPosition += positionOffset.Value;
+                }
+                else
+                {
+                    handTut.transform.position = rectTransform.transform.position;
+                }
             }
         }
-        
+
         public void RemoveCurrentHighLight()
         {
-            tapToCollectTut.gameObject.SetActive(false);
-            needSpaceTut.gameObject.SetActive(false);
-            clearHelperTut.gameObject.SetActive(false);
+            //Debug.LogError("Remove Highlight");
             if (m_CurrentHighLightUI == null) return;
             
             if (m_GraphicRaycaster != null)
@@ -107,19 +96,13 @@ namespace _IEC.Features.VipProHackerUITutorial
                 DestroyImmediate(m_TempCanvas);
             }
             imgDark.gameObject.SetActive(false);
-            handTut.gameObject.SetActive(false);
+            handTut.SetActive(false);
             m_CurrentHighLightUI = null;
             if (m_OldCanvas != null)
             {
                 m_OldCanvas.overrideSorting = m_OldIsOverrideSorting;
                 m_OldCanvas.sortingOrder = m_OldRenderSorting;
             }
-
-        }
-
-        public void SetHandTutToPos(Vector3 worldPos)
-        {
-            handTut.transform.position = worldPos;
         }
     }
 }
