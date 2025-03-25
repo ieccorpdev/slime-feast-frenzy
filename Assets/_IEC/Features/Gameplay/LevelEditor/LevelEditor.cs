@@ -26,8 +26,98 @@ namespace IEC
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public int level = 1;
+
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        public bool createNewLevel;
         
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        public string filePath = "Assets/EncryptedAssets";
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        public string levelFolderName = "CustomLevel";
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        public string levelObjectName = "LevelDataSO";
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        public string levelSpawnDataFolderName = "CustomSpawnData";
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        public string levelSpawnDataObjectName = "LevelSpawnData";
+        
+        // [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        // [ShowIf("@createNewLevel")]
+        // public string mapDataFolderName = "CustomMapData";
+        //
+        // [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        // [ShowIf("@createNewLevel")]
+        // public string mapDataObjectName = "MapData";
+
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@createNewLevel")]
+        [Button]
+        public void CreateNewLevel()
+        {
+            LevelDataSO newLevelDataSO = ScriptableObject.CreateInstance<LevelDataSO>();
+
+            LevelSpawnData newLevelSpawnDataSO = ScriptableObject.CreateInstance<LevelSpawnData>();
+
+            if (currentLevelData != null)
+            {
+                currentLevelData.CloneTo(newLevelDataSO);
+                currentLevelData.levelSpawnData.CloneTo(newLevelSpawnDataSO);
+            }
+            
+            newLevelDataSO.levelSpawnData = newLevelSpawnDataSO;
+
+            string levelDataPath = $"{filePath}/{levelFolderName}";
+            if (!AssetDatabase.IsValidFolder(levelDataPath))
+            {
+                AssetDatabase.CreateFolder(filePath, levelFolderName);
+            }
+            
+            AssetDatabase.CreateAsset(newLevelDataSO, $"{levelDataPath}/{levelObjectName}_{level}.asset");
+            
+            string levelSpawnDataPath = $"{filePath}/{levelSpawnDataFolderName}";
+            if (!AssetDatabase.IsValidFolder(levelSpawnDataPath))
+            {
+                AssetDatabase.CreateFolder(filePath, levelSpawnDataFolderName);
+            }
+            
+            AssetDatabase.CreateAsset(newLevelSpawnDataSO, $"{levelSpawnDataPath}/{levelSpawnDataObjectName}_{level}.asset");
+            
+            
+            // string mapDataPath = $"{filePath}/{mapDataFolderName}";
+            // if (!AssetDatabase.IsValidFolder(mapDataPath))
+            // {
+            //     AssetDatabase.CreateFolder(filePath, mapDataFolderName);
+            // }
+            //
+            // string newMapDataAssetPath = $"{mapDataPath}/{levelSpawnDataObjectName}_{level}.txt";
+            // if (!File.Exists(newMapDataAssetPath))
+            // {
+            //     File.WriteAllText(newMapDataAssetPath, newLevelDataSO.mapData != null ? newLevelDataSO.mapData.text : "");
+            //     AssetDatabase.Refresh();
+            // }
+            //
+            // TextAsset newMapDataAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(newMapDataAssetPath);
+            // newLevelDataSO.mapData = newMapDataAsset;
+            
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+
+            levelDataSo = newLevelDataSO;
+            ReloadLevel();
+
+        }
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        [ShowIf("@!createNewLevel")]
         public LevelDataSO levelDataSo;
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
@@ -700,6 +790,7 @@ namespace IEC
 
             Reset();
             currentLevelData.CloneTo(levelData);
+            currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
             if (isOverrideMapData)
                 levelData.mapData = mapData;
             levelData.listObjectives = levelObjectives.ConvertAll(x => x.Clone());
@@ -859,6 +950,9 @@ namespace IEC
         [ResponsiveButtonGroup] [Button]
         private void Reset()
         {
+            // currentLevelData = null;
+            // currentMapData = null;
+            // levelDataSo = null;
             m_AllItems.Clear();
             m_AllBombs.Clear();
 
