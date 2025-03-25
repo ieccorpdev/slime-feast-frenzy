@@ -264,7 +264,6 @@ namespace IEC
 
             var previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
-
             if (spawnType == SpawnTypes.Border)
             {
                 for (int q = -radius; q <= radius; q++)
@@ -305,19 +304,132 @@ namespace IEC
             return new Vector3(x, 0, z);
         }
     }
+    [Serializable]
+    public class PyramidRectancleSpawnArea : SpawnArea
+    {
+     public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Circle;
 
+        public int radius = 3;
+        public float spacing = 1.5f;
+        public int verticalCount = 1;
+
+        public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame,
+            string itemId)
+        {
+            GameObject previewGameObject;
+            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            if (prefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+
+            previewGameObject = new GameObject("Preview");
+            previewGameObject.transform.position = spawnPos;
+
+            if (spawnType == SpawnTypes.Border)
+            {
+                float circumference = 2 * Mathf.PI * radius * spacing;
+                int itemCount = Mathf.FloorToInt(circumference / spacing);
+
+                for (int i = 0; i < itemCount; i++)
+                {
+                    float angle = i * (360f / itemCount);
+                    var pos = spawnPos + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * radius * spacing, 0,
+                        Mathf.Sin(angle * Mathf.Deg2Rad) * radius * spacing);
+                    CreateItems(itemPrefabConfig, prefab, pos, previewGameObject, itemId, verticalCount);
+                }
+            }
+            else
+            {
+                for (int r = 0; r <= radius; r++)
+                {
+                    int itemCount = Mathf.FloorToInt(2 * Mathf.PI * r * spacing / spacing);
+                    for (int i = 0; i < itemCount; i++)
+                    {
+                        float angle = i * (360f / itemCount);
+                        var pos = spawnPos + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * r * spacing, 0,
+                            Mathf.Sin(angle * Mathf.Deg2Rad) * r * spacing);
+                        
+                        CreateItems(itemPrefabConfig, prefab, pos, previewGameObject, itemId, verticalCount);
+                    }
+                }
+            }
+
+            return previewGameObject;
+        }
+    }
+    public class PyramidCircleSpawnArea : SpawnArea
+    {
+        public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Pyramid;
+        public int width = 10;
+        public int length = 10;
+        public float spacing = 1.5f;
+        public int layerSizeReduce;
+
+        public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
+        {
+            GameObject previewGameObject;
+            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            if (prefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+
+
+            previewGameObject = new GameObject("Preview");
+            previewGameObject.transform.position = spawnPos;
+            var itemHeight = 1f;
+            var renderer  = prefab.GetComponentInChildren<MeshRenderer>();;
+            if (renderer != null)
+            {
+                itemHeight = renderer.bounds.size.y;
+            }
+
+            int numberlayer = width / layerSizeReduce;
+            for (int i = 0; i < numberlayer; i++)
+            {
+                var sizeWidth = (width-i*layerSizeReduce) * spacing;
+                var sizeLength = (length-i*layerSizeReduce) * spacing;
+                var bottomLeftPos = previewGameObject.transform.position + Vector3.left * (sizeWidth / 2f) + Vector3.back * (sizeLength / 2f);
+                for (int x = 0; x < width-i*layerSizeReduce; x++)
+                {
+                    for (int y = 0; y < length-i*layerSizeReduce; y++)
+                    {
+                        if (spawnType == SpawnTypes.Border)
+                        {
+                            if (x != 0 && x != width-i*layerSizeReduce - 1 && y != 0 && y != length-i*layerSizeReduce - 1)
+                            {
+                                //Only draw object border
+                                continue;
+                            }
+                        }
+
+                        var pos = bottomLeftPos + Vector3.right * (spacing * x) + Vector3.forward * (spacing * y) + Vector3.up*i *itemHeight;
+                        CreateItems(itemPrefabConfig, prefab, pos, previewGameObject, itemId, 0);
+                    }
+                }
+            }
+
+
+            return previewGameObject;
+        }
+    }
     public enum SpawnAreaShapes
     {
         None,
         Rectangle,
         Circle,
         Triangle,
-        Hexagon
+        Hexagon,
+        Pyramid
     }
 
     public enum SpawnTypes
     {
         Full,
-        Border
+        Border,
+        Pyramid
     }
 }
