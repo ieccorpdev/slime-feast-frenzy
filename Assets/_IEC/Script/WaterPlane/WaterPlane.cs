@@ -25,16 +25,15 @@ namespace IEC
 
         void UpdateWaterPlaneRenderer(object param)
         {
-            var levelData = (EventLevelLoad)param;
-            var themeId = levelData.themeId;
-            var waterConfig = waterThemeConfig.waterConfigs.Find(x => x.theme == themeId);
-            if (waterConfig == null)
-            {
-                Debug.LogError($"Missing material setup for theme {themeId}");
-                waterConfig = waterThemeConfig.waterConfigs.Find(x => x != null);
-            }
-
-            waterMeshRenderer.material = waterConfig.waterMaterial;
+            //var levelData = (EventLevelLoad)param;
+            //var themeId = levelData.themeId;
+            //var waterConfig = waterThemeConfig.waterConfigs.Find(x => x.theme == themeId);
+            //if (waterConfig == null)
+            //{
+            //    Debug.LogError($"Missing material setup for theme {themeId}");
+            //    waterConfig = waterThemeConfig.waterConfigs.Find(x => x != null);
+            //}
+            //waterMeshRenderer.material = waterConfig.waterMaterial;
         }
     }
 }
