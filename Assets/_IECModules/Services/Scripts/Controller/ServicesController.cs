@@ -1340,8 +1340,11 @@ namespace IEC
         {
             var url = config.privacyPolicy;
             if (string.IsNullOrWhiteSpace(url)) return;
-
+#if UNITY_IOS
+            IECiosNative.OpenURL(url);
+#else
             Application.OpenURL(url);
+#endif
         }
 
         void SaveLogToFile()
