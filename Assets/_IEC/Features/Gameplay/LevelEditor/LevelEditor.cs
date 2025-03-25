@@ -26,6 +26,9 @@ namespace IEC
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public int level = 1;
+        
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
+        public int levelTime = 0;
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public bool createNewLevel;
@@ -750,6 +753,7 @@ namespace IEC
             currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
             levelObjectives = currentLevelData.listObjectives.ConvertAll(x => x.Clone());
             theme = currentLevelData.theme;
+            levelTime = currentLevelData.time;
             levelBombData = currentLevelData.levelBoomData;
             isOverrideBombData = currentLevelData.levelBoomData.isOverrideBombData;
             List<_IEC.Features.Gameplay.ItemData> testItm = new List<_IEC.Features.Gameplay.ItemData>();
@@ -791,6 +795,7 @@ namespace IEC
             Reset();
             currentLevelData.CloneTo(levelData);
             currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            levelTime = currentLevelData.time;
             if (isOverrideMapData)
                 levelData.mapData = mapData;
             levelData.listObjectives = levelObjectives.ConvertAll(x => x.Clone());
@@ -907,6 +912,7 @@ namespace IEC
 
                 currentLevelData.theme = theme;
                 currentLevelData.listObjectives = levelObjectives.ConvertAll(x => x.Clone());
+                currentLevelData.time = levelTime;
 
                 if (mapData != null && isOverrideMapData)
                 {
