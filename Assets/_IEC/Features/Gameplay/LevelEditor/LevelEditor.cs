@@ -8,7 +8,9 @@ using _IEC.Features.ExportLevel.OriginalLevel;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using _IEC.Features.Gameplay;
+using IEC.Linq;
 using Newtonsoft.Json;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Vector3 = System.Numerics.Vector3;
 #if UNITY_EDITOR
@@ -21,8 +23,106 @@ namespace IEC
     public class LevelEditor : SerializedMonoBehaviour
     {
 #if UNITY_EDITOR
+        private void OnEnable()
+        {
+            Selection.selectionChanged += FilterSelection;
+        }
+
         //[ReadOnly] public string currentMapData;
         [ReadOnly] public LevelDataSO currentLevelData;
+        
+        #region Item Selection
+        
+        private static System.Type filterType = typeof(SelectionBaseHolder);
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        public bool isAllowSelectSceneItems;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [ReadOnly] 
+        public int totalXP;
+
+        private void UpdateTotalXP()
+        {
+            totalXP = System.Linq.Enumerable.Sum(filteredObjects, obj => obj.ItemDefinition.GetXp());
+        }
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [ReadOnly] public List<BaseItem> filteredObjects = new ();
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)] 
+        [ShowIf("@isAllowSelectSceneItems")]
+        public string groupItemName;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void GroupItems()
+        {
+            if (string.IsNullOrEmpty(groupItemName))
+            {
+                EditorUtility.DisplayDialog("Group Object name is Empty !!!", "Give a name pls", "Sorry :(");
+                return;
+            }
+            
+            if (itemHolder.GetComponentsInChildren<Transform>().Find(child => child.name == groupItemName))
+            {
+                EditorUtility.DisplayDialog($"Object with name {groupItemName} already exist!!!", "Give a different name pls", "Sorry :(");
+                return;
+            }
+            
+            GameObject groupHolder = new GameObject(groupItemName);
+            groupHolder.transform.parent = itemHolder;
+
+            UnityEngine.Vector3 sum = UnityEngine.Vector3.zero;
+            foreach (var obj in filteredObjects)
+            {
+                sum += obj.transform.position;
+            }
+            var centerPoint = sum / filteredObjects.Count;
+
+            groupHolder.transform.position = centerPoint;
+            
+            foreach (var obj in filteredObjects)
+            {
+                obj.ItemData.groupID = groupItemName;
+                obj.ItemData.groupPosition = centerPoint;
+                obj.transform.parent = groupHolder.transform;
+            }
+        }
+        
+        private void FilterSelection()
+        {
+            if (!isAllowSelectSceneItems)
+                return;
+            
+            if (Selection.objects.Length == 0) return;
+
+            filteredObjects = new ();
+
+            foreach (Object obj in Selection.objects)
+            {
+                if (obj is GameObject gameObject)
+                {
+                    var target = gameObject.GetComponent(typeof(BaseItem)) as BaseItem;
+
+                    if (target == null)
+                        target = gameObject.GetComponentInParent(typeof(BaseItem)) as BaseItem;
+
+                    if (target != null)
+                    {
+                        filteredObjects.Add(target);
+                    }
+                }
+            }
+            
+            // Selection.objects = Array.Empty<Object>();
+            // Selection.objects = filteredObjects.ToArray() as Object[];
+            UpdateTotalXP();
+        }
+        #endregion
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public int level = 1;
@@ -396,17 +496,29 @@ namespace IEC
         public string oldItemID;
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        public bool isReplaceItemWithSameXP;
+
+        [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        [ShowIf("@!isReplaceItemWithSameXP")]
         [ValueDropdown(nameof(GetAllItemIds))]
         public string newItemID;
+        
+        [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        [ShowIf("@isReplaceItemWithSameXP")]
+        [ValueDropdown(nameof(GetAllItemIdsWithSameXP))]
+        public string newItemIDWithSameXP;
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
         [Button]
         public void ReplaceItems()
         {
-            var newItem = itemConfig.listItemDefinition.Find(x => x.GetId() == newItemID);
+            
+            var newID = isReplaceItemWithSameXP ? newItemIDWithSameXP : newItemID;
+            
+            var newItem = itemConfig.listItemDefinition.Find(x => x.GetId() == newID);
             if (newItem == null)
             {
-                Debug.LogError($"Item with id {newItemID} not found");
+                Debug.LogError($"Item with id {newID} not found");
                 return;
             }
 
@@ -418,7 +530,7 @@ namespace IEC
                 {
                     newItemDatas.Add(new _IEC.Features.Gameplay.ItemData()
                     {
-                        itemId = newItemID,
+                        itemId = newID,
                         position = item.transform.position,
                         eulerAngle = item.transform.eulerAngles,
                         isStartKinematic = item.ItemData.isStartKinematic
@@ -1040,6 +1152,12 @@ namespace IEC
             var currentItems = itemHolder.GetComponentsInChildren<BaseItem>().ToList();
             return currentItems.Where(x => x.ItemDefinition != null).Select(x => x.GetItemId());
         }
+        
+        private IEnumerable GetAllItemIdsWithSameXP()
+        {
+            var oldItem = itemConfig.listItemDefinition.Find(item => item.GetId() == oldItemID);
+            return itemConfig.listItemDefinition.Where(x => x.GetXp() == oldItem.GetXp()).Select(x => x.GetId());
+        }
 
         private void UpdateItemSpawnUtilities()
         {
@@ -1158,6 +1276,7 @@ namespace IEC
         //     AssetDatabase.Refresh();
         //     AssetDatabase.SaveAssets();
         // }
+        
 
         [Serializable]
         public class ItemCountInScene
