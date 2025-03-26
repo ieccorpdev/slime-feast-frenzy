@@ -316,7 +316,7 @@ namespace IEC
         public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            GameObject prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
