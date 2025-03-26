@@ -1085,6 +1085,99 @@ namespace IEC
             }
         }
 
+        [ResponsiveButtonGroup]
+        [Button]
+public void LogInfoLevel()
+{
+    string dialog = "DataInfoLevel\n";
+    dialog += "------------------------------------------------------------\n";
+    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", "Objective", "Amount", "Exp", "Total Exp", "Size") + "\n";
+    dialog += "------------------------------------------------------------\n";
+    
+    int countExp = 0;
+    if (currentLevelData == null)
+    {
+        Debug.LogError("Not found Data Level");
+        return;
+    }
+
+    Dictionary<string, int> objectiveId = new Dictionary<string, int>();
+    foreach (var levelObjectiveData in currentLevelData.listObjectives)
+    {
+        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+            "Objective: " + levelObjectiveData.id, 
+            levelObjectiveData.amount.ToString(),  // Làm tròn số Amount
+            itemConfig.GetItemExp(levelObjectiveData.id).ToString(),  // Làm tròn số Exp
+            (levelObjectiveData.amount * itemConfig.GetItemExp(levelObjectiveData.id)).ToString("F2"),  // Tổng Exp
+            " ") + "\n";
+        
+        objectiveId.Add(levelObjectiveData.id, levelObjectiveData.amount);
+    }
+
+    foreach (var listItemSpawn in currentLevelData.levelSpawnData.listItemSpawns)
+    {
+        if (objectiveId.ContainsKey(listItemSpawn.id))
+        {
+            objectiveId.TryGetValue(listItemSpawn.id, out int targetAm);
+            if (listItemSpawn.listSpawnDatas.Count > targetAm)
+            {
+                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                    "Objective Extra: " + listItemSpawn.id, 
+                    (listItemSpawn.listSpawnDatas.Count - targetAm).ToString(),  // Số mục thừa
+                    itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                    (itemConfig.GetItemExp(listItemSpawn.id) * (listItemSpawn.listSpawnDatas.Count - targetAm)).ToString("F2"),
+                    GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+            }
+            else if (listItemSpawn.listSpawnDatas.Count < targetAm)
+            {
+                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                    "Objective Missing: " + listItemSpawn.id, 
+                    (targetAm - listItemSpawn.listSpawnDatas.Count).ToString(),  // Số mục thiếu
+                    itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                    (itemConfig.GetItemExp(listItemSpawn.id) * (targetAm - listItemSpawn.listSpawnDatas.Count)).ToString("F2"),
+                    GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+            }
+
+            // Skip objective
+            countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+            continue;
+        }
+
+        if (listItemSpawn.id.Contains("food_"))
+        {
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                "Normal: " + listItemSpawn.id, 
+                listItemSpawn.listSpawnDatas.Count.ToString(), 
+                itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+            countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+        }
+        else
+        {
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                "Special: " + listItemSpawn.id, 
+                listItemSpawn.listSpawnDatas.Count.ToString(),
+                itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+        }
+    }
+
+    dialog += "------------------------------------------------------------\n";
+    dialog += "Total Exp: " + countExp.ToString("F2") + "\n";  // Làm tròn tổng Exp
+    dialog += "------------------------------------------------------------\n";
+    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10}", 
+        "Bomb: " , 
+        currentLevelData.levelBoomData.number, 
+        0, 
+        0) + "\n";
+
+    // Hiển thị cửa sổ custom dialog với nội dung đã được định dạng
+    CustomDialogWindow.ShowWindow(dialog);
+}
+
+
         [Button]
         private void DecreaseLevelGoalsRandomly(int minLevel, int maxLevel, int minDecrease, int maxDecrease,
             int multiplier = 1,
@@ -1117,7 +1210,19 @@ namespace IEC
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        public string GetStringSizeObject(GameObject obj,float scx =1f,float scy=1f,float scz=1f )
+        {
+            //Apply with localscale
+            var itemHeight = 1f;
+            var renderer  = obj.GetComponentInChildren<MeshRenderer>();;
+            if (renderer != null)
+            {
+                itemHeight = renderer.bounds.size.y;
+                return "x:"+(renderer.bounds.size.x*scx).ToString("F2") + "  ,y:" + (renderer.bounds.size.y*scy).ToString("F2") +"  ,z:" + (renderer.bounds.size.z*scz).ToString("F2");
+            }
 
+            return " ";
+        }
         private static IEnumerable GetAllMapData()
         {
             var root = "Assets/GeneratedLevels/NewlyCreated/";
@@ -1324,7 +1429,38 @@ namespace IEC
                 if (itemConfig == null) return null;
                 return itemConfig.listItemDefinition.Select(x => x.GetId());
             }
+
+
         }
 #endif
+    }
+}
+public class CustomDialogWindow : EditorWindow
+{
+    private string dialogContent = "";
+
+    // Hàm này được gọi để hiển thị cửa sổ và truyền nội dung dialog vào
+    public static void ShowWindow(string dialog)
+    {
+        CustomDialogWindow window = GetWindow<CustomDialogWindow>("Custom Dialog");
+        window.minSize = new Vector2(400, 300);  // Quy ước kích thước tối thiểu
+        window.maxSize = new Vector2(600, 500);  // Quy ước kích thước tối đa
+        window.dialogContent = dialog;  // Truyền nội dung vào cửa sổ
+        window.Show();
+    }
+
+    private void OnGUI()
+    {
+        GUILayout.Label("Dialog Content", EditorStyles.boldLabel);
+        GUILayout.Space(10);
+
+        // Hiển thị nội dung của dialog trong TextArea
+        EditorGUILayout.TextArea(dialogContent, GUILayout.Height(300));
+
+        GUILayout.Space(10);
+        if (GUILayout.Button("OK"))
+        {
+            Close(); // Đóng cửa sổ khi nhấn OK
+        }
     }
 }
