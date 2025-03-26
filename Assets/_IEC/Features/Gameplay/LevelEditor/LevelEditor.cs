@@ -432,7 +432,7 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.ITEM_EXP)]
-        [ValueDropdown(nameof(GetAllItemIds))]
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
         public List<string> listItemIds;
 
         [FoldoutGroup(LevelEditorConstants.ITEM_EXP)]
