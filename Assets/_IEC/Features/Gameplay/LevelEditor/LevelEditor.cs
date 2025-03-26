@@ -111,7 +111,7 @@ namespace IEC
                     if (target == null)
                         target = gameObject.GetComponentInParent(typeof(BaseItem)) as BaseItem;
 
-                    if (target != null)
+                    if (target != null && target.ItemDefinition != null)
                     {
                         filteredObjects.Add(target);
                     }
@@ -1008,6 +1008,8 @@ namespace IEC
                     
                     var itemSpawnData = new ItemSpawnData
                     {
+                        groupID =  baseItem.ItemData.groupID,
+                        groupPosition =  baseItem.transform.parent.transform.position,
                         p = new Position(baseItem.transform.position),
                         r = new Rotation(baseItem.transform.eulerAngles),
                         s = new Scale(baseItem.transform.lossyScale),

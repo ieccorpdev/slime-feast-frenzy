@@ -27,6 +27,8 @@ namespace _IEC.Features.Gameplay
     [Serializable]
     public class ItemSpawnData
     {
+        public string groupID;
+        public Vector3 groupPosition;
         public Position p;
         public Rotation r;
         public Scale s;
@@ -35,6 +37,8 @@ namespace _IEC.Features.Gameplay
         public ItemData ToItemData(string id)
         {
             ItemData itemData = new ItemData();
+            itemData.groupID = groupID;
+            itemData.groupPosition = groupPosition;
             itemData.itemId = id;
             itemData.position = p.ToVector3();
             itemData.eulerAngle = r.ToVector3();
