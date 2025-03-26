@@ -21,7 +21,7 @@ namespace IEC
     public class LevelEditor : SerializedMonoBehaviour
     {
 #if UNITY_EDITOR
-        [ReadOnly] public string currentMapData;
+        //[ReadOnly] public string currentMapData;
         [ReadOnly] public LevelDataSO currentLevelData;
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
@@ -127,8 +127,8 @@ namespace IEC
         [ValueDropdown(nameof(GetAllThemes))]
         public string theme;
 
-        [FoldoutGroup(LevelEditorConstants.CREATIVE)]
-        public bool isLevelCreative;
+        // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
+        // public bool isLevelCreative;
 
         // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
         // [Button]
@@ -392,7 +392,7 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
-        [ValueDropdown(nameof(GetAllItemIds))]
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
         public string oldItemID;
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
@@ -750,7 +750,7 @@ namespace IEC
 
             Reset();
             mapData = currentLevelData.mapData;
-            currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
             levelObjectives = currentLevelData.listObjectives.ConvertAll(x => x.Clone());
             theme = currentLevelData.theme;
             levelTime = currentLevelData.time;
@@ -794,7 +794,7 @@ namespace IEC
 
             Reset();
             currentLevelData.CloneTo(levelData);
-            currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
             levelTime = currentLevelData.time;
             if (isOverrideMapData)
                 levelData.mapData = mapData;
@@ -850,7 +850,7 @@ namespace IEC
         }
 
         [ResponsiveButtonGroup] [Button]
-        [ShowIf("@itemHolder.transform.childCount > 0 && !isLevelCreative")]
+        [ShowIf("@itemHolder.transform.childCount > 0" /*&& !isLevelCreative"*/)]
         void SaveOverrideLevel()
         {
             if (currentLevelData == null)
@@ -1033,6 +1033,12 @@ namespace IEC
         private IEnumerable GetAllItemIds()
         {
             return itemConfig.listItemDefinition.Select(x => x.GetId());
+        }
+        
+        private IEnumerable GetAllCurrentItemIds()
+        {
+            var currentItems = itemHolder.GetComponentsInChildren<BaseItem>().ToList();
+            return currentItems.Where(x => x.ItemDefinition != null).Select(x => x.GetItemId());
         }
 
         private void UpdateItemSpawnUtilities()
