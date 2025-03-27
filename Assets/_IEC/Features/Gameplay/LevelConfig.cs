@@ -35,8 +35,9 @@ namespace _IEC.Features.Gameplay
         // public List<LevelConfigModel> levelConfigDataWithToys;
         public List<LevelConfigModel> levelConfigDataSHP;
         public List<LevelConfigModel> levelConfigCreative;
-        
-        [Header("New Datas")]
+
+        [Header("New Datas")] 
+        public LevelDataSO playTestData;
         public List<LevelDataSO> listLevelDatas;
         public List<LevelDataSO> listLevelDatasSHP;
         // public List<LevelDataSO> listLevelDataToys;

@@ -30,6 +30,16 @@ namespace IEC
 
         //[ReadOnly] public string currentMapData;
         [ReadOnly] public LevelDataSO currentLevelData;
+
+        public LevelConfig currentLevelConfig;
+        //[FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [Button]
+        public void PlayTestLevel()
+        {
+            currentLevelConfig.playTestData = currentLevelData;
+            EditorPrefs.SetBool("isPlayTest", true);
+            EditorApplication.EnterPlaymode();
+        }
         
         #region Item Selection
         
@@ -218,6 +228,10 @@ namespace IEC
             ReloadLevel();
 
         }
+
+        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)] 
+        [ShowIf("@!createNewLevel")]
+        public bool isForcedGameplayToCurrentEditLevel;
         
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         [ShowIf("@!createNewLevel")]

@@ -9,6 +9,7 @@ using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
 using MoreMountains.NiceVibrations;
+using UnityEditor;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay
@@ -104,6 +105,13 @@ namespace _IEC.Features.Gameplay
          
             m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
                 ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
+
+            if (EditorPrefs.GetBool("isPlayTest"))
+            {
+                m_LevelConfig = Config.levelConfig.playTestData;
+                EditorPrefs.SetBool("isPlayTest", false);
+            }
+            
             if (m_LevelConfig == null)
             {
                 Debug.LogError("Level Data is null");
