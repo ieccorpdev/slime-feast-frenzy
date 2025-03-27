@@ -25,7 +25,7 @@ namespace _IECModules
             public const string LB_COUNTRY_AROUND = BASE + "/leaderboards/country/around-me";
             public const string PROFILE = BASE + "/auth/profile";
             public const string LOCATION_INFO = BASE + "/location-info";
-        
+            public const string LB_GROUP_JOIN = BASE + "/leaderboard-groups/join";
         }
         private static string s_AccessToken = "";
 
@@ -82,6 +82,8 @@ namespace _IECModules
                 country = CountryCode
             });
         }
+        
+#region Leaderboard
 
         public static void GetGlobalLB(string key, int page, int pageSize = 10, Action<string> onDone = null, Action onError = null)
         {
@@ -123,8 +125,26 @@ namespace _IECModules
                 keyName = key,
                 country = CountryCode,
                 size = pageSize
+            }, result =>
+            {
+                
+            }, onError);
+        }
+
+#endregion
+
+#region Leaderboard Group
+
+        public static void JoinLeaderBoardGroup(string key, Action<string> onDone = null, Action onError = null, string typeLB = "weekly")
+        {
+            Get(APIUrl.LB_GROUP_JOIN, new
+            {
+                keyName = key,
+                type = typeLB
             }, onDone, onError);
         }
+
+#endregion
         
         static void Post(string url, object body, Action<string> onDone = null, Action onError = null, bool isNeedLogin = true)
         {
