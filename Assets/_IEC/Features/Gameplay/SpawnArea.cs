@@ -19,7 +19,7 @@ namespace IEC
             string itemId);
 
         protected virtual void CreateItems(GameplayItemPrefabConfig itemPrefabConfig, GameObject prefab, Vector3 pos,
-            GameObject previewGameObject, string itemId, int verticalCount)
+            GameObject previewGameObject, string itemId, int verticalCount, float rotOffset = 0)
         {
             var newItem = Object.Instantiate(prefab, previewGameObject.transform);
 
@@ -36,7 +36,7 @@ namespace IEC
 
             itemComponent.LoadData(itemData, itemDefinition);
             newItem.transform.position = pos;
-            newItem.transform.eulerAngles = new Vector3(0, spawnRot, 0);
+            newItem.transform.eulerAngles = new Vector3(0, spawnRot + rotOffset, 0);
                         
             CreateStackedItems(itemPrefabConfig, prefab, itemComponent, itemId, verticalCount - 1);
         }
@@ -430,6 +430,66 @@ namespace IEC
             return previewGameObject;
         }
     }
+
+    [Serializable]
+    public class PillarSpawnArea : SpawnArea
+    {
+
+        public const string pillarID = "food_190";
+        public const string pillarTopID = "food_191";
+
+        public float rotationEachLayer = -20f;
+        public float spacingEachLayer = 0.6f;
+        public float objSpacingFromPillar = 1.5f;
+         
+        public int verticalCount = 1;
+        
+        public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Pillar;
+        public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
+        {
+            GameObject previewGameObject;
+            
+            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            if (prefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            var pillarPrefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, pillarID);
+            if (pillarPrefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            var pillarTopPrefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, pillarTopID);
+            if (pillarTopPrefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            previewGameObject = new GameObject("Preview");
+            previewGameObject.transform.position = spawnPos;
+            
+            
+            for (int i = 0; i < verticalCount; i++)
+            {
+                CreateItems(itemPrefabConfig,
+                    i == verticalCount - 1 ? pillarTopPrefab : pillarPrefab, 
+                    Vector3.zero + Vector3.up * spacingEachLayer * i, previewGameObject, pillarID, 1, rotationEachLayer * i);
+            }
+            
+            CreateItems(itemPrefabConfig,
+                prefab, 
+                Vector3.zero + Vector3.up * (spacingEachLayer * verticalCount + objSpacingFromPillar), previewGameObject, itemId, 1);
+
+
+            return previewGameObject;
+        }
+    }
+    
     public enum SpawnAreaShapes
     {
         None,
@@ -437,7 +497,8 @@ namespace IEC
         Circle,
         Triangle,
         Hexagon,
-        Pyramid
+        Pyramid,
+        Pillar
     }
 
     public enum SpawnTypes
