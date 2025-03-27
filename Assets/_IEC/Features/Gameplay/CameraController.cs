@@ -40,5 +40,22 @@ namespace _IEC.Features.Gameplay
             if (framingTransposer == null) return;
             framingTransposer.m_CameraDistance = data.cameraDistance;
         }
+        
+        
+        public void OnUpdateCameraTargetEditMode(object param)
+        {
+            #if UNITY_EDITOR
+            var data = (UpdateCameraTarget) param;
+            if (data == null) return;
+            if (mainCamera == null)
+            {
+                mainCamera = GetComponentInChildren<CinemachineVirtualCamera>();
+            }
+            mainCamera.Follow = data.target;
+            var framingTransposer = mainCamera.GetCinemachineComponent<CinemachineFramingTransposer>();
+            if (framingTransposer == null) return;
+            framingTransposer.m_CameraDistance = data.cameraDistance;
+            #endif
+        }
     }
 }
