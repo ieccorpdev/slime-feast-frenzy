@@ -605,7 +605,7 @@ namespace IEC
         {
             return
                 itemHolder.GetComponentsInChildren<BaseItem>()
-                    .Count(item => item.ItemDefinition.GetId() == objectiveItemID);
+                    .Count(item => item.ItemDefinition != null && item.ItemDefinition.GetId() == objectiveItemID);
         }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
@@ -635,6 +635,13 @@ namespace IEC
 
         }
 
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [Button]
+        public void ResetObjectives()
+        {
+            levelObjectives.Clear();
+        }
+        
         // private void UpdateItemsInScene()
         // {
         //     foreach (var item in listItemInScenes)
