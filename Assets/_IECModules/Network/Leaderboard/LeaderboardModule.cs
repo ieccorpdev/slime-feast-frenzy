@@ -26,7 +26,10 @@ namespace _IECModules
             public const string PROFILE = BASE + "/auth/profile";
             public const string LOCATION_INFO = BASE + "/location-info";
             public const string LB_GROUP_JOIN = BASE + "/leaderboard-groups/join";
+
+            public const string CLAN = BASE + "/clans";
         }
+
         private static string s_AccessToken = "";
 
         private static bool s_IsLoggedIn = false;
@@ -35,13 +38,15 @@ namespace _IECModules
         private static Dictionary<string, string> m_Header = new Dictionary<string, string>();
         // Start is called before the first frame update
 
-        public static void Login (string gameCode, string platformId = null, Action<string> onDone = null, Action onError = null)
+        public static void Login(string gameCode, string platformId = null, Action<string> onDone = null,
+            Action onError = null)
         {
             if (s_IsLoggedIn) return;
             if (string.IsNullOrWhiteSpace(platformId))
             {
                 platformId = SystemInfo.deviceUniqueIdentifier;
             }
+
             // Debug.Log(Time.realtimeSinceStartup);
             Post(APIUrl.LOGIN_CUSTOM, new
             {
@@ -82,10 +87,11 @@ namespace _IECModules
                 country = CountryCode
             });
         }
-        
-#region Leaderboard
 
-        public static void GetGlobalLB(string key, int page, int pageSize = 10, Action<string> onDone = null, Action onError = null)
+        #region Leaderboard
+
+        public static void GetGlobalLB(string key, int page, int pageSize = 10, Action<string> onDone = null,
+            Action onError = null)
         {
             Get(APIUrl.LB_GLOBAL, new
             {
@@ -107,8 +113,9 @@ namespace _IECModules
                 pageSize = pageSize
             }, onDone, onError);
         }
-        
-        public static void GetGlobalAroundMe(string key, int pageSize = 10, Action<string> onDone = null, Action onError = null)
+
+        public static void GetGlobalAroundMe(string key, int pageSize = 10, Action<string> onDone = null,
+            Action onError = null)
         {
             Get(APIUrl.LB_GLOBAL_AROUND, new
             {
@@ -117,25 +124,24 @@ namespace _IECModules
                 size = pageSize
             }, onDone, onError);
         }
-        
-        public static void GetCountryAroundMe(string key, int pageSize = 10, Action<string> onDone = null, Action onError = null)
+
+        public static void GetCountryAroundMe(string key, int pageSize = 10, Action<string> onDone = null,
+            Action onError = null)
         {
             Get(APIUrl.LB_COUNTRY_AROUND, new
             {
                 keyName = key,
                 country = CountryCode,
                 size = pageSize
-            }, result =>
-            {
-                
-            }, onError);
+            }, result => { }, onError);
         }
 
-#endregion
+        #endregion
 
-#region Leaderboard Group
+        #region Leaderboard Group
 
-        public static void JoinLeaderBoardGroup(string key, Action<string> onDone = null, Action onError = null, string typeLB = "weekly")
+        public static void JoinLeaderBoardGroup(string key, Action<string> onDone = null, Action onError = null,
+            string typeLB = "weekly")
         {
             Get(APIUrl.LB_GROUP_JOIN, new
             {
@@ -144,21 +150,104 @@ namespace _IECModules
             }, onDone, onError);
         }
 
-#endregion
-        
-        static void Post(string url, object body, Action<string> onDone = null, Action onError = null, bool isNeedLogin = true)
+        #endregion
+
+        #region Clan
+
+        public static void CreateClan(string clanName, string description, string type = "open", int maxMembers = 50,
+            int requireLevel = 0, string scoreType = "level", string badge = "", Action<string> onDone = null,
+            Action onError = null)
         {
-            if(isNeedLogin && !IsLogin()) return;
+            Post(APIUrl.CLAN, new
+            {
+                name = clanName,
+                description,
+                type,
+                scoreType,
+                badge,
+                maxMembers,
+                requireLevel
+            }, onDone, onError);
+        }
+
+        public static void SearchClan(string search, string type = "open", int page = 1, int pageSize = 20,
+            Action<string> onDone = null, Action onError = null)
+        {
+            Get(APIUrl.CLAN, new
+            {
+                search,
+                type,
+                page,
+                pageSize,
+            }, onDone, onError);
+        }
+
+        public static void GetClan(string clanId, bool includeMembers, Action<string> onDone = null,
+            Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}?includeMembers={includeMembers}";
+            Get(url, null, onDone, onError);
+        }
+
+        public static void UpdateClanInfo(string clanId, string clanName, string description, string type,
+            string scoreType, string badge, int maxMembers, int requireLevel, Action<string> onDone = null,
+            Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}";
+            Put(url, new
+            {
+                name = clanName,
+                description,
+                type,
+                scoreType,
+                badge,
+                maxMembers,
+                requireLevel
+            }, onDone, onError);
+        }
+
+        public static void LeaveClan(string clanId, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/leave";
+            Put(url, null, onDone, onError);
+        }
+
+        public static void GetClanMember(string clanId, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/members";
+            Get(url, null, onDone, onError);
+        }
+
+        public static void RequestJoinMember(string clanId, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/join-request";
+            Post(url, null, onDone, onError);
+        }
+        
+        public static void GetRequestJoinClan(string clanId, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/join-request";
+            Post(url, null, onDone, onError);
+        }
+
+        #endregion
+
+        static void Post(string url, object body, Action<string> onDone = null, Action onError = null,
+            bool isNeedLogin = true)
+        {
+            if (isNeedLogin && !IsLogin()) return;
             NetworkBase.Post(url, body, onDone, onError, m_Header);
         }
 
-        static void Get(string url, object body, Action<string> onDone = null, Action onError = null, bool isNeedLogin = true)
+        static void Get(string url, object body, Action<string> onDone = null, Action onError = null,
+            bool isNeedLogin = true)
         {
             if (isNeedLogin && !IsLogin()) return;
             NetworkBase.Get(url, body, onDone, onError, m_Header);
         }
 
-        static void Put(string url, object body, Action<string> onDone = null, Action onError = null, bool isNeedLogin = true)
+        static void Put(string url, object body, Action<string> onDone = null, Action onError = null,
+            bool isNeedLogin = true)
         {
             if (isNeedLogin && !IsLogin()) return;
             NetworkBase.Put(url, body, onDone, onError, m_Header);
@@ -169,7 +258,6 @@ namespace _IECModules
             if (s_IsLoggedIn) return true;
             Debug.Log("<color=#ff0000ff>Post Failed</color>: Not login");
             return false;
-
         }
     }
 }
