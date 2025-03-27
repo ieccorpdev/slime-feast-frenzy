@@ -584,11 +584,12 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [ReadOnly]
         public List<LevelObjectiveData> levelObjectives;
 
-        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
-        [OnValueChanged(nameof(UpdateItemsInScene))]
-        public List<ItemCountInScene> listItemInScenes;
+        // [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        // [OnValueChanged(nameof(UpdateItemsInScene))]
+        // public List<ItemCountInScene> listItemInScenes;
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)] 
         [ValueDropdown(nameof(GetAllCurrentItemIds))]
@@ -624,20 +625,24 @@ namespace IEC
                 };
                 levelObjectives.Add(objective);
             }
+
+            if (objectiveCount == 0)
+                levelObjectives.Remove(objective);
+            
             
             //objective.AddObjectiveAmount(objectiveCount);
             objective.amount = objectiveCount;
 
         }
 
-        private void UpdateItemsInScene()
-        {
-            foreach (var item in listItemInScenes)
-            {
-                item.itemHolder = itemHolder;
-                item.itemConfig = itemConfig;
-            }
-        }
+        // private void UpdateItemsInScene()
+        // {
+        //     foreach (var item in listItemInScenes)
+        //     {
+        //         item.itemHolder = itemHolder;
+        //         item.itemConfig = itemConfig;
+        //     }
+        // }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
         [Button]
