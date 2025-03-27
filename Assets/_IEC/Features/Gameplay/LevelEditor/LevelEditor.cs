@@ -421,6 +421,18 @@ namespace IEC
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         [ValueDropdown(nameof(GetAllItemIds))] [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
         public string itemId;
+        
+        // [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        // [ValueDropdown(nameof(GetAllPillarItemIds))]
+        // [ShowIf("@isSpawnPillar")]
+        // public string itemPillarId;
+        //
+        // [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        // [ValueDropdown(nameof(GetAllPillarItemIds))]
+        // [ShowIf("@isSpawnPillar")]
+        // public string itemPillarTopId;
+
+        //private bool isSpawnPillar => spawnArea is PillarSpawnArea;
 
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         public SpawnArea spawnArea;
@@ -577,6 +589,46 @@ namespace IEC
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
         [OnValueChanged(nameof(UpdateItemsInScene))]
         public List<ItemCountInScene> listItemInScenes;
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)] 
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
+        [OnValueChanged(nameof(UpdateValueObjectiveCount))]
+        public string objectiveItemID;
+
+        private void UpdateValueObjectiveCount()
+        {
+            objectiveCount = GetCountObjectiveItem();
+        }
+        
+        private int GetCountObjectiveItem()
+        {
+            return
+                itemHolder.GetComponentsInChildren<BaseItem>()
+                    .Count(item => item.ItemDefinition.GetId() == objectiveItemID);
+        }
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [PropertyRange(0, nameof(GetCountObjectiveItem))]
+        public int objectiveCount;
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [Button]
+        public void UpdateObjective()
+        {
+            var objective = levelObjectives.Find(obj => obj.id == objectiveItemID);
+            if (objective == null)
+            {
+                objective = new LevelObjectiveData()
+                {
+                    id = objectiveItemID,
+                };
+                levelObjectives.Add(objective);
+            }
+            
+            //objective.AddObjectiveAmount(objectiveCount);
+            objective.amount = objectiveCount;
+
+        }
 
         private void UpdateItemsInScene()
         {
@@ -1252,6 +1304,13 @@ public void LogInfoLevel()
         private IEnumerable GetAllItemIds()
         {
             return itemConfig.listItemDefinition.Select(x => x.GetId());
+        }
+        
+        private IEnumerable GetAllPillarItemIds()
+        {
+            return itemConfig.listItemDefinition
+                .Where(x => x.GetPhysicFallingItemType() == _IEC.Features.Gameplay.PhysicFallingItemType.Column)
+                .Select(x => x.GetId());
         }
         
         private IEnumerable GetAllCurrentItemIds()
