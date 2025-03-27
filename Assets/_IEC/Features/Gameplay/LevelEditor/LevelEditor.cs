@@ -427,10 +427,27 @@ namespace IEC
 
         // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
         // public string creativeName = "CreativeLevel_";
+        
+        [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        [ValueDropdown(nameof(GetAllItemXP))]
+        [OnValueChanged(nameof(UpdateItemIdWithXP))]
+        public string itemXP;
 
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
-        [ValueDropdown(nameof(GetAllItemIds))] [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
+        [ValueDropdown(nameof(GetAllItemIdsWithXP))] 
+        [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
         public string itemId;
+        
+        [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        [ReadOnly]
+        [SerializeField][PreviewField(125)] 
+        private GameObject itemPrefab;
+
+        private void UpdateItemIdWithXP()
+        {
+            itemId = GetAllItemIdsWithXP().Cast<string>().FirstOrDefault();
+            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId)).GetPrefab();
+        }
         
         // [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         // [ValueDropdown(nameof(GetAllPillarItemIds))]
@@ -981,7 +998,13 @@ namespace IEC
             Reset();
             currentLevelData.CloneTo(levelData);
             //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            mapData = currentLevelData.mapData;
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            levelObjectives = currentLevelData.listObjectives.ConvertAll(x => x.Clone());
+            theme = currentLevelData.theme;
             levelTime = currentLevelData.time;
+            levelBombData = currentLevelData.levelBoomData;
+            isOverrideBombData = currentLevelData.levelBoomData.isOverrideBombData;
             if (isOverrideMapData)
                 levelData.mapData = mapData;
             levelData.listObjectives = levelObjectives.ConvertAll(x => x.Clone());
@@ -1328,6 +1351,20 @@ public void LogInfoLevel()
             return itemConfig.listItemDefinition.Select(x => x.GetId());
         }
         
+        private IEnumerable GetAllItemIdsWithXP()
+        {
+            return itemConfig.listItemDefinition
+                .Where(x => x.GetXp().ToString().Equals(itemXP))
+                .Select(x => x.GetId());
+        }
+
+        private IEnumerable GetAllItemXP()
+        {
+            return System.Linq.Enumerable.OrderBy(
+                    itemConfig.listItemDefinition, x => x.GetXp())
+                .Select(x => x.GetXp().ToString());
+        }
+        
         private IEnumerable GetAllPillarItemIds()
         {
             return itemConfig.listItemDefinition
@@ -1350,6 +1387,7 @@ public void LogInfoLevel()
         private void UpdateItemSpawnUtilities()
         {
             itemSpawnUtilities.itemId = itemId;
+            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId)).GetPrefab();
         }
 
         private List<BombData> GetListBombDatas()
