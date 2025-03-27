@@ -90,7 +90,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -139,7 +140,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -194,7 +196,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -255,7 +258,8 @@ namespace IEC
 
         public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
         {
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -316,7 +320,8 @@ namespace IEC
         public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
         {
             GameObject previewGameObject;
-            GameObject prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //GameObject prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -373,7 +378,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -449,7 +455,8 @@ namespace IEC
         {
             GameObject previewGameObject;
             
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");

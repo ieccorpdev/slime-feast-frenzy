@@ -228,10 +228,6 @@ namespace IEC
             ReloadLevel();
 
         }
-
-        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)] 
-        [ShowIf("@!createNewLevel")]
-        public bool isForcedGameplayToCurrentEditLevel;
         
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         [ShowIf("@!createNewLevel")]
