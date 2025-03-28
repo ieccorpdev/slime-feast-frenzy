@@ -33,7 +33,7 @@ namespace _IECModules
 
         public static void UseGiftCode(string giftCode, Action<string> onDone, Action onFailed = null)
         {
-            var url = string.Format(APIUrl.USE_GIFT_CODE, giftCode);
+            var url = string.Format(APIUrl.USE_GIFT_CODE, giftCode.Trim());
             NetworkBase.Put(url, Body, s =>
             {
                 var rewards = SimpleJSON.JSON.Parse(s)["rewards"];
