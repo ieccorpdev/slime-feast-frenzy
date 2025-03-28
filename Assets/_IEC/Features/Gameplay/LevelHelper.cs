@@ -219,6 +219,7 @@ namespace _IEC.Features.Gameplay
                     waterWave.WaterMaterial = Config.waveWaterMaterial;
                     waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y;
                     waterWave.OnValidate();
+                    itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
                 

@@ -8,14 +8,14 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MeoMewCustomWater
-  m_Shader: {fileID: 4800000, guid: b7c970a370a5f4041adb0953b37bb7ff, type: 3}
+  m_Shader: {fileID: 4800000, guid: 52890aaaff951b24f8e647eb4c42265b, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2999
   stringTagMap: {}
   disabledShaderPasses: []
   m_SavedProperties:
@@ -67,17 +67,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BumpScale: 1
+    - _BumpScale: 2
     - _Cutoff: 0.5
-    - _DepthAlpha: 1.5
+    - _DepthAlpha: 10
     - _DepthDistance: 0.6
-    - _DepthMinAlpha: 0.5
+    - _DepthMinAlpha: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _DstBlendTCP2: 10
-    - _FoamSmooth: 0.078
-    - _FoamSpread: 2
-    - _FoamStrength: 0.8
+    - _DstBlendTCP2: 3
+    - _FoamSmooth: 0.244
+    - _FoamSpread: 0.01
+    - _FoamStrength: 0.01
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -87,31 +87,31 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RampSmooth: 0.641
-    - _RampThreshold: 0.82
+    - _RampThreshold: 0.116
     - _ReflRoughness: 0
     - _ReflStrength: 1
     - _RimMax: 1
     - _RimMin: 0
-    - _Shininess: 10
+    - _Shininess: 3.42
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _SrcBlendTCP2: 5
+    - _SrcBlendTCP2: 4
     - _UVSec: 0
     - _UVWaveAmplitude: 0.01
     - _UVWaveFrequency: 0.5
     - _UVWaveSpeed: 1.5
-    - _WaveFrequency: 2
-    - _WaveHeight: 0.2
-    - _WaveSpeed: 1
+    - _WaveFrequency: 0.5
+    - _WaveHeight: 0.1
+    - _WaveSpeed: 0.5
     - _ZWrite: 1
     - __dummy__: 0
     m_Colors:
-    - _BumpSpeed: {r: 0.2, g: 0.2, b: -0.2, a: -0.2}
-    - _Color: {r: 0.20891002, g: 0.45795533, b: 0.50735295, a: 0.8627451}
+    - _BumpSpeed: {r: -0.2, g: 0.2, b: -0.2, a: -0.2}
+    - _Color: {r: 0.16634032, g: 0.3611049, b: 0.3962264, a: 1}
     - _DepthColor: {r: 0.066733986, g: 0.29797322, b: 0.547, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FoamColor: {r: 0.9, g: 0.9, b: 0.9, a: 0.922}
+    - _FoamColor: {r: 0.9, g: 0.9, b: 0.9, a: 1}
     - _FoamSpeed: {r: 1, g: 1, b: -1, a: -1}
     - _HColor: {r: 1, g: 1, b: 1, a: 1}
     - _RimColor: {r: 0.30147058, g: 0.2948205, b: 0.2948205, a: 1}
