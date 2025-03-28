@@ -39,13 +39,18 @@ namespace _IECModules
         private static Dictionary<string, string> m_Header = new Dictionary<string, string>();
         // Start is called before the first frame update
 
-        public static void Login(string gameCode, string platformId = null, Action<string> onDone = null,
-            Action onError = null)
+        public static void Login(string platformId = null, Action<string> onDone = null,
+            Action onError = null, string gameCode = null)
         {
             if (s_IsLoggedIn) return;
             if (string.IsNullOrWhiteSpace(platformId))
             {
                 platformId = SystemInfo.deviceUniqueIdentifier;
+            }
+
+            if (string.IsNullOrWhiteSpace(gameCode))
+            {
+                gameCode = Application.identifier;
             }
 
             // Debug.Log(Time.realtimeSinceStartup);
