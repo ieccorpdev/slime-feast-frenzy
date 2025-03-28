@@ -34,6 +34,7 @@ namespace _IECModules
 
         private static bool s_IsLoggedIn = false;
         public static string CountryCode { get; private set; }
+        public static string UserId { get; private set; }
 
         private static Dictionary<string, string> m_Header = new Dictionary<string, string>();
         // Start is called before the first frame update
@@ -62,6 +63,7 @@ namespace _IECModules
                 s_AccessToken = data["accessToken"];
                 Debug.Log(s_AccessToken);
                 CountryCode = data["userInfo"]["country"];
+                UserId = data["userInfo"]["userId"];
                 m_Header.Add("x-access-token", s_AccessToken);
                 // Debug.Log(CountryCode);
                 onDone?.Invoke(data);
