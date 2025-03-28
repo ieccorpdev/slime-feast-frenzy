@@ -61,6 +61,16 @@ namespace IEC
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
         [ShowIf("@isAllowSelectSceneItems")]
         [ReadOnly] public List<BaseItem> filteredObjects = new ();
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ValueDropdown(nameof(GetFilteredItemsID))]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public string filteredItemID;
+
+        private IEnumerable GetFilteredItemsID()
+        {
+            return filteredObjects.Select(x => x.GetItemId());
+        }
 
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)] 
         [ShowIf("@isAllowSelectSceneItems")]
@@ -111,6 +121,8 @@ namespace IEC
             if (Selection.objects.Length == 0) return;
 
             filteredObjects = new ();
+            
+            List<int> instanceIDs = new List<int>();
 
             foreach (Object obj in Selection.objects)
             {
@@ -124,12 +136,12 @@ namespace IEC
                     if (target != null && target.ItemDefinition != null)
                     {
                         filteredObjects.Add(target);
+                        instanceIDs.Add(target.gameObject.GetInstanceID());
                     }
                 }
             }
             
-            // Selection.objects = Array.Empty<Object>();
-            // Selection.objects = filteredObjects.ToArray() as Object[];
+            Selection.instanceIDs = instanceIDs.ToArray();
             UpdateTotalXP();
         }
         #endregion
@@ -440,7 +452,7 @@ namespace IEC
         
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         [ReadOnly]
-        [SerializeField][PreviewField(125)] 
+        [SerializeField][PreviewField(125, ObjectFieldAlignment.Center)] 
         private GameObject itemPrefab;
 
         private void UpdateItemIdWithXP()
@@ -1348,12 +1360,12 @@ public void LogInfoLevel()
 
         private IEnumerable GetAllItemIds()
         {
-            return itemConfig.listItemDefinition.Select(x => x.GetId());
+            return itemConfig.GetListItemDefinition().Select(x => x.GetId());
         }
         
         private IEnumerable GetAllItemIdsWithXP()
         {
-            return itemConfig.listItemDefinition
+            return itemConfig.GetListItemDefinition()
                 .Where(x => x.GetXp().ToString().Equals(itemXP))
                 .Select(x => x.GetId());
         }
@@ -1361,13 +1373,13 @@ public void LogInfoLevel()
         private IEnumerable GetAllItemXP()
         {
             return System.Linq.Enumerable.OrderBy(
-                    itemConfig.listItemDefinition, x => x.GetXp())
+                    itemConfig.GetListItemDefinition(), x => x.GetXp())
                 .Select(x => x.GetXp().ToString());
         }
         
         private IEnumerable GetAllPillarItemIds()
         {
-            return itemConfig.listItemDefinition
+            return itemConfig.GetListItemDefinition()
                 .Where(x => x.GetPhysicFallingItemType() == _IEC.Features.Gameplay.PhysicFallingItemType.Column)
                 .Select(x => x.GetId());
         }
@@ -1380,14 +1392,14 @@ public void LogInfoLevel()
         
         private IEnumerable GetAllItemIdsWithSameXP()
         {
-            var oldItem = itemConfig.listItemDefinition.Find(item => item.GetId() == oldItemID);
-            return itemConfig.listItemDefinition.Where(x => x.GetXp() == oldItem.GetXp()).Select(x => x.GetId());
+            var oldItem = itemConfig.GetListItemDefinition().Find(item => item.GetId() == oldItemID);
+            return itemConfig.GetListItemDefinition().Where(x => x.GetXp() == oldItem.GetXp()).Select(x => x.GetId());
         }
 
         private void UpdateItemSpawnUtilities()
         {
             itemSpawnUtilities.itemId = itemId;
-            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId)).GetPrefab();
+            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId))?.GetPrefab();
         }
 
         private List<BombData> GetListBombDatas()
