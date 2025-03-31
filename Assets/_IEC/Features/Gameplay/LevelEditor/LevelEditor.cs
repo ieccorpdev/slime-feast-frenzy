@@ -69,6 +69,10 @@ namespace IEC
         public string filteredItemID;
         
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public bool isReplaceSelectedItems;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
         [OnValueChanged(nameof(UpdateFilteredItemData))]
         [ShowIf("@isAllowSelectSceneItems")]
         public SpawnArea replaceFilteredItemArea;
@@ -88,6 +92,15 @@ namespace IEC
         [Button]
         public void ApplyUpdatedItems()
         {
+            if (isReplaceSelectedItems)
+            {
+                var listFilteredItem = filteredObjects.Where(it => it.GetItemId() == filteredItemID).ToList();
+
+                foreach (var item in listFilteredItem)
+                {
+                    DestroyImmediate(item.gameObject);
+                }
+            }
             itemSpawnUtilities.Apply();
         }
 
