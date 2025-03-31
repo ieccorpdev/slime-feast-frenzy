@@ -64,12 +64,55 @@ namespace IEC
         
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
         [ValueDropdown(nameof(GetFilteredItemsID))]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
         [ShowIf("@isAllowSelectSceneItems")]
         public string filteredItemID;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public SpawnArea replaceFilteredItemArea;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void UpdateSpawnAreaFilteredItems()
+        {
+            UpdateFilteredItemData();
+            itemSpawnUtilities.spawnArea = replaceFilteredItemArea;
+            itemSpawnUtilities.CreatePreview();
+        }
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void ApplyUpdatedItems()
+        {
+            itemSpawnUtilities.Apply();
+        }
 
         private IEnumerable GetFilteredItemsID()
         {
             return filteredObjects.Select(x => x.GetItemId());
+        }
+
+        private void UpdateFilteredItemData()
+        {
+            itemSpawnUtilities.itemId = filteredItemID;
+
+            var listFilteredItem = filteredObjects.Where(it => it.GetItemId() == filteredItemID).ToList();
+            
+            UnityEngine.Vector3 sum = UnityEngine.Vector3.zero;
+            foreach (var obj in listFilteredItem)
+            {
+                sum += obj.transform.position;
+            }
+            var centerPoint = sum / listFilteredItem.Count;
+
+            if (replaceFilteredItemArea != null)
+            {
+                replaceFilteredItemArea.spawnPos = centerPoint;
+            }
         }
 
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)] 
@@ -480,6 +523,7 @@ namespace IEC
         [Button]
         public void SpawnPreviewItems()
         {
+            itemSpawnUtilities.itemId = itemId;
             itemSpawnUtilities.spawnArea = spawnArea;
             itemSpawnUtilities.CreatePreview();
         }

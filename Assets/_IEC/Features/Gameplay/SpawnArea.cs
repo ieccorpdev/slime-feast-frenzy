@@ -11,7 +11,7 @@ namespace IEC
     {
         public virtual SpawnAreaShapes SpawnShape => SpawnAreaShapes.None;
         public SpawnTypes spawnType;
-        public Vector3 spawnPos = Vector3.zero;
+        public Vector3 spawnPos;
         public float spawnRot = 0f;
         public bool startAsKinematic = true;
 
