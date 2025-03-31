@@ -60,6 +60,7 @@ namespace IEC
         
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
         [ShowIf("@isAllowSelectSceneItems")]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
         [ReadOnly] public List<BaseItem> filteredObjects = new ();
         
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
@@ -67,6 +68,11 @@ namespace IEC
         [OnValueChanged(nameof(UpdateFilteredItemData))]
         [ShowIf("@isAllowSelectSceneItems")]
         public string filteredItemID;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ReadOnly]
+        [SerializeField][PreviewField(125, ObjectFieldAlignment.Center)] 
+        private GameObject filteredItemPrefab;
         
         [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
         [ShowIf("@isAllowSelectSceneItems")]
@@ -114,6 +120,7 @@ namespace IEC
             itemSpawnUtilities.itemId = filteredItemID;
 
             var listFilteredItem = filteredObjects.Where(it => it.GetItemId() == filteredItemID).ToList();
+            filteredItemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(filteredItemID)).GetPrefab();
             
             UnityEngine.Vector3 sum = UnityEngine.Vector3.zero;
             foreach (var obj in listFilteredItem)
