@@ -34,6 +34,9 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] 
     public Button btnDailyReward;
     public Image dailyRewardNotiImage;
+    [Header("Chest Reward")] 
+    public Button btnLevelChestReward;
+    public Button btnStarChestReward;
     [Header("Play")]
     public RectTransform bottomBar;
     public Button playButton;
@@ -92,6 +95,22 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupDailyReward.Show();
+            });
+        SetEvent(btnLevelChestReward,
+            () =>
+            {
+                Locator.Main.PopupChestReward.Setup(
+                    Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)), 
+                    PlayerData.GetChestProgress(ChestType.Level));
+                Locator.Main.PopupChestReward.Show();
+            });
+        SetEvent(btnStarChestReward,
+            () =>
+            {
+                Locator.Main.PopupChestReward.Setup(
+                    Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
+                    PlayerData.GetChestProgress(ChestType.Star));
+                Locator.Main.PopupChestReward.Show();
             });
         SetEvent(playButton,
             () =>

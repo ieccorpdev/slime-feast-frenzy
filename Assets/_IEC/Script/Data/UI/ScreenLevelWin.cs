@@ -118,7 +118,7 @@ namespace IEC
             
             Action callback = null;
             
-            if (PlayerData.level >= Config.levelWinBackHome)
+            //if (PlayerData.level >= Config.levelWinBackHome)
             {
                 // Define the callback to show popups once Home scene is loaded
                 callback = ShowPostWinPopups;

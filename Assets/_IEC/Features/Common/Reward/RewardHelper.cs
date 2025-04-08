@@ -14,10 +14,10 @@ namespace IEC
                 case ResourceType.UnlimitedLive:
                     Pool.Get<PlayerSecret>().AddTimeUnlimitedLife(reward.rewardAmount);
                     break;
-                case ResourceType.ScaleUp:
-                case ResourceType.Magnet:
+                case ResourceType.Enlarge:
+                case ResourceType.Vortex:
                 case ResourceType.Compass:
-                case ResourceType.FrozenTime:
+                case ResourceType.TimeStop:
                     Pool.Get<PlayerSecret>().AddCurrency(reward.typeReward,reward.rewardAmount);
                     break;
                 case ResourceType.BonusTime:

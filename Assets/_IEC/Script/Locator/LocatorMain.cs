@@ -28,6 +28,7 @@ public static partial class Locator
         public static ClaimBonusRewardPanel ClaimBonusRewardPanel => Pool.Get<ClaimBonusRewardPanel>();
         public static PopupDoubleMedal PopupDoubleMedal => Pool.Get<PopupDoubleMedal>();
         public static PopupEditInfo PopupEditInfo => Pool.Get<PopupEditInfo>();
+        public static PopupChestReward PopupChestReward => Pool.Get<PopupChestReward>();
         public static PopupGoldOffer PopupGoldOffer => Pool.Get<PopupGoldOffer>();
         public static PopupHardLevel PopupHardLevel => Pool.Get<PopupHardLevel>();
 
