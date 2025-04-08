@@ -73,6 +73,9 @@ namespace IEC
         [Space(10)]
         public EffectRewardClaimConfig dataEffectRewardClaimConfig;
 
+        [Header("Chest")] 
+        public AllChestConfig allChestConfig;
+
         public Sprite GetGoldSprite(int gold)
         {
             if (gold >= 150) return goldSprites[3];
