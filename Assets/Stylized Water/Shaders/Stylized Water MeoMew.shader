@@ -305,11 +305,11 @@ float4 frag (v2f i) : SV_Target
 
     // Calculate the distance the viewing ray travels underwater,
     // as well as the transmittance for that distance.
-    float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
-    float transmittance = exp(-_DepthDensity * opticalDepth);
+    //float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
+    //float transmittance = exp(-_DepthDensity * opticalDepth);
 
     // Also calculate how far away the fragment is from the camera.
-    float distanceMask = exp(-_DistanceDensity * length(i.worldPosition - _WorldSpaceCameraPos));
+    //float distanceMask = exp(-_DistanceDensity * length(i.worldPosition - _WorldSpaceCameraPos));
 
     // ----------- //
     // SHADOW MASK //
@@ -381,8 +381,8 @@ float4 frag (v2f i) : SV_Target
 
     // Calculate the base color based on the transmittance and distance mask.
     float3 baseColor = fragColor * _ShallowColor;
-    baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
-    baseColor = lerp(_FarColor, baseColor, distanceMask);
+    baseColor = lerp(_DeepColor, baseColor, 0 * max(0.5, shadowMask));
+    //baseColor = lerp(_FarColor, baseColor, distanceMask);
 
     // --------------- //
     // REFLECTED COLOR //
@@ -395,8 +395,8 @@ float4 frag (v2f i) : SV_Target
     float3 reflectedColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, reflect(viewDirWS, normalWS));
     
     // Modulate the reflected color by the fresnel coefficient, distance mask, and shadow.
-    reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
-    reflectedColor = reflectedColor * _ReflectionContribution;
+    //reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
+    //reflectedColor = reflectedColor * _ReflectionContribution;
 
     // --------------------------- //
     // SUBSURFACE SCATTERING COLOR //
@@ -417,7 +417,8 @@ float4 frag (v2f i) : SV_Target
 
     // Sample the foam texture and modulate the result by the distance mask and shadow mask.
     float3 foamColor = MotionFourWayChaos(_FoamTexture, foamUV, _FoamSpeed, false);
-    foamColor = foamColor * distanceMask * shadowMask;
+    //foamColor = foamColor * distanceMask * shadowMask;
+    foamColor = foamColor * shadowMask;
     foamColor = foamColor * _FoamContribution;
 
     // ------------------ //
@@ -445,7 +446,8 @@ float4 frag (v2f i) : SV_Target
     
     // Dot them to make a sparkly mask.
     float sparkleMask = dot(sparkly1, sparkly2) * saturate(3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
-    sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
+    //sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
+    sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask ;
 
     // Get the sparkle specular color to add later on.
     float3 sparkleColor = lerp(0, _SparkleColor, sparkleMask);
@@ -455,16 +457,17 @@ float4 frag (v2f i) : SV_Target
     // --------------- //
 
     // Calculate edge foam mask, by on clipping the optical depth.
-    float edgeFoamMask = round(exp(-opticalDepth / _EdgeFoamDepth));
-    float3 edgeFoamColor = lerp(0, _EdgeFoamColor, edgeFoamMask);
-    edgeFoamColor = edgeFoamColor * lerp(_ShadowColor, 1, shadowMask);
+    //float edgeFoamMask = round(exp(-opticalDepth / _EdgeFoamDepth));
+    //float3 edgeFoamColor = lerp(0, _EdgeFoamColor, edgeFoamMask);
+    //edgeFoamColor = edgeFoamColor * lerp(_ShadowColor, 1, shadowMask);
 
     // ----------- //
     // FINAL COLOR //
     // ----------- //
 
     float3 color = baseColor + reflectedColor + sssColor + foamColor;
-    color += sunSpecularColor + sparkleColor + edgeFoamColor;
+    //color += sunSpecularColor + sparkleColor + edgeFoamColor;
+    color += sunSpecularColor + sparkleColor;
 
     // Apply fog.
     UNITY_APPLY_FOG(i.fogCoord, color);
