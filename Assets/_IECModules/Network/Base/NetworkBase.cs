@@ -19,6 +19,7 @@ namespace _IECModules
                 var bodyStr = JsonConvert.SerializeObject(body);
                 Debug.Log("Post Request:\nUrl:" + url + "\nBody:" + bodyStr);
                 var request = UnityWebRequest.Post(url, bodyStr);
+                request.timeout = 10;
                 var bodyRaw = Encoding.UTF8.GetBytes(bodyStr);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 request.downloadHandler = new DownloadHandlerBuffer();
@@ -63,7 +64,7 @@ namespace _IECModules
                     url = url.Remove(url.Length - 1, 1);
                 }
                 var request = UnityWebRequest.Get(url);
-
+                request.timeout = 10;
                 request.SetRequestHeader("Content-Type", "application/json");
                 if (headers != null)
                 {
@@ -93,6 +94,7 @@ namespace _IECModules
                 var bodyStr = body != null ? JsonConvert.SerializeObject(body): string.Empty;
                 Debug.Log("Put Request:\nUrl:" + url);
                 var request = UnityWebRequest.Put(url, bodyStr);
+                request.timeout = 10;
                 request.SetRequestHeader("Content-Type", "application/json");
                 if (headers != null)
                 {

@@ -33,6 +33,10 @@ namespace _IECModules
         private static string s_AccessToken = "";
 
         private static bool s_IsLoggedIn = false;
+        private static bool s_IsLoggingIn = false;
+        private static string s_PlatformId, s_GameCode;
+        private static Action<string> s_OnLoginDone;
+        private static Action s_OnLoginFailed;
         public static string CountryCode { get; private set; }
         public static string UserId { get; private set; }
 
@@ -42,7 +46,7 @@ namespace _IECModules
         public static void Login(string platformId = null, Action<string> onDone = null,
             Action onError = null, string gameCode = null)
         {
-            if (s_IsLoggedIn) return;
+            if (s_IsLoggedIn || s_IsLoggingIn) return;
             if (string.IsNullOrWhiteSpace(platformId))
             {
                 platformId = SystemInfo.deviceUniqueIdentifier;
@@ -53,7 +57,12 @@ namespace _IECModules
                 gameCode = Application.identifier;
             }
 
+            s_PlatformId = platformId;
+            s_GameCode = gameCode;
+            s_OnLoginDone = onDone;
+            s_OnLoginFailed = onError;
             // Debug.Log(Time.realtimeSinceStartup);
+            s_IsLoggingIn = true;
             Post(APIUrl.LOGIN_CUSTOM, new
             {
                 playerId = platformId,
@@ -72,7 +81,12 @@ namespace _IECModules
                 m_Header.Add("x-access-token", s_AccessToken);
                 // Debug.Log(CountryCode);
                 onDone?.Invoke(data);
-            }, onError, false);
+                s_IsLoggingIn = false;
+            }, ()=>
+            {
+                onError?.Invoke();
+                s_IsLoggingIn = false;
+            }, false);
         }
 
         public static void GetProfile(Action<string> onDone = null, Action onError = null)
@@ -242,21 +256,45 @@ namespace _IECModules
         static void Post(string url, object body, Action<string> onDone = null, Action onError = null,
             bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin()) return;
+            if (isNeedLogin && !IsLogin())
+            {
+                Login(s_PlatformId, s =>
+                {
+                    s_OnLoginDone?.Invoke(s);
+                    NetworkBase.Post(url, body, onDone, onError, m_Header); 
+                }, s_OnLoginFailed, s_GameCode);
+                return;
+            }
             NetworkBase.Post(url, body, onDone, onError, m_Header);
         }
 
         static void Get(string url, object body, Action<string> onDone = null, Action onError = null,
             bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin()) return;
+            if (isNeedLogin && !IsLogin())
+            {
+                Login(s_PlatformId, s =>
+                {
+                    s_OnLoginDone?.Invoke(s);
+                    NetworkBase.Get(url, body, onDone, onError, m_Header);     
+                }, s_OnLoginFailed, s_GameCode);
+                return;
+            }
             NetworkBase.Get(url, body, onDone, onError, m_Header);
         }
 
         static void Put(string url, object body, Action<string> onDone = null, Action onError = null,
             bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin()) return;
+            if (isNeedLogin && !IsLogin())
+            {
+                Login(s_PlatformId, s =>
+                {
+                    s_OnLoginDone?.Invoke(s);
+                    NetworkBase.Put(url, body, onDone, onError, m_Header);
+                }, s_OnLoginFailed, s_GameCode);
+                return;
+            }
             NetworkBase.Put(url, body, onDone, onError, m_Header);
         }
 
