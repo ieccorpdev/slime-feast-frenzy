@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fba0c5ede952410b86312a4677f4be46, type: 3}
+  m_Name: GamePlayConfig
+  m_EditorClassIdentifier: 
+  helperConfigs:
+  - id: 3
+    activeTime: 10
+    startNumber: 4
+    unlockLevel: 4
+    price: 1800
+    numberBuyingResult: 3
+  - id: 1
+    activeTime: 10
+    startNumber: 4
+    unlockLevel: 6
+    price: 1800
+    numberBuyingResult: 3
+  - id: 4
+    activeTime: 10
+    startNumber: 4
+    unlockLevel: 8
+    price: 1800
+    numberBuyingResult: 3
+  - id: 2
+    activeTime: 10
+    startNumber: 4
+    unlockLevel: 10
+    price: 1800
+    numberBuyingResult: 3
+  scaleUpHelperAdditionalSize: 1.5
+  maxNumberDirectorUI: 10
+  baseNumberCoinForRevive: 900
+  reviveTimeForTimer: 210
+  dangerousTime: 30
+  warningTime: 60
+  dangerousTimeColor: {r: 1, g: 0, b: 0, a: 1}
+  warningTimeColor: {r: 1, g: 0.5615011, b: 0, a: 1}
+  safeTimeColor: {r: 0.05724919, g: 1, b: 0, a: 1}
+  holePipeMaterials:
+  - {fileID: 2100000, guid: 6d3d33fba6212be4ab2ac44a8430d96a, type: 2}
+  - {fileID: 2100000, guid: 357a9f3fe42c5d14abf90f6b8ac4a599, type: 2}

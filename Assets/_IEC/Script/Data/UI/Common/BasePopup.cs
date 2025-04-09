@@ -12,22 +12,34 @@ namespace IEC
         public GameObject blackPanel;
         public GameObject mainPanel;
         public bool isHaveAnim = true;
+        public bool isHaveAnimClose = true;
         public bool isShowBlackPanel = true;
+        public bool isShowTopResourceBar = false;
+        protected Ease showEase = Ease.OutBack;
         string TweenID => $"Anim{gameObject.GetInstanceID()}";
-        float TWEEN_TIME = 0.3f;
+        protected float TWEEN_TIME = 0.2f;
+
+        protected bool isPlayAudioPopup = true;
+        private bool isAudioOpenPlayed = false;
+        protected string AudioEventOpen = EventList.Audio.POPUP_OPEN;
+        protected string AudioEventClose = EventList.Audio.POPUP_CLOSE;
+
+        private bool isResoucreBarShownBeforeShowPopup = false;
 
         protected virtual void Awake()
         {
             SetEvent(btnClose, OnHideClick);
         }
-        
+
         public override void Show()
         {
+            HandleShowTopResourceBar();
             DOTween.Kill(TweenID);
             IsShow = true;
             IsFocus = true;
             gameObject.SetActive(true);
-            blackPanel.SetActive(isShowBlackPanel);
+            if (blackPanel != null)
+                blackPanel.SetActive(isShowBlackPanel);
 
             mainPanel.transform.localScale = Vector3.one;
             if (mainPanel.gameObject.TryGetComponent<AspectRatioScaler>(out var scaler))
@@ -38,10 +50,10 @@ namespace IEC
             if (isHaveAnim)
             {
                 var scale = mainPanel.transform.localScale;
-                mainPanel.transform.localScale = Vector3.zero;
+                mainPanel.transform.localScale = Vector3.one*0.8f;
                 mainPanel.transform.DOScale(scale, TWEEN_TIME)
                     .SetId(TweenID)
-                    .SetEase(Ease.InQuad)
+                    .SetEase(showEase)
                     .OnComplete(() =>
                     {
                         onShowDone.Invoke();
@@ -53,6 +65,12 @@ namespace IEC
             }
             onShow.Invoke();
             onHaveFocus.Invoke(true);
+
+            if (isPlayAudioPopup)
+            {
+                EventController.RaiseEvent(AudioEventOpen);
+                isAudioOpenPlayed = true;
+            }
         }
         
         public override void Hide()
@@ -62,14 +80,23 @@ namespace IEC
             IsFocus = false;
             if (isHaveAnim)
             {
-                mainPanel.transform.DOScale(Vector3.zero, TWEEN_TIME)
-                    .SetId(TweenID)
-                    .SetEase(Ease.InBack)
-                    .OnComplete(() =>
-                    {
-                        gameObject.SetActive(false);
-                        onHideDone.Invoke();
-                    });
+                //if (isHaveAnimClose)
+                //{
+                //    mainPanel.transform.DOScale(Vector3.zero, TWEEN_TIME)
+                //    .SetId(TweenID)
+                //    .SetEase(Ease.InBack)
+                //    .OnComplete(() =>
+                //    {
+                //        gameObject.SetActive(false);
+                //        onHideDone.Invoke();
+                //    });
+                //}
+                //else
+                {
+                    gameObject.SetActive(false);
+                    onHideDone.Invoke();
+                }
+                
             }
             else
             {
@@ -78,6 +105,12 @@ namespace IEC
             }
             onHide.Invoke();
             onLostFocus.Invoke(true);
+
+            if (isPlayAudioPopup && isAudioOpenPlayed)
+            {
+                EventController.RaiseEvent(AudioEventClose);
+                isAudioOpenPlayed = false;
+            }
         }
 
         protected virtual void OnHideClick()
@@ -88,6 +121,27 @@ namespace IEC
         private void OnDestroy()
         {
             DOTween.Kill(TweenID);
+        }
+
+        private void HandleShowTopResourceBar()
+        {
+            isResoucreBarShownBeforeShowPopup = Locator.Service.GameResourceDisplay.IsShow;
+            if (isShowTopResourceBar)
+            {
+                Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+            }
+            else
+            {
+                Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
+            }
+        }
+
+        private void HandleHideTopResourceBar()
+        {
+            if (!isResoucreBarShownBeforeShowPopup)
+            {
+                Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+            }
         }
     }
 }

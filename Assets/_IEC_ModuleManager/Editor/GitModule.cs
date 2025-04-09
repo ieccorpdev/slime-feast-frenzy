@@ -21,7 +21,7 @@ namespace IEC.ModuleManager
         public bool isAddPackage;
         public int versionSelected;
         
-        private string m_AccessToken = "glpat-caUzdnAjgtdU4qzQ1AEx";
+        private string m_AccessToken = "glpat-GazGQAKY7QSQAZPzsFpE";
 
         public string CurrentVersion { get; private set; }
         public string CurrentCommit { get; private set; }
@@ -51,7 +51,7 @@ namespace IEC.ModuleManager
                 { "Adjust", PluginDefineSymbol.PluginAdjust },
                 { "MaxSdk", PluginDefineSymbol.PluginApplovin },
                 { "Amazon", PluginDefineSymbol.PluginMaxAmazonNetwork },
-                { @"MaxSdk\MEDIATION\StartIO", PluginDefineSymbol.PuginStartIONetwork },
+                { "StartIO", PluginDefineSymbol.PluginStartIONetwork },
             };
         
         private Dictionary<string, PluginDefineSymbol> dictPackageDefineSymbol =

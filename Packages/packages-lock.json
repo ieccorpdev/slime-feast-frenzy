@@ -1,5 +1,14 @@
 {
   "dependencies": {
+    "com.coffee.ui-effect": {
+      "version": "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.3.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "27a04ca294d15de3715e7211a4990b98837a7678"
+    },
     "com.dbrizov.naughtyattributes": {
       "version": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
       "depth": 0,
@@ -7,12 +16,97 @@
       "dependencies": {},
       "hash": "8a8fa5a9659a6d63f196391c71e06c4286c8acd7"
     },
+    "com.encrypted": {
+      "version": "https://gitlab.com/iec-public-registry/encrypted.git#master",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b24f8eda82039a49b92286ca531b56e04a218e3b"
+    },
+    "com.google.android.appbundle": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.android.appbundle.git#1.9.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "a734c8602dc9c4a8d94777e4920c8bbbe48a0da8"
+    },
     "com.google.external-dependency-manager": {
       "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.177",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "20dc810bdc86de9a6506651e4d397b7a87a015a9"
+    },
+    "com.google.firebase.analytics": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#11.6.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.firebase.app": "11.6.0"
+      },
+      "hash": "8c3d0cae9ca3b897091f5da37042a9c9aef2cfd1"
+    },
+    "com.google.firebase.app": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#11.6.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.177"
+      },
+      "hash": "a7a0d893a14a4f0ca57f454586773b21f20cda04"
+    },
+    "com.google.play.common": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.common.git#1.9.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.android.appbundle": "1.9.0"
+      },
+      "hash": "aaf56ba228de2debc08b9b0fc3dbc86b39c300e7"
+    },
+    "com.google.play.core": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.core.git#1.8.4",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.android.appbundle": "1.9.0",
+        "com.google.external-dependency-manager": "1.2.172"
+      },
+      "hash": "cc55f4bcb69797e1b742778bbd4ff780b18af0c4"
+    },
+    "com.google.play.review": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.play.review.git#1.8.2",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.play.common": "1.9.1",
+        "com.google.play.core": "1.8.4"
+      },
+      "hash": "f2ca4f08e6bfc32afce8330daa3b83b7c534b49a"
+    },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6baeccf6c544c155497164327cca72f28163a578"
+    },
+    "com.nickeltin.core": {
+      "version": "file:com.nickeltin.core",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
+    "com.nickeltin.sdf": {
+      "version": "file:com.nickeltin.sdf",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.2d.sprite": "1.0.0",
+        "com.nickeltin.core": "1.2.5"
+      }
     },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
@@ -26,6 +120,18 @@
       "source": "builtin",
       "dependencies": {}
     },
+    "com.unity.2d.tilemap.extras": {
+      "version": "2.2.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.2d.tilemap": "1.0.0",
+        "com.unity.modules.tilemap": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.analytics": {
       "version": "3.6.12",
       "depth": 0,
@@ -35,13 +141,20 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.collab-proxy": {
-      "version": "1.17.2",
+    "com.unity.cinemachine": {
+      "version": "2.10.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.services.core": "1.0.1"
+        "com.unity.test-framework": "1.1.31"
       },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.collab-proxy": {
+      "version": "2.3.1",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.ext.nunit": {
@@ -52,16 +165,16 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.rider": {
-      "version": "2.0.7",
+      "version": "3.0.28",
       "depth": 0,
       "source": "registry",
       "dependencies": {
-        "com.unity.test-framework": "1.1.1"
+        "com.unity.ext.nunit": "1.0.6"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.ide.visualstudio": {
-      "version": "2.0.16",
+      "version": "2.0.22",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -77,7 +190,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.mobile.notifications": {
-      "version": "2.2.1",
+      "version": "2.3.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -85,39 +198,28 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.multiplayer-hlapi": {
-      "version": "1.0.8",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {
-        "nuget.mono-cecil": "0.1.6-preview"
-      },
-      "url": "https://packages.unity.com"
-    },
     "com.unity.nuget.newtonsoft-json": {
-      "version": "3.0.2",
+      "version": "3.2.1",
       "depth": 0,
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.3.0",
+      "version": "4.12.2",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.modules.unityanalytics": "1.0.0",
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.services.core": "1.12.5",
         "com.unity.modules.androidjni": "1.0.0",
-        "com.unity.services.core": "1.3.1",
-        "com.unity.services.analytics": "4.0.1"
+        "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.recorder": {
-      "version": "2.5.7",
+      "version": "3.0.3",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -125,29 +227,61 @@
       },
       "url": "https://packages.unity.com"
     },
-    "com.unity.services.analytics": {
-      "version": "4.0.1",
+    "com.unity.render-pipelines.core": {
+      "version": "12.1.15",
       "depth": 1,
-      "source": "registry",
+      "source": "builtin",
       "dependencies": {
         "com.unity.ugui": "1.0.0",
-        "com.unity.services.core": "1.4.0"
-      },
+        "com.unity.modules.physics": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      }
+    },
+    "com.unity.searcher": {
+      "version": "4.9.1",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.services.core": {
-      "version": "1.4.0",
-      "depth": 2,
+      "version": "1.12.5",
+      "depth": 1,
       "source": "registry",
       "dependencies": {
-        "com.unity.modules.unitywebrequest": "1.0.0",
-        "com.unity.nuget.newtonsoft-json": "3.0.2",
-        "com.unity.modules.androidjni": "1.0.0"
+        "com.unity.modules.androidjni": "1.0.0",
+        "com.unity.nuget.newtonsoft-json": "3.2.1",
+        "com.unity.modules.unitywebrequest": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.shadergraph": {
+      "version": "12.1.15",
+      "depth": 0,
+      "source": "builtin",
+      "dependencies": {
+        "com.unity.render-pipelines.core": "12.1.15",
+        "com.unity.searcher": "4.9.1"
+      }
+    },
+    "com.unity.sysroot": {
+      "version": "2.0.10",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot.linux-x86_64": {
+      "version": "2.0.9",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10"
       },
       "url": "https://packages.unity.com"
     },
     "com.unity.test-framework": {
-      "version": "1.1.31",
+      "version": "1.1.33",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -167,14 +301,24 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.timeline": {
-      "version": "1.4.8",
+      "version": "1.6.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
+        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.director": "1.0.0",
         "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.audio": "1.0.0",
         "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "2.0.10",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10",
+        "com.unity.sysroot.linux-x86_64": "2.0.9"
       },
       "url": "https://packages.unity.com"
     },
@@ -188,7 +332,7 @@
       }
     },
     "com.unity.xr.legacyinputhelpers": {
-      "version": "2.1.9",
+      "version": "2.1.10",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -197,12 +341,12 @@
       },
       "url": "https://packages.unity.com"
     },
-    "nuget.mono-cecil": {
-      "version": "0.1.6-preview",
-      "depth": 1,
-      "source": "registry",
+    "com.whinarn.unitymeshsimplifier": {
+      "version": "https://github.com/Whinarn/UnityMeshSimplifier.git",
+      "depth": 0,
+      "source": "git",
       "dependencies": {},
-      "url": "https://packages.unity.com"
+      "hash": "d741912bfeaad8da4fe0f258f4f3eefe1fe7b3f3"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

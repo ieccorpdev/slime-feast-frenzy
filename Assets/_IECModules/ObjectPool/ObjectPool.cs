@@ -70,6 +70,7 @@ public sealed class ObjectPool : MonoBehaviour
 					var obj = (GameObject)Object.Instantiate(prefab);
 					//obj.transform.parent = parent;
 					obj.transform.SetParent(parent);
+					obj.gameObject.name += obj.gameObject.name + list.Count;
 					list.Add(obj);
 				}
 				prefab.SetActive(active);
@@ -100,6 +101,52 @@ public sealed class ObjectPool : MonoBehaviour
 	public static T Spawn<T>(T prefab) where T : Component
 	{
 		return Spawn(prefab.gameObject, null, Vector3.zero, Quaternion.identity).GetComponent<T>();
+	}
+
+	public static GameObject GetObjectPool(GameObject prefab,Transform parent, Vector3 position, Quaternion rotation)
+	{
+		List<GameObject> list;
+		Transform trans;
+		GameObject obj;
+		if (parent == null) parent = instance.transform;
+		instance.pooledObjects.TryGetValue(prefab, out list);
+		if (list == null || list.Count <= 0)
+		{
+			CreatePool(prefab, 5);
+			instance.pooledObjects.TryGetValue(prefab, out list);
+		}
+
+		obj = null;
+		if (list.Count > 0)
+		{
+			foreach (var cl in list)
+			{
+				if (!cl.gameObject.activeInHierarchy)
+				{
+					obj = cl;
+					break;
+				}
+			}
+			if (obj != null)
+			{
+				trans = obj.transform;
+				trans.SetParent(parent);
+				trans.localPosition = position;
+				trans.localRotation = rotation;
+				obj.SetActive(true);
+				return obj;
+			}
+		}
+
+		obj = (GameObject) Object.Instantiate(prefab);
+		trans = obj.transform;
+		//trans.parent = parent;
+		trans.SetParent(parent);
+		trans.localPosition = position;
+		trans.localRotation = rotation;
+		list.Add(obj);
+		obj.SetActive(true);
+		return obj;
 	}
 	public static GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
 	{
@@ -408,8 +455,15 @@ public static class ObjectPoolExtensions
 	public static GameObject Spawn(this GameObject prefab)
 	{
 		return ObjectPool.Spawn(prefab, null, Vector3.zero, Quaternion.identity);
+	}	
+	public static GameObject GetObjectPool(this GameObject prefab)
+	{
+		return ObjectPool.GetObjectPool(prefab,null, Vector3.zero, Quaternion.identity);
 	}
-	
+	public static GameObject GetObjectPool(this GameObject prefab,Transform parent)
+	{
+		return ObjectPool.GetObjectPool(prefab,parent, Vector3.zero, Quaternion.identity);
+	}
 	public static void Recycle<T>(this T obj) where T : Component
 	{
 		ObjectPool.Recycle(obj);

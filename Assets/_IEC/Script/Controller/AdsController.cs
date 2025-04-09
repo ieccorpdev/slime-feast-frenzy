@@ -23,6 +23,7 @@ namespace IEC
                     Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
                     {
                         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                        Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));
                     });
                     break;
                 case EventList.Service.INIT_AD_DONE:
@@ -56,7 +57,7 @@ namespace IEC
                 Debug.LogWarning("native xdpi: " + nativeDPI.x);
                 Debug.LogWarning("native ydpi: " + nativeDPI.y);
             }
-            
+
             Debug.LogWarning("bannerHeight: " + bannerHeight);
             Debug.LogWarning("Screen.safeArea.height: " + Screen.safeArea.height);
             Debug.LogWarning("screen height: " + Screen.height);
