@@ -10,6 +10,11 @@ namespace _IEC.Features.Gameplay
     public class LevelSpawnData : SerializedScriptableObject
     {
         public List<ItemSpawn> listItemSpawns;
+
+        public void CloneTo(LevelSpawnData spawnData)
+        {
+            spawnData.listItemSpawns = new(listItemSpawns);
+        }
     }
 
     [Serializable]

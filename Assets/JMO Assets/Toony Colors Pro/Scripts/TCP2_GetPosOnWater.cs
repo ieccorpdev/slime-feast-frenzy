@@ -32,7 +32,7 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 
 #if UNITY_EDITOR
 	//Verify that the material has a valid shader
-	void OnValidate()
+	public void OnValidate()
 	{
 		this.isValid = false;
 
