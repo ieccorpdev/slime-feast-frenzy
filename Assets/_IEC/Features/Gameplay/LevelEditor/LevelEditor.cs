@@ -13,6 +13,8 @@ using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Vector3 = System.Numerics.Vector3;
+using System.IO;
+using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -1262,95 +1264,95 @@ namespace IEC
 
         [ResponsiveButtonGroup]
         [Button]
-public void LogInfoLevel()
-{
-    string dialog = "DataInfoLevel\n";
-    dialog += "------------------------------------------------------------\n";
-    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", "Objective", "Amount", "Exp", "Total Exp", "Size") + "\n";
-    dialog += "------------------------------------------------------------\n";
-    
-    int countExp = 0;
-    if (currentLevelData == null)
-    {
-        Debug.LogError("Not found Data Level");
-        return;
-    }
-
-    Dictionary<string, int> objectiveId = new Dictionary<string, int>();
-    foreach (var levelObjectiveData in currentLevelData.listObjectives)
-    {
-        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
-            "Objective: " + levelObjectiveData.id, 
-            levelObjectiveData.amount.ToString(),  // Làm tròn số Amount
-            itemConfig.GetItemExp(levelObjectiveData.id).ToString(),  // Làm tròn số Exp
-            (levelObjectiveData.amount * itemConfig.GetItemExp(levelObjectiveData.id)).ToString("F2"),  // Tổng Exp
-            " ") + "\n";
-        
-        objectiveId.Add(levelObjectiveData.id, levelObjectiveData.amount);
-    }
-
-    foreach (var listItemSpawn in currentLevelData.levelSpawnData.listItemSpawns)
-    {
-        if (objectiveId.ContainsKey(listItemSpawn.id))
+        public void LogInfoLevel()
         {
-            objectiveId.TryGetValue(listItemSpawn.id, out int targetAm);
-            if (listItemSpawn.listSpawnDatas.Count > targetAm)
+            string dialog = "DataInfoLevel\n";
+            dialog += "------------------------------------------------------------\n";
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", "Objective", "Amount", "Exp", "Total Exp", "Size") + "\n";
+            dialog += "------------------------------------------------------------\n";
+            
+            int countExp = 0;
+            if (currentLevelData == null)
             {
-                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
-                    "Objective Extra: " + listItemSpawn.id, 
-                    (listItemSpawn.listSpawnDatas.Count - targetAm).ToString(),  // Số mục thừa
-                    itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
-                    (itemConfig.GetItemExp(listItemSpawn.id) * (listItemSpawn.listSpawnDatas.Count - targetAm)).ToString("F2"),
-                    GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
-            }
-            else if (listItemSpawn.listSpawnDatas.Count < targetAm)
-            {
-                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
-                    "Objective Missing: " + listItemSpawn.id, 
-                    (targetAm - listItemSpawn.listSpawnDatas.Count).ToString(),  // Số mục thiếu
-                    itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
-                    (itemConfig.GetItemExp(listItemSpawn.id) * (targetAm - listItemSpawn.listSpawnDatas.Count)).ToString("F2"),
-                    GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                Debug.LogError("Not found Data Level");
+                return;
             }
 
-            // Skip objective
-            countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
-            continue;
-        }
+            Dictionary<string, int> objectiveId = new Dictionary<string, int>();
+            foreach (var levelObjectiveData in currentLevelData.listObjectives)
+            {
+                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                    "Objective: " + levelObjectiveData.id, 
+                    levelObjectiveData.amount.ToString(),  // Làm tròn số Amount
+                    itemConfig.GetItemExp(levelObjectiveData.id).ToString(),  // Làm tròn số Exp
+                    (levelObjectiveData.amount * itemConfig.GetItemExp(levelObjectiveData.id)).ToString("F2"),  // Tổng Exp
+                    " ") + "\n";
+                
+                objectiveId.Add(levelObjectiveData.id, levelObjectiveData.amount);
+            }
 
-        if (listItemSpawn.id.Contains("food_"))
-        {
-            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
-                "Normal: " + listItemSpawn.id, 
-                listItemSpawn.listSpawnDatas.Count.ToString(), 
-                itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
-                (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
-                GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
-            countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
-        }
-        else
-        {
-            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
-                "Special: " + listItemSpawn.id, 
-                listItemSpawn.listSpawnDatas.Count.ToString(),
-                itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
-                (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
-                GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
-        }
-    }
+            foreach (var listItemSpawn in currentLevelData.levelSpawnData.listItemSpawns)
+            {
+                if (objectiveId.ContainsKey(listItemSpawn.id))
+                {
+                    objectiveId.TryGetValue(listItemSpawn.id, out int targetAm);
+                    if (listItemSpawn.listSpawnDatas.Count > targetAm)
+                    {
+                        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                            "Objective Extra: " + listItemSpawn.id, 
+                            (listItemSpawn.listSpawnDatas.Count - targetAm).ToString(),  // Số mục thừa
+                            itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                            (itemConfig.GetItemExp(listItemSpawn.id) * (listItemSpawn.listSpawnDatas.Count - targetAm)).ToString("F2"),
+                            GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    }
+                    else if (listItemSpawn.listSpawnDatas.Count < targetAm)
+                    {
+                        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                            "Objective Missing: " + listItemSpawn.id, 
+                            (targetAm - listItemSpawn.listSpawnDatas.Count).ToString(),  // Số mục thiếu
+                            itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                            (itemConfig.GetItemExp(listItemSpawn.id) * (targetAm - listItemSpawn.listSpawnDatas.Count)).ToString("F2"),
+                            GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    }
 
-    dialog += "------------------------------------------------------------\n";
-    dialog += "Total Exp: " + countExp.ToString("F2") + "\n";  // Làm tròn tổng Exp
-    dialog += "------------------------------------------------------------\n";
-    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10}", 
-        "Bomb: " , 
-        currentLevelData.levelBoomData.number, 
-        0, 
-        0) + "\n";
+                    // Skip objective
+                    countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+                    continue;
+                }
 
-    // Hiển thị cửa sổ custom dialog với nội dung đã được định dạng
-    CustomDialogWindow.ShowWindow(dialog);
-}
+                if (listItemSpawn.id.Contains("food_"))
+                {
+                    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                        "Normal: " + listItemSpawn.id, 
+                        listItemSpawn.listSpawnDatas.Count.ToString(), 
+                        itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                        (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                        GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+                }
+                else
+                {
+                    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                        "Special: " + listItemSpawn.id, 
+                        listItemSpawn.listSpawnDatas.Count.ToString(),
+                        itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                        (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                        GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                }
+            }
+
+            dialog += "------------------------------------------------------------\n";
+            dialog += "Total Exp: " + countExp.ToString("F2") + "\n";  // Làm tròn tổng Exp
+            dialog += "------------------------------------------------------------\n";
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10}", 
+                "Bomb: " , 
+                currentLevelData.levelBoomData.number, 
+                0, 
+                0) + "\n";
+
+            // Hiển thị cửa sổ custom dialog với nội dung đã được định dạng
+            CustomDialogWindow.ShowWindow(dialog);
+        }
 
 
         [Button]

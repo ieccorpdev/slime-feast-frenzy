@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using IEC;
 using IEC.Linq;
 using Newtonsoft.Json;
@@ -38,8 +39,11 @@ namespace _IEC.Features.Gameplay
 
         [Header("New Datas")] 
         public LevelDataSO playTestData;
-        public List<LevelDataSO> listLevelDatas;
-        public List<LevelDataSO> listLevelDatasSHP;
+        // public List<LevelDataSO> listLevelDatas;
+        // public List<LevelDataSO> listLevelDatasSHP;
+
+        public LevelDataContainerSO levelData;
+        public LevelDataContainerSO levelDataSHP;
         // public List<LevelDataSO> listLevelDataToys;
         
         
@@ -54,6 +58,79 @@ namespace _IEC.Features.Gameplay
 
         [Header("Editor only")] 
         public GameplayItemPrefabConfig editorItemPrefabConfig;
+        
+        [Button]
+        public void ExportAllLevelsToCSV(LevelDataContainerSO allLevels)
+        {
+            string desktopPath = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop);
+            string path = Path.Combine(desktopPath, $"{allLevels.name}.csv");
+            StringBuilder csv = new StringBuilder();
+            
+            csv.AppendLine("Level,Objective,Amount,Exp,Time");
+
+            for (int levelIndex = 0; levelIndex < allLevels.listAllLevelData.Count; levelIndex++)
+            {
+                LevelDataSO levelData = allLevels.listAllLevelData[levelIndex];
+
+                if (levelData == null)
+                {
+                    Debug.LogWarning($"Level {levelIndex} is null, skipping.");
+                    continue;
+                }
+
+                // Add spacing between levels
+                // if (levelIndex > 0)
+                // {
+                //     csv.AppendLine(); // Empty line
+                // }
+                //
+                // csv.AppendLine("Level,Objective,Amount,Exp,Time");
+
+                Dictionary<string, int> objectiveId = new Dictionary<string, int>();
+
+                foreach (var levelObjectiveData in levelData.listObjectives)
+                {
+                    var id = levelObjectiveData.id;
+                    var amount = levelObjectiveData.amount;
+                    var exp = editorItemPrefabConfig.GetItemExp(id);
+                    int time = levelData.time;
+
+                    csv.AppendLine($"{levelIndex},Objective: {id},{amount},{exp},{time}");
+                    objectiveId.Add(id, amount);
+                }
+
+                foreach (var listItemSpawn in levelData.levelSpawnData.listItemSpawns)
+                {
+                    var id = listItemSpawn.id;
+                    var count = listItemSpawn.listSpawnDatas.Count;
+                    var exp = editorItemPrefabConfig.GetItemExp(id);
+                    int time = levelData.time;
+
+                    if (objectiveId.TryGetValue(id, out int targetAm))
+                    {
+                        if (count > targetAm)
+                        {
+                            csv.AppendLine($"{levelIndex},Objective Extra: {id},{count - targetAm},{exp},{time}");
+                        }
+                        else if (count < targetAm)
+                        {
+                            csv.AppendLine($"{levelIndex},Objective Missing: {id},{targetAm - count},{exp},{time}");
+                        }
+
+                        continue;
+                    }
+
+                    string type = id.Contains("food_") ? "Normal" : "Special";
+                    csv.AppendLine($"{levelIndex},{type}: {id},{count},{exp},{time}");
+                }
+
+                // Optional: include bomb count per level
+                csv.AppendLine($"{levelIndex},Bomb,{levelData.levelBoomData.number},0,{levelData.time}");
+            }
+
+            File.WriteAllText(path, csv.ToString());
+            Debug.Log("All levels exported to CSV at: " + path);
+        }
         
         private GameConfig Config => Pool.Get<GameConfig>();
 
@@ -94,7 +171,7 @@ namespace _IEC.Features.Gameplay
             //     levelDataSO.RemakeLevelSpawnData();
             // }
             
-            foreach (var levelDataSO in listLevelDatasSHP)
+            foreach (var levelDataSO in levelDataSHP.listAllLevelData)
             {
                 levelDataSO.RemakeLevelSpawnData();
             }
@@ -243,7 +320,7 @@ namespace _IEC.Features.Gameplay
                 EditorUtility.SetDirty(levelConfig);
             }
             
-            foreach (var levelDataSO in listLevelDatasSHP)
+            foreach (var levelDataSO in levelDataSHP.listAllLevelData)
             {
                 foreach (var levelObjective in levelDataSO.listObjectives)
                 {
@@ -280,14 +357,14 @@ namespace _IEC.Features.Gameplay
         [Button]
         void CreateLevelDataSO()
         {
-            listLevelDatas = new List<LevelDataSO>();
-            listLevelDatasSHP = new List<LevelDataSO>();
+            levelData.listAllLevelData = new List<LevelDataSO>();
+            levelDataSHP.listAllLevelData = new List<LevelDataSO>();
             
             for (int i = 0; i < levelConfigDataEdited.Count; i++)
             {
                 var levelConfig = levelConfigDataEdited[i];
                 var levelDataSo = levelConfig.CreateLevelDataSO(i + 1, "FS");
-                listLevelDatas.Add(levelDataSo);
+                levelData.listAllLevelData.Add(levelDataSo);
             }
             
             for (int i = 0; i < levelConfigDataSHP.Count; i++)
@@ -295,7 +372,7 @@ namespace _IEC.Features.Gameplay
                 var levelConfig = levelConfigDataSHP[i];
                 if (levelConfig == null) continue;
                 var levelDataSo = levelConfig.CreateLevelDataSO(i + 1, "SHP");
-                listLevelDatasSHP.Add(levelDataSo);
+                levelDataSHP.listAllLevelData.Add(levelDataSo);
             }
             
             EditorUtility.SetDirty(this);
@@ -307,7 +384,7 @@ namespace _IEC.Features.Gameplay
         void RemapAllLevelCoin()
         {
             List<string> idCoin = new List<string>() { "food_224", "food_225", "food_226", "food_227", "food_228" };
-            foreach (var level in listLevelDatas)
+            foreach (var level in levelData.listAllLevelData)
             {
                 var isCoin = level.difficulty == "breaktime";
                 if(!isCoin) continue;
@@ -326,7 +403,7 @@ namespace _IEC.Features.Gameplay
         [Button]
         void ReplaceCoinAnimal()
         {
-            foreach (var level in listLevelDatas)
+            foreach (var level in levelData.listAllLevelData)
             {
                 var isCoin = level.difficulty == "breaktime";
                 if(!isCoin) continue;
@@ -375,13 +452,13 @@ namespace _IEC.Features.Gameplay
         [Button]
         void ShuffleObjectives()
         {
-            foreach (var levelDataSo in listLevelDatas)
+            foreach (var levelDataSo in levelData.listAllLevelData)
             {
                 levelDataSo.listObjectives.Shuffle();
                 EditorUtility.SetDirty(levelDataSo);
             }
             
-            foreach (var levelDataSo in listLevelDatasSHP)
+            foreach (var levelDataSo in levelDataSHP.listAllLevelData)
             {
                 levelDataSo.listObjectives.Shuffle();
                 EditorUtility.SetDirty(levelDataSo);
@@ -481,33 +558,33 @@ namespace _IEC.Features.Gameplay
         {
             level = GetLevel(level);
             var levelIndex = level - 1;
-            return listLevelDatas[levelIndex];
+            return levelData.listAllLevelData[levelIndex];
         }
         
         public LevelDataSO GetLevelDataSOSHP(int level)
         {
             level = GetLevel(level);
             var levelIndex = level - 1;
-            return listLevelDatasSHP[levelIndex];
+            return levelDataSHP.listAllLevelData[levelIndex];
         }
         
         public LevelDataSO GetLevelDataToysSO(int level)
         {
             level = GetLevel(level);
             var levelIndex = level - 1;
-            return listLevelDatas[levelIndex];
+            return levelData.listAllLevelData[levelIndex];
         }
 
         public LevelDataSO GetLevelDataCreativeSO(int level)
         {
-            level = Mathf.Clamp(level,1, listLevelDatas.Count);
+            level = Mathf.Clamp(level,1, levelData.listAllLevelData.Count);
             var levelIndex = level - 1;
-            return listLevelDatas[levelIndex];
+            return levelData.listAllLevelData[levelIndex];
         }
 
         private int GetLevel(int level)
         {
-            var max = listLevelDatas.Count;
+            var max = levelData.listAllLevelData.Count;
             if (level <= max)
             {
                 return level; // Nếu level nằm trong khoảng từ 1 đến maxLevel, trả về level hiện tại
@@ -1140,9 +1217,9 @@ namespace _IEC.Features.Gameplay
         void BulkValidateLevels()
         {
             bool isHaveErrorLevel = false;
-            for (var index = 0; index < listLevelDatas.Count; index++)
+            for (var index = 0; index < levelData.listAllLevelData.Count; index++)
             {
-                var level = index < 50 ? listLevelDatasSHP[index] : listLevelDatas[index];
+                var level = index < 50 ? levelDataSHP.listAllLevelData[index] : levelData.listAllLevelData[index];
                 var listObjectives = level.listObjectives;
                 if (level.difficulty == "breaktime") continue;
                 var listItemSpawn = level.levelSpawnData.listItemSpawns;

@@ -315,6 +315,8 @@ namespace _IEC.Features.Gameplay
         public int GetItemExp(string id)
         {
             var itemDef = listItemDefinition.Find(x => x.GetId() == id);
+            if (itemDef == null)
+                return 0;
             return itemDef.GetXp();
         }
     }
