@@ -44,7 +44,7 @@ namespace _IECModules
         // Start is called before the first frame update
 
         public static void Login(string platformId = null, Action<string> onDone = null,
-            Action onError = null, string gameCode = null)
+            Action onError = null, string gameCode = null, bool isFirstCall = true)
         {
             if (s_IsLoggedIn || s_IsLoggingIn) return;
             if (string.IsNullOrWhiteSpace(platformId))
@@ -57,10 +57,13 @@ namespace _IECModules
                 gameCode = Application.identifier;
             }
 
-            s_PlatformId = platformId;
-            s_GameCode = gameCode;
-            s_OnLoginDone = onDone;
-            s_OnLoginFailed = onError;
+            if (isFirstCall)
+            {
+                s_PlatformId = platformId;
+                s_GameCode = gameCode;
+                s_OnLoginDone = onDone;
+                s_OnLoginFailed = onError;
+            }
             // Debug.Log(Time.realtimeSinceStartup);
             s_IsLoggingIn = true;
             Post(APIUrl.LOGIN_CUSTOM, new
@@ -262,7 +265,7 @@ namespace _IECModules
                 {
                     s_OnLoginDone?.Invoke(s);
                     NetworkBase.Post(url, body, onDone, onError, m_Header); 
-                }, s_OnLoginFailed, s_GameCode);
+                }, s_OnLoginFailed, s_GameCode, false);
                 return;
             }
             NetworkBase.Post(url, body, onDone, onError, m_Header);
@@ -277,7 +280,7 @@ namespace _IECModules
                 {
                     s_OnLoginDone?.Invoke(s);
                     NetworkBase.Get(url, body, onDone, onError, m_Header);     
-                }, s_OnLoginFailed, s_GameCode);
+                }, s_OnLoginFailed, s_GameCode, false);
                 return;
             }
             NetworkBase.Get(url, body, onDone, onError, m_Header);
@@ -292,7 +295,7 @@ namespace _IECModules
                 {
                     s_OnLoginDone?.Invoke(s);
                     NetworkBase.Put(url, body, onDone, onError, m_Header);
-                }, s_OnLoginFailed, s_GameCode);
+                }, s_OnLoginFailed, s_GameCode, false);
                 return;
             }
             NetworkBase.Put(url, body, onDone, onError, m_Header);
