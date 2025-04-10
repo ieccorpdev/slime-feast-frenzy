@@ -29,6 +29,7 @@ namespace _IECModules
             public const string LB_GROUP_JOIN = BASE + "/leaderboard-groups/join";
 
             public const string CLAN = BASE + "/clans";
+            public const string CURRENT_CLAN = BASE + "/auth/my-clan";
         }
 
         private static string s_AccessToken = "";
@@ -222,6 +223,11 @@ namespace _IECModules
             Get(url, null, onDone, onError);
         }
 
+        public static void GetCurrentClan(Action<string> onDone, Action onError = null)
+        {
+            Get(APIUrl.CURRENT_CLAN, null, onDone, onError);
+        }
+
         public static void UpdateClanInfo(string clanId, string clanName, string description, string type,
             string scoreType, string badge, int maxMembers, int requireLevel, Action<string> onDone = null,
             Action onError = null)
@@ -261,6 +267,49 @@ namespace _IECModules
         {
             var url = APIUrl.CLAN + $"/{clanId}/join-request";
             Post(url, null, onDone, onError);
+        }
+
+        public static void CreateClanChat(string clanId, string message, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/chats";
+            Post(url, new
+            {
+                type = "string",
+                content = new {
+                    msg = message
+                }
+            });
+        }
+
+        public static void CreateRequestLive(string clanId, int maxHelp = 5, Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/chats";
+            Post(url, new
+            {
+                type = "request-live",
+                content = new
+                {
+                    msg = "",
+                    current = 0,
+                    max = maxHelp
+                }
+            });
+        }
+
+        public static void UpdateRequestLive(string clanId, string chatId, int helpCount, int maxHelp = 5,
+            Action<string> onDone = null, Action onError = null)
+        {
+            var url = APIUrl.CLAN + $"/{clanId}/chats/{chatId}";
+            Put(url, new
+            {
+                type = "request-live",
+                content = new
+                {
+                    msg = "",
+                    current = helpCount,
+                    max = maxHelp
+                }
+            });
         }
 
         #endregion
