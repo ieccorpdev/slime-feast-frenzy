@@ -66762,7 +66762,6 @@ MonoBehaviour:
   characterGraphics: {fileID: 8878493879494253677}
   holePipe: {fileID: 6636629560930894439}
   characterAnimator: {fileID: 487088504768476969}
-  centerWhirlPool: {fileID: 2046288109176350322}
 --- !u!114 &114220746945882552
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -80967,6 +80966,7 @@ Transform:
   - {fileID: 4979446975788121}
   - {fileID: 4201688455287267}
   - {fileID: 224230323278602836}
+  - {fileID: 6589239765508618466}
   - {fileID: 389061674151195905}
   - {fileID: 7081698562139846580}
   m_Father: {fileID: 4540132904161538}
@@ -129873,6 +129873,81 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &6876141382416496899
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4739917890284579}
+    m_Modifications:
+    - target: {fileID: 296490457914442208, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_Name
+      value: Whirlpool_Hole
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.19
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.17364825
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.9848078
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5046c8d426f30e44bb0279159a34f1c1, type: 3}
+--- !u!4 &6589239765508618466 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 296490457914442209, guid: 5046c8d426f30e44bb0279159a34f1c1,
+    type: 3}
+  m_PrefabInstance: {fileID: 6876141382416496899}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6982909342399938875
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -129974,7 +130049,7 @@ PrefabInstance:
     - target: {fileID: 576852895048107061, guid: d5dd45b1a8bb01f4fa093589a870547c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 576852895048107061, guid: d5dd45b1a8bb01f4fa093589a870547c,
         type: 3}
@@ -130049,7 +130124,7 @@ PrefabInstance:
     - target: {fileID: 576852895048107065, guid: d5dd45b1a8bb01f4fa093589a870547c,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d5dd45b1a8bb01f4fa093589a870547c, type: 3}
@@ -130144,7 +130219,7 @@ PrefabInstance:
     - target: {fileID: 8278576556913525453, guid: 29d95d7d22391df45bd7597a6f2dcc3b,
         type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 8278576556913525453, guid: 29d95d7d22391df45bd7597a6f2dcc3b,
         type: 3}
@@ -130220,6 +130295,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Whirlpool
+      objectReference: {fileID: 0}
+    - target: {fileID: 8283826038326677133, guid: 29d95d7d22391df45bd7597a6f2dcc3b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8285934211449534971, guid: 29d95d7d22391df45bd7597a6f2dcc3b,
         type: 3}
