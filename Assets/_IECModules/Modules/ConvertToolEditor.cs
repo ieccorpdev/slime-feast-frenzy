@@ -6,7 +6,7 @@ using System.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
 using UnityEditor;
 using UnityEngine;
-
+#if UNITY_EDITOR
 namespace IEC
 {
     public class ConvertToolEditor : EditorWindow
@@ -227,3 +227,4 @@ namespace IEC
         }
     }
 }
+#endif
