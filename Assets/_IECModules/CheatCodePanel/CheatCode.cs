@@ -377,6 +377,7 @@ namespace _IECModules
                                 if (isCheatIdfa)
                                 {
                                     m_IsCheatIDFA = true;
+                                    m_HaveInputPassword = true;
                                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
                                 }
                             });
