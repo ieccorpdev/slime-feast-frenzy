@@ -218,7 +218,9 @@ namespace _IEC.Features.Gameplay
                     TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
                     waterWave.WaterMaterial = Config.waveWaterMaterial;
                     waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y;
+                    #if UNITY_EDITOR
                     waterWave.OnValidate();
+                    #endif
                     itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
