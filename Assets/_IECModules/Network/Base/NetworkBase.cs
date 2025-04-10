@@ -12,6 +12,7 @@ namespace _IECModules
     public class NetworkBase
     {
         public const string BASE = "https://leaderboard.haleinteractive.vn/api";
+        public const int TIMEOUT = 10;
         public static async void Post(string url, object body, Action<string> onDone = null, Action onError = null, Dictionary<string, string> headers = null)
         {
             try
@@ -19,7 +20,7 @@ namespace _IECModules
                 var bodyStr = JsonConvert.SerializeObject(body);
                 Debug.Log("Post Request:\nUrl:" + url + "\nBody:" + bodyStr);
                 var request = UnityWebRequest.Post(url, bodyStr);
-                request.timeout = 10;
+                request.timeout = TIMEOUT;
                 var bodyRaw = Encoding.UTF8.GetBytes(bodyStr);
                 request.uploadHandler = new UploadHandlerRaw(bodyRaw);
                 request.downloadHandler = new DownloadHandlerBuffer();
@@ -64,7 +65,7 @@ namespace _IECModules
                     url = url.Remove(url.Length - 1, 1);
                 }
                 var request = UnityWebRequest.Get(url);
-                request.timeout = 10;
+                request.timeout = TIMEOUT;
                 request.SetRequestHeader("Content-Type", "application/json");
                 if (headers != null)
                 {
@@ -94,7 +95,7 @@ namespace _IECModules
                 var bodyStr = body != null ? JsonConvert.SerializeObject(body): string.Empty;
                 Debug.Log("Put Request:\nUrl:" + url);
                 var request = UnityWebRequest.Put(url, bodyStr);
-                request.timeout = 10;
+                request.timeout = TIMEOUT;
                 request.SetRequestHeader("Content-Type", "application/json");
                 if (headers != null)
                 {

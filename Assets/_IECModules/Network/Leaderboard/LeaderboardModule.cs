@@ -17,6 +17,7 @@ namespace _IECModules
         {
             private const string BASE = NetworkBase.BASE;
             public const string LOGIN_CUSTOM = BASE + "/auth/login-custom";
+            public const string UPDATE_PLATFORM_ID = BASE + "/auth/account";
             public const string LB_GLOBAL = BASE + "/leaderboards/global";
             public const string LB_COUNTRY = BASE + "/leaderboards/country";
             public const string USER_STATS = BASE + "/leaderboards/user-stats";
@@ -90,6 +91,14 @@ namespace _IECModules
                 onError?.Invoke();
                 s_IsLoggingIn = false;
             }, false);
+        }
+
+        public static void UpdatePlatformId(string newPlatformId)
+        {
+            Put(APIUrl.UPDATE_PLATFORM_ID, new
+            {
+                playerId = newPlatformId
+            });
         }
 
         public static void GetProfile(Action<string> onDone = null, Action onError = null)
