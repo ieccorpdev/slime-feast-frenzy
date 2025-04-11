@@ -32,7 +32,6 @@ namespace IEC
         public ThemeConfig themeConfig;
         [Header("SwallowHole")]
         public PrefabConfig prefabConfig;
-        public GameplayDebugConfig gameplayDebugConfig;
         public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]

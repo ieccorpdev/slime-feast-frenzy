@@ -41,7 +41,8 @@ namespace _IEC.Features.Tutorial
         {
             var data = (CollectItemData) param;
             //Debug.Log(data.itemID);
-            if (data.itemID == "Banana_NoSkin_Slice" || data.itemID == "Apricot")
+            if (data.itemID == "Banana_NoSkin_Slice" || data.itemID == "Apricot"
+                || data.itemID == "food_80"|| data.itemID == "food_86") // id level 1
             {
                 ChangeState(State.CollectItems);
             }
