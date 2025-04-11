@@ -28,13 +28,10 @@ namespace IEC
         public GamePlayConfig gamePlayConfig;
         public string itemPrefabConfigName;
         public GameplayItemPrefabConfig itemPrefabConfig;
-        [Header("SwallowHole")]
-
-
+        public string themeConfigName;
         public ThemeConfig themeConfig;
+        [Header("SwallowHole")]
         public PrefabConfig prefabConfig;
-        public MapUnlockConfig mapUnlockConfig;
-
         public GameplayDebugConfig gameplayDebugConfig;
         public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
@@ -73,6 +70,7 @@ namespace IEC
             levelConfig = EncryptedAssetModule.LoadAsset<LevelConfig>(levelConfigName);
             gamePlayConfig = EncryptedAssetModule.LoadAsset<GamePlayConfig>(gamePlayConfigName);
             itemPrefabConfig = EncryptedAssetModule.LoadAsset<GameplayItemPrefabConfig>(itemPrefabConfigName);
+            themeConfig = EncryptedAssetModule.LoadAsset<ThemeConfig>(themeConfigName);
         }
         public Sprite GetGoldSprite(int gold)
         {
