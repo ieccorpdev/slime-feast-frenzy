@@ -17,17 +17,3 @@ public class Rewards
     public List<Reward> listReward;
 }
 
-[Serializable]
-public class Reward
-{
-    public int rewardAmount;
-    public ResourceType typeReward;
-    public Reward()
-    {
-    }
-    public Reward(int rewardAmount, ResourceType typeReward)
-    {
-        this.rewardAmount = rewardAmount;
-        this.typeReward = typeReward;
-    }
-}

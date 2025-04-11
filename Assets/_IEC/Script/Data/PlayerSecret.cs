@@ -503,6 +503,59 @@ namespace IEC
         }
         #endregion
         
+        #region ProgressReward
+
+        public DateTime timeLastResetProgressReward;
+        public int currentProgress;
+        public int currentProgressMilestone;
+        public void SaveTimeResetProgressReward()
+        {
+            timeLastResetProgressReward = DateTime.Now;
+        }
+
+        public void CheckResetTimeProgressReward()
+        {
+            if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
+            {
+                SaveTimeResetProgressReward();
+            }
+        }
+
+        public void AddProgressToProgressReward(ProgressRewardData currentProgressData, int progress)
+        {
+            currentProgress += progress;
+            if (currentProgress>= currentProgressData.progress)
+            {
+                currentProgress -= currentProgressData.progress;
+                currentProgressMilestone++;
+            }
+        }
+        
+        public string GetTimeToResetProgressReward()
+        {
+            TimeSpan time = timeLastResetProgressReward.AddDays(Config.progressRewardConfig.daysEachReset) - DateTime.Now;
+
+            string outputString = "";
+            
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+        
+        #endregion
+        
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();
