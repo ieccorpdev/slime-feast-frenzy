@@ -285,19 +285,18 @@ namespace _IEC.Features.Gameplay
                 AssetDatabase.RenameAsset(itemDefPath, itemDef.GetId()+"_SHP");
                 EditorUtility.SetDirty(itemDef);
 
-                if (itemDef.GetPrefab() != null)
-                {
-                    var prefabPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
-                    AssetDatabase.RenameAsset(prefabPath, itemDef.GetId());
-                    EditorUtility.SetDirty(itemDef.GetPrefab());
-                }
-
-                if (itemDef.GetIcon() != null)
-                {
-                    var iconPath = AssetDatabase.GetAssetPath(itemDef.GetIcon());
-                    AssetDatabase.RenameAsset(iconPath, itemDef.GetId());
-                    EditorUtility.SetDirty(itemDef.GetIcon());   
-                }
+                //if (itemDef.GetPrefab() != null)
+                //{
+                //    var prefabPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                //    AssetDatabase.RenameAsset(prefabPath, itemDef.GetId());
+                //    EditorUtility.SetDirty(itemDef.GetPrefab());
+                //}
+                //if (itemDef.GetIcon() != null)
+                //{
+                //    var iconPath = AssetDatabase.GetAssetPath(itemDef.GetIcon());
+                //    AssetDatabase.RenameAsset(iconPath, itemDef.GetId());
+                //    EditorUtility.SetDirty(itemDef.GetIcon());   
+                //}
             }
 
             AssetDatabase.SaveAssets();
