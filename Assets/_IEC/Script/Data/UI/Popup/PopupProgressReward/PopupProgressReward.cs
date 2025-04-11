@@ -54,6 +54,9 @@ namespace IEC
                 }
                 
             }
+            
+            listProgressRewardItems[0].SetBotItem();
+            listProgressRewardItems[^1].SetTopItem();
         }
 
         private void UpdateProgressBar()
@@ -61,7 +64,7 @@ namespace IEC
             currentProgressRewardIcon.sprite = CurrentRewardItem.icon.sprite;
 
             progressFillImage.fillAmount = (float)PlayerData.currentProgress / CurrentRewardItem.ProgressRewardData.progress;
-            progressText.text = $"{PlayerData.currentProgress} / {CurrentRewardItem.ProgressRewardData.progress}";
+            progressText.text = $"{PlayerData.currentProgress}/{CurrentRewardItem.ProgressRewardData.progress}";
         }
 
         private void UpdateTimerText()

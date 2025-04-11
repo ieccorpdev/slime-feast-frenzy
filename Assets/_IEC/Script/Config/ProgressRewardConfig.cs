@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace IEC
@@ -21,7 +22,7 @@ namespace IEC
 
         public Sprite GetRewardSprite(ResourceType rewardType)
         {
-            return listRewardSprite.Find(x => x.rewardType == rewardType).icon;
+            return listRewardSprite.FirstOrDefault(x => x.rewardType == rewardType)?.icon;
         }
     }
 

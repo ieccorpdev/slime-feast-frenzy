@@ -13,6 +13,8 @@ namespace IEC
         public TextMeshProUGUI amountText;
         public GameObject lockGameObj;
         public GameObject claimedGameObj;
+
+        public GameObject topLineImage, botLineImage;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
         
@@ -23,7 +25,10 @@ namespace IEC
             indexText.text = index.ToString();
 
             icon.sprite = Config.progressRewardConfig.GetRewardSprite(data.reward.typeReward);
-
+            amountText.text = data.reward.rewardAmount.ToString();
+            
+            topLineImage.gameObject.SetActive(true);
+            botLineImage.gameObject.SetActive(true);
         }
 
         public void SetRewardClaimed(bool isClaimed)
@@ -31,6 +36,16 @@ namespace IEC
             indexText.gameObject.SetActive(!isClaimed);
             lockGameObj.SetActive(!isClaimed);
             claimedGameObj.SetActive(isClaimed);
+        }
+
+        public void SetTopItem()
+        {
+            topLineImage.gameObject.SetActive(false);
+        }
+
+        public void SetBotItem()
+        {
+            botLineImage.gameObject.SetActive(false);
         }
         
     }

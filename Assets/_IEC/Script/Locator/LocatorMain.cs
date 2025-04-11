@@ -20,6 +20,7 @@ public static partial class Locator
         public static PopupStarterPack PopupStarterPack=> Pool.Get<PopupStarterPack>();
         public static PopupPiggyBank PopupPiggyBank=> Pool.Get<PopupPiggyBank>();
         public static PopupDailyReward PopupDailyReward=> Pool.Get<PopupDailyReward>();
+        public static PopupProgressReward PopupProgressReward => Pool.Get<PopupProgressReward>();
         public static PopupOutOfLive PopupOutOfLive => Pool.Get<PopupOutOfLive>();
         //LeaderBoardMain 
         public static PopupLeaderboard PopupLeaderboard => Pool.Get<PopupLeaderboard>();
