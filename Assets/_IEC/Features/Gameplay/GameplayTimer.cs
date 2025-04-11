@@ -326,18 +326,18 @@ namespace _IEC.Features.Gameplay
         {
             if (newState == m_CurrentRemainingTimeState) return;
             txtCoolDown.color = Config.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
-            // switch (newState)
-            // {
-            //     case RemainingTimeState.Safe:
-            //         imgProgress.sprite = spriteSafe;
-            //         break;
-            //     case RemainingTimeState.Warning:
-            //         imgProgress.sprite = spriteWarning;
-            //         break;
-            //     case RemainingTimeState.Dangerous:
-            //         imgProgress.sprite = spriteDangerous;
-            //         break;
-            // }
+            switch (newState)
+            {
+                case RemainingTimeState.Safe:
+                    imgProgress.sprite = spriteSafe;
+                    break;
+                case RemainingTimeState.Warning:
+                    imgProgress.sprite = spriteWarning;
+                    break;
+                case RemainingTimeState.Dangerous:
+                    imgProgress.sprite = spriteDangerous;
+                    break;
+            }
         }
         public enum State
         {
