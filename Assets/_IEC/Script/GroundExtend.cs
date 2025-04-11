@@ -94,6 +94,12 @@ namespace IEC
                 platform = GetGroundObject(grounds[0]);
             }
 
+            if (Game.usingWaterTheme)
+            {
+                platform.transform.GetChild(0).gameObject.SetActive(false);
+                platform.transform.GetChild(1).gameObject.SetActive(false);
+                platform.transform.GetChild(2).gameObject.SetActive(false);
+            }
             Bounds combinedBounds = CalculateBounds(objectsToInclude);
 
             Vector3 boundsSize = combinedBounds.size;

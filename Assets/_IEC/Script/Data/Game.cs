@@ -32,7 +32,8 @@ namespace IEC
         public bool isUsingGroundExtend = true ;
         public int itemVersion;
         public int levelStartInterAds = 4;
-        
+
+        public bool usingWaterTheme = true;
         public bool ShowFullAdsCondition
         {
             get

@@ -215,6 +215,13 @@ namespace _IEC.Features.Gameplay
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
                     res.Add(itemComponent);
+                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
+                    waterWave.WaterMaterial = Config.waveWaterMaterial;
+                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y;
+                    #if UNITY_EDITOR
+                    waterWave.OnValidate();
+                    #endif
+                    itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
                 

@@ -41,7 +41,7 @@ namespace IEC
         public GameplayDebugConfig gameplayDebugConfig;
         //public PiggyBankConfig piggyBankConfig;
         //public ProfileConfig profileConfig;
-        
+        public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
