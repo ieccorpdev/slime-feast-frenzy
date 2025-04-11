@@ -9,6 +9,7 @@ namespace IEC
     public class ProgressRewardConfig : ScriptableObject
     {
         public int daysEachReset = 3;
+        public List<ProgressRewardSprite> listRewardSprite = new();
         public List<ProgressRewardData> listRewardData = new();
 
         public ProgressRewardData GetRewardData(int index)
@@ -17,12 +18,24 @@ namespace IEC
 
             return listRewardData[index];
         }
+
+        public Sprite GetRewardSprite(ResourceType rewardType)
+        {
+            return listRewardSprite.Find(x => x.rewardType == rewardType).icon;
+        }
     }
 
     [Serializable]
     public class ProgressRewardData
     {
         public int progress;
-        public List<Reward> listReward = new();
+        public Reward reward;
+    }
+
+    [Serializable]
+    public class ProgressRewardSprite
+    {
+        public ResourceType rewardType;
+        public Sprite icon;
     }
 }
