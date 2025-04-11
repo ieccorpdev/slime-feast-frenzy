@@ -60,6 +60,7 @@ public class Hole : _BaseBehaviour
 
 	private void Awake()
 	{
+		m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;

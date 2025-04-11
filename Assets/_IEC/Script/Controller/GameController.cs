@@ -99,6 +99,7 @@ namespace IEC
         public void BehaviourAwake()
         {
             Input.multiTouchEnabled = false;
+            Pool.Get<GameConfig>().PreloadAllConfig();
         }
 
         public void BehaviourStart()
