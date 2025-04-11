@@ -51,6 +51,8 @@ namespace IEC
         public DataPiggyBankConfig dataPiggyBankConfig;   
         [Header("Daily Reward Config")]
         public DataDailyReward dataDailyRewardConfig;
+        [Header("Progress Reward Config")]
+        public ProgressRewardConfig progressRewardConfig;
         [Header("City Build")] 
         public int brickWinReward = 15;
         public BuildCityConfig buildCityConfig;

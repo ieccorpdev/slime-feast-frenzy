@@ -503,6 +503,36 @@ namespace IEC
         }
         #endregion
         
+        #region ProgressReward
+
+        public DateTime timeLastResetProgressReward;
+        public int currentProgress;
+        public int currentProgressMilestone;
+        public void SaveTimeResetProgressReward()
+        {
+            timeLastResetProgressReward = DateTime.Now;
+        }
+
+        public void CheckResetTimeProgressReward()
+        {
+            if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
+            {
+                SaveTimeResetProgressReward();
+            }
+        }
+
+        public void AddProgressToProgressReward(ProgressRewardData currentProgressData, int progress)
+        {
+            currentProgress += progress;
+            if (currentProgress>= currentProgressData.progress)
+            {
+                currentProgress -= currentProgressData.progress;
+                currentProgressMilestone++;
+            }
+        }
+        
+        #endregion
+        
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();
