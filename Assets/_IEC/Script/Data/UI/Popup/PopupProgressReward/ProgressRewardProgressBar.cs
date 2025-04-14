@@ -1,0 +1,49 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using TMPro;
+using UnityEditorInternal.Profiling.Memory.Experimental;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace IEC
+{
+    public class ProgressRewardProgressBar : _BaseBehaviour
+    {
+        [Header("Progress bar")] 
+        public Image currentProgressRewardIcon;
+        public TextMeshProUGUI progressRewardAmountText;
+        public Image progressFillImage;
+        public TextMeshProUGUI progressText;
+        [Header("Timer")] public TextMeshProUGUI resetTimerText;
+        
+        public ProgressRewardData ProgressRewardData { get; private set; }
+
+        public void Setup()
+        {
+            ProgressRewardData = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            UpdateProgressBar();
+        }
+
+        private void Update()
+        {
+            UpdateTimerText();
+        }
+
+        private void UpdateProgressBar()
+        {
+            currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
+            progressRewardAmountText.text = ProgressRewardData.reward.rewardAmount.ToString();
+            progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;
+            progressText.text = $"{PlayerData.currentProgress}/{ProgressRewardData.progress}";
+        }
+
+        private void UpdateTimerText()
+        {
+            if (resetTimerText == null)
+                return;
+            
+            resetTimerText.text = PlayerData.GetTimeToResetProgressReward();
+        }
+    }
+}

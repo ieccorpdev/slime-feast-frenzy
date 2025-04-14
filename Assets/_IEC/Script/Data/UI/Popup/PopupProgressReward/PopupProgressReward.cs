@@ -11,11 +11,7 @@ namespace IEC
     {
         public ProgressRewardItem progressRewardItemPrefab;
         [Header("Progress bar")]
-        public Image currentProgressRewardIcon;
-        public Image progressFillImage;
-        public TextMeshProUGUI progressText;
-        [Header("Timer")] 
-        public TextMeshProUGUI resetTimerText;
+        public ProgressRewardProgressBar progressBar;
         
         [Space(10)]
         public Transform rewardItemContainer;
@@ -27,12 +23,6 @@ namespace IEC
         {
             base.Show();
             Setup();
-            UpdateProgressBar();
-        }
-
-        private void Update()
-        {
-            UpdateTimerText();
         }
 
         public void Setup()
@@ -55,21 +45,10 @@ namespace IEC
                 
             }
             
-            listProgressRewardItems[0].SetBotItem();
-            listProgressRewardItems[^1].SetTopItem();
-        }
-
-        private void UpdateProgressBar()
-        {
-            currentProgressRewardIcon.sprite = CurrentRewardItem.icon.sprite;
-
-            progressFillImage.fillAmount = (float)PlayerData.currentProgress / CurrentRewardItem.ProgressRewardData.progress;
-            progressText.text = $"{PlayerData.currentProgress}/{CurrentRewardItem.ProgressRewardData.progress}";
-        }
-
-        private void UpdateTimerText()
-        {
-            resetTimerText.text = PlayerData.GetTimeToResetProgressReward();
+            progressBar.Setup();
+            
+            // listProgressRewardItems[0].SetBotItem();
+            // listProgressRewardItems[^1].SetTopItem();
         }
     }
 }

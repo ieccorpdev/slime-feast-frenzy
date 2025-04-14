@@ -35,6 +35,7 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image dailyRewardNotiImage;
     [Header("Progress Reward")] 
     public Button progressRewardButton;
+    public ProgressRewardProgressBar progressRewardBar;
     [Header("Play")]
     public RectTransform bottomBar;
     public Button playButton;
@@ -336,6 +337,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdatePiggyBankButton();
         UpdateBuildCity();
         UpdateLifeOffer();
+        progressRewardBar.Setup();
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
         LeaderboardController.StartTournament();//Once when start home game

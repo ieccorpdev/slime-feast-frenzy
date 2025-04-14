@@ -2806,6 +2806,7 @@ GameObject:
   - component: {fileID: 4246505721535183621}
   - component: {fileID: 5039740694126702221}
   - component: {fileID: 6012102271960566618}
+  - component: {fileID: 5971574764968510554}
   m_Layer: 5
   m_Name: ProgressBar
   m_TagString: Untagged
@@ -2919,6 +2920,23 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5971574764968510554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4924484266924695266}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaa37bdb2afd2d74480a22979efc6ec8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentProgressRewardIcon: {fileID: 6324363184414460739}
+  progressRewardAmountText: {fileID: 5564352475212136768}
+  progressFillImage: {fileID: 4397885103171693266}
+  progressText: {fileID: 8505410913920963754}
+  resetTimerText: {fileID: 122147122145435941}
 --- !u!1 &4949609873741411182
 GameObject:
   m_ObjectHideFlags: 0
@@ -3145,6 +3163,7 @@ MonoBehaviour:
   btnDailyReward: {fileID: 3645107571406947075}
   dailyRewardNotiImage: {fileID: 3678179711236873776}
   progressRewardButton: {fileID: 6012102271960566618}
+  progressRewardBar: {fileID: 5971574764968510554}
   bottomBar: {fileID: 2672528009929551151}
   playButton: {fileID: 7598641028685719438}
   playButtonText: {fileID: 5244407018470580217}
@@ -4708,7 +4727,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 7b8214b93ed070444aa820c5766b199c, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
