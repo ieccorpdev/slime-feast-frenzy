@@ -54,6 +54,8 @@ namespace _IEC.Features.Gameplay
             set => _isShowEnding = value;
         }
 
+        public int SpecialProgressRewardObjCollected { get; private set; } = 0;
+
         private void OnEnable()
         {
             this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
@@ -158,6 +160,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopScaleByHelper();
             playerHole.StopMagnetHelper();
             playerHole.Reset();
+            SpecialProgressRewardObjCollected = 0;
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -231,6 +234,7 @@ namespace _IEC.Features.Gameplay
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
+            CheckCollectSpecialProgressRewardObj(data);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
@@ -393,12 +397,19 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.NORMAL});
                 ChangeState(State.Win);
+                PlayerData.AddProgressToProgressReward(SpecialProgressRewardObjCollected);
             }
         }
         
         private void CollectNormalItem(CollectItemData data)
         {
             playerHole.AddXp(data.xp);
+        }
+
+        private void CheckCollectSpecialProgressRewardObj(CollectItemData data)
+        {
+            //Check if is special progress reward item
+            SpecialProgressRewardObjCollected++;
         }
 
         private void CollectBomb()

@@ -116,57 +116,20 @@ namespace IEC
         {
             Hide();
             
-            Action callback = null;
-            
-            //if (PlayerData.level >= Config.levelWinBackHome)
-            {
-                // Define the callback to show popups once Home scene is loaded
-                callback = ShowPostWinPopups;
-            }
+            // Action callback = null;
+            //
+            // //if (PlayerData.level >= Config.levelWinBackHome)
+            // {
+            //     // Define the callback to show popups once Home scene is loaded
+            //     callback = ShowPostWinPopups;
+            // }
             
             //Add callbacks here
-
-            if (PlayerData.level >= Config.levelWinBackHome || callback != null)
-            {
-                GameController.OpenScene(GameScene.Main, callback ?? (() => { }));
-            }
-            else
-            {
-                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-            }
-        }
-        
-        private void ShowPostWinPopups()
-        {
+            
+            #region check add popup
             Queue<PopupData> popupQueue = new Queue<PopupData>();
 
             #region Helper functions
-            PopupData CheckAddChestRewardPopup(ChestType chestType, int addProgress)
-            {
-                PopupData popupData = null;
-                
-                PlayerData.AddChestProgress(
-                    Config.allChestConfig.GetChestConfig(chestType), 
-                    addProgress, 
-                    out var isClaimChestReward);
-
-                if (isClaimChestReward)
-                {
-                    popupData = 
-                        new PopupData(
-                            Locator.Main.ClaimBonusRewardPanel,
-                            () =>
-                            {
-                                var rewardData = Config.allChestConfig.GetChestConfig(chestType)
-                                    .GetRewardData(PlayerData.GetChestMilestone(chestType));
-                                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                            }, 
-                            ShowNext);
-                }
-
-                return popupData;
-            }
 
             void ShowNext()
             {
@@ -179,16 +142,68 @@ namespace IEC
             #endregion
 
             //Check level chest
-            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1);
+            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
             if(levelChestRewardPopup != null)
                 popupQueue.Enqueue(levelChestRewardPopup);
             
             //Check star chest
-            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, 3);
+            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, 3, ShowNext);
             if(starChestRewardPopup != null)
                 popupQueue.Enqueue(starChestRewardPopup);
+            
+            //Check progress reward
+            var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            while(PlayerData.CheckClaimProgressReward(reward))
+            {
+                popupQueue.Enqueue(new PopupData(
+                    Locator.Main.ClaimBonusRewardPanel,
+                    () =>
+                    {
+                        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(new(){reward.reward}, null);
+                        Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                    }, 
+                    ShowNext));
+                reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            }
+            
+            #endregion
 
-            ShowNext(); // Start the chain
+            if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)
+            {
+                //GameController.OpenScene(GameScene.Main, callback ?? (() => { }));
+                GameController.OpenScene(GameScene.Main, ShowNext);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            }
+        }
+        
+        PopupData CheckAddChestRewardPopup(ChestType chestType, int addProgress, Action onClose = null)
+        {
+            PopupData popupData = null;
+                
+            PlayerData.AddChestProgress(
+                Config.allChestConfig.GetChestConfig(chestType), 
+                addProgress, 
+                out var isClaimChestReward);
+
+            if (isClaimChestReward)
+            {
+                popupData = 
+                    new PopupData(
+                        Locator.Main.ClaimBonusRewardPanel,
+                        () =>
+                        {
+                            var rewardData = Config.allChestConfig.GetChestConfig(chestType)
+                                .GetRewardData(PlayerData.GetChestMilestone(chestType));
+                            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
+                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                        }, 
+                        onClose);
+            }
+
+            return popupData;
         }
         
         private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)

@@ -559,6 +559,7 @@ namespace IEC
         #region ProgressReward
 
         public DateTime timeLastResetProgressReward;
+        public int tempSpecialObjCollectedInLevel;
         public int currentProgress;
         public int currentProgressMilestone;
         public void SaveTimeResetProgressReward()
@@ -574,14 +575,21 @@ namespace IEC
             }
         }
 
-        public void AddProgressToProgressReward(ProgressRewardData currentProgressData, int progress)
+        public void AddProgressToProgressReward(int progress)
         {
             currentProgress += progress;
+        }
+
+        public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
+        {
             if (currentProgress>= currentProgressData.progress)
             {
                 currentProgress -= currentProgressData.progress;
                 currentProgressMilestone++;
+                return true;
             }
+
+            return false;
         }
         
         public string GetTimeToResetProgressReward()
