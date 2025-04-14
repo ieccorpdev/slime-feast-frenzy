@@ -562,6 +562,7 @@ namespace IEC
         public int tempSpecialObjCollectedInLevel;
         public int currentProgress;
         public int currentProgressMilestone;
+        public int currentSpecialItemIndex;
         public void SaveTimeResetProgressReward()
         {
             timeLastResetProgressReward = DateTime.Now;
@@ -572,6 +573,9 @@ namespace IEC
             if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
             {
                 SaveTimeResetProgressReward();
+                currentProgress = 0;
+                currentProgressMilestone = 0;
+                currentSpecialItemIndex = 0;
             }
         }
 
@@ -598,13 +602,19 @@ namespace IEC
 
             string outputString = "";
             
+            var day = time.Days;
             var hour = time.Hours;
             var minute = time.Minutes;
             var seconds = time.Seconds;
+            string days = day < 10 ? $"0{day}" : day.ToString();
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
             string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
             string second = seconds.ToString();
-            if (hour > 0)
+            if (day > 0)
+            {
+                outputString = $"{days}d {hours}h";
+            }
+            else if (hour > 0)
             {
                 outputString = $"{hours}h {minutes}m";
             }

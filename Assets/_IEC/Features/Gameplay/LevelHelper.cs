@@ -258,6 +258,44 @@ namespace _IEC.Features.Gameplay
 
             return res;
         }
+        
+        public static List<BaseItem> SpawnSpecialItems(int count, Transform levelObjectHolder,
+            ItemDefinition itemDefinition)
+        {
+            var res = new List<BaseItem>();
+            var prefab = itemDefinition.GetPrefab();
+            if (prefab == null)
+            {
+                return res;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var newItem = prefab.Spawn();
+                var itemComponent = newItem.GetComponent<BaseItem>();
+                if (itemComponent == null)
+                {
+                    itemComponent = newItem.AddComponent<BaseItem>();
+                }
+
+                var itemTransform = itemComponent.transform;
+                var itemData = new ItemData()
+                {
+                    itemId = itemDefinition.GetId(),
+                    position = Vector3.zero, //Do random pos later
+                    eulerAngle = Vector3.zero,
+                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
+                    isStartKinematic =  false,
+                };
+                
+                itemTransform.parent = levelObjectHolder;
+                itemComponent.LoadData(itemData, itemDefinition);
+                res.Add(itemComponent);
+                itemIds.Add(itemData.itemId);
+            }
+
+            return res;
+        }
 
         public static List<BombItem> SpawnAllBomb(LevelConfigModel levelConfigModel, List<BaseItem> allItemInMap,
             Transform levelObjectHolder, PrefabConfig config = null)

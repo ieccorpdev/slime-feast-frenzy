@@ -43,6 +43,9 @@ namespace IEC
         //public ProfileConfig profileConfig;
         public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
+
+        [Header("Special Object Spawn Config")]
+        public SpecialObjectConfig specialObjectConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
         [Header("Lucky Wheel Config")]

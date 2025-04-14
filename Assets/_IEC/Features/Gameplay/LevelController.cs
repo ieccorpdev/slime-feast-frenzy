@@ -44,6 +44,7 @@ namespace _IEC.Features.Gameplay
         private LevelDataSO m_LevelConfig;
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
+        private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
@@ -127,6 +128,13 @@ namespace _IEC.Features.Gameplay
             }
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
+
+            m_AllSpecialItems.Clear();
+            m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
+                Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
+                allItemHolder,
+                Config.specialObjectConfig.GetSpecialItemDefinition(0)
+            );
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
@@ -228,13 +236,14 @@ namespace _IEC.Features.Gameplay
 
         private bool IsSpecialObject(string itemId)
         {
-            return itemId.Contains("SpecialItem");
+            //return itemId.Contains("SpecialItem");
+            return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
         }
         
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
-            CheckCollectSpecialProgressRewardObj(data);
+            SpecialProgressRewardObjCollected++;
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
@@ -404,12 +413,6 @@ namespace _IEC.Features.Gameplay
         private void CollectNormalItem(CollectItemData data)
         {
             playerHole.AddXp(data.xp);
-        }
-
-        private void CheckCollectSpecialProgressRewardObj(CollectItemData data)
-        {
-            //Check if is special progress reward item
-            SpecialProgressRewardObjCollected++;
         }
 
         private void CollectBomb()
