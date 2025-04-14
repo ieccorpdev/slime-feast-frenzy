@@ -67,6 +67,7 @@ namespace IEC
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         private string m_FirebasePseudoId;
+        private string m_TicketId => SystemInfo.deviceUniqueIdentifier;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -1167,6 +1168,7 @@ namespace IEC
         }
         
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
+        private string m_LogFileNonEncr => Application.persistentDataPath + @"/log_non_encr.txt";
         private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
         private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
         [NaughtyAttributes.Button]
@@ -1174,6 +1176,7 @@ namespace IEC
         {
             SaveLogToFile();
             SendMail("");
+            FeedbackDiscord("test@ieccorp.vn", "Test Content");
         }
 
         public void FeedbackDiscord(string email, string contentFeedback)
@@ -1290,9 +1293,7 @@ namespace IEC
                 var formData = new List<IMultipartFormSection>
                 {
                     new MultipartFormDataSection(data.ToString()),
-                    new MultipartFormFileSection("Log file", m_LogFilePath),
-                    new MultipartFormFileSection("PlayerData file", m_PlayerDataFilePath),
-                    new MultipartFormFileSection("ServiceData file", m_ServiceDataFilePath)
+                    new MultipartFormFileSection("Log file", m_LogFileNonEncr)
                 };
 
                 var uwr = UnityWebRequest.Post(url, formData);
@@ -1301,7 +1302,7 @@ namespace IEC
                 if (uwr.error != null)
                 {
                     Debug.Log("Error While Sending: " + uwr.error);
-                    SendMail(contentFeedback);
+                    // SendMail(contentFeedback);
                 }
                 else
                 {
@@ -1313,18 +1314,13 @@ namespace IEC
         private void SendMail(string contentFeedback)
         {
             string email = config.emailSupport;
-            string title = string.Empty;
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                title = Application.productName + " Android Support";
-            }
-            else
-            {
-                title = Application.productName + " IOS Support";
-            }
+            string title = Application.productName + 
+                           $" {(Application.platform == RuntimePlatform.Android ? "Android" : "iOS")}" +
+                           $" Ticket {m_TicketId}";
 
             var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
+            message += $"UserId: {m_FirebasePseudoId}";
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
@@ -1351,28 +1347,33 @@ namespace IEC
         {
             try
             {
-                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
                 var saveLog = Json().ToJson(SaveLog.GetLog());
-                
 
+                var playerDataJson = Json().ToJson(Pool.Get<PlayerSecret>());
+                var serviceDataJson = Json().ToJson(Pool.Get<ServiceData>());
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                                        SimpleEncryption.EncryptString(playerDataJson);
                 var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
-                var content =
+                                         SimpleEncryption.EncryptString(serviceDataJson);
+                var contentEncr = $"IDFA: {m_UserIDFA}" +
+                                  $"\n\nOS Version: {SystemInfo.operatingSystem}" +
+                                  $"\n\nUserId: {m_FirebasePseudoId}" +
+                                  $"\n\nTicketId: {m_TicketId}" +
+                                  $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
+                var content = contentEncr;
+                contentEncr +=
                     $"\n\nPlayerData:\n{playerDataEncrypt}" +
                     $"\n\nServiceData:\n{serviceDataEncrypt}";
+                content +=
+                    $"\n\nPlayerData:\n{playerDataJson}" +
+                    $"\n\nServiceData:\n{serviceDataJson}";
                 Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-
-                content += $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
                 
-                content += $"IDFA:{m_UserIDFA}" +
-                              $"\n\nLog:\n{saveLog}";
-                
-                
-                txtWrite.Write(content);
-                txtWrite.Close();
+                contentEncr += $"\n\nLog:\n{saveLog}";
+                content += $"\n\nLog:\n{saveLog}";
+                File.WriteAllText(m_LogFilePath, contentEncr);
+                File.WriteAllText(m_LogFileNonEncr, content);
             }
             catch
             {
