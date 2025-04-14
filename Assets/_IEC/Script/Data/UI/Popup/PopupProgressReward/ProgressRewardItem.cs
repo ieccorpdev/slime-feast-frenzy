@@ -14,7 +14,7 @@ namespace IEC
         public GameObject lockGameObj;
         public GameObject claimedGameObj;
 
-        public GameObject topLineImage, botLineImage;
+        public RectTransform topLineImage, botLineImage;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
         
@@ -27,8 +27,21 @@ namespace IEC
             icon.sprite = Config.progressRewardConfig.GetRewardSprite(data.reward.typeReward);
             amountText.text = data.reward.rewardAmount.ToString();
             
-            // topLineImage.gameObject.SetActive(true);
-            // botLineImage.gameObject.SetActive(true);
+            topLineImage.gameObject.SetActive(true);
+            botLineImage.gameObject.SetActive(true);
+
+            var lineImgSize = new Vector2
+                (
+                    topLineImage.sizeDelta.x,
+                    GetComponent<RectTransform>().sizeDelta.y / 2
+                    + GetComponentInParent<VerticalLayoutGroup>().spacing / 2
+                );
+
+            topLineImage.sizeDelta = lineImgSize;
+            botLineImage.sizeDelta = lineImgSize;
+            
+            topLineImage.anchoredPosition = new Vector2(topLineImage.anchoredPosition.x, topLineImage.sizeDelta.y / 2);
+            botLineImage.anchoredPosition = new Vector2(botLineImage.anchoredPosition.x, -botLineImage.sizeDelta.y / 2);
         }
 
         public void SetRewardClaimed(bool isClaimed)

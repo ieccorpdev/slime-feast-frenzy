@@ -47,8 +47,8 @@ namespace IEC
             
             progressBar.Setup();
             
-            // listProgressRewardItems[0].SetBotItem();
-            // listProgressRewardItems[^1].SetTopItem();
+            listProgressRewardItems[0].SetBotItem();
+            listProgressRewardItems[^1].SetTopItem();
         }
     }
 }
