@@ -36,7 +36,8 @@ namespace _IEC.Features.Gameplay
         public event Action OnReset;
         public event Action<float> OnTimeUpdate;
         public event Action<bool> OnUpdateFrozenState; 
-
+        
+        public RemainingTimeState CurrentRemainingTimeState => m_CurrentRemainingTimeState;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
@@ -338,6 +339,7 @@ namespace _IEC.Features.Gameplay
                     imgProgress.sprite = spriteDangerous;
                     break;
             }
+            m_CurrentRemainingTimeState = newState;
         }
         public enum State
         {
