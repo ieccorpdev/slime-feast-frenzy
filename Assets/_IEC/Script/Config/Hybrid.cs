@@ -34,7 +34,8 @@ namespace IEC
         BonusTime,
         BonusExp,
         EvolveStone,
-        WindSurf
+        WindSurf,
+        DoubleSpecialObjectCount,
     }
 
     [Serializable]

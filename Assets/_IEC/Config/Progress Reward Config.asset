@@ -13,7 +13,19 @@ MonoBehaviour:
   m_Name: Progress Reward Config
   m_EditorClassIdentifier: 
   daysEachReset: 3
-  listRewardSprite: []
+  listRewardSprite:
+  - rewardType: 0
+    icon: {fileID: 21300000, guid: 7ed08c11b19e79344a4dda8bb3280c45, type: 3}
+  - rewardType: 6
+    icon: {fileID: 21300000, guid: f9a0a68c138985b489de3eb47401243e, type: 3}
+  - rewardType: 11
+    icon: {fileID: 21300000, guid: ddb5d8502ddbae74597ea66ce145c2fc, type: 3}
+  - rewardType: 12
+    icon: {fileID: 21300000, guid: c5f9ecc696767874abbb16d647412c55, type: 3}
+  - rewardType: 13
+    icon: {fileID: 21300000, guid: 747df940dc4d2e94cb2708ce446e73c6, type: 3}
+  - rewardType: 14
+    icon: {fileID: 21300000, guid: decadd82b046e5341847526df508b93a, type: 3}
   listRewardData:
   - progress: 3
     reward:
@@ -25,19 +37,19 @@ MonoBehaviour:
       rewardAmount: 200
   - progress: 10
     reward:
-      typeReward: 6
+      typeReward: 17
       rewardAmount: 15
   - progress: 20
     reward:
-      typeReward: 6
+      typeReward: 19
       rewardAmount: 15
   - progress: 5
     reward:
-      typeReward: 6
-      rewardAmount: 15
+      typeReward: 11
+      rewardAmount: 1
   - progress: 20
     reward:
-      typeReward: 6
+      typeReward: 18
       rewardAmount: 15
   - progress: 30
     reward:
@@ -45,7 +57,7 @@ MonoBehaviour:
       rewardAmount: 1
   - progress: 25
     reward:
-      typeReward: 6
+      typeReward: 19
       rewardAmount: 30
   - progress: 10
     reward:
@@ -61,15 +73,15 @@ MonoBehaviour:
       rewardAmount: 400
   - progress: 20
     reward:
-      typeReward: 6
+      typeReward: 17
       rewardAmount: 30
   - progress: 35
     reward:
-      typeReward: 6
+      typeReward: 19
       rewardAmount: 30
   - progress: 30
     reward:
-      typeReward: 6
+      typeReward: 18
       rewardAmount: 30
   - progress: 15
     reward:
@@ -77,7 +89,7 @@ MonoBehaviour:
       rewardAmount: 1
   - progress: 10
     reward:
-      typeReward: 6
+      typeReward: 19
       rewardAmount: 30
   - progress: 30
     reward:
@@ -89,7 +101,7 @@ MonoBehaviour:
       rewardAmount: 1000
   - progress: 30
     reward:
-      typeReward: 6
+      typeReward: 19
       rewardAmount: 30
   - progress: 30
     reward:
@@ -97,7 +109,7 @@ MonoBehaviour:
       rewardAmount: 3
   - progress: 30
     reward:
-      typeReward: 6
+      typeReward: 18
       rewardAmount: 60
   - progress: 20
     reward:
@@ -109,7 +121,7 @@ MonoBehaviour:
       rewardAmount: 3
   - progress: 30
     reward:
-      typeReward: 6
+      typeReward: 17
       rewardAmount: 60
   - progress: 500
     reward:

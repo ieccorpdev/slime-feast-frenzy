@@ -33,7 +33,8 @@ namespace IEC
         private void UpdateProgressBar()
         {
             currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
-            progressRewardAmountText.text = ProgressRewardData.reward.rewardAmount.ToString();
+            currentProgressRewardIcon.SetNativeSize();
+            progressRewardAmountText.text = ProgressRewardData.GetDisplayText();
             progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;
             progressText.text = $"{PlayerData.currentProgress}/{ProgressRewardData.progress}";
         }

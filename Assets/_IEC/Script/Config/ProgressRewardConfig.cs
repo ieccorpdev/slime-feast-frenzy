@@ -30,7 +30,26 @@ namespace IEC
     public class ProgressRewardData
     {
         public int progress;
+        public ProgressRewardType progressRewardType;
         public Reward reward;
+
+        public string GetDisplayText()
+        {
+            string result = reward.rewardAmount.ToString();
+
+            switch (progressRewardType)
+            {
+                case ProgressRewardType.Gold:
+                    break;
+                case ProgressRewardType.Helper:
+                    result = "x" + result;
+                    break;
+                case ProgressRewardType.TimeEffect:
+                    result += "min";
+                    break;
+            }
+            return result;
+        }
     }
 
     [Serializable]
@@ -38,5 +57,12 @@ namespace IEC
     {
         public ResourceType rewardType;
         public Sprite icon;
+    }
+
+    public enum ProgressRewardType
+    {
+        Gold,
+        Helper,
+        TimeEffect,
     }
 }

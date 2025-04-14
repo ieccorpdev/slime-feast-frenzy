@@ -25,7 +25,7 @@ namespace IEC
             indexText.text = index.ToString();
 
             icon.sprite = Config.progressRewardConfig.GetRewardSprite(data.reward.typeReward);
-            amountText.text = data.reward.rewardAmount.ToString();
+            amountText.text = data.GetDisplayText();
             
             topLineImage.gameObject.SetActive(true);
             botLineImage.gameObject.SetActive(true);
