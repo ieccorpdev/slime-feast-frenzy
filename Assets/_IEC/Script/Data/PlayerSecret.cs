@@ -503,6 +503,59 @@ namespace IEC
         }
         #endregion
         
+        #region ChestReward
+
+        public Dictionary<ChestType, int> currentChestProgress = new();
+        public Dictionary<ChestType, int> chestRewardMilestone = new();
+
+        public void AddChestProgress(ChestConfig chestConfig, int addAmount, out bool isClaimReward)
+        {
+            isClaimReward = false;
+            var chestType = chestConfig.chestType;
+            if (!currentChestProgress.ContainsKey(chestType))
+            {
+                currentChestProgress.Add(chestType, 0);
+            }
+
+            currentChestProgress[chestType] += addAmount;
+
+            var rewardData = chestConfig.GetRewardData(GetChestMilestone(chestType));
+            if (currentChestProgress[chestType] >= rewardData.progressToReward)
+            {
+                isClaimReward = true;
+                AddChestMilestone(chestConfig);
+                currentChestProgress[chestType] -= rewardData.progressToReward;
+            }
+        }
+
+        public int GetChestProgress(ChestType chestType)
+        {
+            return !currentChestProgress.ContainsKey(chestType) ? 0 : currentChestProgress[chestType];
+        }
+
+        public void AddChestMilestone(ChestConfig chestConfig)
+        {
+            var chestType = chestConfig.chestType;
+            if (!chestRewardMilestone.ContainsKey(chestType))
+            {
+                chestRewardMilestone.Add(chestType, 0);
+            }
+
+            chestRewardMilestone[chestType] += 1;
+
+            if (chestRewardMilestone[chestType] >= chestConfig.listChestRewardData.Count)
+            {
+                chestRewardMilestone[chestType] = chestConfig.milestoneBeginLoop;
+            }
+            
+        }
+        
+        public int GetChestMilestone(ChestType chestType)
+        {
+            return !chestRewardMilestone.ContainsKey(chestType) ? 0 : chestRewardMilestone[chestType];
+        }
+        #endregion
+        
         #region ProgressReward
 
         public DateTime timeLastResetProgressReward;

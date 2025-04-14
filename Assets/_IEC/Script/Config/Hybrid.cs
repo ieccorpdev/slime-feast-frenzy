@@ -27,12 +27,14 @@ namespace IEC
         HelperUndo,
         HelperShuffle,
         HelperExpand,
-        ScaleUp,
-        Magnet,
+        Enlarge,
+        Vortex,
         Compass,
-        FrozenTime,     
+        TimeStop,     
         BonusTime,
-        BonusExp
+        BonusExp,
+        EvolveStone,
+        WindSurf
     }
 
     [Serializable]
