@@ -41,7 +41,7 @@ public class FakeScreenCreator : EditorWindow
         }
 
 
-        string path = EditorUtility.OpenFilePanel("Overwrite with png", "", "png");
+        string path = EditorUtility.OpenFilePanel("Choose a image file", "", "jpg, png");
         if (path.Length != 0)
         {
             var fileContent = File.ReadAllBytes(path);
