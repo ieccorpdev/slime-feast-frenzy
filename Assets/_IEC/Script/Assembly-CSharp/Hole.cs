@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
@@ -50,7 +51,8 @@ public class Hole : _BaseBehaviour
 	private Vector3 _defaultScaleGraphic;
 	private Vector3 _defaultScaleCanvas;
 	private float _baseSpeed;
-
+	private bool onSharkForm;
+	private bool onInitAnimNewGame;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -72,6 +74,35 @@ public class Hole : _BaseBehaviour
 	private void OnDestroy()
 	{
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+	}
+	private float cTime = 0;
+	public void Update()
+	{
+		cTime += Time.deltaTime;
+		if (cTime > 0.1f)
+		{
+			cTime = 0f;
+			if(onInitAnimNewGame) return;
+			var obj = GamePlay.levelController.GetAllItems().FirstOrDefault(x => x!=null && Vector3.Distance(x.transform.position, transform.position) < 10 );
+			if (obj != null)
+			{
+				if (onSharkForm)
+				{			
+					onSharkForm = false;
+					TurnSharkToHole();
+
+				}
+			}
+			else
+			{			
+				if (!onSharkForm)
+				{			
+					onSharkForm = true;
+					TurnHoleToShark();
+				}
+			}
+		}
+
 	}
 
 	void OnCollectLightningBooster(object param)
@@ -262,9 +293,13 @@ public class Hole : _BaseBehaviour
 	{
 		txtLevel.gameObject.SetActive(true);
 	}
-
+	public float GetWorldRadius()
+	{
+		return transform.localScale.x / 2f;
+	}
 	public void OnNewGame()
 	{
+		onInitAnimNewGame = true;
 		txtLevel.gameObject.SetActive(true);
 	}
 	private void TurnOffAllVfx()
@@ -273,6 +308,7 @@ public class Hole : _BaseBehaviour
 		sizeUpVfx.Stop();
 	}
 
+	#region Character Animation
 	public void ResetCharacter()
 	{
 		holePipe.transform.localScale = Vector3.zero;
@@ -292,9 +328,21 @@ public class Hole : _BaseBehaviour
 	public void EndAnimationCharacter()
 	{
 		characterGraphics.gameObject.SetActive(false);
+		onInitAnimNewGame = false;
 	}
-	public float GetWorldRadius()
+
+	public void TurnHoleToShark()
 	{
-		return transform.localScale.x / 2f;
+		holePipe.DOScale(Vector3.zero, 1.0f);
+		characterGraphics.gameObject.SetActive(true);
+		characterAnimator.Play("HoleToShark");
 	}
+	public void TurnSharkToHole()
+	{
+		holePipe.DOScale(Vector3.zero, 1.0f);
+		characterAnimator.Play("Dive Into Water 0");
+	}
+	#endregion 
+
+
 }

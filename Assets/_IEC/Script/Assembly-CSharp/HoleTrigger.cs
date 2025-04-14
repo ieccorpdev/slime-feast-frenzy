@@ -15,7 +15,11 @@ public class HoleTrigger : MonoBehaviour
 		if (other.CompareTag("FallingItem_Physics") == false) return;
 		BaseItem baseItem = other.GetComponentInParent<BaseItem>();
 		if (baseItem == null) return;
-		baseItem.EnterHoleTrigger();
+		if (baseItem.ItemDefinition.GetLevel() <= m_Hole.Level)
+		{
+			baseItem.EnterHoleTrigger();
+		}
+
 		//m_Hole.PushItemToTrackingList(baseItem);
 	}
 	private void OnTriggerExit(Collider other)

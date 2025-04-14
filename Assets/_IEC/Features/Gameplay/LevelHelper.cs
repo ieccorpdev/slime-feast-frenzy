@@ -195,6 +195,7 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
+                bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
                 foreach (var spawnData in itemSpawn.listSpawnDatas)
                 {
                     var newItem = prefab.Spawn();
@@ -217,7 +218,14 @@ namespace _IEC.Features.Gameplay
                     res.Add(itemComponent);
                     TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
                     waterWave.WaterMaterial = Config.waveWaterMaterial;
-                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y;
+
+                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
+                    float objectOffset = 0;
+                    if (newLogicWhirlpool)
+                    {
+                        objectOffset = -objectSize / 2;
+                    }
+                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                     #if UNITY_EDITOR
                     waterWave.OnValidate();
                     #endif

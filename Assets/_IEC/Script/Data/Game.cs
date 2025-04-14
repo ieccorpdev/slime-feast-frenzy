@@ -81,8 +81,9 @@ namespace IEC
         public bool isUsePopupRefillHelper;
 
         public bool isOverrideHelperCostData;
-
+        
         public bool isOverrideDataRewardLuckyWheel;
+        [Header("SFF")] public bool usingNewLogicPull = true;
         [Header("Tracking")]
         public LevelType crLevelType = LevelType.NONE;
         [Header("IAP")] 
