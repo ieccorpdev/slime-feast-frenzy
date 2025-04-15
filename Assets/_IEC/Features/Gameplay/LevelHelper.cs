@@ -120,7 +120,24 @@ namespace _IEC.Features.Gameplay
                 }
 
                 var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
+                if (!string.IsNullOrEmpty(itemData.groupID))
+                {
+                    GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
+                        .Find(obj => obj.name == itemData.groupID)?.gameObject;
+                    if (groupHolder == null)
+                    {
+                        groupHolder = new GameObject(itemData.groupID);
+                        groupHolder.transform.parent = levelObjectHolder;
+                        groupHolder.transform.position = itemData.groupPosition;
+                    }
+                    
+                    itemTransform.parent = groupHolder.transform;
+                }
+                else
+                {
+                    itemTransform.parent = levelObjectHolder;
+                }
+
                 itemComponent.LoadData(itemData, itemDefinition);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
@@ -213,8 +230,25 @@ namespace _IEC.Features.Gameplay
                     }
 
                     var itemTransform = itemComponent.transform;
+                    
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
+
+                    var itemData = itemComponent.ItemData;
+                    if (!string.IsNullOrEmpty(itemData.groupID))
+                    {
+                        GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
+                            .Find(obj => obj.name == itemData.groupID)?.gameObject;
+                        if (groupHolder == null)
+                        {
+                            groupHolder = new GameObject(itemData.groupID);
+                            groupHolder.transform.parent = levelObjectHolder;
+                            groupHolder.transform.position = itemData.groupPosition;
+                        }
+                    
+                        itemTransform.parent = groupHolder.transform;
+                    }
+                    
                     res.Add(itemComponent);
                     TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
                     waterWave.WaterMaterial = Config.waveWaterMaterial;

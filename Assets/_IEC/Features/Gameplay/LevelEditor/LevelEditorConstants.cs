@@ -11,5 +11,6 @@
         public const string OBJECTIVES = "Objectives";
         public const string REFERENCES_AND_CONFIG = "References And Config";
         public const string CREATIVE = "Creative";
+        public const string SCENE_ITEMS = "Scene Items";
     }
 }

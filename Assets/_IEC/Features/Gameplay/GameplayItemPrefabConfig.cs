@@ -310,5 +310,12 @@ namespace _IEC.Features.Gameplay
             var itemDef = listItemDefinition.Find(x => x.GetId() == id);
             return itemDef.GetPrefab();
         }
+        public int GetItemExp(string id)
+        {
+            var itemDef = listItemDefinition.Find(x => x.GetId() == id);
+            if (itemDef == null)
+                return 0;
+            return itemDef.GetXp();
+        }
     }
 }
