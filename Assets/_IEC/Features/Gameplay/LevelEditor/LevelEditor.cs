@@ -38,6 +38,8 @@ namespace IEC
         [Button]
         public void PlayTestLevel()
         {
+            if (levelConfig != null)
+                currentLevelConfig = levelConfig;
             currentLevelConfig.playTestData = currentLevelData;
             EditorPrefs.SetBool("isPlayTest", true);
             EditorApplication.EnterPlaymode();
@@ -236,10 +238,6 @@ namespace IEC
         [ShowIf("@createNewLevel")]
         public string levelSpawnDataFolderName = "CustomSpawnData";
         
-        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
-        [ShowIf("@createNewLevel")]
-        public string levelSpawnDataObjectName = "LevelSpawnData";
-        
         // [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         // [ShowIf("@createNewLevel")]
         // public string mapDataFolderName = "CustomMapData";
@@ -279,7 +277,7 @@ namespace IEC
                 AssetDatabase.CreateFolder(filePath, levelSpawnDataFolderName);
             }
             
-            AssetDatabase.CreateAsset(newLevelSpawnDataSO, $"{levelSpawnDataPath}/{levelSpawnDataObjectName}_{level}.asset");
+            AssetDatabase.CreateAsset(newLevelSpawnDataSO, $"{levelSpawnDataPath}/{levelObjectName}SpawnData_{level}.asset");
             
             
             // string mapDataPath = $"{filePath}/{mapDataFolderName}";
