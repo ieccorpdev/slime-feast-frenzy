@@ -36,62 +36,66 @@ namespace _IECModules
 
         private static bool s_IsLoggedIn = false;
         private static bool s_IsLoggingIn = false;
-        private static string s_PlatformId, s_GameCode;
-        private static Action<string> s_OnLoginDone;
-        private static Action s_OnLoginFailed;
+        public static Coroutine s_LoginCorou;
         public static string CountryCode { get; private set; }
         public static string UserId { get; private set; }
 
         private static Dictionary<string, string> m_Header = new Dictionary<string, string>();
         // Start is called before the first frame update
 
-        public static void Login(string platformId = null, Action<string> onDone = null,
-            Action onError = null, string gameCode = null, bool isFirstCall = true)
+        public static void Login(MonoBehaviour mono, string platformId = null, Action<string> onDone = null,
+            Action onError = null, string gameCode = null)
         {
-            if (s_IsLoggedIn || s_IsLoggingIn) return;
-            if (string.IsNullOrWhiteSpace(platformId))
-            {
-                platformId = SystemInfo.deviceUniqueIdentifier;
-            }
+            if(s_LoginCorou != null) mono.StopCoroutine(s_LoginCorou);
+            s_LoginCorou = mono.StartCoroutine(IE_Login(platformId,onDone, onError, gameCode));
+        }
 
-            if (string.IsNullOrWhiteSpace(gameCode))
+        static IEnumerator IE_Login(string platformId = null, Action<string> onDone = null,
+            Action onError = null, string gameCode = null)
+        {
+            var interval = new WaitForSecondsRealtime(5f);
+            while (!s_IsLoggedIn)
             {
-                gameCode = Application.identifier;
-            }
+                if (!s_IsLoggingIn)
+                {
+                    s_IsLoggingIn = true;
+                    if (string.IsNullOrWhiteSpace(platformId))
+                    {
+                        platformId = SystemInfo.deviceUniqueIdentifier;
+                    }
 
-            if (isFirstCall)
-            {
-                s_PlatformId = platformId;
-                s_GameCode = gameCode;
-                s_OnLoginDone = onDone;
-                s_OnLoginFailed = onError;
+                    if (string.IsNullOrWhiteSpace(gameCode))
+                    {
+                        gameCode = Application.identifier;
+                    }
+                    // Debug.Log(Time.realtimeSinceStartup);
+                    Post(APIUrl.LOGIN_CUSTOM, new
+                    {
+                        playerId = platformId,
+                        gameCode = gameCode,
+                        platform = Application.platform == RuntimePlatform.Android ? "android" : "ios",
+                    }, result =>
+                    {
+                        // Debug.Log(Time.realtimeSinceStartup);
+                        // Debug.Log(result);
+                        var data = SimpleJSON.JSON.Parse(result);
+                        s_IsLoggedIn = true;
+                        s_AccessToken = data["accessToken"];
+                        Debug.Log(s_AccessToken);
+                        CountryCode = data["userInfo"]["country"];
+                        UserId = data["userInfo"]["userId"];
+                        m_Header.Add("x-access-token", s_AccessToken);
+                        // Debug.Log(CountryCode);
+                        onDone?.Invoke(data);
+                        s_IsLoggingIn = false;
+                    }, ()=>
+                    {
+                        onError?.Invoke();
+                        s_IsLoggingIn = false;
+                    }, false);
+                }
+                yield return interval;
             }
-            // Debug.Log(Time.realtimeSinceStartup);
-            s_IsLoggingIn = true;
-            Post(APIUrl.LOGIN_CUSTOM, new
-            {
-                playerId = platformId,
-                gameCode = gameCode,
-                platform = Application.platform == RuntimePlatform.Android ? "android" : "ios",
-            }, result =>
-            {
-                // Debug.Log(Time.realtimeSinceStartup);
-                // Debug.Log(result);
-                var data = SimpleJSON.JSON.Parse(result);
-                s_IsLoggedIn = true;
-                s_AccessToken = data["accessToken"];
-                Debug.Log(s_AccessToken);
-                CountryCode = data["userInfo"]["country"];
-                UserId = data["userInfo"]["userId"];
-                m_Header.Add("x-access-token", s_AccessToken);
-                // Debug.Log(CountryCode);
-                onDone?.Invoke(data);
-                s_IsLoggingIn = false;
-            }, ()=>
-            {
-                onError?.Invoke();
-                s_IsLoggingIn = false;
-            }, false);
         }
 
         public static void UpdatePlatformId(string newPlatformId)
@@ -319,11 +323,7 @@ namespace _IECModules
         {
             if (isNeedLogin && !IsLogin())
             {
-                Login(s_PlatformId, s =>
-                {
-                    s_OnLoginDone?.Invoke(s);
-                    NetworkBase.Post(url, body, onDone, onError, m_Header); 
-                }, s_OnLoginFailed, s_GameCode, false);
+                onError?.Invoke();
                 return;
             }
             NetworkBase.Post(url, body, onDone, onError, m_Header);
@@ -334,11 +334,7 @@ namespace _IECModules
         {
             if (isNeedLogin && !IsLogin())
             {
-                Login(s_PlatformId, s =>
-                {
-                    s_OnLoginDone?.Invoke(s);
-                    NetworkBase.Get(url, body, onDone, onError, m_Header);     
-                }, s_OnLoginFailed, s_GameCode, false);
+                onError?.Invoke();
                 return;
             }
             NetworkBase.Get(url, body, onDone, onError, m_Header);
@@ -349,11 +345,7 @@ namespace _IECModules
         {
             if (isNeedLogin && !IsLogin())
             {
-                Login(s_PlatformId, s =>
-                {
-                    s_OnLoginDone?.Invoke(s);
-                    NetworkBase.Put(url, body, onDone, onError, m_Header);
-                }, s_OnLoginFailed, s_GameCode, false);
+                onError?.Invoke();
                 return;
             }
             NetworkBase.Put(url, body, onDone, onError, m_Header);

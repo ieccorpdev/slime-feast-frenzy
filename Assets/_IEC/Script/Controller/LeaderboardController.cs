@@ -10,7 +10,7 @@ public class LeaderboardController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LeaderboardModule.Login("wspp-3");
+        LeaderboardModule.Login(this);
     }
 
     // Update is called once per frame
