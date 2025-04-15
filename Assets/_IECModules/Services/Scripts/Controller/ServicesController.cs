@@ -66,7 +66,6 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
-        private string m_FirebasePseudoId;
         private string m_TicketId => SystemInfo.deviceUniqueIdentifier;
         #endregion
 
@@ -1181,6 +1180,7 @@ namespace IEC
 
         public void FeedbackDiscord(string email, string contentFeedback)
         {
+            if(!File.Exists(m_LogFileNonEncr)) return;
             var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
             string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
@@ -1197,11 +1197,12 @@ namespace IEC
 #if PluginFirebaseAnalytic
             firebasePseudoId = m_ServiceData.firebasePseudoId;
 #endif
-            SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());
 
             IEnumerator IE_SendFeedbackDiscord()
             {
+                var logByte = File.ReadAllBytes(m_LogFileNonEncr);
+                var fileName = "log.txt";
                 var url = config.discordWebhook;
                 var idfv = "";
                 #if UNITY_IOS
@@ -1219,8 +1220,8 @@ namespace IEC
                             {
                                 new
                                 {
-                                    name = "Email",
-                                    value = email
+                                    name = "Game Id",
+                                    value = Application.identifier
                                 },
                                 new
                                 {
@@ -1263,6 +1264,11 @@ namespace IEC
                                 {
                                     name = "Pseudo UID",
                                     value = firebasePseudoId
+                                },
+                                new
+                                {
+                                    name = "Ticket ID",
+                                    value = m_TicketId
                                 }
                             }
                         },
@@ -1290,12 +1296,13 @@ namespace IEC
                         }
                     }
                 };
-                var formData = new List<IMultipartFormSection>
-                {
-                    new MultipartFormDataSection(data.ToString()),
-                    new MultipartFormFileSection("Log file", m_LogFileNonEncr)
-                };
 
+                var formData = new List<IMultipartFormSection>()
+                {
+                    // new MultipartFormDataSection("payload_json", data.content),
+                    new MultipartFormDataSection("payload_json", Json().ToJson(data)),
+                    new MultipartFormFileSection("file", logByte, fileName, "application/octet-stream")
+                };
                 var uwr = UnityWebRequest.Post(url, formData);
                 yield return uwr.SendWebRequest();
 
@@ -1320,7 +1327,7 @@ namespace IEC
 
             var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
-            message += $"UserId: {m_FirebasePseudoId}";
+            message += $"UserId: {m_ServiceData.firebasePseudoId}";
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
@@ -1357,7 +1364,7 @@ namespace IEC
                                          SimpleEncryption.EncryptString(serviceDataJson);
                 var contentEncr = $"IDFA: {m_UserIDFA}" +
                                   $"\n\nOS Version: {SystemInfo.operatingSystem}" +
-                                  $"\n\nUserId: {m_FirebasePseudoId}" +
+                                  $"\n\nUserId: {m_ServiceData.firebasePseudoId}" +
                                   $"\n\nTicketId: {m_TicketId}" +
                                   $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
                 var content = contentEncr;
