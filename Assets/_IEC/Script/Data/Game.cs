@@ -83,7 +83,7 @@ namespace IEC
         public bool isOverrideHelperCostData;
         
         public bool isOverrideDataRewardLuckyWheel;
-        [Header("SFF")] public bool usingNewLogicPull = true;
+        [Header("SFF")] public bool usingNewLogicPull = false;
         [Header("Tracking")]
         public LevelType crLevelType = LevelType.NONE;
         [Header("IAP")] 
