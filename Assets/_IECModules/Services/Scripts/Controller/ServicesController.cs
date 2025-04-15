@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 #if(PluginCMP)
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -66,7 +67,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
-        private string m_TicketId => SystemInfo.deviceUniqueIdentifier;
+        private string m_TicketId => SystemInfo.deviceUniqueIdentifier.Substring(0,12);
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -1300,8 +1301,8 @@ namespace IEC
                 var formData = new List<IMultipartFormSection>()
                 {
                     // new MultipartFormDataSection("payload_json", data.content),
-                    new MultipartFormDataSection("payload_json", Json().ToJson(data)),
-                    new MultipartFormFileSection("file", logByte, fileName, "application/octet-stream")
+                    new MultipartFormDataSection("payload_json", Json().ToJson(data), Encoding.UTF8, "application/json"),
+                    new MultipartFormFileSection("file", logByte, fileName, "text/plain")
                 };
                 var uwr = UnityWebRequest.Post(url, formData);
                 yield return uwr.SendWebRequest();
