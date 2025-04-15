@@ -179,13 +179,85 @@ namespace _IEC.Features.Gameplay
 
         protected virtual void OnBecomeCollectable()
         {
-            rb.isKinematic = false;
+            if (Game.usingNewLogicPull)
+            {
+                onDraging = true;
+                targetObject = GamePlay.levelController.GetHolePlayer().transform;
+            }
+            else
+            {
+                rb.isKinematic = false;
+            }
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
             }
         }
+
+        #region New Whirlpool Logic
         
+        public bool onDraging = false;
+        public Transform targetObject; // Object B
+        public float pullSpeed = 2.5f;   // Speed towards object B
+        public float stopPullDistance = 0.1f;
+        public float gravityStrength = -50f; // Simulated gravity
+        private Vector3 velocity;
+        private bool shouldPull = true;
+        public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
+        public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
+
+        void Update()
+        {
+            if (targetObject == null || !onDraging) return;
+            // Distance check
+            float distance = Vector3.Distance(transform.position, targetObject.position);
+            if (distance <= stopPullDistance)
+                shouldPull = false;
+
+            Vector3 move = Vector3.zero;
+
+            // Horizontal pull
+            if (shouldPull)
+            {
+                // Calculate direction to Object B in world space
+                Vector3 directionToTarget = targetObject.position - transform.position;
+                directionToTarget.y = 0; // Ignore vertical for horizontal pull
+                directionToTarget.Normalize(); // Normalize the direction vector
+
+                // Apply pull speed towards Object B
+                move += directionToTarget * pullSpeed * Time.deltaTime;
+            }
+
+            // Gravity
+            velocity.y += gravityStrength * Time.deltaTime;
+            move += velocity * Time.deltaTime;
+
+            // Apply movement to object
+            transform.position += move;
+
+            // Random rotation in all directions
+            if (shouldPull)
+            {
+                // Generate random rotation vector
+                Vector3 randomRotation = new Vector3(
+                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
+                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
+                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax)
+                );
+
+                // Apply random rotation to the object
+                transform.Rotate(randomRotation * Time.deltaTime);
+            }
+        }
+
+        // Optional: Reset pull if needed
+        public void ResetPull()
+        {
+            shouldPull = true;
+        }
+
+        #endregion
+
         protected void SetLayer(int newLayer)
         {
             gameObject.layer = newLayer;
