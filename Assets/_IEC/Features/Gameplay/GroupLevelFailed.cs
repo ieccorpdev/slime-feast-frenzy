@@ -13,6 +13,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Button btnRetry;
         [SerializeField] private GroupBoosterInLevelFail groupBooster;
         [SerializeField] private GameObject groupDefault;
+        [SerializeField] private Button homeButton;
         
         public event Action OnClose;
         public event Action OnRetry;
@@ -33,6 +34,11 @@ namespace _IEC.Features.Gameplay
                 //SoundController.PlayClickBtnAudio();
                 Services.PushEvent(new ClickBtnTracking("losescreen_retry"));
                 OnRetry?.Invoke();
+            });
+            SetEvent(homeButton, () =>
+            {
+                //SoundController.PlayExitBtnAudio();
+                GameController.OpenScene(GameScene.Main);
             });
         }
         
