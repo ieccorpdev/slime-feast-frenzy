@@ -52,7 +52,7 @@ namespace IEC
             // txtMedalAmount.text = "" + medal;
         }
         
-                private void ActionCompletePopup()
+        private void ActionCompletePopup()
         {
             Hide();
             

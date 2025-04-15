@@ -106,18 +106,18 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnLevelChestReward,
             () =>
             {
-                Locator.Main.PopupChestReward.Setup(
+                Locator.Main.PopupLevelChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)), 
                     PlayerData.GetChestProgress(ChestType.Level));
-                Locator.Main.PopupChestReward.Show();
+                Locator.Main.PopupLevelChestReward.Show();
             });
         SetEvent(btnStarChestReward,
             () =>
             {
-                Locator.Main.PopupChestReward.Setup(
+                Locator.Main.PopupStarChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
                     PlayerData.GetChestProgress(ChestType.Star));
-                Locator.Main.PopupChestReward.Show();
+                Locator.Main.PopupStarChestReward.Show();
             });
         SetEvent(playButton,
             () =>

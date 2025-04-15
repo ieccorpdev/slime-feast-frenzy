@@ -841,8 +841,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 776, y: 112}
+  m_AnchoredPosition: {x: 0.0702, y: 1.2199}
+  m_SizeDelta: {x: 729.4205, y: 79.3998}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4705984230000560049
 CanvasRenderer:
@@ -873,10 +873,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: 21300000, guid: 571115f7630cd1c40b3d0ee8c20695f6, type: 3}
-  m_Type: 1
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -1609,6 +1609,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9124732271477120761}
   - component: {fileID: 5101305875356933436}
+  - component: {fileID: 7934128369277987919}
   m_Layer: 5
   m_Name: PopupLevelChest
   m_TagString: Untagged
@@ -1647,6 +1648,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7397695215518582465}
   m_CullTransparentMesh: 1
+--- !u!114 &7934128369277987919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7397695215518582465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09bf4cca76157314792b6a91ad670628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isHideAllOtherScreen: 0
+  listHideHaveEffect: []
+  listHideNoEffect: []
+  onShow:
+    m_PersistentCalls:
+      m_Calls: []
+  onHide:
+    m_PersistentCalls:
+      m_Calls: []
+  onShowDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  tempOnHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHaveFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  onLostFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  btnClose: {fileID: 2344550433839674939}
+  blackPanel: {fileID: 5251535750349648129}
+  mainPanel: {fileID: 664999163920156472}
+  isHaveAnim: 1
+  isHaveAnimClose: 1
+  isShowBlackPanel: 1
+  isShowTopResourceBar: 0
+  chestProgressText: {fileID: 1089219411313476664}
+  progressFillImage: {fileID: 84386370209963094}
+  continueButton: {fileID: 5284473703505259318}
 --- !u!1 &7505802965985767732
 GameObject:
   m_ObjectHideFlags: 0
