@@ -32,7 +32,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4157078930463672}
   - {fileID: 1367418523739208797}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -93,9 +92,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAutoScale: 1
   reductionFactor: 1
-  targetObject: {fileID: 23614096240347119}
+  targetObject: {fileID: 0}
   objectToScale: {fileID: 0}
---- !u!1 &1253524382672165
+--- !u!1 &1851502039619856103
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,50 +102,50 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4157078930463672}
-  - component: {fileID: 33063095364964613}
-  - component: {fileID: 23614096240347119}
-  - component: {fileID: 64597741191037580}
+  - component: {fileID: 1367418523739208797}
+  - component: {fileID: 2690285541555745784}
+  - component: {fileID: 193979396176758578}
+  - component: {fileID: 2690285541555745787}
   m_Layer: 0
-  m_Name: Fig_Blue(Clone)
+  m_Name: DutchVla02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4157078930463672
+  m_IsActive: 1
+--- !u!4 &1367418523739208797
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253524382672165}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 13.257955, y: 13.257955, z: 13.257955}
+  m_GameObject: {fileID: 1851502039619856103}
+  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalScale: {x: 26.5, y: 26.5, z: 26.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4117696309424235}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &33063095364964613
+--- !u!33 &2690285541555745784
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253524382672165}
-  m_Mesh: {fileID: 4300000, guid: 4f21e0eea04da7248bac7d1012063c84, type: 2}
---- !u!23 &23614096240347119
+  m_GameObject: {fileID: 1851502039619856103}
+  m_Mesh: {fileID: -4901708119065065172, guid: 4ecc01bc9eb0c3442be3d91666ecd248, type: 3}
+--- !u!23 &193979396176758578
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253524382672165}
+  m_GameObject: {fileID: 1851502039619856103}
   m_Enabled: 1
   m_CastShadows: 1
-  m_ReceiveShadows: 0
+  m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
@@ -157,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e80e0aa65e2d15c41904ae36236bb9f9, type: 2}
+  - {fileID: 2100000, guid: 09d637f54914c5e4c9f1d465742e035f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -169,7 +168,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
+  m_StitchLightmapSeams: 1
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -179,122 +178,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64597741191037580
+--- !u!64 &2690285541555745787
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1253524382672165}
+  m_GameObject: {fileID: 1851502039619856103}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 0
-  m_Mesh: {fileID: 4300000, guid: 4f21e0eea04da7248bac7d1012063c84, type: 2}
---- !u!1001 &6065039407419959332
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 4117696309424235}
-    m_Modifications:
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 26.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 26.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 26.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_ConstrainProportionsScale
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5591925367568912067, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_Name
-      value: DutchVla02
-      objectReference: {fileID: 0}
-    - target: {fileID: 8178124912541539295, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_Convex
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8178124912541539295, guid: e21785ed5c1f1bd4e8325704467f6242,
-        type: 3}
-      propertyPath: m_CookingOptions
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: e21785ed5c1f1bd4e8325704467f6242, type: 3}
---- !u!4 &1367418523739208797 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5102950914730267769, guid: e21785ed5c1f1bd4e8325704467f6242,
-    type: 3}
-  m_PrefabInstance: {fileID: 6065039407419959332}
-  m_PrefabAsset: {fileID: 0}
+  m_Mesh: {fileID: -4901708119065065172, guid: 4ecc01bc9eb0c3442be3d91666ecd248, type: 3}

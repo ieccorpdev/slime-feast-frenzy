@@ -559,44 +559,6 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.Refresh();
         }
         
-        // [Button]
-        // void RemoveNonFoodLevels()
-        // {
-        //     for (int i = 0; i < levelConfigDataEdited.Count; i++)
-        //     {
-        //         var currentLevelConfig = levelConfigDataEdited[i];
-        //         var listItemData = currentLevelConfig.GetItemDataForInstantiate();
-        //
-        //         bool isLevelToRemove = false;
-        //         foreach (var item in listItemData)
-        //         {
-        //             var itemDefinition = editorItemPrefabConfig.listItemDefinition.Find(x => x.GetId() == item.itemId);
-        //             if (itemDefinition == null)
-        //             {
-        //                 Debug.LogError("Cant find item definition with id: " + item.itemId);
-        //                 continue;
-        //             }
-        //
-        //             if (itemDefinition.GetFallingItemSetType() == FallingItemSetType.TOYS ||
-        //                 itemDefinition.GetFallingItemSetType() == FallingItemSetType.SCHOOL_SUPPLIES)
-        //             {
-        //                 isLevelToRemove = true;
-        //                 break;
-        //             }
-        //         }
-        //
-        //         if (isLevelToRemove)
-        //         {
-        //             Debug.LogError($"Remove level {currentLevelConfig} at index {i}");
-        //             levelConfigDataEdited.RemoveAt(i);
-        //             i--;
-        //         }
-        //     }
-        //     
-        //     EditorUtility.SetDirty(this);
-        //     AssetDatabase.SaveAssets();
-        // }
-
         [Button]
         void LogLevelWithArch()
         {

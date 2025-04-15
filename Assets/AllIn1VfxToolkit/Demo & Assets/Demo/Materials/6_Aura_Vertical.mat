@@ -59,13 +59,15 @@ Material:
   m_ValidKeywords:
   - ADDITIVECONFIG_ON
   - COLORRAMPGRAD_ON
+  - GLOW_ON
+  - MASK_ON
   - PREMULTIPLYCOLOR_ON
-  - SHAPE1CONTRAST_ON
-  - SHAPE1DISTORT_ON
+  - SHAPE1ROTATE_ON
+  - SHAPE1SHAPECOLOR_ON
   - SHAPE2CONTRAST_ON
   - SHAPE3CONTRAST_ON
   - SHAPE3DISTORT_ON
-  - TEXTURESCROLL_ON
+  - TWISTUV_ON
   m_InvalidKeywords:
   - BLUR_ON
   m_LightmapFlags: 4
@@ -106,11 +108,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 0d4dc7def265c154a814e6741349dc05, type: 3}
+        m_Texture: {fileID: 2800000, guid: 32727a99db2a12d4a929e3ea3070adde, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskTex:
-        m_Texture: {fileID: 2800000, guid: 130dab7b0a336e04e97b73b542c46537, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4f49eac7f827b6c40860b49fc7951331, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Shape1MaskTex:
@@ -147,7 +149,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Alpha: 0.154
+    - _Alpha: 1
     - _AlphaBrightness: 0
     - _AlphaContrast: 1
     - _AlphaCutoffValue: 0.188
@@ -188,14 +190,14 @@ Material:
     - _FadeTransition: 0.075
     - _FishEyeUvAmount: 0.35
     - _Glow: 0
-    - _GlowGlobal: 1
+    - _GlowGlobal: 1.79
     - _HandDrawnAmount: 10
     - _HandDrawnSpeed: 5
     - _HsvBright: 1.43
     - _HsvSaturation: 1.87
     - _HsvShift: 0
     - _LightAmount: 0
-    - _MaskPow: 0.001
+    - _MaskPow: 2.7
     - _OffsetSh1: 1
     - _OffsetSh2: 1
     - _OffsetSh3: 1
@@ -213,8 +215,8 @@ Material:
     - _RimIntensity: 1
     - _RimPower: 5
     - _RimScale: 1
-    - _RoundWaveSpeed: 0
-    - _RoundWaveStrength: 0
+    - _RoundWaveSpeed: 2.35
+    - _RoundWaveStrength: 0.199
     - _ScreenUvSh1DistScale: 1
     - _ScreenUvSh2DistScale: 1
     - _ScreenUvSh3DistScale: 1
@@ -252,23 +254,23 @@ Material:
     - _Shape3XSpeed: -0.1
     - _Shape3YSpeed: -0.8
     - _ShapeAlphaWeight: 1
-    - _ShapeBrightness: 1
+    - _ShapeBrightness: -1
     - _ShapeColorWeight: 1
-    - _ShapeContrast: 10
-    - _ShapeDistortAmount: 1.5
+    - _ShapeContrast: 0
+    - _ShapeDistortAmount: 0
     - _ShapeDistortXSpeed: 0
     - _ShapeDistortYSpeed: -0.35
     - _ShapeRotationOffset: 0
-    - _ShapeRotationSpeed: 0
+    - _ShapeRotationSpeed: 1.5
     - _ShapeXSpeed: 0
     - _ShapeYSpeed: 0
     - _SoftFactor: 0.5
     - _SrcMode: 1
-    - _TextureScrollXSpeed: 0.27
+    - _TextureScrollXSpeed: 0.3
     - _TextureScrollYSpeed: 0
     - _TimingSeed: 0
     - _TrailWidthPower: 1
-    - _TwistUvAmount: 1
+    - _TwistUvAmount: 0.25
     - _TwistUvPosX: 0.5
     - _TwistUvPosY: 0.5
     - _TwistUvRadius: 0.75

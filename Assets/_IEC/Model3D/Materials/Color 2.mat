@@ -12,8 +12,13 @@ Material:
   m_ValidKeywords:
   - COLORRAMPGRAD_ON
   - COLORRAMP_ON
+  - POSTERIZE_ON
   - SHAPE1CONTRAST_ON
+  - SHAPE2CONTRAST_ON
+  - SHAPE2ROTATE_ON
+  - SHAPE2_ON
   - SPLITRGBA_ON
+  - TWISTUV_ON
   m_InvalidKeywords:
   - _ALPHATEST_ON
   - _GLOSSYREFLECTIONS_OFF
@@ -104,7 +109,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Shape2Tex:
-        m_Texture: {fileID: 2800000, guid: fadb12822bee63748bffde4352642d6c, type: 3}
+        m_Texture: {fileID: 2800000, guid: a9bf69081420b4143b27a1512ce6f936, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Shape3DistortTex:
@@ -146,14 +151,14 @@ Material:
     - _ColorGradingMidPoint: 0.01
     - _ColorMask: 15
     - _ColorRampBlend: 1
-    - _ColorRampLuminosity: 0.27
+    - _ColorRampLuminosity: 0.85
     - _CullingOption: 0
     - _Cutoff: 0.016
     - _DebugShape: 1
     - _DepthGlow: 0
-    - _DepthGlowDist: 0.5
+    - _DepthGlowDist: 3.7
     - _DepthGlowGlobal: 1
-    - _DepthGlowPow: 1
+    - _DepthGlowPow: 8
     - _DetailNormalMapScale: 1
     - _DistortAmount: 0
     - _DistortTexXSpeed: 5
@@ -164,7 +169,7 @@ Material:
     - _DistortionScrollYSpeed: 0
     - _DstBlend: 0
     - _DstMode: 0
-    - _EditorDrawers: 28
+    - _EditorDrawers: 60
     - _FadeAmount: -0.1
     - _FadeBurnGlow: 5
     - _FadeBurnWidth: 0.01
@@ -180,9 +185,9 @@ Material:
     - _GlowGlobal: 0.68
     - _HandDrawnAmount: 10
     - _HandDrawnSpeed: 5
-    - _HsvBright: 0.69
+    - _HsvBright: 0.46
     - _HsvSaturation: 2
-    - _HsvShift: 343
+    - _HsvShift: 360
     - _LightAmount: 0
     - _MaskPow: 0.001
     - _Metallic: 0
@@ -200,7 +205,7 @@ Material:
     - _RandomSh1Mult: 0.101
     - _RandomSh2Mult: 0.039
     - _RandomSh3Mult: 1
-    - _RenderingMode: 5
+    - _RenderingMode: 4
     - _RimAddAmount: 1
     - _RimBias: 0
     - _RimErodesAlpha: 0
@@ -224,14 +229,14 @@ Material:
     - _ShakeUvY: 1
     - _Shape1MaskPow: 1
     - _Shape2AlphaWeight: 1.66
-    - _Shape2Brightness: -1
+    - _Shape2Brightness: 0.9
     - _Shape2ColorWeight: 2.32
-    - _Shape2Contrast: 9.67
+    - _Shape2Contrast: 3
     - _Shape2DistortAmount: 1.45
     - _Shape2DistortXSpeed: 0.1
     - _Shape2DistortYSpeed: 0.1
     - _Shape2RotationOffset: 0
-    - _Shape2RotationSpeed: 0
+    - _Shape2RotationSpeed: 1.5
     - _Shape2XSpeed: 0
     - _Shape2YSpeed: 0
     - _Shape3AlphaWeight: 2
@@ -265,10 +270,10 @@ Material:
     - _TextureScrollYSpeed: 0
     - _TimingSeed: 0
     - _TrailWidthPower: 1
-    - _TwistUvAmount: 0.49
+    - _TwistUvAmount: 1
     - _TwistUvPosX: 0.5
     - _TwistUvPosY: 0.5
-    - _TwistUvRadius: 0.76
+    - _TwistUvRadius: 1
     - _UVSec: 0
     - _VertOffsetAmount: 0.5
     - _VertOffsetPower: 1
@@ -285,9 +290,9 @@ Material:
     m_Colors:
     - _BackFaceTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _ColorGradingDark: {r: 0.061187245, g: 0.25951555, b: 0.5188679, a: 0}
-    - _ColorGradingLight: {r: 0.038581353, g: 0.24574825, b: 0.4811321, a: 1}
-    - _ColorGradingMiddle: {r: 0.11792451, g: 0.74107283, b: 1, a: 1}
+    - _ColorGradingDark: {r: 0, g: 0.54687023, b: 1, a: 0}
+    - _ColorGradingLight: {r: 0.014239941, g: 0.2907469, b: 0.6037736, a: 1}
+    - _ColorGradingMiddle: {r: 0, g: 0.10028684, b: 0.2735849, a: 1}
     - _DepthGlowColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FadeBurnColor: {r: 1, g: 1, b: 0, a: 1}
@@ -352,7 +357,7 @@ Texture2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: z_ColorRampTexGradientTex{"mode":0,"colorKeys":[{"color":{"r":0.0,"g":0.717681884765625,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":0.0,"g":0.09462115913629532,"b":0.22641509771347047,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
+  m_Name: z_ColorRampTexGradientTex{"mode":0,"colorKeys":[{"color":{"r":0.0,"g":0.5646710395812988,"b":1.0,"a":1.0},"time":0.0},{"color":{"r":0.0,"g":0.3844127357006073,"b":0.650943398475647,"a":1.0},"time":0.382360577583313},{"color":{"r":0.0037379779387265445,"g":0.04189818724989891,"b":0.2641509175300598,"a":1.0},"time":0.8205844163894653},{"color":{"r":0.0,"g":0.024886135011911393,"b":0.1603773832321167,"a":1.0},"time":1.0}],"alphaKeys":[{"alpha":1.0,"time":0.0},{"alpha":1.0,"time":1.0}]}
   m_ImageContentsHash:
     serializedVersion: 2
     Hash: 00000000000000000000000000000000
@@ -387,7 +392,7 @@ Texture2D:
   m_ColorSpace: 0
   m_PlatformBlob: 
   image data: 256
-  _typelessdata: 00b7ffff00b4fcff00b2f9ff00aff6ff00adf2ff00aaefff00a8ecff00a5e9ff00a3e6ff00a0e3ff009ee0ff009bddff0099d9ff0096d6ff0094d3ff0091d0ff008fcdff008ccaff008ac7ff0087c4ff0085c0ff0082bdff0080baff007db7ff007ab4ff0078b1ff0075aeff0073aaff0070a7ff006ea4ff006ba1ff00699eff00669bff006498ff006195ff005f91ff005c8eff005a8bff005788ff005585ff005282ff00507fff004d7bff004b78ff004875ff004672ff00436fff00406cff003e69ff003b66ff003962ff00365fff00345cff003159ff002f56ff002c53ff002a50ff00274dff002549ff002246ff002043ff001d40ff001b3dff00183aff
+  _typelessdata: 0090ffff008efbff008cf8ff008af4ff0088f0ff0086edff0085e9ff0083e5ff0081e1ff007fdeff007ddaff007bd6ff0079d3ff0077cfff0075cbff0073c8ff0071c4ff0070c0ff006ebcff006cb9ff006ab5ff0068b1ff0066aeff0064aaff0062a6ff005fa3ff005c9fff00599cff005698ff005294ff004f91ff004c8dff00498aff004686ff004383ff00407fff003c7bff003978ff003674ff013371ff01306dff012d6aff012966ff012662ff01235fff01205bff011d58ff011a54ff011651ff01134dff011049ff010d46ff010b43ff010a40ff010a3eff01093cff010939ff010937ff000835ff000832ff000730ff00072eff00072bff000629ff
   m_StreamData:
     serializedVersion: 2
     offset: 0

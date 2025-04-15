@@ -21,26 +21,17 @@ namespace IEC
         public int goldToAddOneLife = 100;
         public int goldLevelWin = 10;
         public int levelWinBackHome = 10;
-        
-        [Header("SwallowHole")]
-        public GamePlayConfig gamePlayConfig;
-        public GameplayItemPrefabConfig itemPrefabConfig;
+        [Header("Encrypted, Target by Name")]
+        public string levelConfigName;
         public LevelConfig levelConfig;
+        public string gamePlayConfigName;
+        public GamePlayConfig gamePlayConfig;
+        public string itemPrefabConfigName;
+        public GameplayItemPrefabConfig itemPrefabConfig;
+        public string themeConfigName;
         public ThemeConfig themeConfig;
+        [Header("SwallowHole")]
         public PrefabConfig prefabConfig;
-        //public HomeConfig homeConfig;
-        public MapUnlockConfig mapUnlockConfig;
-        //public SoundConfig soundConfig;
-        //public BoosterConfig boosterConfig;
-        //public MagicPouchConfig magicPouchConfig;
-        //public RatingConfig ratingConfig;
-        //public DailyRewardConfig dailyRewardConfig;
-        //public TreasureHuntProgressConfig treasureHuntProgressConfig;
-        //public StarProgressRewardConfig starProgressRewardConfig;
-        //public LevelProgressRewardConfig levelProgressRewardConfig;
-        public GameplayDebugConfig gameplayDebugConfig;
-        //public PiggyBankConfig piggyBankConfig;
-        //public ProfileConfig profileConfig;
         public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
 
@@ -81,6 +72,14 @@ namespace IEC
         [Header("Chest")] 
         public AllChestConfig allChestConfig;
 
+        public void PreloadAllConfig()
+        {
+            //if add New config encrypted, load here
+            levelConfig = EncryptedAssetModule.LoadAsset<LevelConfig>(levelConfigName);
+            gamePlayConfig = EncryptedAssetModule.LoadAsset<GamePlayConfig>(gamePlayConfigName);
+            itemPrefabConfig = EncryptedAssetModule.LoadAsset<GameplayItemPrefabConfig>(itemPrefabConfigName);
+            themeConfig = EncryptedAssetModule.LoadAsset<ThemeConfig>(themeConfigName);
+        }
         public Sprite GetGoldSprite(int gold)
         {
             if (gold >= 150) return goldSprites[3];

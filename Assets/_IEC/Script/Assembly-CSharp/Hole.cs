@@ -28,6 +28,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
+	[SerializeField] private ParticleSystem waterSplashFx;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -60,6 +61,7 @@ public class Hole : _BaseBehaviour
 
 	private void Awake()
 	{
+		m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
@@ -263,7 +265,6 @@ public class Hole : _BaseBehaviour
 
 	public void OnNewGame()
 	{
-		AnimationTurnHole();
 		txtLevel.gameObject.SetActive(true);
 	}
 	private void TurnOffAllVfx()
@@ -277,15 +278,21 @@ public class Hole : _BaseBehaviour
 		holePipe.transform.localScale = Vector3.zero;
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
-		characterAnimator.Play("Slime_Idle");
+		characterGraphics.gameObject.SetActive(true);
+		characterAnimator.Play("Spawn_Game");
 	}
-	public void AnimationTurnHole()
+
+	public void PlayEffectSharkDriveIn()
 	{
+		waterSplashFx.Play();
 		holePipe.gameObject.SetActive(true);
-		characterAnimator.SetTrigger("Trans");
 		holePipe.DOScale(Vector3.one, 1.0f);
 	}
 
+	public void EndAnimationCharacter()
+	{
+		characterGraphics.gameObject.SetActive(false);
+	}
 	public float GetWorldRadius()
 	{
 		return transform.localScale.x / 2f;
