@@ -33,7 +33,8 @@ public class Hole : _BaseBehaviour
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
-	[SerializeField]private Animator characterAnimator;
+	[SerializeField]public Animator characterAnimator;
+	[SerializeField]private Transform characterParent;
 
 	private int m_Level;
 	private int m_Xp;
@@ -90,7 +91,6 @@ public class Hole : _BaseBehaviour
 				{			
 					onSharkForm = false;
 					TurnSharkToHole();
-
 				}
 			}
 			else
@@ -102,7 +102,6 @@ public class Hole : _BaseBehaviour
 				}
 			}
 		}
-
 	}
 
 	void OnCollectLightningBooster(object param)
@@ -309,6 +308,7 @@ public class Hole : _BaseBehaviour
 	}
 
 	#region Character Animation
+	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
 	public void ResetCharacter()
 	{
 		holePipe.transform.localScale = Vector3.zero;
@@ -320,6 +320,8 @@ public class Hole : _BaseBehaviour
 
 	public void PlayEffectSharkDriveIn()
 	{
+		//Apply position because animation diff with pos
+		characterGraphics.transform.localPosition = Vector3.back;
 		waterSplashFx.Play();
 		holePipe.gameObject.SetActive(true);
 		holePipe.DOScale(Vector3.one, 1.0f);
@@ -333,16 +335,28 @@ public class Hole : _BaseBehaviour
 
 	public void TurnHoleToShark()
 	{
-		holePipe.DOScale(Vector3.zero, 1.0f);
+		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
+		holePipe.DOScale(Vector3.zero, 0.5f);
 		characterGraphics.gameObject.SetActive(true);
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterParent.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("HoleToShark");
 	}
 	public void TurnSharkToHole()
 	{
+		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
 		holePipe.DOScale(Vector3.zero, 1.0f);
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterParent.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterParent.transform.DOLocalMove(new Vector3(0,0.5f,-1f), 0.5f).SetId(SHARK_TWEEN_MOVE_ID);//hardcode
 		characterAnimator.Play("Dive Into Water 0");
 	}
-	#endregion 
+
+
+
+	#endregion
 
 
 }
