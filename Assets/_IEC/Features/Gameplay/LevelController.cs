@@ -131,6 +131,7 @@ namespace _IEC.Features.Gameplay
 
             m_AllSpecialItems.Clear();
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
+                GroundExtend.CalculateBounds(m_AllItems),
                 Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(0)
