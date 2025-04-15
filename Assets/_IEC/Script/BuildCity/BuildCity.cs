@@ -32,8 +32,8 @@ public class BuildCity : _BaseBehaviour
     [Header("cityContinue new")] public TextMeshProUGUI nameCityEndingTMP_2;
     public Button nextButton;
     public Button backButton;
-    [Header("Reward")]
-    public ClaimBonusRewardPanel cityReward;
+    // [Header("Reward")]
+    // public ClaimBonusRewardPanel cityReward;
     [Header("Data")] public List<IslandModelInfo> listAllIsland; //Move to prefab and create after
     public IslandModelInfo currentIsland;
     public UIBuildCityState currentState;
@@ -328,8 +328,8 @@ public class BuildCity : _BaseBehaviour
         currentState = UIBuildCityState.GETREWARD;
         ChangeStateUI();
         BuildCityDataConfig dataConfig = Config.buildCityConfig.dataCity.Find(x => x.idCity == currentIsland.idIsland);
-        cityReward.SetupRewardPanel(ConvertDataCityReward(dataConfig),OnClaimReward); 
-        cityReward.ShowingRewardPanel();
+        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(ConvertDataCityReward(dataConfig),OnClaimReward); 
+        Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
         //OnClaimReward();
     }
     public List<Reward> ConvertDataCityReward(BuildCityDataConfig dataConfig)
@@ -643,7 +643,8 @@ public class BuildCity : _BaseBehaviour
         holdToBuild.gameObject.SetActive(false);
         cityCompleteReward.gameObject.SetActive(false);
         cityContinue.gameObject.SetActive(false);
-        cityReward.gameObject.SetActive(false);
+        //cityReward.gameObject.SetActive(false);
+        Locator.Main.ClaimBonusRewardPanel.gameObject.SetActive(false);
         backHomeButton.gameObject.SetActive(false);
         int idCity = PlayerData.currentCityBuild;
         var dataIsland = Config.buildCityConfig;
@@ -667,7 +668,8 @@ public class BuildCity : _BaseBehaviour
                 DoShowCompletedBuild(); 
                 break;
             case UIBuildCityState.GETREWARD:
-                cityReward.gameObject.SetActive(true);
+                //cityReward.gameObject.SetActive(true);
+                Locator.Main.ClaimBonusRewardPanel.gameObject.SetActive(true);
                 break;
             case UIBuildCityState.CONTINUECITY:
                 holdToBuild.gameObject.SetActive(false);

@@ -36,7 +36,8 @@ namespace _IEC.Features.Gameplay
         public event Action OnReset;
         public event Action<float> OnTimeUpdate;
         public event Action<bool> OnUpdateFrozenState; 
-
+        
+        public RemainingTimeState CurrentRemainingTimeState => m_CurrentRemainingTimeState;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
@@ -326,18 +327,19 @@ namespace _IEC.Features.Gameplay
         {
             if (newState == m_CurrentRemainingTimeState) return;
             txtCoolDown.color = Config.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
-            // switch (newState)
-            // {
-            //     case RemainingTimeState.Safe:
-            //         imgProgress.sprite = spriteSafe;
-            //         break;
-            //     case RemainingTimeState.Warning:
-            //         imgProgress.sprite = spriteWarning;
-            //         break;
-            //     case RemainingTimeState.Dangerous:
-            //         imgProgress.sprite = spriteDangerous;
-            //         break;
-            // }
+            switch (newState)
+            {
+                case RemainingTimeState.Safe:
+                    imgProgress.sprite = spriteSafe;
+                    break;
+                case RemainingTimeState.Warning:
+                    imgProgress.sprite = spriteWarning;
+                    break;
+                case RemainingTimeState.Dangerous:
+                    imgProgress.sprite = spriteDangerous;
+                    break;
+            }
+            m_CurrentRemainingTimeState = newState;
         }
         public enum State
         {

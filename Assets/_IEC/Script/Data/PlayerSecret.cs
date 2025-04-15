@@ -503,6 +503,130 @@ namespace IEC
         }
         #endregion
         
+        #region ChestReward
+
+        public Dictionary<ChestType, int> currentChestProgress = new();
+        public Dictionary<ChestType, int> chestRewardMilestone = new();
+
+        public void AddChestProgress(ChestConfig chestConfig, int addAmount, out bool isClaimReward)
+        {
+            isClaimReward = false;
+            var chestType = chestConfig.chestType;
+            if (!currentChestProgress.ContainsKey(chestType))
+            {
+                currentChestProgress.Add(chestType, 0);
+            }
+
+            currentChestProgress[chestType] += addAmount;
+
+            var rewardData = chestConfig.GetRewardData(GetChestMilestone(chestType));
+            if (currentChestProgress[chestType] >= rewardData.progressToReward)
+            {
+                isClaimReward = true;
+                AddChestMilestone(chestConfig);
+                currentChestProgress[chestType] -= rewardData.progressToReward;
+            }
+        }
+
+        public int GetChestProgress(ChestType chestType)
+        {
+            return !currentChestProgress.ContainsKey(chestType) ? 0 : currentChestProgress[chestType];
+        }
+
+        public void AddChestMilestone(ChestConfig chestConfig)
+        {
+            var chestType = chestConfig.chestType;
+            if (!chestRewardMilestone.ContainsKey(chestType))
+            {
+                chestRewardMilestone.Add(chestType, 0);
+            }
+
+            chestRewardMilestone[chestType] += 1;
+
+            if (chestRewardMilestone[chestType] >= chestConfig.listChestRewardData.Count)
+            {
+                chestRewardMilestone[chestType] = chestConfig.milestoneBeginLoop;
+            }
+            
+        }
+        
+        public int GetChestMilestone(ChestType chestType)
+        {
+            return !chestRewardMilestone.ContainsKey(chestType) ? 0 : chestRewardMilestone[chestType];
+        }
+        #endregion
+        
+        #region ProgressReward
+
+        public DateTime timeLastResetProgressReward;
+        public int tempSpecialObjCollectedInLevel;
+        public int currentProgress;
+        public int currentProgressMilestone;
+        public int currentSpecialItemIndex;
+        public void SaveTimeResetProgressReward()
+        {
+            timeLastResetProgressReward = DateTime.Now;
+        }
+
+        public void CheckResetTimeProgressReward()
+        {
+            if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
+            {
+                SaveTimeResetProgressReward();
+                currentProgress = 0;
+                currentProgressMilestone = 0;
+                currentSpecialItemIndex = 0;
+            }
+        }
+
+        public void AddProgressToProgressReward(int progress)
+        {
+            currentProgress += progress;
+        }
+
+        public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
+        {
+            if (currentProgress>= currentProgressData.progress)
+            {
+                currentProgress -= currentProgressData.progress;
+                currentProgressMilestone++;
+                return true;
+            }
+
+            return false;
+        }
+        
+        public string GetTimeToResetProgressReward()
+        {
+            TimeSpan time = timeLastResetProgressReward.AddDays(Config.progressRewardConfig.daysEachReset) - DateTime.Now;
+
+            string outputString = "";
+            
+            var day = time.Days;
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string days = day < 10 ? $"0{day}" : day.ToString();
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (day > 0)
+            {
+                outputString = $"{days}d {hours}h";
+            }
+            else if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+        
+        #endregion
+        
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();

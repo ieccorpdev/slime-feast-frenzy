@@ -12,7 +12,6 @@ using TMPro;
 public class HomeScreenTab : ScreenNavigateUI
 {
     public RectTransform rightButtonBar, leftButtonBar;
-    public RectTransform comingSoonProgressBar;
     [Header("Avatar Button")] 
     public Button avatarButton;
     public Image avatarImage;
@@ -34,6 +33,12 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] 
     public Button btnDailyReward;
     public Image dailyRewardNotiImage;
+    [Header("Progress Reward")] 
+    public Button progressRewardButton;
+    public ProgressRewardProgressBar progressRewardBar;
+    [Header("Chest Reward")] 
+    public Button btnLevelChestReward;
+    public Button btnStarChestReward;
     [Header("Play")]
     public RectTransform bottomBar;
     public Button playButton;
@@ -92,6 +97,27 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupDailyReward.Show();
+            });
+        SetEvent(progressRewardButton,
+            () =>
+            {
+                Locator.Main.PopupProgressReward.Show();
+            });
+        SetEvent(btnLevelChestReward,
+            () =>
+            {
+                Locator.Main.PopupLevelChestReward.Setup(
+                    Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)), 
+                    PlayerData.GetChestProgress(ChestType.Level));
+                Locator.Main.PopupLevelChestReward.Show();
+            });
+        SetEvent(btnStarChestReward,
+            () =>
+            {
+                Locator.Main.PopupStarChestReward.Setup(
+                    Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
+                    PlayerData.GetChestProgress(ChestType.Star));
+                Locator.Main.PopupStarChestReward.Show();
             });
         SetEvent(playButton,
             () =>
@@ -174,7 +200,7 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 _listObjMoveOut[i].SetObjPosOut();
             }
-            comingSoonProgressBar.transform.localScale = new Vector3(0, 1, 1);
+            progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
         }
         
         public void DoMoveOutAllObj(float timeAnim,Action onComplete = null, float delay = 0f)
@@ -201,8 +227,8 @@ public class HomeScreenTab : ScreenNavigateUI
             _uiAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    DOTween.Kill(comingSoonProgressBar);
-                    comingSoonProgressBar.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
+                    DOTween.Kill(progressRewardButton.transform);
+                    progressRewardButton.transform.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
                 });
             
             delay += 0.4f;
@@ -235,7 +261,7 @@ public class HomeScreenTab : ScreenNavigateUI
             }
             
             //buildCityUI.HideScale(false);
-            comingSoonProgressBar.transform.localScale = new Vector3(0, 1, 1);
+            progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
 
             _uiAnimSequence = DOTween.Sequence();
             
@@ -253,7 +279,7 @@ public class HomeScreenTab : ScreenNavigateUI
             _uiAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    comingSoonProgressBar.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
+                    progressRewardButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
                 });
 
             delay += 0.3f;
@@ -330,6 +356,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdatePiggyBankButton();
         UpdateBuildCity();
         UpdateLifeOffer();
+        progressRewardBar.Setup();
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
         LeaderboardController.StartTournament();//Once when start home game

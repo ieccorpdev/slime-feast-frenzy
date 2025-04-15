@@ -122,6 +122,9 @@ namespace IEC
                     OpenScene(GameScene.Main);
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
                 }
+                
+                //Check reset progress reward when player start game
+                PlayerData.CheckResetTimeProgressReward();
   
             //});
             // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
