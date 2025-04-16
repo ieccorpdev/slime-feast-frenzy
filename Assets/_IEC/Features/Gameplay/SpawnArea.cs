@@ -571,6 +571,11 @@ namespace IEC
             {
                 itemHeight = renderer.bounds.size.y;
             }
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedPyramidSpawn(prefab);
+            }
 
             int numberlayer = width / layerSizeReduce;
             for (int i = 0; i < numberlayer; i++)
@@ -600,7 +605,79 @@ namespace IEC
 
             return previewGameObject;
         }
+        
+        private void PrepareFixedPyramidSpawn(GameObject prefab)
+        {
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            spacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+
+            int target = fixedSpawnAmount;
+
+            int bestWidth = 1;
+            int bestLength = 1;
+            int bestLayerReduce = 1;
+            int bestTotal = int.MaxValue;
+
+            float bestScore = float.MaxValue;
+
+            for (int reduce = 1; reduce <= 5; reduce++)
+            {
+                for (int w = 3; w <= 50; w++) // Avoid too narrow
+                {
+                    for (int l = w; l <= w + 5; l++) // Favor near-square bases
+                    {
+                        int layer = 0;
+                        int sum = 0;
+
+                        while (true)
+                        {
+                            int cw = w - layer * reduce;
+                            int cl = l - layer * reduce;
+                            if (cw <= 0 || cl <= 0) break;
+
+                            if (spawnType == SpawnTypes.Full)
+                            {
+                                sum += cw * cl;
+                            }
+                            else if (spawnType == SpawnTypes.Border)
+                            {
+                                if (cw > 1 && cl > 1)
+                                    sum += 2 * (cw + cl - 2);
+                                else
+                                    sum += Mathf.Max(cw, cl);
+                            }
+
+                            layer++;
+                        }
+
+                        if (sum >= target)
+                        {
+                            float shapeScore = Mathf.Abs(w - l);       // Penalize unbalanced base
+                            float excess = sum - target;               // Extra count
+                            float layerBonus = layer * 3f;             // Reward deeper pyramids
+
+                            // Lower score is better
+                            float score = excess + shapeScore * 2 - layerBonus;
+
+                            if (score < bestScore)
+                            {
+                                bestScore = score;
+                                bestTotal = sum;
+                                bestWidth = w;
+                                bestLength = l;
+                                bestLayerReduce = reduce;
+                            }
+                        }
+                    }
+                }
+            }
+
+            width = bestWidth;
+            length = bestLength;
+            layerSizeReduce = bestLayerReduce;
+        }
     }
+    [Serializable]
     public class PyramidCircleSpawnArea : SpawnArea
     {
        public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Circle;
