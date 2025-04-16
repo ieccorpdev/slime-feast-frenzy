@@ -209,7 +209,7 @@ namespace IEC
     {
         public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Circle;
 
-        public int radius = 3;
+        public float radius = 3;
         public float spacing = 1.5f;
         public int verticalCount = 1;
 
@@ -227,6 +227,33 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+
+            // Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            // float diameter = Mathf.Max(bounds.size.x, bounds.size.z);
+            // spacing = diameter * 1.1f;
+            //
+            // if (spawnType == SpawnTypes.Border)
+            // {
+            //     float circumference = fixedSpawnAmount * spacing;
+            //     radius = Mathf.CeilToInt(circumference / (2 * Mathf.PI * spacing));
+            // }
+            // else
+            // {
+            //     // Full spawn: estimate how many rings we need
+            //     int rings = 0;
+            //     int count = 0;
+            //     while (count < fixedSpawnAmount)
+            //     {
+            //         rings++;
+            //         count += Mathf.Max(1, Mathf.FloorToInt(2 * Mathf.PI * rings)); // at least 1 per ring
+            //     }
+            //     radius = rings;
+            // }
+
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedCircleSpawn(prefab);
+            }
 
             if (spawnType == SpawnTypes.Border)
             {
@@ -251,13 +278,59 @@ namespace IEC
                         float angle = i * (360f / itemCount);
                         var pos = spawnPos + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * r * spacing, 0,
                             Mathf.Sin(angle * Mathf.Deg2Rad) * r * spacing);
-                        
+
                         CreateItems(itemPrefabConfig, prefab, pos, previewGameObject, itemId, verticalCount);
                     }
                 }
             }
 
             return previewGameObject;
+        }
+
+        private void PrepareFixedCircleSpawn(GameObject prefab)
+        {
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+
+            spacing = minSpacing;
+
+            if (spawnType == SpawnTypes.Border)
+            {
+                radius = fixedSpawnAmount / (2f * Mathf.PI);
+                float testCircumference = 2f * Mathf.PI * radius;
+                if (Mathf.FloorToInt(testCircumference) < fixedSpawnAmount)
+                    radius += 0.01f;
+            }
+            else // Full spawn type
+            {
+                float bestRadius = 1f;
+                int bestCount = 0;
+                float maxRadius = 50f;
+                float step = 0.1f;
+
+                for (float r = 0.5f; r <= maxRadius; r += step)
+                {
+                    int totalCount = 1; // center point
+
+                    for (int ring = 1; ring <= Mathf.FloorToInt(r); ring++)
+                    {
+                        int ringCount = Mathf.FloorToInt(2 * Mathf.PI * ring);
+                        totalCount += ringCount;
+                    }
+
+                    if (Mathf.Abs(totalCount - fixedSpawnAmount) < Mathf.Abs(bestCount - fixedSpawnAmount))
+                    {
+                        bestRadius = r;
+                        bestCount = totalCount;
+
+                        // early exit if exact match
+                        if (totalCount == fixedSpawnAmount)
+                            break;
+                    }
+                }
+
+                radius = Mathf.CeilToInt(bestRadius);
+            }
         }
     }
 
