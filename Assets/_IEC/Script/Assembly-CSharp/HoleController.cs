@@ -36,6 +36,7 @@ public class HoleController : _BaseBehaviour
     
 		transform.position = transformer.transform.position;
 		var dir = Joystick.Direction;
+		m_Hole.characterAnimator.SetFloat("moveAxis",dir.magnitude);
 		if (dir.magnitude < Mathf.Epsilon)
 		{
 			Move(Vector3.zero);
@@ -47,7 +48,7 @@ public class HoleController : _BaseBehaviour
 		//Xoay object theo hướng joystick
 		var angleCharacter = Mathf.Atan2(dir.x, dir.y) * Mathf.Rad2Deg;  // Tính góc quay theo hướng joystick
 		holeCharacter.localRotation = Quaternion.Euler(0, angleCharacter, 0); // Xoay holeCharacter theo trục Y
-		m_Hole.characterAnimator.SetFloat("moveAxis",dir.magnitude);
+
 		var angle = Vector3.SignedAngle(Vector3.right * dir.x + Vector3.forward * dir.y,Vector3.right,Vector3.up);
 		direction.localEulerAngles = Vector3.forward * (angle - 90);
 		Move(dir.normalized);

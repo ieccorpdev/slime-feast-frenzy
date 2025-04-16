@@ -315,13 +315,14 @@ public class Hole : _BaseBehaviour
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
 		characterGraphics.gameObject.SetActive(true);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Spawn_Game");
 	}
 
 	public void PlayEffectSharkDriveIn()
 	{
+
 		//Apply position because animation diff with pos
-		characterGraphics.transform.localPosition = Vector3.back;
 		waterSplashFx.Play();
 		holePipe.gameObject.SetActive(true);
 		holePipe.DOScale(Vector3.one, 1.0f);
@@ -339,7 +340,6 @@ public class Hole : _BaseBehaviour
 		holePipe.DOScale(Vector3.zero, 0.5f);
 		characterGraphics.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
-		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("HoleToShark");
 	}
@@ -350,7 +350,6 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
-		characterParent.transform.DOLocalMove(new Vector3(0,0.5f,-1f), 0.5f).SetId(SHARK_TWEEN_MOVE_ID);//hardcode
 		characterAnimator.Play("Dive Into Water 0");
 	}
 
