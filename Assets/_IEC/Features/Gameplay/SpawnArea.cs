@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using _IEC.Features.ExportLevel.OriginalLevel;
 using _IEC.Features.Gameplay;
 using Sirenix.OdinInspector;
@@ -14,6 +15,8 @@ namespace IEC
         public Vector3 spawnPos;
         public float spawnRot = 0f;
         public bool startAsKinematic = true;
+        public bool isFixedSpawnAmount = false;
+        public int fixedSpawnAmount;
 
         public abstract GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame,
             string itemId);
@@ -100,6 +103,15 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+                float maxSize = Mathf.Max(bounds.size.x, bounds.size.z);
+                spacing = maxSize * 1.1f; // Prevent overlap
+                
+                (width, length) = FindBestAreaFit(fixedSpawnAmount, spawnType);
+            }
 
             var sizeWidth = width * spacing;
             var sizeLength = length * spacing;
@@ -124,6 +136,71 @@ namespace IEC
             }
 
             return previewGameObject;
+        }
+        
+        private (int width, int length) FindBestAreaFit(int targetCount, SpawnTypes spawnType)
+        {
+            int bestW = 1, bestL = targetCount;
+            int minDiff = targetCount;
+
+            if (spawnType == SpawnTypes.Border)
+            {
+                // Border spawn type: Adjust width and length to fit the perimeter with fixed amount of objects
+
+                // For border spawn, we need at least 4 objects to form a rectangle
+                if (targetCount < 4)
+                {
+                    // If targetCount is less than 4, we place objects along one row or column
+                    return (1, targetCount);
+                }
+
+                // Try to find width and length to fit the border (i.e., perimeter placement)
+                for (int w = 1; w <= Mathf.Sqrt(targetCount); w++)
+                {
+                    if (targetCount % w == 0)
+                    {
+                        int l = targetCount / w;
+
+                        // We need to account for perimeter positions:
+                        // Total positions on the border for a w x l rectangle is: 2 * (w + l) - 4 (to avoid double-counting corners)
+                        int perimeterCount = 2 * (w + l) - 4;
+
+                        if (perimeterCount >= targetCount)
+                        {
+                            int diff = Mathf.Abs(w - l);
+                            if (diff < minDiff)
+                            {
+                                minDiff = diff;
+                                bestW = w;
+                                bestL = l;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Full spawn type: Adjust width and length to fill the entire area
+                // For full spawn, try to find width and length to cover the area evenly
+                for (int w = 1; w <= Mathf.Sqrt(targetCount); w++)
+                {
+                    if (targetCount % w == 0)
+                    {
+                        int l = targetCount / w;
+
+                        // We just want the best approximation for width and length that fits the target count
+                        int diff = Mathf.Abs(w - l);
+                        if (diff < minDiff)
+                        {
+                            minDiff = diff;
+                            bestW = w;
+                            bestL = l;
+                        }
+                    }
+                }
+            }
+
+            return (bestW, bestL);
         }
     }
 

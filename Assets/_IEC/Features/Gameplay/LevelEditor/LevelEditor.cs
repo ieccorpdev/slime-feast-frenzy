@@ -178,6 +178,9 @@ namespace IEC
                 obj.ItemData.groupPosition = centerPoint;
                 obj.transform.parent = groupHolder.transform;
             }
+            
+            groupHolder.AddComponent<BaseItemGroup>();
+            groupHolder.GetComponent<BaseItemGroup>().Setup();
         }
         
         private void FilterSelection()
@@ -211,6 +214,73 @@ namespace IEC
             Selection.instanceIDs = instanceIDs.ToArray();
             UpdateTotalXP();
         }
+        #endregion
+        
+        #region Random Level Generator
+
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
+        public BaseItemGroupConfig baseItemGroupConfig;
+
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
+        [Button]
+        public void SpawnRandomLevel()
+        {
+            Reset();
+            GenerateRandomLevel();
+        }
+        
+        public int groupCount = 9;
+        public float spacing = 1f;
+        
+        void GenerateRandomLevel() {
+            Vector2 cursor = Vector2.zero;
+            float rowHeight = 0f;
+            float levelWidth = 0f;
+
+            float estimatedSide = Mathf.Sqrt(groupCount) * 10f; // tweak this estimate
+            
+            List<Bounds> placedBounds = new();
+            
+            bool IsOverlapping(Bounds newBounds) {
+                foreach (var existing in placedBounds) {
+                    if (existing.Intersects(newBounds)) return true;
+                }
+                return false;
+            }
+
+            for (int i = 0; i < groupCount; i++) {
+                BaseItemGroup group = baseItemGroupConfig.listBaseItemGroup[Random.Range(0, baseItemGroupConfig.listBaseItemGroup.Count)];
+                UnityEngine.Vector3 groupSize = group.Bounds.size;
+
+                // Try to place it at cursor position
+                UnityEngine.Vector3 tryPosition = new UnityEngine.Vector3(cursor.x, 0f, cursor.y);
+                Bounds futureBounds = new Bounds(group.Bounds.center + tryPosition, groupSize);
+
+                if (!IsOverlapping(futureBounds)) {
+                    GameObject instance = Instantiate(group.gameObject, tryPosition, Quaternion.identity, itemHolder);
+                    Bounds placed = instance.GetComponent<BaseItemGroup>().Bounds;
+                    placed.center += tryPosition;
+
+                    placedBounds.Add(placed);
+
+                    // Move cursor forward
+                    cursor.x += groupSize.x + spacing;
+                    rowHeight = Mathf.Max(rowHeight, groupSize.z);
+
+                    // Wrap if we get too wide
+                    levelWidth += groupSize.x + spacing;
+                    if (levelWidth > estimatedSide) {
+                        cursor.x = 0f;
+                        cursor.y += rowHeight + spacing;
+                        rowHeight = 0f;
+                        levelWidth = 0f;
+                    }
+                } else {
+                    Debug.Log("Overlap detected, skipping");
+                }
+            }
+        }
+        
         #endregion
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
