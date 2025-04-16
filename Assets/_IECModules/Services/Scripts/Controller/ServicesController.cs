@@ -1169,8 +1169,11 @@ namespace IEC
         
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
         private string m_LogFileNonEncr => Application.persistentDataPath + @"/log_non_encr.txt";
-        private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
-        private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
+        private int m_ServiceDataSize;
+        private int m_PlayerDataSize;
+        private int m_LogSize;
+        private const int MB = 1024 * 1024;
+        private const int MAX_LOG_SIZE = 9 * 1024 * 1024;
         [NaughtyAttributes.Button]
         public void SendEmail()
         {
@@ -1203,6 +1206,7 @@ namespace IEC
             IEnumerator IE_SendFeedbackDiscord()
             {
                 var logByte = File.ReadAllBytes(m_LogFileNonEncr);
+                var isLogFileValid = logByte.Length <= MAX_LOG_SIZE;
                 var fileName = "log.txt";
                 var url = config.discordWebhook;
                 var idfv = "";
@@ -1294,6 +1298,40 @@ namespace IEC
                                     value = adjustCreative
                                 }
                             }
+                        },
+                        new
+                        {
+                            color = "5814783",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Service Data Size",
+                                    value = StringHelper.GetFileSizeStr(m_ServiceDataSize)
+                                },
+                                new
+                                {
+                                    name = "Player Data Size",
+                                    value = StringHelper.GetFileSizeStr(m_PlayerDataSize)
+                                },
+                                new
+                                {
+                                    name = "Log Size",
+                                    value = StringHelper.GetFileSizeStr(m_LogSize)
+                                }
+                            }
+                        },
+                        new
+                        {
+                            color = (isLogFileValid) ? "5814783" : "15548997",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Log Size Valid",
+                                    value = (isLogFileValid) ? "true" : "false"
+                                }
+                            }
                         }
                     }
                 };
@@ -1301,9 +1339,13 @@ namespace IEC
                 var formData = new List<IMultipartFormSection>()
                 {
                     // new MultipartFormDataSection("payload_json", data.content),
-                    new MultipartFormDataSection("payload_json", Json().ToJson(data), Encoding.UTF8, "application/json"),
-                    new MultipartFormFileSection("file", logByte, fileName, "text/plain")
+                    new MultipartFormDataSection("payload_json", Json().ToJson(data), Encoding.UTF8, "application/json")
                 };
+                
+                if(isLogFileValid) 
+                {
+                    formData.Add(new MultipartFormFileSection("file", logByte, fileName, "text/plain"));
+                }
                 var uwr = UnityWebRequest.Post(url, formData);
                 yield return uwr.SendWebRequest();
 
@@ -1359,6 +1401,11 @@ namespace IEC
 
                 var playerDataJson = Json().ToJson(Pool.Get<PlayerSecret>());
                 var serviceDataJson = Json().ToJson(Pool.Get<ServiceData>());
+                
+                m_PlayerDataSize = Encoding.UTF8.GetByteCount(playerDataJson);
+                m_ServiceDataSize = Encoding.UTF8.GetByteCount(serviceDataJson);
+                m_LogSize = Encoding.UTF8.GetByteCount(saveLog);
+                
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
                                         SimpleEncryption.EncryptString(playerDataJson);
                 var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
@@ -1375,6 +1422,10 @@ namespace IEC
                 content +=
                     $"\n\nPlayerData:\n{playerDataJson}" +
                     $"\n\nServiceData:\n{serviceDataJson}";
+
+                var contentSize = Encoding.UTF8.GetByteCount(content);
+                var maxSizeForLog = MAX_LOG_SIZE - contentSize;
+                saveLog = StringHelper.TrimStringToMaxBytes(saveLog, maxSizeForLog);
                 Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
                 
