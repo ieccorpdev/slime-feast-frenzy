@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class UIShopHomeTab : ScreenNavigateUI
 {
-    public PackUI freeAds, freeAdsBundle, discountedBundle;
+    public PackUI freeAds, freeAdsBundle;
 
     private void Awake()
     {
@@ -23,7 +23,7 @@ public class UIShopHomeTab : ScreenNavigateUI
     {
         freeAds.UpdateUI();
         freeAdsBundle.gameObject.SetActive(!PlayerData.isNoAds);
-        discountedBundle.gameObject.SetActive(PlayerData.isNoAds);
+        //discountedBundle.gameObject.SetActive(PlayerData.isNoAds);
     }
     
 }

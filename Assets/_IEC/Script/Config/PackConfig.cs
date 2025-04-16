@@ -13,10 +13,7 @@ namespace IEC
         public string bundleId;
         public string packName;
         public string badge;
-
-        [NaughtyAttributes.InfoBox(
-            "Resource Unlimited Live need to be set in Minutes",
-            EInfoBoxType.Warning)]
+        
         public List<ResourceConfig> resources;
 
         public bool isHaveNoAds;

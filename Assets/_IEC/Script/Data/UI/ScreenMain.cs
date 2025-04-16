@@ -158,14 +158,17 @@ namespace IEC
                 case ResourceType.Gold:
                     AddRewardGoldToClaim(amount);
                     break;
-                case ResourceType.HelperClear:
+                case ResourceType.Vortex:
                     AddRewardHelperToClaim(resourceType, amount, 0.1f);
                     break;
-                case ResourceType.HelperUndo:
+                case ResourceType.Compass:
                     AddRewardHelperToClaim(resourceType, amount, 0.2f);
                     break;
-                case ResourceType.HelperShuffle:
+                case ResourceType.Enlarge:
                     AddRewardHelperToClaim(resourceType, amount, 0.3f);
+                    break;
+                case ResourceType.TimeStop:
+                    AddRewardHelperToClaim(resourceType, amount, 0.4f);
                     break;
             }
         }
