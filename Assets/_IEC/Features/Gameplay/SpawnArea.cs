@@ -462,6 +462,12 @@ namespace IEC
 
             var previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedHexagonSpawn(prefab);
+            }
+            
             if (spawnType == SpawnTypes.Border)
             {
                 for (int q = -radius; q <= radius; q++)
@@ -500,6 +506,40 @@ namespace IEC
             float x = spacing * (3.0f / 2.0f * q);
             float z = spacing * (Mathf.Sqrt(3.0f) * (r + q / 2.0f));
             return new Vector3(x, 0, z);
+        }
+        
+        private void PrepareFixedHexagonSpawn(GameObject prefab)
+        {
+            // Get safe minimum spacing to avoid overlap
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+            spacing = minSpacing;
+
+            int target = fixedSpawnAmount;
+            int r = 0;
+
+            if (spawnType == SpawnTypes.Full)
+            {
+                while (true)
+                {
+                    int count = 1 + 3 * r * (r + 1);
+                    if (count >= target)
+                        break;
+                    r++;
+                }
+            }
+            else if (spawnType == SpawnTypes.Border)
+            {
+                while (true)
+                {
+                    int count = r == 0 ? 1 : 6 * r;
+                    if (count >= target)
+                        break;
+                    r++;
+                }
+            }
+
+            radius = r;
         }
     }
     [Serializable]
