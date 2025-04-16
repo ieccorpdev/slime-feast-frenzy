@@ -14,7 +14,7 @@ namespace IEC
 
         public List<BaseItem> listAllItems = new();
 
-        public float TotalExp { get; private set; }
+        [ShowInInspector]public float TotalExp { get; private set; }
 
         private void Start()
         {
