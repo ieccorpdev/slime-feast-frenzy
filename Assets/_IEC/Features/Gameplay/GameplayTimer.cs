@@ -23,7 +23,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image frozenMark2;
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         
-        private float m_CurrentTime;
+        [SerializeField]private float m_CurrentTime;
         private float m_MaxTime;
         private State m_CurrentState;
         private RemainingTimeState m_CurrentRemainingTimeState;
@@ -161,7 +161,7 @@ namespace _IEC.Features.Gameplay
 #if UNITY_EDITOR
                     if (Input.GetKeyDown(KeyCode.T))
                     {
-                        m_CurrentTime = 10;
+                        m_CurrentTime = 5;
                     }
 #endif
                     if (m_FrozenTimeCoolDown > 0)

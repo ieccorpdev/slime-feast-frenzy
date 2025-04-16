@@ -30,9 +30,7 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     Hide();
-                    //UI.ShowScreen(UI.ScreenHome);
-                    Locator.Game.ScreenInGame.Show();
-                    GamePlay.SetNewLevel(PlayerData.level);
+                    GameController.OpenScene(GameScene.Main);
                 };
                 
                 if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
@@ -48,11 +46,8 @@ namespace IEC
                     if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                     {
                         Hide();
-                        //UI.ShowScreen(UI.ScreenHome);
-                        //UI.ShowScreen(UI.PopUpRefillLives);
-                        //MeoMew maybe wrong thread here
+                        //Back home
                         GameController.OpenScene(GameScene.Main);
-                        //GamePlay.SetNewLevel(PlayerData.level);
                         return;
                     }
                     
@@ -85,7 +80,7 @@ namespace IEC
                 });
             }
         }
-        
+
         private void Start()
         {
             SetUpForLoseReasonTimeUp();
@@ -97,12 +92,23 @@ namespace IEC
             base.Show();
         }
 
+        public void SetupPanelShow(EventParam param)
+        {
+            LoseReason reason = LoseReason.Boom;
+            if (param.p0 != null)
+            {
+                reason = (LoseReason) param.p0;
+            }
+            DisableAllScreen();
+            SetUpLoseReason(reason);
+        }
         public void SetUpLoseReason(LoseReason loseReason)
         {
             DisableAllScreen();
             switch (loseReason)
             {
                 case LoseReason.None:
+                    UI.ShowScreen(groupLevelFailed);
                     break;
                 case LoseReason.TimeUp:
                     UI.ShowScreen(groupLoseReasonTimeUp);
@@ -126,7 +132,6 @@ namespace IEC
             groupLoseReasonTimeUp.SetActionPlayOn(() =>
             {
                 Hide();
-                //UI.ShowScreen(UI.ScreenInGame);
                 Locator.Game.ScreenInGame.Show();
                 this.RaiseEvent(EventList.GamePlay.ADD_TIME_FOR_TIMER,new AddTimeForTimerData()
                 {
@@ -141,10 +146,8 @@ namespace IEC
             groupLoseReasonBoom.SetActionPlayOn(() =>
             {
                 Hide();
-                //UI.ShowScreen(UI.ScreenInGame);
                 Locator.Game.ScreenInGame.Show();
                 this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
-                //this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
             });
         }
     }
