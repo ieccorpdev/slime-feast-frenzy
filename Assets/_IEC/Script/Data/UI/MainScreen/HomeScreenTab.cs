@@ -129,12 +129,15 @@ public class HomeScreenTab : ScreenNavigateUI
                 else
                 {
                     //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                    DoMoveOutAllObj(0.3f,
-                        () =>
-                        {
-                            Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                            GameController.OpenScene(GameScene.Game);
-                        });
+                    // DoMoveOutAllObj(0.3f,
+                    //     () =>
+                    //     {
+                    //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+                    //         GameController.OpenScene(GameScene.Game);
+                    //     });
+                    
+                    //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+                    Locator.Main.PopupBooster.Show();
                 }
             });
         

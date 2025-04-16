@@ -63,6 +63,7 @@ namespace IEC
                     Pool.Get<ConfettiGroup>().ShowConfetti();
                     PlayerData.Vibrate(HapticTypes.Success);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
+                    PlayerData.IncreaseBoosterStreak();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
@@ -73,6 +74,7 @@ namespace IEC
                     OnGameOver();
                     PlayerData.Vibrate(HapticTypes.LightImpact);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
+                    PlayerData.ResetBoosterStreak();
                     break;
                 case EventList.GamePlay.LEVEL_SKIP:
                     GamePlay.SetWin();

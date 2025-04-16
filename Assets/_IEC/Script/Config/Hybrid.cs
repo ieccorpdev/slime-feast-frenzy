@@ -33,9 +33,11 @@ namespace IEC
         TimeStop,     
         BonusTime,
         BonusExp,
+        TimeUnlimitedEvolveStone,
+        TimeUnlimitedWindSurf,
+        DoubleSpecialObjectCount,
         EvolveStone,
         WindSurf,
-        DoubleSpecialObjectCount,
     }
 
     [Serializable]

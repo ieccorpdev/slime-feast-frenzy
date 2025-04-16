@@ -142,6 +142,32 @@ namespace IEC
             return false;
         }
         
+        #region Booster
+
+        public int currentBoosterStreak;
+        public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
+
+        public void IncreaseBoosterStreak()
+        {
+            currentBoosterStreak++;
+        }
+
+        public void ResetBoosterStreak()
+        {
+            currentBoosterStreak = 0;
+        }
+
+        public int GetCurrentBoosterStreak()
+        {
+            return currentBoosterStreak;
+        }
+
+        public void AddTimeUnlimitedBoosters(ResourceType boosterType, int minutes)
+        {
+            
+        }
+        #endregion
+        
         #region Player Life
         [Header("Player Life")]
         public int playerLife = 5;
