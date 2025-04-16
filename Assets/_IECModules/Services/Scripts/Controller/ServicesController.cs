@@ -1301,7 +1301,7 @@ namespace IEC
                         },
                         new
                         {
-                            color = "5814783",
+                            color = (isLogFileValid) ? "5814783" : "15548997",
                             fields = new[]
                             {
                                 new
@@ -1318,24 +1318,16 @@ namespace IEC
                                 {
                                     name = "Log Size",
                                     value = StringHelper.GetFileSizeStr(m_LogSize)
-                                }
-                            }
-                        },
-                        new
-                        {
-                            color = (isLogFileValid) ? "5814783" : "15548997",
-                            fields = new[]
-                            {
+                                },
                                 new
                                 {
                                     name = "Log Size Valid",
                                     value = (isLogFileValid) ? "true" : "false"
                                 }
                             }
-                        }
+                        },
                     }
                 };
-
                 var formData = new List<IMultipartFormSection>()
                 {
                     // new MultipartFormDataSection("payload_json", data.content),
