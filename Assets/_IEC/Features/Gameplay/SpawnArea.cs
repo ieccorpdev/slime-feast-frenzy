@@ -356,6 +356,11 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedTriangleSpawn(prefab);
+            }
 
             if (spawnType == SpawnTypes.Border)
             {
@@ -394,6 +399,45 @@ namespace IEC
             }
 
             return previewGameObject;
+        }
+        
+        private void PrepareFixedTriangleSpawn(GameObject prefab)
+        {
+            // Calculate safe minimum spacing based on prefab size
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+            spacing = minSpacing;
+
+            int targetCount = fixedSpawnAmount;
+            int bestSideLength = 1;
+
+            if (spawnType == SpawnTypes.Full)
+            {
+                // For full spawn: total count = (n * (n + 1)) / 2
+                while (true)
+                {
+                    int count = (bestSideLength * (bestSideLength + 1)) / 2;
+                    if (count >= targetCount)
+                        break;
+
+                    bestSideLength++;
+                }
+            }
+            else if (spawnType == SpawnTypes.Border)
+            {
+                // For border: 3 sides, each has (n - 1) segments, with corners shared
+                // So total = 3 * (n - 1)
+                while (true)
+                {
+                    int count = 3 * (bestSideLength - 1);
+                    if (count >= targetCount)
+                        break;
+
+                    bestSideLength++;
+                }
+            }
+
+            sideLength = bestSideLength;
         }
     }
 
