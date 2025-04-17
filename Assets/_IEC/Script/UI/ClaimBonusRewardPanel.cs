@@ -27,6 +27,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsFour;
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
+    public PositionGroupsRewardDataPanel groupsSeven;
     // Start is called before the first frame update
     void Start()
     {
@@ -182,6 +183,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public RectTransform Pos4;
     public RectTransform Pos5;
     public RectTransform Pos6;
+    public RectTransform Pos7;
 
     public RectTransform GetRectTransformByIndex(int index)
     {
@@ -198,6 +200,8 @@ public class ClaimBonusRewardPanel : BasePopup
             case 5:
                 return Pos5;
             case 6:
+                return Pos6;
+            case 7:
                 return Pos6;
         }
         return Pos1;

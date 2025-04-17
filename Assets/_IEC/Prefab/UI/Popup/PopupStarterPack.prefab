@@ -2328,6 +2328,9 @@ MonoBehaviour:
   onHideDone:
     m_PersistentCalls:
       m_Calls: []
+  tempOnHideDone:
+    m_PersistentCalls:
+      m_Calls: []
   onHaveFocus:
     m_PersistentCalls:
       m_Calls: []
@@ -2340,6 +2343,7 @@ MonoBehaviour:
   isHaveAnim: 1
   isHaveAnimClose: 1
   isShowBlackPanel: 1
+  isShowTopResourceBar: 0
   listRewardImg:
   - {fileID: 939872414001905722}
   - {fileID: 2099269612242089817}
@@ -2361,16 +2365,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c69b4d95968188448b1b743bb58ed614, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Config: {fileID: 11400000, guid: ff3fea66b1d2a0a499918764625fd389, type: 2}
+  m_Config: {fileID: 11400000, guid: 1801085b785d12a47a43bc129094cd0f, type: 2}
   m_BtnBuy: {fileID: 5699013533525390233}
   isAmountDisplayContainWords: 1
   m_listItemDisplay: []
   m_TxtPrice: {fileID: 6769402061797743671}
   m_PackName: {fileID: 0}
   m_goldAmount: {fileID: 8308062126956318704}
-  m_helperShuffleAmount: {fileID: 3335906224499201517}
-  m_helperUndoAmount: {fileID: 4298577804850588122}
-  m_helperClearAmount: {fileID: 801583736208931604}
 --- !u!1001 &5619791161918162031
 PrefabInstance:
   m_ObjectHideFlags: 0
