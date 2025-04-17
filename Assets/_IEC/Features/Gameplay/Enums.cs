@@ -50,7 +50,8 @@ namespace _IEC.Features.Gameplay
         RollingPin = 11,
         FryingPan = 12,
         Lollipop = 13,
-        Shovel = 14
+        Shovel = 14,
+        Boosters = 15
     }
 
     public enum HelperId

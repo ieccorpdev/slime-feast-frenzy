@@ -75,7 +75,6 @@ namespace IEC
                     OnGameOver();
                     PlayerData.Vibrate(HapticTypes.LightImpact);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
-                    PlayerData.ResetBoosterStreak();
                     break;
                 case EventList.GamePlay.LEVEL_SKIP:
                     GamePlay.SetWin();

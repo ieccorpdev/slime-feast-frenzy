@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Gameplay;
 using UnityEngine;
 
 namespace IEC
@@ -29,6 +30,7 @@ namespace IEC
     public class BoosterData
     {
         public ResourceType boosterType;
+        public ItemDefinition itemDefinition;
         public int levelUnlock;
         public float effectValue;
         public float effectTime;

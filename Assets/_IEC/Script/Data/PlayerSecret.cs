@@ -149,11 +149,17 @@ namespace IEC
 
         public void IncreaseBoosterStreak()
         {
+            if (level < Config.AllBoosterConfig.levelUnlockStreak)
+                return;
+            
             currentBoosterStreak++;
         }
 
         public void ResetBoosterStreak()
         {
+            if (level < Config.AllBoosterConfig.levelUnlockStreak)
+                return;
+            
             currentBoosterStreak = 0;
         }
 
@@ -235,6 +241,8 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
+            
+            ResetBoosterStreak();
         }
 
         public bool IsInUnlimitedLife()

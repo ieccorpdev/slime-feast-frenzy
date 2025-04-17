@@ -88,6 +88,11 @@ namespace IEC
                                 if (btn.State == BoosterBaseState.Using)
                                 {
                                     this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                    
+                                    if (!PlayerData.IsUnlimitedBooster(btn.BoosterData.boosterType))
+                                    {
+                                        PlayerData.SubtractCurrency(btn.BoosterData.boosterType, 1);
+                                    }
                                 }
                             }
                         });

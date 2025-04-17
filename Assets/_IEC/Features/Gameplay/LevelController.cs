@@ -177,6 +177,9 @@ namespace _IEC.Features.Gameplay
                 addBoosterAction.Invoke();
                 addBoosterAction = null;
             }
+            
+            //Check spawn booster items
+            OnSpawnBoosterItems(null);
         }
         private void Reset()
         {
@@ -338,12 +341,24 @@ namespace _IEC.Features.Gameplay
 
         private void OnSpawnBoosterItems(object param)
         {
+            if (PlayerData.currentBoosterStreak <= 0)
+                return;
+            
             //var data = (SpawnBoosterEventData)param;
             
             m_AllBoosters.Clear();
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
             //
+            foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+            {
+                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
+                    Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3), 
+                    allItemHolder,
+                    booster
+                ));
+            }
+            
             foreach (var boosterItem in m_AllBoosters)
             {
                 var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
