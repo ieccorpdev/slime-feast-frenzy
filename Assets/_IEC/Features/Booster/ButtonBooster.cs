@@ -38,7 +38,7 @@ namespace _IEC.Features.Booster
         }
 
         //private BoosterConfigModel ConfigModel => Config.boosterConfig.GetBoosterConfigModelById(boosterId);
-        private BoosterDataModel DataModel => PlayerData.boosterData.GetDataModelById(boosterId);
+        //private BoosterDataModel DataModel => PlayerData.boosterData.GetDataModelById(boosterId);
         public void OnShow()
         {
             SetActiveTutorial(false);
@@ -48,21 +48,21 @@ namespace _IEC.Features.Booster
 
         private void UpdateUIState()
         {
-            if (DataModel.IsInUnlimitedTime())
-            {
-                ChangeState(State.Unlimited);
-            }
-            else
-            {
-                //if (PlayerData.level < ConfigModel.unlockLevel)
-                //{
-                //    ChangeState(State.Locked);
-                //}
-                //else
-                {
-                    ChangeState(DataModel.number > 0 ? State.Usable : State.NeedBuy);
-                }
-            }
+            // if (DataModel.IsInUnlimitedTime())
+            // {
+            //     ChangeState(State.Unlimited);
+            // }
+            // else
+            // {
+            //     //if (PlayerData.level < ConfigModel.unlockLevel)
+            //     //{
+            //     //    ChangeState(State.Locked);
+            //     //}
+            //     //else
+            //     {
+            //         ChangeState(DataModel.number > 0 ? State.Usable : State.NeedBuy);
+            //     }
+            // }
         }
 
         
@@ -120,42 +120,42 @@ namespace _IEC.Features.Booster
 
         private void UpdateUnlimitedState()
         {
-            var remainingTime = DataModel.unlimitedExpiredTime.Subtract(DateTime.Now);
-            if (remainingTime.TotalSeconds > 0)
-            {
-                txtTimer.text = remainingTime.ToString(@"mm\:ss");
-            }
-            else
-            {
-                ChangeState(DataModel.number > 0 ? State.Usable : State.NeedBuy);
-            }
+            // var remainingTime = DataModel.unlimitedExpiredTime.Subtract(DateTime.Now);
+            // if (remainingTime.TotalSeconds > 0)
+            // {
+            //     txtTimer.text = remainingTime.ToString(@"mm\:ss");
+            // }
+            // else
+            // {
+            //     ChangeState(DataModel.number > 0 ? State.Usable : State.NeedBuy);
+            // }
         }
 
         public void ChangeState(State newState)
         {
-            if (newState == m_CurrentState)
-            {
-                if (m_CurrentState == State.Usable)
-                {
-                    txtPool.text = DataModel.number.ToString(); //force update UI
-                }
-                return;
-            }
-            groupUsable.SetActive(newState == State.Usable);
-            groupUsing.SetActive(newState == State.Using);
-            groupLock.SetActive(newState == State.Locked);
-            groupUnlimited.SetActive(newState == State.Unlimited);
-            groupNeedBuy.SetActive(newState == State.NeedBuy);
-            m_CurrentState = newState;
-            switch (newState)
-            {
-                case State.Usable:
-                    txtPool.text = DataModel.number.ToString();
-                    break;
-                case State.Locked:
-                    //txtCondition.text = "Lv." + ConfigModel.unlockLevel;
-                    break;
-            }
+            // if (newState == m_CurrentState)
+            // {
+            //     if (m_CurrentState == State.Usable)
+            //     {
+            //         txtPool.text = DataModel.number.ToString(); //force update UI
+            //     }
+            //     return;
+            // }
+            // groupUsable.SetActive(newState == State.Usable);
+            // groupUsing.SetActive(newState == State.Using);
+            // groupLock.SetActive(newState == State.Locked);
+            // groupUnlimited.SetActive(newState == State.Unlimited);
+            // groupNeedBuy.SetActive(newState == State.NeedBuy);
+            // m_CurrentState = newState;
+            // switch (newState)
+            // {
+            //     case State.Usable:
+            //         txtPool.text = DataModel.number.ToString();
+            //         break;
+            //     case State.Locked:
+            //         //txtCondition.text = "Lv." + ConfigModel.unlockLevel;
+            //         break;
+            // }
         }
 
         public void SetActiveTutorial(bool active)
@@ -170,11 +170,11 @@ namespace _IEC.Features.Booster
 
         void ForceEndTutorial()
         {
-            SetActiveTutorial(false);
-            var boosterData = PlayerData.boosterData.GetDataModelById(boosterId);
-            boosterData.CompleteTutorial();
-            Pool.Get<HighLightCanvas>().RemoveCurrentHighLight();
-            _isForceEndTutorial = true;
+            // SetActiveTutorial(false);
+            // var boosterData = PlayerData.boosterData.GetDataModelById(boosterId);
+            // boosterData.CompleteTutorial();
+            // Pool.Get<HighLightCanvas>().RemoveCurrentHighLight();
+            // _isForceEndTutorial = true;
         }
         
         public enum State

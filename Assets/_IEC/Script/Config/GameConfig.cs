@@ -72,6 +72,9 @@ namespace IEC
         [Header("Chest")] 
         public AllChestConfig allChestConfig;
 
+        [Header("Booster")] 
+        public AllBoosterConfig AllBoosterConfig;
+
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here

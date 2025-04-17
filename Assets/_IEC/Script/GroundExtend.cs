@@ -140,7 +140,7 @@ namespace IEC
 
         }
 
-        private Bounds CalculateBounds(List<BaseItem> objects)
+        public static Bounds CalculateBounds(List<BaseItem> objects)
         {
             if (objects.Count == 0)
                 return new Bounds(Vector3.zero, Vector3.zero);
@@ -156,7 +156,7 @@ namespace IEC
             return combinedBounds;
         }
 
-        private Bounds GetRendererBounds(GameObject obj)
+        public static Bounds GetRendererBounds(GameObject obj)
         {
             Renderer[] renderers = obj.GetComponentsInChildren<Renderer>();
 

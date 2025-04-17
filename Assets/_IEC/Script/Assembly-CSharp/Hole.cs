@@ -7,6 +7,7 @@ using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using MoreMountains.NiceVibrations;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -45,7 +46,8 @@ public class Hole : _BaseBehaviour
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel);
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
 	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
 
@@ -56,6 +58,9 @@ public class Hole : _BaseBehaviour
 	private float _baseSpeed;
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
+
+	private float _speedBoosterIncrease;
+	private float timeEffectSpeedBooster;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -84,7 +89,16 @@ public class Hole : _BaseBehaviour
 	public bool readyForSharkBite;
 	public void Update()
 	{
-		CheckSharkForm();
+		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
+		{
+			if (timeEffectSpeedBooster > 0)
+			{
+				timeEffectSpeedBooster =
+					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
+			}
+		}
+
+		CheckPlayerForm();
 		CheckSharkBite();
 	}
 
@@ -143,11 +157,17 @@ public class Hole : _BaseBehaviour
 	}
 	void OnCollectLightningBooster(object param)
 	{
-		var data = (MagicPouchBooster)param;
-		if (data.type == MagicPouchBoosterType.Lightning)
-		{
-			lightningVfx.Play();
-		}
+		// var data = (MagicPouchBooster)param;
+		// if (data.type == MagicPouchBoosterType.Lightning)
+		// {
+		// 	lightningVfx.Play();
+		// }
+	}
+
+	public void OnCollectSpeedBooster(float boosterIncrease, float timeEffect)
+	{
+		_speedBoosterIncrease = boosterIncrease;
+		timeEffectSpeedBooster += timeEffect;
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -203,6 +223,7 @@ public class Hole : _BaseBehaviour
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
+		
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
@@ -217,9 +238,62 @@ public class Hole : _BaseBehaviour
 			myTransform.localScale = targetScale;
 			callback?.Invoke();
 		}
+
 		holeController.SetScale(targetSize);
 	}
+	
+	#if UNITY_EDITOR
+	
+	[PropertySpace(30)]
+	
+	[Button("Reset Level")]
+	public void DebugResetLevel()
+	{
+		//LevelUp(0, 1);
+		SetLevel(0,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
 
+	private bool LevelMax => (Settings.UseSlowXp
+		? Level >= Settings.RequiredXpPerLevelSlow.Length - 1
+		: Level >= Settings.RequiredXpPerLevel.Length - 1);
+	[ShowIf("@!LevelMax")]
+	[Button("Level Up")]
+	public void DebugLevelUp()
+	{
+		//LevelUp(0, 1);
+		SetLevel(Level + 1,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	[ShowIf("@(Level > 0)")]
+	[Button("Level Down")]
+	public void DebugLevelDown()
+	{
+		//LevelUp(0, -1);
+		SetLevel(Level - 1,false);
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	#endif
+	
 	public void LevelUp(int remaining, int count = 1)
 	{
 		SetLevel(Level + count,true);

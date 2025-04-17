@@ -103,10 +103,10 @@ namespace _IEC.Features.Gameplay
 
         private void OnCollectedBooster(object param)
         {
-            var data = (MagicPouchBooster)param;
-            if (data.type != MagicPouchBoosterType.Chrono) return;
-            PlayAddedTimeAnimation(Mathf.FloorToInt(data.effectValue));
-            //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
+            // var data = (MagicPouchBooster)param;
+            // if (data.type != MagicPouchBoosterType.Chrono) return;
+            // PlayAddedTimeAnimation(Mathf.FloorToInt(data.effectValue));
+            // //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
         }
         
         private void StartFreezeTime()

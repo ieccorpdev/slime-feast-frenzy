@@ -38,6 +38,8 @@ namespace IEC
             }
 
             _previewGameObject = spawnArea.CreatePreview(itemPrefabConfig, _folderPathItemInGame, itemId);
+            _previewGameObject.AddComponent<BaseItemGroup>();
+            _previewGameObject.GetComponent<BaseItemGroup>().Setup();
         }
 
         public void Apply()

@@ -8,6 +8,7 @@ using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using DG.Tweening;
 using MoreMountains.NiceVibrations;
+using UnityEditor;
 
 namespace IEC
 {
@@ -63,6 +64,7 @@ namespace IEC
                     Pool.Get<ConfettiGroup>().ShowConfetti();
                     PlayerData.Vibrate(HapticTypes.Success);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
+                    PlayerData.IncreaseBoosterStreak();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);

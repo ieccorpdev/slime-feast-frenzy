@@ -92,6 +92,11 @@ namespace _IEC.Features.Gameplay
         public string id;
         public int amount;
 
+        public void AddObjectiveAmount(int addAmount)
+        {
+            this.amount += addAmount;
+        }
+
         public LevelObjectiveData()
         {
         }

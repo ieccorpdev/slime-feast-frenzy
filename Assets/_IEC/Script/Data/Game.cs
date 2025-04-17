@@ -34,6 +34,7 @@ namespace IEC
         public int levelStartInterAds = 4;
 
         public bool usingWaterTheme = true;
+        
         public bool ShowFullAdsCondition
         {
             get
