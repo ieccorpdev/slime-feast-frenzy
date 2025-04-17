@@ -47,6 +47,7 @@ namespace IEC
                         //m_ResourceUI.SetActive(true);
                         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
                         m_BtnSetting.gameObject.SetActive(true);
+                        m_Shop.GetComponent<UIShopHomeTab>().SortVerticalGroups();
                         Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_shop_iap"));
                         break;
                     case (TabType.Home):

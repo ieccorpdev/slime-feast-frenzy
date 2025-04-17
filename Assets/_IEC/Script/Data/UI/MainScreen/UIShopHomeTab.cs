@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using IEC;
 using IEC.Common.Event;
 using UnityEngine;
@@ -23,9 +24,17 @@ public class UIShopHomeTab : ScreenNavigateUI
     public void OnEnable()
     {
         UpdateAdsPackDisplay();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(verticalLayoutGroup.GetComponent<RectTransform>());
+        SortVerticalGroups();
     }
 
+    public void SortVerticalGroups()
+    {
+        DOVirtual.DelayedCall(0.1f, () =>
+        {
+            // Force the layout rebuild for the parent of the VerticalLayoutGroup
+            LayoutRebuilder.ForceRebuildLayoutImmediate(verticalLayoutGroup.GetComponent<RectTransform>());
+        });
+    }
     public void UpdateAdsPackDisplay()
     {
         freeAds.UpdateUI();
