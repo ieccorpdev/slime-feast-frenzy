@@ -4347,6 +4347,9 @@ MonoBehaviour:
   - {fileID: 3007268048388515379}
   - {fileID: 8433289038557615999}
   - {fileID: 1788791524251846534}
+  listBoosterButtons:
+  - {fileID: 745279784943656684}
+  - {fileID: 1666682540330508559}
   infoPanel: {fileID: 5681893726085938468}
   listInfoObjects:
   - {fileID: 6469277452884682842}
@@ -5799,10 +5802,21 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4297913795858139932}
     m_Modifications:
+    - target: {fileID: 780589216586059851, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
+        type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fc72077f8db17024f96526d93fc2b241,
+        type: 3}
     - target: {fileID: 857388172955447326, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
         type: 3}
       propertyPath: m_Name
       value: BoosterBase (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6758068588188220474, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
+        type: 3}
+      propertyPath: boosterType
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 7557076935389758306, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
         type: 3}
@@ -5911,6 +5925,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6, type: 3}
+--- !u!114 &1666682540330508559 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6758068588188220474, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 5397640447576366389}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c48d81f6aa46aa44af8816e7903c356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &2452320002442108503 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7557076935389758306, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
@@ -5929,6 +5955,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BoosterBase
       objectReference: {fileID: 0}
+    - target: {fileID: 6758068588188220474, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
+        type: 3}
+      propertyPath: boosterType
+      value: 21
+      objectReference: {fileID: 0}
     - target: {fileID: 7557076935389758306, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
         type: 3}
       propertyPath: m_Pivot.x
@@ -6036,6 +6067,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6, type: 3}
+--- !u!114 &745279784943656684 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6758068588188220474, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,
+    type: 3}
+  m_PrefabInstance: {fileID: 6313694383845122774}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c48d81f6aa46aa44af8816e7903c356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &4575269060438385076 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7557076935389758306, guid: 7dcdb86058406fb4d8b0ec3a57ce22a6,

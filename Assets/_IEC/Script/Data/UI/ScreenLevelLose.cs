@@ -70,15 +70,15 @@ namespace IEC
 
         private void HandleBooster(List<BoosterId> boosterIds)
         {
-            foreach (var selectedBooster in boosterIds)
-            {
-                var boosterData = PlayerData.boosterData.GetDataModelById(selectedBooster);
-                boosterData.ConsumeBooster();
-                this.RaiseEvent(EventList.GamePlay.USE_BOOSTER, new UseBoosterEventData()
-                {
-                    boosterId = selectedBooster
-                });
-            }
+            // foreach (var selectedBooster in boosterIds)
+            // {
+            //     var boosterData = PlayerData.boosterData.GetDataModelById(selectedBooster);
+            //     boosterData.ConsumeBooster();
+            //     this.RaiseEvent(EventList.GamePlay.USE_BOOSTER, new UseBoosterEventData()
+            //     {
+            //         boosterId = selectedBooster
+            //     });
+            // }
         }
 
         private void Start()

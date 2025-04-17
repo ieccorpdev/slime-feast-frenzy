@@ -164,8 +164,47 @@ namespace IEC
 
         public void AddTimeUnlimitedBoosters(ResourceType boosterType, int minutes)
         {
-            
+            if (!timeEndUnlimitedBoosters.ContainsKey(boosterType))
+            {
+                timeEndUnlimitedBoosters.Add(boosterType, DateTime.Now);
+            }
+
+            timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
         }
+
+        public bool IsUnlimitedBooster(ResourceType boosterType)
+        {
+            if (!timeEndUnlimitedBoosters.ContainsKey(boosterType))
+            {
+                return false;
+            }
+
+            return DateTime.Now <= timeEndUnlimitedBoosters[boosterType];
+        }
+        
+        public string GetTimeLeftUnlimitedBooster(ResourceType boosterType)
+        {
+            TimeSpan time = timeEndUnlimitedBoosters[boosterType] - DateTime.Now;
+
+            string outputString = "";
+            
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+        
         #endregion
         
         #region Player Life
@@ -420,6 +459,14 @@ namespace IEC
             if (currencyType == ResourceType.UnlimitedLive)
             {
                 AddTimeUnlimitedLife(amount);
+            }
+            else if (currencyType == ResourceType.TimeUnlimitedEvolveStone)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.EvolveStone, amount);
+            }
+            else if (currencyType == ResourceType.TimeUnlimitedWindSurf)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.WindSurf, amount);
             }
             else if (playerCurrencies.ContainsKey(currencyType))
             {

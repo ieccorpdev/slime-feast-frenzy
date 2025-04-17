@@ -20,6 +20,9 @@ namespace IEC
         public List<GameObject> streakDisplayObject = new();
         public List<GameObject> streakIconObject = new();
 
+        [Header("Booster Buttons")] 
+        public List<BoosterBaseButton> listBoosterButtons = new();
+
         [Header("Info panel")]
         public GameObject infoPanel;
 
@@ -40,13 +43,22 @@ namespace IEC
 
             levelText.text = "Level " + PlayerData.level;
             
+            UpdateBoosterButton();
             UpdateStreakDisplay();
+        }
+
+        private void UpdateBoosterButton()
+        {
+            foreach (var btn in listBoosterButtons)
+            {
+                btn.Setup();
+            }
         }
 
         private void UpdateStreakDisplay()
         {
-            streakLockObj.SetActive(PlayerData.level < Game.levelStartWinStreakReward);
-            streakUnlockObj.SetActive(PlayerData.level >= Game.levelStartWinStreakReward);
+            streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
+            streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
 
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {
