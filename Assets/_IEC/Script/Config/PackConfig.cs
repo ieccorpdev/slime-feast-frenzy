@@ -13,7 +13,7 @@ namespace IEC
         public string bundleId;
         public string packName;
         public string badge;
-        
+        //"Resource Unlimited Live need to be set in Minutes",
         public List<ResourceConfig> resources;
 
         public bool isHaveNoAds;
