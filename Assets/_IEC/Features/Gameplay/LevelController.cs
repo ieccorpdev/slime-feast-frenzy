@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Booster;
@@ -10,6 +11,8 @@ using IEC;
 using IEC.TrackingEvent;
 using MoreMountains.NiceVibrations;
 using UnityEngine;
+using BoosterData = IEC.BoosterData;
+using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
 {
@@ -48,6 +51,8 @@ namespace _IEC.Features.Gameplay
         private List<BombItem> m_AllBombs = new List<BombItem>();
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
+
+        private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
         public bool IsShowEnding
         {
@@ -157,6 +162,12 @@ namespace _IEC.Features.Gameplay
                     holeTransform =  playerHole.transform
                 });
             }
+
+            if (addBoosterAction != null)
+            {
+                addBoosterAction.Invoke();
+                addBoosterAction = null;
+            }
         }
         private void Reset()
         {
@@ -189,7 +200,9 @@ namespace _IEC.Features.Gameplay
 
         public Hole GetHolePlayer() => playerHole;
         
-        public List<BaseItem> GetAllItems() => m_AllItems;
+        public List<BaseItem> GetAllItems() => m_AllItems
+            .Concat(m_AllSpecialItems)
+            .Concat(m_AllBoosters).ToList();
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
 
@@ -290,27 +303,45 @@ namespace _IEC.Features.Gameplay
 
         private void OnCollectedBoosterItem(object param)
         {
-            var data = (MagicPouchBooster)param;
-            if (data.type != MagicPouchBoosterType.Lightning) return;
-            playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+            // var data = (MagicPouchBooster)param;
+            // if (data.type != MagicPouchBoosterType.Lightning) return;
+            var data = (BoosterData)param;
+            addBoosterAction +=
+                () =>
+                {
+                    if (data.boosterType == ResourceType.EvolveStone)
+                    {
+                        playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                    }
+                    else if (data.boosterType == ResourceType.WindSurf)
+                    {
+                        playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                    }
+                };
+
+            if (CurrentState == State.Play)
+            {
+                addBoosterAction.Invoke();
+                addBoosterAction = null;
+            }
             //SoundController.PlaySound(new AudioInfo(Config.soundConfig.boosterLightning));
         }
 
         private void OnSpawnBoosterItems(object param)
         {
-            var data = (SpawnBoosterEventData)param;
+            //var data = (SpawnBoosterEventData)param;
             
             m_AllBoosters.Clear();
-            //m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
-            //m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
-
-            //foreach (var boosterItem in m_AllBoosters)
-            //{
-            //    var randomPos = GetRandomPositionInCircle(playerHole.transform.position, Config.magicPouchConfig.maxDistanceFromHole, playerHole.GetWorldRadius() + 0.25f);
-            //    var booster = (IBoosterItem)boosterItem;
-            //    booster.Init();
-            //    booster.MoveToPos(randomPos);
-            //}
+            // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
+            // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
+            //
+            foreach (var boosterItem in m_AllBoosters)
+            {
+                var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
+                var booster = (IBoosterItem)boosterItem;
+                booster.Init();
+                booster.MoveToPos(randomPos);
+            }
         }
 
         //List<BaseItem> SpawnBoosterItem(SpawnBoosterEventData data, MagicPouchBoosterType type)

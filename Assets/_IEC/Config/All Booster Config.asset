@@ -12,6 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53a7d6d27c6d5664b9d5888a15068048, type: 3}
   m_Name: All Booster Config
   m_EditorClassIdentifier: 
-  levelUnlockStreak: 0
-  listBoosterData: []
-  listBoosterStateSprite: []
+  levelUnlockStreak: 19
+  listBoosterData:
+  - boosterType: 20
+    levelUnlock: 10
+    effectValue: 10
+    effectTime: 0
+  - boosterType: 21
+    levelUnlock: 10
+    effectValue: 20
+    effectTime: 5
+  listBoosterStateSprite:
+  - state: 0
+    bgSprite: {fileID: 21300000, guid: 3c884ab1febe44d4780607977f658ce2, type: 3}
+  - state: 1
+    bgSprite: {fileID: 21300000, guid: 3c884ab1febe44d4780607977f658ce2, type: 3}
+  - state: 2
+    bgSprite: {fileID: 21300000, guid: 3c884ab1febe44d4780607977f658ce2, type: 3}
+  - state: 3
+    bgSprite: {fileID: 21300000, guid: a1fc2b395a63abc4588af4141949ed81, type: 3}
+  - state: 4
+    bgSprite: {fileID: 21300000, guid: e0ad407e64cd456468e86053b8274a47, type: 3}

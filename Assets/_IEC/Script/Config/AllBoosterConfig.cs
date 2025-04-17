@@ -30,7 +30,8 @@ namespace IEC
     {
         public ResourceType boosterType;
         public int levelUnlock;
-
+        public float effectValue;
+        public float effectTime;
     }
 
     [Serializable]

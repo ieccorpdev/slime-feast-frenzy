@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Common.Extension;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -79,7 +80,18 @@ namespace IEC
                 () =>
                 {
                     Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                    GameController.OpenScene(GameScene.Game);
+                    GameController.OpenScene(GameScene.Game,
+                        () =>
+                        {
+                            foreach (var btn in listBoosterButtons)
+                            {
+                                if (btn.State == BoosterBaseState.Using)
+                                {
+                                    this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                }
+                            }
+                        });
+                    
                 });
         }
 

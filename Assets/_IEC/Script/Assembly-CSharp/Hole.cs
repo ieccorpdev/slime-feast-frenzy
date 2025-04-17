@@ -7,6 +7,7 @@ using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using MoreMountains.NiceVibrations;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -43,7 +44,8 @@ public class Hole : _BaseBehaviour
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel);
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
 	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
 
@@ -54,6 +56,9 @@ public class Hole : _BaseBehaviour
 	private float _baseSpeed;
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
+
+	private float _speedBoosterIncrease;
+	private float timeEffectSpeedBooster;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -79,6 +84,15 @@ public class Hole : _BaseBehaviour
 	private float cTime = 0;
 	public void Update()
 	{
+		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
+		{
+			if (timeEffectSpeedBooster > 0)
+			{
+				timeEffectSpeedBooster =
+					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
+			}
+		}
+
 		cTime += Time.deltaTime;
 		if (cTime > 0.1f)
 		{
@@ -106,11 +120,17 @@ public class Hole : _BaseBehaviour
 
 	void OnCollectLightningBooster(object param)
 	{
-		var data = (MagicPouchBooster)param;
-		if (data.type == MagicPouchBoosterType.Lightning)
-		{
-			lightningVfx.Play();
-		}
+		// var data = (MagicPouchBooster)param;
+		// if (data.type == MagicPouchBoosterType.Lightning)
+		// {
+		// 	lightningVfx.Play();
+		// }
+	}
+
+	public void OnCollectSpeedBooster(float boosterIncrease, float timeEffect)
+	{
+		_speedBoosterIncrease = boosterIncrease;
+		timeEffectSpeedBooster += timeEffect;
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
