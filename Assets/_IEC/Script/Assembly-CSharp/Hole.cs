@@ -97,8 +97,7 @@ public class Hole : _BaseBehaviour
 					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
 			}
 		}
-
-		CheckPlayerForm();
+		CheckSharkForm();
 		CheckSharkBite();
 	}
 
@@ -153,7 +152,7 @@ public class Hole : _BaseBehaviour
 
 	public float GetDistanceToObject()
 	{
-		return 10;
+		return Speed * 1.1f  + Level * 0.4f;
 	}
 	void OnCollectLightningBooster(object param)
 	{
