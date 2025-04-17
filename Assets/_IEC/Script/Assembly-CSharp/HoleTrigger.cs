@@ -18,6 +18,7 @@ public class HoleTrigger : MonoBehaviour
 		if (baseItem.ItemDefinition.GetLevel() <= m_Hole.Level)
 		{
 			baseItem.EnterHoleTrigger();
+			m_Hole.TriggerdBite();
 		}
 
 		//m_Hole.PushItemToTrackingList(baseItem);
