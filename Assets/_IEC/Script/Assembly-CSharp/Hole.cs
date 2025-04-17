@@ -84,7 +84,7 @@ public class Hole : _BaseBehaviour
 	public bool readyForSharkBite;
 	public void Update()
 	{
-		CheckPlayerForm();
+		CheckSharkForm();
 		CheckSharkBite();
 	}
 
@@ -109,7 +109,7 @@ public class Hole : _BaseBehaviour
 			holeTime = 0;
 		}
 	}
-	private void CheckPlayerForm()
+	private void CheckSharkForm()
 	{
 		cTime += Time.deltaTime;
 		if (cTime > 0.1f)
@@ -117,7 +117,7 @@ public class Hole : _BaseBehaviour
 			cTime = 0f;
 			if (onInitAnimNewGame) return;
 			var obj = GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
-				x != null && Vector3.Distance(x.transform.position, transform.position) < 10);
+				x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
 			if (obj != null)
 			{
 				if (onSharkForm)
@@ -137,6 +137,10 @@ public class Hole : _BaseBehaviour
 		}
 	}
 
+	public float GetDistanceToObject()
+	{
+		return 10;
+	}
 	void OnCollectLightningBooster(object param)
 	{
 		var data = (MagicPouchBooster)param;
