@@ -17,8 +17,8 @@ namespace IEC
         public int maxHealth = 5;
         public int levelUnlockLife = 10;
         public int timeRefillLife = 15;//By Minutes
-        public int goldToRefill = 250;
-        public int goldToAddOneLife = 100;
+        public int goldToRefill = 900;
+        public int goldToAddOneLife = 200;
         public int goldLevelWin = 10;
         public int levelWinBackHome = 10;
         [Header("Encrypted, Target by Name")]
