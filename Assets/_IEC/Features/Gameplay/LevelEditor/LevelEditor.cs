@@ -8,9 +8,13 @@ using _IEC.Features.ExportLevel.OriginalLevel;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using _IEC.Features.Gameplay;
+using IEC.Linq;
 using Newtonsoft.Json;
+using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
 using Vector3 = System.Numerics.Vector3;
+using System.IO;
+using System.Text;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -21,8 +25,263 @@ namespace IEC
     public class LevelEditor : SerializedMonoBehaviour
     {
 #if UNITY_EDITOR
-        [ReadOnly] public string currentMapData;
+        private void OnEnable()
+        {
+            Selection.selectionChanged += FilterSelection;
+        }
+
+        //[ReadOnly] public string currentMapData;
         [ReadOnly] public LevelDataSO currentLevelData;
+
+        public LevelConfig currentLevelConfig;
+        //[FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [Button]
+        public void PlayTestLevel()
+        {
+            if (levelConfig != null)
+                currentLevelConfig = levelConfig;
+            currentLevelConfig.playTestData = currentLevelData;
+            EditorPrefs.SetBool("isPlayTest", true);
+            EditorApplication.EnterPlaymode();
+        }
+        
+        #region Item Selection
+        
+        private static System.Type filterType = typeof(SelectionBaseHolder);
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        public bool isAllowSelectSceneItems;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [ReadOnly] 
+        public int totalXP;
+
+        private void UpdateTotalXP()
+        {
+            totalXP = System.Linq.Enumerable.Sum(filteredObjects, obj => obj.ItemDefinition.GetXp());
+        }
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
+        [ReadOnly] public List<BaseItem> filteredObjects = new ();
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ValueDropdown(nameof(GetFilteredItemsID))]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public string filteredItemID;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ReadOnly]
+        [SerializeField][PreviewField(125, ObjectFieldAlignment.Center)] 
+        private GameObject filteredItemPrefab;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public bool isReplaceSelectedItems;
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [OnValueChanged(nameof(UpdateFilteredItemData))]
+        [ShowIf("@isAllowSelectSceneItems")]
+        public SpawnArea replaceFilteredItemArea;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void UpdateSpawnAreaFilteredItems()
+        {
+            UpdateFilteredItemData();
+            itemSpawnUtilities.spawnArea = replaceFilteredItemArea;
+            itemSpawnUtilities.CreatePreview();
+        }
+        
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void ApplyUpdatedItems()
+        {
+            if (isReplaceSelectedItems)
+            {
+                var listFilteredItem = filteredObjects.Where(it => it.GetItemId() == filteredItemID).ToList();
+
+                foreach (var item in listFilteredItem)
+                {
+                    DestroyImmediate(item.gameObject);
+                }
+            }
+            itemSpawnUtilities.Apply();
+        }
+
+        private IEnumerable GetFilteredItemsID()
+        {
+            return filteredObjects.Select(x => x.GetItemId());
+        }
+
+        private void UpdateFilteredItemData()
+        {
+            itemSpawnUtilities.itemId = filteredItemID;
+
+            var listFilteredItem = filteredObjects.Where(it => it.GetItemId() == filteredItemID).ToList();
+            filteredItemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(filteredItemID)).GetPrefab();
+            
+            UnityEngine.Vector3 sum = UnityEngine.Vector3.zero;
+            foreach (var obj in listFilteredItem)
+            {
+                sum += obj.transform.position;
+            }
+            var centerPoint = sum / listFilteredItem.Count;
+
+            if (replaceFilteredItemArea != null)
+            {
+                replaceFilteredItemArea.spawnPos = centerPoint;
+            }
+        }
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)] 
+        [ShowIf("@isAllowSelectSceneItems")]
+        public string groupItemName;
+
+        [FoldoutGroup(LevelEditorConstants.SCENE_ITEMS)]
+        [ShowIf("@isAllowSelectSceneItems")]
+        [Button]
+        public void GroupItems()
+        {
+            if (string.IsNullOrEmpty(groupItemName))
+            {
+                EditorUtility.DisplayDialog("Group Object name is Empty !!!", "Give a name pls", "Sorry :(");
+                return;
+            }
+            
+            if (itemHolder.GetComponentsInChildren<Transform>().Find(child => child.name == groupItemName))
+            {
+                EditorUtility.DisplayDialog($"Object with name {groupItemName} already exist!!!", "Give a different name pls", "Sorry :(");
+                return;
+            }
+            
+            GameObject groupHolder = new GameObject(groupItemName);
+            groupHolder.transform.parent = itemHolder;
+
+            UnityEngine.Vector3 sum = UnityEngine.Vector3.zero;
+            foreach (var obj in filteredObjects)
+            {
+                sum += obj.transform.position;
+            }
+            var centerPoint = sum / filteredObjects.Count;
+
+            groupHolder.transform.position = centerPoint;
+            
+            foreach (var obj in filteredObjects)
+            {
+                obj.ItemData.groupID = groupItemName;
+                obj.ItemData.groupPosition = centerPoint;
+                obj.transform.parent = groupHolder.transform;
+            }
+            
+            groupHolder.AddComponent<BaseItemGroup>();
+            groupHolder.GetComponent<BaseItemGroup>().Setup();
+        }
+        
+        private void FilterSelection()
+        {
+            if (!isAllowSelectSceneItems)
+                return;
+            
+            if (Selection.objects.Length == 0) return;
+
+            filteredObjects = new ();
+            
+            List<int> instanceIDs = new List<int>();
+
+            foreach (Object obj in Selection.objects)
+            {
+                if (obj is GameObject gameObject)
+                {
+                    var target = gameObject.GetComponent(typeof(BaseItem)) as BaseItem;
+
+                    if (target == null)
+                        target = gameObject.GetComponentInParent(typeof(BaseItem)) as BaseItem;
+
+                    if (target != null && target.ItemDefinition != null)
+                    {
+                        filteredObjects.Add(target);
+                        instanceIDs.Add(target.gameObject.GetInstanceID());
+                    }
+                }
+            }
+            
+            Selection.instanceIDs = instanceIDs.ToArray();
+            UpdateTotalXP();
+        }
+        #endregion
+        
+        #region Random Level Generator
+
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
+        public BaseItemGroupConfig baseItemGroupConfig;
+
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
+        [Button]
+        public void SpawnRandomLevel()
+        {
+            Reset();
+            GenerateRandomLevel();
+        }
+        
+        public int groupCount = 9;
+        public float spacing = 1f;
+        
+        void GenerateRandomLevel() {
+            Vector2 cursor = Vector2.zero;
+            float rowHeight = 0f;
+            float levelWidth = 0f;
+
+            float estimatedSide = Mathf.Sqrt(groupCount) * 10f; // tweak this estimate
+            
+            List<Bounds> placedBounds = new();
+            
+            bool IsOverlapping(Bounds newBounds) {
+                foreach (var existing in placedBounds) {
+                    if (existing.Intersects(newBounds)) return true;
+                }
+                return false;
+            }
+
+            for (int i = 0; i < groupCount; i++) {
+                BaseItemGroup group = baseItemGroupConfig.listBaseItemGroup[Random.Range(0, baseItemGroupConfig.listBaseItemGroup.Count)];
+                UnityEngine.Vector3 groupSize = group.Bounds.size;
+
+                // Try to place it at cursor position
+                UnityEngine.Vector3 tryPosition = new UnityEngine.Vector3(cursor.x, 0f, cursor.y);
+                Bounds futureBounds = new Bounds(group.Bounds.center + tryPosition, groupSize);
+
+                if (!IsOverlapping(futureBounds)) {
+                    GameObject instance = Instantiate(group.gameObject, tryPosition, Quaternion.identity, itemHolder);
+                    Bounds placed = instance.GetComponent<BaseItemGroup>().Bounds;
+                    placed.center += tryPosition;
+
+                    placedBounds.Add(placed);
+
+                    // Move cursor forward
+                    cursor.x += groupSize.x + spacing;
+                    rowHeight = Mathf.Max(rowHeight, groupSize.z);
+
+                    // Wrap if we get too wide
+                    levelWidth += groupSize.x + spacing;
+                    if (levelWidth > estimatedSide) {
+                        cursor.x = 0f;
+                        cursor.y += rowHeight + spacing;
+                        rowHeight = 0f;
+                        levelWidth = 0f;
+                    }
+                } else {
+                    Debug.Log("Overlap detected, skipping");
+                }
+            }
+        }
+        
+        #endregion
 
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         public int level = 1;
@@ -48,10 +307,6 @@ namespace IEC
         [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         [ShowIf("@createNewLevel")]
         public string levelSpawnDataFolderName = "CustomSpawnData";
-        
-        [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
-        [ShowIf("@createNewLevel")]
-        public string levelSpawnDataObjectName = "LevelSpawnData";
         
         // [FoldoutGroup(LevelEditorConstants.LEVEL_AND_THEME)]
         // [ShowIf("@createNewLevel")]
@@ -92,7 +347,7 @@ namespace IEC
                 AssetDatabase.CreateFolder(filePath, levelSpawnDataFolderName);
             }
             
-            AssetDatabase.CreateAsset(newLevelSpawnDataSO, $"{levelSpawnDataPath}/{levelSpawnDataObjectName}_{level}.asset");
+            AssetDatabase.CreateAsset(newLevelSpawnDataSO, $"{levelSpawnDataPath}/{levelObjectName}SpawnData_{level}.asset");
             
             
             // string mapDataPath = $"{filePath}/{mapDataFolderName}";
@@ -127,8 +382,8 @@ namespace IEC
         [ValueDropdown(nameof(GetAllThemes))]
         public string theme;
 
-        [FoldoutGroup(LevelEditorConstants.CREATIVE)]
-        public bool isLevelCreative;
+        // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
+        // public bool isLevelCreative;
 
         // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
         // [Button]
@@ -317,10 +572,39 @@ namespace IEC
 
         // [FoldoutGroup(LevelEditorConstants.CREATIVE)]
         // public string creativeName = "CreativeLevel_";
+        
+        [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        [ValueDropdown(nameof(GetAllItemXP))]
+        [OnValueChanged(nameof(UpdateItemIdWithXP))]
+        public string itemXP;
 
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
-        [ValueDropdown(nameof(GetAllItemIds))] [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
+        [ValueDropdown(nameof(GetAllItemIdsWithXP))] 
+        [OnValueChanged(nameof(UpdateItemSpawnUtilities))]
         public string itemId;
+        
+        [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        [ReadOnly]
+        [SerializeField][PreviewField(125, ObjectFieldAlignment.Center)] 
+        private GameObject itemPrefab;
+
+        private void UpdateItemIdWithXP()
+        {
+            itemId = GetAllItemIdsWithXP().Cast<string>().FirstOrDefault();
+            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId)).GetPrefab();
+        }
+        
+        // [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        // [ValueDropdown(nameof(GetAllPillarItemIds))]
+        // [ShowIf("@isSpawnPillar")]
+        // public string itemPillarId;
+        //
+        // [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
+        // [ValueDropdown(nameof(GetAllPillarItemIds))]
+        // [ShowIf("@isSpawnPillar")]
+        // public string itemPillarTopId;
+
+        //private bool isSpawnPillar => spawnArea is PillarSpawnArea;
 
         [FoldoutGroup(LevelEditorConstants.SPAWN_ITEMS)]
         public SpawnArea spawnArea;
@@ -329,6 +613,7 @@ namespace IEC
         [Button]
         public void SpawnPreviewItems()
         {
+            itemSpawnUtilities.itemId = itemId;
             itemSpawnUtilities.spawnArea = spawnArea;
             itemSpawnUtilities.CreatePreview();
         }
@@ -392,21 +677,33 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
-        [ValueDropdown(nameof(GetAllItemIds))]
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
         public string oldItemID;
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        public bool isReplaceItemWithSameXP;
+
+        [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        [ShowIf("@!isReplaceItemWithSameXP")]
         [ValueDropdown(nameof(GetAllItemIds))]
         public string newItemID;
+        
+        [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
+        [ShowIf("@isReplaceItemWithSameXP")]
+        [ValueDropdown(nameof(GetAllItemIdsWithSameXP))]
+        public string newItemIDWithSameXP;
 
         [FoldoutGroup(LevelEditorConstants.REPLACE_ITEMS)]
         [Button]
         public void ReplaceItems()
         {
-            var newItem = itemConfig.listItemDefinition.Find(x => x.GetId() == newItemID);
+            
+            var newID = isReplaceItemWithSameXP ? newItemIDWithSameXP : newItemID;
+            
+            var newItem = itemConfig.listItemDefinition.Find(x => x.GetId() == newID);
             if (newItem == null)
             {
-                Debug.LogError($"Item with id {newItemID} not found");
+                Debug.LogError($"Item with id {newID} not found");
                 return;
             }
 
@@ -418,7 +715,7 @@ namespace IEC
                 {
                     newItemDatas.Add(new _IEC.Features.Gameplay.ItemData()
                     {
-                        itemId = newItemID,
+                        itemId = newID,
                         position = item.transform.position,
                         eulerAngle = item.transform.eulerAngles,
                         isStartKinematic = item.ItemData.isStartKinematic
@@ -432,7 +729,7 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.ITEM_EXP)]
-        [ValueDropdown(nameof(GetAllItemIds))]
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
         public List<string> listItemIds;
 
         [FoldoutGroup(LevelEditorConstants.ITEM_EXP)]
@@ -460,20 +757,72 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [ReadOnly]
         public List<LevelObjectiveData> levelObjectives;
 
-        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
-        [OnValueChanged(nameof(UpdateItemsInScene))]
-        public List<ItemCountInScene> listItemInScenes;
+        // [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        // [OnValueChanged(nameof(UpdateItemsInScene))]
+        // public List<ItemCountInScene> listItemInScenes;
 
-        private void UpdateItemsInScene()
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)] 
+        [ValueDropdown(nameof(GetAllCurrentItemIds))]
+        [OnValueChanged(nameof(UpdateValueObjectiveCount))]
+        public string objectiveItemID;
+
+        private void UpdateValueObjectiveCount()
         {
-            foreach (var item in listItemInScenes)
-            {
-                item.itemHolder = itemHolder;
-                item.itemConfig = itemConfig;
-            }
+            objectiveCount = GetCountObjectiveItem();
         }
+        
+        private int GetCountObjectiveItem()
+        {
+            return
+                itemHolder.GetComponentsInChildren<BaseItem>()
+                    .Count(item => item.ItemDefinition != null && item.ItemDefinition.GetId() == objectiveItemID);
+        }
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [PropertyRange(0, nameof(GetCountObjectiveItem))]
+        public int objectiveCount;
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [Button]
+        public void UpdateObjective()
+        {
+            var objective = levelObjectives.Find(obj => obj.id == objectiveItemID);
+            if (objective == null)
+            {
+                objective = new LevelObjectiveData()
+                {
+                    id = objectiveItemID,
+                };
+                levelObjectives.Add(objective);
+            }
+
+            if (objectiveCount == 0)
+                levelObjectives.Remove(objective);
+            
+            
+            //objective.AddObjectiveAmount(objectiveCount);
+            objective.amount = objectiveCount;
+
+        }
+
+        [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
+        [Button]
+        public void ResetObjectives()
+        {
+            levelObjectives.Clear();
+        }
+        
+        // private void UpdateItemsInScene()
+        // {
+        //     foreach (var item in listItemInScenes)
+        //     {
+        //         item.itemHolder = itemHolder;
+        //         item.itemConfig = itemConfig;
+        //     }
+        // }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
         [Button]
@@ -750,7 +1099,7 @@ namespace IEC
 
             Reset();
             mapData = currentLevelData.mapData;
-            currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
             levelObjectives = currentLevelData.listObjectives.ConvertAll(x => x.Clone());
             theme = currentLevelData.theme;
             levelTime = currentLevelData.time;
@@ -794,8 +1143,14 @@ namespace IEC
 
             Reset();
             currentLevelData.CloneTo(levelData);
-            currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            mapData = currentLevelData.mapData;
+            //currentMapData = currentLevelData.mapData != null ? currentLevelData.mapData.name : "";
+            levelObjectives = currentLevelData.listObjectives.ConvertAll(x => x.Clone());
+            theme = currentLevelData.theme;
             levelTime = currentLevelData.time;
+            levelBombData = currentLevelData.levelBoomData;
+            isOverrideBombData = currentLevelData.levelBoomData.isOverrideBombData;
             if (isOverrideMapData)
                 levelData.mapData = mapData;
             levelData.listObjectives = levelObjectives.ConvertAll(x => x.Clone());
@@ -850,7 +1205,7 @@ namespace IEC
         }
 
         [ResponsiveButtonGroup] [Button]
-        [ShowIf("@itemHolder.transform.childCount > 0 && !isLevelCreative")]
+        [ShowIf("@itemHolder.transform.childCount > 0" /*&& !isLevelCreative"*/)]
         void SaveOverrideLevel()
         {
             if (currentLevelData == null)
@@ -896,6 +1251,8 @@ namespace IEC
                     
                     var itemSpawnData = new ItemSpawnData
                     {
+                        groupID =  baseItem.ItemData.groupID,
+                        groupPosition =  baseItem.transform.parent.transform.position,
                         p = new Position(baseItem.transform.position),
                         r = new Rotation(baseItem.transform.eulerAngles),
                         s = new Scale(baseItem.transform.lossyScale),
@@ -973,6 +1330,99 @@ namespace IEC
             }
         }
 
+        [ResponsiveButtonGroup]
+        [Button]
+        public void LogInfoLevel()
+        {
+            string dialog = "DataInfoLevel\n";
+            dialog += "------------------------------------------------------------\n";
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", "Objective", "Amount", "Exp", "Total Exp", "Size") + "\n";
+            dialog += "------------------------------------------------------------\n";
+            
+            int countExp = 0;
+            if (currentLevelData == null)
+            {
+                Debug.LogError("Not found Data Level");
+                return;
+            }
+
+            Dictionary<string, int> objectiveId = new Dictionary<string, int>();
+            foreach (var levelObjectiveData in currentLevelData.listObjectives)
+            {
+                dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                    "Objective: " + levelObjectiveData.id, 
+                    levelObjectiveData.amount.ToString(),  // Làm tròn số Amount
+                    itemConfig.GetItemExp(levelObjectiveData.id).ToString(),  // Làm tròn số Exp
+                    (levelObjectiveData.amount * itemConfig.GetItemExp(levelObjectiveData.id)).ToString("F2"),  // Tổng Exp
+                    " ") + "\n";
+                
+                objectiveId.Add(levelObjectiveData.id, levelObjectiveData.amount);
+            }
+
+            foreach (var listItemSpawn in currentLevelData.levelSpawnData.listItemSpawns)
+            {
+                if (objectiveId.ContainsKey(listItemSpawn.id))
+                {
+                    objectiveId.TryGetValue(listItemSpawn.id, out int targetAm);
+                    if (listItemSpawn.listSpawnDatas.Count > targetAm)
+                    {
+                        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                            "Objective Extra: " + listItemSpawn.id, 
+                            (listItemSpawn.listSpawnDatas.Count - targetAm).ToString(),  // Số mục thừa
+                            itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                            (itemConfig.GetItemExp(listItemSpawn.id) * (listItemSpawn.listSpawnDatas.Count - targetAm)).ToString("F2"),
+                            GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    }
+                    else if (listItemSpawn.listSpawnDatas.Count < targetAm)
+                    {
+                        dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                            "Objective Missing: " + listItemSpawn.id, 
+                            (targetAm - listItemSpawn.listSpawnDatas.Count).ToString(),  // Số mục thiếu
+                            itemConfig.GetItemExp(listItemSpawn.id).ToString(),  // Làm tròn Exp
+                            (itemConfig.GetItemExp(listItemSpawn.id) * (targetAm - listItemSpawn.listSpawnDatas.Count)).ToString("F2"),
+                            GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    }
+
+                    // Skip objective
+                    countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+                    continue;
+                }
+
+                if (listItemSpawn.id.Contains("food_"))
+                {
+                    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                        "Normal: " + listItemSpawn.id, 
+                        listItemSpawn.listSpawnDatas.Count.ToString(), 
+                        itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                        (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                        GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                    countExp += itemConfig.GetItemExp(listItemSpawn.id) * listItemSpawn.listSpawnDatas.Count;
+                }
+                else
+                {
+                    dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10} {4,-20}", 
+                        "Special: " + listItemSpawn.id, 
+                        listItemSpawn.listSpawnDatas.Count.ToString(),
+                        itemConfig.GetItemExp(listItemSpawn.id).ToString(), 
+                        (listItemSpawn.listSpawnDatas.Count * itemConfig.GetItemExp(listItemSpawn.id)).ToString("F2"),
+                        GetStringSizeObject(itemConfig.GetItemPrefab(listItemSpawn.id)) + "\n");
+                }
+            }
+
+            dialog += "------------------------------------------------------------\n";
+            dialog += "Total Exp: " + countExp.ToString("F2") + "\n";  // Làm tròn tổng Exp
+            dialog += "------------------------------------------------------------\n";
+            dialog += string.Format("{0,-40} {1,-10} {2,-10} {3,-10}", 
+                "Bomb: " , 
+                currentLevelData.levelBoomData.number, 
+                0, 
+                0) + "\n";
+
+            // Hiển thị cửa sổ custom dialog với nội dung đã được định dạng
+            CustomDialogWindow.ShowWindow(dialog);
+        }
+
+
         [Button]
         private void DecreaseLevelGoalsRandomly(int minLevel, int maxLevel, int minDecrease, int maxDecrease,
             int multiplier = 1,
@@ -1005,7 +1455,19 @@ namespace IEC
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        public string GetStringSizeObject(GameObject obj,float scx =1f,float scy=1f,float scz=1f )
+        {
+            //Apply with localscale
+            var itemHeight = 1f;
+            var renderer  = obj.GetComponentInChildren<MeshRenderer>();;
+            if (renderer != null)
+            {
+                itemHeight = renderer.bounds.size.y;
+                return "x:"+(renderer.bounds.size.x*scx).ToString("F2") + "  ,y:" + (renderer.bounds.size.y*scy).ToString("F2") +"  ,z:" + (renderer.bounds.size.z*scz).ToString("F2");
+            }
 
+            return " ";
+        }
         private static IEnumerable GetAllMapData()
         {
             var root = "Assets/GeneratedLevels/NewlyCreated/";
@@ -1032,12 +1494,46 @@ namespace IEC
 
         private IEnumerable GetAllItemIds()
         {
-            return itemConfig.listItemDefinition.Select(x => x.GetId());
+            return itemConfig.GetListItemDefinition().Select(x => x.GetId());
+        }
+        
+        private IEnumerable GetAllItemIdsWithXP()
+        {
+            return itemConfig.GetListItemDefinition()
+                .Where(x => x.GetXp().ToString().Equals(itemXP))
+                .Select(x => x.GetId());
+        }
+
+        private IEnumerable GetAllItemXP()
+        {
+            return System.Linq.Enumerable.OrderBy(
+                    itemConfig.GetListItemDefinition(), x => x.GetXp())
+                .Select(x => x.GetXp().ToString());
+        }
+        
+        private IEnumerable GetAllPillarItemIds()
+        {
+            return itemConfig.GetListItemDefinition()
+                .Where(x => x.GetPhysicFallingItemType() == _IEC.Features.Gameplay.PhysicFallingItemType.Column)
+                .Select(x => x.GetId());
+        }
+        
+        private IEnumerable GetAllCurrentItemIds()
+        {
+            var currentItems = itemHolder.GetComponentsInChildren<BaseItem>().ToList();
+            return currentItems.Where(x => x.ItemDefinition != null).Select(x => x.GetItemId());
+        }
+        
+        private IEnumerable GetAllItemIdsWithSameXP()
+        {
+            var oldItem = itemConfig.GetListItemDefinition().Find(item => item.GetId() == oldItemID);
+            return itemConfig.GetListItemDefinition().Where(x => x.GetXp() == oldItem.GetXp()).Select(x => x.GetId());
         }
 
         private void UpdateItemSpawnUtilities()
         {
             itemSpawnUtilities.itemId = itemId;
+            itemPrefab = itemConfig.GetListItemDefinition().Find(item => item.GetId().Equals(itemId))?.GetPrefab();
         }
 
         private List<BombData> GetListBombDatas()
@@ -1152,6 +1648,7 @@ namespace IEC
         //     AssetDatabase.Refresh();
         //     AssetDatabase.SaveAssets();
         // }
+        
 
         [Serializable]
         public class ItemCountInScene
@@ -1199,7 +1696,38 @@ namespace IEC
                 if (itemConfig == null) return null;
                 return itemConfig.listItemDefinition.Select(x => x.GetId());
             }
+
+
         }
 #endif
+    }
+}
+public class CustomDialogWindow : EditorWindow
+{
+    private string dialogContent = "";
+
+    // Hàm này được gọi để hiển thị cửa sổ và truyền nội dung dialog vào
+    public static void ShowWindow(string dialog)
+    {
+        CustomDialogWindow window = GetWindow<CustomDialogWindow>("Custom Dialog");
+        window.minSize = new Vector2(400, 300);  // Quy ước kích thước tối thiểu
+        window.maxSize = new Vector2(600, 500);  // Quy ước kích thước tối đa
+        window.dialogContent = dialog;  // Truyền nội dung vào cửa sổ
+        window.Show();
+    }
+
+    private void OnGUI()
+    {
+        GUILayout.Label("Dialog Content", EditorStyles.boldLabel);
+        GUILayout.Space(10);
+
+        // Hiển thị nội dung của dialog trong TextArea
+        EditorGUILayout.TextArea(dialogContent, GUILayout.Height(300));
+
+        GUILayout.Space(10);
+        if (GUILayout.Button("OK"))
+        {
+            Close(); // Đóng cửa sổ khi nhấn OK
+        }
     }
 }

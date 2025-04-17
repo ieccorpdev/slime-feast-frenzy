@@ -186,6 +186,7 @@ public class Hole : _BaseBehaviour
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
+		
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
@@ -200,9 +201,62 @@ public class Hole : _BaseBehaviour
 			myTransform.localScale = targetScale;
 			callback?.Invoke();
 		}
+
 		holeController.SetScale(targetSize);
 	}
+	
+	#if UNITY_EDITOR
+	
+	[PropertySpace(30)]
+	
+	[Button("Reset Level")]
+	public void DebugResetLevel()
+	{
+		//LevelUp(0, 1);
+		SetLevel(0,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
 
+	private bool LevelMax => (Settings.UseSlowXp
+		? Level >= Settings.RequiredXpPerLevelSlow.Length - 1
+		: Level >= Settings.RequiredXpPerLevel.Length - 1);
+	[ShowIf("@!LevelMax")]
+	[Button("Level Up")]
+	public void DebugLevelUp()
+	{
+		//LevelUp(0, 1);
+		SetLevel(Level + 1,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	[ShowIf("@(Level > 0)")]
+	[Button("Level Down")]
+	public void DebugLevelDown()
+	{
+		//LevelUp(0, -1);
+		SetLevel(Level - 1,false);
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	#endif
+	
 	public void LevelUp(int remaining, int count = 1)
 	{
 		SetLevel(Level + count,true);
