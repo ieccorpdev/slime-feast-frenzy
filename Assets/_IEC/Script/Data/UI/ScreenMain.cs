@@ -47,6 +47,7 @@ namespace IEC
                         //m_ResourceUI.SetActive(true);
                         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
                         m_BtnSetting.gameObject.SetActive(true);
+                        m_Shop.GetComponent<UIShopHomeTab>().SortVerticalGroups();
                         Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_shop_iap"));
                         break;
                     case (TabType.Home):
@@ -158,14 +159,17 @@ namespace IEC
                 case ResourceType.Gold:
                     AddRewardGoldToClaim(amount);
                     break;
-                case ResourceType.HelperClear:
+                case ResourceType.Vortex:
                     AddRewardHelperToClaim(resourceType, amount, 0.1f);
                     break;
-                case ResourceType.HelperUndo:
+                case ResourceType.Compass:
                     AddRewardHelperToClaim(resourceType, amount, 0.2f);
                     break;
-                case ResourceType.HelperShuffle:
+                case ResourceType.Enlarge:
                     AddRewardHelperToClaim(resourceType, amount, 0.3f);
+                    break;
+                case ResourceType.TimeStop:
+                    AddRewardHelperToClaim(resourceType, amount, 0.4f);
                     break;
             }
         }
