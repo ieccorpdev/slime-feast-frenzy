@@ -23,7 +23,7 @@ namespace _IEC
             SetEvent(noThanksBtn,OnNoThanksButtonClick);
             configBundle.OnPurchaseSuccess += () =>
             {
-                noThanksBtn.gameObject.SetActive(false);
+                noThanksBtn?.gameObject.SetActive(false);
                 Hide();
             };
             
@@ -36,9 +36,9 @@ namespace _IEC
         {
             base.Show();
             configBundle.UpdateUI();
-            spinAnim.SetAnimation("1_start",false, () =>
+            spinAnim?.SetAnimation("1_start",false, () =>
             {
-                spinAnim.SetAnimation("2_idle", true);
+                spinAnim?.SetAnimation("2_idle", true);
             });
         }
         public void SetScaleAnim()

@@ -15,6 +15,7 @@ public class FakeScreenCreator : EditorWindow
             EditorUtility.DisplayDialog("Select Parent", "You must select a parent first!", "OK");
             return;
         }
+
         GameObject newGO = null;
         // check if already has a fake screen
         for (int i = 0; i < parent.transform.childCount; i++)
@@ -26,6 +27,7 @@ public class FakeScreenCreator : EditorWindow
                 break;
             }
         }
+
         // create one if haven't yet
         if (newGO == null)
         {
@@ -34,6 +36,8 @@ public class FakeScreenCreator : EditorWindow
             var rect = newGO.AddComponent<RectTransform>();
             newGO.tag = "EditorOnly";
             newGO.transform.SetParent(parent.transform);
+            newGO.transform.localPosition = Vector3.zero;
+            newGO.transform.localScale = Vector3.one;
             rect.sizeDelta = Vector2.zero;
             rect.anchorMin = Vector2.zero;
             rect.anchoredPosition = Vector2.zero;
@@ -54,7 +58,8 @@ public class FakeScreenCreator : EditorWindow
             if (image == null) image = newGO.AddComponent<Image>();
 
 
-            image.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)), new Vector2(0.5f, 0.5f));
+            image.sprite = Sprite.Create(texture, new Rect(Vector2.zero, new Vector2(texture.width, texture.height)),
+                new Vector2(0.5f, 0.5f));
 
             //transparent image
             var color = image.color;
