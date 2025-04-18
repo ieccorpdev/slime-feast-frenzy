@@ -11,6 +11,7 @@ namespace IEC
     public class ProgressRewardProgressBar : _BaseBehaviour
     {
         [Header("Progress bar")] 
+        public Image currentSpecialObjectItem;
         public Image currentProgressRewardIcon;
         public TextMeshProUGUI progressRewardAmountText;
         public Image progressFillImage;
@@ -32,6 +33,8 @@ namespace IEC
 
         private void UpdateProgressBar()
         {
+            currentSpecialObjectItem.sprite = Config.specialObjectConfig
+                .GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
             currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
             currentProgressRewardIcon.SetNativeSize();
             progressRewardAmountText.text = ProgressRewardData.GetDisplayText();

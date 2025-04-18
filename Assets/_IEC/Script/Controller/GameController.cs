@@ -55,6 +55,8 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
+                    PlayerData.IncreaseBoosterStreak();
+                    PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else

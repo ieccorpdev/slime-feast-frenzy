@@ -32,17 +32,21 @@ namespace IEC
         public static ResourceType ConvertCurrencyType(string subType)
         {
             string subTypeInLowerCase = subType.ToLower();
-            if (subTypeInLowerCase.Equals("helperClear"))
+            if (subTypeInLowerCase.Equals("helperVortex"))
             {
-                return ResourceType.HelperClear;
+                return ResourceType.Vortex;
             }
-            else if (subTypeInLowerCase.Equals("helperUndo"))
+            else if (subTypeInLowerCase.Equals("helperCompass"))
             {
-                return ResourceType.HelperUndo;
+                return ResourceType.Compass;
             }
-            else if (subTypeInLowerCase.Equals("helperShuffle"))
+            else if (subTypeInLowerCase.Equals("helperEnlarge"))
             {
-                return ResourceType.HelperShuffle;
+                return ResourceType.Enlarge;
+            }
+            else if (subTypeInLowerCase.Equals("helperTimeStop"))
+            {
+                return ResourceType.TimeStop;
             }
             else if (subTypeInLowerCase.Equals("timeInfiniteLife"))
             {
@@ -51,20 +55,6 @@ namespace IEC
             else return ResourceType.Gold;
         }
 
-        //public static SubscriptionType ConvertSubscriptionType(string productID)
-        //{
-        //    if (productID == PRODUCT_VIP_PASS_1) return SubscriptionType.Vip1;
-        //    if (productID == PRODUCT_VIP_PASS_2) return SubscriptionType.Vip2;
-        //    if (productID == PRODUCT_VIP_PASS_3) return SubscriptionType.Vip3;
-        //    return SubscriptionType.None;
-        //}
-        //public static string ConvertSubscriptionTypeToId(SubscriptionType type)
-        //{
-        //    if (type == SubscriptionType.Vip1) return PRODUCT_VIP_PASS_1;
-        //    if (type == SubscriptionType.Vip2) return PRODUCT_VIP_PASS_2;
-        //    if (type == SubscriptionType.Vip3) return PRODUCT_VIP_PASS_3;
-        //    return "";
-        //}
 
         public const string PRODUCT_VIP_PASS_1 = "com.screw.saga.quest.nrs.vippass.1";
         public const string PRODUCT_VIP_PASS_2 = "com.screw.saga.quest.nrs.vippass.2";

@@ -273,10 +273,10 @@ namespace _IEC.Features.Gameplay
         }
 
         public static List<BaseItem> SpawnBoosterItems(int count, Transform levelObjectHolder,
-            ItemDefinition itemDefinition, ItemData itemData)
+            BoosterData boosterData)
         {
             var res = new List<BaseItem>();
-            var prefab = itemDefinition.GetPrefab();
+            var prefab = boosterData.itemDefinition.GetPrefab();
             if (prefab == null)
             {
                 return res;
@@ -285,15 +285,26 @@ namespace _IEC.Features.Gameplay
             for (int i = 0; i < count; i++)
             {
                 var newItem = prefab.Spawn();
-                var itemComponent = newItem.GetComponent<BaseItem>();
+                var itemComponent = newItem.GetComponent<BaseBoosterItem>();
                 if (itemComponent == null)
                 {
-                    itemComponent = newItem.AddComponent<BaseItem>();
+                    itemComponent = newItem.AddComponent<BaseBoosterItem>();
                 }
+                
+                itemComponent.SetBoosterData(boosterData);
+                
+                var itemData = new ItemData()
+                {
+                    itemId = boosterData.itemDefinition.GetId(),
+                    position = Vector3.zero, //Do random pos later
+                    eulerAngle = Vector3.zero,
+                    localScale = Vector3.one,
+                    isStartKinematic =  true,
+                };
 
                 var itemTransform = itemComponent.transform;
                 itemTransform.parent = levelObjectHolder;
-                itemComponent.LoadData(itemData, itemDefinition);
+                itemComponent.LoadData(itemData, boosterData.itemDefinition);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
@@ -327,7 +338,7 @@ namespace _IEC.Features.Gameplay
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
                     localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
-                    isStartKinematic =  true,
+                    isStartKinematic =  false,
                 };
                 
                 itemTransform.parent = levelObjectHolder;
@@ -341,7 +352,7 @@ namespace _IEC.Features.Gameplay
                         itemComponent.gameObject.layer
                     );
                 
-                itemComponent.transform.position = itemComponent.ItemData.position;
+                itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
                 
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
