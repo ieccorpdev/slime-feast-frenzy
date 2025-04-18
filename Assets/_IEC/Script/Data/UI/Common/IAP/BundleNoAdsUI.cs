@@ -21,7 +21,6 @@ namespace IEC
         protected override void Start()
         {
             base.Start();
-            UpdateUI();
         }
 
         public override void UpdateUI()
@@ -30,6 +29,7 @@ namespace IEC
             if(m_Purchased != null)
                 m_Purchased.SetActive(PlayerData.isNoAds);
             m_BtnBuy.gameObject.SetActive(!PlayerData.isNoAds);
+            
         }
         
     }

@@ -14,7 +14,6 @@ namespace IEC
         public TextMeshProUGUI levelText;
         public Button infoButton;
         public Button playButton;
-        public Button hideInfoButton;
 
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
@@ -23,6 +22,7 @@ namespace IEC
 
         [Header("Booster Buttons")] 
         public List<BoosterBaseButton> listBoosterButtons = new();
+        public GameObject boosterPanel;
 
         [Header("Info panel")]
         public GameObject infoPanel;
@@ -35,7 +35,6 @@ namespace IEC
         {
             SetEvent(infoButton, DoShowInfoPanel);
             SetEvent(playButton, OnClickPlayButton);
-            SetEvent(hideInfoButton, () => { infoPanel.gameObject.SetActive(false); });
         }
 
         public override void Show()
@@ -44,8 +43,24 @@ namespace IEC
 
             levelText.text = "Level " + PlayerData.level;
             
+            infoPanel.SetActive(false);
+            boosterPanel.SetActive(true);
+            
             UpdateBoosterButton();
             UpdateStreakDisplay();
+        }
+
+        protected override void OnHideClick()
+        {
+            if (infoPanel.activeInHierarchy)
+            {
+                infoPanel.SetActive(false);
+                boosterPanel.SetActive(true);
+            }
+            else
+            {
+                base.OnHideClick();
+            }
         }
 
         private void UpdateBoosterButton()
@@ -102,7 +117,8 @@ namespace IEC
 
         private void DoShowInfoPanel()
         {
-            infoPanel.gameObject.SetActive(true);
+            boosterPanel.SetActive(false);
+            infoPanel.SetActive(true);
 
             foreach (var obj in listInfoObjects)
             {
