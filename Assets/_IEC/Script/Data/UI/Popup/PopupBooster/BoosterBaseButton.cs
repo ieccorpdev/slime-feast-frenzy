@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ namespace IEC
         
         public GameObject lockObj, buyObj, usableObj, usingObj, unlimitedObj;
 
+        public TextMeshProUGUI countText;
         public TextMeshProUGUI unlimitedTimeText;
         
         public BoosterBaseState State { get; private set; }
@@ -25,6 +27,7 @@ namespace IEC
         private void Start()
         {
             boosterButton.onClick.AddListener(OnBoosterButtonClick);
+            gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_UI, Setup);
         }
 
         private void Update()
@@ -36,11 +39,16 @@ namespace IEC
         {
             if (State == BoosterBaseState.Using)
             {
-                CheckCurrentState();
+                CheckCurrentState(true);
             }
-            else if (State == BoosterBaseState.Usable || State == BoosterBaseState.Unlimited)
+            else if (State == BoosterBaseState.Usable)
             {
                 State = BoosterBaseState.Using;
+            }
+            else if (State == BoosterBaseState.Buy)
+            {
+                Locator.Main.PopupAddHelper.SetData(boosterType);
+                Locator.Main.PopupAddHelper.Show();
             }
             
             CheckShowStateObj();
@@ -52,10 +60,12 @@ namespace IEC
             BoosterData = Config.AllBoosterConfig.GetBoosterData(boosterType);
             CheckCurrentState();
             CheckShowStateObj();
+
+            countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
             bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
         }
 
-        private void CheckCurrentState()
+        private void CheckCurrentState(bool isCheckOnClick = false)
         {
             if (PlayerData.level < BoosterData.levelUnlock)
             {
@@ -63,7 +73,8 @@ namespace IEC
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) > 0)
             {
-                State = BoosterBaseState.Usable;
+                if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && isCheckOnClick))
+                    State = BoosterBaseState.Usable;
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {

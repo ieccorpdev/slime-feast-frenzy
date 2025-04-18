@@ -97,6 +97,7 @@ public class Hole : _BaseBehaviour
 					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
 			}
 		}
+
 		CheckSharkForm();
 		CheckSharkBite();
 		UpdateGravityBySpeed();
