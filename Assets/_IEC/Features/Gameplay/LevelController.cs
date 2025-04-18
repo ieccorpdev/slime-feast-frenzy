@@ -146,7 +146,7 @@ namespace _IEC.Features.Gameplay
                 GroundExtend.CalculateBounds(m_AllItems),
                 Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
                 allItemHolder,
-                Config.specialObjectConfig.GetSpecialItemDefinition(0)
+                Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
@@ -267,7 +267,11 @@ namespace _IEC.Features.Gameplay
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
-            SpecialProgressRewardObjCollected++;
+            if (data.itemID.Contains("Ocean"))
+            {
+                SpecialProgressRewardObjCollected++;
+            }
+
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
@@ -460,7 +464,6 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.NORMAL});
                 ChangeState(State.Win);
-                PlayerData.AddProgressToProgressReward(SpecialProgressRewardObjCollected);
             }
         }
         

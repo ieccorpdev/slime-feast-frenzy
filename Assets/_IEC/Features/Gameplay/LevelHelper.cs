@@ -338,7 +338,7 @@ namespace _IEC.Features.Gameplay
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
                     localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
-                    isStartKinematic =  true,
+                    isStartKinematic =  false,
                 };
                 
                 itemTransform.parent = levelObjectHolder;
@@ -352,7 +352,7 @@ namespace _IEC.Features.Gameplay
                         itemComponent.gameObject.layer
                     );
                 
-                itemComponent.transform.position = itemComponent.ItemData.position;
+                itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
                 
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);

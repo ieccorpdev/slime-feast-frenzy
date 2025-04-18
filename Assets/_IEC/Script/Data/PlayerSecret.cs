@@ -661,7 +661,11 @@ namespace IEC
                 SaveTimeResetProgressReward();
                 currentProgress = 0;
                 currentProgressMilestone = 0;
-                currentSpecialItemIndex = 0;
+                currentSpecialItemIndex++;
+                if (currentSpecialItemIndex >= Config.specialObjectConfig.listSpecialItemDefinition.Count)
+                {
+                    currentSpecialItemIndex = 0;
+                }
             }
         }
 
@@ -686,6 +690,11 @@ namespace IEC
         {
             TimeSpan time = timeLastResetProgressReward.AddDays(Config.progressRewardConfig.daysEachReset) - DateTime.Now;
 
+            if (time < TimeSpan.Zero)
+            {
+                CheckResetTimeProgressReward();
+            }
+            
             string outputString = "";
             
             var day = time.Days;
