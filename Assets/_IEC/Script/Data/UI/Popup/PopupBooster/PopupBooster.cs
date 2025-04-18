@@ -85,7 +85,7 @@ namespace IEC
                         {
                             foreach (var btn in listBoosterButtons)
                             {
-                                if (btn.State == BoosterBaseState.Using)
+                                if (btn.State == BoosterBaseState.Using || btn.State == BoosterBaseState.Unlimited)
                                 {
                                     this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
                                     

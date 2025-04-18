@@ -98,7 +98,7 @@ public class Hole : _BaseBehaviour
 			}
 		}
 
-		CheckPlayerForm();
+		CheckSharkForm();
 		CheckSharkBite();
 	}
 
