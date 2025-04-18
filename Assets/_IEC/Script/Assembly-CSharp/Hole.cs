@@ -99,8 +99,14 @@ public class Hole : _BaseBehaviour
 		}
 		CheckSharkForm();
 		CheckSharkBite();
+		UpdateGravityBySpeed();
 	}
 
+	private void UpdateGravityBySpeed()
+	{
+		//This function must stay in another class
+		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
+	}
 	private void CheckSharkBite()
 	{
 		if(onSharkForm) return;
@@ -449,7 +455,6 @@ public class Hole : _BaseBehaviour
 			characterAnimator.Play("HoleToShark");
 		}
 	}
-
 	private BaseItem GetObjectInDistanceAnimation()
 	{
 		return GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
@@ -463,13 +468,11 @@ public class Hole : _BaseBehaviour
 		holePipe.gameObject.SetActive(true);
 		holePipe.DOScale(Vector3.one, 1.0f);
 	}
-
 	public void EndAnimationCharacter()
 	{
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
 	}
-
 	public void TurnHoleToShark()
 	{
 		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
@@ -489,9 +492,6 @@ public class Hole : _BaseBehaviour
 		characterAnimator.Play("Dive Into Water 0");
 		holeTime = -3;
 	}
-
-
-
 	#endregion
 
 
