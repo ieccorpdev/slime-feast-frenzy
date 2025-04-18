@@ -1190,12 +1190,12 @@ namespace IEC
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
             adjustId = Adjust.getAdid();
-            var adjustCampain = Adjust.getAttribution();
-            if(adjustCampain != null)
+            var attribution = Adjust.getAttribution();
+            if(attribution != null)
             {
-                adjustCampaign = adjustCampain.campaign;
-                adjustNetwork = adjustCampain.network;
-                adjustCreative = adjustCampain.creative;
+                adjustCampaign = attribution.campaign;
+                adjustNetwork = attribution.network;
+                adjustCreative = attribution.creative;
             }
 #endif
 #if PluginFirebaseAnalytic
@@ -1241,7 +1241,8 @@ namespace IEC
                                 new
                                 {
                                     name = "AB Version",
-                                    value = m_ServiceData.curAbTestDate
+                                    value = string.IsNullOrEmpty(m_ServiceData.curAbTestDate) 
+                                        ? "null" : m_ServiceData.curAbTestDate
                                 }
                             }
                         },
@@ -1253,22 +1254,22 @@ namespace IEC
                                 new
                                 {
                                     name = "IDFA",
-                                    value = m_UserIDFA
+                                    value = string.IsNullOrEmpty(m_UserIDFA) ? "null" : m_UserIDFA
                                 },
                                 new
                                 {
                                     name = "IDFV",
-                                    value = idfv
+                                    value = string.IsNullOrEmpty(idfv) ? "null" : idfv
                                 },
                                 new
                                 {
                                     name = "Adjust ID",
-                                    value = adjustId
+                                    value = string.IsNullOrEmpty(adjustId) ? "null" : adjustId
                                 },
                                 new
                                 {
                                     name = "Pseudo UID",
-                                    value = firebasePseudoId
+                                    value = string.IsNullOrEmpty(firebasePseudoId) ? "null" : firebasePseudoId
                                 },
                                 new
                                 {
@@ -1285,17 +1286,17 @@ namespace IEC
                                 new
                                 {
                                     name = "Network",
-                                    value = adjustNetwork
+                                    value = string.IsNullOrEmpty(adjustNetwork) ? "null" : adjustNetwork
                                 },
                                 new
                                 {
                                     name = "Campaign",
-                                    value = adjustCampaign
+                                    value = string.IsNullOrEmpty(adjustCampaign) ? "null" : adjustCampaign
                                 },
                                 new
                                 {
                                     name = "Creative",
-                                    value = adjustCreative
+                                    value = string.IsNullOrEmpty(adjustCreative) ? "null" : adjustCreative
                                 }
                             }
                         },
