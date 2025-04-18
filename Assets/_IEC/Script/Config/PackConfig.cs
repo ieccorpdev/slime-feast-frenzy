@@ -24,7 +24,7 @@ namespace IEC
         {
             m_DictResources ??= resources.ToDictionary(x => x.type, x => x.value);
             if (m_DictResources.TryGetValue(type, out var value)) return value;
-            Debug.LogError("Invalid resource type");
+            Debug.LogError($"Invalid resource type ({type})");
             return -1;
         }
     }

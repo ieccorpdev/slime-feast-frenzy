@@ -84,8 +84,6 @@ public class Hole : _BaseBehaviour
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
 	private float cTime = 0;
-	private float holeTime = 0;
-	private float timeToNextBite = 5;
 	public bool readyForSharkBite;
 	public void Update()
 	{
@@ -99,7 +97,6 @@ public class Hole : _BaseBehaviour
 		}
 
 		CheckSharkForm();
-		CheckSharkBite();
 		UpdateGravityBySpeed();
 	}
 
@@ -108,25 +105,22 @@ public class Hole : _BaseBehaviour
 		//This function must stay in another class
 		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
 	}
-	private void CheckSharkBite()
-	{
-		if(onSharkForm) return;
-		holeTime += Time.deltaTime;
-		if (holeTime > timeToNextBite)
-		{
-			readyForSharkBite = true;
-		}
-	}
-
 	public void TriggerdBite()
 	{
-		if (readyForSharkBite)
+		if (readyForSharkBite && !onSharkForm)
 		{
-			float randomRotationY = UnityEngine.Random.Range(0f, 360f);
+			float randomRotationY = 0f;
+			if (UnityEngine.Random.value < 0.5f)
+			{
+				randomRotationY = UnityEngine.Random.Range(0f, 360f);
+				sharkBiteAnimator.Play( "Bite" );
+			}
+			else
+			{
+				sharkBiteAnimator.Play( "BiteRotate");
+			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
-			sharkBiteAnimator.Play("Bite");
-			timeToNextBite = UnityEngine.Random.Range(3, 5);
-			holeTime = 0;
+			readyForSharkBite = false;
 		}
 	}
 	private void CheckSharkForm()
@@ -441,7 +435,7 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
-		holeTime = -3;
+		readyForSharkBite = true;
 		if (obj != null)//Have object near
 		{
 			characterAnimator.Play("Spawn_Game");
@@ -473,9 +467,11 @@ public class Hole : _BaseBehaviour
 	{
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
+		readyForSharkBite = true;
 	}
 	public void TurnHoleToShark()
 	{
+		readyForSharkBite = false;
 		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
 		holePipe.DOScale(Vector3.zero, 0.5f);
 		characterParent.gameObject.SetActive(true);
@@ -485,13 +481,13 @@ public class Hole : _BaseBehaviour
 	}
 	public void TurnSharkToHole()
 	{
+		readyForSharkBite = false;
 		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
 		holePipe.DOScale(Vector3.one, 1.0f);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
-		holeTime = -3;
 	}
 	#endregion
 
