@@ -133,7 +133,6 @@ namespace _IEC.Features.Gameplay
             }
             
             m_AllItems.Clear();
-            Reset();
             m_AllItems = LevelHelper.SpawnAllItem(m_LevelConfig.levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
@@ -152,8 +151,8 @@ namespace _IEC.Features.Gameplay
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
+            Reset();
             playerHole.HideLevelText();
-            
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);

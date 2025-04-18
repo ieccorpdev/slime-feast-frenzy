@@ -100,8 +100,14 @@ public class Hole : _BaseBehaviour
 
 		CheckSharkForm();
 		CheckSharkBite();
+		UpdateGravityBySpeed();
 	}
 
+	private void UpdateGravityBySpeed()
+	{
+		//This function must stay in another class
+		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
+	}
 	private void CheckSharkBite()
 	{
 		if(onSharkForm) return;
@@ -129,9 +135,8 @@ public class Hole : _BaseBehaviour
 		if (cTime > 0.1f)
 		{
 			cTime = 0f;
-			if (onInitAnimNewGame) return;
-			var obj = GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
-				x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
+			if (!onInitAnimNewGame) return;
+			var obj =  GetObjectInDistanceAnimation();
 			if (obj != null)
 			{
 				if (onSharkForm)
@@ -409,7 +414,6 @@ public class Hole : _BaseBehaviour
 	}
 	public void OnNewGame()
 	{
-		onInitAnimNewGame = true;
 		txtLevel.gameObject.SetActive(true);
 	}
 	private void TurnOffAllVfx()
@@ -422,30 +426,54 @@ public class Hole : _BaseBehaviour
 	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
 	public void ResetCharacter()
 	{
+		onInitAnimNewGame = false;
 		holePipe.transform.localScale = Vector3.zero;
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
-		characterAnimator.Play("Spawn_Game");
+		StartAnimationCharacter();
+	}
+
+	public void StartAnimationCharacter()
+	{
+		var obj = GetObjectInDistanceAnimation();
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterParent.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		holeTime = -3;
+		if (obj != null)//Have object near
+		{
+			characterAnimator.Play("Spawn_Game");
+			//Hole call from EndAnimationCharacter
+			onSharkForm = false;
+		}
+		else
+		{
+			onInitAnimNewGame = true;
+			holePipe.transform.localScale = Vector3.zero;
+			onSharkForm = true;
+			characterAnimator.Play("HoleToShark");
+		}
+	}
+	private BaseItem GetObjectInDistanceAnimation()
+	{
+		return GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
+			x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
 	}
 
 	public void PlayEffectSharkDriveIn()
 	{
-
 		//Apply position because animation diff with pos
 		waterSplashFx.Play();
 		holePipe.gameObject.SetActive(true);
 		holePipe.DOScale(Vector3.one, 1.0f);
 	}
-
 	public void EndAnimationCharacter()
 	{
 		characterParent.gameObject.SetActive(false);
-		onInitAnimNewGame = false;
+		onInitAnimNewGame = true;
 	}
-
 	public void TurnHoleToShark()
 	{
 		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
@@ -458,16 +486,13 @@ public class Hole : _BaseBehaviour
 	public void TurnSharkToHole()
 	{
 		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.zero, 1.0f);
+		holePipe.DOScale(Vector3.one, 1.0f);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
 		holeTime = -3;
 	}
-
-
-
 	#endregion
 
 
