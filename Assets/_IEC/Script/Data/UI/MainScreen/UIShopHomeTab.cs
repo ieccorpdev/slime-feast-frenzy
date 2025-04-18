@@ -24,21 +24,25 @@ public class UIShopHomeTab : ScreenNavigateUI
     public void OnEnable()
     {
         UpdateAdsPackDisplay();
-        SortVerticalGroups();
+        RebuildLayout();
     }
 
-    public void SortVerticalGroups()
+    private void RebuildLayout()
     {
-        DOVirtual.DelayedCall(0.1f, () =>
-        {
-            // Force the layout rebuild for the parent of the VerticalLayoutGroup
-            LayoutRebuilder.ForceRebuildLayoutImmediate(verticalLayoutGroup.GetComponent<RectTransform>());
-        });
+        StartCoroutine(SortVerticalGroups());
+    }
+
+    public IEnumerator SortVerticalGroups()
+    {
+        yield return new WaitForEndOfFrame();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(verticalLayoutGroup.GetComponent<RectTransform>());
     }
     public void UpdateAdsPackDisplay()
     {
         freeAds.UpdateUI();
         freeAdsBundle.gameObject.SetActive(!PlayerData.isNoAds);
+        RebuildLayout();
+
         //discountedBundle.gameObject.SetActive(PlayerData.isNoAds);
     }
     
