@@ -8,6 +8,7 @@ using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using DG.Tweening;
 using MoreMountains.NiceVibrations;
+using UnityEditor;
 
 namespace IEC
 {
@@ -54,6 +55,8 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
+                    PlayerData.IncreaseBoosterStreak();
+                    PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else
@@ -122,6 +125,9 @@ namespace IEC
                     OpenScene(GameScene.Main);
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
                 }
+                
+                //Check reset progress reward when player start game
+                PlayerData.CheckResetTimeProgressReward();
   
             //});
             // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);

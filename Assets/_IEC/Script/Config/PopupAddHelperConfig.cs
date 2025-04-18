@@ -21,11 +21,11 @@ namespace IEC
     {
         public ResourceType helperType;
         public Sprite helperIcon;
+        public string title;
         [TextArea]
         public string helperDescription;
+        public string highlightText;
         public int addGoldAmount = 3;
         public int goldCost;
-        public int addFreeAdsAmount = 1;
-        public int freeAdsLimitPerDay;
     }
 }

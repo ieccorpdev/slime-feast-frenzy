@@ -142,6 +142,82 @@ namespace IEC
             return false;
         }
         
+        #region Booster
+
+        public int currentBoosterStreak;
+        public int levelLostStreak;
+        public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
+
+        public void IncreaseBoosterStreak()
+        {
+            if (level < Config.AllBoosterConfig.levelUnlockStreak)
+                return;
+
+            if (level == levelLostStreak)
+                return;
+            
+            currentBoosterStreak++;
+        }
+
+        public void ResetBoosterStreak()
+        {
+            if (level < Config.AllBoosterConfig.levelUnlockStreak)
+                return;
+
+            levelLostStreak = level;
+            currentBoosterStreak = 0;
+        }
+
+        public int GetCurrentBoosterStreak()
+        {
+            return currentBoosterStreak;
+        }
+
+        public void AddTimeUnlimitedBoosters(ResourceType boosterType, int minutes)
+        {
+            if (!timeEndUnlimitedBoosters.ContainsKey(boosterType))
+            {
+                timeEndUnlimitedBoosters.Add(boosterType, DateTime.Now);
+            }
+
+            timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
+        }
+
+        public bool IsUnlimitedBooster(ResourceType boosterType)
+        {
+            if (!timeEndUnlimitedBoosters.ContainsKey(boosterType))
+            {
+                return false;
+            }
+
+            return DateTime.Now <= timeEndUnlimitedBoosters[boosterType];
+        }
+        
+        public string GetTimeLeftUnlimitedBooster(ResourceType boosterType)
+        {
+            TimeSpan time = timeEndUnlimitedBoosters[boosterType] - DateTime.Now;
+
+            string outputString = "";
+            
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+        
+        #endregion
+        
         #region Player Life
         [Header("Player Life")]
         public int playerLife = 5;
@@ -170,6 +246,8 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
+            
+            ResetBoosterStreak();
         }
 
         public bool IsInUnlimitedLife()
@@ -395,6 +473,14 @@ namespace IEC
             {
                 AddTimeUnlimitedLife(amount);
             }
+            else if (currencyType == ResourceType.TimeUnlimitedEvolveStone)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.EvolveStone, amount);
+            }
+            else if (currencyType == ResourceType.TimeUnlimitedWindSurf)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.WindSurf, amount);
+            }
             else if (playerCurrencies.ContainsKey(currencyType))
             {
                 playerCurrencies[currencyType] += amount;
@@ -501,6 +587,139 @@ namespace IEC
             outputString = $"{hours}h {minutes}m";
             return time.TotalSeconds;
         }
+        #endregion
+        
+        #region ChestReward
+
+        public Dictionary<ChestType, int> currentChestProgress = new();
+        public Dictionary<ChestType, int> chestRewardMilestone = new();
+
+        public void AddChestProgress(ChestConfig chestConfig, int addAmount, out bool isClaimReward)
+        {
+            isClaimReward = false;
+            var chestType = chestConfig.chestType;
+            if (!currentChestProgress.ContainsKey(chestType))
+            {
+                currentChestProgress.Add(chestType, 0);
+            }
+
+            currentChestProgress[chestType] += addAmount;
+
+            var rewardData = chestConfig.GetRewardData(GetChestMilestone(chestType));
+            if (currentChestProgress[chestType] >= rewardData.progressToReward)
+            {
+                isClaimReward = true;
+                AddChestMilestone(chestConfig);
+                currentChestProgress[chestType] -= rewardData.progressToReward;
+            }
+        }
+
+        public int GetChestProgress(ChestType chestType)
+        {
+            return !currentChestProgress.ContainsKey(chestType) ? 0 : currentChestProgress[chestType];
+        }
+
+        public void AddChestMilestone(ChestConfig chestConfig)
+        {
+            var chestType = chestConfig.chestType;
+            if (!chestRewardMilestone.ContainsKey(chestType))
+            {
+                chestRewardMilestone.Add(chestType, 0);
+            }
+
+            chestRewardMilestone[chestType] += 1;
+
+            if (chestRewardMilestone[chestType] >= chestConfig.listChestRewardData.Count)
+            {
+                chestRewardMilestone[chestType] = chestConfig.milestoneBeginLoop;
+            }
+            
+        }
+        
+        public int GetChestMilestone(ChestType chestType)
+        {
+            return !chestRewardMilestone.ContainsKey(chestType) ? 0 : chestRewardMilestone[chestType];
+        }
+        #endregion
+        
+        #region ProgressReward
+
+        public DateTime timeLastResetProgressReward;
+        public int tempSpecialObjCollectedInLevel;
+        public int currentProgress;
+        public int currentProgressMilestone;
+        public int currentSpecialItemIndex;
+        public void SaveTimeResetProgressReward()
+        {
+            timeLastResetProgressReward = DateTime.Now;
+        }
+
+        public void CheckResetTimeProgressReward()
+        {
+            if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
+            {
+                SaveTimeResetProgressReward();
+                currentProgress = 0;
+                currentProgressMilestone = 0;
+                currentSpecialItemIndex++;
+                if (currentSpecialItemIndex >= Config.specialObjectConfig.listSpecialItemDefinition.Count)
+                {
+                    currentSpecialItemIndex = 0;
+                }
+            }
+        }
+
+        public void AddProgressToProgressReward(int progress)
+        {
+            currentProgress += progress;
+        }
+
+        public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
+        {
+            if (currentProgress>= currentProgressData.progress)
+            {
+                currentProgress -= currentProgressData.progress;
+                currentProgressMilestone++;
+                return true;
+            }
+
+            return false;
+        }
+        
+        public string GetTimeToResetProgressReward()
+        {
+            TimeSpan time = timeLastResetProgressReward.AddDays(Config.progressRewardConfig.daysEachReset) - DateTime.Now;
+
+            if (time < TimeSpan.Zero)
+            {
+                CheckResetTimeProgressReward();
+            }
+            
+            string outputString = "";
+            
+            var day = time.Days;
+            var hour = time.Hours;
+            var minute = time.Minutes;
+            var seconds = time.Seconds;
+            string days = day < 10 ? $"0{day}" : day.ToString();
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string second = seconds.ToString();
+            if (day > 0)
+            {
+                outputString = $"{days}d {hours}h";
+            }
+            else if (hour > 0)
+            {
+                outputString = $"{hours}h {minutes}m";
+            }
+            else
+            {
+                outputString = $"{minutes}m {second}s";
+            }
+            return outputString;
+        }
+        
         #endregion
         
         #region Add Helper Popup

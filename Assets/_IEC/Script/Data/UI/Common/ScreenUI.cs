@@ -30,6 +30,9 @@ namespace IEC
         public UnityEvent onShowDone;
         [HideInInspector]
         public UnityEvent onHideDone;
+        
+        [HideInInspector]
+        public UnityEvent tempOnHideDone;
 
         [HideInInspector]
         public UnityBoolEvent onHaveFocus;    // bool isOnShow
@@ -68,6 +71,8 @@ namespace IEC
             EffectUI.DoShowHide(gameObject, false, (isShow) =>
             {
                 onHideDone.Invoke();
+                tempOnHideDone.Invoke();
+                tempOnHideDone?.RemoveAllListeners();
             });
             onHide.Invoke();
             onLostFocus.Invoke(true);
@@ -141,6 +146,14 @@ namespace IEC
                     action?.Invoke();
                 });
             }
+        }
+
+        public void AddActionOnceOnClose(Action action)
+        {
+            tempOnHideDone.AddListener(()=>
+            {
+                action?.Invoke();
+            });
         }
     }
 }

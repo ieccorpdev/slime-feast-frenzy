@@ -5,6 +5,8 @@ namespace _IEC.Features.Gameplay
     [System.Serializable]
     public class ItemData
     {
+        public string groupID;
+        public Vector3 groupPosition;
         public string itemId;
         public Vector3 position;
         public Vector3 eulerAngle;

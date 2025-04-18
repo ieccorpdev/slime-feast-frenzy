@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using _IEC.Features.ExportLevel.OriginalLevel;
 using _IEC.Features.Gameplay;
 using Sirenix.OdinInspector;
@@ -11,15 +12,17 @@ namespace IEC
     {
         public virtual SpawnAreaShapes SpawnShape => SpawnAreaShapes.None;
         public SpawnTypes spawnType;
-        public Vector3 spawnPos = Vector3.zero;
+        public Vector3 spawnPos;
         public float spawnRot = 0f;
         public bool startAsKinematic = true;
+        public bool isFixedSpawnAmount = false;
+        public int fixedSpawnAmount;
 
         public abstract GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame,
             string itemId);
 
         protected virtual void CreateItems(GameplayItemPrefabConfig itemPrefabConfig, GameObject prefab, Vector3 pos,
-            GameObject previewGameObject, string itemId, int verticalCount)
+            GameObject previewGameObject, string itemId, int verticalCount, float rotOffset = 0)
         {
             var newItem = Object.Instantiate(prefab, previewGameObject.transform);
 
@@ -36,7 +39,7 @@ namespace IEC
 
             itemComponent.LoadData(itemData, itemDefinition);
             newItem.transform.position = pos;
-            newItem.transform.eulerAngles = new Vector3(0, spawnRot, 0);
+            newItem.transform.eulerAngles = new Vector3(0, spawnRot + rotOffset, 0);
                         
             CreateStackedItems(itemPrefabConfig, prefab, itemComponent, itemId, verticalCount - 1);
         }
@@ -90,7 +93,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -99,6 +103,15 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+                float maxSize = Mathf.Max(bounds.size.x, bounds.size.z);
+                spacing = maxSize * 1.1f; // Prevent overlap
+                
+                (width, length) = FindBestAreaFit(fixedSpawnAmount, spawnType);
+            }
 
             var sizeWidth = width * spacing;
             var sizeLength = length * spacing;
@@ -124,6 +137,71 @@ namespace IEC
 
             return previewGameObject;
         }
+        
+        private (int width, int length) FindBestAreaFit(int targetCount, SpawnTypes spawnType)
+        {
+            int bestW = 1, bestL = targetCount;
+            int minDiff = targetCount;
+
+            if (spawnType == SpawnTypes.Border)
+            {
+                // Border spawn type: Adjust width and length to fit the perimeter with fixed amount of objects
+
+                // For border spawn, we need at least 4 objects to form a rectangle
+                if (targetCount < 4)
+                {
+                    // If targetCount is less than 4, we place objects along one row or column
+                    return (1, targetCount);
+                }
+
+                // Try to find width and length to fit the border (i.e., perimeter placement)
+                for (int w = 1; w <= Mathf.Sqrt(targetCount); w++)
+                {
+                    if (targetCount % w == 0)
+                    {
+                        int l = targetCount / w;
+
+                        // We need to account for perimeter positions:
+                        // Total positions on the border for a w x l rectangle is: 2 * (w + l) - 4 (to avoid double-counting corners)
+                        int perimeterCount = 2 * (w + l) - 4;
+
+                        if (perimeterCount >= targetCount)
+                        {
+                            int diff = Mathf.Abs(w - l);
+                            if (diff < minDiff)
+                            {
+                                minDiff = diff;
+                                bestW = w;
+                                bestL = l;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                // Full spawn type: Adjust width and length to fill the entire area
+                // For full spawn, try to find width and length to cover the area evenly
+                for (int w = 1; w <= Mathf.Sqrt(targetCount); w++)
+                {
+                    if (targetCount % w == 0)
+                    {
+                        int l = targetCount / w;
+
+                        // We just want the best approximation for width and length that fits the target count
+                        int diff = Mathf.Abs(w - l);
+                        if (diff < minDiff)
+                        {
+                            minDiff = diff;
+                            bestW = w;
+                            bestL = l;
+                        }
+                    }
+                }
+            }
+
+            return (bestW, bestL);
+        }
     }
 
     [Serializable]
@@ -131,7 +209,7 @@ namespace IEC
     {
         public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Circle;
 
-        public int radius = 3;
+        public float radius = 3;
         public float spacing = 1.5f;
         public int verticalCount = 1;
 
@@ -139,7 +217,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -148,6 +227,33 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+
+            // Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            // float diameter = Mathf.Max(bounds.size.x, bounds.size.z);
+            // spacing = diameter * 1.1f;
+            //
+            // if (spawnType == SpawnTypes.Border)
+            // {
+            //     float circumference = fixedSpawnAmount * spacing;
+            //     radius = Mathf.CeilToInt(circumference / (2 * Mathf.PI * spacing));
+            // }
+            // else
+            // {
+            //     // Full spawn: estimate how many rings we need
+            //     int rings = 0;
+            //     int count = 0;
+            //     while (count < fixedSpawnAmount)
+            //     {
+            //         rings++;
+            //         count += Mathf.Max(1, Mathf.FloorToInt(2 * Mathf.PI * rings)); // at least 1 per ring
+            //     }
+            //     radius = rings;
+            // }
+
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedCircleSpawn(prefab);
+            }
 
             if (spawnType == SpawnTypes.Border)
             {
@@ -172,13 +278,59 @@ namespace IEC
                         float angle = i * (360f / itemCount);
                         var pos = spawnPos + new Vector3(Mathf.Cos(angle * Mathf.Deg2Rad) * r * spacing, 0,
                             Mathf.Sin(angle * Mathf.Deg2Rad) * r * spacing);
-                        
+
                         CreateItems(itemPrefabConfig, prefab, pos, previewGameObject, itemId, verticalCount);
                     }
                 }
             }
 
             return previewGameObject;
+        }
+
+        private void PrepareFixedCircleSpawn(GameObject prefab)
+        {
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+
+            spacing = minSpacing;
+
+            if (spawnType == SpawnTypes.Border)
+            {
+                radius = fixedSpawnAmount / (2f * Mathf.PI);
+                float testCircumference = 2f * Mathf.PI * radius;
+                if (Mathf.FloorToInt(testCircumference) < fixedSpawnAmount)
+                    radius += 0.01f;
+            }
+            else // Full spawn type
+            {
+                float bestRadius = 1f;
+                int bestCount = 0;
+                float maxRadius = 50f;
+                float step = 0.1f;
+
+                for (float r = 0.5f; r <= maxRadius; r += step)
+                {
+                    int totalCount = 1; // center point
+
+                    for (int ring = 1; ring <= Mathf.FloorToInt(r); ring++)
+                    {
+                        int ringCount = Mathf.FloorToInt(2 * Mathf.PI * ring);
+                        totalCount += ringCount;
+                    }
+
+                    if (Mathf.Abs(totalCount - fixedSpawnAmount) < Mathf.Abs(bestCount - fixedSpawnAmount))
+                    {
+                        bestRadius = r;
+                        bestCount = totalCount;
+
+                        // early exit if exact match
+                        if (totalCount == fixedSpawnAmount)
+                            break;
+                    }
+                }
+
+                radius = Mathf.CeilToInt(bestRadius);
+            }
         }
     }
 
@@ -194,7 +346,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -203,6 +356,11 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedTriangleSpawn(prefab);
+            }
 
             if (spawnType == SpawnTypes.Border)
             {
@@ -242,6 +400,45 @@ namespace IEC
 
             return previewGameObject;
         }
+        
+        private void PrepareFixedTriangleSpawn(GameObject prefab)
+        {
+            // Calculate safe minimum spacing based on prefab size
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+            spacing = minSpacing;
+
+            int targetCount = fixedSpawnAmount;
+            int bestSideLength = 1;
+
+            if (spawnType == SpawnTypes.Full)
+            {
+                // For full spawn: total count = (n * (n + 1)) / 2
+                while (true)
+                {
+                    int count = (bestSideLength * (bestSideLength + 1)) / 2;
+                    if (count >= targetCount)
+                        break;
+
+                    bestSideLength++;
+                }
+            }
+            else if (spawnType == SpawnTypes.Border)
+            {
+                // For border: 3 sides, each has (n - 1) segments, with corners shared
+                // So total = 3 * (n - 1)
+                while (true)
+                {
+                    int count = 3 * (bestSideLength - 1);
+                    if (count >= targetCount)
+                        break;
+
+                    bestSideLength++;
+                }
+            }
+
+            sideLength = bestSideLength;
+        }
     }
 
     [Serializable]
@@ -255,7 +452,8 @@ namespace IEC
 
         public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
         {
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -264,6 +462,12 @@ namespace IEC
 
             var previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedHexagonSpawn(prefab);
+            }
+            
             if (spawnType == SpawnTypes.Border)
             {
                 for (int q = -radius; q <= radius; q++)
@@ -303,6 +507,40 @@ namespace IEC
             float z = spacing * (Mathf.Sqrt(3.0f) * (r + q / 2.0f));
             return new Vector3(x, 0, z);
         }
+        
+        private void PrepareFixedHexagonSpawn(GameObject prefab)
+        {
+            // Get safe minimum spacing to avoid overlap
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            float minSpacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+            spacing = minSpacing;
+
+            int target = fixedSpawnAmount;
+            int r = 0;
+
+            if (spawnType == SpawnTypes.Full)
+            {
+                while (true)
+                {
+                    int count = 1 + 3 * r * (r + 1);
+                    if (count >= target)
+                        break;
+                    r++;
+                }
+            }
+            else if (spawnType == SpawnTypes.Border)
+            {
+                while (true)
+                {
+                    int count = r == 0 ? 1 : 6 * r;
+                    if (count >= target)
+                        break;
+                    r++;
+                }
+            }
+
+            radius = r;
+        }
     }
     [Serializable]
     public class PyramidRectancleSpawnArea : SpawnArea
@@ -316,7 +554,8 @@ namespace IEC
         public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //GameObject prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -331,6 +570,11 @@ namespace IEC
             if (renderer != null)
             {
                 itemHeight = renderer.bounds.size.y;
+            }
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedPyramidSpawn(prefab);
             }
 
             int numberlayer = width / layerSizeReduce;
@@ -361,7 +605,79 @@ namespace IEC
 
             return previewGameObject;
         }
+        
+        private void PrepareFixedPyramidSpawn(GameObject prefab)
+        {
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            spacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+
+            int target = fixedSpawnAmount;
+
+            int bestWidth = 1;
+            int bestLength = 1;
+            int bestLayerReduce = 1;
+            int bestTotal = int.MaxValue;
+
+            float bestScore = float.MaxValue;
+
+            for (int reduce = 1; reduce <= 5; reduce++)
+            {
+                for (int w = 3; w <= 50; w++) // Avoid too narrow
+                {
+                    for (int l = w; l <= w + 5; l++) // Favor near-square bases
+                    {
+                        int layer = 0;
+                        int sum = 0;
+
+                        while (true)
+                        {
+                            int cw = w - layer * reduce;
+                            int cl = l - layer * reduce;
+                            if (cw <= 0 || cl <= 0) break;
+
+                            if (spawnType == SpawnTypes.Full)
+                            {
+                                sum += cw * cl;
+                            }
+                            else if (spawnType == SpawnTypes.Border)
+                            {
+                                if (cw > 1 && cl > 1)
+                                    sum += 2 * (cw + cl - 2);
+                                else
+                                    sum += Mathf.Max(cw, cl);
+                            }
+
+                            layer++;
+                        }
+
+                        if (sum >= target)
+                        {
+                            float shapeScore = Mathf.Abs(w - l);       // Penalize unbalanced base
+                            float excess = sum - target;               // Extra count
+                            float layerBonus = layer * 3f;             // Reward deeper pyramids
+
+                            // Lower score is better
+                            float score = excess + shapeScore * 2 - layerBonus;
+
+                            if (score < bestScore)
+                            {
+                                bestScore = score;
+                                bestTotal = sum;
+                                bestWidth = w;
+                                bestLength = l;
+                                bestLayerReduce = reduce;
+                            }
+                        }
+                    }
+                }
+            }
+
+            width = bestWidth;
+            length = bestLength;
+            layerSizeReduce = bestLayerReduce;
+        }
     }
+    [Serializable]
     public class PyramidCircleSpawnArea : SpawnArea
     {
        public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Circle;
@@ -373,7 +689,8 @@ namespace IEC
             string itemId)
         {
             GameObject previewGameObject;
-            var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
             if (prefab == null)
             {
                 Debug.LogError($"Missing itemId {itemId}");
@@ -430,6 +747,67 @@ namespace IEC
             return previewGameObject;
         }
     }
+
+    [Serializable]
+    public class PillarSpawnArea : SpawnArea
+    {
+
+        public const string pillarID = "food_190";
+        public const string pillarTopID = "food_191";
+
+        public float rotationEachLayer = -20f;
+        public float spacingEachLayer = 0.6f;
+        public float objSpacingFromPillar = 1.5f;
+         
+        public int verticalCount = 1;
+        
+        public override SpawnAreaShapes SpawnShape => SpawnAreaShapes.Pillar;
+        public override GameObject CreatePreview(GameplayItemPrefabConfig itemPrefabConfig, string folderPathItemInGame, string itemId)
+        {
+            GameObject previewGameObject;
+            
+            //var prefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, itemId);
+            var prefab = itemPrefabConfig.ListItemDefinition.Find(x => x.GetId() == itemId).GetPrefab();
+            if (prefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            var pillarPrefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, pillarID);
+            if (pillarPrefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            var pillarTopPrefab = Utilities.FindAssetInFolder<GameObject>(folderPathItemInGame, pillarTopID);
+            if (pillarTopPrefab == null)
+            {
+                Debug.LogError($"Missing itemId {itemId}");
+                return null;
+            }
+            
+            previewGameObject = new GameObject("Preview");
+            previewGameObject.transform.position = spawnPos;
+            
+            
+            for (int i = 0; i < verticalCount; i++)
+            {
+                CreateItems(itemPrefabConfig,
+                    i == verticalCount - 1 ? pillarTopPrefab : pillarPrefab, 
+                    Vector3.zero + Vector3.up * spacingEachLayer * i, previewGameObject, pillarID, 1, rotationEachLayer * i);
+            }
+            
+            CreateItems(itemPrefabConfig,
+                prefab, 
+                Vector3.zero + Vector3.up * (spacingEachLayer * verticalCount + objSpacingFromPillar), previewGameObject, itemId, 1);
+
+
+            return previewGameObject;
+        }
+    }
+    
     public enum SpawnAreaShapes
     {
         None,
@@ -437,7 +815,8 @@ namespace IEC
         Circle,
         Triangle,
         Hexagon,
-        Pyramid
+        Pyramid,
+        Pillar
     }
 
     public enum SpawnTypes

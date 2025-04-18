@@ -32,7 +32,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1.05, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4461363756851170}
   - {fileID: 7428106103277004980}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -93,9 +92,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isAutoScale: 0
   reductionFactor: 1
-  targetObject: {fileID: 23135576123719881}
+  targetObject: {fileID: 0}
   objectToScale: {fileID: 8601527814881235931}
---- !u!1 &1871142729299760
+--- !u!1 &7808748664721830414
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -103,47 +102,47 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 4461363756851170}
-  - component: {fileID: 33908167428287113}
-  - component: {fileID: 23135576123719881}
-  - component: {fileID: 64641626733017872}
+  - component: {fileID: 7428106103277004980}
+  - component: {fileID: 5817019800860469009}
+  - component: {fileID: 8601527814881235931}
+  - component: {fileID: 6962378486388477601}
   m_Layer: 0
-  m_Name: Burger_Wrapped_Feast_Yellow
+  m_Name: Burger_Wrapped_Feast_Yellow (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &4461363756851170
+  m_IsActive: 1
+--- !u!4 &7428106103277004980
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871142729299760}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3.686372, y: 3.686372, z: 3.686372}
+  m_GameObject: {fileID: 7808748664721830414}
+  m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.018, y: 0.0273, z: 0.0498}
+  m_LocalScale: {x: 20.384085, y: 14.766269, z: 19.834415}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4197399299323647}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &33908167428287113
+  m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+--- !u!33 &5817019800860469009
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871142729299760}
-  m_Mesh: {fileID: 4300000, guid: 23b6dae89342f284193f9b98d188c3f9, type: 2}
---- !u!23 &23135576123719881
+  m_GameObject: {fileID: 7808748664721830414}
+  m_Mesh: {fileID: 246237887660379932, guid: 297d8738c64c21a4c9cb6999ef302ede, type: 3}
+--- !u!23 &8601527814881235931
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871142729299760}
+  m_GameObject: {fileID: 7808748664721830414}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -157,7 +156,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 79382f84c4aee6e49a41b7f5ae135b4e, type: 2}
+  - {fileID: 2100000, guid: 560d1d4e076a05d45bbc606fe3c0d63e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -169,7 +168,7 @@ MeshRenderer:
   m_PreserveUVs: 0
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
-  m_StitchLightmapSeams: 0
+  m_StitchLightmapSeams: 1
   m_SelectedEditorRenderState: 3
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
@@ -179,119 +178,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &64641626733017872
+--- !u!64 &6962378486388477601
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1871142729299760}
+  m_GameObject: {fileID: 7808748664721830414}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 0
-  m_Mesh: {fileID: 4300000, guid: 23b6dae89342f284193f9b98d188c3f9, type: 2}
---- !u!1001 &4903010898134343546
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 4197399299323647}
-    m_Modifications:
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 20.384085
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 14.766269
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 19.834415
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -0.018
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.0273
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.0498
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2636198111477453275, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_CookingOptions
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2906160857377828212, guid: ed9999532578f4e4eb885f35c4d12284,
-        type: 3}
-      propertyPath: m_Name
-      value: Burger_Wrapped_Feast_Yellow (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 2636198111477453274, guid: ed9999532578f4e4eb885f35c4d12284, type: 3}
-  m_SourcePrefab: {fileID: 100100000, guid: ed9999532578f4e4eb885f35c4d12284, type: 3}
---- !u!4 &7428106103277004980 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2530760526851880910, guid: ed9999532578f4e4eb885f35c4d12284,
-    type: 3}
-  m_PrefabInstance: {fileID: 4903010898134343546}
-  m_PrefabAsset: {fileID: 0}
---- !u!23 &8601527814881235931 stripped
-MeshRenderer:
-  m_CorrespondingSourceObject: {fileID: 3698648911830437025, guid: ed9999532578f4e4eb885f35c4d12284,
-    type: 3}
-  m_PrefabInstance: {fileID: 4903010898134343546}
-  m_PrefabAsset: {fileID: 0}
+  m_Mesh: {fileID: 3521592072150490865, guid: 603224456d3e20844a7fd6db73cd8bf0, type: 3}

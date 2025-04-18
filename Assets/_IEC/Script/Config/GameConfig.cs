@@ -17,8 +17,8 @@ namespace IEC
         public int maxHealth = 5;
         public int levelUnlockLife = 10;
         public int timeRefillLife = 15;//By Minutes
-        public int goldToRefill = 250;
-        public int goldToAddOneLife = 100;
+        public int goldToRefill = 900;
+        public int goldToAddOneLife = 200;
         public int goldLevelWin = 10;
         public int levelWinBackHome = 10;
         [Header("Encrypted, Target by Name")]
@@ -32,9 +32,11 @@ namespace IEC
         public ThemeConfig themeConfig;
         [Header("SwallowHole")]
         public PrefabConfig prefabConfig;
-        public GameplayDebugConfig gameplayDebugConfig;
         public Material waveWaterMaterial;
         public HybridConfig hybridConfig;
+
+        [Header("Special Object Spawn Config")]
+        public SpecialObjectConfig specialObjectConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
         [Header("Lucky Wheel Config")]
@@ -43,6 +45,8 @@ namespace IEC
         public DataPiggyBankConfig dataPiggyBankConfig;   
         [Header("Daily Reward Config")]
         public DataDailyReward dataDailyRewardConfig;
+        [Header("Progress Reward Config")]
+        public ProgressRewardConfig progressRewardConfig;
         [Header("City Build")] 
         public int brickWinReward = 15;
         public BuildCityConfig buildCityConfig;
@@ -64,6 +68,13 @@ namespace IEC
         public PopupAddHelperConfig popupAddHelperConfig;
         [Space(10)]
         public EffectRewardClaimConfig dataEffectRewardClaimConfig;
+
+        [Header("Chest")] 
+        public AllChestConfig allChestConfig;
+
+        [Header("Booster")] 
+        public AllBoosterConfig AllBoosterConfig;
+
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here

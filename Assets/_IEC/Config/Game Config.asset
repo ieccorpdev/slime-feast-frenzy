@@ -15,8 +15,8 @@ MonoBehaviour:
   maxHealth: 5
   levelUnlockLife: 10
   timeRefillLife: 15
-  goldToRefill: 250
-  goldToAddOneLife: 100
+  goldToRefill: 900
+  goldToAddOneLife: 200
   goldLevelWin: 10
   levelWinBackHome: 10
   levelConfigName: LevelConfig.asset
@@ -28,15 +28,18 @@ MonoBehaviour:
   themeConfigName: ThemeConfig.asset
   themeConfig: {fileID: 11400000, guid: 7b4a97fe4a134ac49af40953a7358166, type: 2}
   prefabConfig: {fileID: 11400000, guid: 812db71aeabcbfa45b4abf07413290b6, type: 2}
-  gameplayDebugConfig: {fileID: 0}
   waveWaterMaterial: {fileID: 2100000, guid: c52413938de4a8a4a855d475300d4c41, type: 2}
   hybridConfig: {fileID: 11400000, guid: bd9b5bf7c657dd74ea98bafda3afd8d6, type: 2}
+  specialObjectConfig: {fileID: 11400000, guid: c1d7e1b6c135f784f9e5145ff8380297,
+    type: 2}
   playerAvatarConfig: {fileID: 11400000, guid: e85e193b70060164cb1a6c9fed61e1e5, type: 2}
   dataRewardLuckyWheelConfig: {fileID: 11400000, guid: a00b1c60d63b0664f81dd834986b65cd,
     type: 2}
   dataPiggyBankConfig: {fileID: 11400000, guid: c33510cc8a5c5e7428f0ef11a51de965,
     type: 2}
   dataDailyRewardConfig: {fileID: 11400000, guid: f24955c5f5a76854fa48900f0d80cf03,
+    type: 2}
+  progressRewardConfig: {fileID: 11400000, guid: dba4ee27e2fe1f94aaf5d1f93df829f2,
     type: 2}
   brickWinReward: 15
   buildCityConfig: {fileID: 11400000, guid: 2b6ab9017486fde4d902ab21a7b040e9, type: 2}
@@ -61,23 +64,21 @@ MonoBehaviour:
   levelBeginnerPackWin: 120000001e00000032000000
   levelNoAdsPackWin: 19000000280000003c00000064000000
   listAllIapPackConfig:
-  - {fileID: 11400000, guid: e7bbf96fbf085744ebb29bea8041da77, type: 2}
-  - {fileID: 11400000, guid: 767914f5dbdf0e54092a9fea47b17eac, type: 2}
-  - {fileID: 11400000, guid: 9e3001f31117f3e42baceb83dbea8c75, type: 2}
-  - {fileID: 11400000, guid: 28e2991a41fb55746b5368277e67c2da, type: 2}
-  - {fileID: 11400000, guid: 937ed1d8922d94c4bba5d84f7249b4e6, type: 2}
-  - {fileID: 11400000, guid: ff3fea66b1d2a0a499918764625fd389, type: 2}
-  - {fileID: 11400000, guid: 75c95beba12e67647b602e49a0622e2b, type: 2}
-  - {fileID: 11400000, guid: 63d18b48a84de0444b9ad9bce164c683, type: 2}
   - {fileID: 11400000, guid: f38feb91fc021774e96caa97169e673b, type: 2}
   - {fileID: 11400000, guid: 995ea122a5a066343b36438838059fae, type: 2}
   - {fileID: 11400000, guid: be78dea869336ca4c8399af6235f463a, type: 2}
   - {fileID: 11400000, guid: 9debcb6219a497447828b354f1d84408, type: 2}
   - {fileID: 11400000, guid: 5088a3780da874f45ab7cb876f4cf984, type: 2}
   - {fileID: 11400000, guid: c55088700b4939e48908aba21880155d, type: 2}
-  - {fileID: 11400000, guid: f8de64eec49690347bf78283811edc39, type: 2}
-  - {fileID: 11400000, guid: f66e54e2d6e8a494cbf9499877d94798, type: 2}
-  - {fileID: 11400000, guid: f792c59b41266c4478a7908d09dc6aa3, type: 2}
+  - {fileID: 11400000, guid: c2d69803a53bc104b83424c51cd88a8b, type: 2}
+  - {fileID: 11400000, guid: c2a79bc0613a2714991bef3baa2331c3, type: 2}
+  - {fileID: 11400000, guid: 40840b4afe8422a4ba4321a35c7dc5ba, type: 2}
+  - {fileID: 11400000, guid: b78d913d1a1eae545ab93fe47816b8bd, type: 2}
+  - {fileID: 11400000, guid: fcf4c07acf3c8fe45af38f48d71bc235, type: 2}
+  - {fileID: 11400000, guid: 7fd51577ed53e644fa41972d46856052, type: 2}
+  - {fileID: 11400000, guid: bf726564e1aeede49969956307b2ea04, type: 2}
+  - {fileID: 11400000, guid: 1801085b785d12a47a43bc129094cd0f, type: 2}
+  - {fileID: 11400000, guid: bb4cdb532dc5bb54fadc3385ec3cb5e6, type: 2}
   usingLevelGDV1: 1
   levelStartHardLevel: 76
   loseBeforeAllowSkipHardLevel: 1
@@ -87,3 +88,5 @@ MonoBehaviour:
     type: 2}
   dataEffectRewardClaimConfig: {fileID: 11400000, guid: ada35550eac0bc640be05170a8a20e60,
     type: 2}
+  allChestConfig: {fileID: 11400000, guid: 7881c2ab18568904a8a886f0f008bb8a, type: 2}
+  AllBoosterConfig: {fileID: 11400000, guid: d2f50760c3bc9e2408fa88a7e4afe307, type: 2}

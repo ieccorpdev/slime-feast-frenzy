@@ -120,7 +120,24 @@ namespace _IEC.Features.Gameplay
                 }
 
                 var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
+                if (!string.IsNullOrEmpty(itemData.groupID))
+                {
+                    GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
+                        .Find(obj => obj.name == itemData.groupID)?.gameObject;
+                    if (groupHolder == null)
+                    {
+                        groupHolder = new GameObject(itemData.groupID);
+                        groupHolder.transform.parent = levelObjectHolder;
+                        groupHolder.transform.position = itemData.groupPosition;
+                    }
+                    
+                    itemTransform.parent = groupHolder.transform;
+                }
+                else
+                {
+                    itemTransform.parent = levelObjectHolder;
+                }
+
                 itemComponent.LoadData(itemData, itemDefinition);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
@@ -195,6 +212,7 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
+                bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
                 foreach (var spawnData in itemSpawn.listSpawnDatas)
                 {
                     var newItem = prefab.Spawn();
@@ -212,12 +230,36 @@ namespace _IEC.Features.Gameplay
                     }
 
                     var itemTransform = itemComponent.transform;
+                    
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
+
+                    var itemData = itemComponent.ItemData;
+                    if (!string.IsNullOrEmpty(itemData.groupID))
+                    {
+                        GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
+                            .Find(obj => obj.name == itemData.groupID)?.gameObject;
+                        if (groupHolder == null)
+                        {
+                            groupHolder = new GameObject(itemData.groupID);
+                            groupHolder.transform.parent = levelObjectHolder;
+                            groupHolder.transform.position = itemData.groupPosition;
+                        }
+                    
+                        itemTransform.parent = groupHolder.transform;
+                    }
+                    
                     res.Add(itemComponent);
                     TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
                     waterWave.WaterMaterial = Config.waveWaterMaterial;
-                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y;
+
+                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
+                    float objectOffset = 0;
+                    if (newLogicWhirlpool)
+                    {
+                        objectOffset = -objectSize / 2;
+                    }
+                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                     #if UNITY_EDITOR
                     waterWave.OnValidate();
                     #endif
@@ -231,7 +273,47 @@ namespace _IEC.Features.Gameplay
         }
 
         public static List<BaseItem> SpawnBoosterItems(int count, Transform levelObjectHolder,
-            ItemDefinition itemDefinition, ItemData itemData)
+            BoosterData boosterData)
+        {
+            var res = new List<BaseItem>();
+            var prefab = boosterData.itemDefinition.GetPrefab();
+            if (prefab == null)
+            {
+                return res;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var newItem = prefab.Spawn();
+                var itemComponent = newItem.GetComponent<BaseBoosterItem>();
+                if (itemComponent == null)
+                {
+                    itemComponent = newItem.AddComponent<BaseBoosterItem>();
+                }
+                
+                itemComponent.SetBoosterData(boosterData);
+                
+                var itemData = new ItemData()
+                {
+                    itemId = boosterData.itemDefinition.GetId(),
+                    position = Vector3.zero, //Do random pos later
+                    eulerAngle = Vector3.zero,
+                    localScale = Vector3.one,
+                    isStartKinematic =  true,
+                };
+
+                var itemTransform = itemComponent.transform;
+                itemTransform.parent = levelObjectHolder;
+                itemComponent.LoadData(itemData, boosterData.itemDefinition);
+                res.Add(itemComponent);
+                itemIds.Add(itemData.itemId);
+            }
+
+            return res;
+        }
+        
+        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder,
+            ItemDefinition itemDefinition)
         {
             var res = new List<BaseItem>();
             var prefab = itemDefinition.GetPrefab();
@@ -250,8 +332,28 @@ namespace _IEC.Features.Gameplay
                 }
 
                 var itemTransform = itemComponent.transform;
+                var itemData = new ItemData()
+                {
+                    itemId = itemDefinition.GetId(),
+                    position = Vector3.zero, //Do random pos later
+                    eulerAngle = Vector3.zero,
+                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
+                    isStartKinematic =  false,
+                };
+                
                 itemTransform.parent = levelObjectHolder;
                 itemComponent.LoadData(itemData, itemDefinition);
+
+                itemComponent.ItemData.position =
+                    FindValidSpawnPosition(
+                        bounds,
+                        itemComponent.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                        1000,
+                        itemComponent.gameObject.layer
+                    );
+                
+                itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
+                
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
@@ -407,6 +509,35 @@ namespace _IEC.Features.Gameplay
 //
         //    return res;
         //}
+        
+        public static Vector3 FindValidSpawnPosition(Bounds bounds, float checkRadius, int maxAttempts, LayerMask itemLayer) {
+            for (int i = 0; i < maxAttempts; i++) {
+                Vector3 randomPos = new Vector3(
+                    Random.Range(bounds.min.x, bounds.max.x),
+                    0,
+                    Random.Range(bounds.min.z, bounds.max.z)
+                );
+
+                if (IsPositionAvailable(randomPos, checkRadius, itemLayer)) {
+                    return randomPos;
+                }
+            }
+
+            return Vector3.zero; // Couldn't find a free spot
+        }
+        
+        public static bool IsPositionAvailable(Vector3 position, float checkRadius, LayerMask itemLayerMask) {
+            // Check for any colliders in the area
+            Collider[] hits = Physics.OverlapSphere(position, checkRadius);
+    
+            foreach (var hit in hits) {
+                if (hit.transform.parent.GetComponent<BaseItem>() != null) {
+                    return false; // Space is occupied
+                }
+            }
+
+            return true; // No BaseItem found nearby
+        }
 
         public static LevelData CreateLevelData(LevelConfigModel levelConfigModel, int level)
         {

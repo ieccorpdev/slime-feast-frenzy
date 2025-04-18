@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using MoreMountains.NiceVibrations;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
@@ -28,11 +30,15 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
+	[SerializeField] private ParticleSystem waterSplashFx;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
-	[SerializeField]private Animator characterAnimator;
-
+	[SerializeField]public Animator characterAnimator;
+	[SerializeField]public Animator sharkBiteAnimator;
+	[SerializeField]private Transform characterParent;
+	[SerializeField]private Transform sharkBiteParent;
+	
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
@@ -40,7 +46,8 @@ public class Hole : _BaseBehaviour
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel);
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
 	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
 
@@ -49,7 +56,11 @@ public class Hole : _BaseBehaviour
 	private Vector3 _defaultScaleGraphic;
 	private Vector3 _defaultScaleCanvas;
 	private float _baseSpeed;
+	private bool onSharkForm;
+	private bool onInitAnimNewGame;
 
+	private float _speedBoosterIncrease;
+	private float timeEffectSpeedBooster;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -72,14 +83,90 @@ public class Hole : _BaseBehaviour
 	{
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
+	private float cTime = 0;
+	public bool readyForSharkBite;
+	public void Update()
+	{
+		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
+		{
+			if (timeEffectSpeedBooster > 0)
+			{
+				timeEffectSpeedBooster =
+					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
+			}
+		}
 
+		CheckSharkForm();
+		UpdateGravityBySpeed();
+	}
+
+	private void UpdateGravityBySpeed()
+	{
+		//This function must stay in another class
+		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
+	}
+	public void TriggerdBite()
+	{
+		if (readyForSharkBite && !onSharkForm)
+		{
+			float randomRotationY = 0f;
+			if (UnityEngine.Random.value < 0.5f)
+			{
+				randomRotationY = UnityEngine.Random.Range(0f, 360f);
+				sharkBiteAnimator.Play( "Bite" );
+			}
+			else
+			{
+				sharkBiteAnimator.Play( "BiteRotate");
+			}
+			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
+			readyForSharkBite = false;
+		}
+	}
+	private void CheckSharkForm()
+	{
+		cTime += Time.deltaTime;
+		if (cTime > 0.1f)
+		{
+			cTime = 0f;
+			if (!onInitAnimNewGame) return;
+			var obj =  GetObjectInDistanceAnimation();
+			if (obj != null)
+			{
+				if (onSharkForm)
+				{
+					onSharkForm = false;
+					TurnSharkToHole();
+				}
+			}
+			else
+			{
+				if (!onSharkForm)
+				{
+					onSharkForm = true;
+					TurnHoleToShark();
+				}
+			}
+		}
+	}
+
+	public float GetDistanceToObject()
+	{
+		return Speed * 1.1f  + Level * 0.4f;
+	}
 	void OnCollectLightningBooster(object param)
 	{
-		var data = (MagicPouchBooster)param;
-		if (data.type == MagicPouchBoosterType.Lightning)
-		{
-			lightningVfx.Play();
-		}
+		// var data = (MagicPouchBooster)param;
+		// if (data.type == MagicPouchBoosterType.Lightning)
+		// {
+		// 	lightningVfx.Play();
+		// }
+	}
+
+	public void OnCollectSpeedBooster(float boosterIncrease, float timeEffect)
+	{
+		_speedBoosterIncrease = boosterIncrease;
+		timeEffectSpeedBooster += timeEffect;
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -135,6 +222,7 @@ public class Hole : _BaseBehaviour
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
+		
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
@@ -149,9 +237,62 @@ public class Hole : _BaseBehaviour
 			myTransform.localScale = targetScale;
 			callback?.Invoke();
 		}
+
 		holeController.SetScale(targetSize);
 	}
+	
+	#if UNITY_EDITOR
+	
+	[PropertySpace(30)]
+	
+	[Button("Reset Level")]
+	public void DebugResetLevel()
+	{
+		//LevelUp(0, 1);
+		SetLevel(0,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
 
+	private bool LevelMax => (Settings.UseSlowXp
+		? Level >= Settings.RequiredXpPerLevelSlow.Length - 1
+		: Level >= Settings.RequiredXpPerLevel.Length - 1);
+	[ShowIf("@!LevelMax")]
+	[Button("Level Up")]
+	public void DebugLevelUp()
+	{
+		//LevelUp(0, 1);
+		SetLevel(Level + 1,false);
+		
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	[ShowIf("@(Level > 0)")]
+	[Button("Level Down")]
+	public void DebugLevelDown()
+	{
+		//LevelUp(0, -1);
+		SetLevel(Level - 1,false);
+		FindObjectOfType<CameraController>().OnUpdateCameraTargetEditMode(new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+		});
+	}
+	
+	#endif
+	
 	public void LevelUp(int remaining, int count = 1)
 	{
 		SetLevel(Level + count,true);
@@ -261,10 +402,12 @@ public class Hole : _BaseBehaviour
 	{
 		txtLevel.gameObject.SetActive(true);
 	}
-
+	public float GetWorldRadius()
+	{
+		return transform.localScale.x / 2f;
+	}
 	public void OnNewGame()
 	{
-		AnimationTurnHole();
 		txtLevel.gameObject.SetActive(true);
 	}
 	private void TurnOffAllVfx()
@@ -273,22 +416,80 @@ public class Hole : _BaseBehaviour
 		sizeUpVfx.Stop();
 	}
 
+	#region Character Animation
+	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
 	public void ResetCharacter()
 	{
+		onInitAnimNewGame = false;
 		holePipe.transform.localScale = Vector3.zero;
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
-		characterAnimator.Play("Slime_Idle");
-	}
-	public void AnimationTurnHole()
-	{
-		holePipe.gameObject.SetActive(true);
-		characterAnimator.SetTrigger("Trans");
-		holePipe.DOScale(Vector3.one, 1.0f);
+		characterParent.gameObject.SetActive(true);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		StartAnimationCharacter();
 	}
 
-	public float GetWorldRadius()
+	public void StartAnimationCharacter()
 	{
-		return transform.localScale.x / 2f;
+		var obj = GetObjectInDistanceAnimation();
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterParent.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		readyForSharkBite = true;
+		if (obj != null)//Have object near
+		{
+			characterAnimator.Play("Spawn_Game");
+			//Hole call from EndAnimationCharacter
+			onSharkForm = false;
+		}
+		else
+		{
+			onInitAnimNewGame = true;
+			holePipe.transform.localScale = Vector3.zero;
+			onSharkForm = true;
+			characterAnimator.Play("HoleToShark");
+		}
 	}
+	private BaseItem GetObjectInDistanceAnimation()
+	{
+		return GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
+			x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
+	}
+
+	public void PlayEffectSharkDriveIn()
+	{
+		//Apply position because animation diff with pos
+		waterSplashFx.Play();
+		holePipe.gameObject.SetActive(true);
+		holePipe.DOScale(Vector3.one, 1.0f);
+	}
+	public void EndAnimationCharacter()
+	{
+		characterParent.gameObject.SetActive(false);
+		onInitAnimNewGame = true;
+		readyForSharkBite = true;
+	}
+	public void TurnHoleToShark()
+	{
+		readyForSharkBite = false;
+		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
+		holePipe.DOScale(Vector3.zero, 0.5f);
+		characterParent.gameObject.SetActive(true);
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.Play("HoleToShark");
+	}
+	public void TurnSharkToHole()
+	{
+		readyForSharkBite = false;
+		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
+		holePipe.DOScale(Vector3.one, 1.0f);
+		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
+		characterParent.transform.localPosition = new Vector3(0, 0, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.Play("Dive Into Water 0");
+	}
+	#endregion
+
+
 }

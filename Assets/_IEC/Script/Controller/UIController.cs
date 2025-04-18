@@ -37,6 +37,7 @@ namespace IEC
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     // UI.ShowScreen(UI.ScreenLevelLose);
+                    Locator.Game.ScreenLevelLose.SetupPanelShow(param);
                     UI.ShowScreen(Locator.Game.ScreenLevelLose);
                     break;
             }

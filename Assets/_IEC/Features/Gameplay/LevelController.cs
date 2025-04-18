@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Booster;
@@ -9,7 +10,10 @@ using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
 using MoreMountains.NiceVibrations;
+using UnityEditor;
 using UnityEngine;
+using BoosterData = IEC.BoosterData;
+using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
 {
@@ -44,15 +48,20 @@ namespace _IEC.Features.Gameplay
         private LevelDataSO m_LevelConfig;
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
+        private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
+
+        private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
         public bool IsShowEnding
         {
             get => _isShowEnding;
             set => _isShowEnding = value;
         }
+
+        public int SpecialProgressRewardObjCollected { get; private set; } = 0;
 
         private void OnEnable()
         {
@@ -104,6 +113,13 @@ namespace _IEC.Features.Gameplay
          
             m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
                 ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
+
+            if (EditorPrefs.GetBool("isPlayTest"))
+            {
+                m_LevelConfig = Config.levelConfig.playTestData;
+                EditorPrefs.SetBool("isPlayTest", false);
+            }
+            
             if (m_LevelConfig == null)
             {
                 Debug.LogError("Level Data is null");
@@ -117,7 +133,6 @@ namespace _IEC.Features.Gameplay
             }
             
             m_AllItems.Clear();
-            Reset();
             m_AllItems = LevelHelper.SpawnAllItem(m_LevelConfig.levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
@@ -126,10 +141,18 @@ namespace _IEC.Features.Gameplay
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
 
+            m_AllSpecialItems.Clear();
+            m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
+                GroundExtend.CalculateBounds(m_AllItems),
+                Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
+                allItemHolder,
+                Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
+            );
+
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
+            Reset();
             playerHole.HideLevelText();
-            
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);
@@ -147,6 +170,15 @@ namespace _IEC.Features.Gameplay
                     holeTransform =  playerHole.transform
                 });
             }
+
+            if (addBoosterAction != null)
+            {
+                addBoosterAction.Invoke();
+                addBoosterAction = null;
+            }
+            
+            //Check spawn booster items
+            OnSpawnBoosterItems(null);
         }
         private void Reset()
         {
@@ -158,6 +190,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopScaleByHelper();
             playerHole.StopMagnetHelper();
             playerHole.Reset();
+            SpecialProgressRewardObjCollected = 0;
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -178,7 +211,9 @@ namespace _IEC.Features.Gameplay
 
         public Hole GetHolePlayer() => playerHole;
         
-        public List<BaseItem> GetAllItems() => m_AllItems;
+        public List<BaseItem> GetAllItems() => m_AllItems
+            .Concat(m_AllSpecialItems)
+            .Concat(m_AllBoosters).ToList();
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
 
@@ -225,12 +260,18 @@ namespace _IEC.Features.Gameplay
 
         private bool IsSpecialObject(string itemId)
         {
-            return itemId.Contains("SpecialItem");
+            //return itemId.Contains("SpecialItem");
+            return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
         }
         
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
+            if (data.itemID.Contains("Ocean"))
+            {
+                SpecialProgressRewardObjCollected++;
+            }
+
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
@@ -277,27 +318,57 @@ namespace _IEC.Features.Gameplay
 
         private void OnCollectedBoosterItem(object param)
         {
-            var data = (MagicPouchBooster)param;
-            if (data.type != MagicPouchBoosterType.Lightning) return;
-            playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+            // var data = (MagicPouchBooster)param;
+            // if (data.type != MagicPouchBoosterType.Lightning) return;
+            var data = (BoosterData)param;
+            addBoosterAction +=
+                () =>
+                {
+                    if (data.boosterType == ResourceType.EvolveStone)
+                    {
+                        playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                    }
+                    else if (data.boosterType == ResourceType.WindSurf)
+                    {
+                        playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                    }
+                };
+
+            if (CurrentState == State.Play)
+            {
+                addBoosterAction.Invoke();
+                addBoosterAction = null;
+            }
             //SoundController.PlaySound(new AudioInfo(Config.soundConfig.boosterLightning));
         }
 
         private void OnSpawnBoosterItems(object param)
         {
-            var data = (SpawnBoosterEventData)param;
+            if (PlayerData.currentBoosterStreak <= 0)
+                return;
+            
+            //var data = (SpawnBoosterEventData)param;
             
             m_AllBoosters.Clear();
-            //m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
-            //m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
-
-            //foreach (var boosterItem in m_AllBoosters)
-            //{
-            //    var randomPos = GetRandomPositionInCircle(playerHole.transform.position, Config.magicPouchConfig.maxDistanceFromHole, playerHole.GetWorldRadius() + 0.25f);
-            //    var booster = (IBoosterItem)boosterItem;
-            //    booster.Init();
-            //    booster.MoveToPos(randomPos);
-            //}
+            // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
+            // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
+            //
+            foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+            {
+                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
+                    Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3), 
+                    allItemHolder,
+                    booster
+                ));
+            }
+            
+            foreach (var boosterItem in m_AllBoosters)
+            {
+                var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
+                var booster = (IBoosterItem)boosterItem;
+                booster.Init();
+                booster.MoveToPos(randomPos);
+            }
         }
 
         //List<BaseItem> SpawnBoosterItem(SpawnBoosterEventData data, MagicPouchBoosterType type)

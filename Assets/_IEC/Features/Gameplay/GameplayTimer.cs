@@ -23,7 +23,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image frozenMark2;
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         
-        private float m_CurrentTime;
+        [SerializeField]private float m_CurrentTime;
         private float m_MaxTime;
         private State m_CurrentState;
         private RemainingTimeState m_CurrentRemainingTimeState;
@@ -36,7 +36,8 @@ namespace _IEC.Features.Gameplay
         public event Action OnReset;
         public event Action<float> OnTimeUpdate;
         public event Action<bool> OnUpdateFrozenState; 
-
+        
+        public RemainingTimeState CurrentRemainingTimeState => m_CurrentRemainingTimeState;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
@@ -102,10 +103,10 @@ namespace _IEC.Features.Gameplay
 
         private void OnCollectedBooster(object param)
         {
-            var data = (MagicPouchBooster)param;
-            if (data.type != MagicPouchBoosterType.Chrono) return;
-            PlayAddedTimeAnimation(Mathf.FloorToInt(data.effectValue));
-            //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
+            // var data = (MagicPouchBooster)param;
+            // if (data.type != MagicPouchBoosterType.Chrono) return;
+            // PlayAddedTimeAnimation(Mathf.FloorToInt(data.effectValue));
+            // //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
         }
         
         private void StartFreezeTime()
@@ -160,7 +161,7 @@ namespace _IEC.Features.Gameplay
 #if UNITY_EDITOR
                     if (Input.GetKeyDown(KeyCode.T))
                     {
-                        m_CurrentTime = 10;
+                        m_CurrentTime = 5;
                     }
 #endif
                     if (m_FrozenTimeCoolDown > 0)
@@ -326,18 +327,19 @@ namespace _IEC.Features.Gameplay
         {
             if (newState == m_CurrentRemainingTimeState) return;
             txtCoolDown.color = Config.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
-            // switch (newState)
-            // {
-            //     case RemainingTimeState.Safe:
-            //         imgProgress.sprite = spriteSafe;
-            //         break;
-            //     case RemainingTimeState.Warning:
-            //         imgProgress.sprite = spriteWarning;
-            //         break;
-            //     case RemainingTimeState.Dangerous:
-            //         imgProgress.sprite = spriteDangerous;
-            //         break;
-            // }
+            switch (newState)
+            {
+                case RemainingTimeState.Safe:
+                    imgProgress.sprite = spriteSafe;
+                    break;
+                case RemainingTimeState.Warning:
+                    imgProgress.sprite = spriteWarning;
+                    break;
+                case RemainingTimeState.Dangerous:
+                    imgProgress.sprite = spriteDangerous;
+                    break;
+            }
+            m_CurrentRemainingTimeState = newState;
         }
         public enum State
         {
