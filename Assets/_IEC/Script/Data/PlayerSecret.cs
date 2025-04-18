@@ -145,11 +145,15 @@ namespace IEC
         #region Booster
 
         public int currentBoosterStreak;
+        public int levelLostStreak;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
 
         public void IncreaseBoosterStreak()
         {
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
+                return;
+
+            if (level == levelLostStreak)
                 return;
             
             currentBoosterStreak++;
@@ -159,7 +163,8 @@ namespace IEC
         {
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
                 return;
-            
+
+            levelLostStreak = level;
             currentBoosterStreak = 0;
         }
 

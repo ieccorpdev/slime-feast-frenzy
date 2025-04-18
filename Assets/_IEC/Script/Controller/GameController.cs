@@ -55,6 +55,7 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
+                    PlayerData.IncreaseBoosterStreak();
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else
@@ -64,7 +65,6 @@ namespace IEC
                     Pool.Get<ConfettiGroup>().ShowConfetti();
                     PlayerData.Vibrate(HapticTypes.Success);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
-                    PlayerData.IncreaseBoosterStreak();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
