@@ -27,6 +27,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsFour;
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
+    public PositionGroupsRewardDataPanel groupsSeven;
     // Start is called before the first frame update
     void Start()
     {
@@ -75,7 +76,7 @@ public class ClaimBonusRewardPanel : BasePopup
             if (listRewardUI[i].haveData)
             {
                 index++;
-                listRewardUI[i].targetAnchorPos = groups.GetRectTransformByIndex(index).anchoredPosition;
+                listRewardUI[i].targetAnchorPos = groups.GetRectTransformByIndex(index).transform.position;
             }
         }
     }
@@ -130,14 +131,15 @@ public class ClaimBonusRewardPanel : BasePopup
                 {
                     TweenControl.GetInstance().DelayCall(itm.transform,inx*0.07f, ()=>
                     {
-                        itm.GetComponent<RectTransform>().anchoredPosition = chestAnim.GetComponent<RectTransform>().anchoredPosition;
+                        itm.GetComponent<RectTransform>().transform.position = chestAnim.GetComponent<RectTransform>().transform.position;
                     }, () =>
                     {
                         TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f, () =>
                         {
                             itm.transform.DOPunchScale(Vector3.one*0.2f, 0.4f,1,0.3f);
                         });
-                        TweenControl.GetInstance().MoveRect(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
+
+                        TweenControl.GetInstance().Move(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
                     });
                     inx++;
                 }
@@ -182,6 +184,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public RectTransform Pos4;
     public RectTransform Pos5;
     public RectTransform Pos6;
+    public RectTransform Pos7;
 
     public RectTransform GetRectTransformByIndex(int index)
     {
@@ -198,6 +201,8 @@ public class ClaimBonusRewardPanel : BasePopup
             case 5:
                 return Pos5;
             case 6:
+                return Pos6;
+            case 7:
                 return Pos6;
         }
         return Pos1;

@@ -19,6 +19,7 @@ namespace IEC
 
         private bool m_IsStart = true;
         private int m_TabCount;
+        private bool isClick = false;
 
         public BigHomeTab BigHomeTab => m_BigTab;
         
@@ -60,6 +61,15 @@ namespace IEC
                 tab.Init();
                 tab.onClick = () =>
                 {
+                    if (isClick) return;
+                    if (tab.type != Game.hybrid.currentTab)
+                    {
+                        isClick = true;
+                        DOVirtual.DelayedCall(0.5f, () =>
+                        {
+                            isClick = false;
+                        });
+                    }
                     var lastTabType = Game.hybrid.currentTab;
                     Game.hybrid.currentTab = tab.type;
                     var index = tab.transform.GetSiblingIndex();

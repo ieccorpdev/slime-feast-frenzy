@@ -1,4 +1,6 @@
+using _IEC.Features.Common.Extension;
 using DG.Tweening;
+using IEC;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay
@@ -7,6 +9,8 @@ namespace _IEC.Features.Gameplay
     {
         private string TWEEN_ANIM_MOVE => "TWEEN_ANIM_MOVE" + gameObject.GetInstanceID();
         public virtual void ApplyEffect() { }
+        
+        public BoosterData BoosterData { get; private set; }
 
         public void Init()
         {
@@ -23,7 +27,19 @@ namespace _IEC.Features.Gameplay
                 }
             }
         }
-        
+
+        public void SetBoosterData(BoosterData boosterData)
+        {
+            BoosterData = boosterData;
+        }
+
+        public override void OnCollected(Vector3 position)
+        {
+            base.OnCollected(position);
+            
+            this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, BoosterData);
+        }
+
         public virtual void MoveToPos(Vector3 pos)
         {
             DOTween.Kill(TWEEN_ANIM_MOVE);

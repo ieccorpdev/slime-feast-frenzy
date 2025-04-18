@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Common.Extension;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.SocialPlatforms;
@@ -77,21 +78,26 @@ namespace IEC
 
             });
             SetEvent(closeBtn2, () => { Hide(); });
+            SetEvent(btnContinue, HideButtonFunction);
         }
-
+        
+        void HideButtonFunction()
+        {
+            this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
+            Hide();
+        }
         public override void Show()
         {
             base.Show();
-            //GamePlay.SetPauseGame(true);
-
             foreach (var btn in settingButtons)
             {
                 btn.UpdateUI();
             }
+            this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
         }
-
         public override void Hide()
         {
+            this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             base.Hide();
         }
     }

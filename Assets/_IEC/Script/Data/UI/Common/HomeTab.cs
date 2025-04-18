@@ -24,6 +24,7 @@ namespace IEC
         public SpineAnimOT shopIconSpine;
         public SpineAnimOT homeIconSpine;
         public SpineAnimOT leaderBoardIconSpine;
+        private float localPosIconOff = -35;
         private void Start()
         {
             m_Btn.onClick.AddListener(()=>
@@ -123,7 +124,7 @@ namespace IEC
                     MixDirection.In
                 );
             }
-
+            iconSpine.transform.localPosition = Vector3.up * localPosIconOff;
             iconSpine.ske.Update(0);
             iconSpine.ske.LateUpdate();
 

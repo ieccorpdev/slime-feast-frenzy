@@ -10,20 +10,18 @@ namespace IEC
     public class PopupAddHelper : BasePopup
     {
         public Image helperIcon;
+        public TextMeshProUGUI titleText;
 
         public Button buyGoldButton;
-        public Button freeAdsButton;
 
         public TextMeshProUGUI helperDescription;
         public TextMeshProUGUI goldAddAmountText;
         public TextMeshProUGUI goldAmountText;
-        public TextMeshProUGUI freeAdsAddAmountText;
 
-        [Header("Free Ads Count")] 
-        public List<Image> listAvailableAdsImage = new();
-        public Sprite availableAdsSprite;
-        public Sprite unavailableAdsSprite;
-        
+        [Header("Highlight text")] 
+        public float textHighlightSize;
+        public Color textHighlightColor;
+        public Material materialPreset;
         
         public ResourceType HelperType { get; private set; }
         
@@ -34,7 +32,6 @@ namespace IEC
             base.Awake();
             
             SetEvent(buyGoldButton,OnBuyGold);
-            SetEvent(freeAdsButton, OnFreeAds);
         }
 
         public void SetData(ResourceType helperType)
@@ -43,64 +40,21 @@ namespace IEC
 
             AddHelperData = Config.popupAddHelperConfig.GetAddHelperData(HelperType);
 
+            titleText.text = AddHelperData.title;
+
             helperIcon.sprite = AddHelperData.helperIcon;
             helperIcon.SetNativeSize();
             
             helperDescription.text = AddHelperData.helperDescription;
+            HighlightText(helperDescription, AddHelperData.highlightText);
             goldAmountText.text = $"{AddHelperData.goldCost}";
             goldAddAmountText.text = $"x{AddHelperData.addGoldAmount}";
-            freeAdsAddAmountText.text = $"Get x{AddHelperData.addFreeAdsAmount}";
-            
-            SetDataAdsReward();
-        }
-
-        private void SetDataAdsReward()
-        {
-            if (PlayerData.lastTimeResetAdsRewardHelper != DateTime.Today)
-            {
-                PlayerData.ResetAdsRewardHelper();
-            }
-
-            int usedReward = PlayerData.GetUsedAdRewardAddHelper(HelperType);
-
-            if (usedReward == AddHelperData.freeAdsLimitPerDay)
-            {
-                freeAdsButton.gameObject.SetActive(false);
-                return;
-            }
-            
-            freeAdsButton.gameObject.SetActive(true);
-
-            for (int i = 0; i < AddHelperData.freeAdsLimitPerDay; i++)
-            {
-                if (i >= listAvailableAdsImage.Count)
-                {
-                    listAvailableAdsImage.Add(Instantiate(listAvailableAdsImage[0], listAvailableAdsImage[0].transform.parent.transform));
-                }
-                
-                listAvailableAdsImage[i].gameObject.SetActive(false);
-            }
-            
-
-            for (int i = 0; i < AddHelperData.freeAdsLimitPerDay; i++)
-            {
-                listAvailableAdsImage[i].gameObject.SetActive(true);
-                if (i < AddHelperData.freeAdsLimitPerDay - usedReward)
-                {
-                    listAvailableAdsImage[i].sprite = availableAdsSprite;
-                }
-                else
-                {
-                    listAvailableAdsImage[i].sprite = unavailableAdsSprite;
-                }
-            }
-
         }
 
         public override void Show()
         {
-            if (!Game.isUsePopupRefillHelper)
-                return;
+            // if (!Game.isUsePopupRefillHelper)
+            //     return;
             
             base.Show();
         }
@@ -118,17 +72,22 @@ namespace IEC
                 Locator.Main.PopupGoldOffer.Show();
             }
         }
-
-        private void OnFreeAds()
+        
+        void HighlightText(TextMeshProUGUI tmpText, string word)
         {
-            Services.ShowRewardAds(
-                () =>
-                {
-                    Services.PushEvent(new IEC.TrackingEvent.SRApostition($"Popup_Refill_Helper_{HelperType}"));   
-                    PlayerData.UseAdRewardAddHelper(HelperType);
-                    PlayerData.AddCurrency(HelperType, AddHelperData.addFreeAdsAmount);
-                    Hide();
-                });
+            if (tmpText == null || string.IsNullOrEmpty(word) || materialPreset == null) return;
+
+            string materialName = materialPreset.name;
+            string taggedWord = $"<size={textHighlightSize}><color={ColorToHex(textHighlightColor)}><material={materialName}>{word}</material></color></size>";
+
+            string modifiedText = tmpText.text.Replace(word, taggedWord);
+            tmpText.text = modifiedText;
+        }
+        
+        public string ColorToHex(Color color)
+        {
+            Color32 color32 = color; // Converts to 0–255 range
+            return $"#{color32.r:X2}{color32.g:X2}{color32.b:X2}";
         }
         
     }
