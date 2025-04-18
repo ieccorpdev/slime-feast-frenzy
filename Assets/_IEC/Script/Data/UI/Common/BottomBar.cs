@@ -58,10 +58,16 @@ namespace IEC
             {
                 var tab = m_ListTab[i];
                 tab.type = HybridConfig.listTabConfig[i].type;
+                
+
+                
                 tab.Init();
                 tab.onClick = () =>
                 {
                     if (isClick) return;
+                    //lock leaderboard temporary
+                    if(tab.type == TabType.LeaderBoard) return;
+                    
                     if (tab.type != Game.hybrid.currentTab)
                     {
                         isClick = true;

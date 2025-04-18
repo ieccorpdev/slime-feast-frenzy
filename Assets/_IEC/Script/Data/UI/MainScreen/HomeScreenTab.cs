@@ -96,6 +96,8 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnPiggyBank,
             () =>
             {
+                bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+                if(!isEnoughLevel) return;
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupPiggyBank.Show();
             });
