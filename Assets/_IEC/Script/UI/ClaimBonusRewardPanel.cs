@@ -76,7 +76,7 @@ public class ClaimBonusRewardPanel : BasePopup
             if (listRewardUI[i].haveData)
             {
                 index++;
-                listRewardUI[i].targetAnchorPos = groups.GetRectTransformByIndex(index).anchoredPosition;
+                listRewardUI[i].targetAnchorPos = groups.GetRectTransformByIndex(index).transform.position;
             }
         }
     }
@@ -131,14 +131,15 @@ public class ClaimBonusRewardPanel : BasePopup
                 {
                     TweenControl.GetInstance().DelayCall(itm.transform,inx*0.07f, ()=>
                     {
-                        itm.GetComponent<RectTransform>().anchoredPosition = chestAnim.GetComponent<RectTransform>().anchoredPosition;
+                        itm.GetComponent<RectTransform>().transform.position = chestAnim.GetComponent<RectTransform>().transform.position;
                     }, () =>
                     {
                         TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f, () =>
                         {
                             itm.transform.DOPunchScale(Vector3.one*0.2f, 0.4f,1,0.3f);
                         });
-                        TweenControl.GetInstance().MoveRect(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
+
+                        TweenControl.GetInstance().Move(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
                     });
                     inx++;
                 }
