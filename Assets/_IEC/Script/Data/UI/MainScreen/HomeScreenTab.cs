@@ -27,6 +27,8 @@ public class HomeScreenTab : ScreenNavigateUI
     public Button startedPackageBtn;
     [Header("Piggy Bank")] 
     public Button btnPiggyBank;
+    public GameObject goPiggyBankLock;
+    public GameObject goPiggyBankUnlock;
     public Image piggyBankProgressBarFill;
     public Image piggyBankNotiImage;
     public TextMeshProUGUI piggyBankValue;
@@ -36,9 +38,13 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Progress Reward")] 
     public Button progressRewardButton;
     public ProgressRewardProgressBar progressRewardBar;
-    [Header("Chest Reward")] 
+    [Header("Level Chest Reward")] 
     public Button btnLevelChestReward;
+    [Header("Star Chest Reward")] 
     public Button btnStarChestReward;
+
+    public GameObject starChestRewardLock;
+    public GameObject starChestRewardUnlock;
     [Header("Play")]
     public RectTransform bottomBar;
     public Button playButton;
@@ -52,6 +58,7 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image notiCityBuild;
     private List<UIMoveOutAnimation> _listObjMoveOut = new();
     private Sequence _uiAnimSequence;
+    private GameConfig m_gameConfig => Pool.Get<GameConfig>();
 
     // Start is called before the first frame update
     void Start()
@@ -114,6 +121,8 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnStarChestReward,
             () =>
             {
+                bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
+                if(!isEnoughLevel) return;
                 Locator.Main.PopupStarChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
                     PlayerData.GetChestProgress(ChestType.Star));
@@ -330,9 +339,11 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     public void UpdatePiggyBankButton()
     {
-        btnPiggyBank.gameObject.SetActive(PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked); // Add unlock tut later
+        bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+        goPiggyBankLock.SetActive(!isEnoughLevel);
+        goPiggyBankUnlock.SetActive(isEnoughLevel);
         piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
-        piggyBankNotiImage.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
+        luckyWheel.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
         piggyBankValue.text = PlayerData.piggyBankGold.ToString();
         if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
         {
@@ -359,6 +370,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdatePiggyBankButton();
         UpdateBuildCity();
         UpdateLifeOffer();
+        UpdateStarChest();
         progressRewardBar.Setup();
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
@@ -368,6 +380,12 @@ public class HomeScreenTab : ScreenNavigateUI
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
     }
 
+    private void UpdateStarChest()
+    {
+        bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
+        starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
+        starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
+    }
     private void UpdateLifeOffer()
     {
         lifeOfferNotiImage.gameObject.SetActive(PlayerData.playerLife <= 0 && !PlayerData.dailyShowLifeOfferPack);
