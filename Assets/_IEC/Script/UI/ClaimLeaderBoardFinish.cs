@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using DG.Tweening;
 using IEC;
 using IEC.Wind.Leaderboard;
-using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.UI;
 

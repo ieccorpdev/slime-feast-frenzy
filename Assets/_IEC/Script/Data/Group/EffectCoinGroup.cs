@@ -2,7 +2,6 @@ using DG.Tweening;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using NaughtyAttributes;
 
 namespace IEC
 {
@@ -32,7 +31,6 @@ namespace IEC
 
         }
 
-        [Button]
         public void ShowTest()
         {
             ShowEffect(0, 10);

@@ -22,7 +22,6 @@ namespace IEC
         {
             Services.PushEvent(new TrackingEvent.RatingClickLoveIt());
             PlayerData.isClickedRate = true;
-            Services.RateUs();
             Hide();
         }
 

@@ -24,7 +24,6 @@ namespace _IECModules
         private const string EndDocIdSearch = "/";
         private const string SpreadSheetId = "gid";
 
-        [NaughtyAttributes.Button]
         public void TestDownloadFromUrl()
         {
             var url = "https://docs.google.com/spreadsheets/d/1siFrtchtGuq8gQYQMX19_z7ZpdBpoQQRDZnHiNsKrUA/edit#gid=927018210"; 

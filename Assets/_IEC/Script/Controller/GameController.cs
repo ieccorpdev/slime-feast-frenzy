@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using DG.Tweening;
-using MoreMountains.NiceVibrations;
 using UnityEditor;
 
 namespace IEC
@@ -64,7 +63,6 @@ namespace IEC
                     //GamePlay.IsWin = true;
                     OnGameOver();
                     Pool.Get<ConfettiGroup>().ShowConfetti();
-                    PlayerData.Vibrate(HapticTypes.Success);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
@@ -74,7 +72,6 @@ namespace IEC
                     GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
                     OnGameOver();
-                    PlayerData.Vibrate(HapticTypes.LightImpact);
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_SKIP:

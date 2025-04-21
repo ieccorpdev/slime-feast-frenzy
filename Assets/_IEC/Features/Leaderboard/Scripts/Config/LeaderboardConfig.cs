@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NaughtyAttributes;
 using UnityEngine;
 
 namespace IEC.Wind.Leaderboard
@@ -33,7 +32,6 @@ namespace IEC.Wind.Leaderboard
         public Sprite playerLeagueFrameSprite;
         [Header("COLOR CONFIG")]
         public List<ColorRankConfig> lstColor = new List<ColorRankConfig>();
-        [Button]
         public void UpdateNames()
         {
             nameList = new List<string>();
@@ -44,7 +42,6 @@ namespace IEC.Wind.Leaderboard
             }
         }
 
-        [Button]
         public string GeneratorNewName()
         {
             string finalName;

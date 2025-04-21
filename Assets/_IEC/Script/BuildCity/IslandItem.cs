@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using IEC;
-using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Animations;
 
@@ -42,7 +41,6 @@ public class IslandItem : MonoBehaviour
        if(animItem) animItem.enabled = stt;
     }
 
-    [Button()]
     public void SelfUpdate()
     {
         panelInfoItem = null;

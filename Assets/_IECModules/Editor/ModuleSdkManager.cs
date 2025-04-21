@@ -435,14 +435,14 @@ namespace _IECModules
 
         private void SetAbVersionString()
         {
-            var config = ProjectChecklistHelper.servicesConfig;
-            var platformVersion = config.GetPlatformVersion();
-            var version = string.IsNullOrWhiteSpace(platformVersion.version) ? PlayerSettings.bundleVersion : platformVersion.version;
-            var abName = platformVersion.abTest;
-            var abTest = config.GetListAbTestConfig().LastOrDefault(ab => ab.KeyName == abName);
-            var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
-            var platform = config.isVersionByPlatform ? config.platform.ToLower() : "android";
-            m_AbVersionString = platform + " " + version + " " + abVerStr;
+            // var config = ProjectChecklistHelper.servicesConfig;
+            // var platformVersion = config.GetPlatformVersion();
+            // var version = string.IsNullOrWhiteSpace(platformVersion.version) ? PlayerSettings.bundleVersion : platformVersion.version;
+            // var abName = platformVersion.abTest;
+            // var abTest = config.GetListAbTestConfig().LastOrDefault(ab => ab.KeyName == abName);
+            // var abVerStr = (abTest == null || string.IsNullOrWhiteSpace(abTest.GetLastAbName())) ? "AB_20210708_v82" : abTest.GetLastAbName();
+            // var platform = config.isVersionByPlatform ? config.platform.ToLower() : "android";
+            // m_AbVersionString = platform + " " + version + " " + abVerStr;
         }
 
         private void CreateGuiButton(string text, Action onClickButton) =>

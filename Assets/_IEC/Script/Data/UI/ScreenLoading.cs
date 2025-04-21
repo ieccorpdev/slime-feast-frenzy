@@ -15,7 +15,7 @@ namespace IEC
 
         public void Awake()
         {
-            EncryptedAssetModule.LoadPackage(this);
+           // EncryptedAssetModule.LoadPackage(this);
         }
 
         public void ShowLoading(float timeShow, Action loadingDoneCallback = null,Action onLoadingCallBack = null)

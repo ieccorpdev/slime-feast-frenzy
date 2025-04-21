@@ -1,5 +1,4 @@
 using DG.Tweening;
-using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
@@ -11,7 +10,6 @@ namespace IEC
         public CanvasGroup CanvasGr => SingleGet<CanvasGroup>();
         public TextMeshProUGUI TxtContent => SingleGetChild<TextMeshProUGUI>();
 
-        [Button]
         public override void Show()
         {
             if (IsShowing) 

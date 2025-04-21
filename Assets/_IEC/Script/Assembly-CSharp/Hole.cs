@@ -6,7 +6,6 @@ using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
-using MoreMountains.NiceVibrations;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -71,7 +70,7 @@ public class Hole : _BaseBehaviour
 
 	private void Awake()
 	{
-		m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
+		//m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
@@ -259,9 +258,7 @@ public class Hole : _BaseBehaviour
 		});
 	}
 
-	private bool LevelMax => (Settings.UseSlowXp
-		? Level >= Settings.RequiredXpPerLevelSlow.Length - 1
-		: Level >= Settings.RequiredXpPerLevel.Length - 1);
+	
 	[ShowIf("@!LevelMax")]
 	[Button("Level Up")]
 	public void DebugLevelUp()

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 
 namespace IEC
 {
@@ -25,7 +24,6 @@ namespace IEC
         {
         }
 
-        [Button]
         public void StopConfetti()
         {
             StopAllCoroutines();
@@ -38,7 +36,6 @@ namespace IEC
             }
         }
 
-        [Button]
         public void ShowConfetti()
         {
             StartCoroutine(IEShowConfetti());

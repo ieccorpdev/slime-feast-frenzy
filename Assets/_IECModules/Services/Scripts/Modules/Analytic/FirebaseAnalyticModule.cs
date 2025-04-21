@@ -4,8 +4,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Firebase.Analytics;
-using Firebase.Extensions;
 
 namespace IEC
 {
@@ -35,13 +33,7 @@ namespace IEC
 
         public void RequestPseudoId(Action<string> onDone)
         {
-            FirebaseAnalytics.GetAnalyticsInstanceIdAsync().ContinueWithOnMainThread(task =>
-            {
-                if (task.IsCompletedSuccessfully)
-                {
-                    onDone?.Invoke(task.Result);
-                }
-            });
+           
         }
 
         public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)
@@ -98,11 +90,7 @@ namespace IEC
             {
                 value = (int)param["level"];
             }
-            var firebaseParams = new List<Parameter>
-            {
-                new Parameter(FirebaseAnalytics.ParameterValue, value),
-                new Parameter(FirebaseAnalytics.ParameterCurrency, "USD")
-            };
+         
 
             if (param != null)
             {
@@ -124,8 +112,7 @@ namespace IEC
                             valueL = (long)param[key];
                         }
 
-                        var firebaseParam = new Parameter(key, valueL);
-                        firebaseParams.Add(firebaseParam);
+                      
                     }
                     else if (typeValue == typeof(float) || typeValue == typeof(double))
                     {
@@ -139,18 +126,15 @@ namespace IEC
                         {
                             valueD = (double)param[key];
                         }
-                        var firebaseParam = new Parameter(key, valueD);
-                        firebaseParams.Add(firebaseParam);
+                       
                     }
                     else if (typeValue == typeof(string))
                     {
-                        var firebaseParam = new Parameter(key, (string)param[key]);
-                        firebaseParams.Add(firebaseParam);
+                        
                     }
                     else if (typeValue == typeof(bool))
                     {
-                        var firebaseParam = new Parameter(key, (bool)param[key] ? 1 : 0);
-                        firebaseParams.Add(firebaseParam);
+                       
                     }
                     else
                     {
@@ -160,9 +144,7 @@ namespace IEC
                 }
             }
 
-            var firebaseParamArr = firebaseParams.ToArray();
             Debug.Log("Push Firebase Event: " + eventName + ", " + value);
-            FirebaseAnalytics.LogEvent(newName, firebaseParamArr);
         }
 
         public void SetUserProperty(string name, string property)
@@ -174,7 +156,6 @@ namespace IEC
 
             if (IsFirebaseReady())
             {
-                FirebaseAnalytics.SetUserProperty(name, property);
             }
             else
             {

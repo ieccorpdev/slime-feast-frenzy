@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using nickeltin.SDF.Runtime;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay.ObserverEventData

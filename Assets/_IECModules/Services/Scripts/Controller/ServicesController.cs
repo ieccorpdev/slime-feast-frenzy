@@ -18,7 +18,6 @@ using UnityEngine;
 using UnityEngine.Networking;
 #if PluginInAppRating
 #if UNITY_ANDROID
-using Google.Play.Review;
 #endif
 #endif
 
@@ -165,7 +164,6 @@ namespace IEC
             StartCoroutine(IE_CountOneSec());
 #if PluginInAppRating
 #if UNITY_ANDROID
-           m_Review = new ReviewManager();
            StartCoroutine(IE_GetPlayReviewInfo());
 #endif
 #endif
@@ -207,162 +205,162 @@ namespace IEC
 
         public void InitServices()
         {
-            Init();
-            if (isInitAllServices)
-                return;
-            isInitAllServices = true;
-
-            m_IsNewInstall = m_DataNormal.GetBool(SERVICE_FIRST_TIME, true);
-            if (m_IsNewInstall)
-            {
-                m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
-            }
-
-            m_SetUpFacebook = new SetUpSdkMock();
-            m_SetUpFirebase = new SetUpSdkMock();
-
-#if (PluginFirebase)
-            m_SetUpFirebase = new SetUpFirebaseModule();
-            m_SetUpFirebase.Init((isLoaded) =>
-            {
-                if (isLoaded)
-                {
-                    RaiseInitEvent(EventList.Service.FIREBASE_LOADED);
-                }
-            });
-#endif
-            m_Ads = new AdsMock(false);
-
-            m_Login = new LoginMock();
-            m_LeaderBoard = new LeaderBoardMock();
-
-            m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
-            m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
-
-            m_ListAnalytics.Add(new AnalyticEventMock());
-            {
-#if (PluginFacebook)
-                m_ListAnalytics.Add(new FBAnalyticEvent());
-#endif
-
-#if (PluginFirebaseAnalytic)
-                var listIgnoredEvent = new List<string>();
-                if(config.adjustEventConfig != null)
-                {
-                    listIgnoredEvent = config.adjustEventConfig.listData
-                        .Where(x =>
-                        {
-                            return !x.PlatformParam.isPushEventFirebase;
-                        })
-                        .Select(x => x.gameEvent).ToList();
-                }
-                
-                m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
-                m_ListAnalytics.Add(m_FirebaseAnalytic);
-                Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
-#endif
-            }
-
-            m_DataRemote = m_DataNormal;
-#if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
-            SetPushCustomEventFirebase();
-            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
-#endif
-#if PluginByteDanceChinaIOS
-            _initByteDance(config.appId, config.appName);
-#endif
-#if PluginAdjust
-            m_AdjustAnalytic = new AdjustAnalyticModule();
-            m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
-            if (config.adjustEventConfig != null)
-            {
-                var listRevEvent = config.adjustEventConfig.listData.Where(x =>
-                {
-                    return x.PlatformParam.isAdjustRev;
-                }).Select(x => x.gameEvent).ToList();
-                m_AdjustAnalytic.SetListEventRev(listRevEvent);
-            }
-            m_ListAnalytics.Add(m_AdjustAnalytic);
-#endif
-            m_IAP = new InAppPurchaseMock(m_DataSecure);
-            m_ReceiptVerify = new ReceiptMock();
-
-#if (PluginReceiptVerify)
-            m_ReceiptVerify = new ReceiptVerifyOffline();
-#endif
-#if (PluginReceiptVerifyAdjust)
-            m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this, m_ServiceData);
-#endif
-#if (PluginUnityIAP)
-            var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
-            m_IAP = iapUnity;
-            iapUnity.SetCallbackAnalytic(
-            (p) =>
-            {
-                PushEvent("iap_debug_open", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_success_1", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_success_2", 1, new Dictionary<string, object>() { { "package", p } });
-            },
-            (p) =>
-            {
-                PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
-            });
-            iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
-            {
-                var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
-                var param = new Dictionary<string, object>
-                {
-                    ["productID"] = productID
-                };
-                PushEvent(eventName,1,param);
-            } );
-#endif
-            
-            RequestCMP();
-
-            InitAnalyticAndSetupAbTest();
-        }
-
-        public void RequestCMP()
-        {
-            if (Application.isEditor)
-                return;
-#if (PluginCMP)
-            var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
-            
-            Debug.LogWarning("CMP Test Id:" + deviceTestId);
-            
-            var requestParameters = new ConsentRequestParameters
-            {
-                TagForUnderAgeOfConsent = false
-            };
-            
-            if (!string.IsNullOrWhiteSpace(deviceTestId))
-            {
-                Debug.LogWarning("Enable CMP Test");
-                var debugSettings = new ConsentDebugSettings
-                {
-                    DebugGeography = DebugGeography.EEA,
-                    TestDeviceHashedIds = new List<string>
-                    {
-                        PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
-                    }
-                
-                };
-                requestParameters.ConsentDebugSettings = debugSettings;
-            }
-            m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
-            ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
-#else
-            RequestATT();
-#endif
+//             Init();
+//             if (isInitAllServices)
+//                 return;
+//             isInitAllServices = true;
+//
+//             m_IsNewInstall = m_DataNormal.GetBool(SERVICE_FIRST_TIME, true);
+//             if (m_IsNewInstall)
+//             {
+//                 m_DataNormal.SetBool(SERVICE_FIRST_TIME, false);
+//             }
+//
+//             m_SetUpFacebook = new SetUpSdkMock();
+//             m_SetUpFirebase = new SetUpSdkMock();
+//
+// #if (PluginFirebase)
+//             m_SetUpFirebase = new SetUpFirebaseModule();
+//             m_SetUpFirebase.Init((isLoaded) =>
+//             {
+//                 if (isLoaded)
+//                 {
+//                     RaiseInitEvent(EventList.Service.FIREBASE_LOADED);
+//                 }
+//             });
+// #endif
+//             m_Ads = new AdsMock(false);
+//
+//             m_Login = new LoginMock();
+//             m_LeaderBoard = new LeaderBoardMock();
+//
+//             m_Score = new ScoreModule(m_DataSecure, m_LeaderBoard);
+//             m_ABTest = new AnalyticABTestModule(DataNormal(), config.abTestConfigs);
+//
+//             m_ListAnalytics.Add(new AnalyticEventMock());
+//             {
+// #if (PluginFacebook)
+//                 m_ListAnalytics.Add(new FBAnalyticEvent());
+// #endif
+//
+// #if (PluginFirebaseAnalytic)
+//                 var listIgnoredEvent = new List<string>();
+//                 if(config.adjustEventConfig != null)
+//                 {
+//                     listIgnoredEvent = config.adjustEventConfig.listData
+//                         .Where(x =>
+//                         {
+//                             return !x.PlatformParam.isPushEventFirebase;
+//                         })
+//                         .Select(x => x.gameEvent).ToList();
+//                 }
+//                 
+//                 m_FirebaseAnalytic = new FirebaseAnalyticModule(m_SetUpFirebase, listIgnoredEvent);
+//                 m_ListAnalytics.Add(m_FirebaseAnalytic);
+//                 Debug.LogWarning($"Firebase Analytic SDK Version: {config.firebaseSDKVersion}");
+// #endif
+//             }
+//
+//             m_DataRemote = m_DataNormal;
+// #if (PluginFirebaseRemote)
+//             m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
+//             SetPushCustomEventFirebase();
+//             Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
+// #endif
+// #if PluginByteDanceChinaIOS
+//             _initByteDance(config.appId, config.appName);
+// #endif
+// #if PluginAdjust
+//             m_AdjustAnalytic = new AdjustAnalyticModule();
+//             m_AdjustAnalytic.DictEvent = (config.adjustEventConfig != null) ? config.adjustEventConfig.GetDictEvent() : null;
+//             if (config.adjustEventConfig != null)
+//             {
+//                 var listRevEvent = config.adjustEventConfig.listData.Where(x =>
+//                 {
+//                     return x.PlatformParam.isAdjustRev;
+//                 }).Select(x => x.gameEvent).ToList();
+//                 m_AdjustAnalytic.SetListEventRev(listRevEvent);
+//             }
+//             m_ListAnalytics.Add(m_AdjustAnalytic);
+// #endif
+//             m_IAP = new InAppPurchaseMock(m_DataSecure);
+//             m_ReceiptVerify = new ReceiptMock();
+//
+// #if (PluginReceiptVerify)
+//             m_ReceiptVerify = new ReceiptVerifyOffline();
+// #endif
+// #if (PluginReceiptVerifyAdjust)
+//             m_ReceiptVerify = new ReceiptVerifyAdjust(m_AdjustAnalytic, m_Json, this, m_ServiceData);
+// #endif
+// #if (PluginUnityIAP)
+//             var iapUnity = new IapUnityModule(config.IapConfig, m_DataSecure, m_ReceiptVerify);
+//             m_IAP = iapUnity;
+//             iapUnity.SetCallbackAnalytic(
+//             (p) =>
+//             {
+//                 PushEvent("iap_debug_open", 1, new Dictionary<string, object>() { { "package", p } });
+//             },
+//             (p) =>
+//             {
+//                 PushEvent("iap_debug_success_1", 1, new Dictionary<string, object>() { { "package", p } });
+//             },
+//             (p) =>
+//             {
+//                 PushEvent("iap_debug_success_2", 1, new Dictionary<string, object>() { { "package", p } });
+//             },
+//             (p) =>
+//             {
+//                 PushEvent("iap_debug_fail", 1, new Dictionary<string, object>() { { "package", p } });
+//             });
+//             iapUnity.SetPurchaseVerifyCallback((productID, isValid) =>
+//             {
+//                 var eventName = (isValid) ? "in_app_purchase_success_ww" : "in_app_purchase_fail_ww";
+//                 var param = new Dictionary<string, object>
+//                 {
+//                     ["productID"] = productID
+//                 };
+//                 PushEvent(eventName,1,param);
+//             } );
+// #endif
+//             
+//             RequestCMP();
+//
+//             InitAnalyticAndSetupAbTest();
+//         }
+//
+//         public void RequestCMP()
+//         {
+//             if (Application.isEditor)
+//                 return;
+// #if (PluginCMP)
+//             var deviceTestId = PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "");
+//             
+//             Debug.LogWarning("CMP Test Id:" + deviceTestId);
+//             
+//             var requestParameters = new ConsentRequestParameters
+//             {
+//                 TagForUnderAgeOfConsent = false
+//             };
+//             
+//             if (!string.IsNullOrWhiteSpace(deviceTestId))
+//             {
+//                 Debug.LogWarning("Enable CMP Test");
+//                 var debugSettings = new ConsentDebugSettings
+//                 {
+//                     DebugGeography = DebugGeography.EEA,
+//                     TestDeviceHashedIds = new List<string>
+//                     {
+//                         PlayerPrefs.GetString(_IECModules.CheatCode.CMP_DEVICE_HASHED_ID, "")
+//                     }
+//                 
+//                 };
+//                 requestParameters.ConsentDebugSettings = debugSettings;
+//             }
+//             m_CheckConsentStatus = StartCoroutine(IE_WaitConsent());
+//             ConsentInformation.Update(requestParameters, OnConsentInfoUpdated);
+// #else
+//             RequestATT();
+// #endif
         }
 
         public void RequestATT()
@@ -528,10 +526,10 @@ namespace IEC
             }
 
             this.config.SetActiveAbByVersion();
-            foreach (var abTest in config.abTestConfigs)
-            {
-                SetUpAbTest(abTest);
-            }
+            // foreach (var abTest in config.abTestConfigs)
+            // {
+            //     SetUpAbTest(abTest);
+            // }
         }
 
         public void SendATTAnalytic(string eventName)
@@ -737,33 +735,33 @@ namespace IEC
             return (Screen.safeArea.y + m_Ads.GetBannerHeight() / unityScale) * scale;
         }
 
-        void SetUpAbTest(ABTestConfig abTest)
-        {
-            SetUpAbTest(abTest, m_IsNewInstall);
-        }
+        // void SetUpAbTest(ABTestConfig abTest)
+        // {
+        //     SetUpAbTest(abTest, m_IsNewInstall);
+        // }
 
-        public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
-        {
-            if (abTest == null)
-            {
-                Debug.LogError("AB Test config is null");
-                return;
-            }
-            m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
-            {
-                Debug.Log("AB Test event:" + s);
-                var abVersion = s.Split('_')[2].Remove(0, 1);
-                var isNumber = int.TryParse(abVersion, out int version);
-                var eventValue = (isNumber) ? version : 1;
-                if (!isNumber) Debug.LogError("Version Ab is not a number");
-                Debug.LogWarning("AbTest event value:" + eventValue);
-                PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
-                {
-                    { "version", s }
-                });
-                SetUserProperty("AB_Version", s);
-            });
-        }
+        // public void SetUpAbTest(ABTestConfig abTest, bool isNewInstall)
+        // {
+        //     if (abTest == null)
+        //     {
+        //         Debug.LogError("AB Test config is null");
+        //         return;
+        //     }
+        //     m_ABTest.SetUpTest(abTest, isNewInstall, (s) =>
+        //     {
+        //         Debug.Log("AB Test event:" + s);
+        //         var abVersion = s.Split('_')[2].Remove(0, 1);
+        //         var isNumber = int.TryParse(abVersion, out int version);
+        //         var eventValue = (isNumber) ? version : 1;
+        //         if (!isNumber) Debug.LogError("Version Ab is not a number");
+        //         Debug.LogWarning("AbTest event value:" + eventValue);
+        //         PushEvent(abTest.KeyName, eventValue, new Dictionary<string, object>
+        //         {
+        //             { "version", s }
+        //         });
+        //         SetUserProperty("AB_Version", s);
+        //     });
+        // }
 
         public void PushEventIapKochava(string packName, float price)
         {
@@ -1095,20 +1093,12 @@ namespace IEC
         
 #if PluginInAppRating
 #if UNITY_ANDROID
-        private ReviewManager m_Review;
-        private PlayReviewInfo m_PlayReviewInfo;
+
 
         IEnumerator IE_GetPlayReviewInfo()
         {
-            var requestFlowOperation = m_Review.RequestReviewFlow();
-            yield return requestFlowOperation;
-            if (requestFlowOperation.Error != ReviewErrorCode.NoError)
-            {
-                Debug.LogError("request review info error:" + requestFlowOperation.Error.ToString());
-                yield break;
-            }
+            yield break;
 
-            m_PlayReviewInfo = requestFlowOperation.GetResult();
         }
 #endif
         public void RateUs()
@@ -1121,14 +1111,8 @@ namespace IEC
             StartCoroutine(IE_RequestReview());
             IEnumerator IE_RequestReview()
             {
-                if (m_PlayReviewInfo == null) yield break;
-                var launchFlowOperation = m_Review.LaunchReviewFlow(m_PlayReviewInfo);
-                yield return launchFlowOperation;
-                if (launchFlowOperation.Error != ReviewErrorCode.NoError)
-                {
-                    Debug.LogError("launch review error:" + launchFlowOperation.Error.ToString());
-                    // Application.OpenURL("market://details?id=" + Application.identifier);
-                }
+                yield break;
+
             }
 #endif
         }
@@ -1178,7 +1162,6 @@ namespace IEC
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
         private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
         private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
-        [NaughtyAttributes.Button]
         public void SendEmail()
         {
             SaveLogToFile();

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using NaughtyAttributes;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -11,7 +10,6 @@ namespace IEC
 {
     public class ParticleSystemAudioCallback : _BaseBehaviour
     {
-        [Dropdown("GetAudioEvents")]
         public string id;
 
         public float delay = 0f;

@@ -4,7 +4,6 @@ using DG.Tweening;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using IEC;
-using NaughtyAttributes;
 using TMPro;
 
 namespace EasyUI.PickerWheelUI
@@ -78,7 +77,6 @@ namespace EasyUI.PickerWheelUI
             if (nonZeroChancesIndices.Count == 0)
                 Debug.LogError("You can't set all pieces chance to zero");
         }
-        [Button("Load Data Wheel")]
         public void LoadDataWheel()
         {
             int numberPicec = listRewardLuckyWheel.Count;
@@ -130,7 +128,6 @@ namespace EasyUI.PickerWheelUI
         {
             return Instantiate(wheelPiecePrefab, wheelPiecesParent.transform.position, Quaternion.identity, wheelPiecesParent);
         }
-        [Button("Spin")]
         public void Spin(int debugSpinNum = -1)
         {
             if (!_isSpinning)

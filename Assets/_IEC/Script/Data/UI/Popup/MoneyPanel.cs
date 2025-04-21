@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 
@@ -56,7 +55,6 @@ namespace IEC
             // soundController.PlaySound(new AudioInfo(Config.soundConfig.coinFly, false));
         }
 
-        [Button]
         public void TestFXCoin()
         {
             fxCoin.SpawnEffect(new Vector2(350, -1050), m_TxtMoney, m_TransCoinIcon.anchoredPosition, 10, PlayerData.hybridData.GetResourceCount(ResourceType.Gold), null);

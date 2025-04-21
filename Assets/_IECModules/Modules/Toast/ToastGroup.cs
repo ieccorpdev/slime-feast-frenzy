@@ -1,4 +1,3 @@
-using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +17,6 @@ namespace IEC
             HideAllToast();
         }
 
-        [Button]
         public void HideAllToast()
         {
             foreach (var t in ListToast)

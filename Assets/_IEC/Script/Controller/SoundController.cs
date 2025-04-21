@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using NaughtyAttributes;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
@@ -288,7 +287,6 @@ namespace IEC
     
     [Serializable]public class AudioInfo
     {
-        [Dropdown("GetAudioEvents")]
         public string id;
         public AudioClip clip;
         public List<AudioClip> listRandomAudioClips = new();

@@ -158,12 +158,12 @@ namespace IEC
                 var currentPolygon = meshFilter.sharedMesh.triangles.Length / 3;
                 if (currentPolygon < 256) continue;
 
-                var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
-                meshSimplifier.Initialize(sourceMesh);
+               // var meshSimplifier = new UnityMeshSimplifier.MeshSimplifier();
+                //meshSimplifier.Initialize(sourceMesh);
                 var quality = 256f / currentPolygon;
 
-                meshSimplifier.SimplifyMesh(quality);
-                Mesh decimatedMesh = meshSimplifier.ToMesh();
+                //meshSimplifier.SimplifyMesh(quality);
+               // Mesh decimatedMesh = meshSimplifier.ToMesh();
 
                 // Convert the full path to a path relative to Assets folder
                 string assetPath = "Assets/" + FOLDER_PATH_SIMPLIFIED_MESH + meshFilter.name + ".asset";
@@ -184,13 +184,13 @@ namespace IEC
                 }
 
                 // Create and save the new asset
-                AssetDatabase.CreateAsset(decimatedMesh, assetPath);
+                //AssetDatabase.CreateAsset(decimatedMesh, assetPath);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
 
                 if (meshCollider is MeshCollider col)
                 {
-                    col.sharedMesh = decimatedMesh;
+                    //col.sharedMesh = decimatedMesh;
                 }
             }
         }

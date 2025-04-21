@@ -1,5 +1,4 @@
 using UnityEngine;
-using NaughtyAttributes;
 
 [ExecuteAlways] // Ensures it runs in both Play Mode and Edit Mode
 [RequireComponent(typeof(Renderer), typeof(MeshFilter))]
@@ -128,7 +127,6 @@ public class FillShaderEditor : MonoBehaviour
         return false;
     }
 
-    [Button]
     void SetShareShaderBound()
     {
         if (BaseShaderBound(out var localUp)) return;

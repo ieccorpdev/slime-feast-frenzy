@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using IEC;
-using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -169,7 +168,6 @@ public class ClaimBonusRewardPanel : BasePopup
             }
             this.gameObject.SetActive(false);
             actionClose?.Invoke();
-            PlayerData.Vibrate(HapticTypes.Failure);
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
     }

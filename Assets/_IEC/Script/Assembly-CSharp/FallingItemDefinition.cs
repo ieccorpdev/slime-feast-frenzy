@@ -1,4 +1,3 @@
-using nickeltin.SDF.Runtime;
 using UnityEngine;
 public class FallingItemDefinition : ScriptableObject
 {
@@ -14,8 +13,7 @@ public class FallingItemDefinition : ScriptableObject
 
 	[SerializeField]
 	private GameObject icon3DPrefab;
-	[SerializeField]
-	private SDFImage iconSDF;
+	
 
 	[SerializeField]
 	private int level;

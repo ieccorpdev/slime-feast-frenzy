@@ -21,9 +21,9 @@ public class ServicesConfig : ScriptableObject
     public VersionConfig versionAndroid;
     public VersionConfig versionIOS;
 
-    [Header("Analytic AB Test")]
-    public ABTestConfig[] abTestConfigs;
-    public bool IsTestNoAnalytic;
+    // [Header("Analytic AB Test")]
+    // public ABTestConfig[] abTestConfigs;
+    // public bool IsTestNoAnalytic;
 
     [Header("Daily Mission")]
     public DailyMissionConfig[] dailyMissionConfigs;
@@ -118,14 +118,14 @@ public class ServicesConfig : ScriptableObject
         return remoteConfigs;
     }
 
-    public List<ABTestConfig> GetListAbTestConfig()
-    {
-        if (isVersionByPlatform)
-        {
-            return abTestConfigs.Where(ab => ab.IsPlatform(platform)).ToList();
-        }
-        return abTestConfigs.ToList();
-    }
+    // public List<ABTestConfig> GetListAbTestConfig()
+    // {
+    //     if (isVersionByPlatform)
+    //     {
+    //         return abTestConfigs.Where(ab => ab.IsPlatform(platform)).ToList();
+    //     }
+    //     return abTestConfigs.ToList();
+    // }
 
     public void SetActiveAbByVersion()
     {
@@ -133,10 +133,10 @@ public class ServicesConfig : ScriptableObject
 
         var versionConfig = GetPlatformVersion();
 
-        foreach (var ab in abTestConfigs)
-        {
-            ab.IsActive = (ab.KeyName == versionConfig.abTest);
-        }
+        // foreach (var ab in abTestConfigs)
+        // {
+        //     ab.IsActive = (ab.KeyName == versionConfig.abTest);
+        // }
     }
 
     public VersionConfig GetPlatformVersion()

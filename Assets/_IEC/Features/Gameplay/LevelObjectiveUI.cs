@@ -2,7 +2,6 @@
 using _IEC.Features.Common.Extension;
 using DG.Tweening;
 using IEC;
-using nickeltin.SDF.Runtime;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
@@ -14,7 +13,7 @@ namespace _IEC.Features.Gameplay
     {
         [SerializeField] private TextMeshProUGUI txtNumber;
         [SerializeField] private float baseWidth;
-        [SerializeField] private SDFImage sdfImage;
+        [SerializeField] private Image sdfImage;
         [SerializeField] private Image imgCheckComplete;
         [SerializeField] private Image imgIcon;
         [SerializeField] private Transform pivot;

@@ -41,7 +41,6 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public string marketingEventUrl;
     }
 
-    [NaughtyAttributes.Button]
     public void LoadData()
     {
         listData.Clear();

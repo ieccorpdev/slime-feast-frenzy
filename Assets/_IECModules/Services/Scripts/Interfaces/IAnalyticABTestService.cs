@@ -5,7 +5,7 @@ namespace IEC
     public interface IAnalyticABTestService
     {
 
-        void SetUpTest(ABTestConfig config, bool isNewInstall, Action<string> actionLog);
+        //void SetUpTest(ABTestConfig config, bool isNewInstall, Action<string> actionLog);
 
         bool IsActive(string keyNameAB);
 
@@ -15,7 +15,7 @@ namespace IEC
 
         void SetValue(string keyNameAB, int value);
 
-        ABTestConfig GetConfig(string keyNameAB);
+        //ABTestConfig GetConfig(string keyNameAB);
 
     }
 

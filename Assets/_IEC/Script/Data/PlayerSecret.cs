@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using _IEC.Features.Booster;
 using _IEC.Features.Gameplay;
-using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -104,11 +103,6 @@ namespace IEC
             {
                 levelFirstTimeTracking.Add(type,0);
             }
-        }
-        public void Vibrate(HapticTypes hapticType)
-        {
-            if (!isVibrateOn) return;
-            MMVibrationManager.Haptic(hapticType);
         }
         
         public void AddReward(ResourceType type, int amount)

@@ -11,11 +11,10 @@ namespace IEC
     [System.Serializable]
     public class ABTestDate
     {
-        public ABTestConfig config;
         public int date;
         public int version;
 
-        public string FullVersion => $"{config.KeyName}_v{version}";
+        public string FullVersion => $"{date}_v{version}";
 
         public bool IsApplyResult(ABTestDate curTest, int overrideDate)
         {

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using NaughtyAttributes;
 using UnityEngine.Events;
 
 namespace IEC
@@ -109,13 +108,11 @@ namespace IEC
             ShowOrder = showOrder;
         }
 
-        [Button]
         public void TestShow()
         {
             Show();
         }
 
-        [Button]
         public void TestHide()
         {
             Hide();

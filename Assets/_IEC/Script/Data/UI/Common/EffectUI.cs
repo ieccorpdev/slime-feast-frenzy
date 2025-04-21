@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NaughtyAttributes;
 
 namespace IEC
 {
@@ -38,7 +37,6 @@ namespace IEC
             DOTween.Kill(EffectID);
         }
 
-        [Button]
         public void TestEffect()
         {
             switch (action)

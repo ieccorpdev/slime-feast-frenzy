@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using IEC;
-using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -30,7 +28,6 @@ public class HoldingButton : _BaseBehaviour, IPointerDownHandler, IPointerUpHand
         time = 0;
         multipleUpdate = 0;
         buttonPressed = true;
-        PlayerData.Vibrate(HapticTypes.Failure);
     }
 
     public void OnPointerUp(PointerEventData eventData)

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using IEC;
-using MoreMountains.NiceVibrations;
-using NaughtyAttributes;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -322,7 +320,6 @@ public class BuildCity : _BaseBehaviour
 
     #region BuildCityCore
 
-    [Button()]
     public void ShowRewardCity()
     {
         currentState = UIBuildCityState.GETREWARD;
@@ -418,7 +415,6 @@ public class BuildCity : _BaseBehaviour
                 }
                 SpawnCurrentCity();
                 ChangeStateUI();
-                PlayerData.Vibrate(HapticTypes.MediumImpact);
             });
     }
 
@@ -704,7 +700,6 @@ public class BuildCity : _BaseBehaviour
                         .AppendCallback(OnExitBuildCity) // Gọi hàm OnExitBuildCity()
                         //.AppendCallback(OnPressPlayBuildCity)
                         .SetId("Tween_ExitBuildCity"); // Gán ID cho sequence
-                    PlayerData.Vibrate(HapticTypes.Failure);
                 });
         }
     }
@@ -723,7 +718,6 @@ public class BuildCity : _BaseBehaviour
                         .AppendInterval(defaultTimeEffect / 2) // Đợi nửa thời gian hiệu ứng
                         .AppendCallback(OnExitBuildCity) // Gọi hàm OnExitBuildCity()
                         .SetId("Tween_ExitBuildCity"); // Gán ID cho sequence
-                    PlayerData.Vibrate(HapticTypes.Failure);
                 });
         }
     }
@@ -781,7 +775,6 @@ public class BuildCity : _BaseBehaviour
         var data = Config.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
         SetDataNameIsland(data);
         SetButtonLeftRight();
-        PlayerData.Vibrate(HapticTypes.Failure);
     }
 
     public void ValidateIdSelectedIsland()
@@ -833,7 +826,6 @@ public class BuildCity : _BaseBehaviour
         var data = Config.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
         SetDataNameIsland(data);
         SetButtonLeftRight();
-        PlayerData.Vibrate(HapticTypes.Failure);
     }
 
     #endregion

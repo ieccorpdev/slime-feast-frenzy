@@ -2,8 +2,6 @@
 
 using System;
 using UnityEngine;
-using Firebase;
-using Firebase.Extensions;
 
 namespace IEC
 {
@@ -24,7 +22,6 @@ namespace IEC
             if (m_State == SdkState.Initialized)
             {
                 Debug.LogError("Call Init Firebase but initialized");
-                Debug.LogWarning("Firebase App ID:" + FirebaseApp.DefaultInstance.Options.AppId);
                 if (callback != null)
                 {
                     callback.Invoke(true);
@@ -42,31 +39,7 @@ namespace IEC
                 return;
             }
 
-            m_State = SdkState.Initializing;
-            FirebaseApp.CheckAndFixDependenciesAsync().ContinueWithOnMainThread(task =>
-            {
-                var dependencyStatus = task.Result;
-                if (dependencyStatus == Firebase.DependencyStatus.Available)
-                {
-                    m_State = SdkState.Initialized;
-                    Debug.LogWarning("Firebase App ID:" + FirebaseApp.DefaultInstance.Options.AppId);
-                    if (m_CallBack != null)
-                    {
-                        m_CallBack.Invoke(true);
-                    }
-                }
-                else
-                {
-                    m_State = SdkState.FailInit;
-                    Debug.LogError(System.String.Format(
-                      "Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-                    if (m_CallBack != null)
-                    {
-                        m_CallBack.Invoke(false);
-                    }
-                }
-            });
-        }
+            }
 
         public SdkState GetState()
         {

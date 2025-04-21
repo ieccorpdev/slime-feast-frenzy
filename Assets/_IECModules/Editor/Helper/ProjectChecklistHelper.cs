@@ -245,7 +245,7 @@ namespace _IECModules
         {
             LoadServicesConfig();
 
-            var listConfig = servicesConfig.abTestConfigs.ToList();
+            //var listConfig = servicesConfig.abTestConfigs.ToList();
             var splits = setAbString.Split('_');
             if (splits.Length != 3)
             {
@@ -264,53 +264,53 @@ namespace _IECModules
                 platformVersion.abTest = abName;
             }
 
-            listConfig.ForEach(x =>
-            {
-                x.IsActive = false;
-                EditorUtility.SetDirty(x);
-            });
-
-            var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
-            config = (config == null && !string.IsNullOrEmpty(overwriteAbName)) ?
-                listConfig.Where(x => x.KeyName == overwriteAbName).FirstOrDefault() : config;
-            if (config == null)
-            {
-                Debug.Log("create new AB config " + abName);
-                config = ScriptableObject.CreateInstance<ABTestConfig>();
-                config.name = abName;
-                AssetDatabase.CreateAsset(config, configFolderPath + "/" + abName + ".asset");
-                listConfig.Add(config);
-                servicesConfig.abTestConfigs = listConfig.ToArray();
-                EditorUtility.SetDirty(servicesConfig);
-            }
-            else
-            {
-                Debug.Log("update exist AB config " + abName);
-            }
-
-            config.name = abName;
-            config.KeyName = abName;
-            config.IsActive = true;
-            config.IsOnlyNewInstall = true;
-            config.IsOverride = false;
-            config.platform = platform;
-
-            var listAb = new List<string>();
-            for (int i = 0; i < abCount; i++)
-            {
-                listAb.Add(abName + "_v" + (verRootNumber + i).ToString());
-            }
-
-            config.ListEventsAB = listAb.ToArray();
-            config.SetDefaultRatioAndAB();
-
-            string assetPath = AssetDatabase.GetAssetPath(config.GetInstanceID());
-            AssetDatabase.RenameAsset(assetPath, abName);
-
-            EditorUtility.SetDirty(config);
-            EditorUtility.SetDirty(servicesConfig);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
+            // listConfig.ForEach(x =>
+            // {
+            //     x.IsActive = false;
+            //     EditorUtility.SetDirty(x);
+            // });
+            //
+            // var config = listConfig.Where(x => x.KeyName == abName).FirstOrDefault();
+            // config = (config == null && !string.IsNullOrEmpty(overwriteAbName)) ?
+            //     listConfig.Where(x => x.KeyName == overwriteAbName).FirstOrDefault() : config;
+            // if (config == null)
+            // {
+            //     //Debug.Log("create new AB config " + abName);
+            //     // config = ScriptableObject.CreateInstance<ABTestConfig>();
+            //     // config.name = abName;
+            //     // AssetDatabase.CreateAsset(config, configFolderPath + "/" + abName + ".asset");
+            //     // listConfig.Add(config);
+            //     // servicesConfig.abTestConfigs = listConfig.ToArray();
+            //     EditorUtility.SetDirty(servicesConfig);
+            // }
+            // else
+            // {
+            //     Debug.Log("update exist AB config " + abName);
+            // }
+            //
+            // config.name = abName;
+            // config.KeyName = abName;
+            // config.IsActive = true;
+            // config.IsOnlyNewInstall = true;
+            // config.IsOverride = false;
+            // config.platform = platform;
+            //
+            // var listAb = new List<string>();
+            // for (int i = 0; i < abCount; i++)
+            // {
+            //     listAb.Add(abName + "_v" + (verRootNumber + i).ToString());
+            // }
+            //
+            // config.ListEventsAB = listAb.ToArray();
+            // config.SetDefaultRatioAndAB();
+            //
+            // // string assetPath = AssetDatabase.GetAssetPath(config.GetInstanceID());
+            // // AssetDatabase.RenameAsset(assetPath, abName);
+            //
+            // EditorUtility.SetDirty(config);
+            // EditorUtility.SetDirty(servicesConfig);
+            // AssetDatabase.SaveAssets();
+            // AssetDatabase.Refresh();
         }
 
         private static void ApplySdkSetting(List<List<string>> sdkData)
