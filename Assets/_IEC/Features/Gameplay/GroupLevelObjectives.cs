@@ -15,6 +15,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Transform vfxHolder;
         private readonly List<LevelObjectiveUI> m_ActiveObjectiveUIs = new List<LevelObjectiveUI>();
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
+        public GameObject specialObjectiveParent;
 
         // private void Awake()
         // {
@@ -128,11 +129,7 @@ namespace _IEC.Features.Gameplay
                 m_ActiveObjectiveUIs.Add(levelObjectiveUI);
                 rectTransform.anchoredPosition3D = currentAnchorPos3D;
             }
-
             if (levelType != LevelType.COIN)
-                //&& PlayerData.level >= Config.treasureHuntProgressConfig.unlockLevel 
-                //&& Game.enableTreasureHunt)
-                //&& TreasureHuntController.treasureHuntData.currentProgressIndex < Config.treasureHuntProgressConfig.rewardProgressModels.Count)
             {
                 HandleObjectiveUIForSpecialObject();
             }
@@ -144,14 +141,15 @@ namespace _IEC.Features.Gameplay
         
         private void HandleObjectiveUIForSpecialObject()
         {
-            //var treasureConfig = Config.treasureHuntProgressConfig;
-            //var specialObjective = new LevelObjective();
-            //specialObjective.itemId = ProgressRewardHelper.GetCurrentSpecialObjectIdInString();
-            //specialObjective.number = 0;
-            //specialObjectiveUI.LoadData(specialObjective,true);
-            //specialObjectiveUI.gameObject.SetActive(treasureConfig.IsUnlocked(PlayerData.level));
+            var dataSpecial = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex);
+            var specialObjective = new LevelObjective();
+            int count = Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
+            specialObjective.itemId = dataSpecial.GetId();
+            specialObjective.number = count;
+            specialObjectiveUI.LoadData(specialObjective,true);
             m_ActiveObjectiveUIs.Add(specialObjectiveUI);
-            specialObjectiveUI.gameObject.SetActive(true);
+            specialObjectiveUI.gameObject.SetActive(count > 0);
+            specialObjectiveParent.gameObject.SetActive(count > 0);
         }
 
         private void HideSpecialObjective()
