@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,9 +38,21 @@ namespace IEC
             currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
             currentProgressRewardIcon.SetNativeSize();
             progressRewardAmountText.text = ProgressRewardData.GetDisplayText();
-            progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;
+            progressFillImage.fillAmount = 0;
+            //progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;
+            //progressFillImage.DOFillAmount((float)PlayerData.currentProgress / ProgressRewardData.progress, 0.2f);
             progressText.text = $"{PlayerData.currentProgress}/{ProgressRewardData.progress}";
         }
+
+        public void DoAnimProgressBar()
+        {
+            progressFillImage.DOFillAmount((float)PlayerData.currentProgress / ProgressRewardData.progress, 0.2f);
+        }
+
+        // public void SetProgressBarFill(float fillAmount)
+        // {
+        //     
+        // }
 
         private void UpdateTimerText()
         {

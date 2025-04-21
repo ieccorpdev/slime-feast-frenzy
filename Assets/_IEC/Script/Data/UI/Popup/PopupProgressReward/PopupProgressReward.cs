@@ -52,6 +52,7 @@ namespace IEC
             }
             
             progressBar.Setup();
+            progressBar.DoAnimProgressBar();
             
             listProgressRewardItems[0].SetBotItem();
             listProgressRewardItems[^1].SetTopItem();
