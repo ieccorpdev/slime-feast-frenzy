@@ -359,6 +359,7 @@ public class HomeScreenTab : ScreenNavigateUI
     public void UpdateBuildCity()
     {
         buildButton.gameObject.SetActive(PlayerData.level>= Config.buildCityConfig.levelUnlock);
+        buildCityUI.gameObject.SetActive(PlayerData.level>= Config.buildCityConfig.levelUnlock);
         notiCityBuild.gameObject.SetActive(PlayerData.screwCityBuild > 0 && PlayerData.currentCityBuild < Config.buildCityConfig.dataCity.Count);
         //buildCityUI.ShowScale();
     }
@@ -367,7 +368,8 @@ public class HomeScreenTab : ScreenNavigateUI
         avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
-        startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
+        //startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
+        startedPackageBtn.gameObject.SetActive(false);
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();

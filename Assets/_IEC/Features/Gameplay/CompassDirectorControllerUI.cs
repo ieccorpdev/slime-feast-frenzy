@@ -81,7 +81,7 @@ namespace _IEC.Features.Gameplay
         private void TurnOn()
         {
             m_CoolDownTime = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
-            gameObject.SetActive(true);
+            //gameObject.SetActive(true);
         }
         
         public void TurnOff()
@@ -91,7 +91,7 @@ namespace _IEC.Features.Gameplay
                 directorUI.gameObject.Recycle();
             }
             m_ListDirectorUI.Clear();
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
         }
     }
 }
