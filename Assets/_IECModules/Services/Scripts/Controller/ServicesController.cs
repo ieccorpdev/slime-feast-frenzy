@@ -14,6 +14,7 @@ using com.adjust.sdk;
 #endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
 #if PluginInAppRating
@@ -1169,7 +1170,8 @@ namespace IEC
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
         private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
         private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
-        [NaughtyAttributes.Button]
+        
+        [Button]
         public void SendEmail()
         {
             SaveLogToFile();
