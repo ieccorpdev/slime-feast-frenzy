@@ -315,6 +315,7 @@ public class HomeScreenTab : ScreenNavigateUI
             _uiAnimSequence.InsertCallback(delay,
                 () =>
                 {
+                    progressRewardBar.DoAnimProgressBar();
                     onComplete?.Invoke();
                 });
 

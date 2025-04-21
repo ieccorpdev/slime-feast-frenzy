@@ -150,6 +150,7 @@ namespace _IEC.Features.Gameplay
             m_ActiveObjectiveUIs.Add(specialObjectiveUI);
             specialObjectiveUI.gameObject.SetActive(count > 0);
             specialObjectiveParent.gameObject.SetActive(count > 0);
+            specialObjectiveUI.SetNumber(0, false);
         }
 
         private void HideSpecialObjective()
