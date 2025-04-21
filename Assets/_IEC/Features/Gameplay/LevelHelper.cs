@@ -312,16 +312,15 @@ namespace _IEC.Features.Gameplay
             return res;
         }
         
-        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder,
-            ItemDefinition itemDefinition)
+        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
         {
             var res = new List<BaseItem>();
+            if (itemDefinition == null) return res;
             var prefab = itemDefinition.GetPrefab();
             if (prefab == null)
             {
                 return res;
             }
-
             for (int i = 0; i < count; i++)
             {
                 var newItem = prefab.Spawn();
@@ -330,7 +329,6 @@ namespace _IEC.Features.Gameplay
                 {
                     itemComponent = newItem.AddComponent<BaseItem>();
                 }
-
                 var itemTransform = itemComponent.transform;
                 var itemData = new ItemData()
                 {
@@ -340,10 +338,8 @@ namespace _IEC.Features.Gameplay
                     localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
                     isStartKinematic =  false,
                 };
-                
                 itemTransform.parent = levelObjectHolder;
                 itemComponent.LoadData(itemData, itemDefinition);
-
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(
                         bounds,
@@ -351,13 +347,10 @@ namespace _IEC.Features.Gameplay
                         1000,
                         itemComponent.gameObject.layer
                     );
-                
                 itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
-                
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
-
             return res;
         }
 

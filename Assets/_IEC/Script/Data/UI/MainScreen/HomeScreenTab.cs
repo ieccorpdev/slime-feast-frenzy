@@ -174,15 +174,16 @@ public class HomeScreenTab : ScreenNavigateUI
                         Locator.Main.HomeScreenTab.buildCityUI.Show();
                     });
             });
-        
+        SetupUIHome();
+    }
+
+    public void SetupUIHome()
+    {
         InitMoveOutAnimation();
         UpdateMainHome();
-        
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                
         DoMoveBackAllObj();
     }
-    
     #region Change Screen Anim
         
         private void InitMoveOutAnimation()
@@ -387,6 +388,7 @@ public class HomeScreenTab : ScreenNavigateUI
         bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
         starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
         starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
+        btnStarChestReward.interactable = isEnoughLevel;
     }
     private void UpdateLifeOffer()
     {

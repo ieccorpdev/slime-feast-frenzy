@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Gameplay;
+using IEC.TrackingEvent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
@@ -25,6 +26,12 @@ namespace IEC
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 ActionCompletePopup();
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                    ActionCompletePopup,
+                    () =>
+                    {
+                        Services.PushEvent(new TrackingEvent.SFApostition("win_screen_next"));
+                    });
             });
 
         }

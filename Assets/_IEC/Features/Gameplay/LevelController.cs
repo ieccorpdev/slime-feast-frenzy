@@ -113,13 +113,13 @@ namespace _IEC.Features.Gameplay
          
             m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
                 ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
-
+            #if UNITY_EDITOR
             if (EditorPrefs.GetBool("isPlayTest"))
             {
                 m_LevelConfig = Config.levelConfig.playTestData;
                 EditorPrefs.SetBool("isPlayTest", false);
             }
-            
+            #endif
             if (m_LevelConfig == null)
             {
                 Debug.LogError("Level Data is null");
@@ -226,12 +226,14 @@ namespace _IEC.Features.Gameplay
             {
                 CollectBomb();
                 //VibrationController.Vibrate(HapticTypes.Failure);
+                if(PlayerData.isVibrateOn)
+                    MMVibrationManager.Haptic(HapticTypes.Failure);
                 return;
             }
 
             //var timeDelay = Config.soundConfig.delayInterval;
-         
-            
+            if(PlayerData.isVibrateOn)
+                MMVibrationManager.Haptic(HapticTypes.LightImpact);
             
             if (IsObjectiveItem(itemId))
             {

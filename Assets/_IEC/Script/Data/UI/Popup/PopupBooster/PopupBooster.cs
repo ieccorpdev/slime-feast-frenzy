@@ -14,6 +14,7 @@ namespace IEC
         public TextMeshProUGUI levelText;
         public Button infoButton;
         public Button playButton;
+        public Button closeAllButton;
 
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
@@ -35,6 +36,7 @@ namespace IEC
         {
             SetEvent(infoButton, DoShowInfoPanel);
             SetEvent(playButton, OnClickPlayButton);
+            SetEvent(closeAllButton, OnHideClick);
         }
 
         public override void Show()
