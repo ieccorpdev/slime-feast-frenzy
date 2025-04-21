@@ -143,7 +143,7 @@ namespace IEC
         public static Bounds CalculateBounds(List<BaseItem> objects)
         {
             if (objects.Count == 0)
-                return new Bounds(Vector3.zero, Vector3.zero);
+                return new Bounds(Vector3.one, Vector3.one);
 
             Bounds combinedBounds = GetRendererBounds(objects[0].gameObject);
 

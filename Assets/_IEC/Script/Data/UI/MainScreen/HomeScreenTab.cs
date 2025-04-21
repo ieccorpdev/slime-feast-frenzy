@@ -174,15 +174,16 @@ public class HomeScreenTab : ScreenNavigateUI
                         Locator.Main.HomeScreenTab.buildCityUI.Show();
                     });
             });
-        
+        SetupUIHome();
+    }
+
+    public void SetupUIHome()
+    {
         InitMoveOutAnimation();
         UpdateMainHome();
-        
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                
         DoMoveBackAllObj();
     }
-    
     #region Change Screen Anim
         
         private void InitMoveOutAnimation()
