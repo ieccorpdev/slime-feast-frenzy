@@ -228,18 +228,42 @@ namespace IEC
             Reset();
             GenerateRandomLevel();
         }
-        
+
         [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
-        public int groupCount = 9;
+        public RandomLevelSpawnData randomLevelSpawnData;
         [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
         public float spacing = 1f;
+
+        [Serializable]
+        public class RandomLevelSpawnData
+        {
+            public float totalExp;
+            public int minFormationCount, maxFormationCount;
+            public List<SpawnShapeData> listAllSpawnShape = new();
+            public List<BaseItemGroup> listCustomShape = new();
+        }
+
+        [Serializable]
+        public struct SpawnShapeData
+        {
+            public int minSpawn, maxSpawn;
+            public SpawnArea spawnArea;
+        }
+
+        [Serializable]
+        public struct SpawnItemData
+        {
+            public float itemXp;
+            public string itemId;
+            public bool isObjective;
+        }
         
         void GenerateRandomLevel() {
             List<GameObject> spawned = new();
             List<Vector2> sizes = new(); // XZ sizes
             
-            for (int i = 0; i < groupCount; i++) {
-                BaseItemGroup prefab = listBaseItemGroup[Random.Range(0, listBaseItemGroup.Count)];
+            for (int i = 0; i < listBaseItemGroup.Count; i++) {
+                BaseItemGroup prefab = listBaseItemGroup[i];
                 GameObject obj = Instantiate(prefab.gameObject, UnityEngine.Vector3.zero, Quaternion.identity, itemHolder);
 
                 obj.GetComponent<BaseItemGroup>().Setup();
@@ -247,30 +271,21 @@ namespace IEC
                 sizes.Add(new Vector2(b.size.x, b.size.z));
                 spawned.Add(obj);
             }
-
-            // Step 2: Try to pack all into square area
-            float side = EstimateStartingSide(sizes, spacing);
+            
+            float side = EstimateStartingSide(sizes);
             Dictionary<int, UnityEngine.Vector3> positions;
 
-            while (!TryPack(sizes, side, spacing, out positions)) {
-                side += 1f; // grow square until it fits
+            while (!TryBottomLeftPack(sizes, side, out positions)) {
+                side += 1f; // Grow bin size until it fits
             }
-
-            // Step 3: Position and activate
+            
             for (int i = 0; i < spawned.Count; i++) {
                 UnityEngine.Vector3 pos = positions[i];
                 spawned[i].transform.position = new UnityEngine.Vector3(pos.x, 0f, pos.z);
             }
-            
-            // bool IsOverlapping(Bounds newBounds) {
-            //     foreach (var existing in placedBounds) {
-            //         if (existing.Intersects(newBounds)) return true;
-            //     }
-            //     return false;
-            // }
         }
         
-        float EstimateStartingSide(List<Vector2> sizes, float spacing) {
+        float EstimateStartingSide(List<Vector2> sizes) {
             float totalArea = 0f;
             foreach (var s in sizes) {
                 totalArea += (s.x + spacing) * (s.y + spacing);
@@ -278,33 +293,58 @@ namespace IEC
             return Mathf.Ceil(Mathf.Sqrt(totalArea)); // square root of total area
         }
         
-        bool TryPack(List<Vector2> sizes, float side, float spacing, out Dictionary<int, UnityEngine.Vector3> outPositions) {
+        bool TryBottomLeftPack(List<Vector2> sizes, float side, out Dictionary<int, UnityEngine.Vector3> outPositions) {
             outPositions = new Dictionary<int, UnityEngine.Vector3>();
-            float x = 0f, y = 0f, rowHeight = 0f;
+            List<Rect> usedRects = new();
 
             for (int i = 0; i < sizes.Count; i++) {
                 Vector2 size = sizes[i];
+                Rect placement = FindLowestAvailableSpot(size, usedRects, side);
 
-                // Wrap to next row if needed
-                if (x + size.x > side) {
-                    x = 0f;
-                    y += rowHeight + spacing;
-                    rowHeight = 0f;
+                if (placement.width < 0) {
+                    return false; // Could not fit
                 }
 
-                // Check if we still fit vertically
-                if (y + size.y > side) {
-                    return false;
-                }
-
-                // Place it
-                //[i] = new UnityEngine.Vector3(x, 0f, y);
-                outPositions[i] = new UnityEngine.Vector3(x + size.x / 2f, 0f, y + size.y / 2f);
-                x += size.x + spacing;
-                rowHeight = Mathf.Max(rowHeight, size.y);
+                // Store the center of the bounds for placement
+                UnityEngine.Vector3 center = new UnityEngine.Vector3(placement.x + size.x / 2f, 0f, placement.y + size.y / 2f);
+                outPositions[i] = center;
+                usedRects.Add(placement);
             }
 
             return true;
+        }
+
+        Rect FindLowestAvailableSpot(Vector2 size, List<Rect> placed, float side) {
+            Rect best = new Rect(-1, -1, -1, -1);
+            float bestY = float.MaxValue;
+
+            // Try candidate positions on a grid (0.5f step)
+            for (float y = 0; y <= side - size.y; y += 0.5f) {
+                for (float x = 0; x <= side - size.x; x += 0.5f) {
+                    Rect candidate = new Rect(x, y, size.x, size.y);
+                    bool overlaps = false;
+
+                    foreach (var placedRect in placed) {
+                        Rect expanded = new Rect(
+                            placedRect.x - spacing / 2f,
+                            placedRect.y - spacing / 2f,
+                            placedRect.width + spacing,
+                            placedRect.height + spacing
+                        );
+                        if (candidate.Overlaps(expanded)) {
+                            overlaps = true;
+                            break;
+                        }
+                    }
+
+                    if (!overlaps && y < bestY) {
+                        best = candidate;
+                        bestY = y;
+                    }
+                }
+            }
+
+            return best;
         }
         
         #endregion
