@@ -57,40 +57,40 @@ namespace BestHTTP.Examples
             }
         }
 
-        void OnGUI()
-        {
-            GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-                {
-                // Draw the current status
-                GUILayout.Label("Request status: " + status);
-
-                    GUILayout.Space(5);
-
-                // Draw the current progress
-                GUILayout.Label(string.Format("Progress: {0:P2} of {1:N0}Mb", progress, PlayerPrefs.GetInt("DownloadLength") / 1048576 /*1 Mb*/));
-                    GUILayout.HorizontalSlider(progress, 0, 1);
-
-                    GUILayout.Space(50);
-
-                    if (request == null)
-                    {
-                    // Draw a slider to be able to change the fragment size
-                    GUILayout.Label(string.Format("Desired Fragment Size: {0:N} KBytes", fragmentSize / 1024f));
-                        fragmentSize = (int)GUILayout.HorizontalSlider(fragmentSize, HTTPResponse.MinBufferSize, 10 * 1024 * 1024);
-
-                        GUILayout.Space(5);
-
-                        string buttonStr = PlayerPrefs.HasKey("DownloadProgress") ? "Continue Download" : "Start Download";
-                        if (GUILayout.Button(buttonStr))
-                            StreamLargeFileTest();
-                    }
-                    else if (request.State == HTTPRequestStates.Processing && GUILayout.Button("Abort Download"))
-                    {
-                    // Simulate a connection lost
-                    request.Abort();
-                    }
-                });
-        }
+        // void OnGUI()
+        // {
+        //     GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+        //         {
+        //         // Draw the current status
+        //         GUILayout.Label("Request status: " + status);
+        //
+        //             GUILayout.Space(5);
+        //
+        //         // Draw the current progress
+        //         GUILayout.Label(string.Format("Progress: {0:P2} of {1:N0}Mb", progress, PlayerPrefs.GetInt("DownloadLength") / 1048576 /*1 Mb*/));
+        //             GUILayout.HorizontalSlider(progress, 0, 1);
+        //
+        //             GUILayout.Space(50);
+        //
+        //             if (request == null)
+        //             {
+        //             // Draw a slider to be able to change the fragment size
+        //             GUILayout.Label(string.Format("Desired Fragment Size: {0:N} KBytes", fragmentSize / 1024f));
+        //                 fragmentSize = (int)GUILayout.HorizontalSlider(fragmentSize, HTTPResponse.MinBufferSize, 10 * 1024 * 1024);
+        //
+        //                 GUILayout.Space(5);
+        //
+        //                 string buttonStr = PlayerPrefs.HasKey("DownloadProgress") ? "Continue Download" : "Start Download";
+        //                 if (GUILayout.Button(buttonStr))
+        //                     StreamLargeFileTest();
+        //             }
+        //             else if (request.State == HTTPRequestStates.Processing && GUILayout.Button("Abort Download"))
+        //             {
+        //             // Simulate a connection lost
+        //             request.Abort();
+        //             }
+        //         });
+        // }
 
         #endregion
 

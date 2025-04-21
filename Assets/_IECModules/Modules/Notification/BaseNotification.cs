@@ -18,9 +18,9 @@ namespace _IECModules
         public virtual void Init()
         {
             Debug.LogWarning("Notification: Init");
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Send Test Notification",
-                param => { m_CheatCodeShowNotificationTime = int.Parse(param.inputParams[0].value.ToString()); },
-                new CheatCode.InputParam { label = "Second", value = 10 });
+            // ModuleController.cheatCode.AddCheatCodeButtonWithInput("Send Test Notification",
+            //     param => { m_CheatCodeShowNotificationTime = int.Parse(param.inputParams[0].value.ToString()); },
+            //     new CheatCode.InputParam { label = "Second", value = 10 });
         }
 
         public virtual void CancelAllNotification()

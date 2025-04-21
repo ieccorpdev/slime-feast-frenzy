@@ -4,7 +4,6 @@ using UnityEngine;
 using DG.Tweening;
 using UnityEngine.UI;
 using System;
-using BestHTTP.Decompression.Zlib;
 using TMPro;
 using UnityEngine.Serialization;
 

@@ -3,9 +3,6 @@ using UnityEngine;
 
 namespace nickeltin.Core.Runtime
 {
-#if ODIN_INSPECTOR
-    [Sirenix.OdinInspector.DrawWithUnity, Sirenix.OdinInspector.DisableContextMenu()]
-#endif
     [Serializable]
     public class GUIDField
     {

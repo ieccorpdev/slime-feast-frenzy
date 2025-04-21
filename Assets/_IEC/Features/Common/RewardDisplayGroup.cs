@@ -1,6 +1,5 @@
 using System;
 using IEC;
-using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,7 +11,7 @@ namespace IEC
         public RewardTypes rewardType;
         public Image icon;
         public TextMeshProUGUI txtAmount;
-        [ReadOnly] public bool isHaveData;
+         public bool isHaveData;
 
         public void SetActive(bool isActive)
         {

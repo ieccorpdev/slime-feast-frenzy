@@ -164,29 +164,29 @@ namespace _IECModules
             });
 
             var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
-            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
-            {
-                UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
-            }, listCrashCategory);
-
-            var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
-            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Create Exception!!!!!", param =>
-            {
-                var exceptionType = (CheatCodeExceptionType)Enum.Parse(typeof(CheatCodeExceptionType), listExceptionType[param.dropdownParam.value]);
-                switch (exceptionType)
-                {
-                    case CheatCodeExceptionType.Exception:
-                        throw new Exception("Cheat Code Exception");
-                    case CheatCodeExceptionType.OutOfRange:
-                        var a = new int[3];
-                        var b = a[3];
-                        break;
-                    case CheatCodeExceptionType.Null:
-                        SpriteRenderer sprite = null;
-                        var c = sprite.sprite;
-                        break;
-                }
-            }, listExceptionType);
+            // ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
+            // {
+            //     UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
+            // }, listCrashCategory);
+            //
+            // var listExceptionType = Enum.GetValues(typeof(CheatCodeExceptionType)).Cast<CheatCodeExceptionType>().Select(x => x.ToString()).ToList();
+            // ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Create Exception!!!!!", param =>
+            // {
+            //     var exceptionType = (CheatCodeExceptionType)Enum.Parse(typeof(CheatCodeExceptionType), listExceptionType[param.dropdownParam.value]);
+            //     switch (exceptionType)
+            //     {
+            //         case CheatCodeExceptionType.Exception:
+            //             throw new Exception("Cheat Code Exception");
+            //         case CheatCodeExceptionType.OutOfRange:
+            //             var a = new int[3];
+            //             var b = a[3];
+            //             break;
+            //         case CheatCodeExceptionType.Null:
+            //             SpriteRenderer sprite = null;
+            //             var c = sprite.sprite;
+            //             break;
+            //     }
+            // }, listExceptionType);
 
             AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
             {
@@ -273,32 +273,32 @@ namespace _IECModules
 
         private void AddTestButton()
         {
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Test Button + Input",
-                cheatCodeParam => { cheatCodeParam.inputParams.ForEach(print); }, new InputParam
-                {
-                },
-                new InputParam
-                {
-                    label = "y",
-                    value = 5
-                });
-
-            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Test Dropdown",
-                cheatCodeParam => { print(cheatCodeParam.dropdownParam.value); }, new List<string>
-                {
-                    "Options 1",
-                    "Options 2",
-                    "Options 3",
-                    "Options 4",
-                    "Options 5",
-                    "Options 6",
-                    "Options 7",
-                    "Options 8",
-                    "Options 9",
-                    "Options 10",
-                    "Options Long Long Long",
-                    "Options 11",
-                });
+            // ModuleController.cheatCode.AddCheatCodeButtonWithInput("Test Button + Input",
+            //     cheatCodeParam => { cheatCodeParam.inputParams.ForEach(print); }, new InputParam
+            //     {
+            //     },
+            //     new InputParam
+            //     {
+            //         label = "y",
+            //         value = 5
+            //     });
+            //
+            // ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Test Dropdown",
+            //     cheatCodeParam => { print(cheatCodeParam.dropdownParam.value); }, new List<string>
+            //     {
+            //         "Options 1",
+            //         "Options 2",
+            //         "Options 3",
+            //         "Options 4",
+            //         "Options 5",
+            //         "Options 6",
+            //         "Options 7",
+            //         "Options 8",
+            //         "Options 9",
+            //         "Options 10",
+            //         "Options Long Long Long",
+            //         "Options 11",
+            //     });
 
             AddCheatCodeButton("Test Add Button",
                 param => { AddCheatCodeButton("Add Time: " + Time.time, param2 => { }); });

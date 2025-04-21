@@ -124,41 +124,41 @@ public sealed class SocketIOWePlaySample : MonoBehaviour
             SampleSelector.SelectedSample.DestroyUnityObject();
     }
 
-    void OnGUI()
-    {
-        switch(State)
-        {
-            case States.Connecting:
-                GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-                    {
-                        GUILayout.BeginVertical();
-                            GUILayout.FlexibleSpace();
-                            GUIHelper.DrawCenteredText("Connecting to the server...");
-                            GUILayout.FlexibleSpace();
-                        GUILayout.EndVertical();
-                    });
-                break;
-
-            case States.WaitForNick:
-                GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-                    {
-                        DrawLoginScreen();
-                    });
-                break;
-
-            case States.Joined:
-                GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-                    {
-                        // Draw Texture
-                        if (FrameTexture != null)
-                            GUILayout.Box(FrameTexture);
-
-                        DrawControls();
-                        DrawChat();
-                    });
-                break;
-        }
-    }
+    // void OnGUI()
+    // {
+    //     switch(State)
+    //     {
+    //         case States.Connecting:
+    //             GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+    //                 {
+    //                     GUILayout.BeginVertical();
+    //                         GUILayout.FlexibleSpace();
+    //                         GUIHelper.DrawCenteredText("Connecting to the server...");
+    //                         GUILayout.FlexibleSpace();
+    //                     GUILayout.EndVertical();
+    //                 });
+    //             break;
+    //
+    //         case States.WaitForNick:
+    //             GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+    //                 {
+    //                     DrawLoginScreen();
+    //                 });
+    //             break;
+    //
+    //         case States.Joined:
+    //             GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+    //                 {
+    //                     // Draw Texture
+    //                     if (FrameTexture != null)
+    //                         GUILayout.Box(FrameTexture);
+    //
+    //                     DrawControls();
+    //                     DrawChat();
+    //                 });
+    //             break;
+    //     }
+    // }
 
     #endregion
 

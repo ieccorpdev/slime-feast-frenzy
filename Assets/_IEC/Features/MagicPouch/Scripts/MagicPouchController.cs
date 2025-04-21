@@ -57,24 +57,24 @@ namespace IEC
 
         private void AddCheatcode()
         {
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Win Magic Pouch Streak Level", param =>
-            {
-                _winStreakData.AddLevelWin();
-                EventController.RaiseEvent(EventList.SAVE_DATA);
-            }, new CheatCode.InputParam
-            {
-                value = 10
-            });
-
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Win Magic Pouch Streak Level", param =>
-            {
-                int levelCount = int.Parse(param.inputParams[0].value.ToString());
-                _winStreakData.SetLevelWin(levelCount);
-                EventController.RaiseEvent(EventList.SAVE_DATA);
-            }, new CheatCode.InputParam
-            {
-                value = 1
-            });
+            // ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Win Magic Pouch Streak Level", param =>
+            // {
+            //     _winStreakData.AddLevelWin();
+            //     EventController.RaiseEvent(EventList.SAVE_DATA);
+            // }, new CheatCode.InputParam
+            // {
+            //     value = 10
+            // });
+            //
+            // ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Win Magic Pouch Streak Level", param =>
+            // {
+            //     int levelCount = int.Parse(param.inputParams[0].value.ToString());
+            //     _winStreakData.SetLevelWin(levelCount);
+            //     EventController.RaiseEvent(EventList.SAVE_DATA);
+            // }, new CheatCode.InputParam
+            // {
+            //     value = 1
+            // });
         }
         
         void InitData()

@@ -12,9 +12,7 @@ namespace nickeltin.SDF.Runtime
     ///     and at least display it even if sdf metadata isn't generated.
     ///     In version 1.2.x this ability was removed with introduction of decoupled pipeline.
     /// </remarks>
-#if ODIN_INSPECTOR
-    [Sirenix.OdinInspector.DrawWithUnity, Sirenix.OdinInspector.DisableContextMenu()]
-#endif
+
     [Serializable]
     public struct SDFSpriteReference
     {

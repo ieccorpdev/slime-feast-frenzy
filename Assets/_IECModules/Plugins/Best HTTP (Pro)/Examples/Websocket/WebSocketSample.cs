@@ -46,68 +46,68 @@ public class WebSocketSample : MonoBehaviour
             webSocket.Close();
     }
 
-    void OnGUI()
-    {
-        GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-            {
-                scrollPos = GUILayout.BeginScrollView(scrollPos);
-                    GUILayout.Label(Text);
-                GUILayout.EndScrollView();
-
-                GUILayout.Space(5);
-
-                GUILayout.FlexibleSpace();
-
-                address = GUILayout.TextField(address);
-
-                if (webSocket == null && GUILayout.Button("Open Web Socket"))
-                {
-                    // Create the WebSocket instance
-                    webSocket = new WebSocket(new Uri(address));
-
-#if !BESTHTTP_DISABLE_PROXY && !UNITY_WEBGL
-                    if (HTTPManager.Proxy != null)
-                        webSocket.InternalRequest.Proxy = new HTTPProxy(HTTPManager.Proxy.Address, HTTPManager.Proxy.Credentials, false);
-#endif
-
-                    // Subscribe to the WS events
-                    webSocket.OnOpen += OnOpen;
-                    webSocket.OnMessage += OnMessageReceived;
-                    webSocket.OnClosed += OnClosed;
-                    webSocket.OnError += OnError;
-
-                    // Start connecting to the server
-                    webSocket.Open();
-
-                    Text += "Opening Web Socket...\n";
-                }
-
-                if (webSocket != null && webSocket.IsOpen)
-                {
-                    GUILayout.Space(10);
-
-                    GUILayout.BeginHorizontal();
-                        msgToSend = GUILayout.TextField(msgToSend);
-
-                        if (GUILayout.Button("Send", GUILayout.MaxWidth(70)))
-                        {
-                            Text += "Sending message...\n";
-
-                            // Send message to the server
-                            webSocket.Send(msgToSend);
-                        }
-                    GUILayout.EndHorizontal();
-
-                    GUILayout.Space(10);
-
-                    if (GUILayout.Button("Close"))
-                    {
-                        // Close the connection
-                        webSocket.Close(1000, "Bye!");
-                    }
-                }
-            });
-    }
+//     void OnGUI()
+//     {
+//         GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+//             {
+//                 scrollPos = GUILayout.BeginScrollView(scrollPos);
+//                     GUILayout.Label(Text);
+//                 GUILayout.EndScrollView();
+//
+//                 GUILayout.Space(5);
+//
+//                 GUILayout.FlexibleSpace();
+//
+//                 address = GUILayout.TextField(address);
+//
+//                 if (webSocket == null && GUILayout.Button("Open Web Socket"))
+//                 {
+//                     // Create the WebSocket instance
+//                     webSocket = new WebSocket(new Uri(address));
+//
+// #if !BESTHTTP_DISABLE_PROXY && !UNITY_WEBGL
+//                     if (HTTPManager.Proxy != null)
+//                         webSocket.InternalRequest.Proxy = new HTTPProxy(HTTPManager.Proxy.Address, HTTPManager.Proxy.Credentials, false);
+// #endif
+//
+//                     // Subscribe to the WS events
+//                     webSocket.OnOpen += OnOpen;
+//                     webSocket.OnMessage += OnMessageReceived;
+//                     webSocket.OnClosed += OnClosed;
+//                     webSocket.OnError += OnError;
+//
+//                     // Start connecting to the server
+//                     webSocket.Open();
+//
+//                     Text += "Opening Web Socket...\n";
+//                 }
+//
+//                 if (webSocket != null && webSocket.IsOpen)
+//                 {
+//                     GUILayout.Space(10);
+//
+//                     GUILayout.BeginHorizontal();
+//                         msgToSend = GUILayout.TextField(msgToSend);
+//
+//                         if (GUILayout.Button("Send", GUILayout.MaxWidth(70)))
+//                         {
+//                             Text += "Sending message...\n";
+//
+//                             // Send message to the server
+//                             webSocket.Send(msgToSend);
+//                         }
+//                     GUILayout.EndHorizontal();
+//
+//                     GUILayout.Space(10);
+//
+//                     if (GUILayout.Button("Close"))
+//                     {
+//                         // Close the connection
+//                         webSocket.Close(1000, "Bye!");
+//                     }
+//                 }
+//             });
+//     }
 
     #endregion
 

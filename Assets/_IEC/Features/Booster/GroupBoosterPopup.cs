@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using IEC;
-using NaughtyAttributes;
 using UnityEngine;
 
 namespace _IEC.Features.Booster

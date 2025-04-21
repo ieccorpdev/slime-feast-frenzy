@@ -1,4 +1,3 @@
-using NaughtyAttributes;
 using UnityEngine;
 
 namespace _IECModules
@@ -11,7 +10,7 @@ namespace _IECModules
 
         public static CheatCode cheatCode;
         
-        public static GoogleSheetToCSV googleSheetToCsv;
+       // public static GoogleSheetToCSV googleSheetToCsv;
 
         public static NotificationBehaviour notificationBehaviour;
 
@@ -30,7 +29,7 @@ namespace _IECModules
 
             cheatCode = GetComponentInChildren<CheatCode>(true);
             
-            googleSheetToCsv = GetComponentInChildren<GoogleSheetToCSV>(true);
+            //googleSheetToCsv = GetComponentInChildren<GoogleSheetToCSV>(true);
 
             notificationBehaviour = GetComponentInChildren<NotificationBehaviour>(true);
 

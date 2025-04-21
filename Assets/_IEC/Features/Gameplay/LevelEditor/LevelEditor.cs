@@ -12,7 +12,6 @@ using IEC.Linq;
 using Newtonsoft.Json;
 using Object = UnityEngine.Object;
 using Random = UnityEngine.Random;
-using Vector3 = System.Numerics.Vector3;
 using System.IO;
 using System.Text;
 #if UNITY_EDITOR

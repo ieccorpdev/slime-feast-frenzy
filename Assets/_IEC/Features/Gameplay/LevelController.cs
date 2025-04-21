@@ -9,7 +9,6 @@ using _IEC.Features.Tutorial.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
-using MoreMountains.NiceVibrations;
 using UnityEditor;
 using UnityEngine;
 using BoosterData = IEC.BoosterData;

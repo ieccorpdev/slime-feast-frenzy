@@ -1,5 +1,4 @@
-﻿using nickeltin.SDF.Runtime;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay

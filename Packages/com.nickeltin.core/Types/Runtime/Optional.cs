@@ -1,15 +1,10 @@
 ﻿using System;
 using UnityEngine.Serialization;
 
-#if ODIN_INSPECTOR
-using Sirenix.OdinInspector;
-#endif
 
 namespace nickeltin.Core.Runtime
 {
-#if ODIN_INSPECTOR
-    [DrawWithUnity]
-#endif
+
     [Serializable]
     public class Optional<T>
     {

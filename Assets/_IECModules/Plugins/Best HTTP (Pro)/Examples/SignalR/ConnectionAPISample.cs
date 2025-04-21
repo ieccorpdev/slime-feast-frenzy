@@ -75,93 +75,93 @@ public sealed class ConnectionAPISample : MonoBehaviour
     /// Get input strings.
     /// Handle function calls.
     /// </summary>
-    void OnGUI()
-    {
-        GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
-        {
-            GUILayout.BeginVertical();
-
-                #region To Everybody
-                GUILayout.Label("To Everybody");
-
-                GUILayout.BeginHorizontal();
-
-                    ToEveryBodyText = GUILayout.TextField(ToEveryBodyText, GUILayout.MinWidth(100));
-
-                    if (GUILayout.Button("Broadcast"))
-                        Broadcast(ToEveryBodyText);
-
-                    if (GUILayout.Button("Broadcast (All Except Me)"))
-                        BroadcastExceptMe(ToEveryBodyText);
-
-                    if (GUILayout.Button("Enter Name"))
-                        EnterName(ToEveryBodyText);
-
-                    if (GUILayout.Button("Join Group"))
-                        JoinGroup(ToEveryBodyText);
-
-                    if (GUILayout.Button("Leave Group"))
-                        LeaveGroup(ToEveryBodyText);
-
-                GUILayout.EndHorizontal();
-                #endregion
-
-                #region To Me
-                GUILayout.Label("To Me");
-
-                GUILayout.BeginHorizontal();
-
-                ToMeText = GUILayout.TextField(ToMeText, GUILayout.MinWidth(100));
-
-                if (GUILayout.Button("Send to me"))
-                    SendToMe(ToMeText);
-
-                GUILayout.EndHorizontal();
-                #endregion
-
-                #region Private Message
-                GUILayout.Label("Private Message");
-
-                GUILayout.BeginHorizontal();
-
-                    GUILayout.Label("Message:");
-                    PrivateMessageText = GUILayout.TextField(PrivateMessageText, GUILayout.MinWidth(100));
-
-                    GUILayout.Label("User or Group name:");
-                    PrivateMessageUserOrGroupName = GUILayout.TextField(PrivateMessageUserOrGroupName, GUILayout.MinWidth(100));
-
-                    if (GUILayout.Button("Send to user"))
-                        SendToUser(PrivateMessageUserOrGroupName, PrivateMessageText);
-
-                    if (GUILayout.Button("Send to group"))
-                        SendToGroup(PrivateMessageUserOrGroupName, PrivateMessageText);
-
-                GUILayout.EndHorizontal();
-                #endregion
-
-                GUILayout.Space(20);
-
-                if (signalRConnection.State == ConnectionStates.Closed)
-                {
-                    if (GUILayout.Button("Start Connection"))
-                        signalRConnection.Open();
-                }
-                else if (GUILayout.Button("Stop Connection"))
-                        signalRConnection.Close();
-
-                GUILayout.Space(20);
-
-                // Draw the messages
-                GUILayout.Label("Messages");
-
-                GUILayout.BeginHorizontal();
-                    GUILayout.Space(20);
-                    messages.Draw(Screen.width - 20, 0);
-                GUILayout.EndHorizontal();
-
-            GUILayout.EndVertical();
-        });
-    }
+    // void OnGUI()
+    // {
+    //     GUIHelper.DrawArea(GUIHelper.ClientArea, true, () =>
+    //     {
+    //         GUILayout.BeginVertical();
+    //
+    //             #region To Everybody
+    //             GUILayout.Label("To Everybody");
+    //
+    //             GUILayout.BeginHorizontal();
+    //
+    //                 ToEveryBodyText = GUILayout.TextField(ToEveryBodyText, GUILayout.MinWidth(100));
+    //
+    //                 if (GUILayout.Button("Broadcast"))
+    //                     Broadcast(ToEveryBodyText);
+    //
+    //                 if (GUILayout.Button("Broadcast (All Except Me)"))
+    //                     BroadcastExceptMe(ToEveryBodyText);
+    //
+    //                 if (GUILayout.Button("Enter Name"))
+    //                     EnterName(ToEveryBodyText);
+    //
+    //                 if (GUILayout.Button("Join Group"))
+    //                     JoinGroup(ToEveryBodyText);
+    //
+    //                 if (GUILayout.Button("Leave Group"))
+    //                     LeaveGroup(ToEveryBodyText);
+    //
+    //             GUILayout.EndHorizontal();
+    //             #endregion
+    //
+    //             #region To Me
+    //             GUILayout.Label("To Me");
+    //
+    //             GUILayout.BeginHorizontal();
+    //
+    //             ToMeText = GUILayout.TextField(ToMeText, GUILayout.MinWidth(100));
+    //
+    //             if (GUILayout.Button("Send to me"))
+    //                 SendToMe(ToMeText);
+    //
+    //             GUILayout.EndHorizontal();
+    //             #endregion
+    //
+    //             #region Private Message
+    //             GUILayout.Label("Private Message");
+    //
+    //             GUILayout.BeginHorizontal();
+    //
+    //                 GUILayout.Label("Message:");
+    //                 PrivateMessageText = GUILayout.TextField(PrivateMessageText, GUILayout.MinWidth(100));
+    //
+    //                 GUILayout.Label("User or Group name:");
+    //                 PrivateMessageUserOrGroupName = GUILayout.TextField(PrivateMessageUserOrGroupName, GUILayout.MinWidth(100));
+    //
+    //                 if (GUILayout.Button("Send to user"))
+    //                     SendToUser(PrivateMessageUserOrGroupName, PrivateMessageText);
+    //
+    //                 if (GUILayout.Button("Send to group"))
+    //                     SendToGroup(PrivateMessageUserOrGroupName, PrivateMessageText);
+    //
+    //             GUILayout.EndHorizontal();
+    //             #endregion
+    //
+    //             GUILayout.Space(20);
+    //
+    //             if (signalRConnection.State == ConnectionStates.Closed)
+    //             {
+    //                 if (GUILayout.Button("Start Connection"))
+    //                     signalRConnection.Open();
+    //             }
+    //             else if (GUILayout.Button("Stop Connection"))
+    //                     signalRConnection.Close();
+    //
+    //             GUILayout.Space(20);
+    //
+    //             // Draw the messages
+    //             GUILayout.Label("Messages");
+    //
+    //             GUILayout.BeginHorizontal();
+    //                 GUILayout.Space(20);
+    //                 messages.Draw(Screen.width - 20, 0);
+    //             GUILayout.EndHorizontal();
+    //
+    //         GUILayout.EndVertical();
+    //     });
+    // }
 
     void OnDestroy()
     {

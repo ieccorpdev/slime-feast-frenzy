@@ -9,32 +9,32 @@ public class CurrencyFormat
         var formattedAmount = amount.ToString();
         var divide = 1f;
         var symbol = "";
-        switch (amount)
-        {
-            case < 10_000:
-                return formattedAmount;
-            case < 1_000_000:
-                divide = 1000f;
-                symbol = "k";
-                break;
-            case < 1_000_000_000:
-                divide = 1_000_000f;
-                symbol = "m";
-                break;
-            default:
-                divide = 1_000_000_000f;
-                symbol = "b";
-                break;
-        }
+        // switch (amount)
+        // {
+        //     case < 10_000:
+        //         return formattedAmount;
+        //     case < 1_000_000:
+        //         divide = 1000f;
+        //         symbol = "k";
+        //         break;
+        //     case < 1_000_000_000:
+        //         divide = 1_000_000f;
+        //         symbol = "m";
+        //         break;
+        //     default:
+        //         divide = 1_000_000_000f;
+        //         symbol = "b";
+        //         break;
+        // }
 
         var div = amount / divide;
 
-        formattedAmount = div switch
-        {
-            < 10 => $"{div:0.00}{symbol}",
-            < 100 => $"{div:0.0}{symbol}",
-            _ => $"{div}{symbol}"
-        };
+        // formattedAmount = div switch
+        // {
+        //     < 10 => $"{div:0.00}{symbol}",
+        //     < 100 => $"{div:0.0}{symbol}",
+        //     _ => $"{div}{symbol}"
+        // };
         return formattedAmount;
     }
 
