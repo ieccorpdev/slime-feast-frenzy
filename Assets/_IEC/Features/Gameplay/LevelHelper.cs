@@ -314,7 +314,6 @@ namespace _IEC.Features.Gameplay
         
         public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
         {
-            Debug.LogError("SpawnSpecialItems Case 1");
             var res = new List<BaseItem>();
             if (itemDefinition == null) return res;
             var prefab = itemDefinition.GetPrefab();
@@ -322,7 +321,6 @@ namespace _IEC.Features.Gameplay
             {
                 return res;
             }
-            Debug.LogError("SpawnSpecialItems Case 2");
             for (int i = 0; i < count; i++)
             {
                 var newItem = prefab.Spawn();
@@ -331,7 +329,6 @@ namespace _IEC.Features.Gameplay
                 {
                     itemComponent = newItem.AddComponent<BaseItem>();
                 }
-                Debug.LogError("SpawnSpecialItems Case 2_1_" + count);
                 var itemTransform = itemComponent.transform;
                 var itemData = new ItemData()
                 {
@@ -341,10 +338,8 @@ namespace _IEC.Features.Gameplay
                     localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
                     isStartKinematic =  false,
                 };
-                Debug.LogError("SpawnSpecialItems Case 2_2_" + count);
                 itemTransform.parent = levelObjectHolder;
                 itemComponent.LoadData(itemData, itemDefinition);
-                Debug.LogError("SpawnSpecialItems Case 2_3_" + count);
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(
                         bounds,
@@ -352,13 +347,10 @@ namespace _IEC.Features.Gameplay
                         1000,
                         itemComponent.gameObject.layer
                     );
-                Debug.LogError("SpawnSpecialItems Case 2_4_" + count);
                 itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
-                Debug.LogError("SpawnSpecialItems Case 2_5_" + count);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
-            Debug.LogError("SpawnSpecialItems Case 3");
             return res;
         }
 
