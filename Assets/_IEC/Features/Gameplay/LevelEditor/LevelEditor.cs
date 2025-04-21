@@ -219,7 +219,7 @@ namespace IEC
         #region Random Level Generator
 
         [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
-        public BaseItemGroupConfig baseItemGroupConfig;
+        public List<BaseItemGroup> listBaseItemGroup = new();
 
         [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
         [Button]
@@ -249,7 +249,7 @@ namespace IEC
             }
 
             for (int i = 0; i < groupCount; i++) {
-                BaseItemGroup group = baseItemGroupConfig.listBaseItemGroup[Random.Range(0, baseItemGroupConfig.listBaseItemGroup.Count)];
+                BaseItemGroup group = listBaseItemGroup[Random.Range(0, listBaseItemGroup.Count)];
                 UnityEngine.Vector3 groupSize = group.Bounds.size;
 
                 // Try to place it at cursor position
