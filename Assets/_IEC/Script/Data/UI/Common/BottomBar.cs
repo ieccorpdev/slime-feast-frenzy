@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using IEC.Common.Event;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -97,9 +98,24 @@ namespace IEC
                 // Debug.LogError(m_BigTab.GetSize().x);
                 m_ChooseTab.sizeDelta = new Vector2(m_BigTab.GetSize().x, m_ChooseTab.sizeDelta.y);
             }));
-            m_ListTab.ForEach(x => x.SetLock(false));
+            
+            //m_ListTab.ForEach(x => x.SetLock(false)); 
+            StartCoroutine(IE_SetLockTabs());
         }
-
+        [Sirenix.OdinInspector.Button]
+        private void SetLockTabs()
+        {
+            //lock leaderboard for now
+            m_ListTab.ForEach(x =>
+            {
+                x.SetLock(x.type == TabType.LeaderBoard);
+            });
+        }
+        IEnumerator IE_SetLockTabs()
+        {
+            yield return new WaitForEndOfFrame();
+            SetLockTabs();
+        }
         IEnumerator IE_WaitRebuild(Action callback)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(m_Layout);
