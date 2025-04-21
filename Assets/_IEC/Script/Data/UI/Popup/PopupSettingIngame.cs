@@ -61,20 +61,32 @@ namespace IEC
             SetEvent(btnQuit, () =>
             {
                 //EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
-                if(Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                {
-                    PlayerData.DecreasePlayerLife();
-                    if (GamePlay.IsInLevelHard)
+                // if(Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                // {
+                //     PlayerData.DecreasePlayerLife();
+                //     if (GamePlay.IsInLevelHard)
+                //     {
+                //         PlayerData.currentCountLoseHardLevel++;
+                //     }
+                //
+                //     GameController.OpenScene(GameScene.Main);
+                //     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                // }, () =>
+                // {
+                //     Services.PushEvent(new IEC.TrackingEvent.SFApostition($"skip_win_bonus_reward"));
+                // }));
+                
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                    () =>
                     {
-                        PlayerData.currentCountLoseHardLevel++;
-                    }
-
-                    GameController.OpenScene(GameScene.Main);
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                }, () =>
-                {
-                    Services.PushEvent(new IEC.TrackingEvent.SFApostition($"skip_win_bonus_reward"));
-                }));
+                        PlayerData.DecreasePlayerLife();
+                        GameController.OpenScene(GameScene.Main);
+                        EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                    },
+                    () =>
+                    {
+                        Services.PushEvent(new TrackingEvent.SFApostition("in_game_setting_quit"));
+                    });
 
             });
             SetEvent(closeBtn2, () => { Hide(); });
