@@ -226,12 +226,14 @@ namespace _IEC.Features.Gameplay
             {
                 CollectBomb();
                 //VibrationController.Vibrate(HapticTypes.Failure);
+                if(PlayerData.isVibrateOn)
+                    MMVibrationManager.Haptic(HapticTypes.Failure);
                 return;
             }
 
             //var timeDelay = Config.soundConfig.delayInterval;
-         
-            
+            if(PlayerData.isVibrateOn)
+                MMVibrationManager.Haptic(HapticTypes.LightImpact);
             
             if (IsObjectiveItem(itemId))
             {
