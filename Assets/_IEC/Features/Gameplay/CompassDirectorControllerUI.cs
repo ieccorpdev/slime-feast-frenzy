@@ -71,6 +71,7 @@ namespace _IEC.Features.Gameplay
         {
             foreach (var baseItem in baseItems)
             {
+                if(baseItem == null) continue;
                 var director = Config.prefabConfig.itemDirectorUI.Spawn(transform);
                 director.Reset();
                 director.LoadData(holeTransform,baseItem);
