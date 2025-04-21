@@ -89,7 +89,7 @@ namespace IEC
                     });
 
             });
-            SetEvent(closeBtn2, () => { Hide(); });
+            SetEvent(closeBtn2, HideButtonFunction);
             SetEvent(btnContinue, HideButtonFunction);
         }
         
