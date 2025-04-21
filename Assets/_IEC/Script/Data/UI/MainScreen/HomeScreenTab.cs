@@ -387,6 +387,7 @@ public class HomeScreenTab : ScreenNavigateUI
         bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
         starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
         starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
+        btnStarChestReward.interactable = isEnoughLevel;
     }
     private void UpdateLifeOffer()
     {
