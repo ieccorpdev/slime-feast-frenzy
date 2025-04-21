@@ -19,7 +19,8 @@ namespace IEC
         public int abVersion;
         public bool levelCreative;
         public bool isHaveBooster = false;
-        public float timeDelayFullAds;
+        public float timeDelayFullAds = 120f;
+        public int levelStartShowFullAds = 8;
         public int levelVersion = 1;
         public bool enableLevelProgress;
         public bool isUsingHardLevel;
@@ -40,11 +41,11 @@ namespace IEC
             get
             {
 #if UNITY_ANDROID
-                return Pool.Get<PlayerSecret>().level > 6;
+                return Pool.Get<PlayerSecret>().level > levelStartShowFullAds;
 #endif
 
 #if UNITY_IOS
-                return Pool.Get<PlayerSecret>().level > 6;
+                return Pool.Get<PlayerSecret>().level > levelStartShowFullAds;
 #endif
             }
         }
