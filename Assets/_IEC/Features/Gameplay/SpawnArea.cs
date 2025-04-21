@@ -702,6 +702,12 @@ namespace IEC
 
             previewGameObject = new GameObject("Preview");
             previewGameObject.transform.position = spawnPos;
+            
+            if (isFixedSpawnAmount)
+            {
+                PrepareFixedPyramidSpawn(prefab);
+            }
+            
             var itemHeight = 1f;
             var renderer  = prefab.GetComponentInChildren<MeshRenderer>();;
             if (renderer != null)
@@ -745,6 +751,70 @@ namespace IEC
             }
 
             return previewGameObject;
+        }
+        
+        private void PrepareFixedPyramidSpawn(GameObject prefab)
+        {
+            Bounds bounds = GroundExtend.GetRendererBounds(prefab);
+            spacing = Mathf.Max(bounds.size.x, bounds.size.z) * 1.1f;
+
+            int target = fixedSpawnAmount;
+
+            int bestRadius = 1;
+            float bestReduce = 1f;
+            int bestTotal = int.MaxValue;
+            float bestScore = float.MaxValue;
+
+            for (float reduce = 0.25f; reduce <= 2.5f; reduce += 0.25f)
+            {
+                for (int r = 2; r <= 50; r++)
+                {
+                    int layers = Mathf.FloorToInt(r / reduce);
+                    int sum = 0;
+
+                    for (int i = 0; i < layers; i++)
+                    {
+                        float currentRadius = r - i * reduce;
+
+                        if (currentRadius <= 0) break;
+
+                        if (spawnType == SpawnTypes.Border)
+                        {
+                            float circumference = 2 * Mathf.PI * currentRadius * spacing;
+                            int count = Mathf.FloorToInt(circumference / spacing);
+                            sum += count;
+                        }
+                        else // Full
+                        {
+                            for (float ring = currentRadius; ring > 0; ring -= 1f)
+                            {
+                                float circumference = 2 * Mathf.PI * ring * spacing;
+                                int count = Mathf.FloorToInt(circumference / spacing);
+                                sum += count;
+                            }
+                        }
+                    }
+
+                    if (sum >= target)
+                    {
+                        float excess = sum - target;
+                        float layerBonus = layers * 3f;
+
+                        float score = excess - layerBonus;
+
+                        if (score < bestScore)
+                        {
+                            bestScore = score;
+                            bestRadius = r;
+                            bestReduce = reduce;
+                            bestTotal = sum;
+                        }
+                    }
+                }
+            }
+
+            radius = bestRadius;
+            layerSizeReduce = bestReduce;
         }
     }
 
