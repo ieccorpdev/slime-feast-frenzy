@@ -229,56 +229,82 @@ namespace IEC
             GenerateRandomLevel();
         }
         
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
         public int groupCount = 9;
+        [FoldoutGroup(LevelEditorConstants.RANDOM_LEVEL_GENERATOR)]
         public float spacing = 1f;
         
         void GenerateRandomLevel() {
-            Vector2 cursor = Vector2.zero;
-            float rowHeight = 0f;
-            float levelWidth = 0f;
-
-            float estimatedSide = Mathf.Sqrt(groupCount) * 10f; // tweak this estimate
+            List<GameObject> spawned = new();
+            List<Vector2> sizes = new(); // XZ sizes
             
-            List<Bounds> placedBounds = new();
-            
-            bool IsOverlapping(Bounds newBounds) {
-                foreach (var existing in placedBounds) {
-                    if (existing.Intersects(newBounds)) return true;
-                }
-                return false;
-            }
-
             for (int i = 0; i < groupCount; i++) {
-                BaseItemGroup group = listBaseItemGroup[Random.Range(0, listBaseItemGroup.Count)];
-                UnityEngine.Vector3 groupSize = group.Bounds.size;
+                BaseItemGroup prefab = listBaseItemGroup[Random.Range(0, listBaseItemGroup.Count)];
+                GameObject obj = Instantiate(prefab.gameObject, UnityEngine.Vector3.zero, Quaternion.identity, itemHolder);
 
-                // Try to place it at cursor position
-                UnityEngine.Vector3 tryPosition = new UnityEngine.Vector3(cursor.x, 0f, cursor.y);
-                Bounds futureBounds = new Bounds(group.Bounds.center + tryPosition, groupSize);
-
-                if (!IsOverlapping(futureBounds)) {
-                    GameObject instance = Instantiate(group.gameObject, tryPosition, Quaternion.identity, itemHolder);
-                    Bounds placed = instance.GetComponent<BaseItemGroup>().Bounds;
-                    placed.center += tryPosition;
-
-                    placedBounds.Add(placed);
-
-                    // Move cursor forward
-                    cursor.x += groupSize.x + spacing;
-                    rowHeight = Mathf.Max(rowHeight, groupSize.z);
-
-                    // Wrap if we get too wide
-                    levelWidth += groupSize.x + spacing;
-                    if (levelWidth > estimatedSide) {
-                        cursor.x = 0f;
-                        cursor.y += rowHeight + spacing;
-                        rowHeight = 0f;
-                        levelWidth = 0f;
-                    }
-                } else {
-                    Debug.Log("Overlap detected, skipping");
-                }
+                obj.GetComponent<BaseItemGroup>().Setup();
+                Bounds b = obj.GetComponent<BaseItemGroup>().Bounds;
+                sizes.Add(new Vector2(b.size.x, b.size.z));
+                spawned.Add(obj);
             }
+
+            // Step 2: Try to pack all into square area
+            float side = EstimateStartingSide(sizes, spacing);
+            Dictionary<int, UnityEngine.Vector3> positions;
+
+            while (!TryPack(sizes, side, spacing, out positions)) {
+                side += 1f; // grow square until it fits
+            }
+
+            // Step 3: Position and activate
+            for (int i = 0; i < spawned.Count; i++) {
+                UnityEngine.Vector3 pos = positions[i];
+                spawned[i].transform.position = new UnityEngine.Vector3(pos.x, 0f, pos.z);
+            }
+            
+            // bool IsOverlapping(Bounds newBounds) {
+            //     foreach (var existing in placedBounds) {
+            //         if (existing.Intersects(newBounds)) return true;
+            //     }
+            //     return false;
+            // }
+        }
+        
+        float EstimateStartingSide(List<Vector2> sizes, float spacing) {
+            float totalArea = 0f;
+            foreach (var s in sizes) {
+                totalArea += (s.x + spacing) * (s.y + spacing);
+            }
+            return Mathf.Ceil(Mathf.Sqrt(totalArea)); // square root of total area
+        }
+        
+        bool TryPack(List<Vector2> sizes, float side, float spacing, out Dictionary<int, UnityEngine.Vector3> outPositions) {
+            outPositions = new Dictionary<int, UnityEngine.Vector3>();
+            float x = 0f, y = 0f, rowHeight = 0f;
+
+            for (int i = 0; i < sizes.Count; i++) {
+                Vector2 size = sizes[i];
+
+                // Wrap to next row if needed
+                if (x + size.x > side) {
+                    x = 0f;
+                    y += rowHeight + spacing;
+                    rowHeight = 0f;
+                }
+
+                // Check if we still fit vertically
+                if (y + size.y > side) {
+                    return false;
+                }
+
+                // Place it
+                //[i] = new UnityEngine.Vector3(x, 0f, y);
+                outPositions[i] = new UnityEngine.Vector3(x + size.x / 2f, 0f, y + size.y / 2f);
+                x += size.x + spacing;
+                rowHeight = Mathf.Max(rowHeight, size.y);
+            }
+
+            return true;
         }
         
         #endregion
