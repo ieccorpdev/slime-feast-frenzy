@@ -1702,6 +1702,7 @@ namespace IEC
 #endif
     }
 }
+#if UNITY_EDITOR
 public class CustomDialogWindow : EditorWindow
 {
     private string dialogContent = "";
@@ -1731,3 +1732,4 @@ public class CustomDialogWindow : EditorWindow
         }
     }
 }
+#endif

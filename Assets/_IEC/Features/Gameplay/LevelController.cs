@@ -113,13 +113,13 @@ namespace _IEC.Features.Gameplay
          
             m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
                 ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
-
+            #if UNITY_EDITOR
             if (EditorPrefs.GetBool("isPlayTest"))
             {
                 m_LevelConfig = Config.levelConfig.playTestData;
                 EditorPrefs.SetBool("isPlayTest", false);
             }
-            
+            #endif
             if (m_LevelConfig == null)
             {
                 Debug.LogError("Level Data is null");
