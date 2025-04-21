@@ -103,7 +103,8 @@ public class Hole : _BaseBehaviour
 	private void UpdateGravityBySpeed()
 	{
 		//This function must stay in another class
-		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
+		float baseGravity = -30 + (Speed - 4 * 5);
+		Physics.gravity = new Vector3(0, baseGravity * 0.75f , 0);
 	}
 	public void TriggerdBite()
 	{
