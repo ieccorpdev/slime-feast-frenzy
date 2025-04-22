@@ -91,7 +91,9 @@ namespace _IEC.Features.Gameplay
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
             if (objectiveUI == null) return;
-            objectiveUI.SetNumber(number, false);
+            int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+            //objectiveUI.SetNumber(maxSpecialObject, false);
+            objectiveUI.SetNumber(maxSpecialObject - number, false);
         }
         
         public void DisposeAll()
@@ -143,14 +145,14 @@ namespace _IEC.Features.Gameplay
         {
             var dataSpecial = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex);
             var specialObjective = new LevelObjective();
-            int count = Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
+            int count = GamePlay.levelController.AllSpecialItems.Count;
             specialObjective.itemId = dataSpecial.GetId();
             specialObjective.number = count;
             specialObjectiveUI.LoadData(specialObjective,true);
             m_ActiveObjectiveUIs.Add(specialObjectiveUI);
             specialObjectiveUI.gameObject.SetActive(count > 0);
             specialObjectiveParent.gameObject.SetActive(count > 0);
-            specialObjectiveUI.SetNumber(0, false);
+            //specialObjectiveUI.SetNumber(0, false);
         }
 
         private void HideSpecialObjective()
