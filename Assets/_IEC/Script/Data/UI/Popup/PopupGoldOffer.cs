@@ -8,7 +8,6 @@ namespace IEC
     public class PopupGoldOffer : BasePopup
     {
         public Transform rewardContainerTransform;
-        public Transform offerBundleUI;
         
         public Sequence _showAnimSequence;
 
@@ -21,13 +20,11 @@ namespace IEC
         {
             base.Show();
             SetScaleAnim();
-            TweenControl.GetInstance().ScaleFromZero(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InQuad);
         }
 
         public override void Hide()
         {
             base.Hide();
-            TweenControl.GetInstance().ScaleFromOne(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InBack);
         }
 
         public void SetScaleAnim()
