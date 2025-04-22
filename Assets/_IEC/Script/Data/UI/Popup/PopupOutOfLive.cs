@@ -123,20 +123,6 @@ namespace _IEC
             timeNextLifeTMP.gameObject.SetActive(false);
             adsMoreLifeBtn.gameObject.SetActive(false);
         }
-        public void StartAnimClose()
-        {
-            TweenControl.GetInstance().ScaleFromOne(refillBtn.gameObject, 0.3f);
-            //TweenControl.GetInstance().ScaleFromOne(adsMoreLifeBtn.gameObject, 0.3f);
-            TweenControl.GetInstance().ScaleFromOne(closeNBtn.gameObject, 0.3f);
-            TweenControl.GetInstance().ScaleFromOne(timeNextLifeTMP.gameObject, 0.3f);
-        }
-        public void EndAnim()
-        {
-            TweenControl.GetInstance().ScaleFromZero(refillBtn.gameObject, 0.5f);
-            //TweenControl.GetInstance().ScaleFromZero(adsMoreLifeBtn.gameObject, 0.5f);
-            TweenControl.GetInstance().ScaleFromZero(closeNBtn.gameObject, 0.5f);
-            TweenControl.GetInstance().ScaleFromZero(timeNextLifeTMP.gameObject, 0.5f);
-            timeNextLifeTMP.text = PlayerData.GetTimeToNextLife();
-        }
+        // DOTweenModuleUtils
     }
 }

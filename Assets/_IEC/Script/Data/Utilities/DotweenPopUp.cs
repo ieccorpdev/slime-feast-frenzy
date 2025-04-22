@@ -22,22 +22,17 @@ namespace IEC
         public RectTransform activeObject;
         public RectTransform tweenObject;
 
-        [ShowIf("animationType", AnimationType.Scale)]
         public bool popUpOffset;
 
-        [ShowIf("animationType", AnimationType.Scale)]
         public bool scaleToTarget;
         
-        [ShowIf("animationType", AnimationType.Fade)]
         public CanvasGroup canvasGroup;
 
         [Header("Pop Up")]
         public float popUpDuration = 0.4f;
 
-        [ShowIf("animationType", AnimationType.Scale)]
         public Vector3 from;
 
-        [ShowIf("animationType", AnimationType.Scale)]
         public Vector3 to = Vector3.one * 1.25f;
 
         public Ease easePopUp = Ease.OutQuad;
@@ -189,7 +184,7 @@ namespace IEC
         private void FadeIn()
         {
             canvasGroup.alpha = 0;
-            canvasGroup.DOFade(1, popUpDuration).SetEase(easePopUp).SetId(m_TweenEffectID).OnComplete(onShowComplete.Invoke);
+//            canvasGroup.DOFade(1, popUpDuration).SetEase(easePopUp).SetId(m_TweenEffectID).OnComplete(onShowComplete.Invoke);
         }
 
         private void FadeOut()
@@ -197,7 +192,7 @@ namespace IEC
             if (!tweenObject.gameObject.activeInHierarchy)
                 return;
 
-            canvasGroup.DOFade(0, dismissDuration).SetEase(easeDismiss).SetId(m_TweenEffectID).OnComplete(OnHideComplete);
+//            canvasGroup.DOFade(0, dismissDuration).SetEase(easeDismiss).SetId(m_TweenEffectID).OnComplete(OnHideComplete);
         }
         
         private void OnHideComplete()

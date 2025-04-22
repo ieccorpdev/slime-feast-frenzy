@@ -36,7 +36,7 @@ namespace IEC
         {
             base.Show();
 
-            progressFillImage.DOFillAmount(_currentProgress, 0.2f);
+            //progressFillImage.DOFillAmount(_currentProgress, 0.2f);
         }
         
     }

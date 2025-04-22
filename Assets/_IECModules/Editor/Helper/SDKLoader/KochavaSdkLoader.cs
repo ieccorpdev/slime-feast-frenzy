@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using BestHTTP;
 using Newtonsoft.Json;
 using SimpleJSON;
 using UnityEngine;
@@ -15,19 +14,19 @@ namespace _IECModules
         protected override void LoadVersionFromServer()
         {
             PlayerPrefs.DeleteKey(VersionCacheKey);
-            var httpRequest = new HTTPRequest(
-                new Uri("https://api.github.com/repos/Kochava/unity-kochavatracker-releases/releases"),
-                (originalRequest, response) =>
-                {
-                    var data = JSONNode.Parse(response.DataAsText).AsArray;
-                    var versions = new List<string>();
-                    for (var i = 0; i < data.Count; i++)
-                    {
-                        versions.Add(data[i]["name"]);
-                    }
-
-                    PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
-                }).Send();
+            // var httpRequest = new HTTPRequest(
+            //     new Uri("https://api.github.com/repos/Kochava/unity-kochavatracker-releases/releases"),
+            //     (originalRequest, response) =>
+            //     {
+            //         var data = JSONNode.Parse(response.DataAsText).AsArray;
+            //         var versions = new List<string>();
+            //         for (var i = 0; i < data.Count; i++)
+            //         {
+            //             versions.Add(data[i]["name"]);
+            //         }
+            //
+            //         PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
+            //     }).Send();
         }
     }
 }

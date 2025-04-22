@@ -10,7 +10,7 @@ namespace _IEC.Features.Gameplay
 {
     public class MapEditor : MonoBehaviour
     {
-        public RuleTile ruleTile;
+        public UnityEngine.Tilemaps.RuleTile ruleTile;
         public Tilemap tilemap;
         public MapTileConfig mapTileConfig;
 
@@ -252,5 +252,12 @@ namespace _IEC.Features.Gameplay
 
             return position;
         }
+    }
+}
+
+namespace UnityEngine.Tilemaps
+{
+    public class RuleTile : TileBase
+    {
     }
 }

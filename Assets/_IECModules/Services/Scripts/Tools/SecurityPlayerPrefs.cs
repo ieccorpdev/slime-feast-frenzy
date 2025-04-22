@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Security.Cryptography;
 using System.Text;
 using System.IO;
@@ -41,17 +42,18 @@ public class SecurityPlayerPrefs
 
     public static string MakeHash(string original)
     {
-        using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-        {
-            byte[] bytes = System.Text.Encoding.UTF8.GetBytes(original);
-            byte[] hashBytes = md5.ComputeHash(bytes);
-
-            string hashToString = "";
-            for (int i = 0; i < hashBytes.Length; ++i)
-                hashToString += hashBytes[i].ToString("x2");
-
-            return hashToString;
-        }
+        // using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+        // {
+        //     byte[] bytes = System.Text.Encoding.UTF8.GetBytes(original);
+        //     byte[] hashBytes = md5.ComputeHash(bytes);
+        //
+        //     string hashToString = "";
+        //     for (int i = 0; i < hashBytes.Length; ++i)
+        //         hashToString += hashBytes[i].ToString("x2");
+        //
+        //     return hashToString;
+        // }
+        return String.Empty;
     }
 
     public static byte[] Encrypt(byte[] bytesToBeEncrypted)

@@ -20,7 +20,6 @@ namespace IEC
         public TextMeshProUGUI guideText;
         public TextMeshProUGUI goldText;
         public BundlePackUI bundlePackUI;
-        public SpineAnimOT spineAnimPig;
         public bool IsFull => PlayerData.piggyBankGold >= Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
         
         public float PiggyBankFillAmount => (float)PlayerData.piggyBankGold / Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
@@ -76,10 +75,7 @@ namespace IEC
 
         public void SetAnim()
         {
-            spineAnimPig.SetAnimation(IsFull ? "1.2_start_Full" : "1.1_start_Regular", false, () =>
-            {
-                spineAnimPig.SetAnimation(IsFull ? "2.2_idle_Full" : "2.1_idle_Regular", true);
-            });
+
         }
         void SetFullState()
         {

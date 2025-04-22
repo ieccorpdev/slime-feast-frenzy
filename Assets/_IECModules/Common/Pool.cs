@@ -77,11 +77,11 @@ namespace IEC
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="functionCreate"></param>
-        public static void SetCreate<T>(Func<T> functionCreate) where T : class, new()
-        {
-            var type = typeof(T);
-            m_DictCreate[type] = functionCreate;
-        }
+        // public static void SetCreate<T>(Func<T> functionCreate) where T : class, new()
+        // {
+        //     var type = typeof(T);
+        //     m_DictCreate[type] = functionCreate;
+        // }
 
         public static void ClearAll()
         {

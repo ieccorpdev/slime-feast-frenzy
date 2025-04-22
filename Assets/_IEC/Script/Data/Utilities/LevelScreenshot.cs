@@ -64,73 +64,73 @@ namespace IEC
         
         void ProcessCsvData(string csvText, bool isApproved)
         {
-            var idMappings = new List<ItemExportConfig>();
-            var lines = csvText.Split("\n");
-            for (int i = 1; i < lines.Length; i++)
-            {
-                var currentLine = lines[i].Trim();
-                var column = currentLine.Split(',');
-
-                if (column.Length >= 2)
-                {
-                    var idMapping = new ItemExportConfig();
-                    idMapping.itemId = column[0];
-                    idMapping.isApproved = column[1] == "TRUE";
-                    idMappings.Add(idMapping);
-                }
-            }
-
-            var listItem = new List<GameObject>();
-            foreach (var config in idMappings)
-            {
-                if (isApproved)
-                {
-                    if (!config.isApproved) continue;
-                }
-                else
-                {
-                    if (config.isApproved) continue;
-                }
-                var originalPrefab = Utilities.FindAssetInFolder<GameObject>(FOLDER_PATH_ITEM_IN_GAME, config.itemId);
-                if (originalPrefab == null)
-                {
-                    Debug.LogError($"Missing item with name {config.itemId}");
-                    continue;
-                }
-                listItem.Add(originalPrefab);
-            }
-            
-            for (int i = 0; i < listItem.Count; i++)
-            {
-                // Calculate the position for each object in the grid
-                int row = i / columns;
-                int column = i % columns;
-
-                Vector3 position = startPosition + new Vector3(column * offset.x, 0, row * offset.z);
-
-                // Instantiate the object at the calculated position
-                var spawnObj = Instantiate(listItem[i], position, Quaternion.identity);
-                
-                // Create a list of inactive children first
-                List<GameObject> inactiveChildren = new List<GameObject>();
-        
-                // Collect inactive children before removal
-                foreach (Transform child in spawnObj.transform)
-                {
-                    if (!child.gameObject.activeInHierarchy)
-                    {
-                        inactiveChildren.Add(child.gameObject);
-                    }
-                }
-        
-                // Destroy collected inactive children
-                foreach (GameObject child in inactiveChildren)
-                {
-                    DestroyImmediate(child);
-                }
-                
-                spawnedObjects.Add(spawnObj);
-            }
+            // var idMappings = new List<ItemExportConfig>();
+            // var lines = csvText.Split("\n");
+            // for (int i = 1; i < lines.Length; i++)
+            // {
+            //     var currentLine = lines[i].Trim();
+            //     var column = currentLine.Split(',');
+            //
+            //     if (column.Length >= 2)
+            //     {
+            //         var idMapping = new ItemExportConfig();
+            //         idMapping.itemId = column[0];
+            //         idMapping.isApproved = column[1] == "TRUE";
+            //         idMappings.Add(idMapping);
+            //     }
+            // }
+            //
+            // var listItem = new List<GameObject>();
+            // foreach (var config in idMappings)
+            // {
+            //     if (isApproved)
+            //     {
+            //         if (!config.isApproved) continue;
+            //     }
+            //     else
+            //     {
+            //         if (config.isApproved) continue;
+            //     }
+            //     var originalPrefab = Utilities.FindAssetInFolder<GameObject>(FOLDER_PATH_ITEM_IN_GAME, config.itemId);
+            //     if (originalPrefab == null)
+            //     {
+            //         Debug.LogError($"Missing item with name {config.itemId}");
+            //         continue;
+            //     }
+            //     listItem.Add(originalPrefab);
+            // }
+            //
+            // for (int i = 0; i < listItem.Count; i++)
+            // {
+            //     // Calculate the position for each object in the grid
+            //     int row = i / columns;
+            //     int column = i % columns;
+            //
+            //     Vector3 position = startPosition + new Vector3(column * offset.x, 0, row * offset.z);
+            //
+            //     // Instantiate the object at the calculated position
+            //     var spawnObj = Instantiate(listItem[i], position, Quaternion.identity);
+            //     
+            //     // Create a list of inactive children first
+            //     List<GameObject> inactiveChildren = new List<GameObject>();
+            //
+            //     // Collect inactive children before removal
+            //     foreach (Transform child in spawnObj.transform)
+            //     {
+            //         if (!child.gameObject.activeInHierarchy)
+            //         {
+            //             inactiveChildren.Add(child.gameObject);
+            //         }
+            //     }
+            //
+            //     // Destroy collected inactive children
+            //     foreach (GameObject child in inactiveChildren)
+            //     {
+            //         DestroyImmediate(child);
+            //     }
+            //     
+            //     spawnedObjects.Add(spawnObj);
+            // }
         }
         
         [Button]

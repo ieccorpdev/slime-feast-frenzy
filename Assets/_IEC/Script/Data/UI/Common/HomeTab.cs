@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Spine;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,12 +17,8 @@ namespace IEC
         [SerializeField] private GameObject m_Lock;
         private Button m_Btn => SingleGet<Button>();
         private bool m_IsLock;
-        public SpineAnimOT iconSpine;
         public bool isBigTabOn;
-        public RectTransform IconTransform => iconSpine != null? iconSpine.GetComponent<RectTransform>() : m_Icon.GetComponent<RectTransform>();
-        public SpineAnimOT shopIconSpine;
-        public SpineAnimOT homeIconSpine;
-        public SpineAnimOT leaderBoardIconSpine;
+ 
         private float localPosIconOff = -35;
         private void Start()
         {
@@ -39,30 +34,12 @@ namespace IEC
         public void Init()
         {
             SetSpineIcon();
-            iconSpine.gameObject.SetActive(true);
-            var state = iconSpine.ske.AnimationState;
-            state.ClearTrack(0);
-            state.SetAnimation(0, "off", false);
+
         }
 
         private void SetSpineIcon()
         {
-            shopIconSpine.gameObject.SetActive(false);
-            homeIconSpine.gameObject.SetActive(false);
-            leaderBoardIconSpine.gameObject.SetActive(false);
-            m_Icon.gameObject.SetActive(false);
-            switch (type)
-            {
-                case TabType.Home:
-                    iconSpine = homeIconSpine;
-                    break;
-                case TabType.Shop:
-                    iconSpine = shopIconSpine;
-                    break;
-                case TabType.LeaderBoard:
-                    iconSpine = leaderBoardIconSpine;
-                    break;
-            }
+          
         }
 
         public void SetData(TabConfig config, bool isOn,TabType lastTabType)
@@ -96,43 +73,13 @@ namespace IEC
         public void SetAnimationSpineOn()
         {
             SetSpineIcon();
-            iconSpine.gameObject.SetActive(true);
-            iconSpine.SetAnimation( "on" ,false,null);
+       
         }
         public void SetAnimationSpineOff(TabType lastTabType)
         {
             SetSpineIcon();
 
-            iconSpine.gameObject.SetActive(true);
-            var skeleton = iconSpine.ske.Skeleton;
-            var state = iconSpine.ske.AnimationState;
-
-            state.ClearTrack(0);
-
-            var isSameTab = lastTabType == type;
-            var targetAnimation = isSameTab ? skeleton.Data.FindAnimation("on") : skeleton.Data.FindAnimation("off");
-
-            if (targetAnimation != null)
-            {
-                targetAnimation.Apply(
-                    skeleton,
-                    0f,
-                    targetAnimation.Duration,
-                    false,
-                    null,
-                    1f,
-                    MixBlend.Replace,
-                    MixDirection.In
-                );
-            }
-            iconSpine.transform.localPosition = Vector3.up * localPosIconOff;
-            iconSpine.ske.Update(0);
-            iconSpine.ske.LateUpdate();
-
-            if (isSameTab)
-            {
-                state.SetAnimation(0, "off", false);
-            }
+          
         }
     }
 }

@@ -82,12 +82,12 @@ namespace IEC
             {
                 var meshCollider = objectToScale.gameObject.AddComponent<MeshCollider>();
                 meshCollider.convex = true;
-                meshCollider.cookingOptions = MeshColliderCookingOptions.None;
+//                meshCollider.cookingOptions = MeshColliderCookingOptions.None;
             }
             else
             {
                 meshColl.convex = true;
-                meshColl.cookingOptions = MeshColliderCookingOptions.None;
+ //               meshColl.cookingOptions = MeshColliderCookingOptions.None;
             }
         }
         

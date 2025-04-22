@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UniRx;
 using UnityEngine;
 
 namespace IEC.Common.Event
@@ -10,142 +8,84 @@ namespace IEC.Common.Event
     {
         public static void OnEvent(string eventName, GameObject listener, Action callback)
         {
-            EventRx<string>.GetEvent(eventName)
-                .Subscribe(s =>
-                {
-                    callback?.Invoke();
-                })
-                .AddTo(listener);
+            EventDispatcher.AddListener(eventName, callback, listener);
         }
 
         public static void OnEvent(string eventName, GameObject listener, Action<string> callback)
         {
-            EventRx<string>.GetEvent(eventName)
-                .Subscribe(s =>
-                {
-                    callback?.Invoke(s);
-                })
-                .AddTo(listener);
+            EventDispatcher.AddListener<string>(eventName, callback, listener);
         }
 
         public static void SendEvent(string eventName)
         {
-            EventRx<string>.SendEvent(eventName, "");
+            EventDispatcher.Send(eventName);
         }
 
-        public static void SendEvent<T>(string eventName, T eventData)
+        public static void SendEvent<T>(string eventName, T data)
         {
-            // Debug.LogError("SendEvent:" + eventName);
-            EventRx<T>.SendEvent(eventName, eventData);
+            EventDispatcher.Send(eventName, data);
         }
     }
 
-    public static class EventRx<T>
+    public static class EventDispatcher
     {
-        static Dictionary<string, Subject<T>> s_DictEvents = new Dictionary<string, Subject<T>>();
+        private static Dictionary<string, List<ListenerWrapper>> listeners = new();
 
-        public static IObservable<T> GetEvent(string eventName)
+        public static void AddListener(string eventName, Action callback, GameObject owner)
         {
-            if (!s_DictEvents.ContainsKey(eventName))
-            {
-                s_DictEvents.Add(eventName, new Subject<T>());
-            }
-            // Debug.LogError(eventName);
-            return s_DictEvents[eventName];
+            AddListener<object>(eventName, _ => callback?.Invoke(), owner);
         }
 
-        public static void SendEvent(string eventName, T value)
+        public static void AddListener<T>(string eventName, Action<T> callback, GameObject owner)
         {
-            if (s_DictEvents.TryGetValue(eventName, out var eventRx))
+            if (!listeners.ContainsKey(eventName))
+                listeners[eventName] = new List<ListenerWrapper>();
+
+            listeners[eventName].Add(new ListenerWrapper
             {
-                eventRx.OnNext(value);
+                Owner = owner,
+                Action = obj => callback?.Invoke((T)obj)
+            });
+        }
+
+        public static void Send(string eventName)
+        {
+            Send<object>(eventName, null);
+        }
+
+        public static void Send<T>(string eventName, T data)
+        {
+            if (!listeners.TryGetValue(eventName, out var list)) return;
+
+            list.RemoveAll(l => l.Owner == null); // Clean up destroyed listeners
+            foreach (var listener in list)
+            {
+                listener.Action?.Invoke(data);
             }
+        }
+        
+
+        private class ListenerWrapper
+        {
+            public GameObject Owner;
+            public Action<object> Action;
         }
     }
 
     public static class EventRxExtension
     {
-        public static ObservableYieldInstruction<string> WaitForEvent(this GameObject listener, string eventName)
-        {
-            var yielInstruction = EventRx<string>.GetEvent(eventName)
-                .Take(1)
-                .ToYieldInstruction();
-            yielInstruction.AddTo(listener);
-            return yielInstruction;
-        }
-
-        public static ObservableYieldInstruction<T> WaitForEvent<T>(this GameObject listener, string eventName)
-        {
-            var yielInstruction = EventRx<T>.GetEvent(eventName)
-                .Take(1)
-                .ToYieldInstruction();
-            yielInstruction.AddTo(listener);
-            return yielInstruction;
-        }
-
         public static void OnEvent(this GameObject listener, string eventName, Action callback)
         {
-            EventRx<EventParam>.GetEvent(eventName)
-                .Subscribe(param =>
-                {
-                    callback?.Invoke();
-                })
-                .AddTo(listener);
+            EventRx.OnEvent(eventName, listener, callback);
         }
 
         public static void OnEvent<T>(this GameObject listener, string eventName, Action<T> callback)
         {
-            EventRx<T>.GetEvent(eventName)
-                .Subscribe(input =>
-                {
-                    callback?.Invoke(input);
-                })
-                .AddTo(listener);
+            EventDispatcher.AddListener<T>(eventName, callback, listener);
         }
 
-        public static IObservable<T> Concat<T>(this IObservable<T> first, params IObservable<T>[] seconds)
-        {
-            return Observable.Concat(first, seconds);
-        }
-        
-        public static IObservable<T> Merge<T>(this IObservable<T> first, params IObservable<T>[] seconds)
-        {
-            return Observable.Merge(first, seconds);
-        }
-        
-        public static IDisposable Subscribe<T>(this IObservable<T> source, Action<T> observerAction)
-        {
-            return ObservableExtensions.Subscribe(source, observerAction);
-        }
-
-        public static IDisposable AddTo(this IDisposable source, GameObject gameObject)
-        {
-            return DisposableExtensions.AddTo(source, gameObject);
-        }
-
-        public static IObservable<T> Take<T>(this IObservable<T> source, int count)
-        {
-            return Observable.Take(source, count);
-        }
-
-        public static IObservable<T> TakeUntilDestroy<T>(this IObservable<T> source, GameObject gameObject)
-        {
-            return Observable.TakeUntilDestroy(source, gameObject);
-        }
-
-        public static IObservable<T> TakeUntilDisable<T>(this IObservable<T> source, GameObject gameObject)
-        {
-            return Observable.TakeUntilDisable(source, gameObject);
-        }
-
-        public static IObservable<T> TakeWhile<T>(this IObservable<T> source, Func<T, bool> predicate)
-        {
-            return Observable.TakeWhile(source, predicate);
-        }
-
-        public static IObservable<T> TakeUntil<T, TOther>(this IObservable<T> source, IObservable<TOther> other)
-        {
-            return Observable.TakeUntil(source, other);
-        }
+        // Placeholder extensions for compatibility (no UniRx features like Take, Merge etc.)
+        public static void MergeWarning() =>
+            Debug.LogWarning("Observable-like methods like Merge/Take/etc are not available without UniRx.");
     }
 }

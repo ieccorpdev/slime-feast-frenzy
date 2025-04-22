@@ -21,13 +21,13 @@ namespace IEC
         {
             base.Show();
             SetScaleAnim();
-            TweenControl.GetInstance().ScaleFromZero(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InQuad);
+            //TweenControl.GetInstance().ScaleFromZero(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InQuad);
         }
 
         public override void Hide()
         {
             base.Hide();
-            TweenControl.GetInstance().ScaleFromOne(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InBack);
+            //TweenControl.GetInstance().ScaleFromOne(offerBundleUI.gameObject, TWEEN_TIME, null, EaseType.InBack);
         }
 
         public void SetScaleAnim()
@@ -50,7 +50,7 @@ namespace IEC
                 _showAnimSequence.InsertCallback(delay,
                     () =>
                     {
-                        TweenControl.GetInstance().ScaleFromZero(child.gameObject,0.2f);
+                       // TweenControl.GetInstance().ScaleFromZero(child.gameObject,0.2f);
                     });
                 delay += 0.1f;
             }

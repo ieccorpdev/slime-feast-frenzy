@@ -15,7 +15,7 @@ namespace IEC
         {
             SetEvent(m_BtnPrivacy, () =>
             {
-                Application.OpenURL(Services.config.privacyPolicy);
+//                Application.OpenURL(Services.config.privacyPolicy);
             });
             
             SetEvent(m_BtnRestore, () =>

@@ -9,7 +9,6 @@ using UnityEngine.UI;
 public class ClaimBonusRewardPanel : BasePopup
 {
     public List<UIItemReward> listRewardUI;
-    public SpineAnimOT chestAnim;
     public Button tapToClaim;
     public GameObject textTapToClaim;
     public GameObject Aura;
@@ -108,54 +107,52 @@ public class ClaimBonusRewardPanel : BasePopup
         float timeDelayEffect = showAimChest ? 2f : 0f;
         if (showAimChest)
         {
-            chestAnim.SetSkin(skinChest);
-            chestAnim.SetAnimation("animation", false);
+
             //soundController.PlaySound(new AudioInfo(Config.soundConfig.unlockNewFeatureGP, false));
-            TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 1.5f, () =>
+            //TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 1.5f, () =>
             {
                 //soundController.PlaySound(new AudioInfo(Config.soundConfig.openChest, false));
-            });
+            };
         }
         else
         {
-            chestAnim.gameObject.SetActive(false);
         }
 
-        TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, timeDelayEffect, () =>
-        {
-            int inx = 0;
-            foreach (var itm in listRewardUI)
-            {
-                if (itm.haveData)
-                {
-                    TweenControl.GetInstance().DelayCall(itm.transform,inx*0.07f, ()=>
-                    {
-                        itm.GetComponent<RectTransform>().transform.position = chestAnim.GetComponent<RectTransform>().transform.position;
-                    }, () =>
-                    {
-                        TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f, () =>
-                        {
-                            itm.transform.DOPunchScale(Vector3.one*0.2f, 0.4f,1,0.3f);
-                        });
-
-                        TweenControl.GetInstance().Move(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
-                    });
-                    inx++;
-                }
-            }
-
-            if (Aura)
-            {
-                Aura.gameObject.SetActive(true);
-                TweenControl.GetInstance().ScaleFromZero(Aura.gameObject, 0.5f);
-                TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 0.5f, () =>
-                {
-                    tapToClaim.gameObject.SetActive(true);
-                    canClaim = true;
-                    TweenControl.GetInstance().ScaleFromZero(textTapToClaim.gameObject, 0.5f);
-                });
-            }
-        });
+        // TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, timeDelayEffect, () =>
+        // {
+        //     int inx = 0;
+        //     foreach (var itm in listRewardUI)
+        //     {
+        //         if (itm.haveData)
+        //         {
+        //             TweenControl.GetInstance().DelayCall(itm.transform,inx*0.07f, ()=>
+        //             {
+        //                 itm.GetComponent<RectTransform>().transform.position = chestAnim.GetComponent<RectTransform>().transform.position;
+        //             }, () =>
+        //             {
+        //                 TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f, () =>
+        //                 {
+        //                     itm.transform.DOPunchScale(Vector3.one*0.2f, 0.4f,1,0.3f);
+        //                 });
+        //
+        //                 TweenControl.GetInstance().Move(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
+        //             });
+        //             inx++;
+        //         }
+        //     }
+        //
+        //     if (Aura)
+        //     {
+        //         Aura.gameObject.SetActive(true);
+        //         TweenControl.GetInstance().ScaleFromZero(Aura.gameObject, 0.5f);
+        //         TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 0.5f, () =>
+        //         {
+        //             tapToClaim.gameObject.SetActive(true);
+        //             canClaim = true;
+        //             TweenControl.GetInstance().ScaleFromZero(textTapToClaim.gameObject, 0.5f);
+        //         });
+        //     }
+        // });
     }
     public void OnClaimReward()
     {

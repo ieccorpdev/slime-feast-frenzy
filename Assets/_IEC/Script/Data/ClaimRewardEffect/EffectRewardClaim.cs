@@ -86,8 +86,8 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.ITEM_APPEAR);
                 }
                 sequence
-                    .Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
-                    .Insert(timeToPostart + delayTime, currencyObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * ratioTime).SetEase(Ease.OutQuad)
+//                    .Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
+//                    .Insert(timeToPostart + delayTime, currencyObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * ratioTime).SetEase(Ease.OutQuad)
                         .OnComplete(() =>
                         {
                             onEndMove?.Invoke();
@@ -101,7 +101,7 @@ namespace IEC
                             {
                                 EventController.RaiseEvent(EventList.Audio.ITEM_GET);
                             }
-                        }));
+                        });
             }
 
             sequence.OnComplete(() =>

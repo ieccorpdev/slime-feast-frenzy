@@ -52,7 +52,7 @@ namespace IEC
                     btnConsentURL.onClick.RemoveAllListeners();
                     btnConsentURL.onClick.AddListener(() =>
                     {
-                        Application.OpenURL("https://privacy.iecglobal.com.au/");
+//                        Application.OpenURL("https://privacy.iecglobal.com.au/");
                     });
 
                     btnAccept.onClick.RemoveAllListeners();

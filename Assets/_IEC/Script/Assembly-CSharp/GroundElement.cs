@@ -10,7 +10,7 @@ namespace IEC
 
 		private void OnEnable()
 		{
-			if (Application.IsPlaying(gameObject)) return;
+//			if (Application.IsPlaying(gameObject)) return;
 			HideSelectionInLevelEditor();
 		}
 

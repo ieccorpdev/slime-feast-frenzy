@@ -6,11 +6,11 @@ namespace IEC
 {
     public class IapUtilities : _BaseBehaviour
     {
-        public static List<string> GetProductsID()
-        {
-            var productCatalog = ProductCatalog.LoadDefaultCatalog();
-            return productCatalog.allProducts.Select(item => item.id).ToList();
-        }
+        // public static List<string> GetProductsID()
+        // {
+        //     var productCatalog = ProductCatalog.LoadDefaultCatalog();
+        //     return productCatalog.allProducts.Select(item => item.id).ToList();
+        // }
 
         public static List<ProductCatalogPayout> GetProductPayOuts(string id)
         {
@@ -20,14 +20,15 @@ namespace IEC
 
         public static ProductCatalogItem GetProductById(string id)
         {
-            var productCatalog = ProductCatalog.LoadDefaultCatalog();
-            return  productCatalog.allProducts.FirstOrDefault(x => x.id == id);
+            // var productCatalog = ProductCatalog.LoadDefaultCatalog();
+            // return  productCatalog.allProducts.FirstOrDefault(x => x.id == id);
+            return default(ProductCatalogItem);
         }
-        public static List<string> GetProductsIDType(ProductType productType)
-        {
-            var productCatalog = ProductCatalog.LoadDefaultCatalog();
-            return (from item in productCatalog.allProducts where item.type == productType select item.id).ToList();
-        }
+        // public static List<string> GetProductsIDType(ProductType productType)
+        // {
+        //     var productCatalog = ProductCatalog.LoadDefaultCatalog();
+        //     return (from item in productCatalog.allProducts where item.type == productType select item.id).ToList();
+        // }
         
         public static ResourceType ConvertCurrencyType(string subType)
         {

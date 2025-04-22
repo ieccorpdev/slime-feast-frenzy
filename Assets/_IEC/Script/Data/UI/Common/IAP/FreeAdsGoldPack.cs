@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using IEC.Common.Event;
-using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;

@@ -97,7 +97,7 @@ public class GameResourceDisplay : MonoBehaviour
                         {
                             onComplete?.Invoke();
                         } 
-                        : null);
+                        : (Action)null);
             }
             else
             {
@@ -127,7 +127,7 @@ public class GameResourceDisplay : MonoBehaviour
                             {
                                 onComplete?.Invoke();
                             } 
-                            : null);
+                            : (Action)null);
             }
             else
             {

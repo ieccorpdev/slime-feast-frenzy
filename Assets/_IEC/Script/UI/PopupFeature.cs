@@ -9,7 +9,6 @@ public class PopupFeature : BasePopup
 {
     [SerializeField] private Image topBarImg;
     [SerializeField] private TextMeshProUGUI des;
-    public SpineAnimOT mainSpineAnim;
     
     protected override void Awake()
     {

@@ -88,7 +88,7 @@ namespace IEC
                 _showAnimSequence.InsertCallback(delay,
                     () =>
                     {
-                        TweenControl.GetInstance().ScaleFromZero(img.gameObject,0.2f);
+                        //TweenControl.GetInstance().ScaleFromZero(img.gameObject,0.2f);
                     });
                 delay += 0.1f;
             }
@@ -97,7 +97,7 @@ namespace IEC
             _showAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    TweenControl.GetInstance().ScaleFromZero(buyBtn.gameObject,0.5f);
+                    //TweenControl.GetInstance().ScaleFromZero(buyBtn.gameObject,0.5f);
                 });
             //TweenControl.GetInstance().ScaleFromZero(noThanksBtn.gameObject,0.5f);
         }

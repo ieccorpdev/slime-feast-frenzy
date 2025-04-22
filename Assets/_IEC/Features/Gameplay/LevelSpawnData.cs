@@ -13,7 +13,7 @@ namespace _IEC.Features.Gameplay
 
         public void CloneTo(LevelSpawnData spawnData)
         {
-            spawnData.listItemSpawns = new(listItemSpawns);
+            spawnData.listItemSpawns = new List<ItemSpawn>(listItemSpawns);
         }
     }
 

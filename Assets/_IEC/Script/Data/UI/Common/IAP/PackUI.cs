@@ -61,10 +61,10 @@ namespace IEC
                         Locator.Main.ScreenMain.AddRewardClaimEffect(x.type, x.value);
                     }
                 });
-                if (IapUtilities.GetProductById(m_Config.bundleId).type == ProductType.NonConsumable)
-                {
-                    PlayerData.AddBundleIAPPurchased(m_Config.bundleId);
-                }
+                // if (IapUtilities.GetProductById(m_Config.bundleId).type == ProductType.NonConsumable)
+                // {
+                //     PlayerData.AddBundleIAPPurchased(m_Config.bundleId);
+                // }
 
                 Locator.Service.PopupPurchaseSuccess.SetResourceCallBack(listResourceType)
                     .AddActionClose(listResource =>

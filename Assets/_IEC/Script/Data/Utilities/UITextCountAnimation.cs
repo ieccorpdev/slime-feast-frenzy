@@ -24,8 +24,8 @@ namespace IEC
 		[SerializeField] private TextFormat textFormat;
 		[SerializeField] private TextMeshProUGUI m_TextMeshPro;
 
-		[SerializeField, ShowIf("Prefix")] private string prefix;
-		[SerializeField, ShowIf("Suffix")] private string suffix;
+		[SerializeField] private string prefix;
+		[SerializeField] private string suffix;
 		
 		private static readonly Dictionary<(int, TextFormat), string> CachedTexts = new Dictionary<(int, TextFormat), string>();
 		private Tween m_Tween;

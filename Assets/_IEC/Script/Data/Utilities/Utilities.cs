@@ -56,26 +56,26 @@ namespace IEC
             return timeString;
         }
         
-        public static void Smoothing(MaskableGraphic graphic, float smooth)
-        {
-            if (!graphic) return;
-        
-            var canvasRenderer = graphic.canvasRenderer;
-            var currentColor = canvasRenderer.GetColor();
-            var targetAlpha = 1f;
-            if (graphic.maskable && 0 < smooth)
-            {
-                var currentAlpha = graphic.color.a * canvasRenderer.GetInheritedAlpha();
-                if (0 < currentAlpha)
-                {
-                    targetAlpha = Mathf.Lerp(0.01f, 0.002f, smooth) / currentAlpha;
-                }
-            }
-
-            if (Mathf.Approximately(currentColor.a, targetAlpha)) return;
-            currentColor.a = Mathf.Clamp01(targetAlpha);
-            canvasRenderer.SetColor(currentColor);
-        }
+        // public static void Smoothing(MaskableGraphic graphic, float smooth)
+        // {
+        //     if (!graphic) return;
+        //
+        //     var canvasRenderer = graphic.canvasRenderer;
+        //     var currentColor = canvasRenderer.GetColor();
+        //     var targetAlpha = 1f;
+        //     if (graphic.maskable && 0 < smooth)
+        //     {
+        //         var currentAlpha = graphic.color.a * canvasRenderer.GetInheritedAlpha();
+        //         if (0 < currentAlpha)
+        //         {
+        //             targetAlpha = Mathf.Lerp(0.01f, 0.002f, smooth) / currentAlpha;
+        //         }
+        //     }
+        //
+        //     if (Mathf.Approximately(currentColor.a, targetAlpha)) return;
+        //     currentColor.a = Mathf.Clamp01(targetAlpha);
+        //     canvasRenderer.SetColor(currentColor);
+        // }
 
         public static List<T> FindAllAssetsInFolder<T>(string folderPath) where T : UnityEngine.Object
         {

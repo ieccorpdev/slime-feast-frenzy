@@ -1,8 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using BestHTTP;
-using ICSharpCode.SharpZipLib.Zip;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -24,53 +22,53 @@ namespace _IECModules
         {
             LogEditorHelper.AddLog($"Start Download SDK: {url}");
 
-            HTTPManager.Setup();
-            var httpRequest = new HTTPRequest(new Uri(url), (originalRequest, response) =>
-            {
-                EditorUtility.ClearProgressBar();
-                onComplete?.Invoke();
-
-                LogEditorHelper.AddLog($"Download SDK Complete: {BytesToString(response.Data.Length)}");
-                // using (var fs = File.Create("Assets/facebook.zip")) 
-                // {
-                //     fs.Write(response.Data, 0, response.Data.Length);
-                // }
-
-                // var byteArray = File.ReadAllBytes("Assets/facebook.zip");
-                // LogEditorHelper.AddLog($"Assets/facebook.zip: {byteArray.Length} bytes");
-
-                if (url.EndsWith(".unitypackage"))
-                {
-                    ImportPackage(response.Data, url);
-                }
-                else
-                {
-                    ZipUtils.GetZipFileFromByteArray(response.Data, zipFile =>
-                    {
-                        foreach (ZipEntry entry in zipFile)
-                        {
-                            if (entry.IsDirectory) continue;
-                            if (!entry.Name.EndsWith(".unitypackage")) continue;
-                            LogEditorHelper.AddLog(entry.Name);
-                            var zippedStream = zipFile.GetInputStream(entry);
-                            var fileByteArray = ZipUtils.ReadFully(zippedStream);
-
-                            var filePath = $"{GetTempFolderPath()}{entry.Name.Split('/').Last()}";
-
-                            LogEditorHelper.AddLog($"Start Unzip To: {filePath}");
-
-                            ImportPackage(fileByteArray, entry.Name);
-
-                            break;
-                        }
-
-                    });
-                }
-            }).Send();
-            httpRequest.OnProgress += (request, downloaded, length) =>
-            {
-                EditorUtility.DisplayProgressBar("Downloading", $"{BytesToString(downloaded)}/{BytesToString(length)}", (float)downloaded / length);
-            };
+            // HTTPManager.Setup();
+            // var httpRequest = new HTTPRequest(new Uri(url), (originalRequest, response) =>
+            // {
+            //     EditorUtility.ClearProgressBar();
+            //     onComplete?.Invoke();
+            //
+            //     LogEditorHelper.AddLog($"Download SDK Complete: {BytesToString(response.Data.Length)}");
+            //     // using (var fs = File.Create("Assets/facebook.zip")) 
+            //     // {
+            //     //     fs.Write(response.Data, 0, response.Data.Length);
+            //     // }
+            //
+            //     // var byteArray = File.ReadAllBytes("Assets/facebook.zip");
+            //     // LogEditorHelper.AddLog($"Assets/facebook.zip: {byteArray.Length} bytes");
+            //
+            //     if (url.EndsWith(".unitypackage"))
+            //     {
+            //         ImportPackage(response.Data, url);
+            //     }
+            //     else
+            //     {
+            //         ZipUtils.GetZipFileFromByteArray(response.Data, zipFile =>
+            //         {
+            //             foreach (ZipEntry entry in zipFile)
+            //             {
+            //                 if (entry.IsDirectory) continue;
+            //                 if (!entry.Name.EndsWith(".unitypackage")) continue;
+            //                 LogEditorHelper.AddLog(entry.Name);
+            //                 var zippedStream = zipFile.GetInputStream(entry);
+            //                 var fileByteArray = ZipUtils.ReadFully(zippedStream);
+            //
+            //                 var filePath = $"{GetTempFolderPath()}{entry.Name.Split('/').Last()}";
+            //
+            //                 LogEditorHelper.AddLog($"Start Unzip To: {filePath}");
+            //
+            //                 ImportPackage(fileByteArray, entry.Name);
+            //
+            //                 break;
+            //             }
+            //
+            //         });
+            //     }
+            // }).Send();
+            // httpRequest.OnProgress += (request, downloaded, length) =>
+            // {
+            //     EditorUtility.DisplayProgressBar("Downloading", $"{BytesToString(downloaded)}/{BytesToString(length)}", (float)downloaded / length);
+            // };
         }
 
         public static string BytesToString(long byteCount)

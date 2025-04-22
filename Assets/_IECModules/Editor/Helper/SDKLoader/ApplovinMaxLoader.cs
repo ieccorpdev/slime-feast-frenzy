@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BestHTTP;
 using Newtonsoft.Json;
 using SimpleJSON;
 using UnityEngine;
@@ -43,29 +42,29 @@ namespace _IECModules
             PlayerPrefs.DeleteKey(VersionCacheKey);
             var url = "https://api.github.com/repos/AppLovin/AppLovin-MAX-Unity-Plugin/releases";
             var content = UnityWebRequestDownloadHelper.DownloadTextFromUrl(url);
-            var json = JSON.Parse(content).AsArray;
-            var versions = new List<string>();
-            for (int i = 0; i < json.Count; i++)
-            {
-                var node = json[i];
-                var body = node["body"].ToString();
-
-                versions.AddRange(from prefix in listPrefixVersion
-                    where body.Contains(prefix.android) && body.Contains(prefix.iOS)
-                    let unityVersion = node["name"].ToString().Replace("\"", "")
-                    let androidVersion = string.Join(".", body.GetBetweenString(prefix.android, string.Empty, false)
-                        .Split(' ')[0]
-                        .Split(']')[0]
-                        .Split('.')
-                        .ToList()
-                        .GetRange(0, 3))
-                    let iOSVersion = string.Join(".", body.GetBetweenString(prefix.iOS, string.Empty, false)
-                        .Split(' ')[0]
-                        .Split(']')[0]
-                        .Split('.')
-                        .ToList()
-                        .GetRange(0, 3))
-                    select $"{unityVersion}-Android-{androidVersion}-iOS-{iOSVersion}");
+            // var json = JSON.Parse(content).AsArray;
+            // var versions = new List<string>();
+            // for (int i = 0; i < json.Count; i++)
+            // {
+            //     var node = json[i];
+            //     var body = node["body"].ToString();
+            //
+            //     versions.AddRange(from prefix in listPrefixVersion
+            //         where body.Contains(prefix.android) && body.Contains(prefix.iOS)
+            //         let unityVersion = node["name"].ToString().Replace("\"", "")
+            //         let androidVersion = string.Join(".", body.GetBetweenString(prefix.android, string.Empty, false)
+            //             .Split(' ')[0]
+            //             .Split(']')[0]
+            //             .Split('.')
+            //             .ToList()
+            //             .GetRange(0, 3))
+            //         let iOSVersion = string.Join(".", body.GetBetweenString(prefix.iOS, string.Empty, false)
+            //             .Split(' ')[0]
+            //             .Split(']')[0]
+            //             .Split('.')
+            //             .ToList()
+            //             .GetRange(0, 3))
+            //         select $"{unityVersion}-Android-{androidVersion}-iOS-{iOSVersion}");
 
                 // if (body.Contains("Android SDK v") && body.Contains("iOS SDK v"))
                 // {
@@ -86,8 +85,8 @@ namespace _IECModules
                 //         .Split(' ')[0].Split(']')[0].Split('.').ToList().GetRange(0, 3));
                 //     versions.Add($"{unityVersion}-Android-{androidVersion}-iOS-{iOSVersion}");
                 // }
-            }
-            PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
+            //}
+            //PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
         }
     }
 }

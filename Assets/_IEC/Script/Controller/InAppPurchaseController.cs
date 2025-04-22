@@ -124,10 +124,10 @@ namespace IEC
                         goldAdd += rsc.value;
                     }
                 }
-                if (IapUtilities.GetProductById(configIap.bundleId).type == ProductType.NonConsumable)
-                {
-                    PlayerData.AddBundleIAPPurchased(configIap.bundleId);
-                }
+                // if (IapUtilities.GetProductById(configIap.bundleId).type == ProductType.NonConsumable)
+                // {
+                //     PlayerData.AddBundleIAPPurchased(configIap.bundleId);
+                // }
             }
             //meomew need wait screen main shown then show effect, temporary skip
             //Locator.Main.ScreenMain.AddRewardClaimEffect(ResourceType.Gold, goldAdd);

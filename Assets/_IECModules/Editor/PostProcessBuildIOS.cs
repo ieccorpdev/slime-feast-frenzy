@@ -10,7 +10,6 @@ using System.IO;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using BestHTTP;
 using SimpleJSON;
 
 public class PostProcessBuildIOS : MonoBehaviour

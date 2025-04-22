@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using DG.Tweening;
 using IEC;
-using IEC.TrackingEvent;
-using UniRx.Triggers;
 using UnityEngine;
 using UnityEngine.UI;
 namespace _IEC
@@ -13,7 +11,6 @@ namespace _IEC
         public BundleNoAdsUI configBundle;
         public List<Transform> listRewardImg = new();
         private bool m_IsShowHandTut;
-        public SpineAnimOT spinAnim;
         public Sequence _showAnimSequence;
         
         protected override void Awake()
@@ -36,10 +33,7 @@ namespace _IEC
         {
             base.Show();
             configBundle.UpdateUI();
-            spinAnim?.SetAnimation("1_start",false, () =>
-            {
-                spinAnim?.SetAnimation("2_idle", true);
-            });
+    
         }
         public void SetScaleAnim()
         {
@@ -63,7 +57,7 @@ namespace _IEC
                 _showAnimSequence.InsertCallback(delay,
                     () =>
                     {
-                        TweenControl.GetInstance().ScaleFromZero(img.gameObject,0.2f);
+                        //TweenControl.GetInstance().ScaleFromZero(img.gameObject,0.2f);
                     });
                 delay += 0.1f;
             }
@@ -72,7 +66,7 @@ namespace _IEC
             _showAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    TweenControl.GetInstance().ScaleFromZero(buyAdsBtn.gameObject,0.5f);
+                    //TweenControl.GetInstance().ScaleFromZero(buyAdsBtn.gameObject,0.5f);
                 });
             //TweenControl.GetInstance().ScaleFromZero(noThanksBtn.gameObject,0.5f);
         }

@@ -11,22 +11,22 @@ public class ShowFPS : MonoBehaviour
         deltaTime += (Time.unscaledDeltaTime - deltaTime) * 0.1f;
     }
 
-    void OnGUI()
-    {
-        int w = Screen.width, h = Screen.height;
-        var offsetY = topOffset * Screen.height;
-
-        GUIStyle style = new GUIStyle();
-
-        Rect rect = new Rect(0, 0 + offsetY, w, h * 2 / 100);
-        style.alignment = TextAnchor.UpperLeft;
-        style.fontSize = h * 2 / 100;
-        float msec = deltaTime * 1000.0f;
-        float fps = 1.0f / deltaTime;
-        string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
-
-        DrawTextWithOutline(rect, text, style, Color.black, Color.white, 1);
-    }
+    // void OnGUI()
+    // {
+    //     int w = Screen.width, h = Screen.height;
+    //     var offsetY = topOffset * Screen.height;
+    //
+    //     GUIStyle style = new GUIStyle();
+    //
+    //     Rect rect = new Rect(0, 0 + offsetY, w, h * 2 / 100);
+    //     style.alignment = TextAnchor.UpperLeft;
+    //     style.fontSize = h * 2 / 100;
+    //     float msec = deltaTime * 1000.0f;
+    //     float fps = 1.0f / deltaTime;
+    //     string text = string.Format("{0:0.0} ms ({1:0.} fps)", msec, fps);
+    //
+    //     DrawTextWithOutline(rect, text, style, Color.black, Color.white, 1);
+    // }
 
 
     void DrawTextWithOutline(Rect centerRect, string text, GUIStyle style, Color borderColor, Color innerColor, int borderWidth)

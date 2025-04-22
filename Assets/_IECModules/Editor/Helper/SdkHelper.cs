@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.UI;
-using BestHTTP;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using UnityEngine;
@@ -160,49 +159,49 @@ namespace _IECModules
             var manifestFileName = "Packages/manifest.json";
             var manifestFileContent = File.ReadAllText(manifestFileName);
 
-            var jsonNode = JSON.Parse(manifestFileContent);
-            jsonNode["dependencies"][pkgName] = version;
-            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+            // var jsonNode = JSON.Parse(manifestFileContent);
+            // jsonNode["dependencies"][pkgName] = version;
+            // File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
 
-        public static void AddRegistries(RegistryManifest registry)
-        {
-            var manifestFileName = "Packages/manifest.json";
-            var manifestFileContent = File.ReadAllText(manifestFileName);
-
-            var jsonNode = JSON.Parse(manifestFileContent);
-            jsonNode["scopedRegistries"] = new JSONArray();
-            var scopes = new JSONArray();
-            foreach (var regScope in registry.scopes)
-            {
-                scopes.Add(new JSONString(regScope));
-            }
-
-            var item = new JSONObject
-            {
-                ["name"] = registry.name,
-                ["url"] = registry.url,
-                ["scopes"] = scopes
-            };
-            jsonNode["scopedRegistries"].Add(item);
-            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
-        }
+        // public static void AddRegistries(RegistryManifest registry)
+        // {
+        //     var manifestFileName = "Packages/manifest.json";
+        //     var manifestFileContent = File.ReadAllText(manifestFileName);
+        //
+        //     var jsonNode = JSON.Parse(manifestFileContent);
+        //     jsonNode["scopedRegistries"] = new JSONArray();
+        //     var scopes = new JSONArray();
+        //     foreach (var regScope in registry.scopes)
+        //     {
+        //         scopes.Add(new JSONString(regScope));
+        //     }
+        //
+        //     var item = new JSONObject
+        //     {
+        //         ["name"] = registry.name,
+        //         ["url"] = registry.url,
+        //         ["scopes"] = scopes
+        //     };
+        //     jsonNode["scopedRegistries"].Add(item);
+        //     File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+        // }
 
         public static void RemoveRegistries(RegistryManifest registry)
         {
-            var manifestFileName = "Packages/manifest.json";
-            var manifestFileContent = File.ReadAllText(manifestFileName);
-
-            var jsonNode = JSON.Parse(manifestFileContent);
-            var scopeRegistry = jsonNode["scopedRegistries"];
-            JSONNode googleRegistry = null;
-            for (int i = 0; i < scopeRegistry.Count; i++)
-            {
-                if (scopeRegistry[i]["url"] == registry.url) googleRegistry = scopeRegistry[i];
-            }
-
-            if (googleRegistry != null) scopeRegistry.Remove(googleRegistry);
-            File.WriteAllText(manifestFileName, jsonNode.ToString(2));
+            // var manifestFileName = "Packages/manifest.json";
+            // var manifestFileContent = File.ReadAllText(manifestFileName);
+            //
+            // var jsonNode = JSON.Parse(manifestFileContent);
+            // var scopeRegistry = jsonNode["scopedRegistries"];
+            // JSONNode googleRegistry = null;
+            // for (int i = 0; i < scopeRegistry.Count; i++)
+            // {
+            //     if (scopeRegistry[i]["url"] == registry.url) googleRegistry = scopeRegistry[i];
+            // }
+            //
+            // if (googleRegistry != null) scopeRegistry.Remove(googleRegistry);
+            // File.WriteAllText(manifestFileName, jsonNode.ToString(2));
         }
     }
 
@@ -235,64 +234,64 @@ namespace _IECModules
             var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/branches";
             var versions = new List<string>();
             var requestUrl100 = url + "?per_page=100";
-            var httpRequest = new HTTPRequest(new Uri(requestUrl100), (request, response) =>
-            {
-                var numPage = int.Parse(response.Headers["x-total-pages"][0]);
-                // Debug.Log(numPage);
-                var listPageUrl = new List<string>();
-                var data = JSONNode.Parse(response.DataAsText).AsArray;
-                for (int i = 2; i <= numPage; i++)
-                {
-                    listPageUrl.Add($"{requestUrl100}&page={i}");
-                }
-
-                RequestListUrl(listPageUrl, 0, data, () =>
-                {
-                    for (int i = 0; i < data.Count; i++)
-                    {
-                        var version = data[i]["name"].Value;
-                        if (version != "master" && version != "main")
-                        {
-                            versions.Add(version);
-                        }
-                    }
-
-                    versions = versions.OrderByDescending(x => new Version(x)).ToList();
-                    // Debug.Log(id);
-                    // foreach (var version in versions)
-                    // {
-                    //     Debug.Log(version);
-                    // }
-
-                    PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(versions));
-                    versionSelected = 0;
-                    LoadPKGVersionFromCache();
-                });
-            }).Send();
+            // var httpRequest = new HTTPRequest(new Uri(requestUrl100), (request, response) =>
+            // {
+            //     var numPage = int.Parse(response.Headers["x-total-pages"][0]);
+            //     // Debug.Log(numPage);
+            //     var listPageUrl = new List<string>();
+            //     var data = JSONNode.Parse(response.DataAsText).AsArray;
+            //     for (int i = 2; i <= numPage; i++)
+            //     {
+            //         listPageUrl.Add($"{requestUrl100}&page={i}");
+            //     }
+            //
+            //     RequestListUrl(listPageUrl, 0, data, () =>
+            //     {
+            //         for (int i = 0; i < data.Count; i++)
+            //         {
+            //             var version = data[i]["name"].Value;
+            //             if (version != "master" && version != "main")
+            //             {
+            //                 versions.Add(version);
+            //             }
+            //         }
+            //
+            //         versions = versions.OrderByDescending(x => new Version(x)).ToList();
+            //         // Debug.Log(id);
+            //         // foreach (var version in versions)
+            //         // {
+            //         //     Debug.Log(version);
+            //         // }
+            //
+            //         PlayerPrefs.SetString(cache, JsonConvert.SerializeObject(versions));
+            //         versionSelected = 0;
+            //         LoadPKGVersionFromCache();
+            //     });
+            // }).Send();
         }
 
-        void RequestListUrl(List<string> listUrl, int index, JSONArray data, Action callback)
-        {
-            if (index < listUrl.Count)
-            {
-                var url = listUrl[index];
-                // Debug.Log("page:" + url);
-                var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
-                {
-                    var dataItem = JSONNode.Parse(response.DataAsText);
-                    for (int i = 0; i < dataItem.Count; i++)
-                    {
-                        data.Add(dataItem[i]);
-                    }
-
-                    RequestListUrl(listUrl, index + 1, data, callback);
-                }).Send();
-            }
-            else
-            {
-                callback?.Invoke();
-            }
-        }
+        // void RequestListUrl(List<string> listUrl, int index, JSONArray data, Action callback)
+        // {
+        //     if (index < listUrl.Count)
+        //     {
+        //         var url = listUrl[index];
+        //         // Debug.Log("page:" + url);
+        //         // var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
+        //         // {
+        //         //     var dataItem = JSONNode.Parse(response.DataAsText);
+        //         //     for (int i = 0; i < dataItem.Count; i++)
+        //         //     {
+        //         //         data.Add(dataItem[i]);
+        //         //     }
+        //         //
+        //         //     RequestListUrl(listUrl, index + 1, data, callback);
+        //         // }).Send();
+        //     }
+        //     else
+        //     {
+        //         callback?.Invoke();
+        //     }
+        // }
 
         public void InstallHighestVersion()
         {
@@ -323,20 +322,20 @@ namespace _IECModules
         public virtual void InstallDependencies(string version)
         {
             var url = $"{SdkHelper.GITLAB_API}projects/{SdkHelper.GITLAB_GROUP_NAME}%2F{id}/repository/files/package.json/raw?ref={version}";
-            var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
-            {
-                var dataItem = JSONNode.Parse(response.DataAsText);
-                if (dataItem.HasKey("dependencies"))
-                {
-                    var dependencies = JsonConvert.DeserializeObject<Dictionary<string,string>>(dataItem["dependencies"].ToString());
-                    foreach (var key in dependencies.Keys)
-                    {
-                        var dependency = SdkHelper.DictGitlabPluginVersion[key];
-                        var versionDependency = dependencies[key];
-                        dependency.Install(versionDependency);
-                    }
-                }
-            }).Send();
+            // var httpRequest = new HTTPRequest(new Uri(url), (request, response) =>
+            // {
+            //     var dataItem = JSONNode.Parse(response.DataAsText);
+            //     if (dataItem.HasKey("dependencies"))
+            //     {
+            //         var dependencies = JsonConvert.DeserializeObject<Dictionary<string,string>>(dataItem["dependencies"].ToString());
+            //         foreach (var key in dependencies.Keys)
+            //         {
+            //             var dependency = SdkHelper.DictGitlabPluginVersion[key];
+            //             var versionDependency = dependencies[key];
+            //             dependency.Install(versionDependency);
+            //         }
+            //     }
+            // }).Send();
         }
 
         public override void InstallPKG(string version)
@@ -382,7 +381,7 @@ namespace _IECModules
             var data = PlayerPrefs.GetString(cache);
             if (string.IsNullOrEmpty(data)) return false;
 
-            listVersionLoad = JSON.Parse(data).AsStringArray;
+            //listVersionLoad = JSON.Parse(data).AsStringArray;
             return true;
         }
 

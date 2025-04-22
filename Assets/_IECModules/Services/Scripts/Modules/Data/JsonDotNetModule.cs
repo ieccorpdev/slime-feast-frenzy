@@ -3,10 +3,7 @@
 
 #if (JSON_DOT_NET)
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 #endif
-
-using System;
 
 namespace IEC
 {
@@ -23,10 +20,10 @@ namespace IEC
             return JsonConvert.DeserializeObject<T>(json);
         }
 
-        public JObject ToJObject(string json)
-        {
-            return JObject.Parse(json);
-        }
+        // public JObject ToJObject(string json)
+        // {
+        //     return JObject.Parse(json);
+        // }
 #else
         public T FromJson<T>(string json)
         {

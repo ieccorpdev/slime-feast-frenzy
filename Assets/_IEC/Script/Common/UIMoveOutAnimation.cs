@@ -36,12 +36,12 @@ namespace IEC
         }
         public void MoveBack(string idTwween,float timeAnim = 0.3f,Action onComplete = null)
         {
-            target.DOAnchorPos(defaultPos, timeAnim)
-                .SetEase(Ease.OutQuad)
-                .OnComplete(() =>
-                {
-                    onComplete?.Invoke();
-                }).SetId(idTwween);
+            // target.DOAnchorPos(defaultPos, timeAnim)
+            //     .SetEase(Ease.OutQuad)
+            //     .OnComplete(() =>
+            //     {
+            //         onComplete?.Invoke();
+            //     }).SetId(idTwween);
         }
 
         public void SetObjPosOut()

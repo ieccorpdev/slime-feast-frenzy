@@ -14,6 +14,7 @@ namespace IEC
         public HybridGame hybrid = new HybridGame();
 
         #endregion
+
         public bool isDebugReset;
         public int emptyData;
         public int abVersion;
@@ -29,12 +30,12 @@ namespace IEC
 
         public bool isImmortal;
 
-        public bool isUsingGroundExtend = true ;
+        public bool isUsingGroundExtend = true;
         public int itemVersion;
         public int levelStartInterAds = 4;
 
         public bool usingWaterTheme = true;
-        
+
         public bool ShowFullAdsCondition
         {
             get
@@ -45,16 +46,18 @@ namespace IEC
 
 #if UNITY_IOS
                 return Pool.Get<PlayerSecret>().level > 6;
-#endif
+#else
+                return false;
+                #endif
             }
         }
 
         public System.DateTime timeStartLevel;
         public System.DateTime timeEndLevel;
         public bool enablePiggyBank;
-        
+
         public bool isHaveProfileAndLeaderboard;
-        
+
         public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;
 
         public void SetTimeStartLevel()
@@ -66,9 +69,11 @@ namespace IEC
         {
             timeEndLevel = System.DateTime.Now;
         }
+
         ////
         ///         public bool isUsingHardLevel;
         public bool isUsingExtraLvlFollow;
+
         public bool isUsingLuckySpinV2Flow;
         public bool isUsingBuildV2Flow;
         public bool isUsingConnectedBox;
@@ -82,15 +87,12 @@ namespace IEC
         public bool isUsePopupRefillHelper;
 
         public bool isOverrideHelperCostData;
-        
+
         public bool isOverrideDataRewardLuckyWheel;
         [Header("SFF")] public bool usingNewLogicPull = false;
-        [Header("Tracking")]
-        public LevelType crLevelType = LevelType.NONE;
-        [Header("IAP")] 
-        public int timeSkipAdsStartPackage = 20;//Minutes
-        [Header("Tutorial")] 
-        public bool inTutorial;
+        [Header("Tracking")] public LevelType crLevelType = LevelType.NONE;
+        [Header("IAP")] public int timeSkipAdsStartPackage = 20; //Minutes
+        [Header("Tutorial")] public bool inTutorial;
         public bool inTutorialLevel1;
         public bool inTutorialLevel2;
         public bool inTutorialStack;

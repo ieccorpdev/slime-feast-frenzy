@@ -290,16 +290,59 @@ namespace _IEC.Features.Gameplay
 
         private void PlayMeltingAnimation()
         {
+            // var zeroAlphaColor = Color.white;
+            // zeroAlphaColor.a = 0;
+            // DOTween.Sequence().SetId(TweenIdMelting)
+            //     .Append(frozenMark.DOColor(zeroAlphaColor, 0.5f))
+            //     .Join(frozenMark2.DOColor(zeroAlphaColor, 0.5f))
+            //     .AppendCallback(() =>
+            //     {
+            //         SetActiveFrozenMark(false);
+            //     });
+            StartMeltSequence();
+        }
+
+        #region Luna
+
+        private void StartMeltSequence()
+        {
+            StartCoroutine(MeltSequence());
+        }
+
+        private IEnumerator MeltSequence()
+        {
             var zeroAlphaColor = Color.white;
             zeroAlphaColor.a = 0;
-            DOTween.Sequence().SetId(TweenIdMelting)
-                .Append(frozenMark.DOColor(zeroAlphaColor, 0.5f))
-                .Join(frozenMark2.DOColor(zeroAlphaColor, 0.5f))
-                .AppendCallback(() =>
-                {
-                    SetActiveFrozenMark(false);
-                });
+            var fadeDuration = 0.5f;
+            // Bắt đầu 2 fade song song
+            Coroutine fade1 = StartCoroutine(FadeImageColor(frozenMark, zeroAlphaColor, fadeDuration));
+            Coroutine fade2 = StartCoroutine(FadeImageColor(frozenMark2, zeroAlphaColor, fadeDuration));
+
+            // Đợi cả hai xong
+            yield return fade1;
+            yield return fade2;
+
+            // Callback giống AppendCallback
+            SetActiveFrozenMark(false);
         }
+
+        private IEnumerator FadeImageColor(Image image, Color targetColor, float duration)
+        {
+            Color startColor = image.color;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                float t = elapsed / duration;
+                image.color = Color.Lerp(startColor, targetColor, t);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            image.color = targetColor;
+        }
+
+        #endregion
         public void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;

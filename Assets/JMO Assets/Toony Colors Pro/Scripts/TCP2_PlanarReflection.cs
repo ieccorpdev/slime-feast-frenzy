@@ -131,20 +131,20 @@ namespace ToonyColorsPro
 
 			void OnEnable()
 			{
-#if UNITY_2019_3_OR_NEWER
-				isURP  = GraphicsSettings.currentRenderPipeline != null && GraphicsSettings.currentRenderPipeline.GetType().Name.Contains("Universal");
-#endif
-
-#if UNITY_2019_3_OR_NEWER
-				if (isURP)
-				{
-					RenderPipelineManager.beginCameraRendering += BeginCameraRendering_URP;
-				}
-				else
-#endif
-				{
-					Camera.onPreRender += BeginCameraRendering_Bultin;
-				}
+// #if UNITY_2019_3_OR_NEWER
+// 				isURP  = GraphicsSettings.currentRenderPipeline != null && GraphicsSettings.currentRenderPipeline.GetType().Name.Contains("Universal");
+// #endif
+//
+// #if UNITY_2019_3_OR_NEWER
+// 				if (isURP)
+// 				{
+// 					RenderPipelineManager.beginCameraRendering += BeginCameraRendering_URP;
+// 				}
+// 				else
+// #endif
+// 				{
+// 					Camera.onPreRender += BeginCameraRendering_Bultin;
+// 				}
 
 				UpdateRenderTexture();
 				UpdateCommandBuffer();
@@ -152,16 +152,16 @@ namespace ToonyColorsPro
 
 			void OnDisable()
 			{
-#if UNITY_2019_3_OR_NEWER
-				if (isURP)
-				{
-					RenderPipelineManager.beginCameraRendering -= BeginCameraRendering_URP;
-				}
-				else
-#endif
-				{
-					Camera.onPreRender -= BeginCameraRendering_Bultin;
-				}
+// #if UNITY_2019_3_OR_NEWER
+// 				if (isURP)
+// 				{
+// 					RenderPipelineManager.beginCameraRendering -= BeginCameraRendering_URP;
+// 				}
+// 				else
+// #endif
+// 				{
+// 					Camera.onPreRender -= BeginCameraRendering_Bultin;
+// 				}
 
 				ClearCommandBuffer();
 				ClearRenderTexture();
@@ -422,7 +422,7 @@ namespace ToonyColorsPro
 
 						var prevTarget = reflectionCamera.targetTexture;
 						reflectionCamera.targetTexture = reflectionDepthRenderTexture;
-						reflectionCamera.RenderWithShader(reflectionDepthShader, null);
+						//reflectionCamera.RenderWithShader(reflectionDepthShader, string.Empty);
 						reflectionCamera.targetTexture = prevTarget;
 
 						blurMaterial.SetFloat(ShaderID_ReflectivePlaneY, this.transform.position.y + clipPlaneOffset);

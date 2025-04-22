@@ -22,9 +22,9 @@ namespace IEC
             Sequence sequence = DOTween.Sequence();
 
             sequence.Append(CanvasGr.DOFade(0, 0));
-            sequence.Append(CanvasGr.DOFade(1, 0.5f).SetEase(Ease.InOutQuad));
-            sequence.Join(RectTrans.DOMoveY(1, 0.5f).SetEase(Ease.InOutQuad));
-            sequence.Join(RectTrans.transform.DOScale(1.1f * Vector3.one, 1.2f).SetEase(Ease.OutQuad));
+//            sequence.Append(CanvasGr.DOFade(1, 0.5f).SetEase(Ease.InOutQuad));
+            //sequence.Join(RectTrans.DOMoveY(1, 0.5f).SetEase(Ease.InOutQuad));
+            //sequence.Join(RectTrans.transform.DOScale(1.1f * Vector3.one, 1.2f).SetEase(Ease.OutQuad));
             sequence.OnComplete(delegate
             {
                 Hide();

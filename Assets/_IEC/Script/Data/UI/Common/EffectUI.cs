@@ -125,8 +125,8 @@ namespace IEC
             var groupCanvas = GetComponent<CanvasGroup>();
             var sequence = DOTween.Sequence();
             groupCanvas.alpha = from;
-            sequence.Append(groupCanvas.DOFade(from, 0))
-                    .Append(groupCanvas.DOFade(to, time).SetEase(ease));
+            // sequence.Append(groupCanvas.DOFade(from, 0))
+            //         .Append(groupCanvas.DOFade(to, time).SetEase(ease));
             return sequence;
         }
 
@@ -142,8 +142,8 @@ namespace IEC
             var to = isShow ? 0f : -1f * r.sizeDelta.x;
 
             var sequence = DOTween.Sequence();
-            sequence.Append(r.DOAnchorPosX(from, 0))
-                    .Append(r.DOAnchorPosX(to, time).SetEase(ease));
+            // sequence.Append(r.DOAnchorPosX(from, 0))
+            //         .Append(r.DOAnchorPosX(to, time).SetEase(ease));
             return sequence;
         }
     }

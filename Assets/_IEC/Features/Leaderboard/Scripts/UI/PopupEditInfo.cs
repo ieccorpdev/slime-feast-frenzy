@@ -77,7 +77,7 @@ namespace IEC.Wind.Leaderboard
                 avatarUis[i].SetData(sprs[i], i, (x) =>
                 {
                     LeaderboardData.ChangeAvatar(x.id);
-                    avatarUis.ForEach(x => x.SetChosen(false));
+                    avatarUis.ForEach(y => y.SetChosen(false));
                     x.SetChosen(true);
                 });
                 avatarUis[i].SetChosen(i == LeaderboardData.avatarId);

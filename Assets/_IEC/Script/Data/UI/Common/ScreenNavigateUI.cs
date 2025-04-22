@@ -13,6 +13,8 @@ namespace IEC
 
         protected string TWEEN_ID => tabType.ToString() + GetInstanceID().ToString();
         protected float TWEEN_TIME => 0.3f;
+        public AnimationCurve easeInQuad;
+        public Action onCompleteCallback;
 
         public override void Hide()
         {
@@ -26,17 +28,47 @@ namespace IEC
 
             DOTween.Kill(TWEEN_ID);
 
-            mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenLeftPoint(), TWEEN_TIME)
-                .SetId(TWEEN_ID)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() =>
-                {
-                    //onShowDone.Invoke();
-                    Hide();
-                    onCompleteCallback?.Invoke();
-                    DOTween.Kill(TWEEN_ID);
-                });
+            // mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenLeftPoint(), TWEEN_TIME)
+            //     .SetId(TWEEN_ID)
+            //     .SetEase(Ease.InQuad)
+            //     .OnComplete(() =>
+            //     {
+            //         //onShowDone.Invoke();
+            //         Hide();
+            //         onCompleteCallback?.Invoke();
+            //         DOTween.Kill(TWEEN_ID);
+            //     });
+            AnimateMainPanelOut();
         }
+
+        #region Luna
+
+        public void AnimateMainPanelOut()
+        {
+            StartCoroutine(MovePanelToLeft(mainPanel.GetComponent<RectTransform>(), GetScreenLeftPoint(), TWEEN_TIME));
+        }
+
+        private IEnumerator MovePanelToLeft(RectTransform panel, Vector2 targetPos, float duration)
+        {
+            Vector2 startPos = panel.anchoredPosition;
+            float elapsed = 0f;
+
+            while (elapsed < duration)
+            {
+                float t = elapsed / duration;
+                panel.anchoredPosition = Vector2.LerpUnclamped(startPos, targetPos, easeInQuad.Evaluate(t));
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            panel.anchoredPosition = targetPos;
+
+            // OnComplete logic
+            Hide();
+            onCompleteCallback?.Invoke();
+        }
+
+        #endregion
 
         public void MoveMiddleShow(Action onCompleteCallback = null)
         {
@@ -44,15 +76,15 @@ namespace IEC
             //Show();
             DOTween.Kill(TWEEN_ID);
 
-            mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenMiddlePoint(), TWEEN_TIME)
-                .SetId(TWEEN_ID)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() =>
-                {
-                    Show();
-                    onCompleteCallback?.Invoke();
-                    DOTween.Kill(TWEEN_ID);
-                });
+            // mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenMiddlePoint(), TWEEN_TIME)
+            //     .SetId(TWEEN_ID)
+            //     .SetEase(Ease.InQuad)
+            //     .OnComplete(() =>
+            //     {
+            //         Show();
+            //         onCompleteCallback?.Invoke();
+            //         DOTween.Kill(TWEEN_ID);
+            //     });
         }
 
         public void MoveRightHide(Action onCompleteCallback = null)
@@ -61,15 +93,15 @@ namespace IEC
 
             DOTween.Kill(TWEEN_ID);
 
-            mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenRightPoint(), TWEEN_TIME)
-                .SetId(TWEEN_ID)
-                .SetEase(Ease.InQuad)
-                .OnComplete(() =>
-                {
-                    Hide();
-                    onCompleteCallback?.Invoke();
-                    DOTween.Kill(TWEEN_ID);
-                });
+            // mainPanel.GetComponent<RectTransform>().DOAnchorPos(GetScreenRightPoint(), TWEEN_TIME)
+            //     .SetId(TWEEN_ID)
+            //     .SetEase(Ease.InQuad)
+            //     .OnComplete(() =>
+            //     {
+            //         Hide();
+            //         onCompleteCallback?.Invoke();
+            //         DOTween.Kill(TWEEN_ID);
+            //     });
         }
         
         public void SetPosLeft()

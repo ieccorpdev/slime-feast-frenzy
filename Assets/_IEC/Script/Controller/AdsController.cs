@@ -76,13 +76,14 @@ namespace IEC
 
         Vector2 GetNativeDPI()
         {
-            AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
-
-            AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
-            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
-
-            return new Vector2(metrics.Get<float>("xdpi"), metrics.Get<float>("ydpi"));
+            // AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            // AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
+            //
+            // AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
+            // activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
+            //
+            // return new Vector2(metrics.Get<float>("xdpi"), metrics.Get<float>("ydpi"));
+            return Vector2.zero;
         }
     }
 }

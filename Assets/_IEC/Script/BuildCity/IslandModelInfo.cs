@@ -208,11 +208,11 @@ public class IslandModelInfo : _BaseBehaviour
      if (currentModalSelected == listObjectIsland.Count-1)
      {
          isCompleteIsland = true;
-         //CompleteIsland
-         TweenControl.GetInstance().DelayCall(transform, 1.0f, () =>
-         {
-             Locator.Main.HomeScreenTab.buildCityUI.ShowRewardCity();
-         });
+         // //CompleteIsland
+         // TweenControl.GetInstance().DelayCall(transform, 1.0f, () =>
+         // {
+         //     Locator.Main.HomeScreenTab.buildCityUI.ShowRewardCity();
+         // });
      }
      else
      {
@@ -222,18 +222,18 @@ public class IslandModelInfo : _BaseBehaviour
          Vector3 targetScale = listObjectIsland[currentModalSelected].gameObject.transform.localScale;
          listObjectIsland[currentModalSelected].gameObject.transform.localScale = Vector3.zero;
          listObjectIsland[currentModalSelected].gameObject.SetActive(true);
-         TweenControl.GetInstance().Scale(listObjectIsland[currentModalSelected].gameObject,targetScale,0.5f, () =>
-         {
-             if (currentModalSelected >= listObjectIsland.Count)
-             {
-                 //NextIsland
-                 Locator.Main.HomeScreenTab.buildCityUI.ShowRewardCity();
-             }
-             else
-             {
-                 Locator.Main.HomeScreenTab.buildCityUI.canSpendScrew = true;
-             }
-         });
+         // TweenControl.GetInstance().Scale(listObjectIsland[currentModalSelected].gameObject,targetScale,0.5f, () =>
+         // {
+         //     if (currentModalSelected >= listObjectIsland.Count)
+         //     {
+         //         //NextIsland
+         //         Locator.Main.HomeScreenTab.buildCityUI.ShowRewardCity();
+         //     }
+         //     else
+         //     {
+         //         Locator.Main.HomeScreenTab.buildCityUI.canSpendScrew = true;
+         //     }
+         // });
      }
     }
     

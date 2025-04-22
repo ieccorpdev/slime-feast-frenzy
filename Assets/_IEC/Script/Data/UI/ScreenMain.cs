@@ -176,28 +176,8 @@ namespace IEC
         
         private void AddRewardHelperToClaim(ResourceType helperType, int amount, float delay = 0f)
         {
-            RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
-                ? Locator.Main.HomeScreenTab.playButton.GetComponent<RectTransform>()
-                : bottomBar.GetTab(TabType.Home).IconTransform
-                ;
+
             
-            AddCustomRewardToClaimEffect(
-                helperType, 
-                Vector2.zero, 
-                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
-                amount,
-                () =>
-                {
-                    
-                },
-                () =>
-                {
-                    DOTween.Kill(targetTransform);
-                    targetTransform.localScale = Vector3.one;
-                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
-                },
-                delay
-            );
         }
 
         private void AddRewardGoldToClaim(int amount, float delay = 0f)

@@ -6,11 +6,12 @@ namespace IEC
 	{
 
 		public string ToJson (object obj) {
-			return JsonUtility.ToJson (obj);
+			return "";
 		}
 
-		public T FromJson<T> (string json) {
-			return JsonUtility.FromJson<T> (json);
+		public T FromJson<T> (string json)
+		{
+			return  default(T);
 		}
 
 	}

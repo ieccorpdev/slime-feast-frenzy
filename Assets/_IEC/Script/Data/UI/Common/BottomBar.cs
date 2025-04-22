@@ -138,7 +138,7 @@ namespace IEC
                 return;
             }
 
-            m_ChooseTab.DOAnchorPosX(m_BigTab.GetPosX(), 0.2f).SetEase(Ease.OutQuad);
+//            m_ChooseTab.DOAnchorPosX(m_BigTab.GetPosX(), 0.2f).SetEase(Ease.OutQuad);
         }
 
         public HomeTab GetTab(TabType tabType)

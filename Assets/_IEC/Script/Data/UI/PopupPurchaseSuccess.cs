@@ -69,10 +69,10 @@ namespace IEC
             }
         }
 
-        public static ProductCatalogItem GetProductById(string id)
-        {
-            var productCatalog = ProductCatalog.LoadDefaultCatalog();
-            return productCatalog.allProducts.FirstOrDefault(x => x.id == id);
-        }
+        // public static ProductCatalogItem GetProductById(string id)
+        // {
+        //     var productCatalog = ProductCatalog.LoadDefaultCatalog();
+        //     return productCatalog.allProducts.FirstOrDefault(x => x.id == id);
+        // }
     }
 }

@@ -10,7 +10,6 @@ namespace IEC
 {
     public class GroundChecker : _BaseBehaviour
     {
-        [ShowIf("@invalidObjects != null && invalidObjects.Count > 0")]
         [SerializeField] private List<GameObject> invalidObjects;
         [SerializeField] private Transform itemHolder;
         [SerializeField] private LayerMask groundValidatorLayer;

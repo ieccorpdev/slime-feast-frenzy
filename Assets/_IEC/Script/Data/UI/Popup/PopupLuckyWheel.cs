@@ -18,7 +18,6 @@ namespace _IEC
         public Button spinAdsBtn,spinFreeBtn,spinGoldBtn, backBtn,backBtn2;
         public TextMeshProUGUI availableTMP;
         public TextMeshProUGUI goldSpinCostTMP;
-        public SpineAnimOT mascotLuckyWheel;
         // [Header("RewardPopup")]
         // public ClaimBonusRewardPanel rewardClaimPanel;
         public WheelPiece curentResult;
@@ -83,10 +82,7 @@ namespace _IEC
 
         public void SpinWheel(int debugSpinNum = -1)
         {
-            mascotLuckyWheel.SetAnimation("2-Capy_Spin",false, () =>
-            {
-                mascotLuckyWheel.SetAnimation("3-Capy_After_Spin", true);
-            });
+
             mainWheel.Spin(debugSpinNum);
             DeactiveAllSpinButton();
             SetStatusBackButton(false);
@@ -105,12 +101,12 @@ namespace _IEC
             curentResult = result;
             listDataReward.Add(result.dataReward.dataReward);
             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listDataReward,CloseComplete,false);
-            TweenControl.GetInstance().DelayCall(transform,0.2f, () =>
+            //TweenControl.GetInstance().DelayCall(transform,0.2f, () =>
             {
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
                 canClaim = true;
                 LoadData();
-            });
+            };
             Locator.Main.HomeScreenTab.UpdateMainHome();
             
         }
@@ -180,7 +176,6 @@ namespace _IEC
             //rewardClaimPanel.gameObject.SetActive(false);
             //availableTMP.text = "AVAILABLE:" + PlayerData.numberSpinWheelAdsLeft + "/2";
             SetupStatusButton();
-            mascotLuckyWheel.SetAnimation("1-Capy_Idle",true);
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         }
 

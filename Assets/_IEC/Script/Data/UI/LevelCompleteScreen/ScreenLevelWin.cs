@@ -95,7 +95,7 @@ namespace IEC
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             while(PlayerData.CheckClaimProgressReward(reward))
             {
-                List<Reward> listReward = new(){reward.reward};
+                List<Reward> listReward = new List<Reward> {reward.reward};
                 popupQueue.Enqueue(new PopupData(
                     Locator.Main.ClaimBonusRewardPanel,
                     () =>

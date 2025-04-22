@@ -13,7 +13,6 @@ namespace IEC
         public Transform rewardContainerTransform;
         public Button buyBtn;
         public PackUI configBundle;
-        public SpineAnimOT mainAnimLifeOffer;
         public Sequence _showAnimSequence;
 
         protected override void Awake()
@@ -39,10 +38,7 @@ namespace IEC
             base.Show();
             SetScaleAnim();
             //mainAnimLifeOffer.ske.Clear();
-            mainAnimLifeOffer.SetAnimation("Start",false, () =>
-            {
-                mainAnimLifeOffer.SetAnimation("Idle2", true);
-            });
+
             if (PlayerData.playerLife <= 0)
             {
                 PlayerData.dailyShowLifeOfferPack = true;// Reset daily noti each 24h                
@@ -82,7 +78,7 @@ namespace IEC
                 _showAnimSequence.InsertCallback(delay,
                     () =>
                     {
-                        TweenControl.GetInstance().ScaleFromZero(child.gameObject,0.2f);
+                        //TweenControl.GetInstance().ScaleFromZero(child.gameObject,0.2f);
                     });
                 delay += 0.1f;
             }
@@ -91,7 +87,7 @@ namespace IEC
             _showAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    TweenControl.GetInstance().ScaleFromZero(buyBtn.gameObject,0.5f);
+                    //TweenControl.GetInstance().ScaleFromZero(buyBtn.gameObject,0.5f);
                 });
             
             _showAnimSequence.Play();

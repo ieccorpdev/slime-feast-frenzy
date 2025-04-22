@@ -70,7 +70,7 @@ namespace ToonyColorsPro
 					// Avoid fetching the _Time value multiple times per frame
 					if (LastFrameTimeSampling < Time.frameCount)
 					{
-						ShaderTime = Shader.GetGlobalVector(_Time).y;
+						//ShaderTime = Shader.GetGlobalVector(_Time).y;
 						LastFrameTimeSampling = Time.frameCount;
 					}
 

@@ -2,11 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
-using Cinemachine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
-using Spine;
-using Spine.Unity;
 using UnityEngine;
 using UnityEngine.UI;
 using Sequence = DG.Tweening.Sequence;
@@ -34,8 +31,6 @@ namespace IEC
 
         [Header("Bag Animation")]
         [SerializeField] private RectTransform pivotCarAnim;
-        [SerializeField] private SkeletonGraphic skeletonGraphic;
-        [SerializeField, SpineAnimation] private string move, drop, moveNoItem, stop;
 
         // [SerializeField] private Image carEmpty;
         // [SerializeField] private Image carOccupied;
@@ -78,11 +73,8 @@ namespace IEC
 
         void UpdateSkinAnim()
         {
-            Skeleton skeleton = skeletonGraphic.Skeleton;
             
-            skeleton.SetSkin(GetSkinNameByWinsStreakCount());
-            skeleton.SetSlotsToSetupPose();
-            
+
             // var winStreakCount = Mathf.Clamp(MagicPouchController.WinStreakData.countLevelWin - 1, 0, 2);
             // carEmpty.sprite = iconEmpty[winStreakCount];
             // carOccupied.sprite = iconOccupied[winStreakCount];
@@ -115,19 +107,16 @@ namespace IEC
             
             animationSequence.AppendCallback(() =>
             {
-                skeletonGraphic.AnimationState.SetAnimation(0, move, true);
             });
-            animationSequence.Join(pivotCarAnim.DOAnchorPosX(midView.rect.width / 2f, moveDuration).SetEase(moveEase));
+//            animationSequence.Join(pivotCarAnim.DOAnchorPosX(midView.rect.width / 2f, moveDuration).SetEase(moveEase));
 
             animationSequence.AppendCallback(() =>
             {
-                skeletonGraphic.AnimationState.SetAnimation(0, stop, false);
             });
             
             animationSequence.AppendInterval(idleDuration);
             animationSequence.AppendCallback(() =>
             {
-                skeletonGraphic.AnimationState.SetAnimation(0, drop, false);
                 //openAnimationDuration = skeletonGraphic.AnimationState.GetCurrent(0).Animation.Duration;
             });
             
@@ -143,10 +132,9 @@ namespace IEC
             animationSequence.AppendInterval(idleDuration);
             animationSequence.AppendCallback(() =>
             {
-                skeletonGraphic.AnimationState.SetAnimation(0, moveNoItem, true);
             });
             
-            animationSequence.Append(pivotCarAnim.DOAnchorPosX(midView.rect.width * 1.5f, moveOutDuration).SetEase(moveEase));
+//            animationSequence.Append(pivotCarAnim.DOAnchorPosX(midView.rect.width * 1.5f, moveOutDuration).SetEase(moveEase));
             animationSequence.OnComplete(OnCompleteAnimation);
         }
         

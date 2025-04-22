@@ -346,16 +346,16 @@ public class BuildCity : _BaseBehaviour
         currentIsland.maxScrewCanSpend -= 1;
         var des1 =   GetRandomPositionInSphere(destination, 1f);
         SpawnScrewFly(des1,true);
-        TweenControl.GetInstance().DelayCall(transform,0.1f, () =>
-        {
-            var des2 =   GetRandomPositionInSphere(destination, 2f);
-            SpawnScrewFly(des2,false);
-        });
-        TweenControl.GetInstance().DelayCall(transform,0.2f, () =>
-        {
-            var des3 =   GetRandomPositionInSphere(destination, 3f);
-            SpawnScrewFly(des3,false);
-        });
+        // TweenControl.GetInstance().DelayCall(transform,0.1f, () =>
+        // {
+        //     var des2 =   GetRandomPositionInSphere(destination, 2f);
+        //     SpawnScrewFly(des2,false);
+        // });
+        // TweenControl.GetInstance().DelayCall(transform,0.2f, () =>
+        // {
+        //     var des3 =   GetRandomPositionInSphere(destination, 3f);
+        //     SpawnScrewFly(des3,false);
+        // });
         PlayerData.buildCityData[currentIsland.idIsland].itemCity[currentIsland.currentModalSelected] += 1;
         currentScrewTMP.text = PlayerData.screwCityBuild.ToString();
     }

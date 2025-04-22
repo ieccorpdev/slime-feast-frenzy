@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using BestHTTP;
 using Newtonsoft.Json;
 using SimpleJSON;
 using UnityEngine;
@@ -18,17 +17,17 @@ namespace _IECModules
         protected override void LoadVersionFromServer()
         {
             PlayerPrefs.DeleteKey(VersionCacheKey);
-            var httpRequest = new HTTPRequest(
-                new Uri("https://developers.facebook.com/docs/unity/downloads"),
-                (originalRequest, response) =>
-                {
-                    var versions = response.DataAsText
-                        .Split(new[] { "https://lookaside.facebook.com/developers/resources/" }, StringSplitOptions.None)
-                        .ToList();
-                    versions.RemoveAt(0);
-                    versions = versions.Select(x => x.GetBetweenString("\">", "</a></p>", false)).ToList();
-                    PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
-                }).Send();
+            // var httpRequest = new HTTPRequest(
+            //     new Uri("https://developers.facebook.com/docs/unity/downloads"),
+            //     (originalRequest, response) =>
+            //     {
+            //         var versions = response.DataAsText
+            //             .Split(new[] { "https://lookaside.facebook.com/developers/resources/" }, StringSplitOptions.None)
+            //             .ToList();
+            //         versions.RemoveAt(0);
+            //         versions = versions.Select(x => x.GetBetweenString("\">", "</a></p>", false)).ToList();
+            //         PlayerPrefs.SetString(VersionCacheKey, JsonConvert.SerializeObject(versions));
+            //     }).Send();
         }
     }
 }

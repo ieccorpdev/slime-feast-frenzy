@@ -6,7 +6,6 @@ namespace IEC
 {
     public class AddRandomAnimSkeletonGraphic : _BaseBehaviour
     {
-        public SpineAnimOT spineAnim;
         public float minAnimInterval, maxAnimInterval;
 
         public string mainLoopAnimString;
@@ -41,11 +40,7 @@ namespace IEC
                 bool animCompleted = false;
                 // spineAnim.AddCallBack(randomString, () =>
                 // {
-                    spineAnim.SetAnimation(randomString,false, () =>
-                    {
-                        spineAnim.SetAnimation(mainLoopAnimString, true, ()=>{});
-                        animCompleted = true;
-                    });
+                
                 //});
 
                 

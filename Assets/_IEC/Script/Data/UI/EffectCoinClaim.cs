@@ -54,8 +54,8 @@ namespace IEC
                 float delayTime = i * ratioTime;
                 float delayTimeToStart = i * 0.05f;
                 sequence
-                    .Insert(0f, coinObj.DOAnchorPos(posStart, timeToPostart + delayTime * 2).SetEase(Ease.OutQuad))
-                    .Insert(timeToPostart + delayTime * 2, coinObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * 0.5f)
+//                    .Insert(0f, coinObj.DOAnchorPos(posStart, timeToPostart + delayTime * 2).SetEase(Ease.OutQuad))
+ //                   .Insert(timeToPostart + delayTime * 2, coinObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * 0.5f)
                         .SetEase(Ease.OutQuad)
                         .OnComplete(() =>
                         {
@@ -64,7 +64,7 @@ namespace IEC
                             // Pool.Get<PlayerSecret>().Vibrate(HapticTypes.Selection);
                             //StringHelper.GetNumber(moneyStart);
                             coinObj.gameObject.SetActive(false);
-                        }));
+                        });
             }
 
             sequence.OnComplete(() =>

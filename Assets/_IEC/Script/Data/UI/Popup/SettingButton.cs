@@ -71,15 +71,15 @@ namespace IEC
             // onText.gameObject.SetActive(isOn);
             // offText.gameObject.SetActive(!isOn);
             
-            moveObj.DOAnchorPos(endValue: targetObj.anchoredPosition, duration: 0.15f)
-                .SetId(_tween_ID)
-                .SetEase(Ease.OutBack)
-                .OnComplete(() =>
-                {
-                    moveObj.anchoredPosition = initPos;
-                    
-                    UpdateButtonUI(isOn);
-                });
+            // moveObj.DOAnchorPos(endValue: targetObj.anchoredPosition, duration: 0.15f)
+            //     .SetId(_tween_ID)
+            //     .SetEase(Ease.OutBack)
+            //     .OnComplete(() =>
+            //     {
+            //         moveObj.anchoredPosition = initPos;
+            //         
+            //         UpdateButtonUI(isOn);
+            //     });
         }
         
         public void UpdateButton()

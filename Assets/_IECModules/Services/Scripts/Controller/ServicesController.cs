@@ -1320,12 +1320,12 @@ namespace IEC
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
-            var mail = new UT.MailMessage()
-                .AddTo(email)
-                .SetSubject(title)
-                .SetBody(message)
-                .AddAttachment(m_LogFilePath);
-            UT.Mail.Compose(mail, "Support");
+            // var mail = new UT.MailMessage()
+            //     .AddTo(email)
+            //     .SetSubject(title)
+            //     .SetBody(message)
+            //     .AddAttachment(m_LogFilePath);
+            // UT.Mail.Compose(mail, "Support");
         }
 
         public void OpenPrivacyPolicyURL()
@@ -1335,7 +1335,7 @@ namespace IEC
 #if UNITY_IOS
             IECiosNative.OpenURL(url);
 #else
-            Application.OpenURL(url);
+//            Application.OpenURL(url);
 #endif
         }
 

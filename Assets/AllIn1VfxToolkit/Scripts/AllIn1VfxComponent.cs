@@ -17,7 +17,7 @@ namespace AllIn1VfxToolkit
     public class AllIn1VfxComponent : MonoBehaviour
     {
         private Material currMaterial, prevMaterial;
-        private bool matAssigned = false, destroyed = false;
+        private bool matAssigned = false, hasDestroyed = false;
 
         private enum AfterSetAction
         {
@@ -298,7 +298,7 @@ namespace AllIn1VfxToolkit
 
         private void SetKeyword(string keyword, bool state = false)
         {
-            if(destroyed) return;
+            if(hasDestroyed) return;
             if(currMaterial == null)
             {
                 FindCurrMaterial();
@@ -468,7 +468,7 @@ namespace AllIn1VfxToolkit
                                                             gameObject.name +
                                                             ") has no Renderer or UI Graphic component. This AllIn1Vfx component will be removed.",
                 "Ok");
-            destroyed = true;
+            hasDestroyed = true;
             DestroyImmediate(this);
 #endif
         }

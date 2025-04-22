@@ -19,6 +19,7 @@ namespace _IECModules
     {
         public const string APPLOVIN_VERBOSE_LOGGING = "APPLOVIN_VERBOSE_LOGGING";
         public const string CMP_DEVICE_HASHED_ID = "CMP_DEVICE_HASHED_ID";
+
         public class CheatCodeParam
         {
             public CheatCodeType type;
@@ -79,8 +80,7 @@ namespace _IECModules
         }
 
         public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
-        [Range(0f, 1f)]
-        public float topOffset = 0f;
+        [Range(0f, 1f)] public float topOffset = 0f;
 
         private ShowCheatCodeState m_ShowCheatCodeState;
 
@@ -92,9 +92,13 @@ namespace _IECModules
         [NonSerialized] public bool haveOpenedCheatCode;
 
         public readonly List<CheatCodeParam> m_CheatCodeParamList = new List<CheatCodeParam>();
-        public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject = new Dictionary<string, List<CheatCodeParam>>();
 
-        private const string IDFA_GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
+        public readonly Dictionary<string, List<CheatCodeParam>> dictionaryCheatCodeFromObject =
+            new Dictionary<string, List<CheatCodeParam>>();
+
+        private const string IDFA_GOOGLE_SHEET_URL =
+            "https://docs.google.com/spreadsheets/d/1wQwpEomrmCGBzFmYC7tko3iRc7iCVik55hOtW8gdSX4/edit#gid=0";
+
         private List<string> m_IDFAList = new List<string>();
         private bool m_IsCheckCheatIDFA;
         private bool m_IsCheatIDFA;
@@ -128,15 +132,15 @@ namespace _IECModules
         private void Awake()
         {
             m_BackgroundTexture = Texture2D.whiteTexture;
-            m_TextureStyle = new GUIStyle {normal = new GUIStyleState {background = m_BackgroundTexture}};
-            
+            m_TextureStyle = new GUIStyle { normal = new GUIStyleState { background = m_BackgroundTexture } };
 
-            var reporter = GetComponentInChildren<Reporter>(true);
-            AddCheatCodeButton("Show Reporter", param =>
-            {
-                if (reporter != null) reporter.doShow();
-                SetCheatCodeState(ShowCheatCodeState.Hide);
-            });
+
+            // var reporter = GetComponentInChildren<Reporter>(true);
+            // AddCheatCodeButton("Show Reporter", param =>
+            // {
+            //     if (reporter != null) reporter.doShow();
+            //     SetCheatCodeState(ShowCheatCodeState.Hide);
+            // });
 
             var showFPS = GetComponentInChildren<ShowFPS>(true);
             AddCheatCodeButton("Show FPS", param =>
@@ -148,22 +152,25 @@ namespace _IECModules
 
             AddCheatCodeButton("Toggle Debug Log", param =>
             {
-                Debug.unityLogger.filterLogType = (Debug.unityLogger.filterLogType == LogType.Warning) ? LogType.Log : LogType.Warning;
-                param.buttonText = "Debug Log: " + (Debug.unityLogger.filterLogType == LogType.Log ? "enabled" : "disabled");
-                PlayerPrefs.SetInt(ModuleController.LOG_ENABLED_KEY, Debug.unityLogger.filterLogType == LogType.Log ? 1 : 0);
+                Debug.unityLogger.filterLogType = (Debug.unityLogger.filterLogType == LogType.Warning)
+                    ? LogType.Log
+                    : LogType.Warning;
+                param.buttonText = "Debug Log: " +
+                                   (Debug.unityLogger.filterLogType == LogType.Log ? "enabled" : "disabled");
+                PlayerPrefs.SetInt(ModuleController.LOG_ENABLED_KEY,
+                    Debug.unityLogger.filterLogType == LogType.Log ? 1 : 0);
             });
 
-            AddCheatCodeButtonWithInput("Time Scale", param => { Time.timeScale = float.Parse(param.inputParams[0].value.ToString()); }, new InputParam
-            {
-                value = 2
-            });
-            
-            AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam =>
-            {
-                ResetPlayerData();
-            });
+            AddCheatCodeButtonWithInput("Time Scale",
+                param => { Time.timeScale = float.Parse(param.inputParams[0].value.ToString()); }, new InputParam
+                {
+                    value = 2
+                });
 
-            var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>().Select(x => x.ToString()).ToList();
+            AddCheatCodeButton("RESET Player Data!!!!!", cheatCodeParam => { ResetPlayerData(); });
+
+            var listCrashCategory = Enum.GetValues(typeof(ForcedCrashCategory)).Cast<ForcedCrashCategory>()
+                .Select(x => x.ToString()).ToList();
             // ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Force Crash!!!!!", param =>
             // {
             //     UnityEngine.Diagnostics.Utils.ForceCrash((ForcedCrashCategory)Enum.Parse(typeof(ForcedCrashCategory), listCrashCategory[param.dropdownParam.value]));
@@ -188,10 +195,8 @@ namespace _IECModules
             //     }
             // }, listExceptionType);
 
-            AddCheatCodeButton("RESET Player Data but same AB test", cheatCodeParam =>
-            {
-                ResetPlayerDataWithoutChangeAb();
-            });
+            AddCheatCodeButton("RESET Player Data but same AB test",
+                cheatCodeParam => { ResetPlayerDataWithoutChangeAb(); });
 
             var verboseLogging = PlayerPrefs.GetInt(APPLOVIN_VERBOSE_LOGGING, 0);
             AddCheatCodeButton($"Applovin Verbose Log: {verboseLogging}", param =>
@@ -206,7 +211,8 @@ namespace _IECModules
             {
                 var count = int.Parse(param.inputParams[0].value.ToString());
                 PlayerPrefs.SetInt($"{COUNT_PREFIX}show_full_ad", count);
-            }, new InputParam{
+            }, new InputParam
+            {
                 value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_full_ad")
             });
 
@@ -214,7 +220,8 @@ namespace _IECModules
             {
                 var count = int.Parse(param.inputParams[0].value.ToString());
                 PlayerPrefs.SetInt($"{COUNT_PREFIX}show_reward_ad", count);
-            },new InputParam{
+            }, new InputParam
+            {
                 value = PlayerPrefs.GetInt($"{COUNT_PREFIX}show_reward_ad")
             });
 #if(PluginCMP)
@@ -307,14 +314,17 @@ namespace _IECModules
         private void InitGuiParams()
         {
             if (m_ButtonStyle != null) return;
-            m_ButtonStyle = new GUIStyle(GUI.skin.button) {fontSize = FontSize};
+            m_ButtonStyle = new GUIStyle(GUI.skin.button) { fontSize = FontSize };
 
-            m_ButtonDropdownButtonStyle = new GUIStyle(GUI.skin.button) {fontSize = FontSize, alignment = TextAnchor.MiddleLeft};
-            m_ButtonDropdownSelectedStyle = new GUIStyle(m_ButtonStyle) {normal = {textColor = Color.cyan}, alignment = TextAnchor.MiddleLeft};
+            m_ButtonDropdownButtonStyle = new GUIStyle(GUI.skin.button)
+                { fontSize = FontSize, alignment = TextAnchor.MiddleLeft };
+            m_ButtonDropdownSelectedStyle = new GUIStyle(m_ButtonStyle)
+                { normal = { textColor = Color.cyan }, alignment = TextAnchor.MiddleLeft };
 
-            m_InputFieldStyle = new GUIStyle(GUI.skin.textField) {fontSize = FontSize};
+            m_InputFieldStyle = new GUIStyle(GUI.skin.textField) { fontSize = FontSize };
 
-            m_LabelTextStyle = new GUIStyle(GUI.skin.label) {fontSize = FontSize, normal = {textColor = Color.white}};
+            m_LabelTextStyle = new GUIStyle(GUI.skin.label)
+                { fontSize = FontSize, normal = { textColor = Color.white } };
         }
 
 
@@ -344,6 +354,7 @@ namespace _IECModules
                     {
                         SetCheatCodeState(ShowCheatCodeState.Hide);
                     }
+
                     return;
                 }
 
@@ -353,13 +364,14 @@ namespace _IECModules
                     GetIDFAList();
                     m_IsGetIDFAListFirstTime = true;
                 }
+
                 m_TestIndex = 0;
 
                 if (!Services.IsHaveIDFA)
                 {
                     Services.RequestUserIdfa();
                 }
-                
+
                 if (m_HaveInputPassword || Application.isEditor)
                 {
                     SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
@@ -400,240 +412,242 @@ namespace _IECModules
             }
         }
 
-        private void OnGUI()
-        {
-            InitGuiParams();
-            var offset = topOffset * Screen.height;
-            var screenWidth = Screen.width;
-            var screenHeight = Screen.height;
-            var screenWidthCenter = (float) screenWidth / 2;
+        // private void OnGUI()
+        // {
+        //     InitGuiParams();
+        //     var offset = topOffset * Screen.height;
+        //     var screenWidth = Screen.width;
+        //     var screenHeight = Screen.height;
+        //     var screenWidthCenter = (float) screenWidth / 2;
+        //
+        //     switch (showCheatCodeState)
+        //     {
+        //         case ShowCheatCodeState.Hide:
+        //             break;
+        //         case ShowCheatCodeState.ShowPasswordInput:
+        //             var bgColorCurrent = GUI.backgroundColor;
+        //             GUI.backgroundColor = new Color(0, 0, 0, 0);
+        //             if (GuiButton(new Rect(0, screenHeight * 0.25f + offset, screenWidth, screenHeight * 0.75f), ""))
+        //             {
+        //                 SetCheatCodeState(ShowCheatCodeState.Hide);
+        //             }
+        //
+        //             GUI.backgroundColor = bgColorCurrent;
+        //
+        //             var passwordInputTextSize = new Vector2(screenWidthCenter, 300);
+        //             var passwordInputTextRect = new Rect((screenWidth - passwordInputTextSize.x) / 2,
+        //                 50 + offset, passwordInputTextSize.x, passwordInputTextSize.y);
+        //             m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
+        //                 m_InputFieldStyle);
+        //
+        //             var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
+        //             if (passwordEditStr == GetOTPPassword())
+        //             {
+        //                 m_HaveInputPassword = true;
+        //                 SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
+        //             }
+        //
+        //             if (GuiButton(
+        //                 new Rect(0, passwordInputTextRect.y + passwordInputTextRect.height + ButtonSize.y * 0.5f,
+        //                     0, ButtonSize.y), "Send"))
+        //             {
+        //                 SetCheatCodeState(ShowCheatCodeState.Hide);
+        //             }
+        //
+        //             break;
+        //         case ShowCheatCodeState.ShowCheatCode:
+        //             DrawRect(new Rect(0, 0, screenWidth, screenHeight), new Color(0, 0, 0, 0.5f));
+        //
+        //
+        //             if (GuiButton(
+        //                 new Rect(20, 20 + offset, 0, ButtonSize.y), "Close"))
+        //             {
+        //                 SetCheatCodeState(ShowCheatCodeState.Hide);
+        //             }
+        //
+        //             m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20 + offset,
+        //                 300, ButtonSize.y), m_InputSearchString, m_InputFieldStyle);
+        //
+        //             GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20 + offset,
+        //                 150, ButtonSize.y), "Search", m_LabelTextStyle);
+        //
+        //             var cheatCodeRectHeight = screenHeight * 0.9f;
+        //             var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight + offset;
+        //             var cheatCodeSizeEach = ButtonSize.y * 1.2f;
+        //
+        //             var guiSkin = GUI.skin;
+        //             guiSkin.verticalScrollbar.fixedWidth = screenWidth * 0.05f;
+        //
+        //             var cheatCodeParamListFilter = m_CheatCodeParamList
+        //                 .Where(x => string.IsNullOrEmpty(m_InputSearchString) || x.buttonText.ToLower().Contains(m_InputSearchString.ToLower()))
+        //                 .ToList();
+        //
+        //             m_ScrollviewVector2 = GUI.BeginScrollView(
+        //                 new Rect(0, cheatCodeRectStartY, screenWidth, cheatCodeRectHeight),
+        //                 m_ScrollviewVector2,
+        //                 new Rect(0, cheatCodeRectStartY, screenWidth,
+        //                     Mathf.Max(cheatCodeRectHeight, cheatCodeSizeEach * (cheatCodeParamListFilter.Count + 7))));
+        //
+        //             for (var i = 0; i < cheatCodeParamListFilter.Count; i++)
+        //             {
+        //                 var cheatCodeParam = cheatCodeParamListFilter[i];
+        //
+        //                 var commonButtonRect = new Rect(0, cheatCodeRectStartY + cheatCodeSizeEach * i, 0,
+        //                     ButtonSize.y);
+        //
+        //                 switch (cheatCodeParam.type)
+        //                 {
+        //                     case CheatCodeType.Button:
+        //                         if (GuiButton(commonButtonRect, cheatCodeParam.buttonText))
+        //                         {
+        //                             if (cheatCodeParam.action != null) cheatCodeParam.action.Invoke(cheatCodeParam);
+        //                         }
+        //
+        //                         break;
+        //                     case CheatCodeType.ButtonWithInputText:
+        //                         var buttonRatio = cheatCodeParam.inputParams.Count >= 2
+        //                             ? 2f / 3
+        //                             : 1f / 2;
+        //                         var buttonRect = new Rect(commonButtonRect);
+        //                         buttonRect.x = screenWidth * buttonRatio + 10;
+        //                         if (GuiButton(buttonRect, cheatCodeParam.buttonText))
+        //                         {
+        //                             if (cheatCodeParam.action != null) cheatCodeParam.action.Invoke(cheatCodeParam);
+        //                         }
+        //
+        //                         var labelSize = cheatCodeParam.inputParams.Select(x =>
+        //                             (int) m_LabelTextStyle.CalcSize(new GUIContent(x.label + ": ")).x).ToList();
+        //
+        //                         var inputFieldWidth = Mathf.Min(screenWidth / 4,
+        //                             (screenWidth * buttonRatio - labelSize.Sum()) /
+        //                             cheatCodeParam.inputParams.Count);
+        //
+        //                         var currentX = screenWidth * buttonRatio;
+        //                         for (var j = cheatCodeParam.inputParams.Count - 1; j >= 0; j--)
+        //                         {
+        //                             var inputParam = cheatCodeParam.inputParams[j];
+        //
+        //                             currentX = currentX - inputFieldWidth;
+        //                             inputParam.value = inputParam.value == null ? string.Empty : inputParam.value;
+        //                             inputParam.value = GUI.TextField(
+        //                                 new Rect(currentX, buttonRect.y,
+        //                                     inputFieldWidth, ButtonSize.y),
+        //                                 inputParam.value.ToString(),
+        //                                 m_InputFieldStyle);
+        //
+        //                             currentX = currentX - labelSize[j];
+        //                             if (!string.IsNullOrEmpty(inputParam.label))
+        //                             {
+        //                                 GUI.Label(new Rect(currentX, buttonRect.y,
+        //                                     labelSize[j], ButtonSize.y), inputParam.label + ": ", m_LabelTextStyle);
+        //                             }
+        //                         }
+        //
+        //                         break;
+        //                     case CheatCodeType.ButtonWithDropdown:
+        //                         var dropdownParam = cheatCodeParam.dropdownParam;
+        //                         var optionsCount = dropdownParam.options.Count;
+        //
+        //                         var maxWidth = Mathf.Clamp(dropdownParam.options.Max(option =>
+        //                                 m_ButtonStyle.CalcSize(new GUIContent(option + ((optionsCount > 10)?"000":""))).x), ButtonSize.y * 3,
+        //                             screenWidthCenter * 0.9f);
+        //
+        //                         var dropdownRect = dropdownParam.dropdownRect = new Rect(screenWidthCenter,
+        //                             commonButtonRect.y, maxWidth,
+        //                             commonButtonRect.height);
+        //
+        //                         if (GuiButton(dropdownRect,
+        //                             dropdownParam.isShowOption ? "Close" : dropdownParam.selected))
+        //                         {
+        //                             dropdownParam.isShowOption = !dropdownParam.isShowOption;
+        //                         }
+        //
+        //                         var labelWidth = m_LabelTextStyle
+        //                             .CalcSize(new GUIContent(cheatCodeParam.buttonText + ": ")).x;
+        //                         GUI.Label(
+        //                             new Rect(screenWidthCenter - labelWidth, dropdownRect.y, labelWidth,
+        //                                 dropdownRect.height), cheatCodeParam.buttonText + ": ", m_LabelTextStyle);
+        //
+        //                         if (!dropdownParam.isShowOption) continue;
+        //
+        //                         var optionHeight = dropdownRect.height * 0.9f;
+        //                         var windowMaxHeight = optionHeight * 10;
+        //                         var scrollViewMaxHeight = dropdownParam.options.Count * optionHeight;
+        //                         var scrollViewRect = new Rect(dropdownRect.x, dropdownRect.y + dropdownRect.height,
+        //                             dropdownRect.width, Mathf.Min(windowMaxHeight, scrollViewMaxHeight));
+        //
+        //                         scrollViewRect.x -= m_ScrollviewVector2.x;
+        //                         scrollViewRect.y -= m_ScrollviewVector2.y;
+        //
+        //                         GUI.Window(i, scrollViewRect, id =>
+        //                         {
+        //                             dropdownParam.scrollViewVector = GUI.BeginScrollView(
+        //                                 new Rect(0, 0, scrollViewRect.width, scrollViewRect.height),
+        //                                 dropdownParam.scrollViewVector,
+        //                                 new Rect(0, 0, dropdownRect.width, scrollViewMaxHeight));
+        //
+        //                             GUI.Box(
+        //                                 new Rect(0, 0, dropdownRect.width,
+        //                                     Mathf.Max(dropdownRect.height,
+        //                                         dropdownParam.options.Count * optionHeight)), "");
+        //
+        //                             for (var index = 0; index < dropdownParam.options.Count; index++)
+        //                             {
+        //                                 if (GUI.Button(
+        //                                     new Rect(0, index * optionHeight, dropdownRect.width, optionHeight),
+        //                                     dropdownParam.options[index],
+        //                                     index == dropdownParam.value
+        //                                         ? m_ButtonDropdownSelectedStyle
+        //                                         : m_ButtonDropdownButtonStyle))
+        //                                 {
+        //                                     dropdownParam.isShowOption = false;
+        //                                     dropdownParam.value = index;
+        //
+        //                                     if (cheatCodeParam.action != null)
+        //                                         cheatCodeParam.action.Invoke(cheatCodeParam);
+        //                                 }
+        //                             }
+        //
+        //                             GUI.EndScrollView();
+        //                         }, "");
+        //                         break;
+        //                 }
+        //             }
+        //
+        //             GUI.EndScrollView();
+        //             break;
+        //     }
+        // }
 
-            switch (showCheatCodeState)
-            {
-                case ShowCheatCodeState.Hide:
-                    break;
-                case ShowCheatCodeState.ShowPasswordInput:
-                    var bgColorCurrent = GUI.backgroundColor;
-                    GUI.backgroundColor = new Color(0, 0, 0, 0);
-                    if (GuiButton(new Rect(0, screenHeight * 0.25f + offset, screenWidth, screenHeight * 0.75f), ""))
-                    {
-                        SetCheatCodeState(ShowCheatCodeState.Hide);
-                    }
-
-                    GUI.backgroundColor = bgColorCurrent;
-
-                    var passwordInputTextSize = new Vector2(screenWidthCenter, 300);
-                    var passwordInputTextRect = new Rect((screenWidth - passwordInputTextSize.x) / 2,
-                        50 + offset, passwordInputTextSize.x, passwordInputTextSize.y);
-                    m_PasswordInputEditString = GUI.TextField(passwordInputTextRect, m_PasswordInputEditString,
-                        m_InputFieldStyle);
-
-                    var passwordEditStr = m_PasswordInputEditString.ToLower().Trim();
-                    if (passwordEditStr == GetOTPPassword())
-                    {
-                        m_HaveInputPassword = true;
-                        SetCheatCodeState(ShowCheatCodeState.ShowCheatCode);
-                    }
-
-                    if (GuiButton(
-                        new Rect(0, passwordInputTextRect.y + passwordInputTextRect.height + ButtonSize.y * 0.5f,
-                            0, ButtonSize.y), "Send"))
-                    {
-                        SetCheatCodeState(ShowCheatCodeState.Hide);
-                    }
-
-                    break;
-                case ShowCheatCodeState.ShowCheatCode:
-                    DrawRect(new Rect(0, 0, screenWidth, screenHeight), new Color(0, 0, 0, 0.5f));
-
-
-                    if (GuiButton(
-                        new Rect(20, 20 + offset, 0, ButtonSize.y), "Close"))
-                    {
-                        SetCheatCodeState(ShowCheatCodeState.Hide);
-                    }
-
-                    m_InputSearchString = GUI.TextField(new Rect(screenWidth - 20 - 300, 20 + offset,
-                        300, ButtonSize.y), m_InputSearchString, m_InputFieldStyle);
-
-                    GUI.Label(new Rect(screenWidth - 20 - 300 - 150, 20 + offset,
-                        150, ButtonSize.y), "Search", m_LabelTextStyle);
-
-                    var cheatCodeRectHeight = screenHeight * 0.9f;
-                    var cheatCodeRectStartY = screenHeight - cheatCodeRectHeight + offset;
-                    var cheatCodeSizeEach = ButtonSize.y * 1.2f;
-
-                    var guiSkin = GUI.skin;
-                    guiSkin.verticalScrollbar.fixedWidth = screenWidth * 0.05f;
-
-                    var cheatCodeParamListFilter = m_CheatCodeParamList
-                        .Where(x => string.IsNullOrEmpty(m_InputSearchString) || x.buttonText.ToLower().Contains(m_InputSearchString.ToLower()))
-                        .ToList();
-
-                    m_ScrollviewVector2 = GUI.BeginScrollView(
-                        new Rect(0, cheatCodeRectStartY, screenWidth, cheatCodeRectHeight),
-                        m_ScrollviewVector2,
-                        new Rect(0, cheatCodeRectStartY, screenWidth,
-                            Mathf.Max(cheatCodeRectHeight, cheatCodeSizeEach * (cheatCodeParamListFilter.Count + 7))));
-
-                    for (var i = 0; i < cheatCodeParamListFilter.Count; i++)
-                    {
-                        var cheatCodeParam = cheatCodeParamListFilter[i];
-
-                        var commonButtonRect = new Rect(0, cheatCodeRectStartY + cheatCodeSizeEach * i, 0,
-                            ButtonSize.y);
-
-                        switch (cheatCodeParam.type)
-                        {
-                            case CheatCodeType.Button:
-                                if (GuiButton(commonButtonRect, cheatCodeParam.buttonText))
-                                {
-                                    if (cheatCodeParam.action != null) cheatCodeParam.action.Invoke(cheatCodeParam);
-                                }
-
-                                break;
-                            case CheatCodeType.ButtonWithInputText:
-                                var buttonRatio = cheatCodeParam.inputParams.Count >= 2
-                                    ? 2f / 3
-                                    : 1f / 2;
-                                var buttonRect = new Rect(commonButtonRect);
-                                buttonRect.x = screenWidth * buttonRatio + 10;
-                                if (GuiButton(buttonRect, cheatCodeParam.buttonText))
-                                {
-                                    if (cheatCodeParam.action != null) cheatCodeParam.action.Invoke(cheatCodeParam);
-                                }
-
-                                var labelSize = cheatCodeParam.inputParams.Select(x =>
-                                    (int) m_LabelTextStyle.CalcSize(new GUIContent(x.label + ": ")).x).ToList();
-
-                                var inputFieldWidth = Mathf.Min(screenWidth / 4,
-                                    (screenWidth * buttonRatio - labelSize.Sum()) /
-                                    cheatCodeParam.inputParams.Count);
-
-                                var currentX = screenWidth * buttonRatio;
-                                for (var j = cheatCodeParam.inputParams.Count - 1; j >= 0; j--)
-                                {
-                                    var inputParam = cheatCodeParam.inputParams[j];
-
-                                    currentX = currentX - inputFieldWidth;
-                                    inputParam.value = inputParam.value == null ? string.Empty : inputParam.value;
-                                    inputParam.value = GUI.TextField(
-                                        new Rect(currentX, buttonRect.y,
-                                            inputFieldWidth, ButtonSize.y),
-                                        inputParam.value.ToString(),
-                                        m_InputFieldStyle);
-
-                                    currentX = currentX - labelSize[j];
-                                    if (!string.IsNullOrEmpty(inputParam.label))
-                                    {
-                                        GUI.Label(new Rect(currentX, buttonRect.y,
-                                            labelSize[j], ButtonSize.y), inputParam.label + ": ", m_LabelTextStyle);
-                                    }
-                                }
-
-                                break;
-                            case CheatCodeType.ButtonWithDropdown:
-                                var dropdownParam = cheatCodeParam.dropdownParam;
-                                var optionsCount = dropdownParam.options.Count;
-
-                                var maxWidth = Mathf.Clamp(dropdownParam.options.Max(option =>
-                                        m_ButtonStyle.CalcSize(new GUIContent(option + ((optionsCount > 10)?"000":""))).x), ButtonSize.y * 3,
-                                    screenWidthCenter * 0.9f);
-
-                                var dropdownRect = dropdownParam.dropdownRect = new Rect(screenWidthCenter,
-                                    commonButtonRect.y, maxWidth,
-                                    commonButtonRect.height);
-
-                                if (GuiButton(dropdownRect,
-                                    dropdownParam.isShowOption ? "Close" : dropdownParam.selected))
-                                {
-                                    dropdownParam.isShowOption = !dropdownParam.isShowOption;
-                                }
-
-                                var labelWidth = m_LabelTextStyle
-                                    .CalcSize(new GUIContent(cheatCodeParam.buttonText + ": ")).x;
-                                GUI.Label(
-                                    new Rect(screenWidthCenter - labelWidth, dropdownRect.y, labelWidth,
-                                        dropdownRect.height), cheatCodeParam.buttonText + ": ", m_LabelTextStyle);
-
-                                if (!dropdownParam.isShowOption) continue;
-
-                                var optionHeight = dropdownRect.height * 0.9f;
-                                var windowMaxHeight = optionHeight * 10;
-                                var scrollViewMaxHeight = dropdownParam.options.Count * optionHeight;
-                                var scrollViewRect = new Rect(dropdownRect.x, dropdownRect.y + dropdownRect.height,
-                                    dropdownRect.width, Mathf.Min(windowMaxHeight, scrollViewMaxHeight));
-
-                                scrollViewRect.x -= m_ScrollviewVector2.x;
-                                scrollViewRect.y -= m_ScrollviewVector2.y;
-
-                                GUI.Window(i, scrollViewRect, id =>
-                                {
-                                    dropdownParam.scrollViewVector = GUI.BeginScrollView(
-                                        new Rect(0, 0, scrollViewRect.width, scrollViewRect.height),
-                                        dropdownParam.scrollViewVector,
-                                        new Rect(0, 0, dropdownRect.width, scrollViewMaxHeight));
-
-                                    GUI.Box(
-                                        new Rect(0, 0, dropdownRect.width,
-                                            Mathf.Max(dropdownRect.height,
-                                                dropdownParam.options.Count * optionHeight)), "");
-
-                                    for (var index = 0; index < dropdownParam.options.Count; index++)
-                                    {
-                                        if (GUI.Button(
-                                            new Rect(0, index * optionHeight, dropdownRect.width, optionHeight),
-                                            dropdownParam.options[index],
-                                            index == dropdownParam.value
-                                                ? m_ButtonDropdownSelectedStyle
-                                                : m_ButtonDropdownButtonStyle))
-                                        {
-                                            dropdownParam.isShowOption = false;
-                                            dropdownParam.value = index;
-
-                                            if (cheatCodeParam.action != null)
-                                                cheatCodeParam.action.Invoke(cheatCodeParam);
-                                        }
-                                    }
-
-                                    GUI.EndScrollView();
-                                }, "");
-                                break;
-                        }
-                    }
-
-                    GUI.EndScrollView();
-                    break;
-            }
-        }
-
-        private bool GuiButton(Rect rect, string text, GUIStyle style = null)
-        {
-            Rect outRect;
-            return GuiButton(rect, text, style, out outRect);
-        }
+        // private bool GuiButton(Rect rect, string text, GUIStyle style = null)
+        // {
+        //     Rect outRect;
+        //     return GuiButton(rect, text, style, out outRect);
+        // }
 
         private bool GuiButton(Rect rect, string text, GUIStyle style, out Rect outRect)
         {
-            outRect = new Rect(rect);
-            if (style == null) style = m_ButtonStyle;
-            if (outRect.width != 0f) return GUI.Button(outRect, text, style);
-
-            var buttonWidth = style.CalcSize(new GUIContent(text)).x + 50;
-            outRect.width = buttonWidth;
-            if (outRect.x == 0f) outRect.x = Screen.width / 2 - buttonWidth / 2;
-
-            return GUI.Button(outRect, text, style);
+//             outRect = new Rect(rect);
+//             if (style == null) style = m_ButtonStyle;
+// //            if (outRect.width != 0f) return GUI.Button(outRect, text, style);
+//
+//             var buttonWidth = style.CalcSize(new GUIContent(text)).x + 50;
+//             outRect.width = buttonWidth;
+//             if (outRect.x == 0f) outRect.x = Screen.width / 2 - buttonWidth / 2;
+//
+//             return GUI.Button(outRect, text, style);
+            outRect = rect;
+            return false;
         }
 
 
-        private void DrawRect(Rect position, Color color, GUIContent content = null)
-        {
-            var backgroundColor = GUI.backgroundColor;
-            GUI.backgroundColor = color;
-            GUI.Box(position, content ?? GUIContent.none, m_TextureStyle);
-            GUI.backgroundColor = backgroundColor;
-        }
+        // private void DrawRect(Rect position, Color color, GUIContent content = null)
+        // {
+        //     var backgroundColor = GUI.backgroundColor;
+        //     GUI.backgroundColor = color;
+        //     GUI.Box(position, content ?? GUIContent.none, m_TextureStyle);
+        //     GUI.backgroundColor = backgroundColor;
+        // }
 
         public void SetCheatCodeState(ShowCheatCodeState cheatCodeState)
         {
@@ -666,7 +680,7 @@ namespace _IECModules
         private CheatCodeParam AddCheatCode(CheatCodeType cheatCodeType, string buttonText)
         {
             RemoveCheatCodeButtonByName(buttonText);
-            var cheatCodeParam = new CheatCodeParam {type = cheatCodeType, buttonText = buttonText};
+            var cheatCodeParam = new CheatCodeParam { type = cheatCodeType, buttonText = buttonText };
             m_CheatCodeParamList.Add(cheatCodeParam);
             return cheatCodeParam;
         }
@@ -700,78 +714,84 @@ namespace _IECModules
             List<string> options, int defaultValue = 0)
         {
             var cheatCodeParam = AddCheatCode(CheatCodeType.ButtonWithDropdown, buttonText);
-            cheatCodeParam.dropdownParam = new DropdownParam {options = options, value = defaultValue};
+            cheatCodeParam.dropdownParam = new DropdownParam { options = options, value = defaultValue };
             cheatCodeParam.action = onClick;
         }
 
         public void AddCheatCodeFromObject(string className, object classObj, Action onChange = null)
         {
             AddCheatCodeButton($"Toggle {className} Params",
-                cheatCodeParam => { cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}"; }
-            );
-            
-            var checkFieldType = new List<Type> {typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double), typeof(string)};
-            classObj.GetType().GetFields().Where(f => checkFieldType.Contains(f.FieldType)).ToList().ForEach(
-                field =>
+                cheatCodeParam =>
                 {
-                    var fieldValue = field.GetValue(classObj);
-                    var fieldName = field.Name;
-                    var fieldType = field.FieldType;
-                    // print($"{fieldName}: {fieldType} --- {fieldType == typeof(float)}");
-                    if (fieldType == typeof(bool))
+                    cheatCodeParam.buttonText = $"Toggle {className} Params: {ToggleClassParam(className)}";
+                }
+            );
+
+            var checkFieldType = new List<Type>
+                { typeof(bool), typeof(int), typeof(long), typeof(float), typeof(double), typeof(string) };
+            classObj.GetType().GetFields().Where(f => checkFieldType.Contains(f.FieldType)).ToList().ForEach(field =>
+            {
+                var fieldValue = field.GetValue(classObj);
+                var fieldName = field.Name;
+                var fieldType = field.FieldType;
+                // print($"{fieldName}: {fieldType} --- {fieldType == typeof(float)}");
+                if (fieldType == typeof(bool))
+                {
+                    AddCheatCodeButton($"{className}/{fieldName}: {fieldValue}", param =>
                     {
-                        AddCheatCodeButton($"{className}/{fieldName}: {fieldValue}", param =>
-                        {
-                            field.SetValue(classObj, !(bool) field.GetValue(classObj));
-                            param.buttonText = $"{className}/{fieldName}: {field.GetValue(classObj)}";
-                            onChange?.Invoke();
-                        });
-                    }
-                    else if (fieldType == typeof(int) 
-                        || fieldType == typeof(long)
-                        || fieldType == typeof(float)
-                        || fieldType == typeof(double))
+                        field.SetValue(classObj, !(bool)field.GetValue(classObj));
+                        param.buttonText = $"{className}/{fieldName}: {field.GetValue(classObj)}";
+                        onChange?.Invoke();
+                    });
+                }
+                else if (fieldType == typeof(int)
+                         || fieldType == typeof(long)
+                         || fieldType == typeof(float)
+                         || fieldType == typeof(double))
+                {
+                    AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
                     {
-                        AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
+                        var valueStr = param.inputParams[0].value.ToString();
+                        if (fieldType == typeof(int))
                         {
-                            var valueStr = param.inputParams[0].value.ToString();
-                            if (fieldType == typeof(int))
-                            {
-                                var valueParse = int.Parse(valueStr);
-                                field.SetValue(classObj, valueParse);
-                            }
-                            else if (fieldType == typeof(float))
-                            {
-                                var valueParse = float.Parse(valueStr);
-                                field.SetValue(classObj, valueParse);
-                            }
-                            else if (fieldType == typeof(long))
-                            {
-                                var valueParse = long.Parse(valueStr);
-                                field.SetValue(classObj, valueParse);
-                            }
-                            else if (fieldType == typeof(double))
-                            {
-                                var valueParse = double.Parse(valueStr);
-                                field.SetValue(classObj, valueParse);
-                            }
-                            onChange?.Invoke();
-                        }, new InputParam {value = fieldValue});
-                    }
-                    else if (fieldType == typeof(string))
+                            var valueParse = int.Parse(valueStr);
+                            field.SetValue(classObj, valueParse);
+                        }
+                        else if (fieldType == typeof(float))
+                        {
+                            var valueParse = float.Parse(valueStr);
+                            field.SetValue(classObj, valueParse);
+                        }
+                        else if (fieldType == typeof(long))
+                        {
+                            var valueParse = long.Parse(valueStr);
+                            field.SetValue(classObj, valueParse);
+                        }
+                        else if (fieldType == typeof(double))
+                        {
+                            var valueParse = double.Parse(valueStr);
+                            field.SetValue(classObj, valueParse);
+                        }
+
+                        onChange?.Invoke();
+                    }, new InputParam { value = fieldValue });
+                }
+                else if (fieldType == typeof(string))
+                {
+                    AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
                     {
-                        AddCheatCodeButtonWithInput($"{className}/{fieldName}", param =>
-                        {
-                            var valueStr = param.inputParams[0].value.ToString();
-                            field.SetValue(classObj, valueStr);
-                            onChange?.Invoke();
-                        }, new InputParam { value = fieldValue });
-                    }
-                });
+                        var valueStr = param.inputParams[0].value.ToString();
+                        field.SetValue(classObj, valueStr);
+                        onChange?.Invoke();
+                    }, new InputParam { value = fieldValue });
+                }
+            });
         }
+
         public bool ToggleClassParam(string className)
         {
-            if(!dictionaryCheatCodeFromObject.ContainsKey(className)) dictionaryCheatCodeFromObject[className] = new List<CheatCodeParam>();
+            if (!dictionaryCheatCodeFromObject.ContainsKey(className))
+                dictionaryCheatCodeFromObject[className] = new List<CheatCodeParam>();
             var gameCheatCodeParamList = dictionaryCheatCodeFromObject[className];
             if (gameCheatCodeParamList.Count > 0)
             {
@@ -781,7 +801,8 @@ namespace _IECModules
             }
             else
             {
-                dictionaryCheatCodeFromObject[className] = m_CheatCodeParamList.FindAll(x => x.buttonText.StartsWith($"{className}/"));
+                dictionaryCheatCodeFromObject[className] =
+                    m_CheatCodeParamList.FindAll(x => x.buttonText.StartsWith($"{className}/"));
                 m_CheatCodeParamList.RemoveAll(x => x.buttonText.StartsWith($"{className}/"));
                 return false;
             }
@@ -790,7 +811,7 @@ namespace _IECModules
         private string GetOTPPassword()
         {
             var otpSeed = 69696;
-            var utcDateTotalHour = (int) Math.Floor((DateTime.UtcNow.Date - new DateTime(1970, 1, 1)).TotalHours);
+            var utcDateTotalHour = (int)Math.Floor((DateTime.UtcNow.Date - new DateTime(1970, 1, 1)).TotalHours);
             otpSeed += utcDateTotalHour;
             var systemRandom = new System.Random(otpSeed);
             var otpPassword = systemRandom.Next(1000000).ToString();
@@ -810,6 +831,7 @@ namespace _IECModules
             {
                 m_IDFAList = new List<string>();
             }
+
             // Debug.LogError(m_IDFAList.JsonSerialize());
             m_IsFinishedGetIDFA = true;
         }
@@ -817,7 +839,7 @@ namespace _IECModules
         IEnumerator GetIDFAListCoroutine(string url)
         {
             var jsoner = new JsonDotNetModule();
-        
+
             using (var uwr = UnityEditorHelper.GetWebRequestCsvFromAuthUrl(url))
             {
                 yield return uwr.SendWebRequest();
@@ -859,14 +881,14 @@ namespace _IECModules
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
         }
-        
+
         public void ResetPlayerDataWithoutChangeAb()
         {
             Game.isDebugReset = true;
             Services.DataSecure().SetString(DataController.PLAYER_DATA_KEY, string.Empty);
             Services.DataSecure().Save();
             Application.Quit();
-            
+
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
 #endif
