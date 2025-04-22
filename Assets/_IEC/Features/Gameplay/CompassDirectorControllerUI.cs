@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
 using IEC;
@@ -19,7 +20,14 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
         }
-        
+
+        private void OnDestroy()
+        {
+            this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
+            this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
+            this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
+        }
+
         private void OnPauseGame(object param)
         {
             m_IsPausing = true;
