@@ -67,31 +67,31 @@ namespace _IEC.Features.Gameplay
 
         private void Start()
         {
-            AddCheatCode();
+           // AddCheatCode();
         }
 
-        void AddCheatCode()
-        {
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput($"Add power item {helperId}", cheatCodeParam =>
-            {
-                int number = int.Parse(cheatCodeParam.inputParams[0].value.ToString());
-                PlayerData.helperData.CollectHelper(helperId,number);
-                UpdatePoolNumberUI();
-            }, new CheatCode.InputParam
-            {
-                value = 10
-            });
-            
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput($"Set power item {helperId}", cheatCodeParam =>
-            {
-                int number = int.Parse(cheatCodeParam.inputParams[0].value.ToString());
-                PlayerData.helperData.SetHelperValue(helperId,number);
-                UpdatePoolNumberUI();
-            }, new CheatCode.InputParam
-            {
-                value = 10
-            });
-        }
+        // void AddCheatCode()
+        // {
+        //     ModuleController.cheatCode.AddCheatCodeButtonWithInput($"Add power item {helperId}", cheatCodeParam =>
+        //     {
+        //         int number = int.Parse(cheatCodeParam.inputParams[0].value.ToString());
+        //         PlayerData.helperData.CollectHelper(helperId,number);
+        //         UpdatePoolNumberUI();
+        //     }, new CheatCode.InputParam
+        //     {
+        //         value = 10
+        //     });
+        //     
+        //     ModuleController.cheatCode.AddCheatCodeButtonWithInput($"Set power item {helperId}", cheatCodeParam =>
+        //     {
+        //         int number = int.Parse(cheatCodeParam.inputParams[0].value.ToString());
+        //         PlayerData.helperData.SetHelperValue(helperId,number);
+        //         UpdatePoolNumberUI();
+        //     }, new CheatCode.InputParam
+        //     {
+        //         value = 10
+        //     });
+        // }
         
         private void OnDisable()
         {

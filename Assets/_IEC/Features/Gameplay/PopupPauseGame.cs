@@ -53,7 +53,6 @@ namespace _IEC.Features.Gameplay
         {
             PlayerData.DecreasePlayerLife();
             EventController.RaiseEvent(EventList.GamePlay.LEVEL_CLEAR);
-            GameController.OpenScene(GameScene.Main);
             //MagicPouchController.OnLevelLose();
             
             Services.PushEvent(new ClickBtnTracking("quitpopup_quit"));

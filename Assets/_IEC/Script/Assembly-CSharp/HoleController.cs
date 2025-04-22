@@ -28,11 +28,11 @@ public class HoleController : _BaseBehaviour
 	
 	private void Update()
 	{
-		if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
-		{
-			Move(Vector3.zero);
-			return;
-		}
+		// if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
+		// {
+		// 	Move(Vector3.zero);
+		// 	return;
+		// }
     
 		transform.position = transformer.transform.position;
 		var dir = Joystick.Direction;

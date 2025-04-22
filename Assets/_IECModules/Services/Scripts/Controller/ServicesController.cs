@@ -179,10 +179,7 @@ namespace IEC
             }
             m_InitEvents.Clear();
 
-            m_IAP.ConnectInit(() =>
-            {
-                RaiseInitEvent(EventList.Service.INIT_IAP_DONE);
-            });
+
         }
 
         public void BehaviourUpdate(float deltaTime)

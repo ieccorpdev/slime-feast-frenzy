@@ -112,7 +112,6 @@ namespace IEC
             if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)
             {
                 //GameController.OpenScene(GameScene.Main, callback ?? (() => { }));
-                GameController.OpenScene(GameScene.Main, ShowNext);
             }
             else
             {

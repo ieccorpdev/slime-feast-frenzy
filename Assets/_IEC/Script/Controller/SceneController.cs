@@ -11,9 +11,7 @@ namespace IEC
 {
     public static class SceneName
     {
-        public const string MAIN = "Main";
         public const string GAME = "Game";
-        public const string SERVICE = "Service";
     }
 
     public class SceneController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
@@ -22,7 +20,6 @@ namespace IEC
 
         Dictionary<string, string> m_DictEventNeedLoadScene = new Dictionary<string, string>()
         {
-            { EventList.GamePlay.GO_MAIN, SceneName.MAIN },
             { EventList.GamePlay.NEW_GAME, SceneName.GAME },
         };
 
@@ -86,11 +83,11 @@ namespace IEC
 
         IEnumerator PrepareSceneForAction(string sceneName, System.Action action)
         {
-            if (!string.IsNullOrEmpty(CurrentScene))
-                yield return SceneManager.UnloadSceneAsync(CurrentScene);
-            yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
-            SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
-            CurrentScene = sceneName;
+            // if (!string.IsNullOrEmpty(CurrentScene))
+            //     yield return SceneManager.UnloadSceneAsync(CurrentScene);
+            // yield return SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+            // SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+            // CurrentScene = sceneName;
             var activeScene = SceneManager.GetActiveScene();
             RemoveDuplicateEventSystem(activeScene);
             LocateGroupFromScene(activeScene);

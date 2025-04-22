@@ -38,7 +38,6 @@ namespace _IEC.Features.Gameplay
             SetEvent(homeButton, () =>
             {
                 //SoundController.PlayExitBtnAudio();
-                GameController.OpenScene(GameScene.Main);
             });
         }
         

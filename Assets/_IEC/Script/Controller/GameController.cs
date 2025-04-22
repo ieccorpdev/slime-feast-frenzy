@@ -42,7 +42,7 @@ namespace IEC
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
+//                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
                     break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
@@ -113,15 +113,14 @@ namespace IEC
             // Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
             // {
                 // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
-                if (PlayerData.level < Config.levelWinBackHome)
-                {
-                    OpenScene(GameScene.Game);
-                }
-                else
-                {
-                    OpenScene(GameScene.Main);
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                }
+                // if (PlayerData.level < Config.levelWinBackHome)
+                // {
+                //     OpenScene(GameScene.Game);
+                // }
+                // else
+                // {
+                //     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                // }
                 
                 //Check reset progress reward when player start game
                 PlayerData.CheckResetTimeProgressReward();
@@ -240,7 +239,6 @@ namespace IEC
         {
             string sceneName = scene switch
             {
-                GameScene.Main => EventList.GamePlay.GO_MAIN,
                 GameScene.Game => EventList.GamePlay.NEW_GAME,
                 _ => ""
             };
@@ -249,11 +247,7 @@ namespace IEC
                 DOTween.KillAll();
                 Locator.Service.ScreenLoading.ShowLoading();
                 //MeoMew custome tracking level 
-                if (scene == GameScene.Main)
-                {
-                    //Reset tracking to None when back home 
-                    Game.crLevelType = LevelType.NONE;
-                }
+   
                 Scene.SendEvent(sceneName,new EventParam(), () =>
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
@@ -296,8 +290,5 @@ namespace IEC
 }
 public enum GameScene
 {
-    Loading,
-    Service,
-    Main,
     Game
 }

@@ -30,7 +30,6 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     Hide();
-                    GameController.OpenScene(GameScene.Main);
                 };
                 
                 if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
@@ -47,7 +46,6 @@ namespace IEC
                     {
                         Hide();
                         //Back home
-                        GameController.OpenScene(GameScene.Main);
                         return;
                     }
                     

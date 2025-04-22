@@ -558,7 +558,7 @@ namespace _IEC.Features.Gameplay
         {
             level = GetLevel(level);
             var levelIndex = level - 1;
-            return levelData.listAllLevelData[levelIndex];
+            return levelData.listAllLevelData[0];
         }
         
         public LevelDataSO GetLevelDataSOSHP(int level)

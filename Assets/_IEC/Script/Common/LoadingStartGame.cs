@@ -12,10 +12,7 @@ namespace IEC
         [SerializeField] private ScreenLoading m_ScreenLoading;
         private void Start()
         {
-            DOVirtual.DelayedCall(0.5f, () =>
-            {
-                SceneManager.LoadScene(SceneName.SERVICE);
-            });
+         
         }
     }
 }

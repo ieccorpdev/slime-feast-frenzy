@@ -69,7 +69,6 @@ namespace IEC
                         PlayerData.currentCountLoseHardLevel++;
                     }
 
-                    GameController.OpenScene(GameScene.Main);
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
                 }, () =>
                 {
