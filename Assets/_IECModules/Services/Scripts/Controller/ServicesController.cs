@@ -1349,7 +1349,7 @@ namespace IEC
         {
             var url = config.privacyPolicy;
             if (string.IsNullOrWhiteSpace(url)) return;
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             IECiosNative.OpenURL(url);
 #else
             Application.OpenURL(url);
