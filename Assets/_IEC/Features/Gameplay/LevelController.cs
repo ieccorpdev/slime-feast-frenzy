@@ -53,6 +53,8 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
 
+        private List<SpawnBoosterData> listSpawnBoosterData = new();
+
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
         public bool IsShowEnding
@@ -346,8 +348,15 @@ namespace _IEC.Features.Gameplay
 
         private void OnSpawnBoosterItems(object param)
         {
-            if (PlayerData.currentBoosterStreak <= 0)
+            // if (PlayerData.currentBoosterStreak <= 0)
+            //     return;
+
+            if (CurrentState != State.Play)
+            {
+                var data = (SpawnBoosterData)param;
+                listSpawnBoosterData.Add(data);
                 return;
+            }
             
             //var data = (SpawnBoosterEventData)param;
             
@@ -363,6 +372,17 @@ namespace _IEC.Features.Gameplay
                     booster
                 ));
             }
+
+            foreach (var spawnData in listSpawnBoosterData)
+            {
+                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
+                    spawnData.amount, 
+                    allItemHolder,
+                    spawnData.boosterData
+                ));
+            }
+            
+            listSpawnBoosterData.Clear();
             
             foreach (var boosterItem in m_AllBoosters)
             {

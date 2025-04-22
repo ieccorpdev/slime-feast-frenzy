@@ -104,7 +104,8 @@ namespace IEC
                             {
                                 if (btn.State == BoosterBaseState.Using || btn.State == BoosterBaseState.Unlimited)
                                 {
-                                    this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                    //this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                    this.RaiseEvent(EventList.GamePlay.SPAWN_BOOSTER_ITEM, new SpawnBoosterData(){amount = 1, boosterData = btn.BoosterData});
                                     
                                     if (!PlayerData.IsUnlimitedBooster(btn.BoosterData.boosterType))
                                     {
