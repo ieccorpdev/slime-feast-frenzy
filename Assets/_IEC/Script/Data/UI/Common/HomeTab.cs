@@ -80,7 +80,7 @@ namespace IEC
         {
             m_IsLock = isLock;
             //m_Icon.gameObject.SetActive(!isLock);
-            //if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
+            if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
             m_Lock.SetActive(isLock);
             if(isLock) m_Lock.transform.SetAsLastSibling();
             
