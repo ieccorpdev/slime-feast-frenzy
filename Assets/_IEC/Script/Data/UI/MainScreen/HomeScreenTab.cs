@@ -40,8 +40,10 @@ public class HomeScreenTab : ScreenNavigateUI
     public ProgressRewardProgressBar progressRewardBar;
     [Header("Level Chest Reward")] 
     public Button btnLevelChestReward;
+    public BaseHomeFeatureButton levelChestHomeFeature;
     [Header("Star Chest Reward")] 
     public Button btnStarChestReward;
+    public BaseHomeFeatureButton starChestHomeFeature;
 
     public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -123,8 +125,8 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnStarChestReward,
             () =>
             {
-                bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
-                if(!isEnoughLevel) return;
+                // bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
+                // if(!isEnoughLevel) return;
                 Locator.Main.PopupStarChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
                     PlayerData.GetChestProgress(ChestType.Star));
@@ -378,6 +380,16 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateLifeOffer();
         UpdateStarChest();
         progressRewardBar.Setup();
+        levelChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
+        levelChestHomeFeature.SetProgressBar(
+            PlayerData.GetChestProgress(ChestType.Level),
+            Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)).progressToReward 
+            );
+        starChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Star).levelUnlock);
+        starChestHomeFeature.SetProgressBar(
+            PlayerData.GetChestProgress(ChestType.Star),
+            Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)).progressToReward 
+        );
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
         LeaderboardController.StartTournament();//Once when start home game
@@ -388,10 +400,10 @@ public class HomeScreenTab : ScreenNavigateUI
 
     private void UpdateStarChest()
     {
-        bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
-        starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
-        starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
-        btnStarChestReward.interactable = isEnoughLevel;
+        // bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
+        // starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
+        // starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
+        // btnStarChestReward.interactable = isEnoughLevel;
     }
     private void UpdateLifeOffer()
     {

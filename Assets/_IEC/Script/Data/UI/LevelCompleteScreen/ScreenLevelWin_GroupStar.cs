@@ -13,6 +13,8 @@ namespace IEC
         [SerializeField] private Image starMid;
         [SerializeField] private Image starRight;
         private string m_tween_ID => gameObject.GetInstanceID().ToString();
+        
+        public int StarWon { get; private set; }
 
         private void OnEnable()
         {
@@ -44,13 +46,16 @@ namespace IEC
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starRight.gameObject.SetActive(true));
                     sequence.Append(starRight.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+                    StarWon = 3;
                     break;
                 case GameplayTimer.RemainingTimeState.Warning:
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starMid.gameObject.SetActive(true));
                     sequence.Append(starMid.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+                    StarWon = 2;
                     break;
                 case GameplayTimer.RemainingTimeState.Dangerous:
+                    StarWon = 1;
                     break; 
             }
         }

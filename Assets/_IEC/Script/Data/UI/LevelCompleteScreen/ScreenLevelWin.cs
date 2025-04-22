@@ -94,7 +94,7 @@ namespace IEC
                 popupQueue.Enqueue(levelChestRewardPopup);
             
             //Check star chest
-            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, 3, ShowNext);
+            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
             if(starChestRewardPopup != null)
                 popupQueue.Enqueue(starChestRewardPopup);
             
