@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(fileName = "Item Definition", menuName = "Game/Features/Gameplay/New Falling Item Definition", order = 0)]
+    [CreateAssetMenu(fileName = "Item Definition", menuName = "Gameplay/New Falling Item Definition", order = 0)]
     public class ItemDefinition : ScriptableObject
     {
         [SerializeField] [PreviewField(125)] private GameObject prefab;

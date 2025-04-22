@@ -26,7 +26,7 @@ namespace _IEC.Features.Gameplay
         public LevelConfigModel levelConfigModel;
     }
     
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/LevelConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/LevelConfig")]
     public class LevelConfig : ScriptableObject
     {
         public List<LevelConfigModel> levelConfigData;
