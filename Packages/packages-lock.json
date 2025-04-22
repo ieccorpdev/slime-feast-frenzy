@@ -1,11 +1,37 @@
 {
   "dependencies": {
+    "com.coffee.ui-effect": {
+      "version": "https://github.com/mob-sakai/UIEffect.git?path=Packages/src#5.3.0",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      },
+      "hash": "27a04ca294d15de3715e7211a4990b98837a7678"
+    },
+    "com.coffee.ui-particle": {
+      "version": "https://github.com/mob-sakai/ParticleEffectForUGUI.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.modules.particlesystem": "1.0.0"
+      },
+      "hash": "4b98abd7469b10d55c9c623830cb6e1518f72731"
+    },
     "com.dbrizov.naughtyattributes": {
       "version": "https://github.com/dbrizov/NaughtyAttributes.git#upm",
       "depth": 0,
       "source": "git",
       "dependencies": {},
       "hash": "8a8fa5a9659a6d63f196391c71e06c4286c8acd7"
+    },
+    "com.encrypted": {
+      "version": "https://gitlab.com/iec-public-registry/encrypted.git#master",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b24f8eda82039a49b92286ca531b56e04a218e3b"
     },
     "com.google.android.appbundle": {
       "version": "https://gitlab.com/iec-public-registry/com.google.android.appbundle.git#1.9.0",
@@ -68,6 +94,30 @@
       },
       "hash": "f2ca4f08e6bfc32afce8330daa3b83b7c534b49a"
     },
+    "com.neuecc.unirx": {
+      "version": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "6baeccf6c544c155497164327cca72f28163a578"
+    },
+    "com.nickeltin.core": {
+      "version": "file:com.nickeltin.core",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0"
+      }
+    },
+    "com.nickeltin.sdf": {
+      "version": "file:com.nickeltin.sdf",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.2d.sprite": "1.0.0",
+        "com.nickeltin.core": "1.2.5"
+      }
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,
@@ -80,12 +130,33 @@
       "source": "builtin",
       "dependencies": {}
     },
+    "com.unity.2d.tilemap.extras": {
+      "version": "2.2.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.2d.tilemap": "1.0.0",
+        "com.unity.modules.tilemap": "1.0.0",
+        "com.unity.modules.jsonserialize": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.analytics": {
       "version": "3.6.12",
       "depth": 0,
       "source": "registry",
       "dependencies": {
         "com.unity.ugui": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.cinemachine": {
+      "version": "2.10.3",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.test-framework": "1.1.31"
       },
       "url": "https://packages.unity.com"
     },
@@ -177,6 +248,22 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.sysroot": {
+      "version": "2.0.10",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.sysroot.linux-x86_64": {
+      "version": "2.0.9",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.test-framework": {
       "version": "1.1.33",
       "depth": 0,
@@ -209,6 +296,16 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.toolchain.win-x86_64-linux-x86_64": {
+      "version": "2.0.10",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.sysroot": "2.0.10",
+        "com.unity.sysroot.linux-x86_64": "2.0.9"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.ugui": {
       "version": "1.0.0",
       "depth": 0,
@@ -227,6 +324,13 @@
         "com.unity.modules.xr": "1.0.0"
       },
       "url": "https://packages.unity.com"
+    },
+    "com.whinarn.unitymeshsimplifier": {
+      "version": "https://github.com/Whinarn/UnityMeshSimplifier.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "d741912bfeaad8da4fe0f258f4f3eefe1fe7b3f3"
     },
     "com.unity.modules.ai": {
       "version": "1.0.0",

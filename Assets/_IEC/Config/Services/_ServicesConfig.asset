@@ -12,16 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d78a55f692c1ef4499301053f45e5b75, type: 3}
   m_Name: _ServicesConfig
   m_EditorClassIdentifier: 
-  projectChecklistUrl: 
+  projectChecklistUrl: https://docs.google.com/spreadsheets/d/1we0r6HSdENSfiAgZsDXZlck-v7ebUiHavOYzKQ7wVJs/edit?gid=927018210#gid=927018210
   bundleVersion: 1
-  platform: ios
+  isVersionByPlatform: 1
+  platform: android
   versionAndroid:
     version: 1.0.0
-    abTest: 20220414
+    abTest: AB_20250123
   versionIOS:
     version: 1.0.0
     abTest: 20220414
-  abTestConfigs: []
+  abTestConfigs:
+  - {fileID: 11400000, guid: 55de337b44c70f641b84e540022b9ac9, type: 2}
   IsTestNoAnalytic: 0
   dailyMissionConfigs: []
   IsNoAds: 0
@@ -59,6 +61,30 @@ MonoBehaviour:
       bannerID: bd8c00962e9193ba
       rewardID: dfd0d05e74b1ff73
   IronSourceConfig:
+    android:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+    ios:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+  OguryConfig:
+    android:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+      thumbnailID: 
+    ios:
+      appID: 
+      interstitialID: 
+      bannerID: 
+      rewardID: 
+      thumbnailID: 
+  AmazonConfig:
     android:
       appID: 
       interstitialID: 
@@ -155,18 +181,27 @@ MonoBehaviour:
       Type: 0
       AndroidId: gem_pack_6
       IosId: gem_pack_6
+  IapAdjustVerifyUrl: 
   DtaAppId: 9fb351124037695e01d69801dec49357
   SecretKey: DTAMOBILE@2018
   IsLoginOldNick: 0
   kochavaConfig:
-    androidID: kogang-clash-apmr
-    iosID: kocrowd-clash-ios-vh51e23a
+    androidID: 
+    iosID: 
+  adjustConfig:
+    androidID: 
+    iosID: 
+  adjustEventConfig: {fileID: 11400000, guid: ee585c798a7270640bd21bd99c93b228, type: 2}
   remoteCustomEventFirebase: {fileID: 11400000, guid: a2fecc6666d0f3342895fb0757df0ce7,
     type: 2}
   isTestRemoteConfig: 0
   remoteConfigs:
   - {fileID: 11400000, guid: 1fa7f467c7c997a40b12b112a97ce8c6, type: 2}
   - {fileID: 11400000, guid: ef7fab1319b105144be4441b0d9d02c5, type: 2}
+  emailSupport: thanhpt@itthanhpham.vn
+  privacyPolicy: https://iecgamesae.com/privacy
   firebaseSDKVersion: 
   firebaseRemoteSDKVersion: 
+  teamIdCloudSave: 
+  discordWebhook: 
   GDPR_KEY: Gdpr

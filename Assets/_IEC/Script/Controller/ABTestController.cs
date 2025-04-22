@@ -242,7 +242,7 @@ namespace IEC
 
         void PresetAllAbTest()
         {
-            Game.timeDelayFullAds = 30f;
+            Game.timeDelayFullAds = 120f;
         }
 
         void ResultAllAbTest()
@@ -263,5 +263,12 @@ namespace IEC
         void ResultAb20150101() {}
         void UpdateAb20150101(int abValue) {}
         */
+        void ResultAb20250123()
+        {
+
+        }
+        void UpdateAb20250123(int abValue)
+        {
+        }
     }
 }
