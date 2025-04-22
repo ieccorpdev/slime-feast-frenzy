@@ -54,7 +54,7 @@ namespace _IEC.Features.Gameplay
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
 
         private List<SpawnBoosterData> listSpawnBoosterData = new();
-
+        public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
         public bool IsShowEnding
