@@ -71,6 +71,7 @@ namespace _IEC.Features.Gameplay
         {
             foreach (var baseItem in baseItems)
             {
+                if(baseItem == null) continue;
                 var director = Config.prefabConfig.itemDirectorUI.Spawn(transform);
                 director.Reset();
                 director.LoadData(holeTransform,baseItem);
@@ -81,7 +82,7 @@ namespace _IEC.Features.Gameplay
         private void TurnOn()
         {
             m_CoolDownTime = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
-            gameObject.SetActive(true);
+            //gameObject.SetActive(true);
         }
         
         public void TurnOff()
@@ -91,7 +92,7 @@ namespace _IEC.Features.Gameplay
                 directorUI.gameObject.Recycle();
             }
             m_ListDirectorUI.Clear();
-            gameObject.SetActive(false);
+            //gameObject.SetActive(false);
         }
     }
 }

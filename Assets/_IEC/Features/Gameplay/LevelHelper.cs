@@ -277,6 +277,10 @@ namespace _IEC.Features.Gameplay
         {
             var res = new List<BaseItem>();
             var prefab = boosterData.itemDefinition.GetPrefab();
+            
+            if (count <= 0)
+                return res;
+            
             if (prefab == null)
             {
                 return res;

@@ -7,6 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/ChestConfig")]
 public class ChestConfig : ScriptableObject
 {
+    public int levelUnlock = 0;
     public ChestType chestType;
     public int milestoneBeginLoop;
     public List<ChestRewardData> listChestRewardData = new();

@@ -14,6 +14,7 @@ namespace IEC
         public TextMeshProUGUI levelText;
         public Button infoButton;
         public Button playButton;
+        public Button closeAllButton;
 
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
@@ -35,13 +36,14 @@ namespace IEC
         {
             SetEvent(infoButton, DoShowInfoPanel);
             SetEvent(playButton, OnClickPlayButton);
+            SetEvent(closeAllButton, OnHideClick);
         }
 
         public override void Show()
         {
             base.Show();
 
-            levelText.text = "Level " + PlayerData.level;
+            //levelText.text = "Level " + PlayerData.level;
             
             infoPanel.SetActive(false);
             boosterPanel.SetActive(true);
@@ -102,7 +104,8 @@ namespace IEC
                             {
                                 if (btn.State == BoosterBaseState.Using || btn.State == BoosterBaseState.Unlimited)
                                 {
-                                    this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                    //this.RaiseEvent(EventList.GamePlay.ON_BOOSTER_COLLECTED, btn.BoosterData);
+                                    this.RaiseEvent(EventList.GamePlay.SPAWN_BOOSTER_ITEM, new SpawnBoosterData(){amount = 1, boosterData = btn.BoosterData});
                                     
                                     if (!PlayerData.IsUnlimitedBooster(btn.BoosterData.boosterType))
                                     {

@@ -9,6 +9,7 @@ namespace IEC
 {
     public class PopupAddHelper : BasePopup
     {
+        public Button btnCloseAll;
         public Image helperIcon;
         public TextMeshProUGUI titleText;
 
@@ -32,6 +33,7 @@ namespace IEC
             base.Awake();
             
             SetEvent(buyGoldButton,OnBuyGold);
+            SetEvent(btnCloseAll, OnHideClick);
         }
 
         public void SetData(ResourceType helperType)
