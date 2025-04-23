@@ -39,6 +39,9 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
     private Camera cam;
 
     private Vector2 input = Vector2.zero;
+    
+    private int pointerId = -1;
+    private bool isDragging = false;
 
     protected virtual void Start()
     {
@@ -57,16 +60,30 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         handle.anchoredPosition = Vector2.zero;
         input = Vector2.zero;
 
+        isDragging = false;
+        pointerId = -1;
+
         ResetJoystick();
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)
     {
+        if (isDragging)
+            return;
+
+        pointerId = eventData.pointerId;
+        isDragging = true;
         OnDrag(eventData);
     }
 
     public void OnDrag(PointerEventData eventData)
     {
+        if (eventData == null)
+            return;
+        
+        if (pointerId != eventData.pointerId)
+            return;
+        
         cam = null;
         if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
             cam = canvas.worldCamera;
@@ -134,6 +151,12 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public virtual void OnPointerUp(PointerEventData eventData)
     {
+        if (eventData == null)
+            return;
+        
+        if (pointerId != eventData.pointerId)
+            return;
+        
         ResetJoystick();
     }
 
@@ -157,6 +180,9 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         input = Vector2.zero;
         handle.anchoredPosition = Vector2.zero;
         background.anchoredPosition = new Vector2(baseRect.rect.width / 2f, 650);
+        
+        isDragging = false;
+        pointerId = -1;
     }
 }
 

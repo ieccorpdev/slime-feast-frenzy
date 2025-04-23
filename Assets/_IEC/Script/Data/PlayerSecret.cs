@@ -597,6 +597,10 @@ namespace IEC
         public void AddChestProgress(ChestConfig chestConfig, int addAmount, out bool isClaimReward)
         {
             isClaimReward = false;
+            
+            if (level < chestConfig.levelUnlock)
+                return;
+            
             var chestType = chestConfig.chestType;
             if (!currentChestProgress.ContainsKey(chestType))
             {

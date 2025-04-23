@@ -123,14 +123,13 @@ namespace IEC
 
         private void OnCollectSpecialItem(object param)
         {
-            var data = (CollectItemData)param;
+            CollectItemData data = (CollectItemData)param;
             if (data.itemID.ToLower().Contains("coin"))
             {
                 data.itemID = LevelAchievementData.ID_COIN;
             }
-
-            //var totalNumberCollected = GamePlay.gamePlayData.GetAchievementItemCount(data.itemID);
-            //groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
+            var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
+            groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
         }
 
         private void OnCollectItem(object param)
@@ -193,6 +192,7 @@ namespace IEC
         public void LoadLevelData(LevelData levelData)
         {
             groupLevelObjectives.DisposeAll();
+            groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
             groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
             Joystick.OnPointerUp(null);
             UpdateUI();

@@ -60,24 +60,21 @@ namespace IEC
             }
             SetEvent(btnQuit, () =>
             {
-                //EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
-                if(Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                {
-                    PlayerData.DecreasePlayerLife();
-                    if (GamePlay.IsInLevelHard)
-                    {
-                        PlayerData.currentCountLoseHardLevel++;
-                    }
-
-                    GameController.OpenScene(GameScene.Main);
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                }, () =>
-                {
-                    Services.PushEvent(new IEC.TrackingEvent.SFApostition($"skip_win_bonus_reward"));
-                }));
-
+                //Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                //    () =>
+                //    {
+                //        PlayerData.DecreasePlayerLife();
+                //        GameController.OpenScene(GameScene.Main);
+                //        EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                //    },
+                //    () =>
+                //    {
+                //        Services.PushEvent(new TrackingEvent.SFApostition("in_game_setting_quit"));
+                //    });
+                Hide();
+                Locator.Game.PopupQuitConfirm.Show();
             });
-            SetEvent(closeBtn2, () => { Hide(); });
+            SetEvent(closeBtn2, HideButtonFunction);
             SetEvent(btnContinue, HideButtonFunction);
         }
         

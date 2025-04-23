@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/GameplayConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/GameplayConfig")]
     public class GamePlayConfig : ScriptableObject
     {
 

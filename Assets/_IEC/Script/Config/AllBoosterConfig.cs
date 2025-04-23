@@ -37,6 +37,13 @@ namespace IEC
     }
 
     [Serializable]
+    public class SpawnBoosterData
+    {
+        public int amount;
+        public BoosterData boosterData;
+    }
+
+    [Serializable]
     public class BoosterStateSprite
     {
         public BoosterBaseState state;

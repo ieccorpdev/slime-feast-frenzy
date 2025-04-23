@@ -90,7 +90,7 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 	{
 		if(!isValid)
 		{
-			Debug.LogWarning("Invalid Water Material, returning the same worldPosition");
+			//Debug.LogWarning("Invalid Water Material, returning the same worldPosition");
 			return worldPosition;
 		}
 
