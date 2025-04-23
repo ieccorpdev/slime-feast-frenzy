@@ -102,6 +102,7 @@ namespace _IEC.Features.Gameplay
             foreach (var levelObjectiveUi in levelObjectiveUis)
             {
                 levelObjectiveUi.gameObject.SetActive(false);
+                levelObjectiveUi.Reset();
             }
         }
         
