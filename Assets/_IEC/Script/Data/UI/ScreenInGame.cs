@@ -194,7 +194,7 @@ namespace IEC
             groupLevelObjectives.DisposeAll();
             groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
             groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
-            Joystick.OnPointerUp(null);
+            //Joystick.OnPointerUp(null);
             UpdateUI();
             gameplayTimer.SetStartTime(levelData.time);
         }

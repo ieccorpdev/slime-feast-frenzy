@@ -1049,14 +1049,14 @@ namespace IEC
         public void SetActiveBanner(AdsEnum bannerType, bool isActive)
         {
             if (m_ServiceData.isNoAds && isActive) return;
-            if (isActive)
-            {
-                Ads().Show(bannerType, null);
-            }
-            else
-            {
-                Ads().Hide(bannerType);
-            }
+            // if (isActive)
+            // {
+            //     Ads().Show(bannerType, null);
+            // }
+            // else
+            // {
+            //     Ads().Hide(bannerType);
+            // }
         }
 
         public void RequestTimeServer()

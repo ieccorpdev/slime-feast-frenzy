@@ -14,14 +14,6 @@ namespace IEC
 {
     public class UIGroup : _BaseBehaviour, IGroup
     {
-        public Canvas canvas;
-        public CanvasScaler canvasScaler;
-        public EventSystem eventSystem;
-
-        //public TMP_Text textHello;
-
-        public ScreenShopTest ScreenShopTest => Pool.Get<ScreenShopTest>();
-        public PopupFeature PopupFeature => Pool.Get<PopupFeature>();
 
         public List<ScreenUI> ListScreen =>
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
@@ -42,29 +34,29 @@ namespace IEC
             }
         }
 
-        void Start()
-        {
-            foreach (var screen in ListScreen)
-            {
-                screen.onShow.AddListener(() =>
-                {
-                    screen.SetShowOrder(CountScreenShowing());
-                    GamePlay.SetGameState(screen);
-                    ListScreen.Where(s => s.IsShow && s != screen).ToList().ForEach(s => s.LostFocus());
-                });
-
-                screen.onHideDone.AddListener(() =>
-                {
-                    var topScreen = ListScreen.Where(s => s.IsShow).OrderByDescending(s => s.ShowOrder)
-                        .FirstOrDefault();
-                    if (topScreen != null)
-                    {
-                        GamePlay.SetGameState(topScreen);
-                        topScreen.HaveFocus();
-                    }
-                });
-            }
-        }
+        // void Start()
+        // {
+        //     foreach (var screen in ListScreen)
+        //     {
+        //         screen.onShow.AddListener(() =>
+        //         {
+        //             screen.SetShowOrder(CountScreenShowing());
+        //             GamePlay.SetGameState(screen);
+        //             ListScreen.Where(s => s.IsShow && s != screen).ToList().ForEach(s => s.LostFocus());
+        //         });
+        //
+        //         screen.onHideDone.AddListener(() =>
+        //         {
+        //             var topScreen = ListScreen.Where(s => s.IsShow).OrderByDescending(s => s.ShowOrder)
+        //                 .FirstOrDefault();
+        //             if (topScreen != null)
+        //             {
+        //                 GamePlay.SetGameState(topScreen);
+        //                 topScreen.HaveFocus();
+        //             }
+        //         });
+        //     }
+        // }
 
         public void HideAllScreens()
         {

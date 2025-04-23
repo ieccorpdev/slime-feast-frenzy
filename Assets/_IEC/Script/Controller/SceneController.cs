@@ -91,7 +91,7 @@ namespace IEC
             var activeScene = SceneManager.GetActiveScene();
             RemoveDuplicateEventSystem(activeScene);
             LocateGroupFromScene(activeScene);
-            UI.LocateAdditiveGroup();
+            //UI.LocateAdditiveGroup();
             // SendEvent(EventList.GamePlay.SETUP_NEW_SCENE);
             EventController.RaiseEvent(EventList.GamePlay.SETUP_NEW_SCENE);
             yield return new WaitForEndOfFrame();

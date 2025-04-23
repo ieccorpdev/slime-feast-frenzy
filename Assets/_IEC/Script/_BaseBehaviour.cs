@@ -10,15 +10,12 @@ namespace IEC
         protected static ServicesController Services => Controllers.Get<ServicesController>();
         protected static DataController Data => Controllers.Get<DataController>();
         
-        protected static SceneController Scene => Controllers.Get<SceneController>();
-
         protected static Game Game => Pool.Get<Game>();
         
         protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
         
         protected static PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
         
-        protected static UIGroup UI => Pool.Get<UIGroup>();
         protected static Joystick Joystick => Pool.Get<Joystick>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();

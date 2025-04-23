@@ -28,17 +28,18 @@ public class HoleController : _BaseBehaviour
 	
 	private void Update()
 	{
-		// if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
-		// {
-		// 	Move(Vector3.zero);
-		// 	return;
-		// }
+		if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
+		{
+			Move(Vector3.zero);
+			return;
+		}
     
 		transform.position = transformer.transform.position;
 		var dir = Joystick.Direction;
 		m_Hole.characterAnimator.SetFloat("moveAxis",dir.magnitude);
 		if (dir.magnitude < Mathf.Epsilon)
 		{
+
 			Move(Vector3.zero);
 			direction.gameObject.SetActive(false);
 			return;

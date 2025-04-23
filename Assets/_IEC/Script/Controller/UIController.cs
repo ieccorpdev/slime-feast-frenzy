@@ -16,31 +16,31 @@ namespace IEC
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
-            switch (gameEvent)
-            {
-                case EventList.GamePlay.APPLY_AB_TEST:
-                    break;
-                case EventList.GamePlay.NEW_GAME:
-                    UI.ShowScreen(Locator.Game.ScreenInGame);
-                    //Locator.Game.ScreenInGame.SetLevel(PlayerData.level);
-                    break;
-                case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
-                    UI.ShowScreen(Locator.Game.ScreenInGame);
-                    //Locator.Game.ScreenInGame.SetLevelHard();
-                    break;
-                case EventList.GamePlay.LEVEL_WIN:
-                    // UI.ShowScreen(UI.ScreenLevelWin);
-                    if(GamePlay.IsInLevelHard)
-                        UI.ShowScreen(Locator.Game.ScreenLevelWinHard);
-                    else
-                        UI.ShowScreen(Locator.Game.ScreenLevelWin);
-                    break;
-                case EventList.GamePlay.LEVEL_LOSE:
-                    // UI.ShowScreen(UI.ScreenLevelLose);
-                    Locator.Game.ScreenLevelLose.SetupPanelShow(param);
-                    UI.ShowScreen(Locator.Game.ScreenLevelLose);
-                    break;
-            }
+            // switch (gameEvent)
+            // {
+            //     case EventList.GamePlay.APPLY_AB_TEST:
+            //         break;
+            //     case EventList.GamePlay.NEW_GAME:
+            //         UI.ShowScreen(Locator.Game.ScreenInGame);
+            //         //Locator.Game.ScreenInGame.SetLevel(PlayerData.level);
+            //         break;
+            //     case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
+            //         UI.ShowScreen(Locator.Game.ScreenInGame);
+            //         //Locator.Game.ScreenInGame.SetLevelHard();
+            //         break;
+            //     case EventList.GamePlay.LEVEL_WIN:
+            //         // UI.ShowScreen(UI.ScreenLevelWin);
+            //         if(GamePlay.IsInLevelHard)
+            //             UI.ShowScreen(Locator.Game.ScreenLevelWinHard);
+            //         else
+            //             UI.ShowScreen(Locator.Game.ScreenLevelWin);
+            //         break;
+            //     case EventList.GamePlay.LEVEL_LOSE:
+            //         // UI.ShowScreen(UI.ScreenLevelLose);
+            //         Locator.Game.ScreenLevelLose.SetupPanelShow(param);
+            //         UI.ShowScreen(Locator.Game.ScreenLevelLose);
+            //         break;
+            // }
         }
 
         public void BehaviourAwake()

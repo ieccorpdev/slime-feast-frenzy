@@ -248,24 +248,24 @@ namespace IEC
                 Locator.Service.ScreenLoading.ShowLoading();
                 //MeoMew custome tracking level 
    
-                Scene.SendEvent(sceneName,new EventParam(), () =>
-                {
-                    Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
-                    {
-                        if (scene != GameScene.Game)
-                        {
-                            onLoadDone?.Invoke();
-                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
-                        }
-                    }, () =>
-                    {
-                        if (scene == GameScene.Game)
-                        {
-                            onLoadDone?.Invoke();
-                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
-                        }
-                    });
-                });
+                // Scene.SendEvent(sceneName,new EventParam(), () =>
+                // {
+                //     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
+                //     {
+                //         if (scene != GameScene.Game)
+                //         {
+                //             onLoadDone?.Invoke();
+                //             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+                //         }
+                //     }, () =>
+                //     {
+                //         if (scene == GameScene.Game)
+                //         {
+                //             onLoadDone?.Invoke();
+                //             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+                //         }
+                //     });
+                // });
             }
         }
         

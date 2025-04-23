@@ -210,7 +210,8 @@ public class Hole : _BaseBehaviour
 			{
 				target =  myTransform,
 				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-				cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel)
+				curLevel = Mathf.Max(1, level - 1),
+				nextLevel = level,
 			});
 		});
 		SetXp(0,false);
@@ -242,9 +243,7 @@ public class Hole : _BaseBehaviour
 	
 	#if UNITY_EDITOR
 	
-	[PropertySpace(30)]
 	
-	[Button("Reset Level")]
 	public void DebugResetLevel()
 	{
 		//LevelUp(0, 1);
@@ -254,13 +253,11 @@ public class Hole : _BaseBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 
 	
-	[ShowIf("@!LevelMax")]
-	[Button("Level Up")]
 	public void DebugLevelUp()
 	{
 		//LevelUp(0, 1);
@@ -270,12 +267,10 @@ public class Hole : _BaseBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 	
-	[ShowIf("@(Level > 0)")]
-	[Button("Level Down")]
 	public void DebugLevelDown()
 	{
 		//LevelUp(0, -1);
@@ -284,7 +279,7 @@ public class Hole : _BaseBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 	

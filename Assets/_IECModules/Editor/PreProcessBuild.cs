@@ -59,8 +59,8 @@ public class PreProcessBuild : IPreprocessBuildWithReport
     {
 #if PluginFirebaseAnalytic
         ProjectChecklistHelper.LoadServicesConfig();
-        var manifestJson = JSON.Parse(File.ReadAllText("Packages/manifest.json"));
-        ProjectChecklistHelper.servicesConfig.firebaseSDKVersion = manifestJson["dependencies"]["com.google.firebase.analytics"].ToString();
+        //var manifestJson = JSON.Parse(File.ReadAllText("Packages/manifest.json"));
+        //ProjectChecklistHelper.servicesConfig.firebaseSDKVersion = manifestJson["dependencies"]["com.google.firebase.analytics"].ToString();
 #if PluginFirebaseRemote
         ProjectChecklistHelper.servicesConfig.firebaseRemoteSDKVersion = manifestJson["dependencies"]["com.google.firebase.remote-config"].ToString();
 #endif

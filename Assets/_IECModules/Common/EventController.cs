@@ -13,8 +13,7 @@ namespace IEC
 
         private static bool s_IsCheckInstance;
 
-        [SerializeField]
-        private bool m_IsDontDestroy;
+        [SerializeField] private bool m_IsDontDestroy;
 
         IEventListener[] m_Listeners;
         IEventAwake[] m_AwakeEvents;
@@ -39,6 +38,7 @@ namespace IEC
                         count++;
                     }
                 }
+
                 if (count > 1)
                 {
                     throw new Exception("More than 1 EventController on Scene");
@@ -53,12 +53,14 @@ namespace IEC
                             {
                                 Destroy(s_Instance.gameObject);
                             }
+
                             s_Instance = instances[i];
                             break;
                         }
                     }
                 }
             }
+
             if (s_Instance != this) return;
 
             Debug.Log("EventController Awake");
@@ -157,6 +159,7 @@ namespace IEC
             {
                 GetListFromObject(s_StaticObjects.staticControllersParent, listeners);
             }
+
             GetListFromObject(transform, listeners);
 
             return listeners.ToArray();
@@ -255,16 +258,13 @@ namespace IEC
 
         void RaiseEventLocal(string gameEvent, EventParam param)
         {
-            Scene.SendEvent(gameEvent, param, () =>
+            for (int i = 0; i < m_Listeners.Length; i++)
             {
-                for (int i = 0; i < m_Listeners.Length; i++)
+                if (m_Listeners[i].IsActive())
                 {
-                    if (m_Listeners[i].IsActive())
-                    {
-                        m_Listeners[i].OnEventRaise(gameEvent, param);
-                    }
+                    m_Listeners[i].OnEventRaise(gameEvent, param);
                 }
-            });
+            }
         }
 
         public static void RaiseEvent(string gameEvent, EventParam param = new EventParam())
@@ -300,6 +300,7 @@ namespace IEC
             {
                 LocateController(s_StaticObjects.staticControllersParent);
             }
+
             LocateController(transform);
         }
 

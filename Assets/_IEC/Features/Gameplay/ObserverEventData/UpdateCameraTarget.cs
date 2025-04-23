@@ -6,6 +6,7 @@ namespace _IEC.Features.Gameplay.ObserverEventData
     public class UpdateCameraTarget
     {
         public Transform target;
-        public float cameraDistance;
+        public int curLevel;
+        public int nextLevel;
     }
 }

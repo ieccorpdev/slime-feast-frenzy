@@ -61,17 +61,16 @@ namespace IEC
             Debug.LogWarning("bannerHeight: " + bannerHeight);
             Debug.LogWarning("Screen.safeArea.height: " + Screen.safeArea.height);
             Debug.LogWarning("screen height: " + Screen.height);
-            Debug.LogWarning("canvasScaler ref height: " + UI.canvasScaler.referenceResolution.y);
-            var ratio = UI.canvasScaler.referenceResolution.y / Screen.height;
-            bannerHeight *= ratio;
-            bannerHeight += 10;
-            Debug.LogWarning("scaleBannerHeight: " + bannerHeight);
+            // var ratio = UI.canvasScaler.referenceResolution.y / Screen.height;
+            // bannerHeight *= ratio;
+            // bannerHeight += 10;
+            // Debug.LogWarning("scaleBannerHeight: " + bannerHeight);
 
-            var listBannerAdsUI = UI.GetComponentsInChildren<BannerAdsUI>(true);
-            foreach (var bannerAds in listBannerAdsUI)
-            {
-                bannerAds.SetSize(bannerHeight);
-            }
+            // var listBannerAdsUI = UI.GetComponentsInChildren<BannerAdsUI>(true);
+            // foreach (var bannerAds in listBannerAdsUI)
+            // {
+            //     bannerAds.SetSize(bannerHeight);
+            // }
         }
 
         Vector2 GetNativeDPI()

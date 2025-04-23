@@ -5,11 +5,11 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class AdditiveUIGroup : _BaseBehaviour
+    public class AdditiveUIGroup : _BaseBehaviour, IGroup
     {
         public List<ScreenUI> ListScreen =>
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
-
+        
         public void LocateGroup()
         {
             var screens = ListScreen;

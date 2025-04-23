@@ -103,18 +103,18 @@ namespace IEC
         public void SetUpLoseReason(LoseReason loseReason)
         {
             DisableAllScreen();
-            switch (loseReason)
-            {
-                case LoseReason.None:
-                    UI.ShowScreen(groupLevelFailed);
-                    break;
-                case LoseReason.TimeUp:
-                    UI.ShowScreen(groupLoseReasonTimeUp);
-                    break;
-                case LoseReason.Boom:
-                    UI.ShowScreen(groupLoseReasonBoom);
-                    break;
-            }
+            // switch (loseReason)
+            // {
+            //     case LoseReason.None:
+            //         UI.ShowScreen(groupLevelFailed);
+            //         break;
+            //     case LoseReason.TimeUp:
+            //         UI.ShowScreen(groupLoseReasonTimeUp);
+            //         break;
+            //     case LoseReason.Boom:
+            //         UI.ShowScreen(groupLoseReasonBoom);
+            //         break;
+            // }
         }
 
         private void DisableAllScreen()

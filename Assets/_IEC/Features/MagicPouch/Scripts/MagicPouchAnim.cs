@@ -123,10 +123,10 @@ namespace IEC
             animationSequence.AppendInterval(openDuration);
             animationSequence.AppendCallback(() =>
             {
-                var pos = UI.GetWorldPositionFromUI(holderPosSpawnItems);
+                //var pos = UI.GetWorldPositionFromUI(holderPosSpawnItems);
                 // carOccupied.gameObject.SetActive(false);
                 // carEmpty.gameObject.SetActive(true);
-                SpawnBooster(countWinStreak, pos);
+                //SpawnBooster(countWinStreak, pos);
             }); 
             
             animationSequence.AppendInterval(idleDuration);
