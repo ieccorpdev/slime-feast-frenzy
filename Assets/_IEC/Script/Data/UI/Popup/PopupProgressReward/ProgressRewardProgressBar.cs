@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using JetBrains.Annotations;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,8 +15,7 @@ namespace IEC
         public Image currentSpecialObjectItem;
         public Image currentProgressRewardIcon;
         public TextMeshProUGUI progressRewardAmountText;
-        public Image progressFillImage;
-        public TextMeshProUGUI progressText;
+        public ProgressBarFillEffect progressFillBar;
         [Header("Timer")] public TextMeshProUGUI resetTimerText;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
@@ -23,6 +23,7 @@ namespace IEC
         public void Setup()
         {
             ProgressRewardData = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+
             UpdateProgressBar();
         }
 
@@ -38,15 +39,13 @@ namespace IEC
             currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
             currentProgressRewardIcon.SetNativeSize();
             progressRewardAmountText.text = ProgressRewardData.GetDisplayText();
-            progressFillImage.fillAmount = 0;
-            //progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;
-            //progressFillImage.DOFillAmount((float)PlayerData.currentProgress / ProgressRewardData.progress, 0.2f);
-            progressText.text = $"{PlayerData.currentProgress}/{ProgressRewardData.progress}";
+            
+            progressFillBar.SetProgressText($"{PlayerData.currentProgress}/{ProgressRewardData.progress}");
         }
 
         public void DoAnimProgressBar()
         {
-            progressFillImage.DOFillAmount((float)PlayerData.currentProgress / ProgressRewardData.progress, 0.2f);
+            progressFillBar.DoFillAnim((float)PlayerData.currentProgress / ProgressRewardData.progress);
         }
 
         // public void SetProgressBarFill(float fillAmount)

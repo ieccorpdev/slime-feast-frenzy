@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -35,7 +36,9 @@ namespace IEC
             if (progressText == null || progressFillImage == null)
                 return;
             progressText.text = $"{currentProgress}/{maxProgress}";
-            progressFillImage.fillAmount = currentProgress / maxProgress;
+            //progressFillImage.fillAmount = currentProgress / maxProgress;
+            progressFillImage.fillAmount = 0;
+            progressFillImage.DOFillAmount((float)currentProgress / maxProgress, 1f);
         }
     }
 }
