@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using _IEC.Features.Booster;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
@@ -22,8 +23,10 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image frozenMark;
         [SerializeField] private Image frozenMark2;
         [SerializeField] private TextMeshProUGUI txtAddedTime;
+        [SerializeField] private List<Image> listStarTime;
         
         [SerializeField]private float m_CurrentTime;
+        private float timeEffectStar = 0.5f;
         private float m_MaxTime;
         private State m_CurrentState;
         private RemainingTimeState m_CurrentRemainingTimeState;
@@ -285,8 +288,22 @@ namespace _IEC.Features.Gameplay
             ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
             var proportion = m_CurrentTime / m_MaxTime;
             imgProgress.fillAmount = proportion;
+            //UpdateStarProgress();
         }
 
+        public void UpdateStarProgress()
+        {
+            float fillAmount = imgProgress.fillAmount;
+            //0 = 3 star, 1 = 2 star, 2= 1 star
+            for (int i = 0; i < listStarTime.Count; i++)
+            {
+                //Code change position of star if need 
+                //float angle = fillAmount * 360f * Mathf.Deg2Rad;
+                //Vector3 newPosition = new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0) * 200f;
+                //listStarTime[i].rectTransform.localPosition = newPosition;
+            }
+
+        }
         public State GetCurrentState()
         {
             return m_CurrentState;
@@ -297,6 +314,11 @@ namespace _IEC.Features.Gameplay
             SetActiveFrozenMark(false);
             m_FrozenTimeCoolDown = 0;
             OnReset?.Invoke();
+            foreach (var star in listStarTime)
+            {
+                DOTween.Kill((star.transform.GetInstanceID()+"_ANIM_STAR"));
+                star.transform.localScale = Vector3.one;
+            }
         }
 
         private void PlayMeltingAnimation()
@@ -341,12 +363,19 @@ namespace _IEC.Features.Gameplay
             switch (newState)
             {
                 case RemainingTimeState.Safe:
+
                     imgProgress.sprite = spriteSafe;
                     break;
                 case RemainingTimeState.Warning:
+                    listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteWarning;
                     break;
                 case RemainingTimeState.Dangerous:
+                    listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR");;
+                    imgProgress.sprite = spriteDangerous;
+                    break;
+                case RemainingTimeState.None:
+                    listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteDangerous;
                     break;
             }

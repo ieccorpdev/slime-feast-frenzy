@@ -12,6 +12,7 @@ namespace IEC
     {
         public Image buttonDisplayImage;
         [Header("Button Sprite")] 
+        public bool setNative = true;
         public bool isChangeButtonSpriteOnClick = false;
         public Sprite pressSprite;
         public Sprite releaseSprite;
@@ -22,7 +23,7 @@ namespace IEC
         [Header("Button scale")] 
         public bool isScaleButtonOnClick = false;
         [Range(0,1)]public float buttonScaleOnPressDown = 0.8f;
-
+        
         // [Header("Button sound")] 
         // public bool isPlayDefaultSoundOnClick = true;
         
@@ -66,7 +67,7 @@ namespace IEC
             else
                 buttonDisplayImage.sprite = releaseSprite;
             
-            buttonDisplayImage.SetNativeSize();
+            if(setNative) buttonDisplayImage.SetNativeSize();
         }
 
         private void ChangeSpriteOnInactive(bool isInactive)
@@ -79,7 +80,7 @@ namespace IEC
             else
                 buttonDisplayImage.sprite = activeSprite;
             
-            //buttonDisplayImage.SetNativeSize();
+            //if(setNative) buttonDisplayImage.SetNativeSize();
         }
 
         private void ChangeScale(bool isPress)
