@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using _IEC.Features.Gameplay;
 using IEC;
 using JetBrains.Annotations;
@@ -14,6 +15,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using Object = System.Object;
 #if UNITY_EDITOR
+using EnhancedScrollerDemos.RemoteResourcesDemo;
 using UnityEditor;
 #endif
 
@@ -29,9 +31,9 @@ public class ReplaceItemData
 {
     public string itemID;
     // public bool isHavePrefab;
-    // public GameObject newItemPrefab;
-    public Mesh newItemMesh;
-    public Material newItemMaterial;
+    public GameObject newItemPrefab;
+    // public Mesh newItemMesh;
+    // public Material newItemMaterial;
 }
 
 [ExecuteAlways]
@@ -79,17 +81,17 @@ public class BulkReplaceItemUtility : MonoBehaviour
             return;
         }
         
-        GameObject obj = new GameObject(replaceData.newItemMesh.name);
-
+        GameObject obj = PrefabUtility.InstantiatePrefab(replaceData.newItemPrefab) as GameObject;
+        
         // Add MeshFilter and MeshRenderer components
-        MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
-        MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
-
-        meshFilter.mesh = replaceData.newItemMesh;
-        meshRenderer.material = replaceData.newItemMaterial;
+        // MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+        // MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+        //
+        // meshFilter.mesh = replaceData.newItemMesh;
+        // meshRenderer.material = replaceData.newItemMaterial;
         
         DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
-        DestroyImmediate(obj);
+        DestroyImmediate(obj.transform.parent.gameObject);
     }
 
     void DatPTDoReplaceAll()
@@ -138,26 +140,29 @@ public class BulkReplaceItemUtility : MonoBehaviour
 
                 var assetFolder = $"{newModelFolder}/{column[1]}";
                 
-                string[] guids = AssetDatabase.FindAssets("t:Material", new[] { assetFolder });
-
-                if (guids.Length > 0)
-                {
-                    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
-                    replaceData.newItemMaterial = AssetDatabase.LoadAssetAtPath<Material>(path);
-                }
+                // string[] guids = AssetDatabase.FindAssets("t:Material", new[] { assetFolder });
+                //
+                // if (guids.Length > 0)
+                // {
+                //     string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                //     replaceData.newItemMaterial = AssetDatabase.LoadAssetAtPath<Material>(path);
+                // }
                 
-                guids = AssetDatabase.FindAssets($"t:Mesh", new[] { assetFolder });
+                string[] guids = AssetDatabase.FindAssets($"t:GameObject", new[] { assetFolder });
 
                 foreach (string guid in guids)
                 {
                     string path = AssetDatabase.GUIDToAssetPath(guid);
-                    UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+                    List<UnityEngine.GameObject> assets = AssetDatabase
+                        .LoadAllAssetsAtPath(path)
+                        .OfType<UnityEngine.GameObject>()
+                        .ToList();
                     
                     foreach (var asset in assets)
                     {
-                        if (asset is Mesh mesh && mesh.name == column[2])
+                        if (asset.name == column[2])
                         {
-                            replaceData.newItemMesh = asset as Mesh;
+                            replaceData.newItemPrefab = asset;
                             break;
                         }
                     }
