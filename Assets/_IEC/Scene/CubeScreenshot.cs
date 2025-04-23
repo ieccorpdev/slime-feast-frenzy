@@ -28,9 +28,6 @@ public class CubeScreenshot : MonoBehaviour
             // Get item data for this iteration
             var itemData = itemConfig.listItemDefinitionShp[i];
 
-            // Destroy the previous cube if it exists
-            if (cube) Destroy(cube);
-
             // Spawn the new cube
             SpawnCube(itemData.GetPrefab());
 
@@ -46,7 +43,8 @@ public class CubeScreenshot : MonoBehaviour
             // Wait for the next frame before capturing the next picture
             yield return new WaitForEndOfFrame();
             ClearOutRenderTexture(renderTexture);
-            yield return new WaitForSeconds(0.5f);
+            if (cube) Destroy(cube);
+            yield return new WaitForEndOfFrame();
         }
     }
 
