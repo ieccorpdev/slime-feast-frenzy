@@ -11,5 +11,6 @@ public static partial class Locator
         public static ScreenLevelWinHard ScreenLevelWinHard => Pool.Get<ScreenLevelWinHard>();
         public static ScreenLevelLose ScreenLevelLose => Pool.Get<ScreenLevelLose>();
         public static PopupSettingIngame PopupSettingIngame => Pool.Get<PopupSettingIngame>();
+        public static PopupQuitConfirm PopupQuitConfirm => Pool.Get<PopupQuitConfirm>();
     }
 }

@@ -9,6 +9,13 @@ namespace IEC
 {
     public class PopupSettingInHome : PopupSettingIngame
     {
-        
+        public override void Show()
+        {
+            base.Show();
+        }
+        public override void Hide()
+        {
+            base.Hide();
+        }
     }
 }

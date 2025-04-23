@@ -78,8 +78,18 @@ namespace _IEC.Features.Gameplay
         {
             itemId = levelObjective.itemId;
             m_IsSpecial = isSpecial;
-            SetText(isSpecial ? "0" : levelObjective.number.ToString());
-            imgIcon.sprite = LoadSpriteIconFromId(itemId);
+            //SetText(isSpecial ? "0" : levelObjective.number.ToString());
+            SetText(levelObjective.number.ToString());
+            if (isSpecial)
+            {
+                //Change method load 
+                var itemDefinition = Config.specialObjectConfig.listSpecialItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+                imgIcon.sprite = itemDefinition.GetIcon();
+            }
+            else
+            {
+                imgIcon.sprite = LoadSpriteIconFromId(itemId);
+            }
             imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
 
             var delta = RectTransform.sizeDelta;

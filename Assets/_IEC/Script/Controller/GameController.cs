@@ -43,18 +43,20 @@ namespace IEC
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
+                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGameHardLevel();
                     Pool.Get<ConfettiGroup>().StopConfetti();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
+                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
+                    PlayerData.IncreaseBoosterStreak();
+                    PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else

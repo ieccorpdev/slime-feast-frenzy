@@ -1230,13 +1230,16 @@ namespace IEC
                     }
 
                     var id = baseItem.GetItemId();
-                    // var spawnData = listItemSpawns.Find(x => x.id == id);
-                    var spawnData = new ItemSpawn
+                    var spawnData = listItemSpawns.Find(x => x.id == id);
+                    if(spawnData == null)
                     {
-                        id = id,
-                        listSpawnDatas = new List<ItemSpawnData>()
-                    };
-                    listItemSpawns.Add(spawnData);
+                        spawnData = new ItemSpawn
+                        {
+                            id = id,
+                            listSpawnDatas = new List<ItemSpawnData>()
+                        };
+                        listItemSpawns.Add(spawnData);
+                    }
                     // var instantiatedData = root.InstantiateData.Find(x => x.itemId == id);
                     // if (instantiatedData == null)
                     // {
@@ -1702,6 +1705,7 @@ namespace IEC
 #endif
     }
 }
+#if UNITY_EDITOR
 public class CustomDialogWindow : EditorWindow
 {
     private string dialogContent = "";
@@ -1731,3 +1735,4 @@ public class CustomDialogWindow : EditorWindow
         }
     }
 }
+#endif

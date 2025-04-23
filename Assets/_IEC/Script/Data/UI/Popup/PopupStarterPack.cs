@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -14,7 +15,7 @@ namespace IEC
         
         public List<Transform> listRewardImg = new();
 
-        public Button buyAdsBtn;
+        [FormerlySerializedAs("buyAdsBtn")] public Button buyBtn;
         
         //public SpineAnimOT anim;
         
@@ -66,7 +67,7 @@ namespace IEC
         
         public void SetScaleAnim()
         {
-            buyAdsBtn.gameObject.transform.localScale = Vector3.zero;
+            buyBtn.gameObject.transform.localScale = Vector3.zero;
             //noThanksBtn.gameObject.transform.localScale = Vector3.zero;
 
             foreach (Transform img in listRewardImg)
@@ -96,7 +97,7 @@ namespace IEC
             _showAnimSequence.InsertCallback(delay,
                 () =>
                 {
-                    TweenControl.GetInstance().ScaleFromZero(buyAdsBtn.gameObject,0.5f);
+                    TweenControl.GetInstance().ScaleFromZero(buyBtn.gameObject,0.5f);
                 });
             //TweenControl.GetInstance().ScaleFromZero(noThanksBtn.gameObject,0.5f);
         }

@@ -9,6 +9,7 @@ namespace IEC
 {
     public class PopupProgressReward : BasePopup
     {
+        public Button btnCloseAll;
         public ProgressRewardItem progressRewardItemPrefab;
         [Header("Progress bar")]
         public ProgressRewardProgressBar progressBar;
@@ -18,7 +19,12 @@ namespace IEC
         public List<ProgressRewardItem> listProgressRewardItems = new();
         
         public ProgressRewardItem CurrentRewardItem { get; private set; }
-        
+
+        private void Start()
+        {
+            SetEvent(btnCloseAll, OnHideClick);
+        }
+
         public override void Show()
         {
             base.Show();
@@ -46,6 +52,7 @@ namespace IEC
             }
             
             progressBar.Setup();
+            progressBar.DoAnimProgressBar();
             
             listProgressRewardItems[0].SetBotItem();
             listProgressRewardItems[^1].SetTopItem();

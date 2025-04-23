@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Gameplay;
+using IEC.TrackingEvent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
@@ -24,7 +25,13 @@ namespace IEC
             SetEvent(btnNext, () =>
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
-                ActionCompletePopup();
+                //ActionCompletePopup();
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                    ActionCompletePopup,
+                    () =>
+                    {
+                        Services.PushEvent(new TrackingEvent.SFApostition("win_screen_next"));
+                    });
             });
 
         }
@@ -87,7 +94,7 @@ namespace IEC
                 popupQueue.Enqueue(levelChestRewardPopup);
             
             //Check star chest
-            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, 3, ShowNext);
+            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
             if(starChestRewardPopup != null)
                 popupQueue.Enqueue(starChestRewardPopup);
             
@@ -95,11 +102,12 @@ namespace IEC
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             while(PlayerData.CheckClaimProgressReward(reward))
             {
+                List<Reward> listReward = new(){reward.reward};
                 popupQueue.Enqueue(new PopupData(
                     Locator.Main.ClaimBonusRewardPanel,
                     () =>
                     {
-                        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(new(){reward.reward}, null);
+                        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
                         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
                     }, 
                     ShowNext));

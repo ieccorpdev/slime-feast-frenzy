@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using IEC.Common.Event;
+using NaughtyAttributes;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace IEC
 
         private bool m_IsStart = true;
         private int m_TabCount;
+        private bool isClick = false;
 
         public BigHomeTab BigHomeTab => m_BigTab;
         
@@ -57,9 +59,24 @@ namespace IEC
             {
                 var tab = m_ListTab[i];
                 tab.type = HybridConfig.listTabConfig[i].type;
+                
+
+                
                 tab.Init();
                 tab.onClick = () =>
                 {
+                    if (isClick) return;
+                    //lock leaderboard temporary
+                    if(tab.type == TabType.LeaderBoard) return;
+                    
+                    if (tab.type != Game.hybrid.currentTab)
+                    {
+                        isClick = true;
+                        DOVirtual.DelayedCall(0.5f, () =>
+                        {
+                            isClick = false;
+                        });
+                    }
                     var lastTabType = Game.hybrid.currentTab;
                     Game.hybrid.currentTab = tab.type;
                     var index = tab.transform.GetSiblingIndex();
@@ -81,9 +98,24 @@ namespace IEC
                 // Debug.LogError(m_BigTab.GetSize().x);
                 m_ChooseTab.sizeDelta = new Vector2(m_BigTab.GetSize().x, m_ChooseTab.sizeDelta.y);
             }));
-            m_ListTab.ForEach(x => x.SetLock(false));
+            
+            //m_ListTab.ForEach(x => x.SetLock(false)); 
+            StartCoroutine(IE_SetLockTabs());
         }
-
+        [Sirenix.OdinInspector.Button]
+        private void SetLockTabs()
+        {
+            //lock leaderboard for now
+            m_ListTab.ForEach(x =>
+            {
+                x.SetLock(x.type == TabType.LeaderBoard);
+            });
+        }
+        IEnumerator IE_SetLockTabs()
+        {
+            yield return new WaitForEndOfFrame();
+            SetLockTabs();
+        }
         IEnumerator IE_WaitRebuild(Action callback)
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(m_Layout);

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/LevelDataContainer")]
+    [CreateAssetMenu(menuName = "Gameplay/LevelDataContainer")]
     public class LevelDataContainerSO : ScriptableObject
     {
         public List<LevelDataSO> listAllLevelData = new();

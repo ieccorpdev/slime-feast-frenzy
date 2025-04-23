@@ -35,5 +35,6 @@ public static partial class Locator
         public static PopupHardLevel PopupHardLevel => Pool.Get<PopupHardLevel>();
 
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
+        public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
     } 
 }

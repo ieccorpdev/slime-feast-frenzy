@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Booster;
+using _IEC.Features.Common;
+using _IEC.Features.Common.Extension;
+using _IEC.Features.Gameplay;
+using _IEC.Features.Gameplay.ObserverEventData;
+using IEC.TrackingEvent;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
@@ -11,129 +17,138 @@ namespace IEC
 {
     public class ScreenLevelLose : ScreenUI
     {
-        public Button btnRetry;
-        public Button btnRetryAds;
-        public Button btnKeepPlaying;
-        public Button btnGiveUp;
-        public Button addSpaceBtn;
-        public Button backHomeBtn;
-        public TextMeshProUGUI goldNeedUseHelper;
-        private HelperData dataAddSpace;
+        [SerializeField] private GroupLoseReason groupLoseReasonTimeUp;
+        [SerializeField] private GroupLoseReasonConfirm groupLoseReasonConfirmTimeUp;
+        [SerializeField] private GroupLoseReason groupLoseReasonBoom;
+        [SerializeField] private GroupLoseReasonConfirm groupLoseReasonConfirmBoom;
+        public GroupLevelFailed groupLevelFailed;
 
-        public GameObject hardLevelGroup;
-        public GameObject levelFailGroups;
-        public GameObject outOfLifeGroups;
-        public TextMeshProUGUI nextTimeLifeTMP;
-        public List<GameObject> listPackIAPLose;
+        private void Awake()
+        {
+            groupLevelFailed.OnClose += () =>
+            {
+                System.Action actionClose = () =>
+                {
+                    Hide();
+                    GameController.OpenScene(GameScene.Main);
+                };
+                
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                {
+                    Services.PushEvent(new SFApostition("losescreen_exit"));
+                }
+            };
+
+            groupLevelFailed.OnRetry += () =>
+            {
+                System.Action actionClose = () =>
+                {
+                    if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
+                    {
+                        Hide();
+                        //Back home
+                        GameController.OpenScene(GameScene.Main);
+                        return;
+                    }
+                    
+                    var selectedBoosters = groupLevelFailed.GetGroupBooster().GetSelectedBoosters();
+                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                    if (Game.isHaveBooster)
+                    {
+                        HandleBooster(selectedBoosters);
+                    }
+                    
+                    Hide();
+                };
+                
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                {
+                    Services.PushEvent(new SFApostition("losescreen_retry"));
+                }
+            };
+        }
+
+        private void HandleBooster(List<BoosterId> boosterIds)
+        {
+            // foreach (var selectedBooster in boosterIds)
+            // {
+            //     var boosterData = PlayerData.boosterData.GetDataModelById(selectedBooster);
+            //     boosterData.ConsumeBooster();
+            //     this.RaiseEvent(EventList.GamePlay.USE_BOOSTER, new UseBoosterEventData()
+            //     {
+            //         boosterId = selectedBooster
+            //     });
+            // }
+        }
+
         private void Start()
         {
-            listButtonHideOnClick.Add(btnRetry);
-
-            SetEvent(btnRetry, () =>
-            {
-                OnRetryLife();
-            });
-            
-            SetEvent(btnGiveUp,
-                () =>
-                {
-                    Services.PushEvent(new TrackingEvent.ClickBtnTracking("lose_give_up"));
-                    EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
-                    EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
-                    EventController.RaiseEvent(EventList.Audio.VITALITY_PACK_POPUP_OPEN);
-                });      
-          
-            SetEvent(backHomeBtn,
-                () =>
-                {
-                    if(Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                    {
-                        Services.PushEvent(new TrackingEvent.ClickBtnTracking("lose_back_home"));
-                        GameController.OpenScene(GameScene.Main);
-                    }, () =>
-                    {
-                        Services.PushEvent(new IEC.TrackingEvent.SFApostition($"lose_back_home"));
-                    }));
-
-
-                });            
-            SetEvent(btnRetryAds,
-                () =>
-                {
-                    Services.ShowRewardAds(() =>
-                    {
-                        Services.PushEvent(new TrackingEvent.SRApostition("RESTART_LOSE"));
-                        if (PlayerData.IsHardLevel())
-                        {
-                            EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
-                        }
-                        else
-                        {
-                            EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                        }
-                        Hide();
-                    });
-                });
+            SetUpForLoseReasonTimeUp();
+            SetUpForLoseReasonBoom();
         }
 
-        public void Update()
-        {
-            nextTimeLifeTMP.text = PlayerData.GetTimeToNextLife();
-        }
         public override void Show()
         {
-            Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
-            UpdateUI();
             base.Show();
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         }
 
-        public void UpdateUI()
+        public void SetupPanelShow(EventParam param)
         {
-            if(hardLevelGroup != null)
-                hardLevelGroup.gameObject.SetActive(GamePlay.IsInLevelHard);
-            
-            ActiveGroups(PlayerData.playerLife <=0 && !PlayerData.IsInUnlimitedLife());
-            ActivePopupLosePackIap();
-        }
-
-        private void ActivePopupLosePackIap()
-        {
-            foreach (var iappack in listPackIAPLose)
+            LoseReason reason = LoseReason.Boom;
+            if (param.p0 != null)
             {
-                iappack.gameObject.SetActive(false);
+                reason = (LoseReason) param.p0;
             }
-            listPackIAPLose[Random.Range(0,listPackIAPLose.Count)].gameObject.SetActive(true);
+            DisableAllScreen();
+            SetUpLoseReason(reason);
         }
-        private void ActiveGroups(bool outOfLive)
+        public void SetUpLoseReason(LoseReason loseReason)
         {
-            levelFailGroups.gameObject.SetActive(!outOfLive);
-            btnRetry.gameObject.SetActive(!outOfLive);
-            outOfLifeGroups.gameObject.SetActive(outOfLive);
-            btnRetryAds.gameObject.SetActive(outOfLive);
+            DisableAllScreen();
+            switch (loseReason)
+            {
+                case LoseReason.None:
+                    UI.ShowScreen(groupLevelFailed);
+                    break;
+                case LoseReason.TimeUp:
+                    UI.ShowScreen(groupLoseReasonTimeUp);
+                    break;
+                case LoseReason.Boom:
+                    UI.ShowScreen(groupLoseReasonBoom);
+                    break;
+            }
         }
 
-        public void OnRetryLife()
+        private void DisableAllScreen()
         {
-            if (PlayerData.IsInUnlimitedLife() || PlayerData.playerLife > 0)
+            groupLevelFailed.gameObject.SetActive(false);
+            groupLoseReasonBoom.gameObject.SetActive(false);
+            groupLoseReasonConfirmBoom.gameObject.SetActive(false);
+            groupLoseReasonTimeUp.gameObject.SetActive(false);
+            groupLoseReasonConfirmTimeUp.gameObject.SetActive(false);
+        }
+        private void SetUpForLoseReasonTimeUp()
+        {
+            groupLoseReasonTimeUp.SetActionPlayOn(() =>
             {
-                EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
-                EventController.RaiseEvent(EventList.Audio.VITALITY_PACK_POPUP_OPEN);
-                Services.PushEvent(new TrackingEvent.ClickBtnRetry());
-                EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS, new EventParam(this, "lose_level_retry_life"));
                 Hide();
-            }
-            else
-            {
-                EnableGropusOutOfLife();
-            }
-
+                Locator.Game.ScreenInGame.Show();
+                this.RaiseEvent(EventList.GamePlay.ADD_TIME_FOR_TIMER,new AddTimeForTimerData()
+                {
+                    time = Config.gamePlayConfig.reviveTimeForTimer
+                });
+                this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
+            });
         }
 
-        public void EnableGropusOutOfLife()
+        private void SetUpForLoseReasonBoom()
         {
-            //Add Animation here
-            ActiveGroups(true);
+            groupLoseReasonBoom.SetActionPlayOn(() =>
+            {
+                Hide();
+                Locator.Game.ScreenInGame.Show();
+                this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
+            });
         }
     }
 }
