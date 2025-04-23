@@ -100,15 +100,15 @@ namespace IEC
                 Controllers.Get<AdsController>().UpdateWhiteBannerSize();
             }
 
-            if (id == "com.sorting.cube.jam.beginner.pack")
+            if (id == "com.shark.frenzy.force.starter.pack")
             {
                 PlayerData.isBoughtStarterPack = true;
-                PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
+                //PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
                 //Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);//Disable banner Ads
                 if(Locator.Main.HomeScreenTab) Locator.Main.HomeScreenTab.UpdateMainHome();
                 Services.SaveData();
             }            
-            if (id == "com.sorting.cube.jam.piggy.bank")
+            if (id == "com.shark.frenzy.force.piggy.bank")
             {
                 Locator.Main.PopupPiggyBank.BuySuccessPiggyBank();
             }

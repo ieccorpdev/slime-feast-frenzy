@@ -38,7 +38,7 @@ namespace IEC
 
         public void Init()
         {
-            SetSpineIcon();
+            SetSpineIcon(); 
             iconSpine.gameObject.SetActive(true);
             var state = iconSpine.ske.AnimationState;
             state.ClearTrack(0);
@@ -96,13 +96,16 @@ namespace IEC
         public void SetAnimationSpineOn()
         {
             SetSpineIcon();
-            iconSpine.gameObject.SetActive(true);
-            iconSpine.SetAnimation( "on" ,false,null);
+            if (iconSpine && !m_IsLock)
+            {
+                iconSpine.gameObject.SetActive(true);
+                iconSpine.SetAnimation( "on" ,false,null);
+            }
         }
         public void SetAnimationSpineOff(TabType lastTabType)
         {
             SetSpineIcon();
-
+            if(m_IsLock) return;
             iconSpine.gameObject.SetActive(true);
             var skeleton = iconSpine.ske.Skeleton;
             var state = iconSpine.ske.AnimationState;

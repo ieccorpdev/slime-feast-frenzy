@@ -76,6 +76,7 @@ namespace _IEC.Features.Gameplay
 
         public void LoadData(LevelObjective levelObjective, bool isSpecial)
         {
+            Reset();
             itemId = levelObjective.itemId;
             m_IsSpecial = isSpecial;
             //SetText(isSpecial ? "0" : levelObjective.number.ToString());
