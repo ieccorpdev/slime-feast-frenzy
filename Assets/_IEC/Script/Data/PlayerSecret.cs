@@ -26,7 +26,7 @@ namespace IEC
         public int lastFeatureCount = 0;
         public int levelTracking = 1;
         public int levelFirstTime = 0;
-        public Dictionary<LevelType, int> levelFirstTimeTracking;
+        public Dictionary<LevelType, int> levelFirstTimeTracking = new Dictionary<LevelType, int>();
         public int countPlayLevel = 0;
 
         public bool isPlayLevelHardFirstTime = true;
@@ -52,7 +52,7 @@ namespace IEC
         
         public HybridData hybridData = new HybridData();
 
-        private GameConfig Config => Pool.Get<GameConfig>();
+        private GameConfig Config => PlayableController.Instance.gameConfig;
 
         private Game Game => Pool.Get<Game>();
 
@@ -638,29 +638,17 @@ namespace IEC
         
         #region ProgressReward
 
-        public DateTime timeLastResetProgressReward;
         public int tempSpecialObjCollectedInLevel;
         public int currentProgress;
         public int currentProgressMilestone;
         public int currentSpecialItemIndex;
         public void SaveTimeResetProgressReward()
         {
-            timeLastResetProgressReward = DateTime.Now;
         }
 
         public void CheckResetTimeProgressReward()
         {
-            if ((DateTime.Now - timeLastResetProgressReward).TotalDays >= Config.progressRewardConfig.daysEachReset)
-            {
-                SaveTimeResetProgressReward();
-                currentProgress = 0;
-                currentProgressMilestone = 0;
-                currentSpecialItemIndex++;
-                if (currentSpecialItemIndex >= Config.specialObjectConfig.listSpecialItemDefinition.Count)
-                {
-                    currentSpecialItemIndex = 0;
-                }
-            }
+          
         }
 
         public void AddProgressToProgressReward(int progress)
@@ -682,36 +670,7 @@ namespace IEC
         
         public string GetTimeToResetProgressReward()
         {
-            TimeSpan time = timeLastResetProgressReward.AddDays(Config.progressRewardConfig.daysEachReset) - DateTime.Now;
-
-            if (time < TimeSpan.Zero)
-            {
-                CheckResetTimeProgressReward();
-            }
-            
-            string outputString = "";
-            
-            var day = time.Days;
-            var hour = time.Hours;
-            var minute = time.Minutes;
-            var seconds = time.Seconds;
-            string days = day < 10 ? $"0{day}" : day.ToString();
-            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
-            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
-            string second = seconds.ToString();
-            if (day > 0)
-            {
-                outputString = $"{days}d {hours}h";
-            }
-            else if (hour > 0)
-            {
-                outputString = $"{hours}h {minutes}m";
-            }
-            else
-            {
-                outputString = $"{minutes}m {second}s";
-            }
-            return outputString;
+           return string.Empty;
         }
         
         #endregion

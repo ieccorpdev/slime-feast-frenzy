@@ -15,9 +15,9 @@ namespace _IEC.Features.Gameplay
     public class GameplayItemPrefabConfig : ScriptableObject
     {
         [Searchable]
-        public List<ItemDefinition> listItemDefinition;
+        public List<ItemDefinition> listItemDefinition = new List<ItemDefinition>();
         [Space(10)]
-        public List<ItemDefinition> listItemDefinitionShp;
+        public List<ItemDefinition> listItemDefinitionShp = new List<ItemDefinition>();
         #region Bake
         
 #if  UNITY_EDITOR

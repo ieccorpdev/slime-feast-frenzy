@@ -91,7 +91,7 @@ namespace IEC.Wind.Leaderboard
             {
                 if(i >= items.Count)
                     break;
-                Sprite spr = Pool.Get<GameConfig>().GetSpriteByReward(rewards[i].type);
+                Sprite spr = PlayableController.Instance.gameConfig.GetSpriteByReward(rewards[i].type);
                 string txt = "" + rewards[i].amount;
                 items[i].SetData(spr, txt);
                 items[i].gameObject.SetActive(true);

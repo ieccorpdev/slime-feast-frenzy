@@ -96,11 +96,7 @@ namespace IEC
             {
                 gameObject.SetActive(false);
 
-                consentController.StartGetConsent(Controllers.Get<ServicesController>().config, () =>
-                {
-                    gameObject.SetActive(true);
-                    InitFromAwake();
-                });
+               
             }
             else
             {

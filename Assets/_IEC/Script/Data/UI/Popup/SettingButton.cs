@@ -46,7 +46,6 @@ namespace IEC
 
         private void HandleClick()
         {
-            Services.PushEvent(new TrackingEvent.ClickBtnTracking("btn_setting_" + settingType));
             SetButton(!IsSettingOn());
         }
 

@@ -7,7 +7,7 @@ namespace _IEC.Features.Gameplay
 {
     public static class LevelHelper
     {
-        private static GameConfig Config => Pool.Get<GameConfig>();
+        private static GameConfig Config => PlayableController.Instance.gameConfig;
         private static HashSet<string> itemIds = new HashSet<string>();
 
         public static string GetAllItemsId()
@@ -90,112 +90,15 @@ namespace _IEC.Features.Gameplay
             // }
         }
 
-        public static List<BaseItem> SpawnAllItem(List<ItemData> listItemData, Transform levelObjectHolder,
-            LevelConfig levelConfig, GameplayItemPrefabConfig itemConfig, int versionItem)
-        {
-            itemIds.Clear();
+        
 
-            var res = new List<BaseItem>();
-            foreach (var itemData in listItemData)
-            {
-                var itemDefinition = levelConfig.GetItemDefinition(itemData.itemId, itemConfig, versionItem);
-                if (itemDefinition == null)
-                {
-                    Debug.LogError("Cant find item definition with id: " + itemData.itemId);
-                    continue;
-                }
-
-                var prefab = itemDefinition.GetPrefab();
-                if (prefab == null)
-                {
-                    Debug.LogError("Cant find prefab with id: " + itemData.itemId);
-                    continue;
-                }
-
-                var newItem = prefab.Spawn();
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
-                {
-                    itemComponent = newItem.AddComponent<BaseItem>();
-                }
-
-                var itemTransform = itemComponent.transform;
-                if (!string.IsNullOrEmpty(itemData.groupID))
-                {
-                    GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
-                        .Find(obj => obj.name == itemData.groupID)?.gameObject;
-                    if (groupHolder == null)
-                    {
-                        groupHolder = new GameObject(itemData.groupID);
-                        groupHolder.transform.parent = levelObjectHolder;
-                        groupHolder.transform.position = itemData.groupPosition;
-                    }
-                    
-                    itemTransform.parent = groupHolder.transform;
-                }
-                else
-                {
-                    itemTransform.parent = levelObjectHolder;
-                }
-
-                itemComponent.LoadData(itemData, itemDefinition);
-                res.Add(itemComponent);
-                itemIds.Add(itemData.itemId);
-            }
-
-            return res;
-        }
-
-
-        public static List<BaseItem> SpawnAllItem(List<ItemData> listItemData, Transform levelObjectHolder,
-            int versionItem)
-        {
-            itemIds.Clear();
-            var res = new List<BaseItem>();
-            foreach (var itemData in listItemData)
-            {
-                var itemDefinition = Config.levelConfig.GetItemDefinition(itemData.itemId, versionItem);
-                if (itemDefinition == null)
-                {
-                    Debug.LogError("Cant find item definition with id: " + itemData.itemId);
-                    continue;
-                }
-
-                var prefab = itemDefinition.GetPrefab();
-                if (prefab == null)
-                {
-                    Debug.LogError("Cant find prefab with id: " + itemData.itemId);
-                    continue;
-                }
-
-                var newItem = prefab.Spawn();
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
-                {
-                    if (itemDefinition.GetId() == "Coin_Small" || itemDefinition.GetId() == "Coin_Medium")
-                    {
-                        itemComponent = newItem.AddComponent<CoinItem>();
-                    }
-                    else
-                    {
-                        itemComponent = newItem.AddComponent<BaseItem>();
-                    }
-                }
-
-                var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
-                itemComponent.LoadData(itemData, itemDefinition);
-                res.Add(itemComponent);
-                itemIds.Add(itemData.itemId);
-            }
-
-            return res;
-        }
-
+     
         public static List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
         {
             itemIds.Clear();
             var res = new List<BaseItem>();
+            
+            Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
             foreach (var itemSpawn in listItemData)
             {
                 var itemDefinition = Config.levelConfig.GetItemDefinition(itemSpawn.id, versionItem);

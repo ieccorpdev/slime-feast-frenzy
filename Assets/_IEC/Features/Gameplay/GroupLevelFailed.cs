@@ -32,7 +32,6 @@ namespace _IEC.Features.Gameplay
             SetEvent(btnRetry, () =>
             {
                 //SoundController.PlayClickBtnAudio();
-                Services.PushEvent(new ClickBtnTracking("losescreen_retry"));
                 OnRetry?.Invoke();
             });
             SetEvent(homeButton, () =>

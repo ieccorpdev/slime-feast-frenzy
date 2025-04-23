@@ -25,14 +25,14 @@ namespace IEC
 
 			bool isLevelEditorScene = false;
 
-			foreach (string editorScene in LevelEditor.LEVEL_EDITOR_SCENES)
-			{
-				if (currentScenePath.Contains(editorScene) || currentSceneName.Contains(editorScene))
-				{
-					isLevelEditorScene = true;
-					break;
-				}
-			}
+			// foreach (string editorScene in LevelEditor.LEVEL_EDITOR_SCENES)
+			// {
+			// 	if (currentScenePath.Contains(editorScene) || currentSceneName.Contains(editorScene))
+			// 	{
+			// 		isLevelEditorScene = true;
+			// 		break;
+			// 	}
+			// }
 
 			if (isLevelEditorScene)
 			{

@@ -49,7 +49,6 @@ namespace IEC
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGameHardLevel();
                     Pool.Get<ConfettiGroup>().StopConfetti();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
@@ -63,7 +62,6 @@ namespace IEC
                     //GamePlay.IsWin = true;
                     OnGameOver();
                     Pool.Get<ConfettiGroup>().ShowConfetti();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
@@ -72,7 +70,6 @@ namespace IEC
                     GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
                     OnGameOver();
-                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_SKIP:
                     GamePlay.SetWin();
@@ -87,10 +84,7 @@ namespace IEC
                     if (param.p0 != null)
                     {
                         long countShowInter = (long)param.p0;
-                        if (ListEventInterAdjust.Contains((int)countShowInter))
-                        {
-                            Controllers.Get<ServicesController>().PushEvent("inter_" + countShowInter);
-                        }
+                        
                     }
                     break;
             }
@@ -99,17 +93,12 @@ namespace IEC
         public void BehaviourAwake()
         {
             Input.multiTouchEnabled = false;
-            Pool.Get<GameConfig>().PreloadAllConfig();
+            PlayableController.Instance.gameConfig.PreloadAllConfig();
         }
 
         public void BehaviourStart()
         {
-            if (Services.config.adjustEventConfig != null)
-            {
-                m_ListLevelAdjust = Services.config.adjustEventConfig.GetListPlayLevel();
-                m_ListLevelFirstTimeAdjust = Services.config.adjustEventConfig.GetListPlayLevelFirstTime();
-                ListEventInterAdjust = Services.config.adjustEventConfig.GetListInter();
-            }
+        
             // Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
             // {
                 // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
@@ -163,8 +152,6 @@ namespace IEC
                 PlayerData.DecreasePlayerLife();
             }
             EventController.RaiseEvent(EventList.SAVE_DATA);
-            Services.PushEvent(new TrackingEvent.GameOver());
-            Services.PushEvent(new TrackingEvent.PlayLevelDetail());
         }
 
         void PushPlayLevelEvent()
@@ -175,36 +162,26 @@ namespace IEC
             var level = PlayerData.levelTracking;
 
             bool isNewLevel = PlayerData.levelFirstTime != level;
-            bool isFirstTracking = PlayerData.levelFirstTimeTracking[Game.crLevelType] == 0;
+            // bool isFirstTracking = PlayerData.levelFirstTimeTracking[Game.crLevelType] == 0;
+            //
+            // if (isNewLevel || isFirstTracking)
+            // {
+            //     if (isNewLevel)
+            //     {
+            //         PlayerData.ClearAndInitTrackingLevelType();
+            //         PlayerData.levelFirstTime = level;
+            //     }
+            //
+            //     PlayerData.levelFirstTimeTracking[Game.crLevelType] = 1;
+            //     PlayerData.countPlayLevel = 1;
+            //     PlayerData.sessionStartLevel = PlayerData.session;
+            //
+            //  
+            //
+            // }
 
-            if (isNewLevel || isFirstTracking)
-            {
-                if (isNewLevel)
-                {
-                    PlayerData.ClearAndInitTrackingLevelType();
-                    PlayerData.levelFirstTime = level;
-                }
 
-                PlayerData.levelFirstTimeTracking[Game.crLevelType] = 1;
-                PlayerData.countPlayLevel = 1;
-                PlayerData.sessionStartLevel = PlayerData.session;
-
-                Services.PushEvent(new TrackingEvent.PlayLevelFirstTime());
-
-                if (m_ListLevelFirstTimeAdjust.Contains(level))
-                {
-                    Services.PushEvent($"play_level_first_time_{level}");
-                }
-
-                Services.SetUserProperty("Level", level.ToString());
-            }
-
-            Services.PushEvent(new TrackingEvent.PlayLevel());
-
-            if (level % Mathf.FloorToInt(Mathf.Pow(10, level.ToString().Length - 1)) == 0 || m_ListLevelAdjust.Contains(level))
-                Services.PushEvent($"play_level_{level}");
-
-            EventController.RaiseEvent(EventList.SAVE_DATA);
+       
         }
         
         private void UpdateTimeLeftApplicationResume()

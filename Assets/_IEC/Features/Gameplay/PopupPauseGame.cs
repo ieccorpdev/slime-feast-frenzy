@@ -43,10 +43,7 @@ namespace _IEC.Features.Gameplay
         {
             Hide();
             //SoundController.PlayClickBtnAudio();
-            if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, Quit))
-            {
-                Services.PushEvent(new SFApostition("setting_quitpopup_quit"));
-            }
+         
         }
 
         void Quit()
@@ -55,7 +52,6 @@ namespace _IEC.Features.Gameplay
             EventController.RaiseEvent(EventList.GamePlay.LEVEL_CLEAR);
             //MagicPouchController.OnLevelLose();
             
-            Services.PushEvent(new ClickBtnTracking("quitpopup_quit"));
         }
     }
 }

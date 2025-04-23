@@ -33,18 +33,7 @@ namespace _IEC
         }
         void OnClickButtonAdsMoreLife()
         {
-            Services.ShowRewardAds(() =>
-            {
-                PlayerData.AddPlayerLife();
-                Services.PushEvent(new IEC.TrackingEvent.SRApostition($"Ads_More_life"));
-                //UI.screenHome.Hide();
-                // UI.GetGroupsGold().EffectLifeClaim(pos, 1, PlayerData.playerLife, () =>
-                // {
-                //     UI.GetGroupsGold().UpdateUI();
-                // });
-                Hide();
-                //EventController.RaiseEvent(EventList.GamePlay.GAME_INIT, new EventParam() { p0 = GameController.GameType.NormalLevel });
-            }, null);
+            
         }
 
         void OnRequestRefill(bool success)

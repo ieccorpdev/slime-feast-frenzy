@@ -20,12 +20,6 @@ namespace IEC
             base.Awake();
             AudioEventOpen = EventList.Audio.VITALITY_PACK_POPUP_OPEN;
             
-            configBundle.OnPurchaseSuccess += () =>
-            {
-                Locator.Main.HomeScreenTab.UpdateMainHome();
-                Hide();
-                Services.SaveData();
-            };
         }
 
         private void Start()

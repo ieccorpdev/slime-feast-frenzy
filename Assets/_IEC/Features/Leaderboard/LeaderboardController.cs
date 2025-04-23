@@ -58,11 +58,7 @@ namespace IEC.Wind.Leaderboard
 
         public void BehaviourAwake()
         {
-            var dataController = Controllers.Get<DataController>();
-            leaderboardSaveData = dataController.LoadData<LeaderboardSaveData>(LEADERBOARD_DATA_SECRET);
-            Pool.Set(leaderboardSaveData);
-            dataController.SetAutoSaveObject(LEADERBOARD_DATA_SECRET, leaderboardSaveData);
-            Pool.Set(leaderboardConfig);
+          
         }
 
         public void BehaviourStart()

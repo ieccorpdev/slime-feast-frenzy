@@ -25,7 +25,6 @@ namespace IEC
             
             SetEvent(m_BtnFeedback, () =>
             {
-                Services.SendEmail();
             });
         }
 

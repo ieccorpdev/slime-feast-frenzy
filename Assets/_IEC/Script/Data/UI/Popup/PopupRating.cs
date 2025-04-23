@@ -20,21 +20,18 @@ namespace IEC
 
         void OnLoveItClick()
         {
-            Services.PushEvent(new TrackingEvent.RatingClickLoveIt());
             PlayerData.isClickedRate = true;
             Hide();
         }
 
         void OnNoThankClick()
         {
-            Services.PushEvent(new TrackingEvent.RatingClickNoThank());
             PlayerData.isClickedRate = true;
             Hide();
         }
 
         protected override void OnHideClick()
         {
-            Services.PushEvent(new TrackingEvent.RatingClickClose());
             base.OnHideClick();
         }
 

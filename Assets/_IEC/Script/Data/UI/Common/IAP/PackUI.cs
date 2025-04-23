@@ -39,15 +39,8 @@ namespace IEC
         protected virtual void Start()
         {
             if (m_Config == null) return;
-            Services.IAP().SetReceiveProductCallback(m_Config.bundleId, isRestore =>
             {
-                if(isRestore) return;//Only run with buy directed, if restore, change to InAppPurchase Controller - > PurchaseProductResult
-                if (m_Config.isHaveNoAds)
-                {
-                    Pool.Get<ServiceData>().isNoAds = true;
-                    Services.ActiveNoAds(true);
-                    EventController.RaiseEvent(EventList.GamePlay.BUY_NO_ADS);
-                }
+   
                 UpdateUI();
                 // if (isRestore) return;
                 //var goldAdd = 0;
@@ -79,15 +72,12 @@ namespace IEC
                             Locator.Main.ScreenMain.DoAnimAllAvailableReward();
                         }
                     }).Show();
-                Services.PushEvent(new IEC.TrackingEvent.BuySuccessIAP(m_Config.bundleId));
                 OnPurchaseSuccess?.Invoke();
-                Data.SaveData();
-            }); 
+            }; 
                 
             m_BtnBuy.onClick.AddListener(() =>
             {
                 Locator.Service.PopupLoadingPurchaseIap.Show();
-                Services.IAP().PurchaseProduct(m_Config.bundleId);
             });
             if(m_PackName) m_PackName.text = m_Config.packName;
             UpdateUI();
@@ -95,12 +85,7 @@ namespace IEC
 
         protected void SetLocalizePrice()
         {
-            if(m_Config == null) return;
-            var localizeInfo = Services.IAP().GetLocalizePrice(m_Config.bundleId);
-            if (localizeInfo != null)
-            {
-                m_TxtPrice.text = $"{localizeInfo.LocalPrice} {localizeInfo.IsoCode}";
-            }
+
 
         }
 

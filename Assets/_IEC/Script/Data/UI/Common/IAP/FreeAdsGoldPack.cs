@@ -25,11 +25,7 @@ namespace IEC
             adsButton.onClick.AddListener(
                 () =>
                 {
-                    Services.ShowRewardAds(() =>
-                    {
-                        Services.PushEvent(new TrackingEvent.SRApostition("shop_free_gold_pack"));
-                        OnWatchAdsCollectGold();
-                    });
+          
                 });
         }
 

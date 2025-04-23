@@ -26,17 +26,13 @@ namespace IEC
         {
             if(!Game.isHaveBooster) return;
             SaveDataOnUserQuit(true);
-            Data.SaveData();
         }
 
         public void BehaviourPauseApp(bool isPause)
         {
             if(!Game.isHaveBooster) return;
             SaveDataOnUserQuit(isPause);
-            if (isPause)
-            {
-                Data.SaveData();
-            }
+   
         }
 
         private void SaveDataOnUserQuit(bool isPause)

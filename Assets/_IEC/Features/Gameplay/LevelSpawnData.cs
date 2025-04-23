@@ -7,9 +7,10 @@ using UnityEngine.Serialization;
 
 namespace _IEC.Features.Gameplay
 {
-    public class LevelSpawnData : SerializedScriptableObject
+    [Serializable]
+    public class LevelSpawnData : ScriptableObject
     {
-        public List<ItemSpawn> listItemSpawns;
+        public List<ItemSpawn> listItemSpawns = new List<ItemSpawn>();
 
         public void CloneTo(LevelSpawnData spawnData)
         {
@@ -21,7 +22,7 @@ namespace _IEC.Features.Gameplay
     public class ItemSpawn
     {
         public string id;
-        public List<ItemSpawnData> listSpawnDatas;
+        public List<ItemSpawnData> listSpawnDatas = new List<ItemSpawnData>();
     }
 
     [Serializable]

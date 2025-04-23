@@ -10,10 +10,7 @@ namespace IEC
 
     public static class IDataExt
     {
-        public static ServicesController Services(this IData self)
-        {
-            return Controllers.Get<ServicesController>();
-        }
+
 
         public static Game Game(this IData self)
         {
@@ -37,7 +34,7 @@ namespace IEC
 
         public static GameConfig Config(this IData self)
         {
-            return Pool.Get<GameConfig>();
+            return PlayableController.Instance.gameConfig;
         }
     }
 }

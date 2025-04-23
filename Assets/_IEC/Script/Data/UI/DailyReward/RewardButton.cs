@@ -99,11 +99,7 @@ namespace _IEC
             {
                 //Services.ShowRewardAds(ClaimReward, null, true);
                 
-                Services.ShowRewardAds(() =>
-                {
-                    Services.PushEvent(new SRApostition("claimDailyRewardWithAd_"+id));
-                    ClaimReward();
-                }, null, true);
+   
             }
         }
 

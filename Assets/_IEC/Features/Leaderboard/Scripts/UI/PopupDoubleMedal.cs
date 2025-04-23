@@ -29,11 +29,7 @@ namespace IEC.Wind.Leaderboard
         {
             base.SetEvent(getBtn.btn, () =>
             {
-                Services.ShowRewardAds(() =>
-                {
-                    Services.PushEvent(new TrackingEvent.SRApostition("X2Medal"));                    
-                    ActiveDoubleMedal();
-                });
+
                 //GameController.UseTicket(() =>
                 //{
                 //    ActiveDoubleMedal();

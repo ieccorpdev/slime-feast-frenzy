@@ -32,10 +32,6 @@ namespace IEC
                     Hide();
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
-                {
-                    Services.PushEvent(new SFApostition("losescreen_exit"));
-                }
             };
 
             groupLevelFailed.OnRetry += () =>
@@ -59,10 +55,7 @@ namespace IEC
                     Hide();
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
-                {
-                    Services.PushEvent(new SFApostition("losescreen_retry"));
-                }
+               
             };
         }
 

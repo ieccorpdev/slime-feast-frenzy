@@ -14,15 +14,13 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Camera cameraFollower;
         [SerializeField] Transform target;
         private Vector3 cameraOffset;
+        private float fOVOffset = 5;
         [SerializeField]
         private HoleConfig m_settings;
         public void Awake()
         {
             this.RegisterListener(EventList.GamePlay.UPDATE_CAMERA_TARGET,OnUpdateCameraTarget);
-            // if (mainCamera == null)
-            // {
-            //     mainCamera = GetComponentInChildren<CinemachineVirtualCamera>();
-            // }
+
             cameraOffset = cameraFollower.transform.position - target.position;
         }
 
@@ -70,7 +68,7 @@ namespace _IEC.Features.Gameplay
                 yield return null;
             }
 
-            cameraFollower.fieldOfView = targetFOV; 
+            cameraFollower.fieldOfView = targetFOV + fOVOffset; 
         }
    
         private float CalculateFOVbyDistance(float d1, float d2, float fov1)

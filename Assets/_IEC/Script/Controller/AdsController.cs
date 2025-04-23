@@ -20,11 +20,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
-                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                    {
-                        EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                        Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));
-                    });
+                    
                     break;
                 case EventList.Service.INIT_AD_DONE:
                     UpdateWhiteBannerSize();
@@ -48,7 +44,7 @@ namespace IEC
         public void UpdateWhiteBannerSize()
         {
             Debug.LogWarning("UpdateWhiteBannerSize");
-            var bannerHeight = (Application.isEditor ? 150 : Services.Ads().GetBannerHeight());
+            var bannerHeight = 150;
 
             Debug.LogWarning("screen DPI: " + Screen.dpi);
             if (Application.platform == RuntimePlatform.Android)

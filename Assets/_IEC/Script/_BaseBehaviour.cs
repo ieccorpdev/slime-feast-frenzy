@@ -7,8 +7,6 @@ namespace IEC
 {
     public class _BaseBehaviour : BaseBehaviour
     {
-        protected static ServicesController Services => Controllers.Get<ServicesController>();
-        protected static DataController Data => Controllers.Get<DataController>();
         
         protected static Game Game => Pool.Get<Game>();
         
@@ -18,7 +16,7 @@ namespace IEC
         
         protected static Joystick Joystick => Pool.Get<Joystick>();
         
-        protected static GameConfig Config => Pool.Get<GameConfig>();
+        protected static GameConfig Config => PlayableController.Instance.gameConfig;
 
         protected static HybridConfig HybridConfig => Config.hybridConfig;
 		public virtual void SetActive(bool isActive)

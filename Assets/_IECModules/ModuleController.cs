@@ -8,7 +8,6 @@ namespace _IECModules
 
         public static ModuleController instance;
 
-        public static CheatCode cheatCode;
         
        // public static GoogleSheetToCSV googleSheetToCsv;
 
@@ -27,7 +26,6 @@ namespace _IECModules
 
             DontDestroyOnLoad(this);
 
-            cheatCode = GetComponentInChildren<CheatCode>(true);
             
             //googleSheetToCsv = GetComponentInChildren<GoogleSheetToCSV>(true);
 

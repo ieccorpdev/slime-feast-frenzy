@@ -37,7 +37,7 @@ namespace _IEC.Features.Gameplay
         [Button]
         public void FindLevelTheme()
         {
-            var config = Pool.Get<GameConfig>();  
+            var config = PlayableController.Instance.gameConfig;  
             var levelIds = new List<int>();
 
             for (int i = 0; i < config.levelConfig.levelConfigDataEdited.Count; i++)

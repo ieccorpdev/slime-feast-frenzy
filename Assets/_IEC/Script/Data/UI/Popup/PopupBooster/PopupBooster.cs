@@ -94,7 +94,6 @@ namespace IEC
             Locator.Main.HomeScreenTab.DoMoveOutAllObj(0.3f,
                 () =>
                 {
-                    Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
                     GameController.OpenScene(GameScene.Game,
                         () =>
                         {

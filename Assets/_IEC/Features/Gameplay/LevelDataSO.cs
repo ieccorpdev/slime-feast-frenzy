@@ -8,11 +8,12 @@ using UnityEngine.Serialization;
 
 namespace _IEC.Features.Gameplay
 {
-    public class LevelDataSO : SerializedScriptableObject
+    [Serializable]
+    public class LevelDataSO : ScriptableObject
     {
         public LevelSpawnData levelSpawnData;
         public TextAsset mapData;
-        public List<LevelObjectiveData> listObjectives;
+        public List<LevelObjectiveData> listObjectives = new List<LevelObjectiveData>();
         public int time;
         public string theme; // ground skin
         public string difficulty; // type

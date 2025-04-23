@@ -44,19 +44,13 @@ namespace _IEC
         
         void OnSpinAdsButtonCLick()
         {
-            Services.ShowRewardAds(()=>
-            {
-                Services.PushEvent(new IEC.TrackingEvent.SRApostition("LuckyWheel_Spin"));   
-                PlayerData.luckWheelDailyAdsSpin += 1;
-                SpinWheel();
-            });
+   
         }
         void OnSpinFreeButtonCLick()
         {
             PlayerData.luckWheelDailyFreeSpin = false;
             PlayerData.firstSpinTutorial = true;
             SpinWheel();
-            Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("lucky_wheel_spin_free"));
         }
         void OnSpinGoldButtonCLick()
         {
@@ -64,7 +58,6 @@ namespace _IEC
             {
                 if (PlayerData.SubtractCurrency(ResourceType.Gold, goldCost))
                 {
-                    Services.PushEvent(new IEC.TrackingEvent.ClickSpinLuckyWheel(goldCost.ToString()));//Need push before count spin times;
                     PlayerData.luckWheelGoldTimeSpin += 1;
                     SpinWheel();
                 }

@@ -32,14 +32,14 @@ namespace _IEC.Features.Gameplay
 
         public void Show()
         {
-            frozenHelper.SetPopup(popupHelperFrozenTime);
-            magnetHelper.SetPopup(popupHelperMagnet);
-            scaleUpHelper.SetPopup(popupHelperScaleUp);
-            compassHelper.SetPopup(popupHelperCompass);
-            frozenHelper.OnShow();
-            magnetHelper.OnShow();
-            scaleUpHelper.OnShow();
-            compassHelper.OnShow();
+            // frozenHelper.SetPopup(popupHelperFrozenTime);
+            // magnetHelper.SetPopup(popupHelperMagnet);
+            // scaleUpHelper.SetPopup(popupHelperScaleUp);
+            // compassHelper.SetPopup(popupHelperCompass);
+            // frozenHelper.OnShow();
+            // magnetHelper.OnShow();
+            // scaleUpHelper.OnShow();
+            // compassHelper.OnShow();
         }
     }
 }

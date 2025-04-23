@@ -31,10 +31,10 @@ namespace IEC
             {
                 helperData = new PlayerHelperData
                 {
-                    numberFrozenTime = Pool.Get<GameConfig>().gamePlayConfig.GetStartNumber(HelperId.FrozenTime),
-                    numberCompass = Pool.Get<GameConfig>().gamePlayConfig.GetStartNumber(HelperId.Compass),
-                    numberMagnet = Pool.Get<GameConfig>().gamePlayConfig.GetStartNumber(HelperId.Magnet),
-                    numberScaleUp = Pool.Get<GameConfig>().gamePlayConfig.GetStartNumber(HelperId.ScaleUp)
+                    numberFrozenTime = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.FrozenTime),
+                    numberCompass = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.Compass),
+                    numberMagnet = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.Magnet),
+                    numberScaleUp = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.ScaleUp)
                 };
                 PlayerData.helperData = helperData;
             }

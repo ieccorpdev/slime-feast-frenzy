@@ -31,7 +31,6 @@ namespace IEC
 
         public void BehaviourAwake()
         {
-            Services.IAP().SetPurchaseCallback(PurchaseProductResult);
 
             //Set single receive callback for each IAP items from here, should call to single item script
             // UI.ScreenShopTest.SetCallbackIAP();
@@ -53,7 +52,6 @@ namespace IEC
             if (isSuccess)
             {
                 //Should call common analytic tracking IAP
-                Services.PushEvent(CustomIapAdjustName(productId));
                 // Debug.LogError("PurchaseProductResult");
                 // var listPayOut = IapUtilities.GetProductPayOuts(productId);
                 // if (listPayOut != null)
@@ -95,8 +93,6 @@ namespace IEC
             PackConfig configIap = Config.GetConfigPackIap(id);
             if (configIap.isHaveNoAds)
             {
-                Services.ActiveNoAds(true);
-                Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false); //Disable banner Ads
                 Controllers.Get<AdsController>().UpdateWhiteBannerSize();
             }
 
@@ -106,7 +102,6 @@ namespace IEC
                 PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
                 //Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);//Disable banner Ads
                 if(Locator.Main.HomeScreenTab) Locator.Main.HomeScreenTab.UpdateMainHome();
-                Services.SaveData();
             }            
             if (id == "com.sorting.cube.jam.piggy.bank")
             {
@@ -136,7 +131,6 @@ namespace IEC
         {
             //PlayerData.isNoAds = true;
             Pool.Get<ServiceData>().isNoAds = true;
-            Services.ActiveNoAds(true);
             EventController.RaiseEvent(EventList.GamePlay.BUY_NO_ADS);
         }
         

@@ -166,7 +166,7 @@ Camera:
     height: 1
   near clip plane: 0.1
   far clip plane: 5000
-  field of view: 41
+  field of view: 55
   orthographic: 0
   orthographic size: 10
   m_Depth: -1
@@ -981,6 +981,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LevelDataSO: {fileID: 11400000, guid: 3e49ce009b8cf8a4d8b934ceafe5d2c0, type: 2}
+  gameConfig: {fileID: 11400000, guid: bfc5543f643320743a828afe609e9189, type: 2}
   stack: {fileID: 0}
   level: 0
   limitTime: 0
@@ -22884,8 +22885,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 030bed69dae636144996c82e06f2b0c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  positionActivate: 6
-  topOffset: 0
 --- !u!4 &2078252300359500263
 Transform:
   m_ObjectHideFlags: 0
@@ -23362,121 +23361,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56500f8a640cb934ca5cdedaef8069b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_GameConfig: {fileID: 11400000, guid: bfc5543f643320743a828afe609e9189, type: 2}
-  m_GameData:
-    hybrid:
-      currentTab: 0
-    isDebugReset: 0
-    emptyData: 0
-    abVersion: 0
-    levelCreative: 0
-    isHaveBooster: 0
-    timeDelayFullAds: 0
-    levelVersion: 0
-    enableLevelProgress: 0
-    isUsingHardLevel: 0
-    enableTreasureHunt: 0
-    enableRewardForDaily: 0
-    isImmortal: 0
-    isUsingGroundExtend: 0
-    itemVersion: 0
-    levelStartInterAds: 4
-    usingWaterTheme: 1
-    enablePiggyBank: 0
-    isHaveProfileAndLeaderboard: 0
-    isUsingExtraLvlFollow: 0
-    isUsingLuckySpinV2Flow: 0
-    isUsingBuildV2Flow: 0
-    isUsingConnectedBox: 0
-    isUsingCustomLoopLevelFlow: 0
-    isOverrideHardLevelConfig: 0
-    isAllowSkipHardLevelAds: 0
-    levelStartHardLevelOverride: 31
-    loseBeforeAllowSkipHardLevelOverride: 2
-    isUsePopupRefillHelper: 0
-    isOverrideHelperCostData: 0
-    isOverrideDataRewardLuckyWheel: 0
-    usingNewLogicPull: 0
-    crLevelType: 0
-    timeSkipAdsStartPackage: 20
-    inTutorial: 0
-    inTutorialLevel1: 0
-    inTutorialLevel2: 0
-    inTutorialStack: 0
-    levelTutorialStack: 3
-    isHaveLeaderboard: 1
-    isHaveAnimMedal: 0
-  m_PlayerSecret:
-    lastTickPlayTime: 0
-    startTickPlayTime: 0
-    lastVersion: 
-    session: 0
-    ticket: 0
-    level: 1
-    lastFeatureCount: 0
-    levelTracking: 1
-    levelFirstTime: 0
-    countPlayLevel: 0
-    isPlayLevelHardFirstTime: 1
-    currentHardLevel: 0
-    currentCountLoseHardLevel: 0
-    lastHardLevel: 0
-    isDiscountedPackBought: 0
-    isClickedRate: 0
-    sessionStartLevel: 0
-    isMusicOn: 0
-    isSoundOn: 0
-    isVibrateOn: 0
-    passHelperStack: 0
-    passHelperClear: 0
-    hybridData:
-      timeRefillLeft: 0
-      timeUnlimitedLive: 0
-    helperData:
-      numberMagnet: 0
-      numberCompass: 0
-      numberFrozenTime: 0
-      numberScaleUp: 0
-      isCompleteMagnetTutorial: 0
-      isCompleteCompassTutorial: 0
-      isCompleteFrozenTimeTutorial: 0
-      isCompleteScaleUpTutorial: 0
-    boosterData:
-      boosterType: 0
-      itemDefinition: {fileID: 0}
-      levelUnlock: 0
-      effectValue: 0
-      effectTime: 0
-    currentBoosterStreak: 0
-    levelLostStreak: 0
-    playerLife: 5
-    realTimeUnlimidtedLife: 0
-    playerProfileName: 
-    playerProfileIconId: 0
-    levelPending: 0
-    isKilledAppGamePlay: 0
-    dailyShowLifeOfferPack: 0
-    shownFirstTimeBuildCityTut: 0
-    currentCityBuild: 0
-    screwCityBuild: 0
-    playerAvatarSpriteName: 
-    playerName: 
-    firstSpinTutorial: 0
-    luckWheelDailyFreeSpin: 0
-    luckWheelDailyAdsSpin: 0
-    luckWheelGoldTimeSpin: 0
-    isBoughtStarterPack: 0
-    listBundlePurchased: []
-    piggyBankGold: 0
-    wasShowPiggyBankFirstTime: 0
-    dailyShowPiggyBank: 0
-    currentDailyAdReward: 0
-    mainRewardCooldownTickTime: 0
-    claimMainReward: 0
-    tempSpecialObjCollectedInLevel: 0
-    currentProgress: 0
-    currentProgressMilestone: 0
-    currentSpecialItemIndex: 0
 --- !u!4 &2330660615959524433
 Transform:
   m_ObjectHideFlags: 0
@@ -25127,6 +25011,8 @@ MonoBehaviour:
   playerHole: {fileID: 7769055446898107496}
   levelObjectHolder: {fileID: 8205614176905305190}
   allItemHolder: {fileID: 7542084623460381738}
+  m_LevelConfig: {fileID: 11400000, guid: 9e9ac06a5d9cc094d8399951618012d5, type: 2}
+  levelSpawnData: {fileID: 11400000, guid: 131cd8b5e33b23d48ae3021345e85c80, type: 2}
 --- !u!1 &3250402849034095063
 GameObject:
   m_ObjectHideFlags: 0
@@ -53547,28 +53433,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a6f3be44f030941ad2fb84196bc5b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  config: {fileID: 11400000, guid: 605ff9c8a2a517647ac330729159f143, type: 2}
-  m_ServiceData:
-    isNoAds: 0
-    isNoAdsReward: 0
-    isInterFallbackForReward: 0
-    timeCheckType: 0
-    firstVersion: 
-    currentVersion: 
-    curAbTestDate: 
-    installTime: 
-    updateTime: 
-    firebasePseudoId: 
-    revTotalAd: 0
-    revInterAd: 0
-    revRewardAd: 0
-    revBannerAd: 0
-    revInterNReward: 0
-    lastRevFBPurchase: 0
-    ListRevMilestones: []
-  m_AnalyticSaveData:
-    listParam: []
-  bannerPos: 1
 --- !u!222 &6167828556754204446
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -286020,7 +285884,7 @@ PrefabInstance:
     - target: {fileID: 9049274688606409165, guid: c6e731e57f63e1644a934741d7c11320,
         type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 9049274688606409165, guid: c6e731e57f63e1644a934741d7c11320,
         type: 3}

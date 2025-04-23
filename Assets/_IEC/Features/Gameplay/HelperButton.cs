@@ -121,7 +121,7 @@ namespace _IEC.Features.Gameplay
             m_IsGamePause = false;
             m_CooldownTime = HelperActiveTime;
             imgProgress.fillAmount = 1;
-            UpdatePoolNumberUI();
+            //UpdatePoolNumberUI();
             if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false)
             {
                 ChangeState(State.Locked);

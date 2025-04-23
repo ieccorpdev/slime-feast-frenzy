@@ -19,7 +19,6 @@ public class PopupSetting : BasePopup
         SetEvent(vibrateBtn, OnVibrateBtnClick);
         SetEvent(restartBtn, () => {
             EventController.RaiseEvent(EventList.GamePlay.END_LEVEL_ADS, new EventParam(this, name));
-            Services.PushEvent(new IEC.TrackingEvent.ClickBtnReplay());
         });
     }
 

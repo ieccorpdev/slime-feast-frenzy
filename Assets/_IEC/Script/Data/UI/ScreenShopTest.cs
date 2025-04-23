@@ -14,13 +14,11 @@ namespace IEC
         {
             btnTestPurchase.onClick.AddListener(() =>
             {
-                Services.IAP().PurchaseProduct(TEST_PRODUCT_ID);
             });
         }
 
         public void SetCallbackIAP()
         {
-            Services.IAP().SetReceiveProductCallback(TEST_PRODUCT_ID, ReceivePurchaseItem);
         }
 
         void ReceivePurchaseItem(bool isRestore)

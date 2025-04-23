@@ -30,24 +30,12 @@ namespace IEC
             });
             if (privacyPolicy)
             {
-                SetEvent(privacyPolicy, () => { Services.OpenPrivacyPolicyURL(); });
             }
             if (restorePurchaseBtn)
             {
                 SetEvent(restorePurchaseBtn, () =>
                 {
-                    Services.IAP().RestorePurchase((success) =>
-                    {
-                        if (success)
-                        {
-                            Locator.Service.PopupRestorePurchaseSuccess.Show();
-                        }
-                        else
-                        {
-                            Locator.Service.PopupRestorePurchaseFail.Show();
-                        }
-
-                    });
+                   
                 });
             }
 
@@ -55,25 +43,12 @@ namespace IEC
             {
                 SetEvent(feedBackBtn, () =>
                 {
-                    Services.SendEmail();
                 });
             }
             SetEvent(btnQuit, () =>
             {
                 //EventController.RaiseEvent(EventList.GamePlay.GO_MAIN);
-                if(Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
-                {
-                    PlayerData.DecreasePlayerLife();
-                    if (GamePlay.IsInLevelHard)
-                    {
-                        PlayerData.currentCountLoseHardLevel++;
-                    }
-
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                }, () =>
-                {
-                    Services.PushEvent(new IEC.TrackingEvent.SFApostition($"skip_win_bonus_reward"));
-                }));
+              
 
             });
             SetEvent(closeBtn2, () => { Hide(); });

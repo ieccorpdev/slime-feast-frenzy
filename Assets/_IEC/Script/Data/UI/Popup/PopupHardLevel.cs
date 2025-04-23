@@ -19,41 +19,6 @@ namespace IEC
             base.Awake();
             SetEvent(allBgBtn, OnHideClick);
             
-            SetEvent(btnPlay,
-                () =>
-                {
-                    // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);
-                    Services.PushEvent(new TrackingEvent.ClickBtnTracking("click_play_hard_level"));
-                    Hide();
-                    //PlayerData.isPlayLevelHardFirstTime = false;
-                    Locator.Main.HomeScreenTab.DoMoveOutAllObj(0.3f,
-                        () =>
-                        {
-                            Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                            GameController.OpenScene(GameScene.Game, 
-                                ()=>{EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL);}, 
-                                false);
-                        },0.1f);
-                });
-            SetEvent(normalCloseBtn,Hide);
-            SetEvent(btnSkip,
-                () =>
-                {
-                    //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                    Services.PushEvent(new TrackingEvent.ClickBtnTracking("click_skip_hard_level"));
-                    OnSkip();
-                });
-            
-            SetEvent(btnSkipAds,
-                () =>
-                {
-                    Services.ShowRewardAds(()=>
-                    {
-                        Services.PushEvent(new IEC.TrackingEvent.SRApostition("skip_hard_level_ads"));   
-                        Services.PushEvent(new TrackingEvent.ClickBtnTracking("click_skip_hard_level_ads"));
-                        OnSkip();
-                    });
-                });
             
             btnSkipAds.gameObject.SetActive(false);
         }

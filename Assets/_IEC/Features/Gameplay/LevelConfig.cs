@@ -27,6 +27,7 @@ namespace _IEC.Features.Gameplay
     }
     
     [CreateAssetMenu(menuName = "Game/Features/Gameplay/LevelConfig")]
+    [Serializable]
     public class LevelConfig : ScriptableObject
     {
         public List<LevelConfigModel> levelConfigData;
@@ -132,7 +133,7 @@ namespace _IEC.Features.Gameplay
             Debug.Log("All levels exported to CSV at: " + path);
         }
         
-        private GameConfig Config => Pool.Get<GameConfig>();
+        private GameConfig Config => PlayableController.Instance.gameConfig;
 
         private readonly List<int> excludedLevels = new List<int>
         {
@@ -554,12 +555,7 @@ namespace _IEC.Features.Gameplay
             return levelFTUE.levelConfigModel;
         }
         
-        public LevelDataSO GetLevelDataSO(int level)
-        {
-            level = GetLevel(level);
-            var levelIndex = level - 1;
-            return levelData.listAllLevelData[0];
-        }
+
         
         public LevelDataSO GetLevelDataSOSHP(int level)
         {

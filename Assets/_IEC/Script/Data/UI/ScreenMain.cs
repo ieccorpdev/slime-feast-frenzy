@@ -48,7 +48,6 @@ namespace IEC
                         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
                         m_BtnSetting.gameObject.SetActive(true);
                         m_Shop.GetComponent<UIShopHomeTab>().SortVerticalGroups();
-                        Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_shop_iap"));
                         break;
                     case (TabType.Home):
                         //Locator.Service.MoneyPanel.Hide();
@@ -60,7 +59,6 @@ namespace IEC
                         //m_ResourceUI.SetActive(false);
                         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
                         m_BtnSetting.gameObject.SetActive(false);
-                        Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_leaderboard"));
                         EventController.RaiseEvent(EventList.WindLeaderboard.CHANGE_AVATAR);
                         break;
                     default:
@@ -123,7 +121,6 @@ namespace IEC
         public void CheckBannerHome()
         {
             //MeoMew remove ads banner in home
-            Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
         }
         private void HideAllTab()
         {

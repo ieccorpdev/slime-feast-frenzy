@@ -23,7 +23,6 @@ namespace IEC
 
             SetEvent(btnNext, () =>
             {
-                Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 ActionCompletePopup();
             });
 

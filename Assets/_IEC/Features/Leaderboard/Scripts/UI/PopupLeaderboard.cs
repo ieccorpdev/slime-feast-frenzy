@@ -61,7 +61,6 @@ namespace IEC.Wind.Leaderboard
             });
             SetEvent(rankInfoBtn, () =>
             {
-                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("leaderboard_info"));
                 Locator.Main.PopupRankInfo.Show();
             });
             scroller.OnBeingDrag+=DisableRewardPopupMini ;

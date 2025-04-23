@@ -58,7 +58,7 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image notiCityBuild;
     private List<UIMoveOutAnimation> _listObjMoveOut = new();
     private Sequence _uiAnimSequence;
-    private GameConfig m_gameConfig => Pool.Get<GameConfig>();
+    private GameConfig m_gameConfig => PlayableController.Instance.gameConfig;
 
     // Start is called before the first frame update
     void Start()

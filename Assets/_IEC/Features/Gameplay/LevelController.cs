@@ -44,7 +44,8 @@ namespace _IEC.Features.Gameplay
         private bool m_MagnetHelperActive;
         private bool m_IsGameplayPause;
         private int m_Level;
-        private LevelDataSO m_LevelConfig;
+        [SerializeField] private LevelDataSO m_LevelConfig;
+        [SerializeField] private LevelSpawnData levelSpawnData;
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
@@ -102,44 +103,18 @@ namespace _IEC.Features.Gameplay
         public void LoadLevel(int level)
         {
             m_Level = level;
-            // var levelConfig = Game.levelVersion == 2
-            //     ? Config.levelConfig.GetLevelDataToysSO(level)
-            //     : Config.levelConfig.GetLevelDataSO(level);
-            // if (Game.isFTUELevelAB)
-            // {
-            //     levelConfig = Config.levelConfig.GetFTUELevelData(level);
-            // }
-         
-            m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
-                ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
-            #if UNITY_EDITOR
-            if (EditorPrefs.GetBool("isPlayTest"))
-            {
-                m_LevelConfig = Config.levelConfig.playTestData;
-                EditorPrefs.SetBool("isPlayTest", false);
-            }
-            #endif
-            if (m_LevelConfig == null)
-            {
-                Debug.LogError("Level Data is null");
-                return;
-            }
 
-            if (Game.levelCreative)
-            {
-                // var listLevelCreative = Config.levelConfig.levelConfigCreative;
-                // levelConfig = listLevelCreative[level % listLevelCreative.Count];
-            }
             
             m_AllItems.Clear();
-            m_AllItems = LevelHelper.SpawnAllItem(m_LevelConfig.levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
+
+            m_AllItems = LevelHelper.SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
                 LevelHelper.SpawnMap(m_LevelConfig, levelObjectHolder);
             }
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
-
+            
             m_AllSpecialItems.Clear();
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),
@@ -277,18 +252,18 @@ namespace _IEC.Features.Gameplay
         
         private void OnLevelTimeOut(object param)
         {
-            if (GetLevelData().levelType == LevelType.COIN)
-            {
-                ChangeState(State.Win);
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.COIN});
-                return;
-            }
-
-            if (IsInResultState() == false)
-            {
-                ChangeState(State.Lose);
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.TimeUp});
-            }
+            // if (GetLevelData().levelType == LevelType.COIN)
+            // {
+            //     ChangeState(State.Win);
+            //     EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.COIN});
+            //     return;
+            // }
+            //
+            // if (IsInResultState() == false)
+            // {
+            //     ChangeState(State.Lose);
+            //     EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.TimeUp});
+            // }
         }
 
         private void ReviveGame(object param)
@@ -312,7 +287,6 @@ namespace _IEC.Features.Gameplay
             if (data.boosterId != BoosterId.BonusExp) return;
             //var bonusExpConfig = Config.boosterConfig.GetBoosterConfigModelById(BoosterId.BonusExp);
             //playerHole.AddXp(bonusExpConfig.advantageNumber);
-            Services.PushEvent(new UserHelper("growth_potion", Game.crLevelType.ToString()));
         }
 
         private void OnCollectedBoosterItem(object param)

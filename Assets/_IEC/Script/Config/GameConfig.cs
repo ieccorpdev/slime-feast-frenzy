@@ -78,7 +78,7 @@ namespace IEC
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here
-            // levelConfig = EncryptedAssetModule.LoadAsset<LevelConfig>(levelConfigName);
+            //levelConfig = EncryptedAssetModule.LoadAsset<LevelConfig>(levelConfigName);
             // gamePlayConfig = EncryptedAssetModule.LoadAsset<GamePlayConfig>(gamePlayConfigName);
             // itemPrefabConfig = EncryptedAssetModule.LoadAsset<GameplayItemPrefabConfig>(itemPrefabConfigName);
             // themeConfig = EncryptedAssetModule.LoadAsset<ThemeConfig>(themeConfigName);
@@ -116,5 +116,7 @@ namespace IEC
             public Sprite icon;
 
         }
+
+       
     }
 }
