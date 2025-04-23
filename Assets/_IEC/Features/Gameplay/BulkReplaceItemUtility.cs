@@ -10,6 +10,7 @@ using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -19,6 +20,16 @@ public class ItemIdConfig
 {
     public string OriginalID;
     public string NewID;
+}
+
+[Serializable]
+public class ReplaceItemData
+{
+    public string itemID;
+    public bool isHavePrefab;
+    public GameObject newItemPrefab;
+    public Mesh newItemMesh;
+    public Material newItemMaterial;
 }
 
 [ExecuteAlways]
@@ -40,6 +51,41 @@ public class BulkReplaceItemUtility : MonoBehaviour
     private const string FOLDER_PATH_ITEM_DEFINITION = "_IEC/Features/Gameplay/Config/Items";
     private const string FOLDER_PATH_ICON = "RapidIcon/Exports";
     private const string FOLDER_PATH_SIMPLIFIED_MESH = "_IECProject/SimplifiedMesh";
+
+    [Header("Replace Item Prefab")]
+    public ReplaceItemData replaceItemData;
+
+    [Button]
+    void DatPTReplace()
+    {
+        var prefabDefinition = itemPrefabConfig.listItemDefinitionShp
+            .Find(item => item.GetId() == replaceItemData.itemID);
+
+        if (prefabDefinition == null)
+        {
+            Debug.LogError($"Item with ID {replaceItemData.itemID} not found");
+            return;
+        }
+        
+        if (!replaceItemData.isHavePrefab)
+        {
+            GameObject obj = new GameObject(replaceItemData.newItemMesh.name);
+
+            // Add MeshFilter and MeshRenderer components
+            MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+            MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+
+            meshFilter.mesh = replaceItemData.newItemMesh;
+            meshRenderer.material = replaceItemData.newItemMaterial;
+            
+            DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
+            DestroyImmediate(obj);
+        }
+        else
+        {
+            DoReplaceItemPrefab(prefabDefinition.GetPrefab(), replaceItemData.newItemPrefab);
+        }
+    }
 
     [Button]
     void BulkReplace()
@@ -214,6 +260,35 @@ public class BulkReplaceItemUtility : MonoBehaviour
             PrefabUtility.SaveAsPrefabAsset(tempInstance, prefabPath);
             DestroyImmediate(tempInstance);
         }
+    }
+
+    void DoReplaceItemPrefab(GameObject originalPrefab, GameObject newItemPrefab)
+    {
+        if (originalPrefab == null)
+        {
+            Debug.LogError($"Missing item with name {originalPrefab.name}");
+            return;
+        }
+            
+        string prefabPath = AssetDatabase.GetAssetPath(originalPrefab);
+        GameObject tempInstance = PrefabUtility.InstantiatePrefab(originalPrefab) as GameObject;
+
+        if (tempInstance == null)
+        {
+            Debug.LogError($"Missing item with name {originalPrefab.name}");
+            return;
+        }
+            
+        var reskinUtility = tempInstance.GetComponent<ItemReplaceUtility>();
+        if (reskinUtility == null)
+        {
+            Debug.LogError($"Missing reskin utility in item {originalPrefab.name}");
+            return;
+        }
+
+        reskinUtility.ReplaceSkin(newItemPrefab);
+        PrefabUtility.SaveAsPrefabAsset(tempInstance, prefabPath);
+        //DestroyImmediate(tempInstance);
     }
 
     void DuplicatePrefabInstance()
