@@ -5,12 +5,14 @@ using System.Globalization;
 using System.IO;
 using _IEC.Features.Gameplay;
 using IEC;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.Serialization;
+using Object = System.Object;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -26,8 +28,8 @@ public class ItemIdConfig
 public class ReplaceItemData
 {
     public string itemID;
-    public bool isHavePrefab;
-    public GameObject newItemPrefab;
+    // public bool isHavePrefab;
+    // public GameObject newItemPrefab;
     public Mesh newItemMesh;
     public Material newItemMaterial;
 }
@@ -52,38 +54,117 @@ public class BulkReplaceItemUtility : MonoBehaviour
     private const string FOLDER_PATH_ICON = "RapidIcon/Exports";
     private const string FOLDER_PATH_SIMPLIFIED_MESH = "_IECProject/SimplifiedMesh";
 
-    [Header("Replace Item Prefab")]
-    public ReplaceItemData replaceItemData;
+    [Header("Replace Item Prefab")] 
+    public string urlSheetReplaceItem = "";
+
+    public string newModelFolder = "Assets/New Asset Model";
+    //public ReplaceItemData replaceItemData;
+
+    public List<ReplaceItemData> loadedListReplaceData = new();
 
     [Button]
     void DatPTReplace()
     {
+        StartCoroutine(IEDatPTReplaceSkin(DatPTDoReplaceAll));
+    }
+
+    void DoReplaceItem(ReplaceItemData replaceData)
+    {
         var prefabDefinition = itemPrefabConfig.listItemDefinitionShp
-            .Find(item => item.GetId() == replaceItemData.itemID);
+            .Find(item => item.GetId() == replaceData.itemID);
 
         if (prefabDefinition == null)
         {
-            Debug.LogError($"Item with ID {replaceItemData.itemID} not found");
+            Debug.LogError($"Item with ID {replaceData.itemID} not found");
             return;
         }
         
-        if (!replaceItemData.isHavePrefab)
+        GameObject obj = new GameObject(replaceData.newItemMesh.name);
+
+        // Add MeshFilter and MeshRenderer components
+        MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+        MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+
+        meshFilter.mesh = replaceData.newItemMesh;
+        meshRenderer.material = replaceData.newItemMaterial;
+        
+        DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
+        DestroyImmediate(obj);
+    }
+
+    void DatPTDoReplaceAll()
+    {
+        foreach (var data in loadedListReplaceData)
         {
-            GameObject obj = new GameObject(replaceItemData.newItemMesh.name);
-
-            // Add MeshFilter and MeshRenderer components
-            MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
-            MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
-
-            meshFilter.mesh = replaceItemData.newItemMesh;
-            meshRenderer.material = replaceItemData.newItemMaterial;
-            
-            DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
-            DestroyImmediate(obj);
+            DoReplaceItem(data);
         }
-        else
+    }
+    
+    IEnumerator IEDatPTReplaceSkin(Action endAction)
+    {
+        string csvUrl = urlSheetReplaceItem.Replace("/edit?gid=", "/export?format=csv&gid=");
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(csvUrl))
         {
-            DoReplaceItemPrefab(prefabDefinition.GetPrefab(), replaceItemData.newItemPrefab);
+            yield return webRequest.SendWebRequest();
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"Error downloading sheet: {webRequest.error}");
+                yield break;
+            }
+
+            string csvText = webRequest.downloadHandler.text;
+            DatPTProcessCsvData(csvText);
+            endAction?.Invoke();
+        }
+    }
+    
+    void DatPTProcessCsvData(string csvText)
+    {
+        loadedListReplaceData.Clear();
+        
+        Debug.Log("Loaded Text: \n" + csvText);
+
+        var lines = csvText.Split("\n");
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var currentLine = lines[i].Trim();
+            var column = currentLine.Split(',');
+
+            if (column.Length >= 2)
+            {
+                var replaceData = new ReplaceItemData();
+                replaceData.itemID = column[0];
+
+                var assetFolder = $"{newModelFolder}/{column[1]}";
+                
+                string[] guids = AssetDatabase.FindAssets("t:Material", new[] { assetFolder });
+
+                if (guids.Length > 0)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                    replaceData.newItemMaterial = AssetDatabase.LoadAssetAtPath<Material>(path);
+                }
+                
+                guids = AssetDatabase.FindAssets($"t:Mesh", new[] { assetFolder });
+
+                foreach (string guid in guids)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(guid);
+                    UnityEngine.Object[] assets = AssetDatabase.LoadAllAssetsAtPath(path);
+                    
+                    foreach (var asset in assets)
+                    {
+                        if (asset is Mesh mesh && mesh.name == column[2])
+                        {
+                            replaceData.newItemMesh = asset as Mesh;
+                            break;
+                        }
+                    }
+                }
+                
+                loadedListReplaceData.Add(replaceData);
+            }
         }
     }
 
