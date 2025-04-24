@@ -83,6 +83,7 @@ public class ClaimBonusRewardPanel : BasePopup
     
     public void ShowingRewardPanel(string skinChest = "")
     {
+        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);
@@ -174,6 +175,11 @@ public class ClaimBonusRewardPanel : BasePopup
         }
     }
 
+    public override void Hide()
+    {
+        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+        base.Hide();
+    }
 }
 
 [Serializable]public class PositionGroupsRewardDataPanel
