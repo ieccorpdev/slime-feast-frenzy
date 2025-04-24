@@ -24,7 +24,7 @@ namespace IEC
         public Action OnPurchaseSuccess;
         public Action OnPurchaseFail;
         [SerializeField] protected TMP_Text m_TxtPrice, m_PackName;
-
+        public PackConfig GetConfig => m_Config;
         protected virtual void Awake()
         {
             gameObject.OnEvent(EventList.Service.INIT_IAP_DONE, SetLocalizePrice);

@@ -371,8 +371,7 @@ public class HomeScreenTab : ScreenNavigateUI
         avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
-        //startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
-        startedPackageBtn.gameObject.SetActive(false);
+        startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();

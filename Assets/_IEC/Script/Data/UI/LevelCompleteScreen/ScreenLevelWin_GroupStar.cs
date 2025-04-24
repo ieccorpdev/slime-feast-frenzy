@@ -15,7 +15,8 @@ namespace IEC
         private string m_tween_ID => gameObject.GetInstanceID().ToString();
         
         public int StarWon { get; private set; }
-
+        float startWaitTime = 0.3f;
+        float timeEachStep = 0.25f;
         private void OnEnable()
         {
             DeactiveGroupStar();
@@ -32,26 +33,25 @@ namespace IEC
         {
             Sequence sequence = DOTween.Sequence().SetId(m_tween_ID);
             float timeInterval = 0.05f;
-            float startWaitTime = 0.75f;
             sequence.AppendInterval(startWaitTime);
             sequence.AppendCallback(() => starLeft.gameObject.SetActive(true));
-            sequence.Append(starLeft.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
 
             switch (remainingTimeState)
             {
                 case GameplayTimer.RemainingTimeState.Safe:
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starMid.gameObject.SetActive(true));
-                    sequence.Append(starMid.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starRight.gameObject.SetActive(true));
-                    sequence.Append(starRight.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
                     StarWon = 3;
                     break;
                 case GameplayTimer.RemainingTimeState.Warning:
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starMid.gameObject.SetActive(true));
-                    sequence.Append(starMid.transform.DOScale(0, 0.5f).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
                     StarWon = 2;
                     break;
                 case GameplayTimer.RemainingTimeState.Dangerous:

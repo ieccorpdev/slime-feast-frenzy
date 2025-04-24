@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,8 +17,7 @@ namespace IEC
         public GameObject notiObj;
 
         [Header("Progress")]
-        public Image progressFillImage;
-        public TextMeshProUGUI progressText;
+        public ProgressBarFillEffect progressFillEffect;
 
         public void SetLock(bool isLock)
         {
@@ -32,10 +33,11 @@ namespace IEC
 
         public void SetProgressBar(float currentProgress, float maxProgress)
         {
-            if (progressText == null || progressFillImage == null)
+            if (progressFillEffect == null)
                 return;
-            progressText.text = $"{currentProgress}/{maxProgress}";
-            progressFillImage.fillAmount = currentProgress / maxProgress;
+            
+            progressFillEffect.SetProgressText($"{currentProgress}/{maxProgress}");
+            progressFillEffect.DoFillAnim((float)currentProgress / maxProgress);
         }
     }
 }
