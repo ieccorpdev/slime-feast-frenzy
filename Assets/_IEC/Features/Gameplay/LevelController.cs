@@ -115,13 +115,13 @@ namespace _IEC.Features.Gameplay
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
             
-            m_AllSpecialItems.Clear();
-            m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
-                GroundExtend.CalculateBounds(m_AllItems),
-                Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
-                allItemHolder,
-                Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
-            );
+            // m_AllSpecialItems.Clear();
+            // m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
+            //     GroundExtend.CalculateBounds(m_AllItems),
+            //     Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
+            //     allItemHolder,
+            //     Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
+            // );
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
@@ -129,7 +129,7 @@ namespace _IEC.Features.Gameplay
             playerHole.HideLevelText();
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
-            this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);
+            //this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);
         }
         
         public void StartPlay()

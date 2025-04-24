@@ -42,13 +42,13 @@ namespace IEC
         
         private void Awake()
         {
-            btnPause.onClick.AddListener(() =>
-            {
-                if(GamePlay.levelController.CurrentState == LevelController.State.Lose) return;
-                Locator.Game.PopupSettingIngame.Show();
-                //SoundController.PlayClickBtnAudio();
-                //popupPauseGame.Show();
-            });
+            // btnPause.onClick.AddListener(() =>
+            // {
+            //     if(GamePlay.levelController.CurrentState == LevelController.State.Lose) return;
+            //     Locator.Game.PopupSettingIngame.Show();
+            //     //SoundController.PlayClickBtnAudio();
+            //     //popupPauseGame.Show();
+            // });
             gameplayTimer.OnReset += () =>
             {
                 groupMark.SetActiveDangerousMark(false);
@@ -95,7 +95,7 @@ namespace IEC
 
         public void UpdateUI()
         {
-            groupHelperUI.Show();
+//            groupHelperUI.Show();
             //popupPauseGame.Hide();
             groupMark.SetActiveFrozenMark(false);
             groupMark.SetActiveDangerousMark(false);

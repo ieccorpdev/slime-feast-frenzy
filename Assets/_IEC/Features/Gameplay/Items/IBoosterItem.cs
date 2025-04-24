@@ -6,7 +6,7 @@ using UnityEngine;
 
 public interface IBoosterItem
 {
-    public void Init();
-    public void ApplyEffect();
-    public void MoveToPos(Vector3 pos);
+     void Init();
+     void ApplyEffect();
+     void MoveToPos(Vector3 pos);
 }

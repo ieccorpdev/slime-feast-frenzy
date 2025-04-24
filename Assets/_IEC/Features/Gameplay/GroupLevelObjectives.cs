@@ -141,15 +141,15 @@ namespace _IEC.Features.Gameplay
         
         private void HandleObjectiveUIForSpecialObject()
         {
-            var dataSpecial = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex);
-            var specialObjective = new LevelObjective();
-            int count = Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
-            specialObjective.itemId = dataSpecial.GetId();
-            specialObjective.number = count;
-            specialObjectiveUI.LoadData(specialObjective,true);
-            m_ActiveObjectiveUIs.Add(specialObjectiveUI);
-            specialObjectiveUI.gameObject.SetActive(count > 0);
-            specialObjectiveParent.gameObject.SetActive(count > 0);
+            // var dataSpecial = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex);
+            // var specialObjective = new LevelObjective();
+            // int count = Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
+            // specialObjective.itemId = dataSpecial.GetId();
+            // specialObjective.number = count;
+            // specialObjectiveUI.LoadData(specialObjective,true);
+            // m_ActiveObjectiveUIs.Add(specialObjectiveUI);
+            // specialObjectiveUI.gameObject.SetActive(count > 0);
+            // specialObjectiveParent.gameObject.SetActive(count > 0);
         }
 
         private void HideSpecialObjective()

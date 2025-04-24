@@ -53,11 +53,11 @@ namespace IEC
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
-                    PlayerData.IncreaseBoosterStreak();
-                    PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
-                    if(GamePlay.IsInLevelHard)
-                        GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
-                    else
+//                    PlayerData.IncreaseBoosterStreak();
+   //                 PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    // if(GamePlay.IsInLevelHard)
+                    //     GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
+                    // else
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWin);
                     //GamePlay.IsWin = true;
                     OnGameOver();
@@ -139,19 +139,20 @@ namespace IEC
 
         void OnGameOver()
         {
-            Game.SetTimeEndLevel();
-            if (GamePlay.IsWin)
-            {
-                PlayerData.AddLevel();
-                Locator.Main.PopupPiggyBank.AddGoldToPiggyBank(Config.dataPiggyBankConfig
-                    .goldEarnedEachLevel); //CustomGold here
-                PlayerData.AddScrewBuildCity(Config.buildCityConfig.screwAddEndgame);
-            }
-            else
-            {
-                PlayerData.DecreasePlayerLife();
-            }
-            EventController.RaiseEvent(EventList.SAVE_DATA);
+            // Game.SetTimeEndLevel();
+            // if (GamePlay.IsWin)
+            // {
+            //     PlayerData.AddLevel();
+            //     Locator.Main.PopupPiggyBank.AddGoldToPiggyBank(Config.dataPiggyBankConfig
+            //         .goldEarnedEachLevel); //CustomGold here
+            //     PlayerData.AddScrewBuildCity(Config.buildCityConfig.screwAddEndgame);
+            // }
+            // else
+            // {
+            //     PlayerData.DecreasePlayerLife();
+            // }
+            // EventController.RaiseEvent(EventList.SAVE_DATA);
+            PlayableController.Instance.ShowEndCard();
         }
 
         void PushPlayLevelEvent()

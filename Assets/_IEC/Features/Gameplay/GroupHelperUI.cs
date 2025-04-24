@@ -18,17 +18,17 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private PopupHelper popupHelperFrozenTime;
         [SerializeField] private PopupHelper popupHelperScaleUp;
 
-        public PopupHelper GetPopupHelper(HelperId helperId)
-        {
-            return helperId switch
-            {
-                HelperId.Magnet => popupHelperMagnet,
-                HelperId.FrozenTime => popupHelperFrozenTime,
-                HelperId.ScaleUp => popupHelperScaleUp,
-                HelperId.Compass => popupHelperCompass,
-                _ => null
-            };
-        }
+        // public PopupHelper GetPopupHelper(HelperId helperId)
+        // {
+        //     return helperId switch
+        //     {
+        //         HelperId.Magnet => popupHelperMagnet,
+        //         HelperId.FrozenTime => popupHelperFrozenTime,
+        //         HelperId.ScaleUp => popupHelperScaleUp,
+        //         HelperId.Compass => popupHelperCompass,
+        //         _ => null
+        //     };
+        //}
 
         public void Show()
         {
