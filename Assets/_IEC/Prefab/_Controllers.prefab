@@ -1,59 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1086242865168015131
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3017103823329930216}
-  - component: {fileID: 4605010730517796029}
-  m_Layer: 0
-  m_Name: LeaderBoard
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3017103823329930216
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086242865168015131}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4605010730517796029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1086242865168015131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8f393eb12b0180349a1fb91368b5a1b6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  leaderboardSaveData:
-    medalMultiply: 1
-    avatarId: 0
-    myData:
-      name: Player467356
-      medal: 0
-      avatarId: 0
-    currentRankView: 5
-    candidateDatas: []
-  leaderboardConfig: {fileID: 11400000, guid: dc3a14a99c960714b8675de940be5ddc, type: 2}
 --- !u!1 &1756024047977784514
 GameObject:
   m_ObjectHideFlags: 0
@@ -192,6 +138,7 @@ MonoBehaviour:
     levelCreative: 0
     isHaveBooster: 0
     timeDelayFullAds: 0
+    levelStartShowFullAds: 8
     levelVersion: 0
     enableLevelProgress: 0
     isUsingHardLevel: 0
@@ -201,6 +148,7 @@ MonoBehaviour:
     isUsingGroundExtend: 0
     itemVersion: 0
     levelStartInterAds: 4
+    usingWaterTheme: 1
     enablePiggyBank: 0
     isHaveProfileAndLeaderboard: 0
     isUsingExtraLvlFollow: 0
@@ -215,6 +163,7 @@ MonoBehaviour:
     isUsePopupRefillHelper: 0
     isOverrideHelperCostData: 0
     isOverrideDataRewardLuckyWheel: 0
+    usingNewLogicPull: 0
     crLevelType: 0
     timeSkipAdsStartPackage: 20
     inTutorial: 0
@@ -260,7 +209,13 @@ MonoBehaviour:
       isCompleteFrozenTimeTutorial: 0
       isCompleteScaleUpTutorial: 0
     boosterData:
-      boosterDataModels: []
+      boosterType: 0
+      itemDefinition: {fileID: 0}
+      levelUnlock: 0
+      effectValue: 0
+      effectTime: 0
+    currentBoosterStreak: 0
+    levelLostStreak: 0
     playerLife: 5
     realTimeUnlimidtedLife: 0
     playerProfileName: 
@@ -285,6 +240,10 @@ MonoBehaviour:
     currentDailyAdReward: 0
     mainRewardCooldownTickTime: 0
     claimMainReward: 0
+    tempSpecialObjCollectedInLevel: 0
+    currentProgress: 0
+    currentProgressMilestone: 0
+    currentSpecialItemIndex: 0
 --- !u!1 &3150143569490634634
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,7 +428,6 @@ Transform:
   - {fileID: 7372786483039441346}
   - {fileID: 3729348134248297358}
   - {fileID: 3866375574464019524}
-  - {fileID: 3017103823329930216}
   - {fileID: 3470986201554836244}
   - {fileID: 339356625463092080}
   m_Father: {fileID: 0}
@@ -562,7 +520,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7476218560192324324
 MonoBehaviour:
@@ -1131,7 +1089,7 @@ PrefabInstance:
     - target: {fileID: 9049274688606409165, guid: c6e731e57f63e1644a934741d7c11320,
         type: 3}
       propertyPath: m_RootOrder
-      value: 14
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 9049274688606409165, guid: c6e731e57f63e1644a934741d7c11320,
         type: 3}
