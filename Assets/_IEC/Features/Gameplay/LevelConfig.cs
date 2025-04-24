@@ -587,6 +587,7 @@ namespace _IEC.Features.Gameplay
             else
             {
                 // Nếu level vượt quá maxLevel, bắt đầu lại từ startLoopLevel
+                //return 0;
                 return startLoopLevel + ((level - max - 1) % (max - startLoopLevel + 1));
             }
         }
