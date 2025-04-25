@@ -26,7 +26,7 @@ namespace _IEC.Features.Gameplay
         public LevelConfigModel levelConfigModel;
     }
     
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/LevelConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/LevelConfig")]
     public class LevelConfig : ScriptableObject
     {
         public List<LevelConfigModel> levelConfigData;
@@ -592,6 +592,7 @@ namespace _IEC.Features.Gameplay
             else
             {
                 // Nếu level vượt quá maxLevel, bắt đầu lại từ startLoopLevel
+                //return 0;
                 return startLoopLevel + ((level - max - 1) % (max - startLoopLevel + 1));
             }
         }
