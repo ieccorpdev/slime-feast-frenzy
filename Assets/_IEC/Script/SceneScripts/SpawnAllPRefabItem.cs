@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class SpawnAllPRefabItem : MonoBehaviour
 {
-
+#if UNITY_EDITOR
     public GameplayItemPrefabConfig itemConfig;
     public float spacing = 2f;           // Space between each spawned object
     public List<GameObject> objWasSpawn;
@@ -69,4 +69,5 @@ public class SpawnAllPRefabItem : MonoBehaviour
             objWasSpawn.Add(spawnedObject);
         }
     }
+#endif
 }
