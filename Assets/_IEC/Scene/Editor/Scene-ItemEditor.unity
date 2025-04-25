@@ -1,0 +1,1442 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!29 &1
+OcclusionCullingSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_OcclusionBakeSettings:
+    smallestOccluder: 5
+    smallestHole: 0.25
+    backfaceThreshold: 100
+  m_SceneGUID: 00000000000000000000000000000000
+  m_OcclusionCullingData: {fileID: 0}
+--- !u!104 &2
+RenderSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 9
+  m_Fog: 0
+  m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  m_FogMode: 3
+  m_FogDensity: 0.01
+  m_LinearFogStart: 0
+  m_LinearFogEnd: 300
+  m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
+  m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
+  m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
+  m_AmbientIntensity: 1
+  m_AmbientMode: 0
+  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
+  m_HaloStrength: 0.5
+  m_FlareStrength: 1
+  m_FlareFadeSpeed: 3
+  m_HaloTexture: {fileID: 0}
+  m_SpotCookie: {fileID: 10001, guid: 0000000000000000e000000000000000, type: 0}
+  m_DefaultReflectionMode: 0
+  m_DefaultReflectionResolution: 128
+  m_ReflectionBounces: 1
+  m_ReflectionIntensity: 1
+  m_CustomReflection: {fileID: 0}
+  m_Sun: {fileID: 0}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_UseRadianceAmbientProbe: 0
+--- !u!157 &3
+LightmapSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 12
+  m_GIWorkflowMode: 1
+  m_GISettings:
+    serializedVersion: 2
+    m_BounceScale: 1
+    m_IndirectOutputScale: 1
+    m_AlbedoBoost: 1
+    m_EnvironmentLightingMode: 0
+    m_EnableBakedLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
+  m_LightmapEditorSettings:
+    serializedVersion: 12
+    m_Resolution: 2
+    m_BakeResolution: 40
+    m_AtlasSize: 1024
+    m_AO: 0
+    m_AOMaxDistance: 1
+    m_CompAOExponent: 1
+    m_CompAOExponentDirect: 0
+    m_ExtractAmbientOcclusion: 0
+    m_Padding: 2
+    m_LightmapParameters: {fileID: 0}
+    m_LightmapsBakeMode: 1
+    m_TextureCompression: 1
+    m_FinalGather: 0
+    m_FinalGatherFiltering: 1
+    m_FinalGatherRayCount: 256
+    m_ReflectionCompression: 2
+    m_MixedBakeMode: 2
+    m_BakeBackend: 1
+    m_PVRSampling: 1
+    m_PVRDirectSampleCount: 32
+    m_PVRSampleCount: 512
+    m_PVRBounces: 2
+    m_PVREnvironmentSampleCount: 256
+    m_PVREnvironmentReferencePointCount: 2048
+    m_PVRFilteringMode: 1
+    m_PVRDenoiserTypeDirect: 1
+    m_PVRDenoiserTypeIndirect: 1
+    m_PVRDenoiserTypeAO: 1
+    m_PVRFilterTypeDirect: 0
+    m_PVRFilterTypeIndirect: 0
+    m_PVRFilterTypeAO: 0
+    m_PVREnvironmentMIS: 1
+    m_PVRCulling: 1
+    m_PVRFilteringGaussRadiusDirect: 1
+    m_PVRFilteringGaussRadiusIndirect: 5
+    m_PVRFilteringGaussRadiusAO: 2
+    m_PVRFilteringAtrousPositionSigmaDirect: 0.5
+    m_PVRFilteringAtrousPositionSigmaIndirect: 2
+    m_PVRFilteringAtrousPositionSigmaAO: 1
+    m_ExportTrainingData: 0
+    m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
+  m_LightingDataAsset: {fileID: 0}
+  m_LightingSettings: {fileID: 0}
+--- !u!196 &4
+NavMeshSettings:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_BuildSettings:
+    serializedVersion: 2
+    agentTypeID: 0
+    agentRadius: 0.5
+    agentHeight: 2
+    agentSlope: 45
+    agentClimb: 0.4
+    ledgeDropHeight: 0
+    maxJumpAcrossDistance: 0
+    minRegionArea: 2
+    manualCellSize: 0
+    cellSize: 0.16666667
+    manualTileSize: 0
+    tileSize: 256
+    accuratePlacement: 0
+    maxJobWorkers: 0
+    preserveTilesOutsideBounds: 0
+    debug:
+      m_Flags: 0
+  m_NavMeshData: {fileID: 0}
+--- !u!1 &738269991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 738269993}
+  - component: {fileID: 738269992}
+  m_Layer: 0
+  m_Name: Bulk Replace
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &738269992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738269991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0350b15fd853f744995d23600ab20eca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  urlSheetReplace: https://docs.google.com/spreadsheets/d/1UTi8m0CQL0_l_nObisn1iuNG2S0Q06BL1e528VOqNBk/edit?gid=1091526808#gid=1091526808
+  namePrefix: InstanceIcon_
+  targetFolderPath: Assets/_IECProject/InstancesForIcon
+  idMappings:
+  - OriginalID: Apricot
+    NewID: MiniCake09
+  - OriginalID: Banana_NoSkin_Slice
+    NewID: Cupcake04
+  - OriginalID: Strawberry_Top
+    NewID: MiniCake05
+  - OriginalID: Apple_Pink_Whole
+    NewID: WeddingCake03
+  - OriginalID: Blackberry
+    NewID: MiniCake02
+  - OriginalID: Apricot_Half
+    NewID: Donut17
+  - OriginalID: Kiwi_Yellow_Slice
+    NewID: LemonCake01
+  - OriginalID: Mango_Red
+    NewID: PrincessCake03
+  - OriginalID: Pear_Green
+    NewID: Donut06
+  - OriginalID: Kiwi_Slice
+    NewID: CheeseCake04
+  - OriginalID: Cherry_Red
+    NewID: Cupcake15
+  - OriginalID: Dragonfruit_Pink
+    NewID: Cupcake13
+  - OriginalID: Pineapple_Ripe_Ring
+    NewID: pastry_001
+  - OriginalID: Blueberry
+    NewID: ChocolateCake01
+  - OriginalID: Carrot_Slice_Purple
+    NewID: CheeseCake06
+  - OriginalID: Cucumber_Slice
+    NewID: CheeseCake05
+  - OriginalID: PepperGreen
+    NewID: WeddingCake02
+  - OriginalID: PepperRed
+    NewID: WeddingCake01
+  - OriginalID: PepperYellow
+    NewID: WeddingCake04
+  - OriginalID: Strawberry_Half
+    NewID: cake_002
+  - OriginalID: Fig_Blue
+    NewID: cheesecake_001
+  - OriginalID: Carrot_Slice_Orange
+    NewID: Berliner01
+  - OriginalID: Starfruit
+    NewID: can_002
+  - OriginalID: Tomato_Slice
+    NewID: pretzel_001
+  - OriginalID: Apple_DrkRed_Quarter
+    NewID: AmericanPie04_Slice02
+  - OriginalID: Cantaloupe_Half
+    NewID: cake_006
+  - OriginalID: Cherimoya
+    NewID: cake_001
+  - OriginalID: Lemon
+    NewID: can_003
+  - OriginalID: Lemon_Quarter
+    NewID: cheesecake_002
+  - OriginalID: Lychee_Peeled
+    NewID: cake_004
+  - OriginalID: Mandarin_Peeled
+    NewID: cake_005
+  - OriginalID: PassionFruit_Purple_Half
+    NewID: cake_003
+  - OriginalID: Peach
+    NewID: can_001
+  - OriginalID: Carrot_Slice_Yellow
+    NewID: CheeseCake03
+  - OriginalID: Basket
+    NewID: 
+  - OriginalID: Carrot_Orange
+    NewID: carrot_001
+  - OriginalID: Peach_White
+    NewID: FruitCake02
+  - OriginalID: Peach_White_Half
+    NewID: BlueberryCake01
+  - OriginalID: Peach_White_Quarter
+    NewID: BlackForestCake01_Slice
+  - OriginalID: CoffeeMug_Full_01
+    NewID: coffee_003
+  - OriginalID: Teacup_Pattern_Tall_02
+    NewID: Mug01_Matcha02
+  - OriginalID: Teacup_Pattern_Tall_03
+    NewID: Mug02_Tea05
+  - OriginalID: Waffle_Berries
+    NewID: watermelon_002
+  - OriginalID: Cauliflower
+    NewID: apple_001
+  - OriginalID: Coconut_Half
+    NewID: kiwi_002
+  - OriginalID: Mandarin_Slice
+    NewID: lemon_003
+  - OriginalID: CoffeeCup_04
+    NewID: sour_cream_001
+  - OriginalID: CoffeeCup_05
+    NewID: sour_cream_002
+  - OriginalID: CoffeePot_01
+    NewID: milk_003
+  - OriginalID: Cookie_01
+    NewID: lemon_004
+  - OriginalID: Creamer_Pattern_01
+    NewID: GlassMug01_Tea05
+  - OriginalID: Creamer_Pattern_02
+    NewID: GlassMug01_Tea06
+  - OriginalID: Dragonfruit_Pink_Quarter
+    NewID: grapefruit_003
+  - OriginalID: Egg
+    NewID: croissant_002
+  - OriginalID: EspressoCup
+    NewID: sour_cream_003
+  - OriginalID: Matcha_Bowl
+    NewID: can_005
+  - OriginalID: MilkSm_Skim_Closed
+    NewID: can_006
+  - OriginalID: MilkSm_Whole_Closed
+    NewID: can_007
+  - OriginalID: Pomelo_Half
+    NewID: apricot_002
+  - OriginalID: TeaBox_GenmaiCha
+    NewID: soda_001
+  - OriginalID: Teacup_Pattern_Tall_01
+    NewID: tea_004
+  - OriginalID: ToGo_Cup_White_Sm
+    NewID: coffee_004
+  - OriginalID: Waffle_Choc_Cream
+    NewID: melon_001
+  - OriginalID: Waffle_Syrup
+    NewID: coconut_001
+  - OriginalID: Watermelon_02_Half
+    NewID: PrincessCake02
+  - OriginalID: Watermelon_04
+    NewID: Lime
+  - OriginalID: Coin_Bag
+    NewID: 
+  - OriginalID: Coin_Chest
+    NewID: 
+  - OriginalID: Coin_Ingot
+    NewID: 
+  - OriginalID: Coin_Medium
+    NewID: 
+  - OriginalID: Coin_Small
+    NewID: 
+  - OriginalID: Crate
+    NewID: 
+  - OriginalID: Jalapeno
+    NewID: apple_005
+  - OriginalID: Potato
+    NewID: tomato_001
+  - OriginalID: Broccoli
+    NewID: mushroom_001
+  - OriginalID: HotPepper_Yellow
+    NewID: Red Chili pepper
+  - OriginalID: Berrry_Box_02
+    NewID: 
+  - OriginalID: Pomegranate_Half
+    NewID: peach_002
+  - OriginalID: CoffeeCup_06
+    NewID: yogurt_008
+  - OriginalID: Coffee_Bottle_01
+    NewID: chips_015
+  - OriginalID: Honey_Dipper
+    NewID: 
+  - OriginalID: Honey_Jar_01
+    NewID: 
+  - OriginalID: Kettle_Tetsubin_Red
+    NewID: cheese_002
+  - OriginalID: TeaTin_Chinese_Green
+    NewID: FineTea01
+  - OriginalID: TeaTin_Raspberry
+    NewID: 
+  - OriginalID: ToGo_Green_Sm
+    NewID: tea_002
+  - OriginalID: Beet
+    NewID: apricot_001
+  - OriginalID: Breakfast_Sandwich_Sausage
+    NewID: orange_001
+  - OriginalID: Cabbage
+    NewID: Cabbage Red
+  - OriginalID: Coffee_Red_Lrg
+    NewID: glass_005
+  - OriginalID: Cream_Lrg_Closed
+    NewID: kefir_002
+  - OriginalID: Cucumber
+    NewID: eggplant_001
+  - OriginalID: Leek
+    NewID: banana_001
+  - OriginalID: MilkLrg_Almond_Closed
+    NewID: kefir_003
+  - OriginalID: Milk_Chocolate
+    NewID: FineTea03
+  - OriginalID: Napa
+    NewID: eggplant_002
+  - OriginalID: Pancake_Syrup
+    NewID: grapefruit_004
+  - OriginalID: Parsley
+    NewID: orange_004
+  - OriginalID: TeaTin_Blueberry
+    NewID: FineTea02
+  - OriginalID: Waffle_Choc_Berries
+    NewID: Lime half
+  - OriginalID: Carrot_Purple
+    NewID: Radish C
+  - OriginalID: Carrot_Yellow
+    NewID: Carrot_Yellow
+  - OriginalID: HotPepper
+    NewID: pepper_001
+  - OriginalID: HotPepper_Orange
+    NewID: pepper_002
+  - OriginalID: Sweet_Potato
+    NewID: Sweet Potato half
+  - OriginalID: Berrry_Box_03
+    NewID: 
+  - OriginalID: Butternut
+    NewID: pineapple_001
+  - OriginalID: Banana_Mini
+    NewID: 
+  - OriginalID: Pancake_Sugar
+    NewID: apple_004
+  - OriginalID: TeaBox_Hibiscus
+    NewID: FineTea06
+  - OriginalID: Tea_Cannister_05
+    NewID: chips_001
+  - OriginalID: Breakfast_Sandwich_Ham
+    NewID: grapefruit_001
+  - OriginalID: FrenchPress_01
+    NewID: milk_001
+  - OriginalID: Garlic
+    NewID: raspberry_001
+  - OriginalID: Juice_Orange
+    NewID: 
+  - OriginalID: Mushroom_Slice
+    NewID: lemon_002
+  - OriginalID: Pancake_Stack
+    NewID: kiwi_003
+  - OriginalID: Pancake_Whip
+    NewID: Apple Half
+  - OriginalID: Pickle
+    NewID: banana_002
+  - OriginalID: ToGo_Red_Med
+    NewID: cocktail_006
+  - OriginalID: Tomato
+    NewID: pear_002
+  - OriginalID: Waffle_Plain
+    NewID: AmericanPie02
+  - OriginalID: Baozi
+    NewID: noodles_002
+  - OriginalID: Bowl
+    NewID: bowl_001
+  - OriginalID: FishCake
+    NewID: sasuage_007
+  - OriginalID: Maki_01
+    NewID: roll_007
+  - OriginalID: Maki_02
+    NewID: roll_006
+  - OriginalID: MoonCake
+    NewID: burger_001
+  - OriginalID: Onigiri
+    NewID: fries_001
+  - OriginalID: Plate
+    NewID: plate_007
+  - OriginalID: Sushi_02
+    NewID: chicken_002
+  - OriginalID: Taiyaki
+    NewID: sandwich_001
+  - OriginalID: BambooSteamer
+    NewID: plate_010
+  - OriginalID: Basket_01
+    NewID: 
+  - OriginalID: Rambutan
+    NewID: egg_001
+  - OriginalID: Sushi_05
+    NewID: egg_004
+  - OriginalID: Watermelon_02_Slice
+    NewID: tacos_001
+  - OriginalID: Asparagus
+    NewID: juice_001
+  - OriginalID: Avocado
+    NewID: hot_dog_001
+  - OriginalID: Sushi_03
+    NewID: shrimp_002
+  - OriginalID: Bacon
+    NewID: sasuage_008
+  - OriginalID: Breakfast_Platter
+    NewID: plate_005
+  - OriginalID: Dango_04
+    NewID: pastry_002
+  - OriginalID: Kettle_Gooseneck_02
+    NewID: TeaPot01_Closed
+  - OriginalID: Orange_Quarter
+    NewID: orange_003
+  - OriginalID: Pancake_Fruit
+    NewID: strawberry_001
+  - OriginalID: ToGo_Cup_BrownPattern_Med
+    NewID: milk_005
+  - OriginalID: Ginger
+    NewID: sandwich_007
+  - OriginalID: Grapes_Concord
+    NewID: vinograd_001
+  - OriginalID: Radish
+    NewID: sasuage_003
+  - OriginalID: Parsnip
+    NewID: ice_cream_003
+  - OriginalID: Sushi_01
+    NewID: bar_002
+  - OriginalID: Sushi_06
+    NewID: bar_001
+  - OriginalID: FrenchPress_03
+    NewID: sauce_003
+  - OriginalID: Berrry_Box_01
+    NewID: 
+  - OriginalID: Dango
+    NewID: pie_001
+  - OriginalID: SpringRoll
+    NewID: chocolate_001
+  - OriginalID: Sushi_04
+    NewID: lollipop_002
+  - OriginalID: WoodTray
+    NewID: plate_001
+  - OriginalID: BokChoy
+    NewID: loaf_002
+  - OriginalID: Box
+    NewID: 
+  - OriginalID: Cassava
+    NewID: sasuage_002
+  - OriginalID: Eggplant
+    NewID: ice_cream_001
+  - OriginalID: Mushroom
+    NewID: grapefruit_002
+  - OriginalID: Honey_02
+    NewID: 
+  - OriginalID: Teapot_Pattern_02
+    NewID: honey_002
+  - OriginalID: Tomato_Half
+    NewID: tea_003
+  - OriginalID: Banana_Bunch
+    NewID: loaf_004
+  - OriginalID: Box_Fancy
+    NewID: croissant_001
+  - OriginalID: Basket_02
+    NewID: 
+  - OriginalID: Onion
+    NewID: 
+  - OriginalID: Pineapple
+    NewID: apple_003
+  - OriginalID: Watermelon_03_Quarter
+    NewID: Melon Piece
+  - OriginalID: FruitCup
+    NewID: cocktail_003
+  - OriginalID: Celery
+    NewID: leek
+  - OriginalID: Cantaloupe
+    NewID: corn_001
+  - OriginalID: BowlOfRice
+    NewID: coconut_002
+  - OriginalID: CarrotCake
+    NewID: burger_002
+  - OriginalID: BlackForest_Slice
+    NewID: CheeseCake05_Slice
+  - OriginalID: Cheesecake_Lemon_Slice
+    NewID: Cake01_Slice
+  - OriginalID: Cheesecake_Mini_Cherry
+    NewID: MiniCake01
+  - OriginalID: Cheesecake_Mini_Chocolate
+    NewID: MiniCake10
+  - OriginalID: Cheesecake_Mini_Lemon
+    NewID: MiniCake06
+  - OriginalID: Cheesecake_Mini_Lime
+    NewID: MiniCake04
+  - OriginalID: Cupcake_Carrot
+    NewID: Cupcake14
+  - OriginalID: Cupcake_Matcha
+    NewID: Cupcake12
+  - OriginalID: Cupcake_Orange
+    NewID: Cupcake11
+  - OriginalID: Cupcake_Shortcake
+    NewID: Cupcake16
+  - OriginalID: Cupcake_Velvet
+    NewID: Cupcake06
+  - OriginalID: Loaf_Berry_Slice
+    NewID: BiscuitRoll02_Slice02
+  - OriginalID: Loaf_Marble_Slice
+    NewID: BiscuitRoll03_Slice03
+  - OriginalID: Roll_Matcha_Whole
+    NewID: BiscuitRoll01
+  - OriginalID: Roll_Strawberry_Whole
+    NewID: BiscuitRoll02
+  - OriginalID: Roll_Vanilla_Slice
+    NewID: BiscuitRoll04_Slice02
+  - OriginalID: Roll_Vanilla_Whole
+    NewID: BiscuitRoll04
+  - OriginalID: Shortcake_Slice
+    NewID: PrincessCake01_Slice
+  - OriginalID: Specialty_Fruit_Slice
+    NewID: FruitCake01_Slice01
+  - OriginalID: Velvet_Whole
+    NewID: Donut14
+  - OriginalID: Cheesecake_Mini_Berry
+    NewID: RainbowCake01
+  - OriginalID: Cheesecake_Mini_Matcha
+    NewID: 
+  - OriginalID: Cheesecake_Mini_Plain
+    NewID: 
+  - OriginalID: Cupcake_BDay
+    NewID: 
+  - OriginalID: Cupcake_Lemon
+    NewID: 
+  - OriginalID: Roll_Matcha_Slice
+    NewID: 
+  - OriginalID: Specialty_Princess_Whole
+    NewID: 
+  - OriginalID: Cupcake_Rainbow
+    NewID: 
+  - OriginalID: Roll_Strawberry_Slice
+    NewID: 
+  - OriginalID: Cheesecake_Matcha_Slice
+    NewID: 
+  - OriginalID: Wedding_03_Whole
+    NewID: 
+  - OriginalID: Dango_01
+    NewID: 
+  - OriginalID: Papaya_Half
+    NewID: 
+  - OriginalID: Cheesecake_Mini_Caramel
+    NewID: 
+  - OriginalID: Coffee_Bags_v4_03
+    NewID: 
+  - OriginalID: Coffee_Bags_v5_01
+    NewID: 
+  - OriginalID: Cupcake_Forest
+    NewID: 
+  - OriginalID: Matcha_Slice
+    NewID: 
+  - OriginalID: Premium_Mint_Whole
+    NewID: 
+  - OriginalID: Teapot_Pattern_01
+    NewID: 
+  - OriginalID: Artichoke
+    NewID: 
+  - OriginalID: Kiwano
+    NewID: 
+  - OriginalID: PinkCake
+    NewID: 
+  - OriginalID: Shortcake
+    NewID: 
+  - OriginalID: Strudel_02
+    NewID: 
+  - OriginalID: Wedding_04_Whole
+    NewID: 
+  - OriginalID: Bday_Slice
+    NewID: 
+  - OriginalID: SmallDonut_02
+    NewID: 
+  - OriginalID: Coffee_Bags_v2_02
+    NewID: 
+  - OriginalID: Cantaloupe_Slice
+    NewID: 
+  - OriginalID: Cardboard_Box_02
+    NewID: 
+  - OriginalID: Box_Burger_Feast_02
+    NewID: 
+  - OriginalID: Box_Burger_W_01
+    NewID: 
+  - OriginalID: Box_Burger_Zilla_01
+    NewID: 
+  - OriginalID: Box_Nuggets_Zilla
+    NewID: 
+  - OriginalID: Chip_04
+    NewID: 
+  - OriginalID: Chip_Bag_02
+    NewID: 
+  - OriginalID: Chip_Bag_02_Full
+    NewID: 
+  - OriginalID: Chip_Bag_04
+    NewID: 
+  - OriginalID: Flurry_02
+    NewID: 
+  - OriginalID: IceCream_02
+    NewID: 
+  - OriginalID: IceCream_04
+    NewID: 
+  - OriginalID: IceCream_05
+    NewID: 
+  - OriginalID: Mustard_Cup
+    NewID: 
+  - OriginalID: OnionRing
+    NewID: 
+  - OriginalID: Pickle_Sliced_ff
+    NewID: 
+  - OriginalID: Pizza_Slice_Margherita
+    NewID: 
+  - OriginalID: Box_Nuggets_Feast
+    NewID: 
+  - OriginalID: Burger_Chicken
+    NewID: 
+  - OriginalID: Burger_Tall
+    NewID: 
+  - OriginalID: Burger_Wrapped_W_Blue
+    NewID: 
+  - OriginalID: CrinkleFry
+    NewID: 
+  - OriginalID: Flurry_01
+    NewID: 
+  - OriginalID: Fountain_Cup_Med
+    NewID: 
+  - OriginalID: HotDog_Weenie_01
+    NewID: 
+  - OriginalID: Pizza_Slice_Veggie
+    NewID: 
+  - OriginalID: Pizza_Veggie
+    NewID: 
+  - OriginalID: YamFry
+    NewID: 
+  - OriginalID: Burger_Wrapped_W_Red
+    NewID: 
+  - OriginalID: CeremonySet_01_Teapot
+    NewID: 
+  - OriginalID: IceCream_03
+    NewID: 
+  - OriginalID: Sauce_05
+    NewID: 
+  - OriginalID: Pumpkin
+    NewID: 
+  - OriginalID: Box_Fries
+    NewID: 
+  - OriginalID: Chip_Bag_01_Full
+    NewID: 
+  - OriginalID: Chip_Bag_03
+    NewID: 
+  - OriginalID: FountainDrink_Feast_Med
+    NewID: 
+  - OriginalID: Mustard_Packet
+    NewID: 
+  - OriginalID: Pizza_HamPineapple
+    NewID: 
+  - OriginalID: ToGo_Bag_W
+    NewID: 
+  - OriginalID: ToGo_Bag_Zilla
+    NewID: 
+  - OriginalID: BeerBottle_01
+    NewID: 
+  - OriginalID: Burger_Wrapped_Feast_Yellow
+    NewID: 
+  - OriginalID: Chip_Bag_04_Full
+    NewID: 
+  - OriginalID: CrinkleFries_W
+    NewID: 
+  - OriginalID: Fries_Feast
+    NewID: 
+  - OriginalID: HotDog_Weenie_02
+    NewID: 
+  - OriginalID: Reg_Cap_01
+    NewID: 
+  - OriginalID: Sauce_01
+    NewID: 
+  - OriginalID: Sauce_04
+    NewID: 
+  - OriginalID: Coffee_Bags_v3_03
+    NewID: 
+  - OriginalID: Corndog_Ketchup
+    NewID: 
+  - OriginalID: Flurry_03
+    NewID: 
+  - OriginalID: Fountain_Cup_Zilla_Med
+    NewID: 
+  - OriginalID: Juice_Apple
+    NewID: 
+  - OriginalID: Sauce_03
+    NewID: 
+  - OriginalID: Cheesecake_Lemon_Whole
+    NewID: 
+  - OriginalID: Cheesecake_Matcha_Whole
+    NewID: 
+  - OriginalID: Lemon_Whole
+    NewID: 
+  - OriginalID: Burger_Cheese
+    NewID: 
+  - OriginalID: Chip_Bag_03_Full
+    NewID: 
+  - OriginalID: Fountain_Cup_Feast_Med
+    NewID: 
+  - OriginalID: Pizza_Marghertita
+    NewID: 
+  - OriginalID: ChocCake
+    NewID: 
+  - OriginalID: Croissant_02
+    NewID: 
+  - OriginalID: Burger_Wrapped_Feast_Green
+    NewID: 
+  - OriginalID: Burger_Wrapped_W_Green
+    NewID: 
+  - OriginalID: Burger_Wrapped_W_Yellow
+    NewID: 
+  - OriginalID: Pizza_Slice_Pepperoni
+    NewID: 
+  - OriginalID: Pretzel_02
+    NewID: 
+  - OriginalID: Strudel_01
+    NewID: 
+  - OriginalID: Cannoli_01
+    NewID: 
+  - OriginalID: Cannoli_04
+    NewID: 
+  - OriginalID: Cinnamon_Bun_Iced
+    NewID: 
+  - OriginalID: Cinnamon_Bun_Plain
+    NewID: 
+  - OriginalID: Cookie_Flower_01
+    NewID: 
+  - OriginalID: Croissant_04
+    NewID: 
+  - OriginalID: Danish_01
+    NewID: 
+  - OriginalID: Donut_09
+    NewID: 
+  - OriginalID: Eclair_02
+    NewID: 
+  - OriginalID: Eclair_03
+    NewID: 
+  - OriginalID: Macaron_01
+    NewID: 
+  - OriginalID: Macaron_02
+    NewID: 
+  - OriginalID: Macaron_03
+    NewID: 
+  - OriginalID: Macaron_04
+    NewID: 
+  - OriginalID: Macaron_05
+    NewID: 
+  - OriginalID: Macaron_06
+    NewID: 
+  - OriginalID: Macaron_07
+    NewID: 
+  - OriginalID: Macaron_08
+    NewID: 
+  - OriginalID: Strudel_03
+    NewID: 
+  - OriginalID: Tart_Blueberry
+    NewID: 
+  - OriginalID: Tart_Chocolate
+    NewID: 
+  - OriginalID: Tart_Lemon
+    NewID: 
+  - OriginalID: Tart_Pecan
+    NewID: 
+  - OriginalID: Cookie_Heart_02
+    NewID: 
+  - OriginalID: Donut_12
+    NewID: 
+  - OriginalID: CoffeePot_Drip_02
+    NewID: 
+  - OriginalID: Coffee_Bags_v1_03
+    NewID: 
+  - OriginalID: Donut_04
+    NewID: 
+  - OriginalID: Muffin_02
+    NewID: 
+  - OriginalID: Palmier_04
+    NewID: 
+  - OriginalID: SmallDonut_03
+    NewID: 
+  - OriginalID: Cookie_Imperial
+    NewID: 
+  - OriginalID: Croissant_03
+    NewID: 
+  - OriginalID: Danish_02
+    NewID: 
+  - OriginalID: Eclair_01
+    NewID: 
+  - OriginalID: Eclair_04
+    NewID: 
+  - OriginalID: Napoleon_Chocolate
+    NewID: 
+  - OriginalID: Napoleon_Raspberry
+    NewID: 
+  - OriginalID: Tart_Raspberry
+    NewID: 
+  - OriginalID: Beef_Patty
+    NewID: 
+  - OriginalID: Cheesecake_Lime_Whole
+    NewID: 
+  - OriginalID: Hotdog_Chilidog
+    NewID: 
+  - OriginalID: Muffin_03
+    NewID: 
+  - OriginalID: Muffin_06
+    NewID: 
+  - OriginalID: Pretzel_01
+    NewID: 
+  - OriginalID: SmallDonut_01
+    NewID: 
+  - OriginalID: Chip_Bag_01
+    NewID: 
+  - OriginalID: FountainDrink_Zilla_Med
+    NewID: 
+  - OriginalID: Cookie_02_Bitten
+    NewID: 
+  - OriginalID: Donut_07
+    NewID: 
+  - OriginalID: Donut_11
+    NewID: 
+  - OriginalID: Muffin_01
+    NewID: 
+  - OriginalID: Muffin_04
+    NewID: 
+  - OriginalID: Palmier_02
+    NewID: 
+  - OriginalID: Cookie_Star_01
+    NewID: 
+  - OriginalID: Madeleine_03
+    NewID: 
+  - OriginalID: Premium_Cherry_Whole
+    NewID: 
+  - OriginalID: Dango_02
+    NewID: 
+  - OriginalID: Ball_02
+    NewID: 
+  - OriginalID: Basketball_01
+    NewID: 
+  - OriginalID: Car_01
+    NewID: 
+  - OriginalID: Car_02
+    NewID: 
+  - OriginalID: Car_04
+    NewID: 
+  - OriginalID: ChessBoard
+    NewID: 
+  - OriginalID: Doll_01
+    NewID: 
+  - OriginalID: Doll_02
+    NewID: 
+  - OriginalID: Doll_03
+    NewID: 
+  - OriginalID: Dollhouse
+    NewID: 
+  - OriginalID: Helicopter
+    NewID: 
+  - OriginalID: Piano
+    NewID: 
+  - OriginalID: Plane
+    NewID: 
+  - OriginalID: Rocket
+    NewID: 
+  - OriginalID: RollerSkate
+    NewID: 
+  - OriginalID: RubberDuck
+    NewID: 
+  - OriginalID: Sheep
+    NewID: 
+  - OriginalID: ToyStacker
+    NewID: 
+  - OriginalID: Burger_Veggie_01
+    NewID: 
+  - OriginalID: Muffin_05
+    NewID: 
+  - OriginalID: Donut_10
+    NewID: 
+  - OriginalID: Palmier_03
+    NewID: 
+  - OriginalID: Burger_Wrapped_Feast_Red
+    NewID: 
+  - OriginalID: BigDonut_03
+    NewID: 
+  - OriginalID: Cider_Can_02
+    NewID: 
+  - OriginalID: Juice_Bottle_Orange
+    NewID: 
+  - OriginalID: SodaCan_04
+    NewID: 
+  - OriginalID: Bday_Whole
+    NewID: 
+  - OriginalID: BeerCup_02
+    NewID: 
+  - OriginalID: Beer_01
+    NewID: 
+  - OriginalID: Beer_Cup_01
+    NewID: 
+  - OriginalID: Beer_Cup_02
+    NewID: 
+  - OriginalID: Boba_03
+    NewID: 
+  - OriginalID: Boba_04
+    NewID: 
+  - OriginalID: Bottle_Opener_01
+    NewID: 
+  - OriginalID: Bottle_Reg_Empty_Green
+    NewID: 
+  - OriginalID: Bottle_Reg_Full_02
+    NewID: 
+  - OriginalID: Bottle_Regular_05
+    NewID: 
+  - OriginalID: Cider_Can_01
+    NewID: 
+  - OriginalID: Juice_Bottle_Green
+    NewID: 
+  - OriginalID: King_Can_06
+    NewID: 
+  - OriginalID: King_Can_08
+    NewID: 
+  - OriginalID: Pop_Bottle_Glass_02
+    NewID: 
+  - OriginalID: SodaCan_01
+    NewID: 
+  - OriginalID: SodaCan_02
+    NewID: 
+  - OriginalID: SodaCan_03
+    NewID: 
+  - OriginalID: BeerBottle_02
+    NewID: 
+  - OriginalID: BeerCup_01
+    NewID: 
+  - OriginalID: Bottle_Craft_01
+    NewID: 
+  - OriginalID: Bottle_Regular_11
+    NewID: 
+  - OriginalID: Juice_Bottle_Strawberry
+    NewID: 
+  - OriginalID: Pop_Bottle_Glass_03
+    NewID: 
+  - OriginalID: Soda_Bottle_02
+    NewID: 
+  - OriginalID: Water_Bottle_01
+    NewID: 
+  - OriginalID: Boba_02
+    NewID: 
+  - OriginalID: Bottle_Reg_Empty
+    NewID: 
+  - OriginalID: MiniKeg_03
+    NewID: 
+  - OriginalID: TwelvePack_05
+    NewID: 
+  - OriginalID: King_Can_03
+    NewID: 
+  - OriginalID: Bottle_Imported_06
+    NewID: 
+  - OriginalID: Bottle_Stubby_01
+    NewID: 
+  - OriginalID: King_Can_10
+    NewID: 
+  - OriginalID: Corn
+    NewID: 
+  - OriginalID: Corndog
+    NewID: 
+  - OriginalID: Madeleine_01
+    NewID: 
+  - OriginalID: Napoleon_Strawberry
+    NewID: 
+  - OriginalID: Donut_05
+    NewID: 
+  - OriginalID: Horse
+    NewID: 
+  - OriginalID: Robot
+    NewID: 
+  - OriginalID: Car_03
+    NewID: 
+  - OriginalID: RockingHorse
+    NewID: 
+  - OriginalID: TeddyBear
+    NewID: 
+  - OriginalID: Boat_01
+    NewID: 
+  - OriginalID: Bucket
+    NewID: 
+  - OriginalID: Bunny
+    NewID: 
+  - OriginalID: WoodenTrain
+    NewID: 
+  - OriginalID: Dinosaur
+    NewID: 
+  - OriginalID: Donut_06
+    NewID: 
+  - OriginalID: DumpTruck
+    NewID: 
+  - OriginalID: Palmier_01
+    NewID: 
+  - OriginalID: Tart_Custard
+    NewID: 
+  - OriginalID: Donut_08
+    NewID: 
+  - OriginalID: Dango_03
+    NewID: 
+  - OriginalID: Croissant_01
+    NewID: 
+  - OriginalID: ChickenNugget_01
+    NewID: 
+  - OriginalID: Calculator
+    NewID: 
+  - OriginalID: Crayon_Green
+    NewID: 
+  - OriginalID: Crayon_Red
+    NewID: 
+  - OriginalID: DoublePencil
+    NewID: 
+  - OriginalID: Glue_Blue
+    NewID: 
+  - OriginalID: Glue_Red
+    NewID: 
+  - OriginalID: PaintContainer_Blue
+    NewID: 
+  - OriginalID: PaintContainer_Orange
+    NewID: 
+  - OriginalID: PaintContainer_Yellow
+    NewID: 
+  - OriginalID: PaperClip_Blue
+    NewID: 
+  - OriginalID: PencilSharpener_Blue
+    NewID: 
+  - OriginalID: PencilSharpener_Red
+    NewID: 
+  - OriginalID: Pencil_Colored_Orange
+    NewID: 
+  - OriginalID: Pencil_Colored_green
+    NewID: 
+  - OriginalID: Pencil_Rubber_Medium
+    NewID: 
+  - OriginalID: Pin_Blue
+    NewID: 
+  - OriginalID: Pin_Green
+    NewID: 
+  - OriginalID: Pin_Purple
+    NewID: 
+  - OriginalID: Pin_Red
+    NewID: 
+  - OriginalID: Rotring_Blue
+    NewID: 
+  - OriginalID: Rotring_Green
+    NewID: 
+  - OriginalID: Rotring_Red
+    NewID: 
+  - OriginalID: Rubber
+    NewID: 
+  - OriginalID: Ruler_90Deg
+    NewID: 
+  - OriginalID: Ruler_Angular
+    NewID: 
+  - OriginalID: TapeDispenser_Orange
+    NewID: 
+  - OriginalID: Crayon_Purple
+    NewID: 
+  - OriginalID: FeltPen_Orange
+    NewID: 
+  - OriginalID: Glue_Green
+    NewID: 
+  - OriginalID: Glue_Yellow
+    NewID: 
+  - OriginalID: HighlighterPen_Red
+    NewID: 
+  - OriginalID: HighlighterPen_Yellow
+    NewID: 
+  - OriginalID: MagnifyingGlass
+    NewID: 
+  - OriginalID: Pencil_Colored_Purple
+    NewID: 
+  - OriginalID: Pin_Yellow
+    NewID: 
+  - OriginalID: Scissors_Pink
+    NewID: 
+  - OriginalID: Stapler_Blue
+    NewID: 
+  - OriginalID: Tape
+    NewID: 
+  - OriginalID: Book_Red
+    NewID: 
+  - OriginalID: Book_Blue
+    NewID: 
+  - OriginalID: Crayon_Yellow
+    NewID: 
+  - OriginalID: FeltPen_Yellow
+    NewID: 
+  - OriginalID: HighlighterPen_Blue
+    NewID: 
+  - OriginalID: HighlighterPen_Pink
+    NewID: 
+  - OriginalID: PaintContainer_Purple
+    NewID: 
+  - OriginalID: PaperClip_Purple
+    NewID: 
+  - OriginalID: Pencil_Colored_Pink
+    NewID: 
+  - OriginalID: Boba_07
+    NewID: 
+  - OriginalID: Crayon_Blue
+    NewID: 
+  - OriginalID: PaintContainer_Green
+    NewID: 
+  - OriginalID: Tablet
+    NewID: 
+  - OriginalID: WaterColorPaint
+    NewID: 
+  - OriginalID: Espresso_Maker_02
+    NewID: 
+  - OriginalID: TapeDispenser_Blue
+    NewID: 
+  - OriginalID: DrawingCompass
+    NewID: 
+  - OriginalID: FeltPen_Green
+    NewID: 
+  - OriginalID: FeltPen_Purple
+    NewID: 
+  - OriginalID: Basil
+    NewID: 
+  - OriginalID: Green_Pepper
+    NewID: 
+  - OriginalID: Donut_02
+    NewID: 
+  - OriginalID: Laptop
+    NewID: 
+  - OriginalID: BigDonut_01
+    NewID: 
+  - OriginalID: BigDonut_02
+    NewID: 
+  - OriginalID: Stapler_Green
+    NewID: 
+  - OriginalID: Bottle_SwingTop_01
+    NewID: 
+  - OriginalID: ExerciseBook
+    NewID: 
+  - OriginalID: PaperClip_Pink
+    NewID: 
+  - OriginalID: Book_Green
+    NewID: 
+  itemToReplace: []
+  levelConfig: {fileID: 11400000, guid: 890b34f468468db46af95f62dafac826, type: 2}
+  itemPrefabConfig: {fileID: 11400000, guid: 210586fbc29b543418f774f19e467e22, type: 2}
+--- !u!4 &738269993
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 738269991}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1246813297
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1246813299}
+  - component: {fileID: 1246813298}
+  m_Layer: 0
+  m_Name: Bulk Create
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1246813298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246813297}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae5a90e3796544c6bfb093e5dcec1e71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  urlSheetCreate: https://docs.google.com/spreadsheets/d/1MkTrBYhS__pyJJN50Lj9dNDnaUdNmJEx-3ck3VpxU6g/edit?gid=1852048316#gid=1852048316
+  isAddItemToConfigAfterCreate: 1
+  listItemMappings:
+  - id: test
+    prefabName: SM_Prop_Food_Apple_01
+    specialItemId: 0
+    level: 1
+    overrideLevel: 0
+    xp: 4
+    startAsKinematic: 1
+    canBeGoal: 1
+    ignoreInCalculations: 0
+    fallingItemSetType: 0
+    physicFallingItemType: 0
+  listItemDefinitions:
+  - {fileID: 11400000, guid: e871eb6a0d2cab14884b69895a20520a, type: 2}
+  itemPrefabConfig: {fileID: 11400000, guid: 210586fbc29b543418f774f19e467e22, type: 2}
+  itemPrefabExportFolder: {fileID: 0}
+  itemPrefabFolderExportPath: 
+  itemIconFolder: {fileID: 102900000, guid: dd7860807be9a0243b4b3e61ccde7da9, type: 3}
+  itemIconFolderPath: 
+  itemDefinitionFolder: {fileID: 102900000, guid: 3af510e95e43f594b8e767b4542b6e73,
+    type: 3}
+  itemDefinitionFolderPath: Assets/_IEC/Features/Gameplay/Config/Items
+--- !u!4 &1246813299
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1246813297}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1313468793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1313468795}
+  - component: {fileID: 1313468794}
+  m_Layer: 0
+  m_Name: Directional Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!108 &1313468794
+Light:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313468793}
+  m_Enabled: 1
+  serializedVersion: 10
+  m_Type: 1
+  m_Shape: 0
+  m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
+  m_Intensity: 1
+  m_Range: 10
+  m_SpotAngle: 30
+  m_InnerSpotAngle: 21.80208
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 2
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+    m_CullingMatrixOverride:
+      e00: 1
+      e01: 0
+      e02: 0
+      e03: 0
+      e10: 0
+      e11: 1
+      e12: 0
+      e13: 0
+      e20: 0
+      e21: 0
+      e22: 1
+      e23: 0
+      e30: 0
+      e31: 0
+      e32: 0
+      e33: 1
+    m_UseCullingMatrixOverride: 0
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingLayerMask: 1
+  m_Lightmapping: 4
+  m_LightShadowCasterMode: 0
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
+--- !u!4 &1313468795
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313468793}
+  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalPosition: {x: 0, y: 3, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &2101327540
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2101327543}
+  - component: {fileID: 2101327542}
+  - component: {fileID: 2101327541}
+  m_Layer: 0
+  m_Name: Main Camera
+  m_TagString: MainCamera
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!81 &2101327541
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101327540}
+  m_Enabled: 1
+--- !u!20 &2101327542
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101327540}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: -1
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!4 &2101327543
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2101327540}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
