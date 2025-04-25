@@ -1,5 +1,6 @@
 using System.Collections;
 using _IEC.Features.Gameplay;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class CubeScreenshot : MonoBehaviour
@@ -12,6 +13,16 @@ public class CubeScreenshot : MonoBehaviour
 
     [Header("MeoMEw")]
     public GameplayItemPrefabConfig itemConfig;
+
+    private Coroutine _meoMeoPictureCoroutine;
+    
+    [Button]
+    void MeoMeoScreenShot()
+    {
+        if(_meoMeoPictureCoroutine != null)
+            StopCoroutine(_meoMeoPictureCoroutine);
+        _meoMeoPictureCoroutine = StartCoroutine(TakePictureAllItem());
+    }
 
     void Start()
     {
@@ -43,7 +54,7 @@ public class CubeScreenshot : MonoBehaviour
             // Wait for the next frame before capturing the next picture
             yield return new WaitForEndOfFrame();
             ClearOutRenderTexture(renderTexture);
-            if (cube) Destroy(cube);
+            if (cube) DestroyImmediate(cube);
             yield return new WaitForEndOfFrame();
         }
     }
@@ -51,38 +62,68 @@ public class CubeScreenshot : MonoBehaviour
     void SpawnCube(GameObject prefab)
     {
         // Instantiate the cube at the specified position
-        cube = Instantiate(prefab, cubePosition, Quaternion.identity);
+        //cube = Instantiate(prefab, cubePosition, Quaternion.identity);
+        cube = Instantiate(prefab, cubePosition, Quaternion.Euler(0f, 30f, 0f));
         cube.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
     private Collider collider;
     void AdjustCameraSize()
     {
-        // Try to get the MeshCollider or BoxCollider attached to the cube
+        // // Try to get the MeshCollider or BoxCollider attached to the cube
+        // collider = cube.GetComponentInChildren<Collider>();
+        //
+        // if (collider != null)
+        // {
+        //     // Get the bounds from the collider
+        //     Bounds colliderBounds = collider.bounds;
+        //
+        //     // Set the camera's orthographic size based on the object's height
+        //     renderCamera.orthographicSize = colliderBounds.size.y;
+        //
+        //     // Adjust the camera's position to ensure the cube is in view
+        //     renderCamera.transform.position = new Vector3(colliderBounds.center.x, colliderBounds.center.y, renderCamera.transform.position.z);
+        //
+        //     // Ensure the camera is looking at the cube's position
+        //     renderCamera.transform.LookAt(colliderBounds.center);
+        //
+        //     // Optional: Make Rigidbody kinematic if present
+        //     Rigidbody rgb = cube.GetComponent<Rigidbody>();
+        //     if (rgb != null) rgb.isKinematic = true;
+        // }
+        // else
+        // {
+        //     Debug.LogError("Cube does not have a MeshCollider or BoxCollider attached.");
+        // }
+        
         collider = cube.GetComponentInChildren<Collider>();
 
         if (collider != null)
         {
-            // Get the bounds from the collider
-            Bounds colliderBounds = collider.bounds;
+            Bounds bounds = collider.bounds;
 
-            // Set the camera's orthographic size based on the object's height
-            renderCamera.orthographicSize = colliderBounds.size.y;
+            // Move object to origin to simplify positioning
+            cube.transform.position = Vector3.zero;
+            bounds = collider.bounds; // Recalculate after moving
 
-            // Adjust the camera's position to ensure the cube is in view
-            renderCamera.transform.position = new Vector3(colliderBounds.center.x, colliderBounds.center.y, renderCamera.transform.position.z);
+            // Set camera rotation (45° top-down)
+            renderCamera.transform.rotation = Quaternion.Euler(50f, 0f, 0f);
 
-            // Ensure the camera is looking at the cube's position
-            renderCamera.transform.LookAt(colliderBounds.center);
+            // Calculate diagonal size to cover angled view
+            float size = bounds.extents.magnitude; // Radius of the bounding box
+            renderCamera.orthographicSize = size * 1.5f; // Add some padding
 
-            // Optional: Make Rigidbody kinematic if present
-            Rigidbody rgb = cube.GetComponent<Rigidbody>();
-            if (rgb != null) rgb.isKinematic = true;
+            // Set camera position offset at a 45° angle
+            Vector3 cameraOffset = new Vector3(0, 1, -1).normalized * size * 2.5f; // tweak multiplier as needed
+            renderCamera.transform.position = bounds.center + cameraOffset;
+
+            renderCamera.transform.LookAt(bounds.center);
         }
         else
         {
             Debug.LogError("Cube does not have a MeshCollider or BoxCollider attached.");
         }
+
     }
 
     void SetCameraRotation()
@@ -104,6 +145,9 @@ public class CubeScreenshot : MonoBehaviour
 
     void CaptureScreenshot(string nameSave)
     {
+        renderCamera.clearFlags = CameraClearFlags.SolidColor;
+        renderCamera.backgroundColor = new Color(0, 0, 0, 0); // Fully transparent
+        
         // Clear the RenderTexture to ensure it's not overwritten
         ClearOutRenderTexture(renderTexture);
 
@@ -114,7 +158,8 @@ public class CubeScreenshot : MonoBehaviour
         renderCamera.Render();
 
         // Create a texture to store the screenshot
-        Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+        //Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGB24, false);
+        Texture2D texture = new Texture2D(renderTexture.width, renderTexture.height, TextureFormat.RGBA32, false);
 
         // Read the pixels from the RenderTexture into the new texture
         RenderTexture.active = renderTexture;

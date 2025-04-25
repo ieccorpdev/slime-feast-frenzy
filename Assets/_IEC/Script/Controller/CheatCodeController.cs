@@ -125,19 +125,48 @@ namespace IEC
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
             });
-            
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Spin Lucky Wheel", param =>
+
+            ModuleController.cheatCode.AddCheatCodeButton("Add Level Chest ( On Home)", param =>
             {
-                int id = int.Parse(param.inputParams[0].value.ToString());
-                if (Locator.Main.PopupLuckyWheel.gameObject.activeInHierarchy)
+                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Level), 1, out var isClaimChestReward);
+                if (isClaimChestReward)
                 {
-                    Locator.Main.PopupLuckyWheel.SpinWheel(id);
+                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
                 }
+                Locator.Main.HomeScreenTab.UpdateMainHome();
+            });
+            ModuleController.cheatCode.AddCheatCodeButton("Add Star Chest ( On Home)", param =>
+            {
+                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Star), 1, out var isClaimChestReward);
+                if (isClaimChestReward)
+                {
+                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                }
+                Locator.Main.HomeScreenTab.UpdateMainHome();
+            });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Ocean Gift ( On Home)", param =>
+            {
+                //Check progress reward
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.AddProgressToProgressReward(gc);
+                var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+                while (PlayerData.CheckClaimProgressReward(reward))
+                {
+                    System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                    reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+                }
+                Locator.Main.HomeScreenTab.UpdateMainHome();
+                Locator.Main.HomeScreenTab.progressRewardBar.DoAnimProgressBar();
             }, new CheatCode.InputParam
             {
-                value = 0
-            });
-
+                value = 1
+            });    
             ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
             {
                 ModuleController.cheatCode.AddCheatCodeFromObject("Game", Game, () =>
