@@ -174,12 +174,14 @@ public class ClaimBonusRewardPanel : BasePopup
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+        CallTempOnHide();
     }
 
     public override void Hide()
     {
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
         base.Hide();
+        CallTempOnHide();
     }
 }
 
