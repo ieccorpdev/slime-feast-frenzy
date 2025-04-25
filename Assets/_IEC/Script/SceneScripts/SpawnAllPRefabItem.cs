@@ -30,8 +30,12 @@ public class SpawnAllPRefabItem : MonoBehaviour
         for (int i = 0; i < itemConfig.listItemDefinitionShp.Count; i++)
         {
             GameObject prefab = itemConfig.listItemDefinitionShp[i].GetPrefab();
-
-            #if UNITY_EDITOR
+            if (prefab == null)
+            {
+                Debug.LogError("Can't Found item id :" + itemConfig.listItemDefinitionShp[i].GetId());
+                continue;
+            }
+#if UNITY_EDITOR
                         GameObject spawnedObject = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                         spawnedObject.transform.position = spawnPosition;
             #else
