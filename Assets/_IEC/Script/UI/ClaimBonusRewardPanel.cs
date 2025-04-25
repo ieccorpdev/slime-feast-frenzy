@@ -173,6 +173,7 @@ public class ClaimBonusRewardPanel : BasePopup
             PlayerData.Vibrate(HapticTypes.Failure);
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
+        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
     }
 
     public override void Hide()
