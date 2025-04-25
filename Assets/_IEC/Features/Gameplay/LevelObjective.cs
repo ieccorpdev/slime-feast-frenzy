@@ -50,7 +50,7 @@ namespace _IEC.Features.Gameplay
 
             var itemConfig = UnityEditor.AssetDatabase.LoadAssetAtPath<GameplayItemPrefabConfig>
                 (UnityEditor.AssetDatabase.GUIDToAssetPath(itemConfigPath[0]));
-            return itemConfig.listItemDefinition.Select(x => x.GetId());
+            return itemConfig.listItemDefinitionShp.Select(x => x.GetId());
 #endif
             return null;
         }
