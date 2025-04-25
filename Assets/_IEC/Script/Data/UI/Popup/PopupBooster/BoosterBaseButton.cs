@@ -18,6 +18,7 @@ namespace IEC
         public GameObject lockObj, buyObj, usableObj, usingObj, unlimitedObj;
 
         public TextMeshProUGUI countText;
+        public TextMeshProUGUI levelLockText;
         public TextMeshProUGUI unlimitedTimeText;
         
         public BoosterBaseState State { get; private set; }
@@ -63,6 +64,7 @@ namespace IEC
 
             countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
             bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
+            levelLockText.text ="Lvl." + BoosterData.levelUnlock.ToString();
         }
 
         private void CheckCurrentState(bool isCheckOnClick = false)
