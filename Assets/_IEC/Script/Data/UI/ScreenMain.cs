@@ -142,7 +142,7 @@ namespace IEC
 
         public void UpdatePlayerAvatar()
         {
-            avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
+            avatarImage.sprite = PlayConfig.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         }
 
         #endregion

@@ -1,16 +1,17 @@
-using System;
 using System.Collections;
-using System.Linq;
-using System.Net.Security;
 using _IEC.Features.Gameplay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-public class PlayableController : _BaseBehaviour
+public class PlayableController : MonoBehaviour
 {
     private static PlayableController instance;
-    public GameConfig gameConfig;
+    [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
+    public GameplayItemPrefabConfig GameplayItemPrefabConfig;
+    public GameController GameController;
+    public LevelController  levelController;
     public static PlayableController Instance
     {
         get
@@ -30,7 +31,10 @@ public class PlayableController : _BaseBehaviour
      [Header("Playable Config")]
      [LunaPlaygroundField("Level", 0, "Config")]
      public int level;
-    // [LunaPlaygroundField("Limit Time", 0, "Config")]
+
+     public PrefabConfig prefabConfig;
+
+     // [LunaPlaygroundField("Limit Time", 0, "Config")]
     // public float limitTime;
     // [LunaPlaygroundField("Box Move Out", 0, "Config")]
     // public bool boxMoveOut;
@@ -105,6 +109,14 @@ public class PlayableController : _BaseBehaviour
         private set;
     }
 
+    public ConfettiGroup ConfettiGroup;
+
+    public InGamePlayGroup InGamePlayGroup;
+
+    public FloatingJoystick Joystick;
+    public LevelConfig levelConfig;
+    public Material waveWaterMaterial;
+
     public void Awake()
     {
         instance = this;
@@ -117,6 +129,7 @@ public class PlayableController : _BaseBehaviour
         LoadLevel(level);
 
         ShowTutorial();
+        
     }
 
     IEnumerator IE_DelayLoadLevel()
@@ -135,10 +148,9 @@ public class PlayableController : _BaseBehaviour
     public void LoadLevel(int level)
     {
         this.level = level;
-        PlayerData.level = level;
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-        PlayableStarted = false;
-        InitMoveAnimDone = false;
+//        GameController.OnNewGame();
+        //levelController.LoadLevel(level);
     }
 
     public void DoneInitMoveAnim()

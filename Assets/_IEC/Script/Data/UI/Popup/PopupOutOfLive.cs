@@ -29,7 +29,7 @@ namespace _IEC
 
         void OnClickButtonRefill()
         {
-            OnRequestRefill(PlayerData.SubtractCurrency(ResourceType.Gold, IsRaiseToMaxLife ? Config.goldToRefill : Config.goldToAddOneLife));
+            OnRequestRefill(PlayerData.SubtractCurrency(ResourceType.Gold, IsRaiseToMaxLife ? PlayConfig.goldToRefill : PlayConfig.goldToAddOneLife));
         }
         void OnClickButtonAdsMoreLife()
         {
@@ -66,8 +66,8 @@ namespace _IEC
 
         private void UpdateUI()
         {
-            countdownGroup.gameObject.SetActive(PlayerData.playerLife < Config.maxHealth);
-            fullGroup.gameObject.SetActive(PlayerData.playerLife == Config.maxHealth);
+            countdownGroup.gameObject.SetActive(PlayerData.playerLife < PlayConfig.maxHealth);
+            fullGroup.gameObject.SetActive(PlayerData.playerLife == PlayConfig.maxHealth);
             playerLifeText.text = PlayerData.playerLife.ToString();
         }
 
@@ -87,7 +87,7 @@ namespace _IEC
             InClose = false;
             closeNBtn.onClick.RemoveAllListeners();
             closeNBtn.onClick.AddListener(OnCloseButton);
-            goldRefillTMP.text = IsRaiseToMaxLife ? Config.goldToRefill.ToString() : Config.goldToAddOneLife.ToString();
+            goldRefillTMP.text = IsRaiseToMaxLife ? PlayConfig.goldToRefill.ToString() : PlayConfig.goldToAddOneLife.ToString();
             playerLifeAddWithGoldText.text = IsRaiseToMaxLife ? "+5" : "+1";
             //refillBtn.image.sprite = PlayerData.gold >= Config.goldToRefill ? spriteCanBuy : spriteOutOfGold;
             //StartAnim();

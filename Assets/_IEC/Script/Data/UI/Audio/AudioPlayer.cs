@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class AudioPlayer : _BaseBehaviour
+    public class AudioPlayer : MonoBehaviour
     {
         public AudioInfo Info;
         public AudioSource audioSource;

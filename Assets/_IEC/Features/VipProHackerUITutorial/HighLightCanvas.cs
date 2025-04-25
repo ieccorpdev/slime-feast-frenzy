@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace _IEC.Features.VipProHackerUITutorial
 {
-    public class HighLightCanvas : _BaseBehaviour
+    public class HighLightCanvas : MonoBehaviour
     {
         public Image imgDark;
         public Canvas myCanvas;

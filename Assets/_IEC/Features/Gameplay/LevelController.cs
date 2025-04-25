@@ -5,13 +5,11 @@ using _IEC.Features.Booster;
 using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
-using _IEC.Features.Tutorial.ObserverEventData;
 using DG.Tweening;
 using IEC;
-using IEC.TrackingEvent;
-using UnityEditor;
 using UnityEngine;
 using BoosterData = IEC.BoosterData;
+using Game = IEC.Game;
 using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
@@ -28,11 +26,13 @@ namespace _IEC.Features.Gameplay
         }
     }
     
-    public class LevelController : _BaseBehaviour,ILevelController, IGroup
+    public class LevelController : MonoBehaviour,ILevelController, IGroup
     {
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
         [SerializeField] private Transform allItemHolder;
+        protected static Game Game => Pool.Get<Game>();
+
         
 
         private bool _isShowEnding = false;
@@ -115,21 +115,12 @@ namespace _IEC.Features.Gameplay
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
             
-            // m_AllSpecialItems.Clear();
-            // m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
-            //     GroundExtend.CalculateBounds(m_AllItems),
-            //     Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
-            //     allItemHolder,
-            //     Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
-            // );
-
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();
             playerHole.HideLevelText();
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
-            //this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);
         }
         
         public void StartPlay()
@@ -137,13 +128,7 @@ namespace _IEC.Features.Gameplay
             allItemHolder.gameObject.SetActive(true);
             playerHole.OnNewGame();
             ChangeState(State.Play);
-            if (PlayerData.level == 1)
-            {
-                this.RaiseEvent(EventList.GamePlay.START_TUTORIAL,new StartTutorialData()
-                {
-                    holeTransform =  playerHole.transform
-                });
-            }
+           
 
             if (addBoosterAction != null)
             {
@@ -196,12 +181,7 @@ namespace _IEC.Features.Gameplay
             var data = (CollectItemData) param;
             if (data == null) return;
             var itemId = data.itemID;
-            if (IsBomb(itemId))
-            {
-                CollectBomb();
-                //VibrationController.Vibrate(HapticTypes.Failure);
-                return;
-            }
+      
 
             //var timeDelay = Config.soundConfig.delayInterval;
          
@@ -317,8 +297,7 @@ namespace _IEC.Features.Gameplay
 
         private void OnSpawnBoosterItems(object param)
         {
-            if (PlayerData.currentBoosterStreak <= 0)
-                return;
+           
             
             //var data = (SpawnBoosterEventData)param;
             
@@ -326,14 +305,7 @@ namespace _IEC.Features.Gameplay
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
             //
-            foreach (var booster in Config.AllBoosterConfig.listBoosterData)
-            {
-                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
-                    Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3), 
-                    allItemHolder,
-                    booster
-                ));
-            }
+          
             
             foreach (var boosterItem in m_AllBoosters)
             {
@@ -389,38 +361,7 @@ namespace _IEC.Features.Gameplay
         }
         private void OnUserUseHelper(object param)
         {
-            var data = (UserUseHelper) param;
-            switch (data.helperId)
-            {
-                case HelperId.None:
-                    break;
-                case HelperId.Magnet:
-                    playerHole.StartMagnetHelper();
-                    m_MagnetHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
-                    m_MagnetHelperActive = true;
-                    break;
-                case HelperId.FrozenTime:
-                    break;
-                case HelperId.ScaleUp:
-                    playerHole.StartScaleByHelper();
-                    m_ScaleUpHelperActive = true;
-                    m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
-                    break;
-                case HelperId.Compass:
-                    var remainingObjectiveItems = new List<BaseItem>();
-                    foreach (var objective in m_ObjectiveItems)
-                    {
-                        if(objective == null || objective.gameObject.activeInHierarchy == false)
-                            continue;
-                        remainingObjectiveItems.Add(objective);
-                    }
-                    this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,new TurnOnCompassDirector()
-                    {
-                        remainingObjectiveItems = remainingObjectiveItems,
-                        holeTransform = playerHole.transform
-                    });
-                    break;
-            }
+           
         }
 
         private void CollectObjectiveItem(CollectItemData data)

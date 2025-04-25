@@ -32,9 +32,6 @@ namespace IEC
             return Pool.Get<UIGroup>();
         }
 
-        public static GameConfig Config(this IData self)
-        {
-            return PlayableController.Instance.gameConfig;
-        }
+       
     }
 }

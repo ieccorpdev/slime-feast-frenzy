@@ -40,7 +40,7 @@ namespace IEC
             base.Show();
             
             playerName.text = PlayerData.playerName;
-            currentPlayerAvatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
+            currentPlayerAvatarImage.sprite = PlayConfig.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         }
 
         public override void Hide()
@@ -53,10 +53,10 @@ namespace IEC
 
             if (String.IsNullOrEmpty(PlayerData.playerAvatarSpriteName))
             {
-                PlayerData.playerAvatarSpriteName = Config.playerAvatarConfig.GetAvatarSprite("").name;
+                PlayerData.playerAvatarSpriteName = PlayConfig.playerAvatarConfig.GetAvatarSprite("").name;
             }
             
-            for (int i = 0; i < Config.playerAvatarConfig.listAvatarSprites.Count; i++)
+            for (int i = 0; i < PlayConfig.playerAvatarConfig.listAvatarSprites.Count; i++)
             {
                 if (i >= listAvatarSelections.Count)
                 {
@@ -64,9 +64,9 @@ namespace IEC
                 }
 
                 listAvatarSelections[i].transform.localScale = Vector3.one;
-                listAvatarSelections[i].Init(Config.playerAvatarConfig.listAvatarSprites[i]);
+                listAvatarSelections[i].Init(PlayConfig.playerAvatarConfig.listAvatarSprites[i]);
                 
-                if(PlayerData.playerAvatarSpriteName.Equals(Config.playerAvatarConfig.listAvatarSprites[i].name))
+                if(PlayerData.playerAvatarSpriteName.Equals(PlayConfig.playerAvatarConfig.listAvatarSprites[i].name))
                 {
                     listAvatarSelections[i].SetSelectedDisplay(true);
                     CurrentSelectedAvatar = listAvatarSelections[i];

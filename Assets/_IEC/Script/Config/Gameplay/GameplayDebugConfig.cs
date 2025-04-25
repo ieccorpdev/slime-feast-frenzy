@@ -43,7 +43,7 @@ namespace IEC
             // }
 
             var listItems = gameplayItemPrefabConfig.listItemDefinition.ToList();
-            listItems.AddRange(gameplayItemPrefabConfig.listItemDefinitionShp.ToList());
+           // listItems.AddRange(gameplayItemPrefabConfig.listItemDefinitionShp.ToList());
             foreach (var item in listItems)
             {
                 if (itemIds.Contains(item.GetId()))

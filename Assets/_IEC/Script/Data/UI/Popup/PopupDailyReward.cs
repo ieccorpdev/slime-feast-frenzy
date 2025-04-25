@@ -137,7 +137,7 @@ namespace _IEC
         {
             CurrentAdReward = PlayerData.currentDailyAdReward;
             //mainReward.SetButtonState(RewardButtonState.Available);
-            mainReward.UpdateButton(Config.dataDailyRewardConfig.mainReward);
+            mainReward.UpdateButton(PlayConfig.dataDailyRewardConfig.mainReward);
             UpdateAdRewards();
             progressBar.UpdateProgressBar();
         }
@@ -147,7 +147,7 @@ namespace _IEC
             for (int i = 0; i < adRewards.Length; i++)
             {
                 //if (adRewards[i].RewardClaimed)
-                adRewards[i].UpdateButton(Config.dataDailyRewardConfig.dailyRewards[i]);
+                adRewards[i].UpdateButton(PlayConfig.dataDailyRewardConfig.dailyRewards[i]);
                 adRewards[i].id = (i+1).ToString();
                 if (PlayerData.adRewardsClaimed.ContainsKey(i) && PlayerData.adRewardsClaimed[i] && i <= CurrentAdReward)
                 {

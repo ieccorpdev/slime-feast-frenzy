@@ -65,28 +65,7 @@ namespace IEC
             base.Show();
         }
 
-        public void StartTutorialHelper(HelperId helperId)
-        {
-            tutorialCompass.gameObject.SetActive(helperId == HelperId.Compass);
-            tutorialMagnet.gameObject.SetActive(helperId == HelperId.Magnet);
-            tutorialFrozen.gameObject.SetActive(helperId == HelperId.FrozenTime);
-            tutorialScaleUp.gameObject.SetActive(helperId == HelperId.ScaleUp);
-            switch (helperId)
-            {
-                case HelperId.Magnet:
-                    tutorialMagnet.StartTutorial();
-                    break;
-                case HelperId.FrozenTime:
-                    tutorialFrozen.StartTutorial();
-                    break;
-                case HelperId.ScaleUp:
-                    tutorialScaleUp.StartTutorial();
-                    break;
-                case HelperId.Compass:
-                    tutorialCompass.StartTutorial();
-                    break;
-            }
-        }
+    
 
         public GameplayTimer GetGameplayTimer()
         {
@@ -177,7 +156,7 @@ namespace IEC
         {
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
-            var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
+            var xpVFX = PlayableController.Instance.prefabConfig.xpVFX.Spawn(transform);
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);

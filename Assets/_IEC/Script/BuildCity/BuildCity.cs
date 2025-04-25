@@ -62,7 +62,7 @@ public class BuildCity : _BaseBehaviour
 
     private Vector3 _initCamPos;
     private Vector3 _buildCamPos => _initCamPos + Vector3.down * 7f;
-    public bool CanBuildCity => PlayerData.currentCityBuild < Config.buildCityConfig.dataCity.Count;
+    public bool CanBuildCity => PlayerData.currentCityBuild < PlayConfig.buildCityConfig.dataCity.Count;
 
     public int ScrewNeedFinishIsland => currentIsland.AmountLeftToCompleteIsland;
     
@@ -228,7 +228,7 @@ public class BuildCity : _BaseBehaviour
 
     public UIBuildCityState GetStateIsLock()
     {
-        return PlayerData.level < Config.buildCityConfig.levelUnlock ? UIBuildCityState.LOCK : UIBuildCityState.NONE;
+        return PlayerData.level < PlayConfig.buildCityConfig.levelUnlock ? UIBuildCityState.LOCK : UIBuildCityState.NONE;
     }
     // void Update()
     // {
@@ -324,7 +324,7 @@ public class BuildCity : _BaseBehaviour
     {
         currentState = UIBuildCityState.GETREWARD;
         ChangeStateUI();
-        BuildCityDataConfig dataConfig = Config.buildCityConfig.dataCity.Find(x => x.idCity == currentIsland.idIsland);
+        BuildCityDataConfig dataConfig = PlayConfig.buildCityConfig.dataCity.Find(x => x.idCity == currentIsland.idIsland);
         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(ConvertDataCityReward(dataConfig),OnClaimReward); 
         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
         //OnClaimReward();
@@ -460,7 +460,7 @@ public class BuildCity : _BaseBehaviour
         idSelectedIsland = idCity;
         SetStatusAnotherIsLand();
         MoveToCurrentIsland();
-        if (PlayerData.level < Config.buildCityConfig.levelUnlock)
+        if (PlayerData.level < PlayConfig.buildCityConfig.levelUnlock)
         {
             currentIsland.LockIsland();
         }
@@ -643,7 +643,7 @@ public class BuildCity : _BaseBehaviour
         Locator.Main.ClaimBonusRewardPanel.gameObject.SetActive(false);
         backHomeButton.gameObject.SetActive(false);
         int idCity = PlayerData.currentCityBuild;
-        var dataIsland = Config.buildCityConfig;
+        var dataIsland = PlayConfig.buildCityConfig;
         var dataConfig = dataIsland.dataCity.Find(x => x.idCity == idCity);
         if (dataConfig == null) dataConfig = dataIsland.dataCity[dataIsland.dataCity.Count - 1];
         ChangeAnimIsland(false);
@@ -772,7 +772,7 @@ public class BuildCity : _BaseBehaviour
     {
         idSelectedIsland++;
         ValidateIdSelectedIsland();
-        var data = Config.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
+        var data = PlayConfig.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
         SetDataNameIsland(data);
         SetButtonLeftRight();
     }
@@ -823,7 +823,7 @@ public class BuildCity : _BaseBehaviour
     {
         idSelectedIsland--;
         ValidateIdSelectedIsland();
-        var data = Config.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
+        var data = PlayConfig.buildCityConfig.dataCity.Find(x => x.idCity == idSelectedIsland);
         SetDataNameIsland(data);
         SetButtonLeftRight();
     }

@@ -6,11 +6,11 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class TutorialController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class TutorialController : MonoBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
         Dictionary<string, EventYieldWait> m_DictYieldWait = new Dictionary<string, EventYieldWait>();
         public GameObject darkBackGround;
-        public HighLightCanvas tutorialCanvas => Pool.Get<HighLightCanvas>();
+        public HighLightCanvas tutorialCanvas;
         public Transform hand;
 
         public void LocateController()
@@ -55,20 +55,7 @@ namespace IEC
 
         void OnNewGame()
         {
-            if (PlayerData.level == 1)
-            {
-                Locator.Game.ScreenInGame.OnStartTutorial(GamePlay.GetLevelController().GetHolePlayer().transform);
-            }
-            else
-            {
-                Locator.Game.ScreenInGame.DeActiveStartGameTutorial();
-                var helperConfig =
-                    Config.gamePlayConfig.helperConfigs.FirstOrDefault(x => x.unlockLevel == PlayerData.level);
-                if (helperConfig != null && PlayerData.helperData.IsCompleteTutorial(helperConfig.id) == false)
-                {
-                    Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);
-                }
-            }
+           
         }
 
 

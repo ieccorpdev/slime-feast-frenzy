@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class ConfettiGroup : _BaseBehaviour, IGroup
+    public class ConfettiGroup : MonoBehaviour, IGroup
     {
         public Vector2 areaX;
         public Vector2 areaY;

@@ -21,7 +21,6 @@ namespace _IEC.Features.Gameplay
         public int radioActiveWeight;
         public int negativeTimerWeight;
         public Vector3 mapCenter;
-        public LevelBoomData levelBoomData;
         public LevelDefinition levelDefinition;
         public bool isOverriddenByPreset;
         public bool isOverridenByMapPrefab;
@@ -84,7 +83,6 @@ namespace _IEC.Features.Gameplay
             clone.radioActiveWeight = radioActiveWeight;
             clone.negativeTimerWeight = negativeTimerWeight;
             clone.mapCenter = mapCenter;
-            clone.levelBoomData = levelBoomData;
             clone.levelDefinition = levelDefinition;
             clone.isOverriddenByPreset = isOverriddenByPreset;
             
@@ -133,7 +131,6 @@ namespace _IEC.Features.Gameplay
             levelDataSO.theme = groundSkin;
             levelDataSO.difficulty = type;
             levelDataSO.mapCenter = mapCenter;
-            levelDataSO.levelBoomData = levelBoomData;
 #if UNITY_EDITOR
             UnityEditor.AssetDatabase.CreateAsset(levelDataSO, $"Assets/_IECProject/FSLevels/_New_{folderName}/LevelDataSOs/LevelDataSO_{levelIndex}.asset");
             UnityEditor.AssetDatabase.SaveAssets();

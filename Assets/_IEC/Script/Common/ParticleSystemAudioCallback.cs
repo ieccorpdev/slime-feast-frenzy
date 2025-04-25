@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 
 namespace IEC
 {
-    public class ParticleSystemAudioCallback : _BaseBehaviour
+    public class ParticleSystemAudioCallback : MonoBehaviour
     {
         public string id;
 

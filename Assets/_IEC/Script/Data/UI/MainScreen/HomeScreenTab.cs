@@ -58,7 +58,6 @@ public class HomeScreenTab : ScreenNavigateUI
     public Image notiCityBuild;
     private List<UIMoveOutAnimation> _listObjMoveOut = new();
     private Sequence _uiAnimSequence;
-    private GameConfig m_gameConfig => PlayableController.Instance.gameConfig;
 
     // Start is called before the first frame update
     void Start()
@@ -96,7 +95,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnPiggyBank,
             () =>
             {
-                bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+                bool isEnoughLevel = PlayerData.level >= PlayConfig.dataPiggyBankConfig.levelUnlocked;
                 if(!isEnoughLevel) return;
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupPiggyBank.Show();
@@ -116,17 +115,16 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 Locator.Main.PopupLevelChestReward.Setup(
-                    Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)), 
+                    PlayConfig.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)), 
                     PlayerData.GetChestProgress(ChestType.Level));
                 Locator.Main.PopupLevelChestReward.Show();
             });
         SetEvent(btnStarChestReward,
             () =>
             {
-                bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
-                if(!isEnoughLevel) return;
+                if(!true) return;
                 Locator.Main.PopupStarChestReward.Setup(
-                    Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
+                    PlayConfig.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)), 
                     PlayerData.GetChestProgress(ChestType.Star));
                 Locator.Main.PopupStarChestReward.Show();
             });
@@ -342,7 +340,7 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     public void UpdatePiggyBankButton()
     {
-        bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+        bool isEnoughLevel = PlayerData.level >= PlayConfig.dataPiggyBankConfig.levelUnlocked;
         goPiggyBankLock.SetActive(!isEnoughLevel);
         goPiggyBankUnlock.SetActive(isEnoughLevel);
         piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
@@ -358,13 +356,13 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void UpdateBuildCity()
     {
-        buildButton.gameObject.SetActive(PlayerData.level>= Config.buildCityConfig.levelUnlock);
-        notiCityBuild.gameObject.SetActive(PlayerData.screwCityBuild > 0 && PlayerData.currentCityBuild < Config.buildCityConfig.dataCity.Count);
+        buildButton.gameObject.SetActive(PlayerData.level>= PlayConfig.buildCityConfig.levelUnlock);
+        notiCityBuild.gameObject.SetActive(PlayerData.screwCityBuild > 0 && PlayerData.currentCityBuild < PlayConfig.buildCityConfig.dataCity.Count);
         //buildCityUI.ShowScale();
     }
     public void UpdateMainHome()
     {
-        avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
+        avatarImage.sprite = PlayConfig.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
         
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
@@ -385,10 +383,7 @@ public class HomeScreenTab : ScreenNavigateUI
 
     private void UpdateStarChest()
     {
-        bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
-        starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
-        starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
-        btnStarChestReward.interactable = isEnoughLevel;
+       
     }
     private void UpdateLifeOffer()
     {
@@ -396,14 +391,14 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     private void UpdateLuckyWheel()
     {
-        int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
+        int levelUnlock = PlayConfig.dataRewardLuckyWheelConfig.levelUnlock;
         luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
-        luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
+        luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < PlayConfig.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }
     private void UpdateDailyReward()
     {
         dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
-        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock);
+        btnDailyReward.gameObject.SetActive(PlayerData.level >= PlayConfig.dataDailyRewardConfig.levelUnlock);
     }
 
 }

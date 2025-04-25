@@ -10,7 +10,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
-public class Hole : _BaseBehaviour
+public class Hole : MonoBehaviour
 {
 	[SerializeField] private Transform holeGraphics;
 	[SerializeField] private Transform holeCanvases;
@@ -37,7 +37,8 @@ public class Hole : _BaseBehaviour
 	[SerializeField]public Animator sharkBiteAnimator;
 	[SerializeField]private Transform characterParent;
 	[SerializeField]private Transform sharkBiteParent;
-	
+	protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
+
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
@@ -184,11 +185,6 @@ public class Hole : _BaseBehaviour
 		}
 	}
 
-	public void StartScaleByHelper()
-	{
-		m_AdditionalSize = Config.gamePlayConfig.scaleUpHelperAdditionalSize;
-		SetSize(Size,true,null);
-	}
 
 	public void StopScaleByHelper()
 	{

@@ -72,11 +72,11 @@ namespace IEC.Wind.Leaderboard
             rewardItems.ForEach(x => x.gameObject.SetActive(false));
             for(int i = 0; i < rewards.Count; i++)
             {
-                Sprite spr = Config.GetSpriteByReward(rewards[i].type);
+                Sprite spr = PlayConfig.GetSpriteByReward(rewards[i].type);
                 if (rewards[i].type == ResourceType.Gold)
                 {
                     goldAdd = rewards[i].amount;
-                    spr = Config.GetGoldSprite(rewards[i].amount);
+                    spr = PlayConfig.GetGoldSprite(rewards[i].amount);
                 }
                 string rwTxt = "x" + rewards[i].amount;
                 rewardItems[i].SetData(spr, rwTxt);

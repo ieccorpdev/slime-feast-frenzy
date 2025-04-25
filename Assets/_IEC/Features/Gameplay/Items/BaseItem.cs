@@ -10,7 +10,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour
+    public class BaseItem : MonoBehaviour
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -179,15 +179,8 @@ namespace _IEC.Features.Gameplay
 
         protected virtual void OnBecomeCollectable()
         {
-            if (Game.usingNewLogicPull)
-            {
-                onDraging = true;
-                targetObject = GamePlay.levelController.GetHolePlayer().transform;
-            }
-            else
-            {
-                rb.isKinematic = false;
-            }
+            rb.isKinematic = false;
+
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;

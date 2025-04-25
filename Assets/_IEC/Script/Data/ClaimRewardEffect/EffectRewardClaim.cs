@@ -71,7 +71,7 @@ namespace IEC
                 currencyObj.transform.localScale = Vector3.one;
                 currencyObj.anchoredPosition = posSpawn;
                 var img = currencyObj.GetComponent<Image>();
-                img.sprite = Config.dataEffectRewardClaimConfig.GetRewardSprite(rewardType);
+                img.sprite = PlayConfig.dataEffectRewardClaimConfig.GetRewardSprite(rewardType);
                 currencyObj.gameObject.SetActive(true);
                 var posStart = PosRandomSpawnRuby(posSpawn);
                 var index = i;

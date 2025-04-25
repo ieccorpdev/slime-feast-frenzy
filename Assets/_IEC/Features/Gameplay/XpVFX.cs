@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    public class XpVFX : _BaseBehaviour
+    public class XpVFX : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI textUI;
         [SerializeField] private RectTransform rectTransform;

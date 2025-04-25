@@ -12,7 +12,7 @@ using UnityEngine.UI;
 
 namespace _IEC.Features.Gameplay
 {
-    public class GameplayTimer : _BaseBehaviour
+    public class GameplayTimer : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI txtCoolDown;
         [SerializeField] private Image imgProgress;
@@ -22,7 +22,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image frozenMark;
         [SerializeField] private Image frozenMark2;
         [SerializeField] private TextMeshProUGUI txtAddedTime;
-        
+        protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
         [SerializeField]private float m_CurrentTime;
         private float m_MaxTime;
         private State m_CurrentState;
@@ -30,7 +30,7 @@ namespace _IEC.Features.Gameplay
         private float m_FrozenTimeCoolDown;
         private bool m_IsGameStarted;
         private bool m_isTimeShowScreenVignette;
-
+        public FloatingJoystick Joystick;
         private string TweenIdMelting => "melting" + gameObject.GetInstanceID();
         private LevelController _levelController => (LevelController)GamePlay.GetLevelController();
         public event Action OnReset;
@@ -78,27 +78,15 @@ namespace _IEC.Features.Gameplay
 
         private void OnAddTimeByLoseScreen(object param)
         {
-            var data = (AddTimeForTimerData) param;
-            AddMoreTime(data.time, false);
-            ChangeState(State.Active);
+            
         }
         private void OnUserUseHelper(object param)
         {
-            var data = (UserUseHelper) param;
-            if (data.helperId != HelperId.FrozenTime) return;
-            StartFreezeTime();
         }
 
         private void OnUseBooster(object param)
         {
-            var data = (UseBoosterEventData) param;
-            if (data.boosterId == BoosterId.BonusTime)
-            {
-                //Services.PushEvent(new UseItem("time_extend"));
-                //var bonusTimeConfig = Config.boosterConfig.GetBoosterConfigModelById(BoosterId.BonusTime);
-                //PlayAddedTimeAnimation(bonusTimeConfig.advantageNumber);
-                //SoundController.PlaySound(new AudioInfo(Config.soundConfig.boosterChrono));
-            }
+           
         }
 
         private void OnCollectedBooster(object param)
@@ -109,12 +97,7 @@ namespace _IEC.Features.Gameplay
             // //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
         }
         
-        private void StartFreezeTime()
-        {
-            m_FrozenTimeCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime);
-            SetActiveFrozenMark(true);
-            OnUpdateFrozenState?.Invoke(true);
-        }
+       
 
         private void StopFreezeTime()
         {
@@ -130,9 +113,7 @@ namespace _IEC.Features.Gameplay
 
         private void OnCompleteHelper(object pram)
         {
-            var data = (UserCompleteHelper) pram;
-            if (data.helperId != HelperId.FrozenTime) return;
-            Play();
+           
         }
 
         public float GetRemainingTime()
@@ -271,7 +252,7 @@ namespace _IEC.Features.Gameplay
         private void UpdateCoolDown()
         {
             txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToString(m_CurrentTime);
-            ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
+            ChangeRemainingTimeState(PlayableController.Instance.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
             var proportion = m_CurrentTime / m_MaxTime;
             imgProgress.fillAmount = proportion;
         }
@@ -369,7 +350,7 @@ namespace _IEC.Features.Gameplay
         private void ChangeRemainingTimeState(RemainingTimeState newState)
         {
             if (newState == m_CurrentRemainingTimeState) return;
-            txtCoolDown.color = Config.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
+            txtCoolDown.color = PlayableController.Instance.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
             switch (newState)
             {
                 case RemainingTimeState.Safe:

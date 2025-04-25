@@ -21,7 +21,7 @@ namespace IEC
 
         public void Setup()
         {
-            ProgressRewardData = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            ProgressRewardData = PlayConfig.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             UpdateProgressBar();
         }
 
@@ -32,9 +32,9 @@ namespace IEC
 
         private void UpdateProgressBar()
         {
-            currentSpecialObjectItem.sprite = Config.specialObjectConfig
+            currentSpecialObjectItem.sprite = PlayConfig.specialObjectConfig
                 .GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
-            currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
+            currentProgressRewardIcon.sprite = PlayConfig.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
             currentProgressRewardIcon.SetNativeSize();
             progressRewardAmountText.text = ProgressRewardData.GetDisplayText();
             progressFillImage.fillAmount = (float)PlayerData.currentProgress / ProgressRewardData.progress;

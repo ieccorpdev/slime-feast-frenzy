@@ -90,7 +90,7 @@ namespace IEC
         }
         void SetCallBackIAP(string id)
         {
-            PackConfig configIap = Config.GetConfigPackIap(id);
+            PackConfig configIap = PlayConfig.GetConfigPackIap(id);
             if (configIap.isHaveNoAds)
             {
                 Controllers.Get<AdsController>().UpdateWhiteBannerSize();

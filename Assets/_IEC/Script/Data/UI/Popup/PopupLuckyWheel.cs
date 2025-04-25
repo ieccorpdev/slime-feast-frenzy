@@ -22,7 +22,7 @@ namespace _IEC
         // public ClaimBonusRewardPanel rewardClaimPanel;
         public WheelPiece curentResult;
         private bool canClaim;
-        private int goldCost => Config.dataRewardLuckyWheelConfig.GoldCostToSpin(PlayerData.luckWheelGoldTimeSpin);
+        private int goldCost => PlayConfig.dataRewardLuckyWheelConfig.GoldCostToSpin(PlayerData.luckWheelGoldTimeSpin);
         
         private List<Reward> listDataReward = new List<Reward>();
         
@@ -139,7 +139,7 @@ namespace _IEC
         public void LoadData()
         {
             UpdateConfigRewardLuckyWheel();
-            mainWheel.dataWheel = Config.dataRewardLuckyWheelConfig;
+            mainWheel.dataWheel = PlayConfig.dataRewardLuckyWheelConfig;
             mainWheel.SetupWheel();
             mainWheel.LoadDataWheel();
         }
@@ -149,16 +149,16 @@ namespace _IEC
             if (!PlayerData.firstSpinTutorial)
             {
                 if(Game.isOverrideDataRewardLuckyWheel)
-                    mainWheel.listRewardLuckyWheel = Config.dataRewardLuckyWheelConfig.listRewardTutorialOverrideABTest;
+                    mainWheel.listRewardLuckyWheel = PlayConfig.dataRewardLuckyWheelConfig.listRewardTutorialOverrideABTest;
                 else
-                    mainWheel.listRewardLuckyWheel = Config.dataRewardLuckyWheelConfig.listRewardTutorial;
+                    mainWheel.listRewardLuckyWheel = PlayConfig.dataRewardLuckyWheelConfig.listRewardTutorial;
             }
             else
             {
                 if(Game.isOverrideDataRewardLuckyWheel)
-                    mainWheel.listRewardLuckyWheel = Config.dataRewardLuckyWheelConfig.listRewardOverrideABTest;
+                    mainWheel.listRewardLuckyWheel = PlayConfig.dataRewardLuckyWheelConfig.listRewardOverrideABTest;
                 else
-                    mainWheel.listRewardLuckyWheel = Config.dataRewardLuckyWheelConfig.listRewardLuckyWheel;
+                    mainWheel.listRewardLuckyWheel = PlayConfig.dataRewardLuckyWheelConfig.listRewardLuckyWheel;
             }
         }
 
@@ -187,7 +187,7 @@ namespace _IEC
             }
             else
             {
-                spinAdsBtn.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
+                spinAdsBtn.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < PlayConfig.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
                 spinGoldBtn.gameObject.SetActive(true);
                 SetSpinGoldStatus();
             }

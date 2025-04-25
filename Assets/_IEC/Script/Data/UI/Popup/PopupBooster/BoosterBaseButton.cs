@@ -52,17 +52,17 @@ namespace IEC
             }
             
             CheckShowStateObj();
-            bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
+            bgImage.sprite = PlayConfig.AllBoosterConfig.GetBgSprite(State);
         }
 
         public void Setup()
         {
-            BoosterData = Config.AllBoosterConfig.GetBoosterData(boosterType);
+            BoosterData = PlayConfig.AllBoosterConfig.GetBoosterData(boosterType);
             CheckCurrentState();
             CheckShowStateObj();
 
             countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
-            bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
+            bgImage.sprite = PlayConfig.AllBoosterConfig.GetBgSprite(State);
         }
 
         private void CheckCurrentState(bool isCheckOnClick = false)

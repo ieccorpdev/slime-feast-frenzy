@@ -21,7 +21,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private RectTransform iapShopScroll;
         [SerializeField] private RectTransform notEnoughGoldWarning;
         private Action m_ActionPlayOn;
-        private int goldCost => Config.gamePlayConfig.baseNumberCoinForRevive;
+        private int goldCost => PlayConfig.gamePlayConfig.baseNumberCoinForRevive;
         protected override void Awake()
         {
             base.Awake();
@@ -59,7 +59,7 @@ namespace _IEC.Features.Gameplay
         }
         private void UpdateUI()
         {
-            txtNumberCoinPlayOn.text = Config.gamePlayConfig.baseNumberCoinForRevive.ToString();
+            txtNumberCoinPlayOn.text = PlayConfig.gamePlayConfig.baseNumberCoinForRevive.ToString();
         }
 
 

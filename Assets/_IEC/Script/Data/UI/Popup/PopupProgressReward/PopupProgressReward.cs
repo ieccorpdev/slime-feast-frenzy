@@ -27,14 +27,14 @@ namespace IEC
 
         public void Setup()
         {
-            for (int i = 0; i < Config.progressRewardConfig.listRewardData.Count; i++)
+            for (int i = 0; i < PlayConfig.progressRewardConfig.listRewardData.Count; i++)
             {
                 if (i >= listProgressRewardItems.Count)
                 {
                     listProgressRewardItems.Add(Instantiate(progressRewardItemPrefab, rewardItemContainer));
                 }
                 
-                listProgressRewardItems[i].Setup(i + 1, Config.progressRewardConfig.GetRewardData(i));
+                listProgressRewardItems[i].Setup(i + 1, PlayConfig.progressRewardConfig.GetRewardData(i));
 
                 listProgressRewardItems[i].SetRewardClaimed(i < PlayerData.currentProgressMilestone);
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace _IEC.Features.Gameplay
 {
-    public class BaseItemDirectorUI : _BaseBehaviour
+    public class BaseItemDirectorUI : MonoBehaviour
     {
         [SerializeField] private GameObject groupActive;
         [SerializeField] private Image imgIcon;
@@ -29,7 +29,6 @@ namespace _IEC.Features.Gameplay
             m_HoleTransform = holeTransform;
             parentRectTransform = transform.parent.GetComponent<RectTransform>();
             m_BaseItem = item;
-            ChangeState(m_BaseItem.IsInScreen(GamePlay.mainCamera) ? State.InScreen : State.OutScreen);
         }
 
         public string GetID()
@@ -49,14 +48,7 @@ namespace _IEC.Features.Gameplay
                 gameObject.SetActive(false);
                 return;
             }
-            if (m_BaseItem.IsInScreen(GamePlay.mainCamera))
-            {
-                ChangeState(State.InScreen);
-            }
-            else
-            {
-                ChangeState(State.OutScreen);
-            }
+   
             UpdateCurrentState();
         }
         public void Reset()
@@ -89,9 +81,7 @@ namespace _IEC.Features.Gameplay
                     UpdateAnchorPositionY(dir);
                     break;
                 case State.InScreen:
-                    rectTransform.anchoredPosition =
-                        m_BaseItem.transform.position.GetLocalAnchorPos(parentRectTransform, GamePlay.mainCamera,
-                            GamePlay.uiCamera);
+         
                     imgPointer.gameObject.SetActive(m_BaseItem.GetCurrentState() == BaseItem.State.Idle || m_BaseItem.GetCurrentState() == BaseItem.State.None);
                     break;
             }

@@ -31,10 +31,7 @@ namespace IEC
             {
                 helperData = new PlayerHelperData
                 {
-                    numberFrozenTime = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.FrozenTime),
-                    numberCompass = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.Compass),
-                    numberMagnet = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.Magnet),
-                    numberScaleUp = PlayableController.Instance.gameConfig.gamePlayConfig.GetStartNumber(HelperId.ScaleUp)
+ 
                 };
                 PlayerData.helperData = helperData;
             }

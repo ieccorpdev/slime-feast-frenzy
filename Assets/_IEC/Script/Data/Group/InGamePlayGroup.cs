@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using _IEC.Features.Gameplay;
+﻿using _IEC.Features.Gameplay;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace IEC
 {
-    public class InGamePlayGroup : _BaseBehaviour, IGroup
+    public class InGamePlayGroup : MonoBehaviour, IGroup
     {
         public ScreenUI GameState { get; private set; }
 
         public Camera mainCamera;
         public Camera uiCamera;
         public LevelController levelController;
-        public bool IsWin => GameState == Locator.Game.ScreenLevelWin || GameState == Locator.Game.ScreenLevelWinHard;
         
         public bool IsInLevelHard { get; private set; } = false;
         private ILevelController m_CurrentLevelController;
@@ -30,7 +24,6 @@ namespace IEC
 
         public void Start()
         {
-            GamePlay.Init();
         }
 
         public void Init()

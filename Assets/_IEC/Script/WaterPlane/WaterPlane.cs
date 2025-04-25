@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class WaterPlane : _BaseBehaviour
+    public class WaterPlane : MonoBehaviour
     {
         [SerializeField] private MeshRenderer waterMeshRenderer;
         [SerializeField] private WaterPlaneThemeConfig waterThemeConfig;

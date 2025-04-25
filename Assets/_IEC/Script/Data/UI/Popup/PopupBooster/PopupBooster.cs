@@ -73,8 +73,8 @@ namespace IEC
 
         private void UpdateStreakDisplay()
         {
-            streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
-            streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
+            streakLockObj.SetActive(PlayerData.level < PlayConfig.AllBoosterConfig.levelUnlockStreak);
+            streakUnlockObj.SetActive(PlayerData.level >= PlayConfig.AllBoosterConfig.levelUnlockStreak);
 
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {

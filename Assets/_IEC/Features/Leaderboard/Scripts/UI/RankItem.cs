@@ -91,10 +91,10 @@ namespace IEC.Wind.Leaderboard
             {
                 if(i >= items.Count)
                     break;
-                Sprite spr = PlayableController.Instance.gameConfig.GetSpriteByReward(rewards[i].type);
-                string txt = "" + rewards[i].amount;
-                items[i].SetData(spr, txt);
-                items[i].gameObject.SetActive(true);
+                // Sprite spr = PlayableController.Instance.gamePlayConfig.GetSpriteByReward(rewards[i].type);
+                // string txt = "" + rewards[i].amount;
+                // items[i].SetData(spr, txt);
+                // items[i].gameObject.SetActive(true);
             }
         }
 

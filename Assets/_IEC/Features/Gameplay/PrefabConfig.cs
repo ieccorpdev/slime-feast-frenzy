@@ -10,6 +10,5 @@ namespace _IEC.Features.Gameplay
         public XpVFX xpVFX;
         public LevelObjectiveVfx levelObjectiveVfx;
         public BaseItemDirectorUI itemDirectorUI;
-        public BombItem bombPrefab;
     }
 }

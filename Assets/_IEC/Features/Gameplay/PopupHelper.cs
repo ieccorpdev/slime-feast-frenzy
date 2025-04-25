@@ -26,8 +26,8 @@ namespace _IEC.Features.Gameplay
         };
 
         protected int CurrentCoinCount => PlayerData.GetPlayerCurrencyCount(ResourceType.Gold);
-        protected int Price => Config.gamePlayConfig.GetHelperPrice(helperId);
-        protected int NumberBuyingResult => Config.gamePlayConfig.GetNumberBuyingResult(helperId);
+        protected int Price => PlayConfig.gamePlayConfig.GetHelperPrice(helperId);
+        protected int NumberBuyingResult => PlayConfig.gamePlayConfig.GetNumberBuyingResult(helperId);
         public void Show(Action<Result> callback)
         {
             btnClose.onClick.AddListener(()=>callback?.Invoke(Result.Cancel));

@@ -2,7 +2,7 @@ using _IEC.Features.Gameplay;
 using IEC;
 using UnityEngine;
 
-public class HoleController : _BaseBehaviour
+public class HoleController : MonoBehaviour
 {
 	[SerializeField] private HoleTransformer transformer;
 	[SerializeField] private RectTransform direction;
@@ -28,14 +28,10 @@ public class HoleController : _BaseBehaviour
 	
 	private void Update()
 	{
-		if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
-		{
-			Move(Vector3.zero);
-			return;
-		}
+	
     
 		transform.position = transformer.transform.position;
-		var dir = Joystick.Direction;
+		var dir = PlayableController.Instance.Joystick.Direction;
 		m_Hole.characterAnimator.SetFloat("moveAxis",dir.magnitude);
 		if (dir.magnitude < Mathf.Epsilon)
 		{

@@ -126,7 +126,7 @@ namespace IEC
                 Locator.Game.ScreenInGame.Show();
                 this.RaiseEvent(EventList.GamePlay.ADD_TIME_FOR_TIMER,new AddTimeForTimerData()
                 {
-                    time = Config.gamePlayConfig.reviveTimeForTimer
+                    time = PlayConfig.gamePlayConfig.reviveTimeForTimer
                 });
                 this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
             });

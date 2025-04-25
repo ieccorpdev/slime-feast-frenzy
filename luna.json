@@ -2,7 +2,7 @@
     "version": "6.2.0",
     "projectId": "3a813f20308eeda4e90561d4c7263209",
     "applicationID": 29094,
-    "creativeName": "SFF",
+    "creativeName": "SFF2",
     "pgServer": "EU",
     "window": {
         "‐‵": true
@@ -11,6 +11,12 @@
         "environmentID": -680554104,
         "scripts": {
             "excludes": [
+                "Assets/- SHP -/",
+                "Assets/3rdParty/",
+                "Assets/Balaso Software/",
+                "Assets/BuildReport/",
+                "Assets/CrystalFramework/",
+                "Assets/RapidIcon/",
                 "**/Editor/",
                 "**/Luna/RuntimeScripts/",
                 "**/FacebookSDK/",
@@ -122,7 +128,10 @@
                 "Stubs/AppsFlyer",
                 "Stubs/IronSource",
                 "Stubs/Vungle",
-                "Stubs/MoreMountains.NiceVibrations"
+                "Stubs/MoreMountains.NiceVibrations",
+                "Assets/_Art External/Akduman/Toontastic - Mega Fruit Pack/Models/fruits.fbx",
+                "Assets/_Art External/Akduman/Toontastic - Mega Fruit Pack/Models/fruits.fbx",
+                "Assets/_Art External/Akduman/Toontastic - Mega Fruit Pack/Models/fruits.fbx"
             ],
             "includes": [
                 "Assets/Resources/DOTweenSettings.asset",
@@ -132,7 +141,10 @@
         "scenes": [
             "Assets/_IEC/Scene/Game.unity"
         ],
-        "disabledScenes": [],
+        "disabledScenes": [
+            "Assets/_IEC/Scene/Game 1.unity",
+            "Assets/_IEC/Scene/Game 2.unity"
+        ],
         "startupScene": 0,
         "packages": {
             "default": {
@@ -188,13 +200,13 @@
             },
             {
                 "name": "prefabs",
-                "excluded": true,
-                "forceIncluded": false
+                "excluded": false,
+                "forceIncluded": true
             },
             {
                 "name": "mecanim-wasm",
-                "excluded": true,
-                "forceIncluded": false
+                "excluded": false,
+                "forceIncluded": true
             }
         ],
         "disableRuntimeAnalysisForCode": false,
@@ -8076,46 +8088,6 @@
                 "excluded": true
             },
             {
-                "name": "AllIn1VfxToolkit.All1VfxRandomTimeSeed",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1LookAt",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1ParticleHelperComponent",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1ParticleHelperSO",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxBounceAnimation",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxComponent",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxFakeLightDirSetter",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxNoiseCreator",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxScrollShaderProperty",
-                "excluded": true
-            },
-            {
-                "name": "AllIn1VfxToolkit.AllIn1VfxScrollShaderTexture",
-                "excluded": true
-            },
-            {
                 "name": "AllIn1VfxToolkit.Demo.Scripts.All1DemoDropdownScroller",
                 "excluded": true
             },
@@ -8196,19 +8168,7 @@
                 "excluded": true
             },
             {
-                "name": "AllIn1VfxToolkit.Scripts.AllIn1GraphicMaterialDuplicate",
-                "excluded": true
-            },
-            {
                 "name": "ApplePriceTiers",
-                "excluded": true
-            },
-            {
-                "name": "AppTrackingTransparencyExample",
-                "excluded": true
-            },
-            {
-                "name": "Balaso.AppTrackingTransparency",
                 "excluded": true
             },
             {
@@ -8232,10 +8192,6 @@
                 "excluded": true
             },
             {
-                "name": "Crystal.SafeAreaDemo",
-                "excluded": true
-            },
-            {
                 "name": "CurrencyFormat",
                 "excluded": true
             },
@@ -8249,10 +8205,6 @@
             },
             {
                 "name": "DataPiggyBankConfig",
-                "excluded": true
-            },
-            {
-                "name": "DemoRotations",
                 "excluded": true
             },
             {
@@ -8688,10 +8640,6 @@
                 "excluded": true
             },
             {
-                "name": "IEC.PopupData",
-                "excluded": true
-            },
-            {
                 "name": "IEC.ProgressRewardConfig",
                 "excluded": true
             },
@@ -8856,74 +8804,6 @@
                 "excluded": true
             },
             {
-                "name": "ObjectTrajectory",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.BezierPath",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.PathSceneTool",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.GeneratePathExample",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.PathFollower",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.PathSpawner",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.GlobalDisplaySettings",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.MinMax3D",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.PathCreator",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.PathCreatorData",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Utility.CubicBezierUtility",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Utility.MathUtility",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Utility.VertexPathUtility",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Utility.VertexPathUtility.PathSplitData",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.VertexPath",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.VertexPath.TimeOnPathData",
-                "excluded": true
-            },
-            {
-                "name": "PingPongMovement",
-                "excluded": true
-            },
-            {
                 "name": "PlayerPrefsUtility",
                 "excluded": true
             },
@@ -8952,15 +8832,7 @@
                 "excluded": true
             },
             {
-                "name": "RapidIconUIC.IconRenderer",
-                "excluded": true
-            },
-            {
                 "name": "RaycastControl",
-                "excluded": true
-            },
-            {
-                "name": "Rotating",
                 "excluded": true
             },
             {
@@ -9445,18 +9317,6 @@
             },
             {
                 "name": "LightScrollSnap.ScaleEffect",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.CylinderMeshCreator",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.PathPlacer",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.Examples.RoadMeshCreator",
                 "excluded": true
             },
             {
@@ -10289,19 +10149,19 @@
             },
             {
                 "name": "AllIn1VfxToolkit.AllIn1LookAt.FaceDirection",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "AllIn1VfxToolkit.AllIn1ParticleHelperComponent.EmissionShapes",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "AllIn1VfxToolkit.AllIn1ParticleHelperComponent.LifetimeSettings",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "AllIn1VfxToolkit.AllIn1VfxComponent.AfterSetAction",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "AllIn1VfxToolkit.Demo.Scripts.All1VfxDemoEffectCollection",
@@ -10314,10 +10174,6 @@
             {
                 "name": "AxisOptions",
                 "excluded": false
-            },
-            {
-                "name": "Balaso.AppTrackingTransparency.AuthorizationStatus",
-                "excluded": true
             },
             {
                 "name": "BuildCityRewardConfig",
@@ -10341,10 +10197,6 @@
             },
             {
                 "name": "CityRewards",
-                "excluded": true
-            },
-            {
-                "name": "Crystal.SafeArea.SimDevice",
                 "excluded": true
             },
             {
@@ -10986,22 +10838,6 @@
             {
                 "name": "ObjectPool.StartupPoolMode",
                 "excluded": false
-            },
-            {
-                "name": "PathCreation.BezierPath.ControlMode",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.EndOfPathInstruction",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.GlobalDisplaySettings.HandleType",
-                "excluded": true
-            },
-            {
-                "name": "PathCreation.PathSpace",
-                "excluded": true
             },
             {
                 "name": "PhysicFallingItemType",
@@ -12068,11 +11904,11 @@
                 "excluded": false
             },
             {
-                "name": "pc.Debugger.Components.EditorCamera",
+                "name": "Testa",
                 "excluded": true
             },
             {
-                "name": "pc.Debugger.Components.EditorGUI",
+                "name": "IEC.PopupData",
                 "excluded": true
             }
         ],
@@ -20387,7 +20223,7 @@
                     },
                     {
                         "name": "GetEnumerator",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Find",
@@ -24150,10 +23986,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "Config#get",
-                        "excluded": false
-                    },
-                    {
                         "name": "HybridConfig#get",
                         "excluded": true
                     },
@@ -24179,6 +24011,10 @@
                     },
                     {
                         "name": "SetActive$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PlayConfig#get",
                         "excluded": true
                     }
                 ]
@@ -36962,10 +36798,6 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "Config#get",
-                        "excluded": false
-                    },
-                    {
                         "name": "init",
                         "excluded": false
                     },
@@ -37102,10 +36934,6 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "Config#get",
-                        "excluded": false
-                    },
-                    {
                         "name": "PlayerData#get",
                         "excluded": true
                     },
@@ -37146,15 +36974,7 @@
                         "excluded": true
                     },
                     {
-                        "name": "SpawnSpecialItems",
-                        "excluded": true
-                    },
-                    {
                         "name": "SpawnAllBomb",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SpawnAllBomb$1",
                         "excluded": false
                     },
                     {
@@ -37344,36 +37164,6 @@
                     {
                         "name": "Get",
                         "excluded": true
-                    }
-                ]
-            },
-            {
-                "className": "Crystal.SafeArea",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Update",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Refresh",
-                        "excluded": false
-                    },
-                    {
-                        "name": "GetSafeArea",
-                        "excluded": false
-                    },
-                    {
-                        "name": "ApplySafeArea",
-                        "excluded": false
                     }
                 ]
             },
@@ -37586,14 +37376,6 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "GetAudioEvents#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "GetAllAudioEvents",
-                        "excluded": true
-                    },
-                    {
                         "name": "init",
                         "excluded": false
                     },
@@ -37645,10 +37427,6 @@
                 "className": "IEC.ConsentController",
                 "staticMethods": [],
                 "instanceMethods": [
-                    {
-                        "name": "StartGetConsent",
-                        "excluded": true
-                    },
                     {
                         "name": "Update",
                         "excluded": true
@@ -38456,10 +38234,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "SetTimeStartLevel",
-                        "excluded": false
-                    },
-                    {
                         "name": "SetTimeEndLevel",
                         "excluded": true
                     }
@@ -38519,10 +38293,6 @@
                     },
                     {
                         "name": "LevelSessionCount#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "Config#get",
                         "excluded": true
                     },
                     {
@@ -39042,10 +38812,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "StartFreezeTime",
-                        "excluded": true
-                    },
-                    {
                         "name": "StopFreezeTime",
                         "excluded": true
                     },
@@ -39135,6 +38901,10 @@
                     },
                     {
                         "name": "ChangeRemainingTimeState",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GamePlay#get",
                         "excluded": false
                     }
                 ]
@@ -39382,6 +39152,10 @@
                     {
                         "name": "LocateGroup",
                         "excluded": false
+                    },
+                    {
+                        "name": "Game#get",
+                        "excluded": false
                     }
                 ]
             },
@@ -39580,6 +39354,10 @@
                     {
                         "name": "ChangeState",
                         "excluded": true
+                    },
+                    {
+                        "name": "GamePlay#get",
+                        "excluded": true
                     }
                 ]
             },
@@ -39690,10 +39468,6 @@
                         "excluded": true
                     },
                     {
-                        "name": "StartScaleByHelper",
-                        "excluded": true
-                    },
-                    {
                         "name": "StopScaleByHelper",
                         "excluded": false
                     },
@@ -39716,10 +39490,6 @@
                     {
                         "name": "AddXp",
                         "excluded": false
-                    },
-                    {
-                        "name": "SetActive$3",
-                        "excluded": true
                     },
                     {
                         "name": "SetPosition",
@@ -39800,6 +39570,14 @@
                     {
                         "name": "TurnSharkToHole",
                         "excluded": false
+                    },
+                    {
+                        "name": "GamePlay#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetActive",
+                        "excluded": true
                     }
                 ]
             },
@@ -40052,18 +39830,6 @@
                         "excluded": true
                     },
                     {
-                        "name": "m_LifeConfig#get",
-                        "excluded": true
-                    },
-                    {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
-                        "name": "LocateController",
-                        "excluded": false
-                    },
-                    {
                         "name": "IsActive",
                         "excluded": false
                     },
@@ -40096,12 +39862,8 @@
                         "excluded": false
                     },
                     {
-                        "name": "UpdateTimeLeftApplicationResume",
-                        "excluded": true
-                    },
-                    {
-                        "name": "UpdateTimeLifePerSec",
-                        "excluded": true
+                        "name": "GamePlay#get",
+                        "excluded": false
                     }
                 ]
             },
@@ -40167,10 +39929,6 @@
                 "className": "IEC.InGamePlayGroup",
                 "staticMethods": [],
                 "instanceMethods": [
-                    {
-                        "name": "IsWin#get",
-                        "excluded": true
-                    },
                     {
                         "name": "init",
                         "excluded": false
@@ -40360,10 +40118,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "LocateController",
-                        "excluded": false
-                    },
-                    {
                         "name": "OnEventRaise",
                         "excluded": false
                     },
@@ -40386,10 +40140,6 @@
                     {
                         "name": "GetPlayerMusic",
                         "excluded": false
-                    },
-                    {
-                        "name": "SetMuteAllSound",
-                        "excluded": true
                     },
                     {
                         "name": "SetMuteAllMusic",
@@ -40416,10 +40166,6 @@
                         "excluded": true
                     },
                     {
-                        "name": "PlayMusic",
-                        "excluded": true
-                    },
-                    {
                         "name": "PlayMusicOnLoop",
                         "excluded": true
                     },
@@ -40428,23 +40174,7 @@
                         "excluded": false
                     },
                     {
-                        "name": "SetVolumeAllSound",
-                        "excluded": true
-                    },
-                    {
-                        "name": "SetVolumeAllMusic",
-                        "excluded": true
-                    },
-                    {
                         "name": "IsActive",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BehaviourStart",
-                        "excluded": false
-                    },
-                    {
-                        "name": "BehaviourAwake",
                         "excluded": false
                     }
                 ]
@@ -40453,10 +40183,6 @@
                 "className": "IEC.TutorialController",
                 "staticMethods": [],
                 "instanceMethods": [
-                    {
-                        "name": "tutorialCanvas#get",
-                        "excluded": true
-                    },
                     {
                         "name": "init",
                         "excluded": false
@@ -40483,7 +40209,7 @@
                     },
                     {
                         "name": "OnNewGame",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SetStatusAllPanelTutorial",
@@ -40752,20 +40478,12 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "IS_PAUSE_GAME#get",
-                        "excluded": true
-                    },
-                    {
                         "name": "Awake",
                         "excluded": false
                     },
                     {
                         "name": "Show",
                         "excluded": false
-                    },
-                    {
-                        "name": "StartTutorialHelper",
-                        "excluded": true
                     },
                     {
                         "name": "GetGameplayTimer",
@@ -40822,6 +40540,10 @@
                     {
                         "name": "LoadLevelData",
                         "excluded": false
+                    },
+                    {
+                        "name": "IS_PAUSE_GAME#get",
+                        "excluded": true
                     }
                 ]
             },
@@ -40850,15 +40572,11 @@
                         "excluded": false
                     },
                     {
-                        "name": "CheckAddChestRewardPopup",
+                        "name": "DeactiveMedalObj",
                         "excluded": true
                     },
                     {
                         "name": "ShowPopup",
-                        "excluded": true
-                    },
-                    {
-                        "name": "DeactiveMedalObj",
                         "excluded": true
                     }
                 ]
@@ -43302,6 +43020,280 @@
                         "excluded": true
                     }
                 ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.All1VfxRandomTimeSeed",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1LookAt",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "LookAtCompute",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1ParticleHelperComponent",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetSceneDirty",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1ParticleHelperSO",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxBounceAnimation",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxComponent",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MakeNewMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MakeCopy",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FetchCurrentMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ResetAllProperties",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DoAfterSetAction",
+                        "excluded": false
+                    },
+                    {
+                        "name": "TryCreateNew",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ClearAllKeywords",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetKeyword",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FindCurrMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CleanMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SaveMaterial",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SaveMaterialWithOtherName",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DoSaving",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetSceneDirty",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MissingRenderer",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxFakeLightDirSetter",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnValidate",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetGlobalFakeLightDir",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetNewFakeLightDir",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetNewTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetOnUpdateBool",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxNoiseCreator",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "PerlinNoise",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CalculatePerlinColor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PerlinBorderless",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxScrollShaderProperty",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FlipGoingUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DestroyComponentAndLogError",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.AllIn1VfxScrollShaderTexture",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FlipGoingUp",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DestroyComponentAndLogError",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDisable",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "AllIn1VfxToolkit.Scripts.AllIn1GraphicMaterialDuplicate",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    }
+                ]
             }
         ],
         "stubberDataList": [],
@@ -43322,9 +43314,9 @@
                 "default": {
                     "maxWidth": 512,
                     "maxHeight": 512,
-                    "format": "png32",
+                    "format": "webp",
                     "compression": "quantSize",
-                    "quality": 65,
+                    "quality": 60,
                     "script": "",
                     "ext": ""
                 },
@@ -43342,9 +43334,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 60,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/UrbaneRound/Nunito-Black SDF.asset"
@@ -43352,9 +43344,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 60,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/UrbaneRound/UrbaneRounded-Bold SDF.asset"
@@ -43362,9 +43354,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 60,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular SDF.asset"
@@ -43372,9 +43364,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 60,
                         "script": "",
                         "ext": "",
                         "name": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
@@ -43382,9 +43374,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 60,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular Blue Outline.asset"
@@ -43429,8 +43421,8 @@
                     "data": {
                         "alphabet": " §1234567890-=qwertyuiop[]asdfghjkl;'\\`zxcvbnm,./±!@#$%^&*()_+QWERTYUIOP{}ASDFGHJKL:\"|~ZXCVBNM<>?",
                         "size": 64,
-                        "textureWidth": 1024,
-                        "textureHeight": 1024
+                        "textureWidth": 512,
+                        "textureHeight": 512
                     }
                 },
                 "overrides": []

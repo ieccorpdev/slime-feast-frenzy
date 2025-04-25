@@ -26,7 +26,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private GameObject groupHint;
         private State m_CurrentState;
         private float m_CooldownTime;
-        private float HelperActiveTime => Config.gamePlayConfig.GetHelperActiveTime(helperId);
+        private float HelperActiveTime => PlayConfig.gamePlayConfig.GetHelperActiveTime(helperId);
         private bool m_IsGamePause;
         private PopupHelper m_MyPopup;
 
@@ -122,7 +122,7 @@ namespace _IEC.Features.Gameplay
             m_CooldownTime = HelperActiveTime;
             imgProgress.fillAmount = 1;
             //UpdatePoolNumberUI();
-            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false)
+            if (PlayConfig.gamePlayConfig.IsHelperUnlocked(helperId) == false)
             {
                 ChangeState(State.Locked);
             }
@@ -269,7 +269,7 @@ namespace _IEC.Features.Gameplay
                     }
                     break;
                 case State.Locked:
-                    txtUnlockCondition.text = Config.gamePlayConfig.GetUnlockCondition(helperId);
+                    txtUnlockCondition.text = PlayConfig.gamePlayConfig.GetUnlockCondition(helperId);
                     break;
                 
             }
@@ -284,7 +284,7 @@ namespace _IEC.Features.Gameplay
         {
             UpdatePoolNumberUI();
             if (!gameObject.activeInHierarchy) return;
-            if (!Config.gamePlayConfig.IsHelperUnlocked(helperId)) return;
+            if (!PlayConfig.gamePlayConfig.IsHelperUnlocked(helperId)) return;
             if (PlayerData.helperData.GetPool(helperId) > 0)
                 ChangeState(State.Pool);
         }

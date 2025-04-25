@@ -12,7 +12,7 @@ namespace IEC
         Gold
     }
     
-    public class EffectGroup : _BaseBehaviour, IGroup
+    public class EffectGroup : MonoBehaviour, IGroup
     {
         public Transform parent;
         public List<GameObject> effectPrefabs;
@@ -41,12 +41,7 @@ namespace IEC
         {
             ShowEffect(type, amount, posFrom, posTo, currency =>
             {
-                switch (type)
-                {
-                    case EffectType.Gold:
-                        PlayerData.AddCurrency(ResourceType.Gold,amount);
-                        break;
-                }
+               
                 
             }, () =>
             {

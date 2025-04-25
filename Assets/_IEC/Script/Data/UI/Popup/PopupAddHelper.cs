@@ -38,7 +38,7 @@ namespace IEC
         {
             HelperType = helperType;
 
-            AddHelperData = Config.popupAddHelperConfig.GetAddHelperData(HelperType);
+            AddHelperData = PlayConfig.popupAddHelperConfig.GetAddHelperData(HelperType);
 
             titleText.text = AddHelperData.title;
 

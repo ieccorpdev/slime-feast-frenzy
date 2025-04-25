@@ -16,8 +16,6 @@ namespace _IEC.Features.Gameplay
     {
         [Searchable]
         public List<ItemDefinition> listItemDefinition = new List<ItemDefinition>();
-        [Space(10)]
-        public List<ItemDefinition> listItemDefinitionShp = new List<ItemDefinition>();
         #region Bake
         
 #if  UNITY_EDITOR
@@ -27,10 +25,8 @@ namespace _IEC.Features.Gameplay
 
         [SerializeField] private string outputFolder;
         [SerializeField] private string prefabFolder;
-        
-        public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
-            ? listItemDefinitionShp : listItemDefinition; 
-        
+
+        public List<ItemDefinition> ListItemDefinition => listItemDefinition;
         public List<ItemDefinition> GetListItemDefinition()
         {
             return ListItemDefinition;
@@ -242,12 +238,7 @@ namespace _IEC.Features.Gameplay
                 EditorUtility.SetDirty(item);
             }
             
-            for (int i = 0; i < listItemDefinitionShp.Count; i++)
-            {
-                var item = listItemDefinitionShp[i];
-                item.SetId($"food_{i + 1}");
-                EditorUtility.SetDirty(item);
-            }
+     
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
@@ -277,27 +268,6 @@ namespace _IEC.Features.Gameplay
         [Button]
         void RenameAll()
         {
-            foreach (var itemDef in listItemDefinitionShp)
-            {
-                if (itemDef == null) continue;
-                
-                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
-                AssetDatabase.RenameAsset(itemDefPath, itemDef.GetId()+"_SHP");
-                EditorUtility.SetDirty(itemDef);
-
-                //if (itemDef.GetPrefab() != null)
-                //{
-                //    var prefabPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
-                //    AssetDatabase.RenameAsset(prefabPath, itemDef.GetId());
-                //    EditorUtility.SetDirty(itemDef.GetPrefab());
-                //}
-                //if (itemDef.GetIcon() != null)
-                //{
-                //    var iconPath = AssetDatabase.GetAssetPath(itemDef.GetIcon());
-                //    AssetDatabase.RenameAsset(iconPath, itemDef.GetId());
-                //    EditorUtility.SetDirty(itemDef.GetIcon());   
-                //}
-            }
 
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();

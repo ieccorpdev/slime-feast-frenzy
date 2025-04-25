@@ -7,7 +7,6 @@ namespace _IEC.Features.Gameplay
 {
     public static class LevelHelper
     {
-        private static GameConfig Config => PlayableController.Instance.gameConfig;
         private static HashSet<string> itemIds = new HashSet<string>();
 
         public static string GetAllItemsId()
@@ -44,7 +43,7 @@ namespace _IEC.Features.Gameplay
 
         public static void SpawnMap(MapData mapData, Transform levelObjectHolder, ThemeConfig config = null)
         {
-            var themeConfig = config == null ? Config.themeConfig : config;
+            var themeConfig = config;
             var listTileObjects = new List<GroundElement>();
             foreach (var tileMapData in mapData.listMapTileData)
             {
@@ -95,13 +94,14 @@ namespace _IEC.Features.Gameplay
      
         public static List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
         {
+            Debug.Log("SpawnAllItem");
             itemIds.Clear();
             var res = new List<BaseItem>();
             
             Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
             foreach (var itemSpawn in listItemData)
             {
-                var itemDefinition = Config.levelConfig.GetItemDefinition(itemSpawn.id, versionItem);
+                var itemDefinition = PlayableController.Instance.levelConfig.GetItemDefinition(itemSpawn.id, versionItem);
                 if (itemDefinition == null)
                 {
                     Debug.LogError("Cant find item definition with id: " + itemSpawn.id);
@@ -154,7 +154,7 @@ namespace _IEC.Features.Gameplay
                     
                     res.Add(itemComponent);
                     TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
-                    waterWave.WaterMaterial = Config.waveWaterMaterial;
+                    waterWave.WaterMaterial = PlayableController.Instance.waveWaterMaterial;
 
                     float objectSize = itemComponent.MyRenderer.bounds.size.y;
                     float objectOffset = 0;
@@ -215,161 +215,14 @@ namespace _IEC.Features.Gameplay
             return res;
         }
         
-        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
-        {
-            var res = new List<BaseItem>();
-            if (itemDefinition == null) return res;
-            var prefab = itemDefinition.GetPrefab();
-            if (prefab == null)
-            {
-                return res;
-            }
-            for (int i = 0; i < count; i++)
-            {
-                var newItem = prefab.Spawn();
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
-                {
-                    itemComponent = newItem.AddComponent<BaseItem>();
-                }
-                var itemTransform = itemComponent.transform;
-                var itemData = new ItemData()
-                {
-                    itemId = itemDefinition.GetId(),
-                    position = Vector3.zero, //Do random pos later
-                    eulerAngle = Vector3.zero,
-                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
-                    isStartKinematic =  false,
-                };
-                itemTransform.parent = levelObjectHolder;
-                itemComponent.LoadData(itemData, itemDefinition);
-                itemComponent.ItemData.position =
-                    FindValidSpawnPosition(
-                        bounds,
-                        itemComponent.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
-                        1000,
-                        itemComponent.gameObject.layer
-                    );
-                itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
-                res.Add(itemComponent);
-                itemIds.Add(itemData.itemId);
-            }
-            return res;
-        }
+       
 
-        public static List<BombItem> SpawnAllBomb(LevelConfigModel levelConfigModel, List<BaseItem> allItemInMap,
-            Transform levelObjectHolder, PrefabConfig config = null)
-        {
-            var prefabConfig = config == null ? Config.prefabConfig : config;
-            var res = new List<BombItem>();
-            if (levelConfigModel.levelBoomData == null) return null;
-            var levelBombData = levelConfigModel.levelBoomData;
-
-            if (levelBombData.isOverrideBombData && levelBombData.listBombDatas.Count > 0)
-            {
-                foreach (var bombData in levelBombData.listBombDatas)
-                {
-                    var bomb = prefabConfig.bombPrefab.Spawn(levelObjectHolder);
-                    var bombTransform = bomb.transform;
-                    bombTransform.localScale = bombData.scale.ToVector3();
-                    bombTransform.position = bombData.pos.ToVector3();
-                    res.Add(bomb);
-                }
-            }
-            else
-            {
-                var number = levelConfigModel.levelBoomData.number;
-                var cacheAllItems = allItemInMap.ToList();
-                for (int i = 0; i < number; i++)
-                {
-                    float scale = RandomHelper.RangeWithSeed(levelBombData.seedScale + i,
-                        (int)(100 * levelBombData.scaleMin),
-                        (int)(100 * levelBombData.scaleMax)) / 100f;
-                    var itemSelected = cacheAllItems.SampleWithSeed(levelBombData.seedPosition + i);
-                    cacheAllItems.Remove(itemSelected);
-                    if (itemSelected.ItemData.itemId.StartsWith("Column_") &&
-                        itemSelected.ItemData.itemId.EndsWith("_Part"))
-                    {
-                        continue;
-                    }
-
-                    var position = itemSelected.transform.position + Vector3.up * 10;
-
-                    var offSet = 1;
-                    var randValue = RandomHelper.RangeWithSeed(i, 0, 1);
-                    Vector3 randomOffset = new Vector3(
-                        randValue > 0.5f ? offSet : -offSet,
-                        0f,
-                        randValue > 0.5f ? offSet : -offSet
-                    );
-                    position += randomOffset;
-
-                    var bomb = prefabConfig.bombPrefab.Spawn(levelObjectHolder);
-                    var bombTransform = bomb.transform;
-                    bombTransform.localScale = scale * Vector3.one;
-                    bombTransform.position = position;
-                    res.Add(bomb);
-                }
-            }
-
-            return res;
-        }
+    
 
         public static List<BombItem> SpawnAllBomb(LevelDataSO levelConfigModel, List<BaseItem> allItemInMap,
             Transform levelObjectHolder, PrefabConfig config = null)
         {
-            var prefabConfig = config == null ? Config.prefabConfig : config;
             var res = new List<BombItem>();
-            if (levelConfigModel.levelBoomData == null) return null;
-            var levelBombData = levelConfigModel.levelBoomData;
-
-            if (levelBombData.isOverrideBombData && levelBombData.listBombDatas.Count > 0)
-            {
-                foreach (var bombData in levelBombData.listBombDatas)
-                {
-                    var bomb = prefabConfig.bombPrefab.Spawn(levelObjectHolder);
-                    var bombTransform = bomb.transform;
-                    bombTransform.localScale = bombData.scale.ToVector3();
-                    bombTransform.position = bombData.pos.ToVector3();
-                    res.Add(bomb);
-                }
-            }
-            else
-            {
-                var number = levelConfigModel.levelBoomData.number;
-                var cacheAllItems = allItemInMap.ToList();
-                if (allItemInMap.Count <= 0) return res;
-                for (int i = 0; i < number; i++)
-                {
-                    float scale = RandomHelper.RangeWithSeed(levelBombData.seedScale + i,
-                        (int)(100 * levelBombData.scaleMin),
-                        (int)(100 * levelBombData.scaleMax)) / 100f;
-                    var itemSelected = cacheAllItems.SampleWithSeed(levelBombData.seedPosition + i);
-                    cacheAllItems.Remove(itemSelected);
-                    if (itemSelected.ItemData.itemId.StartsWith("Column_") &&
-                        itemSelected.ItemData.itemId.EndsWith("_Part"))
-                    {
-                        continue;
-                    }
-
-                    var position = itemSelected.transform.position + Vector3.up * 10;
-
-                    var offSet = 1;
-                    var randValue = RandomHelper.RangeWithSeed(i, 0, 1);
-                    Vector3 randomOffset = new Vector3(
-                        randValue > 0.5f ? offSet : -offSet,
-                        0f,
-                        randValue > 0.5f ? offSet : -offSet
-                    );
-                    position += randomOffset;
-
-                    var bomb = prefabConfig.bombPrefab.Spawn(levelObjectHolder);
-                    var bombTransform = bomb.transform;
-                    bombTransform.localScale = scale * Vector3.one;
-                    bombTransform.position = position;
-                    res.Add(bomb);
-                }
-            }
 
             return res;
         }

@@ -27,15 +27,15 @@ public class IslandModelInfo : _BaseBehaviour
     public List<SkinnedMeshRenderer> islandSkinMesh;
     private Tween punchTween;
     public bool isCompleteIsland;
-    private int _amountNeedToCompleteIsland => Config.buildCityConfig.GetBaseScrewCompleteIsland(idIsland);//idIsland starts from 0
-    private bool useCustomScrew => Config.buildCityConfig.useCustomScrewIsland;
+    private int _amountNeedToCompleteIsland => PlayConfig.buildCityConfig.GetBaseScrewCompleteIsland(idIsland);//idIsland starts from 0
+    private bool useCustomScrew => PlayConfig.buildCityConfig.useCustomScrewIsland;
     private List<int> _amountNeedEachObject = new List<int>();
 
     public int AmountLeftToCompleteIsland { get; private set; } = 0;
     
     void Start()
     {
-        speedRotate = Config.buildCityConfig.speedRotateIsland;
+        speedRotate = PlayConfig.buildCityConfig.speedRotateIsland;
         //LoadDataIsland();
     }
 
@@ -80,7 +80,7 @@ public class IslandModelInfo : _BaseBehaviour
             _amountNeedEachObject = SplitNumberToEvenList(_amountNeedToCompleteIsland, listObjectIsland.Count);
         }
 
-        var dataIsland = Config.buildCityConfig;
+        var dataIsland = PlayConfig.buildCityConfig;
         dataConfig = dataIsland.dataCity.Find(x => x.idCity == idIsland);
         List<float> listPercentage = new List<float>();
         for (int i = 0; i < listObjectIsland.Count; i++)
@@ -144,11 +144,11 @@ public class IslandModelInfo : _BaseBehaviour
     {
         foreach (var mrd in islandMesh)
         {
-            mrd.sharedMaterial = active ? idIsland <=2 ? Config.buildCityConfig.islandActive :  Config.buildCityConfig.islandActive_2 : Config.buildCityConfig.islandOff;
+            mrd.sharedMaterial = active ? idIsland <=2 ? PlayConfig.buildCityConfig.islandActive :  PlayConfig.buildCityConfig.islandActive_2 : PlayConfig.buildCityConfig.islandOff;
         }      
         foreach (var mrd in islandSkinMesh)
         {
-            mrd.sharedMaterial = active ? idIsland <=2 ? Config.buildCityConfig.islandActive :  Config.buildCityConfig.islandActive_2  :  Config.buildCityConfig.islandOff;
+            mrd.sharedMaterial = active ? idIsland <=2 ? PlayConfig.buildCityConfig.islandActive :  PlayConfig.buildCityConfig.islandActive_2  :  PlayConfig.buildCityConfig.islandOff;
         }
     }
     private void SelectedModelBuild(int i)

@@ -52,8 +52,6 @@ namespace IEC
         
         public HybridData hybridData = new HybridData();
 
-        private GameConfig Config => PlayableController.Instance.gameConfig;
-
         private Game Game => Pool.Get<Game>();
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
@@ -120,18 +118,7 @@ namespace IEC
         #endregion
         public bool IsHardLevel()
         {
-            int levelStart = Game.isOverrideHardLevelConfig
-                ? Game.levelStartHardLevelOverride
-                : Config.levelStartHardLevel;
-            
-            if (Game.isUsingHardLevel && level >= levelStart)
-            {
-                // if (level == Config.levelStartHardLevel && isFirstTimePlayHardLevel)
-                //     return true;
-                
-                if (level - lastHardLevel >= Config.stepBetweenHardLevels)
-                    return true;
-            }
+
 
             return false;
         }
@@ -144,22 +131,12 @@ namespace IEC
 
         public void IncreaseBoosterStreak()
         {
-            if (level < Config.AllBoosterConfig.levelUnlockStreak)
-                return;
-
-            if (level == levelLostStreak)
-                return;
-            
-            currentBoosterStreak++;
+          
         }
 
         public void ResetBoosterStreak()
         {
-            if (level < Config.AllBoosterConfig.levelUnlockStreak)
-                return;
-
-            levelLostStreak = level;
-            currentBoosterStreak = 0;
+           
         }
 
         public int GetCurrentBoosterStreak()
@@ -227,13 +204,7 @@ namespace IEC
         public bool dailyShowLifeOfferPack;
         public void DecreasePlayerLife()
         {
-            if (playerLife == Config.maxHealth)
-            {
-                if (timeStartCountAddLife < DateTime.Now)
-                {
-                    timeStartCountAddLife = DateTime.Now;
-                }
-            }
+           
 
             if (!IsInUnlimitedLife())
             {
@@ -246,9 +217,7 @@ namespace IEC
 
         public bool IsInUnlimitedLife()
         {
-            bool passLevelLife = level < Config.levelUnlockLife;
-            bool inUnlimitedLife = DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife && realTimeUnlimidtedLife > 0;
-            return passLevelLife || inUnlimitedLife;
+            return false;
         }
         public void AddTimeUnlimitedLife(int minutes)
         {
@@ -308,27 +277,15 @@ namespace IEC
         public void CheckPlayerAddLifeByTime()
         {
             TimeSpan diffTime = DateTime.Now - timeStartCountAddLife;
-            if (levelPending && playerLife > 0 )
+            if (levelPending && playerLife > 0)
             {
                 //ReducePlayer life when quit in time
                 levelPending = false;
-                if(!IsInUnlimitedLife()) DecreasePlayerLife();
+                if (!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
-            while (playerLife < Config.maxHealth)
-            {
-                diffTime = DateTime.Now - timeStartCountAddLife;
-                if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= Config.timeRefillLife)
-                {
-                    timeStartCountAddLife = timeStartCountAddLife.AddMinutes(Config.timeRefillLife);
-                    AddPlayerLife();
-                }
-                else
-                {
-                    break;
-                }
-            }
         }
+
         public void SetTimeToNextLife(int minues)
         {
             timeStartCountAddLife = DateTime.Now.AddMinutes(-minues);
@@ -341,27 +298,11 @@ namespace IEC
         public string GetTimeToNextLife()
         {
             CheckPlayerAddLifeByTime();
-            if (playerLife >= Config.maxHealth)
-            {
-                return "MAX";
-            }
-            else
-            {
-                TimeSpan diffTime = DateTime.Now - timeStartCountAddLife;
-                if (diffTime.Ticks < 0)
-                {
-                    //cheat player
-                    return "00:00";
-                }
-                TimeSpan timeLeft = new TimeSpan(0, 0, Config.timeRefillLife, 0) - diffTime;
-                if (timeLeft.Ticks < 0) timeLeft = TimeSpan.Zero;
-                return new DateTime(timeLeft.Ticks).ToString("mm:ss");
-            }
+            return string.Empty;
         }
 
         public void RaiseToMaxHealth()
         {
-            playerLife = Config.maxHealth;
         }
 
         #endregion

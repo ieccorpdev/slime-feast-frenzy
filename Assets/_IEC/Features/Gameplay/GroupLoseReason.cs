@@ -17,7 +17,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private GroupLoseReasonConfirm groupLoseReasonConfirm;
         [SerializeField] private RectTransform notEnoughGoldWarning;
         private Action m_PlayOnAction;
-        private int goldCost => Config.gamePlayConfig.baseNumberCoinForRevive;
+        private int goldCost => PlayConfig.gamePlayConfig.baseNumberCoinForRevive;
         public LoseReason typeScreen;
         protected override void Awake()
         {
@@ -54,7 +54,7 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateUI()
         {
-            txtNumberCoinPlayOn.text = Config.gamePlayConfig.baseNumberCoinForRevive.ToString();
+            txtNumberCoinPlayOn.text = PlayConfig.gamePlayConfig.baseNumberCoinForRevive.ToString();
         }
     }
 }

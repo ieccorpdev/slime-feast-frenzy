@@ -20,9 +20,9 @@ namespace IEC
         public TextMeshProUGUI guideText;
         public TextMeshProUGUI goldText;
         public BundlePackUI bundlePackUI;
-        public bool IsFull => PlayerData.piggyBankGold >= Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
+        public bool IsFull => PlayerData.piggyBankGold >= PlayConfig.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
         
-        public float PiggyBankFillAmount => (float)PlayerData.piggyBankGold / Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
+        public float PiggyBankFillAmount => (float)PlayerData.piggyBankGold / PlayConfig.dataPiggyBankConfig.MaxGoldCapByPiggyBank;
 
         protected override void Awake()
         {
@@ -103,7 +103,7 @@ namespace IEC
             float minX = -barWidth * 0.5f;
             float maxX = barWidth * 0.5f;
 
-            for (int i = 0; i < Config.dataPiggyBankConfig.listGoldMilestone.Count; i++)
+            for (int i = 0; i < PlayConfig.dataPiggyBankConfig.listGoldMilestone.Count; i++)
             {
                 if (i >= listGoldMilestoneDisplay.Count)
                 {
@@ -112,14 +112,14 @@ namespace IEC
 
                 var displayObj = listGoldMilestoneDisplay[i].GetComponent<RectTransform>();
                 float newX = Mathf.Lerp(minX, maxX, 
-                    (float)Config.dataPiggyBankConfig.listGoldMilestone[i] / Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank);
+                    (float)PlayConfig.dataPiggyBankConfig.listGoldMilestone[i] / PlayConfig.dataPiggyBankConfig.MaxGoldCapByPiggyBank);
 
                 displayObj.localPosition = new Vector2(newX, displayObj.anchoredPosition.y);
 
                 var amountText = displayObj.GetComponentInChildren<TextMeshProUGUI>();
                 if (amountText != null)
                 {
-                    amountText.text = Config.dataPiggyBankConfig.listGoldMilestone[i].ToString();
+                    amountText.text = PlayConfig.dataPiggyBankConfig.listGoldMilestone[i].ToString();
                 }
 
             }
@@ -127,20 +127,20 @@ namespace IEC
 
         public void UpdateButtonBottom()
         {
-            bool canBuy = Config.dataPiggyBankConfig.PassMileStonePiggyBank(PlayerData.piggyBankGold);
+            bool canBuy = PlayConfig.dataPiggyBankConfig.PassMileStonePiggyBank(PlayerData.piggyBankGold);
             buyButton.gameObject.SetActive(canBuy);
             keepPlayingButton.gameObject.SetActive(!canBuy);
         }
         void UpdateBuyButton()
         {
             //buyButton.interactable = PlayerData.piggyBankGold != 0;
-            buyButton.interactable = PlayerData.piggyBankGold >= Config.dataPiggyBankConfig.listGoldMilestone[0];
+            buyButton.interactable = PlayerData.piggyBankGold >= PlayConfig.dataPiggyBankConfig.listGoldMilestone[0];
         }
 
         public void AddGoldToPiggyBank(int gold)
         {
             PlayerData.AddGoldToPiggyBank(gold);
-            PlayerData.piggyBankGold = Mathf.Min(PlayerData.piggyBankGold, Config.dataPiggyBankConfig.MaxGoldCapByPiggyBank);
+            PlayerData.piggyBankGold = Mathf.Min(PlayerData.piggyBankGold, PlayConfig.dataPiggyBankConfig.MaxGoldCapByPiggyBank);
             EventController.RaiseEvent(EventList.SAVE_DATA);
         }
 

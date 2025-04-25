@@ -133,7 +133,6 @@ namespace _IEC.Features.Gameplay
             Debug.Log("All levels exported to CSV at: " + path);
         }
         
-        private GameConfig Config => PlayableController.Instance.gameConfig;
 
         private readonly List<int> excludedLevels = new List<int>
         {
@@ -227,9 +226,9 @@ namespace _IEC.Features.Gameplay
         void ReplaceAllIdsForSHP(GameplayItemPrefabConfig itemConfig)
         {
             var itemMapping = new Dictionary<string, string>();
-            for (int i = 0; i < itemConfig.listItemDefinitionShp.Count; i++)
+            for (int i = 0; i < itemConfig.listItemDefinition.Count; i++)
             {
-                var itemDefinition = itemConfig.listItemDefinitionShp[i];
+                var itemDefinition = itemConfig.listItemDefinition[i];
                 itemMapping.TryAdd(itemDefinition.GetId(), $"food_{i + 1}");
             }
             
@@ -496,10 +495,10 @@ namespace _IEC.Features.Gameplay
         //     if (itemPrefabConfig == null) return null;
         //     return itemPrefabConfig.GetPrefab();
         // }
-
+        public GameplayItemPrefabConfig itemPrefabConfig;
         public ItemDefinition GetItemDefinition(string itemId, int version)
         {
-            var itemPrefabConfig = Config.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
+            var itemPrefabConfig = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
             return itemPrefabConfig;
         }
 
@@ -962,61 +961,7 @@ namespace _IEC.Features.Gameplay
             Debug.LogError(str);
         }
         
-        [Button()]
-        public void CreateBombLevelData()
-        {
-            for (int i = 0; i < levelConfigData.Count; i++)
-            {
-                var levelConfig = levelConfigData[i];
-                levelConfig.levelBoomData = new LevelBoomData();
-                levelConfig.levelBoomData.scaleMin = 1;
-                levelConfig.levelBoomData.scaleMax = 1.5f;
-                levelConfig.levelBoomData.seedPosition = i;
-                levelConfig.levelBoomData.seedScale = i + 1;
-                levelConfig.levelBoomData.number = 0;
-                var level = i + 1;
-                var numberLogic = level % 50;
-                if (numberLogic == 27)
-                {
-                    levelConfig.levelBoomData.number = 2;
-                }else if (numberLogic == 28)
-                {
-                    levelConfig.levelBoomData.number = 2;
-                }else if (numberLogic == 31)
-                {
-                    levelConfig.levelBoomData.number = 3;
-                }else if (numberLogic == 32)
-                {
-                    levelConfig.levelBoomData.number = 3;
-                }else if (numberLogic == 35)
-                {
-                    levelConfig.levelBoomData.number = 4;
-                }else if (numberLogic == 36)
-                {
-                    levelConfig.levelBoomData.number = 4;
-                }else if (numberLogic == 39)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }else if (numberLogic == 40)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }else if (numberLogic == 43)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }else if (numberLogic == 44)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }else if (numberLogic == 47)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }else if (numberLogic == 48)
-                {
-                    levelConfig.levelBoomData.number = 5;
-                }
-                UnityEditor.EditorUtility.SetDirty(levelConfig);
-                UnityEditor.AssetDatabase.SaveAssets();
-            }
-        }
+       
 
         [Button]
         void BindDataLevelSHP()

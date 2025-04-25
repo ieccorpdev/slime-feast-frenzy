@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 namespace _IEC.Features.Gameplay
 {
-    public class LevelObjectiveUI : _BaseBehaviour
+    public class LevelObjectiveUI : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI txtNumber;
         [SerializeField] private float baseWidth;
@@ -81,9 +81,7 @@ namespace _IEC.Features.Gameplay
             SetText(levelObjective.number.ToString());
             if (isSpecial)
             {
-                //Change method load 
-                var itemDefinition = Config.specialObjectConfig.listSpecialItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
-                imgIcon.sprite = itemDefinition.GetIcon();
+    
             }
             else
             {
@@ -141,7 +139,7 @@ namespace _IEC.Features.Gameplay
             {
                 itemId = "coin_small";
             }
-            var config = Config.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
+            var config = PlayableController.Instance.GameplayItemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
             if (config != null)
             {
                 if (config.GetIcon() == null)

@@ -32,7 +32,7 @@ namespace IEC
                 currencyTMP.text = PlayerData.playerLife.ToString();
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
-            addButton.gameObject.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
+            addButton.gameObject.SetActive(PlayerData.playerLife < PlayConfig.maxHealth && !PlayerData.IsInUnlimitedLife());
         }
     }
 }

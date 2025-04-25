@@ -37,17 +37,17 @@ namespace _IEC.Features.Gameplay
         [Button]
         public void FindLevelTheme()
         {
-            var config = PlayableController.Instance.gameConfig;  
+            var config = PlayableController.Instance.gamePlayConfig;  
             var levelIds = new List<int>();
 
-            for (int i = 0; i < config.levelConfig.levelConfigDataEdited.Count; i++)
-            {
-                var mapData = config.levelConfig.levelConfigDataEdited[i].GetMapData();
-                if (mapData.groupSkinId == themeNeedToFind)
-                {
-                    levelIds.Add(i + 1);
-                }
-            }
+            // for (int i = 0; i < config.levelConfig.levelConfigDataEdited.Count; i++)
+            // {
+            //     var mapData = config.levelConfig.levelConfigDataEdited[i].GetMapData();
+            //     if (mapData.groupSkinId == themeNeedToFind)
+            //     {
+            //         levelIds.Add(i + 1);
+            //     }
+            // }
             Debug.LogError(new JsonDotNetModule().ToJson(levelIds));
         }
 

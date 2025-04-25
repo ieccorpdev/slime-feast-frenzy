@@ -60,10 +60,7 @@ namespace IEC
 
         public int TimeFinishLevel => (int)(timeEndLevel - timeStartLevel).TotalSeconds;
 
-        public void SetTimeStartLevel()
-        {
-            timeStartLevel = System.DateTime.Now;
-        }
+     
 
         public void SetTimeEndLevel()
         {

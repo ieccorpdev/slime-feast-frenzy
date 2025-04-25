@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    public class CameraController : _BaseBehaviour
+    public class CameraController : MonoBehaviour
     {
 
         [SerializeField] private Camera cameraFollower;
@@ -58,6 +58,7 @@ namespace _IEC.Features.Gameplay
 
         IEnumerator IE_InscreseFOV(float targetFOV, float time)
         {
+            targetFOV += fOVOffset;
             float startFOV = cameraFollower.fieldOfView;
             float elapsed = 0f;
 
@@ -68,7 +69,7 @@ namespace _IEC.Features.Gameplay
                 yield return null;
             }
 
-            cameraFollower.fieldOfView = targetFOV + fOVOffset; 
+            cameraFollower.fieldOfView = targetFOV; 
         }
    
         private float CalculateFOVbyDistance(float d1, float d2, float fov1)

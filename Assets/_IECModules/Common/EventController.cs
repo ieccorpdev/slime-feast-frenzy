@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace IEC
 {
-    public class EventController : _BaseBehaviour
+    public class EventController : MonoBehaviour
     {
         private static EventController s_Instance;
         private static StaticObjectsContainer s_StaticObjects;
@@ -90,18 +90,8 @@ namespace IEC
 
             LocateController();
             LocateGroup();
-
-            var consentController = FindObjectOfType<ConsentController>();
-            if (consentController != null)
-            {
-                gameObject.SetActive(false);
-
-               
-            }
-            else
-            {
-                InitFromAwake();
-            }
+            InitFromAwake();
+         
         }
 
         void InitFromAwake()

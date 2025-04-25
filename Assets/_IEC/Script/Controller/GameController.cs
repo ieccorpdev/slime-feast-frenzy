@@ -11,19 +11,14 @@ using UnityEditor;
 
 namespace IEC
 {
-    public class GameController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
+    public class GameController : MonoBehaviour, IEventListener, IEventAwake, IEventStart
     {
-        private List<int> m_ListLevelAdjust = new List<int>();
-        private List<int> m_ListLevelFirstTimeAdjust = new List<int>();
-        public List<int> ListEventInterAdjust = new List<int>();
-        public bool isInitABDone = false;
+        protected static InGamePlayGroup GamePlay => PlayableController.Instance.InGamePlayGroup;
+        public ScreenInGame ScreenInGame;
         private bool m_IsUpdateTimeResume;
         private bool m_IsPlayWithUnlimitedLives;
-        private LifeConfig m_LifeConfig => Config.hybridConfig.lifeConfig;
-        public void LocateController()
-        {
-            Controllers.Add(this);
-        }
+
+      
 
         public bool IsActive()
         {
@@ -38,17 +33,17 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
-                    GamePlay.SetGameState(Locator.Game.ScreenInGame);
+                    //EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     OnNewGame();
-                    Pool.Get<ConfettiGroup>().StopConfetti();
+                    PlayableController.Instance.ConfettiGroup.StopConfetti();
+                    //Pool.Get<ConfettiGroup>().StopConfetti();
 //                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
                     break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
-                    GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGameHardLevel();
-                    Pool.Get<ConfettiGroup>().StopConfetti();
+                    PlayableController.Instance.ConfettiGroup.StopConfetti();
+                    //Pool.Get<ConfettiGroup>().StopConfetti();
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
@@ -58,16 +53,16 @@ namespace IEC
                     // if(GamePlay.IsInLevelHard)
                     //     GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     // else
-                        GamePlay.SetGameState(Locator.Game.ScreenLevelWin);
                     //GamePlay.IsWin = true;
                     OnGameOver();
-                    Pool.Get<ConfettiGroup>().ShowConfetti();
+                    PlayableController.Instance.ConfettiGroup.ShowConfetti();
+
+                    //Pool.Get<ConfettiGroup>().ShowConfetti();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.LOSE);
 
-                    GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
                     OnGameOver();
                     break;
@@ -75,10 +70,8 @@ namespace IEC
                     GamePlay.SetWin();
                     break;
                 case EventList.GamePlay.TUTORIAL:
-                    Locator.Game.ScreenInGame.btnSetting.gameObject.SetActive(false);
                     break;
                 case EventList.GamePlay.TUTORIAL_DONE:
-                    Locator.Game.ScreenInGame.btnSetting.gameObject.SetActive(true);
                     break;
                 case EventList.Service.PUSH_SHOW_INTER:
                     if (param.p0 != null)
@@ -93,7 +86,6 @@ namespace IEC
         public void BehaviourAwake()
         {
             Input.multiTouchEnabled = false;
-            PlayableController.Instance.gameConfig.PreloadAllConfig();
         }
 
         public void BehaviourStart()
@@ -112,27 +104,24 @@ namespace IEC
                 // }
                 
                 //Check reset progress reward when player start game
-                PlayerData.CheckResetTimeProgressReward();
   
             //});
             // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 
-        void OnNewGame()
+        public void OnNewGame()
         {
-            Game.SetTimeStartLevel();
-            GamePlay.SetNewLevel(PlayerData.level);
-            Locator.Game.ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
-            Locator.Game.ScreenInGame.Show();
+            GamePlay.SetNewLevel(PlayableController.Instance.level);
+            ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
+            ScreenInGame.Show();
             GamePlay.StartGamePlay();
-            GamePlay.SetGameState(Locator.Game.ScreenInGame);
+            //GamePlay.SetGameState(Locator.Game.ScreenInGame);
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             PushPlayLevelEvent();
         }
-
+   
         void OnNewGameHardLevel()
         {
-            Game.SetTimeStartLevel();
             GamePlay.SetNewLevelHard();
             PushPlayLevelEvent();
         }
@@ -157,12 +146,7 @@ namespace IEC
 
         void PushPlayLevelEvent()
         {
-            PlayerData.countPlayLevel++;
-            PlayerData.levelTracking = PlayerData.level;
-
-            var level = PlayerData.levelTracking;
-
-            bool isNewLevel = PlayerData.levelFirstTime != level;
+       
             // bool isFirstTracking = PlayerData.levelFirstTimeTracking[Game.crLevelType] == 0;
             //
             // if (isNewLevel || isFirstTracking)
@@ -185,34 +169,7 @@ namespace IEC
        
         }
         
-        private void UpdateTimeLeftApplicationResume()
-        {
-            m_IsUpdateTimeResume = true;
-            var lastTime = new DateTime(PlayerData.startTickPlayTime);
-            var timeSpanSec = (int)((DateTime.Now - lastTime).TotalSeconds);
-
-            PlayerData.hybridData.AddResource(ResourceType.UnlimitedLive, -timeSpanSec);
-
-            if (timeSpanSec < PlayerData.hybridData.timeRefillLeft)
-            {
-                PlayerData.hybridData.timeRefillLeft -= timeSpanSec;
-            }
-            else
-            {
-                var remainSec = timeSpanSec - PlayerData.hybridData.timeRefillLeft;
-                PlayerData.hybridData.AddResource(ResourceType.Live, 1);
-                while (remainSec > m_LifeConfig.timeRefill)
-                {
-                    remainSec -= m_LifeConfig.timeRefill;
-                    PlayerData.hybridData.AddResource(ResourceType.Live, 1);
-                }
-
-                PlayerData.hybridData.timeRefillLeft = m_LifeConfig.timeRefill - remainSec;
-            }
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI,
-                new EventParam { p0 = ResourceType.Live });
-            m_IsUpdateTimeResume = false;
-        }
+   
         public static void OpenScene(GameScene scene, Action onLoadDone = null, bool raiseFirstEventScene = true)
         {
             string sceneName = scene switch
@@ -223,7 +180,6 @@ namespace IEC
             if (!String.IsNullOrEmpty(sceneName))
             {
                 DOTween.KillAll();
-                Locator.Service.ScreenLoading.ShowLoading();
                 //MeoMew custome tracking level 
    
                 // Scene.SendEvent(sceneName,new EventParam(), () =>
@@ -247,23 +203,7 @@ namespace IEC
             }
         }
         
-        private void UpdateTimeLifePerSec()
-        {
-            if (m_IsUpdateTimeResume) return;
-            if (PlayerData.hybridData.GetResourceCount(ResourceType.UnlimitedLive) > 0)
-            {
-                PlayerData.hybridData.AddResource(ResourceType.UnlimitedLive, -1);
-            }
-            if (PlayerData.hybridData.GetResourceCount(ResourceType.Live) >= m_LifeConfig.maxLife) return;
-            PlayerData.hybridData.timeRefillLeft--;
-            if (PlayerData.hybridData.timeRefillLeft <= 0)
-            {
-                PlayerData.hybridData.timeRefillLeft = Config.hybridConfig.lifeConfig.timeRefill;
-                PlayerData.hybridData.AddResource(ResourceType.Live, 1);
-            }
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI,
-                new EventParam { p0 = ResourceType.Live });
-        }
+    
     }
 }
 public enum GameScene

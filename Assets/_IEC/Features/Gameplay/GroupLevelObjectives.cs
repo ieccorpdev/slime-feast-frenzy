@@ -8,7 +8,7 @@ using UnityEngine.Serialization;
 
 namespace _IEC.Features.Gameplay
 {
-    public class GroupLevelObjectives : _BaseBehaviour
+    public class GroupLevelObjectives : MonoBehaviour
     {
         public List<LevelObjectiveUI> levelObjectiveUis;
         [SerializeField] private Transform holder;
@@ -48,7 +48,7 @@ namespace _IEC.Features.Gameplay
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
             //if (objectiveUI.IsComplete()) return;
-            var objectiveVfx = Config.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
+            var objectiveVfx = PlayableController.Instance.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
             objectiveVfx.Reset();
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());

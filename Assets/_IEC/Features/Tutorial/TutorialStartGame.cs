@@ -7,12 +7,15 @@ using UnityEngine;
 
 namespace _IEC.Features.Tutorial
 {
-    public class TutorialStartGame : _BaseBehaviour
+    public class TutorialStartGame : MonoBehaviour
     {
         [SerializeField] private RectTransform moveYourHole;
         [SerializeField] private RectTransform collectInYourHole;
         [SerializeField] private RectTransform myRectTransform;
         [SerializeField] private RectTransform hintCollectItems;
+        public FloatingJoystick Joystick;
+        protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
+
         private Transform m_HoleTransform;
         private RectTransform m_CurrentHint;
         private State m_CurrentState;

@@ -12,7 +12,7 @@ namespace _IEC.Features.Gameplay
         private float m_CoolDownTime = 0;
         private bool m_IsPausing;
         private string m_CurrentID;
-        private int MaxNumberDirectorUI => Config.gamePlayConfig.maxNumberDirectorUI;
+        private int MaxNumberDirectorUI => PlayConfig.gamePlayConfig.maxNumberDirectorUI;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
@@ -45,7 +45,7 @@ namespace _IEC.Features.Gameplay
             int count = 0;
             foreach (var directorUI in m_ListDirectorUI)
             {
-                if (directorUI.IsNeededDirector() && count < Config.gamePlayConfig.maxNumberDirectorUI)
+                if (directorUI.IsNeededDirector() && count < PlayConfig.gamePlayConfig.maxNumberDirectorUI)
                 {
                     count++;
                     if(directorUI.gameObject.activeInHierarchy == false)
@@ -71,7 +71,7 @@ namespace _IEC.Features.Gameplay
         {
             foreach (var baseItem in baseItems)
             {
-                var director = Config.prefabConfig.itemDirectorUI.Spawn(transform);
+                var director = PlayConfig.prefabConfig.itemDirectorUI.Spawn(transform);
                 director.Reset();
                 director.LoadData(holeTransform,baseItem);
                 m_ListDirectorUI.Add(director);
@@ -80,7 +80,7 @@ namespace _IEC.Features.Gameplay
 
         private void TurnOn()
         {
-            m_CoolDownTime = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
+            m_CoolDownTime = PlayConfig.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
             gameObject.SetActive(true);
         }
         

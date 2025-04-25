@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace _IEC.Features.Gameplay
 {
-    public class LevelObjectiveVfx : _BaseBehaviour
+    public class LevelObjectiveVfx : MonoBehaviour
     {
         [SerializeField] private Image imgIcon;
         [SerializeField] private float baseWidth;

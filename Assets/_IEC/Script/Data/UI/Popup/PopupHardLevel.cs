@@ -49,9 +49,9 @@ namespace IEC
         {
             var loseBeforeAllowSkip = Game.isOverrideHardLevelConfig
                 ? Game.loseBeforeAllowSkipHardLevelOverride
-                : Config.loseBeforeAllowSkipHardLevel;
+                : PlayConfig.loseBeforeAllowSkipHardLevel;
             btnSkip.gameObject.SetActive(PlayerData.currentCountLoseHardLevel >= loseBeforeAllowSkip);
-            rewardText.text = "x" + Config.amountGoldRewardMultiply;
+            rewardText.text = "x" + PlayConfig.amountGoldRewardMultiply;
 
             if (Game.isAllowSkipHardLevelAds)
             {

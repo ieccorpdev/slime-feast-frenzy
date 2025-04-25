@@ -16,9 +16,9 @@ namespace IEC
         
         protected static Joystick Joystick => Pool.Get<Joystick>();
         
-        protected static GameConfig Config => PlayableController.Instance.gameConfig;
+        protected static GameConfig PlayConfig => Pool.Get<GameConfig>();
 
-        protected static HybridConfig HybridConfig => Config.hybridConfig;
+        protected static HybridConfig HybridConfig => PlayConfig.hybridConfig;
 		public virtual void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
