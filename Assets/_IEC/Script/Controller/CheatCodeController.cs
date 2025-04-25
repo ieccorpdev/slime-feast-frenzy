@@ -157,6 +157,14 @@ namespace IEC
                     Services.PushEvent(new TrackingEvent.UnlockCheat());
                 }
             });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add xp Hole", param =>
+            {
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                GamePlay.levelController.GetHolePlayer().AddXp(gc);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Piggy Bank Gold", param =>
             {
                 int gc = int.Parse(param.inputParams[0].value.ToString());
