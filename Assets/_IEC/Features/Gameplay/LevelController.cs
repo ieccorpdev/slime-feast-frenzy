@@ -501,11 +501,19 @@ namespace _IEC.Features.Gameplay
             if (IsInResultState() == false)
             {
                 playerHole.CollectABomb();
-                ChangeState(State.Lose);
-                DOVirtual.DelayedCall(1.5f, () =>
+                if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                 {
-                    EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                });
+                    ChangeState(State.Lose);
+                    DOVirtual.DelayedCall(1.5f, () =>
+                    {
+                        //Double check for sure
+                        if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                        {
+                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
+                        }
+                    });
+                }
+
             }
             
         }
