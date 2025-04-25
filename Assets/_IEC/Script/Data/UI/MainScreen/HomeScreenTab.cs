@@ -410,9 +410,10 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     private void UpdateLuckyWheel()
     {
-        int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
-        luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
-        luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
+        //int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
+        //luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
+        luckyWheel.gameObject.SetActive(false);
+        //uckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }
     private void UpdateDailyReward()
     {
