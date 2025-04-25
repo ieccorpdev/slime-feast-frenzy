@@ -88,7 +88,7 @@ namespace IEC
             if (!isScaleButtonOnClick)
                 return;
             
-            if (!m_Button.interactable || ButtonState == ButtonState.Inactive)
+            if (m_Button ==null || !m_Button.interactable || ButtonState == ButtonState.Inactive)
                 return;
             
             if(isPress)
