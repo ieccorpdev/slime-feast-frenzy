@@ -20,7 +20,7 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.END_LEVEL_ADS:
-                    Services.ShowFullAdsWithTime(Game.timeDelayFullAds, () =>
+                    Services.ShowFullAdsWithTime(Game.GetTimeDelayFullAds(), () =>
                     {
                         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                         Services.PushEvent(new TrackingEvent.SFApostition(param.p0.ToString()));

@@ -24,6 +24,10 @@ namespace IEC
             return spawnData?.GetSpawnAmount() ?? 0;
         }
 
+        public int GetLevelUnlockProgressReward()
+        {
+            return listSpecialObjectSpawnData.Min(x => x.levelStartSpawn);
+        }
         public ItemDefinition GetSpecialItemDefinition(int index)
         {
             if (listSpecialItemDefinition.Count == 0)

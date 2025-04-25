@@ -11,7 +11,7 @@ using UnityEditor;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/ItemPrefabConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/ItemPrefabConfig")]
     public class GameplayItemPrefabConfig : ScriptableObject
     {
         [Searchable]

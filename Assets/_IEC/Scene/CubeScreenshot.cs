@@ -1,6 +1,9 @@
 using System.Collections;
+using System.Linq;
 using _IEC.Features.Gameplay;
+using IEC;
 using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 
 public class CubeScreenshot : MonoBehaviour
@@ -13,6 +16,8 @@ public class CubeScreenshot : MonoBehaviour
 
     [Header("MeoMEw")]
     public GameplayItemPrefabConfig itemConfig;
+    public string itemID;
+    public int startFrom = 0;
 
     private Coroutine _meoMeoPictureCoroutine;
     
@@ -24,6 +29,21 @@ public class CubeScreenshot : MonoBehaviour
         _meoMeoPictureCoroutine = StartCoroutine(TakePictureAllItem());
     }
 
+    [Button]
+    void SetIconAllItem()
+    {
+        foreach (var item in itemConfig.listItemDefinitionShp)
+        {
+            var icon = ImportPngAsSprite("Assets/New Item Icon/" + item.GetId() + ".png");
+            if (icon != null)
+            {
+                item.SetIcon(icon);
+                EditorUtility.SetDirty(item);
+                AssetDatabase.SaveAssets();
+            }
+        }
+    }
+
     void Start()
     {
         StartCoroutine(TakePictureAllItem());
@@ -31,32 +51,73 @@ public class CubeScreenshot : MonoBehaviour
 
     public IEnumerator TakePictureAllItem()
     {
-        for (int i = 0; i < 5; i++)
+        if (!string.IsNullOrEmpty(itemID))
         {
-            // Wait until the end of the frame to allow cube destruction and instantiation
-            yield return new WaitForEndOfFrame();
-
-            // Get item data for this iteration
-            var itemData = itemConfig.listItemDefinitionShp[i];
-
-            // Spawn the new cube
-            SpawnCube(itemData.GetPrefab());
-
-            // Adjust the camera size based on the cube's collider bounds
-            AdjustCameraSize();
-
-            // Set camera rotation to (45, 0, 0)
-            SetCameraRotation();
-
-            // Capture the screenshot with the unique name for each item
-            CaptureScreenshot(itemData.GetId());
-
-            // Wait for the next frame before capturing the next picture
-            yield return new WaitForEndOfFrame();
-            ClearOutRenderTexture(renderTexture);
-            if (cube) DestroyImmediate(cube);
-            yield return new WaitForEndOfFrame();
+            yield return DoScreenShot(itemConfig.listItemDefinitionShp.Find(item => item.GetId().Equals(itemID)));
         }
+        else
+        {
+            for (int i = startFrom; i < itemConfig.listItemDefinitionShp.Count; i++)
+            {
+                // Wait until the end of the frame to allow cube destruction and instantiation
+                yield return new WaitForEndOfFrame();
+
+                // Get item data for this iteration
+                var itemData = itemConfig.listItemDefinitionShp[i];
+
+                if (itemData == null || itemData.GetPrefab() == null)
+                    continue;
+
+                yield return DoScreenShot(itemData);
+
+                // // Spawn the new cube
+                // SpawnCube(itemData.GetPrefab());
+                //
+                // // Adjust the camera size based on the cube's collider bounds
+                // AdjustCameraSize();
+                //
+                // // Set camera rotation to (45, 0, 0)
+                // SetCameraRotation();
+                //
+                // // Capture the screenshot with the unique name for each item
+                // var icon = LoadSpriteFromFile(CaptureScreenshot(itemData.GetId()));
+                //
+                // itemData.SetIcon(icon);
+                //
+                // // Wait for the next frame before capturing the next picture
+                // yield return new WaitForEndOfFrame();
+                // ClearOutRenderTexture(renderTexture);
+                // if (cube) DestroyImmediate(cube);
+                // yield return new WaitForEndOfFrame();
+            }
+        }
+    }
+
+    IEnumerator DoScreenShot(ItemDefinition itemData)
+    {
+
+        // Spawn the new cube
+        SpawnCube(itemData.GetPrefab());
+
+        // Adjust the camera size based on the cube's collider bounds
+        AdjustCameraSize();
+
+        // Set camera rotation to (45, 0, 0)
+        SetCameraRotation();
+
+        // Capture the screenshot with the unique name for each item
+        var icon = ImportPngAsSprite(CaptureScreenshot(itemData.GetId()));
+            
+        itemData.SetIcon(icon);
+        
+        EditorUtility.SetDirty(itemData);
+        AssetDatabase.SaveAssets();
+
+        // Wait for the next frame before capturing the next picture
+        yield return new WaitForEndOfFrame();
+        ClearOutRenderTexture(renderTexture);
+        if (cube) DestroyImmediate(cube);
+        yield return new WaitForEndOfFrame();
     }
 
     void SpawnCube(GameObject prefab)
@@ -67,7 +128,7 @@ public class CubeScreenshot : MonoBehaviour
         cube.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
-    private Collider collider;
+    private Bounds bound;
     void AdjustCameraSize()
     {
         // // Try to get the MeshCollider or BoxCollider attached to the cube
@@ -96,28 +157,29 @@ public class CubeScreenshot : MonoBehaviour
         //     Debug.LogError("Cube does not have a MeshCollider or BoxCollider attached.");
         // }
         
-        collider = cube.GetComponentInChildren<Collider>();
+        var collider = cube.GetComponentsInChildren<Collider>().ToList();
 
-        if (collider != null)
+        if (collider.Count > 0)
         {
-            Bounds bounds = collider.bounds;
+            bound = GroundExtend.CalculateBounds(collider);
 
             // Move object to origin to simplify positioning
             cube.transform.position = Vector3.zero;
-            bounds = collider.bounds; // Recalculate after moving
+            //bounds = collider.bounds; // Recalculate after moving
+            bound = GroundExtend.CalculateBounds(collider);
 
             // Set camera rotation (45° top-down)
             renderCamera.transform.rotation = Quaternion.Euler(50f, 0f, 0f);
 
             // Calculate diagonal size to cover angled view
-            float size = bounds.extents.magnitude; // Radius of the bounding box
-            renderCamera.orthographicSize = size * 1.5f; // Add some padding
+            float size = bound.extents.magnitude; // Radius of the bounding box
+            renderCamera.orthographicSize = size; // Add some padding
 
             // Set camera position offset at a 45° angle
             Vector3 cameraOffset = new Vector3(0, 1, -1).normalized * size * 2.5f; // tweak multiplier as needed
-            renderCamera.transform.position = bounds.center + cameraOffset;
+            renderCamera.transform.position = bound.center + cameraOffset;
 
-            renderCamera.transform.LookAt(bounds.center);
+            renderCamera.transform.LookAt(bound.center);
         }
         else
         {
@@ -138,12 +200,12 @@ public class CubeScreenshot : MonoBehaviour
         renderCamera.transform.position = new Vector3(0, 5 , -distance);
         // Ensure that the camera is looking at the cube
         renderCamera.transform.LookAt(cubePosition);
-        renderCamera.transform.localPosition += new Vector3(0,+ collider.bounds.size.y/2,0);
+        renderCamera.transform.localPosition += new Vector3(0,+ bound.size.y/2,0);
 
 
     }
 
-    void CaptureScreenshot(string nameSave)
+    string CaptureScreenshot(string nameSave)
     {
         renderCamera.clearFlags = CameraClearFlags.SolidColor;
         renderCamera.backgroundColor = new Color(0, 0, 0, 0); // Fully transparent
@@ -168,7 +230,8 @@ public class CubeScreenshot : MonoBehaviour
 
         // Optionally, save the texture to a file
         byte[] bytes = texture.EncodeToPNG();
-        System.IO.File.WriteAllBytes(nameSave + ".png", bytes);
+        var path = "Assets/New Item Icon/" + nameSave + ".png";
+        System.IO.File.WriteAllBytes("Assets/New Item Icon/" + nameSave + ".png", bytes);
 
         // Reset the RenderTexture and clean up
         RenderTexture.active = null;
@@ -176,6 +239,47 @@ public class CubeScreenshot : MonoBehaviour
 
         // Log a message to indicate the screenshot is saved
         Debug.Log("Screenshot saved as png: " + nameSave);
+
+        return path;
+    }
+    
+    public Sprite LoadSpriteFromFile(string filePath)
+    {
+        if (!System.IO.File.Exists(filePath))
+        {
+            Debug.LogError("File not found at: " + filePath);
+            return null;
+        }
+
+        byte[] fileData = System.IO.File.ReadAllBytes(filePath);
+
+        Texture2D tex = new Texture2D(2, 2, TextureFormat.RGBA32, false);
+        tex.LoadImage(fileData); // Auto-resizes the texture based on the data
+        tex.Apply();
+
+        // Create sprite
+        return Sprite.Create(
+            tex,
+            new Rect(0, 0, tex.width, tex.height),
+            new Vector2(0.5f, 0.5f), // pivot in the center
+            100f                     // pixels per unit, tweak if needed
+        );
+    }
+    
+    public static Sprite ImportPngAsSprite(string assetRelativePath)
+    {
+        AssetDatabase.ImportAsset(assetRelativePath, ImportAssetOptions.ForceUpdate);
+
+        TextureImporter textureImporter = (TextureImporter)TextureImporter.GetAtPath(assetRelativePath);
+        textureImporter.textureType = TextureImporterType.Sprite;
+        textureImporter.spriteImportMode = SpriteImportMode.Single;
+        textureImporter.alphaIsTransparency = true;
+        textureImporter.SaveAndReimport();
+
+        Texture2D tex = AssetDatabase.LoadAssetAtPath<Texture2D>(assetRelativePath);
+        Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(assetRelativePath); // This works if it's a single-sprite asset
+
+        return sprite;
     }
 
     public void ClearOutRenderTexture(RenderTexture renderTexture)

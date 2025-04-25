@@ -39,7 +39,6 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    Debug.LogError("NEW_GAME");
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
@@ -262,14 +261,7 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
-                        if (scene != GameScene.Game)
-                        {
-                            onLoadDone?.Invoke();
-                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
-                        }
-                    }, () =>
-                    {
-                        if (scene == GameScene.Game)
+                        //if (scene != GameScene.Game)
                         {
                             onLoadDone?.Invoke();
                             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);

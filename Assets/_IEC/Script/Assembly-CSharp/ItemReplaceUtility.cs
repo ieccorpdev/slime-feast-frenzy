@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using IEC;
 #if UNITY_EDITOR
+using System;
 using UnityEditor;
 #endif
 
@@ -30,6 +31,17 @@ public class ItemReplaceUtility : MonoBehaviour
 		SpawnNewSkin(newId, isPrefabOnly);
 		AddCollider();
 		UpdateIconInItemDefinition();
+		AdjustScaleAndPosition();
+	}
+	
+	public void ReplaceSkin(GameObject newPrefab)
+	{
+		preservedYAxis = true;
+		ValidateScaleUtilities();
+		HideOldSkin();
+		SpawnNewSkin(newPrefab);
+		AddCollider();
+		//UpdateIconInItemDefinition();
 		AdjustScaleAndPosition();
 	}
 
@@ -74,9 +86,20 @@ public class ItemReplaceUtility : MonoBehaviour
 		_itemToReplace = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 		_itemToReplace.transform.parent = transform;
 	}
+
+	void SpawnNewSkin(GameObject newPrefab)
+	{
+		_itemToReplace = PrefabUtility.InstantiatePrefab(newPrefab) as GameObject;
+
+		if (_itemToReplace == null)
+			_itemToReplace = Instantiate(newPrefab);
+		
+		_itemToReplace.transform.parent = transform;
+	}
 	
 	void AdjustScaleAndPosition()
 	{
+		_scaleUtilities.targetObject = _scaleUtilities.objectToScale;
 		_scaleUtilities.objectToScale = _itemToReplace.GetComponent<MeshRenderer>();
 		if (preservedYAxis)
 		{
