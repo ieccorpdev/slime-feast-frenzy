@@ -2,7 +2,7 @@
     "version": "6.2.0",
     "projectId": "3a813f20308eeda4e90561d4c7263209",
     "applicationID": 29094,
-    "creativeName": "",
+    "creativeName": "SFF",
     "pgServer": "EU",
     "window": {
         "‐‵": true
@@ -188,13 +188,13 @@
             },
             {
                 "name": "prefabs",
-                "excluded": false,
-                "forceIncluded": true
+                "excluded": true,
+                "forceIncluded": false
             },
             {
                 "name": "mecanim-wasm",
-                "excluded": false,
-                "forceIncluded": true
+                "excluded": true,
+                "forceIncluded": false
             }
         ],
         "disableRuntimeAnalysisForCode": false,
@@ -6521,11 +6521,11 @@
             },
             {
                 "name": "UnityEngine.UI.CoroutineTween.ColorTween.ColorTweenCallback",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.UI.CoroutineTween.ColorTween.ColorTweenMode",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.UI.CoroutineTween.FloatTween.FloatTweenCallback",
@@ -12066,6 +12066,14 @@
             {
                 "name": "UnityEngine.Tilemaps.RuleTile",
                 "excluded": false
+            },
+            {
+                "name": "pc.Debugger.Components.EditorCamera",
+                "excluded": true
+            },
+            {
+                "name": "pc.Debugger.Components.EditorGUI",
+                "excluded": true
             }
         ],
         "unusedMethods": [
@@ -21685,7 +21693,7 @@
                     },
                     {
                         "name": "highlightedColor#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "highlightedColor#set",
@@ -21693,7 +21701,7 @@
                     },
                     {
                         "name": "pressedColor#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pressedColor#set",
@@ -21701,7 +21709,7 @@
                     },
                     {
                         "name": "selectedColor#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "selectedColor#set",
@@ -21725,7 +21733,7 @@
                     },
                     {
                         "name": "fadeDuration#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "fadeDuration#set",
@@ -21797,7 +21805,7 @@
                     },
                     {
                         "name": "mode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "mode#set",
@@ -21897,7 +21905,7 @@
                     },
                     {
                         "name": "highlightedSprite#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "highlightedSprite#set",
@@ -21905,7 +21913,7 @@
                     },
                     {
                         "name": "pressedSprite#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pressedSprite#set",
@@ -21913,7 +21921,7 @@
                     },
                     {
                         "name": "selectedSprite#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "selectedSprite#set",
@@ -21951,7 +21959,7 @@
                 "instanceMethods": [
                     {
                         "name": "Start",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Init",
@@ -21959,7 +21967,7 @@
                     },
                     {
                         "name": "StartTween",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "StopTween",
@@ -25273,7 +25281,7 @@
                     },
                     {
                         "name": "Invoke",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -27987,7 +27995,7 @@
                     },
                     {
                         "name": "SetColor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "DisableRectClipping",
@@ -29869,7 +29877,7 @@
                     },
                     {
                         "name": "OnDisable",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "AddCanvasGroup",
@@ -29877,7 +29885,7 @@
                     },
                     {
                         "name": "RemoveCanvasGroup",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnDidApplyAnimationProperties",
@@ -29967,7 +29975,7 @@
                     },
                     {
                         "name": "highlightedTrigger#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "highlightedTrigger#set",
@@ -29975,7 +29983,7 @@
                     },
                     {
                         "name": "pressedTrigger#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "pressedTrigger#set",
@@ -29983,7 +29991,7 @@
                     },
                     {
                         "name": "selectedTrigger#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "selectedTrigger#set",
@@ -30437,7 +30445,7 @@
                     },
                     {
                         "name": "startColor#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "targetColor#get",
@@ -30445,7 +30453,7 @@
                     },
                     {
                         "name": "targetColor#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "tweenMode#get",
@@ -30453,39 +30461,39 @@
                     },
                     {
                         "name": "tweenMode#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "duration#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "duration#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreTimeScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ignoreTimeScale#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "ctor",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "TweenValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "AddOnChangedCallback",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetIgnoreTimescale",
@@ -30497,7 +30505,7 @@
                     },
                     {
                         "name": "ValidTarget",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "getHashCode",
@@ -30509,7 +30517,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -31119,7 +31127,7 @@
                     },
                     {
                         "name": "OnPointerClick",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnSubmit",
@@ -31127,7 +31135,7 @@
                     },
                     {
                         "name": "Press",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnFinishSubmit",
@@ -40631,7 +40639,7 @@
                     },
                     {
                         "name": "IsHide#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "init",
@@ -40647,7 +40655,7 @@
                     },
                     {
                         "name": "Hide",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "LostFocus",
@@ -40827,7 +40835,7 @@
                     },
                     {
                         "name": "Hide",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Show",
@@ -40839,7 +40847,7 @@
                     },
                     {
                         "name": "ActionCompletePopup",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "CheckAddChestRewardPopup",
@@ -43403,7 +43411,18 @@
                     "script": "",
                     "ext": ""
                 },
-                "overrides": []
+                "overrides": [
+                    {
+                        "channels": 1,
+                        "startTime": "00:00.000",
+                        "endTime": "00:00.000",
+                        "lengthInSeconds": 0.0,
+                        "bitrate": 128,
+                        "script": "",
+                        "ext": "",
+                        "name": "Assets/_IEC/Prefab/Music-SFX/Music/ingame_bgm_hard_2.mp3"
+                    }
+                ]
             },
             "font": {
                 "default": {
