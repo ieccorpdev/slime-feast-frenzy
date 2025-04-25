@@ -26,7 +26,7 @@ namespace IEC
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 //ActionCompletePopup();
-                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(),
                     ActionCompletePopup,
                     () =>
                     {
