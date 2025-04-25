@@ -180,7 +180,12 @@ namespace IEC
                 timeEndUnlimitedBoosters.Add(boosterType, DateTime.Now);
             }
 
-            timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
+            if (!IsUnlimitedBooster(boosterType))
+            {
+                timeEndUnlimitedBoosters[boosterType] = DateTime.Now;
+            }
+            
+            timeEndUnlimitedBoosters[boosterType] = timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
         }
 
         public bool IsUnlimitedBooster(ResourceType boosterType)
@@ -481,6 +486,10 @@ namespace IEC
             {
                 AddTimeUnlimitedBoosters(ResourceType.WindSurf, amount);
             }
+            else if (currencyType == ResourceType.DoubleSpecialObjectCount)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.DoubleSpecialObjectCount, amount);
+            }
             else if (playerCurrencies.ContainsKey(currencyType))
             {
                 playerCurrencies[currencyType] += amount;
@@ -676,6 +685,11 @@ namespace IEC
         public void AddProgressToProgressReward(int progress)
         {
             currentProgress += progress;
+
+            if (IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount))
+            {
+                currentProgress += progress;
+            }
         }
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
