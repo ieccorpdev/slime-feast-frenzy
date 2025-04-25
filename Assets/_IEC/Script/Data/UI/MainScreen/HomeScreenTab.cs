@@ -391,7 +391,7 @@ public class HomeScreenTab : ScreenNavigateUI
         );
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
-        LeaderboardController.StartTournament();//Once when start home game
+        //LeaderboardController.StartTournament();//Once when start home game
         playButton.gameObject.SetActive(!PlayerData.IsHardLevel());
         playHardButton.gameObject.SetActive(PlayerData.IsHardLevel());
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
