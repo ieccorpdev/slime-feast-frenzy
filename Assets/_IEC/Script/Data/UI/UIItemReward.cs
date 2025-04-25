@@ -17,8 +17,11 @@ public class UIItemReward : MonoBehaviour
         switch (type)
         {
             case ResourceType.UnlimitedLive:
+            case ResourceType.TimeUnlimitedEvolveStone:
+            case ResourceType.TimeUnlimitedWindSurf:
                 reward = amount + "m";
                 break;
+
             default:
                 reward = "x" + amount;
                 break;
