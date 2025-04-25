@@ -43,7 +43,7 @@ namespace _IEC.Features.Gameplay
         {
             Hide();
             //SoundController.PlayClickBtnAudio();
-            if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, Quit))
+            if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), Quit))
             {
                 Services.PushEvent(new SFApostition("setting_quitpopup_quit"));
             }

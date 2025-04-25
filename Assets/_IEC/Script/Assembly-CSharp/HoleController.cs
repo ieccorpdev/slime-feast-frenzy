@@ -28,7 +28,7 @@ public class HoleController : _BaseBehaviour
 	
 	private void Update()
 	{
-		if (GamePlay.levelController.CurrentState == LevelController.State.Lose)
+		if (GamePlay.levelController.CurrentState == LevelController.State.Lose ||GamePlay.levelController.CurrentState == LevelController.State.Win )
 		{
 			Move(Vector3.zero);
 			return;
