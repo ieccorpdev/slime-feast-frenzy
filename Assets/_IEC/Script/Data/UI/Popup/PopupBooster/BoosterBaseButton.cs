@@ -73,6 +73,10 @@ namespace IEC
             {
                 State = BoosterBaseState.Lock;
             }
+            else if(PlayerData.IsUnlimitedBooster(boosterType))
+            {
+                State = BoosterBaseState.Unlimited;
+            }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) > 0)
             {
                 if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
@@ -81,10 +85,6 @@ namespace IEC
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {
                 State = BoosterBaseState.Buy;
-            }
-            else if(PlayerData.IsUnlimitedBooster(boosterType))
-            {
-                State = BoosterBaseState.Unlimited;
             }
         }
 
