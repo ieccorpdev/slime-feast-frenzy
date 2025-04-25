@@ -64,6 +64,8 @@ public class BulkReplaceItemUtility : MonoBehaviour
 
     public List<ReplaceItemData> loadedListReplaceData = new();
 
+    public List<string> replacedItems = new();
+
     [Button]
     void DatPTReplace()
     {
@@ -91,7 +93,14 @@ public class BulkReplaceItemUtility : MonoBehaviour
         // meshRenderer.material = replaceData.newItemMaterial;
         
         DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
-        DestroyImmediate(obj.transform.parent.gameObject);
+        if (obj.transform.parent != null)
+        {
+            DestroyImmediate(obj.transform.parent.gameObject);
+        }
+        else
+        {
+            DestroyImmediate(obj);
+        }
     }
 
     void DatPTDoReplaceAll()
@@ -124,6 +133,7 @@ public class BulkReplaceItemUtility : MonoBehaviour
     void DatPTProcessCsvData(string csvText)
     {
         loadedListReplaceData.Clear();
+        replacedItems.Clear();
         
         Debug.Log("Loaded Text: \n" + csvText);
 
@@ -135,8 +145,17 @@ public class BulkReplaceItemUtility : MonoBehaviour
 
             if (column.Length >= 2)
             {
+                var itemID = column[0].Replace("Normal: ", "").Replace("Objective: ","");
+
+                if (replacedItems.Contains(itemID))
+                {
+                    continue;
+                }
+                
+                replacedItems.Add(itemID);
+                
                 var replaceData = new ReplaceItemData();
-                replaceData.itemID = column[0];
+                replaceData.itemID = column[0].Replace("Normal: ", "").Replace("Objective: ","");
 
                 var assetFolder = $"{newModelFolder}/{column[1]}";
                 
