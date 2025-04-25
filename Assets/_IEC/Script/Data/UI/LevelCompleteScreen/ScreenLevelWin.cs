@@ -144,7 +144,8 @@ namespace IEC
                         () =>
                         {
                             var rewardData = Config.allChestConfig.GetChestConfig(chestType)
-                                .GetRewardData(PlayerData.GetChestMilestone(chestType));
+                                .GetRewardData(PlayerData.GetChestMilestone(chestType)-1);
+                            //-1 by MeoMew fix Task #67686, reduce 1 level chest to get true reward
                             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
                             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
                         }, 

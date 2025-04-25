@@ -128,25 +128,11 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButton("Add Level Chest ( On Home)", param =>
             {
-                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Level), 1, out var isClaimChestReward);
-                if (isClaimChestReward)
-                {
-                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                }
-                Locator.Main.HomeScreenTab.UpdateMainHome();
+                AddChestProgress( ChestType.Level); 
             });
             ModuleController.cheatCode.AddCheatCodeButton("Add Star Chest ( On Home)", param =>
             {
-                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Star), 1, out var isClaimChestReward);
-                if (isClaimChestReward)
-                {
-                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                }
-                Locator.Main.HomeScreenTab.UpdateMainHome();
+                AddChestProgress( ChestType.Star);
             });
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Ocean Gift ( On Home)", param =>
             {
@@ -260,6 +246,20 @@ namespace IEC
             {
                 value = (PlayerData.timeEndStaredPack - DateTime.Now).Seconds
             });
+        }
+
+        private static void AddChestProgress(ChestType type)
+        {
+            PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(type), 1, out var isClaimChestReward);
+            if (isClaimChestReward)
+            {
+                var rewardData = Config.allChestConfig.GetChestConfig(type)
+                    .GetRewardData(PlayerData.GetChestMilestone(type));
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+            }
+
+            Locator.Main.HomeScreenTab.UpdateMainHome();
         }
 
         public void BehaviourUpdate(float deltaTime)

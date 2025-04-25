@@ -14,7 +14,8 @@ public class ChestConfig : ScriptableObject
 
     public ChestRewardData GetRewardData(int index)
     {
-        index = Mathf.Clamp(index, 0, listChestRewardData.Count - 1);
+        //MeoMew fix Task #67686, reduce 1 level chest to get true reward
+        index = Mathf.Clamp(index-1, 0, listChestRewardData.Count - 1);
 
         return listChestRewardData[index];
     }
