@@ -33,6 +33,7 @@ namespace _IEC.Features.Gameplay
         private float m_FrozenTimeCoolDown;
         private bool m_IsGameStarted;
         private bool m_isTimeShowScreenVignette;
+        private bool m_isLevelCoin;
 
         private string TweenIdMelting => "melting" + gameObject.GetInstanceID();
         private LevelController _levelController => (LevelController)GamePlay.GetLevelController();
@@ -212,11 +213,12 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.Active);
         }
 
-        public void SetStartTime(float time)
+        public void SetStartTime(LevelData levelData)
         {
             m_IsGameStarted = false;
-            m_MaxTime = time;
+            m_MaxTime = levelData.time;
             m_CurrentTime = m_MaxTime;
+            CheckActiveStar(levelData);
             UpdateCoolDown();
             Reset();
             m_CurrentState = State.None;
@@ -224,6 +226,14 @@ namespace _IEC.Features.Gameplay
             ChangeRemainingTimeState(RemainingTimeState.Safe);
         }
 
+        public void CheckActiveStar(LevelData levelData)
+        {
+            m_isLevelCoin = levelData.levelType == LevelType.COIN;
+            foreach (var star in listStarTime)
+            {
+                star.gameObject.SetActive(!m_isLevelCoin);
+            }
+        }
         public void CheatTime(float time)
         {
             m_CurrentTime = time;

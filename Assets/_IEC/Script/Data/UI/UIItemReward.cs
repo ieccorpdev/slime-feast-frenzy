@@ -19,9 +19,9 @@ public class UIItemReward : MonoBehaviour
             case ResourceType.UnlimitedLive:
             case ResourceType.TimeUnlimitedEvolveStone:
             case ResourceType.TimeUnlimitedWindSurf:
+            case ResourceType.DoubleSpecialObjectCount:
                 reward = amount + "m";
                 break;
-
             default:
                 reward = "x" + amount;
                 break;

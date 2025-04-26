@@ -30,7 +30,6 @@ namespace IEC
         {
             return gameObject.activeSelf;
         }
-        
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
@@ -39,7 +38,6 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
@@ -57,6 +55,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else

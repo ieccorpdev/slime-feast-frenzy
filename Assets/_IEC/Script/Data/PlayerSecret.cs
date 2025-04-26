@@ -251,7 +251,7 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            
+            EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
             ResetBoosterStreak();
         }
 
@@ -299,7 +299,7 @@ namespace IEC
             }
             string outputString = "";
             
-            var hour = time.Hours;
+            var hour = time.Hours + time.Days * 24;
             var minute = time.Minutes;
             var seconds = time.Seconds;
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
@@ -503,9 +503,13 @@ namespace IEC
             {
                 playerCurrencies[currencyType] += amount;
             }
-            
-            if(isUpdateUI)
+
+            if (isUpdateUI)
+            {
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                if(currencyType == ResourceType.EvolveStone || currencyType == ResourceType.WindSurf)
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_BOOSTER_UI);
+            }
         }
         public bool IsResourceHelper(ResourceType currencyType)
         {
