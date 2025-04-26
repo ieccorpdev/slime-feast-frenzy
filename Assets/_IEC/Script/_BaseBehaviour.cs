@@ -22,6 +22,7 @@ namespace IEC
         protected static Joystick Joystick => Pool.Get<Joystick>();
         
         protected static GameConfig Config => Pool.Get<GameConfig>();
+        protected static SoundController SoundController => Pool.Get<SoundController>();
 
         protected static HybridConfig HybridConfig => Config.hybridConfig;
 		public virtual void SetActive(bool isActive)
