@@ -46,7 +46,9 @@ namespace IEC
             Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             base.Show();
-
+            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+            SoundController.StopSound(EventList.Audio.COMPASS);
+            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
 
