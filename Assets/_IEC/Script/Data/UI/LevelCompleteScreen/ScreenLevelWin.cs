@@ -17,6 +17,9 @@ namespace IEC
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
 
+        public GameObject groupGoldDisplay;
+        public TextMeshProUGUI goldDisplayText;
+
         public Button btnNext;
         private void Start()
         {
@@ -45,8 +48,15 @@ namespace IEC
         {
             Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
+            SetupGoldDisplay();
             base.Show();
 
+        }
+
+        void SetupGoldDisplay()
+        {
+            groupGoldDisplay.SetActive(GamePlay.levelController.GoldCollected > 0);
+            goldDisplayText.text = GamePlay.levelController.GoldCollected.ToString();
         }
 
 
