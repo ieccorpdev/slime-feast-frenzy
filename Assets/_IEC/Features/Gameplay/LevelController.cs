@@ -77,7 +77,7 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.REVIVE_GAME,ReviveGame);
             this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
-            this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
+            this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
         }
 
         private void OnDisable()
@@ -90,7 +90,7 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.ADD_TIME_FOR_TIMER,ReviveGame);
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
-            this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
+            this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
         }
 
         private void Update()
@@ -182,7 +182,7 @@ namespace _IEC.Features.Gameplay
             }
             
             //Check spawn booster items
-            OnSpawnBoosterItems(null);
+            OnSpawnBoosterItems();
         }
         private void Reset()
         {
@@ -349,18 +349,16 @@ namespace _IEC.Features.Gameplay
             //SoundController.PlaySound(new AudioInfo(Config.soundConfig.boosterLightning));
         }
 
-        private void OnSpawnBoosterItems(object param)
+        private void AddSpawnBoosterItem(object param)
+        {
+            var data = (SpawnBoosterData)param;
+            listSpawnBoosterData.Add(data);
+        }
+
+        private void OnSpawnBoosterItems()
         {
             // if (PlayerData.currentBoosterStreak <= 0)
             //     return;
-
-            if (CurrentState != State.Play)
-            {
-                var data = (SpawnBoosterData)param;
-                listSpawnBoosterData.Add(data);
-                return;
-            }
-            
             //var data = (SpawnBoosterEventData)param;
             
             m_AllBoosters.Clear();

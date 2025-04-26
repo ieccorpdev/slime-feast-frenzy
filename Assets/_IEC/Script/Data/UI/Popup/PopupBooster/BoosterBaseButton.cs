@@ -28,7 +28,7 @@ namespace IEC
         private void Start()
         {
             boosterButton.onClick.AddListener(OnBoosterButtonClick);
-            gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_UI, Setup);
+            gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_BOOSTER_UI, Setup);
         }
 
         private void Update()
