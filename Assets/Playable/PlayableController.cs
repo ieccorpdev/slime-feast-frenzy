@@ -9,11 +9,13 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class PlayableController : MonoBehaviour
+public class PlayableController : _BaseBehaviour
 {
     private static PlayableController instance;
     [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
     public GameplayItemPrefabConfig GameplayItemPrefabConfig;
+    public ScreenInGame ScreenInGame;
+    public bool useHelper;
     public static PlayableController Instance
     {
         get
@@ -123,7 +125,7 @@ public class PlayableController : MonoBehaviour
     {
         instance = this;
     }
-
+    
     private void Start()
     {
 
@@ -137,9 +139,12 @@ public class PlayableController : MonoBehaviour
             case 1:
                 break;
             case 2:
-                magnetButton.onClick.RemoveAllListeners();
-                magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                StartCoroutine(IShowHighLight());
+                if (useHelper)
+                {
+                    magnetButton.onClick.RemoveAllListeners();
+                    magnetButton.onClick.AddListener(OnMagnetButtonClicked);
+                    StartCoroutine(IShowHighLight());
+                }
                 break;
             case 3:
                 break;
@@ -193,8 +198,6 @@ public class PlayableController : MonoBehaviour
     {
         this.level = level;
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-//        GameController.OnNewGame();
-        //levelController.LoadLevel(level);
     }
 
     public void DoneInitMoveAnim()
@@ -205,7 +208,7 @@ public class PlayableController : MonoBehaviour
 
     private void Update()
     {
-        ProcessInput();
+        //ProcessInput();
         // time += Time.deltaTime;
         // if (time >= tutorialDuration)
         // {
@@ -252,20 +255,20 @@ public class PlayableController : MonoBehaviour
     }
     private void ProcessInput()
     {
-        // float timeInerval = 5;
+        float timeInerval = 5;
         // if (Time.time - lastTimeTap  >= 5)
         // {
         //     ShowTutorial();
         // }
-        // if(Input.GetKeyDown(KeyCode.LeftArrow))
-        // {
-        //     LoadLevel(level - 1);
-        // }
-        //
-        // if (Input.GetKeyDown(KeyCode.RightArrow))
-        // {
-        //     LoadLevel(level + 1);
-        // }
+        if(Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            LoadLevel(level - 1);
+        }
+        
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            LoadLevel(level + 1);
+        }
     }
     public void OnEndOfTime()
     {
