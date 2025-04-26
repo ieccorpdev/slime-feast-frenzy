@@ -19,6 +19,7 @@ namespace IEC
         
         public bool IsInLevelHard { get; private set; } = false;
         private ILevelController m_CurrentLevelController;
+        public LevelType currentLevelType => GetLevelController().GetLevelData().levelType;
         public void Awake()
         {
 

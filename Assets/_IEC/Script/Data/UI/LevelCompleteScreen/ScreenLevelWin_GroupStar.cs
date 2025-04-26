@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class ScreenLevelWin_GroupStar : MonoBehaviour
+    public class ScreenLevelWin_GroupStar : BaseBehaviour
     {
         [SerializeField] private Image starLeft;
         [SerializeField] private Image starMid;
@@ -36,7 +36,11 @@ namespace IEC
             sequence.AppendInterval(startWaitTime);
             sequence.AppendCallback(() => starLeft.gameObject.SetActive(true));
             sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
-
+            if (Pool.Get<InGamePlayGroup>().currentLevelType == LevelType.COIN)
+            {
+                //Override 3 star in CoinLevel
+                remainingTimeState = GameplayTimer.RemainingTimeState.Safe;
+            }
             switch (remainingTimeState)
             {
                 case GameplayTimer.RemainingTimeState.Safe:
