@@ -71,13 +71,18 @@ namespace IEC
             EffectUI.DoShowHide(gameObject, false, (isShow) =>
             {
                 onHideDone.Invoke();
-                tempOnHideDone.Invoke();
-                tempOnHideDone?.RemoveAllListeners();
+                CallTempOnHide();
             });
             onHide.Invoke();
             onLostFocus.Invoke(true);
         }
 
+        public void CallTempOnHide()
+        {
+            //may be need add to basePopup when hide, bug  #67698
+            tempOnHideDone.Invoke();
+            tempOnHideDone?.RemoveAllListeners();
+        }
         public virtual void LostFocus()
         {
             if (!IsFocus) return;
