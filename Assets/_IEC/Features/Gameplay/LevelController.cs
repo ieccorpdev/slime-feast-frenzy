@@ -144,7 +144,7 @@ namespace _IEC.Features.Gameplay
             }
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
-
+            
             m_AllSpecialItems.Clear();
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),
@@ -367,24 +367,30 @@ namespace _IEC.Features.Gameplay
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
             //
-            foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+            
+            //Block spawn booster from ocean's grace in Coin level
+            if (m_CurrentLevelData.levelType != LevelType.COIN)
             {
-                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
-                    Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3), 
-                    allItemHolder,
-                    booster
-                ));
+                foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+                {
+                    m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
+                        Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3),
+                        allItemHolder,
+                        booster
+                    ));
+                }
             }
 
             foreach (var spawnData in listSpawnBoosterData)
             {
                 m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
-                    spawnData.amount, 
+                    spawnData.amount,
                     allItemHolder,
                     spawnData.boosterData
                 ));
             }
             
+
             listSpawnBoosterData.Clear();
             
             foreach (var boosterItem in m_AllBoosters)
