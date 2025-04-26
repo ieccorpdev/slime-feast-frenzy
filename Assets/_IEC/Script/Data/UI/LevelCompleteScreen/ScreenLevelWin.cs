@@ -50,7 +50,9 @@ namespace IEC
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             SetupGoldDisplay();
             base.Show();
-
+            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+            SoundController.StopSound(EventList.Audio.COMPASS);
+            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         void SetupGoldDisplay()

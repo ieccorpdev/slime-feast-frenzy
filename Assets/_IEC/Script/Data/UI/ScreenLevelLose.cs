@@ -90,6 +90,9 @@ namespace IEC
         public override void Show()
         {
             base.Show();
+            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+            SoundController.StopSound(EventList.Audio.COMPASS);
+            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         public void SetupPanelShow(EventParam param)

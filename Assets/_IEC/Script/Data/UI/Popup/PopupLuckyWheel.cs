@@ -30,7 +30,7 @@ namespace _IEC
         protected override void Awake()
         {
             base.Awake();
-            AudioEventOpen = EventList.Audio.LUCKY_WHEEL_POPUP_OPEN;
+            AudioEventOpen = EventList.Audio.LUCKY_WHEEL_POPUP;
         }
 
         private void Start()
