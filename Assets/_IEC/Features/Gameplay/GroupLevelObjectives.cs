@@ -67,7 +67,7 @@ namespace _IEC.Features.Gameplay
                 .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
                 .AppendCallback(() =>
                 {
-                    objectiveUI.SetNumber(newNumber, isCompleted);
+                    objectiveUI.SetNumber(newNumber.ToString(), isCompleted);
                     objectiveVfx.Recycle();
                 });
         }
@@ -92,8 +92,9 @@ namespace _IEC.Features.Gameplay
             var objectiveUI = GetLevelObjectiveUI(itemId);
             if (objectiveUI == null) return;
             int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+
             //objectiveUI.SetNumber(maxSpecialObject, false);
-            objectiveUI.SetNumber(maxSpecialObject - number, false);
+            objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
         }
         
         public void DisposeAll()

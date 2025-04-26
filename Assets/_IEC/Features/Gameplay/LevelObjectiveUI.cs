@@ -55,10 +55,10 @@ namespace _IEC.Features.Gameplay
             return imgIcon.rectTransform.sizeDelta;
         }
 
-        public void SetNumber(int newNumber, bool isCompleted)
+        public void SetNumber(string newNumber, bool isCompleted)
         {
             effectCollect.Play();
-            SetText(newNumber.ToString());
+            SetText(newNumber);
             if (isCompleted)
             {
                 PlayDoneAnimation();
@@ -80,7 +80,16 @@ namespace _IEC.Features.Gameplay
             itemId = levelObjective.itemId;
             m_IsSpecial = isSpecial;
             //SetText(isSpecial ? "0" : levelObjective.number.ToString());
-            SetText(levelObjective.number.ToString());
+            if (isSpecial)
+            {
+                int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+                var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
+                SetText(totalNumberCollected+"/"+maxSpecialObject);
+            }
+            else
+            {
+                SetText(levelObjective.number.ToString());  
+            }
             if (isSpecial)
             {
                 //Change method load 
@@ -91,7 +100,8 @@ namespace _IEC.Features.Gameplay
             {
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
-            imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            imgIcon.rectTransform.sizeDelta = new Vector2(140, 140);
 
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;
