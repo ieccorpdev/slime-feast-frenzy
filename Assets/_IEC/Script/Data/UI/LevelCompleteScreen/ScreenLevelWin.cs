@@ -30,12 +30,12 @@ namespace IEC
 
         public override void Hide()
         {
-            base.Hide();
             Pool.Get<ConfettiGroup>().StopConfetti();
+            gameObject.SetActive(false);
         }
         public override void Show()
         {
-            groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
+            //groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             base.Show();
 
         }
@@ -64,20 +64,6 @@ namespace IEC
             
             //Add callbacks here
             
-            Queue<PopupData> popupQueue = new Queue<PopupData>();
-
-            #region Helper functions
-
-            void ShowNext()
-            {
-                if (popupQueue.Count > 0)
-                {
-                    var popupData = popupQueue.Dequeue();
-                    ShowPopup(popupData.popup, popupData.onOpen, popupData.onClose);
-                }
-            }
-            #endregion
-
      
         }
         
