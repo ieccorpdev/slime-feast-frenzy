@@ -128,12 +128,16 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButton("Add Level Chest ( On Home)", param =>
             {
-                AddChestProgress( ChestType.Level); 
+                AddChestProgress( ChestType.Level,1); 
             });
-            ModuleController.cheatCode.AddCheatCodeButton("Add Star Chest ( On Home)", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Star Chest ( On Home)", param =>
             {
-                AddChestProgress( ChestType.Star);
-            });
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                AddChestProgress( ChestType.Star,gc);
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });  
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Ocean Gift ( On Home)", param =>
             {
                 //Check progress reward
@@ -248,9 +252,9 @@ namespace IEC
             });
         }
 
-        private static void AddChestProgress(ChestType type)
+        private static void AddChestProgress(ChestType type,int number)
         {
-            PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(type), 1, out var isClaimChestReward);
+            PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(type), number, out var isClaimChestReward);
             if (isClaimChestReward)
             {
                 var rewardData = Config.allChestConfig.GetChestConfig(type)
