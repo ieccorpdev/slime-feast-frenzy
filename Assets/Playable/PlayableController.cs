@@ -14,8 +14,6 @@ public class PlayableController : MonoBehaviour
     private static PlayableController instance;
     [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
     public GameplayItemPrefabConfig GameplayItemPrefabConfig;
-    public GameController GameController;
-    public LevelController  levelController;
     public static PlayableController Instance
     {
         get
@@ -133,10 +131,24 @@ public class PlayableController : MonoBehaviour
         LoadLevel(level);
 
         ShowTutorial();
-    
-        magnetButton.onClick.RemoveAllListeners();
-        magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-        StartCoroutine(IShowHighLight());
+
+        switch (level)
+        {
+            case 1:
+                break;
+            case 2:
+                magnetButton.onClick.RemoveAllListeners();
+                magnetButton.onClick.AddListener(OnMagnetButtonClicked);
+                StartCoroutine(IShowHighLight());
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+        
 
     }
 
