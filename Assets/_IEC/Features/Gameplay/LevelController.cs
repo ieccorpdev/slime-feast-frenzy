@@ -64,6 +64,8 @@ namespace _IEC.Features.Gameplay
         }
 
         public int SpecialProgressRewardObjCollected { get; private set; } = 0;
+        
+        public int GoldCollected { get; private set; }
 
         private void OnEnable()
         {
@@ -193,6 +195,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
+            GoldCollected = 0;
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -244,7 +247,7 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-                if (IsCoin(itemId))
+                if (IsCoin(data))
                 {
                     CollectCoin(data);
                     //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
@@ -528,6 +531,7 @@ namespace _IEC.Features.Gameplay
             CollectNormalItem(data);
             //GamePlay.gamePlayData.AddAchievementItem(LevelAchievementData.ID_COIN, data.GetCoinValue());
             //var totalAmountCollected = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN);
+            GoldCollected += data.GetCoinValue();
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
         
@@ -553,6 +557,11 @@ namespace _IEC.Features.Gameplay
         private bool IsCoin(string itemId)
         {
             return itemId.Contains("coin") || itemId.Contains("Coin");
+        }
+
+        private bool IsCoin(CollectItemData data)
+        {
+            return data.GetCoinValue() != -1;
         }
 
         private void SetUpStartHolePosition(Vector3 startPosition)
