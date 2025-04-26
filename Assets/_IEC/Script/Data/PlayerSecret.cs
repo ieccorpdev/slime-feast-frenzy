@@ -503,9 +503,13 @@ namespace IEC
             {
                 playerCurrencies[currencyType] += amount;
             }
-            
-            if(isUpdateUI)
+
+            if (isUpdateUI)
+            {
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                if(currencyType == ResourceType.EvolveStone || currencyType == ResourceType.WindSurf)
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_BOOSTER_UI);
+            }
         }
         public bool IsResourceHelper(ResourceType currencyType)
         {
