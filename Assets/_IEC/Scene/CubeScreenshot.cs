@@ -20,6 +20,7 @@ public class CubeScreenshot : MonoBehaviour
     public GameplayItemPrefabConfig itemConfig;
     public string itemID;
     public int startFrom = 0;
+    public Vector3 objRotation;
 
     private Coroutine _meoMeoPictureCoroutine;
     
@@ -159,30 +160,40 @@ public class CubeScreenshot : MonoBehaviour
         //     Debug.LogError("Cube does not have a MeshCollider or BoxCollider attached.");
         // }
 
-        var mesh = cube.GetComponentInChildren<MeshRenderer>();
+        var meshes = cube.GetComponentsInChildren<MeshRenderer>();
+
+        foreach (var mesh in meshes)
+        {
+            if (mesh.GetComponent<Collider>() == null)
+            {
+                mesh.gameObject.AddComponent<MeshCollider>();
+                mesh.GetComponent<MeshCollider>().convex = true;
+            }
+        }
         
         //var collider = cube.GetComponentsInChildren<Collider>().ToList();
-        var collider = mesh.GetComponent<Collider>();
+        var collider = meshes.Select(mesh => mesh.gameObject.GetComponent<Collider>()).ToList();
+        //var collider = mesh.GetComponent<Collider>();
 
-        if (collider == null)
-        {
-            collider = mesh.gameObject.AddComponent<MeshCollider>();
-            ((MeshCollider)collider).convex = true;
-        }
+        // if (collider == null)
+        // {
+        //     collider = mesh.gameObject.AddComponent<MeshCollider>();
+        //     ((MeshCollider)collider).convex = true;
+        // }
 
         // if (collider.Count <= 0)
         // {
         //     collider = cube.transform.parent.GetComponentsInChildren<Collider>().ToList();
         // }
 
-        if (collider != null)
+        if (collider.Count > 0)
         {
-            bound = GroundExtend.CalculateBounds(new List<Collider>(){collider});
+            bound = GroundExtend.CalculateBounds(collider);
 
             // Move object to origin to simplify positioning
             cube.transform.position = Vector3.zero;
             //bounds = collider.bounds; // Recalculate after moving
-            bound = GroundExtend.CalculateBounds(new List<Collider>(){collider});
+            bound = GroundExtend.CalculateBounds(collider);
 
             // Set camera rotation (45° top-down)
             renderCamera.transform.rotation = Quaternion.Euler(50f, 0f, 0f);
@@ -243,9 +254,13 @@ public class CubeScreenshot : MonoBehaviour
         RenderTexture.active = renderTexture;
         texture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
         texture.Apply();
+        
+        // Crop it
+        Texture2D croppedTexture = CropTexture(texture);
 
         // Optionally, save the texture to a file
-        byte[] bytes = texture.EncodeToPNG();
+        //byte[] bytes = texture.EncodeToPNG();
+        byte[] bytes = croppedTexture.EncodeToPNG();
         var path = "Assets/New Item Icon/" + nameSave + ".png";
         System.IO.File.WriteAllBytes("Assets/New Item Icon/" + nameSave + ".png", bytes);
 
@@ -257,6 +272,47 @@ public class CubeScreenshot : MonoBehaviour
         Debug.Log("Screenshot saved as png: " + nameSave);
 
         return path;
+    }
+    
+    public static Texture2D CropTexture(Texture2D original)
+    {
+        int width = original.width;
+        int height = original.height;
+
+        Color32[] pixels = original.GetPixels32();
+
+        int left = width;
+        int right = 0;
+        int top = 0;
+        int bottom = height;
+
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                Color32 pixel = pixels[y * width + x];
+                if (pixel.a != 0) // Check if pixel is not fully transparent
+                {
+                    if (x < left) left = x;
+                    if (x > right) right = x;
+                    if (y > top) top = y;
+                    if (y < bottom) bottom = y;
+                }
+            }
+        }
+
+        // If no non-transparent pixel found
+        if (left > right || bottom > top)
+            return null;
+
+        int croppedWidth = right - left + 1;
+        int croppedHeight = top - bottom + 1;
+
+        Texture2D cropped = new Texture2D(croppedWidth, croppedHeight, TextureFormat.RGBA32, false);
+        cropped.SetPixels(original.GetPixels(left, bottom, croppedWidth, croppedHeight));
+        cropped.Apply();
+
+        return cropped;
     }
     
     public Sprite LoadSpriteFromFile(string filePath)
