@@ -299,7 +299,7 @@ namespace IEC
             }
             string outputString = "";
             
-            var hour = time.Hours;
+            var hour = time.Hours + time.Days * 24;
             var minute = time.Minutes;
             var seconds = time.Seconds;
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
