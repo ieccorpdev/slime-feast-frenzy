@@ -8,6 +8,7 @@ using UnityEngine;
 
 public class CubeScreenshot : MonoBehaviour
 {
+    #if UNITY_EDITOR
     public Camera renderCamera;  // Camera that will capture the cube
     public RenderTexture renderTexture;  // Render texture to capture the image
     public GameObject cubePrefab;  // The cube prefab
@@ -288,4 +289,5 @@ public class CubeScreenshot : MonoBehaviour
         renderTexture.Release();
         RenderTexture.active = null;
     }
+    #endif
 }
