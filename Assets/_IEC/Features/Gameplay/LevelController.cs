@@ -142,7 +142,14 @@ namespace _IEC.Features.Gameplay
             }
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
-
+            if (m_CurrentLevelData.levelType == LevelType.COIN)
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_GOLD);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            }
             m_AllSpecialItems.Clear();
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),

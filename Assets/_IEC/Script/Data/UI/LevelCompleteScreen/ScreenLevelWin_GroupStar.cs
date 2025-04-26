@@ -13,7 +13,7 @@ namespace IEC
         [SerializeField] private Image starMid;
         [SerializeField] private Image starRight;
         private string m_tween_ID => gameObject.GetInstanceID().ToString();
-        
+
         public int StarWon { get; private set; }
         float startWaitTime = 0.3f;
         float timeEachStep = 0.25f;
@@ -35,28 +35,36 @@ namespace IEC
             float timeInterval = 0.05f;
             sequence.AppendInterval(startWaitTime);
             sequence.AppendCallback(() => starLeft.gameObject.SetActive(true));
-            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+                EventController.RaiseEvent(EventList.Audio.GET_STAR_1)
+            ));
 
             switch (remainingTimeState)
             {
                 case GameplayTimer.RemainingTimeState.Safe:
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starMid.gameObject.SetActive(true));
-                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+                        EventController.RaiseEvent(EventList.Audio.GET_STAR_2)
+                    ));
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starRight.gameObject.SetActive(true));
-                    sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+                        EventController.RaiseEvent(EventList.Audio.GET_STAR_3)
+                    ));
                     StarWon = 3;
                     break;
                 case GameplayTimer.RemainingTimeState.Warning:
                     sequence.AppendInterval(timeInterval);
                     sequence.AppendCallback(() => starMid.gameObject.SetActive(true));
-                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+                    sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+                        EventController.RaiseEvent(EventList.Audio.GET_STAR_2)
+                    ));
                     StarWon = 2;
                     break;
                 case GameplayTimer.RemainingTimeState.Dangerous:
                     StarWon = 1;
-                    break; 
+                    break;
             }
         }
     }

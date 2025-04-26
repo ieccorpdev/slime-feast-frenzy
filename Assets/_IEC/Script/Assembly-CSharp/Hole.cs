@@ -122,7 +122,8 @@ public class Hole : _BaseBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
-		}
+            EventController.RaiseEvent(EventList.Audio.SHARK_BITE);
+        }
 	}
 	private void CheckSharkForm()
 	{
@@ -298,10 +299,10 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-		
-		//SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
-		//VibrationController.Vibrate(HapticTypes.Selection);
-	}
+        EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
+        //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
+        //VibrationController.Vibrate(HapticTypes.Selection);
+    }
 
 	public void SetXp(int xp,bool isLerp)
 	{
@@ -479,7 +480,8 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("HoleToShark");
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_UP);
+    }
 	public void TurnSharkToHole()
 	{
 		readyForSharkBite = false;
@@ -489,7 +491,8 @@ public class Hole : _BaseBehaviour
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
+    }
 	#endregion
 
 

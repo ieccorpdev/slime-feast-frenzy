@@ -61,7 +61,7 @@ namespace _IEC.Features.Gameplay
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
             Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
-
+            EventController.RaiseEvent(EventList.Audio.OBJECTIVE_GET);
             DOTween.Sequence()
                 .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
                 .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))

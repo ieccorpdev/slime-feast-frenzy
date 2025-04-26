@@ -19,7 +19,7 @@ public class IslandItem : MonoBehaviour
     public void BuildingCompleteEffect()
     {
         panelInfoItem.EffectComplete();
-        EventController.RaiseEvent(EventList.Audio.COMPLETE_BUILDING);
+        //EventController.RaiseEvent(EventList.Audio.COMPLETE_BUILDING);
         foreach (var particle in listEffectComplete)
         {
             particle.Play();
