@@ -469,6 +469,10 @@ namespace IEC
 
         public int GetPlayerCurrencyCount(ResourceType currencyType)
         {
+            if (IsResourceHelper(currencyType))
+            {
+                helperData.GetPool(helperData.ConvertResourceType(currencyType));
+            }
             return playerCurrencies.TryGetValue(currencyType, out int value) ? value : -1;
         }
 
@@ -490,6 +494,11 @@ namespace IEC
             {
                 AddTimeUnlimitedBoosters(ResourceType.DoubleSpecialObjectCount, amount);
             }
+            else if (IsResourceHelper(currencyType))
+            {
+                //Using old code, change after 
+                helperData.CollectHelper(helperData.ConvertResourceType(currencyType),amount);
+            }
             else if (playerCurrencies.ContainsKey(currencyType))
             {
                 playerCurrencies[currencyType] += amount;
@@ -498,7 +507,11 @@ namespace IEC
             if(isUpdateUI)
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         }
-
+        public bool IsResourceHelper(ResourceType currencyType)
+        {
+            return currencyType is ResourceType.Compass or ResourceType.Enlarge or
+                                   ResourceType.Vortex  or ResourceType.TimeStop;
+        }
         public bool SubtractCurrency(ResourceType currencyType, int amount)
         {
             if (playerCurrencies.ContainsKey(currencyType))
@@ -507,7 +520,11 @@ namespace IEC
                 {
                     return false;
                 }
-
+                if (IsResourceHelper(currencyType))
+                {
+                    helperData.ConsumeHelper(helperData.ConvertResourceType(currencyType),amount);
+                    return true;
+                }   
                 playerCurrencies[currencyType] -= amount;
                 switch (currencyType)
                 {
