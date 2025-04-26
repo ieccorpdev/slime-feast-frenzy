@@ -205,9 +205,7 @@ public class Hole : MonoBehaviour
 			this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
 			{
 				target =  myTransform,
-				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-				curLevel = Mathf.Max(1, level - 1),
-				nextLevel = level,
+				cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
 			});
 		});
 		SetXp(0,false);

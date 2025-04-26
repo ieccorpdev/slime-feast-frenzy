@@ -38,7 +38,6 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialCompass;
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
-        [SerializeField] private GameObject timerFrozenMark;
         
         private void Awake()
         {
@@ -78,7 +77,6 @@ namespace IEC
             //popupPauseGame.Hide();
             groupMark.SetActiveFrozenMark(false);
             groupMark.SetActiveDangerousMark(false);
-            timerFrozenMark.SetActive(false);
         }
         
         private void OnEnable()

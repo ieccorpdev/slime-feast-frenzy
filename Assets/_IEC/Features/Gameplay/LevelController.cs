@@ -25,27 +25,23 @@ namespace _IEC.Features.Gameplay
             this.items = items;
         }
     }
-    
-    public class LevelController : MonoBehaviour,ILevelController, IGroup
+
+    public class LevelController : _BaseBehaviour, ILevelController, IGroup
     {
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
         [SerializeField] private Transform allItemHolder;
-        protected static Game Game => Pool.Get<Game>();
 
-        
 
         private bool _isShowEnding = false;
         private State m_CurrentState;
         private LevelData m_CurrentLevelData;
         private float m_MagnetHelperCoolDown;
         private float m_ScaleUpHelperCoolDown;
-        private bool m_ScaleUpHelperActive ;
+        private bool m_ScaleUpHelperActive;
         private bool m_MagnetHelperActive;
         private bool m_IsGameplayPause;
         private int m_Level;
-        [SerializeField] private LevelDataSO m_LevelConfig;
-        [SerializeField] private LevelSpawnData levelSpawnData;
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
@@ -55,6 +51,7 @@ namespace _IEC.Features.Gameplay
 
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
+
         public bool IsShowEnding
         {
             get => _isShowEnding;
@@ -65,26 +62,26 @@ namespace _IEC.Features.Gameplay
 
         private void OnEnable()
         {
-            this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
-            this.RegisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
-            this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
-            this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
-            this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
-            this.RegisterListener(EventList.GamePlay.REVIVE_GAME,ReviveGame);
-            this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
+            this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT, OnLevelTimeOut);
+            this.RegisterListener(EventList.GamePlay.COLLECT_ITEM, OnCollectItem);
+            this.RegisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
+            this.RegisterListener(EventList.GamePlay.PAUSE_GAME, OnPauseGame);
+            this.RegisterListener(EventList.GamePlay.RESUME_GAME, OnResumeGame);
+            this.RegisterListener(EventList.GamePlay.REVIVE_GAME, ReviveGame);
+            this.RegisterListener(EventList.GamePlay.USE_BOOSTER, OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
         }
 
         private void OnDisable()
         {
-            this.UnregisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
-            this.UnregisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
-            this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
-            this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
-            this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
-            this.UnregisterListener(EventList.GamePlay.ADD_TIME_FOR_TIMER,ReviveGame);
-            this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
+            this.UnregisterListener(EventList.GamePlay.TIMER_TIME_OUT, OnLevelTimeOut);
+            this.UnregisterListener(EventList.GamePlay.COLLECT_ITEM, OnCollectItem);
+            this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
+            this.UnregisterListener(EventList.GamePlay.PAUSE_GAME, OnPauseGame);
+            this.UnregisterListener(EventList.GamePlay.RESUME_GAME, OnResumeGame);
+            this.UnregisterListener(EventList.GamePlay.ADD_TIME_FOR_TIMER, ReviveGame);
+            this.UnregisterListener(EventList.GamePlay.USE_BOOSTER, OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
         }
@@ -103,18 +100,20 @@ namespace _IEC.Features.Gameplay
         public void LoadLevel(int level)
         {
             m_Level = level;
+            int index = Mathf.Max(0, level - 1);
+            var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData(index);
 
-            
             m_AllItems.Clear();
-
+            var levelSpawnData = m_LevelConfig.levelSpawnData;
             m_AllItems = LevelHelper.SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
                 LevelHelper.SpawnMap(m_LevelConfig, levelObjectHolder);
             }
+
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
-            
+
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();
@@ -122,23 +121,24 @@ namespace _IEC.Features.Gameplay
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
         }
-        
+
         public void StartPlay()
         {
             allItemHolder.gameObject.SetActive(true);
             playerHole.OnNewGame();
             ChangeState(State.Play);
-           
+
 
             if (addBoosterAction != null)
             {
                 addBoosterAction.Invoke();
                 addBoosterAction = null;
             }
-            
+
             //Check spawn booster items
             OnSpawnBoosterItems(null);
         }
+
         private void Reset()
         {
             _isShowEnding = false;
@@ -155,11 +155,10 @@ namespace _IEC.Features.Gameplay
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
         {
             m_ObjectiveItems.Clear();
-            m_ObjectiveItems = allItems.Where(
-                    x =>
-                        m_CurrentLevelData
-                            .levelObjectives
-                            .Exists(objective => objective.itemId == x.GetItemId()))
+            m_ObjectiveItems = allItems.Where(x =>
+                    m_CurrentLevelData
+                        .levelObjectives
+                        .Exists(objective => objective.itemId == x.GetItemId()))
                 .ToList();
         }
 
@@ -169,24 +168,24 @@ namespace _IEC.Features.Gameplay
         }
 
         public Hole GetHolePlayer() => playerHole;
-        
+
         public List<BaseItem> GetAllItems() => m_AllItems
             .Concat(m_AllSpecialItems)
             .Concat(m_AllBoosters).ToList();
+
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
 
         private void OnCollectItem(object param)
         {
-            var data = (CollectItemData) param;
+            var data = (CollectItemData)param;
             if (data == null) return;
             var itemId = data.itemID;
-      
+
 
             //var timeDelay = Config.soundConfig.delayInterval;
-         
-            
-            
+
+
             if (IsObjectiveItem(itemId))
             {
                 CollectObjectiveItem(data);
@@ -217,7 +216,7 @@ namespace _IEC.Features.Gameplay
             //return itemId.Contains("SpecialItem");
             return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
         }
-        
+
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
@@ -227,9 +226,9 @@ namespace _IEC.Features.Gameplay
             }
 
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
-            this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
+            this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, data);
         }
-        
+
         private void OnLevelTimeOut(object param)
         {
             // if (GetLevelData().levelType == LevelType.COIN)
@@ -253,17 +252,18 @@ namespace _IEC.Features.Gameplay
             //UI.ScreenInGame.UpdateUI();
             if (IsLevelComplete())
             {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.NORMAL});
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN, new EventParam() { p0 = LevelType.NORMAL });
                 ChangeState(State.Win);
                 return;
             }
+
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             ChangeState(State.Play);
         }
 
         private void OnUseBooster(object param)
         {
-            var data = (UseBoosterEventData) param;
+            var data = (UseBoosterEventData)param;
             if (data.boosterId != BoosterId.BonusExp) return;
             //var bonusExpConfig = Config.boosterConfig.GetBoosterConfigModelById(BoosterId.BonusExp);
             //playerHole.AddXp(bonusExpConfig.advantageNumber);
@@ -297,19 +297,18 @@ namespace _IEC.Features.Gameplay
 
         private void OnSpawnBoosterItems(object param)
         {
-           
-            
             //var data = (SpawnBoosterEventData)param;
-            
+
             m_AllBoosters.Clear();
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
             //
-          
-            
+
+
             foreach (var boosterItem in m_AllBoosters)
             {
-                var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
+                var randomPos = GetRandomPositionInCircle(playerHole.transform.position,
+                    playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
                 var booster = (IBoosterItem)boosterItem;
                 booster.Init();
                 booster.MoveToPos(randomPos);
@@ -333,7 +332,7 @@ namespace _IEC.Features.Gameplay
         //        position = data.posStartSpawn
         //    });
         //}
-        
+
         private Vector3 GetRandomPositionInCircle(Vector3 center, float radius, float minDistanceFromCenter)
         {
             minDistanceFromCenter = Mathf.Min(minDistanceFromCenter, radius);
@@ -347,7 +346,7 @@ namespace _IEC.Features.Gameplay
 
             return randomPosition;
         }
-        
+
         private void OnPauseGame(object param)
         {
             m_IsGameplayPause = true;
@@ -359,9 +358,16 @@ namespace _IEC.Features.Gameplay
             m_IsGameplayPause = false;
             Physics.autoSimulation = true;
         }
+
         private void OnUserUseHelper(object param)
         {
-           
+            var data = (UserUseHelper) param;
+            if (data.helperId == HelperId.Magnet)
+            {
+                playerHole.StartMagnetHelper();
+                m_MagnetHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                m_MagnetHelperActive = true;
+            }
         }
 
         private void CollectObjectiveItem(CollectItemData data)
@@ -373,14 +379,15 @@ namespace _IEC.Features.Gameplay
             {
                 levelObjective.number = 0;
             }
-            this.RaiseEvent(EventList.GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI,data);
+
+            this.RaiseEvent(EventList.GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI, data);
             if (IsLevelComplete() && IsInResultState() == false)
             {
-                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.NORMAL});
+                EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN, new EventParam() { p0 = LevelType.NORMAL });
                 ChangeState(State.Win);
             }
         }
-        
+
         private void CollectNormalItem(CollectItemData data)
         {
             playerHole.AddXp(data.xp);
@@ -389,17 +396,18 @@ namespace _IEC.Features.Gameplay
         private void CollectBomb()
         {
             if (Game.isImmortal) return;
-            
+
             if (IsInResultState() == false)
             {
                 playerHole.CollectABomb();
                 ChangeState(State.Lose);
-                DOVirtual.DelayedCall(1.5f, () =>
-                {
-                    EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                });
+                DOVirtual.DelayedCall(1.5f,
+                    () =>
+                    {
+                        EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,
+                            new EventParam() { p0 = LoseReason.Boom });
+                    });
             }
-            
         }
 
         public bool IsInResultState()
@@ -412,9 +420,9 @@ namespace _IEC.Features.Gameplay
             CollectNormalItem(data);
             //GamePlay.gamePlayData.AddAchievementItem(LevelAchievementData.ID_COIN, data.GetCoinValue());
             //var totalAmountCollected = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN);
-            this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
+            this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, data);
         }
-        
+
         private bool IsLevelComplete()
         {
             //return false;
@@ -443,24 +451,24 @@ namespace _IEC.Features.Gameplay
         {
             playerHole.SetPosition(startPosition);
         }
-        
+
         private void RecycleAllLevelObjects()
         {
             var childCount = levelObjectHolder.transform.childCount;
-            for (int i = childCount-1; i >= 0; i--)
+            for (int i = childCount - 1; i >= 0; i--)
             {
                 var child = levelObjectHolder.transform.GetChild(i);
                 child.gameObject.Recycle();
             }
 
             childCount = allItemHolder.transform.childCount;
-            for (int i = childCount-1; i>=0; i--)
+            for (int i = childCount - 1; i >= 0; i--)
             {
                 var child = allItemHolder.transform.GetChild(i);
                 child.gameObject.Recycle();
             }
         }
-        
+
         private void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
@@ -489,7 +497,6 @@ namespace _IEC.Features.Gameplay
 
         private void UpdateCurrentState()
         {
-
             switch (m_CurrentState)
             {
                 case State.None:
@@ -506,7 +513,8 @@ namespace _IEC.Features.Gameplay
                             m_MagnetHelperCoolDown = 0;
                             playerHole.StopMagnetHelper();
                             m_MagnetHelperActive = false;
-                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper(){helperId = HelperId.Magnet});
+                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,
+                                new UserCompleteHelper() { helperId = HelperId.Magnet });
                         }
                     }
 
@@ -518,12 +526,13 @@ namespace _IEC.Features.Gameplay
                             m_ScaleUpHelperCoolDown = 0;
                             playerHole.StopScaleByHelper();
                             m_ScaleUpHelperActive = false;
-                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper()
+                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER, new UserCompleteHelper()
                             {
                                 helperId = HelperId.ScaleUp
                             });
                         }
                     }
+
                     break;
                 case State.Win:
                     break;
@@ -548,7 +557,7 @@ namespace _IEC.Features.Gameplay
                     break;
             }
         }
-        
+
         public enum State
         {
             None,

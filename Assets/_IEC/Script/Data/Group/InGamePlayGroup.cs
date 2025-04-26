@@ -43,7 +43,7 @@ namespace IEC
 
         public void SetNewLevel(int level)
         {
-            levelController.LoadLevel(0);
+            levelController.LoadLevel(level);
         }
         public LevelType GetCurrentLevelType()
         {

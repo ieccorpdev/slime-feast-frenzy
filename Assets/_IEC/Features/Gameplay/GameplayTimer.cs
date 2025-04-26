@@ -19,8 +19,8 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Sprite spriteSafe;
         [SerializeField] private Sprite spriteWarning;
         [SerializeField] private Sprite spriteDangerous;
-        [SerializeField] private Image frozenMark;
-        [SerializeField] private Image frozenMark2;
+        // [SerializeField] private Image frozenMark;
+        // [SerializeField] private Image frozenMark2;
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
         [SerializeField]private float m_CurrentTime;
@@ -52,18 +52,18 @@ namespace _IEC.Features.Gameplay
         private void SetActiveFrozenMark(bool isActive)
         {
             DOTween.Kill(TweenIdMelting);
-            frozenMark.color = Color.white;
-            frozenMark2.color = Color.white;
+            // frozenMark.color = Color.white;
+            // frozenMark2.color = Color.white;
             SetActiveMarks(isActive);
 
-            frozenMark2.rectTransform.anchoredPosition = Vector2.zero;
-            frozenMark2.rectTransform.sizeDelta = Vector2.zero;   
+            // frozenMark2.rectTransform.anchoredPosition = Vector2.zero;
+            // frozenMark2.rectTransform.sizeDelta = Vector2.zero;   
         }
 
         private void SetActiveMarks(bool isActive)
         {
-            frozenMark.gameObject.SetActive(isActive);
-            frozenMark2.gameObject.SetActive(isActive);
+            // frozenMark.gameObject.SetActive(isActive);
+            // frozenMark2.gameObject.SetActive(isActive);
         }
         
         private void OnPauseGame(object param)
@@ -296,13 +296,13 @@ namespace _IEC.Features.Gameplay
             zeroAlphaColor.a = 0;
             var fadeDuration = 0.5f;
             // Bắt đầu 2 fade song song
-            Coroutine fade1 = StartCoroutine(FadeImageColor(frozenMark, zeroAlphaColor, fadeDuration));
-            Coroutine fade2 = StartCoroutine(FadeImageColor(frozenMark2, zeroAlphaColor, fadeDuration));
+            // Coroutine fade1 = StartCoroutine(FadeImageColor(frozenMark, zeroAlphaColor, fadeDuration));
+            // Coroutine fade2 = StartCoroutine(FadeImageColor(frozenMark2, zeroAlphaColor, fadeDuration));
 
             // Đợi cả hai xong
-            yield return fade1;
-            yield return fade2;
-
+            // yield return fade1;
+            // yield return fade2;
+            yield break;
             // Callback giống AppendCallback
             SetActiveFrozenMark(false);
         }

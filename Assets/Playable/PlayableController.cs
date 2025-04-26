@@ -1,9 +1,13 @@
 using System.Collections;
+using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
+using _IEC.Features.Gameplay.ObserverEventData;
+using _IEC.Features.VipProHackerUITutorial;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PlayableController : MonoBehaviour
 {
@@ -129,9 +133,37 @@ public class PlayableController : MonoBehaviour
         LoadLevel(level);
 
         ShowTutorial();
-        
+    
+        magnetButton.onClick.RemoveAllListeners();
+        magnetButton.onClick.AddListener(OnMagnetButtonClicked);
+        StartCoroutine(IShowHighLight());
+
     }
 
+    IEnumerator IShowHighLight()
+    {
+        yield return new WaitForSeconds(5);
+        HighLightCanvas.gameObject.SetActive(true);
+        this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
+    }
+
+    private void OnMagnetButtonClicked()
+    {
+        
+        HighLightCanvas.gameObject.SetActive(false);
+        this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
+        this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
+        {
+            helperId = HelperId.Magnet
+        });
+    }
+    public HighLightCanvas HighLightCanvas;
+    public Button magnetButton;
+
+    public LevelDataSO GetLevelSpawnData(int level)
+    {
+        return levelConfig.levelData.listAllLevelData[level];
+    }
     IEnumerator IE_DelayLoadLevel()
     {
         yield return new WaitForSeconds(3);
