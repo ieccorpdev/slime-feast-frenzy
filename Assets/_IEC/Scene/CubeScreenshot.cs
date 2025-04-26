@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Gameplay;
 using IEC;
@@ -157,17 +158,31 @@ public class CubeScreenshot : MonoBehaviour
         // {
         //     Debug.LogError("Cube does not have a MeshCollider or BoxCollider attached.");
         // }
-        
-        var collider = cube.GetComponentsInChildren<Collider>().ToList();
 
-        if (collider.Count > 0)
+        var mesh = cube.GetComponentInChildren<MeshRenderer>();
+        
+        //var collider = cube.GetComponentsInChildren<Collider>().ToList();
+        var collider = mesh.GetComponent<Collider>();
+
+        if (collider == null)
         {
-            bound = GroundExtend.CalculateBounds(collider);
+            collider = mesh.gameObject.AddComponent<MeshCollider>();
+            ((MeshCollider)collider).convex = true;
+        }
+
+        // if (collider.Count <= 0)
+        // {
+        //     collider = cube.transform.parent.GetComponentsInChildren<Collider>().ToList();
+        // }
+
+        if (collider != null)
+        {
+            bound = GroundExtend.CalculateBounds(new List<Collider>(){collider});
 
             // Move object to origin to simplify positioning
             cube.transform.position = Vector3.zero;
             //bounds = collider.bounds; // Recalculate after moving
-            bound = GroundExtend.CalculateBounds(collider);
+            bound = GroundExtend.CalculateBounds(new List<Collider>(){collider});
 
             // Set camera rotation (45° top-down)
             renderCamera.transform.rotation = Quaternion.Euler(50f, 0f, 0f);
