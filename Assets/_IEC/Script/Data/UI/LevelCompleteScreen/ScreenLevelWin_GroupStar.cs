@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class ScreenLevelWin_GroupStar : MonoBehaviour
+    public class ScreenLevelWin_GroupStar : _BaseBehaviour
     {
         [SerializeField] private Image starLeft;
         [SerializeField] private Image starMid;
@@ -17,9 +17,13 @@ namespace IEC
         public int StarWon { get; private set; }
         float startWaitTime = 0.3f;
         float timeEachStep = 0.25f;
+
         private void OnEnable()
         {
             DeactiveGroupStar();
+            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+            SoundController.StopSound(EventList.Audio.COMPASS);
+            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         private void DeactiveGroupStar()
@@ -66,6 +70,11 @@ namespace IEC
                     StarWon = 1;
                     break;
             }
+        }
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(m_tween_ID);
         }
     }
 }
