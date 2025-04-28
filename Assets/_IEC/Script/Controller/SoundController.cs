@@ -77,6 +77,8 @@ namespace IEC
     AudioPlayer CreateAudio(string id, bool sound = true)
         {
             var audio = Instantiate(audioPlayerPrefab, this.gameObject.transform);
+            var data = listSoundConfig.Find(x => x.id == id);
+            audio.SetData(data);
             if (sound)
             {
                 m_ListSoundAudio.Add(audio);
