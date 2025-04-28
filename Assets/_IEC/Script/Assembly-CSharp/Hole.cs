@@ -323,8 +323,8 @@ public class Hole : MonoBehaviour
 
 	public void StopMagnetHelper()
 	{
-		//holeMagnet.gameObject.SetActive(false);
-		//magnetVfx.Stop();
+		holeMagnet.gameObject.SetActive(false);
+		magnetVfx.Stop();
 	}
 
 	public void CollectABomb()

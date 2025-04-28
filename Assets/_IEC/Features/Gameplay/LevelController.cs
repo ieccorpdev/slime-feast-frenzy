@@ -365,7 +365,9 @@ namespace _IEC.Features.Gameplay
             if (data.helperId == HelperId.Magnet)
             {
                 playerHole.StartMagnetHelper();
-                m_MagnetHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                m_MagnetHelperCoolDown =
+                    PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                Debug.Log($"m_MagnetHelperCoolDown = {m_MagnetHelperCoolDown}");
                 m_MagnetHelperActive = true;
             }
         }
@@ -508,9 +510,11 @@ namespace _IEC.Features.Gameplay
                     if (m_MagnetHelperActive)
                     {
                         m_MagnetHelperCoolDown -= Time.deltaTime;
+
                         if (m_MagnetHelperCoolDown < 0)
                         {
                             m_MagnetHelperCoolDown = 0;
+
                             playerHole.StopMagnetHelper();
                             m_MagnetHelperActive = false;
                             this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,
