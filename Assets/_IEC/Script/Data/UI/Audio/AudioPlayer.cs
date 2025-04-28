@@ -22,6 +22,7 @@ namespace IEC
         {
             Info = new AudioInfo(info);
             audioSource.clip = Info.clip;
+            audioSource.loop = info.isLoop;
             _listRandomAudioClips = new List<AudioClip>(Info.listRandomAudioClips);
             SetLoop(Info.isLoop);
             SetVolume(Info.volume);
