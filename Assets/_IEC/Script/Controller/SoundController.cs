@@ -77,26 +77,7 @@ namespace IEC
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
                     break;
                 default:
-                    if (gameEvent == EventList.Audio.ITEM_DOWN)
-                    {
-                        if (m_DicAudioConfig.ContainsKey(gameEvent))
-                        {
-                            m_DicAudioConfig[gameEvent]++;
-                        }
-                        else
-                        {
-                            m_DicAudioConfig.Add(gameEvent, 0);
-                        }
-                        DOVirtual.DelayedCall(0.1f * m_DicAudioConfig[gameEvent], () =>
-                        {
-                            m_DicAudioConfig[gameEvent] = Math.Max(m_DicAudioConfig[gameEvent] - 1, 0);
-                            PlayAudio(gameEvent);
-                        });
-                    }
-                    else
-                    {
-                        PlayAudio(gameEvent);
-                    }
+                    PlayAudio(gameEvent);
                     break;
             }
         }
