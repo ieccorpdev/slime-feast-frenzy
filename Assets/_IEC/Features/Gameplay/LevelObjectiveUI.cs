@@ -132,7 +132,7 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(TWEEN_LEVEL_OBJECTIVE);
             pivot.localScale = Vector3.one;
             pivot.localEulerAngles = Vector3.zero;
-
+            txtNumber.gameObject.SetActive(false);
             var sequence = DOTween.Sequence().SetId(TWEEN_LEVEL_OBJECTIVE);
             sequence.Append(pivot.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.35f).SetEase(Ease.OutQuad));
             sequence.Join(pivot.DOPunchRotation(new Vector3(0f, 0f, 25f), 0.7f, 6, elasticity: 0.85f).SetEase(Ease.OutQuad));

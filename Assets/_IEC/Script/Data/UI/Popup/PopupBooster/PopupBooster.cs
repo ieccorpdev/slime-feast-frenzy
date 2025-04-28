@@ -44,7 +44,7 @@ namespace IEC
         {
             base.Show();
 
-            //levelText.text = "Level " + PlayerData.level;
+            levelText.text = "Level " + PlayerData.level;
             
             infoPanel.SetActive(false);
             boosterPanel.SetActive(true);

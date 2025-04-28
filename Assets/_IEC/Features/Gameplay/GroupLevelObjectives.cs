@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using DG.Tweening;
 using IEC;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,6 +17,7 @@ namespace _IEC.Features.Gameplay
         private readonly List<LevelObjectiveUI> m_ActiveObjectiveUIs = new List<LevelObjectiveUI>();
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
         public GameObject specialObjectiveParent;
+        public TextMeshProUGUI goldTextTutorial;
 
         // private void Awake()
         // {
@@ -120,6 +122,11 @@ namespace _IEC.Features.Gameplay
             {
                 var levelObjective = levelObjectives[i];
                 var levelObjectiveUIObject = levelObjectiveUis[i].gameObject;
+                if (levelType == LevelType.COIN)
+                {
+                    levelObjectiveUIObject.SetActive(false);
+                    continue;
+                }
                 levelObjectiveUIObject.SetActive(true);
                 var levelObjectiveUI = levelObjectiveUIObject.GetComponent<LevelObjectiveUI>();
                 levelObjectiveUI.Reset();
@@ -133,14 +140,16 @@ namespace _IEC.Features.Gameplay
                 m_ActiveObjectiveUIs.Add(levelObjectiveUI);
                 rectTransform.anchoredPosition3D = currentAnchorPos3D;
             }
-            if (levelType != LevelType.COIN)
-            {
-                HandleObjectiveUIForSpecialObject();
-            }
-            else
-            {
-                HideSpecialObjective();
-            }
+            HandleObjectiveUIForSpecialObject();
+            goldTextTutorial.gameObject.SetActive(levelType == LevelType.COIN);
+            //if (levelType == LevelType.COIN)
+            //{
+            //    HandleObjectiveUIForSpecialObject();
+            //}
+            //else
+            //{
+            //    HideSpecialObjective();
+            //}
         }
         
         private void HandleObjectiveUIForSpecialObject()

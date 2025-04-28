@@ -39,10 +39,15 @@ namespace IEC
             float timeInterval = 0.05f;
             sequence.AppendInterval(startWaitTime);
             sequence.AppendCallback(() => starLeft.gameObject.SetActive(true));
-            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From()).OnComplete(() =>
                 EventController.RaiseEvent(EventList.Audio.GET_STAR_1)
-            ));
+            );
 
+            if (Pool.Get<InGamePlayGroup>().currentLevelType == LevelType.COIN)
+            {
+                //Override 3 star in CoinLevel
+                remainingTimeState = GameplayTimer.RemainingTimeState.Safe;
+            }
             switch (remainingTimeState)
             {
                 case GameplayTimer.RemainingTimeState.Safe:

@@ -28,6 +28,22 @@ namespace _IEC.Features.Gameplay
             };
         }
 
+        public HelperId ConvertResourceType(ResourceType rType)
+        {
+            switch (rType)
+            {
+                case ResourceType.Compass:
+                    return HelperId.Compass;
+                case ResourceType.Vortex:
+                    return HelperId.Magnet;
+                case ResourceType.Enlarge:
+                    return HelperId.ScaleUp;
+                case ResourceType.TimeStop:
+                    return HelperId.FrozenTime;
+            }
+
+            return HelperId.None;
+        }
         public void CollectHelper(HelperId helperId, int number)
         {
             switch (helperId)
@@ -66,21 +82,21 @@ namespace _IEC.Features.Gameplay
             }
         }
 
-        public void ConsumeHelper(HelperId helperId)
+        public void ConsumeHelper(HelperId helperId,int value = 1)
         {
             switch (helperId)
             {
                 case HelperId.Magnet:
-                    ConsumeNumber(ref numberMagnet);
+                    ConsumeNumber(ref numberMagnet,value);
                     break;
                 case HelperId.FrozenTime:
-                    ConsumeNumber(ref numberFrozenTime);
+                    ConsumeNumber(ref numberFrozenTime,value);
                     break;
                 case HelperId.ScaleUp:
-                    ConsumeNumber(ref numberScaleUp);
+                    ConsumeNumber(ref numberScaleUp,value);
                     break;
                 case HelperId.Compass:
-                    ConsumeNumber(ref numberCompass);
+                    ConsumeNumber(ref numberCompass,value);
                     break;
             }
         }
@@ -122,9 +138,9 @@ namespace _IEC.Features.Gameplay
                     throw new ArgumentOutOfRangeException(nameof(helperId), helperId, null);
             }
         }
-        private void ConsumeNumber(ref int number)
+        private void ConsumeNumber(ref int number,int value)
         {
-            number--;
+            number-= value;
             if (number < 0) number = 0;
         }
     }
