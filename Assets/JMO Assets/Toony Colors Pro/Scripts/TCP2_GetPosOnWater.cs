@@ -34,29 +34,35 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 	//Verify that the material has a valid shader
 	public void OnValidate()
 	{
+		InitShader();
+	}
+#endif
+
+	public void InitShader()
+	{
 		this.isValid = false;
 
 		if (WaterMaterial == null)
 			return;
 
 		var shader = WaterMaterial.shader;
-		if(shader == null)
+		if (shader == null)
 		{
 			WaterMaterial = null;
 		}
 
 		bool validMaterial = false;
 		var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
-		if(assetImporter != null)
+		if (assetImporter != null)
 		{
 			sineCount = 1;
 			string[] userData = assetImporter.userData.Split(',');
-			foreach(var ud in userData)
+			foreach (var ud in userData)
 			{
-				if(ud == "FVERTEX_SIN_WAVES")
+				if (ud == "FVERTEX_SIN_WAVES")
 					validMaterial = true;
 
-				if(ud == "FVSW_8")
+				if (ud == "FVSW_8")
 					sineCount = 8;
 
 				if (ud == "FVSW_4")
@@ -67,7 +73,7 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 			}
 		}
 
-		if(!validMaterial)
+		if (!validMaterial)
 		{
 			WaterMaterial = null;
 			Debug.LogWarning("Please use a material that has a generated TCP2 Water Shader!");
@@ -75,7 +81,6 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 
 		this.isValid = validMaterial;
 	}
-#endif
 
 	void LateUpdate()
 	{

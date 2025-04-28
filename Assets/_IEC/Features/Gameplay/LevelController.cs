@@ -293,6 +293,7 @@ namespace _IEC.Features.Gameplay
         
         private void OnLevelTimeOut(object param)
         {
+            if(GetLevelData() == null) return;
             if (GetLevelData().levelType == LevelType.COIN)
             {
                 ChangeState(State.Win);
