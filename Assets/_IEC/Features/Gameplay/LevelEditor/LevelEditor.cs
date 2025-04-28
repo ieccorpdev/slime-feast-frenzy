@@ -757,7 +757,7 @@ namespace IEC
         }
 
         [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
-        [ReadOnly]
+        //[ReadOnly]
         public List<LevelObjectiveData> levelObjectives;
 
         // [FoldoutGroup(LevelEditorConstants.OBJECTIVES)]
