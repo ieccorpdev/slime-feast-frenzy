@@ -87,7 +87,7 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
-            this.UnregisterListener(EventList.GamePlay.ADD_TIME_FOR_TIMER,ReviveGame);
+            this.UnregisterListener(EventList.GamePlay.REVIVE_GAME,ReviveGame);
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
