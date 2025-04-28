@@ -68,7 +68,6 @@ namespace IEC
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
-                    //EventController.RaiseEvent(EventList.Audio.LOSE);
                     GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
                     OnGameOver();
@@ -163,6 +162,7 @@ namespace IEC
             else
             {
                 PlayerData.DecreasePlayerLife();
+                EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
             }
             EventController.RaiseEvent(EventList.SAVE_DATA);
             Services.PushEvent(new TrackingEvent.GameOver());

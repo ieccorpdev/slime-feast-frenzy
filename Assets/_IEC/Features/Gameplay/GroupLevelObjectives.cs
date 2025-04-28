@@ -18,7 +18,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
         public GameObject specialObjectiveParent;
         public TextMeshProUGUI goldTextTutorial;
-        private int countPlayOBJECTIVE_GET = 0;
+        private bool canPlaySFX = true;
 
         // private void Awake()
         // {
@@ -66,17 +66,11 @@ namespace _IEC.Features.Gameplay
             Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
             if (!GamePlay.IsWin)
             {
-                if (countPlayOBJECTIVE_GET == 0)
+                if (canPlaySFX)
                 {
-                    DOVirtual.DelayedCall(3f, () =>
-                    {
-                        countPlayOBJECTIVE_GET = 0;
-                    });
-                }
-                countPlayOBJECTIVE_GET++;
-                if (countPlayOBJECTIVE_GET < 5)
-                {
+                    canPlaySFX = false;
                     SoundController.PlaySound(EventList.Audio.OBJECTIVE_GET);
+                    DOVirtual.DelayedCall(0.3f, () => canPlaySFX = true);
                 }
             }
             DOTween.Sequence()
