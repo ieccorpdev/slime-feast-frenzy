@@ -18,6 +18,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
         public GameObject specialObjectiveParent;
         public TextMeshProUGUI goldTextTutorial;
+        private bool canPlaySFX = true;
 
         // private void Awake()
         // {
@@ -45,7 +46,7 @@ namespace _IEC.Features.Gameplay
         //         objectiveUI.SetNumber(objectiveData.number);
         //     }
         // }
-        
+
         public void CollectAObject(string itemId, Vector2 startAnchorPosition)
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
@@ -63,7 +64,15 @@ namespace _IEC.Features.Gameplay
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
             Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
-            EventController.RaiseEvent(EventList.Audio.OBJECTIVE_GET);
+            if (!GamePlay.IsWin)
+            {
+                if (canPlaySFX)
+                {
+                    canPlaySFX = false;
+                    SoundController.PlaySound(EventList.Audio.OBJECTIVE_GET);
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET), () => canPlaySFX = true);
+                }
+            }
             DOTween.Sequence()
                 .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
                 .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))

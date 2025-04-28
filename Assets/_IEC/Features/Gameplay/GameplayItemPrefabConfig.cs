@@ -304,7 +304,30 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        [Button]
+        void CustomEnableGPUInstancing()
+        {
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
 
+
+                if (itemDef.GetPrefab() != null)
+                {
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshRenderer>();
+                    foreach (var mat in mats)
+                    {
+                        mat.sharedMaterial.enableInstancing = true;
+                        EditorUtility.SetDirty(mat.sharedMaterial);
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
 #endif
 #endregion
         public GameObject GetItemPrefab(string id)
