@@ -134,18 +134,9 @@ public class PlayableController : MonoBehaviour
 
         ShowTutorial();
 
-        switch (level)
-        {
-            case 1:
-                break;
-            case 2:
-                magnetButton.onClick.RemoveAllListeners();
-                magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                StartCoroutine(IShowHighLight());
-                break;
-            case 3:
-                break;
-        }
+        magnetButton.onClick.RemoveAllListeners();
+        magnetButton.onClick.AddListener(OnMagnetButtonClicked);
+        StartCoroutine(IShowHighLight());
 
     }
 
