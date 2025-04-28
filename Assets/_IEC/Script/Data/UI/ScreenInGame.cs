@@ -113,6 +113,7 @@ namespace IEC
         {
             var data = (CollectItemData)param;
             SpawnXpVFX(data.xp, data.position);
+            PlayableController.Instance.SoundController.PlaySound(EventList.Audio.ITEM_GET);
         }
 
         private void OnCollectObjectiveItem(object param)

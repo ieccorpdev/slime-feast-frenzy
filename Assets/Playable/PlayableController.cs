@@ -113,6 +113,8 @@ public class PlayableController : _BaseBehaviour
         private set;
     }
 
+    public SoundController SoundController;
+
     public ConfettiGroup ConfettiGroup;
 
     public InGamePlayGroup InGamePlayGroup;
