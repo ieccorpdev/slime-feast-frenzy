@@ -275,16 +275,17 @@ namespace _IEC.Features.Gameplay
         private bool IsSpecialObject(string itemId)
         {
             //return itemId.Contains("SpecialItem");
-            return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
+            return itemId.Contains("Ocean");
+            //return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId)) != null;
         }
         
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
-            if (data.itemID.Contains("Ocean"))
-            {
+            //if (data.itemID.Contains("Ocean"))
+            //{
                 SpecialProgressRewardObjCollected++;
-            }
+            //}
 
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
