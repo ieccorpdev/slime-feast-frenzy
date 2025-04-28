@@ -134,18 +134,9 @@ public class PlayableController : MonoBehaviour
 
         ShowTutorial();
 
-        switch (level)
-        {
-            case 1:
-                break;
-            case 2:
-                magnetButton.onClick.RemoveAllListeners();
-                magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                StartCoroutine(IShowHighLight());
-                break;
-            case 3:
-                break;
-        }
+        helperButton.onClick.RemoveAllListeners();
+        helperButton.onClick.AddListener(OnHelperButtonClicked);
+        StartCoroutine(IShowHighLight());
 
     }
 
@@ -156,18 +147,18 @@ public class PlayableController : MonoBehaviour
         this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
     }
 
-    private void OnMagnetButtonClicked()
+    private void OnHelperButtonClicked()
     {
         
         HighLightCanvas.gameObject.SetActive(false);
         this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
         {
-            helperId = HelperId.Magnet
+            helperId = HelperId.ScaleUp
         });
     }
-    public HighLightCanvas HighLightCanvas;
-    public Button magnetButton;
+    public GameObject HighLightCanvas;
+    [FormerlySerializedAs("magnetButton")] public Button helperButton;
 
     public LevelDataSO GetLevelSpawnData(int level)
     {

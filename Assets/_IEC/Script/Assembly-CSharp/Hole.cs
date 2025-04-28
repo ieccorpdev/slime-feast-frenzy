@@ -22,13 +22,8 @@ public class Hole : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI txtLevel;
 	[SerializeField] private HoleXpBar xpBar;
 	[Header("Helper")]
-	[SerializeField] private HoleMagnet holeMagnet;
 	[Header("VFX")] [SerializeField] private ParticleSystem levelUpVfx;
 	[SerializeField] private ParticleSystem sizeUpVfx;
-	[SerializeField] private ParticleSystem magnetVfx;
-	[SerializeField] private ParticleSystem exploreVfx;
-	[SerializeField] private ParticleSystem deathVfx;
-	[SerializeField] private ParticleSystem lightningVfx;
 	[SerializeField] private ParticleSystem waterSplashFx;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
@@ -77,6 +72,11 @@ public class Hole : MonoBehaviour
 		_baseSpeed = Settings.BaseSpeed;
 		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+	}
+	public void StartScaleByHelper()
+	{
+		m_AdditionalSize = PlayableController.Instance.gamePlayConfig.scaleUpHelperAdditionalSize;
+		SetSize(Size,true,null);
 	}
 
 	private void OnDestroy()
@@ -317,20 +317,15 @@ public class Hole : MonoBehaviour
 
 	public void StartMagnetHelper()
 	{
-		holeMagnet.gameObject.SetActive(true);
-		magnetVfx.Play();
 	}
 
 	public void StopMagnetHelper()
 	{
-		holeMagnet.gameObject.SetActive(false);
-		magnetVfx.Stop();
+//		holeMagnet.gameObject.SetActive(false);
 	}
 
 	public void CollectABomb()
 	{
-		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
 		DOTween.Sequence()
 			.AppendInterval(0.2f)
 			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
@@ -370,7 +365,6 @@ public class Hole : MonoBehaviour
 	public void Reset()
 	{
 		TurnOffAllVfx();
-		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
 		ResetSize();
 		m_Xp = 0;

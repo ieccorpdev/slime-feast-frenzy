@@ -356,6 +356,13 @@ namespace _IEC.Features.Gameplay
                 m_MagnetHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
                 m_MagnetHelperActive = true;
             }
+
+            if (data.helperId == HelperId.ScaleUp)
+            {
+                playerHole.StartScaleByHelper();
+                m_ScaleUpHelperActive = true;
+                m_ScaleUpHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
+            }
         }
 
         private void CollectObjectiveItem(CollectItemData data)
