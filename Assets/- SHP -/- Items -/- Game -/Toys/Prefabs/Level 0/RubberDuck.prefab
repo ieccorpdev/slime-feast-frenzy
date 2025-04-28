@@ -49,11 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f2b5db204a2c1e29b34adf6e8dc6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsItemSet: 0
-  CanStartWithoutKinematic: 1
-  CanBeRecursive: 1
-  IsPhysical: 0
-  Dimensions: {x: 1.45, y: 1.2109351, z: 1.7}
 --- !u!114 &114409100437295067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7df4285d723e7cd36dd6bddc51093c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDefinition: {fileID: 11400000, guid: 74c286d178e943647b597b651d3b639d, type: 2}
-  startAsKinematic: 1
-  isContainedIn: {fileID: 0}
-  isContainedInRuntime: {fileID: 0}
-  mainRenderer: {fileID: 0}
-  IceCubePrefab: {fileID: 0}
+  useConvexCollider: 1
+  preservedYAxis: 0
 --- !u!54 &54031647401302853
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -283,6 +274,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RubberDuck
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810617917406179398, guid: 9aa0f24aa778c094798d76a9873398b3,
+        type: 3}
+      propertyPath: m_Radius
+      value: 0.036476783
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810617917406179398, guid: 9aa0f24aa778c094798d76a9873398b3,
+        type: 3}
+      propertyPath: m_Center.x
+      value: -0.0014257402
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810617917406179398, guid: 9aa0f24aa778c094798d76a9873398b3,
+        type: 3}
+      propertyPath: m_Center.y
+      value: 0.034321174
+      objectReference: {fileID: 0}
+    - target: {fileID: 8810617917406179398, guid: 9aa0f24aa778c094798d76a9873398b3,
+        type: 3}
+      propertyPath: m_Center.z
+      value: 0.005
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9aa0f24aa778c094798d76a9873398b3, type: 3}
