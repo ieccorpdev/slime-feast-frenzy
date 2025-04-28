@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2572547213416405064}
   - component: {fileID: 2625571660734364860}
   - component: {fileID: 7033520839037721269}
-  - component: {fileID: 1164901078892984340}
+  - component: {fileID: 8810617917406179398}
   m_Layer: 0
   m_Name: RubberDuck
   m_TagString: Untagged
@@ -84,8 +84,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &1164901078892984340
-BoxCollider:
+--- !u!135 &8810617917406179398
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -95,5 +95,5 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 0.06516589, y: 0.077952534, z: 0.087281175}
-  m_Center: {x: 0.003624751, y: 0.042926326, z: -0.0016066824}
+  m_Radius: 0.048733592
+  m_Center: {x: 0, y: 0.045222968, z: -0.0036099628}
