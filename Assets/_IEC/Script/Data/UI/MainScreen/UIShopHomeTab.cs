@@ -9,21 +9,24 @@ using UnityEngine.UI;
 
 public class UIShopHomeTab : ScreenNavigateUI
 {
-    public PackUI freeAds, freeAdsBundle;
+    public PackUI freeAds, freeAdsBundle, starterPack;
     public VerticalLayoutGroup verticalLayoutGroup;
     private void Awake()
     {
         gameObject.OnEvent(EventList.GamePlay.BUY_NO_ADS, UpdateAdsPackDisplay);
+        gameObject.OnEvent(EventList.GamePlay.BUY_STARTER_PACK, UpdateStarterPackDisplay);
     }
 
     private void Start()
     {
         UpdateAdsPackDisplay();
+        UpdateStarterPackDisplay();
     }
 
     public void OnEnable()
     {
         UpdateAdsPackDisplay();
+        UpdateStarterPackDisplay();
         RebuildLayout();
     }
 
@@ -44,6 +47,12 @@ public class UIShopHomeTab : ScreenNavigateUI
         RebuildLayout();
 
         //discountedBundle.gameObject.SetActive(PlayerData.isNoAds);
+    }
+
+    public void UpdateStarterPackDisplay()
+    {
+        starterPack.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
+        RebuildLayout();
     }
     
 }

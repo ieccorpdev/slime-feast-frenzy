@@ -380,22 +380,22 @@ namespace _IEC.Features.Gameplay
                 case RemainingTimeState.Safe:
 
                     imgProgress.sprite = spriteSafe;
-                    txtCoolDown.fontMaterial = safeMaterialPreset;
+                    //txtCoolDown.fontMaterial = safeMaterialPreset;
                     break;
                 case RemainingTimeState.Warning:
                     listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteWarning;
-                    txtCoolDown.fontMaterial = warningMaterialPreset;
+                    //txtCoolDown.fontMaterial = warningMaterialPreset;
                     break;
                 case RemainingTimeState.Dangerous:
                     listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR");;
                     imgProgress.sprite = spriteDangerous;
-                    txtCoolDown.fontMaterial = dangerousMaterialPreset;
+                    //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
                 case RemainingTimeState.None:
                     listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteDangerous;
-                    txtCoolDown.fontMaterial = dangerousMaterialPreset;
+                    //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
             }
             m_CurrentRemainingTimeState = newState;
