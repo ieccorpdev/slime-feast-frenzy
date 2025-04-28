@@ -1138,6 +1138,7 @@ MonoBehaviour:
   screenLevelWin: {fileID: 2029316458}
   level: 1
   prefabConfig: {fileID: 11400000, guid: 812db71aeabcbfa45b4abf07413290b6, type: 2}
+  SoundController: {fileID: 712008679204350466}
   ConfettiGroup: {fileID: 6398762714481124019}
   InGamePlayGroup: {fileID: 1118379855}
   Joystick: {fileID: 7449795621115547962}
@@ -6723,21 +6724,21 @@ MonoBehaviour:
   audioPlayerPrefab: {fileID: 6921869917988125337, guid: d92186cbcd6ea8a4eafae267c2c00b1c,
     type: 3}
   listSoundConfig:
+  - id: Audio.BACKGROUND_INGAME
+    clip: {fileID: 8300000, guid: 68d9043cf75994543be4381adba31414, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 10
+    isPlayMultiple: 0
+    volume: 0.5
+  listMusicConfig:
   - id: Audio.ITEM_GET
     clip: {fileID: 8300000, guid: a4b845893c1072b4989bb415b67fe59c, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
-    isPlayMultiple: 0
-    volume: 1
-  - id: Audio.BACKGROUND_INGAME
-    clip: {fileID: 8300000, guid: 68d9043cf75994543be4381adba31414, type: 3}
-    listRandomAudioClips: []
-    isLoop: 1
-    loopInterval: 0
-    isPlayMultiple: 0
-    volume: 1
-  listMusicConfig: []
+    isPlayMultiple: 1
+    volume: 0.628
 --- !u!4 &741277106759964136
 Transform:
   m_ObjectHideFlags: 0

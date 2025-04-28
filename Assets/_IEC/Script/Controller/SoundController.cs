@@ -35,6 +35,7 @@ namespace IEC
                     break;
                 case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_HOME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
+
                     break;
                 default:
                     PlayAudio(gameEvent);
