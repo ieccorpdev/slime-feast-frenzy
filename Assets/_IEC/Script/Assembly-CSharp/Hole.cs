@@ -419,7 +419,7 @@ public class Hole : _BaseBehaviour
 	}
 
 	#region Character Animation
-	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
+	public string SHARK_TWEEN_HOLE_SCALE => characterParent.gameObject.GetInstanceID() + "_HOLE_SCALE";
 	public void ResetCharacter()
 	{
 		onInitAnimNewGame = false;
@@ -460,10 +460,12 @@ public class Hole : _BaseBehaviour
 
 	public void PlayEffectSharkDriveIn()
 	{
+		
 		//Apply position because animation diff with pos
 		waterSplashFx.Play();
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
 		holePipe.gameObject.SetActive(true);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 	}
 	public void EndAnimationCharacter()
 	{
@@ -475,8 +477,8 @@ public class Hole : _BaseBehaviour
 	public void TurnHoleToShark()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.zero, 0.5f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.zero, 0.5f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterParent.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
@@ -486,8 +488,8 @@ public class Hole : _BaseBehaviour
 	public void TurnSharkToHole()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);

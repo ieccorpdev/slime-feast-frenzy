@@ -18,7 +18,7 @@ namespace IEC
 
         public override void UpdateUI()
         {
-            m_goldAmount.text = "x" + m_Config.GetResourceValueByType(ResourceType.Gold);
+            m_goldAmount.text = m_Config.GetResourceValueByType(ResourceType.Gold).ToString();
             //_helperShuffleAmount.text = "x" + m_Config.GetResourceValueByType(ResourceType.HelperShuffle);
             //_helperUndoAmount.text = "x" + m_Config.GetResourceValueByType(ResourceType.HelperUndo);
             //_helperClearAmount.text = "x" + m_Config.GetResourceValueByType(ResourceType.HelperClear);
