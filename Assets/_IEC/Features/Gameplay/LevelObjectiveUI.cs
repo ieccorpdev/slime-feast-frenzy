@@ -101,7 +101,7 @@ namespace _IEC.Features.Gameplay
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
             //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
-            imgIcon.rectTransform.sizeDelta = new Vector2(140, 140);
+            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
 
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;
