@@ -34,40 +34,41 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 	//Verify that the material has a valid shader
 	public void OnValidate()
 	{
+		InitShader();
+	}
+#endif
+
+	public void InitShader()
+	{
 		this.isValid = false;
 
 		if (WaterMaterial == null)
 			return;
 
 		var shader = WaterMaterial.shader;
-		if(shader == null)
+		if (shader == null)
 		{
 			WaterMaterial = null;
 		}
 
-		bool validMaterial = false;
-		var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
-		if(assetImporter != null)
-		{
-			sineCount = 1;
-			string[] userData = assetImporter.userData.Split(',');
-			foreach(var ud in userData)
-			{
-				if(ud == "FVERTEX_SIN_WAVES")
-					validMaterial = true;
+		bool validMaterial = true;
+		//MeoMew hard code.
+		sineCount = 2;
+		//var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
+		//if (WaterMaterial != null )
+		//{
+		//	sineCount = 1;
+		//	if (WaterMaterial.IsKeywordEnabled("FVERTEX_SIN_WAVES"))
+		//		validMaterial = true;
+		//	if (WaterMaterial.IsKeywordEnabled("FVSW_8"))
+		//		sineCount = 8;
+		//	else if (WaterMaterial.IsKeywordEnabled("FVSW_4"))
+		//		sineCount = 4;
+		//	else if (WaterMaterial.IsKeywordEnabled("FVSW_2"))
+		//		sineCount = 2;
+		//}
 
-				if(ud == "FVSW_8")
-					sineCount = 8;
-
-				if (ud == "FVSW_4")
-					sineCount = 4;
-
-				if (ud == "FVSW_2")
-					sineCount = 2;
-			}
-		}
-
-		if(!validMaterial)
+		if (!validMaterial)
 		{
 			WaterMaterial = null;
 			Debug.LogWarning("Please use a material that has a generated TCP2 Water Shader!");
@@ -75,7 +76,6 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 
 		this.isValid = validMaterial;
 	}
-#endif
 
 	void LateUpdate()
 	{

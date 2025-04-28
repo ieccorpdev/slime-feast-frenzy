@@ -25,6 +25,11 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         [SerializeField] private List<Image> listStarTime;
         
+        [Header("Cooldown Text Style")]
+        public Material safeMaterialPreset;
+        public Material warningMaterialPreset;
+        public Material dangerousMaterialPreset;
+        
         [SerializeField]private float m_CurrentTime;
         private float timeEffectStar = 0.5f;
         private float m_MaxTime;
@@ -294,7 +299,7 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateCoolDown()
         {
-            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToString(m_CurrentTime);
+            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToStringNoLeadingZero(m_CurrentTime);
             ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
             var proportion = m_CurrentTime / m_MaxTime;
             imgProgress.fillAmount = proportion;
@@ -375,18 +380,22 @@ namespace _IEC.Features.Gameplay
                 case RemainingTimeState.Safe:
 
                     imgProgress.sprite = spriteSafe;
+                    txtCoolDown.fontMaterial = safeMaterialPreset;
                     break;
                 case RemainingTimeState.Warning:
                     listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteWarning;
+                    txtCoolDown.fontMaterial = warningMaterialPreset;
                     break;
                 case RemainingTimeState.Dangerous:
                     listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR");;
                     imgProgress.sprite = spriteDangerous;
+                    txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
                 case RemainingTimeState.None:
                     listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteDangerous;
+                    txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
             }
             m_CurrentRemainingTimeState = newState;
