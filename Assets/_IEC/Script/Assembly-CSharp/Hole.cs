@@ -22,10 +22,10 @@ public class Hole : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI txtLevel;
 	[SerializeField] private HoleXpBar xpBar;
 	[Header("Helper")]
-	[SerializeField] private HoleMagnet holeMagnet;
+	//[SerializeField] private HoleMagnet holeMagnet;
 	[Header("VFX")] [SerializeField] private ParticleSystem levelUpVfx;
 	[SerializeField] private ParticleSystem sizeUpVfx;
-	[SerializeField] private ParticleSystem magnetVfx;
+	//[SerializeField] private ParticleSystem magnetVfx;
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
@@ -317,14 +317,14 @@ public class Hole : MonoBehaviour
 
 	public void StartMagnetHelper()
 	{
-		holeMagnet.gameObject.SetActive(true);
-		magnetVfx.Play();
+		//holeMagnet.gameObject.SetActive(true);
+		//magnetVfx.Play();
 	}
 
 	public void StopMagnetHelper()
 	{
-		holeMagnet.gameObject.SetActive(false);
-		magnetVfx.Stop();
+		//holeMagnet.gameObject.SetActive(false);
+		//magnetVfx.Stop();
 	}
 
 	public void CollectABomb()
@@ -370,7 +370,7 @@ public class Hole : MonoBehaviour
 	public void Reset()
 	{
 		TurnOffAllVfx();
-		holeMagnet.gameObject.SetActive(false);
+		//holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
 		ResetSize();
 		m_Xp = 0;
