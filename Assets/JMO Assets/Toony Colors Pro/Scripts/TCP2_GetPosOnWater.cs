@@ -50,10 +50,8 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 		{
 			WaterMaterial = null;
 		}
-
-		bool validMaterial = true;
 		//MeoMew hard code.
-		sineCount = 2;
+
 		//var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
 		//if (WaterMaterial != null )
 		//{
@@ -67,14 +65,8 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 		//	else if (WaterMaterial.IsKeywordEnabled("FVSW_2"))
 		//		sineCount = 2;
 		//}
-
-		if (!validMaterial)
-		{
-			WaterMaterial = null;
-			Debug.LogWarning("Please use a material that has a generated TCP2 Water Shader!");
-		}
-
-		this.isValid = validMaterial;
+		sineCount = 2;
+		this.isValid = true;
 	}
 
 	void LateUpdate()
