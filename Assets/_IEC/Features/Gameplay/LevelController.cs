@@ -193,20 +193,8 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-                if (IsCoin(itemId))
-                {
-                    CollectCoin(data);
-                    //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
-                }
-                else if (IsSpecialObject(itemId))
-                {
-                    CollectSpecialObject(data);
-                }
-                else
-                {
                     CollectNormalItem(data);
                     //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
-                }
             }
             //VibrationController.VibrateWithInterval(HapticTypes.Selection);
         }
@@ -442,10 +430,7 @@ namespace _IEC.Features.Gameplay
             return itemId == "Bomb";
         }
 
-        private bool IsCoin(string itemId)
-        {
-            return itemId.Contains("coin") || itemId.Contains("Coin");
-        }
+    
 
         private void SetUpStartHolePosition(Vector3 startPosition)
         {
