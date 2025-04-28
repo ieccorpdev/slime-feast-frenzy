@@ -28,6 +28,7 @@ namespace IEC
             public const string UPDATE_RESOURCE_UI = "GamePlay.UPDATE_RESOURCE_UI";
             public const string UPDATE_RESOURCE_BOOSTER_UI = "GamePlay.UPDATE_RESOURCE_BOOSTER_UI";
             public const string BUY_NO_ADS = "GamePlay.BUY_NO_ADS";
+            public const string BUY_STARTER_PACK = "GamePlay.BUY_STARTER_PACK";
             
             public const string SHOW_REWARD_INFO_LEADERBOARD = "GamePlay.SHOW_REWARD_INFO_LEADERBOARD";
 
