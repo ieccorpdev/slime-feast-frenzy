@@ -83,7 +83,8 @@ namespace _IEC.Features.Gameplay
                     gameObject.Recycle();
                 }
             }).SetId(RecycleTweenId);
-            EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+            if (!GamePlay.IsWin)
+                EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
         }
         
         //TODO: cache colliders

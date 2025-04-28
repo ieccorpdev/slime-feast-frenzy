@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using Random = UnityEngine.Random;
 using Sirenix.OdinInspector;
+using static IEC.EventList;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -18,6 +20,7 @@ namespace IEC
         private List<AudioPlayer> m_ListSoundAudio = new List<AudioPlayer>();
         public List<AudioInfo> listSoundConfig;
         public List<AudioInfo> listMusicConfig;
+        private Dictionary<string, int> m_DicAudioConfig = new Dictionary<string, int>();
 
 #if UNITY_EDITOR
         [Sirenix.OdinInspector.Button]
@@ -65,7 +68,7 @@ namespace IEC
                     }
                     break;
                case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
-                   SetMuteAllMusic(true);
+                    SetMuteAllMusic(true);
                     break;
                case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_INGAME, false);
@@ -74,7 +77,26 @@ namespace IEC
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
                     break;
                 default:
-                    PlayAudio(gameEvent);
+                    if (gameEvent == EventList.Audio.ITEM_DOWN)
+                    {
+                        if (m_DicAudioConfig.ContainsKey(gameEvent))
+                        {
+                            m_DicAudioConfig[gameEvent]++;
+                        }
+                        else
+                        {
+                            m_DicAudioConfig.Add(gameEvent, 0);
+                        }
+                        DOVirtual.DelayedCall(0.1f * m_DicAudioConfig[gameEvent], () =>
+                        {
+                            m_DicAudioConfig[gameEvent] = Math.Max(m_DicAudioConfig[gameEvent] - 1, 0);
+                            PlayAudio(gameEvent);
+                        });
+                    }
+                    else
+                    {
+                        PlayAudio(gameEvent);
+                    }
                     break;
             }
         }

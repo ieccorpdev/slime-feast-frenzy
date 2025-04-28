@@ -320,6 +320,14 @@ namespace _IEC.Features.Gameplay
             }
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             ChangeState(State.Play);
+            if (m_CurrentLevelData.levelType == LevelType.COIN)
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_GOLD);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            }
         }
 
         private void OnUseBooster(object param)
