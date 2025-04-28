@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: ffd9722a84407874b9d780cf72dae207, type: 2}
+  - {fileID: 2100000, guid: cd506a769f14b144d952696479b62a43, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2429,12 +2429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7df4285d723e7cd36dd6bddc51093c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDefinition: {fileID: 11400000, guid: f22343ff921ba3f4b935c60ffa5e90f0, type: 2}
-  startAsKinematic: 0
-  isContainedIn: {fileID: 0}
-  isContainedInRuntime: {fileID: 0}
-  mainRenderer: {fileID: 0}
-  IceCubePrefab: {fileID: 0}
+  useConvexCollider: 1
+  preservedYAxis: 0
 --- !u!114 &114731724334221058
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2447,11 +2443,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f2b5db204a2c1e29b34adf6e8dc6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsItemSet: 0
-  CanStartWithoutKinematic: 1
-  CanBeRecursive: 1
-  IsPhysical: 0
-  Dimensions: {x: 6, y: 1, z: 5}
 --- !u!54 &54962187185436226
 Rigidbody:
   m_ObjectHideFlags: 0
