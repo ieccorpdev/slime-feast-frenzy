@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using Random = UnityEngine.Random;
 using Sirenix.OdinInspector;
+using static IEC.EventList;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -18,6 +20,7 @@ namespace IEC
         private List<AudioPlayer> m_ListSoundAudio = new List<AudioPlayer>();
         public List<AudioInfo> listSoundConfig;
         public List<AudioInfo> listMusicConfig;
+        private Dictionary<string, int> m_DicAudioConfig = new Dictionary<string, int>();
 
 #if UNITY_EDITOR
         [Sirenix.OdinInspector.Button]
@@ -65,7 +68,7 @@ namespace IEC
                     }
                     break;
                case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
-                   SetMuteAllMusic(true);
+                    SetMuteAllMusic(true);
                     break;
                case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_INGAME, false);
@@ -226,6 +229,24 @@ namespace IEC
             sound.Play();
         }
 
+        public float GetLengthSound(string id)
+        {
+            var sound = GetPlayerSound(id);
+            var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return 0;
+            }
+            if (data != null && sound.Info.clip != data.clip)
+            {
+                //PlaySound(data);
+                sound.SetData(data);
+            }
+
+            return sound.audioSource.clip.length;
+        }
+
         public void PlayMusic(string id)
         {
             if (IsMusicPlaying(id))
@@ -297,7 +318,15 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
+        public void StopAllSound()
+        {
+            foreach (var player in m_ListSoundAudio)
+            {
+                player.Stop();
+            }
+        }
+
         public void SetVolumeAllMusic(float volume)
         {
             volume = Mathf.Clamp(volume, 0, 1);

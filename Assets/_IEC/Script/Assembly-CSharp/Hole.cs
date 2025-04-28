@@ -472,7 +472,8 @@ public class Hole : _BaseBehaviour
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
 		readyForSharkBite = true;
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
+    }
 	public void TurnHoleToShark()
 	{
 		readyForSharkBite = false;

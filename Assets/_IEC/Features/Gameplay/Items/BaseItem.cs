@@ -31,6 +31,8 @@ namespace _IEC.Features.Gameplay
 
         public bool IsCollected => _isCollected;
         public Rigidbody Rb => rb;
+        private static bool CanPlaySFX = true;
+
         private void Start()
         {
             if (m_ItemDefinition == null && this.itemDefinition != null)
@@ -83,7 +85,15 @@ namespace _IEC.Features.Gameplay
                     gameObject.Recycle();
                 }
             }).SetId(RecycleTweenId);
-            EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+            if (!GamePlay.IsWin)
+            {
+                if (CanPlaySFX)
+                {
+                    EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                    CanPlaySFX = false;
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
+                }
+            }
         }
         
         //TODO: cache colliders

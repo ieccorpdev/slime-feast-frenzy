@@ -251,7 +251,6 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
             ResetBoosterStreak();
         }
 

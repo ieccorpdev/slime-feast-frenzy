@@ -28,12 +28,14 @@ namespace _IEC.Features.Gameplay
             {
                 //SoundController.PlayExitBtnAudio();
                 OnClose?.Invoke();
+                EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
             });
             SetEvent(btnRetry, () =>
             {
                 //SoundController.PlayClickBtnAudio();
                 Services.PushEvent(new ClickBtnTracking("losescreen_retry"));
                 OnRetry?.Invoke();
+                EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
             });
             SetEvent(homeButton, () =>
             {
@@ -56,8 +58,10 @@ namespace _IEC.Features.Gameplay
 
         public override void Show()
         {
+            isPlayAudioPopup = false;
             //MagicPouchController.OnLevelLose();
             base.Show();
+            EventController.RaiseEvent(EventList.Audio.LOSE);
         }
     }
 }
