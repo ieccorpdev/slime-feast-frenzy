@@ -162,6 +162,22 @@ namespace IEC
 
             return combinedBounds;
         }
+        
+        public static Bounds CalculateBounds(List<Collider> objects)
+        {
+            if (objects.Count == 0)
+                return new Bounds(Vector3.one, Vector3.one);
+
+            Bounds combinedBounds = GetRendererBounds(objects[0].gameObject);
+
+            for (int i = 1; i < objects.Count; i++)
+            {
+                Bounds objectBounds = GetRendererBounds(objects[i].gameObject);
+                combinedBounds.Encapsulate(objectBounds);
+            }
+
+            return combinedBounds;
+        }
 
         public static Bounds GetRendererBounds(GameObject obj)
         {

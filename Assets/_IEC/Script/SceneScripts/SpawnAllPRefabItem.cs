@@ -7,9 +7,11 @@ using UnityEngine;
 
 public class SpawnAllPRefabItem : MonoBehaviour
 {
-
+#if UNITY_EDITOR
     public GameplayItemPrefabConfig itemConfig;
     public float spacing = 2f;           // Space between each spawned object
+    public float offsetYrange = 2f;           // Space between each spawned object
+    public float maxXRange = 50f;           // Space between each spawned object
     public List<GameObject> objWasSpawn;
     void Start()
     {
@@ -24,6 +26,7 @@ public class SpawnAllPRefabItem : MonoBehaviour
         {
             DestroyImmediate(objWasSpawn[i]);
         }
+        objWasSpawn.Clear();
         Vector3 spawnPosition = Vector3.zero;  // Start position for spawning (can be adjusted)
         float maxZ = 0;
         // Loop through the list of prefabs
@@ -54,11 +57,11 @@ public class SpawnAllPRefabItem : MonoBehaviour
                 // Add spacing + size along the X axis (or any other axis you want)
                 spawnPosition.x += spacing + colliderBounds.size.x;
                 maxZ = colliderBounds.size.z > maxZ ? colliderBounds.size.z : maxZ;
-                if (spawnPosition.x > 30)
+                if (spawnPosition.x > maxXRange)
                 {
                     //Down
                     spawnPosition.x = 0;
-                    spawnPosition.z += spacing + maxZ;
+                    spawnPosition.z += offsetYrange + spacing + maxZ;
                     maxZ = 0;
                 }
             }
@@ -69,4 +72,5 @@ public class SpawnAllPRefabItem : MonoBehaviour
             objWasSpawn.Add(spawnedObject);
         }
     }
+#endif
 }

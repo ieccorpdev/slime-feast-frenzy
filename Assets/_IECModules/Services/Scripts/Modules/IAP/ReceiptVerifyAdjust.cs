@@ -114,6 +114,7 @@ namespace IEC
         public class VerifyPaymentIosData
         {
             public string packageName;
+            public string productId;
             public string receipt;
             public AdjustData adjust;
             public UserData userData;
@@ -261,6 +262,7 @@ namespace IEC
             var dataCheck = new VerifyPaymentIosData()
             {
                 packageName = Application.identifier,
+                productId = product.definition.id,
                 receipt = iosPayment,
                 adjust = adjust,
                 userData = new UserData

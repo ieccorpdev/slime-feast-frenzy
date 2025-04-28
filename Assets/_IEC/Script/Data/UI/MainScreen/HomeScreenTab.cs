@@ -345,17 +345,18 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     public void UpdatePiggyBankButton()
     {
-        bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
-        goPiggyBankLock.SetActive(!isEnoughLevel);
-        goPiggyBankUnlock.SetActive(isEnoughLevel);
-        piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
-        luckyWheel.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
-        piggyBankValue.text = PlayerData.piggyBankGold.ToString();
-        if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
-        {
-            PlayerData.wasShowPiggyBankFirstTime = true;
-            btnPiggyBank.onClick.Invoke();
-        }
+        btnPiggyBank.gameObject.SetActive(false);
+        //bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+        //goPiggyBankLock.SetActive(!isEnoughLevel);
+        //goPiggyBankUnlock.SetActive(isEnoughLevel);
+        //piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
+        //luckyWheel.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
+        //piggyBankValue.text = PlayerData.piggyBankGold.ToString();
+        //if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
+        //{
+        //    PlayerData.wasShowPiggyBankFirstTime = true;
+        //    btnPiggyBank.onClick.Invoke();
+        //}
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
     }
 

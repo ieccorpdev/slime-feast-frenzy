@@ -33,7 +33,7 @@ namespace IEC
                     GameController.OpenScene(GameScene.Main);
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
                 {
                     Services.PushEvent(new SFApostition("losescreen_exit"));
                 }
@@ -61,7 +61,7 @@ namespace IEC
                     Hide();
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
                 {
                     Services.PushEvent(new SFApostition("losescreen_retry"));
                 }
@@ -90,6 +90,9 @@ namespace IEC
         public override void Show()
         {
             base.Show();
+            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+            SoundController.StopSound(EventList.Audio.COMPASS);
+            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         public void SetupPanelShow(EventParam param)

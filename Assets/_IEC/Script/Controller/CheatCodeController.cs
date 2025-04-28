@@ -128,26 +128,16 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButton("Add Level Chest ( On Home)", param =>
             {
-                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Level), 1, out var isClaimChestReward);
-                if (isClaimChestReward)
-                {
-                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Level).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                }
-                Locator.Main.HomeScreenTab.UpdateMainHome();
+                AddChestProgress( ChestType.Level,1); 
             });
-            ModuleController.cheatCode.AddCheatCodeButton("Add Star Chest ( On Home)", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Star Chest ( On Home)", param =>
             {
-                PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(ChestType.Star), 1, out var isClaimChestReward);
-                if (isClaimChestReward)
-                {
-                    var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Star).GetRewardData(PlayerData.GetChestMilestone(ChestType.Level));
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                }
-                Locator.Main.HomeScreenTab.UpdateMainHome();
-            });
+                int gc = int.Parse(param.inputParams[0].value.ToString());
+                AddChestProgress( ChestType.Star,gc);
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });  
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Ocean Gift ( On Home)", param =>
             {
                 //Check progress reward
@@ -260,6 +250,20 @@ namespace IEC
             {
                 value = (PlayerData.timeEndStaredPack - DateTime.Now).Seconds
             });
+        }
+
+        private static void AddChestProgress(ChestType type,int number)
+        {
+            PlayerData.AddChestProgress(Config.allChestConfig.GetChestConfig(type), number, out var isClaimChestReward);
+            if (isClaimChestReward)
+            {
+                var rewardData = Config.allChestConfig.GetChestConfig(type)
+                    .GetRewardData(PlayerData.GetChestMilestone(type));
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+            }
+
+            Locator.Main.HomeScreenTab.UpdateMainHome();
         }
 
         public void BehaviourUpdate(float deltaTime)

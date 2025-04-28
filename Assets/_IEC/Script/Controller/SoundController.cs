@@ -5,8 +5,8 @@ using NaughtyAttributes;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using Sirenix.OdinInspector;
 
 namespace IEC
 {
@@ -19,6 +19,22 @@ namespace IEC
         public List<AudioInfo> listSoundConfig;
         public List<AudioInfo> listMusicConfig;
 
+#if UNITY_EDITOR
+        [Sirenix.OdinInspector.Button]
+        public void AddSoundConfig()
+        {
+            var audioFields = typeof(EventList.Audio).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            foreach (var field in audioFields)
+            {
+                if (field.FieldType == typeof(string))
+                {
+                    var audioId = (string)field.GetValue(null);
+                    var newSound = new AudioInfo(audioId, null, false, false, 1f);
+                    listSoundConfig.Add(newSound);
+                }
+            }
+        }
+#endif
         public void LocateController()
         {
             Pool.Set(this);
@@ -194,6 +210,11 @@ namespace IEC
         {
             var sound = GetPlayerSound(id);
             var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");  
+                return;
+            }
             if (data != null && sound.Info.clip != data.clip)
             {
                 //PlaySound(data);
@@ -204,6 +225,7 @@ namespace IEC
             
             sound.Play();
         }
+
         public void PlayMusic(string id)
         {
             if (IsMusicPlaying(id))
@@ -211,6 +233,11 @@ namespace IEC
             
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);
@@ -228,6 +255,11 @@ namespace IEC
             
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);
@@ -242,6 +274,11 @@ namespace IEC
         {
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using IEC;
 using TMPro;
 using UnityEngine;
@@ -16,6 +17,9 @@ namespace _IEC.Features.Gameplay
         public void UpdateUI()
         {
             txtNumberHeart.text = 1.ToString();
+            UpdateStarDisplay();
+            UpdateGoldDisplay();
+            UpdateSpecialItemDisplay();
            //var remainingTime = UI.ScreenInGame.GetGameplayTimer().GetRemainingTime();
            //txtNumberStar.text = Config.gamePlayConfig.GetStarByRemainingTime(remainingTime, UI.ScreenInGame.GetGameplayTimer().GetMaxTime()).ToString();
            //txtNumberCoin.text = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN).ToString();
@@ -33,6 +37,41 @@ namespace _IEC.Features.Gameplay
            //    imgIconSpecialObject.gameObject.SetActive(true);
            //    txtNumberSpecialObject.gameObject.SetActive(true);
            //}
+        }
+
+        void UpdateStarDisplay()
+        {
+            int starLost = 0;
+            switch (Locator.Game.ScreenInGame.GetGameplayTimer().CurrentRemainingTimeState)
+            {
+                case GameplayTimer.RemainingTimeState.None:
+                    break;
+                case GameplayTimer.RemainingTimeState.Safe:
+                    starLost = 3;
+                    break;
+                case GameplayTimer.RemainingTimeState.Warning:
+                    starLost = 2;
+                    break;
+                case GameplayTimer.RemainingTimeState.Dangerous:
+                    starLost = 1;
+                    break;
+                default:
+                    starLost = 0;
+                    break;
+            }
+            
+            txtNumberStar.text = starLost.ToString();
+        }
+
+        void UpdateGoldDisplay()
+        {
+            txtNumberCoin.text = GamePlay.levelController.GoldCollected.ToString();
+        }
+
+        void UpdateSpecialItemDisplay()
+        {
+            txtNumberSpecialObject.text = GamePlay.levelController.SpecialProgressRewardObjCollected.ToString();
+            imgIconSpecialObject.sprite = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
         }
     }
 }

@@ -11,7 +11,7 @@ using UnityEditor;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/ItemPrefabConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/ItemPrefabConfig")]
     public class GameplayItemPrefabConfig : ScriptableObject
     {
         [Searchable]
@@ -28,12 +28,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private string outputFolder;
         [SerializeField] private string prefabFolder;
         
-        public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
-            ? listItemDefinitionShp : listItemDefinition; 
+        // public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
+        //     ? listItemDefinitionShp : listItemDefinition; 
+        public List<ItemDefinition> ListItemDefinition => listItemDefinitionShp; 
         
         public List<ItemDefinition> GetListItemDefinition()
         {
-            return ListItemDefinition;
+            //return ListItemDefinition;
+            return listItemDefinitionShp;
         }
         
         

@@ -98,7 +98,7 @@ public class ClaimBonusRewardPanel : BasePopup
             var itemReward = listRewardUI.Find(x => x.typeReward == itr.typeReward);
             if (itemReward != null)
             {
-                itemReward.valueReward.text = itr.typeReward == ResourceType.UnlimitedLive ? (itr.rewardAmount + "m") : "x" + itr.rewardAmount;
+                itemReward.LoadValueReward(itr.typeReward,itr.rewardAmount);
                 itemReward.haveData = true;
             }
         }
@@ -174,12 +174,14 @@ public class ClaimBonusRewardPanel : BasePopup
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+        CallTempOnHide();
     }
 
     public override void Hide()
     {
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
         base.Hide();
+        CallTempOnHide();
     }
 }
 
