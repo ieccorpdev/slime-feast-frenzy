@@ -40,6 +40,7 @@ namespace _IEC.Features.Gameplay
 
         public override void Show()
         {
+            isPlayAudioPopup = false;
             UpdateUI();
             notEnoughGoldWarning.gameObject.SetActive(false);
             groupCurrencyResult.UpdateUI();
@@ -47,6 +48,7 @@ namespace _IEC.Features.Gameplay
         }
         public void OnBtnPlayOn()
         {
+            EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
             if (PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) >= goldCost)
             {
                 PlayerData.SubtractCurrency(ResourceType.Gold,goldCost);
@@ -67,6 +69,7 @@ namespace _IEC.Features.Gameplay
         {
             Locator.Game.ScreenLevelLose.groupLevelFailed.Show();
             Hide();
+            EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
         }
     }
 }

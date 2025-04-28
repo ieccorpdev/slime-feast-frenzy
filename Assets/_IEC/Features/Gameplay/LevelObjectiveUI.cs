@@ -121,7 +121,8 @@ namespace _IEC.Features.Gameplay
         private void PlayDoneAnimation()
         {
             DOCollectedAllObjectsEffect();
-            EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
+            if (!GamePlay.IsWin)
+                EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
             txtNumber.gameObject.SetActive(false);
             imgCheckComplete.gameObject.SetActive(true);
         }

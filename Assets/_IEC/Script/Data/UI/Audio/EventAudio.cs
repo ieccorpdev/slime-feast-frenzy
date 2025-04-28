@@ -54,6 +54,7 @@ namespace IEC
             public const string RANK_UP = "Audio.RANK_UP";
             public const string RANK_SAFE = "Audio.RANK_SAFE";
             public const string RANK_DOWN = "Audio.RANK_DOWN";
+            public const string BOOSTER_APPEAR = "Audio.BOOSTER_APPEAR";
         }
     }
 }
