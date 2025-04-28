@@ -98,8 +98,8 @@ namespace _IEC.Features.Tutorial
                     }).SetId(DelayTweenId);
                     break;
             }
-            m_CurrentHint.anchoredPosition =
-                m_HoleTransform.position.GetLocalAnchorPos(myRectTransform, GamePlay.mainCamera, GamePlay.uiCamera);
+            // m_CurrentHint.anchoredPosition =
+            //     m_HoleTransform.position.GetLocalAnchorPos(myRectTransform, GamePlay.mainCamera, GamePlay.uiCamera);
         }
 
         private enum State
