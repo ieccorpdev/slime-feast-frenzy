@@ -128,6 +128,7 @@ namespace IEC
             {
                 data.itemID = LevelAchievementData.ID_COIN;
             }
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
             groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
         }

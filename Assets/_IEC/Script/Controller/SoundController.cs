@@ -229,6 +229,24 @@ namespace IEC
             sound.Play();
         }
 
+        public float GetLengthSound(string id)
+        {
+            var sound = GetPlayerSound(id);
+            var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return 0;
+            }
+            if (data != null && sound.Info.clip != data.clip)
+            {
+                //PlaySound(data);
+                sound.SetData(data);
+            }
+
+            return sound.audioSource.clip.length;
+        }
+
         public void PlayMusic(string id)
         {
             if (IsMusicPlaying(id))
@@ -300,7 +318,15 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
+        public void StopAllSound()
+        {
+            foreach (var player in m_ListSoundAudio)
+            {
+                player.Stop();
+            }
+        }
+
         public void SetVolumeAllMusic(float volume)
         {
             volume = Mathf.Clamp(volume, 0, 1);

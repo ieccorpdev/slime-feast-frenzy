@@ -70,7 +70,7 @@ namespace _IEC.Features.Gameplay
                 {
                     canPlaySFX = false;
                     SoundController.PlaySound(EventList.Audio.OBJECTIVE_GET);
-                    DOVirtual.DelayedCall(0.3f, () => canPlaySFX = true);
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET), () => canPlaySFX = true);
                 }
             }
             DOTween.Sequence()

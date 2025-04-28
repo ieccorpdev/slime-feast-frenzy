@@ -51,6 +51,7 @@ namespace IEC
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
+                    SoundController.StopAllSound();
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayerData.IncreaseBoosterStreak();
@@ -67,6 +68,7 @@ namespace IEC
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
+                    SoundController.StopAllSound();
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
@@ -249,6 +251,7 @@ namespace IEC
             {
                 DOTween.KillAll();
                 Locator.Service.ScreenLoading.ShowLoading();
+                SoundController.StopAllSound();
                 //MeoMew custome tracking level 
                 if (scene == GameScene.Main)
                 {

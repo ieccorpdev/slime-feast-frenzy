@@ -91,7 +91,7 @@ namespace _IEC.Features.Gameplay
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
                     CanPlaySFX = false;
-                    DOVirtual.DelayedCall(0.6f, () => CanPlaySFX = true);
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
                 }
             }
         }

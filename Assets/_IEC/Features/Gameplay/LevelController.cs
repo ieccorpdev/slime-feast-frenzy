@@ -286,7 +286,7 @@ namespace _IEC.Features.Gameplay
             //{
                 SpecialProgressRewardObjCollected++;
             //}
-
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
@@ -404,16 +404,23 @@ namespace _IEC.Features.Gameplay
                     spawnData.boosterData
                 ));
             }
-            
 
             listSpawnBoosterData.Clear();
-            
+            int count = 0;
             foreach (var boosterItem in m_AllBoosters)
             {
                 var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
                 var booster = (IBoosterItem)boosterItem;
                 booster.Init();
+                if (count < 3)
+                {
+                    DOVirtual.DelayedCall(count * SoundController.GetLengthSound(EventList.Audio.BOOSTER_APPEAR), () =>
+                    {
+                        EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
+                    });
+                }
                 booster.MoveToPos(randomPos);
+                count++;
             }
         }
 

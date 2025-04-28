@@ -105,7 +105,8 @@ namespace IEC
 
         public void SetLoop(bool isLoop)
         {
-            //audioSource.loop = isLoop;
+            if (Info.loopInterval == 0)
+                audioSource.loop = isLoop;
             IsLoop = isLoop;
         }
 

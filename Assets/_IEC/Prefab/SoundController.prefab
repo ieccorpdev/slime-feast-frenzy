@@ -69,12 +69,12 @@ MonoBehaviour:
     isPlayMultiple: 0
     volume: 1
   - id: Audio.ITEM_DOWN
-    clip: {fileID: 8300000, guid: 817b6524eca129a4a944ccf21557a25f, type: 3}
+    clip: {fileID: 8300000, guid: 3d1c989b32c4ee54fa283aa98ccdc8d0, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 1
-    volume: 1
+    volume: 0.6
   - id: Audio.OBJECTIVE_GET
     clip: {fileID: 8300000, guid: c70028d7b1360ef42aa579f39163ac82, type: 3}
     listRandomAudioClips: []
@@ -97,14 +97,14 @@ MonoBehaviour:
     isPlayMultiple: 0
     volume: 0.6
   - id: Audio.BOMB_IDLE
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 1d4c49092d9b3e04baf9f71449d064ed, type: 3}
     listRandomAudioClips: []
-    isLoop: 0
+    isLoop: 1
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 1
+    volume: 0.6
   - id: Audio.BOMB_EXPLODE
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 20dae133af88d304383867dad11b6446, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
@@ -139,21 +139,21 @@ MonoBehaviour:
     isPlayMultiple: 0
     volume: 1
   - id: Audio.SPECIAL_ITEM_NEAR
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: 33ef7f985c1ebbc4c891ebf84d6aa3df, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
     volume: 1
-  - id: Audio.LOSE
-    clip: {fileID: 8300000, guid: 5051e1d749c6c9b4c8bcf825ee567e00, type: 3}
+  - id: Audio.SPECIAL_ITEM_GET
+    clip: {fileID: 8300000, guid: 101e607029304f748851fa2d475a2705, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
     volume: 1
   - id: Audio.SPECIAL_ITEM_HIT
-    clip: {fileID: 0}
+    clip: {fileID: 8300000, guid: df4d92ba2d5dd1a4fbf49455fa2aeda0, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
@@ -341,13 +341,20 @@ MonoBehaviour:
     loopInterval: 0
     isPlayMultiple: 0
     volume: 1
-  - id: 
-    clip: {fileID: 0}
+  - id: Audio.LOSE
+    clip: {fileID: 8300000, guid: 5051e1d749c6c9b4c8bcf825ee567e00, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.BOOSTER_APPEAR
+    clip: {fileID: 8300000, guid: 624e36c571b17ac428a8526b72eea298, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0
+    volume: 1
   listMusicConfig:
   - id: Audio.BACKGROUND_HOME
     clip: {fileID: 8300000, guid: 5e549804575af7e41a855056a0eb33df, type: 3}

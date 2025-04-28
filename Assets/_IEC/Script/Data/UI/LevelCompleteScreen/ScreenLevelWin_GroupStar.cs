@@ -21,9 +21,6 @@ namespace IEC
         private void OnEnable()
         {
             DeactiveGroupStar();
-            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
-            SoundController.StopSound(EventList.Audio.COMPASS);
-            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         private void DeactiveGroupStar()
