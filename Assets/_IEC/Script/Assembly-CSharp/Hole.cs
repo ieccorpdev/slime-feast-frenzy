@@ -472,7 +472,6 @@ public class Hole : _BaseBehaviour
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
 		readyForSharkBite = true;
-        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
     }
 	public void TurnHoleToShark()
 	{
@@ -494,7 +493,6 @@ public class Hole : _BaseBehaviour
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
-        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
     }
 	#endregion
 
