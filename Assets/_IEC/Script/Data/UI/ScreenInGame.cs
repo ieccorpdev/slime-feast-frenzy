@@ -9,6 +9,7 @@ using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.Tutorial;
 using UnityEngine.SocialPlatforms;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -39,7 +40,7 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
-        
+        private static bool CanPlaySFX = true;
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
@@ -124,11 +125,20 @@ namespace IEC
         private void OnCollectSpecialItem(object param)
         {
             CollectItemData data = (CollectItemData)param;
-            if (data.itemID.ToLower().Contains("coin"))
+            if (data.GetCoinValue() > 0)
             {
                 data.itemID = LevelAchievementData.ID_COIN;
+                if (CanPlaySFX)
+                {
+                    EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                    CanPlaySFX = false;
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
+                }
             }
-            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
+            }
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
             groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
         }

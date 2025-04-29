@@ -33,17 +33,26 @@ namespace _IEC.Features.Gameplay
         public Rigidbody Rb => rb;
         private static bool CanPlaySFX = true;
 
+        private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
+
         private void Start()
         {
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
             }
+
+            _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
 
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(false);
+            }
         }
 
         public Sprite GetIcon()
@@ -58,6 +67,11 @@ namespace _IEC.Features.Gameplay
         public void ExitHoleTrigger()
         {
             ChangeState(State.Idle);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(true);
+            }
         }
 
         public bool IsInScreen(Camera particularCam)
@@ -203,6 +217,12 @@ namespace _IEC.Features.Gameplay
             {
                 posOnWater.enabled = false;
             }
+
+            // if (_specialItemHighlightEffect != null)
+            // {
+            //     _specialItemHighlightEffect.gameObject.SetActive(false);
+            // }
+            
         }
 
         #region New Whirlpool Logic
