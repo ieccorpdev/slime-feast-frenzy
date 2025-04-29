@@ -8071,10 +8071,6 @@
                 "excluded": true
             },
             {
-                "name": "TMPro.GlyphPairKey",
-                "excluded": true
-            },
-            {
                 "name": "TMPro.KerningPairKey",
                 "excluded": true
             },
@@ -11124,7 +11120,7 @@
             },
             {
                 "name": "_IEC.Features.Tutorial.TutorialStartGame.State",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "_IEC.RewardButtonState",
@@ -11872,14 +11868,6 @@
             },
             {
                 "name": "LuceedStudio_Utils.CameraDepthMode",
-                "excluded": true
-            },
-            {
-                "name": "pc.Debugger.Components.EditorCamera",
-                "excluded": true
-            },
-            {
-                "name": "pc.Debugger.Components.EditorGUI",
                 "excluded": true
             }
         ],
@@ -20050,7 +20038,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#set",
@@ -32936,7 +32924,7 @@
                     },
                     {
                         "name": "glyphIndex#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "glyphIndex#set",
@@ -32968,7 +32956,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -32982,7 +32970,7 @@
                     },
                     {
                         "name": "firstAdjustmentRecord#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "firstAdjustmentRecord#set",
@@ -32990,7 +32978,7 @@
                     },
                     {
                         "name": "secondAdjustmentRecord#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "secondAdjustmentRecord#set",
@@ -33084,7 +33072,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -33540,7 +33528,7 @@
                     },
                     {
                         "name": "defaultFontAsset#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "defaultFontAssetPath#get",
@@ -39101,11 +39089,11 @@
                         "excluded": true
                     },
                     {
-                        "name": "IsCoin",
+                        "name": "RecycleAllLevelObjects",
                         "excluded": true
                     },
                     {
-                        "name": "RecycleAllLevelObjects",
+                        "name": "IsCoin",
                         "excluded": true
                     }
                 ]
@@ -39296,7 +39284,7 @@
                     },
                     {
                         "name": "DelayTweenId#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "StartTutorial",
@@ -39308,7 +39296,7 @@
                     },
                     {
                         "name": "ChangeState",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -43905,6 +43893,40 @@
                         "excluded": false
                     }
                 ]
+            },
+            {
+                "className": "TMPro.GlyphPairKey",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor2",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
+                    }
+                ]
             }
         ],
         "stubberDataList": [],
@@ -43925,9 +43947,9 @@
                 "default": {
                     "maxWidth": 512,
                     "maxHeight": 512,
-                    "format": "png32",
+                    "format": "webp",
                     "compression": "quantSize",
-                    "quality": 65,
+                    "quality": 40,
                     "script": "",
                     "ext": ""
                 },
@@ -43955,9 +43977,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 40,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/UrbaneRound/UrbaneRounded-Bold SDF.asset"
@@ -43965,9 +43987,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 40,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular SDF.asset"
@@ -43975,9 +43997,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 40,
                         "script": "",
                         "ext": "",
                         "name": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
@@ -43985,9 +44007,9 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 40,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular Blue Outline.asset"
@@ -44010,7 +44032,7 @@
                     "startTime": "00:00.000",
                     "endTime": "00:30.000",
                     "lengthInSeconds": 30.0,
-                    "bitrate": 128,
+                    "bitrate": 40,
                     "script": "",
                     "ext": ""
                 },
