@@ -78,8 +78,13 @@ namespace IEC
         {
             levelUnlockStreak.text ="Unlock at lv."+ Config.AllBoosterConfig.levelUnlockStreak.ToString();
             streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
-            streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
-
+            bool isUnlockFeature = PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak;
+            streakUnlockObj.SetActive(isUnlockFeature);
+            if (isUnlockFeature && PlayerData.currentBoosterStreak == 0)
+            {
+                //MeoMew fix Task #67920, unlock first phase
+                PlayerData.currentBoosterStreak = 1;
+            }
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {
                 streakDisplayObject[i].gameObject.SetActive(i <= PlayerData.currentBoosterStreak - 1);
