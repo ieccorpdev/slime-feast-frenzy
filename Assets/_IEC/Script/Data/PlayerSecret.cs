@@ -144,6 +144,7 @@ namespace IEC
         
         #region Booster
 
+        public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
         public int levelLostStreak;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
@@ -251,8 +252,6 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
-            ResetBoosterStreak();
         }
 
         public bool IsInUnlimitedLife()

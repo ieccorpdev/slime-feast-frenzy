@@ -36,7 +36,6 @@ namespace IEC
                         Services.PushEvent(new TrackingEvent.SFApostition("win_screen_next"));
                     });
             });
-
         }
 
         public override void Hide()
@@ -50,9 +49,6 @@ namespace IEC
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             SetupGoldDisplay();
             base.Show();
-            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
-            SoundController.StopSound(EventList.Audio.COMPASS);
-            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         void SetupGoldDisplay()

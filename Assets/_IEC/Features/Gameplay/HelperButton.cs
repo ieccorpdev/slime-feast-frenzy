@@ -209,6 +209,9 @@ namespace _IEC.Features.Gameplay
                 case HelperId.Compass:
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
+                case HelperId.ScaleUp:
+                    EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
+                    break;
                 case HelperId.FrozenTime:
                     EventController.RaiseEvent(EventList.Audio.ICE_START);
                     DOVirtual.DelayedCall(0.5f, () =>

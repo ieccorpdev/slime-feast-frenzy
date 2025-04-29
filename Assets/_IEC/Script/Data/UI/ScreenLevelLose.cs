@@ -30,6 +30,7 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     Hide();
+                    PlayerData.ResetBoosterStreak();
                     GameController.OpenScene(GameScene.Main);
                 };
                 
@@ -43,6 +44,7 @@ namespace IEC
             {
                 System.Action actionClose = () =>
                 {
+                    PlayerData.ResetBoosterStreak();
                     if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                     {
                         Hide();
@@ -90,9 +92,6 @@ namespace IEC
         public override void Show()
         {
             base.Show();
-            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
-            SoundController.StopSound(EventList.Audio.COMPASS);
-            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         public void SetupPanelShow(EventParam param)

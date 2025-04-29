@@ -124,9 +124,14 @@ namespace IEC
         private void OnCollectSpecialItem(object param)
         {
             CollectItemData data = (CollectItemData)param;
-            if (data.itemID.ToLower().Contains("coin"))
+            if (data.GetCoinValue() > 0)
             {
                 data.itemID = LevelAchievementData.ID_COIN;
+                EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
             }
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
             groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);

@@ -21,9 +21,6 @@ namespace IEC
         private void OnEnable()
         {
             DeactiveGroupStar();
-            SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
-            SoundController.StopSound(EventList.Audio.COMPASS);
-            SoundController.StopSound(EventList.Audio.ICE_IDLE);
         }
 
         private void DeactiveGroupStar()
@@ -39,9 +36,8 @@ namespace IEC
             float timeInterval = 0.05f;
             sequence.AppendInterval(startWaitTime);
             sequence.AppendCallback(() => starLeft.gameObject.SetActive(true));
-            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From()).OnComplete(() =>
-                EventController.RaiseEvent(EventList.Audio.GET_STAR_1)
-            );
+            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+            EventController.RaiseEvent(EventList.Audio.GET_STAR_1);
 
             if (Pool.Get<InGamePlayGroup>().currentLevelType == LevelType.COIN)
             {
