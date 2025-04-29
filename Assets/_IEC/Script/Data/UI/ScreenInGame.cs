@@ -9,6 +9,7 @@ using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.Tutorial;
 using UnityEngine.SocialPlatforms;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -39,7 +40,7 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
-        
+        private static bool CanPlaySFX = true;
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
@@ -127,7 +128,12 @@ namespace IEC
             if (data.GetCoinValue() > 0)
             {
                 data.itemID = LevelAchievementData.ID_COIN;
-                EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                if (CanPlaySFX)
+                {
+                    EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                    CanPlaySFX = false;
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
+                }
             }
             else
             {
