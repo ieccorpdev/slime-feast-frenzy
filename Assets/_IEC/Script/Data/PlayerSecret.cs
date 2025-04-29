@@ -144,10 +144,23 @@ namespace IEC
         
         #region Booster
 
+        public List<ResourceType> listUnlockedBoosters = new();
         public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
         public int levelLostStreak;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
+
+        public bool CheckUnlockBooster(ResourceType boosterType)
+        {
+            if (!listUnlockedBoosters.Contains(boosterType))
+            {
+                listUnlockedBoosters.Add(boosterType);
+                return true;
+            }
+
+            return false;
+        }
+        
 
         public void IncreaseBoosterStreak()
         {

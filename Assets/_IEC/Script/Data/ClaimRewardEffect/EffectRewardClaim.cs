@@ -17,7 +17,7 @@ namespace IEC
         //public List<RectTransform> effectCurrency;
         private Dictionary<ResourceType, List<RectTransform>> m_ListEffectByType = new();
         
-        public float allTimeSpawn = 1f;
+        private float allTimeSpawn = 2f;
         
         public bool AnimCompleted { get; private set; }
 
@@ -93,7 +93,6 @@ namespace IEC
                         {
                             onEndMove?.Invoke();
                             currencyObj.gameObject.SetActive(false);
-
                             if (rewardType == ResourceType.Gold)
                             {
                                 EventController.RaiseEvent(EventList.Audio.COIN_GET);
