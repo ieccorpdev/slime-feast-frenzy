@@ -221,7 +221,7 @@
             }
         ],
         "disableRuntimeAnalysisForCode": false,
-        "disableRuntimeAnalysisForShaders": false,
+        "disableRuntimeAnalysisForShaders": true,
         "useShadersCache": true,
         "preventUpdatingRAListWhenRAIsDisabled": false,
         "bakeReferenceAmbientProbe": false,
@@ -8071,10 +8071,6 @@
                 "excluded": true
             },
             {
-                "name": "TMPro.GlyphPairKey",
-                "excluded": true
-            },
-            {
                 "name": "TMPro.KerningPairKey",
                 "excluded": true
             },
@@ -11872,6 +11868,22 @@
             },
             {
                 "name": "LuceedStudio_Utils.CameraDepthMode",
+                "excluded": true
+            },
+            {
+                "name": "DemoRotations",
+                "excluded": true
+            },
+            {
+                "name": "ObjectTrajectory",
+                "excluded": true
+            },
+            {
+                "name": "PingPongMovement",
+                "excluded": true
+            },
+            {
+                "name": "Rotating",
                 "excluded": true
             }
         ],
@@ -20042,7 +20054,7 @@
                     },
                     {
                         "name": "name#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "name#set",
@@ -32928,7 +32940,7 @@
                     },
                     {
                         "name": "glyphIndex#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "glyphIndex#set",
@@ -32960,7 +32972,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -32974,7 +32986,7 @@
                     },
                     {
                         "name": "firstAdjustmentRecord#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "firstAdjustmentRecord#set",
@@ -32982,7 +32994,7 @@
                     },
                     {
                         "name": "secondAdjustmentRecord#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "secondAdjustmentRecord#set",
@@ -33076,7 +33088,7 @@
                     },
                     {
                         "name": "$clone",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -33532,7 +33544,7 @@
                     },
                     {
                         "name": "defaultFontAsset#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "defaultFontAssetPath#get",
@@ -39093,10 +39105,6 @@
                         "excluded": true
                     },
                     {
-                        "name": "IsCoin",
-                        "excluded": true
-                    },
-                    {
                         "name": "RecycleAllLevelObjects",
                         "excluded": true
                     }
@@ -39521,6 +39529,10 @@
                     {
                         "name": "GetWorldRadius",
                         "excluded": true
+                    },
+                    {
+                        "name": "StartScaleByHelper",
+                        "excluded": false
                     }
                 ]
             },
@@ -40305,7 +40317,7 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnMagnetButtonClicked",
+                        "name": "OnHelperButtonClicked",
                         "excluded": false
                     }
                 ]
@@ -43895,6 +43907,40 @@
                     {
                         "name": "OnTransitionFromCamera",
                         "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "TMPro.GlyphPairKey",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor2",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
                     }
                 ]
             }
