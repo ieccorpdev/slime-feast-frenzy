@@ -85,6 +85,12 @@ namespace IEC
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {
                 State = BoosterBaseState.Buy;
+
+                if (PlayerData.CheckUnlockBooster(boosterType))
+                {
+                    PlayerData.AddCurrency(boosterType, Config.popupAddHelperConfig.GetAddHelperData(boosterType).addGoldAmount);
+                }
+                
             }
         }
 
