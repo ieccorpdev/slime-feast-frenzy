@@ -8,11 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: T_PROP_food_BC Edit 2
-  m_Shader: {fileID: 4800000, guid: ccfc7d68845db8341944b3091b59be55, type: 3}
+  m_Shader: {fileID: 4800000, guid: cc41e27cc06772449b0c155411e89757, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -34,8 +34,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Brightness: 1.05
+    - _Contrast: 1.1
+    - _DiffuseFactor: 0.2
+    - _DiffuseThreadHold: 0.5
+    - _GammaValue: 5
     - _RampSmooth: 0.1
     - _RampThreshold: 0.5
+    - _Saturation: 1.2
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _HColor: {r: 0.785, g: 0.785, b: 0.785, a: 1}

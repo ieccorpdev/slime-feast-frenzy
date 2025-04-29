@@ -180,7 +180,12 @@ namespace IEC
                 timeEndUnlimitedBoosters.Add(boosterType, DateTime.Now);
             }
 
-            timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
+            if (!IsUnlimitedBooster(boosterType))
+            {
+                timeEndUnlimitedBoosters[boosterType] = DateTime.Now;
+            }
+            
+            timeEndUnlimitedBoosters[boosterType] = timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
         }
 
         public bool IsUnlimitedBooster(ResourceType boosterType)
@@ -246,7 +251,6 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            
             ResetBoosterStreak();
         }
 
@@ -294,7 +298,7 @@ namespace IEC
             }
             string outputString = "";
             
-            var hour = time.Hours;
+            var hour = time.Hours + time.Days * 24;
             var minute = time.Minutes;
             var seconds = time.Seconds;
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
@@ -464,6 +468,10 @@ namespace IEC
 
         public int GetPlayerCurrencyCount(ResourceType currencyType)
         {
+            if (IsResourceHelper(currencyType))
+            {
+                helperData.GetPool(helperData.ConvertResourceType(currencyType));
+            }
             return playerCurrencies.TryGetValue(currencyType, out int value) ? value : -1;
         }
 
@@ -481,15 +489,32 @@ namespace IEC
             {
                 AddTimeUnlimitedBoosters(ResourceType.WindSurf, amount);
             }
+            else if (currencyType == ResourceType.DoubleSpecialObjectCount)
+            {
+                AddTimeUnlimitedBoosters(ResourceType.DoubleSpecialObjectCount, amount);
+            }
+            else if (IsResourceHelper(currencyType))
+            {
+                //Using old code, change after 
+                helperData.CollectHelper(helperData.ConvertResourceType(currencyType),amount);
+            }
             else if (playerCurrencies.ContainsKey(currencyType))
             {
                 playerCurrencies[currencyType] += amount;
             }
-            
-            if(isUpdateUI)
-                EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
-        }
 
+            if (isUpdateUI)
+            {
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                if(currencyType == ResourceType.EvolveStone || currencyType == ResourceType.WindSurf)
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_BOOSTER_UI);
+            }
+        }
+        public bool IsResourceHelper(ResourceType currencyType)
+        {
+            return currencyType is ResourceType.Compass or ResourceType.Enlarge or
+                                   ResourceType.Vortex  or ResourceType.TimeStop;
+        }
         public bool SubtractCurrency(ResourceType currencyType, int amount)
         {
             if (playerCurrencies.ContainsKey(currencyType))
@@ -498,7 +523,11 @@ namespace IEC
                 {
                     return false;
                 }
-
+                if (IsResourceHelper(currencyType))
+                {
+                    helperData.ConsumeHelper(helperData.ConvertResourceType(currencyType),amount);
+                    return true;
+                }   
                 playerCurrencies[currencyType] -= amount;
                 switch (currencyType)
                 {
@@ -676,6 +705,11 @@ namespace IEC
         public void AddProgressToProgressReward(int progress)
         {
             currentProgress += progress;
+
+            if (IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount))
+            {
+                currentProgress += progress;
+            }
         }
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)

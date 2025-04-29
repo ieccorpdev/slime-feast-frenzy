@@ -20,6 +20,9 @@ namespace _IEC.Features.Tutorial
         
         public void StartTutorial(Transform holeTransform)
         {
+            hintCollectItems.gameObject.SetActive(false);
+            collectInYourHole.gameObject.SetActive(false);
+            moveYourHole.gameObject.SetActive(false);
             m_CurrentState = State.None;
             m_HoleTransform = holeTransform;
             m_CurrentHint = moveYourHole;
@@ -27,7 +30,6 @@ namespace _IEC.Features.Tutorial
         }
         private void OnEnable()
         {
-            
             this.RegisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
         }
 
@@ -40,8 +42,8 @@ namespace _IEC.Features.Tutorial
         private void OnCollectItem(object param)
         {
             var data = (CollectItemData) param;
-            //Debug.Log(data.itemID);
-            if (data.itemID == "Banana_NoSkin_Slice" || data.itemID == "Apricot"
+            Debug.Log(data.itemID);
+            if (data.itemID == "rubberduck_0" || data.itemID == "Apricot"
                 || data.itemID == "food_80"|| data.itemID == "food_86") // id level 1
             {
                 ChangeState(State.CollectItems);
@@ -88,10 +90,13 @@ namespace _IEC.Features.Tutorial
                     m_CurrentHint = collectInYourHole;
                     break;
                 case State.CollectItems:
+
                     DOVirtual.DelayedCall(0.1f, () =>
                     {
                         collectInYourHole.gameObject.SetActive(false);
                         hintCollectItems.gameObject.SetActive(true);
+                        hintCollectItems.transform.DOScale(Vector3.one, .3f).SetEase(Ease.OutBack).OnComplete(
+                            () => { });
                     }).SetId(DelayTweenId);
                     break;
             }

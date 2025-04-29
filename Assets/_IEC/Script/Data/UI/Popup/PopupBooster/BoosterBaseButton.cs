@@ -18,6 +18,7 @@ namespace IEC
         public GameObject lockObj, buyObj, usableObj, usingObj, unlimitedObj;
 
         public TextMeshProUGUI countText;
+        public TextMeshProUGUI levelLockText;
         public TextMeshProUGUI unlimitedTimeText;
         
         public BoosterBaseState State { get; private set; }
@@ -27,7 +28,7 @@ namespace IEC
         private void Start()
         {
             boosterButton.onClick.AddListener(OnBoosterButtonClick);
-            gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_UI, Setup);
+            gameObject.OnEvent(EventList.GamePlay.UPDATE_RESOURCE_BOOSTER_UI, Setup);
         }
 
         private void Update()
@@ -63,6 +64,7 @@ namespace IEC
 
             countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
             bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
+            levelLockText.text ="Lvl." + BoosterData.levelUnlock.ToString();
         }
 
         private void CheckCurrentState(bool isCheckOnClick = false)
@@ -71,18 +73,18 @@ namespace IEC
             {
                 State = BoosterBaseState.Lock;
             }
+            else if(PlayerData.IsUnlimitedBooster(boosterType))
+            {
+                State = BoosterBaseState.Unlimited;
+            }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) > 0)
             {
-                if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && isCheckOnClick))
+                if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
                     State = BoosterBaseState.Usable;
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {
                 State = BoosterBaseState.Buy;
-            }
-            else if(PlayerData.IsUnlimitedBooster(boosterType))
-            {
-                State = BoosterBaseState.Unlimited;
             }
         }
 

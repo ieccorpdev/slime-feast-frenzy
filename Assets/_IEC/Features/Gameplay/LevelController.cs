@@ -64,6 +64,8 @@ namespace _IEC.Features.Gameplay
         }
 
         public int SpecialProgressRewardObjCollected { get; private set; } = 0;
+        
+        public int GoldCollected { get; private set; }
 
         private void OnEnable()
         {
@@ -75,7 +77,7 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.REVIVE_GAME,ReviveGame);
             this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
-            this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
+            this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
         }
 
         private void OnDisable()
@@ -85,10 +87,10 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
-            this.UnregisterListener(EventList.GamePlay.ADD_TIME_FOR_TIMER,ReviveGame);
+            this.UnregisterListener(EventList.GamePlay.REVIVE_GAME,ReviveGame);
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
-            this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, OnSpawnBoosterItems);
+            this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
         }
 
         private void Update()
@@ -142,7 +144,14 @@ namespace _IEC.Features.Gameplay
             }
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
             m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
-
+            if (m_CurrentLevelData.levelType == LevelType.COIN)
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_GOLD);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            }
             m_AllSpecialItems.Clear();
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),
@@ -180,7 +189,7 @@ namespace _IEC.Features.Gameplay
             }
             
             //Check spawn booster items
-            OnSpawnBoosterItems(null);
+            OnSpawnBoosterItems();
         }
         private void Reset()
         {
@@ -193,6 +202,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
+            GoldCollected = 0;
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -244,7 +254,7 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-                if (IsCoin(itemId))
+                if (IsCoin(data))
                 {
                     CollectCoin(data);
                     //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
@@ -265,23 +275,25 @@ namespace _IEC.Features.Gameplay
         private bool IsSpecialObject(string itemId)
         {
             //return itemId.Contains("SpecialItem");
-            return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
+            return itemId.Contains("Ocean");
+            //return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId)) != null;
         }
         
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
-            if (data.itemID.Contains("Ocean"))
-            {
+            //if (data.itemID.Contains("Ocean"))
+            //{
                 SpecialProgressRewardObjCollected++;
-            }
-
+            //}
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
         
         private void OnLevelTimeOut(object param)
         {
+            if(GetLevelData() == null) return;
             if (GetLevelData().levelType == LevelType.COIN)
             {
                 ChangeState(State.Win);
@@ -309,6 +321,14 @@ namespace _IEC.Features.Gameplay
             }
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             ChangeState(State.Play);
+            if (m_CurrentLevelData.levelType == LevelType.COIN)
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_GOLD);
+            }
+            else
+            {
+                EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            }
         }
 
         private void OnUseBooster(object param)
@@ -346,50 +366,61 @@ namespace _IEC.Features.Gameplay
             //SoundController.PlaySound(new AudioInfo(Config.soundConfig.boosterLightning));
         }
 
-        private void OnSpawnBoosterItems(object param)
+        private void AddSpawnBoosterItem(object param)
+        {
+            var data = (SpawnBoosterData)param;
+            listSpawnBoosterData.Add(data);
+        }
+
+        private void OnSpawnBoosterItems()
         {
             // if (PlayerData.currentBoosterStreak <= 0)
             //     return;
-
-            if (CurrentState != State.Play)
-            {
-                var data = (SpawnBoosterData)param;
-                listSpawnBoosterData.Add(data);
-                return;
-            }
-            
             //var data = (SpawnBoosterEventData)param;
             
             m_AllBoosters.Clear();
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Lightning));
             // m_AllBoosters.AddRange(SpawnBoosterItem(data, MagicPouchBoosterType.Chrono));
             //
-            foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+            
+            //Block spawn booster from ocean's grace in Coin level
+            if (m_CurrentLevelData.levelType != LevelType.COIN)
             {
-                m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
-                    Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3), 
-                    allItemHolder,
-                    booster
-                ));
+                foreach (var booster in Config.AllBoosterConfig.listBoosterData)
+                {
+                    m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
+                        Mathf.Clamp(PlayerData.currentBoosterStreak, 0, 3),
+                        allItemHolder,
+                        booster
+                    ));
+                }
             }
 
             foreach (var spawnData in listSpawnBoosterData)
             {
                 m_AllBoosters.AddRange(LevelHelper.SpawnBoosterItems(
-                    spawnData.amount, 
+                    spawnData.amount,
                     allItemHolder,
                     spawnData.boosterData
                 ));
             }
-            
+
             listSpawnBoosterData.Clear();
-            
+            int count = 0;
             foreach (var boosterItem in m_AllBoosters)
             {
                 var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
                 var booster = (IBoosterItem)boosterItem;
                 booster.Init();
+                if (count < 3)
+                {
+                    DOVirtual.DelayedCall(count * SoundController.GetLengthSound(EventList.Audio.BOOSTER_APPEAR), () =>
+                    {
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_APPEAR);
+                    });
+                }
                 booster.MoveToPos(randomPos);
+                count++;
             }
         }
 
@@ -501,11 +532,19 @@ namespace _IEC.Features.Gameplay
             if (IsInResultState() == false)
             {
                 playerHole.CollectABomb();
-                ChangeState(State.Lose);
-                DOVirtual.DelayedCall(1.5f, () =>
+                if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                 {
-                    EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                });
+                    ChangeState(State.Lose);
+                    DOVirtual.DelayedCall(1.5f, () =>
+                    {
+                        //Double check for sure
+                        if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                        {
+                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
+                        }
+                    });
+                }
+
             }
             
         }
@@ -520,6 +559,7 @@ namespace _IEC.Features.Gameplay
             CollectNormalItem(data);
             //GamePlay.gamePlayData.AddAchievementItem(LevelAchievementData.ID_COIN, data.GetCoinValue());
             //var totalAmountCollected = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN);
+            GoldCollected += data.GetCoinValue();
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
         
@@ -545,6 +585,11 @@ namespace _IEC.Features.Gameplay
         private bool IsCoin(string itemId)
         {
             return itemId.Contains("coin") || itemId.Contains("Coin");
+        }
+
+        private bool IsCoin(CollectItemData data)
+        {
+            return data.GetCoinValue() != -1;
         }
 
         private void SetUpStartHolePosition(Vector3 startPosition)

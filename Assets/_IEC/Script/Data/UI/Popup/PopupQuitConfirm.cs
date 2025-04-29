@@ -24,10 +24,11 @@ namespace IEC
             });           
             SetEvent(btnClose, () =>
             {
-                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(),
                     () =>
                     {
                         PlayerData.DecreasePlayerLife();
+                        EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
                         GameController.OpenScene(GameScene.Main);
                         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
                     },

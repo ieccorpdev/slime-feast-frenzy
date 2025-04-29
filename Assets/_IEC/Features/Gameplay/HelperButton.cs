@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IECModules;
+using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
 using TMPro;
@@ -196,6 +197,29 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
+            switch (helperId)
+            {
+                case HelperId.Magnet:
+                    EventController.RaiseEvent(EventList.Audio.MAGNET_START);
+                    DOVirtual.DelayedCall(0.5f, () =>
+                    {
+                        EventController.RaiseEvent(EventList.Audio.MAGNET_IDLE);
+                    });
+                    break;
+                case HelperId.Compass:
+                    EventController.RaiseEvent(EventList.Audio.COMPASS);
+                    break;
+                case HelperId.ScaleUp:
+                    EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
+                    break;
+                case HelperId.FrozenTime:
+                    EventController.RaiseEvent(EventList.Audio.ICE_START);
+                    DOVirtual.DelayedCall(0.5f, () =>
+                    {
+                        EventController.RaiseEvent(EventList.Audio.ICE_IDLE);
+                    });
+                    break;
+            }
         }
 
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
@@ -230,7 +254,19 @@ namespace _IEC.Features.Gameplay
                         {
                             ChangeState(State.Addable);
                         }
-
+                        
+                        switch (helperId)
+                        {
+                            case HelperId.Magnet:
+                                SoundController.StopSound(EventList.Audio.MAGNET_IDLE);
+                                break;
+                            case HelperId.Compass:
+                                SoundController.StopSound(EventList.Audio.COMPASS);
+                                break;
+                            case HelperId.FrozenTime:
+                                SoundController.StopSound(EventList.Audio.ICE_IDLE);
+                                break;
+                        }
                         //if (SoundController.dictSoundActiveByHelperId.ContainsKey(helperId))
                         //{
                         //    var audioInfo = SoundController.dictSoundActiveByHelperId[helperId];

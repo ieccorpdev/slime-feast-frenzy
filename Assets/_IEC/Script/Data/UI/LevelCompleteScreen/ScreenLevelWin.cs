@@ -17,6 +17,9 @@ namespace IEC
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
 
+        public GameObject groupGoldDisplay;
+        public TextMeshProUGUI goldDisplayText;
+
         public Button btnNext;
         private void Start()
         {
@@ -26,14 +29,13 @@ namespace IEC
             {
                 Services.PushEvent(new TrackingEvent.ClickBtnNext());
                 //ActionCompletePopup();
-                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds,
+                Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(),
                     ActionCompletePopup,
                     () =>
                     {
                         Services.PushEvent(new TrackingEvent.SFApostition("win_screen_next"));
                     });
             });
-
         }
 
         public override void Hide()
@@ -45,8 +47,14 @@ namespace IEC
         {
             Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
+            SetupGoldDisplay();
             base.Show();
+        }
 
+        void SetupGoldDisplay()
+        {
+            groupGoldDisplay.SetActive(GamePlay.levelController.GoldCollected > 0);
+            goldDisplayText.text = GamePlay.levelController.GoldCollected.ToString();
         }
 
 
@@ -144,7 +152,8 @@ namespace IEC
                         () =>
                         {
                             var rewardData = Config.allChestConfig.GetChestConfig(chestType)
-                                .GetRewardData(PlayerData.GetChestMilestone(chestType));
+                                .GetRewardData(PlayerData.GetChestMilestone(chestType)-1);
+                            //-1 by MeoMew fix Task #67686, reduce 1 level chest to get true reward
                             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
                             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
                         }, 

@@ -28,12 +28,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private string outputFolder;
         [SerializeField] private string prefabFolder;
         
-        public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
-            ? listItemDefinitionShp : listItemDefinition; 
+        // public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
+        //     ? listItemDefinitionShp : listItemDefinition; 
+        public List<ItemDefinition> ListItemDefinition => listItemDefinitionShp; 
         
         public List<ItemDefinition> GetListItemDefinition()
         {
-            return ListItemDefinition;
+            //return ListItemDefinition;
+            return listItemDefinitionShp;
         }
         
         
@@ -302,7 +304,30 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        [Button]
+        void CustomEnableGPUInstancing()
+        {
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
 
+
+                if (itemDef.GetPrefab() != null)
+                {
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshRenderer>();
+                    foreach (var mat in mats)
+                    {
+                        mat.sharedMaterial.enableInstancing = true;
+                        EditorUtility.SetDirty(mat.sharedMaterial);
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
 #endif
 #endregion
         public GameObject GetItemPrefab(string id)

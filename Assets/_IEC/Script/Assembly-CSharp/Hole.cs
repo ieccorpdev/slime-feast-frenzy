@@ -122,7 +122,8 @@ public class Hole : _BaseBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
-		}
+            EventController.RaiseEvent(EventList.Audio.SHARK_BITE);
+        }
 	}
 	private void CheckSharkForm()
 	{
@@ -298,10 +299,10 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-		
-		//SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
-		//VibrationController.Vibrate(HapticTypes.Selection);
-	}
+        EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
+        //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
+        //VibrationController.Vibrate(HapticTypes.Selection);
+    }
 
 	public void SetXp(int xp,bool isLerp)
 	{
@@ -418,7 +419,7 @@ public class Hole : _BaseBehaviour
 	}
 
 	#region Character Animation
-	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
+	public string SHARK_TWEEN_HOLE_SCALE => characterParent.gameObject.GetInstanceID() + "_HOLE_SCALE";
 	public void ResetCharacter()
 	{
 		onInitAnimNewGame = false;
@@ -459,37 +460,42 @@ public class Hole : _BaseBehaviour
 
 	public void PlayEffectSharkDriveIn()
 	{
+		
 		//Apply position because animation diff with pos
 		waterSplashFx.Play();
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
 		holePipe.gameObject.SetActive(true);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 	}
 	public void EndAnimationCharacter()
 	{
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
 		readyForSharkBite = true;
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
+    }
 	public void TurnHoleToShark()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.zero, 0.5f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.zero, 0.5f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterParent.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("HoleToShark");
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_UP);
+    }
 	public void TurnSharkToHole()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
-	}
+        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
+    }
 	#endregion
 
 

@@ -30,7 +30,6 @@ namespace IEC
         {
             return gameObject.activeSelf;
         }
-        
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
@@ -39,7 +38,6 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
@@ -53,10 +51,12 @@ namespace IEC
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
+                    SoundController.StopAllSound();
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else
@@ -68,9 +68,8 @@ namespace IEC
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
+                    SoundController.StopAllSound();
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
-                    EventController.RaiseEvent(EventList.Audio.LOSE);
-
                     GamePlay.SetGameState(Locator.Game.ScreenLevelLose);
                     //GamePlay.IsWin = false;
                     OnGameOver();
@@ -165,6 +164,7 @@ namespace IEC
             else
             {
                 PlayerData.DecreasePlayerLife();
+                EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
             }
             EventController.RaiseEvent(EventList.SAVE_DATA);
             Services.PushEvent(new TrackingEvent.GameOver());
@@ -251,6 +251,7 @@ namespace IEC
             {
                 DOTween.KillAll();
                 Locator.Service.ScreenLoading.ShowLoading();
+                SoundController.StopAllSound();
                 //MeoMew custome tracking level 
                 if (scene == GameScene.Main)
                 {
@@ -261,14 +262,7 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
-                        if (scene != GameScene.Game)
-                        {
-                            onLoadDone?.Invoke();
-                            if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
-                        }
-                    }, () =>
-                    {
-                        if (scene == GameScene.Game)
+                        //if (scene != GameScene.Game)
                         {
                             onLoadDone?.Invoke();
                             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);

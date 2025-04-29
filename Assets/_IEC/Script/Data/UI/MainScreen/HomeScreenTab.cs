@@ -345,17 +345,18 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     public void UpdatePiggyBankButton()
     {
-        bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
-        goPiggyBankLock.SetActive(!isEnoughLevel);
-        goPiggyBankUnlock.SetActive(isEnoughLevel);
-        piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
-        luckyWheel.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
-        piggyBankValue.text = PlayerData.piggyBankGold.ToString();
-        if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
-        {
-            PlayerData.wasShowPiggyBankFirstTime = true;
-            btnPiggyBank.onClick.Invoke();
-        }
+        btnPiggyBank.gameObject.SetActive(false);
+        //bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
+        //goPiggyBankLock.SetActive(!isEnoughLevel);
+        //goPiggyBankUnlock.SetActive(isEnoughLevel);
+        //piggyBankProgressBarFill.fillAmount = Locator.Main.PopupPiggyBank.PiggyBankFillAmount;
+        //luckyWheel.gameObject.SetActive(Locator.Main.PopupPiggyBank.IsFull && !PlayerData.dailyShowPiggyBank);
+        //piggyBankValue.text = PlayerData.piggyBankGold.ToString();
+        //if (Locator.Main.PopupPiggyBank.IsFull && !PlayerData.wasShowPiggyBankFirstTime)
+        //{
+        //    PlayerData.wasShowPiggyBankFirstTime = true;
+        //    btnPiggyBank.onClick.Invoke();
+        //}
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
     }
 
@@ -391,7 +392,7 @@ public class HomeScreenTab : ScreenNavigateUI
         );
         playButtonText.text = "Level " + PlayerData.level;
         playHardButtonText.text = "Level " + PlayerData.level;
-        LeaderboardController.StartTournament();//Once when start home game
+        //LeaderboardController.StartTournament();//Once when start home game
         playButton.gameObject.SetActive(!PlayerData.IsHardLevel());
         playHardButton.gameObject.SetActive(PlayerData.IsHardLevel());
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
@@ -410,9 +411,10 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     private void UpdateLuckyWheel()
     {
-        int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
-        luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
-        luckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
+        //int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
+        //luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
+        luckyWheel.gameObject.SetActive(false);
+        //uckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }
     private void UpdateDailyReward()
     {

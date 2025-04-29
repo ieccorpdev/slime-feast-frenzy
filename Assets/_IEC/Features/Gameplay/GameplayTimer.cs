@@ -25,6 +25,11 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         [SerializeField] private List<Image> listStarTime;
         
+        [Header("Cooldown Text Style")]
+        public Material safeMaterialPreset;
+        public Material warningMaterialPreset;
+        public Material dangerousMaterialPreset;
+        
         [SerializeField]private float m_CurrentTime;
         private float timeEffectStar = 0.5f;
         private float m_MaxTime;
@@ -33,6 +38,7 @@ namespace _IEC.Features.Gameplay
         private float m_FrozenTimeCoolDown;
         private bool m_IsGameStarted;
         private bool m_isTimeShowScreenVignette;
+        private bool m_isLevelCoin;
 
         private string TweenIdMelting => "melting" + gameObject.GetInstanceID();
         private LevelController _levelController => (LevelController)GamePlay.GetLevelController();
@@ -212,11 +218,12 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.Active);
         }
 
-        public void SetStartTime(float time)
+        public void SetStartTime(LevelData levelData)
         {
             m_IsGameStarted = false;
-            m_MaxTime = time;
+            m_MaxTime = levelData.time;
             m_CurrentTime = m_MaxTime;
+            CheckActiveStar(levelData);
             UpdateCoolDown();
             Reset();
             m_CurrentState = State.None;
@@ -224,6 +231,14 @@ namespace _IEC.Features.Gameplay
             ChangeRemainingTimeState(RemainingTimeState.Safe);
         }
 
+        public void CheckActiveStar(LevelData levelData)
+        {
+            m_isLevelCoin = levelData.levelType == LevelType.COIN;
+            foreach (var star in listStarTime)
+            {
+                star.gameObject.SetActive(!m_isLevelCoin);
+            }
+        }
         public void CheatTime(float time)
         {
             m_CurrentTime = time;
@@ -284,7 +299,7 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateCoolDown()
         {
-            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToString(m_CurrentTime);
+            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToStringNoLeadingZero(m_CurrentTime);
             ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
             var proportion = m_CurrentTime / m_MaxTime;
             imgProgress.fillAmount = proportion;
@@ -365,18 +380,22 @@ namespace _IEC.Features.Gameplay
                 case RemainingTimeState.Safe:
 
                     imgProgress.sprite = spriteSafe;
+                    //txtCoolDown.fontMaterial = safeMaterialPreset;
                     break;
                 case RemainingTimeState.Warning:
                     listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteWarning;
+                    //txtCoolDown.fontMaterial = warningMaterialPreset;
                     break;
                 case RemainingTimeState.Dangerous:
                     listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR");;
                     imgProgress.sprite = spriteDangerous;
+                    //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
                 case RemainingTimeState.None:
                     listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR");
                     imgProgress.sprite = spriteDangerous;
+                    //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
             }
             m_CurrentRemainingTimeState = newState;

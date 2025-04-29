@@ -18,6 +18,7 @@ namespace IEC
 
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
+        public TextMeshProUGUI levelUnlockStreak;
         public List<GameObject> streakDisplayObject = new();
         public List<GameObject> streakIconObject = new();
 
@@ -43,7 +44,7 @@ namespace IEC
         {
             base.Show();
 
-            //levelText.text = "Level " + PlayerData.level;
+            levelText.text = "Level " + PlayerData.level;
             
             infoPanel.SetActive(false);
             boosterPanel.SetActive(true);
@@ -75,6 +76,7 @@ namespace IEC
 
         private void UpdateStreakDisplay()
         {
+            levelUnlockStreak.text ="Unlock at lv."+ Config.AllBoosterConfig.levelUnlockStreak.ToString();
             streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
             streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
 

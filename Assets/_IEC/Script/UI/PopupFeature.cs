@@ -14,7 +14,7 @@ public class PopupFeature : BasePopup
     protected override void Awake()
     {
         base.Awake();
-        AudioEventOpen = EventList.Audio.NEW_ITEM;
+        //AudioEventOpen = EventList.Audio.NEW_ITEM;
     }
 
 

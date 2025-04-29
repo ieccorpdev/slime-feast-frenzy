@@ -29,12 +29,12 @@ namespace IEC
             base.Awake();
             configBundle.OnPurchaseSuccess += () =>
             {
-                PlayerData.isBoughtStarterPack = true;
-                PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
-                //Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);//Disable banner Ads
-                Locator.Main.HomeScreenTab.UpdateMainHome();
+                // PlayerData.isBoughtStarterPack = true;
+                // PlayerData.timeEndStaredPack = DateTime.Now.AddMinutes(Game.timeSkipAdsStartPackage);
+                // //Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);//Disable banner Ads
+                // Locator.Main.HomeScreenTab.UpdateMainHome();
                 Hide();
-                Services.SaveData();
+                //Services.SaveData();
             };
             SetEvent(btnX, OnHideClick);
             AudioEventOpen = EventList.Audio.STARTER_PACK_POPUP_OPEN;

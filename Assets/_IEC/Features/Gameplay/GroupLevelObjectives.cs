@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using DG.Tweening;
 using IEC;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -16,6 +17,8 @@ namespace _IEC.Features.Gameplay
         private readonly List<LevelObjectiveUI> m_ActiveObjectiveUIs = new List<LevelObjectiveUI>();
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
         public GameObject specialObjectiveParent;
+        public TextMeshProUGUI goldTextTutorial;
+        private bool canPlaySFX = true;
 
         // private void Awake()
         // {
@@ -43,7 +46,7 @@ namespace _IEC.Features.Gameplay
         //         objectiveUI.SetNumber(objectiveData.number);
         //     }
         // }
-        
+
         public void CollectAObject(string itemId, Vector2 startAnchorPosition)
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
@@ -61,13 +64,21 @@ namespace _IEC.Features.Gameplay
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
             Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
-
+            if (!GamePlay.IsWin)
+            {
+                if (canPlaySFX)
+                {
+                    canPlaySFX = false;
+                    SoundController.PlaySound(EventList.Audio.OBJECTIVE_GET);
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET), () => canPlaySFX = true);
+                }
+            }
             DOTween.Sequence()
                 .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
                 .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
                 .AppendCallback(() =>
                 {
-                    objectiveUI.SetNumber(newNumber, isCompleted);
+                    objectiveUI.SetNumber(newNumber.ToString(), isCompleted);
                     objectiveVfx.Recycle();
                 });
         }
@@ -92,8 +103,9 @@ namespace _IEC.Features.Gameplay
             var objectiveUI = GetLevelObjectiveUI(itemId);
             if (objectiveUI == null) return;
             int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+
             //objectiveUI.SetNumber(maxSpecialObject, false);
-            objectiveUI.SetNumber(maxSpecialObject - number, false);
+            objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
         }
         
         public void DisposeAll()
@@ -119,6 +131,11 @@ namespace _IEC.Features.Gameplay
             {
                 var levelObjective = levelObjectives[i];
                 var levelObjectiveUIObject = levelObjectiveUis[i].gameObject;
+                if (levelType == LevelType.COIN)
+                {
+                    levelObjectiveUIObject.SetActive(false);
+                    continue;
+                }
                 levelObjectiveUIObject.SetActive(true);
                 var levelObjectiveUI = levelObjectiveUIObject.GetComponent<LevelObjectiveUI>();
                 levelObjectiveUI.Reset();
@@ -132,14 +149,16 @@ namespace _IEC.Features.Gameplay
                 m_ActiveObjectiveUIs.Add(levelObjectiveUI);
                 rectTransform.anchoredPosition3D = currentAnchorPos3D;
             }
-            if (levelType != LevelType.COIN)
-            {
-                HandleObjectiveUIForSpecialObject();
-            }
-            else
-            {
-                HideSpecialObjective();
-            }
+            HandleObjectiveUIForSpecialObject();
+            goldTextTutorial.gameObject.SetActive(levelType == LevelType.COIN);
+            //if (levelType == LevelType.COIN)
+            //{
+            //    HandleObjectiveUIForSpecialObject();
+            //}
+            //else
+            //{
+            //    HideSpecialObjective();
+            //}
         }
         
         private void HandleObjectiveUIForSpecialObject()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using JetBrains.Annotations;
 using TMPro;
@@ -23,8 +24,16 @@ namespace IEC
         public void Setup()
         {
             ProgressRewardData = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            if (PlayerData.level < Config.specialObjectConfig.GetLevelUnlockProgressReward())
+            {
+                gameObject.SetActive(false);
+            }
+            else
+            {
+                gameObject.SetActive(true);
+                UpdateProgressBar();   
+            }
 
-            UpdateProgressBar();
         }
 
         private void Update()

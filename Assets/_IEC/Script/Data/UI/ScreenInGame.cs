@@ -128,6 +128,7 @@ namespace IEC
             {
                 data.itemID = LevelAchievementData.ID_COIN;
             }
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
             groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
         }
@@ -193,10 +194,9 @@ namespace IEC
         {
             groupLevelObjectives.DisposeAll();
             groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
-            groupLevelObjectives.LoadObjectiveData(levelData.levelObjectives, levelData.levelType);
             Joystick.OnPointerUp(null);
             UpdateUI();
-            gameplayTimer.SetStartTime(levelData.time);
+            gameplayTimer.SetStartTime(levelData);
         }
     }
 }

@@ -260,9 +260,7 @@ namespace _IEC.Features.Gameplay
                         objectOffset = -objectSize / 2;
                     }
                     waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
-                    #if UNITY_EDITOR
-                    waterWave.OnValidate();
-                    #endif
+                    waterWave.InitShader();
                     itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
