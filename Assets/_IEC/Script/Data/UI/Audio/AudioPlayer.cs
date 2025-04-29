@@ -31,6 +31,7 @@ namespace IEC
 
         public void Play()
         {
+            gameObject.SetActive(true);
             audioSource.clip = GetRandomAudioClip();
             if (!audioSource.isPlaying)
                 audioSource.Play();
@@ -85,6 +86,7 @@ namespace IEC
         public void Stop()
         {
             audioSource.Stop();
+            gameObject.SetActive(false);
         }
 
         public void SetMute(bool isMute)
