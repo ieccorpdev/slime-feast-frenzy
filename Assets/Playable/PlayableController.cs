@@ -175,10 +175,7 @@ public class PlayableController : MonoBehaviour
     {
         return levelConfig.levelData.listAllLevelData[level];
     }
-    IEnumerator IE_DelayLoadLevel()
-    {
-        yield return new WaitForSeconds(3);
-    }
+
     Color HexToColor(string hex)
     {
         Color color;

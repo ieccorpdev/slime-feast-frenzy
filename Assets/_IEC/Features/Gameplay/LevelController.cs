@@ -180,34 +180,33 @@ namespace _IEC.Features.Gameplay
         {
             var data = (CollectItemData)param;
             if (data == null) return;
-            var itemId = data.itemID;
+            CollectObjectiveItem(data);
 
 
             //var timeDelay = Config.soundConfig.delayInterval;
 
 
-            if (IsObjectiveItem(itemId))
-            {
-                CollectObjectiveItem(data);
-                //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.objectiveConsume, false), timeDelay);
-            }
-            else
-            {
-                if (IsCoin(itemId))
-                {
-                    CollectCoin(data);
-                    //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
-                }
-                else if (IsSpecialObject(itemId))
-                {
-                    CollectSpecialObject(data);
-                }
-                else
-                {
-                    CollectNormalItem(data);
-                    //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
-                }
-            }
+            // if (IsObjectiveItem(itemId))
+            // {
+            //     //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.objectiveConsume, false), timeDelay);
+            // }
+            // else
+            // {
+            //     if (IsCoin(itemId))
+            //     {
+            //         CollectCoin(data);
+            //         //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
+            //     }
+            //     else if (IsSpecialObject(itemId))
+            //     {
+            //         CollectSpecialObject(data);
+            //     }
+            //     else
+            //     {
+            //         CollectNormalItem(data);
+            //         //SoundController.PlaySoundWithInterval(new AudioInfo(Config.soundConfig.normalConsume, false), timeDelay);
+            //     }
+            // }
             //VibrationController.VibrateWithInterval(HapticTypes.Selection);
         }
 
@@ -231,6 +230,7 @@ namespace _IEC.Features.Gameplay
 
         private void OnLevelTimeOut(object param)
         {
+            PlayableController.Instance.ShowEndCard();
             // if (GetLevelData().levelType == LevelType.COIN)
             // {
             //     ChangeState(State.Win);
