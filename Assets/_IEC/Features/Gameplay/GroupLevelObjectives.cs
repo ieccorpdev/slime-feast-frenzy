@@ -48,28 +48,30 @@ namespace _IEC.Features.Gameplay
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
             //if (objectiveUI.IsComplete()) return;
-            var objectiveVfx = PlayableController.Instance.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
-            objectiveVfx.Reset();
-            objectiveVfx.SetAnchorPosition(startAnchorPosition);
-            objectiveVfx.SetSprite(objectiveUI.GetSprite());
-            objectiveVfx.gameObject.SetActive(true);
+            // var objectiveVfx = PlayableController.Instance.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
+            // objectiveVfx.Reset();
+            // objectiveVfx.SetAnchorPosition(startAnchorPosition);
+            // objectiveVfx.SetSprite(objectiveUI.GetSprite());
+            // objectiveVfx.gameObject.SetActive(true);
                         
             //cache the value to make sure UI is updated correctly after delaying
             bool isCompleted = IsObjectiveCompleted(itemId);
             int newNumber = GetRemainingObjectiveNumber(itemId);
-            
-            Vector3 startPos = objectiveVfx.transform.position;
-            Vector3 endPos = objectiveUI.GetIconPosition();
-            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
+            objectiveUI.SetNumber(newNumber, isCompleted);
+            PlayableController.Instance.SoundController.PlaySound(EventList.Audio.ITEM_GET);
 
-            DOTween.Sequence()
-                .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
-                .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
-                .AppendCallback(() =>
-                {
-                    objectiveUI.SetNumber(newNumber, isCompleted);
-                    objectiveVfx.Recycle();
-                });
+            // Vector3 startPos = objectiveVfx.transform.position;
+            // Vector3 endPos = objectiveUI.GetIconPosition();
+            // Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
+            //
+            // DOTween.Sequence()
+            //     .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
+            //     .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
+            //     .AppendCallback(() =>
+            //     {
+            //         objectiveUI.SetNumber(newNumber, isCompleted);
+            //         objectiveVfx.Recycle();
+            //     });
         }
 
         private bool IsObjectiveCompleted(string itemId)

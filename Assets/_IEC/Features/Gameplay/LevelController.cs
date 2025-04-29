@@ -182,7 +182,6 @@ namespace _IEC.Features.Gameplay
             if (data == null) return;
             var itemId = data.itemID;
 
-            EventController.RaiseEvent(EventList.Audio.ITEM_GET);
 
             //var timeDelay = Config.soundConfig.delayInterval;
 
