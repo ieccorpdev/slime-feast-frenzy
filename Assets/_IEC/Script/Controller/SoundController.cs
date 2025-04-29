@@ -32,7 +32,7 @@ namespace IEC
                 if (field.FieldType == typeof(string))
                 {
                     var audioId = (string)field.GetValue(null);
-                    var newSound = new AudioInfo(audioId, null, false, 1f);
+                    var newSound = new AudioInfo(audioId, null, false, false, 1f);
                     listSoundConfig.Add(newSound);
                 }
             }
@@ -384,14 +384,16 @@ namespace IEC
         public List<AudioClip> listRandomAudioClips = new();
         public bool isLoop;
         public float loopInterval;
+        public bool isPlayMultiple;
         [Range(0, 1) ]
         public float volume = 1f; 
-        public AudioInfo(string id,AudioClip clip, bool isLoop, float volume)
+        public AudioInfo(string id,AudioClip clip, bool isPlayMultiple, bool isLoop, float volume)
         {
             this.id = id;
             this.clip = clip;
             this.isLoop = isLoop;
             this.volume = volume;
+            this.isPlayMultiple = isPlayMultiple;
         }
         
         public AudioInfo(AudioInfo info)
@@ -400,6 +402,7 @@ namespace IEC
             this.clip = info.clip;
             this.isLoop = info.isLoop;
             this.volume = info.volume;
+            this.isPlayMultiple = info.isPlayMultiple;
             this.listRandomAudioClips = new List<AudioClip>(info.listRandomAudioClips);
         }
         private static List<string> GetAudioEvents => GetAllAudioEvents();
