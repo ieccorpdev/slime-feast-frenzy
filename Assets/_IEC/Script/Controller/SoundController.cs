@@ -218,6 +218,7 @@ namespace IEC
                 Debug.LogError($"Sound {id} is null");  
                 return;
             }
+            sound.gameObject.SetActive(true);
             if (data != null && sound.Info.clip != data.clip)
             {
                 //PlaySound(data);
