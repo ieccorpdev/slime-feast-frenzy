@@ -412,15 +412,12 @@ namespace _IEC.Features.Gameplay
                 var randomPos = GetRandomPositionInCircle(playerHole.transform.position, playerHole.GetWorldRadius() + 5f, playerHole.GetWorldRadius() + 0.25f);
                 var booster = (IBoosterItem)boosterItem;
                 booster.Init();
-                if (count < 3)
-                {
-                    DOVirtual.DelayedCall(count * SoundController.GetLengthSound(EventList.Audio.BOOSTER_APPEAR), () =>
-                    {
-                        EventController.RaiseEvent(EventList.Audio.BOOSTER_APPEAR);
-                    });
-                }
                 booster.MoveToPos(randomPos);
                 count++;
+            }
+            if (count > 0)
+            {
+                EventController.RaiseEvent(EventList.Audio.BOOSTER_APPEAR);
             }
         }
 
