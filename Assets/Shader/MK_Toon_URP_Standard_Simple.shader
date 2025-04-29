@@ -12,14 +12,15 @@ Shader "Unlit/ThanhdayVipPro2"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "RenderType" = "Opaque" }
         LOD 100
 
+        // --- Main Pass ---
         Pass
         {
             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+            #pragma vertex vertMain
+            #pragma fragment fragMain
             #pragma multi_compile_instancing
             #include "UnityCG.cginc"
 
@@ -28,6 +29,7 @@ Shader "Unlit/ThanhdayVipPro2"
             float _Saturation;
             float _Contrast;
             float4 _MainTex_ST;
+
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -41,9 +43,8 @@ Shader "Unlit/ThanhdayVipPro2"
                 float4 vertex : SV_POSITION;
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
-            
-            
-            v2f vert (appdata v)
+
+            v2f vertMain (appdata v)
             {
                 v2f o;
                 UNITY_SETUP_INSTANCE_ID(v);
@@ -53,11 +54,7 @@ Shader "Unlit/ThanhdayVipPro2"
                 return o;
             }
 
-            UNITY_INSTANCING_BUFFER_START(Props)
-                //UNITY_DEFINE_INSTANCED_PROP(float4, _Color)
-            UNITY_INSTANCING_BUFFER_END(Props)
-            
-            fixed4 frag (v2f i) : SV_Target
+            fixed4 fragMain (v2f i) : SV_Target
             {
                 UNITY_SETUP_INSTANCE_ID(i);
                 fixed4 color = tex2D(_MainTex, i.uv);
@@ -69,32 +66,34 @@ Shader "Unlit/ThanhdayVipPro2"
             }
             ENDCG
         }
+
+        // --- ShadowCaster Pass ---
         Pass
         {
-            Tags {"LightMode"="ShadowCaster"}
-
+            Tags { "LightMode" = "ShadowCaster" }
+            ZWrite On
             CGPROGRAM
-            #pragma vertex vert
-            #pragma fragment frag
+            #pragma vertex vertShadow
+            #pragma fragment fragShadow
             #pragma multi_compile_shadowcaster
+            #pragma target 3.0
             #include "UnityCG.cginc"
 
-            struct v2f { 
-                V2F_SHADOW_CASTER;
-            };
+            struct v2fShadow { V2F_SHADOW_CASTER; };
 
-            v2f vert(appdata_base v)
+            v2fShadow vertShadow (appdata_base v)
             {
-                v2f o;
+                v2fShadow o;
                 TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
                 return o;
             }
 
-            float4 frag(v2f i) : SV_Target
+            float4 fragShadow (v2fShadow i) : SV_Target
             {
                 SHADOW_CASTER_FRAGMENT(i)
             }
             ENDCG
         }
     }
+    Fallback "Unlit/Texture"
 }

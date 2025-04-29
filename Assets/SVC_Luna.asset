@@ -2944,8 +2944,22 @@ MonoBehaviour:
     - DIRECTIONAL
     - LIGHTPROBE_SH
   _includedShaderVariants: []
-  _excludedShaderVariants: []
-  version: 1416
+  _excludedShaderVariants:
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: cc41e27cc06772449b0c155411e89757, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 1
+    keywords: []
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: cc41e27cc06772449b0c155411e89757, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 1
+    keywords: []
+  version: 1431
   _shaderParsedShaders:
   - ParsedSubShaders:
     - Index: 0
@@ -52811,7 +52825,7 @@ MonoBehaviour:
   _sceneLightData:
     PointLightCount: 0
     SpotLightCount: 0
-    DirectionalLightCount: 13
+    DirectionalLightCount: 16
     LightmapOn: 1
     DirlightmapCombined: 1
     DirectionalCookieExists: 0
