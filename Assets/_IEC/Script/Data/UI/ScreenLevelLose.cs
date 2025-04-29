@@ -30,6 +30,7 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     Hide();
+                    PlayerData.ResetBoosterStreak();
                     GameController.OpenScene(GameScene.Main);
                 };
                 

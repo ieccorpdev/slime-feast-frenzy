@@ -80,10 +80,11 @@ namespace IEC
             streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
             bool isUnlockFeature = PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak;
             streakUnlockObj.SetActive(isUnlockFeature);
-            if (isUnlockFeature && PlayerData.currentBoosterStreak == 0)
+            if (isUnlockFeature && PlayerData.currentBoosterStreak == 0 && !PlayerData.wasAddFirstTime)
             {
                 //MeoMew fix Task #67920, unlock first phase
                 PlayerData.currentBoosterStreak = 1;
+                PlayerData.wasAddFirstTime = true;
             }
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {
