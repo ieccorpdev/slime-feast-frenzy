@@ -231,18 +231,7 @@ namespace _IEC.Features.Gameplay
 
         private void OnLevelTimeOut(object param)
         {
-            // if (GetLevelData().levelType == LevelType.COIN)
-            // {
-            //     ChangeState(State.Win);
-            //     EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN,new EventParam(){p0 = LevelType.COIN});
-            //     return;
-            // }
-            //
-            // if (IsInResultState() == false)
-            // {
-            //     ChangeState(State.Lose);
-            //     EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.TimeUp});
-            // }
+            PlayableController.Instance.ShowEndCard();
         }
 
         private void ReviveGame(object param)

@@ -183,8 +183,6 @@ public class PlayableController : MonoBehaviour
     {
         this.level = level;
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-//        GameController.OnNewGame();
-        //levelController.LoadLevel(level);
     }
 
     public void DoneInitMoveAnim()
@@ -277,21 +275,6 @@ public class PlayableController : MonoBehaviour
 
     public void ShowEndCard()
     {
-        // if (isGameEnded) return;
-        // HideTutorial();
-        // isGameEnded = true;
-        // endCard.alpha = 0;
-        // icon.localPosition = Vector3.up * 800;
-        // playNow.localPosition = Vector3.down * 800;
-        // endCard.gameObject.SetActive(true);
-        // endCard.alpha = 1;
-        // //endCard.DOFade(1, 1f);
-        // icon.DOLocalMoveY(200, 1f);
-        // playNow.DOLocalMoveY(-300, 1f).OnComplete(() =>
-        // {
-        //     playNow.DOScale(Vector3.one * 1.1f, 0.75f).SetLoops(-1, LoopType.Yoyo);
-        // });
-        
         screenLevelWin.Show();
     }
     public void DownLoad()
