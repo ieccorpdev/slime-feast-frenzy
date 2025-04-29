@@ -29,14 +29,15 @@ namespace IEC
             {
                 System.Action actionClose = () =>
                 {
-                    if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
-                    {
-                        Services.PushEvent(new SFApostition("losescreen_exit"));
-                    }
                     Hide();
                     PlayerData.ResetBoosterStreak();
                     GameController.OpenScene(GameScene.Main);
                 };
+                
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
+                {
+                    Services.PushEvent(new SFApostition("losescreen_exit"));
+                }
             };
 
             groupLevelFailed.OnRetry += () =>
