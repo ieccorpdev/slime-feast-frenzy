@@ -43,21 +43,6 @@ namespace IEC
             Pool.Set(this);
         }
 
-        private void OnEnable()
-        {
-            AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
-        }
-
-        private void OnDisable()
-        {
-            AudioSettings.OnAudioConfigurationChanged -= OnAudioConfigurationChanged;
-        }
-
-        private void OnAudioConfigurationChanged(bool deviceChanged)
-        {
-            AudioSettings.Reset(AudioSettings.GetConfiguration());
-        }
-
         public void OnEventRaise(string gameEvent, EventParam param)
         {
             switch (gameEvent)
