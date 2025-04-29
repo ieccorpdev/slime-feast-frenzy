@@ -30,7 +30,7 @@ namespace _IEC.Features.Gameplay
         public Material warningMaterialPreset;
         public Material dangerousMaterialPreset;
         
-        [SerializeField]private float m_CurrentTime;
+        public float CurrentTime;
         private float timeEffectStar = 0.5f;
         private float m_MaxTime;
         private State m_CurrentState;
@@ -157,7 +157,7 @@ namespace _IEC.Features.Gameplay
 
         public float GetRemainingTime()
         {
-            return m_CurrentTime;
+            return CurrentTime;
         }
 
         public float GetMaxTime()
@@ -181,7 +181,7 @@ namespace _IEC.Features.Gameplay
 #if UNITY_EDITOR
                     if (Input.GetKeyDown(KeyCode.T))
                     {
-                        m_CurrentTime = 5;
+                        CurrentTime = 5;
                     }
 #endif
                     if (m_FrozenTimeCoolDown > 0)
@@ -194,11 +194,11 @@ namespace _IEC.Features.Gameplay
                     }
                     else
                     {
-                        m_CurrentTime -= Time.deltaTime;
-                        OnTimeUpdate?.Invoke(m_CurrentTime);
-                        if (m_CurrentTime < 0)
+                        CurrentTime -= Time.deltaTime;
+                        OnTimeUpdate?.Invoke(CurrentTime);
+                        if (CurrentTime < 0)
                         {
-                            m_CurrentTime = 0;
+                            CurrentTime = 0;
                             this.RaiseEvent(EventList.GamePlay.TIMER_TIME_OUT);
                             ChangeState(State.Inactive);
                         }
@@ -222,7 +222,7 @@ namespace _IEC.Features.Gameplay
         {
             m_IsGameStarted = false;
             m_MaxTime = levelData.time;
-            m_CurrentTime = m_MaxTime;
+            CurrentTime = m_MaxTime;
             CheckActiveStar(levelData);
             UpdateCoolDown();
             Reset();
@@ -241,7 +241,7 @@ namespace _IEC.Features.Gameplay
         }
         public void CheatTime(float time)
         {
-            m_CurrentTime = time;
+            CurrentTime = time;
         }
 
         public void Pause()
@@ -251,7 +251,7 @@ namespace _IEC.Features.Gameplay
 
         public void Play()
         {
-            if(m_CurrentTime > 0)
+            if(CurrentTime > 0)
                 ChangeState(State.Active);
         }
 
@@ -261,7 +261,7 @@ namespace _IEC.Features.Gameplay
             {
                 m_MaxTime += extraTime;
             }
-            m_CurrentTime += extraTime;
+            CurrentTime += extraTime;
             UpdateCoolDown();
         }
         
@@ -299,9 +299,9 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateCoolDown()
         {
-            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToStringNoLeadingZero(m_CurrentTime);
-            ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(m_CurrentTime, m_MaxTime));
-            var proportion = m_CurrentTime / m_MaxTime;
+            txtCoolDown.text = Common.Helper.StringHelper.ConvertTimeInSecondToStringNoLeadingZero(CurrentTime);
+            ChangeRemainingTimeState(Config.gamePlayConfig.GetRemainingTimeState(CurrentTime, m_MaxTime));
+            var proportion = CurrentTime / m_MaxTime;
             imgProgress.fillAmount = proportion;
             //UpdateStarProgress();
         }

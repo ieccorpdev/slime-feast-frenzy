@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using _IECModules;
+using _IEC.Features.Gameplay;
 
 namespace IEC
 {
@@ -58,6 +59,18 @@ namespace IEC
 #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
 #endif
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Timer (Second)", param =>
+            {
+                GameplayTimer timer = Locator.Game.ScreenInGame.GetGameplayTimer();
+                if (timer != null)
+                {
+                    timer.CurrentTime = int.Parse(param.inputParams[0].value.ToString());
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 0
             });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
