@@ -416,7 +416,7 @@ namespace _IEC.Features.Gameplay
                 {
                     DOVirtual.DelayedCall(count * SoundController.GetLengthSound(EventList.Audio.BOOSTER_APPEAR), () =>
                     {
-                        EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_APPEAR);
                     });
                 }
                 booster.MoveToPos(randomPos);

@@ -32,14 +32,8 @@ namespace IEC
         public void Play()
         {
             audioSource.clip = GetRandomAudioClip();
-            if (Info.isPlayMultiple)
-            {
-                audioSource.PlayOneShot(audioSource.clip);
-            }
-            else
-            {
+            if (!audioSource.isPlaying)
                 audioSource.Play();
-            }
         }
 
         public void PlayOnLoop()
