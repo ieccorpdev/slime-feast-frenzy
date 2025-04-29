@@ -19,7 +19,7 @@ namespace IEC
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private ScreenNavigateUI _currentScreen;
-        
+        public GameObject shopTab => m_Shop;
         public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
         
         [Header("Avatar Button")] 

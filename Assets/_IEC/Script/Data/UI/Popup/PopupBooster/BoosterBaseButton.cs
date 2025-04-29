@@ -65,6 +65,11 @@ namespace IEC
             countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
             bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
             levelLockText.text ="Lvl." + BoosterData.levelUnlock.ToString();
+            
+            if (PlayerData.level >= BoosterData.levelUnlock && PlayerData.CheckUnlockBooster(boosterType))
+            {
+                PlayerData.AddCurrency(boosterType, Config.popupAddHelperConfig.GetAddHelperData(boosterType).addGoldAmount);
+            }
         }
 
         private void CheckCurrentState(bool isCheckOnClick = false)
@@ -85,12 +90,6 @@ namespace IEC
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {
                 State = BoosterBaseState.Buy;
-
-                if (PlayerData.CheckUnlockBooster(boosterType))
-                {
-                    PlayerData.AddCurrency(boosterType, Config.popupAddHelperConfig.GetAddHelperData(boosterType).addGoldAmount);
-                }
-                
             }
         }
 
