@@ -86,6 +86,9 @@ namespace IEC
 
             public const string ON_LEVEL_LOADED = "Gameplay.ON_LEVEL_LOADED";
             public const string ON_LEVEL_DEBUG_LOADED = "Gameplay.ON_LEVEL_DEBUG_LOADED";
+            
+            public const string SHOW_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS";
+            public const string HIDE_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS";
         }
         public static class Tutorial
         {

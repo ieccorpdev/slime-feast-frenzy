@@ -33,8 +33,14 @@ namespace IEC
         {
             gameObject.SetActive(true);
             audioSource.clip = GetRandomAudioClip();
-            if (!audioSource.isPlaying)
+            if (Info.isPlayMultiple)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
+            else
+            {
                 audioSource.Play();
+            }
         }
 
         public void PlayOnLoop()
