@@ -44,6 +44,7 @@ namespace IEC
             {
                 System.Action actionClose = () =>
                 {
+                    PlayerData.ResetBoosterStreak();
                     if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                     {
                         Hide();
