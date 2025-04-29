@@ -91,6 +91,14 @@ namespace IEC
                 case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_HOME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
                     break;
+                #if UNITY_IOS
+                case EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS:
+                    AudioSettings.Mobile.StopAudioOutput();
+                    break;
+                case EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS:
+                    AudioSettings.Mobile.StartAudioOutput();
+                    break;
+                #endif
                 default:
                     PlayAudio(gameEvent);
                     break;
