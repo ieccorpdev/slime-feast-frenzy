@@ -887,7 +887,7 @@ namespace IEC
                 SafeInvoke(closeCallback);
                 return;
             }
-            
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS);
             m_Ads.Show(AdsEnum.INTERSTITIAL, (param) =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS);
