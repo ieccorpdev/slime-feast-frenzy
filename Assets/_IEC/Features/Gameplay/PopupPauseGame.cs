@@ -52,6 +52,7 @@ namespace _IEC.Features.Gameplay
         void Quit()
         {
             PlayerData.DecreasePlayerLife();
+            EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
             EventController.RaiseEvent(EventList.GamePlay.LEVEL_CLEAR);
             GameController.OpenScene(GameScene.Main);
             //MagicPouchController.OnLevelLose();

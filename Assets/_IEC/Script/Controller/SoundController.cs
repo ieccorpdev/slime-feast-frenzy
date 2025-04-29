@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using Random = UnityEngine.Random;
 using Sirenix.OdinInspector;
+using static IEC.EventList;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -18,6 +20,7 @@ namespace IEC
         private List<AudioPlayer> m_ListSoundAudio = new List<AudioPlayer>();
         public List<AudioInfo> listSoundConfig;
         public List<AudioInfo> listMusicConfig;
+        private Dictionary<string, int> m_DicAudioConfig = new Dictionary<string, int>();
 
 #if UNITY_EDITOR
         [Sirenix.OdinInspector.Button]
@@ -29,7 +32,7 @@ namespace IEC
                 if (field.FieldType == typeof(string))
                 {
                     var audioId = (string)field.GetValue(null);
-                    var newSound = new AudioInfo(audioId, null, false, false, 1f);
+                    var newSound = new AudioInfo(audioId, null, false, 1f);
                     listSoundConfig.Add(newSound);
                 }
             }
@@ -38,6 +41,21 @@ namespace IEC
         public void LocateController()
         {
             Pool.Set(this);
+        }
+
+        private void OnEnable()
+        {
+            AudioSettings.OnAudioConfigurationChanged += OnAudioConfigurationChanged;
+        }
+
+        private void OnDisable()
+        {
+            AudioSettings.OnAudioConfigurationChanged -= OnAudioConfigurationChanged;
+        }
+
+        private void OnAudioConfigurationChanged(bool deviceChanged)
+        {
+            AudioSettings.Reset(AudioSettings.GetConfiguration());
         }
 
         public void OnEventRaise(string gameEvent, EventParam param)
@@ -65,7 +83,7 @@ namespace IEC
                     }
                     break;
                case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
-                   SetMuteAllMusic(true);
+                    SetMuteAllMusic(true);
                     break;
                case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_INGAME, false);
@@ -215,6 +233,7 @@ namespace IEC
                 Debug.LogError($"Sound {id} is null");  
                 return;
             }
+            sound.gameObject.SetActive(true);
             if (data != null && sound.Info.clip != data.clip)
             {
                 //PlaySound(data);
@@ -224,6 +243,24 @@ namespace IEC
             sound.SetMute(!PlayerData.isSoundOn);
             
             sound.Play();
+        }
+
+        public float GetLengthSound(string id)
+        {
+            var sound = GetPlayerSound(id);
+            var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return 0;
+            }
+            if (data != null && sound.Info.clip != data.clip)
+            {
+                //PlaySound(data);
+                sound.SetData(data);
+            }
+
+            return sound.audioSource.clip.length;
         }
 
         public void PlayMusic(string id)
@@ -297,7 +334,15 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
+        public void StopAllSound()
+        {
+            foreach (var player in m_ListSoundAudio)
+            {
+                player.Stop();
+            }
+        }
+
         public void SetVolumeAllMusic(float volume)
         {
             volume = Mathf.Clamp(volume, 0, 1);
@@ -331,15 +376,13 @@ namespace IEC
         public List<AudioClip> listRandomAudioClips = new();
         public bool isLoop;
         public float loopInterval;
-        public bool isPlayMultiple;
         [Range(0, 1) ]
         public float volume = 1f; 
-        public AudioInfo(string id,AudioClip clip, bool isLoop, bool isPlayMultiple, float volume)
+        public AudioInfo(string id,AudioClip clip, bool isLoop, float volume)
         {
             this.id = id;
             this.clip = clip;
             this.isLoop = isLoop;
-            this.isPlayMultiple = isPlayMultiple;
             this.volume = volume;
         }
         
@@ -348,7 +391,6 @@ namespace IEC
             this.id = info.id;
             this.clip = info.clip;
             this.isLoop = info.isLoop;
-            this.isPlayMultiple = info.isPlayMultiple;
             this.volume = info.volume;
             this.listRandomAudioClips = new List<AudioClip>(info.listRandomAudioClips);
         }
