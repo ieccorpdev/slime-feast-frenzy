@@ -88,8 +88,8 @@
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "17.13",
-            "monoVersion": "9.0.4",
+            "msbuildVersion": "16.10",
+            "monoVersion": "N/A",
             "dotnetVersion": ""
         },
         "assets": {
@@ -231,7 +231,7 @@
                 "forceIncluded": false
             }
         ],
-        "disableRuntimeAnalysisForCode": false,
+        "disableRuntimeAnalysisForCode": true,
         "disableRuntimeAnalysisForShaders": false,
         "useShadersCache": true,
         "preventUpdatingRAListWhenRAIsDisabled": false,
@@ -18369,7 +18369,7 @@
                     },
                     {
                         "name": "LayerToName",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetMask",
@@ -18893,7 +18893,7 @@
                     },
                     {
                         "name": "sceneCount#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetSceneByName",
@@ -18917,7 +18917,7 @@
                     },
                     {
                         "name": "GetSceneAt",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "LoadScene$2",
@@ -19023,7 +19023,7 @@
                     },
                     {
                         "name": "GetLayerNameFromValue",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "NameToID",
@@ -40268,10 +40268,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "IE_DelayLoadLevel",
-                        "excluded": true
-                    },
-                    {
                         "name": "HexToColor",
                         "excluded": true
                     },
@@ -40301,7 +40297,7 @@
                     },
                     {
                         "name": "DownLoad",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OnMove",
