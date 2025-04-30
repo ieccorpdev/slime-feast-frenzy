@@ -30,7 +30,7 @@ namespace IEC
 
         public override void Hide()
         {
-            Pool.Get<ConfettiGroup>().StopConfetti();
+            //Pool.Get<ConfettiGroup>().StopConfetti();
             gameObject.SetActive(false);
         }
         public override void Show()
