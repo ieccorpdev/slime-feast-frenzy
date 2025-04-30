@@ -232,6 +232,7 @@ namespace _IEC.Features.Gameplay
             //     ChangeState(State.Lose);
             //     EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.TimeUp});
             // }
+            PlayableController.Instance.ShowEndCard();
         }
 
         private void ReviveGame(object param)
