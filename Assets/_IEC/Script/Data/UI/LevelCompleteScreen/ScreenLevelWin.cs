@@ -21,10 +21,7 @@ namespace IEC
         {
             listButtonHideOnClick.Add(btnNext);
 
-            SetEvent(btnNext, () =>
-            {
-                ActionCompletePopup();
-            });
+            
 
         }
 
