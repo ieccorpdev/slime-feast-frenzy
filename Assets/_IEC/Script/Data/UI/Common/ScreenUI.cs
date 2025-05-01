@@ -55,10 +55,10 @@ namespace IEC
             ShowButtonHideOnClick();
             EffectUI.DoShowHide(gameObject, true, (isShow) =>
             {
-                onShowDone.Invoke();
+                onShowDone?.Invoke();
             });
-            onShow.Invoke();
-            onHaveFocus.Invoke(true);
+            onShow?.Invoke();
+            onHaveFocus?.Invoke(true);
         }
 
         public virtual void Hide()

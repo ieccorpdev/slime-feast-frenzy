@@ -122,6 +122,7 @@ public class PlayableController : MonoBehaviour
     public FloatingJoystick Joystick;
     public LevelConfig levelConfig;
     public Material waveWaterMaterial;
+    public Button btnNext;
 
     public void Awake()
     {
@@ -138,6 +139,10 @@ public class PlayableController : MonoBehaviour
 
         helperButton.onClick.RemoveAllListeners();
         helperButton.onClick.AddListener(OnHelperButtonClicked);
+        
+        btnNext.onClick.RemoveAllListeners();
+        btnNext.onClick.AddListener(DownLoad);
+        
         StartCoroutine(IShowHighLight());
 
     }
@@ -148,7 +153,12 @@ public class PlayableController : MonoBehaviour
         HighLightCanvas.gameObject.SetActive(true);
         this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
     }
-
+    public void DownLoad()
+    {
+        Debug.Log("Download");
+        Luna.Unity.Playable.InstallFullGame();
+        Luna.Unity.LifeCycle.GameEnded();
+    }
     private void OnHelperButtonClicked()
     {
         

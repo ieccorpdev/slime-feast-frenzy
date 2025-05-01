@@ -14,22 +14,10 @@ namespace IEC
     public class ScreenLevelWin : ScreenUI
     {
         [SerializeField] private GameplayTimer gameplayTimer;
-        [SerializeField] private ScreenLevelWin_GroupStar groupStar;
 
         public Button btnNext;
-        private void Start()
-        {
-            //listButtonHideOnClick.Add(btnNext);
-            btnNext.onClick.RemoveAllListeners();
-            btnNext.onClick.AddListener(DownLoad);
-            
-
-        }
-        public void DownLoad()
-        {
-            Luna.Unity.Playable.InstallFullGame();
-            Luna.Unity.LifeCycle.GameEnded();
-        }
+    
+     
 
         public override void Hide()
         {
