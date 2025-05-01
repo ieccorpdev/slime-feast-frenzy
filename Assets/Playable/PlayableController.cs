@@ -16,6 +16,7 @@ public class PlayableController : MonoBehaviour
     public GameplayItemPrefabConfig GameplayItemPrefabConfig;
     public GameController GameController;
     public LevelController  levelController;
+    public Button btnNext;
     public static PlayableController Instance
     {
         get
@@ -135,19 +136,9 @@ public class PlayableController : MonoBehaviour
         LoadLevel(level);
 
         ShowTutorial();
-
-        switch (level)
-        {
-            case 1:
-                break;
-            case 2:
-                magnetButton.onClick.RemoveAllListeners();
-                magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                StartCoroutine(IShowHighLight());
-                break;
-            case 3:
-                break;
-        }
+        btnNext.onClick.RemoveAllListeners();
+        btnNext.onClick.AddListener(DownLoad);
+       
 
     }
 
