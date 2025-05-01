@@ -294,11 +294,7 @@ public class PlayableController : MonoBehaviour
         
         screenLevelWin.Show();
     }
-    public void DownLoad()
-    {
-        Luna.Unity.Playable.InstallFullGame();
-        Luna.Unity.LifeCycle.GameEnded();
-    }
+   
 
     public void OnMove()
     {

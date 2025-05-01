@@ -19,18 +19,21 @@ namespace IEC
         public Button btnNext;
         private void Start()
         {
-            listButtonHideOnClick.Add(btnNext);
+            //listButtonHideOnClick.Add(btnNext);
+            btnNext.onClick.RemoveAllListeners();
+            btnNext.onClick.AddListener(DownLoad);
+            
 
-            SetEvent(btnNext, () =>
-            {
-                ActionCompletePopup();
-            });
-
+        }
+        public void DownLoad()
+        {
+            Luna.Unity.Playable.InstallFullGame();
+            Luna.Unity.LifeCycle.GameEnded();
         }
 
         public override void Hide()
         {
-            Pool.Get<ConfettiGroup>().StopConfetti();
+            //Pool.Get<ConfettiGroup>().StopConfetti();
             gameObject.SetActive(false);
         }
         public override void Show()
