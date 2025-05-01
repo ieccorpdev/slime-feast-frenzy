@@ -87,8 +87,8 @@
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "17.13",
-            "monoVersion": "9.0.4",
+            "msbuildVersion": "16.10",
+            "monoVersion": "N/A",
             "dotnetVersion": ""
         },
         "assets": {
@@ -221,7 +221,7 @@
             }
         ],
         "disableRuntimeAnalysisForCode": false,
-        "disableRuntimeAnalysisForShaders": true,
+        "disableRuntimeAnalysisForShaders": false,
         "useShadersCache": true,
         "preventUpdatingRAListWhenRAIsDisabled": false,
         "bakeReferenceAmbientProbe": false,
@@ -40301,10 +40301,6 @@
                         "excluded": true
                     },
                     {
-                        "name": "DownLoad",
-                        "excluded": true
-                    },
-                    {
                         "name": "OnMove",
                         "excluded": true
                     },
@@ -40544,6 +40540,10 @@
                     },
                     {
                         "name": "DeactiveMedalObj",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DownLoad",
                         "excluded": true
                     }
                 ]
@@ -43963,7 +43963,7 @@
                 "default": {
                     "maxWidth": 512,
                     "maxHeight": 512,
-                    "format": "png32",
+                    "format": "webp",
                     "compression": "quantSize",
                     "quality": 65,
                     "script": "",
@@ -43983,7 +43983,7 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
                         "quality": 65,
                         "script": "",
@@ -43993,7 +43993,7 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
                         "quality": 65,
                         "script": "",
@@ -44003,7 +44003,7 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
                         "quality": 65,
                         "script": "",
@@ -44013,7 +44013,7 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
                         "quality": 65,
                         "script": "",
@@ -44023,7 +44023,7 @@
                     {
                         "maxWidth": 512,
                         "maxHeight": 512,
-                        "format": "png32",
+                        "format": "webp",
                         "compression": "none",
                         "quality": 65,
                         "script": "",
@@ -44048,7 +44048,7 @@
                     "startTime": "00:00.000",
                     "endTime": "00:15.000",
                     "lengthInSeconds": 15.0,
-                    "bitrate": 64,
+                    "bitrate": 0,
                     "script": "",
                     "ext": ""
                 },
