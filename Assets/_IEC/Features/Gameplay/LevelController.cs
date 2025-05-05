@@ -55,6 +55,7 @@ namespace _IEC.Features.Gameplay
 
         private List<SpawnBoosterData> listSpawnBoosterData = new();
         public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
+        public float GetTimeMagnetHelper => m_MagnetHelperCoolDown;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
         public bool IsShowEnding
