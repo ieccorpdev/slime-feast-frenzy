@@ -243,7 +243,7 @@ namespace _IEC.Features.Gameplay
                 case State.Playing:
                     if (m_IsGamePause) return;
                     m_CooldownTime -= Time.deltaTime;
-                    imgProgress.fillAmount = m_CooldownTime / HelperActiveTime;
+                    imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
                     if (m_CooldownTime <= 0)
                     {
                         if (PlayerData.helperData.GetPool(helperId) > 0 )
@@ -292,7 +292,7 @@ namespace _IEC.Features.Gameplay
             {
                 case State.Playing:
                     m_CooldownTime = HelperActiveTime;
-                    imgProgress.fillAmount = 1;
+                    imgProgress.fillAmount = 0;
                     if (PlayerData.helperData.GetPool(helperId) > 0)
                     {
                         groupPool.SetActive(true);
