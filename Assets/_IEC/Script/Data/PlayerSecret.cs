@@ -727,6 +727,12 @@ namespace IEC
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
         {
+            if (Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone))
+            {
+                currentProgress = currentProgressData.progress;
+                return false;
+            }
+
             if (currentProgress>= currentProgressData.progress)
             {
                 currentProgress -= currentProgressData.progress;
