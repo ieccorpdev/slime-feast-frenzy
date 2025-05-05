@@ -19,6 +19,9 @@ namespace _IEC.Features.Gameplay
         public GameObject specialObjectiveParent;
         public TextMeshProUGUI goldTextTutorial;
         private bool canPlaySFX = true;
+        
+        private List<Sequence> sequences = new List<Sequence>();
+        private List<LevelObjectiveVfx> listObjectiveVfx = new List<LevelObjectiveVfx>();
 
         // private void Awake()
         // {
@@ -56,6 +59,8 @@ namespace _IEC.Features.Gameplay
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());
             objectiveVfx.gameObject.SetActive(true);
+            
+            listObjectiveVfx.Add(objectiveVfx);
                         
             //cache the value to make sure UI is updated correctly after delaying
             bool isCompleted = IsObjectiveCompleted(itemId);
@@ -73,14 +78,16 @@ namespace _IEC.Features.Gameplay
                     DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET), () => canPlaySFX = true);
                 }
             }
-            DOTween.Sequence()
-                .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
+            Sequence temp = DOTween.Sequence();
+            temp.Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
                 .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
                 .AppendCallback(() =>
                 {
                     objectiveUI.SetNumber(newNumber.ToString(), isCompleted);
                     objectiveVfx.Recycle();
                 });
+            
+            sequences.Add(temp);
         }
 
         private bool IsObjectiveCompleted(string itemId)
@@ -110,7 +117,28 @@ namespace _IEC.Features.Gameplay
         
         public void DisposeAll()
         {
+            foreach (var sequence in sequences)
+            {
+                if(sequence.IsActive())
+                    sequence.Kill();
+            }
+            sequences.Clear();
+            
             m_ActiveObjectiveUIs.Clear();
+
+            foreach (var obj in listObjectiveVfx)
+            {
+                if (obj != null && obj.GetRectTransform() != null)
+                {
+                    if(DOTween.IsTweening(obj))
+                        DOTween.Kill(obj);
+                    
+                    obj.Recycle();
+                }
+            }
+            
+            listObjectiveVfx.Clear();
+            
             foreach (var levelObjectiveUi in levelObjectiveUis)
             {
                 levelObjectiveUi.gameObject.SetActive(false);
