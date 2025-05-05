@@ -128,19 +128,6 @@ namespace IEC
 
         void OnGameOver()
         {
-            // Game.SetTimeEndLevel();
-            // if (GamePlay.IsWin)
-            // {
-            //     PlayerData.AddLevel();
-            //     Locator.Main.PopupPiggyBank.AddGoldToPiggyBank(Config.dataPiggyBankConfig
-            //         .goldEarnedEachLevel); //CustomGold here
-            //     PlayerData.AddScrewBuildCity(Config.buildCityConfig.screwAddEndgame);
-            // }
-            // else
-            // {
-            //     PlayerData.DecreasePlayerLife();
-            // }
-            // EventController.RaiseEvent(EventList.SAVE_DATA);
             PlayableController.Instance.ShowEndCard();
         }
 

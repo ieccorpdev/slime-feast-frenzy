@@ -33,69 +33,21 @@ namespace IEC
             Pool.Get<ConfettiGroup>().StopConfetti();
             gameObject.SetActive(false);
         }
-        public override void Show()
-        {
-            //groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
-            base.Show();
-
-        }
+   
 
 
         public void SetMedalReward(int medal)
         {
-            // bool showMedal = Game.isHaveLeaderboard && PlayerData.level >= LeaderboardConfig.levelUnlock;
-            // medalObj.gameObject.SetActive(showMedal);
-            // if (!showMedal) return;
-            // medalImage.sprite = LeaderboardConfig.GetSpirteCurrentLeagueLevelWin();
-            // txtMedalAmount.text = "" + medal;
         }
         
         private void ActionCompletePopup()
         {
-            Hide();
-            
-            // Action callback = null;
-            //
-            // //if (PlayerData.level >= Config.levelWinBackHome)
-            // {
-            //     // Define the callback to show popups once Home scene is loaded
-            //     callback = ShowPostWinPopups;
-            // }
-            
-            //Add callbacks here
-            
-     
+            Luna.Unity.Playable.InstallFullGame();
+            Luna.Unity.LifeCycle.GameEnded();
         }
-        
-        
-        private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)
-        {
-            popup.AddActionOnceOnClose(() =>
-            {
-                onClosed?.Invoke(); // Called when popup is closed
-            });
-            onOpen?.Invoke();
-            //popup.Show();
-        }
-
-        public void DeactiveMedalObj()
-        {
-            //medalObj.gameObject.SetActive(false);
-        }
+      
+  
     }
     
-    public class PopupData
-    {
-        public BasePopup popup;
-        public Action onOpen;
-        public Action onClose;
-
-        public PopupData(BasePopup popup, Action onOpen = null, Action onClose = null)
-        {
-            this.popup = popup;
-            this.onOpen = onOpen;
-            this.onClose = onClose;
-        }
-    }
 
 }

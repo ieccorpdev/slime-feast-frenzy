@@ -48,8 +48,7 @@ namespace IEC.Wind.Leaderboard
                     }
                     else
                     {
-                        Locator.Game.ScreenLevelWin.DeactiveMedalObj();
-                        Locator.Game.ScreenLevelWinHard.DeactiveMedalObj();
+ 
                     }
                     CheckEndTournamentAndInit();
                     break;
