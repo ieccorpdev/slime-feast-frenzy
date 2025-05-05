@@ -95,6 +95,19 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
             }
+            
+            CheckActionAfterQuitGame();
+        }
+
+        private void CheckActionAfterQuitGame()
+        {
+            if(!isKilledAppGamePlay)
+                return;
+
+            isKilledAppGamePlay = false;
+            
+            ResetBoosterStreak();
+            
         }
 
         public void ClearAndInitTrackingLevelType()
