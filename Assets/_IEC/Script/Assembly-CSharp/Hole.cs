@@ -31,6 +31,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
 	[SerializeField] private ParticleSystem waterSplashFx;
+	[SerializeField] private ParticleSystem speedLinesVFX;
 	[SerializeField] private MeshRenderer waterGround;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
@@ -94,6 +95,13 @@ public class Hole : _BaseBehaviour
 			{
 				timeEffectSpeedBooster =
 					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
+			}
+			else
+			{
+				if (speedLinesVFX.isPlaying)
+				{
+					speedLinesVFX.Stop();
+				}
 			}
 		}
 
@@ -170,6 +178,7 @@ public class Hole : _BaseBehaviour
 	{
 		_speedBoosterIncrease = boosterIncrease;
 		timeEffectSpeedBooster += timeEffect;
+		speedLinesVFX.Play();
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -429,6 +438,7 @@ public class Hole : _BaseBehaviour
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+		speedLinesVFX.Stop();
 	}
 
 	#region Character Animation
