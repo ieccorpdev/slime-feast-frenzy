@@ -201,7 +201,7 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
-            imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,0.5f,0.5f).SetId(IconPunchScale);
+            imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,1,0.2f).SetId(IconPunchScale);
             switch (helperId)
             {
                 case HelperId.Magnet:
