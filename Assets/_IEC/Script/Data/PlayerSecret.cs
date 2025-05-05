@@ -167,7 +167,7 @@ namespace IEC
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
                 return;
 
-            if (level == levelLostStreak)
+            if (level == levelLostStreak && currentBoosterStreak > 0)
                 return;
             
             currentBoosterStreak++;
