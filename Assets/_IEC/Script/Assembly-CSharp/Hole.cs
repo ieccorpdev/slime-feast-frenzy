@@ -31,6 +31,8 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
 	[SerializeField] private ParticleSystem waterSplashFx;
+	[SerializeField] private ParticleSystem speedLinesVFX;
+	[SerializeField] private MeshRenderer waterGround;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -45,7 +47,7 @@ public class Hole : _BaseBehaviour
 
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
-	
+	private string WaterMagnetEffect => "_WhirlpoolRadius";
 	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
 	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
@@ -93,6 +95,13 @@ public class Hole : _BaseBehaviour
 			{
 				timeEffectSpeedBooster =
 					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
+			}
+			else
+			{
+				if (speedLinesVFX.isPlaying)
+				{
+					speedLinesVFX.Stop();
+				}
 			}
 		}
 
@@ -169,6 +178,7 @@ public class Hole : _BaseBehaviour
 	{
 		_speedBoosterIncrease = boosterIncrease;
 		timeEffectSpeedBooster += timeEffect;
+		speedLinesVFX.Play();
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -299,6 +309,7 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
+		SetEffectWhirlPoolMagnet();
         EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
         //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
         //VibrationController.Vibrate(HapticTypes.Selection);
@@ -335,12 +346,23 @@ public class Hole : _BaseBehaviour
 	{
 		holeMagnet.gameObject.SetActive(true);
 		magnetVfx.Play();
+		SetEffectWhirlPoolMagnet(true);
 	}
 
+	public void SetEffectWhirlPoolMagnet(bool force = false)
+	{
+		if (force || GamePlay.levelController.GetTimeMagnetHelper > 0)
+		{
+			int valueSize = (int)Math.Round(1.75 * m_Level + 1.1);
+			waterGround.material.SetFloat(WaterMagnetEffect,valueSize);			
+		}
+
+	}
 	public void StopMagnetHelper()
 	{
 		holeMagnet.gameObject.SetActive(false);
 		magnetVfx.Stop();
+		waterGround.material.SetFloat(WaterMagnetEffect,0);
 	}
 
 	public void CollectABomb()
@@ -416,6 +438,7 @@ public class Hole : _BaseBehaviour
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+		speedLinesVFX.Stop();
 	}
 
 	#region Character Animation

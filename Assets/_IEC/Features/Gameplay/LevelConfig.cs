@@ -58,6 +58,47 @@ namespace _IEC.Features.Gameplay
 
         [Header("Editor only")] 
         public GameplayItemPrefabConfig editorItemPrefabConfig;
+
+        [Button]
+        public void CheckValidAllLevel()
+        {
+            List<string> listDebugLevel = new();
+            foreach (var level in levelDataSHP.listAllLevelData)
+            {
+                if(level.difficulty.Equals("breaktime"))
+                    continue;
+                
+                string temp = "";
+                foreach (var obj in level.listObjectives)
+                {
+                    var objItem = level.levelSpawnData.listItemSpawns.Find(item => item.id.Equals(obj.id));
+
+                    if (objItem == null || obj.amount > objItem.listSpawnDatas.Count)
+                    {
+                        temp += obj.id + "_";
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(temp))
+                {
+                    temp = level.name + ": " + temp;
+                    listDebugLevel.Add(temp);
+                    //Debug.LogError(temp);
+                }
+            }
+
+            if (listDebugLevel.Count > 0)
+            {
+                foreach (var debug in listDebugLevel)
+                {
+                    Debug.LogError(debug);
+                }
+            }
+            else
+            {
+                Debug.LogError("All levels are valid");
+            }
+        }
         
         [Button]
         public void ExportAllLevelsToCSV(LevelDataContainerSO allLevels)

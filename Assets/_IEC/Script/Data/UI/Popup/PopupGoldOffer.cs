@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
+using IEC.Common.Event;
+using LightScrollSnap;
 using UnityEngine;
 
 namespace IEC
 {
     public class PopupGoldOffer : BasePopup
     {
+        public IAPShopScroll packScroll;
         public Transform rewardContainerTransform;
         
         public Sequence _showAnimSequence;
@@ -14,6 +17,14 @@ namespace IEC
         private void Start()
         {
             onShowDone.AddListener(DoAnimationOpen);
+            
+            gameObject.OnEvent(EventList.GamePlay.BUY_NO_ADS, UpdateUI);
+            gameObject.OnEvent(EventList.GamePlay.BUY_STARTER_PACK, UpdateUI);
+        }
+
+        private void UpdateUI()
+        {
+            packScroll.CheckListShowing();
         }
 
         public override void Show()

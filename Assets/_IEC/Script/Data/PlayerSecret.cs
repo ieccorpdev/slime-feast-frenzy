@@ -95,6 +95,19 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
             }
+            
+            CheckActionAfterQuitGame();
+        }
+
+        private void CheckActionAfterQuitGame()
+        {
+            if(!isKilledAppGamePlay)
+                return;
+
+            isKilledAppGamePlay = false;
+            
+            ResetBoosterStreak();
+            
         }
 
         public void ClearAndInitTrackingLevelType()
@@ -167,7 +180,7 @@ namespace IEC
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
                 return;
 
-            if (level == levelLostStreak)
+            if (level == levelLostStreak && currentBoosterStreak > 0)
                 return;
             
             currentBoosterStreak++;
@@ -727,6 +740,12 @@ namespace IEC
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
         {
+            if (Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone))
+            {
+                currentProgress = currentProgressData.progress;
+                return false;
+            }
+
             if (currentProgress>= currentProgressData.progress)
             {
                 currentProgress -= currentProgressData.progress;

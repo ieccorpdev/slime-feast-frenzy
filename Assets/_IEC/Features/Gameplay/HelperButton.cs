@@ -23,6 +23,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Button button;
         [SerializeField] private HelperId helperId;
         [SerializeField] private Image imgProgress;
+        [SerializeField] private Image imgIcon;
         [SerializeField] private TextMeshProUGUI txtUnlockCondition;
         [SerializeField] private GameObject groupHint;
         private State m_CurrentState;
@@ -137,6 +138,9 @@ namespace _IEC.Features.Gameplay
                     ChangeState(State.Addable);
                 }
             }
+
+            DOTween.Kill(IconPunchScale);
+            imgIcon.transform.localScale = Vector3.one;
         }
         
         private void OnPauseGame(object param)
@@ -179,7 +183,7 @@ namespace _IEC.Features.Gameplay
                 }
             });
         }
-
+        protected string IconPunchScale => "Icon_Punch_Scale" + GetInstanceID();
         private void OnClickInPoolState()
         {
             this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
@@ -197,6 +201,7 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
+            imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,1,0.2f).SetId(IconPunchScale);
             switch (helperId)
             {
                 case HelperId.Magnet:
@@ -243,7 +248,7 @@ namespace _IEC.Features.Gameplay
                 case State.Playing:
                     if (m_IsGamePause) return;
                     m_CooldownTime -= Time.deltaTime;
-                    imgProgress.fillAmount = m_CooldownTime / HelperActiveTime;
+                    imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
                     if (m_CooldownTime <= 0)
                     {
                         if (PlayerData.helperData.GetPool(helperId) > 0 )
@@ -292,7 +297,7 @@ namespace _IEC.Features.Gameplay
             {
                 case State.Playing:
                     m_CooldownTime = HelperActiveTime;
-                    imgProgress.fillAmount = 1;
+                    imgProgress.fillAmount = 0;
                     if (PlayerData.helperData.GetPool(helperId) > 0)
                     {
                         groupPool.SetActive(true);

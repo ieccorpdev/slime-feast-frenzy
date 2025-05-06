@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eaef4815ad7ff3e4695ece4bf7df2f85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mainParticle: {fileID: 3707800483936174721}
 --- !u!1001 &161830733953962762
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -521,11 +522,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: fx_SpecialItem_Skin_1
       objectReference: {fileID: 0}
+    - target: {fileID: 2471929140473021986, guid: 662b06bb88103064fa778b89ba9d440f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 662b06bb88103064fa778b89ba9d440f, type: 3}
 --- !u!4 &3707800483920956597 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2471929140472735254, guid: 662b06bb88103064fa778b89ba9d440f,
+    type: 3}
+  m_PrefabInstance: {fileID: 1241531773250251427}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3707800483936174721 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2471929140458596386, guid: 662b06bb88103064fa778b89ba9d440f,
     type: 3}
   m_PrefabInstance: {fileID: 1241531773250251427}
   m_PrefabAsset: {fileID: 0}
