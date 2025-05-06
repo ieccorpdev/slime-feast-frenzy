@@ -13,7 +13,7 @@ namespace IEC
         public void Start()
         {
             mainParticle.Stop();
-            DOVirtual.DelayedCall(3f, DelayStartParticle);
+            DOVirtual.DelayedCall(3f, DelayStartParticle).SetId(GetInstanceID() + "_DelayCallItem");
         }
 
         void DelayStartParticle()
@@ -23,6 +23,11 @@ namespace IEC
         void Update()
         {
             transform.rotation = Quaternion.identity;
+        }
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(GetInstanceID() + "_DelayCallItem");
         }
     }
 }
