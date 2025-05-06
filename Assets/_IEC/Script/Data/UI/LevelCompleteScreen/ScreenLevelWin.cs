@@ -95,7 +95,7 @@ namespace IEC
                 }
             }
             #endregion
-            if (PlayerData.level >= Config.levelShowRating && !PlayerData.wasRateUs)
+            if (PlayerData.level > Config.levelShowRating && !PlayerData.wasRateUs)
             {
                 PopupData CallNativeReview = new PopupData(
                     null,
