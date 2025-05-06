@@ -28904,7 +28904,7 @@ Transform:
   m_Children:
   - {fileID: 4365064656004021}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!198 &198315099115522123
 ParticleSystem:
@@ -35899,7 +35899,7 @@ Transform:
   m_Children:
   - {fileID: 4335716872640542}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!198 &198679703550392451
 ParticleSystem:
@@ -52494,7 +52494,7 @@ Transform:
   m_Children:
   - {fileID: 4006121553265494}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!198 &198407449833666466
 ParticleSystem:
@@ -59801,6 +59801,7 @@ Transform:
   - {fileID: 4268728463879139}
   - {fileID: 4038455886060368}
   - {fileID: 4233619865606173}
+  - {fileID: 7610989335805642679}
   - {fileID: 4946878442350027}
   - {fileID: 4672444182892957}
   - {fileID: 4041753727816879}
@@ -59827,7 +59828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4233619865606173
 Transform:
   m_ObjectHideFlags: 0
@@ -64422,7 +64423,7 @@ Transform:
   m_Children:
   - {fileID: 4407049419354357}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!198 &198952912402203235
 ParticleSystem:
@@ -66756,11 +66757,13 @@ MonoBehaviour:
   holeMagnet: {fileID: 114510778177413717}
   levelUpVfx: {fileID: 0}
   sizeUpVfx: {fileID: 198443164876762417}
-  magnetVfx: {fileID: 198012111043699033}
+  magnetVfx: {fileID: 3757069051098623622}
   exploreVfx: {fileID: 198324615902753754}
   deathVfx: {fileID: 198315099115522123}
   lightningVfx: {fileID: 0}
   waterSplashFx: {fileID: 6321166551868899092}
+  speedLinesVFX: {fileID: 0}
+  waterGround: {fileID: 0}
   characterGraphics: {fileID: 8878493879494253677}
   holePipe: {fileID: 6636629560930894439}
   characterAnimator: {fileID: 6409579815122101514}
@@ -69182,7 +69185,7 @@ Transform:
   m_Children:
   - {fileID: 4896413670570248}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
 --- !u!198 &198324615902753754
 ParticleSystem:
@@ -126273,7 +126276,7 @@ Transform:
   - {fileID: 4138418523036604}
   - {fileID: 4124954764384852}
   m_Father: {fileID: 4748292145213252}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: -90, y: -0, z: 0}
 --- !u!222 &222070430731765722
 CanvasRenderer:
@@ -130449,6 +130452,87 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: ee8cd7b9bd670e7428887bab2900a3ba,
     type: 3}
   m_PrefabInstance: {fileID: 6982909342399938875}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &9095384035243812958
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 4748292145213252}
+    m_Modifications:
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3928723353557665495, guid: f62e4d911a219474b9d8cbe468872c64,
+        type: 3}
+      propertyPath: m_Name
+      value: fx_MagnetSuction_Sky_1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: f62e4d911a219474b9d8cbe468872c64, type: 3}
+--- !u!198 &3757069051098623622 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 5339723186180163288, guid: f62e4d911a219474b9d8cbe468872c64,
+    type: 3}
+  m_PrefabInstance: {fileID: 9095384035243812958}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7610989335805642679 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1704297924840402921, guid: f62e4d911a219474b9d8cbe468872c64,
+    type: 3}
+  m_PrefabInstance: {fileID: 9095384035243812958}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &9141939484737289243
 PrefabInstance:
