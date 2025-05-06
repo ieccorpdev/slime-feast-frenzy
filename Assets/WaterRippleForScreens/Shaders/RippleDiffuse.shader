@@ -103,7 +103,7 @@
 				float dist = distance(float2(coords.x * _AspectRatio / _CircleXScale, coords.y / _CircleYScale), float2(target.x * _AspectRatio / _CircleXScale, target.y / _CircleYScale));
 
 				if(dist <= _ExternalRadio + internalRadio) {
-					float2 offset = (_Scale * dir * (sin(dist * 80. * _Frequency - _Time.w * 15. * _Speed) + .5) / 30.) * amplitude;
+					float2 offset = (_Scale * dir * (sin(dist * 40. * _Frequency - _Time.w * 5. * _Speed) + .5) / 30.) * amplitude;
 
 					maxValue = maxValue + internalRadio; //Set max wave value offset
 

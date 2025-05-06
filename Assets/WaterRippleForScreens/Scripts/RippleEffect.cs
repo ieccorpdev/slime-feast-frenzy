@@ -75,6 +75,8 @@ public class RippleEffect : MonoBehaviour {
             if (Input.GetMouseButtonUp(0))
             {
                 isDragging = false;
+                lastLogTime = -999;
+                lastLoggedPosition = Vector3.one * -999f;
             }
 #elif UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_WP_8_1 //Detect player input for mobiles
             if (Input.touchCount > 0) {
@@ -96,13 +98,21 @@ public class RippleEffect : MonoBehaviour {
 
         if (isDragging)
         {
-            //action wave 
+            // Detect input position by platform
+#if UNITY_EDITOR
             playerClickPosition = Input.mousePosition;
+#elif UNITY_ANDROID || UNITY_IOS || UNITY_TIZEN || UNITY_WP_8_1
+    if (Input.touchCount > 0)
+        playerClickPosition = Input.GetTouch(0).position;
+    else
+        return;
+#endif
+
             float timeSinceLastLog = Time.time - lastLogTime;
             float distance = Vector3.Distance(playerClickPosition, lastLoggedPosition);
+
             if (timeSinceLastLog >= logInterval && distance >= minDistance)
             {
-                Debug.Log("Logged Drag Pos: " + playerClickPosition);
                 lastLoggedPosition = playerClickPosition;
                 lastLogTime = Time.time;
                 SetIdWave();
