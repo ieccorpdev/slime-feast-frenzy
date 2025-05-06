@@ -202,7 +202,7 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
-            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.2f,1,0.15f).SetId(IconPunchScale);
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
             Services.PushEvent(new UserHelper(helperId.ToString()));
             switch (helperId)
             {
@@ -233,7 +233,7 @@ namespace _IEC.Features.Gameplay
         {
             imgIcon.material.SetFloat("_ShineLocation",0);
             imgIcon.material.DOFloat(1f, "_ShineLocation", 0.3f).SetId(imgIcon.GetInstanceID()+"_Shiny");
-            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.2f,1,0.15f).SetId(IconPunchScale);
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
         }
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
         {

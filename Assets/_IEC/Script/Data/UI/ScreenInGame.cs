@@ -60,7 +60,7 @@ namespace IEC
         
         public override void Show()
         {
-            gameplayTimer.ResetFreezeTime();
+            // gameplayTimer.ResetFreezeTime();
             //popupPauseGame.gameObject.SetActive(false);
             //Services.SetActiveBottomBanner(true);
             base.Show();
@@ -207,6 +207,7 @@ namespace IEC
             Joystick.OnPointerUp(null);
             UpdateUI();
             gameplayTimer.SetStartTime(levelData);
+            gameplayTimer.ResetFreezeTime();
         }
     }
 }
