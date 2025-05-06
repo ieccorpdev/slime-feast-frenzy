@@ -86,6 +86,8 @@ namespace IEC
             {
                 if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
                     State = BoosterBaseState.Usable;
+                if(State == BoosterBaseState.Using && isCheckOnClick)
+                    State = BoosterBaseState.Usable;
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
             {
