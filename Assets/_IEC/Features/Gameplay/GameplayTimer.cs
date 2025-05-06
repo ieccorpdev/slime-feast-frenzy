@@ -199,8 +199,11 @@ namespace _IEC.Features.Gameplay
                         if (CurrentTime < 0)
                         {
                             CurrentTime = 0;
-                            this.RaiseEvent(EventList.GamePlay.TIMER_TIME_OUT);
-                            ChangeState(State.Inactive);
+                            if (!GamePlay.IsInDebugAllItemsLevel)
+                            {
+                                this.RaiseEvent(EventList.GamePlay.TIMER_TIME_OUT);
+                                ChangeState(State.Inactive);
+                            }
                         }
                         
                         UpdateCoolDown();
