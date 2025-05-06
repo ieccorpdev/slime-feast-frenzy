@@ -35,7 +35,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 3.8392, y: 7.3308}
+  m_AnchoredPosition: {x: 3.8392, y: 0}
   m_SizeDelta: {x: 557.6327, y: 86.4748}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8245304294078572561
@@ -66,10 +66,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: FEEDBACK
+  m_text: Privacy Policy
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9f120cb01c5043647b084e12d83e5a13, type: 2}
-  m_sharedMaterial: {fileID: 2100000, guid: 3d756820c4df95041abdbe238808a416, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 35bd84c3801524a4fa9c9836b009f29c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -93,13 +93,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60
+  m_fontSize: 74
   m_fontSizeBase: 48
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 60
-  m_fontStyle: 16
+  m_fontSizeMax: 74
+  m_fontStyle: 4
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -201,7 +201,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Privacy Policy
+  m_text: FeedBack
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9f120cb01c5043647b084e12d83e5a13, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 3d756820c4df95041abdbe238808a416, type: 2}
@@ -647,9 +647,9 @@ MonoBehaviour:
   isShowTopResourceBar: 0
   btnContinue: {fileID: 3515092269112085787}
   btnQuit: {fileID: 7201566721761486685}
-  privacyPolicy: {fileID: 4140028456545657242}
+  privacyPolicy: {fileID: 2575473335937552586}
   restorePurchaseBtn: {fileID: 4063190468754892317}
-  feedBackBtn: {fileID: 2575473335937552586}
+  feedBackBtn: {fileID: 4140028456545657242}
   closeBtn2: {fileID: 2675713734409405920}
   settingButtons:
   - {fileID: 7686730404154660328}
@@ -1080,7 +1080,7 @@ GameObject:
   - component: {fileID: 4140028456545657242}
   - component: {fileID: 460323875220544074}
   m_Layer: 5
-  m_Name: Button-PrivacyPolicy
+  m_Name: Button-FeedBack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1102,9 +1102,9 @@ RectTransform:
   m_Father: {fileID: 6325402079310740600}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.94246, y: -173}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0.94246, y: -818}
   m_SizeDelta: {x: 775.6, y: 221}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2153722886388602841
@@ -1753,7 +1753,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: -527}
-  m_SizeDelta: {x: 969.1, y: 1289.9}
+  m_SizeDelta: {x: 969.1, y: 1373.0487}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8212446951065797005
 CanvasRenderer:
@@ -1955,12 +1955,12 @@ GameObject:
   - component: {fileID: 2575473335937552586}
   - component: {fileID: 2194286620799749593}
   m_Layer: 5
-  m_Name: Button-FeedBack
+  m_Name: Button-PrivacyPolicy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2658693243271049940
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1977,10 +1977,10 @@ RectTransform:
   m_Father: {fileID: 6325402079310740600}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.94246, y: -545.6958}
-  m_SizeDelta: {x: 689.92, y: 181}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: -1235}
+  m_SizeDelta: {x: 689.92, y: 95.98}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &919998486010773727
 CanvasRenderer:
@@ -2003,7 +2003,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.003921569}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -2124,9 +2124,9 @@ RectTransform:
   m_Father: {fileID: 6325402079310740600}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.94246, y: -419}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0.94246, y: -1064}
   m_SizeDelta: {x: 775.6, y: 221}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7360578686464332678
