@@ -89,6 +89,84 @@ namespace _IEC.Features.Gameplay
             //     }
             // }
         }
+        
+        public static List<BaseItem> GenerateRandomLevelAllItems(Transform levelObjectHolder, GameplayItemPrefabConfig itemConfig)
+        {
+            List<BaseItem> listBaseItems = new();
+            float spacing = 1f;
+            Vector2 cursor = Vector2.zero;
+            float rowHeight = 0f;
+            float levelWidth = 0f;
+            
+            float estimatedSide = Mathf.Sqrt(itemConfig.ListItemDefinition.Count) * 10f; // tweak this estimate
+            
+            List<Bounds> placedBounds = new();
+            
+            // bool IsOverlapping(Bounds newBounds) {
+            //     foreach (var existing in placedBounds) {
+            //         if (existing.Intersects(newBounds)) return true;
+            //     }
+            //     return false;
+            // }
+            
+            for (int i = 0; i < itemConfig.ListItemDefinition.Count; i++) {
+                
+                if(itemConfig.ListItemDefinition[i].GetPrefab() == null)
+                    continue;
+            
+                var bound = GroundExtend.GetRendererBounds(itemConfig.ListItemDefinition[i].GetPrefab());
+                var boundSize = bound.size;
+            
+                // Try to place it at cursor position
+                UnityEngine.Vector3 tryPosition = new UnityEngine.Vector3(cursor.x, 0f, cursor.y);
+                Bounds futureBounds = new Bounds(bound.center + tryPosition, boundSize);
+            
+                //if (!IsOverlapping(futureBounds)) 
+                {
+                    var newItem = itemConfig.ListItemDefinition[i].GetPrefab().Spawn();
+                    //GameObject instance = Instantiate(Config.itemPrefabConfig.ListItemDefinition[i].GetPrefab(), tryPosition, Quaternion.identity, itemHolder);
+                    Bounds placed = GroundExtend.GetRendererBounds(newItem);
+                    placed.center += tryPosition;
+                    
+                    var itemComponent = newItem.GetComponent<BaseItem>();
+                    if (itemComponent == null)
+                    {
+                        itemComponent = newItem.AddComponent<BaseItem>();
+                    }
+
+                    newItem.transform.parent = levelObjectHolder;
+                    
+                    itemComponent.LoadData(new ItemData()
+                    {
+                        itemId = itemConfig.ListItemDefinition[i].GetId(),
+                        //position = newItem.transform.position,
+                        position = tryPosition,
+                        eulerAngle = newItem.transform.eulerAngles,
+                        isStartKinematic = true
+                    }, 
+                    itemConfig.ListItemDefinition[i]);
+            
+                    placedBounds.Add(placed);
+            
+                    // Move cursor forward
+                    cursor.x += boundSize.x + spacing;
+                    rowHeight = Mathf.Max(rowHeight, boundSize.z);
+            
+                    // Wrap if we get too wide
+                    levelWidth += boundSize.x + spacing;
+                    if (levelWidth > estimatedSide) {
+                        cursor.x = 0f;
+                        cursor.y += rowHeight + spacing;
+                        rowHeight = 0f;
+                        levelWidth = 0f;
+                    }
+                    
+                    listBaseItems.Add(itemComponent);
+                }
+            }
+
+            return listBaseItems;
+        }
 
         public static List<BaseItem> SpawnAllItem(List<ItemData> listItemData, Transform levelObjectHolder,
             LevelConfig levelConfig, GameplayItemPrefabConfig itemConfig, int versionItem)

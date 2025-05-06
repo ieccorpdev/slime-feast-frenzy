@@ -105,6 +105,36 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.None);
         }
 
+        public void LoadLevelDebugAllItems()
+        {
+            // List<LevelObjective> listObjectives = new();
+            //
+            // foreach (var item in Config.itemPrefabConfig.listItemDefinitionShp)
+            // {
+            //     listObjectives.Add(new LevelObjective(item.GetId(),1));
+            // }
+            
+            m_CurrentLevelData = new LevelData()
+            {
+                time = 99999,
+                levelType = LevelType.NORMAL,
+                levelObjectives = new()
+            };
+            
+            m_AllItems.Clear();
+            m_AllItems = LevelHelper.GenerateRandomLevelAllItems(allItemHolder, Config.itemPrefabConfig);
+            EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            
+            SetUpStartHolePosition(Vector3.zero + Vector3.left * 5);
+            //SearchAllObjectiveItems(m_AllItems);
+            Reset();
+            playerHole.HideLevelText();
+            playerHole.AddXp(2000);
+            
+            this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, ""));
+            this.RaiseEvent(EventList.GamePlay.ON_LEVEL_DEBUG_LOADED);
+        }
+
         public void LoadLevel(int level)
         {
             m_Level = level;
