@@ -368,7 +368,7 @@ namespace _IEC.Features.Gameplay
             if (data.boosterId != BoosterId.BonusExp) return;
             //var bonusExpConfig = Config.boosterConfig.GetBoosterConfigModelById(BoosterId.BonusExp);
             //playerHole.AddXp(bonusExpConfig.advantageNumber);
-            Services.PushEvent(new UserHelper("growth_potion", Game.crLevelType.ToString()));
+            Services.PushEvent(new UserHelper("growth_potion"));
         }
 
         private void OnCollectedBoosterItem(object param)
