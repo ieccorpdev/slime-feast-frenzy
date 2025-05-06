@@ -43,6 +43,7 @@ namespace IEC
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+        public bool wasRateUs;
         [Header("CCJ")]
         public bool isMusicOn = true;
         public bool isSoundOn = true;

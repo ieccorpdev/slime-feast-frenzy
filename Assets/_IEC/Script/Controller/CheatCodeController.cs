@@ -33,7 +33,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopRight | CheatCode.PositionActivate.BotLeft;
+            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopLeft | CheatCode.PositionActivate.BotLeft;
             ModuleController.cheatCode.topOffset = 0f;
             Reporter.topOffset = 0f;
             ShowFPS.topOffset = 0f;
@@ -117,6 +117,14 @@ namespace IEC
                         () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_HARD_LEVEL); },
                         false);
                 }
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            {
+                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
+                GameController.OpenScene(GameScene.Game,
+                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
+                    false);
             });
             
             ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>

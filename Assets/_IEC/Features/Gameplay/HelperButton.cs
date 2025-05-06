@@ -202,6 +202,7 @@ namespace _IEC.Features.Gameplay
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
             imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,1,0.2f).SetId(IconPunchScale);
+            Services.PushEvent(new UserHelper(helperId.ToString()));
             switch (helperId)
             {
                 case HelperId.Magnet:
