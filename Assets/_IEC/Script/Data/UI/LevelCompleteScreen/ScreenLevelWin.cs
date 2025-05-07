@@ -95,7 +95,15 @@ namespace IEC
                 }
             }
             #endregion
-
+            if (PlayerData.level > Config.levelShowRating && !PlayerData.wasRateUs)
+            {
+                PopupData CallNativeReview = new PopupData(
+                    null,
+                    Services.RateUs,
+                    ShowNext
+                );
+                popupQueue.Enqueue(CallNativeReview);
+            }
             //Check level chest
             var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
             if(levelChestRewardPopup != null)
@@ -165,12 +173,22 @@ namespace IEC
         
         private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)
         {
-            popup.AddActionOnceOnClose(() =>
+            if (popup != null)
             {
-                onClosed?.Invoke(); // Called when popup is closed
-            });
-            onOpen?.Invoke();
-            //popup.Show();
+                popup.AddActionOnceOnClose(() =>
+                {
+                    onClosed?.Invoke(); // Called when popup is closed
+                });
+                onOpen?.Invoke();
+            }
+            else
+            {
+                //Custom rating thread
+                onOpen?.Invoke();
+                onClosed?.Invoke();
+            }
+
+
         }
 
         public void DeactiveMedalObj()

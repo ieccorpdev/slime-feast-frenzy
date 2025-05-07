@@ -43,6 +43,12 @@ namespace IEC
                     Pool.Get<ConfettiGroup>().StopConfetti();
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
+                case EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM:
+                    GamePlay.SetGameState(Locator.Game.ScreenInGame);
+                    OnNewGameDebugAllItems();
+                    Pool.Get<ConfettiGroup>().StopConfetti();
+                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
+                    break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
@@ -142,6 +148,16 @@ namespace IEC
             GamePlay.SetGameState(Locator.Game.ScreenInGame);
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             PushPlayLevelEvent();
+        }
+
+        void OnNewGameDebugAllItems()
+        {
+            GamePlay.SetLevelDebugAllItems();
+            Locator.Game.ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
+            Locator.Game.ScreenInGame.Show();
+            GamePlay.StartGamePlay();
+            GamePlay.SetGameState(Locator.Game.ScreenInGame);
+            this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         }
 
         void OnNewGameHardLevel()

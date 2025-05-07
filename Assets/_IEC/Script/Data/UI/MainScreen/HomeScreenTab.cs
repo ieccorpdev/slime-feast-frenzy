@@ -184,7 +184,7 @@ public class HomeScreenTab : ScreenNavigateUI
         InitMoveOutAnimation();
         UpdateMainHome();
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-        DoMoveBackAllObj();
+        DoMoveBackAllObj(0.8f);
     }
     #region Change Screen Anim
         
@@ -217,7 +217,7 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 _listObjMoveOut[i].SetObjPosOut();
             }
-            progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
+            progressRewardButton.transform.localScale = new Vector3(0, 0, 1);
         }
         
         public void DoMoveOutAllObj(float timeAnim,Action onComplete = null, float delay = 0f)
@@ -238,15 +238,26 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Service.GameResourceDisplay.DoMoveOutAnim();
                 });
 
-
-            delay += 0.1f;
             
-            _uiAnimSequence.InsertCallback(delay,
-                () =>
-                {
-                    DOTween.Kill(progressRewardButton.transform);
-                    progressRewardButton.transform.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
-                });
+        delay += 0.1f;
+        _uiAnimSequence.InsertCallback(delay,
+            () =>
+            {
+                DOTween.Kill(progressRewardButton);
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(progressRewardButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1), 0.1f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0.5f, 0.1f))
+                        .Append(progressRewardButton.transform.DOScale(new Vector3(0.9f, 0.9f, 1), 0.1f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0.3f, 0.1f))
+                        .Append(progressRewardButton.transform.DOScale(Vector3.zero, 0.1f).SetEase(Ease.InQuad))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0, 0.1f));
+            });
+        //_uiAnimSequence.InsertCallback(delay,
+        //        () =>
+        //        {
+        //            DOTween.Kill(progressRewardButton.transform);
+        //            progressRewardButton.transform.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
+        //        });
             
             delay += 0.4f;
             //
@@ -278,28 +289,35 @@ public class HomeScreenTab : ScreenNavigateUI
             }
             
             //buildCityUI.HideScale(false);
-            progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
+            progressRewardButton.transform.localScale = new Vector3(0, 0, 1);
 
             _uiAnimSequence = DOTween.Sequence();
             
             float delay = delayTime;
-            
-            // _uiAnimSequence.InsertCallback(delay,
-            //     () =>
-            //     {
-            //         //buildCityUI.ShowScale();
-            //         buildCityUI.InitBuildCity();
-            //     });
-            //
-            // delay += 0.2f;
-            
-            _uiAnimSequence.InsertCallback(delay,
-                () =>
-                {
-                    progressRewardButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
-                });
 
-            delay += 0.3f;
+        // _uiAnimSequence.InsertCallback(delay,
+        //     () =>
+        //     {
+        //         //buildCityUI.ShowScale();
+        //         buildCityUI.InitBuildCity();
+        //     });
+        //
+        // delay += 0.2f;
+        _uiAnimSequence.InsertCallback(delay,
+            () =>
+            {
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(progressRewardButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1), 0.2f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(1, 0.2f))
+                        .Append(progressRewardButton.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetEase(Ease.OutQuad));
+            });
+        //_uiAnimSequence.InsertCallback(delay,
+        //        () =>
+        //        {
+        //            progressRewardButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
+        //        });
+
+            delay += 0.1f;
             
             _uiAnimSequence.InsertCallback(delay,
                 () =>
@@ -312,7 +330,7 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Service.GameResourceDisplay.DoMoveBackAnim();
                 });
             
-            delay += 0.3f;
+            delay += 0.1f;
 
             _uiAnimSequence.InsertCallback(delay,
                 () =>
