@@ -83,6 +83,7 @@ namespace IEC
             
             #region check add popup
             Queue<PopupData> popupQueue = new Queue<PopupData>();
+            List<KeyValuePair<ResourceType, int>> listCollectedItems = new();
 
             #region Helper functions
 
@@ -106,36 +107,88 @@ namespace IEC
             }
             //Check level chest
             var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
-            if(levelChestRewardPopup != null)
-                popupQueue.Enqueue(levelChestRewardPopup);
-            
+            if (levelChestRewardPopup != null)
+            {
+                //popupQueue.Enqueue(levelChestRewardPopup);
+                
+                var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Level)
+                    .GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)-1);
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(rewardData.listReward),
+                    });
+            }
+
             //Check star chest
             var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
-            if(starChestRewardPopup != null)
-                popupQueue.Enqueue(starChestRewardPopup);
-            
+            if (starChestRewardPopup != null)
+            {
+                //popupQueue.Enqueue(starChestRewardPopup);
+                
+                var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Star)
+                    .GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)-1);
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(rewardData.listReward),
+                    });
+            }
+
             //Check progress reward
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
-                popupQueue.Enqueue(new PopupData(
-                    Locator.Main.ClaimBonusRewardPanel,
-                    () =>
+                // popupQueue.Enqueue(new PopupData(
+                //     Locator.Main.ClaimBonusRewardPanel,
+                //     () =>
+                //     {
+                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
+                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                //     }, 
+                //     ShowNext));
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
                     {
-                        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                        Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                    }, 
-                    ShowNext));
+                        listDataReward = new List<Reward>(listReward),
+                    });
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
+
+            if (Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim())
+            {
+                popupQueue.Enqueue(new PopupData(
+                    Locator.Main.ClaimBonusRewardPanel,
+                    Locator.Main.ClaimBonusRewardPanel.ShowNext,
+                    ShowNext
+                ));
+            }
             
+            #endregion
+            
+            #region Claim Reward Effect
+            
+            listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.LevelStar, groupStar.StarWon));
+            if (GamePlay.levelController.GoldCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.Gold, GamePlay.levelController.GoldCollected));
+            }
+
+            if (GamePlay.levelController.SpecialProgressRewardObjCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.OceanGiftObject, GamePlay.levelController.SpecialProgressRewardObjCollected));
+            }
             #endregion
 
             if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)
             {
                 //GameController.OpenScene(GameScene.Main, callback ?? (() => { }));
-                GameController.OpenScene(GameScene.Main, ShowNext);
+                GameController.OpenScene(GameScene.Main, ()=>
+                {
+                    //ShowNext();
+                    Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, ShowNext);
+                });
             }
             else
             {

@@ -23,10 +23,10 @@ namespace IEC
 
         public void SpawnEffect(RewardClaimData effectData)
         {
-            SpawnEffect(effectData.rewardType, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount, effectData.onComplete, effectData.onEndMove, effectData.delay);
+            SpawnEffect(effectData.rewardType, effectData.rewardSprite, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount, effectData.onComplete, effectData.onEndMove, effectData.delay, effectData.animTime);
         }
 
-        public void SpawnEffect(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        public void SpawnEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
             if (addAmount <= 0)
             {
@@ -52,7 +52,7 @@ namespace IEC
             // int currencyCount = effectCurrency.Count;
             // currencyCount = Mathf.Max(currencyCount, addAmount);
             int currencyCount = Mathf.Min(addAmount, maxSpawn);
-            float ratioTime = allTimeSpawn / currencyCount;
+            float ratioTime = animTime / currencyCount;
 
             Sequence sequence = DOTween.Sequence();
             //EffectCurrency.gameObject.SetActive(true);
@@ -72,7 +72,7 @@ namespace IEC
                 currencyObj.transform.localScale = Vector3.one;
                 currencyObj.anchoredPosition = posSpawn;
                 var img = currencyObj.GetComponent<Image>();
-                img.sprite = Config.dataEffectRewardClaimConfig.GetRewardSprite(rewardType);
+                img.sprite = rewardSprite;
                 currencyObj.gameObject.SetActive(true);
                 var posStart = PosRandomSpawnRuby(posSpawn);
                 var index = i;
@@ -158,22 +158,26 @@ namespace IEC
     public class RewardClaimData
     {
         public ResourceType rewardType;
+        public Sprite rewardSprite;
         public int rewardAmount;
         public Vector2 posSpawn;
         public Vector2 posEnd;
         public Action onComplete;
         public Action onEndMove;
         public float delay;
+        public float animTime;
 
-        public RewardClaimData(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        public RewardClaimData(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 2f)
         {
             this.rewardType = rewardType;
+            this.rewardSprite = rewardSprite;
             this.rewardAmount = addAmount;
             this.posSpawn = posSpawn;
             this.posEnd = posEnd;
             this.onComplete = onComplete;
             this.onEndMove = onEndMove;
             this.delay = delay;
+            this.animTime = animTime;
         }
     }
     

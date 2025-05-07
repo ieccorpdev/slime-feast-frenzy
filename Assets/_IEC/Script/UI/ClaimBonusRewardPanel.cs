@@ -20,18 +20,42 @@ public class ClaimBonusRewardPanel : BasePopup
     private bool canClaim;
     private bool showAimChest = true;
 
-    [Header("Fixed position")] 
-    public PositionGroupsRewardDataPanel groupsOne;
+    [Header("Fixed position")] public PositionGroupsRewardDataPanel groupsOne;
     public PositionGroupsRewardDataPanel groupsTwo;
     public PositionGroupsRewardDataPanel groupsThree;
     public PositionGroupsRewardDataPanel groupsFour;
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
     public PositionGroupsRewardDataPanel groupsSeven;
+
+    private Queue<ShowClaimRewardData> queueShowClaimReward = new();
+
     // Start is called before the first frame update
     void Start()
     {
         tapToClaim.onClick.AddListener(OnClaimReward);
+    }
+
+    public bool IsHaveShowClaimRewardAnim()
+    {
+        return queueShowClaimReward.Count > 0;
+    }
+
+    public void AddClaimRewardData(ShowClaimRewardData data)
+    {
+        data.actionClose += ShowNext;
+        queueShowClaimReward.Enqueue(data);
+    }
+
+    public void ShowNext()
+    {
+        if (queueShowClaimReward.Count == 0)
+            return;
+
+        var data = queueShowClaimReward.Dequeue();
+        
+        SetupRewardPanel(data.listDataReward, data.actionClose, data.showAimChest);
+        ShowingRewardPanel();
     }
 
     public void SetupRewardPanel(List<Reward> listDataReward, Action actionClose, bool showAimChest = false)
@@ -168,13 +192,19 @@ public class ClaimBonusRewardPanel : BasePopup
             {
                 PlayerData.AddCurrency(itr.typeReward,itr.rewardAmount);
             }
-            this.gameObject.SetActive(false);
+
+            if (!IsHaveShowClaimRewardAnim())
+            {
+                //this.gameObject.SetActive(false);
+                Hide();
+            }
+
             actionClose?.Invoke();
             PlayerData.Vibrate(HapticTypes.Failure);
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
-        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
-        CallTempOnHide();
+        //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+        //CallTempOnHide();
     }
 
     public override void Hide()
@@ -216,4 +246,12 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         return Pos1;
     }
+}
+
+[Serializable]
+public class ShowClaimRewardData
+{
+    public List<Reward> listDataReward = new();
+    public Action actionClose;
+    public bool showAimChest;
 }
