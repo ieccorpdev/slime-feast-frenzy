@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using _IECModules;
+using Cysharp.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -36,25 +38,25 @@ namespace _IECModules
 
         private static bool s_IsLoggedIn = false;
         private static bool s_IsLoggingIn = false;
-        public static Coroutine s_LoginCorou;
+        private static CancellationTokenSource s_LoginCancelToken = new CancellationTokenSource();
         public static string CountryCode { get; private set; }
         public static string UserId { get; private set; }
 
         private static Dictionary<string, string> m_Header = new Dictionary<string, string>();
         // Start is called before the first frame update
 
-        public static void Login(MonoBehaviour mono, string platformId = null, Action<string> onDone = null,
-            Action onError = null, string gameCode = null)
+        public static async UniTask<string> Login(string platformId = null, string gameCode = null)
         {
-            if(s_LoginCorou != null) mono.StopCoroutine(s_LoginCorou);
-            s_LoginCorou = mono.StartCoroutine(IE_Login(platformId,onDone, onError, gameCode));
+            s_LoginCancelToken.Cancel();
+            s_LoginCancelToken.Dispose();
+            s_LoginCancelToken = new CancellationTokenSource();
+            return await RepeatLogin(s_LoginCancelToken.Token, platformId, gameCode);
+
         }
 
-        static IEnumerator IE_Login(string platformId = null, Action<string> onDone = null,
-            Action onError = null, string gameCode = null)
+        static async UniTask<string> RepeatLogin(CancellationToken token, string platformId = null, string gameCode = null)
         {
-            var interval = new WaitForSecondsRealtime(5f);
-            while (!s_IsLoggedIn)
+            while (!s_IsLoggedIn || !token.IsCancellationRequested)
             {
                 if (!s_IsLoggingIn)
                 {
@@ -69,15 +71,14 @@ namespace _IECModules
                         gameCode = Application.identifier;
                     }
                     // Debug.Log(Time.realtimeSinceStartup);
-                    Post(APIUrl.LOGIN_CUSTOM, new
+                    var result = await Post(APIUrl.LOGIN_CUSTOM, new
                     {
                         playerId = platformId,
                         gameCode = gameCode,
                         platform = Application.platform == RuntimePlatform.Android ? "android" : "ios",
-                    }, result =>
+                    }, false);
+                    if (!string.IsNullOrEmpty(result))
                     {
-                        // Debug.Log(Time.realtimeSinceStartup);
-                        // Debug.Log(result);
                         var data = SimpleJSON.JSON.Parse(result);
                         s_IsLoggedIn = true;
                         s_AccessToken = data["accessToken"];
@@ -86,16 +87,18 @@ namespace _IECModules
                         UserId = data["userInfo"]["userId"];
                         m_Header.Add("x-access-token", s_AccessToken);
                         // Debug.Log(CountryCode);
-                        onDone?.Invoke(data);
                         s_IsLoggingIn = false;
-                    }, ()=>
+                        return data;
+                    }
+                    else
                     {
-                        onError?.Invoke();
                         s_IsLoggingIn = false;
-                    }, false);
+                    }
                 }
-                yield return interval;
+                await UniTask.Delay(TimeSpan.FromSeconds(5), cancellationToken: token);
             }
+
+            return string.Empty;
         }
 
         public static void UpdatePlatformId(string newPlatformId)
@@ -103,17 +106,17 @@ namespace _IECModules
             Put(APIUrl.UPDATE_PLATFORM_ID, new
             {
                 playerId = newPlatformId
-            });
+            }).Forget();
         }
 
-        public static void GetProfile(Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> GetProfile()
         {
-            Get(APIUrl.PROFILE, null, onDone, onError);
+            return await Get(APIUrl.PROFILE, null);
         }
 
-        public static void UpdateProfile(Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> UpdateProfile()
         {
-            Put(APIUrl.PROFILE, null, onDone, onError);
+            return await Put(APIUrl.PROFILE, null);
         }
 
         public static void SubmitScore(string key, int val)
@@ -123,80 +126,74 @@ namespace _IECModules
                 keyName = key,
                 value = val,
                 country = CountryCode
-            });
+            }).Forget();
         }
 
         #region Leaderboard
 
-        public static void GetGlobalLB(string key, int page, int pageSize = 10, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> GetGlobalLB(string key, int page = 1, int pageSize = 100)
         {
-            Get(APIUrl.LB_GLOBAL, new
+            return await Get(APIUrl.LB_GLOBAL, new
             {
                 keyName = key,
                 country = CountryCode,
-                page = page,
-                pageSize = pageSize
-            }, onDone, onError);
+                page,
+                pageSize
+            });
         }
 
-        public static void GetCountryLB(string key, int page, int pageSize = 10, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> GetCountryLB(string key, int page = 1, int pageSize = 100)
         {
-            Get(APIUrl.LB_COUNTRY, new
+            return await Get(APIUrl.LB_COUNTRY, new
             {
                 keyName = key,
                 country = CountryCode,
-                page = page,
-                pageSize = pageSize
-            }, onDone, onError);
+                page,
+                pageSize
+            });
         }
 
-        public static void GetGlobalAroundMe(string key, int pageSize = 10, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> GetGlobalAroundMe(string key, int pageSize = 10)
         {
-            Get(APIUrl.LB_GLOBAL_AROUND, new
+            return await Get(APIUrl.LB_GLOBAL_AROUND, new
             {
                 keyName = key,
                 country = CountryCode,
                 size = pageSize
-            }, onDone, onError);
+            });
         }
 
-        public static void GetCountryAroundMe(string key, int pageSize = 10, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> GetCountryAroundMe(string key, int pageSize = 10)
         {
-            Get(APIUrl.LB_COUNTRY_AROUND, new
+            return await Get(APIUrl.LB_COUNTRY_AROUND, new
             {
                 keyName = key,
                 country = CountryCode,
                 size = pageSize
-            }, result => { }, onError);
+            });
         }
 
         #endregion
 
         #region Leaderboard Group
 
-        public static void JoinLeaderBoardGroup(string key, Action<string> onDone = null, Action onError = null,
-            string typeLB = "weekly")
+        public static async UniTask<string> JoinLeaderBoardGroup(string key, string typeLB = "weekly")
         {
-            Get(APIUrl.LB_GROUP_JOIN, new
+            return await Get(APIUrl.LB_GROUP_JOIN, new
             {
                 keyName = key,
                 type = typeLB
-            }, onDone, onError);
+            });
         }
 
         #endregion
 
         #region Clan
 
-        public static void CreateClan(string clanName, string description, string type = "open", int maxMembers = 50,
-            int requireLevel = 0, string scoreType = "level", string badge = "", Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> CreateClan(string clanName, string description, string type = "open", int maxMembers = 50,
+            int requireLevel = 0, string scoreType = "level", string badge = "")
         {
-            Post(APIUrl.CLAN, new
+            return await Post(APIUrl.CLAN, new
             {
                 name = clanName,
                 description,
@@ -205,39 +202,36 @@ namespace _IECModules
                 badge,
                 maxMembers,
                 requireLevel
-            }, onDone, onError);
+            });
         }
 
-        public static void SearchClan(string search, string type = "open", int page = 1, int pageSize = 20,
-            Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> SearchClan(string search, string type = "open", int page = 1, int pageSize = 20)
         {
-            Get(APIUrl.CLAN, new
+            return await Get(APIUrl.CLAN, new
             {
                 search,
                 type,
                 page,
                 pageSize,
-            }, onDone, onError);
+            });
         }
 
-        public static void GetClan(string clanId, bool includeMembers, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> GetClan(string clanId, bool includeMembers)
         {
             var url = APIUrl.CLAN + $"/{clanId}?includeMembers={includeMembers}";
-            Get(url, null, onDone, onError);
+            return await Get(url, null);
         }
 
-        public static void GetCurrentClan(Action<string> onDone, Action onError = null)
+        public static async UniTask<string> GetCurrentClan()
         {
-            Get(APIUrl.CURRENT_CLAN, null, onDone, onError);
+            return await Get(APIUrl.CURRENT_CLAN, null);
         }
 
-        public static void UpdateClanInfo(string clanId, string clanName, string description, string type,
-            string scoreType, string badge, int maxMembers, int requireLevel, Action<string> onDone = null,
-            Action onError = null)
+        public static async UniTask<string> UpdateClanInfo(string clanId, string clanName, string description, string type,
+            string scoreType, string badge, int maxMembers, int requireLevel)
         {
             var url = APIUrl.CLAN + $"/{clanId}";
-            Put(url, new
+            return await Put(url, new
             {
                 name = clanName,
                 description,
@@ -246,37 +240,37 @@ namespace _IECModules
                 badge,
                 maxMembers,
                 requireLevel
-            }, onDone, onError);
+            });
         }
 
-        public static void LeaveClan(string clanId, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> LeaveClan(string clanId)
         {
             var url = APIUrl.CLAN + $"/{clanId}/leave";
-            Put(url, null, onDone, onError);
+            return await Put(url, null);
         }
 
-        public static void GetClanMember(string clanId, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> GetClanMember(string clanId)
         {
             var url = APIUrl.CLAN + $"/{clanId}/members";
-            Get(url, null, onDone, onError);
+            return await Get(url, null);
         }
 
-        public static void RequestJoinMember(string clanId, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> RequestJoinMember(string clanId)
         {
             var url = APIUrl.CLAN + $"/{clanId}/join-request";
-            Post(url, null, onDone, onError);
+            return await Post(url, null);
         }
         
-        public static void GetRequestJoinClan(string clanId, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> GetRequestJoinClan(string clanId)
         {
             var url = APIUrl.CLAN + $"/{clanId}/join-request";
-            Post(url, null, onDone, onError);
+            return await Post(url, null);
         }
 
-        public static void CreateClanChat(string clanId, string message, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> CreateClanChat(string clanId, string message)
         {
             var url = APIUrl.CLAN + $"/{clanId}/chats";
-            Post(url, new
+            return await Post(url, new
             {
                 type = "string",
                 content = new {
@@ -285,10 +279,10 @@ namespace _IECModules
             });
         }
 
-        public static void CreateRequestLive(string clanId, int maxHelp = 5, Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> CreateRequestLive(string clanId, int maxHelp = 5)
         {
             var url = APIUrl.CLAN + $"/{clanId}/chats";
-            Post(url, new
+            return await Post(url, new
             {
                 type = "request-live",
                 content = new
@@ -300,11 +294,10 @@ namespace _IECModules
             });
         }
 
-        public static void UpdateRequestLive(string clanId, string chatId, int helpCount, int maxHelp = 5,
-            Action<string> onDone = null, Action onError = null)
+        public static async UniTask<string> UpdateRequestLive(string clanId, string chatId, int helpCount, int maxHelp = 5)
         {
             var url = APIUrl.CLAN + $"/{clanId}/chats/{chatId}";
-            Put(url, new
+            return await Put(url, new
             {
                 type = "request-live",
                 content = new
@@ -318,37 +311,27 @@ namespace _IECModules
 
         #endregion
 
-        static void Post(string url, object body, Action<string> onDone = null, Action onError = null,
-            bool isNeedLogin = true)
+        static async UniTask<string> Post(string url, object body, bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin())
-            {
-                onError?.Invoke();
-                return;
-            }
-            NetworkBase.Post(url, body, onDone, onError, m_Header);
+            if (!isNeedLogin || IsLogin()) return await NetworkBase.Post(url, body, m_Header);
+            Debug.LogError("Not logged in");
+            return string.Empty;
         }
 
-        static void Get(string url, object body, Action<string> onDone = null, Action onError = null,
+        static async UniTask<string> Get(string url, object body, Action<string> onDone = null, Action onError = null,
             bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin())
-            {
-                onError?.Invoke();
-                return;
-            }
-            NetworkBase.Get(url, body, onDone, onError, m_Header);
+            if (!isNeedLogin || IsLogin()) return await NetworkBase.Get(url, body, m_Header);
+            Debug.LogError("Not logged in");
+            return string.Empty;
         }
 
-        static void Put(string url, object body, Action<string> onDone = null, Action onError = null,
+        static async UniTask<string> Put(string url, object body, Action<string> onDone = null, Action onError = null,
             bool isNeedLogin = true)
         {
-            if (isNeedLogin && !IsLogin())
-            {
-                onError?.Invoke();
-                return;
-            }
-            NetworkBase.Put(url, body, onDone, onError, m_Header);
+            if (!isNeedLogin || IsLogin()) return await NetworkBase.Put(url, body, m_Header);
+            Debug.LogError("Not logged in");
+            return string.Empty;
         }
 
         static bool IsLogin()

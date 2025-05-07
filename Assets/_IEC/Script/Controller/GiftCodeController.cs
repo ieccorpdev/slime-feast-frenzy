@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using _IECModules;
+using Cysharp.Threading.Tasks;
 using SimpleJSON;
 using UnityEngine;
 
@@ -18,7 +19,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            // UseGiftCode("W928AC2W");
+            UseGiftCode("WC64A90W").Forget();
         }
 
         public void BehaviourAwake()
@@ -45,30 +46,31 @@ namespace IEC
 
         #region Base
         
-        private void UseGiftCode(string giftCode)
+        private async UniTaskVoid UseGiftCode(string giftCode)
         {
-            GiftCodeModule.UseGiftCode(giftCode, data =>
+            giftCode = giftCode.Trim();
+            var data = await GiftCodeModule.UseGiftCode(giftCode);
+            // Debug.LogError(data);
+            if (string.IsNullOrEmpty(data)) return;
+            var json = JSON.Parse(data);
+            // Debug.LogError(json);
+            if (json.HasKey("iapBundles"))
             {
-                var json = JSON.Parse(data);
-                Debug.LogError(json.Value);
-                if (json.HasKey("iapBundles"))
-                {
-                    ProcessIapBundle(json["iapBundles"]);
-                }
+                ProcessIapBundle(json["iapBundles"]);
+            }
 
-                if (json.HasKey("isNoAds"))
-                {
-                    Pool.Get<ServiceData>().isNoAds = json["isNoAds"].AsBool;
-                }
+            if (json.HasKey("isNoAds"))
+            {
+                Pool.Get<ServiceData>().isNoAds = json["isNoAds"].AsBool;
+            }
 
-                if (json.HasKey("playerData"))
-                {
-                    ProcessPlayerData(json["playerData"]);
-                }
+            if (json.HasKey("playerData"))
+            {
+                ProcessPlayerData(json["playerData"]);
+            }
                 
-                //TODO: Code for other items, resources, datas
-                ProcessOtherData(json);
-            });
+            //TODO: Code for other items, resources, datas
+            ProcessOtherData(json);
         }
 
         private void ProcessIapBundle(JSONNode iapBundles)

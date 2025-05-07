@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _IECModules;
+using Cysharp.Threading.Tasks;
 using IEC;
 using NaughtyAttributes;
 using UnityEngine;
@@ -10,7 +11,7 @@ public class LeaderboardController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        LeaderboardModule.Login(this);
+        LeaderboardModule.Login(gameCode: "wspp-3").Forget();
     }
 
     // Update is called once per frame

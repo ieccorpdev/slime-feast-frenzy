@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using IEC;
 using Newtonsoft.Json;
 using UnityEditor;
@@ -31,14 +32,11 @@ namespace _IECModules
             }
         }
 
-        public static void UseGiftCode(string giftCode, Action<string> onDone, Action onFailed = null)
+        public static async UniTask<string> UseGiftCode(string giftCode)
         {
             var url = string.Format(APIUrl.USE_GIFT_CODE, giftCode.Trim());
-            NetworkBase.Put(url, Body, s =>
-            {
-                var rewards = SimpleJSON.JSON.Parse(s)["rewards"];
-                onDone?.Invoke(rewards.ToString());
-            }, onFailed);
+            var res =  await NetworkBase.Put(url, Body);
+            return string.IsNullOrWhiteSpace(res) ? res : SimpleJSON.JSON.Parse(res)["rewards"].ToString();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
+using Cysharp.Threading.Tasks;
 
 namespace _IECModules
 { 
@@ -13,7 +14,7 @@ namespace _IECModules
     {
         public const string BASE = "https://leaderboard.haleinteractive.vn/api";
         public const int TIMEOUT = 10;
-        public static async void Post(string url, object body, Action<string> onDone = null, Action onError = null, Dictionary<string, string> headers = null)
+        public static async UniTask<string> Post(string url, object body, Dictionary<string, string> headers = null)
         {
             try
             {
@@ -34,21 +35,17 @@ namespace _IECModules
                     }
                 }
 
-                var res = request.SendWebRequest();
-                while (!res.isDone)
-                {
-                    await Task.Yield();
-                }
-
-                ProcessResResult(res, onDone, onError);
+                await request.SendWebRequest().ToUniTask();
+                return ProcessResResult(request);
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message);
+                return string.Empty;
             }
         }
 
-        public static async void Get(string url, object body, Action<string> onDone = null, Action onError = null, Dictionary<string, string> headers = null)
+        public static async UniTask<string> Get(string url, object body, Dictionary<string, string> headers = null)
         {
             try
             {
@@ -74,26 +71,23 @@ namespace _IECModules
                         request.SetRequestHeader(h.Key, h.Value);
                     }
                 }
-                var res = request.SendWebRequest();
-                while (!res.isDone)
-                {
-                    await Task.Yield();
-                }
-
-                ProcessResResult(res, onDone, onError);
+                await request.SendWebRequest().ToUniTask();
+                return ProcessResResult(request);
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message);
+                return string.Empty;
             }
         }
 
-        public static async void Put(string url, object body, Action<string> onDone = null, Action onError = null, Dictionary<string, string> headers = null)
+        public static async UniTask<string> Put(string url, object body, Dictionary<string, string> headers = null)
         {
             try
             {
                 var bodyStr = body != null ? JsonConvert.SerializeObject(body): string.Empty;
                 Debug.Log("Put Request:\nUrl:" + url);
+                Debug.Log("Put Request Body:" + bodyStr);
                 var request = UnityWebRequest.Put(url, bodyStr);
                 request.timeout = TIMEOUT;
                 request.SetRequestHeader("Content-Type", "application/json");
@@ -104,41 +98,40 @@ namespace _IECModules
                         request.SetRequestHeader(h.Key, h.Value);
                     }
                 }
-                var res = request.SendWebRequest();
-                while (!res.isDone)
-                {
-                    await Task.Yield();
-                }
-
-                ProcessResResult(res, onDone, onError);
+                await request.SendWebRequest().ToUniTask();
+                return ProcessResResult(request);
             }
             catch (Exception e)
             {
                 Debug.Log(e.Message);
+                return string.Empty;
             }
         }
 
-        static void ProcessResResult(UnityWebRequestAsyncOperation res, Action<string> onDone = null, Action onError = null)
+        static string ProcessResResult(UnityWebRequest res)
         {
-            if (res.webRequest.result == UnityWebRequest.Result.Success)
+            if (res.result == UnityWebRequest.Result.Success)
             {
-                var result = res.webRequest.downloadHandler.text;
+                var result = res.downloadHandler.text;
                 var resultJson = SimpleJSON.JSON.Parse(result);
                 if (resultJson["statusCode"] == 200)
                 {
                     Debug.Log("<color=#00ff00ff>Success</color>:" + result);
                     // Debug.Log(resultJson["data"]);
-                    onDone?.Invoke(resultJson["data"].ToString());
+                    // onDone?.Invoke(resultJson["data"].ToString());
+                    return resultJson["data"].ToString();
                 }
                 else
                 {
                     Debug.Log("<color=#ff0000ff>Failed</color>:" + result);
+                    return string.Empty;
                 }
             }
             else
             {
-                Debug.Log("<color=#ff0000ff>Failed</color>:" + res.webRequest.error);
-                onError?.Invoke();
+                Debug.Log("<color=#ff0000ff>Failed</color>:" + res.error);
+                // onError?.Invoke();
+                return string.Empty;
             }
         }
     }
