@@ -153,20 +153,20 @@ namespace _IEC.Features.Gameplay
                     }
                     
                     res.Add(itemComponent);
-                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
-                    waterWave.WaterMaterial = PlayableController.Instance.waveWaterMaterial;
-
-                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
-                    float objectOffset = 0;
-                    if (newLogicWhirlpool)
-                    {
-                        objectOffset = -objectSize / 2;
-                    }
-                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
-                    #if UNITY_EDITOR
-                    waterWave.OnValidate();
-                    #endif
-                    itemComponent.posOnWater = waterWave; 
+                    //TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
+                    // waterWave.WaterMaterial = PlayableController.Instance.waveWaterMaterial;
+                    //
+                    // float objectSize = itemComponent.MyRenderer.bounds.size.y;
+                    // float objectOffset = 0;
+                    // if (newLogicWhirlpool)
+                    // {
+                    //     objectOffset = -objectSize / 2;
+                    // }
+                    // waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
+                    // #if UNITY_EDITOR
+                    // waterWave.OnValidate();
+                    // #endif
+                    // itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
                 

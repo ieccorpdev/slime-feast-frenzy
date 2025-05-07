@@ -14,8 +14,6 @@ public class PlayableController : _BaseBehaviour
     private static PlayableController instance;
     [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
     public GameplayItemPrefabConfig GameplayItemPrefabConfig;
-    public ScreenInGame ScreenInGame;
-    public bool useHelper;
     public static PlayableController Instance
     {
         get
