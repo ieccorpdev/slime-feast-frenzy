@@ -44,7 +44,6 @@ namespace IEC
                 
                 var targetPos = starTransform.position;
                 var targetRotation = starTransform.rotation;
-                var targetScale = starTransform.localScale;
                 
                 RectTransform starRect = starTransform as RectTransform;
                 RectTransform timerStarRect = timerStarTransform as RectTransform;
@@ -54,7 +53,6 @@ namespace IEC
                 
                 starTransform.position = timerStarTransform.position;
                 starTransform.rotation = timerStarTransform.rotation;
-                starTransform.localScale = timerStarTransform.localScale;
                 timerStarTransform.gameObject.SetActive(false);
 
                 starTransform.DOMove(targetPos, timeEachStep).SetEase(Ease.InOutQuart).SetDelay(delay);
