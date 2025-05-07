@@ -27,6 +27,7 @@ namespace _IEC.Features.Gameplay
         public void Start()
         {
             frozenHelper.actionEffect += AnimationFrozen;
+            missleFrozen.Stop();
             //gameplayTimer.OnUpdateFrozenState += isFrozen => { groupMark.SetActiveFrozenMark(isFrozen); };
         }
 
