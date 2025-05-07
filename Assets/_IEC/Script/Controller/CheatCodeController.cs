@@ -119,7 +119,11 @@ namespace IEC
                 }
             });
             
-
+            ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>
+            {
+                Config.levelConfig.CheckValidAllLevel();
+            });
+            
             ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_WIN", cheatCodeParam =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
