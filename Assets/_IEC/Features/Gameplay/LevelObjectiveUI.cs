@@ -64,7 +64,7 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-                DOCollectItemEffect();
+                //DOCollectItemEffect();
             }
         }
         

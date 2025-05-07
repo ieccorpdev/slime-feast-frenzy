@@ -214,7 +214,7 @@ namespace _IEC.Features.Gameplay
         private bool IsSpecialObject(string itemId)
         {
             //return itemId.Contains("SpecialItem");
-            return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId));
+            return false;
         }
 
         private void CollectSpecialObject(CollectItemData data)
@@ -423,9 +423,16 @@ namespace _IEC.Features.Gameplay
         private bool IsObjectiveItem(string itemId)
         {
             if (GetLevelData().levelObjectives == null || GetLevelData().levelObjectives.Count == 0) return false;
-            return GetLevelData().levelObjectives.Exists(x => x.itemId == itemId);
+            return mapObjectiveItem.Contains(itemId);
         }
 
+        private List<string> mapObjectiveItem = new List<string>()
+        {
+            "food_41",
+            "food_294",
+            "food_293",
+            "food_413",
+        };
         private bool IsBomb(string itemId)
         {
             return itemId == "Bomb";
