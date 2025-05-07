@@ -40,6 +40,7 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
+        [SerializeField] private HelperIntro helperIntro;
         private static bool CanPlaySFX = true;
         private void Awake()
         {
@@ -60,7 +61,7 @@ namespace IEC
         
         public override void Show()
         {
-            gameplayTimer.ResetFreezeTime();
+            // gameplayTimer.ResetFreezeTime();
             //popupPauseGame.gameObject.SetActive(false);
             //Services.SetActiveBottomBanner(true);
             base.Show();
@@ -87,6 +88,11 @@ namespace IEC
                     tutorialCompass.StartTutorial();
                     break;
             }
+        }
+
+        public void ShowHelperIntroAnimation(string messenger)
+        {
+            helperIntro.ShowHelperIntroAnimation(messenger);
         }
 
         public GameplayTimer GetGameplayTimer()
@@ -127,7 +133,6 @@ namespace IEC
             CollectItemData data = (CollectItemData)param;
             if (data.GetCoinValue() > 0)
             {
-                data.itemID = LevelAchievementData.ID_COIN;
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
@@ -140,7 +145,7 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
             }
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
-            groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
+            groupLevelObjectives.CollectASpecialObject(data, totalNumberCollected, Vector2.zero);
         }
 
         private void OnCollectItem(object param)
@@ -152,7 +157,7 @@ namespace IEC
         private void OnCollectObjectiveItem(object param)
         {
             var data = (CollectItemData)param;
-            groupLevelObjectives.CollectAObject(data.itemID, Vector2.zero);
+            groupLevelObjectives.CollectAObject(data, Vector2.zero,true);
         }
 
         private void OnUserUseHelper(object param)
@@ -207,6 +212,7 @@ namespace IEC
             Joystick.OnPointerUp(null);
             UpdateUI();
             gameplayTimer.SetStartTime(levelData);
+            gameplayTimer.ResetFreezeTime();
         }
     }
 }

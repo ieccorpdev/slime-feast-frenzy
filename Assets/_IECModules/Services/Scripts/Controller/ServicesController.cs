@@ -1117,6 +1117,7 @@ namespace IEC
         public void RateUs()
         {
             Debug.LogWarning("rate us");
+            Pool.Get<PlayerSecret>().wasRateUs = true;
 #if UNITY_IOS
             UnityEngine.iOS.Device.RequestStoreReview();
 #endif

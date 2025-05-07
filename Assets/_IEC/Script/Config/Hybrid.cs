@@ -31,6 +31,8 @@ namespace IEC
         DoubleSpecialObjectCount,
         EvolveStone,
         WindSurf,
+        LevelStar,
+        OceanGiftObject,
     }
 
     [Serializable]

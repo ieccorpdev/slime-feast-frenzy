@@ -64,12 +64,13 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
             Observer.AddObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
-            
         }
 
         private void Start()
         {
             AddCheatCode();
+            Material instanceMaterial = new Material(imgIcon.material);
+            imgIcon.material = instanceMaterial;
         }
 
         void AddCheatCode()
@@ -201,10 +202,12 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
-            imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,1,0.2f).SetId(IconPunchScale);
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
+            Services.PushEvent(new UserHelper(helperId.ToString()));
             switch (helperId)
             {
                 case HelperId.Magnet:
+                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
                     EventController.RaiseEvent(EventList.Audio.MAGNET_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -212,12 +215,15 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
                 case HelperId.Compass:
+                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
+                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
                     EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
                     break;
                 case HelperId.FrozenTime:
+                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Time Freeze");
                     EventController.RaiseEvent(EventList.Audio.ICE_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -227,6 +233,12 @@ namespace _IEC.Features.Gameplay
             }
         }
 
+        public void PlayShinyEffect()
+        {
+            imgIcon.material.SetFloat("_ShineLocation",0);
+            imgIcon.material.DOFloat(1f, "_ShineLocation", 0.3f).SetId(imgIcon.GetInstanceID()+"_Shiny");
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
+        }
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
         {
             if (dict.ContainsKey(id))
@@ -259,7 +271,7 @@ namespace _IEC.Features.Gameplay
                         {
                             ChangeState(State.Addable);
                         }
-                        
+                        PlayShinyEffect();
                         switch (helperId)
                         {
                             case HelperId.Magnet:
@@ -329,7 +341,13 @@ namespace _IEC.Features.Gameplay
             if (PlayerData.helperData.GetPool(helperId) > 0)
                 ChangeState(State.Pool);
         }
-        
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(imgIcon.GetInstanceID()+"_Shiny");
+            DOTween.Kill(IconPunchScale);
+        }
+
         private enum  State
         {
             None,

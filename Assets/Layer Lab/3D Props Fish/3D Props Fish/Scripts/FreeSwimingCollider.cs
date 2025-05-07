@@ -9,7 +9,7 @@ public class FreeSwimingCollider : MonoBehaviour
     public float avoidanceDistance = 5f;
     public LayerMask obstacleLayer;
     public float targetProximityThreshold = 1f;
-    public MeshCollider swimAreaMeshCollider;
+    public Collider swimAreaMeshCollider;
 
     private Vector3 _targetPosition;
     private Collider[] _obstacles;

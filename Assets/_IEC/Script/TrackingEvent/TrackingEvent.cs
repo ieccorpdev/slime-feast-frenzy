@@ -103,19 +103,17 @@ namespace IEC.TrackingEvent
     {
         public override string Name => "use_helper";
         private string helperType;
-        private string costType;
+        private string level_prop;
 
-        public UserHelper(string hType,string cType)
+        public UserHelper(string hType)
         {
             helperType = hType;
-            costType = cType;
         }
 
         public override Dictionary<string, object> GetParams()
         {
             var dict = base.GetParams();
             dict["helper_type"] = helperType;
-            dict["cost_type"] = costType;
             return dict;
         }
     }
