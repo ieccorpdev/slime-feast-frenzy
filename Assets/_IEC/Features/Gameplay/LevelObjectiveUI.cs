@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
 {
@@ -21,12 +22,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private ParticleSystem effectCollect;
 
         public string itemId;
-
+        
         private bool m_IsSpecial;
         private RectTransform m_RectTransform;
 
         private string TWEEN_LEVEL_OBJECTIVE => "TWEEN_LEVEL_OBJECTIVE" + gameObject.GetInstanceID();
-
+        //anim fly up
+        private float offsetFlyX;
+        private int dirFlyX;
         public RectTransform RectTransform
         {
             get
@@ -45,6 +48,21 @@ namespace _IEC.Features.Gameplay
             return imgIcon.transform.position;
         }
 
+        public float GetOffsetItemCurve()
+        {
+            offsetFlyX += 0.1f*dirFlyX;
+            if (offsetFlyX < -0.5f)
+            {
+                offsetFlyX = -0.5f;
+                dirFlyX = 1;
+            }
+            if (offsetFlyX > 0.5f)
+            {
+                offsetFlyX = 0.5f;
+                dirFlyX = -1;
+            }
+            return offsetFlyX;
+        }
         public bool IsSpecialItem()
         {
             return m_IsSpecial;
@@ -106,6 +124,8 @@ namespace _IEC.Features.Gameplay
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;
             RectTransform.sizeDelta = delta;
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
         }
 
         public void Reset()
