@@ -242,6 +242,12 @@ namespace _IEC.Features.Gameplay
                 star.gameObject.SetActive(!m_isLevelCoin);
             }
         }
+
+        public List<Image> GetListStarImages()
+        {
+            return listStarTime;
+        }
+        
         public void CheatTime(float time)
         {
             CurrentTime = time;
