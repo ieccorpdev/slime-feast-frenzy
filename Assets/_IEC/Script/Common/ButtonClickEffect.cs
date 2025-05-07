@@ -61,7 +61,8 @@ namespace IEC
 
             if (ButtonState == ButtonState.Inactive)
                 return;
-
+            if (pressSprite == null || releaseSprite == null)
+                return;
             if (isPress)
                 buttonDisplayImage.sprite = pressSprite;
             else
@@ -74,7 +75,8 @@ namespace IEC
         {
             if (!isChangeButtonSpriteOnInactive)
                 return;
-            
+            if (pressSprite == null || releaseSprite == null)
+                return;
             if (isInactive)
                 buttonDisplayImage.sprite = inactiveSprite;
             else
