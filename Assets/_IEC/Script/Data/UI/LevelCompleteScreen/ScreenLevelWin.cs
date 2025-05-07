@@ -105,6 +105,28 @@ namespace IEC
                 );
                 popupQueue.Enqueue(CallNativeReview);
             }
+            
+            //Check progress reward
+            var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            while(PlayerData.CheckClaimProgressReward(reward))
+            {
+                List<Reward> listReward = new(){reward.reward};
+                // popupQueue.Enqueue(new PopupData(
+                //     Locator.Main.ClaimBonusRewardPanel,
+                //     () =>
+                //     {
+                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
+                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                //     }, 
+                //     ShowNext));
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(listReward),
+                    });
+                reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            }
+            
             //Check level chest
             var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
             if (levelChestRewardPopup != null)
@@ -133,27 +155,6 @@ namespace IEC
                     {
                         listDataReward = new List<Reward>(rewardData.listReward),
                     });
-            }
-
-            //Check progress reward
-            var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
-            while(PlayerData.CheckClaimProgressReward(reward))
-            {
-                List<Reward> listReward = new(){reward.reward};
-                // popupQueue.Enqueue(new PopupData(
-                //     Locator.Main.ClaimBonusRewardPanel,
-                //     () =>
-                //     {
-                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                //     }, 
-                //     ShowNext));
-                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
-                    new ShowClaimRewardData()
-                    {
-                        listDataReward = new List<Reward>(listReward),
-                    });
-                reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
 
             if (Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim())
@@ -187,7 +188,11 @@ namespace IEC
                 GameController.OpenScene(GameScene.Main, ()=>
                 {
                     //ShowNext();
-                    Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, ShowNext);
+                    Locator.Main.HomeScreenTab.AddOpenSceneAction(
+                        () =>
+                        {
+                            Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, ShowNext);
+                        });
                 });
             }
             else

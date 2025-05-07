@@ -182,7 +182,7 @@ namespace IEC
 
         private void AddLevelStarToClaim(int amount, float animTime = 1f, float delay = 0f)
         {
-            RectTransform targetTransform = Locator.Main.HomeScreenTab.starChestHomeFeature.GetComponent<RectTransform>();
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.btnStarChestReward.GetComponent<ButtonClickEffect>().buttonDisplayImage.GetComponent<RectTransform>();
             
             AddCustomRewardToClaimEffect(
                 ResourceType.LevelStar, 
