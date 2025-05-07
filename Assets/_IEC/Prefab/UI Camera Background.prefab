@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8449978738249779259}
   - component: {fileID: 8449978738249779256}
   - component: {fileID: 8449978738249779258}
+  - component: {fileID: 998788948932826211}
   m_Layer: 0
   m_Name: UI Camera Background
   m_TagString: Untagged
@@ -84,3 +85,62 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8449978738249779257}
   m_Enabled: 1
+--- !u!114 &998788948932826211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8449978738249779257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b0ba117f9d8e6a4a8a2aaca7154c935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectClick: 1
+  waveCount: 10
+  timeInfinity: 0
+  waveTime: 0.5
+  waveAnimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.41899693
+      value: 0.5761954
+      inSlope: -2.1942995
+      outSlope: -2.1942995
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  waveInternalRadio: 0.08
+  waveExternalRadio: 0.05
+  waveScale: 6
+  waveSpeed: 2
+  waveFrequency: 6
+  circleXScale: 1.5
+  circleYScale: 1.5
+  material: {fileID: 2100000, guid: 029afe2ad7599a04ca77015dd74292b7, type: 2}
+  logInterval: 0.1
+  minDistance: 50
