@@ -25,11 +25,6 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private TextMeshProUGUI txtAddedTime;
         [SerializeField] private List<Image> listStarTime;
         
-        [Header("Cooldown Text Style")]
-        public Material safeMaterialPreset;
-        public Material warningMaterialPreset;
-        public Material dangerousMaterialPreset;
-        
         public float CurrentTime;
         private float timeEffectStar = 0.5f;
         private float m_MaxTime;
@@ -386,17 +381,17 @@ namespace _IEC.Features.Gameplay
                     //txtCoolDown.fontMaterial = safeMaterialPreset;
                     break;
                 case RemainingTimeState.Warning:
-                    listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR");
+                    listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR").SetEase(Ease.InBack);
                     imgProgress.sprite = spriteWarning;
                     //txtCoolDown.fontMaterial = warningMaterialPreset;
                     break;
                 case RemainingTimeState.Dangerous:
-                    listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR");;
+                    listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR").SetEase(Ease.InBack);;
                     imgProgress.sprite = spriteDangerous;
                     //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
                 case RemainingTimeState.None:
-                    listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR");
+                    listStarTime[2].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[2].transform.GetInstanceID()+"_ANIM_STAR").SetEase(Ease.InBack);
                     imgProgress.sprite = spriteDangerous;
                     //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
