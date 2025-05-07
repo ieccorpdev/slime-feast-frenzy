@@ -25,14 +25,13 @@ namespace IEC
 
         [Space]
         //public Button btnRestart;
-        [SerializeField]
-        private GameplayTimer gameplayTimer;
+        public GameplayTimer gameplayTimer;
         public Button btnSetting;
         [SerializeField] private GroupLevelObjectives groupLevelObjectives;
         [SerializeField] private GroupHelperUI groupHelperUI;
         [SerializeField] private Button btnPause;
         //[SerializeField] private PopupPauseGame popupPauseGame;
-        [SerializeField] private GroupScreenInGameMark groupMark;
+        public GroupScreenInGameMark groupMark;
         [SerializeField] private CompassDirectorControllerUI compassDirectorControllerUI;
         [SerializeField] private TutorialStartGame tutorialStartGame;
         [SerializeField] private BaseHelperTutorial tutorialMagnet;
@@ -55,7 +54,6 @@ namespace IEC
                 groupMark.SetActiveDangerousMark(false);
             };
             gameplayTimer.OnTimeUpdate += remainingTime => { groupMark.SetActiveDangerousMark(remainingTime <= 10); };
-            gameplayTimer.OnUpdateFrozenState += isFrozen => { groupMark.SetActiveFrozenMark(isFrozen); };
         }
         
         public override void Show()
@@ -157,10 +155,11 @@ namespace IEC
         private void OnUserUseHelper(object param)
         {
             var data = (UserUseHelper)param;
-            if (data.helperId == HelperId.FrozenTime)
-            {
-                groupMark.SetActiveFrozenMark(true);
-            }
+            //if (data.helperId == HelperId.FrozenTime)
+            //{
+            //    //MoveTo effect helper
+            //    groupMark.SetActiveFrozenMark(true);
+            //}
         }
 
         private void OnUserCompleteHelper(object param)

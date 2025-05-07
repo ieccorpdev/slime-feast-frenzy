@@ -26,6 +26,8 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image imgIcon;
         [SerializeField] private TextMeshProUGUI txtUnlockCondition;
         [SerializeField] private GameObject groupHint;
+        public Action actionEffect;
+        public Action completeActionEffect;
         private State m_CurrentState;
         private float m_CooldownTime;
         private float HelperActiveTime => Config.gamePlayConfig.GetHelperActiveTime(helperId);
@@ -203,6 +205,7 @@ namespace _IEC.Features.Gameplay
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
             imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
+            actionEffect?.Invoke();
             Services.PushEvent(new UserHelper(helperId.ToString()));
             switch (helperId)
             {
