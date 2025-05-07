@@ -21,7 +21,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private ItemDefinition m_ItemDefinition;
         [SerializeField] private State m_CurrentState;
         [SerializeField] protected bool _isCollected = false;
-        public TCP2_GetPosOnWater posOnWater;
+        public TCP2_GetPosOnWater_Stylized posOnWater;
         private int LayerMainWorld => LayerMask.NameToLayer("MainWorld");
         private int LayerHole => LayerMask.NameToLayer("Hole");
         protected string RecycleTweenId => gameObject.GetInstanceID() + "recycle";

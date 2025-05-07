@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1791470107485603861}
   - component: {fileID: 2413788302057481313}
+  - component: {fileID: 4979629871891203518}
   m_Layer: 0
   m_Name: WallBouy
   m_TagString: Untagged
@@ -40,7 +41,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1791470107485603866}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6915f708139f354f84cc18a35d5bffc, type: 3}
   m_Name: 
@@ -51,6 +52,22 @@ MonoBehaviour:
   heightScale: 1.5
   isValid: 1
   sineCount: 2
+--- !u!114 &4979629871891203518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1791470107485603866}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a829f6902b49a7448b3df3b20155c246, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WaterMaterial: {fileID: 2100000, guid: 1b628b00915a79646b11f6e4821c303d, type: 2}
+  heightOffset: 0
+  bobAmount: 0
+  bobSpeed: 1
 --- !u!1 &7386037988521667773
 GameObject:
   m_ObjectHideFlags: 0

@@ -328,7 +328,7 @@ namespace _IEC.Features.Gameplay
                     }
                     
                     res.Add(itemComponent);
-                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
+                    TCP2_GetPosOnWater_Stylized waterWave = newItem.AddComponent<TCP2_GetPosOnWater_Stylized>();
                     waterWave.WaterMaterial = Config.waveWaterMaterial;
 
                     float objectSize = itemComponent.MyRenderer.bounds.size.y;
@@ -338,7 +338,7 @@ namespace _IEC.Features.Gameplay
                         objectOffset = -objectSize / 2;
                     }
                     waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
-                    waterWave.InitShader();
+                    //waterWave.InitShader();
                     itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }

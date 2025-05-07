@@ -50,21 +50,6 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 		{
 			WaterMaterial = null;
 		}
-		//MeoMew hard code.
-
-		//var assetImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(shader)) as ShaderImporter;
-		//if (WaterMaterial != null )
-		//{
-		//	sineCount = 1;
-		//	if (WaterMaterial.IsKeywordEnabled("FVERTEX_SIN_WAVES"))
-		//		validMaterial = true;
-		//	if (WaterMaterial.IsKeywordEnabled("FVSW_8"))
-		//		sineCount = 8;
-		//	else if (WaterMaterial.IsKeywordEnabled("FVSW_4"))
-		//		sineCount = 4;
-		//	else if (WaterMaterial.IsKeywordEnabled("FVSW_2"))
-		//		sineCount = 2;
-		//}
 		sineCount = 2;
 		this.isValid = true;
 	}
