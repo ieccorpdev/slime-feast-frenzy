@@ -68,7 +68,7 @@ namespace _IEC.Features.Gameplay
             
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
-            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
+            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(objectiveUI.GetOffsetItemCurve(),0 , 0); // Add a Y offset to create a curve
             if (!GamePlay.IsWin)
             {
                 if (canPlaySFX)
