@@ -184,106 +184,117 @@ public class HomeScreenTab : ScreenNavigateUI
         InitMoveOutAnimation();
         UpdateMainHome();
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-        DoMoveBackAllObj();
+        DoMoveBackAllObj(0.8f);
     }
     #region Change Screen Anim
         
-    private void InitMoveOutAnimation()
-    {
-        _listObjMoveOut = new List<UIMoveOutAnimation>();
-        _listObjMoveOut.Add(new UIMoveOutAnimation(leftButtonBar,UIElementMoveDir.LEFT)); 
-        
-        _listObjMoveOut.Add(new UIMoveOutAnimation(rightButtonBar,UIElementMoveDir.RIGHT));
-        
-        _listObjMoveOut.Add(new UIMoveOutAnimation(bottomBar,UIElementMoveDir.DOWN));
-        
-        foreach (RectTransform child in Locator.Main.ScreenMain.bottomBar.transform)
+        private void InitMoveOutAnimation()
         {
-            _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.DOWN));
-        }
-        
-        // foreach (RectTransform child in Locator.Main.ScreenMain.topBar.transform)
-        // {
-        //     _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.UP));
-        // }
-        // _listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.bottomBar.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
-        //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
-        
-    }
-
-    public void DoMoveOutAllObjNoAnim()
-    {
-        for (int i = 0; i < _listObjMoveOut.Count; i++)
-        {
-            _listObjMoveOut[i].SetObjPosOut();
-        }
-        progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
-    }
-    
-    public void DoMoveOutAllObj(float timeAnim,Action onComplete = null, float delay = 0f)
-    {
-        DOTween.Kill(_uiAnimSequence);
-
-        _uiAnimSequence = DOTween.Sequence();
-
-        _uiAnimSequence.InsertCallback(delay,
-            () =>
+            _listObjMoveOut = new List<UIMoveOutAnimation>();
+            _listObjMoveOut.Add(new UIMoveOutAnimation(leftButtonBar,UIElementMoveDir.LEFT)); 
+            
+            _listObjMoveOut.Add(new UIMoveOutAnimation(rightButtonBar,UIElementMoveDir.RIGHT));
+            
+            _listObjMoveOut.Add(new UIMoveOutAnimation(bottomBar,UIElementMoveDir.DOWN));
+            
+            foreach (RectTransform child in Locator.Main.ScreenMain.bottomBar.transform)
             {
-                for (int i = 0; i < _listObjMoveOut.Count; i++)
+                _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.DOWN));
+            }
+            
+            // foreach (RectTransform child in Locator.Main.ScreenMain.topBar.transform)
+            // {
+            //     _listObjMoveOut.Add(new UIMoveOutAnimation(child,UIElementMoveDir.UP));
+            // }
+            // _listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.bottomBar.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
+            //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
+            
+        }
+
+        public void DoMoveOutAllObjNoAnim()
+        {
+            for (int i = 0; i < _listObjMoveOut.Count; i++)
+            {
+                _listObjMoveOut[i].SetObjPosOut();
+            }
+            progressRewardButton.transform.localScale = new Vector3(0, 0, 1);
+        }
+        
+        public void DoMoveOutAllObj(float timeAnim,Action onComplete = null, float delay = 0f)
+        {
+            DOTween.Kill(_uiAnimSequence);
+
+            _uiAnimSequence = DOTween.Sequence();
+
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
                 {
-                    DOTween.Kill($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
-                    _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}",timeAnim);
-                }
-                
-                Locator.Service.GameResourceDisplay.DoMoveOutAnim();
-            });
+                    for (int i = 0; i < _listObjMoveOut.Count; i++)
+                    {
+                        DOTween.Kill($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}");
+                        _listObjMoveOut[i].MoveOut($"MV_T{_listObjMoveOut[i].target.GetInstanceID()}",timeAnim);
+                    }
+                    
+                    Locator.Service.GameResourceDisplay.DoMoveOutAnim();
+                });
 
-
+            
         delay += 0.1f;
-        
         _uiAnimSequence.InsertCallback(delay,
             () =>
             {
-                DOTween.Kill(progressRewardButton.transform);
-                progressRewardButton.transform.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
+                DOTween.Kill(progressRewardButton);
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(progressRewardButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1), 0.1f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0.5f, 0.1f))
+                        .Append(progressRewardButton.transform.DOScale(new Vector3(0.9f, 0.9f, 1), 0.1f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0.3f, 0.1f))
+                        .Append(progressRewardButton.transform.DOScale(Vector3.zero, 0.1f).SetEase(Ease.InQuad))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(0, 0.1f));
             });
-        
-        delay += 0.4f;
-        //
-        // _uiAnimSequence.InsertCallback(delay,
-        //     () =>
-        //     {
-        //         buildCityUI.HideScale();
-        //     });
+        //_uiAnimSequence.InsertCallback(delay,
+        //        () =>
+        //        {
+        //            DOTween.Kill(progressRewardButton.transform);
+        //            progressRewardButton.transform.DOScaleX(0, 0.2f).SetEase(Ease.InQuad);
+        //        });
+            
+            delay += 0.4f;
+            //
+            // _uiAnimSequence.InsertCallback(delay,
+            //     () =>
+            //     {
+            //         buildCityUI.HideScale();
+            //     });
 
 
-        // delay += 0.6f;
-        
-        _uiAnimSequence.InsertCallback(delay,
-            () =>
-            {
-                onComplete?.Invoke();
-            });
+            // delay += 0.6f;
+            
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    onComplete?.Invoke();
+                });
 
-        _uiAnimSequence.Play();
-    }
-    
-    public void DoMoveBackAllObj(float delayTime = 0f, Action onComplete = null)
-    {
-        DOTween.Kill(_uiAnimSequence);
-        
-        foreach (var obj in _listObjMoveOut)
-        {
-            obj.SetObjPosOut();
+            _uiAnimSequence.Play();
         }
         
-        //buildCityUI.HideScale(false);
-        progressRewardButton.transform.localScale = new Vector3(0, 1, 1);
+        public void DoMoveBackAllObj(float delayTime = 0f, Action onComplete = null)
+        {
+            DOTween.Kill(_uiAnimSequence);
+            
+            foreach (var obj in _listObjMoveOut)
+            {
+                obj.SetObjPosOut();
+            }
+            
+            //buildCityUI.HideScale(false);
+            progressRewardButton.transform.localScale = new Vector3(0, 0, 1);
 
-        _uiAnimSequence = DOTween.Sequence();
-        
-        float delay = delayTime;
-        
+            _uiAnimSequence = DOTween.Sequence();
+            
+            float delay = delayTime;
+
         // _uiAnimSequence.InsertCallback(delay,
         //     () =>
         //     {
@@ -292,54 +303,61 @@ public class HomeScreenTab : ScreenNavigateUI
         //     });
         //
         // delay += 0.2f;
-        
         _uiAnimSequence.InsertCallback(delay,
             () =>
             {
-                progressRewardButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
+                Sequence sequence = DOTween.Sequence();
+                sequence.Append(progressRewardButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1), 0.2f))
+                        .Join(progressRewardButton.GetComponent<Image>().DOFade(1, 0.2f))
+                        .Append(progressRewardButton.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetEase(Ease.OutQuad));
             });
+        //_uiAnimSequence.InsertCallback(delay,
+        //        () =>
+        //        {
+        //            progressRewardButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutQuad);
+        //        });
 
-        delay += 0.3f;
-        
-        _uiAnimSequence.InsertCallback(delay,
-            () =>
-            {
-                for (int i = 0; i < _listObjMoveOut.Count; i++)
+            delay += 0.1f;
+            
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
                 {
-                    _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}",0.2f);
-                }
-                
-                Locator.Service.GameResourceDisplay.DoMoveBackAnim();
-            });
-        
-        delay += 0.3f;
+                    for (int i = 0; i < _listObjMoveOut.Count; i++)
+                    {
+                        _listObjMoveOut[i].SetOutMoveBack($"MV_B{_listObjMoveOut[i].target.GetInstanceID()}",0.2f);
+                    }
+                    
+                    Locator.Service.GameResourceDisplay.DoMoveBackAnim();
+                });
+            
+            delay += 0.1f;
 
-        _uiAnimSequence.InsertCallback(delay,
-            () =>
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    progressRewardBar.DoAnimProgressBar();
+                    onComplete?.Invoke();
+                });
+
+            _uiAnimSequence.Play();
+        }
+        
+        public void SpawnCollectItemOnEndGameEffect(List<KeyValuePair<ResourceType, int>> listCollectedItems, Action onComplete = null)
+        {
+            if (listCollectedItems.Count == 0)
             {
-                progressRewardBar.DoAnimProgressBar();
                 onComplete?.Invoke();
-            });
-
-        _uiAnimSequence.Play();
-    }
-
-    public void SpawnCollectItemOnEndGameEffect(List<KeyValuePair<ResourceType, int>> listCollectedItems, Action onComplete = null)
-    {
-        if (listCollectedItems.Count == 0)
-        {
-            onComplete?.Invoke();
-            return;
+                return;
+            }
+        
+            foreach (var collectedItem in listCollectedItems)
+            {
+                Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.Key, collectedItem.Value);
+            }
+            Locator.Main.ScreenMain.DoAnimAllAvailableReward(onComplete);
         }
         
-        foreach (var collectedItem in listCollectedItems)
-        {
-            Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.Key, collectedItem.Value);
-        }
-        Locator.Main.ScreenMain.DoAnimAllAvailableReward(onComplete);
-    }
-    
-    #endregion
+        #endregion
 
     // Update is called once per frame
     void Update()
