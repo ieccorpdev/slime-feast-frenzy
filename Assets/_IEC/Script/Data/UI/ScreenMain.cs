@@ -172,10 +172,10 @@ namespace IEC
                     AddRewardHelperToClaim(resourceType, amount, 1f,0.4f);
                     break;
                 case ResourceType.OceanGiftObject:
-                    AddSpecialObjectToClaim(amount, 0.5f);
+                    AddSpecialObjectToClaim(amount, 1f);
                     break;
                 case ResourceType.LevelStar:
-                    AddLevelStarToClaim(amount, 0.5f, 0.05f);
+                    AddLevelStarToClaim(amount, 1f, 0.15f);
                     break;
             }
         }

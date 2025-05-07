@@ -77,7 +77,7 @@ namespace IEC
                 var posStart = PosRandomSpawnRuby(posSpawn);
                 var index = i;
                 float delayTime = i * ratioTime + delay;
-                float delayTimeToStart = i * 0.01f;
+                float delayTimeToStart = i * ratioTime;
                 if (rewardType == ResourceType.Gold)
                 {
                     EventController.RaiseEvent(EventList.Audio.COIN_APPEAR);
