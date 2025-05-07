@@ -87,6 +87,11 @@ namespace IEC
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Send Feedback", cheatCodeParam =>
+            {
+                Services.SendEmail();
+            });
 
             ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
             {

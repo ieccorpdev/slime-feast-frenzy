@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 #if(PluginCMP)
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -14,6 +15,7 @@ using com.adjust.sdk;
 #endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
 #if PluginInAppRating
@@ -66,7 +68,7 @@ namespace IEC
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
-        private string m_FirebasePseudoId;
+        private string m_TicketId => SystemInfo.deviceUniqueIdentifier.Substring(0,12);
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -1167,38 +1169,45 @@ namespace IEC
         }
         
         private string m_LogFilePath => (Application.persistentDataPath + @"/log.txt");
-        private string m_PlayerDataFilePath => (Application.persistentDataPath + @"/playerData.txt");
-        private string m_ServiceDataFilePath => (Application.persistentDataPath + @"/serviceData.txt");
-        [NaughtyAttributes.Button]
+        private string m_LogFileNonEncr => Application.persistentDataPath + @"/log_non_encr.txt";
+        private int m_ServiceDataSize;
+        private int m_PlayerDataSize;
+        private int m_LogSize;
+        private const int MB = 1024 * 1024;
+        private const int MAX_LOG_SIZE = 9 * 1024 * 1024;
         public void SendEmail()
         {
             SaveLogToFile();
             SendMail("");
+            FeedbackDiscord("test@ieccorp.vn", "Test Content");
         }
 
         public void FeedbackDiscord(string email, string contentFeedback)
         {
+            if(!File.Exists(m_LogFileNonEncr)) return;
             var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
             string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
             adjustId = Adjust.getAdid();
-            var adjustCampain = Adjust.getAttribution();
-            if(adjustCampain != null)
+            var attribution = Adjust.getAttribution();
+            if(attribution != null)
             {
-                adjustCampaign = adjustCampain.campaign;
-                adjustNetwork = adjustCampain.network;
-                adjustCreative = adjustCampain.creative;
+                adjustCampaign = attribution.campaign;
+                adjustNetwork = attribution.network;
+                adjustCreative = attribution.creative;
             }
 #endif
 #if PluginFirebaseAnalytic
             firebasePseudoId = m_ServiceData.firebasePseudoId;
 #endif
-            SaveLogToFile();
             StartCoroutine(IE_SendFeedbackDiscord());
 
             IEnumerator IE_SendFeedbackDiscord()
             {
+                var logByte = File.ReadAllBytes(m_LogFileNonEncr);
+                var isLogFileValid = logByte.Length <= MAX_LOG_SIZE;
+                var fileName = "log.txt";
                 var url = config.discordWebhook;
                 var idfv = "";
                 #if UNITY_IOS
@@ -1216,8 +1225,8 @@ namespace IEC
                             {
                                 new
                                 {
-                                    name = "Email",
-                                    value = email
+                                    name = "Game Id",
+                                    value = Application.identifier
                                 },
                                 new
                                 {
@@ -1232,7 +1241,8 @@ namespace IEC
                                 new
                                 {
                                     name = "AB Version",
-                                    value = m_ServiceData.curAbTestDate
+                                    value = string.IsNullOrEmpty(m_ServiceData.curAbTestDate) 
+                                        ? "null" : m_ServiceData.curAbTestDate
                                 }
                             }
                         },
@@ -1244,22 +1254,27 @@ namespace IEC
                                 new
                                 {
                                     name = "IDFA",
-                                    value = m_UserIDFA
+                                    value = string.IsNullOrEmpty(m_UserIDFA) ? "null" : m_UserIDFA
                                 },
                                 new
                                 {
                                     name = "IDFV",
-                                    value = idfv
+                                    value = string.IsNullOrEmpty(idfv) ? "null" : idfv
                                 },
                                 new
                                 {
                                     name = "Adjust ID",
-                                    value = adjustId
+                                    value = string.IsNullOrEmpty(adjustId) ? "null" : adjustId
                                 },
                                 new
                                 {
                                     name = "Pseudo UID",
-                                    value = firebasePseudoId
+                                    value = string.IsNullOrEmpty(firebasePseudoId) ? "null" : firebasePseudoId
+                                },
+                                new
+                                {
+                                    name = "Ticket ID",
+                                    value = m_TicketId
                                 }
                             }
                         },
@@ -1271,37 +1286,66 @@ namespace IEC
                                 new
                                 {
                                     name = "Network",
-                                    value = adjustNetwork
+                                    value = string.IsNullOrEmpty(adjustNetwork) ? "null" : adjustNetwork
                                 },
                                 new
                                 {
                                     name = "Campaign",
-                                    value = adjustCampaign
+                                    value = string.IsNullOrEmpty(adjustCampaign) ? "null" : adjustCampaign
                                 },
                                 new
                                 {
                                     name = "Creative",
-                                    value = adjustCreative
+                                    value = string.IsNullOrEmpty(adjustCreative) ? "null" : adjustCreative
                                 }
                             }
-                        }
+                        },
+                        new
+                        {
+                            color = (isLogFileValid) ? "5814783" : "15548997",
+                            fields = new[]
+                            {
+                                new
+                                {
+                                    name = "Service Data Size",
+                                    value = StringHelper.GetFileSizeStr(m_ServiceDataSize)
+                                },
+                                new
+                                {
+                                    name = "Player Data Size",
+                                    value = StringHelper.GetFileSizeStr(m_PlayerDataSize)
+                                },
+                                new
+                                {
+                                    name = "Log Size",
+                                    value = StringHelper.GetFileSizeStr(m_LogSize)
+                                },
+                                new
+                                {
+                                    name = "Log Size Valid",
+                                    value = (isLogFileValid) ? "true" : "false"
+                                }
+                            }
+                        },
                     }
                 };
-                var formData = new List<IMultipartFormSection>
+                var formData = new List<IMultipartFormSection>()
                 {
-                    new MultipartFormDataSection(data.ToString()),
-                    new MultipartFormFileSection("Log file", m_LogFilePath),
-                    new MultipartFormFileSection("PlayerData file", m_PlayerDataFilePath),
-                    new MultipartFormFileSection("ServiceData file", m_ServiceDataFilePath)
+                    // new MultipartFormDataSection("payload_json", data.content),
+                    new MultipartFormDataSection("payload_json", Json().ToJson(data), Encoding.UTF8, "application/json")
                 };
-
+                
+                if(isLogFileValid) 
+                {
+                    formData.Add(new MultipartFormFileSection("file", logByte, fileName, "text/plain"));
+                }
                 var uwr = UnityWebRequest.Post(url, formData);
                 yield return uwr.SendWebRequest();
 
                 if (uwr.error != null)
                 {
                     Debug.Log("Error While Sending: " + uwr.error);
-                    SendMail(contentFeedback);
+                    // SendMail(contentFeedback);
                 }
                 else
                 {
@@ -1313,18 +1357,13 @@ namespace IEC
         private void SendMail(string contentFeedback)
         {
             string email = config.emailSupport;
-            string title = string.Empty;
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                title = Application.productName + " Android Support";
-            }
-            else
-            {
-                title = Application.productName + " IOS Support";
-            }
+            string title = Application.productName + 
+                           $" {(Application.platform == RuntimePlatform.Android ? "Android" : "iOS")}" +
+                           $" Ticket {m_TicketId}";
 
             var newLine = "\n";
             string message = Application.productName + " version: " + Application.version + newLine;
+            message += $"UserId: {m_ServiceData.firebasePseudoId}";
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
@@ -1340,36 +1379,53 @@ namespace IEC
         {
             var url = config.privacyPolicy;
             if (string.IsNullOrWhiteSpace(url)) return;
-
+#if UNITY_IOS
+            IECiosNative.OpenURL(url);
+#else
             Application.OpenURL(url);
+#endif
         }
 
         void SaveLogToFile()
         {
             try
             {
-                var txtWrite = new StreamWriter(Application.persistentDataPath + @"/log.txt");
                 var saveLog = Json().ToJson(SaveLog.GetLog());
-                
 
+                var playerDataJson = Json().ToJson(Pool.Get<PlayerSecret>());
+                var serviceDataJson = Json().ToJson(Pool.Get<ServiceData>());
+                
+                m_PlayerDataSize = Encoding.UTF8.GetByteCount(playerDataJson);
+                m_ServiceDataSize = Encoding.UTF8.GetByteCount(serviceDataJson);
+                m_LogSize = Encoding.UTF8.GetByteCount(saveLog);
+                
                 var playerDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                        SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<PlayerSecret>()));
+                                        SimpleEncryption.EncryptString(playerDataJson);
                 var serviceDataEncrypt = PlayerPrefsUtility.VALUE_STRING_PREFIX +
-                                         SimpleEncryption.EncryptString(Json().ToJson(Pool.Get<ServiceData>()));
-                var content =
+                                         SimpleEncryption.EncryptString(serviceDataJson);
+                var contentEncr = $"IDFA: {m_UserIDFA}" +
+                                  $"\n\nOS Version: {SystemInfo.operatingSystem}" +
+                                  $"\n\nUserId: {m_ServiceData.firebasePseudoId}" +
+                                  $"\n\nTicketId: {m_TicketId}" +
+                                  $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
+                var content = contentEncr;
+                contentEncr +=
                     $"\n\nPlayerData:\n{playerDataEncrypt}" +
                     $"\n\nServiceData:\n{serviceDataEncrypt}";
+                content +=
+                    $"\n\nPlayerData:\n{playerDataJson}" +
+                    $"\n\nServiceData:\n{serviceDataJson}";
+
+                var contentSize = Encoding.UTF8.GetByteCount(content);
+                var maxSizeForLog = MAX_LOG_SIZE - contentSize;
+                saveLog = StringHelper.TrimStringToMaxBytes(saveLog, maxSizeForLog);
                 Debug.Log("serviceDataEncrypt:\n" + serviceDataEncrypt);
                 Debug.Log("playerDataEncrypt:\n" + playerDataEncrypt);
-
-                content += $"\n\nOS Version:\n{SystemInfo.operatingSystem}";
                 
-                content += $"IDFA:{m_UserIDFA}" +
-                              $"\n\nLog:\n{saveLog}";
-                
-                
-                txtWrite.Write(content);
-                txtWrite.Close();
+                contentEncr += $"\n\nLog:\n{saveLog}";
+                content += $"\n\nLog:\n{saveLog}";
+                File.WriteAllText(m_LogFilePath, contentEncr);
+                File.WriteAllText(m_LogFileNonEncr, content);
             }
             catch
             {
