@@ -6,43 +6,59 @@ using UnityEngine.UI;
 public class ComboUI : MonoBehaviour
 {
     [Header("0 -> 9")]
-    public Sprite[] comboNumberSprites;
+    [SerializeField] private Sprite[] comboNumberSprites;
     [Header("Text")]
-    public Image[] comboTxt;
-    public Animator animator;
+    [SerializeField] private Image[] comboTxt;
+    [SerializeField] private Animator animator;
+    private int currentComboCount;
+    [SerializeField] private float comboTimeRange = 0.3f;
+    [SerializeField] private int minComboCount = 3;
 
-    public void Show()
+    private void Show()
     {
-        gameObject.SetActive(true);
         animator.Play("Show");
     }
 
-    public void Hide()
+    private void Hide()
     {
         animator.Play("Hide");
-        gameObject.SetActive(false);
     }
 
-    public void SetCombo(int combo)
+    public void HandleEatCombo()
     {
-        if (combo <= 0 || combo >= comboTxt.Length * 10)
+        StopAllCoroutines();
+        StartCoroutine(CheckInCombo());
+        currentComboCount++;
+        SetCombo(currentComboCount);
+    }
+
+    IEnumerator CheckInCombo()
+    {
+        yield return new WaitForSeconds(comboTimeRange);
+        currentComboCount = 0;
+    }
+
+    private void SetCombo(int combo)
+    {
+        if (combo < minComboCount || combo >= comboTxt.Length * 10)
         {
-            Debug.LogError("Invalid combo number: " + combo);
             return;
         }
-        for (int i = 0; i < comboTxt.Length; i++)
-        {
-            comboTxt[i].gameObject.SetActive(false);
-        }
-        int j = 0;
-        while (combo > 0)
-        {
-            int index = combo % 10;
-            comboTxt[j].gameObject.SetActive(true);
-            comboTxt[j].sprite = comboNumberSprites[index - 1];
-            combo /= 10;
-            j++;
-        }
+        Debug.Log(combo);
+
+        //for (int i = 0; i < comboTxt.Length; i++)
+        //{
+        //    comboTxt[i].gameObject.SetActive(false);
+        //}
+        //int j = 0;
+        //while (combo > 0)
+        //{
+        //    int index = combo % 10;
+        //    comboTxt[j].gameObject.SetActive(true);
+        //    comboTxt[j].sprite = comboNumberSprites[index - 1];
+        //    combo /= 10;
+        //    j++;
+        //}
     }
 
 

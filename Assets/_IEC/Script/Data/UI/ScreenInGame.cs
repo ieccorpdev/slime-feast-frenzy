@@ -91,6 +91,11 @@ namespace IEC
             }
         }
 
+        public void HandleEatCombo()
+        {
+            comboUI.HandleEatCombo();
+        }
+
         public void ShowHelperIntroAnimation(string messenger)
         {
             helperIntro.ShowHelperIntroAnimation(messenger);
@@ -134,6 +139,7 @@ namespace IEC
             CollectItemData data = (CollectItemData)param;
             if (data.GetCoinValue() > 0)
             {
+                Locator.Game.ScreenInGame.HandleEatCombo();
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
