@@ -60,6 +60,25 @@ namespace _IEC.Features.Gameplay
         public GameplayItemPrefabConfig editorItemPrefabConfig;
 
         [Button]
+        public void UpdateItemToNormal(string id)
+        {
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                var obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                while (obj != null)
+                {
+                    levelData.listObjectives.Remove(obj);
+                    obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                    Debug.LogError(($"Remove objective: {id} at {levelData.name}"));
+                    
+                    EditorUtility.SetDirty(levelData);
+                    AssetDatabase.SaveAssets();        
+                    AssetDatabase.Refresh();
+                }
+            }
+        }
+
+        [Button]
         public void CheckValidAllLevel()
         {
             List<string> listDebugLevel = new();
