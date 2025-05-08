@@ -33,7 +33,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopLeft | CheatCode.PositionActivate.BotLeft;
+            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopLeft ;
             ModuleController.cheatCode.topOffset = 0f;
             Reporter.topOffset = 0f;
             ShowFPS.topOffset = 0f;
