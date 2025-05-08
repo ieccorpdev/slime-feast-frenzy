@@ -56,12 +56,12 @@ namespace _IEC.Features.Gameplay
                         
             //cache the value to make sure UI is updated correctly after delaying
             bool isCompleted = IsObjectiveCompleted(itemId);
-            int newNumber = GetRemainingObjectiveNumber(itemId);
+            int newNumber = GetRemainingObjectiveNumber(itemId);        
             objectiveUI.SetNumber(newNumber, isCompleted);
-
+            //objectiveVfx.Recycle();       
+            
             // Vector3 startPos = objectiveVfx.transform.position;
             // Vector3 endPos = objectiveUI.GetIconPosition();
-            //
             // Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
             //
             // DOTween.Sequence()
@@ -69,6 +69,7 @@ namespace _IEC.Features.Gameplay
             //     .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
             //     .AppendCallback(() =>
             //     {
+            //         objectiveUI.SetNumber(newNumber, isCompleted);
             //         objectiveVfx.Recycle();
             //     });
         }

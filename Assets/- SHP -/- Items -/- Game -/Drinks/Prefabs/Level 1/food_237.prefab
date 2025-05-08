@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 114930526896181066}
   - component: {fileID: 54982822531482734}
   - component: {fileID: -6323084774917648948}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: food_237
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,8 +104,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4684978344035195}
-  - component: {fileID: 64631110990697005}
-  m_Layer: 0
+  - component: {fileID: 5805948242484856520}
+  m_Layer: 10
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,8 +127,8 @@ Transform:
   m_Father: {fileID: 4703175263467385}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &64631110990697005
-MeshCollider:
+--- !u!65 &5805948242484856520
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -137,10 +137,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1.5598099, z: 1}
+  m_Center: {x: 0, y: -0.22168517, z: 0}
 --- !u!1 &8059484214705596541
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +151,7 @@ GameObject:
   - component: {fileID: 7247095120935613127}
   - component: {fileID: 5997951416471813474}
   - component: {fileID: 8420031737593760168}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Bottle_Stubby_01
   m_TagString: Untagged
   m_Icon: {fileID: 0}

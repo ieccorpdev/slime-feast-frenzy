@@ -169,9 +169,8 @@ namespace _IEC.Features.Gameplay
 
         public Hole GetHolePlayer() => playerHole;
 
-        public List<BaseItem> GetAllItems() => m_AllItems
-            .Concat(m_AllSpecialItems)
-            .Concat(m_AllBoosters).ToList();
+        public List<BaseItem> GetAllItems() => m_AllItems;
+
 
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
@@ -428,10 +427,10 @@ namespace _IEC.Features.Gameplay
 
         private List<string> mapObjectiveItem = new List<string>()
         {
-            "food_41",
-            "food_294",
-            "food_293",
-            "food_413",
+            "food_225",
+            "food_236",
+            "food_226",
+            "food_306",
         };
         private bool IsBomb(string itemId)
         {

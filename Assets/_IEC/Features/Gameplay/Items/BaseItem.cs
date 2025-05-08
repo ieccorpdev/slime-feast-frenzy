@@ -75,7 +75,7 @@ namespace _IEC.Features.Gameplay
             rb.velocity = -10 * Vector3.up;
             DisableAllCollider();
             _isCollected = true;
-            gameObject.Recycle();
+            //gameObject.Recycle(); 
             // DOVirtual.DelayedCall(3, () =>
             // {
             //     if (gameObject != null)

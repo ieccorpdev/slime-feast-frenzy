@@ -41,7 +41,7 @@ public class HoleMagnet : MonoBehaviour
 			if (rb.gameObject.name.Contains("Bomb")) return;
 			rb.isKinematic = false;
 			var cacheVelocity = rb.velocity;
-			rb.velocity = -dir * m_Hole.Settings.magnetForce + Vector3.up * cacheVelocity.y;
+			rb.velocity = -dir * m_Hole.Settings.magnetForce * 10 + Vector3.up * cacheVelocity.y; 
 		}
 	}
 
