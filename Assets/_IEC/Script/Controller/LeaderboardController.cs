@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using _IECModules;
 using Cysharp.Threading.Tasks;
 using IEC;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class LeaderboardController : MonoBehaviour
