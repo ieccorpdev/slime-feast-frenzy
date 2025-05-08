@@ -62,6 +62,7 @@ namespace _IEC.Features.Gameplay
         [Button]
         public void UpdateItemToNormal(string id)
         {
+#if UNITY_EDITOR
             foreach (var levelData in levelDataSHP.listAllLevelData)
             {
                 var obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
@@ -76,6 +77,7 @@ namespace _IEC.Features.Gameplay
                     AssetDatabase.Refresh();
                 }
             }
+#endif
         }
 
         [Button]
