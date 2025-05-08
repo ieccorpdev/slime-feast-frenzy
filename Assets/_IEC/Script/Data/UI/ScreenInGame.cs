@@ -39,6 +39,7 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
+        [SerializeField] private HelperIntro helperIntro;
         private static bool CanPlaySFX = true;
         private void Awake()
         {
@@ -85,6 +86,11 @@ namespace IEC
                     tutorialCompass.StartTutorial();
                     break;
             }
+        }
+
+        public void ShowHelperIntroAnimation(string messenger)
+        {
+            helperIntro.ShowHelperIntroAnimation(messenger);
         }
 
         public GameplayTimer GetGameplayTimer()

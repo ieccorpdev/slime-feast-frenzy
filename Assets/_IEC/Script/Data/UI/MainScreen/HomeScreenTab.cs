@@ -62,6 +62,8 @@ public class HomeScreenTab : ScreenNavigateUI
     private Sequence _uiAnimSequence;
     private GameConfig m_gameConfig => Pool.Get<GameConfig>();
 
+    private Action onOpenSceneActionOnce;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -184,7 +186,12 @@ public class HomeScreenTab : ScreenNavigateUI
         InitMoveOutAnimation();
         UpdateMainHome();
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-        DoMoveBackAllObj(0.8f);
+        DoMoveBackAllObj(0.8f,
+            () =>
+            {
+                onOpenSceneActionOnce?.Invoke();
+                onOpenSceneActionOnce = null;
+            });
     }
     #region Change Screen Anim
         
@@ -336,10 +343,37 @@ public class HomeScreenTab : ScreenNavigateUI
                 () =>
                 {
                     progressRewardBar.DoAnimProgressBar();
+                });
+            
+            delay += 0.3f;
+            _uiAnimSequence.InsertCallback(delay,
+                () =>
+                {
+                    progressRewardBar.DoAnimProgressBar();
                     onComplete?.Invoke();
                 });
 
             _uiAnimSequence.Play();
+        }
+        
+        public void SpawnCollectItemOnEndGameEffect(List<KeyValuePair<ResourceType, int>> listCollectedItems, Action onComplete = null)
+        {
+            if (listCollectedItems.Count == 0)
+            {
+                onComplete?.Invoke();
+                return;
+            }
+        
+            foreach (var collectedItem in listCollectedItems)
+            {
+                Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.Key, collectedItem.Value);
+            }
+            Locator.Main.ScreenMain.DoAnimAllAvailableReward(onComplete);
+        }
+
+        public void AddOpenSceneAction(Action onOpen = null)
+        {
+            onOpenSceneActionOnce = onOpen;
         }
         
         #endregion
