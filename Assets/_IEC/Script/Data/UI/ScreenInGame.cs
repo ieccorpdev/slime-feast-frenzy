@@ -40,6 +40,7 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
         [SerializeField] private HelperIntro helperIntro;
+        [SerializeField] private ComboUI comboUI;
         private static bool CanPlaySFX = true;
         private void Awake()
         {
@@ -88,6 +89,11 @@ namespace IEC
             }
         }
 
+        public void HandleEatCombo()
+        {
+            comboUI.HandleEatCombo();
+        }
+
         public void ShowHelperIntroAnimation(string messenger)
         {
             helperIntro.ShowHelperIntroAnimation(messenger);
@@ -131,6 +137,7 @@ namespace IEC
             CollectItemData data = (CollectItemData)param;
             if (data.GetCoinValue() > 0)
             {
+                Locator.Game.ScreenInGame.HandleEatCombo();
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
