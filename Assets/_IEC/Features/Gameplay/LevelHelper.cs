@@ -314,7 +314,7 @@ namespace _IEC.Features.Gameplay
         public static LevelData CreateLevelData(LevelDataSO levelConfigModel, int level)
         {
             var levelData = new LevelData();
-            levelData.time = levelConfigModel.time;
+            levelData.time = PlayableController.Instance.playTime;
             levelData.levelObjectives = new List<LevelObjective>();
             foreach (var levelObjective in levelConfigModel.listObjectives)
             {
