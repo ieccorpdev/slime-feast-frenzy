@@ -34,7 +34,7 @@ namespace _IEC.Features.Gameplay
         private bool m_IsGameStarted;
         private bool m_isTimeShowScreenVignette;
         private bool m_isLevelCoin;
-
+        public TextMeshProUGUI timeTextTMP => txtCoolDown;
         private string TweenIdMelting => "melting" + gameObject.GetInstanceID();
         private LevelController _levelController => (LevelController)GamePlay.GetLevelController();
         public event Action OnReset;
@@ -100,8 +100,8 @@ namespace _IEC.Features.Gameplay
         private void OnUserUseHelper(object param)
         {
             var data = (UserUseHelper) param;
-            if (data.helperId != HelperId.FrozenTime) return;
-            StartFreezeTime();
+            //if (data.helperId != HelperId.FrozenTime) return;
+            //StartFreezeTime();
         }
 
         private void OnUseBooster(object param)
@@ -124,7 +124,7 @@ namespace _IEC.Features.Gameplay
             // //SoundController.PlaySound(new AudioInfo(Config.soundConfig.littleChrono));
         }
         
-        private void StartFreezeTime()
+        public void StartFreezeTime()
         {
             m_FrozenTimeCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime);
             SetActiveFrozenMark(true);

@@ -114,16 +114,16 @@ namespace _IEC.Features.Gameplay
             //     listObjectives.Add(new LevelObjective(item.GetId(),1));
             // }
             
+            m_AllItems.Clear();
+            m_AllItems = LevelHelper.GenerateRandomLevelAllItems(allItemHolder, Config.itemPrefabConfig);
+            EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            
             m_CurrentLevelData = new LevelData()
             {
                 time = 99999,
                 levelType = LevelType.NORMAL,
-                levelObjectives = new()
+                levelObjectives = new(){new LevelObjective("", m_AllItems.Count)}
             };
-            
-            m_AllItems.Clear();
-            m_AllItems = LevelHelper.GenerateRandomLevelAllItems(allItemHolder, Config.itemPrefabConfig);
-            EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             
             SetUpStartHolePosition(Vector3.zero + Vector3.left * 5);
             //SearchAllObjectiveItems(m_AllItems);
@@ -534,6 +534,13 @@ namespace _IEC.Features.Gameplay
         private void CollectObjectiveItem(CollectItemData data)
         {
             CollectNormalItem(data);
+
+            //Override for debug
+            if (GamePlay.IsInDebugAllItemsLevel)
+            {
+                data.itemID = "";
+            }
+            
             var levelObjective = GetLevelData().levelObjectives.Find(x => x.itemId == data.itemID);
             levelObjective.number--;
             if (levelObjective.number < 0)
@@ -601,6 +608,10 @@ namespace _IEC.Features.Gameplay
 
         private bool IsObjectiveItem(string itemId)
         {
+            //Override for debug
+            if (GamePlay.IsInDebugAllItemsLevel)
+                return true;
+            
             if (GetLevelData().levelObjectives == null || GetLevelData().levelObjectives.Count == 0) return false;
             return GetLevelData().levelObjectives.Exists(x => x.itemId == itemId);
         }

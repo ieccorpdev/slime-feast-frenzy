@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 172373162}
   - component: {fileID: 172373161}
   - component: {fileID: 172373163}
+  - component: {fileID: 172373164}
   m_Layer: 0
   m_Name: UI Camera Background
   m_TagString: Untagged
@@ -207,6 +208,65 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 172373160}
   m_Enabled: 1
+--- !u!114 &172373164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 172373160}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b0ba117f9d8e6a4a8a2aaca7154c935, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectClick: 1
+  waveCount: 10
+  timeInfinity: 0
+  waveTime: 0.5
+  waveAnimCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.41899693
+      value: 0.5761954
+      inSlope: -2.1942995
+      outSlope: -2.1942995
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  waveInternalRadio: 0.08
+  waveExternalRadio: 0.05
+  waveScale: 6
+  waveSpeed: 2
+  waveFrequency: 6
+  circleXScale: 1.5
+  circleYScale: 1.5
+  material: {fileID: 2100000, guid: 029afe2ad7599a04ca77015dd74292b7, type: 2}
+  logInterval: 0.1
+  minDistance: 50
 --- !u!1001 &724576348
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -352,75 +412,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 821754980}
   m_CullTransparentMesh: 1
---- !u!1001 &882871677
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 8449978738249779257, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_Name
-      value: UI Camera Background (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 540
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1170
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8449978738249779259, guid: 533a3d75ff0a32146851bde304abf995,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 533a3d75ff0a32146851bde304abf995, type: 3}
 --- !u!114 &1173350077 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4568704306570388285, guid: 50e0600ae51557b40a82fa682763fe62,
@@ -453,7 +444,7 @@ PrefabInstance:
     - target: {fileID: 3142468547596720011, guid: 50e0600ae51557b40a82fa682763fe62,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3142468547596720011, guid: 50e0600ae51557b40a82fa682763fe62,
         type: 3}
@@ -878,7 +869,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!28 &1842126481
 Texture2D:
@@ -1087,7 +1078,7 @@ RectTransform:
   - {fileID: 1425853299995898290}
   - {fileID: 821754981}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1201,7 +1192,7 @@ PrefabInstance:
     - target: {fileID: 4695019827649238789, guid: fa3840ab6e7492a4cb95aaa84f77701c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4695019827649238789, guid: fa3840ab6e7492a4cb95aaa84f77701c,
         type: 3}
