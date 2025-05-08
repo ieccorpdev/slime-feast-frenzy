@@ -42,6 +42,8 @@ public class PlayableController : _BaseBehaviour
     public FloatingJoystick Joystick;
     public LevelConfig levelConfig;
     public Material waveWaterMaterial;
+    [LunaPlaygroundField("Level play time", 0, "Config")]
+    public float playTime = 15;
 
     public void Awake()
     {
