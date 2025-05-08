@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6936393338505057080}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigJaw
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -41,9 +41,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5924283554019372184}
   - component: {fileID: 562598549743870889}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Shark
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -138,9 +138,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1906756166674256974}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: Rig
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -169,9 +169,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1598559315613710549}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigTail3
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -202,6 +202,7 @@ GameObject:
   m_Component:
   - component: {fileID: 672316746995200292}
   - component: {fileID: 672316746995200295}
+  - component: {fileID: 1484175528164857167}
   m_Layer: 24
   m_Name: FishTank
   m_TagString: Untagged
@@ -238,6 +239,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 50, y: 50, z: 100}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1484175528164857167
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 672316746995200293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d498303a33cd5345a250536e8b3bcec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 0}
+  fishLayer:
+    serializedVersion: 2
+    m_Bits: 33554432
 --- !u!1 &1458813658239482608
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,9 +264,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3557353414095670595}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigNeck
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -279,9 +296,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5953214718446873612}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigLArm1
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -311,9 +328,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5418091819056386384}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigRArm2
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -342,9 +359,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4444531156624771230}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigTail1
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -376,9 +393,10 @@ GameObject:
   - component: {fileID: 2731425796767144549}
   - component: {fileID: 8288828517535776799}
   - component: {fileID: 672316745629140028}
-  m_Layer: 0
+  - component: {fileID: 8870928406286774458}
+  m_Layer: 25
   m_Name: Shark_Bite
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -443,6 +461,19 @@ MonoBehaviour:
     m_Bits: 0
   targetProximityThreshold: 2
   swimAreaMeshCollider: {fileID: 672316746995200295}
+--- !u!65 &8870928406286774458
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3363109092780703967}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 2, z: 3}
+  m_Center: {x: 0, y: 0.78, z: 0}
 --- !u!1 &3406789050987504063
 GameObject:
   m_ObjectHideFlags: 0
@@ -452,9 +483,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5304161920278114535}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigRArm1
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -484,9 +515,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1811631888573919557}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigTail4
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -548,9 +579,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3550465061301904377}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigRibcage
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -583,9 +614,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8467948152556342085}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigLArm2
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -614,9 +645,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1152879050967718420}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigTail5
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -645,9 +676,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2293852269565604074}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigTail2
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -677,9 +708,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3719689571793960712}
-  m_Layer: 0
+  m_Layer: 25
   m_Name: RigHead
-  m_TagString: Untagged
+  m_TagString: Fish
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
