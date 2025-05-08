@@ -12,7 +12,9 @@ public class HelperIntro : MonoBehaviour
     public void ShowHelperIntroAnimation(string messenger)
     {
         helperIntroTxt.text = messenger;
-        helperIntroAnim.Play("Show");
-        helperIntroFx.Play();
+        if (helperIntroAnim)
+            helperIntroAnim.Play("Show");
+        if (helperIntroFx)
+            helperIntroFx.Play();
     }
 }
