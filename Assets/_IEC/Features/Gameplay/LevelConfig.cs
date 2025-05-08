@@ -937,7 +937,7 @@ namespace _IEC.Features.Gameplay
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-
+    
         [Button]
         public void BakeLevelDefinitionToLevelModel()
         {
@@ -1355,7 +1355,19 @@ namespace _IEC.Features.Gameplay
             Debug.LogError(str);
         }
 
-#endregion
+        [Button]
+        public void SetAllLevelSpawnKinematic()
+        {
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                levelData.levelSpawnData.SetAllSpawnDataKinematic();
+                EditorUtility.SetDirty(levelData.levelSpawnData);
+                AssetDatabase.SaveAssets();        
+                AssetDatabase.Refresh();
+            }
+        }
+
+        #endregion
 #endif
     }
     [System.Serializable]
