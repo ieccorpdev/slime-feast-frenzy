@@ -42,6 +42,8 @@ namespace _IEC.Features.Gameplay
                 m_ItemDefinition = this.itemDefinition;
             }
 
+            rb.drag = Config.gamePlayConfig.ItemDrag;
+            rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
 

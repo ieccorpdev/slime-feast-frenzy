@@ -22,8 +22,9 @@ namespace _IEC.Features.Gameplay
         public Color dangerousTimeColor;
         public Color warningTimeColor;
         public Color safeTimeColor;
-        
 
+        public float ItemDrag = 2;
+        public float ItemAngularDrag = 4;
         public bool IsHelperUnlocked(HelperId helperId)
         {
             return PlayerData.level >= GetUnlockLevelHelper(helperId);
