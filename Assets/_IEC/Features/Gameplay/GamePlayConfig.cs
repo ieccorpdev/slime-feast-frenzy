@@ -59,7 +59,7 @@ namespace _IEC.Features.Gameplay
 
         public string GetUnlockCondition(HelperId helperId)
         {
-            return "Lv." + GetUnlockLevelHelper(helperId);
+            return "" + GetUnlockLevelHelper(helperId);
         }
 
         public Color GetTimeColorByRemainingTimeState(GameplayTimer.RemainingTimeState remainingTimeState)
