@@ -115,6 +115,11 @@ namespace IEC
                 return;
 
             unlimitedTimeText.text = PlayerData.GetTimeLeftUnlimitedBooster(boosterType);
+
+            if (!PlayerData.IsUnlimitedBooster(boosterType))
+            {
+                Setup();
+            }
         }
     }
     

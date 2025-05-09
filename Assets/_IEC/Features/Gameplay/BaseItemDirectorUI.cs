@@ -74,7 +74,6 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateCurrentState()
         {
-           
             switch (m_CurrentState)
             {
                 case State.None:
@@ -104,17 +103,6 @@ namespace _IEC.Features.Gameplay
             }
         }
 
-        private void UpdateAnchorPositionY(Vector3 dir)
-        {
-            var y = dir.z / heightRectMap;
-            if (y > 1) y = 1;
-            if (y < -1) y = -1;
-            y = y * parentRectTransform.sizeDelta.y/2;
-            var currentAnchorPos = rectTransform.anchoredPosition;
-            currentAnchorPos.y = y;
-            rectTransform.anchoredPosition = currentAnchorPos;
-        }
-
         private void SnapRight()
         {
             var currentAnchorPosition = rectTransform.anchoredPosition;
@@ -126,6 +114,14 @@ namespace _IEC.Features.Gameplay
             var currentAnchorPosition = rectTransform.anchoredPosition;
             rectTransform.anchoredPosition = new Vector2(-m_ScreenWidth/2 + rectTransform.sizeDelta.x/2 + 50f, currentAnchorPosition.y);
         }
+        private void UpdateAnchorPositionY(Vector3 dir)
+        {
+            Vector2 normalizedDir = new Vector2(dir.x, dir.z).normalized;
+            float radius = (m_ScreenWidth-rectTransform.sizeDelta.magnitude)/2;
+            Vector2 anchoredPosition = normalizedDir * radius;
+            rectTransform.anchoredPosition = anchoredPosition;
+        }
+
         
         private void ChangeState(State newState)
         {

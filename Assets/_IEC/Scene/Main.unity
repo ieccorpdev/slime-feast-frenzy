@@ -715,6 +715,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1484175528164857167, guid: 5846854facedf204395dc701ca37009d,
+        type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 2020233854}
     - target: {fileID: 2095923961156419072, guid: 5846854facedf204395dc701ca37009d,
         type: 3}
       propertyPath: m_RootOrder
@@ -993,6 +998,12 @@ Camera:
   m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!20 &2020233854 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7805958315319604677, guid: bd0f6c5ca6c95a84493226378a464808,
+    type: 3}
+  m_PrefabInstance: {fileID: 724576348}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &585865186960492843
 MonoBehaviour:
   m_ObjectHideFlags: 0

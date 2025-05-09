@@ -101,6 +101,7 @@ namespace _IEC.Features.Gameplay
             }).SetId(RecycleTweenId);
             if (!GamePlay.IsWin)
             {
+                Locator.Game.ScreenInGame.HandleEatCombo();
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
