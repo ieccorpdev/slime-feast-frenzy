@@ -219,21 +219,20 @@ public class Hole : MonoBehaviour
 		
 		myTransform.localScale = targetScale;
 		callback?.Invoke();
-		// DOTween.Kill(TweenIdScale);
-		// if (isLerpSize)
-		// {
-		// 	//sizeUpVfx.Play();
-		// 	myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
-		// 	{
-		// 		callback?.Invoke();
-		// 	}).SetId(TweenIdScale);
-		// }
-		// else
-		// {
-		// 	myTransform.localScale = targetScale;
-		// 	callback?.Invoke();
-		// }
-
+		DOTween.Kill(TweenIdScale);
+		if (isLerpSize)
+		{
+			sizeUpVfx.Play();
+			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
+			{
+				callback?.Invoke();
+			}).SetId(TweenIdScale);
+		}
+		else
+		{
+			myTransform.localScale = targetScale;
+			callback?.Invoke();
+		}
 		holeController.SetScale(targetSize);
 	}
 	
