@@ -6,6 +6,7 @@ using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.Tutorial.ObserverEventData;
+using Cinemachine;
 using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
@@ -569,6 +570,24 @@ namespace _IEC.Features.Gameplay
             if (IsInResultState() == false)
             {
                 playerHole.CollectABomb();
+                
+                GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
+                TweenControl.GetInstance().Shake(
+                    target: GamePlay.mainCamera.gameObject,
+                    time: 1f,
+                    strength: new Vector3(.5f, .5f, 0),
+                    vibrato: 20,  
+                    shakeType: ShakeType.ShakeTypePosition,
+                    randomness: 45,
+                    snapping: false,
+                    fadeOut: false,
+                    onComplete: () =>
+                    {
+                        GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerHole.transform;
+                    },
+                    easeType: EaseType.InOutQuad,
+                    delay: 0f
+                );
                 if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                 {
                     ChangeState(State.Lose);
