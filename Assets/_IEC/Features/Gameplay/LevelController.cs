@@ -362,7 +362,7 @@ namespace _IEC.Features.Gameplay
         {
             CollectNormalItem(data);
             var levelObjective = GetLevelData().levelObjectives.Find(x => x.itemId == data.itemID);
-            levelObjective.number--;
+                levelObjective.number--;
             if (levelObjective.number < 0)
             {
                 levelObjective.number = 0;
@@ -422,16 +422,9 @@ namespace _IEC.Features.Gameplay
         private bool IsObjectiveItem(string itemId)
         {
             if (GetLevelData().levelObjectives == null || GetLevelData().levelObjectives.Count == 0) return false;
-            return mapObjectiveItem.Contains(itemId);
+            return GetLevelData().levelObjectives.Exists(x => x.itemId == itemId);
         }
 
-        private List<string> mapObjectiveItem = new List<string>()
-        {
-            "food_225",
-            "food_236",
-            "food_226",
-            "food_306",
-        };
         private bool IsBomb(string itemId)
         {
             return itemId == "Bomb";
