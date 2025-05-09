@@ -231,6 +231,7 @@ namespace _IEC.Features.Gameplay
             m_MagnetHelperActive = false;
             m_MagnetHelperCoolDown = 0;
             playerHole.StopScaleByHelper();
+            playerHole.StopCompassHelper();
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
@@ -516,6 +517,7 @@ namespace _IEC.Features.Gameplay
                     m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
                     break;
                 case HelperId.Compass:
+                    playerHole.StartCompassHelper();
                     var remainingObjectiveItems = new List<BaseItem>();
                     foreach (var objective in m_ObjectiveItems)
                     {

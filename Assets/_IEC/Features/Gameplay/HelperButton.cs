@@ -127,7 +127,7 @@ namespace _IEC.Features.Gameplay
             m_CooldownTime = HelperActiveTime;
             imgProgress.fillAmount = 1;
             UpdatePoolNumberUI();
-            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false)
+            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || GamePlay.levelController.GetLevelData().levelType == LevelType.COIN)
             {
                 ChangeState(State.Locked);
             }
@@ -218,7 +218,7 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
                 case HelperId.Compass:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
@@ -226,7 +226,7 @@ namespace _IEC.Features.Gameplay
                     EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
                     break;
                 case HelperId.FrozenTime:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Time Freeze");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Time Freeze");
                     EventController.RaiseEvent(EventList.Audio.ICE_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {

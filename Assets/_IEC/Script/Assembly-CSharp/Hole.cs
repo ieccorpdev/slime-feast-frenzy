@@ -26,6 +26,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private HoleMagnet holeMagnet;
 	[Header("VFX")] [SerializeField] private ParticleSystem levelUpVfx;
 	[SerializeField] private ParticleSystem sizeUpVfx;
+	[SerializeField] private ParticleSystem radialCompassVfx;
 	[SerializeField] private ParticleSystem magnetVfx;
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
@@ -202,6 +203,10 @@ public class Hole : _BaseBehaviour
 		m_AdditionalSize = Config.gamePlayConfig.scaleUpHelperAdditionalSize;
 		SetSize(Size,true,null);
 	}
+	public void StartCompassHelper()
+	{
+		radialCompassVfx.Play();
+	}
 
 	public void StopScaleByHelper()
 	{
@@ -209,7 +214,10 @@ public class Hole : _BaseBehaviour
 		m_AdditionalSize = 0;
 		SetSize(Size,true,null);
 	}
-	
+	public void StopCompassHelper()
+	{
+		radialCompassVfx.Stop();
+	}
 	public void SetLevel(int level, bool lerpSize = false)
 	{
 		gameObject.SetActive(true);

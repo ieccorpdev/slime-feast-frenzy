@@ -118,7 +118,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(bannerPos, null);
-                    //SetActiveBanner(bannerPos, true);
+                    SetActiveBanner(bannerPos, false);
                     StartCoroutine(IE_LoadAd());
                     break;
                 case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
@@ -1051,7 +1051,7 @@ namespace IEC
         {
             m_ServiceData.isNoAds = isActive;
             SaveData();
-            SetActiveBanner(AdsEnum.BANNER_BOTTOM, !isActive);
+            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
         }
 
         public void SetActiveBanner(AdsEnum bannerType, bool isActive)
