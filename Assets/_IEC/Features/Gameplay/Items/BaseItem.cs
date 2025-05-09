@@ -76,13 +76,13 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle(); 
-            // DOVirtual.DelayedCall(3, () =>
-            // {
-            //     if (gameObject != null)
-            //     {
-            //         gameObject.Recycle();
-            //     }
-            // }).SetId(RecycleTweenId);
+            DOVirtual.DelayedCall(3, () =>
+            {
+                if (gameObject != null)
+                {
+                    gameObject.Recycle();
+                }
+            }).SetId(RecycleTweenId);
         }
         
         //TODO: cache colliders

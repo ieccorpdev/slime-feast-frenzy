@@ -111,9 +111,9 @@ namespace IEC
 
         private void OnCollectItem(object param)
         {
-            var data = (CollectItemData)param;
+            //var data = (CollectItemData)param;
             //SpawnXpVFX(data.xp, data.position);
-            //PlayableController.Instance.SoundController.PlaySound(EventList.Audio.ITEM_GET);
+            PlayableController.Instance.SoundController.PlaySound(EventList.Audio.ITEM_GET);
         }
 
         private void OnCollectObjectiveItem(object param)
