@@ -22,6 +22,7 @@ namespace IEC
         [Header("Group objective")] 
         [SerializeField] private RectTransform holderImage;
         [SerializeField] private RectTransform groupLevelObjectiveLayoutGroup;
+        [SerializeField] private RectTransform xpParentRT;
 
         [Space]
         //public Button btnRestart;
@@ -200,6 +201,7 @@ namespace IEC
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
             var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
+            xpVFX.transform.parent = xpParentRT.transform;
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);
