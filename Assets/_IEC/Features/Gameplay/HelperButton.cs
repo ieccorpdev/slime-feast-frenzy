@@ -218,7 +218,7 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
                 case HelperId.Compass:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
