@@ -217,6 +217,8 @@ public class Hole : MonoBehaviour
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
 		
+		myTransform.localScale = targetScale;
+		callback?.Invoke();
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
@@ -231,7 +233,6 @@ public class Hole : MonoBehaviour
 			myTransform.localScale = targetScale;
 			callback?.Invoke();
 		}
-
 		holeController.SetScale(targetSize);
 	}
 	
