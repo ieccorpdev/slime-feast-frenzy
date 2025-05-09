@@ -127,7 +127,7 @@ namespace _IEC.Features.Gameplay
             m_CooldownTime = HelperActiveTime;
             imgProgress.fillAmount = 1;
             UpdatePoolNumberUI();
-            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || GamePlay.levelController.GetLevelData().levelType == LevelType.COIN)
+            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || (GamePlay.levelController.GetLevelData().levelType == LevelType.COIN && helperId == HelperId.Compass ))
             {
                 ChangeState(State.Locked);
             }
