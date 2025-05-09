@@ -172,8 +172,8 @@ namespace IEC
                 while (PlayerData.CheckClaimProgressReward(reward))
                 {
                     System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel("Chest_1");
                     reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
                 }
                 Locator.Main.HomeScreenTab.UpdateMainHome();
@@ -284,8 +284,8 @@ namespace IEC
             {
                 var rewardData = Config.allChestConfig.GetChestConfig(type)
                     .GetRewardData(PlayerData.GetChestMilestone(type));
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? "Chest_2": "Chest_1");
             }
 
             Locator.Main.HomeScreenTab.UpdateMainHome();
