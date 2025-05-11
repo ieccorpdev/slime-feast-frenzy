@@ -60,12 +60,11 @@ namespace _IEC.Features.Gameplay
                     var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
                     contactPoint.y = 0.15f;//hard code,surface water
                     splashVFX.transform.position = contactPoint;
-                    splashVFX.Play();
                     splashVFX.transform.parent = null;
                     Vector3 size = myRenderer.bounds.size;
                     float maxSize = Mathf.Max(size.x, size.y, size.z);
                     splashVFX.transform.localScale = Vector3.one*maxSize;
-                    //Need recycle
+                    splashVFX.Show();
                 }
             }
         }
