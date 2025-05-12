@@ -30,6 +30,7 @@ namespace IEC
         public override void Show()
         {
             base.Show();
+            this.transform.SetAsLastSibling();
             SetScaleAnim();
         }
 
