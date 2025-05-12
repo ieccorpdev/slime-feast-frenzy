@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/ThemeConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/ThemeConfig")]
     public class ThemeConfig : ScriptableObject
     {
         public List<GroundThemeConfigModel> groundThemeConfigModels;

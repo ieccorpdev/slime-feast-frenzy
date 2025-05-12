@@ -118,7 +118,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(bannerPos, null);
-                    //SetActiveBanner(bannerPos, true);
+                    SetActiveBanner(bannerPos, false);
                     StartCoroutine(IE_LoadAd());
                     break;
                 case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
@@ -887,9 +887,10 @@ namespace IEC
                 SafeInvoke(closeCallback);
                 return;
             }
-
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS);
             m_Ads.Show(AdsEnum.INTERSTITIAL, (param) =>
             {
+                EventController.RaiseEvent(EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS);
                 if (param.isSuccess)
                 {
                     PushEvent("show_full_ad", position);
@@ -976,8 +977,10 @@ namespace IEC
             Debug.Log("Show reward ads");
             if (m_Ads.IsLoaded(AdsEnum.REWARD))
             {
+                EventController.RaiseEvent(EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS);
                 m_Ads.Show(AdsEnum.REWARD, (param) =>
                 {
+                    EventController.RaiseEvent(EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS);
                     if (param.isSuccess)
                     {
                         if (isResetInterCD)
@@ -1048,7 +1051,7 @@ namespace IEC
         {
             m_ServiceData.isNoAds = isActive;
             SaveData();
-            SetActiveBanner(AdsEnum.BANNER_BOTTOM, !isActive);
+            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
         }
 
         public void SetActiveBanner(AdsEnum bannerType, bool isActive)
@@ -1114,6 +1117,7 @@ namespace IEC
         public void RateUs()
         {
             Debug.LogWarning("rate us");
+            Pool.Get<PlayerSecret>().wasRateUs = true;
 #if UNITY_IOS
             UnityEngine.iOS.Device.RequestStoreReview();
 #endif
@@ -1333,7 +1337,7 @@ namespace IEC
             }
 
             var newLine = "\n";
-            string message = Application.productName + " version: " + Application.version + newLine;
+            string message = Application.productName + " version: " + Application.version + newLine + " Level:" + Pool.Get<PlayerSecret>().level;
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
@@ -1349,7 +1353,7 @@ namespace IEC
         {
             var url = config.privacyPolicy;
             if (string.IsNullOrWhiteSpace(url)) return;
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
             IECiosNative.OpenURL(url);
 #else
             Application.OpenURL(url);

@@ -49,11 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f2b5db204a2c1e29b34adf6e8dc6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsItemSet: 0
-  CanStartWithoutKinematic: 1
-  CanBeRecursive: 1
-  IsPhysical: 0
-  Dimensions: {x: 1.2, y: 1.0000004, z: 1.2000002}
 --- !u!114 &114541373497248781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -66,12 +61,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7df4285d723e7cd36dd6bddc51093c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDefinition: {fileID: 11400000, guid: d29d4beabb0e1c345bfc4a5d4aab9061, type: 2}
-  startAsKinematic: 1
-  isContainedIn: {fileID: 0}
-  isContainedInRuntime: {fileID: 0}
-  mainRenderer: {fileID: 0}
-  IceCubePrefab: {fileID: 0}
+  useConvexCollider: 1
+  preservedYAxis: 0
 --- !u!54 &54486889009107025
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -283,6 +274,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6408989080801665915, guid: 50ac4f60c7473564c9dca48583d077d7,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d95caa4c61de70c4d9ab1dffa1aade05, type: 2}
     m_RemovedComponents:
     - {fileID: 3517115010098188201, guid: 50ac4f60c7473564c9dca48583d077d7, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 50ac4f60c7473564c9dca48583d077d7, type: 3}

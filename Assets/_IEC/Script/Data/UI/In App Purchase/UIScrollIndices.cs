@@ -6,19 +6,20 @@ namespace IEC
 {
     public class UIScrollIndices : _BaseBehaviour
     {
-        public int totalIndex = 3;
+        public int totalIndex = 4;
         public ScrollImageIndices[] scrollImageIndices;
 
         public void OnTotalsItemUpdate(int totalIndices)
         {
             totalIndex = totalIndices;
-            scrollImageIndices[0].parentObj.SetActive(totalIndices == 3);
-            scrollImageIndices[1].parentObj.SetActive(totalIndices == 2);
+            scrollImageIndices[0].parentObj.SetActive(totalIndices == 4);
+            scrollImageIndices[1].parentObj.SetActive(totalIndices == 3);
+            scrollImageIndices[2].parentObj.SetActive(totalIndices == 2);
         }
         
         public void SetIndex(RectTransform go, int index)
         {
-            scrollImageIndices[totalIndex == 2 ? 1 : 0].SetIndex(go, index);
+            scrollImageIndices[totalIndex == 4 ? 0 : totalIndex == 3 ? 1 : 2].SetIndex(go, index);
         }
     }
 

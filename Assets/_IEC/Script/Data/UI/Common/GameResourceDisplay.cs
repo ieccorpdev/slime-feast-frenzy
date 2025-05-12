@@ -73,7 +73,7 @@ public class GameResourceDisplay : MonoBehaviour
         }
     }
 
-    private void SetAllObjPosOut()
+    public void SetAllObjPosOut()
     {
         foreach (var obj in _listObjMoveOut)
         {

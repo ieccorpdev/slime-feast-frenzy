@@ -14,19 +14,19 @@ namespace IEC
     {
         public int maxSpawn = 30;
         public RectTransform baseObjectToSpawn;
-        //public List<RectTransform> effectCurrency;
+
         private Dictionary<ResourceType, List<RectTransform>> m_ListEffectByType = new();
-        
-        public float allTimeSpawn = 1f;
+        public List<ParticleSystem> listStartExplosion;
+        private float allTimeSpawn = 2f;
         
         public bool AnimCompleted { get; private set; }
 
         public void SpawnEffect(RewardClaimData effectData)
         {
-            SpawnEffect(effectData.rewardType, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount, effectData.onComplete, effectData.onEndMove, effectData.delay);
+            SpawnEffect(effectData.rewardType, effectData.rewardSprite, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount, effectData.onComplete, effectData.onEndMove, effectData.delay, effectData.animTime);
         }
 
-        public void SpawnEffect(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        public void SpawnEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
             if (addAmount <= 0)
             {
@@ -52,7 +52,7 @@ namespace IEC
             // int currencyCount = effectCurrency.Count;
             // currencyCount = Mathf.Max(currencyCount, addAmount);
             int currencyCount = Mathf.Min(addAmount, maxSpawn);
-            float ratioTime = allTimeSpawn / currencyCount;
+            float ratioTime = animTime / currencyCount;
 
             Sequence sequence = DOTween.Sequence();
             //EffectCurrency.gameObject.SetActive(true);
@@ -72,12 +72,12 @@ namespace IEC
                 currencyObj.transform.localScale = Vector3.one;
                 currencyObj.anchoredPosition = posSpawn;
                 var img = currencyObj.GetComponent<Image>();
-                img.sprite = Config.dataEffectRewardClaimConfig.GetRewardSprite(rewardType);
+                img.sprite = rewardSprite;
                 currencyObj.gameObject.SetActive(true);
                 var posStart = PosRandomSpawnRuby(posSpawn);
                 var index = i;
                 float delayTime = i * ratioTime + delay;
-                float delayTimeToStart = i * 0.01f;
+                float delayTimeToStart = i * ratioTime;
                 if (rewardType == ResourceType.Gold)
                 {
                     EventController.RaiseEvent(EventList.Audio.COIN_APPEAR);
@@ -93,7 +93,6 @@ namespace IEC
                         {
                             onEndMove?.Invoke();
                             currencyObj.gameObject.SetActive(false);
-
                             if (rewardType == ResourceType.Gold)
                             {
                                 EventController.RaiseEvent(EventList.Audio.COIN_GET);
@@ -102,6 +101,8 @@ namespace IEC
                             {
                                 EventController.RaiseEvent(EventList.Audio.ITEM_GET);
                             }
+
+                            ActiveVFXStartExplosion(posEnd);
                         }));
             }
 
@@ -116,6 +117,15 @@ namespace IEC
             //EventController.RaiseEvent(EventList.GamePlay.ON_CLAIM_GOLD);
         }
 
+        public void ActiveVFXStartExplosion(Vector2 anchorPos)
+        {
+            var vfx = listStartExplosion.Find(x => !x.isPlaying);
+            if (vfx != null)
+            {
+                vfx.GetComponent<RectTransform>().anchoredPosition = anchorPos;
+                vfx.Play();
+            }
+        }
         private Vector3 PosRandomSpawnRuby(Vector3 posSpawn)
         {
             posSpawn.x += UnityEngine.Random.Range(-300f, 300f);
@@ -125,13 +135,21 @@ namespace IEC
         
         // public static Vector2 SwitchToRectTransform(RectTransform from, RectTransform to)
         // {
-        //     Vector2 localPoint;
-        //     Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin);
-        //     Vector2 screenP = RectTransformUtility.WorldToScreenPoint(null, from.position);
-        //     screenP += fromPivotDerivedOffset;
-        //     RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, null, out localPoint);
-        //     Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin);
-        //     return to.anchoredPosition + localPoint - pivotDerivedOffset;
+        //     // Vector2 localPoint;
+        //     // Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin);
+        //     // Vector2 screenP = RectTransformUtility.WorldToScreenPoint(null, from.position);
+        //     // screenP += fromPivotDerivedOffset;
+        //     // RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, null, out localPoint);
+        //     // Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin);
+        //     // return to.anchoredPosition + localPoint - pivotDerivedOffset;
+        //     
+        //     // Convert world position of 'from' to screen space
+        //     Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(GamePlay.uiCamera, from.position);
+        //
+        //     // Convert screen point to local point in 'to' RectTransform
+        //     RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenPoint, GamePlay.uiCamera, out Vector2 localPoint);
+        //
+        //     return localPoint;
         // }
         
         public static Vector2 SwitchToRectTransform(RectTransform from, RectTransform to)
@@ -139,19 +157,19 @@ namespace IEC
             Vector2 localPoint;
             Canvas fromCanvas = from.GetComponentInParent<Canvas>();
             Canvas toCanvas = to.GetComponentInParent<Canvas>();
-
+        
             Camera fromCamera = fromCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : fromCanvas.worldCamera;
             Camera toCamera = toCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : toCanvas.worldCamera;
-
+        
             // Convert world position to screen position
             Vector2 screenP = RectTransformUtility.WorldToScreenPoint(fromCamera, from.position);
-
+        
             // Convert screen position to local position in the target rect
             RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, toCamera, out localPoint);
-
+        
             Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin);
             Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin);
-
+        
             return to.anchoredPosition + localPoint - pivotDerivedOffset;
         }
     }
@@ -159,22 +177,26 @@ namespace IEC
     public class RewardClaimData
     {
         public ResourceType rewardType;
+        public Sprite rewardSprite;
         public int rewardAmount;
         public Vector2 posSpawn;
         public Vector2 posEnd;
         public Action onComplete;
         public Action onEndMove;
         public float delay;
+        public float animTime;
 
-        public RewardClaimData(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        public RewardClaimData(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 2f)
         {
             this.rewardType = rewardType;
+            this.rewardSprite = rewardSprite;
             this.rewardAmount = addAmount;
             this.posSpawn = posSpawn;
             this.posEnd = posEnd;
             this.onComplete = onComplete;
             this.onEndMove = onEndMove;
             this.delay = delay;
+            this.animTime = animTime;
         }
     }
     

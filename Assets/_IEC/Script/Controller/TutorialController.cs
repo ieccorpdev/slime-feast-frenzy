@@ -63,7 +63,7 @@ namespace IEC
             {
                 Locator.Game.ScreenInGame.DeActiveStartGameTutorial();
                 var helperConfig =
-                    Config.gamePlayConfig.helperConfigs.FirstOrDefault(x => x.unlockLevel == PlayerData.level);
+                    Config.gamePlayConfig.helperConfigs.Find(x => x.unlockLevel == PlayerData.level);
                 if (helperConfig != null && PlayerData.helperData.IsCompleteTutorial(helperConfig.id) == false)
                 {
                     Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);

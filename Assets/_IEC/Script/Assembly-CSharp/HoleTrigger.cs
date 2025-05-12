@@ -15,9 +15,9 @@ public class HoleTrigger : MonoBehaviour
 		if (other.CompareTag("FallingItem_Physics") == false) return;
 		BaseItem baseItem = other.GetComponentInParent<BaseItem>();
 		if (baseItem == null) return;
-		if (baseItem.ItemDefinition.GetLevel() <= m_Hole.Level)
+		baseItem.EnterHoleTrigger();
+		if(baseItem.ItemDefinition != null && baseItem.ItemDefinition.GetLevel() <= m_Hole.Level)
 		{
-			baseItem.EnterHoleTrigger();
 			m_Hole.TriggerdBite();
 		}
 

@@ -292,7 +292,7 @@ public class BuildCity : _BaseBehaviour
         {
             Vector3 target = currentIsland.currentSelectedObj.GetComponent<IslandItem>().GetCenterObject();
             SpawnObjectScrew(target);
-            EventController.RaiseEvent(EventList.Audio.BUILD);
+            //EventController.RaiseEvent(EventList.Audio.BUILD);
         }
 
         if (currentIsland.maxScrewCanSpend <= 0 && currentIsland.LastIsland() && !currentIsland.isCompleteIsland && CanBuildCity)
@@ -840,7 +840,7 @@ public class BuildCity : _BaseBehaviour
 
     private void DoShowCompletedBuild(Action onComplete = null)
     {
-        EventController.RaiseEvent(EventList.Audio.COMPLETE_ISLAND);
+        //EventController.RaiseEvent(EventList.Audio.COMPLETE_ISLAND);
         cityCompleteReward.gameObject.SetActive(true);
         completedTitle.localScale = Vector3.zero;
         completedLightAura.localScale = Vector3.zero;

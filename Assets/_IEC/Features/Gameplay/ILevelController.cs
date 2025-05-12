@@ -6,6 +6,7 @@ namespace _IEC.Features.Gameplay
     {
         public void Dispose();
         public void LoadLevel(int level);
+        public void LoadLevelDebugAllItems();
         public void StartPlay();
         public LevelData GetLevelData();
         public Hole GetHolePlayer();

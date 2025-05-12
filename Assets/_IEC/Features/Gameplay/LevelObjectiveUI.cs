@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
 {
@@ -21,12 +22,17 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private ParticleSystem effectCollect;
 
         public string itemId;
-
+        
         private bool m_IsSpecial;
+        private bool m_isLoaded;
+        public bool IsLoaded => m_isLoaded;
         private RectTransform m_RectTransform;
 
         private string TWEEN_LEVEL_OBJECTIVE => "TWEEN_LEVEL_OBJECTIVE" + gameObject.GetInstanceID();
-
+        //anim fly up
+        private float offsetFlyX;
+        private int dirFlyX;
+        public bool isGoldObj => itemId == Config.specialObjectConfig.goldSpecialObjective.GetId();
         public RectTransform RectTransform
         {
             get
@@ -45,6 +51,17 @@ namespace _IEC.Features.Gameplay
             return imgIcon.transform.position;
         }
 
+        public float GetOffsetItemCurve()
+        {
+            offsetFlyX += 0.1f * dirFlyX;
+            if (offsetFlyX is < -0.5f or > 0.5f)
+            {
+                dirFlyX *= -1;
+                offsetFlyX = Mathf.Clamp(offsetFlyX, -0.5f, 0.5f);
+            }
+            return offsetFlyX;
+        }
+
         public bool IsSpecialItem()
         {
             return m_IsSpecial;
@@ -55,10 +72,10 @@ namespace _IEC.Features.Gameplay
             return imgIcon.rectTransform.sizeDelta;
         }
 
-        public void SetNumber(int newNumber, bool isCompleted)
+        public void SetNumber(string newNumber, bool isCompleted)
         {
             effectCollect.Play();
-            SetText(newNumber.ToString());
+            SetText(newNumber);
             if (isCompleted)
             {
                 PlayDoneAnimation();
@@ -76,25 +93,56 @@ namespace _IEC.Features.Gameplay
 
         public void LoadData(LevelObjective levelObjective, bool isSpecial)
         {
+            Reset();
             itemId = levelObjective.itemId;
             m_IsSpecial = isSpecial;
             //SetText(isSpecial ? "0" : levelObjective.number.ToString());
-            SetText(levelObjective.number.ToString());
+            if (isSpecial)
+            {
+                if (isGoldObj) // MeoMew hard Code;
+                {
+                    SetText(GamePlay.levelController.GoldCollected.ToString());
+                }
+                else
+                {
+                    int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+                    var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
+                    SetText(totalNumberCollected+"/"+maxSpecialObject);
+                }
+
+            }
+            else
+            {
+                SetText(levelObjective.number.ToString());  
+            }
             if (isSpecial)
             {
                 //Change method load 
-                var itemDefinition = Config.specialObjectConfig.listSpecialItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
-                imgIcon.sprite = itemDefinition.GetIcon();
+                if (isGoldObj)// MeoMew hard Code;
+                {
+                    var itemDefinition = Config.specialObjectConfig.goldSpecialObjective;
+                    imgIcon.sprite = itemDefinition.GetIcon();
+                }
+                else
+                {
+                    var itemDefinition = Config.specialObjectConfig.listSpecialItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+                    imgIcon.sprite = itemDefinition.GetIcon();
+                }
+
             }
             else
             {
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
-            imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
 
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;
             RectTransform.sizeDelta = delta;
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
         }
 
         public void Reset()
@@ -102,15 +150,16 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(TWEEN_LEVEL_OBJECTIVE);
             pivot.localScale = Vector3.one;
             pivot.localEulerAngles = Vector3.zero;
-            
             imgCheckComplete.gameObject.SetActive(false);
             txtNumber.gameObject.SetActive(true);
+            m_isLoaded = false;
         }
 
         private void PlayDoneAnimation()
         {
             DOCollectedAllObjectsEffect();
-
+            if (!GamePlay.IsWin)
+                EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
             txtNumber.gameObject.SetActive(false);
             imgCheckComplete.gameObject.SetActive(true);
         }
@@ -121,7 +170,7 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(TWEEN_LEVEL_OBJECTIVE);
             pivot.localScale = Vector3.one;
             pivot.localEulerAngles = Vector3.zero;
-
+            txtNumber.gameObject.SetActive(false);
             var sequence = DOTween.Sequence().SetId(TWEEN_LEVEL_OBJECTIVE);
             sequence.Append(pivot.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.35f).SetEase(Ease.OutQuad));
             sequence.Join(pivot.DOPunchRotation(new Vector3(0f, 0f, 25f), 0.7f, 6, elasticity: 0.85f).SetEase(Ease.OutQuad));

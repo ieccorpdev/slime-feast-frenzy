@@ -33,7 +33,7 @@ namespace _IEC.Features.Tutorial
         private void CompleteHelper()
         {
             HighLightCanvas.RemoveCurrentHighLight();
-            //PlayerData.helperData.SetCompleteTutorial(helperId);
+            PlayerData.helperData.SetCompleteTutorial(helperId);
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             helperButton.HideHint();
         }

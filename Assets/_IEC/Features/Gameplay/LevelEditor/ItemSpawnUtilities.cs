@@ -31,11 +31,11 @@ namespace IEC
         public void CreatePreview()
         {
             if (spawnArea == null) return;
-            if (_previewGameObject)
-            {
-                DestroyImmediate(_previewGameObject);
-                _previewGameObject = null;
-            }
+            //if (_previewGameObject)
+            //{
+                //DestroyImmediate(_previewGameObject);
+                //_previewGameObject = null;
+            //}
 
             _previewGameObject = spawnArea.CreatePreview(itemPrefabConfig, _folderPathItemInGame, itemId);
             _previewGameObject.AddComponent<BaseItemGroup>();

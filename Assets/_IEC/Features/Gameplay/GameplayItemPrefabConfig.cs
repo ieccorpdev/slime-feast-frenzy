@@ -11,7 +11,7 @@ using UnityEditor;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/ItemPrefabConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/ItemPrefabConfig")]
     public class GameplayItemPrefabConfig : ScriptableObject
     {
         [Searchable]
@@ -28,12 +28,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private string outputFolder;
         [SerializeField] private string prefabFolder;
         
-        public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
-            ? listItemDefinitionShp : listItemDefinition; 
+        // public List<ItemDefinition> ListItemDefinition => Pool.Get<PlayerSecret>().level <= 50 && Pool.Get<PlayerSecret>().level % 20 != 0
+        //     ? listItemDefinitionShp : listItemDefinition; 
+        public List<ItemDefinition> ListItemDefinition => listItemDefinitionShp; 
         
         public List<ItemDefinition> GetListItemDefinition()
         {
-            return ListItemDefinition;
+            //return ListItemDefinition;
+            return listItemDefinitionShp;
         }
         
         
@@ -302,7 +304,80 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        [Button]
+        void CustomEnableGPUInstancing()
+        {
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
 
+
+                if (itemDef.GetPrefab() != null)
+                {
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshRenderer>();
+                    foreach (var mat in mats)
+                    {
+                        mat.sharedMaterial.enableInstancing = true;
+                        EditorUtility.SetDirty(mat.sharedMaterial);
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [Button]
+        void MarkAllModalReadWirteAble()
+        {
+            Debug.LogError($"Start MarkAllModalReadWirteAble");
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
+                
+                if (itemDef.GetPrefab() != null)
+                {
+                    //Make Mesh Convex
+                    var convexs = itemDef.GetPrefab().GetComponentsInChildren<MeshCollider>();
+                    foreach (var convex in convexs)
+                    {
+                        if (!convex.convex)
+                        {
+                            Debug.LogError("CvOn:" +itemDef.GetPrefab().name);
+                            convex.convex = true;
+                        }
+
+                    }
+
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshFilter>();
+                    foreach (var mf in mats)
+                    {
+                        if (mf.sharedMesh == null)
+                            continue;
+
+                        string path = AssetDatabase.GetAssetPath(mf.sharedMesh);
+                        if (string.IsNullOrEmpty(path))
+                            continue; // Not an asset, likely a procedural mesh
+
+                        // Load the mesh importer
+                        ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
+                        if (importer != null && !importer.isReadable)
+                        {
+                            importer.isReadable = true;
+                            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                            Debug.LogError($"Enabled Read/Write on mesh at: {path}");
+                        }
+                    }
+                }
+            }
+            Debug.LogError($"End MarkAllModalReadWirteAble");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
 #endif
 #endregion
         public GameObject GetItemPrefab(string id)
