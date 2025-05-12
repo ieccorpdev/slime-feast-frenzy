@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -26,6 +27,7 @@ public class ComboUI : MonoBehaviour
     private int currentComboIndex = 0;
     [SerializeField] private int minComboIndexVibrate = 2;
     private bool canVibrate = true;
+    [NonSerialized] public int bonusCombo = 1;
 
     private void Start()
     {
@@ -46,7 +48,7 @@ public class ComboUI : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(CheckInCombo());
-        currentComboCount++;
+        currentComboCount += bonusCombo;
         SetCombo(currentComboCount);
     }
 
@@ -99,7 +101,6 @@ public class ComboUI : MonoBehaviour
             return;
         }
         comboTxt.text = $"{combo}";
-        Show();
 
         if (combo >= thresholds[currentComboIndex])
         {
@@ -107,10 +108,12 @@ public class ComboUI : MonoBehaviour
             if (currentComboIndex >= thresholds.Count)
             {
                 currentComboIndex = thresholds.Count - 1;
-                return;
             }
-            ChangeComboColor();
-            //fxFireCombos[currentComboIndex].Play();
+            else
+            {
+                ChangeComboColor();
+                //fxFireCombos[currentComboIndex].Play();
+            }
         }
         if (currentComboIndex > minComboIndexVibrate)
         {
@@ -118,13 +121,14 @@ public class ComboUI : MonoBehaviour
         }
         if (combo < 10000)
         {
-            comboTxt.transform.position = comboTxtPos[combo.ToString().Length - 1].position;
-            subComboTxt.transform.position = subComboTxtPos[combo.ToString().Length - 1].position;
+            comboTxt.transform.localPosition = comboTxtPos[comboTxt.text.Length - 1].localPosition;
+            subComboTxt.transform.localPosition = subComboTxtPos[comboTxt.text.Length - 1].localPosition;
         }
         else
         {
             comboTxt.transform.position = comboTxtPos[comboTxtPos.Length - 1].position;
             subComboTxt.transform.position = subComboTxtPos[comboTxtPos.Length - 1].position;
         }
+        Show();
     }
 }

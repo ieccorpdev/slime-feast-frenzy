@@ -41,8 +41,9 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
         [SerializeField] private HelperIntro helperIntro;
-        [SerializeField] private ComboUI comboUI;
+        public ComboUI comboUI;
         private static bool CanPlaySFX = true;
+
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
