@@ -247,6 +247,7 @@ public class Hole : _BaseBehaviour
 		if (isLerpSize)
 		{
 			sizeUpVfx.Play();
+			//levelUpVfx.Play();
 			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
 				callback?.Invoke();
@@ -446,6 +447,7 @@ public class Hole : _BaseBehaviour
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+		levelUpVfx.Stop();
 		speedLinesVFX.Stop();
 	}
 
