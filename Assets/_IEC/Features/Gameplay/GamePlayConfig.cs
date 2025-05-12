@@ -25,6 +25,18 @@ namespace _IEC.Features.Gameplay
 
         public float ItemDrag = 2;
         public float ItemAngularDrag = 4;
+        [Header("LevelCustom")]
+        public List<CustomLevelData> customLevelExpands;
+
+        public int GetTimeLevelExpand(int level)
+        {
+            var dataLevelExpand = customLevelExpands.Find(x => x.level == level);
+            if (dataLevelExpand != null)
+            {
+                return dataLevelExpand.timeExpand;
+            }
+            return 0;
+        }
         public bool IsHelperUnlocked(HelperId helperId)
         {
             return PlayerData.level >= GetUnlockLevelHelper(helperId);
@@ -102,5 +114,11 @@ namespace _IEC.Features.Gameplay
         public int unlockLevel;
         public int price;
         public int numberBuyingResult;
+    }
+    [System.Serializable]
+    public class CustomLevelData
+    {
+        public int level;
+        public int timeExpand;
     }
 }
