@@ -67,28 +67,73 @@ namespace IEC
                         }
                     }
                     break;
-               case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
+                case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
                     SetMuteAllMusic(true);
                     break;
-               case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
+                case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_INGAME, false);
                     break;
                 case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_HOME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
                     break;
-                #if UNITY_IOS
+#if UNITY_IOS
                 case EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS:
                     AudioSettings.Mobile.StopAudioOutput();
                     break;
                 case EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS:
                     AudioSettings.Mobile.StartAudioOutput();
                     break;
-                #endif
+#endif
                 default:
                     PlayAudio(gameEvent);
                     break;
             }
         }
+
+        public void FadeAudio(float from = 0f, float to = 0f, float duration = 0f)
+        {
+            StopAllCoroutines();
+            StartCoroutine(FadeAllMusicAudioSources(duration));
+        }
+
+        IEnumerator FadeAudioListenerVolume(float from, float to, float duration)
+        {
+            float time = 0f;
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                AudioListener.volume = Mathf.Lerp(from, to, time / duration);
+                yield return null;
+            }
+            AudioListener.volume = to;
+        }
+
+        IEnumerator FadeAllMusicAudioSources(float duration)
+        {
+            float time = 0f;
+
+            Dictionary<AudioPlayer, float> initialVolumes = new Dictionary<AudioPlayer, float>();
+            foreach (var player in m_ListMusicAudio)
+            {
+                initialVolumes[player] = player.audioSource.volume;
+            }
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+
+                foreach (var player in m_ListMusicAudio)
+                {
+                    if (player != null && player.audioSource != null)
+                    {
+                        player.audioSource.volume = Mathf.Lerp(0, initialVolumes[player], time / duration); ;
+                    }
+                }
+
+                yield return null;
+            }
+        }
+
 
         private void PlayAudio(string id)
         {
@@ -119,11 +164,11 @@ namespace IEC
 
             if (!PlayerData.isMusicOn)
                 return;
-            
+
             SetMuteMusic(id, false);
         }
 
-    AudioPlayer CreateAudio(string id, bool sound = true)
+        AudioPlayer CreateAudio(string id, bool sound = true)
         {
             var audio = Instantiate(audioPlayerPrefab, this.gameObject.transform);
             if (sound)
@@ -136,7 +181,7 @@ namespace IEC
             }
             return audio;
         }
-        
+
         AudioPlayer GetPlayerSound(string id)
         {
             var audio = m_ListSoundAudio.Find(x => x.Info.id == id);
@@ -151,7 +196,7 @@ namespace IEC
             var audio = m_ListMusicAudio.Find(x => x.Info.id == id);
             if (audio == null)
             {
-                audio = CreateAudio(id,false);
+                audio = CreateAudio(id, false);
             }
             return audio;
         }
@@ -171,7 +216,7 @@ namespace IEC
                 player.SetMute(isMute);
             }
         }
-        
+
         void SetMuteMusic(string id, bool isMute)
         {
             // if(!IsMusicPlaying(id))
@@ -186,20 +231,20 @@ namespace IEC
                 data.SetMute(isMute);
             }
         }
-        
+
         bool IsMusicPlaying(string id)
         {
-            
+
             var audioMusicSource = m_ListMusicAudio.Find(x => x.Info.id == id);
             if (audioMusicSource == null)
                 return false;
 
             return audioMusicSource.IsPlaying;
         }
-        
+
         bool IsSoundPlaying(string id)
         {
-            
+
             var audioSoundSource = m_ListSoundAudio.Find(x => x.Info.id == id);
             if (audioSoundSource == null)
                 return false;
@@ -216,14 +261,14 @@ namespace IEC
                 sound.Stop();
             }
         }
-        
+
         public void PlaySound(string id)
         {
             var sound = GetPlayerSound(id);
             var data = listSoundConfig.Find(x => x.id == id);
             if (data != null && data.clip == null)
             {
-                Debug.LogError($"Sound {id} is null");  
+                Debug.LogError($"Sound {id} is null");
                 return;
             }
             sound.gameObject.SetActive(true);
@@ -232,9 +277,9 @@ namespace IEC
                 //PlaySound(data);
                 sound.SetData(data);
             }
-            
+
             sound.SetMute(!PlayerData.isSoundOn);
-            
+
             sound.Play();
         }
 
@@ -260,7 +305,7 @@ namespace IEC
         {
             if (IsMusicPlaying(id))
                 return;
-            
+
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
             if (data != null && data.clip == null)
@@ -272,17 +317,17 @@ namespace IEC
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.Play();
         }
-        
+
         public void PlayMusicOnLoop(string id)
         {
             if (IsMusicPlaying(id))
                 return;
-            
+
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
             if (data != null && data.clip == null)
@@ -294,9 +339,9 @@ namespace IEC
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.PlayOnLoop();
         }
 
@@ -313,9 +358,9 @@ namespace IEC
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.ResetLoop();
         }
 
@@ -344,7 +389,7 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
         public bool IsActive()
         {
             return gameObject.activeSelf;
@@ -352,16 +397,17 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            
+
         }
 
         public void BehaviourAwake()
         {
-            
+
         }
     }
-    
-    [Serializable]public class AudioInfo
+
+    [Serializable]
+    public class AudioInfo
     {
         [Dropdown("GetAudioEvents")]
         public string id;
@@ -370,9 +416,9 @@ namespace IEC
         public bool isLoop;
         public float loopInterval;
         public bool isPlayMultiple;
-        [Range(0, 1) ]
-        public float volume = 1f; 
-        public AudioInfo(string id,AudioClip clip, bool isPlayMultiple, bool isLoop, float volume)
+        [Range(0, 1)]
+        public float volume = 1f;
+        public AudioInfo(string id, AudioClip clip, bool isPlayMultiple, bool isLoop, float volume)
         {
             this.id = id;
             this.clip = clip;
@@ -380,7 +426,7 @@ namespace IEC
             this.volume = volume;
             this.isPlayMultiple = isPlayMultiple;
         }
-        
+
         public AudioInfo(AudioInfo info)
         {
             this.id = info.id;
@@ -391,7 +437,7 @@ namespace IEC
             this.listRandomAudioClips = new List<AudioClip>(info.listRandomAudioClips);
         }
         private static List<string> GetAudioEvents => GetAllAudioEvents();
-        
+
         public static List<string> GetAllAudioEvents()
         {
             var audioType = typeof(EventList.Audio);
