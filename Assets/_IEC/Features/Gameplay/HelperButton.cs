@@ -249,7 +249,7 @@ namespace _IEC.Features.Gameplay
             switch (helperId)
             {
                 case HelperId.Magnet:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
                     EventController.RaiseEvent(EventList.Audio.MAGNET_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -261,7 +261,7 @@ namespace _IEC.Features.Gameplay
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
                     EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
                     break;
                 case HelperId.FrozenTime:
