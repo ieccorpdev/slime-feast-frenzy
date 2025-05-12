@@ -82,8 +82,9 @@ namespace IEC
                     .InitData(
                         EventType.StarChase,
                         eventIndex,
-                        DateTime.Now,
-                        DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
+                        DateTime.Now.Date,
+                        //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
+                        DateTime.Now.AddDays(1).Date, //hard code to end of day
                         new List<EventPlayerData>(listPlayerData)
                         );
                 
