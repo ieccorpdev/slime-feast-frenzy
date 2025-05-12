@@ -41,7 +41,7 @@ namespace LightScrollSnap
         #region PRIVATE PROPERTIES
 
         private float _scrollPos;
-        private float[] _posses;
+        [SerializeField] private float[] _posses;
         private float _distance;
         private int _itemCount;
         private Coroutine _smoothScrollingCoroutine;
@@ -108,9 +108,12 @@ namespace LightScrollSnap
         private void SetupItems(int itemCount)
         {
             _itemCount = itemCount;
-            _posses = new float[_itemCount];
+            if (_posses.Length != itemCount)
+            {
+                _posses = new float[_itemCount];
+            }
 
-            _distance = _itemCount > 1 ? 1f / (_itemCount - 1f) : 1;
+            _distance = _itemCount > 1 ? (1f - initialPos) / (_itemCount - 1f) : 1;
             _items = new List<RectTransform>(_itemCount);
 
             var activeIndex = 0;
@@ -119,7 +122,10 @@ namespace LightScrollSnap
                 var child = Content.GetChild(i).GetComponent<RectTransform>();
                 if (!child.gameObject.activeSelf) continue;
                 _items.Add(child);
-                _posses[activeIndex] = _distance * activeIndex;
+                if (_posses[activeIndex] == 0)
+                {
+                    _posses[activeIndex] = _distance * activeIndex + initialPos;
+                }
                 activeIndex++;
             }
 

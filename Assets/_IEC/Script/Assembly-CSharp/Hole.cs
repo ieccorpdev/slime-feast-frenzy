@@ -26,6 +26,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private HoleMagnet holeMagnet;
 	[Header("VFX")] [SerializeField] private ParticleSystem levelUpVfx;
 	[SerializeField] private ParticleSystem sizeUpVfx;
+	[SerializeField] private ParticleSystem radialCompassVfx;
 	[SerializeField] private ParticleSystem magnetVfx;
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
@@ -113,7 +114,7 @@ public class Hole : _BaseBehaviour
 	{
 		//This function must stay in another class
 		float baseGravity = -30 + (Speed - 4 * 5);
-		Physics.gravity = new Vector3(0, baseGravity * 0.75f , 0);
+		Physics.gravity = new Vector3(0, baseGravity * 0.85f , 0);
 	}
 	public void TriggerdBite()
 	{
@@ -202,6 +203,10 @@ public class Hole : _BaseBehaviour
 		m_AdditionalSize = Config.gamePlayConfig.scaleUpHelperAdditionalSize;
 		SetSize(Size,true,null);
 	}
+	public void StartCompassHelper()
+	{
+		radialCompassVfx.Play();
+	}
 
 	public void StopScaleByHelper()
 	{
@@ -209,7 +214,10 @@ public class Hole : _BaseBehaviour
 		m_AdditionalSize = 0;
 		SetSize(Size,true,null);
 	}
-	
+	public void StopCompassHelper()
+	{
+		radialCompassVfx.Stop();
+	}
 	public void SetLevel(int level, bool lerpSize = false)
 	{
 		gameObject.SetActive(true);
@@ -239,6 +247,7 @@ public class Hole : _BaseBehaviour
 		if (isLerpSize)
 		{
 			sizeUpVfx.Play();
+			//levelUpVfx.Play();
 			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
 				callback?.Invoke();
@@ -438,6 +447,7 @@ public class Hole : _BaseBehaviour
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+		levelUpVfx.Stop();
 		speedLinesVFX.Stop();
 	}
 

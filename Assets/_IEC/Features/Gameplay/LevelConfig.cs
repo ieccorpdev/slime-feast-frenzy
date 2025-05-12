@@ -60,6 +60,27 @@ namespace _IEC.Features.Gameplay
         public GameplayItemPrefabConfig editorItemPrefabConfig;
 
         [Button]
+        public void UpdateItemToNormal(string id)
+        {
+#if UNITY_EDITOR
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                var obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                while (obj != null)
+                {
+                    levelData.listObjectives.Remove(obj);
+                    obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                    Debug.LogError(($"Remove objective: {id} at {levelData.name}"));
+                    
+                    EditorUtility.SetDirty(levelData);
+                    AssetDatabase.SaveAssets();        
+                    AssetDatabase.Refresh();
+                }
+            }
+#endif
+        }
+
+        [Button]
         public void CheckValidAllLevel()
         {
             List<string> listDebugLevel = new();
@@ -916,7 +937,7 @@ namespace _IEC.Features.Gameplay
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-
+    
         [Button]
         public void BakeLevelDefinitionToLevelModel()
         {
@@ -1334,7 +1355,19 @@ namespace _IEC.Features.Gameplay
             Debug.LogError(str);
         }
 
-#endregion
+        [Button]
+        public void SetAllLevelSpawnKinematic()
+        {
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                levelData.levelSpawnData.SetAllSpawnDataKinematic();
+                EditorUtility.SetDirty(levelData.levelSpawnData);
+                AssetDatabase.SaveAssets();        
+                AssetDatabase.Refresh();
+            }
+        }
+
+        #endregion
 #endif
     }
     [System.Serializable]

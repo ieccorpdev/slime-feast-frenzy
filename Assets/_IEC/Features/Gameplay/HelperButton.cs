@@ -26,12 +26,15 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Image imgIcon;
         [SerializeField] private TextMeshProUGUI txtUnlockCondition;
         [SerializeField] private GameObject groupHint;
+        public Action actionEffect;
+        public Action completeActionEffect;
         private State m_CurrentState;
         private float m_CooldownTime;
         private float HelperActiveTime => Config.gamePlayConfig.GetHelperActiveTime(helperId);
         private bool m_IsGamePause;
         private PopupHelper m_MyPopup;
-
+        [SerializeField] private Animator fillAnim;
+        private readonly int fillAnimName = Animator.StringToHash("Fill");
         private Dictionary<HelperId, string> _paramTrackingById = new Dictionary<HelperId, string>()
         {
             { HelperId.ScaleUp, "bigger_hole" },
@@ -39,7 +42,8 @@ namespace _IEC.Features.Gameplay
             { HelperId.Compass, "compass" },
             { HelperId.FrozenTime, "time_freeze" },
         };
-        
+        [SerializeField] private Transform lockIcon, groupUnlockDescription;
+        private static Transform lastGroupUnlockDescription;
         public event Action OnClick;
         private void Awake()
         {
@@ -48,8 +52,10 @@ namespace _IEC.Features.Gameplay
                 OnClick?.Invoke();
                 switch (m_CurrentState)
                 {
-                    case State.None:
                     case State.Locked:
+                        HandleLockedOnClick();
+                        return;
+                    case State.None:
                     case State.Playing:
                         return;
                     case State.Pool:
@@ -64,12 +70,48 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
             Observer.AddObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
-            
         }
+
+        private void HandleLockedOnClick()
+        {
+            if (lastGroupUnlockDescription)
+            {
+                DOTween.Kill(lastGroupUnlockDescription.GetHashCode());
+                lastGroupUnlockDescription.DOKill();
+                lastGroupUnlockDescription.gameObject.SetActive(false);
+            }
+            DOTween.Kill(lockIcon.GetHashCode());
+
+            Sequence sequence = DOTween.Sequence().SetId(lockIcon.GetHashCode());
+
+            sequence.Append(lockIcon.DORotate(new Vector3(0, 0, 5), 0.05f).SetEase(Ease.OutQuad))
+                    .Append(lockIcon.DORotate(new Vector3(0, 0, -5), 0.1f).SetEase(Ease.InOutQuad))
+                    .Append(lockIcon.DORotate(new Vector3(0, 0, 2.5f), 0.05f).SetEase(Ease.InOutQuad))
+                    .Append(lockIcon.DORotate(new Vector3(0, 0, -2.5f), 0.05f).SetEase(Ease.InOutQuad))
+                    .Append(lockIcon.DORotate(Vector3.zero, 0.05f).SetEase(Ease.OutBack));
+
+            groupUnlockDescription.DOKill();
+            DOTween.Kill(groupUnlockDescription.GetHashCode());
+            groupUnlockDescription.gameObject.SetActive(true);
+            groupUnlockDescription.transform.localScale = Vector3.zero;
+            groupUnlockDescription.transform.DOScale(Vector3.one, 0.5f)
+                .SetEase(Ease.OutBack);
+            lastGroupUnlockDescription = groupUnlockDescription;
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                groupUnlockDescription.transform.DOScale(Vector3.zero, 0.3f)
+                    .SetEase(Ease.InBack)
+                    .OnComplete(() => groupUnlockDescription.gameObject.SetActive(false));
+            }).SetId(groupUnlockDescription.GetHashCode());
+        }
+
 
         private void Start()
         {
             AddCheatCode();
+            Material instanceMaterial = new Material(imgIcon.material);
+            imgIcon.material = instanceMaterial;
+           
         }
 
         void AddCheatCode()
@@ -124,7 +166,7 @@ namespace _IEC.Features.Gameplay
             m_CooldownTime = HelperActiveTime;
             imgProgress.fillAmount = 1;
             UpdatePoolNumberUI();
-            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false)
+            if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || (GamePlay.levelController.GetLevelData().levelType == LevelType.COIN && helperId == HelperId.Compass ))
             {
                 ChangeState(State.Locked);
             }
@@ -201,11 +243,13 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
-            imgIcon.transform.DOPunchScale(Vector3.one, 0.2f,1,0.2f).SetId(IconPunchScale);
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
+            actionEffect?.Invoke();
             Services.PushEvent(new UserHelper(helperId.ToString()));
             switch (helperId)
             {
                 case HelperId.Magnet:
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
                     EventController.RaiseEvent(EventList.Audio.MAGNET_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -213,12 +257,15 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
                 case HelperId.Compass:
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Guiding Compass");
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
                     EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
                     break;
                 case HelperId.FrozenTime:
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Time Freeze");
                     EventController.RaiseEvent(EventList.Audio.ICE_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -228,6 +275,12 @@ namespace _IEC.Features.Gameplay
             }
         }
 
+        public void PlayShinyEffect()
+        {
+            imgIcon.material.SetFloat("_ShineLocation",0);
+            imgIcon.material.DOFloat(1f, "_ShineLocation", 0.3f).SetId(imgIcon.GetInstanceID()+"_Shiny");
+            imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
+        }
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
         {
             if (dict.ContainsKey(id))
@@ -249,7 +302,9 @@ namespace _IEC.Features.Gameplay
                 case State.Playing:
                     if (m_IsGamePause) return;
                     m_CooldownTime -= Time.deltaTime;
-                    imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
+                    //imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
+                    fillAnim.Play(fillAnimName, 0, 1 - m_CooldownTime / HelperActiveTime);
+                    fillAnim.speed = 0;
                     if (m_CooldownTime <= 0)
                     {
                         if (PlayerData.helperData.GetPool(helperId) > 0 )
@@ -260,7 +315,7 @@ namespace _IEC.Features.Gameplay
                         {
                             ChangeState(State.Addable);
                         }
-                        
+                        PlayShinyEffect();
                         switch (helperId)
                         {
                             case HelperId.Magnet:
@@ -288,12 +343,14 @@ namespace _IEC.Features.Gameplay
         {
             if (newState == m_CurrentState) return;
             m_CurrentState = newState;
+            button.interactable = true;
             groupLock.SetActive(newState == State.Locked);
             groupUnlocked.SetActive(newState != State.Locked);
             groupAdd.SetActive(newState!= State.Pool);
             groupPool.SetActive(newState!= State.Addable);
             groupPlaying.SetActive(newState == State.Playing);
             UpdatePoolNumberUI();
+            fillAnim.Play("idle");
             switch (newState)
             {
                 case State.Playing:
@@ -311,9 +368,8 @@ namespace _IEC.Features.Gameplay
                     }
                     break;
                 case State.Locked:
-                    txtUnlockCondition.text = Config.gamePlayConfig.GetUnlockCondition(helperId);
+                    txtUnlockCondition.text += Config.gamePlayConfig.GetUnlockCondition(helperId);
                     break;
-                
             }
         }
 
@@ -330,7 +386,13 @@ namespace _IEC.Features.Gameplay
             if (PlayerData.helperData.GetPool(helperId) > 0)
                 ChangeState(State.Pool);
         }
-        
+
+        private void OnDestroy()
+        {
+            DOTween.Kill(imgIcon.GetInstanceID()+"_Shiny");
+            DOTween.Kill(IconPunchScale);
+        }
+
         private enum  State
         {
             None,

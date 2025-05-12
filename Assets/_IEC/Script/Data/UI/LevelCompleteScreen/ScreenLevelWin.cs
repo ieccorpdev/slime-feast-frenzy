@@ -83,6 +83,7 @@ namespace IEC
             
             #region check add popup
             Queue<PopupData> popupQueue = new Queue<PopupData>();
+            List<KeyValuePair<ResourceType, int>> listCollectedItems = new();
 
             #region Helper functions
 
@@ -95,7 +96,7 @@ namespace IEC
                 }
             }
             #endregion
-            if (PlayerData.level >= Config.levelShowRating && !PlayerData.wasRateUs)
+            if (PlayerData.level > Config.levelShowRating && !PlayerData.wasRateUs)
             {
                 PopupData CallNativeReview = new PopupData(
                     null,
@@ -104,38 +105,99 @@ namespace IEC
                 );
                 popupQueue.Enqueue(CallNativeReview);
             }
-            //Check level chest
-            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
-            if(levelChestRewardPopup != null)
-                popupQueue.Enqueue(levelChestRewardPopup);
-            
-            //Check star chest
-            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
-            if(starChestRewardPopup != null)
-                popupQueue.Enqueue(starChestRewardPopup);
             
             //Check progress reward
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
-                popupQueue.Enqueue(new PopupData(
-                    Locator.Main.ClaimBonusRewardPanel,
-                    () =>
+                // popupQueue.Enqueue(new PopupData(
+                //     Locator.Main.ClaimBonusRewardPanel,
+                //     () =>
+                //     {
+                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
+                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                //     }, 
+                //     ShowNext));
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
                     {
-                        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                        Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                    }, 
-                    ShowNext));
+                        listDataReward = new List<Reward>(listReward),
+                    });
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
             
+            //Check level chest
+            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
+            if (levelChestRewardPopup != null)
+            {
+                //popupQueue.Enqueue(levelChestRewardPopup);
+                
+                var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Level)
+                    .GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)-1);
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(rewardData.listReward),
+                        showAimChest = true,
+                        chestType = "Chest_2"
+                    });
+            }
+
+            //Check star chest
+            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
+            if (starChestRewardPopup != null)
+            {
+                //popupQueue.Enqueue(starChestRewardPopup);
+                
+                var rewardData = Config.allChestConfig.GetChestConfig(ChestType.Star)
+                    .GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)-1);
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(rewardData.listReward),
+                        showAimChest = true,
+                        chestType = "Chest_1"
+                    });
+            }
+
+            if (Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim())
+            {
+                popupQueue.Enqueue(new PopupData(
+                    Locator.Main.ClaimBonusRewardPanel,
+                    Locator.Main.ClaimBonusRewardPanel.ShowNext,
+                    ShowNext
+                ));
+            }
+            
+            #endregion
+            
+            #region Claim Reward Effect
+            
+            listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.LevelStar, groupStar.StarWon));
+            if (GamePlay.levelController.GoldCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.Gold, GamePlay.levelController.GoldCollected));
+            }
+
+            if (GamePlay.levelController.SpecialProgressRewardObjCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.OceanGiftObject, GamePlay.levelController.SpecialProgressRewardObjCollected));
+            }
             #endregion
 
             if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)
             {
                 //GameController.OpenScene(GameScene.Main, callback ?? (() => { }));
-                GameController.OpenScene(GameScene.Main, ShowNext);
+                GameController.OpenScene(GameScene.Main, ()=>
+                {
+                    //ShowNext();
+                    Locator.Main.HomeScreenTab.AddOpenSceneAction(
+                        () =>
+                        {
+                            Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, ShowNext);
+                        });
+                });
             }
             else
             {
@@ -163,7 +225,7 @@ namespace IEC
                                 .GetRewardData(PlayerData.GetChestMilestone(chestType)-1);
                             //-1 by MeoMew fix Task #67686, reduce 1 level chest to get true reward
                             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(chestType == ChestType.Level ? "Chest_2": "Chest_1");
                         }, 
                         onClose);
             }

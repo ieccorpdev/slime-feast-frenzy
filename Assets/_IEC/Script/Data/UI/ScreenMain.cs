@@ -160,29 +160,33 @@ namespace IEC
                     AddRewardGoldToClaim(amount);
                     break;
                 case ResourceType.Vortex:
-                    AddRewardHelperToClaim(resourceType, amount, 0.1f);
+                    AddRewardHelperToClaim(resourceType, amount,1f, 0.1f);
                     break;
                 case ResourceType.Compass:
-                    AddRewardHelperToClaim(resourceType, amount, 0.2f);
+                    AddRewardHelperToClaim(resourceType, amount, 1f,0.2f);
                     break;
                 case ResourceType.Enlarge:
-                    AddRewardHelperToClaim(resourceType, amount, 0.3f);
+                    AddRewardHelperToClaim(resourceType, amount, 1f,0.3f);
                     break;
                 case ResourceType.TimeStop:
-                    AddRewardHelperToClaim(resourceType, amount, 0.4f);
+                    AddRewardHelperToClaim(resourceType, amount, 1f,0.4f);
+                    break;
+                case ResourceType.OceanGiftObject:
+                    AddSpecialObjectToClaim(amount, 1f);
+                    break;
+                case ResourceType.LevelStar:
+                    AddLevelStarToClaim(amount, 1f, 0.15f);
                     break;
             }
         }
-        
-        private void AddRewardHelperToClaim(ResourceType helperType, int amount, float delay = 0f)
+
+        private void AddLevelStarToClaim(int amount, float animTime = 1f, float delay = 0f)
         {
-            RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
-                ? Locator.Main.HomeScreenTab.playButton.GetComponent<RectTransform>()
-                : bottomBar.GetTab(TabType.Home).IconTransform
-                ;
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.btnStarChestReward.GetComponent<ButtonClickEffect>().buttonDisplayImage.GetComponent<RectTransform>();
             
             AddCustomRewardToClaimEffect(
-                helperType, 
+                ResourceType.LevelStar, 
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.LevelStar),
                 Vector2.zero, 
                 EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
@@ -196,16 +200,71 @@ namespace IEC
                     targetTransform.localScale = Vector3.one;
                     targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
                 },
-                delay
+                delay,
+                animTime
             );
         }
 
-        private void AddRewardGoldToClaim(int amount, float delay = 0f)
+        private void AddSpecialObjectToClaim(int amount, float animTime = 1f, float delay = 0f)
+        {
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>();
+            
+            AddCustomRewardToClaimEffect(
+                ResourceType.OceanGiftObject, 
+                Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon(),
+                Vector2.zero, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay,
+                animTime
+            );
+        }
+        
+        private void AddRewardHelperToClaim(ResourceType helperType, int amount, float animTime = 1f, float delay = 0f)
+        {
+            RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
+                ? Locator.Main.HomeScreenTab.playButton.GetComponent<RectTransform>()
+                : bottomBar.GetTab(TabType.Home).IconTransform
+                ;
+            
+            AddCustomRewardToClaimEffect(
+                helperType, 
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(helperType),
+                Vector2.zero, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay,
+                animTime
+            );
+        }
+
+        private void AddRewardGoldToClaim(int amount, float animTime = 2f, float delay = 0f)
         {
             GoldCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) - amount);
             GoldCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
                 ResourceType.Gold, 
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Gold),
                 Vector2.zero, 
                 EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.GoldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
@@ -219,29 +278,42 @@ namespace IEC
                 {
                     GoldCurrencyDisplay.ForceUpdateCurrencyText(GoldCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)amount / effectRewardClaim.maxSpawn));
                 },
-                delay
+                delay,
+                animTime
             );
         }
 
-        public void AddCustomRewardToClaimEffect(ResourceType rewardType, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f)
+        public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
-            listClaimRewardData.Push(new RewardClaimData(rewardType, posSpawn, posEnd, addAmount, onComplete,onEndMove, delay));
+            listClaimRewardData.Push(new RewardClaimData(rewardType, rewardSprite,  posSpawn, posEnd, addAmount, onComplete,onEndMove, delay, animTime));
         }
 
-        public void DoAnimAllAvailableReward()
+        public void DoAnimAllAvailableReward(Action onComplete = null)
         {
             while (listClaimRewardData.Count > 0)
             {
                 // var rewardData = listClaimRewardData.Pop();
                 //
                 // effectRewardClaim.SpawnEffect(rewardData);
-                DoAnimLatestAvailableReward();
+                if (onComplete != null && listClaimRewardData.Count == 1)
+                {
+                    DoAnimLatestAvailableReward(onComplete);
+                }
+                else
+                {
+                    DoAnimLatestAvailableReward();
+                }
             }
         }
 
-        public void DoAnimLatestAvailableReward()
+        public void DoAnimLatestAvailableReward(Action onComplete = null)
         {
             var rewardData = listClaimRewardData.Pop();
+
+            if (onComplete != null)
+            {
+                rewardData.onComplete += onComplete;
+            }
             
             effectRewardClaim.SpawnEffect(rewardData);
         }

@@ -78,7 +78,7 @@ namespace _IECModules
             Null
         }
 
-        public PositionActivate positionActivate = PositionActivate.TopRight | PositionActivate.BotLeft;
+        public PositionActivate positionActivate = PositionActivate.TopLeft;
         [Range(0f, 1f)]
         public float topOffset = 0f;
 

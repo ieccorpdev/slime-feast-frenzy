@@ -6,6 +6,7 @@ using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.Tutorial.ObserverEventData;
+using Cinemachine;
 using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
@@ -114,16 +115,16 @@ namespace _IEC.Features.Gameplay
             //     listObjectives.Add(new LevelObjective(item.GetId(),1));
             // }
             
+            m_AllItems.Clear();
+            m_AllItems = LevelHelper.GenerateRandomLevelAllItems(allItemHolder, Config.itemPrefabConfig);
+            EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+            
             m_CurrentLevelData = new LevelData()
             {
                 time = 99999,
                 levelType = LevelType.NORMAL,
-                levelObjectives = new()
+                levelObjectives = new(){new LevelObjective("", m_AllItems.Count)}
             };
-            
-            m_AllItems.Clear();
-            m_AllItems = LevelHelper.GenerateRandomLevelAllItems(allItemHolder, Config.itemPrefabConfig);
-            EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             
             SetUpStartHolePosition(Vector3.zero + Vector3.left * 5);
             //SearchAllObjectiveItems(m_AllItems);
@@ -230,6 +231,7 @@ namespace _IEC.Features.Gameplay
             m_MagnetHelperActive = false;
             m_MagnetHelperCoolDown = 0;
             playerHole.StopScaleByHelper();
+            playerHole.StopCompassHelper();
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
@@ -515,6 +517,7 @@ namespace _IEC.Features.Gameplay
                     m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
                     break;
                 case HelperId.Compass:
+                    playerHole.StartCompassHelper();
                     var remainingObjectiveItems = new List<BaseItem>();
                     foreach (var objective in m_ObjectiveItems)
                     {
@@ -534,6 +537,13 @@ namespace _IEC.Features.Gameplay
         private void CollectObjectiveItem(CollectItemData data)
         {
             CollectNormalItem(data);
+
+            //Override for debug
+            if (GamePlay.IsInDebugAllItemsLevel)
+            {
+                data.itemID = "";
+            }
+            
             var levelObjective = GetLevelData().levelObjectives.Find(x => x.itemId == data.itemID);
             levelObjective.number--;
             if (levelObjective.number < 0)
@@ -560,6 +570,24 @@ namespace _IEC.Features.Gameplay
             if (IsInResultState() == false)
             {
                 playerHole.CollectABomb();
+                
+                GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
+                TweenControl.GetInstance().Shake(
+                    target: GamePlay.mainCamera.gameObject,
+                    time: 1f,
+                    strength: new Vector3(.5f, .5f, 0),
+                    vibrato: 20,  
+                    shakeType: ShakeType.ShakeTypePosition,
+                    randomness: 45,
+                    snapping: false,
+                    fadeOut: false,
+                    onComplete: () =>
+                    {
+                        GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = playerHole.transform;
+                    },
+                    easeType: EaseType.InOutQuad,
+                    delay: 0f
+                );
                 if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                 {
                     ChangeState(State.Lose);
@@ -601,6 +629,10 @@ namespace _IEC.Features.Gameplay
 
         private bool IsObjectiveItem(string itemId)
         {
+            //Override for debug
+            if (GamePlay.IsInDebugAllItemsLevel)
+                return true;
+            
             if (GetLevelData().levelObjectives == null || GetLevelData().levelObjectives.Count == 0) return false;
             return GetLevelData().levelObjectives.Exists(x => x.itemId == itemId);
         }

@@ -341,6 +341,18 @@ namespace _IEC.Features.Gameplay
                 
                 if (itemDef.GetPrefab() != null)
                 {
+                    //Make Mesh Convex
+                    var convexs = itemDef.GetPrefab().GetComponentsInChildren<MeshCollider>();
+                    foreach (var convex in convexs)
+                    {
+                        if (!convex.convex)
+                        {
+                            Debug.LogError("CvOn:" +itemDef.GetPrefab().name);
+                            convex.convex = true;
+                        }
+
+                    }
+
                     var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshFilter>();
                     foreach (var mf in mats)
                     {

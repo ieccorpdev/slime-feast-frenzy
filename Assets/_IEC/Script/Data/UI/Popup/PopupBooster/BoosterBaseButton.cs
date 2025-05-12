@@ -84,7 +84,14 @@ namespace IEC
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) > 0)
             {
-                if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
+                if (State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
+                {
+                    State = BoosterBaseState.Usable;
+                }
+                    
+                if(State == BoosterBaseState.Using && isCheckOnClick)
+                    State = BoosterBaseState.Usable;
+                if(State == BoosterBaseState.Using && isCheckOnClick)
                     State = BoosterBaseState.Usable;
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
@@ -108,6 +115,11 @@ namespace IEC
                 return;
 
             unlimitedTimeText.text = PlayerData.GetTimeLeftUnlimitedBooster(boosterType);
+
+            if (!PlayerData.IsUnlimitedBooster(boosterType))
+            {
+                Setup();
+            }
         }
     }
     
