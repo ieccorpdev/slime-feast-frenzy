@@ -14,9 +14,9 @@ namespace IEC
     {
         public int maxSpawn = 30;
         public RectTransform baseObjectToSpawn;
-        //public List<RectTransform> effectCurrency;
+
         private Dictionary<ResourceType, List<RectTransform>> m_ListEffectByType = new();
-        
+        public List<ParticleSystem> listStartExplosion;
         private float allTimeSpawn = 2f;
         
         public bool AnimCompleted { get; private set; }
@@ -101,6 +101,8 @@ namespace IEC
                             {
                                 EventController.RaiseEvent(EventList.Audio.ITEM_GET);
                             }
+
+                            ActiveVFXStartExplosion(posEnd);
                         }));
             }
 
@@ -115,6 +117,15 @@ namespace IEC
             //EventController.RaiseEvent(EventList.GamePlay.ON_CLAIM_GOLD);
         }
 
+        public void ActiveVFXStartExplosion(Vector2 anchorPos)
+        {
+            var vfx = listStartExplosion.Find(x => !x.isPlaying);
+            if (vfx != null)
+            {
+                vfx.GetComponent<RectTransform>().anchoredPosition = anchorPos;
+                vfx.Play();
+            }
+        }
         private Vector3 PosRandomSpawnRuby(Vector3 posSpawn)
         {
             posSpawn.x += UnityEngine.Random.Range(-300f, 300f);
