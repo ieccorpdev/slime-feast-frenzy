@@ -164,7 +164,6 @@ namespace _IEC.Features.Gameplay
         {
             m_IsGamePause = false;
             m_CooldownTime = HelperActiveTime;
-            imgProgress.fillAmount = 1;
             UpdatePoolNumberUI();
             if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || (GamePlay.levelController.GetLevelData().levelType == LevelType.COIN && helperId == HelperId.Compass ))
             {
@@ -303,8 +302,8 @@ namespace _IEC.Features.Gameplay
                     if (m_IsGamePause) return;
                     m_CooldownTime -= Time.deltaTime;
                     //imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
+                   
                     fillAnim.Play(fillAnimName, 0, 1 - m_CooldownTime / HelperActiveTime);
-                    fillAnim.speed = 0;
                     if (m_CooldownTime <= 0)
                     {
                         if (PlayerData.helperData.GetPool(helperId) > 0 )
@@ -355,7 +354,8 @@ namespace _IEC.Features.Gameplay
             {
                 case State.Playing:
                     m_CooldownTime = HelperActiveTime;
-                    imgProgress.fillAmount = 0;
+                    imgProgress.fillAmount = 1;
+                    imgIcon.enabled = false;
                     if (PlayerData.helperData.GetPool(helperId) > 0)
                     {
                         groupPool.SetActive(true);
@@ -366,6 +366,10 @@ namespace _IEC.Features.Gameplay
                         groupAdd.SetActive(true);
                         groupPool.SetActive(false);
                     }
+                    break;
+                default:
+                    imgIcon.enabled = true;
+                    imgProgress.fillAmount = 0;
                     break;
             }
         }
