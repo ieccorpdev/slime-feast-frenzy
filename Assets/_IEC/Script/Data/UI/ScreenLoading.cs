@@ -27,6 +27,7 @@ namespace IEC
             DOVirtual.DelayedCall(timeShow, () =>
             {
                 loadingDoneCallback?.Invoke();
+                SoundController.FadeAudio(6f);
             });
         }
         public void ShowLoading()
