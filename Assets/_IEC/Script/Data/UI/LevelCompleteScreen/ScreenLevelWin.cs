@@ -6,6 +6,7 @@ using System.Linq;
 using _IEC.Features.Gameplay;
 using IEC.TrackingEvent;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -21,6 +22,15 @@ namespace IEC
         public TextMeshProUGUI goldDisplayText;
 
         public Button btnNext;
+
+        public int StarWon => gameplayTimer.CurrentRemainingTimeState switch
+        {
+            GameplayTimer.RemainingTimeState.None => 1,
+            GameplayTimer.RemainingTimeState.Safe => 3,
+            GameplayTimer.RemainingTimeState.Warning => 2,
+            GameplayTimer.RemainingTimeState.Dangerous => 1,
+            _ => 1
+        };
         private void Start()
         {
             listButtonHideOnClick.Add(btnNext);

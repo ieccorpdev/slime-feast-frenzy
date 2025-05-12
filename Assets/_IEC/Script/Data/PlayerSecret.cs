@@ -833,7 +833,11 @@ namespace IEC
 
             if (data == null)
             {
-                data = new EventSaveData() { eventType = eventType };
+                data = new EventSaveData()
+                {
+                    eventType = eventType,
+                    eventIndex = 0,
+                };
                 listEventSaveData.Add(data);
             }
 

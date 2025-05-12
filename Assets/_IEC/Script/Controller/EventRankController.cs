@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace IEC
@@ -29,17 +30,48 @@ namespace IEC
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
-            
+            switch (gameEvent)
+            {
+                case EventList.GamePlay.LEVEL_WIN:
+                    //Event Add Star
+                    AddEventProgress(
+                        new AddEventProgressData()
+                        {
+                            eventType = EventType.StarChase,
+                            id = PlayerData.playerProfileName,
+                            progressAmount = Locator.Game.ScreenLevelWin.StarWon,
+                        });
+                    
+                    //Event Add Level
+                    AddEventProgress(
+                        new AddEventProgressData()
+                        {
+                            eventType = EventType.SharkRace,
+                            id = PlayerData.playerProfileName,
+                            progressAmount = 1,
+                        });
+                    break;
+            }
         }
 
-        public void InitData(EventType eventType, DateTime timeStart, DateTime timeEnd, List<EventPlayerData> listEventPlayerData)
+        public void InitData(EventType eventType, int eventIndex, DateTime timeStart, DateTime timeEnd, List<EventPlayerData> listEventPlayerData)
         {
             var eventData = PlayerData.GetEventSaveData(eventType);
 
             eventData.listPlayerData = new List<EventPlayerData>(listEventPlayerData);
+            eventData.eventIndex = eventIndex;
             eventData.lastUpdateTime = DateTime.MinValue;
             eventData.timeStart = timeStart;
             eventData.timeEnd = timeEnd;
+        }
+
+        public EventSaveData GetEventSaveData(EventType eventType)
+        {
+            var data = PlayerData.GetEventSaveData(eventType);
+
+            data.listPlayerData = new List<EventPlayerData>(data.listPlayerData.OrderByDescending(playerData => playerData.progress));
+            
+            return data;
         }
 
         private void AddEventProgress(AddEventProgressData progressData)
@@ -75,12 +107,16 @@ namespace IEC
         public string id;
         public bool isPlayer = false;
         public int progress;
+        public float speed;
     }
 
     [System.Serializable]
     public class EventSaveData
     {
         public EventType eventType;
+
+        //For event with different data after each win(shark race)
+        public int eventIndex;
         
         public DateTime lastUpdateTime;
         public DateTime timeStart;
