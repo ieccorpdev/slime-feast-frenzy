@@ -22,21 +22,13 @@ namespace IEC
         {
             base.Show();
             m_Progress.fillAmount = 0;
-            onLoadingCallBack?.Invoke();
             m_Progress.DOFillAmount(1F, timeShow + 0.1f).SetEase(Ease.OutQuad)
-                .OnComplete(
-                    ()=>
-                    {
-                        Hide();
-                        DOVirtual.DelayedCall(0.5f, () =>
-                        {
-                            loadingDoneCallback?.Invoke();
-                        });
-                    });
-            // DOVirtual.DelayedCall(timeShow, () =>
-            // {
-            //     loadingDoneCallback?.Invoke();
-            // });
+                .OnComplete(Hide);
+            DOVirtual.DelayedCall(timeShow, () =>
+            {
+                loadingDoneCallback?.Invoke();
+                SoundController.FadeAudio(6f);
+            });
         }
         public void ShowLoading()
         {

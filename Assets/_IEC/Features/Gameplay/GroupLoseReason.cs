@@ -29,6 +29,7 @@ namespace _IEC.Features.Gameplay
 
         public void OnBtnPlayOn()
         {
+            EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
             if (PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) >= goldCost)
             {
                 PlayerData.SubtractCurrency(ResourceType.Gold,goldCost);
@@ -47,11 +48,18 @@ namespace _IEC.Features.Gameplay
 
         public override void Show()
         {
+            isPlayAudioPopup = false;
             UpdateUI();
             notEnoughGoldWarning.gameObject.SetActive(false);
             base.Show();
         }
-        
+
+        public override void Hide()
+        {
+            base.Hide();
+             EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
+        }
+
         private void UpdateUI()
         {
             txtNumberCoinPlayOn.text = Config.gamePlayConfig.baseNumberCoinForRevive.ToString();

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _IEC.Features.Gameplay
 {
-    [CreateAssetMenu(menuName = "Game/Features/Gameplay/PrefabConfig")]
+    [CreateAssetMenu(menuName = "Gameplay/PrefabConfig")]
     public class PrefabConfig : ScriptableObject
     {
         public XpVFX xpVFX;
@@ -12,5 +12,6 @@ namespace _IEC.Features.Gameplay
         public BaseItemDirectorUI itemDirectorUI;
         public BombItem bombPrefab;
         public GameObject wallBouyOcean;
+        public ParticleSystem vfxItemSplash;
     }
 }

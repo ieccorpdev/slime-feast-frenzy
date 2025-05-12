@@ -176,7 +176,7 @@ namespace EasyUI.PickerWheelUI
                             if (isIndicatorOnTheLine)
                             {
                                 //audioSource.PlayOneShot(audioSource.clip);
-                                EventController.RaiseEvent(EventList.Audio.LUCKY_WHEEL_TICK);
+                                //EventController.RaiseEvent(EventList.Audio.LUCKY_WHEEL_TICK);
                             }
 
                             prevAngle = currentAngle;

@@ -14,7 +14,8 @@ namespace IEC
         public float minSpawnSize, maxSpawnSize;
         public List<SpecialObjectSpawnData> listSpecialObjectSpawnData = new();
         public List<ItemDefinition> listSpecialItemDefinition = new();
-
+        [Header("Gold Level")] 
+        public ItemDefinition goldSpecialObjective;
         public int GetSpawnAmount(int level)
         {
             var spawnData = listSpecialObjectSpawnData
@@ -24,6 +25,10 @@ namespace IEC
             return spawnData?.GetSpawnAmount() ?? 0;
         }
 
+        public int GetLevelUnlockProgressReward()
+        {
+            return listSpecialObjectSpawnData.Min(x => x.levelStartSpawn);
+        }
         public ItemDefinition GetSpecialItemDefinition(int index)
         {
             if (listSpecialItemDefinition.Count == 0)

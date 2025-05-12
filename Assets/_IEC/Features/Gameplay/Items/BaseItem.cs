@@ -31,17 +31,52 @@ namespace _IEC.Features.Gameplay
 
         public bool IsCollected => _isCollected;
         public Rigidbody Rb => rb;
+        private static bool CanPlaySFX = true;
+
+        private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
+
         private void Start()
         {
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
             }
-        }
 
+            rb.drag = Config.gamePlayConfig.ItemDrag;
+            rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
+        }
+        
+        void OnCollisionEnter(Collision collision)
+        {
+            if(!Game.dropSplashWater) return;
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")
+                || collision.gameObject.layer == LayerMask.NameToLayer("HoleWorld"))
+            {
+                Vector3 velocityAtImpact = rb.velocity;
+                Vector3 contactPoint = collision.contacts[0].point;
+                if(Math.Abs(velocityAtImpact.y) > 1)
+                {
+                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                    contactPoint.y = 0.15f;//hard code,surface water
+                    splashVFX.transform.position = contactPoint;
+                    splashVFX.Play();
+                    splashVFX.transform.parent = null;
+                    Vector3 size = myRenderer.bounds.size;
+                    float maxSize = Mathf.Max(size.x, size.y, size.z);
+                    splashVFX.transform.localScale = Vector3.one*maxSize;
+                    //Need recycle
+                }
+            }
+        }
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(false);
+            }
         }
 
         public Sprite GetIcon()
@@ -56,6 +91,11 @@ namespace _IEC.Features.Gameplay
         public void ExitHoleTrigger()
         {
             ChangeState(State.Idle);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(true);
+            }
         }
 
         public bool IsInScreen(Camera particularCam)
@@ -83,6 +123,16 @@ namespace _IEC.Features.Gameplay
                     gameObject.Recycle();
                 }
             }).SetId(RecycleTweenId);
+            if (!GamePlay.IsWin)
+            {
+                Locator.Game.ScreenInGame.HandleEatCombo();
+                if (CanPlaySFX)
+                {
+                    EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                    CanPlaySFX = false;
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
+                }
+            }
         }
         
         //TODO: cache colliders
@@ -192,6 +242,12 @@ namespace _IEC.Features.Gameplay
             {
                 posOnWater.enabled = false;
             }
+
+            // if (_specialItemHighlightEffect != null)
+            // {
+            //     _specialItemHighlightEffect.gameObject.SetActive(false);
+            // }
+            
         }
 
         #region New Whirlpool Logic

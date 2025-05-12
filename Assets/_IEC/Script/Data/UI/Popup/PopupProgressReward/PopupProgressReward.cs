@@ -10,6 +10,7 @@ namespace IEC
     public class PopupProgressReward : BasePopup
     {
         public Button btnCloseAll;
+
         public ProgressRewardItem progressRewardItemPrefab;
         [Header("Progress bar")]
         public ProgressRewardProgressBar progressBar;
@@ -19,10 +20,21 @@ namespace IEC
         public List<ProgressRewardItem> listProgressRewardItems = new();
         
         public ProgressRewardItem CurrentRewardItem { get; private set; }
-
+        [Header("Tutorial")] 
+        public Button infoButton;
+        public Button closeTutorialPanel;
+        public GameObject tutorialPopup;
         private void Start()
         {
             SetEvent(btnCloseAll, OnHideClick);
+            SetEvent(infoButton, ()=>
+            {
+                tutorialPopup.gameObject.SetActive(true);
+            });            
+            SetEvent(closeTutorialPanel, ()=>
+            {
+                tutorialPopup.gameObject.SetActive(false);
+            });
         }
 
         public override void Show()
@@ -50,7 +62,7 @@ namespace IEC
                 }
                 
             }
-            
+            tutorialPopup.gameObject.SetActive(false);
             progressBar.Setup();
             progressBar.DoAnimProgressBar();
             

@@ -17,8 +17,11 @@ namespace IEC
         public LevelController levelController;
         public bool IsWin => GameState == Locator.Game.ScreenLevelWin || GameState == Locator.Game.ScreenLevelWinHard;
         
+        public bool IsInDebugAllItemsLevel { get; private set; }
+        
         public bool IsInLevelHard { get; private set; } = false;
         private ILevelController m_CurrentLevelController;
+        public LevelType currentLevelType => GetLevelController().GetLevelData().levelType;
         public void Awake()
         {
 
@@ -53,7 +56,19 @@ namespace IEC
             ClearCurrentLevel();
             m_CurrentLevelController = GetLevelController();
             m_CurrentLevelController.LoadLevel(level);
+
+            IsInDebugAllItemsLevel = false;
         }
+
+        public void SetLevelDebugAllItems()
+        {
+            ClearCurrentLevel();
+            m_CurrentLevelController = GetLevelController();
+            m_CurrentLevelController.LoadLevelDebugAllItems();
+
+            IsInDebugAllItemsLevel = true;
+        }
+        
         public LevelType GetCurrentLevelType()
         {
             return m_CurrentLevelController.GetLevelData().levelType;

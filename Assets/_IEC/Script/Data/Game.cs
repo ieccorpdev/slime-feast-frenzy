@@ -20,6 +20,8 @@ namespace IEC
         public bool levelCreative;
         public bool isHaveBooster = false;
         public float timeDelayFullAds = 120f;
+        public float timeDelayFullAds2050 = 105;
+        public float timeDelayFullAds50Plus = 90f;
         public int levelStartShowFullAds = 8;
         public int levelVersion = 1;
         public bool enableLevelProgress;
@@ -35,7 +37,19 @@ namespace IEC
         public int levelStartInterAds = 4;
 
         public bool usingWaterTheme = true;
-        
+
+        public float GetTimeDelayFullAds()
+        {
+            int level = Pool.Get<PlayerSecret>().level;
+            if (level >= 50)
+            {
+                return timeDelayFullAds50Plus;
+            } else if (level >= 20)
+            {
+                return timeDelayFullAds2050;
+            }
+            return timeDelayFullAds;
+        }
         public bool ShowFullAdsCondition
         {
             get
@@ -67,22 +81,13 @@ namespace IEC
         {
             timeEndLevel = System.DateTime.Now;
         }
-        ////
-        ///         public bool isUsingHardLevel;
-        public bool isUsingExtraLvlFollow;
-        public bool isUsingLuckySpinV2Flow;
-        public bool isUsingBuildV2Flow;
-        public bool isUsingConnectedBox;
-        public bool isUsingCustomLoopLevelFlow;
-
         public bool isOverrideHardLevelConfig;
         public bool isAllowSkipHardLevelAds;
         public int levelStartHardLevelOverride = 31;
         public int loseBeforeAllowSkipHardLevelOverride = 2;
 
-        public bool isUsePopupRefillHelper;
-
-        public bool isOverrideHelperCostData;
+        public bool dropSplashWater;
+        public bool enableComboCount = true;
         
         public bool isOverrideDataRewardLuckyWheel;
         [Header("SFF")] public bool usingNewLogicPull = false;

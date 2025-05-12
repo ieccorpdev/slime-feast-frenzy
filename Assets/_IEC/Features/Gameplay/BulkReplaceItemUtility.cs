@@ -3,14 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using _IEC.Features.Gameplay;
 using IEC;
+using JetBrains.Annotations;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Rendering;
+using UnityEngine.Serialization;
+using Object = System.Object;
 #if UNITY_EDITOR
+using EnhancedScrollerDemos.RemoteResourcesDemo;
 using UnityEditor;
 #endif
 
@@ -19,6 +24,16 @@ public class ItemIdConfig
 {
     public string OriginalID;
     public string NewID;
+}
+
+[Serializable]
+public class ReplaceItemData
+{
+    public string itemID;
+    // public bool isHavePrefab;
+    public GameObject newItemPrefab;
+    // public Mesh newItemMesh;
+    // public Material newItemMaterial;
 }
 
 [ExecuteAlways]
@@ -40,6 +55,142 @@ public class BulkReplaceItemUtility : MonoBehaviour
     private const string FOLDER_PATH_ITEM_DEFINITION = "_IEC/Features/Gameplay/Config/Items";
     private const string FOLDER_PATH_ICON = "RapidIcon/Exports";
     private const string FOLDER_PATH_SIMPLIFIED_MESH = "_IECProject/SimplifiedMesh";
+
+    [Header("Replace Item Prefab")] 
+    public string urlSheetReplaceItem = "";
+
+    public string newModelFolder = "Assets/New Asset Model";
+    //public ReplaceItemData replaceItemData;
+
+    public List<ReplaceItemData> loadedListReplaceData = new();
+
+    public List<string> replacedItems = new();
+
+    [Button]
+    void DatPTReplace()
+    {
+        StartCoroutine(IEDatPTReplaceSkin(DatPTDoReplaceAll));
+    }
+
+    void DoReplaceItem(ReplaceItemData replaceData)
+    {
+        var prefabDefinition = itemPrefabConfig.listItemDefinitionShp
+            .Find(item => item.GetId() == replaceData.itemID);
+
+        if (prefabDefinition == null)
+        {
+            Debug.LogError($"Item with ID {replaceData.itemID} not found");
+            return;
+        }
+        
+        GameObject obj = PrefabUtility.InstantiatePrefab(replaceData.newItemPrefab) as GameObject;
+        
+        // Add MeshFilter and MeshRenderer components
+        // MeshFilter meshFilter = obj.AddComponent<MeshFilter>();
+        // MeshRenderer meshRenderer = obj.AddComponent<MeshRenderer>();
+        //
+        // meshFilter.mesh = replaceData.newItemMesh;
+        // meshRenderer.material = replaceData.newItemMaterial;
+        
+        DoReplaceItemPrefab(prefabDefinition.GetPrefab(), obj);
+        if (obj.transform.parent != null)
+        {
+            DestroyImmediate(obj.transform.parent.gameObject);
+        }
+        else
+        {
+            DestroyImmediate(obj);
+        }
+    }
+
+    void DatPTDoReplaceAll()
+    {
+        foreach (var data in loadedListReplaceData)
+        {
+            DoReplaceItem(data);
+        }
+    }
+    
+    IEnumerator IEDatPTReplaceSkin(Action endAction)
+    {
+        string csvUrl = urlSheetReplaceItem.Replace("/edit?gid=", "/export?format=csv&gid=");
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(csvUrl))
+        {
+            yield return webRequest.SendWebRequest();
+            if (webRequest.result == UnityWebRequest.Result.ConnectionError || 
+                webRequest.result == UnityWebRequest.Result.ProtocolError)
+            {
+                Debug.LogError($"Error downloading sheet: {webRequest.error}");
+                yield break;
+            }
+
+            string csvText = webRequest.downloadHandler.text;
+            DatPTProcessCsvData(csvText);
+            endAction?.Invoke();
+        }
+    }
+    
+    void DatPTProcessCsvData(string csvText)
+    {
+        loadedListReplaceData.Clear();
+        replacedItems.Clear();
+        
+        Debug.Log("Loaded Text: \n" + csvText);
+
+        var lines = csvText.Split("\n");
+        for (int i = 0; i < lines.Length; i++)
+        {
+            var currentLine = lines[i].Trim();
+            var column = currentLine.Split(',');
+
+            if (column.Length >= 2)
+            {
+                var itemID = column[0].Replace("Normal: ", "").Replace("Objective: ","");
+
+                if (replacedItems.Contains(itemID))
+                {
+                    continue;
+                }
+                
+                replacedItems.Add(itemID);
+                
+                var replaceData = new ReplaceItemData();
+                replaceData.itemID = column[0].Replace("Normal: ", "").Replace("Objective: ","");
+
+                var assetFolder = $"{newModelFolder}/{column[1]}";
+                
+                // string[] guids = AssetDatabase.FindAssets("t:Material", new[] { assetFolder });
+                //
+                // if (guids.Length > 0)
+                // {
+                //     string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                //     replaceData.newItemMaterial = AssetDatabase.LoadAssetAtPath<Material>(path);
+                // }
+                
+                string[] guids = AssetDatabase.FindAssets($"t:GameObject", new[] { assetFolder });
+
+                foreach (string guid in guids)
+                {
+                    string path = AssetDatabase.GUIDToAssetPath(guid);
+                    List<UnityEngine.GameObject> assets = AssetDatabase
+                        .LoadAllAssetsAtPath(path)
+                        .OfType<UnityEngine.GameObject>()
+                        .ToList();
+                    
+                    foreach (var asset in assets)
+                    {
+                        if (asset.name == column[2])
+                        {
+                            replaceData.newItemPrefab = asset;
+                            break;
+                        }
+                    }
+                }
+                
+                loadedListReplaceData.Add(replaceData);
+            }
+        }
+    }
 
     [Button]
     void BulkReplace()
@@ -214,6 +365,35 @@ public class BulkReplaceItemUtility : MonoBehaviour
             PrefabUtility.SaveAsPrefabAsset(tempInstance, prefabPath);
             DestroyImmediate(tempInstance);
         }
+    }
+
+    void DoReplaceItemPrefab(GameObject originalPrefab, GameObject newItemPrefab)
+    {
+        if (originalPrefab == null)
+        {
+            Debug.LogError($"Missing item with name {originalPrefab.name}");
+            return;
+        }
+            
+        string prefabPath = AssetDatabase.GetAssetPath(originalPrefab);
+        GameObject tempInstance = PrefabUtility.InstantiatePrefab(originalPrefab) as GameObject;
+
+        if (tempInstance == null)
+        {
+            Debug.LogError($"Missing item with name {originalPrefab.name}");
+            return;
+        }
+            
+        var reskinUtility = tempInstance.GetComponent<ItemReplaceUtility>();
+        if (reskinUtility == null)
+        {
+            Debug.LogError($"Missing reskin utility in item {originalPrefab.name}");
+            return;
+        }
+
+        reskinUtility.ReplaceSkin(newItemPrefab);
+        PrefabUtility.SaveAsPrefabAsset(tempInstance, prefabPath);
+        //DestroyImmediate(tempInstance);
     }
 
     void DuplicatePrefabInstance()

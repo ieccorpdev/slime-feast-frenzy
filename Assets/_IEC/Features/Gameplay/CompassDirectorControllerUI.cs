@@ -100,6 +100,7 @@ namespace _IEC.Features.Gameplay
                 directorUI.gameObject.Recycle();
             }
             m_ListDirectorUI.Clear();
+            GamePlay.levelController.GetHolePlayer().StopCompassHelper();
             //gameObject.SetActive(false);
         }
     }

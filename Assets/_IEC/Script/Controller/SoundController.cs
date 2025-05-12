@@ -5,8 +5,10 @@ using NaughtyAttributes;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
+using Sirenix.OdinInspector;
+using static IEC.EventList;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -18,7 +20,24 @@ namespace IEC
         private List<AudioPlayer> m_ListSoundAudio = new List<AudioPlayer>();
         public List<AudioInfo> listSoundConfig;
         public List<AudioInfo> listMusicConfig;
+        private Dictionary<string, int> m_DicAudioConfig = new Dictionary<string, int>();
 
+#if UNITY_EDITOR
+        [Sirenix.OdinInspector.Button]
+        public void AddSoundConfig()
+        {
+            var audioFields = typeof(EventList.Audio).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+            foreach (var field in audioFields)
+            {
+                if (field.FieldType == typeof(string))
+                {
+                    var audioId = (string)field.GetValue(null);
+                    var newSound = new AudioInfo(audioId, null, false, false, 1f);
+                    listSoundConfig.Add(newSound);
+                }
+            }
+        }
+#endif
         public void LocateController()
         {
             Pool.Set(this);
@@ -48,20 +67,73 @@ namespace IEC
                         }
                     }
                     break;
-               case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
-                   SetMuteAllMusic(true);
+                case EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC:
+                    SetMuteAllMusic(true);
                     break;
-               case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
+                case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_INGAME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_INGAME, false);
                     break;
                 case EventList.GamePlay.SET_UNMUTE_BACKGROUND_MUSIC_HOME:
                     SetMuteMusic(EventList.Audio.BACKGROUND_HOME, false);
                     break;
+#if UNITY_IOS
+                case EventList.GamePlay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS:
+                    AudioSettings.Mobile.StopAudioOutput();
+                    break;
+                case EventList.GamePlay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS:
+                    AudioSettings.Mobile.StartAudioOutput();
+                    break;
+#endif
                 default:
                     PlayAudio(gameEvent);
                     break;
             }
         }
+
+        public void FadeAudio(float duration = 0f)
+        {
+            StopAllCoroutines();
+            StartCoroutine(FadeAllMusicAudioSources(duration));
+        }
+
+        IEnumerator FadeAudioListenerVolume(float from, float to, float duration)
+        {
+            float time = 0f;
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+                AudioListener.volume = Mathf.Lerp(from, to, time / duration);
+                yield return null;
+            }
+            AudioListener.volume = to;
+        }
+
+        IEnumerator FadeAllMusicAudioSources(float duration)
+        {
+            float time = 0f;
+
+            Dictionary<AudioPlayer, float> initialVolumes = new Dictionary<AudioPlayer, float>();
+            foreach (var player in m_ListMusicAudio)
+            {
+                initialVolumes[player] = player.audioSource.volume;
+            }
+
+            while (time < duration)
+            {
+                time += Time.deltaTime;
+
+                foreach (var player in m_ListMusicAudio)
+                {
+                    if (player != null && player.audioSource != null)
+                    {
+                        player.audioSource.volume = Mathf.Lerp(0, initialVolumes[player], time / duration);
+                    }
+                }
+
+                yield return null;
+            }
+        }
+
 
         private void PlayAudio(string id)
         {
@@ -92,11 +164,11 @@ namespace IEC
 
             if (!PlayerData.isMusicOn)
                 return;
-            
+
             SetMuteMusic(id, false);
         }
 
-    AudioPlayer CreateAudio(string id, bool sound = true)
+        AudioPlayer CreateAudio(string id, bool sound = true)
         {
             var audio = Instantiate(audioPlayerPrefab, this.gameObject.transform);
             if (sound)
@@ -109,7 +181,7 @@ namespace IEC
             }
             return audio;
         }
-        
+
         AudioPlayer GetPlayerSound(string id)
         {
             var audio = m_ListSoundAudio.Find(x => x.Info.id == id);
@@ -124,7 +196,7 @@ namespace IEC
             var audio = m_ListMusicAudio.Find(x => x.Info.id == id);
             if (audio == null)
             {
-                audio = CreateAudio(id,false);
+                audio = CreateAudio(id, false);
             }
             return audio;
         }
@@ -144,7 +216,7 @@ namespace IEC
                 player.SetMute(isMute);
             }
         }
-        
+
         void SetMuteMusic(string id, bool isMute)
         {
             // if(!IsMusicPlaying(id))
@@ -159,20 +231,20 @@ namespace IEC
                 data.SetMute(isMute);
             }
         }
-        
+
         bool IsMusicPlaying(string id)
         {
-            
+
             var audioMusicSource = m_ListMusicAudio.Find(x => x.Info.id == id);
             if (audioMusicSource == null)
                 return false;
 
             return audioMusicSource.IsPlaying;
         }
-        
+
         bool IsSoundPlaying(string id)
         {
-            
+
             var audioSoundSource = m_ListSoundAudio.Find(x => x.Info.id == id);
             if (audioSoundSource == null)
                 return false;
@@ -189,52 +261,87 @@ namespace IEC
                 sound.Stop();
             }
         }
-        
+
         public void PlaySound(string id)
         {
             var sound = GetPlayerSound(id);
             var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
+            sound.gameObject.SetActive(true);
             if (data != null && sound.Info.clip != data.clip)
             {
                 //PlaySound(data);
                 sound.SetData(data);
             }
-            
+
             sound.SetMute(!PlayerData.isSoundOn);
-            
+
             sound.Play();
         }
+
+        public float GetLengthSound(string id)
+        {
+            var sound = GetPlayerSound(id);
+            var data = listSoundConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return 0;
+            }
+            if (data != null && sound.Info.clip != data.clip)
+            {
+                //PlaySound(data);
+                sound.SetData(data);
+            }
+
+            return sound.audioSource.clip.length;
+        }
+
         public void PlayMusic(string id)
         {
             if (IsMusicPlaying(id))
                 return;
-            
+
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.Play();
         }
-        
+
         public void PlayMusicOnLoop(string id)
         {
             if (IsMusicPlaying(id))
                 return;
-            
+
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.PlayOnLoop();
         }
 
@@ -242,13 +349,18 @@ namespace IEC
         {
             var music = GetPlayerMusic(id);
             var data = listMusicConfig.Find(x => x.id == id);
+            if (data != null && data.clip == null)
+            {
+                Debug.LogError($"Sound {id} is null");
+                return;
+            }
             if (data != null && music.Info.clip != data.clip)
             {
                 music.SetData(data);
             }
-            
+
             music.SetMute(!PlayerData.isMusicOn);
-            
+
             music.ResetLoop();
         }
 
@@ -260,7 +372,15 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
+        public void StopAllSound()
+        {
+            foreach (var player in m_ListSoundAudio)
+            {
+                player.Stop();
+            }
+        }
+
         public void SetVolumeAllMusic(float volume)
         {
             volume = Mathf.Clamp(volume, 0, 1);
@@ -269,7 +389,7 @@ namespace IEC
                 player.SetVolume(volume);
             }
         }
-        
+
         public bool IsActive()
         {
             return gameObject.activeSelf;
@@ -277,16 +397,17 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            
+
         }
 
         public void BehaviourAwake()
         {
-            
+
         }
     }
-    
-    [Serializable]public class AudioInfo
+
+    [Serializable]
+    public class AudioInfo
     {
         [Dropdown("GetAudioEvents")]
         public string id;
@@ -295,28 +416,28 @@ namespace IEC
         public bool isLoop;
         public float loopInterval;
         public bool isPlayMultiple;
-        [Range(0, 1) ]
-        public float volume = 1f; 
-        public AudioInfo(string id,AudioClip clip, bool isLoop, bool isPlayMultiple, float volume)
+        [Range(0, 1)]
+        public float volume = 1f;
+        public AudioInfo(string id, AudioClip clip, bool isPlayMultiple, bool isLoop, float volume)
         {
             this.id = id;
             this.clip = clip;
             this.isLoop = isLoop;
-            this.isPlayMultiple = isPlayMultiple;
             this.volume = volume;
+            this.isPlayMultiple = isPlayMultiple;
         }
-        
+
         public AudioInfo(AudioInfo info)
         {
             this.id = info.id;
             this.clip = info.clip;
             this.isLoop = info.isLoop;
-            this.isPlayMultiple = info.isPlayMultiple;
             this.volume = info.volume;
+            this.isPlayMultiple = info.isPlayMultiple;
             this.listRandomAudioClips = new List<AudioClip>(info.listRandomAudioClips);
         }
         private static List<string> GetAudioEvents => GetAllAudioEvents();
-        
+
         public static List<string> GetAllAudioEvents()
         {
             var audioType = typeof(EventList.Audio);

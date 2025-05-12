@@ -8,6 +8,10 @@ namespace _IEC.Features.Gameplay
 {
     public class BombItem : BaseItem
     {
+        private void Awake()
+        {
+            //EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
+        }
         public override void OnCollected(Vector3 position)
         {
             this.RaiseEvent(EventList.GamePlay.COLLECT_ITEM,new CollectItemData()
@@ -16,7 +20,7 @@ namespace _IEC.Features.Gameplay
                 position = position,
                 xp = 0
             });
-            
+            EventController.RaiseEvent(EventList.Audio.BOMB_EXPLODE);
             DisableAllCollider();
             gameObject.Recycle();
         }

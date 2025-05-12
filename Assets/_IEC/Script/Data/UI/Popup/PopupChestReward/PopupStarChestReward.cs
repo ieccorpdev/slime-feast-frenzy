@@ -6,6 +6,5 @@ namespace IEC
 {
     public class PopupStarChestReward : PopupChestReward
     {
-        
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using IEC;
+using Sirenix.OdinInspector;
 
 [CreateAssetMenu(fileName = "AdjustAnalyticEventConfig", menuName = "Services/AdjustAnalyticEventConfig")]
 public class AdjustAnalyticEventConfig : ScriptableObject
@@ -41,7 +42,7 @@ public class AdjustAnalyticEventConfig : ScriptableObject
         public string marketingEventUrl;
     }
 
-    [NaughtyAttributes.Button]
+    [Button]
     public void LoadData()
     {
         listData.Clear();

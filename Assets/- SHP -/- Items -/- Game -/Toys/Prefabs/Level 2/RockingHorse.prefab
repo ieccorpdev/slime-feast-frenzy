@@ -148,11 +148,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28f2b5db204a2c1e29b34adf6e8dc6e0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsItemSet: 0
-  CanStartWithoutKinematic: 1
-  CanBeRecursive: 1
-  IsPhysical: 0
-  Dimensions: {x: 4, y: 6.194124, z: 6}
 --- !u!114 &114061248766628770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -165,12 +160,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7df4285d723e7cd36dd6bddc51093c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDefinition: {fileID: 11400000, guid: 7c9f00050c64859479c777d929c1da60, type: 2}
-  startAsKinematic: 1
-  isContainedIn: {fileID: 0}
-  isContainedInRuntime: {fileID: 0}
-  mainRenderer: {fileID: 0}
-  IceCubePrefab: {fileID: 0}
+  useConvexCollider: 1
+  preservedYAxis: 0
 --- !u!54 &54744685819846604
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -238,12 +229,12 @@ PrefabInstance:
     - target: {fileID: 7491297890401891580, guid: b198d55a6c51a8c499bda2cb34082a9f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.4956
+      value: 1.4
       objectReference: {fileID: 0}
     - target: {fileID: 7491297890401891580, guid: b198d55a6c51a8c499bda2cb34082a9f,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.1314
+      value: -8.15
       objectReference: {fileID: 0}
     - target: {fileID: 7491297890401891580, guid: b198d55a6c51a8c499bda2cb34082a9f,
         type: 3}
@@ -313,17 +304,17 @@ PrefabInstance:
     - target: {fileID: 1223786674591289250, guid: 85feb6c2d1d10fc43a73527ff18a8543,
         type: 3}
       propertyPath: m_LocalScale.x
-      value: 34.340298
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 1223786674591289250, guid: 85feb6c2d1d10fc43a73527ff18a8543,
         type: 3}
       propertyPath: m_LocalScale.y
-      value: 42.73977
+      value: 31.11488
       objectReference: {fileID: 0}
     - target: {fileID: 1223786674591289250, guid: 85feb6c2d1d10fc43a73527ff18a8543,
         type: 3}
       propertyPath: m_LocalScale.z
-      value: 39.203846
+      value: 28.5407
       objectReference: {fileID: 0}
     - target: {fileID: 1223786674591289250, guid: 85feb6c2d1d10fc43a73527ff18a8543,
         type: 3}

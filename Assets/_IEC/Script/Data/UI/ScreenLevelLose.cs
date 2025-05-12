@@ -30,10 +30,11 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     Hide();
+                    PlayerData.ResetBoosterStreak();
                     GameController.OpenScene(GameScene.Main);
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
                 {
                     Services.PushEvent(new SFApostition("losescreen_exit"));
                 }
@@ -43,6 +44,7 @@ namespace IEC
             {
                 System.Action actionClose = () =>
                 {
+                    PlayerData.ResetBoosterStreak();
                     if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                     {
                         Hide();
@@ -61,7 +63,7 @@ namespace IEC
                     Hide();
                 };
                 
-                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.timeDelayFullAds, actionClose))
+                if (Services.ShowFullAdsWithTimeAndCondition(Game.ShowFullAdsCondition, Game.GetTimeDelayFullAds(), actionClose))
                 {
                     Services.PushEvent(new SFApostition("losescreen_retry"));
                 }

@@ -18,6 +18,7 @@ namespace IEC
 
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
+        public TextMeshProUGUI levelUnlockStreak;
         public List<GameObject> streakDisplayObject = new();
         public List<GameObject> streakIconObject = new();
 
@@ -43,7 +44,7 @@ namespace IEC
         {
             base.Show();
 
-            //levelText.text = "Level " + PlayerData.level;
+            levelText.text = "Level " + PlayerData.level;
             
             infoPanel.SetActive(false);
             boosterPanel.SetActive(true);
@@ -75,9 +76,16 @@ namespace IEC
 
         private void UpdateStreakDisplay()
         {
+            levelUnlockStreak.text ="Unlock at lv."+ Config.AllBoosterConfig.levelUnlockStreak.ToString();
             streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
-            streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
-
+            bool isUnlockFeature = PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak;
+            streakUnlockObj.SetActive(isUnlockFeature);
+            if (isUnlockFeature && PlayerData.currentBoosterStreak == 0 && !PlayerData.wasAddFirstTime)
+            {
+                //MeoMew fix Task #67920, unlock first phase
+                PlayerData.currentBoosterStreak = 1;
+                PlayerData.wasAddFirstTime = true;
+            }
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {
                 streakDisplayObject[i].gameObject.SetActive(i <= PlayerData.currentBoosterStreak - 1);
