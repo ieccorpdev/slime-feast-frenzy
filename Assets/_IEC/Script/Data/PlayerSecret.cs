@@ -822,5 +822,24 @@ namespace IEC
         }
 
         #endregion
+        
+        #region Event
+
+        public List<EventSaveData> listEventSaveData = new();
+
+        public EventSaveData GetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+
+            if (data == null)
+            {
+                data = new EventSaveData() { eventType = eventType };
+                listEventSaveData.Add(data);
+            }
+
+            return data;
+        }
+
+        #endregion
     }
 }
