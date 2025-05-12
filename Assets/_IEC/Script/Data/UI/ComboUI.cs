@@ -15,8 +15,8 @@ public class ComboUI : MonoBehaviour
     private int currentComboCount;
     [SerializeField] private float comboTimeRange = 1.2f;
     [SerializeField] private int minComboCount = 3;
-    [SerializeField] private List<float> comboLocalPos = new List<float>();
     [SerializeField] private Transform [] comboTxtPos;
+    [SerializeField] private Transform [] subComboTxtPos;
     [SerializeField] private List<Color> comboColorsTop = new List<Color>();
     [SerializeField] private List<Color> comboColorsBottom = new List<Color>();
     [SerializeField] private List<ParticleSystem> fxFireCombos = new List<ParticleSystem>();
@@ -93,7 +93,7 @@ public class ComboUI : MonoBehaviour
 
     private void SetCombo(int combo)
     {
-        if (combo < minComboCount)
+        if (combo == 1)
         {
             ChangeComboColor();
             return;
@@ -116,15 +116,15 @@ public class ComboUI : MonoBehaviour
         {
             VibrateComboTxt();
         }
-        if (combo < 1000)
+        if (combo < 10000)
         {
             comboTxt.transform.position = comboTxtPos[combo.ToString().Length - 1].position;
-            this.transform.localPosition = new Vector3(comboLocalPos[combo.ToString().Length - 1], this.transform.localPosition.y, this.transform.localPosition.z);
+            subComboTxt.transform.position = subComboTxtPos[combo.ToString().Length - 1].position;
         }
         else
         {
             comboTxt.transform.position = comboTxtPos[comboTxtPos.Length - 1].position;
-            this.transform.localPosition = new Vector3(comboLocalPos[comboLocalPos.Count - 1], this.transform.localPosition.y, this.transform.localPosition.z);
+            subComboTxt.transform.position = subComboTxtPos[comboTxtPos.Length - 1].position;
         }
     }
 }
