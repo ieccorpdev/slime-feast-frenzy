@@ -194,6 +194,7 @@ namespace IEC
                 dictIapBought[packageId] = 0;
             }
             dictIapBought[packageId]++;
+            Debug.LogWarning("AddIapVerified" + packageId);
         }
     }
     

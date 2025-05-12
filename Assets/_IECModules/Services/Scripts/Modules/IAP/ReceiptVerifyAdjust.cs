@@ -286,6 +286,7 @@ namespace IEC
                         {
                             serviceData.AddIapVerified(product.definition.id);
                         }
+                        Debug.LogWarning("VerifyPaymentIOS status Code:" + res.statusCode);
                         // bool isValid = VerifyPaymentHandle(res);
                         // callback.Invoke(isValid);
                     }));
