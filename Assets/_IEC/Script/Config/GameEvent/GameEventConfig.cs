@@ -25,7 +25,7 @@ namespace IEC
     public class EventData
     {
         public int eventTarget;
-        public List<EventBotData> eventBotData = new();
+        public List<EventBotData> listEventBotData = new();
     }
 
     [System.Serializable]

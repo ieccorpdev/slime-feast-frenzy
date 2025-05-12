@@ -6,6 +6,7 @@ using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
 using TMPro;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace IEC
 {
@@ -43,19 +44,50 @@ namespace IEC
             UpdateUI();
         }
 
+        private void CheckShowReward()
+        {
+            
+        }
+
         private void CheckInitEventProgress()
         {
             var data = PlayerData.GetEventSaveData(EventType.StarChase);
-            if (DateTime.Now >= data.timeEnd)
+            if (DateTime.Now >= data.timeEnd || (DateTime.Now - data.timeStart.Date).TotalDays > 0)
             {
+                CheckShowReward();
+                
+                List<EventPlayerData> listPlayerData = new();
+
+                int eventIndex = data.eventIndex < _eventConfig.listEventData.Count - 1 ? data.eventIndex + 1 : 0;
+                
+                var nameList =
+                    Config.AllGameEventConfig.GenerateAllNames(_eventConfig.GetEventData(eventIndex).listEventBotData
+                        .Count);
+
+                for (int i = 0; i < _eventConfig.GetEventData(eventIndex).listEventBotData.Count; i++)
+                {
+                    var botData = _eventConfig.GetEventData(eventIndex).listEventBotData[i];
+                    var randomSpeedRange = Random.Range(-botData.speedRange, botData.speedRange);
+                    
+                    listPlayerData.Add(
+                        new EventPlayerData()
+                        {
+                            id = nameList[i],
+                            progress = 0,
+                            speed = botData.baseSpeed * (100 + randomSpeedRange) / 100, 
+                        });
+                }
+                
                 _eventRankController
                     .InitData(
                         EventType.StarChase,
-                        data.eventIndex < _eventConfig.listEventData.Count - 1 ? data.eventIndex + 1 : 0,
+                        eventIndex,
                         DateTime.Now,
                         DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
-                        new List<EventPlayerData>() {}
+                        new List<EventPlayerData>(listPlayerData)
                         );
+                
+                listPlayerData.Clear();
             }
         }
 
