@@ -263,6 +263,10 @@ namespace _IEC.Features.Gameplay
 
         void Update()
         {
+            if(posOnWater !=null && !rb.isKinematic && posOnWater.enabled )
+            {
+                posOnWater.enabled = false;
+            }
             if (targetObject == null || !onDraging) return;
             // Distance check
             float distance = Vector3.Distance(transform.position, targetObject.position);
