@@ -11,8 +11,11 @@ namespace IEC
     public class ScreenLevelWin_GroupStar : _BaseBehaviour
     {
         [SerializeField] private Image starLeft;
+        [SerializeField] private ParticleSystem starLeftExplosion;
         [SerializeField] private Image starMid;
+        [SerializeField] private ParticleSystem starMidExplosion;
         [SerializeField] private Image starRight;
+        [SerializeField] private ParticleSystem starRightExplosion;
         private string m_tween_ID => gameObject.GetInstanceID().ToString();
         
         private List<GameObject> m_starAnimObjects = new();
@@ -37,34 +40,7 @@ namespace IEC
         public void DoShowStarEffect(GameplayTimer.RemainingTimeState remainingTimeState)
         {
             DeactiveGroupStar();
-            
-            // void DoMoveStarAnim(Transform starTransform, Transform timerStarTransform,float delay = 0f, Action onComplete = null)
-            // {
-            //     starTransform.gameObject.SetActive(true);
-            //     
-            //     var targetPos = starTransform.position;
-            //     var targetRotation = starTransform.rotation;
-            //     
-            //     RectTransform starRect = starTransform as RectTransform;
-            //     RectTransform timerStarRect = timerStarTransform as RectTransform;
-            //     
-            //     var targetSize = starRect.sizeDelta;
-            //     starRect.sizeDelta = timerStarRect.sizeDelta;
-            //     
-            //     starTransform.position = timerStarTransform.position;
-            //     starTransform.rotation = timerStarTransform.rotation;
-            //     timerStarTransform.gameObject.SetActive(false);
-            //
-            //     starTransform.DOMove(targetPos, timeEachStep).SetEase(Ease.InOutQuart).SetDelay(delay);
-            //     starTransform.DORotate(targetRotation.eulerAngles, timeEachStep).SetEase(Ease.InOutQuart).SetDelay(delay);
-            //     //starTransform.DOScale(targetScale, timeEachStep).SetEase(Ease.OutQuad).SetDelay(delay).OnComplete(()=>onComplete?.Invoke());
-            //     
-            //     DOTween.To(() => starRect.sizeDelta, x => starRect.sizeDelta = x, targetSize, timeEachStep)
-            //         .SetEase(Ease.OutBack).SetDelay(delay)
-            //         .OnComplete(() => onComplete?.Invoke());
-            // }
-            //
-            // var starImages = Locator.Game.ScreenInGame.GetGameplayTimer().GetListStarImages();
+
             
             Sequence sequence = DOTween.Sequence().SetId(m_tween_ID);
             float timeInterval = 0.05f;
@@ -73,11 +49,15 @@ namespace IEC
             sequence.AppendCallback(() =>
              {
                  starLeft.gameObject.SetActive(true);
+                 
                 // DoMoveStarAnim(starLeft.transform, starImages[2].transform, timeDelayEachStep, ()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_1));
              });
             //DoMoveStarAnim(starLeft.transform, starImages[2].transform, timeDelay, ()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_1));
             //timeDelay += timeInterval + timeEachStep + timeDelayEachStep;
-            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From());
+            sequence.Append(starLeft.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
+            {
+                starLeftExplosion.Play();
+            }));
             EventController.RaiseEvent(EventList.Audio.GET_STAR_1);
 
             if (Pool.Get<InGamePlayGroup>().currentLevelType == LevelType.COIN)
@@ -96,8 +76,12 @@ namespace IEC
                      });
                     // DoMoveStarAnim(starMid.transform, starImages[1].transform, timeDelay,()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_2));
                     // timeDelay += timeInterval + timeEachStep + timeDelayEachStep;
-                     sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
-                         EventController.RaiseEvent(EventList.Audio.GET_STAR_2)
+                     sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(
+                         () =>
+                         {
+                             EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
+                             starMidExplosion.Play();
+                         }
                      ));
                     sequence.AppendInterval(timeInterval + timeEachStep);
                      sequence.AppendCallback(() =>
@@ -106,8 +90,13 @@ namespace IEC
                          starRight.gameObject.SetActive(true);
                      });
                     //DoMoveStarAnim(starRight.transform, starImages[0].transform, timeDelay,()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_3));
-                    sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
-                        EventController.RaiseEvent(EventList.Audio.GET_STAR_3)
+                    sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(
+                        () =>
+                        {
+                            EventController.RaiseEvent(EventList.Audio.GET_STAR_3);
+                            starRightExplosion.Play();
+                        }
+
                     ));
                     StarWon = 3;
                     break;
@@ -120,7 +109,10 @@ namespace IEC
                      });
                     //DoMoveStarAnim(starMid.transform, starImages[1].transform, timeDelay,()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_2));
                     sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
-                        EventController.RaiseEvent(EventList.Audio.GET_STAR_2)
+                    {
+                        EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
+                        starMidExplosion.Play();
+                    }
                     ));
                     StarWon = 2;
                     break;
