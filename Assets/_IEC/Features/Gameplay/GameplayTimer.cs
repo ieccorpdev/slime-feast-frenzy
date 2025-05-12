@@ -220,6 +220,7 @@ namespace _IEC.Features.Gameplay
         {
             m_IsGameStarted = false;
             m_MaxTime = levelData.time;
+            m_MaxTime += Config.gamePlayConfig.GetTimeLevelExpand(levelData.level);
             CurrentTime = m_MaxTime;
             CheckActiveStar(levelData);
             UpdateCoolDown();

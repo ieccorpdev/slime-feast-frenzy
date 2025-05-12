@@ -12,5 +12,6 @@ namespace _IEC.Features.Gameplay
         public BaseItemDirectorUI itemDirectorUI;
         public BombItem bombPrefab;
         public GameObject wallBouyOcean;
+        public ParticleSystem vfxItemSplash;
     }
 }

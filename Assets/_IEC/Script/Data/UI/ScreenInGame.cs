@@ -22,6 +22,7 @@ namespace IEC
         [Header("Group objective")] 
         [SerializeField] private RectTransform holderImage;
         [SerializeField] private RectTransform groupLevelObjectiveLayoutGroup;
+        [SerializeField] private RectTransform xpParentRT;
 
         [Space]
         //public Button btnRestart;
@@ -91,7 +92,14 @@ namespace IEC
 
         public void HandleEatCombo()
         {
-            comboUI.HandleEatCombo();
+            if (Game.enableComboCount)
+            {
+                comboUI.HandleEatCombo();
+            }
+            else
+            {
+                comboUI.gameObject.SetActive(false);
+            }
         }
 
         public void ShowHelperIntroAnimation(string messenger)
@@ -120,6 +128,7 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.RegisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
+            comboUI.gameObject.SetActive(Game.enableComboCount);
         }
 
         private void OnDisable()
@@ -200,6 +209,7 @@ namespace IEC
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
             var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
+            xpVFX.transform.parent = xpParentRT.transform;
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);

@@ -21,7 +21,6 @@ public class FishTankController : MonoBehaviour
             if (Physics.Raycast(ray, out hit, Mathf.Infinity, fishLayer))
             {
                 GameObject clickedObject = hit.collider.gameObject;
-                Debug.LogError(clickedObject.name);
                 if (clickedObject.CompareTag("Fish"))
                 {
                     var fsc = clickedObject.GetComponent<FreeSwimingCollider>();

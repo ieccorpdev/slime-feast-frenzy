@@ -130,7 +130,11 @@ namespace _IEC.Features.Gameplay
             else
             {
                 int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
-                objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+                EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+                {
+                    objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+                },true);
+                //objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
             }
 
         }
