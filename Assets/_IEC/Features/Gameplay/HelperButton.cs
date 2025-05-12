@@ -111,7 +111,7 @@ namespace _IEC.Features.Gameplay
             AddCheatCode();
             Material instanceMaterial = new Material(imgIcon.material);
             imgIcon.material = instanceMaterial;
-           
+            txtUnlockCondition.text += Config.gamePlayConfig.GetUnlockCondition(helperId);
         }
 
         void AddCheatCode()
@@ -366,9 +366,6 @@ namespace _IEC.Features.Gameplay
                         groupAdd.SetActive(true);
                         groupPool.SetActive(false);
                     }
-                    break;
-                case State.Locked:
-                    txtUnlockCondition.text += Config.gamePlayConfig.GetUnlockCondition(helperId);
                     break;
             }
         }

@@ -90,7 +90,7 @@ namespace IEC
             }
         }
 
-        public void FadeAudio(float from = 0f, float to = 0f, float duration = 0f)
+        public void FadeAudio(float duration = 0f)
         {
             StopAllCoroutines();
             StartCoroutine(FadeAllMusicAudioSources(duration));
@@ -126,7 +126,7 @@ namespace IEC
                 {
                     if (player != null && player.audioSource != null)
                     {
-                        player.audioSource.volume = Mathf.Lerp(0, initialVolumes[player], time / duration); ;
+                        player.audioSource.volume = Mathf.Lerp(0, initialVolumes[player], time / duration);
                     }
                 }
 
