@@ -91,19 +91,22 @@ namespace _IEC.Features.Gameplay
                     .Append(lockIcon.DORotate(new Vector3(0, 0, -2.5f), 0.05f).SetEase(Ease.InOutQuad))
                     .Append(lockIcon.DORotate(Vector3.zero, 0.05f).SetEase(Ease.OutBack));
 
-            groupUnlockDescription.DOKill();
-            DOTween.Kill(groupUnlockDescription.GetHashCode());
-            groupUnlockDescription.gameObject.SetActive(true);
-            groupUnlockDescription.transform.localScale = Vector3.zero;
-            groupUnlockDescription.transform.DOScale(Vector3.one, 0.5f)
-                .SetEase(Ease.OutBack);
-            lastGroupUnlockDescription = groupUnlockDescription;
-            DOVirtual.DelayedCall(1.5f, () =>
+            if (GamePlay.levelController.GetLevelData().levelType != LevelType.COIN)
             {
-                groupUnlockDescription.transform.DOScale(Vector3.zero, 0.3f)
-                    .SetEase(Ease.InBack)
-                    .OnComplete(() => groupUnlockDescription.gameObject.SetActive(false));
-            }).SetId(groupUnlockDescription.GetHashCode());
+                groupUnlockDescription.DOKill();
+                DOTween.Kill(groupUnlockDescription.GetHashCode());
+                groupUnlockDescription.gameObject.SetActive(true);
+                groupUnlockDescription.transform.localScale = Vector3.zero;
+                groupUnlockDescription.transform.DOScale(Vector3.one, 0.5f)
+                    .SetEase(Ease.OutBack);
+                lastGroupUnlockDescription = groupUnlockDescription;
+                DOVirtual.DelayedCall(1.5f, () =>
+                {
+                    groupUnlockDescription.transform.DOScale(Vector3.zero, 0.3f)
+                        .SetEase(Ease.InBack)
+                        .OnComplete(() => groupUnlockDescription.gameObject.SetActive(false));
+                }).SetId(groupUnlockDescription.GetHashCode());
+            }
         }
 
         public void UpdateLockDescription()
@@ -339,6 +342,7 @@ namespace _IEC.Features.Gameplay
                                 SoundController.StopSound(EventList.Audio.ICE_IDLE);
                                 break;
                         }
+                        this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER, new UserCompleteHelper(helperId));
                         //if (SoundController.dictSoundActiveByHelperId.ContainsKey(helperId))
                         //{
                         //    var audioInfo = SoundController.dictSoundActiveByHelperId[helperId];
