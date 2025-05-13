@@ -136,18 +136,18 @@ namespace ToonyColorsPro
 				var systemPath = Application.dataPath + @"/JMO Assets/Toony Colors Pro/Shader Templates 2/";
 				if (!Directory.Exists(systemPath))
 				{
-					var rootDir = Utils.FindReadmePath();
+					var rootDir = ToonyColorsPro.Utilities.Utils.FindReadmePath();
 					systemPath = rootDir.Replace(@"\", "/") + "/Shader Templates 2/";
 				}
 
 				if (Directory.Exists(systemPath))
 				{
-					var txtFiles = Utils.GetFilesSafe(systemPath, "*.txt");
+					var txtFiles = ToonyColorsPro.Utilities.Utils.GetFilesSafe(systemPath, "*.txt");
 
 					foreach (var sysPath in txtFiles)
 					{
 						var unityPath = sysPath;
-						if (Utils.SystemToUnityPath(ref unityPath))
+						if (ToonyColorsPro.Utilities.Utils.SystemToUnityPath(ref unityPath))
 						{
 							var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(unityPath);
 							if (textAsset != null && !list.Contains(textAsset))
@@ -683,7 +683,7 @@ namespace ToonyColorsPro
 						ProjectOptions.data.CustomOutputPath = EditorGUILayout.TextField(TCP2_GUI.TempContent("Output Directory", "The output directory for the generated shader."), ProjectOptions.data.CustomOutputPath);
 						if (GUILayout.Button("Browse", EditorStyles.miniButton, GUILayout.ExpandWidth(false)))
 						{
-							var newOutputPath = Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for TCP2 generated shaders", ProjectOptions.data.CustomOutputPath);
+							var newOutputPath = ToonyColorsPro.Utilities.Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for TCP2 generated shaders", ProjectOptions.data.CustomOutputPath);
 							if (!string.IsNullOrEmpty(newOutputPath))
 							{
 								ProjectOptions.data.CustomOutputPath = newOutputPath;
@@ -1192,7 +1192,7 @@ namespace ToonyColorsPro
 					var rootPath = (ProjectOptions.data.LoadAllShaders ? Application.dataPath : GetOutputPath());
 					if (Directory.Exists(rootPath))
 					{
-						var paths = Utils.GetFilesSafe(rootPath, "*.shader");
+						var paths = ToonyColorsPro.Utilities.Utils.GetFilesSafe(rootPath, "*.shader");
 						var shaderList = new List<Shader>();
 
 						foreach (var path in paths)
@@ -1212,7 +1212,7 @@ namespace ToonyColorsPro
 								}
 								else
 								{
-									string osPath = Utils.UnityRelativeToSystemPath(shaderImporter.assetPath);
+									string osPath = ToonyColorsPro.Utilities.Utils.UnityRelativeToSystemPath(shaderImporter.assetPath);
 									var shaderContent = File.ReadAllLines(osPath);
 
 									// only check the last 10 lines
@@ -3612,7 +3612,7 @@ namespace ToonyColorsPro
 				}
 				if (!unityPath.EndsWith("/"))
 					unityPath = unityPath + "/";
-				return Utils.UnityRelativeToSystemPath(unityPath);
+				return ToonyColorsPro.Utilities.Utils.UnityRelativeToSystemPath(unityPath);
 			}
 
 			//Returns hash of file content to check for manual modifications (with 'h' prefix)

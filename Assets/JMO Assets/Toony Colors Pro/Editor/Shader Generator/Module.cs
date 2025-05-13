@@ -60,7 +60,7 @@ namespace ToonyColorsPro
 			static public Module CreateFromName(string moduleName)
 			{
 				string moduleFile = string.Format("Module_{0}.txt", moduleName);
-				string rootPath = Utils.FindReadmePath(true);
+				string rootPath = ToonyColorsPro.Utilities.Utils.FindReadmePath(true);
 				string modulePath = string.Format("{0}/Shader Templates 2/Modules/{1}", rootPath, moduleFile);
 
 				var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(modulePath);

@@ -583,7 +583,7 @@ namespace ToonyColorsPro
 
 					var curMask = Array.IndexOf(masks, config.GetKeyword(maskKeyword));
 					if (curMask < 0) curMask = 0;
-					var curChannel = Utils.FromShader(config.GetKeyword(channelKeyword));
+					var curChannel = ToonyColorsPro.Utilities.Utils.FromShader(config.GetKeyword(channelKeyword));
 					var uvKey = (curMask > 1 && curMask < 5) ? "UV_" + masks[curMask] : null;
 					var curUv = Array.IndexOf(uvs, config.GetKeyword(uvKey));
 					if (curUv < 0) curUv = 0;
@@ -607,7 +607,7 @@ namespace ToonyColorsPro
 					middleRect.width = position.width * 0.25f;
 					middleRect.x += sideRect.width;
 					GUI.enabled &= curMask > 0;
-					curChannel = (Utils.TextureChannel)EditorGUI.EnumPopup(middleRect, curChannel);
+					curChannel = (ToonyColorsPro.Utilities.Utils.TextureChannel)EditorGUI.EnumPopup(middleRect, curChannel);
 
 					//Mask UVs
 					sideRect.x += sideRect.width + middleRect.width;

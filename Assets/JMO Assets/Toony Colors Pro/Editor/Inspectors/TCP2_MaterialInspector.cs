@@ -13,7 +13,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using ToonyColorsPro.Utilities;
 using ToonyColorsPro.Legacy;
-
+namespace ToonyColorsPro.Utilities { 
 // Custom Unified Inspector that will select the correct shaders depending on the settings defined.
 
 public class TCP2_MaterialInspector : ShaderGUI
@@ -870,4 +870,5 @@ public class TCP2_MaterialInspector : ShaderGUI
 		}
 		return prop.colorValue;
 	}
+}
 }
