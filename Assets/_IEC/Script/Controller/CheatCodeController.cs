@@ -249,14 +249,7 @@ namespace IEC
             {
                 value = 500
             });
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Medal LeaderBoard", param =>
-            {
-                int gc = int.Parse(param.inputParams[0].value.ToString());
-                LeaderboardController.leaderboardSaveData.AddMedal(gc);
-            }, new CheatCode.InputParam
-            {
-                value = 100
-            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set UnlimitedLife Time ( Minutes)", param =>
             {
                 int gc = int.Parse(param.inputParams[0].value.ToString());
