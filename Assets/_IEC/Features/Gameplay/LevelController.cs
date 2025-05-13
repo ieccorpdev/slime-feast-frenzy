@@ -720,7 +720,7 @@ namespace _IEC.Features.Gameplay
                             m_MagnetHelperCoolDown = 0;
                             playerHole.StopMagnetHelper();
                             m_MagnetHelperActive = false;
-                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper(){helperId = HelperId.Magnet});
+                            //this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper(HelperId.Magnet));
                         }
                     }
 
@@ -732,10 +732,7 @@ namespace _IEC.Features.Gameplay
                             m_ScaleUpHelperCoolDown = 0;
                             playerHole.StopScaleByHelper();
                             m_ScaleUpHelperActive = false;
-                            this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper()
-                            {
-                                helperId = HelperId.ScaleUp
-                            });
+                            //this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER,new UserCompleteHelper(HelperId.ScaleUp));
                         }
                     }
                     break;

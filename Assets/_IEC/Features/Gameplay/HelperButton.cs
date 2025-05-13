@@ -339,6 +339,7 @@ namespace _IEC.Features.Gameplay
                                 SoundController.StopSound(EventList.Audio.ICE_IDLE);
                                 break;
                         }
+                        this.RaiseEvent(EventList.GamePlay.COMPLETE_HELPER, new UserCompleteHelper(helperId));
                         //if (SoundController.dictSoundActiveByHelperId.ContainsKey(helperId))
                         //{
                         //    var audioInfo = SoundController.dictSoundActiveByHelperId[helperId];
