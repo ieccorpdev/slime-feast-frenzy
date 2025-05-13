@@ -113,7 +113,7 @@ namespace IEC
             for (int i = 0; i < _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count; i++)
             {
                 var botData = _eventConfig.GetEventData(eventStageIndex).listEventBotData[i];
-                var randomSpeedRange = Random.Range(-botData.speedRange, botData.speedRange);
+                var randomSpeedRange = Random.Range(-botData.speedRange * 100, botData.speedRange * 100);
                     
                 listPlayerData.Add(
                     new EventPlayerData()
