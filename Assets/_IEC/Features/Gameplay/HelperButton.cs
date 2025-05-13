@@ -74,6 +74,7 @@ namespace _IEC.Features.Gameplay
 
         private void HandleLockedOnClick()
         {
+            UpdateLockDescription();
             if (lastGroupUnlockDescription)
             {
                 DOTween.Kill(lastGroupUnlockDescription.GetHashCode());
@@ -105,7 +106,18 @@ namespace _IEC.Features.Gameplay
             }).SetId(groupUnlockDescription.GetHashCode());
         }
 
+        public void UpdateLockDescription()
+        {
+            if (GamePlay.levelController.GetLevelData().levelType == LevelType.COIN)
+            {
+                txtUnlockCondition.text ="Level Bonus";
+            }
+            else
+            {
+                txtUnlockCondition.text ="Unlocks \nat level "+  Config.gamePlayConfig.GetUnlockCondition(helperId);
+            }
 
+        }
         private void Start()
         {
             AddCheatCode();
