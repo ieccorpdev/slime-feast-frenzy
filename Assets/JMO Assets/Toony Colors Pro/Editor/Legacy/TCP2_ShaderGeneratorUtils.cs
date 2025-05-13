@@ -37,7 +37,7 @@ namespace ToonyColorsPro
 						//TCP2 folder has been moved? Try to find new location
 						if (!Directory.Exists(OUTPUT_PATH))
 						{
-							var rootPath = Utils.FindReadmePath(true).Substring("Assets".Length);
+							var rootPath = ToonyColorsPro.Utilities.Utils.FindReadmePath(true).Substring("Assets".Length);
 							if (!string.IsNullOrEmpty(rootPath))
 							{
 								return rootPath + "/Shaders Generated/";
@@ -261,22 +261,22 @@ namespace ToonyColorsPro
 
 				//Unity version
 #if UNITY_5_4_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_5_4");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_5_4");
 #endif
 #if UNITY_5_5_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_5_5");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_5_5");
 #endif
 #if UNITY_5_6_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_5_6");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_5_6");
 #endif
 #if UNITY_2017_1_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_2017_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_2017_1");
 #endif
 #if UNITY_2018_1_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_2018_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_2018_1");
 #endif
 #if UNITY_2018_2_OR_NEWER
-				Utils.AddIfMissing(features, "UNITY_2018_2");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "UNITY_2018_2");
 #endif
 
 				//Masks
@@ -298,7 +298,7 @@ namespace ToonyColorsPro
 					keywords.Add("SHADER_TARGET", target);
 					if (config.shaderTarget == 20)
 					{
-						Utils.AddIfMissing(features, "FORCE_SM2");
+						ToonyColorsPro.Utilities.Utils.AddIfMissing(features, "FORCE_SM2");
 					}
 				}
 
@@ -445,20 +445,20 @@ namespace ToonyColorsPro
 									keywords.Add(parts[1], parts[2]);
 								break;
 
-							case "enable_kw": Utils.AddIfMissing(features, parts[1]); break;
-							case "disable_kw": Utils.RemoveIfExists(features, parts[1]); break;
-							case "enable_flag": Utils.AddIfMissing(flags, parts[1]); break;
-							case "disable_flag": Utils.RemoveIfExists(flags, parts[1]); break;
+							case "enable_kw": ToonyColorsPro.Utilities.Utils.AddIfMissing(features, parts[1]); break;
+							case "disable_kw": ToonyColorsPro.Utilities.Utils.RemoveIfExists(features, parts[1]); break;
+							case "enable_flag": ToonyColorsPro.Utilities.Utils.AddIfMissing(flags, parts[1]); break;
+							case "disable_flag": ToonyColorsPro.Utilities.Utils.RemoveIfExists(flags, parts[1]); break;
 
 							//Keywords that will also be modified in the Config
 							case "enable_kw_config":
-								Utils.AddIfMissing(features, parts[1]);
-								Utils.AddIfMissing(config.Features, parts[1]);
+								ToonyColorsPro.Utilities.Utils.AddIfMissing(features, parts[1]);
+								ToonyColorsPro.Utilities.Utils.AddIfMissing(config.Features, parts[1]);
 								break;
 
 							case "disable_kw_config":
-								Utils.RemoveIfExists(features, parts[1]);
-								Utils.RemoveIfExists(config.Features, parts[1]);
+								ToonyColorsPro.Utilities.Utils.RemoveIfExists(features, parts[1]);
+								ToonyColorsPro.Utilities.Utils.RemoveIfExists(config.Features, parts[1]);
 								break;
 						}
 					}
@@ -845,7 +845,7 @@ namespace ToonyColorsPro
 
 				if (outputPath == OUTPUT_PATH)
 					return INCLUDE_REL_PATH;
-				var tcp2includeFile = Utils.GetFileSafe(Application.dataPath, "TCP2_Include.cginc");
+				var tcp2includeFile = ToonyColorsPro.Utilities.Utils.GetFileSafe(Application.dataPath, "TCP2_Include.cginc");
 				if (tcp2includeFile != null)
 				{
 					var absoluteTcp2IncludeDir = Path.GetDirectoryName(tcp2includeFile) + "/";

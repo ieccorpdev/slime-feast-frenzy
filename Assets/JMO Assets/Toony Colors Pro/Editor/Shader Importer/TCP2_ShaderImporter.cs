@@ -162,7 +162,7 @@ namespace ToonyColorsPro
 
             public override void OnImportAsset(AssetImportContext context)
             {
-                bool isUsingURP = Utils.IsUsingURP();
+                bool isUsingURP = ToonyColorsPro.Utilities.Utils.IsUsingURP();
 
                 detectedRenderPipeline = isUsingURP ? "Universal Render Pipeline" : "Built-In Render Pipeline";
 
@@ -383,7 +383,7 @@ namespace ToonyColorsPro
 
                 public override void OnInspectorGUI()
                 {
-                    bool isUsingURP = Utils.IsUsingURP();
+                    bool isUsingURP = ToonyColorsPro.Utilities.Utils.IsUsingURP();
                     serializedObject.Update();
 
                     GUILayout.Label(TCP2_GUI.TempContent(Importer.shaderName));

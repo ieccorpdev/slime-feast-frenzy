@@ -353,7 +353,7 @@ namespace ToonyColorsPro
 			{
 				foreach (var f in ShaderProperty.AllOptionFeatures())
 				{
-					Utils.RemoveIfExists(this.Features, f);
+					ToonyColorsPro.Utilities.Utils.RemoveIfExists(this.Features, f);
 				}
 			}
 
@@ -1478,49 +1478,49 @@ namespace ToonyColorsPro
 			{
 				//Add Unity versions to features
 #if UNITY_5_4_OR_NEWER
-				Utils.AddIfMissing(Features, "UNITY_5_4");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(Features, "UNITY_5_4");
 #endif
 #if UNITY_5_5_OR_NEWER
-				Utils.AddIfMissing(Features, "UNITY_5_5");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(Features, "UNITY_5_5");
 #endif
 #if UNITY_5_6_OR_NEWER
-				Utils.AddIfMissing(Features, "UNITY_5_6");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(Features, "UNITY_5_6");
 #endif
 #if UNITY_2017_1_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2017_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2017_1");
 #endif
 #if UNITY_2018_1_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2018_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2018_1");
 #endif
 #if UNITY_2018_2_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2018_2");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2018_2");
 #endif
 #if UNITY_2018_3_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2018_3");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2018_3");
 #endif
 #if UNITY_2019_1_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2019_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2019_1");
 #endif
 #if UNITY_2019_2_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2019_2");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2019_2");
 #endif
 #if UNITY_2019_3_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2019_3");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2019_3");
 #endif
 #if UNITY_2019_4_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2019_4");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2019_4");
 #endif
 #if UNITY_2020_1_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2020_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2020_1");
 #endif
 #if UNITY_2021_1_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2021_1");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2021_1");
 #endif
 #if UNITY_2021_2_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2021_2");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2021_2");
 #endif
 #if UNITY_2022_2_OR_NEWER
-				Utils.AddIfMissing(this.Features, "UNITY_2022_2");
+				ToonyColorsPro.Utilities.Utils.AddIfMissing(this.Features, "UNITY_2022_2");
 #endif
 				var parsedLines = template.GetParsedLinesFromConditions(this, null, null);
 
@@ -1659,7 +1659,7 @@ namespace ToonyColorsPro
 					case "enable_kw": //legacy
 					case "feature_on":
 					{
-						if (Utils.AddIfMissing(tempFeatures, parts[1]))
+						if (ToonyColorsPro.Utilities.Utils.AddIfMissing(tempFeatures, parts[1]))
 						{
 							return true;
 						}
@@ -1669,7 +1669,7 @@ namespace ToonyColorsPro
 					case "disable_kw": //legacy
 					case "feature_off":
 					{
-						if (Utils.RemoveIfExists(tempFeatures, parts[1]))
+						if (ToonyColorsPro.Utilities.Utils.RemoveIfExists(tempFeatures, parts[1]))
 						{
 							return true;
 						}
@@ -1681,7 +1681,7 @@ namespace ToonyColorsPro
 					case "flag_on":
 						if (tempFlags != null)
 						{
-							if (Utils.AddIfMissing(tempFlags, parts[1]))
+							if (ToonyColorsPro.Utilities.Utils.AddIfMissing(tempFlags, parts[1]))
 							{
 								return true;
 							}
@@ -1691,7 +1691,7 @@ namespace ToonyColorsPro
 					case "flag_off":
 						if (tempFlags != null)
 						{
-							if (Utils.RemoveIfExists(tempFlags, parts[1]))
+							if (ToonyColorsPro.Utilities.Utils.RemoveIfExists(tempFlags, parts[1]))
 							{
 								return true;
 							}
@@ -1711,7 +1711,7 @@ namespace ToonyColorsPro
 							string block = parts[0].Substring("flag_on:".Length);
 							if (!tempExtraFlags.ContainsKey(block)) tempExtraFlags.Add(block, new List<string>());
 
-							if (Utils.AddIfMissing(tempExtraFlags[block], parts[1]))
+							if (ToonyColorsPro.Utilities.Utils.AddIfMissing(tempExtraFlags[block], parts[1]))
 							{
 								return true;
 							}
@@ -1729,7 +1729,7 @@ namespace ToonyColorsPro
 								return false;
 							}
 
-							if (Utils.RemoveIfExists(tempExtraFlags[block], parts[1]))
+							if (ToonyColorsPro.Utilities.Utils.RemoveIfExists(tempExtraFlags[block], parts[1]))
 							{
 								if (tempExtraFlags[block].Count == 0)
 								{

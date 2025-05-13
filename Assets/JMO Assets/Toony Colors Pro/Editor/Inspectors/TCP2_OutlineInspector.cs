@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
-using ToonyColorsPro.Utilities;
+namespace ToonyColorsPro.Utilities
+{
+    // Custom Inspector when using the Outline Only shaders
 
-// Custom Inspector when using the Outline Only shaders
-
-public class TCP2_OutlineInspector : MaterialEditor
+    public class TCP2_OutlineInspector : MaterialEditor
 {
 	//Properties
 	private Material targetMaterial { get { return target as Material; } }
@@ -277,4 +277,5 @@ public class TCP2_OutlineInspector : MaterialEditor
 
 		return true;
 	}
+}
 }

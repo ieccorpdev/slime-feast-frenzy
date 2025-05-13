@@ -85,7 +85,7 @@ namespace ToonyColorsPro
 				if (materialEditor.isVisible && !mShader.hasMultipleDifferentValues && mShader.objectReferenceValue != null)
 				{
 					//Retina display fix
-					EditorGUIUtility.labelWidth = Utils.ScreenWidthRetina - 120f;
+					EditorGUIUtility.labelWidth = ToonyColorsPro.Utilities.Utils.ScreenWidthRetina - 120f;
 					EditorGUIUtility.fieldWidth = 64f;
 
 					EditorGUI.BeginChangeCheck();

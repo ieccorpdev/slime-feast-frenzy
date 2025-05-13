@@ -167,7 +167,7 @@ namespace ToonyColorsPro
 
 				private TextAsset LoadTextAsset(string filename)
 				{
-					string rootPath = Utils.FindReadmePath(true);
+					string rootPath = ToonyColorsPro.Utilities.Utils.FindReadmePath(true);
 					var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(string.Format("{0}/Shader Templates/{1}", rootPath, filename));
 					if (asset == null)
 					{
@@ -260,18 +260,18 @@ namespace ToonyColorsPro
 				var systemPath = Application.dataPath + @"/JMO Assets/Toony Colors Pro/Shader Templates/";
 				if (!Directory.Exists(systemPath))
 				{
-					var rootDir = Utils.FindReadmePath();
+					var rootDir = ToonyColorsPro.Utilities.Utils.FindReadmePath();
 					systemPath = rootDir.Replace(@"\", "/") + "/Shader Templates/";
 				}
 
 				if (Directory.Exists(systemPath))
 				{
-					var txtFiles = Utils.GetFilesSafe(systemPath, "*.txt");
+					var txtFiles = ToonyColorsPro.Utilities.Utils.GetFilesSafe(systemPath, "*.txt");
 
 					foreach (var sysPath in txtFiles)
 					{
 						var unityPath = sysPath;
-						if (Utils.SystemToUnityPath(ref unityPath))
+						if (ToonyColorsPro.Utilities.Utils.SystemToUnityPath(ref unityPath))
 						{
 							var textAsset = AssetDatabase.LoadAssetAtPath<TextAsset>(unityPath);
 							if (textAsset != null && !list.Contains(textAsset))
@@ -721,7 +721,7 @@ namespace ToonyColorsPro
 					TCP2_ShaderGeneratorUtils.OutputPath = EditorGUILayout.TextField("", TCP2_ShaderGeneratorUtils.OutputPath);
 					if (GUILayout.Button("Select...", EditorStyles.miniButton, GUILayout.ExpandWidth(false)))
 					{
-						var outputPath = Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for TCP2 generated shaders", TCP2_ShaderGeneratorUtils.OutputPath);
+						var outputPath = ToonyColorsPro.Utilities.Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for TCP2 generated shaders", TCP2_ShaderGeneratorUtils.OutputPath);
 						if (!string.IsNullOrEmpty(outputPath))
 						{
 							TCP2_ShaderGeneratorUtils.OutputPath = outputPath;
@@ -879,7 +879,7 @@ namespace ToonyColorsPro
 
 				if (Directory.Exists(rootPath))
 				{
-					var paths = Utils.GetFilesSafe(rootPath, "*.shader");
+					var paths = ToonyColorsPro.Utilities.Utils.GetFilesSafe(rootPath, "*.shader");
 					var shaderList = new List<Shader>();
 
 					foreach (var path in paths)

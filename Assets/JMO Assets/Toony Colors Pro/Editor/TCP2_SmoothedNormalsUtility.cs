@@ -80,8 +80,8 @@ namespace ToonyColorsPro
 
 		private Dictionary<Mesh, SelectedMesh> mMeshes;
 		private string mFormat = "XYZ";
-		private Utils.SmoothedNormalsChannel smoothedNormalChannel;
-		private Utils.SmoothedNormalsUVType smoothedNormalUVType;
+		private ToonyColorsPro.Utilities.Utils.SmoothedNormalsChannel smoothedNormalChannel;
+		private ToonyColorsPro.Utilities.Utils.SmoothedNormalsUVType smoothedNormalUVType;
 		private Vector2 mScroll;
 
 		private bool mAlwaysOverwrite;
@@ -211,9 +211,9 @@ namespace ToonyColorsPro
 
 			TCP2_GUI.Separator();
 
-			smoothedNormalChannel = (Utils.SmoothedNormalsChannel)EditorGUILayout.EnumPopup(TCP2_GUI.TempContent("Vertex Data Target", "Defines where to store the smoothed normals in the mesh; use a target where there isn't any data already."), smoothedNormalChannel);
-			EditorGUI.BeginDisabledGroup(smoothedNormalChannel == Utils.SmoothedNormalsChannel.Tangents || smoothedNormalChannel == Utils.SmoothedNormalsChannel.VertexColors);
-			smoothedNormalUVType = (Utils.SmoothedNormalsUVType)EditorGUILayout.EnumPopup(TCP2_GUI.TempContent("UV Data Type", "Defines where and how to store the smoothed normals in the target vertex UV channel."), smoothedNormalUVType);
+			smoothedNormalChannel = (ToonyColorsPro.Utilities.Utils.SmoothedNormalsChannel)EditorGUILayout.EnumPopup(TCP2_GUI.TempContent("Vertex Data Target", "Defines where to store the smoothed normals in the mesh; use a target where there isn't any data already."), smoothedNormalChannel);
+			EditorGUI.BeginDisabledGroup(smoothedNormalChannel == ToonyColorsPro.Utilities.Utils.SmoothedNormalsChannel.Tangents || smoothedNormalChannel == ToonyColorsPro.Utilities.Utils.SmoothedNormalsChannel.VertexColors);
+			smoothedNormalUVType = (ToonyColorsPro.Utilities.Utils.SmoothedNormalsUVType)EditorGUILayout.EnumPopup(TCP2_GUI.TempContent("UV Data Type", "Defines where and how to store the smoothed normals in the target vertex UV channel."), smoothedNormalUVType);
 			EditorGUI.EndDisabledGroup();
 
 			EditorGUILayout.HelpBox("You will need to select the proper option in the Material Inspector depending on the selected target/format!", MessageType.Info);
@@ -238,7 +238,7 @@ namespace ToonyColorsPro
 				mCustomDirectoryPath = EditorGUILayout.TextField(GUIContent.none, mCustomDirectoryPath);
 				if (GUILayout.Button("Select...", EditorStyles.miniButton, GUILayout.ExpandWidth(false)))
 				{
-					var outputPath = Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for generated smoothed meshes", mCustomDirectoryPath);
+					var outputPath = ToonyColorsPro.Utilities.Utils.OpenFolderPanel_ProjectPath("Choose custom output directory for generated smoothed meshes", mCustomDirectoryPath);
 					if (!string.IsNullOrEmpty(outputPath))
 					{
 						mCustomDirectoryPath = outputPath;
@@ -270,13 +270,13 @@ namespace ToonyColorsPro
 			//Check if we are ok to overwrite
 			var overwrite = true;
 
-			var rootPath = mCustomDirectory ? Application.dataPath + "/" + mCustomDirectoryPath + "/" : Utils.FindReadmePath() + OUTPUT_FOLDER;
+			var rootPath = mCustomDirectory ? Application.dataPath + "/" + mCustomDirectoryPath + "/" : ToonyColorsPro.Utilities.Utils.FindReadmePath() + OUTPUT_FOLDER;
 
 			if (!Directory.Exists(rootPath))
 				Directory.CreateDirectory(rootPath);
 
 #if UNITY_EDITOR_WIN
-			rootPath = rootPath.Replace(mCustomDirectory ? Application.dataPath : Utils.ToSystemSlashPath(Application.dataPath), "").Replace(@"\", "/");
+			rootPath = rootPath.Replace(mCustomDirectory ? Application.dataPath : ToonyColorsPro.Utilities.Utils.ToSystemSlashPath(Application.dataPath), "").Replace(@"\", "/");
 #else
 		rootPath = rootPath.Replace(Application.dataPath, "");
 #endif
@@ -305,8 +305,8 @@ namespace ToonyColorsPro
 				originalMesh.name = existingAsset.name;
 			}
 
-			var channel = originalMesh.isSkinned ? Utils.SmoothedNormalsChannel.Tangents : smoothedNormalChannel;
-			Mesh newMesh = Utils.CreateSmoothedMesh(originalMesh.mesh, mFormat, channel, smoothedNormalUVType, !originalMesh.isAsset || (originalMesh.isAsset && assetExists));
+			var channel = originalMesh.isSkinned ? ToonyColorsPro.Utilities.Utils.SmoothedNormalsChannel.Tangents : smoothedNormalChannel;
+			Mesh newMesh = ToonyColorsPro.Utilities.Utils.CreateSmoothedMesh(originalMesh.mesh, mFormat, channel, smoothedNormalUVType, !originalMesh.isAsset || (originalMesh.isAsset && assetExists));
 
 			if (newMesh == null)
 			{

@@ -109,7 +109,7 @@ namespace ToonyColorsPro
 				// add new keywords if any
 				foreach (var kw in templateKeywords)
 				{
-					Utils.AddIfMissing(config.Features, kw);
+					ToonyColorsPro.Utilities.Utils.AddIfMissing(config.Features, kw);
 				}
 			}
 
@@ -333,7 +333,7 @@ namespace ToonyColorsPro
 
 			private static TextAsset LoadTextAsset(string filename)
 			{
-				string rootPath = Utils.FindReadmePath(true);
+				string rootPath = ToonyColorsPro.Utilities.Utils.FindReadmePath(true);
 				var asset = AssetDatabase.LoadAssetAtPath<TextAsset>(string.Format("{0}/Editor/Shader Templates/{1}", rootPath, filename));
 
 				if (asset == null)
@@ -1171,7 +1171,7 @@ namespace ToonyColorsPro
 										// add the new toggled features, if any
 										foreach (var f in tempFeatures)
 										{
-											Utils.AddIfMissing(conditionalFeatures, f);
+											ToonyColorsPro.Utilities.Utils.AddIfMissing(conditionalFeatures, f);
 										}
 
 										// reset the loop, so that the #keywords order doesn't matter in the template

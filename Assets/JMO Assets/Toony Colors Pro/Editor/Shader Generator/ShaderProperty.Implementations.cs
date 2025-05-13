@@ -3675,11 +3675,11 @@ namespace ToonyColorsPro
 						{
 							if (enabled)
 							{
-								Utils.AddIfMissing(ShaderGenerator2.CurrentConfig.ExtraTempFeatures, this.feature);
+								ToonyColorsPro.Utilities.Utils.AddIfMissing(ShaderGenerator2.CurrentConfig.ExtraTempFeatures, this.feature);
 							}
 							else
 							{
-								Utils.RemoveIfExists(ShaderGenerator2.CurrentConfig.ExtraTempFeatures, this.feature);
+								ToonyColorsPro.Utilities.Utils.RemoveIfExists(ShaderGenerator2.CurrentConfig.ExtraTempFeatures, this.feature);
 							}
 						}
 					}
