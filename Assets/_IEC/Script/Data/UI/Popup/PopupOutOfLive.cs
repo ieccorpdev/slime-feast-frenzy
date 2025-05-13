@@ -85,6 +85,7 @@ namespace _IEC
         void Update()
         {
             timeNextLifeTMP.text = PlayerData.GetTimeToNextLife();
+            UpdateUI();
         }
         public override void Show()
         {
