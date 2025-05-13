@@ -169,15 +169,15 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         
-        SetEvent(buildButton,
-            () =>
-            {
-                DoMoveOutAllObj(0.3f,
-                    () =>
-                    {
-                        Locator.Main.HomeScreenTab.buildCityUI.Show();
-                    });
-            });
+        //SetEvent(buildButton,
+        //    () =>
+        //    {
+        //        DoMoveOutAllObj(0.3f,
+        //            () =>
+        //            {
+        //                Locator.Main.HomeScreenTab.buildCityUI.Show();
+        //            });
+        //    });
         SetupUIHome();
     }
 
@@ -428,7 +428,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();
-        UpdateBuildCity();
+        //UpdateBuildCity();
         UpdateLifeOffer();
         UpdateStarChest();
         progressRewardBar.Setup();
