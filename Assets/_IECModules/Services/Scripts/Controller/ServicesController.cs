@@ -64,6 +64,10 @@ namespace IEC
         RetentionModule m_Retention;
 
         IAnalyticEvent m_FirebaseAnalytic;
+#if (PluginFirebaseAnalytic)
+        public FirebaseAnalyticModule FirebaseAnalyticModule => (FirebaseAnalyticModule)m_FirebaseAnalytic;
+#endif
+        
 
         private Dictionary<RevAdType, List<int>> m_DictListMilestoneAd = new Dictionary<RevAdType, List<int>>();
         public Action<string> onPushEvent;

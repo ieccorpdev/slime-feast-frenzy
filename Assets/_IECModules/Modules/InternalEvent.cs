@@ -44,11 +44,11 @@ namespace IEC
                 NetworkBase.Post(URL, m_Body);
             });
 #if PluginFirebaseAnalytic
-            (FirebaseAnalyticModule)Controllers.Get<ServicesController>().RequestSessionId(s =>
+            (FirebaseAnalyticModule)Controllers.Get<ServicesController>().FirebaseAnalyticModule.RequestSessionId(s =>
             {
                 m_Body.sessionId = s;
                 action.Invoke();
-            })
+            });
 #else   
             action.Invoke();
 #endif
