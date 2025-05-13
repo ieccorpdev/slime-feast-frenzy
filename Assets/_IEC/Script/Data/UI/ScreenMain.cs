@@ -313,7 +313,6 @@ namespace IEC
 
         public void DoAnimLatestAvailableReward(Action onComplete = null)
         {
-            Debug.LogError("DoAnimLatestAvailableReward" + Time.realtimeSinceStartup);
             var rewardData = listClaimRewardData.Pop();
 
             if (onComplete != null)
