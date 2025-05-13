@@ -93,13 +93,9 @@ namespace IEC
 
         public void HandleEatCombo()
         {
-            if (Game.enableComboCount)
+            if (Game.enableComboCount && PlayerData.level > 1)
             {
                 comboUI.HandleEatCombo();
-            }
-            else
-            {
-                comboUI.gameObject.SetActive(false);
             }
         }
 

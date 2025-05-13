@@ -137,6 +137,9 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(playButton,
             () =>
             {
+                //Block play button when have reward on way claim
+                if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+                   Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
                 if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                 {
                     Locator.Main.PopupOutOfLive.Show();

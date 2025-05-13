@@ -28,7 +28,7 @@ namespace IEC
 
         [Header("Claim reward effect")] 
         public EffectRewardClaim effectRewardClaim;
-        private Stack<RewardClaimData> listClaimRewardData = new();
+        public Stack<RewardClaimData> listClaimRewardData = new();
         
         private void Awake()
         {
@@ -290,11 +290,15 @@ namespace IEC
 
         public void DoAnimAllAvailableReward(Action onComplete = null)
         {
+            StartCoroutine(DoAnimRewardWhileLoop(onComplete));
+        }
+
+        private IEnumerator DoAnimRewardWhileLoop(Action onComplete)
+        {
             while (listClaimRewardData.Count > 0)
             {
-                // var rewardData = listClaimRewardData.Pop();
-                //
-                // effectRewardClaim.SpawnEffect(rewardData);
+                var data = listClaimRewardData.Peek();
+                float timeWait = data.delay;
                 if (onComplete != null && listClaimRewardData.Count == 1)
                 {
                     DoAnimLatestAvailableReward(onComplete);
@@ -303,6 +307,7 @@ namespace IEC
                 {
                     DoAnimLatestAvailableReward();
                 }
+                yield return new WaitForSeconds(timeWait+0.5f); // Delay between iterations
             }
         }
 
