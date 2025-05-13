@@ -185,9 +185,10 @@ namespace _IEC.Features.Gameplay
                 EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             }
             m_AllSpecialItems.Clear();
+            int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),
-                Config.specialObjectConfig.GetSpawnAmount(PlayerData.level), 
+                countSpecialProgressReward, 
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );

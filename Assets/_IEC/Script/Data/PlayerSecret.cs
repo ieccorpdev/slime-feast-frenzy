@@ -703,7 +703,7 @@ namespace IEC
         #endregion
         
         #region ProgressReward
-
+        [Header("ProgressReward")]
         public DateTime timeLastResetProgressReward;
         public int tempSpecialObjCollectedInLevel;
         public int currentProgress;
@@ -790,7 +790,11 @@ namespace IEC
             }
             return outputString;
         }
-        
+
+        public bool ReachMaxProgressReward()
+        {
+            return Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone) && currentProgress >= Config.progressRewardConfig.listRewardData.Count;
+        }
         #endregion
         
         #region Add Helper Popup
