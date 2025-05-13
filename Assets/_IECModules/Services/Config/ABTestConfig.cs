@@ -1,6 +1,6 @@
-﻿using NaughtyAttributes;
-using System;
+﻿using System;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace IEC
