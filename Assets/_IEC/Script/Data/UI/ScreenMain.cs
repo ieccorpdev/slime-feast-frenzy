@@ -307,7 +307,6 @@ namespace IEC
                 {
                     DoAnimLatestAvailableReward();
                 }
-                Debug.LogError(Time.realtimeSinceStartup);
                 yield return new WaitForSeconds(timeWait+0.5f); // Delay between iterations
             }
         }
