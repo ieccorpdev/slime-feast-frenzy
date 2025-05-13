@@ -689,7 +689,7 @@ namespace IEC
 
             chestRewardMilestone[chestType] += 1;
 
-            if (chestRewardMilestone[chestType] >= chestConfig.listChestRewardData.Count)
+            if (chestRewardMilestone[chestType] > chestConfig.listChestRewardData.Count)
             {
                 chestRewardMilestone[chestType] = chestConfig.milestoneBeginLoop;
             }
