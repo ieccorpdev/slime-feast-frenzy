@@ -7,42 +7,8 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class StarChasePlayerDataUI : _BaseBehaviour
+    public class StarChasePlayerDataUI : GameEventPlayerDataUI
     {
-        public TextMeshProUGUI playerName;
-        public TextMeshProUGUI playerRank;
-        public TextMeshProUGUI playerProgress;
 
-        public Button rewardInfoButton;
-        public EventPlayerData EventPlayerData { get; private set; }
-
-        private void Start()
-        {
-            rewardInfoButton.onClick.AddListener(OnShowRewardInfoUI);
-        }
-
-        private void OnShowRewardInfoUI()
-        {
-            
-        }
-
-        public void Setup(EventPlayerData playerData, int rank)
-        {
-            EventPlayerData = playerData;
-
-            playerName.text = EventPlayerData.id;
-            playerRank.text = rank.ToString();
-            playerProgress.text = EventPlayerData.progress.ToString();
-
-            if (EventPlayerData.isPlayer)
-            {
-                SetMainPlayerUI();
-            }
-        }
-
-        private void SetMainPlayerUI()
-        {
-            
-        }
     }
 }
