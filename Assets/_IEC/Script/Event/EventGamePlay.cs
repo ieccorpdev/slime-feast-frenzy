@@ -13,6 +13,7 @@ namespace IEC
 
             public const string NEW_GAME = "GamePlay.NEW_GAME";
             public const string NEW_GAME_HARD_LEVEL = "GamePlay.NEW_GAME_HARD_LEVEL";
+            public const string NEW_GAME_LEVEL_ALL_ITEM = "GamePlay.NEW_GAME_LEVEL_ALL_ITEM";
 
             public const string LEVEL_WIN = "GamePlay.LEVEL_WIN";
             public const string LEVEL_LOSE = "GamePlay.LEVEL_LOSE";
@@ -86,6 +87,9 @@ namespace IEC
 
             public const string ON_LEVEL_LOADED = "Gameplay.ON_LEVEL_LOADED";
             public const string ON_LEVEL_DEBUG_LOADED = "Gameplay.ON_LEVEL_DEBUG_LOADED";
+            
+            public const string SHOW_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS";
+            public const string HIDE_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.HIDE_FULL_SCREEN_BY_MEDIATION_ADS";
         }
         public static class Tutorial
         {

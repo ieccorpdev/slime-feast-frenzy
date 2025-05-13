@@ -13,6 +13,7 @@ public class UICurrency : _BaseBehaviour
     public ResourceType typeCurrency;
     public TextMeshProUGUI currencyTMP;
     public Button addButton;
+    public GameObject addButtonDisplay;
 
     private bool m_isForcedCurrencyText = false;
 

@@ -85,6 +85,8 @@ namespace IEC
                 if (isRestore)
                 {
                     SetCallBackIAP(productId);
+                    Locator.Main.HomeScreenTab.UpdateMainHome();
+                    Locator.Main.ScreenMain.shopTab.GetComponent<UIShopHomeTab>().UpdateAdsPackDisplay();
                 }
                 //this.RaiseEvent(EventList.GamePlay.IAP_SUCCESS_PRODUCT, productId);
 

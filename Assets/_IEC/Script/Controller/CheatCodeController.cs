@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using _IECModules;
+using _IEC.Features.Gameplay;
 
 namespace IEC
 {
@@ -32,7 +33,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopRight | CheatCode.PositionActivate.BotLeft;
+            ModuleController.cheatCode.positionActivate = CheatCode.PositionActivate.TopLeft;
             ModuleController.cheatCode.topOffset = 0f;
             Reporter.topOffset = 0f;
             ShowFPS.topOffset = 0f;
@@ -60,6 +61,18 @@ namespace IEC
 #endif
             });
 
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Timer (Second)", param =>
+            {
+                GameplayTimer timer = Locator.Game.ScreenInGame.GetGameplayTimer();
+                if (timer != null)
+                {
+                    timer.CurrentTime = int.Parse(param.inputParams[0].value.ToString());
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
@@ -69,7 +82,16 @@ namespace IEC
             {
                 value = PlayerData.level
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set bonus combo", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                Locator.Game.ScreenInGame.comboUI.bonusCombo = count;
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level Hard with id", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
@@ -106,7 +128,19 @@ namespace IEC
                 }
             });
             
-
+            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            {
+                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
+                GameController.OpenScene(GameScene.Game,
+                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
+                    false);
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>
+            {
+                Config.levelConfig.CheckValidAllLevel();
+            });
+            
             ModuleController.cheatCode.AddCheatCodeButton("Set LEVEL_WIN", cheatCodeParam =>
             {
                 EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
@@ -147,8 +181,8 @@ namespace IEC
                 while (PlayerData.CheckClaimProgressReward(reward))
                 {
                     System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel("Chest_1");
                     reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
                 }
                 Locator.Main.HomeScreenTab.UpdateMainHome();
@@ -259,8 +293,8 @@ namespace IEC
             {
                 var rewardData = Config.allChestConfig.GetChestConfig(type)
                     .GetRewardData(PlayerData.GetChestMilestone(type));
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? "Chest_2": "Chest_1");
             }
 
             Locator.Main.HomeScreenTab.UpdateMainHome();

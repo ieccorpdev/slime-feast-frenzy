@@ -46,7 +46,7 @@ namespace IEC
             currentSpecialObjectItem.sprite = Config.specialObjectConfig
                 .GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
             currentProgressRewardIcon.sprite = Config.progressRewardConfig.GetRewardSprite(ProgressRewardData.reward.typeReward);
-            currentProgressRewardIcon.SetNativeSize();
+            //currentProgressRewardIcon.SetNativeSize();
             progressRewardAmountText.text = ProgressRewardData.GetDisplayText();
             
             progressFillBar.SetProgressText($"{PlayerData.currentProgress}/{ProgressRewardData.progress}");

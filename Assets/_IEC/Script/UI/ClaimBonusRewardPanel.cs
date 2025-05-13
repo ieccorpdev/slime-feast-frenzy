@@ -18,24 +18,51 @@ public class ClaimBonusRewardPanel : BasePopup
     public List<Reward> listDataReward;
     public Action actionClose;
     private bool canClaim;
+    private bool canOpen;
     private bool showAimChest = true;
 
-    [Header("Fixed position")] 
-    public PositionGroupsRewardDataPanel groupsOne;
+    [Header("Fixed position")] public PositionGroupsRewardDataPanel groupsOne;
     public PositionGroupsRewardDataPanel groupsTwo;
     public PositionGroupsRewardDataPanel groupsThree;
     public PositionGroupsRewardDataPanel groupsFour;
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
     public PositionGroupsRewardDataPanel groupsSeven;
+
+    private Queue<ShowClaimRewardData> queueShowClaimReward = new();
+
     // Start is called before the first frame update
     void Start()
     {
         tapToClaim.onClick.AddListener(OnClaimReward);
     }
 
+    public bool IsHaveShowClaimRewardAnim()
+    {
+        return queueShowClaimReward.Count > 0;
+    }
+
+    public void AddClaimRewardData(ShowClaimRewardData data)
+    {
+        data.actionClose += ShowNext;
+        queueShowClaimReward.Enqueue(data);
+    }
+
+    public void ShowNext()
+    {
+        if (queueShowClaimReward.Count == 0)
+            return;
+
+        var data = queueShowClaimReward.Dequeue();
+        
+        SetupRewardPanel(data.listDataReward, data.actionClose, data.showAimChest);
+        ShowingRewardPanel(data.chestType);
+    }
+
     public void SetupRewardPanel(List<Reward> listDataReward, Action actionClose, bool showAimChest = false)
     {
+        canOpen = false;
+        canClaim = false;
         this.listDataReward = listDataReward;
         this.showAimChest = showAimChest;
         this.actionClose = null;
@@ -76,7 +103,9 @@ public class ClaimBonusRewardPanel : BasePopup
             if (listRewardUI[i].haveData)
             {
                 index++;
-                listRewardUI[i].targetAnchorPos = groups.GetRectTransformByIndex(index).transform.position;
+                var anchoTarget = groups.GetRectTransformByIndex(index).anchoredPosition;
+                anchoTarget += Vector2.up * ( showAimChest ? 225: 0);
+                listRewardUI[i].targetAnchorPos = anchoTarget;
             }
         }
     }
@@ -110,8 +139,17 @@ public class ClaimBonusRewardPanel : BasePopup
         float timeDelayEffect = showAimChest ? 2f : 0f;
         if (showAimChest)
         {
+            chestAnim.gameObject.SetActive(true);
             chestAnim.SetSkin(skinChest);
-            chestAnim.SetAnimation("animation", false);
+            chestAnim.SetAnimation("1_Start", false, () =>
+            {
+                chestAnim.SetAnimation("2_Idle", false, () =>
+                {
+                    Pool.Get<ConfettiGroup>().StopConfetti();
+                    canOpen = true;
+                    AnimShowTextTapClaim();
+                });
+            });
             //soundController.PlaySound(new AudioInfo(Config.soundConfig.unlockNewFeatureGP, false));
             TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 1.5f, () =>
             {
@@ -121,60 +159,96 @@ public class ClaimBonusRewardPanel : BasePopup
         else
         {
             chestAnim.gameObject.SetActive(false);
+            canClaim = true;
+            canOpen = true;
         }
 
-        TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, timeDelayEffect, () =>
+        if (!showAimChest)
         {
-            int inx = 0;
-            foreach (var itm in listRewardUI)
+            //Block 
+            TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, timeDelayEffect, ShowRewardInChest);
+        }
+
+    }
+
+    private void ShowRewardInChest()
+    {
+        int inx = 0;
+        foreach (var itm in listRewardUI)
+        {
+            if (itm.haveData)
             {
-                if (itm.haveData)
-                {
-                    TweenControl.GetInstance().DelayCall(itm.transform,inx*0.07f, ()=>
+                TweenControl.GetInstance().DelayCall(itm.transform, inx * 0.07f,
+                    () =>
                     {
-                        itm.GetComponent<RectTransform>().transform.position = chestAnim.GetComponent<RectTransform>().transform.position;
+                        itm.GetComponent<RectTransform>().transform.position =
+                            chestAnim.GetComponent<RectTransform>().transform.position;
                     }, () =>
                     {
-                        TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f, () =>
-                        {
-                            itm.transform.DOPunchScale(Vector3.one*0.2f, 0.4f,1,0.3f);
-                        });
+                        TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f,
+                            () => { itm.transform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 1, 0.3f); });
 
-                        TweenControl.GetInstance().Move(itm.GetComponent<RectTransform>(),itm.targetAnchorPos ,0.5f,null,EaseType.OutQuint);
+                        TweenControl.GetInstance().MoveRect(itm.GetComponent<RectTransform>(), itm.targetAnchorPos, 0.5f, null,
+                            EaseType.OutQuint);
                     });
-                    inx++;
-                }
+                inx++;
             }
+        }
 
-            if (Aura)
+        if (Aura)
+        {
+            Aura.gameObject.SetActive(true);
+            TweenControl.GetInstance().ScaleFromZero(Aura.gameObject, 0.5f);
+            if (!showAimChest)
             {
-                Aura.gameObject.SetActive(true);
-                TweenControl.GetInstance().ScaleFromZero(Aura.gameObject, 0.5f);
-                TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 0.5f, () =>
-                {
-                    tapToClaim.gameObject.SetActive(true);
-                    canClaim = true;
-                    TweenControl.GetInstance().ScaleFromZero(textTapToClaim.gameObject, 0.5f);
-                });
+                AnimShowTextTapClaim();
             }
+        }
+    }
+
+    private void AnimShowTextTapClaim()
+    {
+        TweenControl.GetInstance().DelayCall(tapToClaim.gameObject.transform, 0.5f, () =>
+        {
+            tapToClaim.gameObject.SetActive(true);
+            TweenControl.GetInstance().ScaleFromZero(textTapToClaim.gameObject, 0.5f);
         });
     }
+
     public void OnClaimReward()
     {
-        if (canClaim)
+        if (canOpen && showAimChest)
         {
+            canOpen = false;
+            chestAnim.SetAnimation("3_Open", false, () =>
+            {
+                ShowRewardInChest();
+                canClaim = true;
+                chestAnim.SetAnimation("4_OpenIdle", false, () =>
+                {
+                });
+            });
+        } else if (canClaim)
+        {
+            tapToClaim.gameObject.SetActive(false);
             canClaim = false;
             foreach (var itr in listDataReward)
             {
                 PlayerData.AddCurrency(itr.typeReward,itr.rewardAmount);
             }
-            this.gameObject.SetActive(false);
+
+            if (!IsHaveShowClaimRewardAnim())
+            {
+                //this.gameObject.SetActive(false);
+                Hide();
+            }
+            
             actionClose?.Invoke();
             PlayerData.Vibrate(HapticTypes.Failure);
             Pool.Get<ConfettiGroup>().StopConfetti();
         }
-        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
-        CallTempOnHide();
+        //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
+        //CallTempOnHide();
     }
 
     public override void Hide()
@@ -216,4 +290,13 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         return Pos1;
     }
+}
+
+[Serializable]
+public class ShowClaimRewardData
+{
+    public List<Reward> listDataReward = new();
+    public Action actionClose;
+    public bool showAimChest;
+    public string chestType = "";
 }

@@ -43,6 +43,7 @@ namespace IEC
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+        public bool wasRateUs;
         [Header("CCJ")]
         public bool isMusicOn = true;
         public bool isSoundOn = true;
@@ -95,6 +96,19 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
             }
+            
+            CheckActionAfterQuitGame();
+        }
+
+        private void CheckActionAfterQuitGame()
+        {
+            if(!isKilledAppGamePlay)
+                return;
+
+            isKilledAppGamePlay = false;
+            
+            ResetBoosterStreak();
+            
         }
 
         public void ClearAndInitTrackingLevelType()
@@ -144,16 +158,30 @@ namespace IEC
         
         #region Booster
 
+        public List<ResourceType> listUnlockedBoosters = new();
+        public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
         public int levelLostStreak;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
+
+        public bool CheckUnlockBooster(ResourceType boosterType)
+        {
+            if (!listUnlockedBoosters.Contains(boosterType))
+            {
+                listUnlockedBoosters.Add(boosterType);
+                return true;
+            }
+
+            return false;
+        }
+        
 
         public void IncreaseBoosterStreak()
         {
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
                 return;
 
-            if (level == levelLostStreak)
+            if (level == levelLostStreak && currentBoosterStreak > 0)
                 return;
             
             currentBoosterStreak++;
@@ -251,7 +279,6 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            ResetBoosterStreak();
         }
 
         public bool IsInUnlimitedLife()
@@ -714,6 +741,12 @@ namespace IEC
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
         {
+            if (Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone))
+            {
+                currentProgress = currentProgressData.progress;
+                return false;
+            }
+
             if (currentProgress>= currentProgressData.progress)
             {
                 currentProgress -= currentProgressData.progress;
