@@ -5,6 +5,9 @@ using UnityEngine;
 public class FishTankController : MonoBehaviour
 {
     public Camera targetCamera;
+
+    private float delay;
+    private float maxDelay =1f;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,7 +16,8 @@ public class FishTankController : MonoBehaviour
     public LayerMask fishLayer;
     void Update()
     {
-        if (Input.GetMouseButtonDown(0)) // Left mouse button or screen touch
+        delay -= Time.deltaTime;
+        if (Input.GetMouseButtonDown(0) && delay < 0) // Left mouse button or screen touch
         {
             Ray ray = targetCamera.ScreenPointToRay(Input.mousePosition); // Convert screen to ray
             RaycastHit hit;
@@ -27,6 +31,7 @@ public class FishTankController : MonoBehaviour
                     if (fsc != null)
                     {
                         fsc.TouchFish();
+                        delay = maxDelay;
                     }
                 }
             }
