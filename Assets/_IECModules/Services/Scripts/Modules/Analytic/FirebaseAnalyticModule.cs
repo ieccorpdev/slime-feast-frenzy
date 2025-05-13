@@ -44,7 +44,7 @@ namespace IEC
             });
         }
 
-        public void RequestSessionId(Action<string> onDone)
+        public void RequestSessionId(Action<long> onDone)
         {
             FirebaseAnalytics.GetSessionIdAsync().ContinueWithOnMainThread(task =>
             {
@@ -52,7 +52,7 @@ namespace IEC
                 {
                     onDone?.Invoke(task.Result);
                 }
-            })
+            });
         }
 
         public void Init(AdjustAnalyticEventConfig adjustAnalyticEventConfig)

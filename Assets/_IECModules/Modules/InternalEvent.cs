@@ -44,9 +44,9 @@ namespace IEC
                 NetworkBase.Post(URL, m_Body);
             });
 #if PluginFirebaseAnalytic
-            (FirebaseAnalyticModule)Controllers.Get<ServicesController>().FirebaseAnalyticModule.RequestSessionId(s =>
+            Controllers.Get<ServicesController>().FirebaseAnalyticModule.RequestSessionId(s =>
             {
-                m_Body.sessionId = s;
+                m_Body.sessionId = s.ToString();
                 action.Invoke();
             });
 #else   
