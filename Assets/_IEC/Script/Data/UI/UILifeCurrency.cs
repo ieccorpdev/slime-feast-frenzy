@@ -19,19 +19,18 @@ namespace IEC
         {
             if (PlayerData.IsInUnlimitedLife())
             {
-                button.interactable = false;    
                 currencyTMP.gameObject.SetActive(false);
                 infinityLifeImage.gameObject.SetActive(true);
                 lifeCountDownText.text = PlayerData.GetTimeLeftUnlimitedLife();
             }
             else
             {
-                button.interactable = true;
                 currencyTMP.gameObject.SetActive(true);
                 infinityLifeImage.gameObject.SetActive(false);
                 currencyTMP.text = PlayerData.playerLife.ToString();
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
+            button.interactable = PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife();
             //addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
         }
     }
