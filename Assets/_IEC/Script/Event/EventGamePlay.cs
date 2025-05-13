@@ -13,6 +13,7 @@ namespace IEC
 
             public const string NEW_GAME = "GamePlay.NEW_GAME";
             public const string NEW_GAME_HARD_LEVEL = "GamePlay.NEW_GAME_HARD_LEVEL";
+            public const string NEW_GAME_LEVEL_ALL_ITEM = "GamePlay.NEW_GAME_LEVEL_ALL_ITEM";
 
             public const string LEVEL_WIN = "GamePlay.LEVEL_WIN";
             public const string LEVEL_LOSE = "GamePlay.LEVEL_LOSE";

@@ -10,7 +10,7 @@ namespace _IEC.Features.Gameplay
     {
         private void Awake()
         {
-            EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
+            //EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
         }
         public override void OnCollected(Vector3 position)
         {

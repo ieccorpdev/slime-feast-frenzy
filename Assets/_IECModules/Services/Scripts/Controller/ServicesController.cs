@@ -118,7 +118,7 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(bannerPos, null);
-                    //SetActiveBanner(bannerPos, true);
+                    SetActiveBanner(bannerPos, false);
                     StartCoroutine(IE_LoadAd());
                     break;
                 case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
@@ -1051,7 +1051,7 @@ namespace IEC
         {
             m_ServiceData.isNoAds = isActive;
             SaveData();
-            SetActiveBanner(AdsEnum.BANNER_BOTTOM, !isActive);
+            SetActiveBanner(AdsEnum.BANNER_BOTTOM, false);
         }
 
         public void SetActiveBanner(AdsEnum bannerType, bool isActive)
@@ -1117,6 +1117,7 @@ namespace IEC
         public void RateUs()
         {
             Debug.LogWarning("rate us");
+            Pool.Get<PlayerSecret>().wasRateUs = true;
 #if UNITY_IOS
             UnityEngine.iOS.Device.RequestStoreReview();
 #endif
@@ -1336,7 +1337,7 @@ namespace IEC
             }
 
             var newLine = "\n";
-            string message = Application.productName + " version: " + Application.version + newLine;
+            string message = Application.productName + " version: " + Application.version + newLine + " Level:" + Pool.Get<PlayerSecret>().level;
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);

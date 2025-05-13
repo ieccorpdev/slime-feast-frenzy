@@ -9,8 +9,9 @@ public class FreeSwimingCollider : MonoBehaviour
     public float avoidanceDistance = 5f;
     public LayerMask obstacleLayer;
     public float targetProximityThreshold = 1f;
-    public MeshCollider swimAreaMeshCollider;
-
+    public Collider swimAreaMeshCollider;
+    private bool inBoosterTime = false;
+    private float timeInBooster = 0f;
     private Vector3 _targetPosition;
     private Collider[] _obstacles;
 
@@ -23,6 +24,15 @@ public class FreeSwimingCollider : MonoBehaviour
     {
         MoveTowardsTarget();
         StayWithinBounds();
+        if (timeInBooster >= 0)
+        {
+            inBoosterTime = true;  
+            timeInBooster -= Time.deltaTime;
+        }
+        else
+        {
+            inBoosterTime = false;  
+        }
     }
 
     private void SetRandomTargetPosition()
@@ -49,14 +59,7 @@ public class FreeSwimingCollider : MonoBehaviour
         }
         else
         {
-            var direction = _targetPosition - transform.position;
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-
-            var distanceToTarget = direction.magnitude;
-            var speedMultiplier = Mathf.Clamp01(distanceToTarget / avoidanceDistance);
-            var speed = Mathf.Lerp(minSpeed, maxSpeed, speedMultiplier);
-            transform.Translate(Vector3.forward * (speed * Time.deltaTime));
+            ChangeDirMove();
         }
 
         if (Vector3.Distance(transform.position, _targetPosition) <= targetProximityThreshold)
@@ -65,6 +68,24 @@ public class FreeSwimingCollider : MonoBehaviour
         }
     }
 
+    private void ChangeDirMove()
+    {
+        var direction = _targetPosition - transform.position;
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+
+        var distanceToTarget = direction.magnitude;
+        var speedMultiplier = Mathf.Clamp01(distanceToTarget / avoidanceDistance);
+        var speed = Mathf.Lerp(minSpeed, maxSpeed, speedMultiplier);
+        transform.Translate(Vector3.forward * (speed * Time.deltaTime * (inBoosterTime ? 2 : 1)));
+    }
+
+    public void TouchFish()
+    {
+        timeInBooster = 2f;
+        SetRandomTargetPosition();
+        ChangeDirMove();
+    }
     private void StayWithinBounds()
     {
         Vector3 currentPosition = transform.position;

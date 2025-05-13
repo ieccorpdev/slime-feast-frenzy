@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
+using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace _IEC.Features.Gameplay
 {
@@ -15,7 +18,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Transform holder;
         [SerializeField] private Transform vfxHolder;
         private readonly List<LevelObjectiveUI> m_ActiveObjectiveUIs = new List<LevelObjectiveUI>();
-        [SerializeField] private LevelObjectiveUI specialObjectiveUI;
+        [SerializeField] private List<LevelObjectiveUI> specialObjectiveUI;
         public GameObject specialObjectiveParent;
         public TextMeshProUGUI goldTextTutorial;
         private bool canPlaySFX = true;
@@ -50,43 +53,52 @@ namespace _IEC.Features.Gameplay
         //     }
         // }
 
-        public void CollectAObject(string itemId, Vector2 startAnchorPosition)
+        public void CollectAObject(CollectItemData itemData, Vector2 startAnchorPosition,bool canPlaySFX)
         {
-            var objectiveUI = GetLevelObjectiveUI(itemId);
+            var objectiveUI = GetLevelObjectiveUI(itemData);
             //if (objectiveUI.IsComplete()) return;
+            //cache the value to make sure UI is updated correctly after delaying
+            bool isCompleted = IsObjectiveCompleted(itemData.itemID);
+            int newNumber = GetRemainingObjectiveNumber(itemData.itemID);
+            EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+            {
+                objectiveUI.SetNumber(newNumber.ToString(), isCompleted);
+            },true);
+        }
+
+        private void EffectSpawnObjectTive(CollectItemData itemData, Vector2 startAnchorPosition, LevelObjectiveUI objectiveUI,Action flyComplete, bool playSFX)
+        {
             var objectiveVfx = Config.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
             objectiveVfx.Reset();
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());
             objectiveVfx.gameObject.SetActive(true);
-            
             listObjectiveVfx.Add(objectiveVfx);
-                        
-            //cache the value to make sure UI is updated correctly after delaying
-            bool isCompleted = IsObjectiveCompleted(itemId);
-            int newNumber = GetRemainingObjectiveNumber(itemId);
-            
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
-            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
+            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(objectiveUI.GetOffsetItemCurve(), 0, 0); // Add a Y offset to create a curve
             if (!GamePlay.IsWin)
             {
-                if (canPlaySFX)
+                if (canPlaySFX && playSFX)
                 {
                     canPlaySFX = false;
                     SoundController.PlaySound(EventList.Audio.OBJECTIVE_GET);
-                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET), () => canPlaySFX = true);
+                    DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.OBJECTIVE_GET),
+                        () => canPlaySFX = true);
                 }
             }
+
             Sequence temp = DOTween.Sequence();
-            temp.Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
-                .Join(objectiveVfx.GetRectTransform().DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
+            temp.Append(objectiveVfx.GetRectTransform()
+                    .DOPath(new Vector3[] {startPos, midPos, endPos}, 1f, PathType.CatmullRom))
+                .Join(objectiveVfx.GetRectTransform()
+                    .DOScale(objectiveUI.GetIconSize().x / objectiveVfx.GetRectTransform().sizeDelta.x * Vector3.one, 1f))
                 .AppendCallback(() =>
                 {
-                    objectiveUI.SetNumber(newNumber.ToString(), isCompleted);
+                    flyComplete?.Invoke();
                     objectiveVfx.Recycle();
                 });
-            
+
             sequences.Add(temp);
         }
 
@@ -105,14 +117,26 @@ namespace _IEC.Features.Gameplay
             return levelObjective.number;
         }
         
-        public void CollectASpecialObject(string itemId,int number,Vector2 startAnchorPosition)
+        public void CollectASpecialObject(CollectItemData itemData,int number,Vector2 startAnchorPosition)
         {
-            var objectiveUI = GetLevelObjectiveUI(itemId);
+            var objectiveUI = GetLevelObjectiveUI(itemData);
             if (objectiveUI == null) return;
-            int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+            if(itemData.GetCoinValue() > 0){
+                EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+                {
+                    objectiveUI.SetNumber(GamePlay.levelController.GoldCollected.ToString(),false);
+                },true);
+            }
+            else
+            {
+                int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+                EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+                {
+                    objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+                },true);
+                //objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+            }
 
-            //objectiveUI.SetNumber(maxSpecialObject, false);
-            objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
         }
         
         public void DisposeAll()
@@ -147,9 +171,13 @@ namespace _IEC.Features.Gameplay
         }
         
 
-        public LevelObjectiveUI GetLevelObjectiveUI(string itemId)
+        public LevelObjectiveUI GetLevelObjectiveUI(CollectItemData itemData)
         {
-            return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemId.ToLower()));
+            if (itemData.GetCoinValue() > 0)
+            {
+               return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.goldSpecialObjective.GetId());
+            }
+            return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemData.itemID.ToLower()));
         }
         
         public void LoadObjectiveData(List<LevelObjective> levelObjectives,LevelType levelType)
@@ -177,7 +205,12 @@ namespace _IEC.Features.Gameplay
                 m_ActiveObjectiveUIs.Add(levelObjectiveUI);
                 rectTransform.anchoredPosition3D = currentAnchorPos3D;
             }
-            HandleObjectiveUIForSpecialObject();
+            for (int i = 0; i < specialObjectiveUI.Count; i ++)
+            {
+                specialObjectiveUI[i].gameObject.SetActive(false);
+                specialObjectiveUI[i].Reset();
+            }
+            HandleObjectiveUIForSpecialObject(levelType);
             goldTextTutorial.gameObject.SetActive(levelType == LevelType.COIN);
             //if (levelType == LevelType.COIN)
             //{
@@ -188,24 +221,59 @@ namespace _IEC.Features.Gameplay
             //    HideSpecialObjective();
             //}
         }
+
+        public LevelObjectiveUI GetSpecialObjectiveEnable()
+        {
+            var result = specialObjectiveUI.Find(x => !x.IsLoaded);
+            result.gameObject.SetActive(true);
+            return result;
+        }
+        private void HandleObjectiveUIForSpecialObject(LevelType levelType)
+        {
+            HandleGoldSpecialObjective(levelType);
+            HandleOceanGiftObject();
+            specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
+            StartCoroutine(RebuildNextFrame());
+        }
         
-        private void HandleObjectiveUIForSpecialObject()
+        IEnumerator RebuildNextFrame()
+        {
+            yield return null; // wait 1 frame
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialObjectiveParent.GetComponent<RectTransform>());
+        }
+
+        public void HandleGoldSpecialObjective(LevelType levelType)
+        {
+            if (levelType == LevelType.COIN)
+            {
+                var dataSpecial = Config.specialObjectConfig.goldSpecialObjective;
+                var specialObjective = new LevelObjective();
+                int count = 0;
+                specialObjective.itemId = dataSpecial.GetId();
+                specialObjective.number = count;
+                LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
+                objectiveContain.LoadData(specialObjective,true);
+                m_ActiveObjectiveUIs.Add(objectiveContain);
+            }
+        }
+        public void HandleOceanGiftObject()
         {
             var dataSpecial = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex);
             var specialObjective = new LevelObjective();
             int count = GamePlay.levelController.AllSpecialItems.Count;
             specialObjective.itemId = dataSpecial.GetId();
             specialObjective.number = count;
-            specialObjectiveUI.LoadData(specialObjective,true);
-            m_ActiveObjectiveUIs.Add(specialObjectiveUI);
-            specialObjectiveUI.gameObject.SetActive(count > 0);
-            specialObjectiveParent.gameObject.SetActive(count > 0);
-            //specialObjectiveUI.SetNumber(0, false);
+            LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
+            objectiveContain.LoadData(specialObjective,true);
+            m_ActiveObjectiveUIs.Add(objectiveContain);
+            objectiveContain.gameObject.SetActive(count > 0);
         }
-
         private void HideSpecialObjective()
         {
-            specialObjectiveUI.gameObject.SetActive(false);
+            foreach (var objSpecial in specialObjectiveUI)
+            {
+                objSpecial.gameObject.SetActive(false);
+            }
         }
     }
 }

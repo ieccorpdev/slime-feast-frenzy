@@ -24,6 +24,10 @@ namespace IEC
                     UI.ShowScreen(Locator.Game.ScreenInGame);
                     //Locator.Game.ScreenInGame.SetLevel(PlayerData.level);
                     break;
+                case EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM:
+                    UI.ShowScreen(Locator.Game.ScreenInGame);
+                    //Locator.Game.ScreenInGame.SetLevel(PlayerData.level);
+                    break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     UI.ShowScreen(Locator.Game.ScreenInGame);
                     //Locator.Game.ScreenInGame.SetLevelHard();

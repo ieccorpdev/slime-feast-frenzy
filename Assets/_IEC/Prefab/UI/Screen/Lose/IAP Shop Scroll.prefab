@@ -405,8 +405,8 @@ RectTransform:
   m_GameObject: {fileID: 1601963424358642169}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 5394302180919284107}
   - {fileID: 782484945589193632}
@@ -415,7 +415,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -20, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1905962101608579011
@@ -743,6 +743,7 @@ MonoBehaviour:
   effects:
   - {fileID: 11400000, guid: 9093d4f436ad7c14e8a48bb0cac6f402, type: 2}
   _defaultItemCount: 4
+  _posses: []
   OnItemSelected:
     m_PersistentCalls:
       m_Calls:
@@ -1034,8 +1035,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3196447364406673841}
   m_HandleRect: {fileID: 1555468639381156982}
   m_Direction: 0
-  m_Value: 0
-  m_Size: 0.31764707
+  m_Value: -0.000000053357073
+  m_Size: 0.29606155
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2044,7 +2045,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -275}
+  m_AnchoredPosition: {x: -0.000030518, y: -265.95}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7050138969820569462
@@ -2508,7 +2509,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0.00012207031, y: 0}
   m_SizeDelta: {x: 0, y: 450}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5463930754587350974
@@ -2529,7 +2530,7 @@ MonoBehaviour:
     m_Top: 0
     m_Bottom: 0
   m_ChildAlignment: 4
-  m_Spacing: -200
+  m_Spacing: -250
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 0
@@ -2587,7 +2588,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 2100000, guid: 6b48a23cae9d38e4c91246e808a920be, type: 2}
+      objectReference: {fileID: 2100000, guid: 35bd84c3801524a4fa9c9836b009f29c, type: 2}
     - target: {fileID: 269031740705466781, guid: 368017fecba15e044b04e92cf9a008b0,
         type: 3}
       propertyPath: m_Name
@@ -2933,7 +2934,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_sharedMaterial
       value: 
-      objectReference: {fileID: 2100000, guid: 6b48a23cae9d38e4c91246e808a920be, type: 2}
+      objectReference: {fileID: 2100000, guid: 35bd84c3801524a4fa9c9836b009f29c, type: 2}
     - target: {fileID: 250255711434359651, guid: 368017fecba15e044b04e92cf9a008b0,
         type: 3}
       propertyPath: m_HorizontalAlignment

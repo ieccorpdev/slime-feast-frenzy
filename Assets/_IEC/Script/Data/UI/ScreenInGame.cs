@@ -22,17 +22,17 @@ namespace IEC
         [Header("Group objective")] 
         [SerializeField] private RectTransform holderImage;
         [SerializeField] private RectTransform groupLevelObjectiveLayoutGroup;
+        [SerializeField] private RectTransform xpParentRT;
 
         [Space]
         //public Button btnRestart;
-        [SerializeField]
-        private GameplayTimer gameplayTimer;
+        public GameplayTimer gameplayTimer;
         public Button btnSetting;
         [SerializeField] private GroupLevelObjectives groupLevelObjectives;
         [SerializeField] private GroupHelperUI groupHelperUI;
         [SerializeField] private Button btnPause;
         //[SerializeField] private PopupPauseGame popupPauseGame;
-        [SerializeField] private GroupScreenInGameMark groupMark;
+        public GroupScreenInGameMark groupMark;
         [SerializeField] private CompassDirectorControllerUI compassDirectorControllerUI;
         [SerializeField] private TutorialStartGame tutorialStartGame;
         [SerializeField] private BaseHelperTutorial tutorialMagnet;
@@ -40,7 +40,10 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialFrozen;
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
+        [SerializeField] private HelperIntro helperIntro;
+        public ComboUI comboUI;
         private static bool CanPlaySFX = true;
+
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
@@ -55,12 +58,11 @@ namespace IEC
                 groupMark.SetActiveDangerousMark(false);
             };
             gameplayTimer.OnTimeUpdate += remainingTime => { groupMark.SetActiveDangerousMark(remainingTime <= 10); };
-            gameplayTimer.OnUpdateFrozenState += isFrozen => { groupMark.SetActiveFrozenMark(isFrozen); };
         }
         
         public override void Show()
         {
-            gameplayTimer.ResetFreezeTime();
+            // gameplayTimer.ResetFreezeTime();
             //popupPauseGame.gameObject.SetActive(false);
             //Services.SetActiveBottomBanner(true);
             base.Show();
@@ -89,6 +91,23 @@ namespace IEC
             }
         }
 
+        public void HandleEatCombo()
+        {
+            if (Game.enableComboCount)
+            {
+                comboUI.HandleEatCombo();
+            }
+            else
+            {
+                comboUI.gameObject.SetActive(false);
+            }
+        }
+
+        public void ShowHelperIntroAnimation(string messenger)
+        {
+            helperIntro.ShowHelperIntroAnimation(messenger);
+        }
+
         public GameplayTimer GetGameplayTimer()
         {
             return gameplayTimer;
@@ -110,6 +129,7 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.RegisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
+            comboUI.gameObject.SetActive(Game.enableComboCount);
         }
 
         private void OnDisable()
@@ -127,7 +147,7 @@ namespace IEC
             CollectItemData data = (CollectItemData)param;
             if (data.GetCoinValue() > 0)
             {
-                data.itemID = LevelAchievementData.ID_COIN;
+                Locator.Game.ScreenInGame.HandleEatCombo();
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
@@ -140,28 +160,37 @@ namespace IEC
                 EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_HIT);
             }
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
-            groupLevelObjectives.CollectASpecialObject(data.itemID, totalNumberCollected, Vector2.zero);
+            groupLevelObjectives.CollectASpecialObject(data, totalNumberCollected, Vector2.zero);
         }
 
         private void OnCollectItem(object param)
         {
             var data = (CollectItemData)param;
-            SpawnXpVFX(data.xp, data.position);
+            if (data.itemID == Config.AllBoosterConfig.GetBoosterData(ResourceType.EvolveStone).itemDefinition.GetId())
+            {
+                var boosterData = Config.AllBoosterConfig.GetBoosterData(ResourceType.EvolveStone);
+                SpawnXpVFX(Mathf.FloorToInt(boosterData.effectValue), data.position,Color.green);
+            }
+            else
+            {
+                SpawnXpVFX(data.xp, data.position);
+            }
         }
 
         private void OnCollectObjectiveItem(object param)
         {
             var data = (CollectItemData)param;
-            groupLevelObjectives.CollectAObject(data.itemID, Vector2.zero);
+            groupLevelObjectives.CollectAObject(data, Vector2.zero,true);
         }
 
         private void OnUserUseHelper(object param)
         {
             var data = (UserUseHelper)param;
-            if (data.helperId == HelperId.FrozenTime)
-            {
-                groupMark.SetActiveFrozenMark(true);
-            }
+            //if (data.helperId == HelperId.FrozenTime)
+            //{
+            //    //MoveTo effect helper
+            //    groupMark.SetActiveFrozenMark(true);
+            //}
         }
 
         private void OnUserCompleteHelper(object param)
@@ -184,17 +213,28 @@ namespace IEC
             tutorialStartGame.StartTutorial(holeTransform);
         }
 
-        private void SpawnXpVFX(int xp, Vector3 position)
+        private void SpawnXpVFX(int xp, Vector3 position, Color? color = null)
         {
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
+
             var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
+            xpVFX.transform.parent = xpParentRT.transform;
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);
-            xpVFX.Show(xp);
-        }
+            if (color.HasValue)
+            {
+                xpVFX.SetTargetColor(color.Value);
+                xpVFX.Show(xp,1.5f);
+            }
+            else
+            {
+                xpVFX.Show(xp);
+            }
 
+
+        }
         private Vector2 GetLocalAnchorPos(Vector3 position)
         {
             return position.GetLocalAnchorPos(transform as RectTransform, GamePlay.mainCamera, GamePlay.uiCamera);
@@ -207,6 +247,7 @@ namespace IEC
             Joystick.OnPointerUp(null);
             UpdateUI();
             gameplayTimer.SetStartTime(levelData);
+            gameplayTimer.ResetFreezeTime();
         }
     }
 }

@@ -58,6 +58,68 @@ namespace _IEC.Features.Gameplay
 
         [Header("Editor only")] 
         public GameplayItemPrefabConfig editorItemPrefabConfig;
+
+        [Button]
+        public void UpdateItemToNormal(string id)
+        {
+#if UNITY_EDITOR
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                var obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                while (obj != null)
+                {
+                    levelData.listObjectives.Remove(obj);
+                    obj = levelData.listObjectives.FirstOrDefault(item => item.id.Equals(id));
+                    Debug.LogError(($"Remove objective: {id} at {levelData.name}"));
+                    
+                    EditorUtility.SetDirty(levelData);
+                    AssetDatabase.SaveAssets();        
+                    AssetDatabase.Refresh();
+                }
+            }
+#endif
+        }
+
+        [Button]
+        public void CheckValidAllLevel()
+        {
+            List<string> listDebugLevel = new();
+            foreach (var level in levelDataSHP.listAllLevelData)
+            {
+                if(level.difficulty.Equals("breaktime"))
+                    continue;
+                
+                string temp = "";
+                foreach (var obj in level.listObjectives)
+                {
+                    var objItem = level.levelSpawnData.listItemSpawns.Find(item => item.id.Equals(obj.id));
+
+                    if (objItem == null || obj.amount > objItem.listSpawnDatas.Count)
+                    {
+                        temp += obj.id + "_";
+                    }
+                }
+
+                if (!String.IsNullOrEmpty(temp))
+                {
+                    temp = level.name + ": " + temp;
+                    listDebugLevel.Add(temp);
+                    //Debug.LogError(temp);
+                }
+            }
+
+            if (listDebugLevel.Count > 0)
+            {
+                foreach (var debug in listDebugLevel)
+                {
+                    Debug.LogError(debug);
+                }
+            }
+            else
+            {
+                Debug.LogError("All levels are valid");
+            }
+        }
         
         [Button]
         public void ExportAllLevelsToCSV(LevelDataContainerSO allLevels)
@@ -875,7 +937,7 @@ namespace _IEC.Features.Gameplay
             UnityEditor.EditorUtility.SetDirty(this);
             UnityEditor.AssetDatabase.SaveAssets();
         }
-
+    
         [Button]
         public void BakeLevelDefinitionToLevelModel()
         {
@@ -1293,7 +1355,19 @@ namespace _IEC.Features.Gameplay
             Debug.LogError(str);
         }
 
-#endregion
+        [Button]
+        public void SetAllLevelSpawnKinematic()
+        {
+            foreach (var levelData in levelDataSHP.listAllLevelData)
+            {
+                levelData.levelSpawnData.SetAllSpawnDataKinematic();
+                EditorUtility.SetDirty(levelData.levelSpawnData);
+                AssetDatabase.SaveAssets();        
+                AssetDatabase.Refresh();
+            }
+        }
+
+        #endregion
 #endif
     }
     [System.Serializable]
