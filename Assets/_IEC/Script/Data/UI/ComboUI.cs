@@ -1,5 +1,6 @@
 using DG.Tweening;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
@@ -15,8 +16,8 @@ public class ComboUI : MonoBehaviour
     private int currentComboCount;
     [SerializeField] private float comboTimeRange = 1.2f;
     [SerializeField] private int minComboCount = 3;
-    [SerializeField] private List<float> comboLocalPos = new List<float>();
     [SerializeField] private Transform [] comboTxtPos;
+    [SerializeField] private Transform [] subComboTxtPos;
     [SerializeField] private List<Color> comboColorsTop = new List<Color>();
     [SerializeField] private List<Color> comboColorsBottom = new List<Color>();
     [SerializeField] private List<ParticleSystem> fxFireCombos = new List<ParticleSystem>();
@@ -24,6 +25,9 @@ public class ComboUI : MonoBehaviour
     [SerializeField] private List<Material> comboTxtMaterials= new List<Material>();
     [SerializeField] private List<int> thresholds = new List<int>();
     private int currentComboIndex = 0;
+    [SerializeField] private int minComboIndexVibrate = 2;
+    private bool canVibrate = true;
+    [NonSerialized] public int bonusCombo = 1;
 
     private void Start()
     {
@@ -44,7 +48,7 @@ public class ComboUI : MonoBehaviour
     {
         StopAllCoroutines();
         StartCoroutine(CheckInCombo());
-        currentComboCount++;
+        currentComboCount += bonusCombo;
         SetCombo(currentComboCount);
     }
 
@@ -53,6 +57,8 @@ public class ComboUI : MonoBehaviour
         yield return new WaitForSeconds(comboTimeRange);
         currentComboCount = 0;
         currentComboIndex = 0;
+        canVibrate = true;
+        subComboTxt.transform.parent.DOKill();
         Hide();
     }
 
@@ -73,15 +79,28 @@ public class ComboUI : MonoBehaviour
         subComboTxt.fontMaterial = comboTxtMaterials[currentComboIndex];
     }
 
+    private void VibrateComboTxt()
+    {
+        if (!canVibrate) return;
+        canVibrate = false;
+        subComboTxt.transform.parent.DOKill();
+
+        float duration = 0.3f; 
+        float strength = 20f; 
+        int vibrato = 50;    
+        float randomness = 90f;
+
+        subComboTxt.transform.parent.DOShakePosition(duration, strength, vibrato, randomness, false, true).onComplete += () => canVibrate = true;
+    }
+
     private void SetCombo(int combo)
     {
-        if (combo < minComboCount)
+        if (combo == 1)
         {
             ChangeComboColor();
             return;
         }
         comboTxt.text = $"{combo}";
-        Show();
 
         if (combo >= thresholds[currentComboIndex])
         {
@@ -89,20 +108,27 @@ public class ComboUI : MonoBehaviour
             if (currentComboIndex >= thresholds.Count)
             {
                 currentComboIndex = thresholds.Count - 1;
-                return;
             }
-            ChangeComboColor();
-            fxFireCombos[currentComboIndex].Play();
+            else
+            {
+                ChangeComboColor();
+                //fxFireCombos[currentComboIndex].Play();
+            }
         }
-        if (combo < 1000)
+        if (currentComboIndex > minComboIndexVibrate)
         {
-            comboTxt.transform.position = comboTxtPos[combo.ToString().Length - 1].position;
-            this.transform.localPosition = new Vector3(comboLocalPos[combo.ToString().Length - 1], this.transform.localPosition.y, this.transform.localPosition.z);
+            VibrateComboTxt();
+        }
+        if (combo < 10000)
+        {
+            comboTxt.transform.localPosition = comboTxtPos[comboTxt.text.Length - 1].localPosition;
+            subComboTxt.transform.localPosition = subComboTxtPos[comboTxt.text.Length - 1].localPosition;
         }
         else
         {
             comboTxt.transform.position = comboTxtPos[comboTxtPos.Length - 1].position;
-            this.transform.localPosition = new Vector3(comboLocalPos[comboLocalPos.Count - 1], this.transform.localPosition.y, this.transform.localPosition.z);
+            subComboTxt.transform.position = subComboTxtPos[comboTxtPos.Length - 1].position;
         }
+        Show();
     }
 }

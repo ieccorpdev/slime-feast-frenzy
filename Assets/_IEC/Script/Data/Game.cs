@@ -87,6 +87,7 @@ namespace IEC
         public int loseBeforeAllowSkipHardLevelOverride = 2;
 
         public bool dropSplashWater;
+        public bool enableComboCount = true;
         
         public bool isOverrideDataRewardLuckyWheel;
         [Header("SFF")] public bool usingNewLogicPull = false;

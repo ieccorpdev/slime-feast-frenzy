@@ -111,7 +111,7 @@ namespace _IEC.Features.Gameplay
             AddCheatCode();
             Material instanceMaterial = new Material(imgIcon.material);
             imgIcon.material = instanceMaterial;
-           
+            txtUnlockCondition.text += Config.gamePlayConfig.GetUnlockCondition(helperId);
         }
 
         void AddCheatCode()
@@ -164,7 +164,6 @@ namespace _IEC.Features.Gameplay
         {
             m_IsGamePause = false;
             m_CooldownTime = HelperActiveTime;
-            imgProgress.fillAmount = 1;
             UpdatePoolNumberUI();
             if (Config.gamePlayConfig.IsHelperUnlocked(helperId) == false || (GamePlay.levelController.GetLevelData().levelType == LevelType.COIN && helperId == HelperId.Compass ))
             {
@@ -249,7 +248,7 @@ namespace _IEC.Features.Gameplay
             switch (helperId)
             {
                 case HelperId.Magnet:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Magnetic Force");
                     EventController.RaiseEvent(EventList.Audio.MAGNET_START);
                     DOVirtual.DelayedCall(0.5f, () =>
                     {
@@ -261,7 +260,7 @@ namespace _IEC.Features.Gameplay
                     EventController.RaiseEvent(EventList.Audio.COMPASS);
                     break;
                 case HelperId.ScaleUp:
-                    Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
+                    //Locator.Game.ScreenInGame.ShowHelperIntroAnimation("Scale Up");
                     EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
                     break;
                 case HelperId.FrozenTime:
@@ -303,8 +302,8 @@ namespace _IEC.Features.Gameplay
                     if (m_IsGamePause) return;
                     m_CooldownTime -= Time.deltaTime;
                     //imgProgress.fillAmount = 1 - m_CooldownTime / HelperActiveTime;
+                   
                     fillAnim.Play(fillAnimName, 0, 1 - m_CooldownTime / HelperActiveTime);
-                    fillAnim.speed = 0;
                     if (m_CooldownTime <= 0)
                     {
                         if (PlayerData.helperData.GetPool(helperId) > 0 )
@@ -355,7 +354,8 @@ namespace _IEC.Features.Gameplay
             {
                 case State.Playing:
                     m_CooldownTime = HelperActiveTime;
-                    imgProgress.fillAmount = 0;
+                    imgProgress.fillAmount = 1;
+                    imgIcon.enabled = false;
                     if (PlayerData.helperData.GetPool(helperId) > 0)
                     {
                         groupPool.SetActive(true);
@@ -367,8 +367,9 @@ namespace _IEC.Features.Gameplay
                         groupPool.SetActive(false);
                     }
                     break;
-                case State.Locked:
-                    txtUnlockCondition.text += Config.gamePlayConfig.GetUnlockCondition(helperId);
+                default:
+                    imgIcon.enabled = true;
+                    imgProgress.fillAmount = 0;
                     break;
             }
         }
