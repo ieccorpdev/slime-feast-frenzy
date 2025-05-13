@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(RectTransform))]
@@ -21,10 +22,11 @@ public class AntiSafeArea : MonoBehaviour
         ApplyAntiSafeArea();
     }
 
-    void Update()
+    private void Start()
     {
-        ApplyAntiSafeArea(); // In case orientation/safe area changes at runtime
+        ApplyAntiSafeArea();
     }
+
 
     void ApplyAntiSafeArea()
     {
