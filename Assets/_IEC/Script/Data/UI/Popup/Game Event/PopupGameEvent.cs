@@ -17,6 +17,12 @@ namespace IEC
         public Button closeInfoButton;
         public GameObject infoGroup;
 
+        [Header("Reward Group")] 
+        public Button claimRewardButton;
+        public GameObject claimRewardGroup;
+        
+        [Space(10)]
+
         public EventType eventType;
         
         public TextMeshProUGUI eventTimerText;
@@ -29,6 +35,8 @@ namespace IEC
         protected GameEventConfig _eventConfig;
 
         protected bool IsEventMultipleStage;
+
+        public bool IsInEvent { get; private set; }
         
         protected override void Awake()
         {
@@ -38,12 +46,6 @@ namespace IEC
 
         private void Start()
         {
-            SetEvent(infoButton, OnShowInfo);
-            SetEvent(closeInfoButton, OnShowInfo);
-            if (infoGroup != null)
-            {
-                infoGroup.SetActive(false);
-            }
             scroller.OnBeingDrag+=DisableRewardPopupMini;
         }
 
@@ -57,13 +59,29 @@ namespace IEC
 
         protected virtual void Init()
         {
+            SetEvent(infoButton, OnShowInfo);
+            SetEvent(closeInfoButton, OnShowInfo);
+            SetEvent(claimRewardButton, OnClaimReward);
+            if (infoGroup != null)
+            {
+                infoGroup.SetActive(false);
+            }
+
+            if (claimRewardGroup != null)
+            {
+                claimRewardGroup.SetActive(false);
+            }
+            
             _eventRankController = Controllers.Get<EventRankController>();
             _eventConfig = Config.AllGameEventConfig.GetGameEventConfig(eventType);
 
             IsEventMultipleStage = false;
             
-            
-            
+            InitScroller();
+        }
+
+        private void InitScroller()
+        {
             if (scroller.Delegate == null)
             {
                 scroller.Delegate = this;
@@ -87,7 +105,7 @@ namespace IEC
         
         private void JumpToPlayer()
         {
-            Init();
+            InitScroller();
             int index = listPlayerData.FindIndex(data => data.isPlayer);
             scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
@@ -119,7 +137,44 @@ namespace IEC
 
         protected virtual void CheckShowReward()
         {
+            if (claimRewardGroup != null)
+            {
+                claimRewardGroup.SetActive(true);
+            }
+
+            eventTimerText.text = "Finished";
+        }
+
+        protected virtual void OnClaimReward()
+        {
+            if (claimRewardGroup != null)
+            {
+                claimRewardGroup.SetActive(false);
+            }
             
+            var data = _eventRankController.GetEventSaveData(eventType);
+            int stage = 0;
+
+            if (IsEventMultipleStage && !IsEndEvent() && data.eventIndex < _eventConfig.listEventData.Count - 1)
+            {
+                stage = data.eventIndex + 1;
+            }
+
+            var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
+            var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
+                data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
+            
+            Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                new ShowClaimRewardData()
+                {
+                    listDataReward = new List<Reward>(eventRewardData.listReward),
+                });
+            
+            Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(()=>
+            {
+                StartNewEventStage(stage);
+            });
+            Locator.Main.ClaimBonusRewardPanel.ShowNext();
         }
 
         protected virtual void ShowEventCompletedScreen()
@@ -136,7 +191,7 @@ namespace IEC
         public virtual bool IsEndEventStage()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
-            return DateTime.Now >= data.timeEnd || (DateTime.Now - data.timeStart.Date).TotalDays > 0;
+            return DateTime.Now >= data.timeEnd;
         }
 
         public virtual bool IsEventStageCompleted()
@@ -148,26 +203,34 @@ namespace IEC
         {
             var data = _eventRankController.GetEventSaveData(eventType);
             
-            if (IsEndEvent())
+            if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
             {
-                CheckShowReward();
-                
-                StartNewEventStage(0);
-            }
-            else if (IsEventMultipleStage && IsEndEventStage())
-            {
-                if (data.eventIndex < _eventConfig.listEventData.Count - 1)
+                IsInEvent = false;
+
+                if (data.listPlayerData.Count == 0) // First time in star chase
                 {
-                    CheckShowReward();
-                
-                    StartNewEventStage(data.eventIndex + 1);
+                    OnShowInfo();
+                    StartNewEventStage(0);
                 }
                 else
                 {
-                    //When complete all stages of an event
-                    ShowEventCompletedScreen();
+                    CheckShowReward();
                 }
             }
+            // else if (IsEventMultipleStage && IsEndEventStage())
+            // {
+            //     //if (data.eventIndex < _eventConfig.listEventData.Count - 1)
+            //     {
+            //         CheckShowReward();
+            //     
+            //         //StartNewEventStage(data.eventIndex + 1);
+            //     }
+            //     //else
+            //     {
+            //         //When complete all stages of an event
+            //         //ShowEventCompletedScreen();
+            //     }
+            // }
             else
             {
                 listPlayerData.Clear();
@@ -177,6 +240,7 @@ namespace IEC
 
         private void StartNewEventStage(int eventStageIndex)
         {
+            IsInEvent = true;
             listPlayerData.Clear();
             
             var nameList =
@@ -211,18 +275,25 @@ namespace IEC
                 .InitData(
                     eventType,
                     eventStageIndex,
-                    DateTime.Now.Date,
+                    DateTime.Now,
                     //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
                     DateTime.Now.AddDays(1).Date, //hard code to end of day - events last one day
                     new List<EventPlayerData>(listPlayerData)
                 );
+            
+            CheckUpdateEventProgress();
         }
 
         private void CheckUpdateEventProgress()
         {
+            if (!IsInEvent)
+                return;
+            
             var data = _eventRankController.GetEventSaveData(eventType);
 
-            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
+
+            if ((timeToCheck - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
@@ -253,6 +324,17 @@ namespace IEC
 
         private void UpdateTimer()
         {
+            if (IsEndEvent())
+            {
+                if (IsInEvent)
+                {
+                    CheckUpdateEventProgress();
+                    CheckInitEventProgress();
+                }
+
+                return;
+            }
+            
             eventTimerText.text =
                 DateTimeHelper.GetFormattedTimeHMS(
                     PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
