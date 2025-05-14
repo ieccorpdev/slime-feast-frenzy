@@ -65,22 +65,21 @@ namespace IEC
 
         private void ProcessOtherData(JSONNode jsonString)
         {
-            var listReward = jsonString.IsArray
-                ? jsonString.AsStringArray.ToList()
-                : new List<string> { jsonString.ToString() };
-            foreach (var reward in listReward)
+            List<Reward> rewardWrapper = new List<Reward>();
+            foreach (var reward in jsonString)
             {
-                string rawData = reward.ToString();
-                //Debug.LogError(rawData);
-                RewardListWrapper rewardWrapper = JsonConvert.DeserializeObject<RewardListWrapper>(rawData);
-                if (rewardWrapper != null && rewardWrapper.rewards !=null && rewardWrapper.rewards.Count > 0)
+                if (Enum.TryParse<ResourceType>(reward.Key, out var result))
                 {
-                    //foreach (Reward reward in rewardWrapper.rewards)
-                    //{
-                    //    Debug.Log($"Reward: {reward.typeReward}, Amount: {reward.rewardAmount}");
-                    //}
-                    Locator.Main.PopupGiftCode.ReceiveGiftCode(rewardWrapper.rewards);
+                    rewardWrapper.Add(new Reward(reward.Value,result));
                 }
+            }
+            if ( rewardWrapper.Count > 0)
+            {
+                //foreach (Reward reward in rewardWrapper.rewards)
+                //{
+                //    Debug.Log($"Reward: {reward.typeReward}, Amount: {reward.rewardAmount}");
+                //}
+                Locator.Main.PopupGiftCode.ReceiveGiftCode(rewardWrapper);
             }
         }
 
