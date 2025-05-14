@@ -31,7 +31,7 @@ namespace IEC
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
             button.interactable = PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife();
-            //addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
+            addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
         }
     }
 }
