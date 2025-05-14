@@ -38,7 +38,7 @@ namespace IEC
                         new AddEventProgressData()
                         {
                             eventType = EventType.StarChase,
-                            id = PlayerData.playerProfileName,
+                            id = PlayerData.playerName,
                             progressAmount = Locator.Game.ScreenLevelWin.StarWon,
                         });
                     
@@ -47,7 +47,7 @@ namespace IEC
                         new AddEventProgressData()
                         {
                             eventType = EventType.SharkRace,
-                            id = PlayerData.playerProfileName,
+                            id = PlayerData.playerName,
                             progressAmount = 1,
                         });
                     break;
@@ -76,6 +76,9 @@ namespace IEC
 
         private void AddEventProgress(AddEventProgressData progressData)
         {
+            if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).levelUnlock)
+                return;
+            
             var eventData = PlayerData.GetEventSaveData(progressData.eventType);
 
             var player = eventData.listPlayerData.Find(bot => bot.id.Equals(progressData.id));
@@ -105,6 +108,7 @@ namespace IEC
     public class EventPlayerData
     {
         public string id;
+        public string avatarID;
         public bool isPlayer = false;
         public int progress;
         public float speed;

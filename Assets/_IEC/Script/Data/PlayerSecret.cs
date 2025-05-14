@@ -258,8 +258,6 @@ namespace IEC
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;
         public DateTime timeEndUnlimitedLife = DateTime.MinValue;
         public float realTimeUnlimidtedLife;
-        public string playerProfileName = "";
-        public int playerProfileIconId;
         public bool levelPending;//check player quit in game
         public bool isKilledAppGamePlay;
 
@@ -442,6 +440,20 @@ namespace IEC
         [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
         public string playerName;    
+        
+        public void UpdatePlayerProfileName(string profileName)
+        {
+            playerName = profileName;
+            foreach (var data in listEventSaveData)
+            {
+                var playerData = data.listPlayerData.Find(data => data.isPlayer);
+
+                if (playerData != null)
+                {
+                    playerData.id = playerName;
+                }
+            }
+        }
 
         #endregion
         

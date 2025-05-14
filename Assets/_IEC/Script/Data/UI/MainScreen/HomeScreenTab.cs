@@ -44,6 +44,10 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Star Chest Reward")] 
     public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
+    [Header("Star Chase Event")] 
+    public Button btnStarChase;
+    
+    [Space(10)]
 
     public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -178,6 +182,13 @@ public class HomeScreenTab : ScreenNavigateUI
                         Locator.Main.HomeScreenTab.buildCityUI.Show();
                     });
             });
+        
+        SetEvent(btnStarChase,
+            () =>
+            {
+                Locator.Main.PopupStarChase.Show();
+            });
+        
         SetupUIHome();
     }
 

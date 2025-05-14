@@ -72,6 +72,15 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Profile Name", param =>
+            {
+                string name = param.inputParams[0].value.ToString();
+                PlayerData.UpdatePlayerProfileName(name);
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.playerName
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {

@@ -36,5 +36,7 @@ public static partial class Locator
 
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
+
+        public static PopupStarChase PopupStarChase => Pool.Get<PopupStarChase>();
     } 
 }

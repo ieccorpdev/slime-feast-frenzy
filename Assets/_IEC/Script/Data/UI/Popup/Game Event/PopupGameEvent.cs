@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 namespace IEC
 {
-    public class PopupGameEvent : BasePopup
+    public class PopupGameEvent : BasePopup, IEnhancedScrollerDelegate
     {
         [SerializeField] EnhancedScroller scroller;
 
@@ -17,7 +17,9 @@ namespace IEC
         
         public TextMeshProUGUI eventTimerText;
 
+        public GameEventPlayerDataUI playerDataUIPrefab;
         public List<GameEventPlayerDataUI> listPlayerDataUI = new();
+        public List<EventPlayerData> listPlayerData = new ();
         
         protected EventRankController _eventRankController;
         protected GameEventConfig _eventConfig;
@@ -27,10 +29,44 @@ namespace IEC
         protected override void Awake()
         {
             base.Awake();
+            Init();
+        }
+
+        protected virtual void Init()
+        {
             _eventRankController = Controllers.Get<EventRankController>();
             _eventConfig = Config.AllGameEventConfig.GetGameEventConfig(eventType);
 
             IsEventMultipleStage = false;
+            
+            
+            
+            if (scroller.Delegate == null)
+            {
+                scroller.Delegate = this;
+            }
+            else
+            {
+                LoadData();
+            }
+        }
+        
+        public void LoadData()
+        {
+            scroller.RefreshActiveCellViews();
+        }
+
+        public void ReloadData()
+        {
+            scroller.ReloadData();
+            JumpToPlayer();
+        }
+        
+        private void JumpToPlayer()
+        {
+            Init();
+            int index = listPlayerData.FindIndex(data => data.isPlayer);
+            scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
         
          private void Update()
@@ -40,13 +76,17 @@ namespace IEC
 
         public override void Show()
         {
+            Init();
+            
             if (PlayerData.level < _eventConfig.levelUnlock)
                 return;
 
             base.Show();
             CheckInitEventProgress();
             CheckUpdateEventProgress();
-            UpdateUI();
+            //UpdateUI();
+            
+            ReloadData();
         }
 
         protected virtual void CheckShowReward()
@@ -61,13 +101,13 @@ namespace IEC
 
         public virtual bool IsEndEvent()
         {
-            var data = PlayerData.GetEventSaveData(eventType);
-            return DateTime.Now >= data.timeEnd || (DateTime.Now - data.timeStart.Date).TotalDays > 0;
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return DateTime.Now >= data.timeEnd;
         }
         
         public virtual bool IsEndEventStage()
         {
-            var data = PlayerData.GetEventSaveData(eventType);
+            var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd || (DateTime.Now - data.timeStart.Date).TotalDays > 0;
         }
 
@@ -78,7 +118,7 @@ namespace IEC
 
         private void CheckInitEventProgress()
         {
-            var data = PlayerData.GetEventSaveData(eventType);
+            var data = _eventRankController.GetEventSaveData(eventType);
             
             if (IsEndEvent())
             {
@@ -100,12 +140,17 @@ namespace IEC
                     ShowEventCompletedScreen();
                 }
             }
+            else
+            {
+                listPlayerData.Clear();
+                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
+            }
         }
 
         private void StartNewEventStage(int eventStageIndex)
         {
-            List<EventPlayerData> listPlayerData = new();
-                
+            listPlayerData.Clear();
+            
             var nameList =
                 Config.AllGameEventConfig.GenerateAllNames(
                     _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count);
@@ -121,8 +166,18 @@ namespace IEC
                         id = nameList[i],
                         progress = 0,
                         speed = botData.baseSpeed * (100 + randomSpeedRange) / 100, 
+                        isPlayer = false,
                     });
             }
+            
+            listPlayerData.Add(
+                new EventPlayerData()
+                {
+                    id = PlayerData.playerName,
+                    progress = 0,
+                    speed = 0,
+                    isPlayer = true,
+                });
                 
             _eventRankController
                 .InitData(
@@ -133,13 +188,11 @@ namespace IEC
                     DateTime.Now.AddDays(1).Date, //hard code to end of day - events last one day
                     new List<EventPlayerData>(listPlayerData)
                 );
-                
-            listPlayerData.Clear();
         }
 
         private void CheckUpdateEventProgress()
         {
-            var data = PlayerData.GetEventSaveData(eventType);
+            var data = _eventRankController.GetEventSaveData(eventType);
 
             if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
@@ -157,16 +210,17 @@ namespace IEC
 
         private void UpdateUI()
         {
-            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            for (int i = 0; i < eventSaveData.listPlayerData.Count; i++)
-            {
-                if (i >= listPlayerDataUI.Count)
-                {
-                    listPlayerDataUI.Add(listPlayerDataUI[0].Spawn(scroller.transform));
-                }
-                
-                listPlayerDataUI[i].Setup(eventSaveData.listPlayerData[i], i + 1);
-            }
+            // var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            // for (int i = 0; i < eventSaveData.listPlayerData.Count; i++)
+            // {
+            //     if (i >= listPlayerDataUI.Count)
+            //     {
+            //         listPlayerDataUI.Add(playerDataUIPrefab.Spawn(scroller.Container.transform));
+            //     }
+            //
+            //     listPlayerDataUI[i].transform.localScale = Vector3.one;
+            //     listPlayerDataUI[i].Setup(_eventConfig, eventSaveData.listPlayerData[i], i + 1);
+            // }
         }
 
         private void UpdateTimer()
@@ -174,6 +228,31 @@ namespace IEC
             eventTimerText.text =
                 DateTimeHelper.GetFormattedTimeHMS(
                     PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
+        }
+
+        public int GetNumberOfCells(EnhancedScroller scroller)
+        {
+            return listPlayerData.Count;
+        }
+
+        public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
+        {
+            if (listPlayerData[dataIndex].isPlayer)
+            {
+                return 192;
+            }
+            return 162;
+        }
+
+        public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        {
+            //var data = listPlayerData[dataIndex];
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+
+            GameEventPlayerDataUI cellView = scroller.GetCellView(playerDataUIPrefab) as GameEventPlayerDataUI;
+            cellView.Setup(_eventConfig, eventSaveData.listPlayerData[dataIndex], dataIndex + 1);
+
+            return cellView;
         }
     }
 }
