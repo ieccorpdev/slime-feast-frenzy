@@ -35,7 +35,7 @@ namespace IEC
         public bool isUsingGroundExtend = true ;
         public int itemVersion;
         public int levelStartInterAds = 4;
-
+        public bool isUsingBtnAdsMoreLife = true;
         public bool usingWaterTheme = true;
 
         public float GetTimeDelayFullAds()
