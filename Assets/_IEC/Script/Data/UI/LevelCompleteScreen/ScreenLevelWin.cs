@@ -180,6 +180,20 @@ namespace IEC
                 ));
             }
             
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock && !PlayerData.isShownPopupStartStarChase)
+            {
+                PopupData StartStarChase = new PopupData(
+                    Locator.Main.PopupStartStarChaseEvent,
+                    () =>
+                    {
+                        Locator.Main.PopupStartStarChaseEvent.Show();
+                        PlayerData.isShownPopupStartStarChase = true;
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(StartStarChase);
+            }
+            
             #endregion
             
             #region Claim Reward Effect

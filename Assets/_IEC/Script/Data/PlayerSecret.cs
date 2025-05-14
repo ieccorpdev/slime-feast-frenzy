@@ -842,6 +842,7 @@ namespace IEC
         #region Event
 
         public List<EventSaveData> listEventSaveData = new();
+        public bool isShownPopupStartStarChase;
 
         public EventSaveData GetEventSaveData(EventType eventType)
         {
