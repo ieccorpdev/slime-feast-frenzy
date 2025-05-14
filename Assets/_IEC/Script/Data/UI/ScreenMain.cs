@@ -61,7 +61,7 @@ namespace IEC
                         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
                         m_BtnSetting.gameObject.SetActive(false);
                         Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("icon_home_leaderboard"));
-                        EventController.RaiseEvent(EventList.WindLeaderboard.CHANGE_AVATAR);
+                        //EventController.RaiseEvent(EventList.WindLeaderboard.CHANGE_AVATAR);
                         break;
                     default:
                         Locator.Service.MoneyPanel.Hide();

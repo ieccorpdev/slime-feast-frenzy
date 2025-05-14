@@ -28,6 +28,8 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
     public PositionGroupsRewardDataPanel groupsSeven;
+    public PositionGroupsRewardDataPanel groupsEight;
+    public PositionGroupsRewardDataPanel groupsNine;
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
 
@@ -92,6 +94,15 @@ public class ClaimBonusRewardPanel : BasePopup
                 break;         
             case 6:
                 AssignRewardByGroups(groupsSix);
+                break;
+            case 7:
+                AssignRewardByGroups(groupsSeven);
+                break;
+            case 8:
+                AssignRewardByGroups(groupsEight);
+                break;
+            case 9:
+                AssignRewardByGroups(groupsNine);
                 break;
         }
     }
@@ -301,6 +312,8 @@ public class ClaimBonusRewardPanel : BasePopup
     public RectTransform Pos5;
     public RectTransform Pos6;
     public RectTransform Pos7;
+    public RectTransform Pos8;
+    public RectTransform Pos9;
 
     public RectTransform GetRectTransformByIndex(int index)
     {
@@ -319,7 +332,11 @@ public class ClaimBonusRewardPanel : BasePopup
             case 6:
                 return Pos6;
             case 7:
-                return Pos6;
+                return Pos7;
+            case 8:
+                return Pos8;
+            case 9:
+                return Pos9;
         }
         return Pos1;
     }

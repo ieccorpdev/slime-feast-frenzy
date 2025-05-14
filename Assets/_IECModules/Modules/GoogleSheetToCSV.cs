@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -24,7 +25,7 @@ namespace _IECModules
         private const string EndDocIdSearch = "/";
         private const string SpreadSheetId = "gid";
 
-        [NaughtyAttributes.Button]
+        [Button]
         public void TestDownloadFromUrl()
         {
             var url = "https://docs.google.com/spreadsheets/d/1siFrtchtGuq8gQYQMX19_z7ZpdBpoQQRDZnHiNsKrUA/edit#gid=927018210"; 

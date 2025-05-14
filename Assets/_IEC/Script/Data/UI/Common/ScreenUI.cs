@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using NaughtyAttributes;
 using UnityEngine.Events;
+using Sirenix.OdinInspector;
 
 namespace IEC
 {
