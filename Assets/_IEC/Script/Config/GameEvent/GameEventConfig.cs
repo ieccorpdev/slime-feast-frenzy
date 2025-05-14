@@ -5,6 +5,7 @@ using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 namespace IEC
 {
@@ -16,6 +17,12 @@ namespace IEC
         public float eventDurationInHours;
         public float timeUpdateEventProgressInHours;
         public bool updateEventAfterPlayerWinLevel;
+
+        [Header("UI")] 
+        public Sprite normalFrameSprite;
+        public Sprite mainPlayerFrameSprite;
+        public List<Sprite> listRankSprites = new();
+        public List<Sprite> listRewardButtonSprites = new();
 
         public List<EventData> listEventData = new();
         
@@ -164,50 +171,6 @@ namespace IEC
         [Button]
         public void LoadData2()
         {
-            // var dataDefault = DownloadCsvFromAuthUrl(csv2);
-            //
-            // if (dataDefault.Count == 0)
-            //     return;
-            //
-            // listEventData.Clear();
-            //
-            // var speedRange = float.Parse(dataDefault[1][^1]);
-            //
-            // int index = 1;
-            // int indexStartBotData = dataDefault[1].IndexOf(dataDefault[1].FirstOrDefault(data => data.Contains("Bot")));
-            //
-            // List<string> data = new();
-            // while ((data = dataDefault.FirstOrDefault(data => int.Parse(data[0]) == index)) != null && data.Count > 0)
-            // {
-            //     var eventData = new EventData();
-            //
-            //     eventData.eventTarget = int.Parse(data[1]);
-            //     eventData.listEventBotData = new();
-            //     
-            //     for(int i = indexStartBotData; i < data.Count; i++)
-            //     {
-            //         eventData.listEventBotData.Add(
-            //             new EventBotData()
-            //             {
-            //                 baseSpeed = float.Parse(data[i]),
-            //                 speedRange = speedRange,
-            //             });
-            //     }
-            //
-            //     int dataIndex = dataDefault.IndexOf(data);
-            //     
-            //     data = dataDefault.Skip(dataIndex + 1).FirstOrDefault(data => int.Parse(data[0]) == index);
-            //
-            //     do
-            //     {
-            //         dataIndex = dataDefault.IndexOf(data);
-            //         data = dataDefault[dataIndex+1];
-            //     } while (String.IsNullOrEmpty(data[0]));
-            //     
-            //     index++;
-            //     data.Clear();
-            // }
-            
             var dataDefault = DownloadCsvFromAuthUrl(csv2);
 
             if (dataDefault.Count == 0)
@@ -344,6 +307,22 @@ namespace IEC
         {
             index = Mathf.Clamp(index, 0, listEventData.Count - 1);
             return listEventData[index];
+        }
+
+        public Sprite GetRankSprite(int rank)
+        {
+            if (rank > listRankSprites.Count)
+                return null;
+
+            return listRankSprites[rank - 1];
+        }
+        
+        public Sprite GetRewardButtonSprite(int rank)
+        {
+            if (rank > listRewardButtonSprites.Count)
+                return listRewardButtonSprites[^1];
+
+            return listRewardButtonSprites[rank - 1];
         }
         
         private List<List<string>> DownloadCsvFromAuthUrl(string url)
