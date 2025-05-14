@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Linq.Expressions;
 using _IECModules;
 using Cysharp.Threading.Tasks;
+using Newtonsoft.Json;
 using SimpleJSON;
 using UnityEngine;
 
@@ -28,6 +30,13 @@ namespace IEC
 
         public void OnEventRaise(string gameEvent, EventParam param)
         {
+            switch (gameEvent)
+            {
+                case EventList.Setting.REQUEST_GIFTCODE:
+                    string giftCode = (string)param.p0;
+                    UseGiftCode(giftCode);
+                    break;
+            }
         }
 
         #region Customize
@@ -35,15 +44,48 @@ namespace IEC
         private void ClaimIapBundle(string bundleId)
         {
             //TODO: Claim iap bundle id
+            var pack = Pool.Get<GameConfig>().listAllIapPackConfig.Find(pack => pack.bundleId == bundleId);
+            if (pack != null)
+            {
+                List<Reward> listPackReward = new List<Reward>();
+                foreach (var rsc in pack.resources)
+                {
+                    listPackReward.Add(new Reward(rsc.value,rsc.type) );
+                }
+                //maybe change to iap thread ? 
+                if (pack.isHaveNoAds)
+                {
+                    Services.ActiveNoAds(true);
+                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false); //Disable banner Ads
+                    Controllers.Get<AdsController>().UpdateWhiteBannerSize();
+                }
+                Locator.Main.PopupGiftCode.ReceiveGiftCode(listPackReward);
+            }
         }
 
-        private void ProcessOtherData(JSONNode rewards)
+        private void ProcessOtherData(JSONNode jsonString)
         {
-            //TODO: Process other data
+            var listReward = jsonString.IsArray
+                ? jsonString.AsStringArray.ToList()
+                : new List<string> { jsonString.ToString() };
+            foreach (var reward in listReward)
+            {
+                string rawData = reward.ToString();
+                //Debug.LogError(rawData);
+                RewardListWrapper rewardWrapper = JsonConvert.DeserializeObject<RewardListWrapper>(rawData);
+                if (rewardWrapper != null && rewardWrapper.rewards !=null && rewardWrapper.rewards.Count > 0)
+                {
+                    //foreach (Reward reward in rewardWrapper.rewards)
+                    //{
+                    //    Debug.Log($"Reward: {reward.typeReward}, Amount: {reward.rewardAmount}");
+                    //}
+                    Locator.Main.PopupGiftCode.ReceiveGiftCode(rewardWrapper.rewards);
+                }
+            }
         }
 
         #endregion
-
+        
         #region Base
         
         private async UniTaskVoid UseGiftCode(string giftCode)
