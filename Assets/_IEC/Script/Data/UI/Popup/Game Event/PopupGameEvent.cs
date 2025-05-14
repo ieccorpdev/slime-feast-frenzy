@@ -13,6 +13,9 @@ namespace IEC
     public class PopupGameEvent : BasePopup, IEnhancedScrollerDelegate
     {
         public EnhancedScroller scroller;
+        public Button infoButton;
+        public Button closeInfoButton;
+        public GameObject infoGroup;
 
         public EventType eventType;
         
@@ -35,7 +38,21 @@ namespace IEC
 
         private void Start()
         {
+            SetEvent(infoButton, OnShowInfo);
+            SetEvent(closeInfoButton, OnShowInfo);
+            if (infoGroup != null)
+            {
+                infoGroup.SetActive(false);
+            }
             scroller.OnBeingDrag+=DisableRewardPopupMini;
+        }
+
+        protected virtual void OnShowInfo()
+        {
+            if (infoGroup != null)
+            {
+                infoGroup.SetActive(!infoGroup.activeInHierarchy);
+            }
         }
 
         protected virtual void Init()
