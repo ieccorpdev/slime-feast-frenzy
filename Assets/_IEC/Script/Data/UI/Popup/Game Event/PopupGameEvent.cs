@@ -5,13 +5,14 @@ using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace IEC
 {
     public class PopupGameEvent : BasePopup, IEnhancedScrollerDelegate
     {
-        [SerializeField] EnhancedScroller scroller;
+        public EnhancedScroller scroller;
 
         public EventType eventType;
         
@@ -30,6 +31,11 @@ namespace IEC
         {
             base.Awake();
             Init();
+        }
+
+        private void Start()
+        {
+            scroller.OnBeingDrag+=DisableRewardPopupMini;
         }
 
         protected virtual void Init()
@@ -87,6 +93,11 @@ namespace IEC
             //UpdateUI();
             
             ReloadData();
+        }
+        
+        public void DisableRewardPopupMini()
+        {
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE);
         }
 
         protected virtual void CheckShowReward()
@@ -250,7 +261,9 @@ namespace IEC
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
 
             GameEventPlayerDataUI cellView = scroller.GetCellView(playerDataUIPrefab) as GameEventPlayerDataUI;
-            cellView.Setup(_eventConfig, eventSaveData.listPlayerData[dataIndex], dataIndex + 1);
+            
+            cellView.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),  eventSaveData.listPlayerData[dataIndex], dataIndex + 1);
+            
 
             return cellView;
         }

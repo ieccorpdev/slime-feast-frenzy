@@ -20,7 +20,9 @@ namespace IEC
 
         [Header("UI")] 
         public Sprite normalFrameSprite;
+        public Sprite normalProgressFrameSprite;
         public Sprite mainPlayerFrameSprite;
+        public Sprite mainPlayerProgressFrameSprite;
         public List<Sprite> listRankSprites = new();
         public List<Sprite> listRewardButtonSprites = new();
 

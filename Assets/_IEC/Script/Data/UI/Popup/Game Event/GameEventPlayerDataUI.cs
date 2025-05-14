@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -11,6 +12,7 @@ namespace IEC
     public class GameEventPlayerDataUI : EnhancedScrollerCellView
     {
         public Image displayFrame;
+        public Image progressDisplayFrame;
         public TextMeshProUGUI playerName;
         public Image playerRankImage;
         public TextMeshProUGUI playerRankText;
@@ -18,18 +20,86 @@ namespace IEC
 
         public Button rewardInfoButton;
         public Image rewardInfoButtonImage;
+        public GameObject rewardInfoGroup;
+        public GameObject rewardInfoDownImg;
+        public GameObject rewardInfoUpImg;
+
+        public List<GameEventRewardInfoUI> listRewardInfoUI = new();
         public EventPlayerData EventPlayerData { get; private set; }
 
         private GameEventConfig _gameEventConfig;
+        private EventData _eventData;
+        
+        public int CurrentRank { get; private set; }
 
         private void Start()
         {
             rewardInfoButton.onClick.AddListener(OnShowRewardInfoUI);
+            OnHideRewardInfoUI();
+            gameObject.OnEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE, OnHideRewardInfoUI);
+        }
+
+        private void OnHideRewardInfoUI()
+        {
+            rewardInfoGroup.SetActive(false);
+            rewardInfoDownImg.gameObject.SetActive(false);
+            rewardInfoUpImg.gameObject.SetActive(false);
+        }
+
+        private void SetRewardInfoDown()
+        {
+            rewardInfoDownImg.gameObject.SetActive(true);
+            rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
+                rewardInfoDownImg.GetComponent<RectTransform>().anchoredPosition;
+        }
+
+        private void SetRewardInfoUp()
+        {
+            rewardInfoUpImg.gameObject.SetActive(true);
+            rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
+                rewardInfoUpImg.GetComponent<RectTransform>().anchoredPosition + Vector2.up * 30;
         }
 
         private void OnShowRewardInfoUI()
         {
+            bool wasActive = rewardInfoGroup.gameObject.activeInHierarchy;
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE);
+            var eventRewardData = _eventData.listEventRewardData.Find(data =>
+                data.rankStartReward <= CurrentRank && (data.rankEndReward >= CurrentRank || data.rankEndReward == -1)); // = -1 means from rank start reward to the end of the leaderboard
+
+            if (eventRewardData == null)
+                return;
             
+            if (wasActive)
+                return;
+
+            var pos = GetHalf(Locator.Main.PopupStarChase.scroller.GetComponent<RectTransform>(),
+                GetComponent<RectTransform>());
+
+            if (pos == HalfPosition.Top)
+            {
+                SetRewardInfoDown();
+            }
+            else if (pos == HalfPosition.Bottom)
+            {
+                SetRewardInfoUp();
+            }
+            
+            rewardInfoGroup.SetActive(true);
+            
+            foreach (var rewardUI in listRewardInfoUI)
+            {
+                Reward rewardData;
+                if ((rewardData = eventRewardData.listReward.Find(data => data.typeReward == rewardUI.resourceType)) != null)
+                {
+                    rewardUI.gameObject.SetActive(true);
+                    rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
+                }
+                else
+                {
+                    rewardUI.gameObject.SetActive(false);
+                }
+            }
         }
 
         protected virtual void UpdatePlayerRank(int rank)
@@ -55,10 +125,13 @@ namespace IEC
             playerProgress.text = EventPlayerData.progress.ToString();
         }
 
-        public void Setup(GameEventConfig gameEventConfig, EventPlayerData playerData, int rank)
+        public void Setup(GameEventConfig gameEventConfig, EventData eventData, EventPlayerData playerData, int rank)
         {
             _gameEventConfig = gameEventConfig;
+            _eventData = eventData;
             EventPlayerData = playerData;
+
+            CurrentRank = rank;
 
             playerName.text = EventPlayerData.id;
             
@@ -74,11 +147,30 @@ namespace IEC
             if (EventPlayerData.isPlayer)
             {
                 displayFrame.sprite = _gameEventConfig.mainPlayerFrameSprite;
+                progressDisplayFrame.sprite = _gameEventConfig.mainPlayerProgressFrameSprite;
             }
             else
             {
                 displayFrame.sprite = _gameEventConfig.normalFrameSprite;
+                progressDisplayFrame.sprite = _gameEventConfig.normalProgressFrameSprite;
             }
+        }
+        
+        public enum HalfPosition { Top, Bottom }
+
+        public HalfPosition GetHalf(RectTransform container, RectTransform nestedChild)
+        {
+            // Get the child's world position and convert it to container's local space
+            Vector3 localPos = container.InverseTransformPoint(nestedChild.position);
+
+            // Get container's half height
+            float halfHeight = container.rect.height / 2f;
+
+            // In local space, Y=0 is at center; +Y is up, -Y is down
+            if (localPos.y > 0)
+                return HalfPosition.Top;
+            else
+                return HalfPosition.Bottom;
         }
     }
 }

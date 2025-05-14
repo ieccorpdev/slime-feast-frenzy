@@ -32,6 +32,7 @@ namespace IEC
             public const string BUY_STARTER_PACK = "GamePlay.BUY_STARTER_PACK";
             
             public const string SHOW_REWARD_INFO_LEADERBOARD = "GamePlay.SHOW_REWARD_INFO_LEADERBOARD";
+            public const string SHOW_REWARD_INFO_STARCHASE = "GamePlay.SHOW_REWARD_INFO_STARCHASE";
 
             public const string TUTORIAL = "GamePlay.TUTORIAL";
             public const string TUTORIAL_DONE = "GamePlay.TUTORIAL_DONE";
