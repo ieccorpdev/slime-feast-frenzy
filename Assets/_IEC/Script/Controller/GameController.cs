@@ -127,8 +127,7 @@ namespace IEC
                 }
                 else
                 {
-                    OpenScene(GameScene.Main);
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                    OpenScene(GameScene.Main, () => EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME));
                 }
                 
                 //Check reset progress reward when player start game

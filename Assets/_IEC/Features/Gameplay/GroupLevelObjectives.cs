@@ -232,7 +232,7 @@ namespace _IEC.Features.Gameplay
         {
             HandleGoldSpecialObjective(levelType);
             HandleOceanGiftObject();
-            specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.IsLoaded) !=null);
+            specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
             StartCoroutine(RebuildNextFrame());
         }
         

@@ -91,7 +91,16 @@ namespace IEC
             {
                 value = PlayerData.level
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set bonus combo", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                Locator.Game.ScreenInGame.comboUI.bonusCombo = count;
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level Hard with id", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());

@@ -1337,7 +1337,7 @@ namespace IEC
             }
 
             var newLine = "\n";
-            string message = Application.productName + " version: " + Application.version + newLine;
+            string message = Application.productName + " version: " + Application.version + newLine + " Level:" + Pool.Get<PlayerSecret>().level;
             message += newLine + "Hello, " + newLine;
             message += contentFeedback;
             Debug.Log("message SendEmail: " + message);
