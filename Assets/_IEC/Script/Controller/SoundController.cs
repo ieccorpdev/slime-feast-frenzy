@@ -124,7 +124,7 @@ namespace IEC
 
                 foreach (var player in m_ListMusicAudio)
                 {
-                    if (player != null && player.audioSource != null)
+                    if (player != null && player.audioSource != null && initialVolumes.ContainsKey(player))
                     {
                         player.audioSource.volume = Mathf.Lerp(0, initialVolumes[player], time / duration);
                     }
