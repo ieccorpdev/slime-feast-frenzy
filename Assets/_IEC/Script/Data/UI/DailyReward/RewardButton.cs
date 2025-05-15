@@ -35,6 +35,7 @@ namespace _IEC
         [Header("Button State Groups")]
         public GameObject availableGroup;
         public GameObject unavailableGroup;
+        public GameObject claimedGroup;
         private void Start()
         {
             ClaimButton.onClick.RemoveAllListeners();
@@ -50,17 +51,17 @@ namespace _IEC
         public virtual void SetButtonState(RewardButtonState buttonState)
         {
             dailyRewardState = buttonState;
-            
             availableGroup.SetActive(dailyRewardState == RewardButtonState.Available);
             unavailableGroup.SetActive(dailyRewardState == RewardButtonState.Unavailable);
-
-            ClaimButton.gameObject.SetActive(dailyRewardState != RewardButtonState.Claimed);
+            claimedGroup.SetActive(dailyRewardState == RewardButtonState.Claimed);
+            
+            ClaimButton.gameObject.SetActive(true);
             ClaimButton.interactable = dailyRewardState == RewardButtonState.Available;
 
             if (!RewardClaimed)
                 RewardClaimed = dailyRewardState == RewardButtonState.Claimed;
             
-            bg.sprite = dailyRewardState == RewardButtonState.Claimed ? bgNormal: bgClaimable;
+            bg.sprite = dailyRewardState == RewardButtonState.Available ?bgClaimable : bgNormal ;
             bg.SetNativeSize();
             rewardIcon.sprite = dailyRewardState == RewardButtonState.Claimed ? iconClaimed: iconClaimable;
             rewardIcon.SetNativeSize();
@@ -78,10 +79,8 @@ namespace _IEC
 
         void HandleRewardClaim()
         {
-            foreach (var reward in rewards)
-            {
-                PlayerData.AddCurrency(reward.typeReward,reward.rewardAmount, false);
-            }
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null); 
+            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
         }
 
         public void ResetButton()

@@ -32,18 +32,37 @@ namespace _IEC
                 return false;
             }
         }
+        private void OnEnable()
+        {
+            foreach (var btn in dailyReward)
+            {
+                btn.onClaim += OnRewardClaim;
+            }
 
+        }
+        
+        
+
+        private void OnDisable()
+        {
+            foreach (var btn in dailyReward)
+            {
+                btn.onClaim -= OnRewardClaim;
+            }
+            
+        }
 
         private void Update()
         {
             if (!IsShow)
                 return;
-            UpdateDailyRewardCountdown();
+            //UpdateDailyRewardCountdown();
         }
 
         public override void Show()
         {
             base.Show();
+            PlayerData.CheckResetDailyReward();
             UpdateUI();
 
             CurrentGoldClaimed = 0;
@@ -70,6 +89,10 @@ namespace _IEC
 
         void UpdateUI()
         {
+            foreach (var btn in dailyReward)
+            {
+                btn.ResetButton();
+            }
             CurrentDayReward = PlayerData.currentDailyAdReward;
             UpdateRewards();
             //progressBar.UpdateProgressBar();
@@ -82,13 +105,13 @@ namespace _IEC
                 //multiple reward
                 dailyReward[i].id = (i+1).ToString();
                 dailyReward[i].SetDataButton(Config.dataDailyRewardConfig.dailyRewards[i].rewards);
-                if (PlayerData.dailyRewardsClaimed.ContainsKey(i) && PlayerData.dailyRewardsClaimed[i] && i <= CurrentDayReward)
+                if (PlayerData.dailyRewardsClaimed[i] && i <= CurrentDayReward)
                 {
                     dailyReward[i].SetButtonState(RewardButtonState.Claimed);
                     continue;
                 }
                 
-                if (i <= CurrentDayReward)
+                if (i <= CurrentDayReward && CanClaimReward())
                 {
                     dailyReward[i].SetButtonState(RewardButtonState.Available);
                 }
@@ -98,34 +121,30 @@ namespace _IEC
                 }
             }
         }
-
+        void OnRewardClaim(RewardButton btn)
+        {
+            PlayerData.dailyRewardsClaimed[CurrentDayReward] = true;
+            CurrentDayReward++;
+            PlayerData.currentDailyAdReward = CurrentDayReward;
+            PlayerData.lastTimeOpenDailyReward = DateTime.Now;
+            UpdateRewards();
+            EventController.RaiseEvent(EventList.SAVE_DATA);
+        }
         void UpdateDailyRewardCountdown()
         {
             string endTime = "";
             PlayerData.GetEndTimeDay(out endTime);
             dailyCountdownText.text = $"Reset in " + endTime;
-            
-            if(PlayerData.lastTimeOpenDailyReward != DateTime.Today)
-                OnResetDailyReward();
         }
 
-        void OnResetDailyReward()
+        bool CanClaimReward()
         {
-            var dayDiff = (PlayerData.lastTimeOpenDailyReward - DateTime.Today).Days;
-            if (dayDiff >= Config.dataDailyRewardConfig.dailyRewards.Count)
-            {
-                //Out of day reward, reset 
-                PlayerData.ResetDailyReward();
-            }
-            
-            PlayerData.lastTimeOpenDailyReward = DateTime.Today;
-            EventController.RaiseEvent(EventList.SAVE_DATA);
-            foreach (var btn in dailyReward)
-            {
-                btn.ResetButton();
-            }
-            UpdateUI();
+            // next day or next moth can claim
+            return PlayerData.lastTimeOpenDailyReward.Day != DateTime.Now.Day 
+                   || PlayerData.lastTimeOpenDailyReward.Month != DateTime.Now.Month
+                   || PlayerData.lastTimeOpenDailyReward.Year != DateTime.Now.Year;
         }
+
     }
     
 }

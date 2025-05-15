@@ -96,7 +96,7 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
             }
-            
+            InitDailyReward();
             CheckActionAfterQuitGame();
         }
 
@@ -627,7 +627,7 @@ namespace IEC
 
         [Header("Daily Reward")] 
         public int currentDailyAdReward = 0;
-        public DateTime lastTimeOpenDailyReward;
+        public DateTime lastTimeOpenDailyReward = DateTime.MinValue;
         public Dictionary<int, bool> dailyRewardsClaimed = new Dictionary<int, bool>();
         public double GetEndTimeDay(out string outputString)
         {
@@ -642,10 +642,36 @@ namespace IEC
             return time.TotalSeconds;
         }
 
+        public void InitDailyReward()
+        {
+            if (dailyRewardsClaimed == null || !dailyRewardsClaimed.ContainsKey(0))
+            {
+                lastTimeOpenDailyReward = DateTime.MinValue;
+                for (int i = 0; i < 10; i++)
+                {
+                    dailyRewardsClaimed[i] = false;
+                }
+            }
+        }
+        public void CheckResetDailyReward()
+        {
+            var dayDiff = (DateTime.Today - lastTimeOpenDailyReward.Date).Days;
+            if (dayDiff > 1 || (dayDiff == 1 && currentDailyAdReward >= Config.dataDailyRewardConfig.dailyRewards.Count))
+            {
+                //Out of day reward, reset 
+                ResetDailyReward();
+                EventController.RaiseEvent(EventList.SAVE_DATA);
+            }
+        }
         public void ResetDailyReward()
         {
             currentDailyAdReward = 0;
+            lastTimeOpenDailyReward = DateTime.MinValue;
             dailyRewardsClaimed.Clear();
+            for (int i = 0; i < 10; i++)
+            {
+                dailyRewardsClaimed[i] = false;
+            }
         }
         #endregion
         
