@@ -628,9 +628,7 @@ namespace IEC
         [Header("Daily Reward")] 
         public int currentDailyAdReward = 0;
         public DateTime lastTimeOpenDailyReward;
-        public long mainRewardCooldownTickTime;
-        public bool claimMainReward;
-        public Dictionary<int, bool> adRewardsClaimed = new Dictionary<int, bool>();
+        public Dictionary<int, bool> dailyRewardsClaimed = new Dictionary<int, bool>();
         public double GetEndTimeDay(out string outputString)
         {
             outputString = "";
@@ -642,6 +640,12 @@ namespace IEC
             string minutes = time.Minutes < 10 ? $"0{time.Minutes}" : time.Minutes.ToString();
             outputString = $"{hours}h {minutes}m";
             return time.TotalSeconds;
+        }
+
+        public void ResetDailyReward()
+        {
+            currentDailyAdReward = 0;
+            dailyRewardsClaimed.Clear();
         }
         #endregion
         

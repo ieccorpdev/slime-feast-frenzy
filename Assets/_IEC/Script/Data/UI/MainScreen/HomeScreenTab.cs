@@ -474,7 +474,7 @@ public class HomeScreenTab : ScreenNavigateUI
     private void UpdateDailyReward()
     {
         dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
-        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock);
+        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock && Game.haveDailyReward);
     }
 
 }

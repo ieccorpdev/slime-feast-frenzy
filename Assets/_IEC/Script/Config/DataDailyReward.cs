@@ -8,6 +8,12 @@ public class DataDailyReward : ScriptableObject
 {
     public int levelUnlock = 16;
     public Reward mainReward;
-    public List<Reward> dailyRewards;
+    public List<RewardDay> dailyRewards;
     
+}
+[System.Serializable]
+public class RewardDay
+{
+    public int day;
+    public List<Reward> rewards;
 }
