@@ -6,11 +6,21 @@ using IEC;
 using MoreMountains.NiceVibrations;
 using UnityEngine;
 using UnityEngine.UI;
-
+public static class ClaimBonusRewardSkin
+{
+    public const string Chest_1 = "Chest_1";
+    public const string Chest_2 = "Chest_2";
+    public const string Gift_Box_1 = "Gift_Box_1";
+    public const string Gift_Box_2 = "Gift_Box_2";
+    public const string Gift_Box_3 = "Gift_Box_3";
+    public const string Gift_Box_4 = "Gift_Box_4";
+}
 public class ClaimBonusRewardPanel : BasePopup
 {
     public List<UIItemReward> listRewardUI;
     public SpineAnimOT chestAnim;
+    public SpineAnimOT giftBoxAnim;
+
     public Button tapToClaim;
     public GameObject textTapToClaim;
     public GameObject Aura;
@@ -20,7 +30,7 @@ public class ClaimBonusRewardPanel : BasePopup
     private bool canClaim;
     private bool canOpen;
     private bool showAimChest = true;
-
+    private SpineAnimOT targetSpineAnimObject;
     [Header("Fixed position")] public PositionGroupsRewardDataPanel groupsOne;
     public PositionGroupsRewardDataPanel groupsTwo;
     public PositionGroupsRewardDataPanel groupsThree;
@@ -122,8 +132,9 @@ public class ClaimBonusRewardPanel : BasePopup
         }
     }
     
-    public void ShowingRewardPanel(string skinChest = "")
+    public void ShowingRewardPanel(string skinAnim = "")
     {
+        SetTargetObjectAnimOt(skinAnim);
         DOTween.Kill(AutoClaimTween);
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         EventController.RaiseEvent(EventList.Audio.GET_REWARD);
@@ -152,12 +163,12 @@ public class ClaimBonusRewardPanel : BasePopup
         {
             tapToClaim.gameObject.SetActive(true);
             canOpen = true;
-            chestAnim.gameObject.SetActive(true);
-            chestAnim.SetSkin(skinChest);
+            targetSpineAnimObject.gameObject.SetActive(true);
+            targetSpineAnimObject.SetSkin(skinAnim);
             Pool.Get<ConfettiGroup>().StopConfetti();
-            chestAnim.SetAnimation("1_Start", false, () =>
+            targetSpineAnimObject.SetAnimation("1_Start", false, () =>
             {
-                chestAnim.SetAnimation("2_Idle", false, () =>
+                targetSpineAnimObject.SetAnimation("2_Idle", false, () =>
                 {
                     OpenChest();
                     AnimShowTextTapClaim();
@@ -171,7 +182,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
-            chestAnim.gameObject.SetActive(false);
+            targetSpineAnimObject.gameObject.SetActive(false);
             canClaim = true;
             canOpen = true;
         }
@@ -195,7 +206,7 @@ public class ClaimBonusRewardPanel : BasePopup
                     () =>
                     {
                         itm.GetComponent<RectTransform>().transform.position =
-                            chestAnim.GetComponent<RectTransform>().transform.position;
+                            targetSpineAnimObject.GetComponent<RectTransform>().transform.position;
                     }, () =>
                     {
                         TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f,
@@ -271,7 +282,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
-            chestAnim.SetAnimation("3_Open", false, () =>
+            targetSpineAnimObject.SetAnimation("3_Open", false, () =>
             {
                 EndingChestOpen();
             });
@@ -282,7 +293,7 @@ public class ClaimBonusRewardPanel : BasePopup
     private void EndingChestOpen()
     {
         ShowRewardInChest();
-        chestAnim.SetAnimation("4_OpenIdle", false, () =>
+        targetSpineAnimObject.SetAnimation("4_OpenIdle", false, () =>
         {
             //Autoclaim
             DOVirtual.DelayedCall(1.5f, () =>
@@ -300,6 +311,26 @@ public class ClaimBonusRewardPanel : BasePopup
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
         base.Hide();
         CallTempOnHide();
+    }
+
+    public void SetTargetObjectAnimOt(string skinName)
+    {
+        chestAnim.gameObject.SetActive(false);
+        giftBoxAnim.gameObject.SetActive(false);
+        targetSpineAnimObject = chestAnim;
+        if (showAimChest)
+        {
+            if (skinName.Contains("Chest"))
+            {
+                chestAnim.gameObject.SetActive(true);
+                targetSpineAnimObject = chestAnim;
+            }
+            else if (skinName.Contains("Gift"))
+            {
+                giftBoxAnim.gameObject.SetActive(true);
+                targetSpineAnimObject = giftBoxAnim;
+            }
+        }
     }
 }
 
