@@ -75,7 +75,7 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupAvatar.Show();
+                Locator.Main.PopupEditProfile.Show();
             });      
         SetEvent(luckyWheel,
             () =>

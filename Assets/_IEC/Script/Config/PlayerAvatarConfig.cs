@@ -8,6 +8,7 @@ namespace IEC
     public class PlayerAvatarConfig : ScriptableObject
     {
         public List<Sprite> listAvatarSprites = new();
+        public List<Sprite> listAvatarFrameSprites = new();
 
         public Sprite GetAvatarSprite(string spriteName)
         {
@@ -17,11 +18,30 @@ namespace IEC
                 return null;
             }
             
+            
             Sprite sprite = listAvatarSprites.Find(sprite => sprite.name.Equals(spriteName));
 
             if (sprite == null)
             {
                 sprite = listAvatarSprites[0];
+            }
+            
+            return sprite;
+        }
+        
+        public Sprite GetAvatarFrameSprite(string spriteName)
+        {
+            if (listAvatarFrameSprites.Count == 0)
+            {
+                Debug.LogError("No player avatar available!");
+                return null;
+            }
+            
+            Sprite sprite = listAvatarFrameSprites.Find(sprite => sprite.name.Equals(spriteName));
+
+            if (sprite == null)
+            {
+                sprite = listAvatarFrameSprites[0];
             }
             
             return sprite;
