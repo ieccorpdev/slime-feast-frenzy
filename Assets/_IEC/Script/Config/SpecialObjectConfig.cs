@@ -12,10 +12,15 @@ namespace IEC
     public class SpecialObjectConfig : ScriptableObject
     {
         public float minSpawnSize, maxSpawnSize;
+        public float minSpawnSizeKingdom, maxSpawnSizeKingdom;
         public List<SpecialObjectSpawnData> listSpecialObjectSpawnData = new();
         public List<ItemDefinition> listSpecialItemDefinition = new();
         [Header("Gold Level")] 
         public ItemDefinition goldSpecialObjective;
+        [Header("Kingdom Special Level")]
+        public ItemDefinition kingdomSpecialObjective;
+        public SpecialObjectSpawnData kingdomSpecialObjectSpawnData;
+
         public int GetSpawnAmount(int level)
         {
             var spawnData = listSpecialObjectSpawnData
@@ -23,6 +28,11 @@ namespace IEC
                 .LastOrDefault(data => data.levelStartSpawn <= level);
 
             return spawnData?.GetSpawnAmount() ?? 0;
+        }
+
+        public int GetSpawnAmount()
+        {
+            return kingdomSpecialObjectSpawnData.GetSpawnAmount();
         }
 
         public int GetLevelUnlockProgressReward()
@@ -39,8 +49,12 @@ namespace IEC
             return listSpecialItemDefinition[index];
         }
 
-        public float GetRandomSpawnSize()
+        public float GetRandomSpawnSize(string itemId)
         {
+            if (itemId.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                return Random.Range(minSpawnSizeKingdom, maxSpawnSizeKingdom);
+            }
             return Random.Range(minSpawnSize, maxSpawnSize);
         }
     }

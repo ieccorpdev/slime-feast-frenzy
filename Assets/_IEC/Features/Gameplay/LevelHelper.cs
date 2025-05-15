@@ -415,7 +415,7 @@ namespace _IEC.Features.Gameplay
                     itemId = itemDefinition.GetId(),
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
-                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
+                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId()),
                     isStartKinematic =  false,
                 };
                 itemTransform.parent = levelObjectHolder;

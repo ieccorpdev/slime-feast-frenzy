@@ -53,6 +53,7 @@ namespace _IEC.Features.Gameplay
         Shovel = 14,
         Boosters = 15,
         Ocean = 16,
+        KingdomSpecial = 17,
     }
 
     public enum HelperId

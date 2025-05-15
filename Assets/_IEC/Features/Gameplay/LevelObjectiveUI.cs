@@ -33,6 +33,8 @@ namespace _IEC.Features.Gameplay
         private float offsetFlyX;
         private int dirFlyX;
         public bool isGoldObj => itemId == Config.specialObjectConfig.goldSpecialObjective.GetId();
+        public bool isKingdomObj => itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId();
+
         public RectTransform RectTransform
         {
             get
@@ -103,6 +105,11 @@ namespace _IEC.Features.Gameplay
                 {
                     SetText(GamePlay.levelController.GoldCollected.ToString());
                 }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
+                    SetText(GamePlay.levelController.KingdomCollected.ToString() + "/" + maxSpecialObject);
+                }
                 else
                 {
                     int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
@@ -121,6 +128,11 @@ namespace _IEC.Features.Gameplay
                 if (isGoldObj)// MeoMew hard Code;
                 {
                     var itemDefinition = Config.specialObjectConfig.goldSpecialObjective;
+                    imgIcon.sprite = itemDefinition.GetIcon();
+                }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    var itemDefinition = Config.specialObjectConfig.kingdomSpecialObjective;
                     imgIcon.sprite = itemDefinition.GetIcon();
                 }
                 else
