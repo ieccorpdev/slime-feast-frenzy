@@ -95,6 +95,7 @@ namespace IEC
             if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
             {
                 ClearAndInitTrackingLevelType();
+                levelLostStreak = -1;
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
@@ -161,7 +162,7 @@ namespace IEC
         public List<ResourceType> listUnlockedBoosters = new();
         public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
-        public int levelLostStreak;
+        public int levelLostStreak = -1;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
 
         public bool CheckUnlockBooster(ResourceType boosterType)
@@ -440,7 +441,27 @@ namespace IEC
         [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
         public string playerAvatarFrameName;
-        public string playerName;    
+        public string playerName;
+
+        public Dictionary<PlayerGeneralStat, int> playerStat = new();
+
+        public void UpdatePlayerStat(PlayerGeneralStat stat, int amount)
+        {
+            if (!playerStat.TryAdd(stat, amount))
+            {
+                if (amount >= playerStat[stat])
+                {
+                    playerStat[stat] = amount;
+                }
+            }
+        }
+
+        public int GetPlayerStat(PlayerGeneralStat stat)
+        {
+            playerStat.TryAdd(stat, 0);
+
+            return playerStat[stat];
+        }
         
         public void UpdatePlayerProfileName(string profileName)
         {

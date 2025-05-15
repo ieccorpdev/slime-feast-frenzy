@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4573202915428663903}
   - component: {fileID: 4598135379047488664}
   - component: {fileID: 7783521655605002897}
+  - component: {fileID: 215716146769504498}
   m_Layer: 5
   m_Name: Collected Stars
   m_TagString: Untagged
@@ -78,6 +79,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &215716146769504498
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 21552561263483299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e434b41209e47f74bb395a56ad8c0749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 1
+  statText: {fileID: 6668013826378622765}
 --- !u!1 &578395340577241884
 GameObject:
   m_ObjectHideFlags: 0
@@ -166,7 +181,7 @@ GameObject:
   - component: {fileID: 7157856345930463195}
   - component: {fileID: 2521897105947475766}
   m_Layer: 5
-  m_Name: DaysPlayerdText
+  m_Name: DaysPlayedText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -189,7 +204,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 12.399994, y: -74.54897}
+  m_AnchoredPosition: {x: 12.399994, y: -6}
   m_SizeDelta: {x: 242.36, y: 60.3866}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7157856345930463195
@@ -513,8 +528,9 @@ GameObject:
   - component: {fileID: 4502139440216592026}
   - component: {fileID: 3002559396210755084}
   - component: {fileID: 4380364201703842069}
+  - component: {fileID: 9052340394557631390}
   m_Layer: 5
-  m_Name: HighestSharkLevel
+  m_Name: HighestComboCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -580,6 +596,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9052340394557631390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2230134511213640060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e434b41209e47f74bb395a56ad8c0749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 2
+  statText: {fileID: 5765704269105486551}
 --- !u!1 &2299292434370248018
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +811,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'First-Try
+  m_text: '1st-Try
 
     Wins'
   m_isRightToLeft: 0
@@ -2066,6 +2096,11 @@ MonoBehaviour:
   btnEditProfile: {fileID: 7851944821747198754}
   playerNameText: {fileID: 6512283167247821452}
   playerLevelText: {fileID: 41164673924452673}
+  playerDaysPlayedText: {fileID: 2521897105947475766}
+  listPlayerStatUI:
+  - {fileID: 718074203242630089}
+  - {fileID: 215716146769504498}
+  - {fileID: 9052340394557631390}
 --- !u!1 &5484465442393832453
 GameObject:
   m_ObjectHideFlags: 0
@@ -2376,7 +2411,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5817918966258984567
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2900,6 +2935,7 @@ GameObject:
   - component: {fileID: 1213981400994151085}
   - component: {fileID: 736945693558842453}
   - component: {fileID: 8986450667061718765}
+  - component: {fileID: 718074203242630089}
   m_Layer: 5
   m_Name: First-try wins
   m_TagString: Untagged
@@ -2967,6 +3003,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &718074203242630089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7251508934834152036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e434b41209e47f74bb395a56ad8c0749, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 0
+  statText: {fileID: 4483028419523737930}
 --- !u!1 &7705011809628958866
 GameObject:
   m_ObjectHideFlags: 0
@@ -3231,9 +3281,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Highest Shark
-
-    Level'
+  m_text: "Highest \nCombo Count"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9f120cb01c5043647b084e12d83e5a13, type: 2}
   m_sharedMaterial: {fileID: -1081373604102784450, guid: 9f120cb01c5043647b084e12d83e5a13,

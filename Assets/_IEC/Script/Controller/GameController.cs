@@ -63,6 +63,14 @@ namespace IEC
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
+
+                    if (PlayerData.level != PlayerData.levelLostStreak)
+                    {
+                        PlayerData.UpdatePlayerStat(
+                            PlayerGeneralStat.FirstTryWin
+                            , PlayerData.GetPlayerStat(PlayerGeneralStat.FirstTryWin) + 1);
+                    }
+                    
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else

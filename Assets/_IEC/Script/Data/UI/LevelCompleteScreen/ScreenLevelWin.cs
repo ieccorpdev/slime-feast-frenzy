@@ -65,6 +65,10 @@ namespace IEC
             
             starChaseInfoBar.gameObject.SetActive(PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock);
             starChaseInfoBar.SetupData();
+            
+            PlayerData.UpdatePlayerStat(
+                PlayerGeneralStat.CollectedStars
+                , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
         }
 
         void SetupGoldDisplay()
