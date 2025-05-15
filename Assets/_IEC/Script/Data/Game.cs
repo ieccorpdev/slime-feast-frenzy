@@ -27,15 +27,12 @@ namespace IEC
         public bool enableLevelProgress;
         public bool isUsingHardLevel;
         public bool enableTreasureHunt;
-
-        public bool enableRewardForDaily;
-
         public bool isImmortal;
 
         public bool isUsingGroundExtend = true ;
         public int itemVersion;
         public int levelStartInterAds = 4;
-
+        public bool isUsingBtnAdsMoreLife = true;
         public bool usingWaterTheme = true;
 
         public float GetTimeDelayFullAds()
@@ -87,8 +84,8 @@ namespace IEC
         public int loseBeforeAllowSkipHardLevelOverride = 2;
 
         public bool dropSplashWater;
-        public bool enableComboCount;
-        
+        public bool enableComboCount = true;
+        public bool haveDailyReward;
         public bool isOverrideDataRewardLuckyWheel;
         [Header("SFF")] public bool usingNewLogicPull = false;
         [Header("Tracking")]

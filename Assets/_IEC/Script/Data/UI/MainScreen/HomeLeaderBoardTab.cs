@@ -20,6 +20,5 @@ public class HomeLeaderBoardTab : ScreenNavigateUI
     public override void Show()
     {
         base.Show();
-        Locator.Main.PopupLeaderboard.Show();
     }
 }

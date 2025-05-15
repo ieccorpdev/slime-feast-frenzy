@@ -28,9 +28,12 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsFive;
     public PositionGroupsRewardDataPanel groupsSix;
     public PositionGroupsRewardDataPanel groupsSeven;
+    public PositionGroupsRewardDataPanel groupsEight;
+    public PositionGroupsRewardDataPanel groupsNine;
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
 
+    public string AutoClaimTween => GetInstanceID() + "_AutoClaim";
     // Start is called before the first frame update
     void Start()
     {
@@ -92,6 +95,15 @@ public class ClaimBonusRewardPanel : BasePopup
             case 6:
                 AssignRewardByGroups(groupsSix);
                 break;
+            case 7:
+                AssignRewardByGroups(groupsSeven);
+                break;
+            case 8:
+                AssignRewardByGroups(groupsEight);
+                break;
+            case 9:
+                AssignRewardByGroups(groupsNine);
+                break;
         }
     }
 
@@ -112,6 +124,7 @@ public class ClaimBonusRewardPanel : BasePopup
     
     public void ShowingRewardPanel(string skinChest = "")
     {
+        DOTween.Kill(AutoClaimTween);
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
@@ -133,20 +146,20 @@ public class ClaimBonusRewardPanel : BasePopup
         }
 
         SettingRewardPosition();
-        tapToClaim.gameObject.SetActive(false);
         if (Aura) Aura.gameObject.SetActive(false);
-
         float timeDelayEffect = showAimChest ? 2f : 0f;
         if (showAimChest)
         {
+            tapToClaim.gameObject.SetActive(true);
+            canOpen = true;
             chestAnim.gameObject.SetActive(true);
             chestAnim.SetSkin(skinChest);
+            Pool.Get<ConfettiGroup>().StopConfetti();
             chestAnim.SetAnimation("1_Start", false, () =>
             {
                 chestAnim.SetAnimation("2_Idle", false, () =>
                 {
-                    Pool.Get<ConfettiGroup>().StopConfetti();
-                    canOpen = true;
+                    OpenChest();
                     AnimShowTextTapClaim();
                 });
             });
@@ -219,36 +232,67 @@ public class ClaimBonusRewardPanel : BasePopup
     {
         if (canOpen && showAimChest)
         {
-            canOpen = false;
-            chestAnim.SetAnimation("3_Open", false, () =>
-            {
-                ShowRewardInChest();
-                canClaim = true;
-                chestAnim.SetAnimation("4_OpenIdle", false, () =>
-                {
-                });
-            });
+            OpenChest(true);
         } else if (canClaim)
         {
-            tapToClaim.gameObject.SetActive(false);
-            canClaim = false;
-            foreach (var itr in listDataReward)
-            {
-                PlayerData.AddCurrency(itr.typeReward,itr.rewardAmount);
-            }
-
-            if (!IsHaveShowClaimRewardAnim())
-            {
-                //this.gameObject.SetActive(false);
-                Hide();
-            }
-            
-            actionClose?.Invoke();
-            PlayerData.Vibrate(HapticTypes.Failure);
-            Pool.Get<ConfettiGroup>().StopConfetti();
+            ClaimReward();
         }
-        //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
-        //CallTempOnHide();
+    }
+
+    private void ClaimReward()
+    {
+        DOTween.Kill(AutoClaimTween);
+        tapToClaim.gameObject.SetActive(false);
+        canClaim = false;
+        canOpen = false;
+        foreach (var itr in listDataReward)
+        {
+            PlayerData.AddCurrency(itr.typeReward, itr.rewardAmount);
+        }
+
+        if (!IsHaveShowClaimRewardAnim())
+        {
+            //this.gameObject.SetActive(false);
+            Hide();
+        }
+
+        actionClose?.Invoke();
+        PlayerData.Vibrate(HapticTypes.Failure);
+        Pool.Get<ConfettiGroup>().StopConfetti();
+    }
+
+    private void OpenChest(bool fastOpen = false)
+    {
+        canClaim = true;
+        canOpen = false;
+        if (fastOpen)
+        {
+            EndingChestOpen();
+        }
+        else
+        {
+            chestAnim.SetAnimation("3_Open", false, () =>
+            {
+                EndingChestOpen();
+            });
+        }
+
+    }
+
+    private void EndingChestOpen()
+    {
+        ShowRewardInChest();
+        chestAnim.SetAnimation("4_OpenIdle", false, () =>
+        {
+            //Autoclaim
+            DOVirtual.DelayedCall(1.5f, () =>
+            {
+                if (canClaim)
+                {
+                    ClaimReward();
+                }
+            }).SetId(AutoClaimTween);
+        });
     }
 
     public override void Hide()
@@ -268,6 +312,8 @@ public class ClaimBonusRewardPanel : BasePopup
     public RectTransform Pos5;
     public RectTransform Pos6;
     public RectTransform Pos7;
+    public RectTransform Pos8;
+    public RectTransform Pos9;
 
     public RectTransform GetRectTransformByIndex(int index)
     {
@@ -286,7 +332,11 @@ public class ClaimBonusRewardPanel : BasePopup
             case 6:
                 return Pos6;
             case 7:
-                return Pos6;
+                return Pos7;
+            case 8:
+                return Pos8;
+            case 9:
+                return Pos9;
         }
         return Pos1;
     }

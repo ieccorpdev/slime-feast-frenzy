@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using _IEC;
 using IEC;
-using IEC.Wind.Leaderboard;
 using UnityEngine;
 
 public static partial class Locator
@@ -22,13 +21,8 @@ public static partial class Locator
         public static PopupDailyReward PopupDailyReward=> Pool.Get<PopupDailyReward>();
         public static PopupProgressReward PopupProgressReward => Pool.Get<PopupProgressReward>();
         public static PopupOutOfLive PopupOutOfLive => Pool.Get<PopupOutOfLive>();
-        //LeaderBoardMain 
-        public static PopupLeaderboard PopupLeaderboard => Pool.Get<PopupLeaderboard>();
-        public static PopupRankInfo PopupRankInfo => Pool.Get<PopupRankInfo>();
-        public static ClaimLeaderBoardFinish ClaimLeaderBoardFinish => Pool.Get<ClaimLeaderBoardFinish>();
+
         public static ClaimBonusRewardPanel ClaimBonusRewardPanel => Pool.Get<ClaimBonusRewardPanel>();
-        public static PopupDoubleMedal PopupDoubleMedal => Pool.Get<PopupDoubleMedal>();
-        public static PopupEditInfo PopupEditInfo => Pool.Get<PopupEditInfo>();
         public static PopupLevelChestReward PopupLevelChestReward => Pool.Get<PopupLevelChestReward>();
         public static PopupStarChestReward PopupStarChestReward => Pool.Get<PopupStarChestReward>();
         public static PopupGoldOffer PopupGoldOffer => Pool.Get<PopupGoldOffer>();
@@ -36,5 +30,6 @@ public static partial class Locator
 
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
+        public static PopupGiftCode PopupGiftCode => Pool.Get<PopupGiftCode>();
     } 
 }

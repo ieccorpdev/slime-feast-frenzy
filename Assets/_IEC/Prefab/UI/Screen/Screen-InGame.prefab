@@ -21824,6 +21824,7 @@ GameObject:
   - component: {fileID: 658132619029331038}
   - component: {fileID: 805451604231930438}
   - component: {fileID: 7671898490636106714}
+  - component: {fileID: 1413030570297198990}
   m_Layer: 5
   m_Name: GroupMark
   m_TagString: Untagged
@@ -21875,6 +21876,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groupDangerous: {fileID: 8664147209773926344}
   groupFrozen: {fileID: 927554100714446341}
+--- !u!114 &1413030570297198990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4877558523962971465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 717aec4af1d7fc641af9986ea9ebefe1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5068326966555032154
 GameObject:
   m_ObjectHideFlags: 0
@@ -22200,7 +22213,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 0.3
+      scalar: 0.2
       minScalar: 0.15
       maxCurve:
         serializedVersion: 2
@@ -26992,7 +27005,7 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 5
+      scalar: 1.5
       minScalar: 0.05
       maxCurve:
         serializedVersion: 2
@@ -31802,8 +31815,8 @@ ParticleSystem:
     startSize:
       serializedVersion: 2
       minMaxState: 3
-      scalar: 2.5
-      minScalar: 1.8
+      scalar: 0.8
+      minScalar: 0.5
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -59315,7 +59328,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 1b3381116260cbe4181a80b6f956e905,
+      objectReference: {fileID: 21300000, guid: 746ad380cd414b74d9dc3b52943d65e3,
         type: 3}
     - target: {fileID: 7523008856698629549, guid: 1c9736b1396653442af8b2e8d2ee8c26,
         type: 3}
@@ -60435,11 +60448,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Combo!
       objectReference: {fileID: 0}
-    - target: {fileID: 3518854467969650501, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 3687525340053673515, guid: 8dbd6ed5792346c4687b52ae885725f8,
         type: 3}
       propertyPath: m_Pivot.x
@@ -60545,11 +60553,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7660743883148904832, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColor32.rgba
-      value: 4294967295
-      objectReference: {fileID: 0}
     - target: {fileID: 7682263268139881566, guid: 8dbd6ed5792346c4687b52ae885725f8,
         type: 3}
       propertyPath: m_SortingLayer
@@ -60584,31 +60587,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SortingLayer
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8001467088681927022, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColorGradient.topRight.g
-      value: 0.99215686
-      objectReference: {fileID: 0}
-    - target: {fileID: 8001467088681927022, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColorGradient.topRight.r
-      value: 0.9411765
-      objectReference: {fileID: 0}
-    - target: {fileID: 8001467088681927022, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColorGradient.bottomRight.b
-      value: 0.9411765
-      objectReference: {fileID: 0}
-    - target: {fileID: 8001467088681927022, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColorGradient.bottomRight.g
-      value: 0.5764706
-      objectReference: {fileID: 0}
-    - target: {fileID: 8001467088681927022, guid: 8dbd6ed5792346c4687b52ae885725f8,
-        type: 3}
-      propertyPath: m_fontColorGradient.bottomRight.r
-      value: 0.5882353
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8dbd6ed5792346c4687b52ae885725f8, type: 3}
@@ -61527,7 +61505,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: cd1aa5e4e1ef806459a99bceecc1e37a,
+      objectReference: {fileID: 21300000, guid: 94588dfb100d0ed43bc53988b7c8dbd1,
         type: 3}
     - target: {fileID: 7523008856698629549, guid: 1c9736b1396653442af8b2e8d2ee8c26,
         type: 3}
@@ -63420,7 +63398,7 @@ PrefabInstance:
     - target: {fileID: 7991140602421775782, guid: 1fe79c3bad177464d96a50ecd23316d0,
         type: 3}
       propertyPath: m_text
-      value: Level up your whirlpool for <color=#F2A024>10 seconds</color>
+      value: Level up temporarily for <color=#F2A024>10 seconds</color>
       objectReference: {fileID: 0}
     - target: {fileID: 7991140602421775782, guid: 1fe79c3bad177464d96a50ecd23316d0,
         type: 3}
@@ -64347,7 +64325,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 60f1664e5a8b39d45bf264de7eb5c7f4,
+      objectReference: {fileID: 21300000, guid: 2e81790868b523f4296eaf31c1ff5872,
         type: 3}
     - target: {fileID: 7523008856698629549, guid: 1c9736b1396653442af8b2e8d2ee8c26,
         type: 3}

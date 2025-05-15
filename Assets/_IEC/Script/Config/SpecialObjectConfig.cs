@@ -20,7 +20,7 @@ namespace IEC
         {
             var spawnData = listSpecialObjectSpawnData
                 .OrderBy(data => data.levelStartSpawn)
-                .FirstOrDefault(data => data.levelStartSpawn <= level);
+                .LastOrDefault(data => data.levelStartSpawn <= level);
 
             return spawnData?.GetSpawnAmount() ?? 0;
         }

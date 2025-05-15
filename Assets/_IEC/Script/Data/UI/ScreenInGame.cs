@@ -41,8 +41,9 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
         [SerializeField] private HelperIntro helperIntro;
-        [SerializeField] private ComboUI comboUI;
+        public ComboUI comboUI;
         private static bool CanPlaySFX = true;
+
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
@@ -92,13 +93,9 @@ namespace IEC
 
         public void HandleEatCombo()
         {
-            if (Game.enableComboCount)
+            if (Game.enableComboCount && PlayerData.level > 1)
             {
                 comboUI.HandleEatCombo();
-            }
-            else
-            {
-                comboUI.gameObject.SetActive(false);
             }
         }
 
@@ -165,7 +162,15 @@ namespace IEC
         private void OnCollectItem(object param)
         {
             var data = (CollectItemData)param;
-            SpawnXpVFX(data.xp, data.position);
+            if (data.itemID == Config.AllBoosterConfig.GetBoosterData(ResourceType.EvolveStone).itemDefinition.GetId())
+            {
+                var boosterData = Config.AllBoosterConfig.GetBoosterData(ResourceType.EvolveStone);
+                SpawnXpVFX(Mathf.FloorToInt(boosterData.effectValue), data.position,Color.green);
+            }
+            else
+            {
+                SpawnXpVFX(data.xp, data.position);
+            }
         }
 
         private void OnCollectObjectiveItem(object param)
@@ -204,18 +209,28 @@ namespace IEC
             tutorialStartGame.StartTutorial(holeTransform);
         }
 
-        private void SpawnXpVFX(int xp, Vector3 position)
+        private void SpawnXpVFX(int xp, Vector3 position, Color? color = null)
         {
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
+
             var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
             xpVFX.transform.parent = xpParentRT.transform;
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);
-            xpVFX.Show(xp);
-        }
+            if (color.HasValue)
+            {
+                xpVFX.SetTargetColor(color.Value);
+                xpVFX.Show(xp,1.5f);
+            }
+            else
+            {
+                xpVFX.Show(xp);
+            }
 
+
+        }
         private Vector2 GetLocalAnchorPos(Vector3 position)
         {
             return position.GetLocalAnchorPos(transform as RectTransform, GamePlay.mainCamera, GamePlay.uiCamera);

@@ -137,6 +137,9 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(playButton,
             () =>
             {
+                //Block play button when have reward on way claim
+                if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+                   Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
                 if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                 {
                     Locator.Main.PopupOutOfLive.Show();
@@ -169,15 +172,15 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         
-        SetEvent(buildButton,
-            () =>
-            {
-                DoMoveOutAllObj(0.3f,
-                    () =>
-                    {
-                        Locator.Main.HomeScreenTab.buildCityUI.Show();
-                    });
-            });
+        //SetEvent(buildButton,
+        //    () =>
+        //    {
+        //        DoMoveOutAllObj(0.3f,
+        //            () =>
+        //            {
+        //                Locator.Main.HomeScreenTab.buildCityUI.Show();
+        //            });
+        //    });
         SetupUIHome();
     }
 
@@ -428,7 +431,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();
-        UpdateBuildCity();
+        //UpdateBuildCity();
         UpdateLifeOffer();
         UpdateStarChest();
         progressRewardBar.Setup();
@@ -471,7 +474,7 @@ public class HomeScreenTab : ScreenNavigateUI
     private void UpdateDailyReward()
     {
         dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
-        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock);
+        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock && Game.haveDailyReward);
     }
 
 }

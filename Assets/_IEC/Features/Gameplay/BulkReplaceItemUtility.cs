@@ -15,7 +15,6 @@ using UnityEngine.Rendering;
 using UnityEngine.Serialization;
 using Object = System.Object;
 #if UNITY_EDITOR
-using EnhancedScrollerDemos.RemoteResourcesDemo;
 using UnityEditor;
 #endif
 

@@ -20,7 +20,7 @@ namespace IEC
         public Button closeBtn2;
         public List<SettingButton> settingButtons = new();
 
-        private void Start()
+        protected virtual void Start()
         {
             SetEvent(btnContinue, () =>
             {

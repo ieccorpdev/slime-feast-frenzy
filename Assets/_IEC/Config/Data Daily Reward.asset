@@ -12,16 +12,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9adcbb34c649482459bb826e709bb7af, type: 3}
   m_Name: Data Daily Reward
   m_EditorClassIdentifier: 
-  levelUnlock: 9999
+  levelUnlock: 8
   mainReward:
     typeReward: 0
     rewardAmount: 50
   dailyRewards:
-  - typeReward: 8
-    rewardAmount: 1
-  - typeReward: 0
-    rewardAmount: 100
-  - typeReward: 9
-    rewardAmount: 1
-  - typeReward: 0
-    rewardAmount: 150
+  - day: 1
+    rewards:
+    - typeReward: 3
+      rewardAmount: 15
+  - day: 2
+    rewards:
+    - typeReward: 0
+      rewardAmount: 100
+  - day: 3
+    rewards:
+    - typeReward: 11
+      rewardAmount: 15
+  - day: 4
+    rewards:
+    - typeReward: 0
+      rewardAmount: 200
+  - day: 5
+    rewards:
+    - typeReward: 10
+      rewardAmount: 15
+  - day: 6
+    rewards:
+    - typeReward: 3
+      rewardAmount: 30
+  - day: 7
+    rewards:
+    - typeReward: 13
+      rewardAmount: 2
+    - typeReward: 14
+      rewardAmount: 2

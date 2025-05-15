@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +8,7 @@ namespace IEC
     {
         public TextMeshProUGUI lifeCountDownText;
         public Image infinityLifeImage;
+        public Button button;
 
         private void Update()
         {
@@ -32,7 +30,8 @@ namespace IEC
                 currencyTMP.text = PlayerData.playerLife.ToString();
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
-            //addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
+            button.interactable = PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife();
+            addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
         }
     }
 }
