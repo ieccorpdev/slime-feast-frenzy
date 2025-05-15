@@ -300,6 +300,13 @@ namespace IEC
         public void OnPurchaseFailed(Product i, PurchaseFailureReason p)
         {
             var productId = i.definition.id;
+            if (p == PurchaseFailureReason.UserCancelled)
+            {
+                InternalEvent.Push("purchase_cancelled", new Dictionary<string, object>()
+                {
+                    {"bundleId", productId}
+                });
+            }
             SafeInvoke(m_LogFail, productId);
             PurchaseProductResult(productId, false);
         }

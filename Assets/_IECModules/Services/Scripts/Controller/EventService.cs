@@ -32,6 +32,8 @@ namespace IEC
             public const string SETTING_MUSIC = "Setting.SETTING_MUSIC";
             public const string SETTING_SOUND = "Setting.SETTING_SOUND";
             public const string SETTING_VIBRATES = "Setting.SETTING_VIBRATES";
+            public const string REQUEST_GIFTCODE = "Setting.REQUEST_GIFTCODE";
+            public const string RECIVE_GIFTCODE = "Setting.RECIVE_GIFTCODE";
         }
 
         public static class Leaderboard

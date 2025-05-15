@@ -17,6 +17,7 @@ namespace IEC
 
         public bool CheckPushedUniqueEvent(string eventName, AnalyticDataParamType type)
         {
+            if (eventConfig == null) return false;
             var eventParam = eventConfig.GetEventParam(eventName);
             if (eventParam == null) return false;
             if (eventParam.PlatformParam.isUnique)
