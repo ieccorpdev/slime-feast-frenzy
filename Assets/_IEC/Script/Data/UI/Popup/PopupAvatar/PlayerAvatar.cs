@@ -14,8 +14,7 @@ namespace IEC
 
         public Button btnShowProfile;
         
-        // Start is called before the first frame update
-        void Start()
+        void Awake()
         {
             gameObject.OnEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE, UpdateAvatarUI);
 
@@ -30,11 +29,6 @@ namespace IEC
             }
             
             UpdateAvatarUI();
-        }
-
-        private void OnEnable()
-        {
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
         }
 
         public void UpdateAvatarUI()

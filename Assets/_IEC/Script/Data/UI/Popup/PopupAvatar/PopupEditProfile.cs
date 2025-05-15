@@ -62,6 +62,7 @@ namespace IEC
         public override void Show()
         {
             base.Show();
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_NAME);
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
             
             //playerAvatar.playerAvatar.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
