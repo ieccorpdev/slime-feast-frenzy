@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
 using TMPro;
@@ -20,6 +21,11 @@ namespace IEC
         [Header("Reward Group")] 
         public Button claimRewardButton;
         public GameObject claimRewardGroup;
+        
+        [Header("Info ui")]
+        public List<Transform> listInfoUI = new();
+
+        private Sequence showInfoSequence;
         
         [Space(10)]
 
@@ -46,7 +52,8 @@ namespace IEC
 
         private void Start()
         {
-            scroller.OnBeingDrag+=DisableRewardPopupMini;
+            if(scroller != null)
+                scroller.OnBeingDrag+=DisableRewardPopupMini;
         }
 
         protected virtual void OnShowInfo()
@@ -54,6 +61,30 @@ namespace IEC
             if (infoGroup != null)
             {
                 infoGroup.SetActive(!infoGroup.activeInHierarchy);
+            }
+
+            if (infoGroup != null && infoGroup.activeInHierarchy)
+            {
+                DOTween.Kill(showInfoSequence);
+                showInfoSequence = DOTween.Sequence();
+
+                foreach (var ui in listInfoUI)
+                {
+                    ui.localScale = Vector3.zero;
+                }
+
+                closeInfoButton.transform.localScale = new Vector3(0, 1, 1);
+
+                float delay = 0f;
+                foreach (var ui in listInfoUI)
+                {
+                    showInfoSequence.Insert(delay, ui.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
+                    delay += 0.1f;
+                }
+
+                showInfoSequence.Insert(delay, closeInfoButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
+
+                showInfoSequence.Play();
             }
         }
 
@@ -82,6 +113,9 @@ namespace IEC
 
         private void InitScroller()
         {
+            if (scroller == null)
+                return;
+            
             if (scroller.Delegate == null)
             {
                 scroller.Delegate = this;
@@ -94,17 +128,26 @@ namespace IEC
         
         public void LoadData()
         {
+            if (scroller == null)
+                return;
+            
             scroller.RefreshActiveCellViews();
         }
 
         public void ReloadData()
         {
+            if (scroller == null)
+                return;
+            
             scroller.ReloadData();
             JumpToPlayer();
         }
         
         private void JumpToPlayer()
         {
+            if (scroller == null)
+                return;
+            
             InitScroller();
             int index = listPlayerData.FindIndex(data => data.isPlayer);
             scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
@@ -199,7 +242,7 @@ namespace IEC
             return true;
         }
 
-        private void CheckInitEventProgress()
+        protected virtual void CheckInitEventProgress()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
             
@@ -217,20 +260,6 @@ namespace IEC
                     CheckShowReward();
                 }
             }
-            // else if (IsEventMultipleStage && IsEndEventStage())
-            // {
-            //     //if (data.eventIndex < _eventConfig.listEventData.Count - 1)
-            //     {
-            //         CheckShowReward();
-            //     
-            //         //StartNewEventStage(data.eventIndex + 1);
-            //     }
-            //     //else
-            //     {
-            //         //When complete all stages of an event
-            //         //ShowEventCompletedScreen();
-            //     }
-            // }
             else
             {
                 listPlayerData.Clear();
@@ -238,7 +267,7 @@ namespace IEC
             }
         }
 
-        public void StartNewEventStage(int eventStageIndex)
+        public virtual void StartNewEventStage(int eventStageIndex)
         {
             IsInEvent = true;
             listPlayerData.Clear();
@@ -284,7 +313,7 @@ namespace IEC
             CheckUpdateEventProgress();
         }
 
-        private void CheckUpdateEventProgress()
+        protected virtual void CheckUpdateEventProgress()
         {
             if (!IsInEvent)
                 return;
@@ -305,21 +334,6 @@ namespace IEC
                     }
                 }
             }
-        }
-
-        private void UpdateUI()
-        {
-            // var eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            // for (int i = 0; i < eventSaveData.listPlayerData.Count; i++)
-            // {
-            //     if (i >= listPlayerDataUI.Count)
-            //     {
-            //         listPlayerDataUI.Add(playerDataUIPrefab.Spawn(scroller.Container.transform));
-            //     }
-            //
-            //     listPlayerDataUI[i].transform.localScale = Vector3.one;
-            //     listPlayerDataUI[i].Setup(_eventConfig, eventSaveData.listPlayerData[i], i + 1);
-            // }
         }
 
         private void UpdateTimer()

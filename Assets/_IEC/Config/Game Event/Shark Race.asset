@@ -17,10 +17,18 @@ MonoBehaviour:
   eventDurationInHours: 24
   timeUpdateEventProgressInHours: 0
   updateEventAfterPlayerWinLevel: 1
-  normalFrameSprite: {fileID: 0}
-  mainPlayerFrameSprite: {fileID: 0}
-  listRankSprites: []
-  listRewardButtonSprites: []
+  listDisplaySprites:
+  - normalFrameSprite: {fileID: 21300000, guid: 3500566e35d8f2e4c984d12629c21128,
+      type: 3}
+    normalProgressFrameSprite: {fileID: 0}
+    mainPlayerFrameSprite: {fileID: 21300000, guid: 68d0e66d69c797043bbe93e25f8546fb,
+      type: 3}
+    mainPlayerProgressFrameSprite: {fileID: 0}
+    listRankSprites: []
+    listRewardButtonSprites:
+    - {fileID: 21300000, guid: d61f7a4679373dd46b1ad00717a4cbf1, type: 3}
+    - {fileID: 21300000, guid: efa07498e9c27bb4599e6beba8c6e2cb, type: 3}
+    - {fileID: 21300000, guid: cbe85062063dab145bdba525dd5d3767, type: 3}
   listEventData:
   - eventTarget: 5
     listEventBotData:

@@ -48,6 +48,9 @@ namespace IEC
         {
             if (rewardInfoButton == null)
                 return;
+
+            if (rewardInfoGroup == null)
+                return;
             
             rewardInfoGroup.SetActive(false);
             rewardInfoDownImg.gameObject.SetActive(false);
@@ -58,6 +61,9 @@ namespace IEC
         {
             if (rewardInfoButton == null)
                 return;
+
+            if (rewardInfoDownImg == null)
+                return;
             
             rewardInfoDownImg.gameObject.SetActive(true);
             rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
@@ -67,6 +73,9 @@ namespace IEC
         private void SetRewardInfoUp()
         {
             if (rewardInfoButton == null)
+                return;
+            
+            if (rewardInfoUpImg == null)
                 return;
             
             rewardInfoUpImg.gameObject.SetActive(true);
@@ -121,9 +130,15 @@ namespace IEC
 
         protected virtual void UpdatePlayerRank(int rank)
         {
-            playerRankText.gameObject.SetActive(true);
-            playerRankImage.gameObject.SetActive(false);
-            playerRankText.text = rank.ToString();
+            if (playerRankText != null)
+            {
+                playerRankText.gameObject.SetActive(true);
+                playerRankText.text = rank.ToString();
+            }
+
+            if(playerRankImage != null)
+                playerRankImage.gameObject.SetActive(false);
+
 
             Sprite rankSprite;
             if ((rankSprite = _gameEventConfig.GetRankSprite(spriteSetIndex, rank)) != null)
@@ -167,16 +182,18 @@ namespace IEC
             if (EventPlayerData.isPlayer)
             {
                 displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerFrameSprite;
-                progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerProgressFrameSprite;
+                if(progressDisplayFrame != null)
+                    progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerProgressFrameSprite;
             }
             else
             {
                 displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).normalFrameSprite;
-                progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).normalProgressFrameSprite;
+                if(progressDisplayFrame != null)
+                    progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).normalProgressFrameSprite;
             }
         }
         
-        public enum HalfPosition { Top, Bottom }
+        public enum HalfPosition { Top, Bottom, Left, Right }
 
         public HalfPosition GetHalf(RectTransform container, RectTransform nestedChild)
         {

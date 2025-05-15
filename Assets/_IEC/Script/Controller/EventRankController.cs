@@ -34,7 +34,7 @@ namespace IEC
             {
                 case EventList.GamePlay.LEVEL_WIN:
                     //Event Add Star
-                    AddEventProgress(
+                    AddPlayerEventProgress(
                         new AddEventProgressData()
                         {
                             eventType = EventType.StarChase,
@@ -43,7 +43,7 @@ namespace IEC
                         });
                     
                     //Event Add Level
-                    AddEventProgress(
+                    AddPlayerEventProgress(
                         new AddEventProgressData()
                         {
                             eventType = EventType.SharkRace,
@@ -74,14 +74,14 @@ namespace IEC
             return data;
         }
 
-        private void AddEventProgress(AddEventProgressData progressData)
+        private void AddPlayerEventProgress(AddEventProgressData progressData)
         {
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).levelUnlock)
                 return;
             
             var eventData = PlayerData.GetEventSaveData(progressData.eventType);
 
-            var player = eventData.listPlayerData.Find(bot => bot.id.Equals(progressData.id));
+            var player = eventData.listPlayerData.Find(bot => bot.isPlayer);
 
             if (player != null)
             {

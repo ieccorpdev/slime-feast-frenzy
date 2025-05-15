@@ -46,6 +46,8 @@ public class HomeScreenTab : ScreenNavigateUI
     public BaseHomeFeatureButton starChestHomeFeature;
     [Header("Star Chase Event")] 
     public Button btnStarChase;
+    [Header("Shark Race Event")] 
+    public Button btnSharkRace;
     
     [Space(10)]
 
@@ -190,6 +192,11 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 Locator.Main.PopupStarChase.Show();
+            });
+        SetEvent(btnSharkRace,
+            () =>
+            {
+                Locator.Main.PopupSharkRace.Show();
             });
         SetupUIHome();
     }
