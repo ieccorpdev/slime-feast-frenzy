@@ -12,7 +12,9 @@ public static partial class Locator
         
         //"Home Main"
         public static HomeScreenTab HomeScreenTab => Pool.Get<HomeScreenTab>();
-        public static PopupAvatar PopupAvatar=> Pool.Get<PopupAvatar>();
+        public static PopupEditProfile PopupEditProfile=> Pool.Get<PopupEditProfile>();
+        public static PopupProfile PopupProfile => Pool.Get<PopupProfile>();
+        public static PopupEditProfileName PopupEditProfileName => Pool.Get<PopupEditProfileName>();
         public static PopupLuckyWheel PopupLuckyWheel=> Pool.Get<PopupLuckyWheel>();
         public static PopupNoAds PopupNoAds=> Pool.Get<PopupNoAds>();
         public static PopupLifeOffer PopupLifeOffer=> Pool.Get<PopupLifeOffer>();

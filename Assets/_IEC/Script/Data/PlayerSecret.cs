@@ -439,6 +439,7 @@ namespace IEC
         #region Player Avatar Profile
         [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
+        public string playerAvatarFrameName;
         public string playerName;    
         
         public void UpdatePlayerProfileName(string profileName)
