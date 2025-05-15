@@ -29,6 +29,8 @@ namespace IEC
         [Header("Info panel")]
         public GameObject infoPanel;
 
+        public StarChaseInfoBar starChaseInfoBar;
+
         public List<GameObject> listInfoObjects = new();
 
         public Sequence showInfoSequence;
@@ -51,6 +53,9 @@ namespace IEC
             
             UpdateBoosterButton();
             UpdateStreakDisplay();
+            
+            starChaseInfoBar.gameObject.SetActive(PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock);
+            starChaseInfoBar.SetupData();
         }
 
         protected override void OnHideClick()

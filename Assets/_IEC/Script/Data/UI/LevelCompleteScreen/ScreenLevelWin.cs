@@ -17,6 +17,8 @@ namespace IEC
     {
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
+        
+        public StarChaseInfoBar starChaseInfoBar;
 
         public GameObject groupGoldDisplay;
         public TextMeshProUGUI goldDisplayText;
@@ -58,7 +60,11 @@ namespace IEC
             Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             SetupGoldDisplay();
+            
             base.Show();
+            
+            starChaseInfoBar.gameObject.SetActive(PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock);
+            starChaseInfoBar.SetupData();
         }
 
         void SetupGoldDisplay()

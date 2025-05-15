@@ -11,6 +11,7 @@ namespace IEC
 {
     public class GameEventPlayerDataUI : EnhancedScrollerCellView
     {
+        public int spriteSetIndex;
         public Image displayFrame;
         public Image progressDisplayFrame;
         public TextMeshProUGUI playerName;
@@ -34,13 +35,20 @@ namespace IEC
 
         private void Start()
         {
-            rewardInfoButton.onClick.AddListener(OnShowRewardInfoUI);
+            if (rewardInfoButton != null)
+            {
+                rewardInfoButton.onClick.AddListener(OnShowRewardInfoUI);
+            }
+
             OnHideRewardInfoUI();
             gameObject.OnEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE, OnHideRewardInfoUI);
         }
 
         private void OnHideRewardInfoUI()
         {
+            if (rewardInfoButton == null)
+                return;
+            
             rewardInfoGroup.SetActive(false);
             rewardInfoDownImg.gameObject.SetActive(false);
             rewardInfoUpImg.gameObject.SetActive(false);
@@ -48,6 +56,9 @@ namespace IEC
 
         private void SetRewardInfoDown()
         {
+            if (rewardInfoButton == null)
+                return;
+            
             rewardInfoDownImg.gameObject.SetActive(true);
             rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
                 rewardInfoDownImg.GetComponent<RectTransform>().anchoredPosition;
@@ -55,6 +66,9 @@ namespace IEC
 
         private void SetRewardInfoUp()
         {
+            if (rewardInfoButton == null)
+                return;
+            
             rewardInfoUpImg.gameObject.SetActive(true);
             rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
                 rewardInfoUpImg.GetComponent<RectTransform>().anchoredPosition + Vector2.up * 30;
@@ -62,6 +76,9 @@ namespace IEC
 
         private void OnShowRewardInfoUI()
         {
+            if (rewardInfoButton == null)
+                return;
+            
             bool wasActive = rewardInfoGroup.gameObject.activeInHierarchy;
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE);
             var eventRewardData = _eventData.listEventRewardData.Find(data =>
@@ -109,15 +126,18 @@ namespace IEC
             playerRankText.text = rank.ToString();
 
             Sprite rankSprite;
-            if ((rankSprite = _gameEventConfig.GetRankSprite(rank)) != null)
+            if ((rankSprite = _gameEventConfig.GetRankSprite(spriteSetIndex, rank)) != null)
             {
                 playerRankText.gameObject.SetActive(false);
                 playerRankImage.gameObject.SetActive(true);
                 playerRankImage.sprite = rankSprite;
             }
 
-            rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(rank);
-            rewardInfoButtonImage.SetNativeSize();
+            if (rewardInfoButtonImage != null)
+            {
+                rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, rank);
+                rewardInfoButtonImage.SetNativeSize();
+            }
         }
         
         protected virtual void UpdatePlayerProgress()
@@ -146,13 +166,13 @@ namespace IEC
         {
             if (EventPlayerData.isPlayer)
             {
-                displayFrame.sprite = _gameEventConfig.mainPlayerFrameSprite;
-                progressDisplayFrame.sprite = _gameEventConfig.mainPlayerProgressFrameSprite;
+                displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerFrameSprite;
+                progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerProgressFrameSprite;
             }
             else
             {
-                displayFrame.sprite = _gameEventConfig.normalFrameSprite;
-                progressDisplayFrame.sprite = _gameEventConfig.normalProgressFrameSprite;
+                displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).normalFrameSprite;
+                progressDisplayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).normalProgressFrameSprite;
             }
         }
         

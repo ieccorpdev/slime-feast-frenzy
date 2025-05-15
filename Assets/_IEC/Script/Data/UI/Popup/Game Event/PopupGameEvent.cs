@@ -238,7 +238,7 @@ namespace IEC
             }
         }
 
-        private void StartNewEventStage(int eventStageIndex)
+        public void StartNewEventStage(int eventStageIndex)
         {
             IsInEvent = true;
             listPlayerData.Clear();

@@ -19,12 +19,7 @@ namespace IEC
         public bool updateEventAfterPlayerWinLevel;
 
         [Header("UI")] 
-        public Sprite normalFrameSprite;
-        public Sprite normalProgressFrameSprite;
-        public Sprite mainPlayerFrameSprite;
-        public Sprite mainPlayerProgressFrameSprite;
-        public List<Sprite> listRankSprites = new();
-        public List<Sprite> listRewardButtonSprites = new();
+        public List<GameEventDisplaySprite> listDisplaySprites = new();
 
         public List<EventData> listEventData = new();
         
@@ -305,26 +300,36 @@ namespace IEC
             
         }
 
+        public GameEventDisplaySprite GetDisplaySprite(int index)
+        {
+            if (listDisplaySprites.Count == 0)
+                return null;
+            
+            index = Mathf.Clamp(index, 0, listDisplaySprites.Count);
+
+            return listDisplaySprites[index];
+        }
+
         public EventData GetEventData(int index)
         {
             index = Mathf.Clamp(index, 0, listEventData.Count - 1);
             return listEventData[index];
         }
 
-        public Sprite GetRankSprite(int rank)
+        public Sprite GetRankSprite(int spriteSetIndex, int rank)
         {
-            if (rank > listRankSprites.Count)
+            if (rank > GetDisplaySprite(spriteSetIndex).listRankSprites.Count)
                 return null;
 
-            return listRankSprites[rank - 1];
+            return GetDisplaySprite(spriteSetIndex).listRankSprites[rank - 1];
         }
         
-        public Sprite GetRewardButtonSprite(int rank)
+        public Sprite GetRewardButtonSprite(int spriteSetIndex, int rank)
         {
-            if (rank > listRewardButtonSprites.Count)
-                return listRewardButtonSprites[^1];
+            if (rank > GetDisplaySprite(spriteSetIndex).listRewardButtonSprites.Count)
+                return GetDisplaySprite(spriteSetIndex).listRewardButtonSprites[^1];
 
-            return listRewardButtonSprites[rank - 1];
+            return GetDisplaySprite(spriteSetIndex).listRewardButtonSprites[rank - 1];
         }
         
         private List<List<string>> DownloadCsvFromAuthUrl(string url)
@@ -365,6 +370,17 @@ namespace IEC
                 default: return false;
             }
         }
+    }
+
+    [System.Serializable]
+    public class GameEventDisplaySprite
+    {
+        public Sprite normalFrameSprite;
+        public Sprite normalProgressFrameSprite;
+        public Sprite mainPlayerFrameSprite;
+        public Sprite mainPlayerProgressFrameSprite;
+        public List<Sprite> listRankSprites = new();
+        public List<Sprite> listRewardButtonSprites = new();
     }
 
     [System.Serializable]
