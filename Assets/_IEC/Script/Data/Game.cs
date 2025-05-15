@@ -27,9 +27,6 @@ namespace IEC
         public bool enableLevelProgress;
         public bool isUsingHardLevel;
         public bool enableTreasureHunt;
-
-        public bool enableRewardForDaily;
-
         public bool isImmortal;
 
         public bool isUsingGroundExtend = true ;
@@ -88,7 +85,7 @@ namespace IEC
 
         public bool dropSplashWater;
         public bool enableComboCount = true;
-        public bool haveDailyReward = true;
+        public bool haveDailyReward;
         public bool isOverrideDataRewardLuckyWheel;
         [Header("SFF")] public bool usingNewLogicPull = false;
         [Header("Tracking")]
