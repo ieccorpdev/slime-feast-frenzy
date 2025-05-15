@@ -4,11 +4,6 @@ using System.Globalization;
 
 namespace IEC
 {
-    [System.Serializable]
-    public class RewardListWrapper
-    {
-        public List<Reward> rewards;
-    }
     [Serializable]
     public class Reward
     {
