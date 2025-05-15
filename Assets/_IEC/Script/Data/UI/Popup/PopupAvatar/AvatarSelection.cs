@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public class AvatarSelection : _BaseBehaviour, IPointerDownHandler
+    public class AvatarSelection : _BaseBehaviour, IPointerDownHandler, IPointerUpHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
         public Image avatarFrameImage;
         public Image avatarImage;
@@ -35,7 +35,39 @@ namespace IEC
         
         public void OnPointerDown(PointerEventData eventData)
         {
+            //OnSelectAvatar();
+        }
+        
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (Locator.Main.PopupEditProfile.Dragging)
+                return;
+            
             OnSelectAvatar();
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            if(Locator.Main.PopupEditProfile.avatarScrollGroup != null)
+                Locator.Main.PopupEditProfile.avatarScrollGroup.OnDrag(eventData);
+        }
+        
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            if (Locator.Main.PopupEditProfile.avatarScrollGroup != null)
+            {
+                Locator.Main.PopupEditProfile.avatarScrollGroup.OnBeginDrag(eventData);
+                Locator.Main.PopupEditProfile.Dragging = true;
+            }
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            if (Locator.Main.PopupEditProfile.avatarScrollGroup != null)
+            {
+                Locator.Main.PopupEditProfile.avatarScrollGroup.OnEndDrag(eventData);
+                Locator.Main.PopupEditProfile.Dragging = false;
+            }
         }
 
         private void OnSelectAvatar()

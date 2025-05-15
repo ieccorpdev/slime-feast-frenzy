@@ -10,9 +10,19 @@ namespace IEC
         public Button btn;
         public ProfileSelectTab profileSelectTab;
 
+        public Image btnSprite;
+
+        public GameObject selectedGroup;
+        public GameObject deselectedGroup;
+
+        public Sprite selectedSprite;
+        public Sprite deselectedSprite;
+
         public void SetSelected(bool selected)
         {
-            
+            btnSprite.sprite = selected ? selectedSprite : deselectedSprite;
+            selectedGroup.gameObject.SetActive(selected);
+            deselectedGroup.gameObject.SetActive(!selected);
         }
     }
 }

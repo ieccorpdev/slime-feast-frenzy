@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,10 +10,12 @@ namespace IEC
 {
     public class PopupEditProfile : BasePopup
     {
+        public ScrollRect avatarScrollGroup;
         public Button allBGButton;
         public PlayerAvatar playerAvatar;
         public Button btnEditProfileName;
         public Button saveButton;
+        public TextMeshProUGUI playerNameText;
 
         public List<EditProfileTabSelection> listTabSelection = new();
 
@@ -24,6 +27,8 @@ namespace IEC
         public AvatarSelection CurrentSelectedAvatar { get; private set; }
         
         public ProfileSelectTab CurrentSelectedTab { get; private set; }
+        
+        public bool Dragging { get; set; }
 
         protected override void Awake()
         {
@@ -47,6 +52,9 @@ namespace IEC
             }
             
             SetEvent(allBGButton, OnHideClick);
+            
+            gameObject.OnEvent(EventList.GamePlay.UPDATE_PLAYER_NAME, UpdatePlayerName);
+            UpdatePlayerName();
 
             //InitAvatarTab();
         }
@@ -54,7 +62,7 @@ namespace IEC
         public override void Show()
         {
             base.Show();
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_PROFILE);
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
             
             //playerAvatar.playerAvatar.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
             
@@ -63,7 +71,7 @@ namespace IEC
 
         public override void Hide()
         {
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_PROFILE);
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
             base.Hide();
         }
 
@@ -81,11 +89,11 @@ namespace IEC
                 {
                     listAvatarSelections.Add(ObjectPool.Spawn(avatarSelectionPrefab, avatarSelectionContainer));
                 }
-
+                listAvatarSelections[i].SetActive(true);
                 listAvatarSelections[i].transform.localScale = Vector3.one;
                 listAvatarSelections[i].Init(Config.playerAvatarConfig.listAvatarSprites[i]);
                 
-                if(PlayerData.playerAvatarSpriteName.Equals(Config.playerAvatarConfig.listAvatarSprites[i].name))
+                if(playerAvatar.playerAvatar.sprite.name.Equals(Config.playerAvatarConfig.listAvatarSprites[i].name))
                 {
                     listAvatarSelections[i].SetSelectedDisplay(true);
                     CurrentSelectedAvatar = listAvatarSelections[i];
@@ -95,11 +103,45 @@ namespace IEC
                     listAvatarSelections[i].SetSelectedDisplay(false);
                 }
             }
+
+            for (int i = Config.playerAvatarConfig.listAvatarSprites.Count; i < listAvatarSelections.Count; i++)
+            {
+                listAvatarSelections[i].SetActive(false);
+            }
         }
 
         public void InitFrameTab()
         {
+            if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName))
+            {
+                PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
+            }
             
+            for (int i = 0; i < Config.playerAvatarConfig.listAvatarFrameSprites.Count; i++)
+            {
+                if (i >= listAvatarSelections.Count)
+                {
+                    listAvatarSelections.Add(ObjectPool.Spawn(avatarSelectionPrefab, avatarSelectionContainer));
+                }
+                listAvatarSelections[i].SetActive(true);
+                listAvatarSelections[i].transform.localScale = Vector3.one;
+                listAvatarSelections[i].Init(Config.playerAvatarConfig.listAvatarFrameSprites[i]);
+                
+                if(playerAvatar.playerAvatarFrame.sprite.name.Equals(Config.playerAvatarConfig.listAvatarFrameSprites[i].name))
+                {
+                    listAvatarSelections[i].SetSelectedDisplay(true);
+                    CurrentSelectedAvatar = listAvatarSelections[i];
+                }
+                else
+                {
+                    listAvatarSelections[i].SetSelectedDisplay(false);
+                }
+            }
+            
+            for (int i = Config.playerAvatarConfig.listAvatarFrameSprites.Count; i < listAvatarSelections.Count; i++)
+            {
+                listAvatarSelections[i].SetActive(false);
+            }
         }
 
         public void OnSelectTab(EditProfileTabSelection tabSelection)
@@ -147,8 +189,13 @@ namespace IEC
         {
             PlayerData.playerAvatarSpriteName = playerAvatar.playerAvatar.sprite.name;
             PlayerData.playerAvatarFrameName = playerAvatar.playerAvatarFrame.sprite.name;
-            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_PROFILE);
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
             OnHideClick();
+        }
+
+        private void UpdatePlayerName()
+        {
+            playerNameText.text = PlayerData.playerName;
         }
     }
 

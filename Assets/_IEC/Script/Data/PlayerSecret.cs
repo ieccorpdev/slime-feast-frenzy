@@ -454,6 +454,7 @@ namespace IEC
                     playerData.id = playerName;
                 }
             }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_NAME);
         }
 
         #endregion
