@@ -10,6 +10,17 @@ namespace _IEC.Features.Gameplay
     [Serializable]
     public class LevelSpawnData : ScriptableObject
     {
+        [Button]
+        public void SetAllSpawnDataKinematic()
+        {
+            foreach (var item in listItemSpawns)
+            {
+                foreach (var data in item.listSpawnDatas)
+                {
+                    data.kinematic = true;
+                }
+            }
+        }
         public List<ItemSpawn> listItemSpawns = new List<ItemSpawn>();
 
         public void CloneTo(LevelSpawnData spawnData)
@@ -17,6 +28,7 @@ namespace _IEC.Features.Gameplay
             spawnData.listItemSpawns = new List<ItemSpawn>(listItemSpawns);
         }
     }
+    
 
     [Serializable]
     public class ItemSpawn
