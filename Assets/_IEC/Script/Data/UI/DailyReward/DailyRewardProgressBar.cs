@@ -20,9 +20,9 @@ namespace _IEC
 
         public void UpdateRewardNodes()
         {
-            for (int i = 0; i < Locator.Main.PopupDailyReward.adRewards.Length; i++)
+            for (int i = 0; i < Locator.Main.PopupDailyReward.dailyReward.Length; i++)
             {
-                progressNodes[i].transform.GetChild(0).gameObject.SetActive(PlayerData.adRewardsClaimed.ContainsKey(i) && PlayerData.adRewardsClaimed[i]);
+                progressNodes[i].transform.GetChild(0).gameObject.SetActive(PlayerData.dailyRewardsClaimed.ContainsKey(i) && PlayerData.dailyRewardsClaimed[i]);
             }
         }
 
