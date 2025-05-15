@@ -196,7 +196,7 @@ namespace IEC
                 {
                     System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
                     Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel("Chest_1");
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                     reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
                 }
                 Locator.Main.HomeScreenTab.UpdateMainHome();
@@ -291,6 +291,10 @@ namespace IEC
             {
                 value = (PlayerData.timeEndStaredPack - DateTime.Now).Seconds
             });
+            ModuleController.cheatCode.AddCheatCodeButton("Set Claimable Daily Reward", cheatCodeParam =>
+            {
+               PlayerData.lastTimeOpenDailyReward = PlayerData.lastTimeOpenDailyReward.AddDays(-1);
+            });
         }
 
         private static void AddChestProgress(ChestType type,int number)
@@ -301,7 +305,7 @@ namespace IEC
                 var rewardData = Config.allChestConfig.GetChestConfig(type)
                     .GetRewardData(PlayerData.GetChestMilestone(type));
                 Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null,true);
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? "Chest_2": "Chest_1");
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? ClaimBonusRewardSkin.Chest_2: ClaimBonusRewardSkin.Chest_1);
             }
 
             Locator.Main.HomeScreenTab.UpdateMainHome();
