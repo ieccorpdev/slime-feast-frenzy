@@ -42,7 +42,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsNine;
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
-
+    List<EffectRewardData> listCollectedItems = new();
     public string AutoClaimTween => GetInstanceID() + "_AutoClaim";
     // Start is called before the first frame update
     void Start()
@@ -80,6 +80,7 @@ public class ClaimBonusRewardPanel : BasePopup
         this.showAimChest = showAimChest;
         this.actionClose = null;
         this.actionClose = actionClose;
+        listCollectedItems.Clear();
     }
 
     public void SettingRewardPosition()
@@ -136,7 +137,8 @@ public class ClaimBonusRewardPanel : BasePopup
     {
         SetTargetObjectAnimOt(skinAnim);
         DOTween.Kill(AutoClaimTween);
-        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+        //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+        Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
         EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);
@@ -256,20 +258,38 @@ public class ClaimBonusRewardPanel : BasePopup
         tapToClaim.gameObject.SetActive(false);
         canClaim = false;
         canOpen = false;
+        //First, just show only what add in last claim screen
+        listCollectedItems.Clear();
         foreach (var itr in listDataReward)
         {
             PlayerData.AddCurrency(itr.typeReward, itr.rewardAmount);
+            var dataRwScreen = listRewardUI.Find(item => item.typeReward == itr.typeReward);
+            var rectD = dataRwScreen.GetComponent<RectTransform>();
+            EffectRewardData dataEffectRW = new EffectRewardData(itr.typeReward, itr.rewardAmount,rectD.anchoredPosition,rectD.sizeDelta);
+            listCollectedItems.Add(dataEffectRW);
         }
-
+        
         if (!IsHaveShowClaimRewardAnim())
         {
             //this.gameObject.SetActive(false);
+            SpawnEffectClaimBonusInMainScreen();
             Hide();
+            
         }
 
         actionClose?.Invoke();
         PlayerData.Vibrate(HapticTypes.Failure);
         Pool.Get<ConfettiGroup>().StopConfetti();
+    }
+
+    private void SpawnEffectClaimBonusInMainScreen()
+    {
+        foreach (var collectedItem in listCollectedItems)
+        {
+            Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.rewardType, collectedItem.rewardAmount,collectedItem.startPos,collectedItem.startSize);
+        }
+
+        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null,0f);
     }
 
     private void OpenChest(bool fastOpen = false)

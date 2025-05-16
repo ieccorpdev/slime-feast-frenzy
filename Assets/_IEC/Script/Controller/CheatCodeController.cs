@@ -72,6 +72,47 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Profile Name", param =>
+            {
+                string name = param.inputParams[0].value.ToString();
+                PlayerData.UpdatePlayerProfileName(name);
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.playerName
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add star chase progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.StarChase,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.SharkRace,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
