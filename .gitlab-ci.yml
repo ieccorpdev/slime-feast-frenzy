@@ -197,6 +197,7 @@ build-android-il2cpp:
   <<: *build
   image: $IMAGE:$UNITY_VERSION-android-$IMAGE_VERSION
   after_script:
+    - chmod +x ./ci/firebase_app_distribution.sh
     - chmod +x ./ci/get_manifest_info.sh && ./ci/get_manifest_info.sh
   # rules:
   #   - if: $CI_COMMIT_BRANCH =~ $BUILD_CONFIG
