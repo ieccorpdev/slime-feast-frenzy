@@ -42,7 +42,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsNine;
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
-
+    List<KeyValuePair<ResourceType, int>> listCollectedItems = new();
     public string AutoClaimTween => GetInstanceID() + "_AutoClaim";
     // Start is called before the first frame update
     void Start()
@@ -80,6 +80,7 @@ public class ClaimBonusRewardPanel : BasePopup
         this.showAimChest = showAimChest;
         this.actionClose = null;
         this.actionClose = actionClose;
+        listCollectedItems.Clear();
     }
 
     public void SettingRewardPosition()
@@ -256,20 +257,34 @@ public class ClaimBonusRewardPanel : BasePopup
         tapToClaim.gameObject.SetActive(false);
         canClaim = false;
         canOpen = false;
+
         foreach (var itr in listDataReward)
         {
             PlayerData.AddCurrency(itr.typeReward, itr.rewardAmount);
+            listCollectedItems.Add(new KeyValuePair<ResourceType, int>(itr.typeReward, itr.rewardAmount));
         }
-
+        
         if (!IsHaveShowClaimRewardAnim())
         {
             //this.gameObject.SetActive(false);
+            SpawnEffectClaimBonusInMainScreen();
             Hide();
+            
         }
 
         actionClose?.Invoke();
         PlayerData.Vibrate(HapticTypes.Failure);
         Pool.Get<ConfettiGroup>().StopConfetti();
+    }
+
+    private void SpawnEffectClaimBonusInMainScreen()
+    {
+        foreach (var collectedItem in listCollectedItems)
+        {
+            Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.Key, collectedItem.Value);
+        }
+
+        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null);
     }
 
     private void OpenChest(bool fastOpen = false)

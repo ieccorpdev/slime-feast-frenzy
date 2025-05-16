@@ -21,6 +21,7 @@ namespace IEC
         private ScreenNavigateUI _currentScreen;
         public GameObject shopTab => m_Shop;
         public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
+        public UICurrency LifeCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Live);
         
         [Header("Avatar Button")] 
         public Button avatarButton;
@@ -158,18 +159,33 @@ namespace IEC
             {
                 case ResourceType.Gold:
                     AddRewardGoldToClaim(amount);
+                    break;           
+                case ResourceType.Live:
+                    AddRewardLifeToClaim(amount);
                     break;
                 case ResourceType.Vortex:
-                    AddRewardHelperToClaim(resourceType, amount,1f, 0.1f);
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
                     break;
                 case ResourceType.Compass:
-                    AddRewardHelperToClaim(resourceType, amount, 1f,0.2f);
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
                     break;
                 case ResourceType.Enlarge:
-                    AddRewardHelperToClaim(resourceType, amount, 1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
                     break;
                 case ResourceType.TimeStop:
-                    AddRewardHelperToClaim(resourceType, amount, 1f,0.4f);
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    break;
+                case ResourceType.TimeUnlimitedEvolveStone:
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    break;
+                case ResourceType.TimeUnlimitedWindSurf:
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    break;
+                case ResourceType.EvolveStone:
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    break;
+                case ResourceType.WindSurf:
+                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
                     break;
                 case ResourceType.OceanGiftObject:
                     AddSpecialObjectToClaim(amount, 1f);
@@ -282,7 +298,30 @@ namespace IEC
                 animTime
             );
         }
-
+        private void AddRewardLifeToClaim(int amount, float animTime = 2f, float delay = 0f)
+        {
+            LifeCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.playerLife - amount);
+            LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
+            AddCustomRewardToClaimEffect(
+                ResourceType.Gold, 
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Live),
+                Vector2.zero, 
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                () =>
+                {
+                    LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
+                    //goldCurrencyDisplay.UpdateCurrency();
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                },
+                () =>
+                {
+                    LifeCurrencyDisplay.ForceUpdateCurrencyText(LifeCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)amount / effectRewardClaim.maxSpawn));
+                },
+                delay,
+                animTime
+            );
+        }
         public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
             listClaimRewardData.Push(new RewardClaimData(rewardType, rewardSprite,  posSpawn, posEnd, addAmount, onComplete,onEndMove, delay, animTime));
