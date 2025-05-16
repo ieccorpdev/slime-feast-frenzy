@@ -89,6 +89,10 @@ namespace IEC
 
         public void AfterInit()
         {
+            if (String.IsNullOrEmpty(playerName))
+            {
+                playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
+            }
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();

@@ -15,7 +15,7 @@ namespace IEC
             return listAllGameEventConfig.Find(config => config.eventType == eventType);
         }
         
-        public List<string> GenerateAllNames(int num)
+        public List<string> GenerateAllNames(int num, string nameToIgnore = "")
         {
             List<string> result = new List<string>();
 
@@ -23,7 +23,7 @@ namespace IEC
             {
                 string name = GenerateNewName();
 
-                if (!result.Contains(name))
+                if (!result.Contains(name) && !nameToIgnore.Equals(name))
                 {
                     result.Add(name);
                 }
@@ -41,11 +41,20 @@ namespace IEC
             }
             else
             {
-                string part1 = "Player";
-                string part2 = Random.Range(0, 1000000).ToString("000000");
-                finalName = (part1 + part2).Replace(" ", string.Empty);
+                // string part1 = "Player";
+                // string part2 = Random.Range(0, 1000000).ToString("000000");
+                // finalName = (part1 + part2).Replace(" ", string.Empty);
+
+                finalName = GenerateNewPlayerName();
             }
             return finalName;
+        }
+
+        public string GenerateNewPlayerName()
+        {
+            string part1 = "Player";
+            string part2 = Random.Range(0, 1000000).ToString("000000");
+            return (part1 + part2).Replace(" ", string.Empty);
         }
     }
 }

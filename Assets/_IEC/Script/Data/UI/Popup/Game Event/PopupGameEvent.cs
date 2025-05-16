@@ -66,6 +66,12 @@ namespace IEC
             Init();
         }
 
+        public override void Hide()
+        {
+            base.Hide();
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+        }
+
         private void Start()
         {
             if(scroller != null)
@@ -225,22 +231,33 @@ namespace IEC
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
-            
-            Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
-                new ShowClaimRewardData()
-                {
-                    listDataReward = new List<Reward>(eventRewardData.listReward),
-                });
-            
-            Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(()=>
+
+            if (eventRewardData.listReward.Count > 0)
             {
-                if(stage != -1)
+                Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
+                    new ShowClaimRewardData()
+                    {
+                        listDataReward = new List<Reward>(eventRewardData.listReward),
+                    });
+
+                Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
+                {
+                    if (stage != -1)
+                        StartNewEventStage(stage);
+
+                    CheckInitEventProgress();
+                    UpdateUI();
+                });
+                Locator.Main.ClaimBonusRewardPanel.ShowNext();
+            }
+            else
+            {
+                if (stage != -1)
                     StartNewEventStage(stage);
-                
+
                 CheckInitEventProgress();
                 UpdateUI();
-            });
-            Locator.Main.ClaimBonusRewardPanel.ShowNext();
+            }
         }
 
         protected virtual void ShowEventCompletedScreen()
@@ -270,6 +287,10 @@ namespace IEC
         
         public virtual bool IsEndEventStage()
         {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd;
         }
@@ -317,7 +338,7 @@ namespace IEC
             
             var nameList =
                 Config.AllGameEventConfig.GenerateAllNames(
-                    _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count);
+                    _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count, PlayerData.playerName);
 
             for (int i = 0; i < _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count; i++)
             {

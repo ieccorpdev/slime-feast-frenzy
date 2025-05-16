@@ -38,6 +38,11 @@ namespace IEC
 
         public override bool IsEndEventStage()
         {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
 

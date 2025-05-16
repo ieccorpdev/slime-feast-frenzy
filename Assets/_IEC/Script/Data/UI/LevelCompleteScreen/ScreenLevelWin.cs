@@ -73,6 +73,8 @@ namespace IEC
         
         private void CheckShowGameEventInfoBar()
         {
+            sharkRaceInfoBar.gameObject.SetActive(false);
+            starChaseInfoBar.gameObject.SetActive(false);
             if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
             {
                 if (!Locator.Main.PopupSharkRace.IsEventCompleted())
@@ -220,6 +222,20 @@ namespace IEC
                     {
                         Locator.Main.PopupStartStarChaseEvent.Show();
                         PlayerData.isShownPopupStartStarChase = true;
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(StartStarChase);
+            }
+            
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock && !PlayerData.isShownPopupStartSharkRace)
+            {
+                PopupData StartStarChase = new PopupData(
+                    Locator.Main.PopupStartSharkRaceEvent,
+                    () =>
+                    {
+                        Locator.Main.PopupStartSharkRaceEvent.Show();
+                        PlayerData.isShownPopupStartSharkRace = true;
                     },
                     ShowNext
                 );

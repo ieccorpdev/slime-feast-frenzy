@@ -60,6 +60,8 @@ namespace IEC
 
         private void CheckShowGameEventInfoBar()
         {
+            sharkRaceInfoBar.gameObject.SetActive(false);
+            starChaseInfoBar.gameObject.SetActive(false);
             if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
             {
                 if (!Locator.Main.PopupSharkRace.IsEventCompleted())

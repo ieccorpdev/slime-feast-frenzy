@@ -27,6 +27,7 @@ namespace IEC
             public const string SHOW_LOADING = "GamePlay.SHOW_LOADING";
             public const string ON_CHOOSE_TAB = "GamePlay.ON_CHOOSE_TAB";
             public const string UPDATE_RESOURCE_UI = "GamePlay.UPDATE_RESOURCE_UI";
+            public const string UPDATE_GAME_EVENT_UI = "GamePlay.UPDATE_GAME_EVENT_UI";
             public const string UPDATE_RESOURCE_BOOSTER_UI = "GamePlay.UPDATE_RESOURCE_BOOSTER_UI";
             public const string UPDATE_PLAYER_AVATAR_PROFILE = "GamePlay.UPDATE_PLAYER_PROFILE";
             public const string UPDATE_PLAYER_NAME = "GamePlay.UPDATE_PLAYER_PROFILE";
