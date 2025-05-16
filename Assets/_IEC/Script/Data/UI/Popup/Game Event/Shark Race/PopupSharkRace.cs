@@ -22,6 +22,20 @@ namespace IEC
             UpdateUI();
         }
 
+        public override bool IsEventCompleted()
+        {
+            //var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            var data = PlayerData.GetEventSaveData(eventType);
+
+            if (data == null || data.listPlayerData.Count == 0)
+                return true;
+            
+            if (data.claimedReward && _eventConfig.listEventData.Count - 1 == data.eventIndex)
+                return true;
+
+            return false;
+        }
+
         public override bool IsEndEventStage()
         {
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);

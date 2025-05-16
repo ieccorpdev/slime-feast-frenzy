@@ -896,6 +896,7 @@ namespace IEC
 
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
+        public bool isShownPopupStartSharkRace;
 
         public EventSaveData GetEventSaveData(EventType eventType)
         {
@@ -912,6 +913,13 @@ namespace IEC
             }
 
             return data;
+        }
+        
+        public bool IsEventCompleted(EventType eventType)
+        {
+            var saveData = GetEventSaveData(eventType);
+            var eventData = Config.AllGameEventConfig.GetGameEventConfig(eventType).GetEventData(saveData.eventIndex);
+            return false;
         }
 
         #endregion

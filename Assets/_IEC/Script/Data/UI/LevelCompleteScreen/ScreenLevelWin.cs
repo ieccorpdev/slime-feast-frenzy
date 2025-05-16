@@ -18,7 +18,8 @@ namespace IEC
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
         
-        public StarChaseInfoBar starChaseInfoBar;
+        public GameEventInfoBar starChaseInfoBar;
+        public GameEventInfoBar sharkRaceInfoBar;
 
         public GameObject groupGoldDisplay;
         public TextMeshProUGUI goldDisplayText;
@@ -63,12 +64,33 @@ namespace IEC
             
             base.Show();
             
-            starChaseInfoBar.gameObject.SetActive(PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock);
-            starChaseInfoBar.SetupData();
+            CheckShowGameEventInfoBar();
             
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.CollectedStars
                 , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+        }
+        
+        private void CheckShowGameEventInfoBar()
+        {
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            {
+                if (!Locator.Main.PopupSharkRace.IsEventCompleted())
+                {
+                    sharkRaceInfoBar.gameObject.SetActive(true);
+                    starChaseInfoBar.gameObject.SetActive(false);
+                    sharkRaceInfoBar.SetupData();
+                }
+            }
+            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            {
+                if (!Locator.Main.PopupStarChase.IsEventCompleted())
+                {
+                    starChaseInfoBar.gameObject.SetActive(true);
+                    sharkRaceInfoBar.gameObject.SetActive(false);
+                    starChaseInfoBar.SetupData();
+                }
+            }
         }
 
         void SetupGoldDisplay()

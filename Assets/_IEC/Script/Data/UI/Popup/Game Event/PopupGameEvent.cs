@@ -212,7 +212,10 @@ namespace IEC
 
             if (IsEventMultipleStage && !IsEndEvent() && data.eventIndex < _eventConfig.listEventData.Count - 1)
             {
-                stage = data.eventIndex + 1;
+                if (IsEventStageCompleted())
+                    stage = data.eventIndex + 1;
+                else
+                    stage = data.eventIndex;
             }
             else
             {
@@ -250,8 +253,17 @@ namespace IEC
             
         }
 
+        public virtual bool IsEventCompleted()
+        {
+            return IsEndEvent();
+        }
+
         public virtual bool IsEndEvent()
         {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd;
         }

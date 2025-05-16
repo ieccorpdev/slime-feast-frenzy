@@ -866,7 +866,7 @@ GameObject:
   - component: {fileID: 6887245565209233529}
   - component: {fileID: 302249323380685410}
   - component: {fileID: 7879575090678027040}
-  - component: {fileID: 1535126001621950670}
+  - component: {fileID: 3573701673663002561}
   m_Layer: 5
   m_Name: StarChaseInfoBar
   m_TagString: Untagged
@@ -936,7 +936,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1535126001621950670
+--- !u!114 &3573701673663002561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -945,12 +945,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 7967189832860638679}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 415c76a2b10d5a942936263d8eab240c, type: 3}
+  m_Script: {fileID: 11500000, guid: a591cb003e2df3d4b84c867fa84c17f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  eventType: 0
   startGroup: {fileID: 506138506278194342}
-  startChaseButton: {fileID: 6228738501532453049}
+  startButton: {fileID: 6228738501532453049}
   scroller: {fileID: 5195379647733909248}
+  eventTargetText: {fileID: 0}
   timerText: {fileID: 3332796655539221011}
   playerDataUIPrefab: {fileID: 493425141699441487, guid: e9e1308abd2e92845aa608f72f320020,
     type: 3}

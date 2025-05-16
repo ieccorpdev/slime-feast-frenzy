@@ -29,7 +29,8 @@ namespace IEC
         [Header("Info panel")]
         public GameObject infoPanel;
 
-        public StarChaseInfoBar starChaseInfoBar;
+        public GameEventInfoBar starChaseInfoBar;
+        public GameEventInfoBar sharkRaceInfoBar;
 
         public List<GameObject> listInfoObjects = new();
 
@@ -53,9 +54,30 @@ namespace IEC
             
             UpdateBoosterButton();
             UpdateStreakDisplay();
-            
-            starChaseInfoBar.gameObject.SetActive(PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock);
-            starChaseInfoBar.SetupData();
+
+            CheckShowGameEventInfoBar();
+        }
+
+        private void CheckShowGameEventInfoBar()
+        {
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            {
+                if (!Locator.Main.PopupSharkRace.IsEventCompleted())
+                {
+                    sharkRaceInfoBar.gameObject.SetActive(true);
+                    starChaseInfoBar.gameObject.SetActive(false);
+                    sharkRaceInfoBar.SetupData();
+                }
+            }
+            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            {
+                if (!Locator.Main.PopupStarChase.IsEventCompleted())
+                {
+                    starChaseInfoBar.gameObject.SetActive(true);
+                    sharkRaceInfoBar.gameObject.SetActive(false);
+                    starChaseInfoBar.SetupData();
+                }
+            }
         }
 
         protected override void OnHideClick()
