@@ -216,7 +216,7 @@ namespace IEC
             data.claimedReward = true;
             int stage = 0;
 
-            if (IsEventMultipleStage && !IsEndEvent() && data.eventIndex < _eventConfig.listEventData.Count - 1)
+            if (IsEventMultipleStage && !IsEndEvent())
             {
                 if (IsEventStageCompleted())
                 {
