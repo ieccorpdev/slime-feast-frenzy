@@ -140,7 +140,7 @@ namespace IEC
                     {
                         listDataReward = new List<Reward>(rewardData.listReward),
                         showAimChest = true,
-                        chestType = "Chest_2"
+                        chestType = ClaimBonusRewardSkin.Chest_2
                     });
             }
 
@@ -157,7 +157,7 @@ namespace IEC
                     {
                         listDataReward = new List<Reward>(rewardData.listReward),
                         showAimChest = true,
-                        chestType = "Chest_1"
+                        chestType = ClaimBonusRewardSkin.Chest_1
                     });
             }
 
@@ -225,7 +225,7 @@ namespace IEC
                                 .GetRewardData(PlayerData.GetChestMilestone(chestType)-1);
                             //-1 by MeoMew fix Task #67686, reduce 1 level chest to get true reward
                             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(chestType == ChestType.Level ? "Chest_2": "Chest_1");
+                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(chestType == ChestType.Level ? ClaimBonusRewardSkin.Chest_2: ClaimBonusRewardSkin.Chest_1);
                         }, 
                         onClose);
             }
