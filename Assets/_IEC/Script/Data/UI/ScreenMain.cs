@@ -288,7 +288,7 @@ namespace IEC
                 ResourceType.Gold, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Gold),
                 startPos, 
-                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.GoldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.GoldCurrencyDisplay.targetIcon.rectTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
                 startSize,
                 () =>

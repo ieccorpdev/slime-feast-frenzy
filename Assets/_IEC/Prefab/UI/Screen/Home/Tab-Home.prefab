@@ -1080,6 +1080,8 @@ GameObject:
   - component: {fileID: 1424269084748729415}
   - component: {fileID: 9052803038675991474}
   - component: {fileID: 7963877462003740472}
+  - component: {fileID: 404078186073387411}
+  - component: {fileID: 385624028666586895}
   m_Layer: 0
   m_Name: SkeletonGraphic (chest)
   m_TagString: Untagged
@@ -1177,6 +1179,38 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
+--- !u!114 &404078186073387411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2246163408906088793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791182c332a4b8743b33c934a0c9c1ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spine: {fileID: 385624028666586895}
+  listAnimAloop:
+  - animation
+  - idle
+  delayEachanim:
+  - 3
+  - 4
+--- !u!114 &385624028666586895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2246163408906088793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04530c2c8fade404984890aa2aedfe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ske: {fileID: 7963877462003740472}
 --- !u!1 &2319328439760785944
 GameObject:
   m_ObjectHideFlags: 0
@@ -2233,6 +2267,8 @@ GameObject:
   - component: {fileID: 6608177097190657532}
   - component: {fileID: 7581435473013810857}
   - component: {fileID: 9002735447058711167}
+  - component: {fileID: 900868941706325005}
+  - component: {fileID: 7820873205372057225}
   m_Layer: 0
   m_Name: SkeletonGraphic (no ads)
   m_TagString: Untagged
@@ -2330,6 +2366,38 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
+--- !u!114 &900868941706325005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365786931742519213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04530c2c8fade404984890aa2aedfe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ske: {fileID: 9002735447058711167}
+--- !u!114 &7820873205372057225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3365786931742519213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791182c332a4b8743b33c934a0c9c1ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spine: {fileID: 900868941706325005}
+  listAnimAloop:
+  - animation
+  - idle
+  delayEachanim:
+  - 3
+  - 4
 --- !u!1 &3386678126338530872
 GameObject:
   m_ObjectHideFlags: 0
@@ -5796,6 +5864,8 @@ GameObject:
   - component: {fileID: 9067052595008121155}
   - component: {fileID: 1816764984423200524}
   - component: {fileID: 7550192030383596492}
+  - component: {fileID: 3683268605268204994}
+  - component: {fileID: 8033686516891282290}
   m_Layer: 0
   m_Name: SkeletonGraphic (star chest)
   m_TagString: Untagged
@@ -5893,6 +5963,38 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
+--- !u!114 &3683268605268204994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7937946893793325098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04530c2c8fade404984890aa2aedfe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ske: {fileID: 7550192030383596492}
+--- !u!114 &8033686516891282290
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7937946893793325098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791182c332a4b8743b33c934a0c9c1ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spine: {fileID: 3683268605268204994}
+  listAnimAloop:
+  - animation
+  - idle
+  delayEachanim:
+  - 3
+  - 4
 --- !u!1 &8437436313891747483
 GameObject:
   m_ObjectHideFlags: 0
@@ -6403,6 +6505,8 @@ GameObject:
   - component: {fileID: 8465906554100731188}
   - component: {fileID: 7493160324019018491}
   - component: {fileID: 3193924753646246903}
+  - component: {fileID: 3234561347421963244}
+  - component: {fileID: 1651056854499714567}
   m_Layer: 0
   m_Name: SkeletonGraphic (ads bundle)
   m_TagString: Untagged
@@ -6500,6 +6604,38 @@ MonoBehaviour:
       immutableTriangles: 0
   updateTiming: 1
   unscaledTime: 0
+--- !u!114 &3234561347421963244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759651236892789698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 791182c332a4b8743b33c934a0c9c1ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spine: {fileID: 1651056854499714567}
+  listAnimAloop:
+  - animation
+  - idle
+  delayEachanim:
+  - 3
+  - 4
+--- !u!114 &1651056854499714567
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8759651236892789698}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04530c2c8fade404984890aa2aedfe2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ske: {fileID: 3193924753646246903}
 --- !u!1 &9134331516839979992
 GameObject:
   m_ObjectHideFlags: 0
