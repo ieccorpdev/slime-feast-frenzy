@@ -219,13 +219,18 @@ namespace IEC
             if (IsEventMultipleStage && !IsEndEvent() && data.eventIndex < _eventConfig.listEventData.Count - 1)
             {
                 if (IsEventStageCompleted())
-                    stage = data.eventIndex + 1;
+                {
+                    if (data.eventIndex < _eventConfig.listEventData.Count - 1)
+                    {
+                        stage = data.eventIndex + 1;
+                    }
+                    else
+                    {
+                        stage = -1;
+                    }
+                }
                 else
                     stage = data.eventIndex;
-            }
-            else
-            {
-                stage = -1;
             }
 
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
@@ -243,20 +248,26 @@ namespace IEC
                 Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
                 {
                     if (stage != -1)
+                    {
                         StartNewEventStage(stage);
-
-                    CheckInitEventProgress();
-                    UpdateUI();
+                        CheckInitEventProgress();
+                        UpdateUI();
+                    }
+                    else
+                        Hide();
                 });
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
             {
                 if (stage != -1)
+                {
                     StartNewEventStage(stage);
-
-                CheckInitEventProgress();
-                UpdateUI();
+                    CheckInitEventProgress();
+                    UpdateUI();
+                }
+                else
+                    Hide();
             }
         }
 
@@ -357,7 +368,8 @@ namespace IEC
                     });
             }
             
-            listPlayerData.Add(
+            //Insert player data to middle
+            listPlayerData.Insert( listPlayerData.Count / 2,
                 new EventPlayerData()
                 {
                     id = PlayerData.playerName,
@@ -365,6 +377,11 @@ namespace IEC
                     speed = 0,
                     isPlayer = true,
                 });
+
+            for (int i = 0; i < listPlayerData.Count; i++)
+            {
+                listPlayerData[i].indexInUI = i;
+            }
                 
             _eventRankController
                 .InitData(

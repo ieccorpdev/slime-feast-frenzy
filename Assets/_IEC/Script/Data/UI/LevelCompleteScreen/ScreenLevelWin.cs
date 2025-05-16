@@ -214,7 +214,7 @@ namespace IEC
                 ));
             }
             
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock && !PlayerData.isShownPopupStartStarChase)
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock && !PlayerData.isShownPopupStartStarChase)
             {
                 PopupData StartStarChase = new PopupData(
                     Locator.Main.PopupStartStarChaseEvent,
@@ -228,7 +228,7 @@ namespace IEC
                 popupQueue.Enqueue(StartStarChase);
             }
             
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock && !PlayerData.isShownPopupStartSharkRace)
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock && !PlayerData.isShownPopupStartSharkRace)
             {
                 PopupData StartStarChase = new PopupData(
                     Locator.Main.PopupStartSharkRaceEvent,

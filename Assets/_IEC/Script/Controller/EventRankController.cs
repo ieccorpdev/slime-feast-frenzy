@@ -60,6 +60,7 @@ namespace IEC
 
             eventData.listPlayerData = new List<EventPlayerData>(listEventPlayerData);
             eventData.eventIndex = eventIndex;
+            eventData.claimedReward = false;
             eventData.lastUpdateTime = DateTime.MinValue;
             eventData.timeStart = timeStart;
             eventData.timeEnd = timeEnd;
@@ -68,8 +69,9 @@ namespace IEC
         public EventSaveData GetEventSaveData(EventType eventType)
         {
             var data = PlayerData.GetEventSaveData(eventType);
-
-            data.listPlayerData = new List<EventPlayerData>(data.listPlayerData.OrderByDescending(playerData => playerData.progress));
+            
+            data.listPlayerData =
+                new List<EventPlayerData>(data.listPlayerData.OrderByDescending(playerData => playerData.progress));
             
             return data;
         }
@@ -116,6 +118,7 @@ namespace IEC
         public string id;
         public string avatarID;
         public string avatarFrameID;
+        public int indexInUI; // For shark chase
         public bool isPlayer = false;
         public int progress;
         public float speed;

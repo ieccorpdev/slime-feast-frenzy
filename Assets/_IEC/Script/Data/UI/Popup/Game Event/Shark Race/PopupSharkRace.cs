@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -84,15 +85,18 @@ namespace IEC
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(eventSaveData.eventIndex);
             eventTargetText.text = eventData.eventTarget.ToString();
+
+            var data = eventSaveData.listPlayerData.OrderBy(data => data.indexInUI).ToList();
+            
             for (int i = 0; i < listPlayerData.Count; i++)
             {
                 listPlayerDataUI[i]
                     .Setup(
                         _eventConfig,
                         eventData,
-                        eventSaveData.listPlayerData[i],
-                        i + 1);
-                (listPlayerDataUI[i] as SharkRacePlayerDataUI).UpdateUI((float)eventSaveData.listPlayerData[i].progress / eventData.eventTarget);
+                        data[i],
+                        eventSaveData.listPlayerData.IndexOf(data[i]) + 1);
+                (listPlayerDataUI[i] as SharkRacePlayerDataUI).UpdateUI((float)data[i].progress / eventData.eventTarget);
             }
         }
         

@@ -92,6 +92,7 @@ namespace IEC
                         id = PlayerData.playerName,
                         progressAmount = value,
                     });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
             }, new CheatCode.InputParam
             {
                 value = 0
@@ -107,6 +108,7 @@ namespace IEC
                         id = PlayerData.playerName,
                         progressAmount = value,
                     });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
             }, new CheatCode.InputParam
             {
                 value = 0
