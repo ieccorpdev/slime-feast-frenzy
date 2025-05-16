@@ -137,7 +137,8 @@ public class ClaimBonusRewardPanel : BasePopup
     {
         SetTargetObjectAnimOt(skinAnim);
         DOTween.Kill(AutoClaimTween);
-        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+        //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+        Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
         EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);

@@ -70,7 +70,12 @@ namespace IEC
                 }
                 else
                 {
-                    if (_gameEventPopup.IsEndEventStage())
+                    if (_gameEventPopup.IsEndEvent() && data.claimedReward)
+                    {
+                        joinGroup.gameObject.SetActive(true);
+                        button.interactable = true;
+                    }
+                    else if (_gameEventPopup.IsEndEventStage())
                     {
                         if (!data.claimedReward)
                         {
