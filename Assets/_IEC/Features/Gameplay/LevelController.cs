@@ -196,7 +196,8 @@ namespace _IEC.Features.Gameplay
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
             m_AllkingdomSpecialItems.Clear();
-            int countAllkingdomSpecialItems = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount();
+            int countAllkingdomSpecialItems = PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn ? 
+                Config.specialObjectConfig.GetSpawnAmount() : 0;
             m_AllkingdomSpecialItems = LevelHelper.SpawnSpecialItems(
                 GroundExtend.CalculateBounds(m_AllItems),
                 countAllkingdomSpecialItems,
