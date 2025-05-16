@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public static class StringHelper
@@ -43,5 +44,46 @@ public static class StringHelper
         return includeStartEndString
             ? original.Substring(pFrom, pTo - pFrom + end.Length)
             : original.Substring(pFrom + start.Length, pTo - pFrom - start.Length);
+    }
+
+    public static string TrimStringToMaxBytes(string input, int maxBytes)
+    {
+        var totalBytes = Encoding.UTF8.GetByteCount(input);
+        if (totalBytes <= maxBytes)
+        {
+            return input;
+        }
+
+        var low = 0;
+        var high = input.Length;
+        var bestIndex = input.Length;
+
+        while (low <= high)
+        {
+            var mid = (low + high) / 2;
+            var substring = input.Substring(mid);
+            var byteCount = Encoding.UTF8.GetByteCount(substring);
+
+            if (byteCount <= maxBytes)
+            {
+                bestIndex = mid;
+                high = mid - 1;
+            }
+            else
+            {
+                low = mid + 1;
+            }
+        }
+        return input.Substring(bestIndex);
+    }
+
+    public static string GetFileSizeStr(int byteCount)
+    {
+        return byteCount switch
+        {
+            < 1024 => byteCount + " B",
+            < 1024 * 1024 => (1f * byteCount / 1024).ToString("0.0") + " KB",
+            _ => (1f * byteCount / 1024 / 1024).ToString("0.0") + " MB"
+        };
     }
 }

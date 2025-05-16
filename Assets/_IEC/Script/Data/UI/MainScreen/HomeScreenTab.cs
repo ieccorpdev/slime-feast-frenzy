@@ -44,6 +44,14 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Star Chest Reward")] 
     public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
+    [Header("Star Chase Event")] 
+    public Button btnStarChase;
+    public GameEventHomeButton starChaseButton;
+    [Header("Shark Race Event")] 
+    public Button btnSharkRace;
+    public GameEventHomeButton sharkRaceButton;
+    
+    [Space(10)]
 
     public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -71,7 +79,7 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupAvatar.Show();
+                Locator.Main.PopupEditProfile.Show();
             });      
         SetEvent(luckyWheel,
             () =>
@@ -137,6 +145,9 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(playButton,
             () =>
             {
+                //Block play button when have reward on way claim
+                if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+                   Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
                 if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                 {
                     Locator.Main.PopupOutOfLive.Show();
@@ -169,14 +180,25 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         
-        SetEvent(buildButton,
+        //SetEvent(buildButton,
+        //    () =>
+        //    {
+        //        DoMoveOutAllObj(0.3f,
+        //            () =>
+        //            {
+        //                Locator.Main.HomeScreenTab.buildCityUI.Show();
+        //            });
+        //    });
+           
+        SetEvent(btnStarChase,
             () =>
             {
-                DoMoveOutAllObj(0.3f,
-                    () =>
-                    {
-                        Locator.Main.HomeScreenTab.buildCityUI.Show();
-                    });
+                Locator.Main.PopupStarChase.Show();
+            });
+        SetEvent(btnSharkRace,
+            () =>
+            {
+                Locator.Main.PopupSharkRace.Show();
             });
         SetupUIHome();
     }
@@ -428,9 +450,10 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();
-        UpdateBuildCity();
+        //UpdateBuildCity();
         UpdateLifeOffer();
         UpdateStarChest();
+        UpdateGameEventButton();
         progressRewardBar.Setup();
         levelChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
         levelChestHomeFeature.SetProgressBar(
@@ -457,6 +480,13 @@ public class HomeScreenTab : ScreenNavigateUI
         // starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
         // btnStarChestReward.interactable = isEnoughLevel;
     }
+
+    private void UpdateGameEventButton()
+    {
+        starChaseButton.InitUI();
+        sharkRaceButton.InitUI();
+    }
+
     private void UpdateLifeOffer()
     {
         lifeOfferNotiImage.gameObject.SetActive(PlayerData.playerLife <= 0 && !PlayerData.dailyShowLifeOfferPack);
@@ -471,7 +501,7 @@ public class HomeScreenTab : ScreenNavigateUI
     private void UpdateDailyReward()
     {
         dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
-        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock);
+        btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock && Game.haveDailyReward);
     }
 
 }

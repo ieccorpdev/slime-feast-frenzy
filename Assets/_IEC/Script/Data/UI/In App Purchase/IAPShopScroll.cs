@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using IEC.Common.Event;
 using NaughtyAttributes;
+using UnityEngine;
 
 namespace IEC
 {
@@ -13,7 +15,12 @@ namespace IEC
         {
             CheckListShowing();
         }
-
+        private void Start()
+        {
+            
+            gameObject.OnEvent(EventList.GamePlay.BUY_NO_ADS, CheckListShowing);
+            gameObject.OnEvent(EventList.GamePlay.BUY_STARTER_PACK, CheckListShowing);
+        }
         public void CheckListShowing()
         {
             foreach (var iapPack in listIAPPackage)

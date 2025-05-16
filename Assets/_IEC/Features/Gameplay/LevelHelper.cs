@@ -419,6 +419,7 @@ namespace _IEC.Features.Gameplay
                     isStartKinematic =  false,
                 };
                 itemTransform.parent = levelObjectHolder;
+                //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
                 itemComponent.LoadData(itemData, itemDefinition);
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(

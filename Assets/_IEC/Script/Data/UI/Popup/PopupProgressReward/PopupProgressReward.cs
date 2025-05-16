@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -24,12 +25,18 @@ namespace IEC
         public Button infoButton;
         public Button closeTutorialPanel;
         public GameObject tutorialPopup;
+
+        [Header("Info ui")] 
+        public Transform tapToContinueImg;
+        public List<Transform> listInfoUI = new();
+
+        private Sequence showInfoSequence;
         private void Start()
         {
             SetEvent(btnCloseAll, OnHideClick);
             SetEvent(infoButton, ()=>
             {
-                tutorialPopup.gameObject.SetActive(true);
+                OnShowInfo();
             });            
             SetEvent(closeTutorialPanel, ()=>
             {
@@ -68,6 +75,32 @@ namespace IEC
             
             listProgressRewardItems[0].SetBotItem();
             listProgressRewardItems[^1].SetTopItem();
+        }
+
+        private void OnShowInfo()
+        {
+            tutorialPopup.gameObject.SetActive(true);
+            
+            DOTween.Kill(showInfoSequence);
+            showInfoSequence = DOTween.Sequence();
+
+            foreach (var ui in listInfoUI)
+            {
+                ui.localScale = Vector3.zero;
+            }
+
+            tapToContinueImg.transform.localScale = new Vector3(0, 1, 1);
+
+            float delay = 0f;
+            foreach (var ui in listInfoUI)
+            {
+                showInfoSequence.Insert(delay, ui.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
+                delay += 0.1f;
+            }
+
+            showInfoSequence.Insert(delay, tapToContinueImg.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
+
+            showInfoSequence.Play();
         }
     }
 }

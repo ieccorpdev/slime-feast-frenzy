@@ -72,6 +72,47 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Profile Name", param =>
+            {
+                string name = param.inputParams[0].value.ToString();
+                PlayerData.UpdatePlayerProfileName(name);
+            }, new CheatCode.InputParam
+            {
+                value = PlayerData.playerName
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add star chase progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.StarChase,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.SharkRace,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
@@ -82,7 +123,16 @@ namespace IEC
             {
                 value = PlayerData.level
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set bonus combo", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                Locator.Game.ScreenInGame.comboUI.bonusCombo = count;
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level Hard with id", param =>
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
@@ -150,6 +200,11 @@ namespace IEC
 
                 cheatCodeParam.buttonText = "NoAds: " + data.isNoAds;
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Send Feedback", cheatCodeParam =>
+            {
+                Services.SendEmail();
+            });
 
             ModuleController.cheatCode.AddCheatCodeButton("Add Level Chest ( On Home)", param =>
             {
@@ -173,7 +228,7 @@ namespace IEC
                 {
                     System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
                     Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
-                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel("Chest_1");
+                    Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                     reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
                 }
                 Locator.Main.HomeScreenTab.UpdateMainHome();
@@ -235,14 +290,7 @@ namespace IEC
             {
                 value = 500
             });
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Medal LeaderBoard", param =>
-            {
-                int gc = int.Parse(param.inputParams[0].value.ToString());
-                LeaderboardController.leaderboardSaveData.AddMedal(gc);
-            }, new CheatCode.InputParam
-            {
-                value = 100
-            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set UnlimitedLife Time ( Minutes)", param =>
             {
                 int gc = int.Parse(param.inputParams[0].value.ToString());
@@ -275,6 +323,10 @@ namespace IEC
             {
                 value = (PlayerData.timeEndStaredPack - DateTime.Now).Seconds
             });
+            ModuleController.cheatCode.AddCheatCodeButton("Set Claimable Daily Reward", cheatCodeParam =>
+            {
+               PlayerData.lastTimeOpenDailyReward = PlayerData.lastTimeOpenDailyReward.AddDays(-1);
+            });
         }
 
         private static void AddChestProgress(ChestType type,int number)
@@ -285,7 +337,7 @@ namespace IEC
                 var rewardData = Config.allChestConfig.GetChestConfig(type)
                     .GetRewardData(PlayerData.GetChestMilestone(type));
                 Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null,true);
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? "Chest_2": "Chest_1");
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(type == ChestType.Level ? ClaimBonusRewardSkin.Chest_2: ClaimBonusRewardSkin.Chest_1);
             }
 
             Locator.Main.HomeScreenTab.UpdateMainHome();

@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using NaughtyAttributes;
+using Sirenix.OdinInspector;
 
 namespace IEC
 {

@@ -41,8 +41,9 @@ namespace IEC
         [SerializeField] private BaseHelperTutorial tutorialScaleUp;
         [SerializeField] private GameObject timerFrozenMark;
         [SerializeField] private HelperIntro helperIntro;
-        [SerializeField] private ComboUI comboUI;
+        public ComboUI comboUI;
         private static bool CanPlaySFX = true;
+
         private void Awake()
         {
             btnPause.onClick.AddListener(() =>
@@ -92,13 +93,9 @@ namespace IEC
 
         public void HandleEatCombo()
         {
-            if (Game.enableComboCount)
+            if (Game.enableComboCount && PlayerData.level > 1)
             {
                 comboUI.HandleEatCombo();
-            }
-            else
-            {
-                comboUI.gameObject.SetActive(false);
             }
         }
 

@@ -27,7 +27,7 @@ namespace IEC
 
         private Vector3 _onPos;
         private Vector3 _offPos;
-        
+        public Action actionClickSetting;
         private void Start()
         {
             button.onClick.RemoveAllListeners();
@@ -48,6 +48,7 @@ namespace IEC
         {
             Services.PushEvent(new TrackingEvent.ClickBtnTracking("btn_setting_" + settingType));
             SetButton(!IsSettingOn());
+            actionClickSetting?.Invoke();
         }
 
         private void SetButton(bool isOn)
