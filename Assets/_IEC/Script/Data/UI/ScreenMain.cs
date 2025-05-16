@@ -154,7 +154,7 @@ namespace IEC
         #region Claim Reward Effect
         public void AddRewardClaimEffect(ResourceType resourceType, int amount)
         {
-            AddRewardClaimEffect(resourceType,amount,Vector3.zero, Vector2.one*100);
+            AddRewardClaimEffect(resourceType,amount,Vector3.zero, Vector2.one*200);
         }
         public void AddRewardClaimEffect(ResourceType resourceType, int amount,Vector3 startPos,Vector2 startSize)
         {
@@ -191,6 +191,8 @@ namespace IEC
                     AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.OceanGiftObject:
+                    startPos = EffectRewardClaim.SwitchToRectTransform(Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>());
+                    startPos += Vector3.down * 300;
                     AddSpecialObjectToClaim(amount,startPos,startSize, 1f);
                     break;
                 case ResourceType.LevelStar:

@@ -111,7 +111,7 @@ namespace IEC
                 float timeEffect = 0.5f + delayTimeToStart * ratioTime;
                 sequence
                     //.Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
-                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.5f,timeEffect).SetEase(Ease.OutQuad))
+                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.OutQuad))
                     .Insert(delayTime, currencyObj.DOAnchorPos(posEnd, timeEffect).SetEase(Ease.InBack)
                         .OnComplete(() =>
                         {
