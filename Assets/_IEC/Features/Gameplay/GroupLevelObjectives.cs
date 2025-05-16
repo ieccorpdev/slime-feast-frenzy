@@ -26,6 +26,8 @@ namespace _IEC.Features.Gameplay
         private List<Sequence> sequences = new List<Sequence>();
         private List<LevelObjectiveVfx> listObjectiveVfx = new List<LevelObjectiveVfx>();
 
+        public LevelObjectiveUI specialBottleUI;
+
         // private void Awake()
         // {
         //     this.RegisterListener(EventList.GamePlay.RESUME_GAME, OnGameResume);
@@ -130,10 +132,12 @@ namespace _IEC.Features.Gameplay
             else if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
             {
                 int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
+                objectiveUI.PlayAnim();
                 EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
                 {
                     objectiveUI.SetNumber(GamePlay.levelController.KingdomCollected + "/" + maxSpecialObject, false);
                 }, true);
+                //objectiveUI.PlayAnim();
             }
             else
             {
@@ -187,7 +191,7 @@ namespace _IEC.Features.Gameplay
             }
             if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
             {
-                return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId());
+                return specialBottleUI;
             }
             return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemData.itemID.ToLower()));
         }
@@ -289,7 +293,7 @@ namespace _IEC.Features.Gameplay
             int kingdomCount = GamePlay.levelController.AllkingdomSpecialItems.Count;
             kingdomObjective.itemId = dataKingdom.GetId();
             kingdomObjective.number = kingdomCount;
-            LevelObjectiveUI kingdomObjectiveContain = GetSpecialObjectiveEnable();
+            LevelObjectiveUI kingdomObjectiveContain = specialBottleUI;
             kingdomObjectiveContain.LoadData(kingdomObjective, true);
             m_ActiveObjectiveUIs.Add(kingdomObjectiveContain);
             kingdomObjectiveContain.gameObject.SetActive(kingdomCount > 0);

@@ -34,6 +34,8 @@ namespace _IEC.Features.Gameplay
         private int dirFlyX;
         public bool isGoldObj => itemId == Config.specialObjectConfig.goldSpecialObjective.GetId();
         public bool isKingdomObj => itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId();
+        [SerializeField] private Animator anim;
+        [SerializeField] private Transform subIconPos;
 
         public RectTransform RectTransform
         {
@@ -48,9 +50,14 @@ namespace _IEC.Features.Gameplay
             }
         }
         
+        public void PlayAnim()
+        {
+            anim.Play("Show");
+        }
+
         public Vector3 GetIconPosition()
         {
-            return imgIcon.transform.position;
+            return subIconPos ? subIconPos.position : imgIcon.transform.position;
         }
 
         public float GetOffsetItemCurve()
