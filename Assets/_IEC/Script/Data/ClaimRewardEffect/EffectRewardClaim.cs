@@ -57,6 +57,10 @@ namespace IEC
             Sequence sequence = DOTween.Sequence();
             //EffectCurrency.gameObject.SetActive(true);
             sequence.SetId(rewardType);
+            if (rewardType == ResourceType.Gold)
+            {
+                ActiveVFXStartExplosion(posSpawn);
+            }
             for (int i = 0; i < currencyCount; i++)
             {
                 RectTransform currencyObj;
@@ -111,10 +115,14 @@ namespace IEC
                 float timeEffect = 0.5f + delayTimeToStart * ratioTime;
                 sequence
                     //.Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
-                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.OutQuad))
-                    .Insert(delayTime, currencyObj.DOAnchorPos(posEnd, timeEffect).SetEase(Ease.InBack)
+                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.InBack))
+                    .Insert(i*0.01f, currencyObj.DOAnchorPos(posEnd, timeEffect).SetEase(Ease.InBack)
                         .OnComplete(() =>
                         {
+                            if (rewardType == ResourceType.Gold)
+                            {
+                                Locator.Main.ScreenMain.GoldCurrencyDisplay.TriggredPressButton();
+                            }
                             onEndMove?.Invoke();
                             currencyObj.gameObject.SetActive(false);
                             if (rewardType == ResourceType.Gold)
