@@ -42,7 +42,7 @@ public class ClaimBonusRewardPanel : BasePopup
     public PositionGroupsRewardDataPanel groupsNine;
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
-    List<KeyValuePair<ResourceType, int>> listCollectedItems = new();
+    List<EffectRewardData> listCollectedItems = new();
     public string AutoClaimTween => GetInstanceID() + "_AutoClaim";
     // Start is called before the first frame update
     void Start()
@@ -257,11 +257,15 @@ public class ClaimBonusRewardPanel : BasePopup
         tapToClaim.gameObject.SetActive(false);
         canClaim = false;
         canOpen = false;
-
+        //First, just show only what add in last claim screen
+        listCollectedItems.Clear();
         foreach (var itr in listDataReward)
         {
             PlayerData.AddCurrency(itr.typeReward, itr.rewardAmount);
-            listCollectedItems.Add(new KeyValuePair<ResourceType, int>(itr.typeReward, itr.rewardAmount));
+            var dataRwScreen = listRewardUI.Find(item => item.typeReward == itr.typeReward);
+            var rectD = dataRwScreen.GetComponent<RectTransform>();
+            EffectRewardData dataEffectRW = new EffectRewardData(itr.typeReward, itr.rewardAmount,rectD.anchoredPosition,rectD.sizeDelta);
+            listCollectedItems.Add(dataEffectRW);
         }
         
         if (!IsHaveShowClaimRewardAnim())
@@ -281,10 +285,10 @@ public class ClaimBonusRewardPanel : BasePopup
     {
         foreach (var collectedItem in listCollectedItems)
         {
-            Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.Key, collectedItem.Value);
+            Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.rewardType, collectedItem.rewardAmount,collectedItem.startPos,collectedItem.startSize);
         }
 
-        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null);
+        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null,0f);
     }
 
     private void OpenChest(bool fastOpen = false)

@@ -152,60 +152,64 @@ namespace IEC
         #endregion
         
         #region Claim Reward Effect
-
         public void AddRewardClaimEffect(ResourceType resourceType, int amount)
+        {
+            AddRewardClaimEffect(resourceType,amount,Vector3.zero, Vector2.one*100);
+        }
+        public void AddRewardClaimEffect(ResourceType resourceType, int amount,Vector3 startPos,Vector2 startSize)
         {
             switch (resourceType)
             {
                 case ResourceType.Gold:
-                    AddRewardGoldToClaim(amount);
+                    AddRewardGoldToClaim(amount,startPos,startSize);
                     break;           
                 case ResourceType.Live:
-                    AddRewardLifeToClaim(amount);
+                    AddRewardLifeToClaim(amount,startPos,startSize);
                     break;
                 case ResourceType.Vortex:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.Compass:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.Enlarge:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.TimeStop:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.TimeUnlimitedEvolveStone:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.TimeUnlimitedWindSurf:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.EvolveStone:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.WindSurf:
-                    AddRewardHelperToClaim(resourceType, amount,1f,0.3f);
+                    AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
                     break;
                 case ResourceType.OceanGiftObject:
-                    AddSpecialObjectToClaim(amount, 1f);
+                    AddSpecialObjectToClaim(amount,startPos,startSize, 1f);
                     break;
                 case ResourceType.LevelStar:
-                    AddLevelStarToClaim(amount, 1f, 0.15f);
+                    AddLevelStarToClaim(amount,startPos,startSize, 1f, 0.15f);
                     break;
             }
         }
 
-        private void AddLevelStarToClaim(int amount, float animTime = 1f, float delay = 0f)
+        private void AddLevelStarToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = Locator.Main.HomeScreenTab.btnStarChestReward.GetComponent<ButtonClickEffect>().buttonDisplayImage.GetComponent<RectTransform>();
             
             AddCustomRewardToClaimEffect(
                 ResourceType.LevelStar, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.LevelStar),
-                Vector2.zero, 
+                startPos, 
                 EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
+                startSize,
                 () =>
                 {
                     
@@ -221,16 +225,17 @@ namespace IEC
             );
         }
 
-        private void AddSpecialObjectToClaim(int amount, float animTime = 1f, float delay = 0f)
+        private void AddSpecialObjectToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>();
             
             AddCustomRewardToClaimEffect(
                 ResourceType.OceanGiftObject, 
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon(),
-                Vector2.zero, 
+                startPos, 
                 EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
+                startSize,
                 () =>
                 {
                     
@@ -246,7 +251,7 @@ namespace IEC
             );
         }
         
-        private void AddRewardHelperToClaim(ResourceType helperType, int amount, float animTime = 1f, float delay = 0f)
+        private void AddRewardHelperToClaim(ResourceType helperType, int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
                 ? Locator.Main.HomeScreenTab.playButton.GetComponent<RectTransform>()
@@ -256,9 +261,10 @@ namespace IEC
             AddCustomRewardToClaimEffect(
                 helperType, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(helperType),
-                Vector2.zero, 
+                startPos, 
                 EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
+                startSize,
                 () =>
                 {
                     
@@ -274,16 +280,17 @@ namespace IEC
             );
         }
 
-        private void AddRewardGoldToClaim(int amount, float animTime = 2f, float delay = 0f)
+        private void AddRewardGoldToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 2f, float delay = 0f)
         {
             GoldCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) - amount);
             GoldCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
                 ResourceType.Gold, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Gold),
-                Vector2.zero, 
+                startPos, 
                 EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.GoldCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
+                startSize,
                 () =>
                 {
                     GoldCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
@@ -298,16 +305,17 @@ namespace IEC
                 animTime
             );
         }
-        private void AddRewardLifeToClaim(int amount, float animTime = 2f, float delay = 0f)
+        private void AddRewardLifeToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 2f, float delay = 0f)
         {
             LifeCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.playerLife - amount);
             LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
                 ResourceType.Gold, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Live),
-                Vector2.zero, 
+                startPos, 
                 EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,
+                startSize,
                 () =>
                 {
                     LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
@@ -322,17 +330,21 @@ namespace IEC
                 animTime
             );
         }
-        public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
+        
+        
+        public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
-            listClaimRewardData.Push(new RewardClaimData(rewardType, rewardSprite,  posSpawn, posEnd, addAmount, onComplete,onEndMove, delay, animTime));
+           var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);
+           dataEffect.SetStartSize(startSize);
+            listClaimRewardData.Push(dataEffect);
         }
 
-        public void DoAnimAllAvailableReward(Action onComplete = null)
+        public void DoAnimAllAvailableReward(Action onComplete = null,float delayEachStep =0.5f)
         {
-            StartCoroutine(DoAnimRewardWhileLoop(onComplete));
+            StartCoroutine(DoAnimRewardWhileLoop(onComplete,delayEachStep));
         }
 
-        private IEnumerator DoAnimRewardWhileLoop(Action onComplete)
+        private IEnumerator DoAnimRewardWhileLoop(Action onComplete,float delayEachStep)
         {
             while (listClaimRewardData.Count > 0)
             {
@@ -346,7 +358,12 @@ namespace IEC
                 {
                     DoAnimLatestAvailableReward();
                 }
-                yield return new WaitForSeconds(timeWait+0.5f); // Delay between iterations
+
+                if (delayEachStep != 0f)
+                {
+                    yield return new WaitForSeconds(delayEachStep+0.5f); // Delay between iterations   
+                }
+
             }
         }
 
