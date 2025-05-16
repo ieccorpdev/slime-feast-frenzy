@@ -46,5 +46,19 @@ namespace IEC
             
             return sprite;
         }
+
+        public Sprite GetRandomAvatarSprite()
+        {
+            int index = Random.Range(0, listAvatarSprites.Count);
+
+            return listAvatarSprites[index];
+        }
+        
+        public Sprite GetRandomAvatarFrameSprite()
+        {
+            int index = Random.Range(0, listAvatarFrameSprites.Count);
+
+            return listAvatarFrameSprites[index];
+        }
     }
 }

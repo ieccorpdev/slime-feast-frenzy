@@ -74,18 +74,24 @@ namespace IEC
             return data;
         }
 
-        private void AddPlayerEventProgress(AddEventProgressData progressData)
+        public void AddPlayerEventProgress(AddEventProgressData progressData)
         {
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).levelUnlock)
                 return;
             
             var eventData = PlayerData.GetEventSaveData(progressData.eventType);
+            var data = Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).GetEventData(eventData.eventIndex);
 
             var player = eventData.listPlayerData.Find(bot => bot.isPlayer);
 
             if (player != null)
             {
                 player.progress += progressData.progressAmount;
+
+                if (data.eventTarget > 0 && player.progress > data.eventTarget)
+                {
+                    player.progress = data.eventTarget;
+                }
             }
         }
     }
@@ -109,6 +115,7 @@ namespace IEC
     {
         public string id;
         public string avatarID;
+        public string avatarFrameID;
         public bool isPlayer = false;
         public int progress;
         public float speed;
@@ -125,6 +132,8 @@ namespace IEC
         public DateTime lastUpdateTime;
         public DateTime timeStart;
         public DateTime timeEnd;
+
+        public bool claimedReward;
 
         public List<EventPlayerData> listPlayerData = new();
     }

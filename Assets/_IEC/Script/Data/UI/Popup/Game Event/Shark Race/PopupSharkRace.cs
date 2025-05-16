@@ -26,6 +26,13 @@ namespace IEC
         {
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
+
+            //If player completed then move to next stage
+            if (eventSaveData.listPlayerData.Find(data => data.isPlayer).progress >=
+                _eventConfig.GetEventData(data.eventIndex).eventTarget)
+            {
+                return true;
+            }
             
             for (int i = 0; i < 3; i++)
             {
@@ -53,7 +60,7 @@ namespace IEC
             return false;
         }
 
-        private void UpdateUI()
+        protected override void UpdateUI()
         {
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(eventSaveData.eventIndex);

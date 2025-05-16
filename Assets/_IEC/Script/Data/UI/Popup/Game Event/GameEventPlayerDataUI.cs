@@ -12,6 +12,8 @@ namespace IEC
     public class GameEventPlayerDataUI : EnhancedScrollerCellView
     {
         public int spriteSetIndex;
+        public Image avatarImage;
+        public Image avatarFrameImage;
         public Image displayFrame;
         public Image progressDisplayFrame;
         public TextMeshProUGUI playerName;
@@ -128,12 +130,28 @@ namespace IEC
             }
         }
 
-        protected virtual void UpdatePlayerRank(int rank)
+        protected virtual void UpdatePlayerAvatar()
+        {
+            var config = Pool.Get<GameConfig>();
+            var playerData = Pool.Get<PlayerSecret>();
+            if (EventPlayerData.isPlayer)
+            {
+                avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(playerData.playerAvatarSpriteName);
+                avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(playerData.playerAvatarFrameName);
+            }
+            else
+            {
+                avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(EventPlayerData.avatarID);
+                avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(EventPlayerData.avatarFrameID);
+            }
+        }
+
+        protected virtual void UpdatePlayerRank()
         {
             if (playerRankText != null)
             {
                 playerRankText.gameObject.SetActive(true);
-                playerRankText.text = rank.ToString();
+                playerRankText.text = CurrentRank.ToString();
             }
 
             if(playerRankImage != null)
@@ -141,7 +159,7 @@ namespace IEC
 
 
             Sprite rankSprite;
-            if ((rankSprite = _gameEventConfig.GetRankSprite(spriteSetIndex, rank)) != null)
+            if ((rankSprite = _gameEventConfig.GetRankSprite(spriteSetIndex, CurrentRank)) != null)
             {
                 playerRankText.gameObject.SetActive(false);
                 playerRankImage.gameObject.SetActive(true);
@@ -150,8 +168,19 @@ namespace IEC
 
             if (rewardInfoButtonImage != null)
             {
-                rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, rank);
-                rewardInfoButtonImage.SetNativeSize();
+                var eventRewardData = _eventData.listEventRewardData.Find(data =>
+                    data.rankStartReward <= CurrentRank && (data.rankEndReward >= CurrentRank || data.rankEndReward == -1));
+
+                if (eventRewardData == null)
+                {
+                    rewardInfoButtonImage.gameObject.SetActive(false);
+                }
+                else
+                {
+                    rewardInfoButtonImage.gameObject.SetActive(true);
+                    rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    rewardInfoButtonImage.SetNativeSize();
+                }
             }
         }
         
@@ -170,11 +199,11 @@ namespace IEC
 
             playerName.text = EventPlayerData.id;
             
-            UpdatePlayerRank(rank);
+            UpdatePlayerRank();
             UpdatePlayerProgress();
             
             CheckSetMainPlayerUI();
-
+            UpdatePlayerAvatar();
         }
 
         protected virtual void CheckSetMainPlayerUI()

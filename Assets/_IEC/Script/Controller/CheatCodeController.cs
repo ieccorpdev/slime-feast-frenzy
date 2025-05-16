@@ -81,6 +81,36 @@ namespace IEC
             {
                 value = PlayerData.playerName
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add star chase progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.StarChase,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.SharkRace,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {
