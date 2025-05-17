@@ -18,7 +18,7 @@ namespace IEC
         private Dictionary<ResourceType, List<RectTransform>> m_ListEffectByType = new();
         public List<ParticleSystem> listStartExplosion;
         private float allTimeSpawn = 2f;
-        
+        public RuntimeAnimatorController coinAnimator;//may be switch to prefab after this...
         public bool AnimCompleted { get; private set; }
 
         public void SpawnEffect(RewardClaimData effectData)
@@ -57,8 +57,6 @@ namespace IEC
             Sequence sequence = DOTween.Sequence();
             //EffectCurrency.gameObject.SetActive(true);
             sequence.SetId(rewardType);
-            var timeToPostart = 0.2f;
-            
             for (int i = 0; i < currencyCount; i++)
             {
                 RectTransform currencyObj;
@@ -67,17 +65,39 @@ namespace IEC
                 {
                     effectCurrency.Add(ObjectPool.Spawn(baseObjectToSpawn.gameObject, transform).GetComponent<RectTransform>());
                 }
-                
+                var posStart = (Vector3)UnityEngine.Random.insideUnitCircle * 0.8f *200 ;
                 currencyObj = effectCurrency[i];
                 currencyObj.transform.localScale = Vector3.one;
-                currencyObj.anchoredPosition = posSpawn;
+                currencyObj.anchoredPosition = posSpawn + (rewardType == ResourceType.Gold? posStart : Vector2.zero );
                 var img = currencyObj.GetComponent<Image>();
+                //Animation
+                if (rewardType == ResourceType.Gold)
+                {
+                    var animator = currencyObj.GetComponent<Animator>();
+                    if (animator == null)
+                    {
+                        animator = currencyObj.gameObject.AddComponent<Animator>();
+                    }
+
+                    animator.enabled = true;
+                    animator.runtimeAnimatorController = coinAnimator;
+                }
+                else
+                {
+                    var animator = currencyObj.GetComponent<Animator>();
+                    if (animator != null)
+                    {
+                        animator.enabled = false;
+                    }
+                }
+                //
                 img.sprite = rewardSprite;
+                
                 img.rectTransform.sizeDelta = startSize;
                 currencyObj.gameObject.SetActive(true);
-                var posStart = PosRandomSpawnRuby(posSpawn);
+
                 var index = i;
-                float delayTime = i * ratioTime + delay;
+                float delayTime = i * ratioTime /2f;
                 float delayTimeToStart = i * ratioTime;
                 if (rewardType == ResourceType.Gold)
                 {
@@ -87,10 +107,12 @@ namespace IEC
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_APPEAR);
                 }
+
+                float timeEffect = 0.5f + delayTimeToStart * ratioTime;
                 sequence
-                    .Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
-                    .Insert(0f,img.rectTransform.DOSizeDelta(new Vector2(100,100),timeToPostart + delayTime).SetEase(Ease.OutQuad))
-                    .Insert(timeToPostart + delayTime, currencyObj.DOAnchorPos(posEnd, 0.1f + delayTimeToStart * ratioTime).SetEase(Ease.OutQuad)
+                    //.Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
+                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.OutQuad))
+                    .Insert(delayTime, currencyObj.DOAnchorPos(posEnd, timeEffect).SetEase(Ease.InBack)
                         .OnComplete(() =>
                         {
                             onEndMove?.Invoke();
