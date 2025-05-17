@@ -332,14 +332,12 @@ namespace IEC
                 }
                 else
                 {
-                    CheckShowReward();
+                    if(!data.claimedReward)
+                        CheckShowReward();
+                    else
+                        StartNewEventStage(0);
                 }
             }
-            // else
-            // {
-            //     listPlayerData.Clear();
-            //     listPlayerData = new List<EventPlayerData>(data.listPlayerData);
-            // }
         }
 
         public virtual void StartNewEventStage(int eventStageIndex)
