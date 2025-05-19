@@ -6,7 +6,8 @@ using IEC.Helper;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
+using Button = UnityEngine.UI.Button;
 
 namespace IEC
 {
@@ -116,6 +117,9 @@ namespace IEC
         
         private void InitScroller()
         {
+            if (scroller == null || !scroller.gameObject.activeInHierarchy)
+                return;
+            
             if (scroller.Delegate == null)
             {
                 scroller.Delegate = this;
@@ -128,11 +132,16 @@ namespace IEC
         
         public void LoadData()
         {
+            if (scroller == null || !scroller.gameObject.activeInHierarchy)
+                return;
             scroller.RefreshActiveCellViews();
         }
 
         public void ReloadData()
         {
+            if (scroller == null || !scroller.gameObject.activeInHierarchy)
+                return;
+            
             scroller.ReloadData();
             JumpToPlayer();
         }
