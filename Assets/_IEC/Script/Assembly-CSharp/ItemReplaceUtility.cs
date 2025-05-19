@@ -8,7 +8,7 @@ using System;
 using UnityEditor;
 #endif
 
-[RequireComponent(typeof(Rigidbody), typeof(SpawnSettings))]
+[RequireComponent(typeof(SpawnSettings))]
 public class ItemReplaceUtility : MonoBehaviour
 {
 #if UNITY_EDITOR 
