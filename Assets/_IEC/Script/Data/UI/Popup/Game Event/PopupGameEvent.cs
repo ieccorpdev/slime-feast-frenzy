@@ -81,6 +81,8 @@ namespace IEC
 
         protected virtual void OnShowInfo()
         {
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
+            
             if (infoGroup != null)
             {
                 infoGroup.SetActive(!infoGroup.activeInHierarchy);
