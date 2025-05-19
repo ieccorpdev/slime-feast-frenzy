@@ -13,8 +13,9 @@ public class UICurrency : _BaseBehaviour
     public ResourceType typeCurrency;
     public TextMeshProUGUI currencyTMP;
     public Button addButton;
+    public Image targetIcon;
     public GameObject addButtonDisplay;
-
+    public Animator clickEffectAnimator;
     private bool m_isForcedCurrencyText = false;
 
     private void Awake()
@@ -34,6 +35,10 @@ public class UICurrency : _BaseBehaviour
         if (addButton) addButton.onClick.AddListener(OnAddButtonClick);
     }
 
+    public void TriggredPressButton()
+    {
+        clickEffectAnimator.Play("PunchScale");
+    }
     public void OnEnable()
     {
         UpdateCurrency();

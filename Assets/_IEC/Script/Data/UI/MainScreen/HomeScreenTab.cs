@@ -44,6 +44,14 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Star Chest Reward")] 
     public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
+    [Header("Star Chase Event")] 
+    public Button btnStarChase;
+    public GameEventHomeButton starChaseButton;
+    [Header("Shark Race Event")] 
+    public Button btnSharkRace;
+    public GameEventHomeButton sharkRaceButton;
+    
+    [Space(10)]
 
     public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -71,7 +79,7 @@ public class HomeScreenTab : ScreenNavigateUI
             () =>
             {
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupAvatar.Show();
+                Locator.Main.PopupEditProfile.Show();
             });      
         SetEvent(luckyWheel,
             () =>
@@ -181,6 +189,17 @@ public class HomeScreenTab : ScreenNavigateUI
         //                Locator.Main.HomeScreenTab.buildCityUI.Show();
         //            });
         //    });
+           
+        SetEvent(btnStarChase,
+            () =>
+            {
+                Locator.Main.PopupStarChase.Show();
+            });
+        SetEvent(btnSharkRace,
+            () =>
+            {
+                Locator.Main.PopupSharkRace.Show();
+            });
         SetupUIHome();
     }
 
@@ -434,6 +453,7 @@ public class HomeScreenTab : ScreenNavigateUI
         //UpdateBuildCity();
         UpdateLifeOffer();
         UpdateStarChest();
+        UpdateGameEventButton();
         progressRewardBar.Setup();
         levelChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
         levelChestHomeFeature.SetProgressBar(
@@ -460,6 +480,13 @@ public class HomeScreenTab : ScreenNavigateUI
         // starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
         // btnStarChestReward.interactable = isEnoughLevel;
     }
+
+    private void UpdateGameEventButton()
+    {
+        starChaseButton.InitUI();
+        sharkRaceButton.InitUI();
+    }
+
     private void UpdateLifeOffer()
     {
         lifeOfferNotiImage.gameObject.SetActive(PlayerData.playerLife <= 0 && !PlayerData.dailyShowLifeOfferPack);
