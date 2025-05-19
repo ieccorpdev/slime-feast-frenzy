@@ -27,8 +27,11 @@ namespace IEC
                         Locator.Main.PopupProfile.Show();
                     });
             }
-            
-            UpdateAvatarUI();
+        }
+
+        private void OnEnable()
+        {
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
         }
 
         public void UpdateAvatarUI()

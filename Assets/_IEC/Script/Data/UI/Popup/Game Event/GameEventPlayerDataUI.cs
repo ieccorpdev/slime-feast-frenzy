@@ -43,7 +43,7 @@ namespace IEC
             }
 
             OnHideRewardInfoUI();
-            gameObject.OnEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE, OnHideRewardInfoUI);
+            gameObject.OnEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT, OnHideRewardInfoUI);
         }
 
         private void OnHideRewardInfoUI()
@@ -55,8 +55,11 @@ namespace IEC
                 return;
             
             rewardInfoGroup.SetActive(false);
-            rewardInfoDownImg.gameObject.SetActive(false);
-            rewardInfoUpImg.gameObject.SetActive(false);
+            
+            if(rewardInfoDownImg != null)
+                rewardInfoDownImg.gameObject.SetActive(false);
+            if(rewardInfoUpImg != null)
+                rewardInfoUpImg.gameObject.SetActive(false);
         }
 
         private void SetRewardInfoDown()
@@ -91,7 +94,7 @@ namespace IEC
                 return;
             
             bool wasActive = rewardInfoGroup.gameObject.activeInHierarchy;
-            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE);
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
             var eventRewardData = _eventData.listEventRewardData.Find(data =>
                 data.rankStartReward <= CurrentRank && (data.rankEndReward >= CurrentRank || data.rankEndReward == -1)); // = -1 means from rank start reward to the end of the leaderboard
 
