@@ -190,12 +190,16 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
+#if UNITY_ANDROID
             if (itemData.isStartKinematic)
             {
                 rb.isKinematic = false;
                 SaveAndDestroyRigidbody();
                 Destroy(this.GetComponent<Rigidbody>());
             }
+#else
+            rb.isKinematic = itemData.isStartKinematic;
+#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -275,7 +279,11 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
+#if UNITY_ANDROID
                 RestoreRigidbody();
+#else
+                rb.isKinematic = false;
+#endif
             }
             if (posOnWater != null)
             {
