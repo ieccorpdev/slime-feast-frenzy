@@ -1,0 +1,241 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781c5459e2348c847808fa92e7ed3756, type: 3}
+  m_Name: Shark Race
+  m_EditorClassIdentifier: 
+  levelUnlock: 32
+  eventType: 1
+  eventDurationInHours: 24
+  timeUpdateEventProgressInHours: 0
+  updateEventAfterPlayerWinLevel: 1
+  listDisplaySprites:
+  - normalFrameSprite: {fileID: 21300000, guid: 3500566e35d8f2e4c984d12629c21128,
+      type: 3}
+    normalProgressFrameSprite: {fileID: 0}
+    mainPlayerFrameSprite: {fileID: 21300000, guid: 68d0e66d69c797043bbe93e25f8546fb,
+      type: 3}
+    mainPlayerProgressFrameSprite: {fileID: 0}
+    listRankSprites: []
+    listRewardButtonSprites:
+    - {fileID: 21300000, guid: d61f7a4679373dd46b1ad00717a4cbf1, type: 3}
+    - {fileID: 21300000, guid: efa07498e9c27bb4599e6beba8c6e2cb, type: 3}
+    - {fileID: 21300000, guid: cbe85062063dab145bdba525dd5d3767, type: 3}
+  - normalFrameSprite: {fileID: 21300000, guid: c33498fcab469704982f11fdf6d1c114,
+      type: 3}
+    normalProgressFrameSprite: {fileID: 21300000, guid: 441595346ef453e4ea06b962bcdcf878,
+      type: 3}
+    mainPlayerFrameSprite: {fileID: 21300000, guid: d774030db729ede4487f5b02c5ed28b9,
+      type: 3}
+    mainPlayerProgressFrameSprite: {fileID: 21300000, guid: 661fd810c9085974fa9ca2b7fa51b8d4,
+      type: 3}
+    listRankSprites:
+    - {fileID: 21300000, guid: a25401ed6aad6a5499062835d730bb3f, type: 3}
+    - {fileID: 21300000, guid: dc9c8ba37e504ca47ab0310da94783b2, type: 3}
+    - {fileID: 21300000, guid: 458d8f1ab94cfe7459378b7971e800f4, type: 3}
+    listRewardButtonSprites: []
+  listEventData:
+  - eventTarget: 5
+    listEventBotData:
+    - baseSpeed: 648
+      speedRange: 0.15
+    - baseSpeed: 778
+      speedRange: 0.15
+    - baseSpeed: 1037
+      speedRange: 0.15
+    - baseSpeed: 1296
+      speedRange: 0.15
+    listEventRewardData:
+    - rankStartReward: 1
+      rankEndReward: 1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 100
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 5
+      - typeReward: 10
+        rewardAmount: 5
+      - typeReward: 3
+        rewardAmount: 15
+    - rankStartReward: 2
+      rankEndReward: 2
+      listReward:
+      - typeReward: 0
+        rewardAmount: 50
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 1
+      - typeReward: 10
+        rewardAmount: 1
+    - rankStartReward: 3
+      rankEndReward: 3
+      listReward:
+      - typeReward: 7
+        rewardAmount: 1
+  - eventTarget: 10
+    listEventBotData:
+    - baseSpeed: 583
+      speedRange: 0.15
+    - baseSpeed: 700
+      speedRange: 0.15
+    - baseSpeed: 933
+      speedRange: 0.15
+    - baseSpeed: 1166
+      speedRange: 0.15
+    listEventRewardData:
+    - rankStartReward: 1
+      rankEndReward: 1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 200
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 5
+      - typeReward: 10
+        rewardAmount: 5
+      - typeReward: 3
+        rewardAmount: 20
+    - rankStartReward: 2
+      rankEndReward: 2
+      listReward:
+      - typeReward: 0
+        rewardAmount: 100
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 1
+      - typeReward: 10
+        rewardAmount: 1
+    - rankStartReward: 3
+      rankEndReward: 3
+      listReward:
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 1
+      - typeReward: 10
+        rewardAmount: 1
+  - eventTarget: 15
+    listEventBotData:
+    - baseSpeed: 544
+      speedRange: 0.15
+    - baseSpeed: 653
+      speedRange: 0.15
+    - baseSpeed: 871
+      speedRange: 0.15
+    - baseSpeed: 1089
+      speedRange: 0.15
+    listEventRewardData:
+    - rankStartReward: 1
+      rankEndReward: 1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 300
+      - typeReward: 4
+        rewardAmount: 2
+      - typeReward: 11
+        rewardAmount: 10
+      - typeReward: 10
+        rewardAmount: 10
+      - typeReward: 3
+        rewardAmount: 30
+    - rankStartReward: 2
+      rankEndReward: 2
+      listReward:
+      - typeReward: 0
+        rewardAmount: 200
+      - typeReward: 4
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 5
+      - typeReward: 10
+        rewardAmount: 5
+      - typeReward: 3
+        rewardAmount: 15
+    - rankStartReward: 3
+      rankEndReward: 3
+      listReward:
+      - typeReward: 0
+        rewardAmount: 50
+      - typeReward: 11
+        rewardAmount: 1
+      - typeReward: 10
+        rewardAmount: 1
+  - eventTarget: 20
+    listEventBotData:
+    - baseSpeed: 572
+      speedRange: 0.15
+    - baseSpeed: 686
+      speedRange: 0.15
+    - baseSpeed: 914
+      speedRange: 0.15
+    - baseSpeed: 1143
+      speedRange: 0.15
+    listEventRewardData:
+    - rankStartReward: 1
+      rankEndReward: 1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 400
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 6
+        rewardAmount: 1
+      - typeReward: 4
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 15
+      - typeReward: 10
+        rewardAmount: 15
+      - typeReward: 3
+        rewardAmount: 30
+    - rankStartReward: 2
+      rankEndReward: 2
+      listReward:
+      - typeReward: 0
+        rewardAmount: 300
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 4
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 5
+      - typeReward: 10
+        rewardAmount: 5
+      - typeReward: 3
+        rewardAmount: 15
+    - rankStartReward: 3
+      rankEndReward: 3
+      listReward:
+      - typeReward: 0
+        rewardAmount: 100
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 11
+        rewardAmount: 1
+      - typeReward: 10
+        rewardAmount: 1
+      - typeReward: 3
+        rewardAmount: 15
+  csv1: 
+  csv2: https://docs.google.com/spreadsheets/d/1tyEl45QPe1oH8uTK4RoDM7uq7_mWkaTIlz0mq1MPNl4/edit?gid=0#gid=0

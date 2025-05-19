@@ -21,7 +21,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            UseGiftCode("WC64A90W").Forget();
+            //UseGiftCode("WC64A90W").Forget();
         }
 
         public void BehaviourAwake()
@@ -34,7 +34,7 @@ namespace IEC
             {
                 case EventList.Setting.REQUEST_GIFTCODE:
                     string giftCode = (string)param.p0;
-                    UseGiftCode(giftCode);
+                    UseGiftCode(giftCode).Forget();
                     break;
             }
         }

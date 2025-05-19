@@ -63,6 +63,14 @@ namespace IEC
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
+
+                    if (PlayerData.level != PlayerData.levelLostStreak)
+                    {
+                        PlayerData.UpdatePlayerStat(
+                            PlayerGeneralStat.FirstTryWin
+                            , PlayerData.GetPlayerStat(PlayerGeneralStat.FirstTryWin) + 1);
+                    }
+                    
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else
@@ -277,12 +285,19 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
+#if UNITY_IOS
+
                         //if (scene != GameScene.Game)
                         {
                             onLoadDone?.Invoke();
                             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
                         }
+#endif
                     });
+#if UNITY_ANDROID
+                    onLoadDone?.Invoke();
+                    if (raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+#endif
                 });
             }
         }

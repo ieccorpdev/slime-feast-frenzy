@@ -27,11 +27,15 @@ namespace IEC
             public const string SHOW_LOADING = "GamePlay.SHOW_LOADING";
             public const string ON_CHOOSE_TAB = "GamePlay.ON_CHOOSE_TAB";
             public const string UPDATE_RESOURCE_UI = "GamePlay.UPDATE_RESOURCE_UI";
+            public const string UPDATE_GAME_EVENT_UI = "GamePlay.UPDATE_GAME_EVENT_UI";
             public const string UPDATE_RESOURCE_BOOSTER_UI = "GamePlay.UPDATE_RESOURCE_BOOSTER_UI";
+            public const string UPDATE_PLAYER_AVATAR_PROFILE = "GamePlay.UPDATE_PLAYER_PROFILE";
+            public const string UPDATE_PLAYER_NAME = "GamePlay.UPDATE_PLAYER_PROFILE";
             public const string BUY_NO_ADS = "GamePlay.BUY_NO_ADS";
             public const string BUY_STARTER_PACK = "GamePlay.BUY_STARTER_PACK";
             
             public const string SHOW_REWARD_INFO_LEADERBOARD = "GamePlay.SHOW_REWARD_INFO_LEADERBOARD";
+            public const string SHOW_REWARD_INFO_GAME_EVENT = "GamePlay.SHOW_REWARD_INFO_GAME_EVENT";
 
             public const string TUTORIAL = "GamePlay.TUTORIAL";
             public const string TUTORIAL_DONE = "GamePlay.TUTORIAL_DONE";

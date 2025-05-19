@@ -244,6 +244,7 @@ MonoBehaviour:
     currentProgress: 0
     currentProgressMilestone: 0
     currentSpecialItemIndex: 0
+    listEventSaveData: []
 --- !u!1 &3150143569490634634
 GameObject:
   m_ObjectHideFlags: 0
@@ -432,6 +433,7 @@ Transform:
   - {fileID: 3866375574464019524}
   - {fileID: 339356625463092080}
   - {fileID: 6951623619024931522}
+  - {fileID: 8235030710609336856}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -800,6 +802,50 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 56b02f71ebb65ce438d56628e5e26229, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &7545104364903685859
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8235030710609336856}
+  - component: {fileID: 1420399972348908351}
+  m_Layer: 0
+  m_Name: GameEventRankController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8235030710609336856
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7545104364903685859}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4676664891199191328}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1420399972348908351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7545104364903685859}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 173bdf7ccd2c7c44e9fd0cbf9be07813, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7624873476044037499
