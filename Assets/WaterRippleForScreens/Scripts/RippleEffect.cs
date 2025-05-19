@@ -76,7 +76,10 @@ namespace WaterRippleForScreens
 
         void Update()
         {
-            if (!detectClick) return;
+            if (!detectClick)
+            {
+                return;
+            }
 
 #if UNITY_EDITOR
             if (Input.GetMouseButtonDown(0))
@@ -120,7 +123,6 @@ namespace WaterRippleForScreens
     else
     {
         ResetClick();
-        return;
     }
 #endif
 

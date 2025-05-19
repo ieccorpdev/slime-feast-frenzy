@@ -21,7 +21,7 @@ namespace IEC
 
         public void BehaviourStart()
         {
-            UseGiftCode("WC64A90W").Forget();
+            //UseGiftCode("WC64A90W").Forget();
         }
 
         public void BehaviourAwake()

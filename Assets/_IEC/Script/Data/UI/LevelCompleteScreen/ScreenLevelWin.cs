@@ -6,6 +6,7 @@ using System.Linq;
 using _IEC.Features.Gameplay;
 using IEC.TrackingEvent;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
@@ -16,11 +17,23 @@ namespace IEC
     {
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
+        
+        public GameEventInfoBar starChaseInfoBar;
+        public GameEventInfoBar sharkRaceInfoBar;
 
         public GameObject groupGoldDisplay;
         public TextMeshProUGUI goldDisplayText;
 
         public Button btnNext;
+
+        public int StarWon => gameplayTimer.CurrentRemainingTimeState switch
+        {
+            GameplayTimer.RemainingTimeState.None => 1,
+            GameplayTimer.RemainingTimeState.Safe => 3,
+            GameplayTimer.RemainingTimeState.Warning => 2,
+            GameplayTimer.RemainingTimeState.Dangerous => 1,
+            _ => 1
+        };
         private void Start()
         {
             listButtonHideOnClick.Add(btnNext);
@@ -48,7 +61,38 @@ namespace IEC
             Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
             groupStar.DoShowStarEffect(gameplayTimer.CurrentRemainingTimeState);
             SetupGoldDisplay();
+            
             base.Show();
+            
+            CheckShowGameEventInfoBar();
+            
+            PlayerData.UpdatePlayerStat(
+                PlayerGeneralStat.CollectedStars
+                , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+        }
+        
+        private void CheckShowGameEventInfoBar()
+        {
+            sharkRaceInfoBar.gameObject.SetActive(false);
+            starChaseInfoBar.gameObject.SetActive(false);
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            {
+                if (!Locator.Main.PopupSharkRace.IsEventCompleted())
+                {
+                    sharkRaceInfoBar.gameObject.SetActive(true);
+                    starChaseInfoBar.gameObject.SetActive(false);
+                    sharkRaceInfoBar.SetupData();
+                }
+            }
+            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            {
+                if (!Locator.Main.PopupStarChase.IsEventCompleted())
+                {
+                    starChaseInfoBar.gameObject.SetActive(true);
+                    sharkRaceInfoBar.gameObject.SetActive(false);
+                    starChaseInfoBar.SetupData();
+                }
+            }
         }
 
         void SetupGoldDisplay()
@@ -140,7 +184,7 @@ namespace IEC
                     {
                         listDataReward = new List<Reward>(rewardData.listReward),
                         showAimChest = true,
-                        chestType = "Chest_2"
+                        chestType = ClaimBonusRewardSkin.Chest_2
                     });
             }
 
@@ -157,7 +201,7 @@ namespace IEC
                     {
                         listDataReward = new List<Reward>(rewardData.listReward),
                         showAimChest = true,
-                        chestType = "Chest_1"
+                        chestType = ClaimBonusRewardSkin.Chest_1
                     });
             }
 
@@ -168,6 +212,34 @@ namespace IEC
                     Locator.Main.ClaimBonusRewardPanel.ShowNext,
                     ShowNext
                 ));
+            }
+            
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock && !PlayerData.isShownPopupStartStarChase)
+            {
+                PopupData StartStarChase = new PopupData(
+                    Locator.Main.PopupStartStarChaseEvent,
+                    () =>
+                    {
+                        Locator.Main.PopupStartStarChaseEvent.Show();
+                        PlayerData.isShownPopupStartStarChase = true;
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(StartStarChase);
+            }
+            
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock && !PlayerData.isShownPopupStartSharkRace)
+            {
+                PopupData StartStarChase = new PopupData(
+                    Locator.Main.PopupStartSharkRaceEvent,
+                    () =>
+                    {
+                        Locator.Main.PopupStartSharkRaceEvent.Show();
+                        PlayerData.isShownPopupStartSharkRace = true;
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(StartStarChase);
             }
             
             #endregion
@@ -225,7 +297,7 @@ namespace IEC
                                 .GetRewardData(PlayerData.GetChestMilestone(chestType)-1);
                             //-1 by MeoMew fix Task #67686, reduce 1 level chest to get true reward
                             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewardData.listReward, null);
-                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(chestType == ChestType.Level ? "Chest_2": "Chest_1");
+                            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(chestType == ChestType.Level ? ClaimBonusRewardSkin.Chest_2: ClaimBonusRewardSkin.Chest_1);
                         }, 
                         onClose);
             }

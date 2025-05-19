@@ -16,8 +16,8 @@ namespace _IEC
         public Image rewardIcon;
         public Image bg;
         public TextMeshProUGUI dayText;
-        public string id;
-
+        public int id;
+        public string skinClaim;
 
 
         public Action<RewardButton> onClaim;
@@ -46,6 +46,7 @@ namespace _IEC
         {
             dayText.text = "Day " + id;
             this.rewards = rewardData;
+            skinClaim = id < 7 ? ClaimBonusRewardSkin.Gift_Box_1 : ClaimBonusRewardSkin.Gift_Box_3;
         }
 
         public virtual void SetButtonState(RewardButtonState buttonState)
@@ -79,8 +80,8 @@ namespace _IEC
 
         void HandleRewardClaim()
         {
-            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null); 
-            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null,true); 
+            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(skinClaim);
         }
 
         public void ResetButton()

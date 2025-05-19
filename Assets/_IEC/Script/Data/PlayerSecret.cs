@@ -89,12 +89,17 @@ namespace IEC
 
         public void AfterInit()
         {
+            if (String.IsNullOrEmpty(playerName))
+            {
+                playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
+            }
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
             if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
             {
                 ClearAndInitTrackingLevelType();
+                levelLostStreak = -1;
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
@@ -161,7 +166,7 @@ namespace IEC
         public List<ResourceType> listUnlockedBoosters = new();
         public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
-        public int levelLostStreak;
+        public int levelLostStreak = -1;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
 
         public bool CheckUnlockBooster(ResourceType boosterType)
@@ -258,8 +263,6 @@ namespace IEC
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;
         public DateTime timeEndUnlimitedLife = DateTime.MinValue;
         public float realTimeUnlimidtedLife;
-        public string playerProfileName = "";
-        public int playerProfileIconId;
         public bool levelPending;//check player quit in game
         public bool isKilledAppGamePlay;
 
@@ -441,7 +444,43 @@ namespace IEC
         #region Player Avatar Profile
         [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
-        public string playerName;    
+        public string playerAvatarFrameName;
+        public string playerName;
+
+        public Dictionary<PlayerGeneralStat, int> playerStat = new();
+
+        public void UpdatePlayerStat(PlayerGeneralStat stat, int amount)
+        {
+            if (!playerStat.TryAdd(stat, amount))
+            {
+                if (amount >= playerStat[stat])
+                {
+                    playerStat[stat] = amount;
+                }
+            }
+        }
+
+        public int GetPlayerStat(PlayerGeneralStat stat)
+        {
+            playerStat.TryAdd(stat, 0);
+
+            return playerStat[stat];
+        }
+        
+        public void UpdatePlayerProfileName(string profileName)
+        {
+            playerName = profileName;
+            foreach (var data in listEventSaveData)
+            {
+                var playerData = data.listPlayerData.Find(data => data.isPlayer);
+
+                if (playerData != null)
+                {
+                    playerData.id = playerName;
+                }
+            }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_NAME);
+        }
 
         #endregion
         
@@ -853,6 +892,38 @@ namespace IEC
             adRewardUsedAddHelper.TryAdd(helperType, 0);
 
             return adRewardUsedAddHelper[helperType];
+        }
+
+        #endregion
+        
+        #region Event
+
+        public List<EventSaveData> listEventSaveData = new();
+        public bool isShownPopupStartStarChase;
+        public bool isShownPopupStartSharkRace;
+
+        public EventSaveData GetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+
+            if (data == null)
+            {
+                data = new EventSaveData()
+                {
+                    eventType = eventType,
+                    eventIndex = 0,
+                };
+                listEventSaveData.Add(data);
+            }
+
+            return data;
+        }
+        
+        public bool IsEventCompleted(EventType eventType)
+        {
+            var saveData = GetEventSaveData(eventType);
+            var eventData = Config.AllGameEventConfig.GetGameEventConfig(eventType).GetEventData(saveData.eventIndex);
+            return false;
         }
 
         #endregion

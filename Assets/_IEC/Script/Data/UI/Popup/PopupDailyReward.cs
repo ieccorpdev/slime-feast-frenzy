@@ -103,7 +103,7 @@ namespace _IEC
             for (int i = 0; i < dailyReward.Length; i++)
             {
                 //multiple reward
-                dailyReward[i].id = (i+1).ToString();
+                dailyReward[i].id = (i+1);
                 dailyReward[i].SetDataButton(Config.dataDailyRewardConfig.dailyRewards[i].rewards);
                 if (PlayerData.dailyRewardsClaimed[i] && i <= CurrentDayReward)
                 {
