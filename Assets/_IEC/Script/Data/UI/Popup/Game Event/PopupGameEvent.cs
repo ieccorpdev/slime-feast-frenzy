@@ -70,6 +70,7 @@ namespace IEC
         {
             base.Hide();
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
         }
 
         private void Start()
@@ -182,7 +183,7 @@ namespace IEC
         
         public void DisableRewardPopupMini()
         {
-            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_STARCHASE);
+            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
         }
 
         protected virtual void CheckShowReward()
@@ -237,7 +238,7 @@ namespace IEC
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
 
-            if (eventRewardData.listReward.Count > 0)
+            if (eventRewardData != null && eventRewardData.listReward.Count > 0)
             {
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
