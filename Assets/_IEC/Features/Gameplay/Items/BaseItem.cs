@@ -22,6 +22,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private State m_CurrentState;
         [SerializeField] protected bool _isCollected = false;
         public TCP2_GetPosOnWater posOnWater;
+        public SpringOscillation springOscillation;
         private int LayerMainWorld => LayerMask.NameToLayer("MainWorld");
         private int LayerHole => LayerMask.NameToLayer("Hole");
         protected string RecycleTweenId => gameObject.GetInstanceID() + "recycle";
@@ -50,8 +51,8 @@ namespace _IEC.Features.Gameplay
         void OnCollisionEnter(Collision collision)
         {
             if(!Game.dropSplashWater) return;
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")
-                || collision.gameObject.layer == LayerMask.NameToLayer("HoleWorld"))
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+                //|| collision.gameObject.layer == LayerMask.NameToLayer("HoleWorld"))
             {
                 Vector3 velocityAtImpact = rb.velocity;
                 Vector3 contactPoint = collision.contacts[0].point;
@@ -65,6 +66,15 @@ namespace _IEC.Features.Gameplay
                     float maxSize = Mathf.Max(size.x, size.y, size.z);
                     splashVFX.transform.localScale = Vector3.one*maxSize;
                     splashVFX.Show();
+
+                }
+
+                if (Math.Abs(velocityAtImpact.y) > 0.4f)
+                {
+                    if (springOscillation)
+                    {
+                        springOscillation.ApplyForce(Math.Abs(velocityAtImpact.y)*(-1f));
+                    }
                 }
             }
         }
@@ -184,6 +194,11 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
+            }
+
+            if (springOscillation == null)
+            {
+                springOscillation = GetComponentInChildren<SpringOscillation>();
             }
             var myTransform = transform;
             myTransform.position = itemData.position;
