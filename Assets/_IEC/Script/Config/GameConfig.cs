@@ -76,6 +76,9 @@ namespace IEC
         [Header("Booster")] 
         public AllBoosterConfig AllBoosterConfig;
 
+        [Header("Game Event")] 
+        public AllGameEventConfig AllGameEventConfig;
+
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here
