@@ -21,6 +21,12 @@ namespace IEC
                 case ResourceType.UnlimitedLive:
                     amountText.text = text + "m";
                     break;
+                case ResourceType.TimeUnlimitedWindSurf:
+                    amountText.text = text + "m";
+                    break;
+                case ResourceType.TimeUnlimitedEvolveStone:
+                    amountText.text = text + "m";
+                    break;
                 default:
                     amountText.text = "x" + text;
                     break;
