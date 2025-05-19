@@ -151,10 +151,10 @@ namespace IEC
 
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
         {
-            if (listPlayerData[dataIndex].isPlayer)
-            {
-                return 192;
-            }
+            // if (listPlayerData[dataIndex].isPlayer)
+            // {
+            //     return 192;
+            // }
             return 162;
         }
 

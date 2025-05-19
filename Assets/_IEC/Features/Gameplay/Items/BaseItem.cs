@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
@@ -30,10 +31,21 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
 
         public bool IsCollected => _isCollected;
-        public Rigidbody Rb => rb;
+        public Rigidbody Rb
+        {
+            get
+            {
+                if (rb == null)
+                {
+                    RestoreRigidbody();
+                }
+                return rb;
+            }
+        }
         private static bool CanPlaySFX = true;
 
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
+        private RigidbodyData savedData;
 
         private void Start()
         {
@@ -189,14 +201,54 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-            rb.isKinematic = itemData.isStartKinematic;
 #if UNITY_ANDROID
-            rb.Sleep();
+            if (itemData.isStartKinematic)
+            {
+                rb.isKinematic = false;
+                SaveAndDestroyRigidbody();
+                Destroy(this.GetComponent<Rigidbody>());
+            }
+#else
+            rb.isKinematic = itemData.isStartKinematic;
 #endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
-        
+
+        private void SaveAndDestroyRigidbody()
+        {
+            if (rb != null)
+            {
+                savedData.velocity = rb.velocity;
+                savedData.angularVelocity = rb.angularVelocity;
+                savedData.mass = rb.mass;
+                savedData.drag = rb.drag;
+                savedData.angularDrag = rb.angularDrag;
+                savedData.useGravity = rb.useGravity;
+                savedData.isKinematic = rb.isKinematic;
+                savedData.interpolation = rb.interpolation;
+                savedData.collisionDetectionMode = rb.collisionDetectionMode;
+                Destroy(rb);
+            }
+        }
+
+        private void RestoreRigidbody()
+        {
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+                rb.velocity = savedData.velocity;
+                rb.angularVelocity = savedData.angularVelocity;
+                rb.mass = savedData.mass;
+                rb.drag = savedData.drag;
+                rb.angularDrag = savedData.angularDrag;
+                rb.useGravity = savedData.useGravity;
+                rb.isKinematic = savedData.isKinematic;
+                rb.interpolation = savedData.interpolation;
+                rb.collisionDetectionMode = savedData.collisionDetectionMode;
+            }
+        }
+
         protected void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
@@ -238,15 +290,16 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
+#if UNITY_ANDROID
+                RestoreRigidbody();
+#else
                 rb.isKinematic = false;
+#endif
             }
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
             }
-#if UNITY_ANDROID
-            rb.WakeUp();
-#endif
             // if (_specialItemHighlightEffect != null)
             // {
             //     _specialItemHighlightEffect.gameObject.SetActive(false);
@@ -268,7 +321,7 @@ namespace _IEC.Features.Gameplay
 
         void Update()
         {
-            if(posOnWater !=null && !rb.isKinematic && posOnWater.enabled )
+            if(posOnWater !=null && rb && posOnWater.enabled )
             {
                 posOnWater.enabled = false;
             }
@@ -344,5 +397,20 @@ namespace _IEC.Features.Gameplay
             Collectable,
             Falling
         }
+
+        [System.Serializable]
+        public struct RigidbodyData
+        {
+            public Vector3 velocity;
+            public Vector3 angularVelocity;
+            public float mass;
+            public float drag;
+            public float angularDrag;
+            public bool useGravity;
+            public bool isKinematic;
+            public RigidbodyInterpolation interpolation;
+            public CollisionDetectionMode collisionDetectionMode;
+        }
+
     }
 }
