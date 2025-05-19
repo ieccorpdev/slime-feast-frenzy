@@ -10,7 +10,8 @@ namespace IEC
 {
     public class ButtonClickEffect : _BaseBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
     {
-        public Image buttonDisplayImage;
+        public GameObject buttonDisplayImage;
+        private Image btnDisplayImage => buttonDisplayImage.GetComponent<Image>();
         [Header("Button Sprite")] 
         public bool setNative = true;
         public bool isChangeButtonSpriteOnClick = false;
@@ -28,12 +29,13 @@ namespace IEC
         // public bool isPlayDefaultSoundOnClick = true;
         
         private Button m_Button;
-        
+        private Vector3 baseScale;
         public ButtonState ButtonState { get; private set; } = ButtonState.Active;
         
         private void Start()
         {
             m_Button = GetComponent<Button>();
+            baseScale = buttonDisplayImage == null ? gameObject.transform.localScale : buttonDisplayImage.gameObject.transform.localScale;
         }
 
         private void OnDisable()
@@ -61,14 +63,14 @@ namespace IEC
 
             if (ButtonState == ButtonState.Inactive)
                 return;
-            if (pressSprite == null || releaseSprite == null)
+            if (pressSprite == null || releaseSprite == null || btnDisplayImage == null)
                 return;
             if (isPress)
-                buttonDisplayImage.sprite = pressSprite;
+                btnDisplayImage.sprite = pressSprite;
             else
-                buttonDisplayImage.sprite = releaseSprite;
+                btnDisplayImage.sprite = releaseSprite;
             
-            if(setNative) buttonDisplayImage.SetNativeSize();
+            if(setNative) btnDisplayImage.SetNativeSize();
         }
 
         private void ChangeSpriteOnInactive(bool isInactive)
@@ -78,9 +80,9 @@ namespace IEC
             if (pressSprite == null || releaseSprite == null)
                 return;
             if (isInactive)
-                buttonDisplayImage.sprite = inactiveSprite;
+                btnDisplayImage.sprite = inactiveSprite;
             else
-                buttonDisplayImage.sprite = activeSprite;
+                btnDisplayImage.sprite = activeSprite;
             
             //if(setNative) buttonDisplayImage.SetNativeSize();
         }
@@ -94,9 +96,9 @@ namespace IEC
                 return;
             GameObject go = buttonDisplayImage == null ? gameObject : buttonDisplayImage.gameObject;
             if (isPress)
-                go.transform.DOScale(Vector3.one * buttonScaleOnPressDown, 0.1f).SetEase(Ease.InQuad);
+                go.transform.DOScale(baseScale * buttonScaleOnPressDown, 0.1f).SetEase(Ease.InQuad);
             else
-                go.transform.DOScale(Vector3.one, 0.1f).SetEase(Ease.OutQuad);
+                go.transform.DOScale(baseScale, 0.1f).SetEase(Ease.OutQuad);
         }
 
         public void OnPointerDown(PointerEventData eventData)
