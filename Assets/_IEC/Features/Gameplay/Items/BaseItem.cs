@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
@@ -30,7 +31,17 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
 
         public bool IsCollected => _isCollected;
-        public Rigidbody Rb => rb;
+        public Rigidbody Rb
+        {
+            get
+            {
+                if (rb == null)
+                {
+                    RestoreRigidbody();
+                }
+                return rb;
+            }
+        }
         private static bool CanPlaySFX = true;
 
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
@@ -204,7 +215,7 @@ namespace _IEC.Features.Gameplay
             m_ItemDefinition = itemDefinition;
         }
 
-        public void SaveAndDestroyRigidbody()
+        private void SaveAndDestroyRigidbody()
         {
             if (rb != null)
             {
@@ -221,7 +232,7 @@ namespace _IEC.Features.Gameplay
             }
         }
 
-        public void RestoreRigidbody()
+        private void RestoreRigidbody()
         {
             if (rb == null)
             {
