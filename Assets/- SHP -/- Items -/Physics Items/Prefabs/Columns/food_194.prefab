@@ -220,6 +220,7 @@ GameObject:
   - component: {fileID: 3446538745448805660}
   - component: {fileID: 6834144010993618130}
   - component: {fileID: 7852379773265750298}
+  - component: {fileID: 7453997492221638544}
   m_Layer: 0
   m_Name: Carrot_Slice_Yellow(Clone)
   m_TagString: Untagged
@@ -306,3 +307,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 0
   m_Mesh: {fileID: 4300000, guid: 1dd9a412b18e8b8489d5c0e50bdb55e1, type: 2}
+--- !u!114 &7453997492221638544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3778987648918460644}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2

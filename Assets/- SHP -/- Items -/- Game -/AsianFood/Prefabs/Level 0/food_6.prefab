@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1700098135607469654}
+  - {fileID: 3613823587399336499}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -94,6 +95,52 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 566568324254670137}
+--- !u!1 &4270904209052907865
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3613823587399336499}
+  - component: {fileID: 8569236025778437686}
+  m_Layer: 0
+  m_Name: collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3613823587399336499
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270904209052907865}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.010782174, y: -0.0058775246, z: -0.034353167}
+  m_LocalScale: {x: 7.011117, y: 5.2387156, z: 6.911825}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4569619985971501}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &8569236025778437686
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4270904209052907865}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -34462694124234983, guid: 55420e7c7325bb641b60be9c488599ea, type: 3}
 --- !u!1001 &316700072038479104
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -186,7 +233,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Sushi_04
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 443522843202301997, guid: 450fd4164f2064048b0223198bd8b2bb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 450fd4164f2064048b0223198bd8b2bb, type: 3}
 --- !u!23 &566568324254670137 stripped
 MeshRenderer:
@@ -200,3 +248,25 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 316700072038479104}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2079579543602969836 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1781459088445409772, guid: 450fd4164f2064048b0223198bd8b2bb,
+    type: 3}
+  m_PrefabInstance: {fileID: 316700072038479104}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3530567076218438603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2079579543602969836}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2

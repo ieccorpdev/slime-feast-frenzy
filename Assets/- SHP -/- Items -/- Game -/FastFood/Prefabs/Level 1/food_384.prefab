@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5305305184745802962}
+  - {fileID: 6474875032673223093}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -105,7 +106,6 @@ GameObject:
   - component: {fileID: 3065217455429024054}
   - component: {fileID: 6411916237567103169}
   - component: {fileID: 3776879038822078574}
-  - component: {fileID: 371591162436037734}
   m_Layer: 0
   m_Name: Strawberry_Half_WithoutLeaf
   m_TagString: Untagged
@@ -178,20 +178,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &371591162436037734
+--- !u!1 &4562260174599288680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6474875032673223093}
+  - component: {fileID: 6043585472654131283}
+  m_Layer: 0
+  m_Name: collider (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6474875032673223093
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4562260174599288680}
+  m_LocalRotation: {x: 0.00000004371139, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0041886, y: 0.027, z: -0.004424}
+  m_LocalScale: {x: 9.00321, y: 10.7501, z: 9.00278}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4165335381248771}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &6043585472654131283
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 952329007839765961}
+  m_GameObject: {fileID: 4562260174599288680}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 5443427256096671120, guid: 33d35646a8e5dfd48bad9a671ea34953, type: 3}
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -7749513952728393136, guid: d355dddacb8a10948b882cc8ea777d3e, type: 3}
 --- !u!1 &4822205491511793256
 GameObject:
   m_ObjectHideFlags: 0
@@ -201,6 +233,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5305305184745802962}
+  - component: {fileID: 1371243313740242712}
   m_Layer: 0
   m_Name: bread
   m_TagString: Untagged
@@ -228,6 +261,22 @@ Transform:
   m_Father: {fileID: 4165335381248771}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1371243313740242712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4822205491511793256}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
 --- !u!1 &5844910917247530370
 GameObject:
   m_ObjectHideFlags: 0
@@ -239,7 +288,6 @@ GameObject:
   - component: {fileID: 8548894926395271549}
   - component: {fileID: 347237272069767306}
   - component: {fileID: 7512068863737612325}
-  - component: {fileID: 883586641374962476}
   m_Layer: 0
   m_Name: Strawberry_Half_WithoutLeaf (2)
   m_TagString: Untagged
@@ -312,20 +360,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &883586641374962476
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5844910917247530370}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 5443427256096671120, guid: 33d35646a8e5dfd48bad9a671ea34953, type: 3}
 --- !u!1 &6281374196960707976
 GameObject:
   m_ObjectHideFlags: 0
@@ -337,7 +371,6 @@ GameObject:
   - component: {fileID: 8112497693070154103}
   - component: {fileID: 209141930163712128}
   - component: {fileID: 7959722955584895023}
-  - component: {fileID: 4650127598291972546}
   m_Layer: 0
   m_Name: Strawberry_Half_WithoutLeaf (1)
   m_TagString: Untagged
@@ -410,20 +443,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4650127598291972546
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6281374196960707976}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 5443427256096671120, guid: 33d35646a8e5dfd48bad9a671ea34953, type: 3}
 --- !u!1 &6339348237489099799
 GameObject:
   m_ObjectHideFlags: 0
@@ -435,7 +454,6 @@ GameObject:
   - component: {fileID: 8090556771773696232}
   - component: {fileID: 159044722082488607}
   - component: {fileID: 7972658817995663792}
-  - component: {fileID: 7777909462050779951}
   m_Layer: 0
   m_Name: Strawberry_Half_WithoutLeaf (3)
   m_TagString: Untagged
@@ -508,20 +526,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7777909462050779951
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6339348237489099799}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 5443427256096671120, guid: 33d35646a8e5dfd48bad9a671ea34953, type: 3}
 --- !u!1 &8316634363841736926
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +537,6 @@ GameObject:
   - component: {fileID: 4411381773498586978}
   - component: {fileID: 2107151668845414718}
   - component: {fileID: 3144516820053408882}
-  - component: {fileID: 6669827915792527728}
   m_Layer: 0
   m_Name: bread
   m_TagString: Untagged
@@ -606,17 +609,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &6669827915792527728
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8316634363841736926}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -7749513952728393136, guid: d355dddacb8a10948b882cc8ea777d3e, type: 3}

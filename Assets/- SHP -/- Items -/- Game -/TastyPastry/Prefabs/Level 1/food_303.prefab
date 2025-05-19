@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 8864298699436330221}
   - component: {fileID: 5524662367466750792}
   - component: {fileID: 7732535901783586690}
+  - component: {fileID: 7876141375540302259}
   m_Layer: 0
   m_Name: Cookie_Flower_01 (1)
   m_TagString: Untagged
@@ -224,3 +225,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &7876141375540302259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8092827926584383063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2

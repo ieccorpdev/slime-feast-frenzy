@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 6872227924406565215}
   - component: {fileID: 7561778484650637050}
   - component: {fileID: 5698217079654187568}
+  - component: {fileID: 9015769977647560716}
   m_Layer: 0
   m_Name: King_Can_10 2
   m_TagString: Untagged
@@ -224,3 +225,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9015769977647560716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6058711826977629157}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2

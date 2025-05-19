@@ -32,6 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4784361446256117554}
+  - {fileID: 2948491019364856526}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -88,7 +89,6 @@ GameObject:
   - component: {fileID: 1755211016640675367}
   - component: {fileID: 3455413801639686530}
   - component: {fileID: 581227970256422216}
-  - component: {fileID: 2292748254471164731}
   m_Layer: 0
   m_Name: Ice Cream Bowl D
   m_TagString: Untagged
@@ -161,20 +161,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &2292748254471164731
+--- !u!1 &1753426446633997796
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2948491019364856526}
+  - component: {fileID: 7722881881831948947}
+  m_Layer: 0
+  m_Name: collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2948491019364856526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1753426446633997796}
+  m_LocalRotation: {x: 0.00000004371139, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0041886, y: 1.51, z: -0.0044241}
+  m_LocalScale: {x: 2.6080835, y: 3.036276, z: 2.607959}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4822856027226849}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &7722881881831948947
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1373619543083607197}
+  m_GameObject: {fileID: 1753426446633997796}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 8447559393522658543, guid: 3cf86ec62e61431abc821883ecdf88ee, type: 3}
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4300000, guid: 1bc60f5b85603834cb9679824a53bb62, type: 2}
 --- !u!1 &2158911891931097088
 GameObject:
   m_ObjectHideFlags: 0
@@ -186,7 +218,6 @@ GameObject:
   - component: {fileID: 1638798175300694714}
   - component: {fileID: 2382955971947543839}
   - component: {fileID: 501309808285370837}
-  - component: {fileID: 7089734333386389115}
   m_Layer: 0
   m_Name: Cup Ice Cream N
   m_TagString: Untagged
@@ -259,20 +290,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7089734333386389115
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2158911891931097088}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -1973660135213781936, guid: b75dcbe799f34d90bd855fac015d9a10, type: 3}
 --- !u!1 &2648411358024704098
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,7 +467,6 @@ GameObject:
   - component: {fileID: 3908364834813835817}
   - component: {fileID: 113318457297859980}
   - component: {fileID: 2771510100969062726}
-  - component: {fileID: 3582600727953390936}
   m_Layer: 0
   m_Name: Ice Cream Bowl H
   m_TagString: Untagged
@@ -523,20 +539,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3582600727953390936
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4428900665036939411}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -4422975349254998065, guid: 01baa8dd144548bb95b8cb10fee88b49, type: 3}
 --- !u!1 &4784361446256117517
 GameObject:
   m_ObjectHideFlags: 0
@@ -546,6 +548,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4784361446256117554}
+  - component: {fileID: 7513387440991680337}
   m_Layer: 0
   m_Name: Flurry_01 (1)
   m_TagString: Untagged
@@ -575,6 +578,22 @@ Transform:
   m_Father: {fileID: 4822856027226849}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7513387440991680337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4784361446256117517}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
 --- !u!1 &7627897814831759072
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,7 +605,6 @@ GameObject:
   - component: {fileID: 7102295400131208282}
   - component: {fileID: 6142830298082651135}
   - component: {fileID: 8276280027061542709}
-  - component: {fileID: 7285370041911059285}
   m_Layer: 0
   m_Name: Ice Cream Bowl G
   m_TagString: Untagged
@@ -659,20 +677,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7285370041911059285
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7627897814831759072}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -6164715979796084434, guid: 07a41b9d3e664531a11548022bcf2945, type: 3}
 --- !u!1 &7644838160569717145
 GameObject:
   m_ObjectHideFlags: 0

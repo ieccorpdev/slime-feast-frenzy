@@ -378,6 +378,71 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        [Button]
+        void ReModalItemForFloating(int min,int max)
+        {
+            Debug.LogError($"Start ReModalItemForFloating");
+            for (int i = min; i < max; i++)
+            {
+                if(i >= listItemDefinitionShp.Count) break;
+                var itemDef = listItemDefinitionShp[i];
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    Debug.LogError("Missing path for " + itemDef.GetId());
+                    continue;
+                }
+                GameObject prefab = PrefabUtility.LoadPrefabContents(itemDefPath);
+                if (prefab != null)
+                {
+                    //Make Mesh Convex
+                    var colliders = prefab.GetComponentsInChildren<Collider>();
+                    var meshs = prefab.GetComponentsInChildren<MeshRenderer>();
+                    if (colliders.Length > 1)
+                    {
+                        Debug.LogWarning(prefab.name + " Item have more one than collider");
+                    } 
+                    if (meshs.Length > 1)
+                    {
+                        Debug.LogWarning(prefab.name + " Item have more one than meshRenderer");
+                    }
+
+                    if (colliders[0].gameObject == meshs[0].gameObject)
+                    {
+                        //Collider and mesh SameObject
+                        GameObject child = new GameObject("collider");
+                        child.transform.SetParent(prefab.transform);
+                        CopyTransform(meshs[0].gameObject.transform, child.transform);
+                        ColliderUtils.CopyCollider(colliders[0], child);
+                        Object.DestroyImmediate(colliders[0], true);
+                    }
+                    if (meshs.Length ==1)
+                    {
+                        //Only one mehsRender, can fake spring
+                        if (meshs[0].gameObject.GetComponent<SpringOscillation>() == null)
+                        {
+                            meshs[0].gameObject.AddComponent<SpringOscillation>();
+                        }
+                    }
+
+                    if (prefab.GetComponentInChildren<SpringOscillation>() == null)
+                    {
+                        Debug.LogError("Mising SpringOsci in " + prefab.name);
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(prefab, itemDefPath);
+                    PrefabUtility.UnloadPrefabContents(prefab);
+                }
+            }
+            Debug.LogError($"End ReModalItemForFloating");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        void CopyTransform(Transform source, Transform target)
+        {
+            target.position = source.position;
+            target.rotation = source.rotation;
+            target.localScale = source.localScale;
+        }
 #endif
 #endregion
         public GameObject GetItemPrefab(string id)

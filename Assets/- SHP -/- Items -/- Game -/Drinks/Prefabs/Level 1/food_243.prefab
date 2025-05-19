@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 2025092436005023461}
   - component: {fileID: 3149504062557774144}
   - component: {fileID: 887699560207947146}
+  - component: {fileID: 9101494061522247560}
   m_Layer: 0
   m_Name: Juice_Bottle_Green (1)
   m_TagString: Untagged
@@ -224,3 +225,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9101494061522247560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1680197235521401951}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
