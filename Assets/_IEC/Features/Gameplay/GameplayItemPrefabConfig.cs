@@ -4,6 +4,7 @@ using System.Linq;
 using IEC;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -407,23 +408,29 @@ namespace _IEC.Features.Gameplay
                         Debug.LogWarning(prefab.name + " Item have more one than meshRenderer");
                     }
 
-                    if (colliders[0].gameObject == meshs[0].gameObject)
+                    foreach (var ms in meshs)
                     {
-                        //Collider and mesh SameObject
-                        GameObject child = new GameObject("collider");
-                        child.transform.SetParent(prefab.transform);
-                        CopyTransform(meshs[0].gameObject.transform, child.transform);
-                        ColliderUtils.CopyCollider(colliders[0], child);
-                        Object.DestroyImmediate(colliders[0], true);
+                        ms.shadowCastingMode = ShadowCastingMode.Off;
+                        ms.receiveShadows = false;
                     }
-                    if (meshs.Length ==1)
-                    {
-                        //Only one mehsRender, can fake spring
-                        if (meshs[0].gameObject.GetComponent<SpringOscillation>() == null)
-                        {
-                            meshs[0].gameObject.AddComponent<SpringOscillation>();
-                        }
-                    }
+                    CheckOverlap(colliders, meshs, prefab.name);
+                    //if (colliders[0].gameObject == meshs[0].gameObject)
+                    //{
+                    //    //Collider and mesh SameObject
+                    //    GameObject child = new GameObject("collider");
+                    //    child.transform.SetParent(prefab.transform);
+                    //    CopyTransform(meshs[0].gameObject.transform, child.transform);
+                    //    ColliderUtils.CopyCollider(colliders[0], child);
+                    //    Object.DestroyImmediate(colliders[0], true);
+                    //}
+                    //if (meshs.Length ==1)
+                    //{
+                    //    //Only one mehsRender, can fake spring
+                    //    if (meshs[0].gameObject.GetComponent<SpringOscillation>() == null)
+                    //    {
+                    //        meshs[0].gameObject.AddComponent<SpringOscillation>();
+                    //    }
+                    //}
 
                     if (prefab.GetComponentInChildren<SpringOscillation>() == null)
                     {
@@ -436,6 +443,20 @@ namespace _IEC.Features.Gameplay
             Debug.LogError($"End ReModalItemForFloating");
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+        void CheckOverlap(Collider[] colliders, MeshRenderer[] meshs,string nameObj)
+        {
+            // Lấy danh sách GameObject từ mỗi mảng
+            var colliderObjects = colliders.Select(c => c.gameObject);
+            var meshObjects     = meshs.Select(m => m.gameObject);
+
+            // Tìm giao (intersect)
+            var duplicates = colliderObjects.Intersect(meshObjects);
+
+            if (duplicates.Any())
+            {
+                    Debug.LogError($"Found overlapping GameObject: "+ nameObj);
+            }
         }
         void CopyTransform(Transform source, Transform target)
         {
