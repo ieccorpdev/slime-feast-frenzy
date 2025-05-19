@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4301406518257414}
-  - component: {fileID: 114519371994820264}
   - component: {fileID: 114130626119499430}
   - component: {fileID: 54537141495966089}
   - component: {fileID: 2601994470032456950}
+  - component: {fileID: 7281788288779616767}
   m_Layer: 0
   m_Name: food_87
   m_TagString: Untagged
@@ -36,20 +36,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
---- !u!114 &114519371994820264
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1270724936992161}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e7df4285d723e7cd36dd6bddc51093c2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  useConvexCollider: 1
-  preservedYAxis: 1
 --- !u!114 &114130626119499430
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -94,6 +80,19 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 3504098169615904774}
+--- !u!65 &7281788288779616767
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1270724936992161}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.7254841, z: 1.5633733}
+  m_Center: {x: 0, y: 0.35667703, z: 0.038546592}
 --- !u!1 &3144060957645525459
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +104,6 @@ GameObject:
   - component: {fileID: 2371745970650254185}
   - component: {fileID: 1677021252568319180}
   - component: {fileID: 3504098169615904774}
-  - component: {fileID: 329158318928178224}
   m_Layer: 0
   m_Name: grapefruit_003
   m_TagString: Untagged
@@ -144,7 +142,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3144060957645525459}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -178,17 +176,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &329158318928178224
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3144060957645525459}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 4300000, guid: b24e981bc2b9bbd4893258116817e66c, type: 2}
