@@ -285,12 +285,19 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
+#if UNITY_IOS
+
                         //if (scene != GameScene.Game)
                         {
                             onLoadDone?.Invoke();
                             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
                         }
+#endif
                     });
+#if UNITY_ANDROID
+                    onLoadDone?.Invoke();
+                    if (raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+#endif
                 });
             }
         }

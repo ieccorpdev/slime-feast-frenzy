@@ -190,6 +190,9 @@ namespace _IEC.Features.Gameplay
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
             rb.isKinematic = itemData.isStartKinematic;
+#if UNITY_ANDROID
+            rb.Sleep();
+#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -241,16 +244,18 @@ namespace _IEC.Features.Gameplay
             {
                 posOnWater.enabled = false;
             }
-
+#if UNITY_ANDROID
+            rb.WakeUp();
+#endif
             // if (_specialItemHighlightEffect != null)
             // {
             //     _specialItemHighlightEffect.gameObject.SetActive(false);
             // }
-            
+
         }
 
         #region New Whirlpool Logic
-        
+
         public bool onDraging = false;
         public Transform targetObject; // Object B
         public float pullSpeed = 2.5f;   // Speed towards object B
