@@ -1,23 +1,29 @@
-using System;
 using IEC;
-using UnityEngine;
 using UnityEngine;
 
 public class SpringOscillation : _BaseBehaviour
 {
-    [Header("Oscillation Settings")] public float damping = 0.8f;
+    [Header("Oscillation Settings")]
+    public float damping = 0.8f;
     public float frequency = 1.0f;
     public float minAmplitude = 0.01f;
 
-    [Header("Limit Settings")] public float movementLimit = 1.5f;
-    public float amplitudeSmoothSpeed = 5f; // tốc độ nội suy amplitude
+    [Header("Size Multipliers")]
+    public float sizeAmplitudeMultiplier = 1.0f;
+
+    [Tooltip("Hệ số nhân giới hạn dao động theo kích cỡ object.")]
+    public float sizeMovementLimitMultiplier = 1.0f;
+
+    [Header("Smooth Settings")]
+    public float amplitudeSmoothSpeed = 5f;
 
     private float amplitude = 0f;
     private float targetAmplitude = 0f;
+    private float movementLimit = 1.5f;
     private float time = 0f;
     private bool isOscillating = false;
 
-    private Vector3 localStartPosition; // Vị trí local gốc lúc start
+    private Vector3 localStartPosition;
 
     void Start()
     {
@@ -25,18 +31,26 @@ public class SpringOscillation : _BaseBehaviour
         frequency = Config.gamePlayConfig.frequency;
         minAmplitude = Config.gamePlayConfig.minAmplitude;
         amplitude = Config.gamePlayConfig.amplitude;
-
-        // Ghi nhận vị trí local ban đầu lúc start
+        amplitudeSmoothSpeed = Config.gamePlayConfig.amplitudeSmoothSpeed;
+        sizeAmplitudeMultiplier = Config.gamePlayConfig.sizeAmplitudeMultiplier;
+        sizeMovementLimitMultiplier = Config.gamePlayConfig.sizeMovementLimitMultiplier;
+        
         localStartPosition = transform.localPosition;
+    }
+
+    public void SetSizeDependentLimits(Vector3 boundsSize)
+    {
+        float maxSize = Mathf.Max(boundsSize.x, boundsSize.y, boundsSize.z);
+
+        amplitude = Config.gamePlayConfig.amplitude * maxSize * sizeAmplitudeMultiplier;
+        movementLimit = maxSize * sizeMovementLimitMultiplier;
     }
 
     void Update()
     {
         if (!isOscillating) return;
 
-        // Nội suy biên độ để tránh giật
         amplitude = Mathf.Lerp(amplitude, targetAmplitude, Time.deltaTime * amplitudeSmoothSpeed);
-
         time += Time.deltaTime;
 
         float decay = Mathf.Exp(-damping * time);
@@ -48,7 +62,6 @@ public class SpringOscillation : _BaseBehaviour
 
         float clampedOffset = Mathf.Clamp(offset, -movementLimit, movementLimit);
 
-        // Áp dụng dao động chỉ theo trục Y thế giới
         transform.position = new Vector3(
             worldBasePosition.x,
             worldBasePosition.y + clampedOffset,
@@ -60,23 +73,18 @@ public class SpringOscillation : _BaseBehaviour
             isOscillating = false;
             amplitude = 0f;
             targetAmplitude = 0f;
-
-            // Trở về vị trí ban đầu (ổn định)
             transform.position = worldBasePosition;
         }
     }
 
     public void ApplyForce(float force)
     {
-        Debug.LogError(force);
-
         if (force >= 0f)
         {
             return;
         }
 
         float newForce = Mathf.Abs(force);
-
         targetAmplitude = Mathf.Min(targetAmplitude + newForce, movementLimit);
 
         if (!isOscillating)

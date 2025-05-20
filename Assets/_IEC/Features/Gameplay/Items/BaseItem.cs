@@ -66,41 +66,48 @@ namespace _IEC.Features.Gameplay
         private void OnCollisionEnter(Collision collision)
         {
             if (!Game.dropSplashWater) return;
-            if (collision.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
-            if (collision.contactCount == 0) return;
-            
-            if (hasSplashed) return;
-
-            float velocityY = rb.velocity.y;
-            float relVelocityY = collision.relativeVelocity.y;
-            if (velocityY < -minImpactVelocity && relVelocityY > 0)
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                // Splash VFX
-                Vector3 contactPoint = collision.contacts[0].point;
-                contactPoint.y = splashYOffset;
+                if (collision.contactCount == 0) return;
+                if (hasSplashed) return;
 
-                var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
-                if (splashVFX != null)
+                float velocityY = rb.velocity.y;
+                float relVelocityY = collision.relativeVelocity.y;
+                if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
-                    splashVFX.transform.position = contactPoint;
-                    splashVFX.transform.parent = null;
+                    // Splash VFX
+                    Vector3 contactPoint = collision.contacts[0].point;
+                    contactPoint.y = splashYOffset;
 
-                    if (myRenderer != null)
+                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                    if (splashVFX != null)
                     {
-                        Vector3 size = myRenderer.bounds.size;
-                        float maxSize = Mathf.Max(size.x, size.z); 
-                        splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                        splashVFX.transform.position = contactPoint;
+                        splashVFX.transform.parent = null;
+
+                        if (myRenderer != null)
+                        {
+                            Vector3 size = myRenderer.bounds.size;
+                            float maxSize = Mathf.Max(size.x, size.z); 
+                            splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                        }
+                        splashVFX.Show();
                     }
-                    splashVFX.Show();
+                    // Spring Oscillation
+                    ApplySpringForce(velocityY);
+                    hasSplashed = true; 
                 }
-                // Spring Oscillation
-                if (springOscillation != null)
-                {
-                    springOscillation.ApplyForce(velocityY);
-                }
-                hasSplashed = true; 
+            } 
+
+        }
+        public void ApplySpringForce(float velocityY)
+        {
+            if (springOscillation != null)
+            {
+                springOscillation.ApplyForce(velocityY);
             }
         }
+
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
@@ -222,6 +229,7 @@ namespace _IEC.Features.Gameplay
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
+                springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
             }
             var myTransform = transform;
             myTransform.position = itemData.position;
