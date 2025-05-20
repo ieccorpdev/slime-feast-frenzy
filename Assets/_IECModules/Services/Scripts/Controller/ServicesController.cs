@@ -967,7 +967,7 @@ namespace IEC
             return false;
         }
 
-        public void ShowRewardAds(Action closeCallback, Action skipCallback = null, bool isResetInterCD = true)
+        public void ShowRewardAds(Action closeCallback, Action skipCallback = null, bool isResetInterCD = true, float timeAddCooldown = 0)
         {
             var serviceData = Pool.Get<ServiceData>();
             if (Application.isEditor || config.IsNoAds || serviceData.isNoAdsReward)
@@ -993,6 +993,7 @@ namespace IEC
                         {
                             lastFullAdsTime = UnityEngine.Time.realtimeSinceStartup;
                         }
+                        lastFullAdsTime += timeAddCooldown;
                         //PushEvent("show_reward_ad");
 #if (PluginKochava)
                         m_KochavaAnalytic?.PushEventRewardAd();
