@@ -48,7 +48,7 @@ namespace _IEC.Features.Gameplay
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
         
-        [SerializeField] private float minImpactVelocity = 0.4f;
+        [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
         private void OnCollisionEnter(Collision collision)
@@ -61,7 +61,6 @@ namespace _IEC.Features.Gameplay
 
             float velocityY = rb.velocity.y;
             float relVelocityY = collision.relativeVelocity.y;
-            Debug.LogError(velocityY + " _ " + relVelocityY);
             if (velocityY < -minImpactVelocity && relVelocityY > 0)
             {
                 // Splash VFX

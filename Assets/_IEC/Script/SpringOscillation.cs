@@ -21,19 +21,21 @@ public class SpringOscillation : _BaseBehaviour
 
     private void Start()
     {
-        //damping = Config.gamePlayConfig.damping;
-        //frequency = Config.gamePlayConfig.frequency;
-        //minAmplitude = Config.gamePlayConfig.minAmplitude;
-        //amplitude = Config.gamePlayConfig.amplitude;
+        damping = Config.gamePlayConfig.damping;
+        frequency = Config.gamePlayConfig.frequency;
+        minAmplitude = Config.gamePlayConfig.minAmplitude;
+        amplitude = Config.gamePlayConfig.amplitude;
     }
     
 
         void Update()
         {
+            #if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 ApplyForce(-1f);
             }
+            #endif
             if (!isOscillating) return;
             // Nội suy biên độ để tránh giật
             amplitude = Mathf.Lerp(amplitude, targetAmplitude, Time.deltaTime * amplitudeSmoothSpeed);
@@ -58,14 +60,10 @@ public class SpringOscillation : _BaseBehaviour
 
         public void ApplyForce(float force)
         {
-            Debug.LogError(force);
-
             if (force >= 0f)
             {
-                Debug.LogWarning("SpringOscillation: Force must be negative to simulate downward pull.");
                 return;
             }
-
             float newForce = Mathf.Abs(force);
 
             // Set amplitude mục tiêu, nội suy từ từ thay vì thay đổi ngay lập tức
