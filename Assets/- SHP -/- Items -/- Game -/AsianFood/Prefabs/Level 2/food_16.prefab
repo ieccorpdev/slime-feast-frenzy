@@ -33,6 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8992735352678532182}
+  - {fileID: 6435368255887843251}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -94,6 +95,52 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 7820414943569624889}
+--- !u!1 &6518091235839212196
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6435368255887843251}
+  - component: {fileID: 6217013418152167925}
+  m_Layer: 0
+  m_Name: collider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6435368255887843251
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518091235839212196}
+  m_LocalRotation: {x: 0.000000015582426, y: 0.70119655, z: -0.000000015325144, w: 0.7129681}
+  m_LocalPosition: {x: 0.30328, y: 0.014776409, z: 0.44485}
+  m_LocalScale: {x: 28.83408, y: 16.586775, z: 27.365568}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4898747828752903}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!64 &6217013418152167925
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6518091235839212196}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6031587261813024734, guid: 2f1f8b0df40a05e47b13935293eeb852, type: 3}
 --- !u!1 &8612938045008649964
 GameObject:
   m_ObjectHideFlags: 0
@@ -105,7 +152,7 @@ GameObject:
   - component: {fileID: 8992735352678532182}
   - component: {fileID: 5432263353530534899}
   - component: {fileID: 7820414943569624889}
-  - component: {fileID: 7658010505919604822}
+  - component: {fileID: 6843886104449849830}
   m_Layer: 0
   m_Name: Taiyaki
   m_TagString: Untagged
@@ -144,7 +191,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8612938045008649964}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -178,17 +225,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &7658010505919604822
-MeshCollider:
+--- !u!114 &6843886104449849830
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8612938045008649964}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -6031587261813024734, guid: 2f1f8b0df40a05e47b13935293eeb852, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
