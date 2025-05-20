@@ -33,6 +33,11 @@ namespace _IECModules
             Debug.LogWarning("Notification: ScheduleNotification");
         }
 
+        public virtual void ScheduleNotification(string title, string message, TimeSpan timeInTargetZone, string timeZoneId)
+        {
+            Debug.LogWarning("Notification: ScheduleNotification");
+        }
+
         public virtual void RequestAuthorization()
         {
             Debug.LogWarning("Notification: RequestAuthorization");
