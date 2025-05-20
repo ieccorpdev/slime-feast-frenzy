@@ -105,6 +105,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7395095486391602685}
   - component: {fileID: 7381849498174542323}
+  - component: {fileID: 4575732449707906907}
   m_Layer: 0
   m_Name: collider
   m_TagString: Untagged
@@ -120,8 +121,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1338080777632129518}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0977, y: 0.071, z: -0.0723}
-  m_LocalScale: {x: 33.612743, y: 31.715424, z: 33.154545}
+  m_LocalPosition: {x: 0.0977, y: 5.35, z: -0.0723}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4230816389030144}
@@ -141,6 +142,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4759857262846673415, guid: c485b24fc69e7544a83c13030acf7ae9, type: 3}
+--- !u!136 &4575732449707906907
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1338080777632129518}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 2.64
+  m_Height: 10.6
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6886053797989242342
 GameObject:
   m_ObjectHideFlags: 0
@@ -241,3 +256,4 @@ MonoBehaviour:
   frequency: 1
   minAmplitude: 0.01
   movementLimit: 2
+  amplitudeSmoothSpeed: 5

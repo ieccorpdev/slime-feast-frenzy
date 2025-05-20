@@ -19,10 +19,25 @@ namespace IEC
         {
             SetEvent(btnStart, () =>
             {
-                Locator.Main.PopupStarChase.Show();
+                if (!Locator.Main.PopupStarChase.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupStarChase.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupStarChase.InitEvent();
+                }
+
                 OnHideClick();
             });
             SetEvent(btnCloseAll, OnHideClick);
+        }
+
+        public override void Show()
+        {
+            if (isActiveAndEnabled)
+                return;
+            base.Show();
         }
 
         private void Update()

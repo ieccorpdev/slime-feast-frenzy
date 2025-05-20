@@ -73,6 +73,7 @@ namespace IEC
         
         private void CheckShowGameEventInfoBar()
         {
+            Controllers.Get<EventRankController>().CheckAddPlayerProgress();
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
             if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
@@ -84,15 +85,15 @@ namespace IEC
                     sharkRaceInfoBar.SetupData();
                 }
             }
-            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
-            {
-                if (!Locator.Main.PopupStarChase.IsEventCompleted())
-                {
-                    starChaseInfoBar.gameObject.SetActive(true);
-                    sharkRaceInfoBar.gameObject.SetActive(false);
-                    starChaseInfoBar.SetupData();
-                }
-            }
+            // else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            // {
+            //     if (!Locator.Main.PopupStarChase.IsEventCompleted())
+            //     {
+            //         starChaseInfoBar.gameObject.SetActive(true);
+            //         sharkRaceInfoBar.gameObject.SetActive(false);
+            //         starChaseInfoBar.SetupData();
+            //     }
+            // }
         }
 
         void SetupGoldDisplay()
@@ -221,7 +222,6 @@ namespace IEC
                     () =>
                     {
                         Locator.Main.PopupStartStarChaseEvent.Show();
-                        PlayerData.isShownPopupStartStarChase = true;
                     },
                     ShowNext
                 );
@@ -235,11 +235,42 @@ namespace IEC
                     () =>
                     {
                         Locator.Main.PopupStartSharkRaceEvent.Show();
-                        PlayerData.isShownPopupStartSharkRace = true;
                     },
                     ShowNext
                 );
                 popupQueue.Enqueue(StartStarChase);
+            }
+
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
+                && Locator.Main.PopupSharkRace.IsEndEventStage() 
+                && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
+                && !PlayerData.GetEventSaveData(EventType.SharkRace).claimedReward)
+            {
+                PopupData ClaimSharkRace = new PopupData(
+                    Locator.Main.PopupSharkRace,
+                    () =>
+                    {
+                        Locator.Main.PopupSharkRace.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(ClaimSharkRace);
+            }
+            
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock 
+                && Locator.Main.PopupStarChase.IsEndEventStage() 
+                && PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count > 0
+                && !PlayerData.GetEventSaveData(EventType.StarChase).claimedReward)
+            {
+                PopupData ClaimStarChase = new PopupData(
+                    Locator.Main.PopupStarChase,
+                    () =>
+                    {
+                        Locator.Main.PopupStarChase.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(ClaimStarChase);
             }
             
             #endregion

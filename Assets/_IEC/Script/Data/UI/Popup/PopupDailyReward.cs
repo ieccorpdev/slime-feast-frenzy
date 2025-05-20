@@ -24,12 +24,14 @@ namespace _IEC
         {
             get
             {
-                for (int i = 0; i < dailyReward.Length; i++)
-                {
-                    if (!PlayerData.dailyRewardsClaimed.ContainsKey(i))
-                        return true;
-                }
-                return false;
+                // for (int i = 0; i < dailyReward.Length; i++)
+                // {
+                //     if (!PlayerData.dailyRewardsClaimed.ContainsKey(i))
+                //         return true;
+                // }
+                // return false;
+
+                return !PlayerData.dailyRewardsClaimed[PlayerData.currentDailyAdReward];
             }
         }
         private void OnEnable()
@@ -40,8 +42,6 @@ namespace _IEC
             }
 
         }
-        
-        
 
         private void OnDisable()
         {
@@ -137,7 +137,7 @@ namespace _IEC
             dailyCountdownText.text = $"Reset in " + endTime;
         }
 
-        bool CanClaimReward()
+        public bool CanClaimReward()
         {
             // next day or next moth can claim
             return PlayerData.lastTimeOpenDailyReward.Day != DateTime.Now.Day 

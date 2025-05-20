@@ -33,23 +33,23 @@ namespace IEC
             switch (gameEvent)
             {
                 case EventList.GamePlay.LEVEL_WIN:
-                    //Event Add Star
-                    AddPlayerEventProgress(
-                        new AddEventProgressData()
-                        {
-                            eventType = EventType.StarChase,
-                            id = PlayerData.playerName,
-                            progressAmount = Locator.Game.ScreenLevelWin.StarWon,
-                        });
-                    
-                    //Event Add Level
-                    AddPlayerEventProgress(
-                        new AddEventProgressData()
-                        {
-                            eventType = EventType.SharkRace,
-                            id = PlayerData.playerName,
-                            progressAmount = 1,
-                        });
+                    // //Event Add Star
+                    // AddPlayerEventProgress(
+                    //     new AddEventProgressData()
+                    //     {
+                    //         eventType = EventType.StarChase,
+                    //         id = PlayerData.playerName,
+                    //         progressAmount = Locator.Game.ScreenLevelWin.StarWon,
+                    //     });
+                    //
+                    // //Event Add Level
+                    // AddPlayerEventProgress(
+                    //     new AddEventProgressData()
+                    //     {
+                    //         eventType = EventType.SharkRace,
+                    //         id = PlayerData.playerName,
+                    //         progressAmount = 1,
+                    //     });
                     break;
             }
         }
@@ -64,6 +64,27 @@ namespace IEC
             eventData.lastUpdateTime = DateTime.MinValue;
             eventData.timeStart = timeStart;
             eventData.timeEnd = timeEnd;
+        }
+
+        public void CheckAddPlayerProgress()
+        {
+            //Event Add Star
+            AddPlayerEventProgress(
+                new AddEventProgressData()
+                {
+                    eventType = EventType.StarChase,
+                    id = PlayerData.playerName,
+                    progressAmount = Locator.Game.ScreenLevelWin.StarWon,
+                });
+                    
+            //Event Add Level
+            AddPlayerEventProgress(
+                new AddEventProgressData()
+                {
+                    eventType = EventType.SharkRace,
+                    id = PlayerData.playerName,
+                    progressAmount = 1,
+                });
         }
 
         public EventSaveData GetEventSaveData(EventType eventType)
