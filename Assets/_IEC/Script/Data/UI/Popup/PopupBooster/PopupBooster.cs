@@ -71,15 +71,15 @@ namespace IEC
                     sharkRaceInfoBar.SetupData();
                 }
             }
-            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
-            {
-                if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
-                {
-                    starChaseInfoBar.gameObject.SetActive(true);
-                    sharkRaceInfoBar.gameObject.SetActive(false);
-                    starChaseInfoBar.SetupData();
-                }
-            }
+            // else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            // {
+            //     if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
+            //     {
+            //         starChaseInfoBar.gameObject.SetActive(true);
+            //         sharkRaceInfoBar.gameObject.SetActive(false);
+            //         starChaseInfoBar.SetupData();
+            //     }
+            // }
         }
 
         protected override void OnHideClick()

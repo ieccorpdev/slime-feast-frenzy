@@ -84,15 +84,15 @@ namespace IEC
                     sharkRaceInfoBar.SetupData();
                 }
             }
-            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
-            {
-                if (!Locator.Main.PopupStarChase.IsEventCompleted())
-                {
-                    starChaseInfoBar.gameObject.SetActive(true);
-                    sharkRaceInfoBar.gameObject.SetActive(false);
-                    starChaseInfoBar.SetupData();
-                }
-            }
+            // else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            // {
+            //     if (!Locator.Main.PopupStarChase.IsEventCompleted())
+            //     {
+            //         starChaseInfoBar.gameObject.SetActive(true);
+            //         sharkRaceInfoBar.gameObject.SetActive(false);
+            //         starChaseInfoBar.SetupData();
+            //     }
+            // }
         }
 
         void SetupGoldDisplay()
@@ -221,7 +221,6 @@ namespace IEC
                     () =>
                     {
                         Locator.Main.PopupStartStarChaseEvent.Show();
-                        PlayerData.isShownPopupStartStarChase = true;
                     },
                     ShowNext
                 );
@@ -235,7 +234,6 @@ namespace IEC
                     () =>
                     {
                         Locator.Main.PopupStartSharkRaceEvent.Show();
-                        PlayerData.isShownPopupStartSharkRace = true;
                     },
                     ShowNext
                 );

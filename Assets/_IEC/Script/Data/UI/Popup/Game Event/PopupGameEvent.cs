@@ -113,6 +113,17 @@ namespace IEC
             }
         }
 
+        protected virtual void ShowStartPopup()
+        {
+            
+        }
+
+        protected virtual bool CheckShowStartPopup()
+        {
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return (IsEndEventStage() && data.claimedReward) || data == null || data.listPlayerData.Count == 0;
+        }
+
         protected virtual void Init()
         {
             _eventRankController = Controllers.Get<EventRankController>();
@@ -176,10 +187,21 @@ namespace IEC
                 return;
 
             base.Show();
+
+            if (CheckShowStartPopup())
+            {
+                ShowStartPopup();
+            }
+            else
+            {
+                InitEvent();
+            }
+        }
+
+        public virtual void InitEvent()
+        {
             CheckInitEventProgress();
             CheckUpdateEventProgress();
-            //UpdateUI();
-            
             ReloadData();
         }
         
@@ -252,9 +274,10 @@ namespace IEC
                 {
                     if (stage != -1)
                     {
-                        StartNewEventStage(stage);
-                        CheckInitEventProgress();
-                        UpdateUI();
+                        // StartNewEventStage(stage);
+                        // CheckInitEventProgress();
+                        // UpdateUI();
+                        ShowStartPopup();
                     }
                     else
                         Hide();
@@ -265,9 +288,10 @@ namespace IEC
             {
                 if (stage != -1)
                 {
-                    StartNewEventStage(stage);
-                    CheckInitEventProgress();
-                    UpdateUI();
+                    // StartNewEventStage(stage);
+                    // CheckInitEventProgress();
+                    // UpdateUI();
+                    ShowStartPopup();
                 }
                 else
                     Hide();
@@ -316,12 +340,35 @@ namespace IEC
 
         protected virtual void CheckInitEventProgress()
         {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             var data = _eventRankController.GetEventSaveData(eventType);
             
             if (data.listPlayerData.Count > 0 )
             {
                 listPlayerData.Clear();
                 listPlayerData = new List<EventPlayerData>(data.listPlayerData);
+            }
+            
+            int stage = 0;
+
+            if (IsEventMultipleStage && !IsEndEvent())
+            {
+                if (IsEventStageCompleted())
+                {
+                    if (data.eventIndex < _eventConfig.listEventData.Count - 1)
+                    {
+                        stage = data.eventIndex + 1;
+                    }
+                    else
+                    {
+                        stage = -1;
+                    }
+                }
+                else
+                    stage = data.eventIndex;
             }
             
             if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
@@ -338,7 +385,7 @@ namespace IEC
                     if(!data.claimedReward)
                         CheckShowReward();
                     else
-                        StartNewEventStage(0);
+                        StartNewEventStage(stage);
                 }
             }
         }
@@ -404,8 +451,6 @@ namespace IEC
             
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);
-            
-            
 
             var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
 
