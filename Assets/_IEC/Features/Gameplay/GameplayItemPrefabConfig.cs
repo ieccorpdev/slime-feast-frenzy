@@ -379,6 +379,39 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        
+        [Button]
+        void DeleteAllDeactiveObject()
+        {
+            Debug.LogError($"Start MarkAllModalReadWirteAble");
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                 if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    Debug.LogError("Missing path for " + itemDef.GetId());
+                    continue;
+                }
+                GameObject prefab = PrefabUtility.LoadPrefabContents(itemDefPath);
+                if (prefab != null)
+                {
+                    var allChild = GetAllChildren(prefab.transform);
+                    for (int i = allChild.Count-1; i >=0; i--)
+                    {
+                        if (!allChild[i].gameObject.activeSelf)
+                        {
+                            DestroyImmediate(allChild[i].gameObject,true);
+                        }
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(prefab, itemDefPath);
+                    PrefabUtility.UnloadPrefabContents(prefab);
+                }
+            }
+            Debug.LogError($"End MarkAllModalReadWirteAble");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
         [Button]
         void ReModalItemForFloating(int min,int max)
         {
@@ -478,5 +511,16 @@ namespace _IEC.Features.Gameplay
                 return 0;
             return itemDef.GetXp();
         }
+        List<Transform> GetAllChildren(Transform parent)
+        {
+            List<Transform> children = new List<Transform>();
+            foreach (Transform child in parent)
+            {
+                children.Add(child);
+                children.AddRange(GetAllChildren(child)); // Đệ quy lấy tiếp các con của child
+            }
+            return children;
+        }
     }
+    
 }

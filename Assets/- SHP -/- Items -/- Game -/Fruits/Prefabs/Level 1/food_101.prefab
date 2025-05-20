@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1493985831936478583}
+  - {fileID: 4301586828268442490}
   - {fileID: 5070062102021502137}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -95,70 +95,6 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 5810515728938941288}
---- !u!1 &1692919219449963935
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2032712926830231333}
-  m_Layer: 0
-  m_Name: melon_part
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2032712926830231333
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1692919219449963935}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4301586828268442490}
-  m_Father: {fileID: 1493985831936478583}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2301450040540534733
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1493985831936478583}
-  m_Layer: 0
-  m_Name: Cantaloupe_Slice
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1493985831936478583
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2301450040540534733}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.57497, y: 0.89998, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2032712926830231333}
-  m_Father: {fileID: 4485894121202936}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3177541888540958061
 GameObject:
   m_ObjectHideFlags: 0
@@ -185,12 +121,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3177541888540958061}
-  m_LocalRotation: {x: 0.000000021855694, y: 0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0027747375, y: 0.089715004, z: 0.004163593}
-  m_LocalScale: {x: 44.99444, y: 22.749401, z: 13.334682}
+  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.0015953908, y: 0.08074171, z: 0.004163593}
+  m_LocalScale: {x: 25.870453, y: 20.474007, z: 13.334682}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2032712926830231333}
+  m_Father: {fileID: 4485894121202936}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2175032646169256247
@@ -259,6 +195,7 @@ MonoBehaviour:
   frequency: 1
   minAmplitude: 0.01
   movementLimit: 2
+  amplitudeSmoothSpeed: 5
 --- !u!1 &5616658834908118888
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +222,7 @@ Transform:
   m_GameObject: {fileID: 5616658834908118888}
   m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.0015953908, y: 0.08074171, z: 0.004163593}
-  m_LocalScale: {x: 44.99444, y: 22.749401, z: 13.334682}
+  m_LocalScale: {x: 25.870453, y: 20.474007, z: 13.334682}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4485894121202936}
