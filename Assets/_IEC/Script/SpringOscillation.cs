@@ -10,74 +10,72 @@ public class SpringOscillation : _BaseBehaviour
     public float minAmplitude = 0.01f;
 
     [Header("Limit Settings")]
-    private float movementLimit = 1.5f;
+    public float movementLimit = 1.5f;
+    public float amplitudeSmoothSpeed = 5f; // tốc độ nội suy amplitude
 
     private float amplitude = 0f;
+    private float targetAmplitude = 0f; // amplitude mục tiêu
     private float time = 0f;
     private bool isOscillating = false;
-
     private Vector3 upDirection = Vector3.up;
 
     private void Start()
     {
-        damping = Config.gamePlayConfig.damping;
-        frequency = Config.gamePlayConfig.frequency;
-        minAmplitude = Config.gamePlayConfig.minAmplitude;
-        amplitude = Config.gamePlayConfig.amplitude;
+        //damping = Config.gamePlayConfig.damping;
+        //frequency = Config.gamePlayConfig.frequency;
+        //minAmplitude = Config.gamePlayConfig.minAmplitude;
+        //amplitude = Config.gamePlayConfig.amplitude;
     }
+    
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
+        void Update()
         {
-            ApplyForce(-1f);
-        }
-        if (!isOscillating) return;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                ApplyForce(-1f);
+            }
+            if (!isOscillating) return;
+            // Nội suy biên độ để tránh giật
+            amplitude = Mathf.Lerp(amplitude, targetAmplitude, Time.deltaTime * amplitudeSmoothSpeed);
 
-        time += Time.deltaTime;
+            time += Time.deltaTime;
 
-        float decay = Mathf.Exp(-damping * time);
-        float offset = -amplitude * decay * Mathf.Cos(2 * Mathf.PI * frequency * time);
+            float decay = Mathf.Exp(-damping * time);
+            float offset = -amplitude * decay * Mathf.Cos(2 * Mathf.PI * frequency * time);
 
-        // Tính vị trí gốc theo vị trí của parent
-        Vector3 basePosition = transform.parent ? transform.parent.position : Vector3.zero;
-        
-        // Giới hạn offset để không vượt quá movementLimit
-        float clampedOffset = Mathf.Clamp(offset, -movementLimit, movementLimit);
+            Vector3 basePosition = transform.parent ? transform.parent.position : Vector3.zero;
+            float clampedOffset = Mathf.Clamp(offset, -movementLimit, movementLimit);
+            transform.position = basePosition + upDirection * clampedOffset;
 
-        transform.position = basePosition + upDirection * clampedOffset;
-
-        if (Mathf.Abs(offset) < minAmplitude)
-        {
-            isOscillating = false;
-            transform.position = basePosition;
-        }
-    }
-
-    public void ApplyForce(float force)
-    {
-        Debug.LogError(force);
-        if (force >= 0f)
-        {
-            Debug.LogWarning("SpringOscillation: Force must be negative to simulate downward pull.");
-            return;
+            if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < 0.01f)
+            {
+                isOscillating = false;
+                amplitude = 0f;
+                targetAmplitude = 0f;
+                transform.position = basePosition;
+            }
         }
 
-        float newForce = Mathf.Abs(force);
-
-        // Cộng dồn lực nếu đang dao động
-        if (isOscillating)
+        public void ApplyForce(float force)
         {
-            amplitude += newForce;
-        }
-        else
-        {
-            amplitude = newForce;
-            time = 0f;
-            isOscillating = true;
-        }
+            Debug.LogError(force);
 
-        // Giới hạn biên độ
-        amplitude = Mathf.Min(amplitude, movementLimit);
-    }
+            if (force >= 0f)
+            {
+                Debug.LogWarning("SpringOscillation: Force must be negative to simulate downward pull.");
+                return;
+            }
+
+            float newForce = Mathf.Abs(force);
+
+            // Set amplitude mục tiêu, nội suy từ từ thay vì thay đổi ngay lập tức
+            targetAmplitude = Mathf.Min(targetAmplitude + newForce, movementLimit);
+
+            if (!isOscillating)
+            {
+                time = 0f;
+                amplitude = 0f; // bắt đầu từ 0 để tránh nhảy đột ngột
+                isOscillating = true;
+            }
+        }
 }
