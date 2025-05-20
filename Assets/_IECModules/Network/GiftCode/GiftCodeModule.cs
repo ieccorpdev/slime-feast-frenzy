@@ -34,7 +34,7 @@ namespace _IECModules
 
         public static async UniTask<string> UseGiftCode(string giftCode)
         {
-            Debug.LogWarning("Body:" + JsonUtility.ToJson(Body).ToString());
+            Debug.LogWarning("Body: " + JsonConvert.SerializeObject(Body));
             var url = string.Format(APIUrl.USE_GIFT_CODE, giftCode.Trim());
             var res =  await NetworkBase.Put(url, Body);
             return string.IsNullOrWhiteSpace(res) ? res : SimpleJSON.JSON.Parse(res)["rewards"].ToString();
