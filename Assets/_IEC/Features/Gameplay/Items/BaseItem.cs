@@ -341,9 +341,9 @@ namespace _IEC.Features.Gameplay
                     AppearInScreen();
                 }
             }
-            else if (rb.velocity != Vector3.zero)
+            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
-                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime);
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
         }
 
