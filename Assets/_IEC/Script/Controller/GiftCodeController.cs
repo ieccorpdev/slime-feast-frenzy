@@ -89,12 +89,13 @@ namespace IEC
         
         private async UniTaskVoid UseGiftCode(string giftCode)
         {
+            Debug.LogError("UseGiftCode" + giftCode);
             giftCode = giftCode.Trim();
             var data = await GiftCodeModule.UseGiftCode(giftCode);
-            // Debug.LogError(data);
+            Debug.LogWarning(data);
             if (string.IsNullOrEmpty(data)) return;
             var json = JSON.Parse(data);
-            // Debug.LogError(json);
+            Debug.LogWarning(json);
             if (json.HasKey("iapBundles"))
             {
                 ProcessIapBundle(json["iapBundles"]);
