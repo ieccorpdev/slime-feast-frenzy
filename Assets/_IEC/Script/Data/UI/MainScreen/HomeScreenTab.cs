@@ -35,6 +35,7 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] 
     public Button btnDailyReward;
     public Image dailyRewardNotiImage;
+    public DailyRewardHomeButton dailyRewardHomeButton;
     [Header("Progress Reward")] 
     public Button progressRewardButton;
     public ProgressRewardProgressBar progressRewardBar;
@@ -500,7 +501,8 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     private void UpdateDailyReward()
     {
-        dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
+        dailyRewardHomeButton.UpdateUI();
+        //dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
         btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock && Game.haveDailyReward);
     }
 

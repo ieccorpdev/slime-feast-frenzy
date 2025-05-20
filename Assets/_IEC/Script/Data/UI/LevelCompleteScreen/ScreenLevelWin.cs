@@ -73,6 +73,7 @@ namespace IEC
         
         private void CheckShowGameEventInfoBar()
         {
+            Controllers.Get<EventRankController>().CheckAddPlayerProgress();
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
             if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
@@ -238,6 +239,38 @@ namespace IEC
                     ShowNext
                 );
                 popupQueue.Enqueue(StartStarChase);
+            }
+
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
+                && Locator.Main.PopupSharkRace.IsEndEventStage() 
+                && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
+                && !PlayerData.GetEventSaveData(EventType.SharkRace).claimedReward)
+            {
+                PopupData ClaimSharkRace = new PopupData(
+                    Locator.Main.PopupSharkRace,
+                    () =>
+                    {
+                        Locator.Main.PopupSharkRace.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(ClaimSharkRace);
+            }
+            
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock 
+                && Locator.Main.PopupStarChase.IsEndEventStage() 
+                && PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count > 0
+                && !PlayerData.GetEventSaveData(EventType.StarChase).claimedReward)
+            {
+                PopupData ClaimStarChase = new PopupData(
+                    Locator.Main.PopupStarChase,
+                    () =>
+                    {
+                        Locator.Main.PopupStarChase.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(ClaimStarChase);
             }
             
             #endregion
