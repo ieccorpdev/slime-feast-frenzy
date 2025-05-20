@@ -92,10 +92,10 @@ namespace IEC
             Debug.LogError("UseGiftCode" + giftCode);
             giftCode = giftCode.Trim();
             var data = await GiftCodeModule.UseGiftCode(giftCode);
-            Debug.LogWarning(data);
+            Debug.LogWarning("UseGiftCode data: "+data);
             if (string.IsNullOrEmpty(data)) return;
             var json = JSON.Parse(data);
-            Debug.LogWarning(json);
+            Debug.LogWarning("UseGiftCode data: "+data);
             if (json.HasKey("iapBundles"))
             {
                 ProcessIapBundle(json["iapBundles"]);
