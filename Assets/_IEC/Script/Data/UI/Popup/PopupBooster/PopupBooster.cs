@@ -64,7 +64,7 @@ namespace IEC
             starChaseInfoBar.gameObject.SetActive(false);
             if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
             {
-                if (!Locator.Main.PopupSharkRace.IsEventCompleted())
+                if (!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0)
                 {
                     sharkRaceInfoBar.gameObject.SetActive(true);
                     starChaseInfoBar.gameObject.SetActive(false);
@@ -73,7 +73,7 @@ namespace IEC
             }
             else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
             {
-                if (!Locator.Main.PopupStarChase.IsEventCompleted())
+                if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
                 {
                     starChaseInfoBar.gameObject.SetActive(true);
                     sharkRaceInfoBar.gameObject.SetActive(false);
