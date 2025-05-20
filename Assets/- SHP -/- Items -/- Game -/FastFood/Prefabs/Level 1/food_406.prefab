@@ -104,7 +104,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9185434414356804804}
-  - component: {fileID: 2986906398667538197}
   - component: {fileID: 7141569921827579954}
   m_Layer: 0
   m_Name: FountainDrink_Zilla_Med (2)
@@ -128,14 +127,6 @@ Transform:
   m_Father: {fileID: 4902764087655929}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &2986906398667538197
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 997953872904165665}
-  m_Mesh: {fileID: 4300000, guid: 283bace7e63c3cb4488f1ca063c755ec, type: 2}
 --- !u!64 &7141569921827579954
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -237,9 +228,41 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9060696705379166164, guid: e990cf0982dbbb04fb0b7ab05ca69032,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9060696705379166164, guid: e990cf0982dbbb04fb0b7ab05ca69032,
+        type: 3}
+      propertyPath: m_ReceiveShadows
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7674021632285866834, guid: e990cf0982dbbb04fb0b7ab05ca69032, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: e990cf0982dbbb04fb0b7ab05ca69032, type: 3}
+--- !u!1 &2772840818194760019 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7403622937540085249, guid: e990cf0982dbbb04fb0b7ab05ca69032,
+    type: 3}
+  m_PrefabInstance: {fileID: 4667400323859547986}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2515369759201537474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2772840818194760019}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
 --- !u!4 &3256327539253287913 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7923278123933801659, guid: e990cf0982dbbb04fb0b7ab05ca69032,

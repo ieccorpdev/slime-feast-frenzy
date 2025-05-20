@@ -34,9 +34,14 @@ namespace _IECModules
 
         public static async UniTask<string> UseGiftCode(string giftCode)
         {
-            Debug.LogWarning("Body: " + JsonConvert.SerializeObject(Body));
+            Debug.LogWarning("Body: " + JsonConvert.SerializeObject(Body) + ",m_body" + JsonConvert.SerializeObject(m_Body) );
             var url = string.Format(APIUrl.USE_GIFT_CODE, giftCode.Trim());
-            var res =  await NetworkBase.Put(url, Body);
+            var res =  await NetworkBase.Put(url, new
+            {
+                userId = Pool.Get<ServiceData>().firebasePseudoId,
+                deviceId = SystemInfo.deviceUniqueIdentifier,
+                gameId = Application.identifier
+            });
             return string.IsNullOrWhiteSpace(res) ? res : SimpleJSON.JSON.Parse(res)["rewards"].ToString();
         }
     }
