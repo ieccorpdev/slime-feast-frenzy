@@ -1,79 +1,89 @@
 using System;
 using IEC;
 using UnityEngine;
+using UnityEngine;
 
 public class SpringOscillation : _BaseBehaviour
 {
-    [Header("Oscillation Settings")]
-    public float damping = 0.8f;
+    [Header("Oscillation Settings")] public float damping = 0.8f;
     public float frequency = 1.0f;
     public float minAmplitude = 0.01f;
 
-    [Header("Limit Settings")]
-    public float movementLimit = 1.5f;
+    [Header("Limit Settings")] public float movementLimit = 1.5f;
     public float amplitudeSmoothSpeed = 5f; // tốc độ nội suy amplitude
 
     private float amplitude = 0f;
-    private float targetAmplitude = 0f; // amplitude mục tiêu
+    private float targetAmplitude = 0f;
     private float time = 0f;
     private bool isOscillating = false;
-    private Vector3 upDirection = Vector3.up;
 
-    private void Start()
+    private Vector3 localStartPosition; // Vị trí local gốc lúc start
+
+    void Start()
     {
         damping = Config.gamePlayConfig.damping;
         frequency = Config.gamePlayConfig.frequency;
         minAmplitude = Config.gamePlayConfig.minAmplitude;
         amplitude = Config.gamePlayConfig.amplitude;
+
+        // Ghi nhận vị trí local ban đầu lúc start
+        localStartPosition = transform.localPosition;
     }
-    
 
-        void Update()
+    void Update()
+    {
+        if (!isOscillating) return;
+
+        // Nội suy biên độ để tránh giật
+        amplitude = Mathf.Lerp(amplitude, targetAmplitude, Time.deltaTime * amplitudeSmoothSpeed);
+
+        time += Time.deltaTime;
+
+        float decay = Mathf.Exp(-damping * time);
+        float offset = -amplitude * decay * Mathf.Cos(2 * Mathf.PI * frequency * time);
+
+        Vector3 worldBasePosition = transform.parent
+            ? transform.parent.TransformPoint(localStartPosition)
+            : localStartPosition;
+
+        float clampedOffset = Mathf.Clamp(offset, -movementLimit, movementLimit);
+
+        // Áp dụng dao động chỉ theo trục Y thế giới
+        transform.position = new Vector3(
+            worldBasePosition.x,
+            worldBasePosition.y + clampedOffset,
+            worldBasePosition.z
+        );
+
+        if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < 0.01f)
         {
-            #if UNITY_EDITOR
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                ApplyForce(-1f);
-            }
-            #endif
-            if (!isOscillating) return;
-            // Nội suy biên độ để tránh giật
-            amplitude = Mathf.Lerp(amplitude, targetAmplitude, Time.deltaTime * amplitudeSmoothSpeed);
+            isOscillating = false;
+            amplitude = 0f;
+            targetAmplitude = 0f;
 
-            time += Time.deltaTime;
+            // Trở về vị trí ban đầu (ổn định)
+            transform.position = worldBasePosition;
+        }
+    }
 
-            float decay = Mathf.Exp(-damping * time);
-            float offset = -amplitude * decay * Mathf.Cos(2 * Mathf.PI * frequency * time);
+    public void ApplyForce(float force)
+    {
+        Debug.LogError(force);
 
-            Vector3 basePosition = transform.parent ? transform.parent.position : Vector3.zero;
-            float clampedOffset = Mathf.Clamp(offset, -movementLimit, movementLimit);
-            transform.position = basePosition + upDirection * clampedOffset;
-
-            if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < 0.01f)
-            {
-                isOscillating = false;
-                amplitude = 0f;
-                targetAmplitude = 0f;
-                transform.position = basePosition;
-            }
+        if (force >= 0f)
+        {
+            return;
         }
 
-        public void ApplyForce(float force)
+        float newForce = Mathf.Abs(force);
+
+        targetAmplitude = Mathf.Min(targetAmplitude + newForce, movementLimit);
+
+        if (!isOscillating)
         {
-            if (force >= 0f)
-            {
-                return;
-            }
-            float newForce = Mathf.Abs(force);
-
-            // Set amplitude mục tiêu, nội suy từ từ thay vì thay đổi ngay lập tức
-            targetAmplitude = Mathf.Min(targetAmplitude + newForce, movementLimit);
-
-            if (!isOscillating)
-            {
-                time = 0f;
-                amplitude = 0f; // bắt đầu từ 0 để tránh nhảy đột ngột
-                isOscillating = true;
-            }
+            time = 0f;
+            amplitude = 0f;
+            isOscillating = true;
         }
+    }
 }
