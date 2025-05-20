@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 664981206371441225}
-  - {fileID: 3873189956438487130}
+  - {fileID: 8489741172851969446}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -195,7 +195,8 @@ MonoBehaviour:
   frequency: 1
   minAmplitude: 0.01
   movementLimit: 2
---- !u!1 &8994631671404914074
+  amplitudeSmoothSpeed: 5
+--- !u!1 &3232219489580749470
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,41 +204,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3873189956438487130}
-  - component: {fileID: 7736038151333279986}
+  - component: {fileID: 8489741172851969446}
+  - component: {fileID: 5711500405143876303}
   m_Layer: 0
-  m_Name: collider
+  m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3873189956438487130
+--- !u!4 &8489741172851969446
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8994631671404914074}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.0038456086, y: 0.0828149, z: 0.261}
-  m_LocalScale: {x: 5, y: 6.101155, z: 6.25}
+  m_GameObject: {fileID: 3232219489580749470}
+  m_LocalRotation: {x: -0.70710677, y: -0, z: -0, w: 0.7071069}
+  m_LocalPosition: {x: 0, y: 0.404, z: 0.269}
+  m_LocalScale: {x: 0.83423, y: 0.83423007, z: 0.83423007}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4029913878323620}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &7736038151333279986
-MeshCollider:
+  m_LocalEulerAnglesHint: {x: -89.99999, y: 0, z: 0}
+--- !u!136 &5711500405143876303
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8994631671404914074}
+  m_GameObject: {fileID: 3232219489580749470}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 8697757872570946970, guid: bcf9d540193784443b76471f8f690d36, type: 3}
+  m_Radius: 0.44
+  m_Height: 3.44
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

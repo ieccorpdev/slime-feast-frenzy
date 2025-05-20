@@ -119,14 +119,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9399084852557696}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 7.11756, y: 7.11756, z: 7.11756}
+  m_LocalRotation: {x: 0.7132504, y: 0, z: 0, w: 0.7009094}
+  m_LocalPosition: {x: -0.14444193, y: 2.8162, z: -2.4237}
+  m_LocalScale: {x: 11.865302, y: 11.633389, z: 12.56371}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4083891853432886}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 91, y: 0, z: 0}
 --- !u!64 &968576756839665908
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -140,7 +140,7 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 4300000, guid: 3351326f48d73044e9b231d1c2f8d749, type: 2}
+  m_Mesh: {fileID: 970772311553030305, guid: b4c5634cec8ed0942b41f836a214e5cf, type: 3}
 --- !u!1001 &1921685964777904556
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -270,3 +270,4 @@ MonoBehaviour:
   frequency: 1
   minAmplitude: 0.01
   movementLimit: 2
+  amplitudeSmoothSpeed: 5

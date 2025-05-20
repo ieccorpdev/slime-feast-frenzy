@@ -33,7 +33,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5983374981603743772}
-  - {fileID: 154765654884170899}
+  - {fileID: 3912252288192464196}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -195,7 +195,8 @@ MonoBehaviour:
   frequency: 1
   minAmplitude: 0.01
   movementLimit: 2
---- !u!1 &7918314248943750706
+  amplitudeSmoothSpeed: 5
+--- !u!1 &8207764808733863948
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -203,41 +204,41 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 154765654884170899}
-  - component: {fileID: 8924305189260133470}
+  - component: {fileID: 3912252288192464196}
+  - component: {fileID: 3060077732375972334}
   m_Layer: 0
-  m_Name: collider
+  m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &154765654884170899
+--- !u!4 &3912252288192464196
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7918314248943750706}
-  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -0.1049, y: -0.0043, z: 0.0004}
-  m_LocalScale: {x: 32.050484, y: 29.592936, z: 26.639559}
+  m_GameObject: {fileID: 8207764808733863948}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.492, z: 0.003}
+  m_LocalScale: {x: 0.83423, y: 0.83423007, z: 0.83423007}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4332617709796360}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &8924305189260133470
-MeshCollider:
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+--- !u!136 &3060077732375972334
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7918314248943750706}
+  m_GameObject: {fileID: 8207764808733863948}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1916939931986802804, guid: 4dd983e5927144c448ff97f915c3ad83, type: 3}
+  m_Radius: 0.6
+  m_Height: 3.5
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
