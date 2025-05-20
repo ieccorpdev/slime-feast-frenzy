@@ -13,6 +13,31 @@ namespace IEC
 {
     public class PopupStarChase : PopupGameEvent
     {
+        protected override void ShowStartPopup()
+        {
+            if (!PlayerData.isShownPopupStartStarChase)
+                return;
+            
+            if (Locator.Main.PopupStartStarChaseEvent.gameObject.activeInHierarchy)
+                return;
+            Locator.Main.PopupStartStarChaseEvent.Show();
+        }
 
+        protected override bool CheckShowStartPopup()
+        {
+            if (!PlayerData.isShownPopupStartStarChase)
+                return false;
+            return base.CheckShowStartPopup();
+        }
+
+        public override void InitEvent()
+        {
+            base.InitEvent();
+            
+            if (!PlayerData.isShownPopupStartSharkRace)
+            {
+                PlayerData.isShownPopupStartSharkRace = true;
+            }
+        }
     }
 }

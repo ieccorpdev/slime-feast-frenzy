@@ -15,14 +15,41 @@ namespace IEC
 
         public TextMeshProUGUI timerText;
 
+        public TextMeshProUGUI infoText;
+
         private void Start()
         {
             SetEvent(btnStart, () =>
             {
-                Locator.Main.PopupSharkRace.Show();
+                if (!Locator.Main.PopupSharkRace.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupSharkRace.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupSharkRace.InitEvent();
+                }
                 OnHideClick();
             });
             SetEvent(btnCloseAll, OnHideClick);
+        }
+
+        public override void Show()
+        {
+            if (isActiveAndEnabled)
+                return;
+            
+            base.Show();
+
+            UpdateInfoText();
+        }
+
+        private void UpdateInfoText()
+        {
+            var eventSaveData = PlayerData.GetEventSaveData(EventType.SharkRace);
+            int index = eventSaveData.claimedReward ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
+            var eventData = Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).GetEventData(index);
+            infoText.text = $"clear {eventData.eventTarget} levels!";
         }
 
         private void Update()

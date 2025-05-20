@@ -23,6 +23,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private State m_CurrentState;
         [SerializeField] protected bool _isCollected = false;
         public TCP2_GetPosOnWater posOnWater;
+        public SpringOscillation springOscillation;
         private int LayerMainWorld => LayerMask.NameToLayer("MainWorld");
         private int LayerHole => LayerMask.NameToLayer("Hole");
         protected string RecycleTweenId => gameObject.GetInstanceID() + "recycle";
@@ -59,25 +60,45 @@ namespace _IEC.Features.Gameplay
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
         
-        void OnCollisionEnter(Collision collision)
+        [SerializeField] private float minImpactVelocity = 0.2f;
+        [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
+        private bool hasSplashed = false;
+        private void OnCollisionEnter(Collision collision)
         {
-            if(!Game.dropSplashWater) return;
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")
-                || collision.gameObject.layer == LayerMask.NameToLayer("HoleWorld"))
+            if (!Game.dropSplashWater) return;
+            if (collision.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
+            if (collision.contactCount == 0) return;
+            
+            if (hasSplashed) return;
+
+            float velocityY = rb.velocity.y;
+            float relVelocityY = collision.relativeVelocity.y;
+            if (velocityY < -minImpactVelocity && relVelocityY > 0)
             {
-                Vector3 velocityAtImpact = rb.velocity;
+                // Splash VFX
                 Vector3 contactPoint = collision.contacts[0].point;
-                if(Math.Abs(velocityAtImpact.y) > 1)
+                contactPoint.y = splashYOffset;
+
+                var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                if (splashVFX != null)
                 {
-                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
-                    contactPoint.y = 0.15f;//hard code,surface water
                     splashVFX.transform.position = contactPoint;
                     splashVFX.transform.parent = null;
-                    Vector3 size = myRenderer.bounds.size;
-                    float maxSize = Mathf.Max(size.x, size.y, size.z);
-                    splashVFX.transform.localScale = Vector3.one*maxSize;
+
+                    if (myRenderer != null)
+                    {
+                        Vector3 size = myRenderer.bounds.size;
+                        float maxSize = Mathf.Max(size.x, size.z); 
+                        splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                    }
                     splashVFX.Show();
                 }
+                // Spring Oscillation
+                if (springOscillation != null)
+                {
+                    springOscillation.ApplyForce(velocityY);
+                }
+                hasSplashed = true; 
             }
         }
         public void EnterHoleTrigger()
@@ -207,6 +228,11 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
+            }
+
+            if (springOscillation == null)
+            {
+                springOscillation = GetComponentInChildren<SpringOscillation>();
             }
             var myTransform = transform;
             myTransform.position = itemData.position;

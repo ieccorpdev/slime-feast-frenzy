@@ -23,6 +23,36 @@ namespace IEC
             UpdateUI();
         }
 
+        public override void InitEvent()
+        {
+            base.InitEvent();
+
+            UpdateUI();
+            
+            if (!PlayerData.isShownPopupStartSharkRace)
+            {
+                PlayerData.isShownPopupStartSharkRace = true;
+            }
+        }
+
+        protected override bool CheckShowStartPopup()
+        {
+            if (!PlayerData.isShownPopupStartSharkRace)
+                return false;
+            
+            return base.CheckShowStartPopup();
+        }
+
+        protected override void ShowStartPopup()
+        {
+            if (!PlayerData.isShownPopupStartSharkRace)
+                return;
+            
+            if (Locator.Main.PopupStartSharkRaceEvent.gameObject.activeInHierarchy)
+                return;
+            Locator.Main.PopupStartSharkRaceEvent.Show();
+        }
+
         public override bool IsEventCompleted()
         {
             //var eventSaveData = _eventRankController.GetEventSaveData(eventType);
@@ -46,6 +76,9 @@ namespace IEC
             
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
+
+            if (eventSaveData.listPlayerData.Count == 0)
+                return false;
 
             //If player completed then move to next stage
             if (eventSaveData.listPlayerData.Find(data => data.isPlayer).progress >=

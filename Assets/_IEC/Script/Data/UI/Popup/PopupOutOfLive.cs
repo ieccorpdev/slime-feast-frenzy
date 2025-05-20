@@ -44,7 +44,9 @@ namespace _IEC
                 // });
                 Hide();
                 //EventController.RaiseEvent(EventList.GamePlay.GAME_INIT, new EventParam() { p0 = GameController.GameType.NormalLevel });
-            }, null);
+            }, null
+            ,default
+            , 60);
         }
 
         void OnRequestRefill(bool success)
