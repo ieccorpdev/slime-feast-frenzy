@@ -58,7 +58,7 @@ namespace IEC
             {
                 starLeftExplosion.Play();
             }));
-            EventController.RaiseEvent(EventList.Audio.GET_STAR_1);
+            //EventController.RaiseEvent(EventList.Audio.GET_STAR_1);
 
             if (Pool.Get<InGamePlayGroup>().currentLevelType == LevelType.COIN)
             {
@@ -79,7 +79,7 @@ namespace IEC
                      sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(
                          () =>
                          {
-                             EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
+                             //EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
                              starMidExplosion.Play();
                          }
                      ));
@@ -93,7 +93,7 @@ namespace IEC
                     sequence.Append(starRight.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(
                         () =>
                         {
-                            EventController.RaiseEvent(EventList.Audio.GET_STAR_3);
+                            //EventController.RaiseEvent(EventList.Audio.GET_STAR_3);
                             starRightExplosion.Play();
                         }
 
@@ -110,7 +110,7 @@ namespace IEC
                     //DoMoveStarAnim(starMid.transform, starImages[1].transform, timeDelay,()=>EventController.RaiseEvent(EventList.Audio.GET_STAR_2));
                     sequence.Append(starMid.transform.DOScale(0, timeEachStep).SetEase(Ease.OutBounce).From().OnComplete(() =>
                     {
-                        EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
+                        //EventController.RaiseEvent(EventList.Audio.GET_STAR_2);
                         starMidExplosion.Play();
                     }
                     ));

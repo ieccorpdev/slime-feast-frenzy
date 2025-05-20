@@ -127,13 +127,15 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle();
-            DOVirtual.DelayedCall(3, () =>
-            {
-                if (gameObject != null)
-                {
-                    gameObject.Recycle();
-                }
-            }).SetId(RecycleTweenId);
+            StartCoroutine(DelayDisable(3));
+
+            //DOVirtual.DelayedCall(3, () =>
+            //{
+            //    if (gameObject != null)
+            //    {
+            //        gameObject.Recycle();
+            //    }
+            //}).SetId(RecycleTweenId);
             if (!GamePlay.IsWin)
             {
                 Locator.Game.ScreenInGame.HandleEatCombo();
@@ -145,7 +147,16 @@ namespace _IEC.Features.Gameplay
                 }
             }
         }
-        
+
+        IEnumerator DelayDisable(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (gameObject != null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         //TODO: cache colliders
         protected virtual void DisableAllCollider()
         {
@@ -201,14 +212,10 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-#if UNITY_ANDROID
             if (itemData.isStartKinematic)
             {
                 SaveAndDestroyRigidbody();
             }
-#else
-            rb.isKinematic = itemData.isStartKinematic;
-#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -312,6 +319,7 @@ namespace _IEC.Features.Gameplay
         public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
         public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
         private static Plane[] sharedPlanes;
+        private Plane[] curentPlanes;
 
         void LateUpdate()
         {
@@ -321,8 +329,11 @@ namespace _IEC.Features.Gameplay
             }
             if (rb == null)
             {
-                if (sharedPlanes == null || Time.frameCount % 5 == 0)
+                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+                {
                     sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+                    curentPlanes = sharedPlanes;
+                }
 
                 if (myRenderer != null && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
                 {
@@ -330,9 +341,9 @@ namespace _IEC.Features.Gameplay
                     AppearInScreen();
                 }
             }
-            else if (rb.velocity != Vector3.zero)
+            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
-                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime);
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
         }
 

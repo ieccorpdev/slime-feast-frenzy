@@ -18,8 +18,8 @@ namespace IEC
 
         private List<AudioPlayer> m_ListMusicAudio = new List<AudioPlayer>();
         private List<AudioPlayer> m_ListSoundAudio = new List<AudioPlayer>();
-        public List<AudioInfo> listSoundConfig;
-        public List<AudioInfo> listMusicConfig;
+        [Searchable] public List<AudioInfo> listSoundConfig;
+        [Searchable] public List<AudioInfo> listMusicConfig;
         private Dictionary<string, int> m_DicAudioConfig = new Dictionary<string, int>();
 
 #if UNITY_EDITOR
