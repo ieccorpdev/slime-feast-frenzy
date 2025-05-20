@@ -25,6 +25,11 @@ namespace _IEC.Features.Gameplay
 
         public float ItemDrag = 2;
         public float ItemAngularDrag = 4;
+        [Header("SplashEffect")]
+        public float amplitude = 0f;
+        public float damping = 0.8f;
+        public float frequency = 1.0f;
+        public float minAmplitude = 0.01f;
         [Header("LevelCustom")]
         public LevelTimeBonusData levelTimeBonusData;
         //public List<CustomLevelData> customLevelExpands;

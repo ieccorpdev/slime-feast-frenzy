@@ -1,6 +1,8 @@
+using System;
+using IEC;
 using UnityEngine;
 
-public class SpringOscillation : MonoBehaviour
+public class SpringOscillation : _BaseBehaviour
 {
     [Header("Oscillation Settings")]
     public float damping = 0.8f;
@@ -8,16 +10,28 @@ public class SpringOscillation : MonoBehaviour
     public float minAmplitude = 0.01f;
 
     [Header("Limit Settings")]
-    public float movementLimit = 2.0f;
+    private float movementLimit = 1.5f;
 
-    private float amplitude = 0.5f;
+    private float amplitude = 0f;
     private float time = 0f;
     private bool isOscillating = false;
 
     private Vector3 upDirection = Vector3.up;
 
+    private void Start()
+    {
+        damping = Config.gamePlayConfig.damping;
+        frequency = Config.gamePlayConfig.frequency;
+        minAmplitude = Config.gamePlayConfig.minAmplitude;
+        amplitude = Config.gamePlayConfig.amplitude;
+    }
+
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ApplyForce(-1f);
+        }
         if (!isOscillating) return;
 
         time += Time.deltaTime;
