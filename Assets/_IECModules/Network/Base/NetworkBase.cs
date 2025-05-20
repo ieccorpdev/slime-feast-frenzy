@@ -2,11 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Networking;
 using Cysharp.Threading.Tasks;
+using IEC;
 
 namespace _IECModules
 { 
@@ -103,6 +105,22 @@ namespace _IECModules
             }
             catch (Exception e)
             {
+                string rawMessage = e.Message;
+                string parsedMessage = "Invalid Error Message"; // Mặc định nếu không trích được
+
+                try
+                {
+                    Match match = Regex.Match(rawMessage, "\"message\"\\s*:\\s*\"([^\"]+)\"");
+                    if (match.Success)
+                    {
+                        parsedMessage = match.Groups[1].Value;
+                    }
+                }
+                catch
+                {
+                    //
+                }
+                EventController.RaiseEvent(EventList.Setting.ERROR_GIFTCODE, new EventParam { p0 = parsedMessage });
                 Debug.Log(e.Message);
                 return string.Empty;
             }
