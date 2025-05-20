@@ -22,6 +22,52 @@ namespace _IECModules
             iOSNotificationCenter.RemoveAllScheduledNotifications();
         }
 
+        public override void ScheduleNotification(string title, string message, TimeSpan timeInTargetZone, string timeZoneId)
+        {
+            base.ScheduleNotification(title, message, timeInTargetZone, timeZoneId);
+            TimeZoneInfo targetZone;
+            try
+            {
+                targetZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            }
+            catch
+            {
+                targetZone = TimeZoneInfo.Local;
+            }
+
+            DateTime nowTargetZone = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, targetZone);
+            DateTime targetTime = new DateTime(
+                nowTargetZone.Year, nowTargetZone.Month, nowTargetZone.Day,
+                timeInTargetZone.Hours, timeInTargetZone.Minutes, timeInTargetZone.Seconds
+            );
+
+            if (nowTargetZone > targetTime)
+                targetTime = targetTime.AddDays(1);
+
+            DateTime localTriggerTime = TimeZoneInfo.ConvertTimeFromUtc(targetTime.ToUniversalTime(), TimeZoneInfo.Local);
+
+            var trigger = new iOSNotificationCalendarTrigger
+            {
+                Hour = localTriggerTime.Hour,
+                Minute = localTriggerTime.Minute,
+                Second = localTriggerTime.Second,
+                Repeats = true
+            };
+
+            var notification = new iOSNotification
+            {
+                Title = title,
+                Body = message,
+                ShowInForeground = true,
+                ForegroundPresentationOption = PresentationOption.Alert | PresentationOption.Sound,
+                CategoryIdentifier = "category_a",
+                ThreadIdentifier = "thread1",
+                Trigger = trigger
+            };
+
+            iOSNotificationCenter.ScheduleNotification(notification);
+        }
+
         public override void ScheduleNotification(string title, string message, TimeSpan timeSpan)
         {
             base.ScheduleNotification(title, message, timeSpan);
