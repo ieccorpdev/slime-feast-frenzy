@@ -132,6 +132,62 @@ namespace IEC
             InitScroller();
         }
 
+        public void ResetEvent()
+        {
+            if (_eventRankController == null)
+                _eventRankController = Controllers.Get<EventRankController>();
+            if (_eventConfig == null)
+                _eventConfig = Config.AllGameEventConfig.GetGameEventConfig(eventType);
+
+            var data = _eventRankController.GetEventSaveData(eventType);
+            if (data != null)
+            {
+                data.claimedReward = false;
+                data.eventIndex = 0;
+                data.timeStart = DateTime.Now;
+                data.timeEnd = DateTime.Now.AddDays(1).Date; 
+                data.lastUpdateTime = DateTime.Now;
+                data.listPlayerData.Clear();
+
+                var nameList = Config.AllGameEventConfig.GenerateAllNames(
+                    _eventConfig.GetEventData(0).listEventBotData.Count, PlayerData.playerName);
+
+                for (int i = 0; i < _eventConfig.GetEventData(0).listEventBotData.Count; i++)
+                {
+                    var botData = _eventConfig.GetEventData(0).listEventBotData[i];
+                    var randomSpeedRange = Random.Range(-botData.speedRange * 100, botData.speedRange * 100);
+
+                    data.listPlayerData.Add(
+                        new EventPlayerData()
+                        {
+                            id = nameList[i],
+                            avatarID = Config.playerAvatarConfig.GetRandomAvatarSprite().name,
+                            avatarFrameID = Config.playerAvatarConfig.GetRandomAvatarFrameSprite().name,
+                            progress = 0,
+                            speed = botData.baseSpeed * (100 + randomSpeedRange) / 100,
+                            isPlayer = false,
+                        });
+                }
+
+                data.listPlayerData.Insert(data.listPlayerData.Count / 2,
+                    new EventPlayerData()
+                    {
+                        id = PlayerData.playerName,
+                        progress = 0,
+                        speed = 0,
+                        isPlayer = true,
+                    });
+
+                for (int i = 0; i < data.listPlayerData.Count; i++)
+                {
+                    data.listPlayerData[i].indexInUI = i;
+                }
+            }
+
+            ReloadData();
+        }
+
+
         private void InitScroller()
         {
             if (scroller == null)

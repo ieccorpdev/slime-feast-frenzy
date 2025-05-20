@@ -77,6 +77,9 @@ namespace IEC
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
 
+            if (eventSaveData.listPlayerData.Count == 0)
+                return false;
+
             //If player completed then move to next stage
             if (eventSaveData.listPlayerData.Find(data => data.isPlayer).progress >=
                 _eventConfig.GetEventData(data.eventIndex).eventTarget)
