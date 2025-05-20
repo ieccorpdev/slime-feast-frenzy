@@ -32,7 +32,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4527882215033561}
-  - {fileID: 65102896508276402}
   - {fileID: 7706029335928726154}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -104,7 +103,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782761077719294}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.503, z: 0}
+  m_LocalPosition: {x: 0.058, y: 0.503, z: 0}
   m_LocalScale: {x: 2.6706, y: 0.9864709, z: 2.6706}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -180,13 +179,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 65102896508276413}
   m_LocalRotation: {x: 0.037772465, y: 0.9653238, z: -0.16928072, w: -0.1951085}
-  m_LocalPosition: {x: 0.069, y: 0.925, z: 0.224}
-  m_LocalScale: {x: 7.4, y: 7.4, z: 7.4}
+  m_LocalPosition: {x: 0.00034640165, y: 0.11552129, z: 0.020519875}
+  m_LocalScale: {x: 0.5749921, y: 0.8597107, z: 0.59847826}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4323677432183428747}
-  m_Father: {fileID: 4805289335167552}
-  m_RootOrder: 1
+  m_Father: {fileID: 7706029335928726154}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &252625148630939484
 GameObject:
@@ -269,7 +268,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 615226022109180378}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -384,7 +383,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637274037944795842}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -504,7 +503,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2739610754617061606}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -588,7 +587,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5187909450347395730}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -672,7 +671,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5198403716228900300}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -717,7 +716,7 @@ GameObject:
   - component: {fileID: 7706029335928726154}
   - component: {fileID: 6727968064937815343}
   - component: {fileID: 8843517187279460837}
-  - component: {fileID: 5075662253710441584}
+  - component: {fileID: 6437347480847324679}
   m_Layer: 0
   m_Name: Pancake_Sugar
   m_TagString: Untagged
@@ -736,9 +735,10 @@ Transform:
   m_LocalPosition: {x: 0.0645, y: -0.0054, z: -0.0386}
   m_LocalScale: {x: 12.990705, y: 8.053927, z: 12.797349}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 65102896508276402}
   m_Father: {fileID: 4805289335167552}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6727968064937815343
 MeshFilter:
@@ -756,7 +756,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7042082215239694384}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
   m_StaticShadowCaster: 0
@@ -790,20 +790,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5075662253710441584
-MeshCollider:
+--- !u!114 &6437347480847324679
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7042082215239694384}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -2261792953774906788, guid: a2abba72c87fa684e91ce91eab9fd29e, type: 3}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damping: 0.8
+  frequency: 1
+  minAmplitude: 0.01
+  movementLimit: 2
+  amplitudeSmoothSpeed: 5
 --- !u!1 &7422547735316145341
 GameObject:
   m_ObjectHideFlags: 0

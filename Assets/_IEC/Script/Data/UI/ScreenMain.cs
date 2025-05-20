@@ -164,7 +164,10 @@ namespace IEC
                     AddRewardGoldToClaim(amount,startPos,startSize);
                     break;           
                 case ResourceType.Live:
-                    AddRewardLifeToClaim(amount,startPos,startSize);
+                    AddRewardLifeToClaim(amount, startPos, startSize);
+                    break;
+                case ResourceType.UnlimitedLive:
+                    AddRewardUnlimitedLiveToClaim(startPos, startSize);
                     break;
                 case ResourceType.Vortex:
                     AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
@@ -312,7 +315,7 @@ namespace IEC
             LifeCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.playerLife - amount);
             LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
-                ResourceType.Gold, 
+                ResourceType.Live, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Live),
                 startPos, 
                 EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
@@ -332,8 +335,31 @@ namespace IEC
                 animTime
             );
         }
-        
-        
+
+        private void AddRewardUnlimitedLiveToClaim(Vector3 startPos, Vector2 startSize, float animTime = 2f, float delay = 0f)
+        {
+            LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
+            AddCustomRewardToClaimEffect(
+                ResourceType.UnlimitedLive,
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.UnlimitedLive),
+                startPos,
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                1,
+                startSize,
+                () =>
+                {
+                    LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
+                    //goldCurrencyDisplay.UpdateCurrency();
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                },
+                () =>
+                {
+                    LifeCurrencyDisplay.ForceUpdateCurrencyText(LifeCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)1 / effectRewardClaim.maxSpawn));
+                },
+                delay,
+                animTime
+            );
+        }
         public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
            var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);

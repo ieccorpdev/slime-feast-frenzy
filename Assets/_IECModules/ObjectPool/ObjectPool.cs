@@ -82,7 +82,12 @@ public sealed class ObjectPool : MonoBehaviour
 	{
 		return Spawn(prefab.gameObject, parent, position, rotation).GetComponent<T>();
 	}
-	public static T Spawn<T>(T prefab, Vector3 position, Quaternion rotation) where T : Component
+
+    public static T Spawn<T>(T prefab, Transform parent, Vector3 position, Quaternion rotation, bool isCache) where T : Component
+    {
+        return Spawn(prefab.gameObject, parent, position, rotation, isCache).GetComponent<T>();
+    }
+    public static T Spawn<T>(T prefab, Vector3 position, Quaternion rotation) where T : Component
 	{
 		return Spawn(prefab.gameObject, null, position, rotation).GetComponent<T>();
 	}
@@ -148,7 +153,7 @@ public sealed class ObjectPool : MonoBehaviour
 		obj.SetActive(true);
 		return obj;
 	}
-	public static GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation)
+	public static GameObject Spawn(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, bool isCache = false)
 	{
 		List<GameObject> list;
 		Transform trans;
@@ -162,6 +167,8 @@ public sealed class ObjectPool : MonoBehaviour
 				{
 					obj = list[0];
 					list.RemoveAt(0);
+					if (obj) 
+						break;
 				}
 				if (obj != null)
 				{
@@ -191,6 +198,10 @@ public sealed class ObjectPool : MonoBehaviour
 			trans.SetParent(parent);
 			trans.localPosition = position;
 			trans.localRotation = rotation;
+			if (isCache)
+			{
+                instance.pooledObjects.Add(prefab, new List<GameObject> { obj });
+            }
 			return obj;
 		}
 	}
@@ -428,7 +439,13 @@ public static class ObjectPoolExtensions
 	{
 		return ObjectPool.Spawn(prefab, parent, Vector3.zero, Quaternion.identity);
 	}
-	public static T Spawn<T>(this T prefab) where T : Component
+
+    public static T Spawn<T>(this T prefab, Transform parent, bool isCache) where T : Component
+    {
+        return ObjectPool.Spawn(prefab, parent, Vector3.zero, Quaternion.identity, isCache);
+    }
+
+    public static T Spawn<T>(this T prefab) where T : Component
 	{
 		return ObjectPool.Spawn(prefab, null, Vector3.zero, Quaternion.identity);
 	}

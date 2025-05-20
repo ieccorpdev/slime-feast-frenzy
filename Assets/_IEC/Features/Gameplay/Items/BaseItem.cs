@@ -23,13 +23,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private State m_CurrentState;
         [SerializeField] protected bool _isCollected = false;
         public TCP2_GetPosOnWater posOnWater;
+        public SpringOscillation springOscillation;
         private int LayerMainWorld => LayerMask.NameToLayer("MainWorld");
         private int LayerHole => LayerMask.NameToLayer("Hole");
         protected string RecycleTweenId => gameObject.GetInstanceID() + "recycle";
         public ItemData ItemData => m_ItemData;
         public Renderer MyRenderer => myRenderer;
         public ItemDefinition ItemDefinition => m_ItemDefinition;
-
+        private Camera mainCam;
         public bool IsCollected => _isCollected;
         public Rigidbody Rb
         {
@@ -53,31 +54,51 @@ namespace _IEC.Features.Gameplay
             {
                 m_ItemDefinition = this.itemDefinition;
             }
-
+            mainCam = Camera.main;
             rb.drag = Config.gamePlayConfig.ItemDrag;
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
         
-        void OnCollisionEnter(Collision collision)
+        [SerializeField] private float minImpactVelocity = 0.2f;
+        [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
+        private bool hasSplashed = false;
+        private void OnCollisionEnter(Collision collision)
         {
-            if(!Game.dropSplashWater) return;
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground")
-                || collision.gameObject.layer == LayerMask.NameToLayer("HoleWorld"))
+            if (!Game.dropSplashWater) return;
+            if (collision.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
+            if (collision.contactCount == 0) return;
+            
+            if (hasSplashed) return;
+
+            float velocityY = rb.velocity.y;
+            float relVelocityY = collision.relativeVelocity.y;
+            if (velocityY < -minImpactVelocity && relVelocityY > 0)
             {
-                Vector3 velocityAtImpact = rb.velocity;
+                // Splash VFX
                 Vector3 contactPoint = collision.contacts[0].point;
-                if(Math.Abs(velocityAtImpact.y) > 1)
+                contactPoint.y = splashYOffset;
+
+                var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                if (splashVFX != null)
                 {
-                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
-                    contactPoint.y = 0.15f;//hard code,surface water
                     splashVFX.transform.position = contactPoint;
                     splashVFX.transform.parent = null;
-                    Vector3 size = myRenderer.bounds.size;
-                    float maxSize = Mathf.Max(size.x, size.y, size.z);
-                    splashVFX.transform.localScale = Vector3.one*maxSize;
+
+                    if (myRenderer != null)
+                    {
+                        Vector3 size = myRenderer.bounds.size;
+                        float maxSize = Mathf.Max(size.x, size.z); 
+                        splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                    }
                     splashVFX.Show();
                 }
+                // Spring Oscillation
+                if (springOscillation != null)
+                {
+                    springOscillation.ApplyForce(velocityY);
+                }
+                hasSplashed = true; 
             }
         }
         public void EnterHoleTrigger()
@@ -127,13 +148,15 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle();
-            DOVirtual.DelayedCall(3, () =>
-            {
-                if (gameObject != null)
-                {
-                    gameObject.Recycle();
-                }
-            }).SetId(RecycleTweenId);
+            StartCoroutine(DelayDisable(3));
+
+            //DOVirtual.DelayedCall(3, () =>
+            //{
+            //    if (gameObject != null)
+            //    {
+            //        gameObject.Recycle();
+            //    }
+            //}).SetId(RecycleTweenId);
             if (!GamePlay.IsWin)
             {
                 Locator.Game.ScreenInGame.HandleEatCombo();
@@ -145,7 +168,16 @@ namespace _IEC.Features.Gameplay
                 }
             }
         }
-        
+
+        IEnumerator DelayDisable(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (gameObject != null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         //TODO: cache colliders
         protected virtual void DisableAllCollider()
         {
@@ -197,20 +229,19 @@ namespace _IEC.Features.Gameplay
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
             }
+
+            if (springOscillation == null)
+            {
+                springOscillation = GetComponentInChildren<SpringOscillation>();
+            }
             var myTransform = transform;
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-#if UNITY_ANDROID
             if (itemData.isStartKinematic)
             {
-                rb.isKinematic = false;
                 SaveAndDestroyRigidbody();
-                Destroy(this.GetComponent<Rigidbody>());
             }
-#else
-            rb.isKinematic = itemData.isStartKinematic;
-#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -225,7 +256,7 @@ namespace _IEC.Features.Gameplay
                 savedData.drag = rb.drag;
                 savedData.angularDrag = rb.angularDrag;
                 savedData.useGravity = rb.useGravity;
-                savedData.isKinematic = rb.isKinematic;
+                savedData.isKinematic = true;
                 savedData.interpolation = rb.interpolation;
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
@@ -290,11 +321,8 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-#if UNITY_ANDROID
                 RestoreRigidbody();
-#else
                 rb.isKinematic = false;
-#endif
             }
             if (posOnWater != null)
             {
@@ -314,65 +342,39 @@ namespace _IEC.Features.Gameplay
         public float pullSpeed = 2.5f;   // Speed towards object B
         public float stopPullDistance = 0.1f;
         public float gravityStrength = -50f; // Simulated gravity
-        private Vector3 velocity;
-        private bool shouldPull = true;
         public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
         public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
+        private static Plane[] sharedPlanes;
+        private Plane[] curentPlanes;
 
-        void Update()
+        void LateUpdate()
         {
-            if(posOnWater !=null && rb && posOnWater.enabled )
+            if (posOnWater != null && rb && posOnWater.enabled)
             {
                 posOnWater.enabled = false;
             }
-            if (targetObject == null || !onDraging) return;
-            // Distance check
-            float distance = Vector3.Distance(transform.position, targetObject.position);
-            if (distance <= stopPullDistance)
-                shouldPull = false;
-
-            Vector3 move = Vector3.zero;
-
-            // Horizontal pull
-            if (shouldPull)
+            if (rb == null)
             {
-                // Calculate direction to Object B in world space
-                Vector3 directionToTarget = targetObject.position - transform.position;
-                directionToTarget.y = 0; // Ignore vertical for horizontal pull
-                directionToTarget.Normalize(); // Normalize the direction vector
+                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+                {
+                    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+                    curentPlanes = sharedPlanes;
+                }
 
-                // Apply pull speed towards Object B
-                move += directionToTarget * pullSpeed * Time.deltaTime;
+                if (myRenderer != null && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+                {
+                    RestoreRigidbody();
+                    AppearInScreen();
+                }
             }
-
-            // Gravity
-            velocity.y += gravityStrength * Time.deltaTime;
-            move += velocity * Time.deltaTime;
-
-            // Apply movement to object
-            transform.position += move;
-
-            // Random rotation in all directions
-            if (shouldPull)
+            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
-                // Generate random rotation vector
-                Vector3 randomRotation = new Vector3(
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax)
-                );
-
-                // Apply random rotation to the object
-                transform.Rotate(randomRotation * Time.deltaTime);
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
         }
 
-        // Optional: Reset pull if needed
-        public void ResetPull()
-        {
-            shouldPull = true;
-        }
-
+        protected virtual void AppearInScreen() { }
+        
         #endregion
 
         protected void SetLayer(int newLayer)
