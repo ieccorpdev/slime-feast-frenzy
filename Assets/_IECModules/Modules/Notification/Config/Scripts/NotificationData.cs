@@ -10,6 +10,7 @@ namespace _IECModules
     {
         public List<string> listMgs = new List<string>();
         public List<NotificationInfo> listInfo = new List<NotificationInfo>();
+        public List<NotificationInfo2> listInfoChooseTime = new List<NotificationInfo2>();
 
         public string RandomMessage => listMgs.Sample();
 
@@ -28,6 +29,12 @@ namespace _IECModules
             return TimeSpan.FromDays(info.time);
         }
 
+        public TimeSpan GetTimeSpanChooseTime(int id)
+        {
+            var info = listInfoChooseTime[id];
+            return new TimeSpan(info.Hour, info.Minute, info.Second);
+        }
+
         public string GetMessage(int id)
         {
             var info = listInfo[id];
@@ -42,6 +49,16 @@ namespace _IECModules
         public string message;
         public float time;
         public NotificationTimeType timeType;
+    }
+
+    [Serializable]
+    public class NotificationInfo2
+    {
+        public string message;
+        public int Hour;
+        public int Minute;
+        public int Second;
+        public string timeZoneId;
     }
 
     public enum NotificationTimeType
