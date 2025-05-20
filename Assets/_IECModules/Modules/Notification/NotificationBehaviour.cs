@@ -54,6 +54,10 @@ namespace _IECModules
             {
                 Notification.ScheduleNotification(BaseNotification.GameName, Data.GetMessage(i), Data.GetTimeSpan(i));
             }
+            for (int i = 0; i < Data.listInfoChooseTime.Count; i++)
+            {
+                Notification.ScheduleNotification(BaseNotification.GameName, Data.GetMessage(i), Data.GetTimeSpanChooseTime(i));
+            }
         }
     }
 }
