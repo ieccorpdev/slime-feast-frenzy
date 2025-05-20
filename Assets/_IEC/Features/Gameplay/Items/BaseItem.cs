@@ -63,6 +63,13 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
+        private Vector3 lastVelocity;
+
+        void FixedUpdate()
+        {
+            lastVelocity = rb.velocity;
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (!Game.dropSplashWater) return;
@@ -70,8 +77,7 @@ namespace _IEC.Features.Gameplay
             {
                 if (collision.contactCount == 0) return;
                 if (hasSplashed) return;
-
-                float velocityY = rb.velocity.y;
+                float velocityY = lastVelocity.y;
                 float relVelocityY = collision.relativeVelocity.y;
                 if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
@@ -229,7 +235,10 @@ namespace _IEC.Features.Gameplay
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
-                springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
+                if (springOscillation != null)
+                {
+                    springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
+                }
             }
             var myTransform = transform;
             myTransform.position = itemData.position;
