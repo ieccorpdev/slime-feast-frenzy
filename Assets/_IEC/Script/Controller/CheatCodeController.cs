@@ -2,6 +2,7 @@
 using UnityEngine;
 using _IECModules;
 using _IEC.Features.Gameplay;
+using System.Collections.Generic;
 
 namespace IEC
 {
@@ -168,7 +169,24 @@ namespace IEC
                         false);
                 }
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButton("Reset Daily Login Reward", param =>
+            {
+                PlayerData.dailyRewardsClaimed = new Dictionary<int, bool>();
+                PlayerData.currentDailyAdReward = 0;
+                PlayerData.lastTimeOpenDailyReward = DateTime.MinValue;
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Reset Shark Raced", param =>
+            {
+                Locator.Main.PopupSharkRace.ResetEvent();
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButton("Reset Star Chase", param =>
+            {
+                Locator.Main.PopupStarChase.ResetEvent();
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
             {
                 Locator.Service.GameResourceDisplay.SetAllObjPosOut();

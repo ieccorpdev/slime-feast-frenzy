@@ -30,6 +30,9 @@ namespace _IEC.Features.Gameplay
         public float damping = 0.8f;
         public float frequency = 1.0f;
         public float minAmplitude = 0.01f;
+        public float amplitudeSmoothSpeed = 5f;
+        public float sizeAmplitudeMultiplier = 1f;
+        public float sizeMovementLimitMultiplier = 1f;
         [Header("LevelCustom")]
         public LevelTimeBonusData levelTimeBonusData;
         //public List<CustomLevelData> customLevelExpands;
