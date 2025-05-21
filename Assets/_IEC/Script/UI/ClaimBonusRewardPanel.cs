@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
 using IEC;
 using MoreMountains.NiceVibrations;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 public static class ClaimBonusRewardSkin
@@ -31,15 +33,34 @@ public class ClaimBonusRewardPanel : BasePopup
     private bool canOpen;
     private bool showAimChest = true;
     private SpineAnimOT targetSpineAnimObject;
-    [Header("Fixed position")] public PositionGroupsRewardDataPanel groupsOne;
-    public PositionGroupsRewardDataPanel groupsTwo;
-    public PositionGroupsRewardDataPanel groupsThree;
-    public PositionGroupsRewardDataPanel groupsFour;
-    public PositionGroupsRewardDataPanel groupsFive;
-    public PositionGroupsRewardDataPanel groupsSix;
-    public PositionGroupsRewardDataPanel groupsSeven;
-    public PositionGroupsRewardDataPanel groupsEight;
-    public PositionGroupsRewardDataPanel groupsNine;
+    [Header("Fixed position")]
+    // public PositionGroupsRewardDataPanel groupsOne;
+    // public PositionGroupsRewardDataPanel groupsTwo;
+    // public PositionGroupsRewardDataPanel groupsThree;
+    // public PositionGroupsRewardDataPanel groupsFour;
+    // public PositionGroupsRewardDataPanel groupsFive;
+    // public PositionGroupsRewardDataPanel groupsSix;
+    // public PositionGroupsRewardDataPanel groupsSeven;
+    // public PositionGroupsRewardDataPanel groupsEight;
+    // public PositionGroupsRewardDataPanel groupsNine;
+
+    public List<PositionGroupsRewardDataPanel> listGroupRewardPanel = new();
+    public List<RectTransform> listGroup = new();
+    [Button]
+    public void UpdateGroupRewardPanel()
+    {
+        listGroupRewardPanel.Clear();
+        foreach (var group in listGroup)
+        {
+            var list = group.transform.GetComponentsInChildren<RectTransform>().ToList();
+            list.Remove(group);
+            listGroupRewardPanel.Add(
+                new PositionGroupsRewardDataPanel()
+                {
+                    pos = new List<RectTransform>(list)
+                });
+        }
+    }
 
     private Queue<ShowClaimRewardData> queueShowClaimReward = new();
     List<EffectRewardData> listCollectedItems = new();
@@ -86,36 +107,42 @@ public class ClaimBonusRewardPanel : BasePopup
     public void SettingRewardPosition()
     {
         int numberReward = listDataReward.Count;
-        switch (numberReward)
+
+        if (numberReward > 0 && numberReward < listGroupRewardPanel.Count)
         {
-            case 1:
-                AssignRewardByGroups(groupsOne);
-                break;
-            case 2:
-                AssignRewardByGroups(groupsTwo);
-                break;
-            case 3:
-                AssignRewardByGroups(groupsThree);
-                break;
-            case 4:
-                AssignRewardByGroups(groupsFour);    
-                break;
-            case 5:
-                AssignRewardByGroups(groupsFive);
-                break;         
-            case 6:
-                AssignRewardByGroups(groupsSix);
-                break;
-            case 7:
-                AssignRewardByGroups(groupsSeven);
-                break;
-            case 8:
-                AssignRewardByGroups(groupsEight);
-                break;
-            case 9:
-                AssignRewardByGroups(groupsNine);
-                break;
+            AssignRewardByGroups(listGroupRewardPanel[numberReward - 1]);
         }
+
+        // switch (numberReward)
+        // {
+        //     case 1:
+        //         AssignRewardByGroups(groupsOne);
+        //         break;
+        //     case 2:
+        //         AssignRewardByGroups(groupsTwo);
+        //         break;
+        //     case 3:
+        //         AssignRewardByGroups(groupsThree);
+        //         break;
+        //     case 4:
+        //         AssignRewardByGroups(groupsFour);    
+        //         break;
+        //     case 5:
+        //         AssignRewardByGroups(groupsFive);
+        //         break;         
+        //     case 6:
+        //         AssignRewardByGroups(groupsSix);
+        //         break;
+        //     case 7:
+        //         AssignRewardByGroups(groupsSeven);
+        //         break;
+        //     case 8:
+        //         AssignRewardByGroups(groupsEight);
+        //         break;
+        //     case 9:
+        //         AssignRewardByGroups(groupsNine);
+        //         break;
+        // }
     }
 
     public void AssignRewardByGroups(PositionGroupsRewardDataPanel groups)
@@ -264,6 +291,8 @@ public class ClaimBonusRewardPanel : BasePopup
         {
             PlayerData.AddCurrency(itr.typeReward, itr.rewardAmount);
             var dataRwScreen = listRewardUI.Find(item => item.typeReward == itr.typeReward);
+            if(dataRwScreen == null)
+                continue;
             var rectD = dataRwScreen.GetComponent<RectTransform>();
             EffectRewardData dataEffectRW = new EffectRewardData(itr.typeReward, itr.rewardAmount,rectD.anchoredPosition,rectD.sizeDelta);
             listCollectedItems.Add(dataEffectRW);
@@ -356,40 +385,43 @@ public class ClaimBonusRewardPanel : BasePopup
 
 [Serializable]public class PositionGroupsRewardDataPanel
 {
-    public RectTransform Pos1;
-    public RectTransform Pos2;
-    public RectTransform Pos3;
-    public RectTransform Pos4;
-    public RectTransform Pos5;
-    public RectTransform Pos6;
-    public RectTransform Pos7;
-    public RectTransform Pos8;
-    public RectTransform Pos9;
+    // public RectTransform Pos1;
+    // public RectTransform Pos2;
+    // public RectTransform Pos3;
+    // public RectTransform Pos4;
+    // public RectTransform Pos5;
+    // public RectTransform Pos6;
+    // public RectTransform Pos7;
+    // public RectTransform Pos8;
+    // public RectTransform Pos9;
+    public List<RectTransform> pos;
 
     public RectTransform GetRectTransformByIndex(int index)
     {
-        switch (index)
-        {
-            case 1:
-                return Pos1;
-            case 2:
-                return Pos2;
-            case 3:
-                return Pos3;
-            case 4:
-                return Pos4;
-            case 5:
-                return Pos5;
-            case 6:
-                return Pos6;
-            case 7:
-                return Pos7;
-            case 8:
-                return Pos8;
-            case 9:
-                return Pos9;
-        }
-        return Pos1;
+        index = Mathf.Clamp(index, 0, pos.Count);
+        return pos[index - 1];
+        // switch (index)
+        // {
+        //     case 1:
+        //         return Pos1;
+        //     case 2:
+        //         return Pos2;
+        //     case 3:
+        //         return Pos3;
+        //     case 4:
+        //         return Pos4;
+        //     case 5:
+        //         return Pos5;
+        //     case 6:
+        //         return Pos6;
+        //     case 7:
+        //         return Pos7;
+        //     case 8:
+        //         return Pos8;
+        //     case 9:
+        //         return Pos9;
+        // }
+        // return Pos1;
     }
 }
 
