@@ -27,6 +27,9 @@ namespace IEC
         
         protected EventRankController _eventRankController;
         protected GameEventConfig _eventConfig;
+
+        private EventSaveData eventSaveData;
+        private PopupGameEvent popup;
         
         
         // Start is called before the first frame update
@@ -38,10 +41,12 @@ namespace IEC
 
         private void OnStartClick()
         {
-            if(eventType == EventType.StarChase)
-                Locator.Main.PopupStarChase.StartNewEventStage(0);
-            else if(eventType == EventType.SharkRace)
-                Locator.Main.PopupSharkRace.StartNewEventStage(0);
+            // if(eventType == EventType.StarChase)
+            //     Locator.Main.PopupStarChase.StartNewEventStage(0);
+            // else if(eventType == EventType.SharkRace)
+            //     Locator.Main.PopupSharkRace.StartNewEventStage(0);
+            
+            popup.StartNewEventStage(0);
 
             if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
             {
@@ -83,14 +88,15 @@ namespace IEC
         public void SetupData()
         {
             Init();
-            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            popup = eventType == EventType.SharkRace ? Locator.Main.PopupSharkRace : Locator.Main.PopupStarChase;
             
             scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0);
-            startGroup.SetActive(eventSaveData.listPlayerData.Count == 0);
+            startGroup.SetActive(eventSaveData.listPlayerData.Count == 0 || eventSaveData.claimedReward);
 
             if (eventTargetGroup != null)
             {
-                eventTargetGroup.SetActive(eventSaveData.listPlayerData.Count > 0);
+                eventTargetGroup.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
             }
             
             InitScroller();
@@ -100,11 +106,18 @@ namespace IEC
         private void UpdateTimer()
         {
 
-            var eventSaveData = PlayerData.GetEventSaveData(eventType);
-
-            if (eventSaveData.timeEnd <= DateTime.Now)
+            if (popup.IsEndEvent() || popup.IsEndEventStage())
             {
-                timerText.text = "Finished";
+                if (eventSaveData.claimedReward)
+                {
+                    timerText.text = "Finished";
+                }
+                else
+                {
+                    timerText.text =
+                        DateTimeHelper.GetFormattedTimeHMS(
+                            DateTime.Now.AddDays(1).Date - DateTime.Now);
+                }
             }
             else
             {
