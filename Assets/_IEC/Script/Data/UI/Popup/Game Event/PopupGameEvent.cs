@@ -494,7 +494,7 @@ namespace IEC
 
             var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
 
-            if ((timeToCheck - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
@@ -502,7 +502,7 @@ namespace IEC
 
                     if (!player.isPlayer)
                     {
-                        player.progress = Mathf.FloorToInt((float)(DateTime.Now - data.timeStart).TotalSeconds / player.speed);
+                        player.progress = Mathf.FloorToInt((float)(timeToCheck - data.timeStart).TotalSeconds / player.speed);
 
                         if (eventData.eventTarget > 0 && player.progress > eventData.eventTarget)
                             player.progress = eventData.eventTarget;

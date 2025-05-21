@@ -105,6 +105,10 @@ namespace IEC
             var eventData = PlayerData.GetEventSaveData(progressData.eventType);
             var data = Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).GetEventData(eventData.eventIndex);
 
+            if (DateTime.Now > eventData.timeEnd)
+                return;
+            
+
             var player = eventData.listPlayerData.Find(bot => bot.isPlayer);
 
             if (player != null)
