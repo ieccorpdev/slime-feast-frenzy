@@ -1,4 +1,7 @@
-public interface IManagedFixedUpdate
+namespace _IEC.Script.GamePlay
 {
-    void ManagedFixedUpdate();
+    public interface IManagedFixedUpdate
+    {
+        void ManagedFixedUpdate();
+    }
 }

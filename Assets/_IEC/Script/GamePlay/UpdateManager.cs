@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _IEC.Script.GamePlay;
 using UnityEngine;
 
 public class UpdateManager : MonoBehaviour
@@ -33,6 +34,7 @@ public class UpdateManager : MonoBehaviour
 
     private void LateUpdate()
     {
+        Debug.Log("ManagedLateUpdate count: " + managedLateUpdates.Count);
         for (int i = 0; i < managedLateUpdates.Count; i++)
             managedLateUpdates[i].ManagedLateUpdate();
     }

@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
+using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
@@ -75,13 +76,6 @@ namespace _IEC.Features.Gameplay
         private bool hasSplashed = false;
         private Vector3 lastVelocity;
 
-        void FixedUpdate()
-        {
-            if (rb != null)
-            {
-                lastVelocity = rb.velocity;
-            }
-        }
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -369,19 +363,30 @@ namespace _IEC.Features.Gameplay
 
         public bool onDraging = false;
         public Transform targetObject; // Object B
-        public float pullSpeed = 2.5f;   // Speed towards object B
-        public float stopPullDistance = 0.1f;
-        public float gravityStrength = -50f; // Simulated gravity
-        public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
-        public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
 
         public void ManagedLateUpdate()
         {
-            if (posOnWater != null && rb && posOnWater.enabled)
+            if (rb != null)
             {
-                posOnWater.enabled = false;
+                lastVelocity = rb.velocity;
+            }
+
+            if (springOscillation != null)
+            {
+                springOscillation.CheckSpringObject();
+            }
+            if (posOnWater != null )
+            {
+                //if (rb && posOnWater.enabled)
+                //{
+                //    posOnWater.enabled = false;
+                //}
+                //else
+                //{
+                //    posOnWater.CheckPosWater();
+                //}
             }
             if (rb == null)
             {

@@ -1,4 +1,7 @@
-public interface IManagedLateUpdate
+namespace _IEC.Script.GamePlay
 {
-    void ManagedLateUpdate();
+    public interface IManagedLateUpdate
+    {
+        void ManagedLateUpdate();
+    }
 }

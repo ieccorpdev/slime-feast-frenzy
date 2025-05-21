@@ -1,4 +1,7 @@
-public interface IManagedUpdate
+namespace _IEC.Script.GamePlay
 {
-    void ManagedUpdate();
+    public interface IManagedUpdate
+    {
+        void ManagedUpdate();
+    }
 }

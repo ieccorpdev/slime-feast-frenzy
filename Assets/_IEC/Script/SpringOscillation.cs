@@ -1,3 +1,4 @@
+using _IEC.Script.GamePlay;
 using IEC;
 using UnityEngine;
 
@@ -46,7 +47,12 @@ public class SpringOscillation : _BaseBehaviour
         movementLimit = maxSize * sizeMovementLimitMultiplier;
     }
 
-    void Update()
+    public void ManagedUpdate()
+    {
+        CheckSpringObject();
+    }
+
+    public void CheckSpringObject()
     {
         if (!isOscillating) return;
 
