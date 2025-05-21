@@ -57,6 +57,10 @@ namespace IEC
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
+        public Dictionary<int, JourneyItemStatus> regularJourneyPass = new Dictionary<int, JourneyItemStatus>();//0 to lock, 1 to unlock, 2 is can claimed,3 is unlock
+        public Dictionary<int, JourneyItemStatus> vipJourneyPass = new Dictionary<int, JourneyItemStatus>();
+        public int currentTargetJourney;
+        public bool purchasedJourneyPass;
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
@@ -70,9 +74,43 @@ namespace IEC
             }
         }
 
+        public JourneyItemStatus GetStatusVipPass(int id)
+        {
+            if (id < currentTargetJourney && vipJourneyPass[id] == JourneyItemStatus.LOCK || vipJourneyPass[id] == JourneyItemStatus.UNLOCK)
+            {
+                if (purchasedJourneyPass)
+                {
+                    vipJourneyPass[id] = JourneyItemStatus.CANCLAIM;
+                }
+                else
+                {
+                    vipJourneyPass[id] = JourneyItemStatus.UNLOCK;
+                }
+            }
+            return vipJourneyPass[id];
+        }
+
+        public void SetStatusVipPass(int id, JourneyItemStatus stt)
+        {
+            vipJourneyPass[id] = stt;
+        }
+
+        public void SetStatusRegularPass(int id, JourneyItemStatus stt)
+        {
+            regularJourneyPass[id] = stt;
+        }
+
         public void AddLevel()
         {
             level += 1;
+        }
+        public JourneyItemStatus GetStatusRegularPass(int id)
+        {
+            if (id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
+            {
+                regularJourneyPass[id] = JourneyItemStatus.CANCLAIM;
+            }
+            return regularJourneyPass[id];
         }
 
         public void SaveLastPlayTime()
