@@ -377,16 +377,16 @@ namespace _IEC.Features.Gameplay
             {
                 springOscillation.CheckSpringObject();
             }
-            if (posOnWater != null )
+            if ( Game.objectBobbingWater && posOnWater != null )
             {
-                //if (rb && posOnWater.enabled)
-                //{
-                //    posOnWater.enabled = false;
-                //}
-                //else
-                //{
-                //    posOnWater.CheckPosWater();
-                //}
+                if (rb && posOnWater.enabled)
+                {
+                    posOnWater.enabled = false;
+                }
+                else
+                {
+                    posOnWater.CheckPosWater();
+                }
             }
             if (rb == null)
             {

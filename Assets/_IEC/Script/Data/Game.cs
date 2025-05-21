@@ -83,6 +83,7 @@ namespace IEC
         public int levelStartHardLevelOverride = 31;
         public int loseBeforeAllowSkipHardLevelOverride = 2;
 
+        public bool objectBobbingWater = false;
         public bool dropSplashWater = true;
         public bool enableComboCount = true;
         public bool haveDailyReward = true;
