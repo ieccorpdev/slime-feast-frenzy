@@ -20,6 +20,7 @@ namespace IEC
 
         [Header("Reward Group")] 
         public Button claimRewardButton;
+        public TextMeshProUGUI claimRewardButtonText;
         public GameObject claimRewardGroup;
         
         [Header("Info ui")]
@@ -218,12 +219,26 @@ namespace IEC
         protected virtual void CheckShowReward()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
+            var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
+            var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
+                data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
             if (claimRewardGroup != null)
             {
                 claimRewardGroup.SetActive(true);
 
                 claimRewardButton.gameObject.SetActive(!data.claimedReward);
-                
+
+                if (claimRewardButtonText != null)
+                {
+                    if (eventRewardData == null || eventRewardData.listReward.Count == 0)
+                    {
+                        claimRewardButtonText.text = "OK!";
+                    }
+                    else
+                    {
+                        claimRewardButtonText.text = "Claim";
+                    }
+                }
             }
 
             eventTimerText.text = "Finished";
@@ -231,7 +246,6 @@ namespace IEC
 
         protected virtual void OnClaimReward()
         {
-            
             var data = _eventRankController.GetEventSaveData(eventType);
 
             // if (data.claimedReward)
@@ -277,30 +291,32 @@ namespace IEC
 
                 Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
                 {
-                    if (stage != -1)
-                    {
-                        // StartNewEventStage(stage);
-                        // CheckInitEventProgress();
-                        // UpdateUI();
-                        ShowStartPopup();
-                    }
-                    else
-                        Hide();
+                    // if (stage != -1)
+                    // {
+                    //     // StartNewEventStage(stage);
+                    //     // CheckInitEventProgress();
+                    //     // UpdateUI();
+                    //     ShowStartPopup();
+                    // }
+                    // else
+                        // Hide();
                 });
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
             {
-                if (stage != -1)
-                {
-                    // StartNewEventStage(stage);
-                    // CheckInitEventProgress();
-                    // UpdateUI();
-                    ShowStartPopup();
-                }
-                else
-                    Hide();
+                // if (stage != -1)
+                // {
+                //     // StartNewEventStage(stage);
+                //     // CheckInitEventProgress();
+                //     // UpdateUI();
+                //     ShowStartPopup();
+                // }
+                // else
+                    // Hide();
             }
+            
+            Hide();
         }
 
         protected virtual void ShowEventCompletedScreen()
@@ -338,25 +354,25 @@ namespace IEC
             return DateTime.Now >= data.timeEnd;
         }
 
+        public virtual bool IsHaveNextEventStage()
+        {
+            var data = _eventRankController.GetEventSaveData(eventType);
+
+            return data.eventIndex < _eventConfig.listEventData.Count - 1;
+        }
+
         public virtual bool IsEventStageCompleted()
         {
             return true;
         }
 
-        protected virtual void CheckInitEventProgress()
+        public virtual int GetNextEventStageIndex()
         {
             if (_eventRankController == null)
             {
                 Init();
             }
             var data = _eventRankController.GetEventSaveData(eventType);
-            
-            if (data.listPlayerData.Count > 0 )
-            {
-                listPlayerData.Clear();
-                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
-            }
-            
             int stage = 0;
 
             if (IsEventMultipleStage && !IsEndEvent())
@@ -375,6 +391,25 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+
+            return stage;
+        }
+
+        protected virtual void CheckInitEventProgress()
+        {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            var data = _eventRankController.GetEventSaveData(eventType);
+            
+            if (data.listPlayerData.Count > 0 )
+            {
+                listPlayerData.Clear();
+                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
+            }
+
+            int stage = GetNextEventStageIndex();
             
             if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
             {
@@ -459,7 +494,7 @@ namespace IEC
 
             var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
 
-            if ((timeToCheck - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
@@ -467,10 +502,13 @@ namespace IEC
 
                     if (!player.isPlayer)
                     {
-                        player.progress = Mathf.FloorToInt((float)(DateTime.Now - data.timeStart).TotalSeconds / player.speed);
+                        player.progress = Mathf.FloorToInt((float)(timeToCheck - data.timeStart).TotalSeconds / player.speed);
 
                         if (eventData.eventTarget > 0 && player.progress > eventData.eventTarget)
                             player.progress = eventData.eventTarget;
+
+                        if (player.progress < 0)
+                            player.progress = 0;
                     }
                 }
             }

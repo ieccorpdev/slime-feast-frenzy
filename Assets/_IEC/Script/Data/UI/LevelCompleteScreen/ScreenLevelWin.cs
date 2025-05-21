@@ -76,18 +76,18 @@ namespace IEC
             Controllers.Get<EventRankController>().CheckAddPlayerProgress();
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)//Dont show first time -> show start popup at home
             {
-                if (!Locator.Main.PopupSharkRace.IsEventCompleted())
+                if ((!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0))
                 {
                     sharkRaceInfoBar.gameObject.SetActive(true);
                     starChaseInfoBar.gameObject.SetActive(false);
                     sharkRaceInfoBar.SetupData();
                 }
             }
-            // else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            // else if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)// Dont show first time -> show start popup at home
             // {
-            //     if (!Locator.Main.PopupStarChase.IsEventCompleted())
+            //     if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
             //     {
             //         starChaseInfoBar.gameObject.SetActive(true);
             //         sharkRaceInfoBar.gameObject.SetActive(false);
