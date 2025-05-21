@@ -47,7 +47,7 @@ namespace IEC
         private void UpdateInfoText()
         {
             var eventSaveData = PlayerData.GetEventSaveData(EventType.SharkRace);
-            int index = eventSaveData.claimedReward ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
+            int index = Locator.Main.PopupSharkRace.IsEventStageCompleted() ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
             var eventData = Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).GetEventData(index);
             infoText.text = $"clear {eventData.eventTarget} levels!";
         }

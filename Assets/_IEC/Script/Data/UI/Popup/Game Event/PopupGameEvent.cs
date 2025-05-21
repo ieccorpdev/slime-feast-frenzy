@@ -20,6 +20,7 @@ namespace IEC
 
         [Header("Reward Group")] 
         public Button claimRewardButton;
+        public TextMeshProUGUI claimRewardButtonText;
         public GameObject claimRewardGroup;
         
         [Header("Info ui")]
@@ -218,12 +219,26 @@ namespace IEC
         protected virtual void CheckShowReward()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
+            var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
+            var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
+                data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
             if (claimRewardGroup != null)
             {
                 claimRewardGroup.SetActive(true);
 
                 claimRewardButton.gameObject.SetActive(!data.claimedReward);
-                
+
+                if (claimRewardButtonText != null)
+                {
+                    if (eventRewardData == null || eventRewardData.listReward.Count == 0)
+                    {
+                        claimRewardButtonText.text = "OK!";
+                    }
+                    else
+                    {
+                        claimRewardButtonText.text = "Claim";
+                    }
+                }
             }
 
             eventTimerText.text = "Finished";
@@ -231,7 +246,6 @@ namespace IEC
 
         protected virtual void OnClaimReward()
         {
-            
             var data = _eventRankController.GetEventSaveData(eventType);
 
             // if (data.claimedReward)
@@ -277,30 +291,32 @@ namespace IEC
 
                 Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
                 {
-                    if (stage != -1)
-                    {
-                        // StartNewEventStage(stage);
-                        // CheckInitEventProgress();
-                        // UpdateUI();
-                        ShowStartPopup();
-                    }
-                    else
-                        Hide();
+                    // if (stage != -1)
+                    // {
+                    //     // StartNewEventStage(stage);
+                    //     // CheckInitEventProgress();
+                    //     // UpdateUI();
+                    //     ShowStartPopup();
+                    // }
+                    // else
+                        // Hide();
                 });
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
             {
-                if (stage != -1)
-                {
-                    // StartNewEventStage(stage);
-                    // CheckInitEventProgress();
-                    // UpdateUI();
-                    ShowStartPopup();
-                }
-                else
-                    Hide();
+                // if (stage != -1)
+                // {
+                //     // StartNewEventStage(stage);
+                //     // CheckInitEventProgress();
+                //     // UpdateUI();
+                //     ShowStartPopup();
+                // }
+                // else
+                    // Hide();
             }
+            
+            Hide();
         }
 
         protected virtual void ShowEventCompletedScreen()
@@ -336,6 +352,13 @@ namespace IEC
             }
             var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd;
+        }
+
+        public virtual bool IsHaveNextEventStage()
+        {
+            var data = _eventRankController.GetEventSaveData(eventType);
+
+            return data.eventIndex < _eventConfig.listEventData.Count - 1;
         }
 
         public virtual bool IsEventStageCompleted()
@@ -471,6 +494,9 @@ namespace IEC
 
                         if (eventData.eventTarget > 0 && player.progress > eventData.eventTarget)
                             player.progress = eventData.eventTarget;
+
+                        if (player.progress < 0)
+                            player.progress = 0;
                     }
                 }
             }

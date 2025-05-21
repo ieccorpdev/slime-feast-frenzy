@@ -84,14 +84,23 @@ namespace IEC
                         }
                         else
                         {
-                            if (completedGroup != null)
+                            if (_gameEventPopup.IsHaveNextEventStage())
                             {
-                                completedGroup.SetActive(true);
-                                unlockedGroup.SetActive(false);
+                                joinGroup.gameObject.SetActive(true);
+                                button.interactable = true;
                             }
-                            currentRankText.gameObject.SetActive(false);
-                            timerText.gameObject.SetActive(true);
-                            button.interactable = false;
+                            else
+                            {
+                                if (completedGroup != null)
+                                {
+                                    completedGroup.SetActive(true);
+                                    unlockedGroup.SetActive(false);
+                                }
+
+                                currentRankText.gameObject.SetActive(false);
+                                timerText.gameObject.SetActive(true);
+                                button.interactable = false;
+                            }
                         }
                     }
                     else
