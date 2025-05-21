@@ -104,7 +104,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6999216931804634721}
-  - component: {fileID: 3987259207213070250}
+  - component: {fileID: 8591917050493971923}
   m_Layer: 0
   m_Name: collider
   m_TagString: Untagged
@@ -127,8 +127,8 @@ Transform:
   m_Father: {fileID: 4133982975344140}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &3987259207213070250
-MeshCollider:
+--- !u!65 &8591917050493971923
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -137,10 +137,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 1005593078873590818, guid: 3fad8a7ee254e16429df3a0a5c22fb7d, type: 3}
+  serializedVersion: 2
+  m_Size: {x: 0.11934634, y: 0.0819314, z: 0.11185164}
+  m_Center: {x: 0.0003494755, y: 0.040965732, z: -0.004747856}
 --- !u!1 &2758916624587893317
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,5 +239,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5
