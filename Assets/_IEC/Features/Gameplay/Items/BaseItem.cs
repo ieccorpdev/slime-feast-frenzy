@@ -11,7 +11,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour
+    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -59,7 +59,17 @@ namespace _IEC.Features.Gameplay
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
-        
+        void OnEnable()
+        {
+            UpdateManager.Instance.RegisterLateUpdate(this);
+        }
+
+        void OnDisable()
+        {
+            DOTween.Kill(RecycleTweenId);
+            UpdateManager.Instance.UnregisterLateUpdate(this);
+        }
+
         [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
@@ -347,7 +357,7 @@ namespace _IEC.Features.Gameplay
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
 
-        void LateUpdate()
+        public void ManagedLateUpdate()
         {
             if (posOnWater != null && rb && posOnWater.enabled)
             {
@@ -387,10 +397,6 @@ namespace _IEC.Features.Gameplay
             //itemCollider.gameObject.layer = newLayer;
         }
 
-        protected virtual void OnDisable()
-        {
-            DOTween.Kill(RecycleTweenId);
-        }
 
         public enum State
         {
@@ -413,6 +419,5 @@ namespace _IEC.Features.Gameplay
             public RigidbodyInterpolation interpolation;
             public CollisionDetectionMode collisionDetectionMode;
         }
-
     }
 }
