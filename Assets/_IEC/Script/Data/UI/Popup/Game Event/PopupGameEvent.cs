@@ -366,20 +366,13 @@ namespace IEC
             return true;
         }
 
-        protected virtual void CheckInitEventProgress()
+        public virtual int GetNextEventStageIndex()
         {
             if (_eventRankController == null)
             {
                 Init();
             }
             var data = _eventRankController.GetEventSaveData(eventType);
-            
-            if (data.listPlayerData.Count > 0 )
-            {
-                listPlayerData.Clear();
-                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
-            }
-            
             int stage = 0;
 
             if (IsEventMultipleStage && !IsEndEvent())
@@ -398,6 +391,25 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+
+            return stage;
+        }
+
+        protected virtual void CheckInitEventProgress()
+        {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            var data = _eventRankController.GetEventSaveData(eventType);
+            
+            if (data.listPlayerData.Count > 0 )
+            {
+                listPlayerData.Clear();
+                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
+            }
+
+            int stage = GetNextEventStageIndex();
             
             if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
             {

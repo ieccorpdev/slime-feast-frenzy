@@ -46,16 +46,17 @@ namespace IEC
             // else if(eventType == EventType.SharkRace)
             //     Locator.Main.PopupSharkRace.StartNewEventStage(0);
             
-            popup.StartNewEventStage(0);
-
-            if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
-            {
-                Locator.Main.PopupBooster.playButton.onClick.Invoke();
-            }
-            else if (Locator.Game.ScreenLevelWin.gameObject.activeInHierarchy)
-            {
-                
-            }
+            popup.StartNewEventStage(popup.GetNextEventStageIndex());
+            SetupData();
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            // if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
+            // {
+            //     Locator.Main.PopupBooster.playButton.onClick.Invoke();
+            // }
+            // else if (Locator.Game.ScreenLevelWin.gameObject.activeInHierarchy)
+            // {
+            //     
+            // }
             
         }
 
