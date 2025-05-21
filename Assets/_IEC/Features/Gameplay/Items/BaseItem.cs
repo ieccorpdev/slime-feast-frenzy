@@ -67,7 +67,10 @@ namespace _IEC.Features.Gameplay
 
         void FixedUpdate()
         {
-            lastVelocity = rb.velocity;
+            if (rb != null)
+            {
+                lastVelocity = rb.velocity;
+            }
         }
 
         private void OnCollisionEnter(Collision collision)
