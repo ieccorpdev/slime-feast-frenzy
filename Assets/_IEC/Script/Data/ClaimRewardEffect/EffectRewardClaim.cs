@@ -26,15 +26,6 @@ namespace IEC
             SpawnEffect(effectData.rewardType, effectData.rewardSprite, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount,effectData.startSize ,effectData.onComplete, effectData.onEndMove, effectData.delay, effectData.animTime);
         }
 
-        public void Start()
-        {
-            foreach (var prt in listStartExplosion)
-            {
-                prt.gameObject.SetActive(false);
-            }
-        }
-
-
         public void SpawnEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
             if (addAmount <= 0)
@@ -161,7 +152,6 @@ namespace IEC
         public void ActiveVFXStartExplosion(Vector2 anchorPos)
         {
             var vfx = listStartExplosion.Find(x => !x.isPlaying);
-            vfx.gameObject.SetActive(true);
             if (vfx != null)
             {
                 vfx.GetComponent<RectTransform>().anchoredPosition = anchorPos;
