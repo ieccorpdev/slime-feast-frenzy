@@ -31,7 +31,6 @@ public class UnderwaterDistortionEffect : MonoBehaviour
             _material.SetFloat("_Strength", strength);
             _material.SetFloat("_Speed1", speed1);
             _material.SetFloat("_Speed2", speed2);
-
             Graphics.Blit(src, dest, _material);
         }
         else

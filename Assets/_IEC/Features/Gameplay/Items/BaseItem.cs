@@ -33,6 +33,11 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
         private Camera mainCam;
         public bool IsCollected => _isCollected;
+        private bool hasRenderer;
+        private bool hasRigidbody;
+        private bool hasSpringOscillation;
+        private bool hasPosOnWater;
+        private Game GameG;
         public Rigidbody Rb
         {
             get
@@ -51,6 +56,7 @@ namespace _IEC.Features.Gameplay
 
         private void Start()
         {
+            this.GameG = Pool.Get<Game>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
@@ -248,11 +254,13 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
+                hasRenderer = true;
             }
 
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
+                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
@@ -285,6 +293,8 @@ namespace _IEC.Features.Gameplay
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
             }
+
+            hasRigidbody = false;
         }
 
         private void RestoreRigidbody()
@@ -302,6 +312,8 @@ namespace _IEC.Features.Gameplay
                 rb.interpolation = savedData.interpolation;
                 rb.collisionDetectionMode = savedData.collisionDetectionMode;
             }
+
+            hasRigidbody = true;
         }
 
         protected void ChangeState(State newState)
@@ -365,19 +377,19 @@ namespace _IEC.Features.Gameplay
         public Transform targetObject; // Object B
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
-
+    
         public void ManagedLateUpdate()
         {
-            if (rb != null)
+            if (hasRigidbody)
             {
                 lastVelocity = rb.velocity;
             }
 
-            if (springOscillation != null)
+            if (hasSpringOscillation)
             {
                 springOscillation.CheckSpringObject();
             }
-            if ( Game.objectBobbingWater && posOnWater != null )
+            if (GameG.objectBobbingWater && hasPosOnWater)
             {
                 if (rb && posOnWater.enabled)
                 {
@@ -388,15 +400,15 @@ namespace _IEC.Features.Gameplay
                     posOnWater.CheckPosWater();
                 }
             }
-            if (rb == null)
+            if (!hasRigidbody)
             {
-                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
-                {
-                    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-                    curentPlanes = sharedPlanes;
-                }
+               //if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+               //{
+               //    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+               //    curentPlanes = sharedPlanes;
+               //}
 
-                if (myRenderer != null && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+                if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
                 {
                     RestoreRigidbody();
                     AppearInScreen();
@@ -408,6 +420,11 @@ namespace _IEC.Features.Gameplay
             }
         }
 
+        public void SetPosOnwater(TCP2_GetPosOnWater pow)
+        {
+            posOnWater = pow;
+            hasPosOnWater = true;
+        }
         protected virtual void AppearInScreen() { }
         
         #endregion

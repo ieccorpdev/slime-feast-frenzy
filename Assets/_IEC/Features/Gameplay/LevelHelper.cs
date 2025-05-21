@@ -341,7 +341,7 @@ namespace _IEC.Features.Gameplay
                         }
                         waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                         waterWave.InitShader();
-                        itemComponent.posOnWater = waterWave; 
+                        itemComponent.SetPosOnwater(waterWave);
                     }
                     itemIds.Add(itemSpawn.id);
                 }
