@@ -96,7 +96,7 @@ namespace IEC
             StartCoroutine(IE_WaitRebuild(() =>
             {
                 // Debug.LogError(m_BigTab.GetSize().x);
-                m_ChooseTab.sizeDelta = new Vector2(m_BigTab.GetSize().x, m_ChooseTab.sizeDelta.y);
+                //m_ChooseTab.sizeDelta = new Vector2(m_BigTab.GetSize().x, m_ChooseTab.sizeDelta.y);
             }));
             
             //m_ListTab.ForEach(x => x.SetLock(false)); 
