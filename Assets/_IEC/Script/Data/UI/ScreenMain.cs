@@ -362,8 +362,13 @@ namespace IEC
         }
         public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
-           var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);
-           dataEffect.SetStartSize(startSize);
+            if (rewardType != ResourceType.Gold)
+            {
+                addAmount = 1;
+            }
+            
+            var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);
+            dataEffect.SetStartSize(startSize);
             listClaimRewardData.Push(dataEffect);
         }
 
