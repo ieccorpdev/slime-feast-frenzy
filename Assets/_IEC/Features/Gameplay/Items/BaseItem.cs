@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
+using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour
+    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -59,48 +60,67 @@ namespace _IEC.Features.Gameplay
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
-        
+        void OnEnable()
+        {
+            UpdateManager.Instance.RegisterLateUpdate(this);
+        }
+
+        void OnDisable()
+        {
+            DOTween.Kill(RecycleTweenId);
+            UpdateManager.Instance.UnregisterLateUpdate(this);
+        }
+
         [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
+        private Vector3 lastVelocity;
+
+
         private void OnCollisionEnter(Collision collision)
         {
             if (!Game.dropSplashWater) return;
-            if (collision.gameObject.layer != LayerMask.NameToLayer("Ground")) return;
-            if (collision.contactCount == 0) return;
-            
-            if (hasSplashed) return;
-
-            float velocityY = rb.velocity.y;
-            float relVelocityY = collision.relativeVelocity.y;
-            if (velocityY < -minImpactVelocity && relVelocityY > 0)
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
             {
-                // Splash VFX
-                Vector3 contactPoint = collision.contacts[0].point;
-                contactPoint.y = splashYOffset;
-
-                var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
-                if (splashVFX != null)
+                if (collision.contactCount == 0) return;
+                if (hasSplashed) return;
+                float velocityY = lastVelocity.y;
+                float relVelocityY = collision.relativeVelocity.y;
+                if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
-                    splashVFX.transform.position = contactPoint;
-                    splashVFX.transform.parent = null;
+                    // Splash VFX
+                    Vector3 contactPoint = collision.contacts[0].point;
+                    contactPoint.y = splashYOffset;
 
-                    if (myRenderer != null)
+                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                    if (splashVFX != null)
                     {
-                        Vector3 size = myRenderer.bounds.size;
-                        float maxSize = Mathf.Max(size.x, size.z); 
-                        splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                        splashVFX.transform.position = contactPoint;
+                        splashVFX.transform.parent = null;
+
+                        if (myRenderer != null)
+                        {
+                            Vector3 size = myRenderer.bounds.size;
+                            float maxSize = Mathf.Max(size.x, size.z); 
+                            splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                        }
+                        splashVFX.Show();
                     }
-                    splashVFX.Show();
+                    // Spring Oscillation
+                    ApplySpringForce(velocityY);
+                    hasSplashed = true; 
                 }
-                // Spring Oscillation
-                if (springOscillation != null)
-                {
-                    springOscillation.ApplyForce(velocityY);
-                }
-                hasSplashed = true; 
+            } 
+
+        }
+        public void ApplySpringForce(float velocityY)
+        {
+            if (springOscillation != null)
+            {
+                springOscillation.ApplyForce(velocityY);
             }
         }
+
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
@@ -233,6 +253,10 @@ namespace _IEC.Features.Gameplay
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
+                if (springOscillation != null)
+                {
+                    springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
+                }
             }
             var myTransform = transform;
             myTransform.position = itemData.position;
@@ -339,19 +363,30 @@ namespace _IEC.Features.Gameplay
 
         public bool onDraging = false;
         public Transform targetObject; // Object B
-        public float pullSpeed = 2.5f;   // Speed towards object B
-        public float stopPullDistance = 0.1f;
-        public float gravityStrength = -50f; // Simulated gravity
-        public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
-        public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
 
-        void LateUpdate()
+        public void ManagedLateUpdate()
         {
-            if (posOnWater != null && rb && posOnWater.enabled)
+            if (rb != null)
             {
-                posOnWater.enabled = false;
+                lastVelocity = rb.velocity;
+            }
+
+            if (springOscillation != null)
+            {
+                springOscillation.CheckSpringObject();
+            }
+            if ( Game.objectBobbingWater && posOnWater != null )
+            {
+                if (rb && posOnWater.enabled)
+                {
+                    posOnWater.enabled = false;
+                }
+                else
+                {
+                    posOnWater.CheckPosWater();
+                }
             }
             if (rb == null)
             {
@@ -387,10 +422,6 @@ namespace _IEC.Features.Gameplay
             //itemCollider.gameObject.layer = newLayer;
         }
 
-        protected virtual void OnDisable()
-        {
-            DOTween.Kill(RecycleTweenId);
-        }
 
         public enum State
         {
@@ -413,6 +444,5 @@ namespace _IEC.Features.Gameplay
             public RigidbodyInterpolation interpolation;
             public CollisionDetectionMode collisionDetectionMode;
         }
-
     }
 }
