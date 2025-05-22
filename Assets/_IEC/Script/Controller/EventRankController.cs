@@ -70,6 +70,7 @@ namespace IEC
         {
             //Event Add Star
             AddPlayerEventProgress(
+                Locator.Main.PopupStarChase,
                 new AddEventProgressData()
                 {
                     eventType = EventType.StarChase,
@@ -79,11 +80,22 @@ namespace IEC
                     
             //Event Add Level
             AddPlayerEventProgress(
+                Locator.Main.PopupSharkRace,
                 new AddEventProgressData()
                 {
                     eventType = EventType.SharkRace,
                     id = PlayerData.playerName,
                     progressAmount = 1,
+                });
+            
+            //Event Chomp Off
+            AddPlayerEventProgress(
+                Locator.Main.PopupChompOff,
+                new AddEventProgressData()
+                {
+                    eventType = EventType.ChompOff,
+                    id = PlayerData.playerName,
+                    progressAmount = Config.AllGameEventConfig.chompOffProgressConfig.GetProgress(PlayerData.chompOffCurrentLevelLostCount),
                 });
         }
 
@@ -97,7 +109,7 @@ namespace IEC
             return data;
         }
 
-        public void AddPlayerEventProgress(AddEventProgressData progressData)
+        public void AddPlayerEventProgress(PopupGameEvent popupGameEvent, AddEventProgressData progressData)
         {
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).levelUnlock)
                 return;
@@ -105,7 +117,10 @@ namespace IEC
             var eventData = PlayerData.GetEventSaveData(progressData.eventType);
             var data = Config.AllGameEventConfig.GetGameEventConfig(progressData.eventType).GetEventData(eventData.eventIndex);
 
-            if (DateTime.Now > eventData.timeEnd)
+            if (DateTime.Now >= eventData.timeEnd)
+                return;
+
+            if (popupGameEvent.IsEndEventStage())
                 return;
             
 

@@ -87,6 +87,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupStarChase,
                     new AddEventProgressData()
                     {
                         eventType = EventType.StarChase,
@@ -103,6 +104,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupSharkRace,
                     new AddEventProgressData()
                     {
                         eventType = EventType.SharkRace,

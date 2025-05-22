@@ -2,18 +2,28 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IEC
 {
     public class PopupChompOff : PopupGameEvent
     {
+        public Button playButton;
         public GameEventPlayerDataUI playerUI;
         public GameEventPlayerDataUI opponentUI;
         protected override void Awake()
         {
             base.Awake();
+            
+            SetEvent(playButton, OnPlayButtonClick);
 
             IsEventMultipleStage = true;
+        }
+
+        private void OnPlayButtonClick()
+        {
+            Hide();
+            Locator.Main.PopupBooster.Show();
         }
 
         public override void Show()
