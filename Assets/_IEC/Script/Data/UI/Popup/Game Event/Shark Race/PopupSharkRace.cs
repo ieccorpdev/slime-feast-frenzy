@@ -35,7 +35,7 @@ namespace IEC
             }
         }
 
-        protected override bool CheckShowStartPopup()
+        public override bool CheckShowStartPopup()
         {
             if (!PlayerData.isShownPopupStartSharkRace)
                 return false;

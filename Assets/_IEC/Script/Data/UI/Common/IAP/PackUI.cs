@@ -82,6 +82,7 @@ namespace IEC
                 Services.PushEvent(new IEC.TrackingEvent.BuySuccessIAP(m_Config.bundleId));
                 OnPurchaseSuccess?.Invoke();
                 Data.SaveData();
+                Observer.Notify(EventList.GamePlay.UPDATE_HELPER_UI);
             }); 
                 
             m_BtnBuy.onClick.AddListener(() =>
