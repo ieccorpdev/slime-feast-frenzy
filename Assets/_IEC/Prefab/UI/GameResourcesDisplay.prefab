@@ -437,6 +437,7 @@ GameObject:
   - component: {fileID: 5912917308901329906}
   - component: {fileID: 3204322242537192722}
   - component: {fileID: 1248504504482889976}
+  - component: {fileID: 7475105833404363455}
   m_Layer: 5
   m_Name: PlayerAvatar
   m_TagString: Untagged
@@ -562,6 +563,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7475105833404363455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7899096885778678374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 7899096885778678374}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 21300000, guid: 7706a7c3c5bbfa04389bd28fb91d672b, type: 3}
+  releaseSprite: {fileID: 21300000, guid: 7706a7c3c5bbfa04389bd28fb91d672b, type: 3}
+  isChangeButtonSpriteOnInactive: 1
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1001 &3975012070692435389
 PrefabInstance:
   m_ObjectHideFlags: 0

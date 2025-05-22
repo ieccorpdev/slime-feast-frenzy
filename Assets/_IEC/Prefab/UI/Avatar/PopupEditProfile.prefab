@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 6613363161064174616}
   - component: {fileID: 8685397981731566002}
   - component: {fileID: 1923183660473807011}
+  - component: {fileID: 8900888187205253875}
   m_Layer: 5
   m_Name: SaveButton
   m_TagString: Untagged
@@ -113,8 +114,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.7, y: 13.9}
-  m_SizeDelta: {x: 487.5, y: 198.2}
+  m_AnchoredPosition: {x: 0.3623, y: 10.5}
+  m_SizeDelta: {x: 482.771, y: 200.9023}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6613363161064174616
 CanvasRenderer:
@@ -198,6 +199,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &8900888187205253875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109897050715978307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 1109897050715978307}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &1465908947698294271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,6 +1204,7 @@ GameObject:
   - component: {fileID: 229796328821180104}
   - component: {fileID: 5169029148155620354}
   - component: {fileID: 1118018970819766635}
+  - component: {fileID: 4672072048734912401}
   m_Layer: 5
   m_Name: FrameButton
   m_TagString: Untagged
@@ -1311,6 +1335,28 @@ MonoBehaviour:
   deselectedGroup: {fileID: 7781992890314224646}
   selectedSprite: {fileID: 21300000, guid: 235085f06884b11468b97cf57d96e96e, type: 3}
   deselectedSprite: {fileID: 21300000, guid: ad88e0cd0ac5f4741a84a76f63ba39e7, type: 3}
+--- !u!114 &4672072048734912401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5226803911074837074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 5226803911074837074}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &5292038364417675909
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,6 +2017,7 @@ GameObject:
   - component: {fileID: 3559405698396487697}
   - component: {fileID: 5896306638938555960}
   - component: {fileID: 8154240215430055033}
+  - component: {fileID: 4246588274406710361}
   m_Layer: 5
   m_Name: ButtonEditName
   m_TagString: Untagged
@@ -2080,6 +2127,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &4246588274406710361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7148485767002991304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 7148485767002991304}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &7357499458282333403
 GameObject:
   m_ObjectHideFlags: 0
@@ -2091,6 +2160,7 @@ GameObject:
   - component: {fileID: 2347659612522120591}
   - component: {fileID: 1691694651058151322}
   - component: {fileID: 8993798579255526336}
+  - component: {fileID: 5676883492728895287}
   m_Layer: 5
   m_Name: SaveButtonBase
   m_TagString: Untagged
@@ -2157,6 +2227,28 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5676883492728895287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357499458282333403}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 7357499458282333403}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &7704854314942464255
 GameObject:
   m_ObjectHideFlags: 0
@@ -2440,6 +2532,7 @@ GameObject:
   - component: {fileID: 9076830277997704218}
   - component: {fileID: 1548350455709258063}
   - component: {fileID: 8653074161981611991}
+  - component: {fileID: 8754815786112621129}
   m_Layer: 5
   m_Name: AvatarButton
   m_TagString: Untagged
@@ -2570,6 +2663,28 @@ MonoBehaviour:
   deselectedGroup: {fileID: 1465908947698294271}
   selectedSprite: {fileID: 21300000, guid: 235085f06884b11468b97cf57d96e96e, type: 3}
   deselectedSprite: {fileID: 21300000, guid: ad88e0cd0ac5f4741a84a76f63ba39e7, type: 3}
+--- !u!114 &8754815786112621129
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8167774411123770153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 8167774411123770153}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &8223331931250826866
 GameObject:
   m_ObjectHideFlags: 0
@@ -2703,6 +2818,7 @@ GameObject:
   - component: {fileID: 6493036412032772089}
   - component: {fileID: 6266709368930738059}
   - component: {fileID: 8112660053414254737}
+  - component: {fileID: 5912384299664815497}
   m_Layer: 5
   m_Name: CloseButton
   m_TagString: Untagged
@@ -2812,6 +2928,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5912384299664815497
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8504773595368727713}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 8504773595368727713}
+  setNative: 0
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &9097622606226113951
 GameObject:
   m_ObjectHideFlags: 0
