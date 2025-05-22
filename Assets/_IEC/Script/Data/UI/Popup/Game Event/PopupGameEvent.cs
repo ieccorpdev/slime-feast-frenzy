@@ -119,8 +119,12 @@ namespace IEC
             
         }
 
-        protected virtual bool CheckShowStartPopup()
+        public virtual bool CheckShowStartPopup()
         {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             var data = _eventRankController.GetEventSaveData(eventType);
             return (IsEndEventStage() && data.claimedReward) || data == null || data.listPlayerData.Count == 0;
         }
@@ -194,11 +198,11 @@ namespace IEC
 
             base.Show();
 
-            if (CheckShowStartPopup())
-            {
-                ShowStartPopup();
-            }
-            else
+            // if (CheckShowStartPopup())
+            // {
+            //     ShowStartPopup();
+            // }
+            // else
             {
                 InitEvent();
             }

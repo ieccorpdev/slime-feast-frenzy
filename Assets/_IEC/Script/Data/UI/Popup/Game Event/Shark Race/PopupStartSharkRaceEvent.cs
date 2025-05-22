@@ -26,10 +26,10 @@ namespace IEC
                 {
                     Locator.Main.PopupSharkRace.Show();
                 }
-                else
-                {
-                    Locator.Main.PopupSharkRace.InitEvent();
-                }
+                // else
+                // {
+                //     Locator.Main.PopupSharkRace.InitEvent();
+                // }
                 OnHideClick();
             });
             SetEvent(btnCloseAll, ()=>

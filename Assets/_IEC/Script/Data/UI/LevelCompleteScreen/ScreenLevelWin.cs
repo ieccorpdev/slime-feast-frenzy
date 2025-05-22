@@ -222,6 +222,7 @@ namespace IEC
                     () =>
                     {
                         Locator.Main.PopupStartStarChaseEvent.Show();
+                        PlayerData.isShownPopupStartStarChase = true;
                     },
                     ShowNext
                 );
@@ -230,15 +231,16 @@ namespace IEC
             
             if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock && !PlayerData.isShownPopupStartSharkRace)
             {
-                PopupData StartStarChase = new PopupData(
+                PopupData StartSharkRace = new PopupData(
                     Locator.Main.PopupStartSharkRaceEvent,
                     () =>
                     {
                         Locator.Main.PopupStartSharkRaceEvent.Show();
+                        PlayerData.isShownPopupStartSharkRace = true;
                     },
                     ShowNext
                 );
-                popupQueue.Enqueue(StartStarChase);
+                popupQueue.Enqueue(StartSharkRace);
             }
 
             if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
