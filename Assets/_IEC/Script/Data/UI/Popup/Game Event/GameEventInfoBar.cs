@@ -92,7 +92,7 @@ namespace IEC
             eventSaveData = _eventRankController.GetEventSaveData(eventType);
             popup = eventType == EventType.SharkRace ? Locator.Main.PopupSharkRace : Locator.Main.PopupStarChase;
             
-            scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0);
+            scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
             startGroup.SetActive(eventSaveData.listPlayerData.Count == 0 || eventSaveData.claimedReward);
 
             if (eventTargetGroup != null)
