@@ -43,6 +43,7 @@ namespace IEC
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
+        public bool wasRateUs;
         [Header("CCJ")]
         public bool isMusicOn = true;
         public bool isSoundOn = true;
@@ -88,13 +89,31 @@ namespace IEC
 
         public void AfterInit()
         {
+            if (String.IsNullOrEmpty(playerName))
+            {
+                playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
+            }
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
             if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
             {
                 ClearAndInitTrackingLevelType();
+                levelLostStreak = -1;
             }
+            InitDailyReward();
+            CheckActionAfterQuitGame();
+        }
+
+        private void CheckActionAfterQuitGame()
+        {
+            if(!isKilledAppGamePlay)
+                return;
+
+            isKilledAppGamePlay = false;
+            
+            ResetBoosterStreak();
+            
         }
 
         public void ClearAndInitTrackingLevelType()
@@ -144,16 +163,30 @@ namespace IEC
         
         #region Booster
 
+        public List<ResourceType> listUnlockedBoosters = new();
+        public bool wasAddFirstTime = false;
         public int currentBoosterStreak;
-        public int levelLostStreak;
+        public int levelLostStreak = -1;
         public Dictionary<ResourceType, DateTime> timeEndUnlimitedBoosters = new();
+
+        public bool CheckUnlockBooster(ResourceType boosterType)
+        {
+            if (!listUnlockedBoosters.Contains(boosterType))
+            {
+                listUnlockedBoosters.Add(boosterType);
+                return true;
+            }
+
+            return false;
+        }
+        
 
         public void IncreaseBoosterStreak()
         {
             if (level < Config.AllBoosterConfig.levelUnlockStreak)
                 return;
 
-            if (level == levelLostStreak)
+            if (level == levelLostStreak && currentBoosterStreak > 0)
                 return;
             
             currentBoosterStreak++;
@@ -230,8 +263,6 @@ namespace IEC
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;
         public DateTime timeEndUnlimitedLife = DateTime.MinValue;
         public float realTimeUnlimidtedLife;
-        public string playerProfileName = "";
-        public int playerProfileIconId;
         public bool levelPending;//check player quit in game
         public bool isKilledAppGamePlay;
 
@@ -251,7 +282,6 @@ namespace IEC
                 playerLife -= 1;
                 playerLife = playerLife < 0 ? 0 : playerLife;
             }
-            ResetBoosterStreak();
         }
 
         public bool IsInUnlimitedLife()
@@ -414,7 +444,43 @@ namespace IEC
         #region Player Avatar Profile
         [Header("Player Avatar Profile")]
         public string playerAvatarSpriteName;
-        public string playerName;    
+        public string playerAvatarFrameName;
+        public string playerName;
+
+        public Dictionary<PlayerGeneralStat, int> playerStat = new();
+
+        public void UpdatePlayerStat(PlayerGeneralStat stat, int amount)
+        {
+            if (!playerStat.TryAdd(stat, amount))
+            {
+                if (amount >= playerStat[stat])
+                {
+                    playerStat[stat] = amount;
+                }
+            }
+        }
+
+        public int GetPlayerStat(PlayerGeneralStat stat)
+        {
+            playerStat.TryAdd(stat, 0);
+
+            return playerStat[stat];
+        }
+        
+        public void UpdatePlayerProfileName(string profileName)
+        {
+            playerName = profileName;
+            foreach (var data in listEventSaveData)
+            {
+                var playerData = data.listPlayerData.Find(data => data.isPlayer);
+
+                if (playerData != null)
+                {
+                    playerData.id = playerName;
+                }
+            }
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_NAME);
+        }
 
         #endregion
         
@@ -600,10 +666,8 @@ namespace IEC
 
         [Header("Daily Reward")] 
         public int currentDailyAdReward = 0;
-        public DateTime lastTimeOpenDailyReward;
-        public long mainRewardCooldownTickTime;
-        public bool claimMainReward;
-        public Dictionary<int, bool> adRewardsClaimed = new Dictionary<int, bool>();
+        public DateTime lastTimeOpenDailyReward = DateTime.MinValue;
+        public Dictionary<int, bool> dailyRewardsClaimed = new Dictionary<int, bool>();
         public double GetEndTimeDay(out string outputString)
         {
             outputString = "";
@@ -615,6 +679,38 @@ namespace IEC
             string minutes = time.Minutes < 10 ? $"0{time.Minutes}" : time.Minutes.ToString();
             outputString = $"{hours}h {minutes}m";
             return time.TotalSeconds;
+        }
+
+        public void InitDailyReward()
+        {
+            if (dailyRewardsClaimed == null || !dailyRewardsClaimed.ContainsKey(0))
+            {
+                lastTimeOpenDailyReward = DateTime.MinValue;
+                for (int i = 0; i < 10; i++)
+                {
+                    dailyRewardsClaimed[i] = false;
+                }
+            }
+        }
+        public void CheckResetDailyReward()
+        {
+            var dayDiff = (DateTime.Today - lastTimeOpenDailyReward.Date).Days;
+            if (dayDiff > 1 || (dayDiff == 1 && currentDailyAdReward >= Config.dataDailyRewardConfig.dailyRewards.Count))
+            {
+                //Out of day reward, reset 
+                ResetDailyReward();
+                EventController.RaiseEvent(EventList.SAVE_DATA);
+            }
+        }
+        public void ResetDailyReward()
+        {
+            currentDailyAdReward = 0;
+            lastTimeOpenDailyReward = DateTime.MinValue;
+            dailyRewardsClaimed.Clear();
+            for (int i = 0; i < 10; i++)
+            {
+                dailyRewardsClaimed[i] = false;
+            }
         }
         #endregion
         
@@ -662,7 +758,7 @@ namespace IEC
 
             chestRewardMilestone[chestType] += 1;
 
-            if (chestRewardMilestone[chestType] >= chestConfig.listChestRewardData.Count)
+            if (chestRewardMilestone[chestType] > chestConfig.listChestRewardData.Count)
             {
                 chestRewardMilestone[chestType] = chestConfig.milestoneBeginLoop;
             }
@@ -676,7 +772,7 @@ namespace IEC
         #endregion
         
         #region ProgressReward
-
+        [Header("ProgressReward")]
         public DateTime timeLastResetProgressReward;
         public int tempSpecialObjCollectedInLevel;
         public int currentProgress;
@@ -714,6 +810,12 @@ namespace IEC
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
         {
+            if (Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone))
+            {
+                currentProgress = currentProgressData.progress;
+                return false;
+            }
+
             if (currentProgress>= currentProgressData.progress)
             {
                 currentProgress -= currentProgressData.progress;
@@ -757,7 +859,11 @@ namespace IEC
             }
             return outputString;
         }
-        
+
+        public bool ReachMaxProgressReward()
+        {
+            return Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone) && currentProgress >= Config.progressRewardConfig.listRewardData.Count;
+        }
         #endregion
         
         #region Add Helper Popup
@@ -786,6 +892,38 @@ namespace IEC
             adRewardUsedAddHelper.TryAdd(helperType, 0);
 
             return adRewardUsedAddHelper[helperType];
+        }
+
+        #endregion
+        
+        #region Event
+
+        public List<EventSaveData> listEventSaveData = new();
+        public bool isShownPopupStartStarChase;
+        public bool isShownPopupStartSharkRace;
+
+        public EventSaveData GetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+
+            if (data == null)
+            {
+                data = new EventSaveData()
+                {
+                    eventType = eventType,
+                    eventIndex = 0,
+                };
+                listEventSaveData.Add(data);
+            }
+
+            return data;
+        }
+        
+        public bool IsEventCompleted(EventType eventType)
+        {
+            var saveData = GetEventSaveData(eventType);
+            var eventData = Config.AllGameEventConfig.GetGameEventConfig(eventType).GetEventData(saveData.eventIndex);
+            return false;
         }
 
         #endregion

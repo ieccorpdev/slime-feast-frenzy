@@ -37,6 +37,7 @@ namespace IEC
         public override void Show()
         {
             base.Show();
+            this.transform.SetAsLastSibling();
             SetScaleAnim();
             //mainAnimLifeOffer.ske.Clear();
             mainAnimLifeOffer.SetAnimation("Start",false, () =>

@@ -4,6 +4,7 @@ using System.Linq;
 using IEC;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -304,7 +305,198 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        [Button]
+        void CustomEnableGPUInstancing()
+        {
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
 
+
+                if (itemDef.GetPrefab() != null)
+                {
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshRenderer>();
+                    foreach (var mat in mats)
+                    {
+                        mat.sharedMaterial.enableInstancing = true;
+                        EditorUtility.SetDirty(mat.sharedMaterial);
+                    }
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+
+        [Button]
+        void MarkAllModalReadWirteAble()
+        {
+            Debug.LogError($"Start MarkAllModalReadWirteAble");
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef);
+                
+                if (itemDef.GetPrefab() != null)
+                {
+                    //Make Mesh Convex
+                    var convexs = itemDef.GetPrefab().GetComponentsInChildren<MeshCollider>();
+                    foreach (var convex in convexs)
+                    {
+                        if (!convex.convex)
+                        {
+                            Debug.LogError("CvOn:" +itemDef.GetPrefab().name);
+                            convex.convex = true;
+                        }
+
+                    }
+
+                    var mats = itemDef.GetPrefab().GetComponentsInChildren<MeshFilter>();
+                    foreach (var mf in mats)
+                    {
+                        if (mf.sharedMesh == null)
+                            continue;
+
+                        string path = AssetDatabase.GetAssetPath(mf.sharedMesh);
+                        if (string.IsNullOrEmpty(path))
+                            continue; // Not an asset, likely a procedural mesh
+
+                        // Load the mesh importer
+                        ModelImporter importer = AssetImporter.GetAtPath(path) as ModelImporter;
+                        if (importer != null && !importer.isReadable)
+                        {
+                            importer.isReadable = true;
+                            AssetDatabase.ImportAsset(path, ImportAssetOptions.ForceUpdate);
+                            Debug.LogError($"Enabled Read/Write on mesh at: {path}");
+                        }
+                    }
+                }
+            }
+            Debug.LogError($"End MarkAllModalReadWirteAble");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        
+        [Button]
+        void DeleteAllDeactiveObject()
+        {
+            Debug.LogError($"Start MarkAllModalReadWirteAble");
+            foreach (var itemDef in listItemDefinitionShp)
+            {
+                if (itemDef == null) continue;
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                 if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    Debug.LogError("Missing path for " + itemDef.GetId());
+                    continue;
+                }
+                GameObject prefab = PrefabUtility.LoadPrefabContents(itemDefPath);
+                if (prefab != null)
+                {
+                    var allChild = GetAllChildren(prefab.transform);
+                    for (int i = allChild.Count-1; i >=0; i--)
+                    {
+                        if (!allChild[i].gameObject.activeSelf)
+                        {
+                            DestroyImmediate(allChild[i].gameObject,true);
+                        }
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(prefab, itemDefPath);
+                    PrefabUtility.UnloadPrefabContents(prefab);
+                }
+            }
+            Debug.LogError($"End MarkAllModalReadWirteAble");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        [Button]
+        void ReModalItemForFloating(int min,int max)
+        {
+            Debug.LogError($"Start ReModalItemForFloating");
+            for (int i = min; i < max; i++)
+            {
+                if(i >= listItemDefinitionShp.Count) break;
+                var itemDef = listItemDefinitionShp[i];
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    Debug.LogError("Missing path for " + itemDef.GetId());
+                    continue;
+                }
+                GameObject prefab = PrefabUtility.LoadPrefabContents(itemDefPath);
+                if (prefab != null)
+                {
+                    //Make Mesh Convex
+                    var colliders = prefab.GetComponentsInChildren<Collider>();
+                    var meshs = prefab.GetComponentsInChildren<MeshRenderer>();
+                    if (colliders.Length > 1)
+                    {
+                        Debug.LogWarning(prefab.name + " Item have more one than collider");
+                    } 
+                    if (meshs.Length > 1)
+                    {
+                        Debug.LogWarning(prefab.name + " Item have more one than meshRenderer");
+                    }
+
+                    foreach (var ms in meshs)
+                    {
+                        ms.shadowCastingMode = ShadowCastingMode.Off;
+                        ms.receiveShadows = false;
+                    }
+                    CheckOverlap(colliders, meshs, prefab.name);
+                    //if (colliders[0].gameObject == meshs[0].gameObject)
+                    //{
+                    //    //Collider and mesh SameObject
+                    //    GameObject child = new GameObject("collider");
+                    //    child.transform.SetParent(prefab.transform);
+                    //    CopyTransform(meshs[0].gameObject.transform, child.transform);
+                    //    ColliderUtils.CopyCollider(colliders[0], child);
+                    //    Object.DestroyImmediate(colliders[0], true);
+                    //}
+                    //if (meshs.Length ==1)
+                    //{
+                    //    //Only one mehsRender, can fake spring
+                    //    if (meshs[0].gameObject.GetComponent<SpringOscillation>() == null)
+                    //    {
+                    //        meshs[0].gameObject.AddComponent<SpringOscillation>();
+                    //    }
+                    //}
+
+                    if (prefab.GetComponentInChildren<SpringOscillation>() == null)
+                    {
+                        Debug.LogError("Mising SpringOsci in " + prefab.name);
+                    }
+                    PrefabUtility.SaveAsPrefabAsset(prefab, itemDefPath);
+                    PrefabUtility.UnloadPrefabContents(prefab);
+                }
+            }
+            Debug.LogError($"End ReModalItemForFloating");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }
+        void CheckOverlap(Collider[] colliders, MeshRenderer[] meshs,string nameObj)
+        {
+            // Lấy danh sách GameObject từ mỗi mảng
+            var colliderObjects = colliders.Select(c => c.gameObject);
+            var meshObjects     = meshs.Select(m => m.gameObject);
+
+            // Tìm giao (intersect)
+            var duplicates = colliderObjects.Intersect(meshObjects);
+
+            if (duplicates.Any())
+            {
+                    Debug.LogError($"Found overlapping GameObject: "+ nameObj);
+            }
+        }
+        void CopyTransform(Transform source, Transform target)
+        {
+            target.position = source.position;
+            target.rotation = source.rotation;
+            target.localScale = source.localScale;
+        }
 #endif
 #endregion
         public GameObject GetItemPrefab(string id)
@@ -319,5 +511,16 @@ namespace _IEC.Features.Gameplay
                 return 0;
             return itemDef.GetXp();
         }
+        List<Transform> GetAllChildren(Transform parent)
+        {
+            List<Transform> children = new List<Transform>();
+            foreach (Transform child in parent)
+            {
+                children.Add(child);
+                children.AddRange(GetAllChildren(child)); // Đệ quy lấy tiếp các con của child
+            }
+            return children;
+        }
     }
+    
 }

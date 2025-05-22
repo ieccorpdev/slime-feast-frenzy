@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
@@ -22,6 +23,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private State m_CurrentState;
         [SerializeField] protected bool _isCollected = false;
         public TCP2_GetPosOnWater posOnWater;
+        public SpringOscillation springOscillation;
         private int LayerMainWorld => LayerMask.NameToLayer("MainWorld");
         private int LayerHole => LayerMask.NameToLayer("Hole");
         protected string RecycleTweenId => gameObject.GetInstanceID() + "recycle";
@@ -30,8 +32,21 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
 
         public bool IsCollected => _isCollected;
-        public Rigidbody Rb => rb;
+        public Rigidbody Rb
+        {
+            get
+            {
+                if (rb == null)
+                {
+                    RestoreRigidbody();
+                }
+                return rb;
+            }
+        }
         private static bool CanPlaySFX = true;
+
+        private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
+        private RigidbodyData savedData;
 
         private void Start()
         {
@@ -39,11 +54,77 @@ namespace _IEC.Features.Gameplay
             {
                 m_ItemDefinition = this.itemDefinition;
             }
+
+            rb.drag = Config.gamePlayConfig.ItemDrag;
+            rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
+        }
+        
+        [SerializeField] private float minImpactVelocity = 0.2f;
+        [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
+        private bool hasSplashed = false;
+        private Vector3 lastVelocity;
+
+        void FixedUpdate()
+        {
+            if (rb != null)
+            {
+                lastVelocity = rb.velocity;
+            }
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (!Game.dropSplashWater) return;
+            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            {
+                if (collision.contactCount == 0) return;
+                if (hasSplashed) return;
+                float velocityY = lastVelocity.y;
+                float relVelocityY = collision.relativeVelocity.y;
+                if (velocityY < -minImpactVelocity && relVelocityY > 0)
+                {
+                    // Splash VFX
+                    Vector3 contactPoint = collision.contacts[0].point;
+                    contactPoint.y = splashYOffset;
+
+                    var splashVFX = Config.prefabConfig.vfxItemSplash.Spawn(transform);
+                    if (splashVFX != null)
+                    {
+                        splashVFX.transform.position = contactPoint;
+                        splashVFX.transform.parent = null;
+
+                        if (myRenderer != null)
+                        {
+                            Vector3 size = myRenderer.bounds.size;
+                            float maxSize = Mathf.Max(size.x, size.z); 
+                            splashVFX.transform.localScale = Vector3.one * Mathf.Clamp(maxSize, 0.2f, 2.5f);
+                        }
+                        splashVFX.Show();
+                    }
+                    // Spring Oscillation
+                    ApplySpringForce(velocityY);
+                    hasSplashed = true; 
+                }
+            } 
+
+        }
+        public void ApplySpringForce(float velocityY)
+        {
+            if (springOscillation != null)
+            {
+                springOscillation.ApplyForce(velocityY);
+            }
         }
 
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(false);
+            }
         }
 
         public Sprite GetIcon()
@@ -58,6 +139,11 @@ namespace _IEC.Features.Gameplay
         public void ExitHoleTrigger()
         {
             ChangeState(State.Idle);
+            
+            if (_specialItemHighlightEffect != null)
+            {
+                _specialItemHighlightEffect.gameObject.SetActive(true);
+            }
         }
 
         public bool IsInScreen(Camera particularCam)
@@ -87,6 +173,7 @@ namespace _IEC.Features.Gameplay
             }).SetId(RecycleTweenId);
             if (!GamePlay.IsWin)
             {
+                Locator.Game.ScreenInGame.HandleEatCombo();
                 if (CanPlaySFX)
                 {
                     EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
@@ -147,15 +234,67 @@ namespace _IEC.Features.Gameplay
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
             }
+
+            if (springOscillation == null)
+            {
+                springOscillation = GetComponentInChildren<SpringOscillation>();
+                if (springOscillation != null)
+                {
+                    springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
+                }
+            }
             var myTransform = transform;
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
+#if UNITY_ANDROID
+            if (itemData.isStartKinematic)
+            {
+                rb.isKinematic = false;
+                SaveAndDestroyRigidbody();
+                Destroy(this.GetComponent<Rigidbody>());
+            }
+#else
             rb.isKinematic = itemData.isStartKinematic;
+#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
-        
+
+        private void SaveAndDestroyRigidbody()
+        {
+            if (rb != null)
+            {
+                savedData.velocity = rb.velocity;
+                savedData.angularVelocity = rb.angularVelocity;
+                savedData.mass = rb.mass;
+                savedData.drag = rb.drag;
+                savedData.angularDrag = rb.angularDrag;
+                savedData.useGravity = rb.useGravity;
+                savedData.isKinematic = rb.isKinematic;
+                savedData.interpolation = rb.interpolation;
+                savedData.collisionDetectionMode = rb.collisionDetectionMode;
+                Destroy(rb);
+            }
+        }
+
+        private void RestoreRigidbody()
+        {
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+                rb.velocity = savedData.velocity;
+                rb.angularVelocity = savedData.angularVelocity;
+                rb.mass = savedData.mass;
+                rb.drag = savedData.drag;
+                rb.angularDrag = savedData.angularDrag;
+                rb.useGravity = savedData.useGravity;
+                rb.isKinematic = savedData.isKinematic;
+                rb.interpolation = savedData.interpolation;
+                rb.collisionDetectionMode = savedData.collisionDetectionMode;
+            }
+        }
+
         protected void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
@@ -197,16 +336,25 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
+#if UNITY_ANDROID
+                RestoreRigidbody();
+#else
                 rb.isKinematic = false;
+#endif
             }
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
             }
+            // if (_specialItemHighlightEffect != null)
+            // {
+            //     _specialItemHighlightEffect.gameObject.SetActive(false);
+            // }
+
         }
 
         #region New Whirlpool Logic
-        
+
         public bool onDraging = false;
         public Transform targetObject; // Object B
         public float pullSpeed = 2.5f;   // Speed towards object B
@@ -219,6 +367,10 @@ namespace _IEC.Features.Gameplay
 
         void Update()
         {
+            if(posOnWater !=null && rb && posOnWater.enabled )
+            {
+                posOnWater.enabled = false;
+            }
             if (targetObject == null || !onDraging) return;
             // Distance check
             float distance = Vector3.Distance(transform.position, targetObject.position);
@@ -291,5 +443,20 @@ namespace _IEC.Features.Gameplay
             Collectable,
             Falling
         }
+
+        [System.Serializable]
+        public struct RigidbodyData
+        {
+            public Vector3 velocity;
+            public Vector3 angularVelocity;
+            public float mass;
+            public float drag;
+            public float angularDrag;
+            public bool useGravity;
+            public bool isKinematic;
+            public RigidbodyInterpolation interpolation;
+            public CollisionDetectionMode collisionDetectionMode;
+        }
+
     }
 }

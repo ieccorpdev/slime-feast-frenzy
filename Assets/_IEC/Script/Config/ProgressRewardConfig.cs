@@ -20,6 +20,11 @@ namespace IEC
             return listRewardData[index];
         }
 
+        public bool IsCompleteReward(int currentIndex)
+        {
+            return currentIndex >= listRewardData.Count;
+        }
+
         public Sprite GetRewardSprite(ResourceType rewardType)
         {
             return listRewardSprite.FirstOrDefault(x => x.rewardType == rewardType)?.icon;

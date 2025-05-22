@@ -1,4 +1,5 @@
-﻿using _IEC.Features.Common.Extension;
+﻿using System;
+using _IEC.Features.Common.Extension;
 using IEC;
 using UnityEngine;
 using UnityEngine.UI;
@@ -19,7 +20,12 @@ namespace _IEC.Features.Gameplay
         private Transform m_HoleTransform;
         private State m_CurrentState;
         private float m_ScreenWidth;
-        
+        private float baseIconRotate;
+
+        public void Awake()
+        {
+            baseIconRotate = imgIcon.transform.localEulerAngles.z;
+        }
 
         public void LoadData(Transform holeTransform, BaseItem item)
         {
@@ -68,7 +74,6 @@ namespace _IEC.Features.Gameplay
         
         private void UpdateCurrentState()
         {
-           
             switch (m_CurrentState)
             {
                 case State.None:
@@ -76,8 +81,9 @@ namespace _IEC.Features.Gameplay
                 case State.OutScreen:
                     var dir = m_BaseItem.transform.position - m_HoleTransform.transform.position;
                     var angle = Vector3.SignedAngle(Vector3.right * dir.x + Vector3.forward * dir.z,Vector3.right,Vector3.up);
-                    transform.localEulerAngles = Vector3.forward * (angle - 90 + angleOffset);
-                    //Debug.Log("Angle: " + angle);
+                    var trueAngle = angle - 90 + angleOffset;
+                    transform.localEulerAngles = Vector3.forward * trueAngle;
+                    imgIcon.transform.localEulerAngles =  Vector3.forward * (baseIconRotate - trueAngle);
                     if (dir.x > 0)
                     {
                         SnapRight();
@@ -97,17 +103,6 @@ namespace _IEC.Features.Gameplay
             }
         }
 
-        private void UpdateAnchorPositionY(Vector3 dir)
-        {
-            var y = dir.z / heightRectMap;
-            if (y > 1) y = 1;
-            if (y < -1) y = -1;
-            y = y * parentRectTransform.sizeDelta.y/2;
-            var currentAnchorPos = rectTransform.anchoredPosition;
-            currentAnchorPos.y = y;
-            rectTransform.anchoredPosition = currentAnchorPos;
-        }
-
         private void SnapRight()
         {
             var currentAnchorPosition = rectTransform.anchoredPosition;
@@ -119,6 +114,14 @@ namespace _IEC.Features.Gameplay
             var currentAnchorPosition = rectTransform.anchoredPosition;
             rectTransform.anchoredPosition = new Vector2(-m_ScreenWidth/2 + rectTransform.sizeDelta.x/2 + 50f, currentAnchorPosition.y);
         }
+        private void UpdateAnchorPositionY(Vector3 dir)
+        {
+            Vector2 normalizedDir = new Vector2(dir.x, dir.z).normalized;
+            float radius = (m_ScreenWidth-rectTransform.sizeDelta.magnitude)/2;
+            Vector2 anchoredPosition = normalizedDir * radius;
+            rectTransform.anchoredPosition = anchoredPosition;
+        }
+
         
         private void ChangeState(State newState)
         {

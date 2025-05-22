@@ -14,12 +14,13 @@ namespace IEC
         public float minSpawnSize, maxSpawnSize;
         public List<SpecialObjectSpawnData> listSpecialObjectSpawnData = new();
         public List<ItemDefinition> listSpecialItemDefinition = new();
-
+        [Header("Gold Level")] 
+        public ItemDefinition goldSpecialObjective;
         public int GetSpawnAmount(int level)
         {
             var spawnData = listSpecialObjectSpawnData
                 .OrderBy(data => data.levelStartSpawn)
-                .FirstOrDefault(data => data.levelStartSpawn <= level);
+                .LastOrDefault(data => data.levelStartSpawn <= level);
 
             return spawnData?.GetSpawnAmount() ?? 0;
         }

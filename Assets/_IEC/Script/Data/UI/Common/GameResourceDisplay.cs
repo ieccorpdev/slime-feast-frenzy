@@ -9,6 +9,7 @@ public class GameResourceDisplay : MonoBehaviour
 {
     public GameObject darkBG;
     public Canvas canvas;
+    public GameObject playerAvatar;
     public List<UICurrency> listResourceDisplay = new();
     
     private List<UIMoveOutAnimation> _listObjMoveOut = new();
@@ -37,6 +38,7 @@ public class GameResourceDisplay : MonoBehaviour
             //darkBG.SetActive(false);
             canvas.sortingOrder = 1000;
         }
+        playerAvatar.SetActive(isShow);
         foreach (var display in listResourceDisplay)
         {
             display.gameObject.SetActive(isShow);
@@ -73,7 +75,7 @@ public class GameResourceDisplay : MonoBehaviour
         }
     }
 
-    private void SetAllObjPosOut()
+    public void SetAllObjPosOut()
     {
         foreach (var obj in _listObjMoveOut)
         {

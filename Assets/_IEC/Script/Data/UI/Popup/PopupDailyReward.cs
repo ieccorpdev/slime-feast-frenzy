@@ -9,13 +9,12 @@ namespace _IEC
 {
     public class PopupDailyReward : BasePopup
     {
-        public DailyRewardProgressBar progressBar;
-        public RewardButton mainReward;
-        public RewardButton[] adRewards;
+        //public DailyRewardProgressBar progressBar;
+        public RewardButton[] dailyReward;
 
         public TextMeshProUGUI dailyCountdownText;
 
-        public int CurrentAdReward { get; private set; } = 0;
+        public int CurrentDayReward { get; private set; } = 0;
 
         public int CurrentGoldClaimed { get; private set; } = 0;
 
@@ -25,80 +24,45 @@ namespace _IEC
         {
             get
             {
-                for (int i = 0; i < adRewards.Length; i++)
-                {
-                    if (!PlayerData.adRewardsClaimed.ContainsKey(i))
-                        return true;
-                }
-                return !PlayerData.claimMainReward;
-                //if (PlayerData.mainRewardCooldownTickTime - DateTime.Now.Ticks <= 0)
-                //    return true;
-                ///return false;
+                // for (int i = 0; i < dailyReward.Length; i++)
+                // {
+                //     if (!PlayerData.dailyRewardsClaimed.ContainsKey(i))
+                //         return true;
+                // }
+                // return false;
+
+                return !PlayerData.dailyRewardsClaimed[PlayerData.currentDailyAdReward];
             }
         }
-
         private void OnEnable()
         {
-            foreach (var btn in adRewards)
+            foreach (var btn in dailyReward)
             {
-                btn.onClaim += OnAdRewardClaim;
+                btn.onClaim += OnRewardClaim;
             }
 
-            mainReward.onClaim += OnMainRewardClaim;
         }
-        
-        
 
         private void OnDisable()
         {
-            foreach (var btn in adRewards)
+            foreach (var btn in dailyReward)
             {
-                btn.onClaim -= OnAdRewardClaim;
+                btn.onClaim -= OnRewardClaim;
             }
             
-            mainReward.onClaim -= OnMainRewardClaim;
         }
 
         private void Update()
         {
             if (!IsShow)
                 return;
-            
-            UpdateDailyRewardCountdown();
-        }
-
-        void OnAdRewardClaim(RewardButton btn)
-        {
-            PlayerData.adRewardsClaimed[CurrentAdReward] = true;
-            CurrentAdReward++;
-            PlayerData.currentDailyAdReward = CurrentAdReward;
-            UpdateAdRewards();
-            progressBar.UpdateProgressBar();
-            
-            if(btn.Reward == ResourceType.Gold)
-                CurrentGoldClaimed += btn.RewardAmount;
-
-            if (!listRewardByType.TryAdd(btn.Reward, btn.RewardAmount))
-            {
-                listRewardByType[btn.Reward] += btn.RewardAmount;
-            }
-            
-            EventController.RaiseEvent(EventList.SAVE_DATA);
-        }
-
-        void OnMainRewardClaim(RewardButton btn)
-        {
-            PlayerData.claimMainReward = true;
-            if (!listRewardByType.TryAdd(btn.Reward, btn.RewardAmount))
-            {
-                listRewardByType[btn.Reward] += btn.RewardAmount;
-            }
-            EventController.RaiseEvent(EventList.SAVE_DATA);
+            //UpdateDailyRewardCountdown();
         }
 
         public override void Show()
         {
             base.Show();
+            PlayerData.CheckResetDailyReward();
             UpdateUI();
 
             CurrentGoldClaimed = 0;
@@ -109,8 +73,7 @@ namespace _IEC
             base.Hide();
             //UpdatePlayerGold();
             Locator.Main.HomeScreenTab.UpdateMainHome();
-
-            SpawnClaimRewardEffect();
+            //SpawnClaimRewardEffect();
         }
 
         private void SpawnClaimRewardEffect()
@@ -123,77 +86,65 @@ namespace _IEC
             listRewardByType.Clear();
         }
 
-        void UpdatePlayerGold()
-        {
-            Vector2 pos = new Vector2(0, -1250);
-            //GoldGroup goldGroup = UI.GetGoldGroup();
-            //goldGroup.EffectCoinClaim(pos, CurrentGoldClaimed, PlayerData.gold, () =>
-            //{
-            //    goldGroup.UpdateGold();
-            //});
-        }
 
         void UpdateUI()
         {
-            CurrentAdReward = PlayerData.currentDailyAdReward;
-            //mainReward.SetButtonState(RewardButtonState.Available);
-            mainReward.UpdateButton(Config.dataDailyRewardConfig.mainReward);
-            UpdateAdRewards();
-            progressBar.UpdateProgressBar();
+            foreach (var btn in dailyReward)
+            {
+                btn.ResetButton();
+            }
+            CurrentDayReward = PlayerData.currentDailyAdReward;
+            UpdateRewards();
+            //progressBar.UpdateProgressBar();
         }
 
-        void UpdateAdRewards()
+        void UpdateRewards()
         {
-            for (int i = 0; i < adRewards.Length; i++)
+            for (int i = 0; i < dailyReward.Length; i++)
             {
-                //if (adRewards[i].RewardClaimed)
-                adRewards[i].UpdateButton(Config.dataDailyRewardConfig.dailyRewards[i]);
-                adRewards[i].id = (i+1).ToString();
-                if (PlayerData.adRewardsClaimed.ContainsKey(i) && PlayerData.adRewardsClaimed[i] && i <= CurrentAdReward)
+                //multiple reward
+                dailyReward[i].id = (i+1);
+                dailyReward[i].SetDataButton(Config.dataDailyRewardConfig.dailyRewards[i].rewards);
+                if (PlayerData.dailyRewardsClaimed[i] && i <= CurrentDayReward)
                 {
-                    adRewards[i].SetButtonState(RewardButtonState.Claimed);
+                    dailyReward[i].SetButtonState(RewardButtonState.Claimed);
                     continue;
                 }
-                    
-                if (i <= CurrentAdReward)
+                
+                if (i <= CurrentDayReward && CanClaimReward())
                 {
-                    adRewards[i].SetButtonState(RewardButtonState.Available);
+                    dailyReward[i].SetButtonState(RewardButtonState.Available);
                 }
                 else
                 {
-                    adRewards[i].SetButtonState(RewardButtonState.Unavailable);
+                    dailyReward[i].SetButtonState(RewardButtonState.Unavailable);
                 }
             }
-            mainReward.SetButtonState(PlayerData.claimMainReward ? RewardButtonState.Claimed : RewardButtonState.Available);
         }
-
+        void OnRewardClaim(RewardButton btn)
+        {
+            PlayerData.dailyRewardsClaimed[CurrentDayReward] = true;
+            CurrentDayReward++;
+            PlayerData.currentDailyAdReward = CurrentDayReward;
+            PlayerData.lastTimeOpenDailyReward = DateTime.Now;
+            UpdateRewards();
+            EventController.RaiseEvent(EventList.SAVE_DATA);
+        }
         void UpdateDailyRewardCountdown()
         {
             string endTime = "";
             PlayerData.GetEndTimeDay(out endTime);
             dailyCountdownText.text = $"Reset in " + endTime;
-            
-            if(PlayerData.lastTimeOpenDailyReward != DateTime.Today)
-                OnResetDailyReward();
         }
 
-        void OnResetDailyReward()
+        public bool CanClaimReward()
         {
-            PlayerData.currentDailyAdReward = 0;
-            PlayerData.adRewardsClaimed.Clear();
-            PlayerData.claimMainReward = false;
-            
-            PlayerData.lastTimeOpenDailyReward = DateTime.Today;
-            EventController.RaiseEvent(EventList.SAVE_DATA);
-            
-            mainReward.ResetButton();
-            foreach (var btn in adRewards)
-            {
-                btn.ResetButton();
-            }
-            mainReward.ResetButton();
-            UpdateUI();
+            // next day or next moth can claim
+            return PlayerData.lastTimeOpenDailyReward.Day != DateTime.Now.Day 
+                   || PlayerData.lastTimeOpenDailyReward.Month != DateTime.Now.Month
+                   || PlayerData.lastTimeOpenDailyReward.Year != DateTime.Now.Year;
         }
+
     }
     
 }

@@ -1,0 +1,240 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 781c5459e2348c847808fa92e7ed3756, type: 3}
+  m_Name: Star Chase
+  m_EditorClassIdentifier: 
+  levelUnlock: 25
+  eventType: 0
+  eventDurationInHours: 24
+  timeUpdateEventProgressInHours: 0.33333334
+  updateEventAfterPlayerWinLevel: 0
+  listDisplaySprites:
+  - normalFrameSprite: {fileID: 21300000, guid: 991551b0599a3244091bfce0e5d0a276,
+      type: 3}
+    normalProgressFrameSprite: {fileID: 21300000, guid: bea5581204f801c45b4c44cb8a3807bc,
+      type: 3}
+    mainPlayerFrameSprite: {fileID: 21300000, guid: 9007d83a45a97fd4f91adafb625c6f30,
+      type: 3}
+    mainPlayerProgressFrameSprite: {fileID: 21300000, guid: 7d3bf4590359010419265eb53c1c3de6,
+      type: 3}
+    listRankSprites:
+    - {fileID: 21300000, guid: f61609f6102149f489d1e79ca8f7d1de, type: 3}
+    - {fileID: 21300000, guid: 2a52eda60b92fc742b2127c48d5f015a, type: 3}
+    listRewardButtonSprites:
+    - {fileID: 21300000, guid: 760840b9588ac6b4e9a1ca88989ccc27, type: 3}
+    - {fileID: 21300000, guid: 42fb9567dc882c346855c1e226826361, type: 3}
+    - {fileID: 21300000, guid: aa5d1f2de73b6a448bbf93ada488bdeb, type: 3}
+    - {fileID: 21300000, guid: db356184ad292814d9bb09a78192df76, type: 3}
+  - normalFrameSprite: {fileID: 21300000, guid: c33498fcab469704982f11fdf6d1c114,
+      type: 3}
+    normalProgressFrameSprite: {fileID: 21300000, guid: 441595346ef453e4ea06b962bcdcf878,
+      type: 3}
+    mainPlayerFrameSprite: {fileID: 21300000, guid: d774030db729ede4487f5b02c5ed28b9,
+      type: 3}
+    mainPlayerProgressFrameSprite: {fileID: 21300000, guid: 661fd810c9085974fa9ca2b7fa51b8d4,
+      type: 3}
+    listRankSprites:
+    - {fileID: 21300000, guid: a25401ed6aad6a5499062835d730bb3f, type: 3}
+    - {fileID: 21300000, guid: dc9c8ba37e504ca47ab0310da94783b2, type: 3}
+    - {fileID: 21300000, guid: 458d8f1ab94cfe7459378b7971e800f4, type: 3}
+    listRewardButtonSprites: []
+  listEventData:
+  - eventTarget: 0
+    listEventBotData:
+    - baseSpeed: 617
+      speedRange: 0.15
+    - baseSpeed: 625
+      speedRange: 0.15
+    - baseSpeed: 634
+      speedRange: 0.15
+    - baseSpeed: 643
+      speedRange: 0.15
+    - baseSpeed: 652
+      speedRange: 0.15
+    - baseSpeed: 661
+      speedRange: 0.15
+    - baseSpeed: 671
+      speedRange: 0.15
+    - baseSpeed: 882
+      speedRange: 0.15
+    - baseSpeed: 917
+      speedRange: 0.15
+    - baseSpeed: 954
+      speedRange: 0.3
+    - baseSpeed: 995
+      speedRange: 0.3
+    - baseSpeed: 1040
+      speedRange: 0.3
+    - baseSpeed: 1089
+      speedRange: 0.3
+    - baseSpeed: 1143
+      speedRange: 0.3
+    - baseSpeed: 1202
+      speedRange: 0.3
+    - baseSpeed: 1268
+      speedRange: 0.3
+    - baseSpeed: 1342
+      speedRange: 0.3
+    - baseSpeed: 1424
+      speedRange: 0.3
+    - baseSpeed: 1518
+      speedRange: 0.3
+    - baseSpeed: 1624
+      speedRange: 0.3
+    - baseSpeed: 1747
+      speedRange: 0.3
+    - baseSpeed: 3086
+      speedRange: 0.3
+    - baseSpeed: 3192
+      speedRange: 0.3
+    - baseSpeed: 3306
+      speedRange: 0.3
+    - baseSpeed: 3429
+      speedRange: 0.3
+    - baseSpeed: 3560
+      speedRange: 0.3
+    - baseSpeed: 3703
+      speedRange: 0.3
+    - baseSpeed: 3857
+      speedRange: 0.5
+    - baseSpeed: 4025
+      speedRange: 0.5
+    - baseSpeed: 4208
+      speedRange: 0.5
+    - baseSpeed: 4408
+      speedRange: 0.5
+    - baseSpeed: 4629
+      speedRange: 0.5
+    - baseSpeed: 4872
+      speedRange: 0.5
+    - baseSpeed: 5143
+      speedRange: 0.5
+    - baseSpeed: 5445
+      speedRange: 0.5
+    - baseSpeed: 5786
+      speedRange: 0.5
+    - baseSpeed: 6171
+      speedRange: 0.5
+    - baseSpeed: 6612
+      speedRange: 0.5
+    - baseSpeed: 7121
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 9257
+      speedRange: 0.5
+    - baseSpeed: 11571
+      speedRange: 0.5
+    - baseSpeed: 18514
+      speedRange: 0.5
+    - baseSpeed: 30857
+      speedRange: 1
+    - baseSpeed: 46286
+      speedRange: 1
+    - baseSpeed: 92571
+      speedRange: 1
+    listEventRewardData:
+    - rankStartReward: 1
+      rankEndReward: 1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 500
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 6
+        rewardAmount: 1
+      - typeReward: 4
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 14
+        rewardAmount: 3
+      - typeReward: 13
+        rewardAmount: 3
+      - typeReward: 3
+        rewardAmount: 180
+    - rankStartReward: 2
+      rankEndReward: 2
+      listReward:
+      - typeReward: 0
+        rewardAmount: 200
+      - typeReward: 5
+        rewardAmount: 1
+      - typeReward: 4
+        rewardAmount: 1
+      - typeReward: 14
+        rewardAmount: 2
+      - typeReward: 13
+        rewardAmount: 2
+      - typeReward: 3
+        rewardAmount: 60
+    - rankStartReward: 3
+      rankEndReward: 3
+      listReward:
+      - typeReward: 0
+        rewardAmount: 100
+      - typeReward: 6
+        rewardAmount: 1
+      - typeReward: 7
+        rewardAmount: 1
+      - typeReward: 14
+        rewardAmount: 1
+      - typeReward: 13
+        rewardAmount: 1
+      - typeReward: 3
+        rewardAmount: 45
+    - rankStartReward: 4
+      rankEndReward: 10
+      listReward:
+      - typeReward: 0
+        rewardAmount: 50
+      - typeReward: 14
+        rewardAmount: 1
+      - typeReward: 13
+        rewardAmount: 1
+      - typeReward: 3
+        rewardAmount: 30
+    - rankStartReward: 11
+      rankEndReward: -1
+      listReward:
+      - typeReward: 0
+        rewardAmount: 10
+  listTitleData:
+  - rankStartReward: 1
+    rankEndReward: 1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 173c0bbaad9aabb47b028723a23302db,
+      type: 3}
+    claimRewardSubtitleText: 'You''re the best star chaser
+
+      this time!'
+  - rankStartReward: 2
+    rankEndReward: 10
+    claimRewardTitleSprite: {fileID: 21300000, guid: f3b97e2f9d622a545a90c8e9cf873564,
+      type: 3}
+    claimRewardSubtitleText: 'You ranked {0} in this
+
+      star chase!'
+  - rankStartReward: 11
+    rankEndReward: -1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 224b27af13538a74db086a59d9431995,
+      type: 3}
+    claimRewardSubtitleText: Join the fun next time!
+  csv1: https://docs.google.com/spreadsheets/d/1tyEl45QPe1oH8uTK4RoDM7uq7_mWkaTIlz0mq1MPNl4/edit?gid=0#gid=0
+  csv2: 

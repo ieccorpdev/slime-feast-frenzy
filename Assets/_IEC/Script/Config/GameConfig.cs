@@ -21,6 +21,7 @@ namespace IEC
         public int goldToAddOneLife = 200;
         public int goldLevelWin = 10;
         public int levelWinBackHome = 10;
+        public int levelShowRating = 22;
         [Header("Encrypted, Target by Name")]
         public string levelConfigName;
         public LevelConfig levelConfig;
@@ -74,6 +75,9 @@ namespace IEC
 
         [Header("Booster")] 
         public AllBoosterConfig AllBoosterConfig;
+
+        [Header("Game Event")] 
+        public AllGameEventConfig AllGameEventConfig;
 
         public void PreloadAllConfig()
         {

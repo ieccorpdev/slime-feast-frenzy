@@ -1,5 +1,3 @@
-using System;
-using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
 using TMPro;
@@ -10,13 +8,12 @@ namespace _IEC
 {
     public class PopupOutOfLive : BasePopup
     {
-        public Button refillBtn, adsMoreLifeBtn, closeNBtn;
-        public TextMeshProUGUI goldRefillTMP, timeNextLifeTMP;
+        public Button refillBtn, adsMoreLifeBtn, closeNBtn, refillBtnOld;
+        public TextMeshProUGUI goldRefillTMP, timeNextLifeTMP, goldRefillTMPOld;
         public TextMeshProUGUI playerLifeText;
         public TextMeshProUGUI playerLifeAddWithGoldText;
-        public RectTransform countdownGroup, fullGroup;
+        public RectTransform countdownGroup, fullGroup, groupBtnRefill;
         private bool InClose;
-        Vector2 pos = new Vector2(300, -1250);
 
         private bool IsRaiseToMaxLife = false;
 
@@ -24,7 +21,10 @@ namespace _IEC
         {
             base.Awake();
             refillBtn.onClick.AddListener(OnClickButtonRefill);
+            refillBtnOld.onClick.AddListener(OnClickButtonRefill);
             adsMoreLifeBtn.onClick.AddListener(OnClickButtonAdsMoreLife);
+            groupBtnRefill.gameObject.SetActive(Game.isUsingBtnAdsMoreLife);
+            refillBtnOld.gameObject.SetActive(!Game.isUsingBtnAdsMoreLife);
         }
 
         void OnClickButtonRefill()
@@ -44,7 +44,9 @@ namespace _IEC
                 // });
                 Hide();
                 //EventController.RaiseEvent(EventList.GamePlay.GAME_INIT, new EventParam() { p0 = GameController.GameType.NormalLevel });
-            }, null);
+            }, null
+            ,default
+            , 60);
         }
 
         void OnRequestRefill(bool success)
@@ -85,6 +87,7 @@ namespace _IEC
         void Update()
         {
             timeNextLifeTMP.text = PlayerData.GetTimeToNextLife();
+            UpdateUI();
         }
         public override void Show()
         {
@@ -94,11 +97,13 @@ namespace _IEC
         }
         void SetupData()
         {
+            isShowTopResourceBar = true;
             IsRaiseToMaxLife = true;
             InClose = false;
             closeNBtn.onClick.RemoveAllListeners();
             closeNBtn.onClick.AddListener(OnCloseButton);
             goldRefillTMP.text = IsRaiseToMaxLife ? Config.goldToRefill.ToString() : Config.goldToAddOneLife.ToString();
+            goldRefillTMPOld.text = goldRefillTMP.text;
             playerLifeAddWithGoldText.text = IsRaiseToMaxLife ? "+5" : "+1";
             //refillBtn.image.sprite = PlayerData.gold >= Config.goldToRefill ? spriteCanBuy : spriteOutOfGold;
             //StartAnim();

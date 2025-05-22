@@ -22,8 +22,31 @@ namespace _IEC.Features.Gameplay
         public Color dangerousTimeColor;
         public Color warningTimeColor;
         public Color safeTimeColor;
-        
 
+        public float ItemDrag = 2;
+        public float ItemAngularDrag = 4;
+        [Header("SplashEffect")]
+        public float amplitude = 0f;
+        public float damping = 0.8f;
+        public float frequency = 1.0f;
+        public float minAmplitude = 0.01f;
+        public float amplitudeSmoothSpeed = 5f;
+        public float sizeAmplitudeMultiplier = 1f;
+        public float sizeMovementLimitMultiplier = 1f;
+        [Header("LevelCustom")]
+        public LevelTimeBonusData levelTimeBonusData;
+        //public List<CustomLevelData> customLevelExpands;
+
+        public int GetTimeLevelExpand(int level)
+        {
+            return levelTimeBonusData.GetBonusForLevel(level);
+            //var dataLevelExpand = customLevelExpands.Find(x => x.level == level);
+            //if (dataLevelExpand != null)
+            //{
+            //    return dataLevelExpand.timeExpand;
+            //}
+            //return 0;
+        }
         public bool IsHelperUnlocked(HelperId helperId)
         {
             return PlayerData.level >= GetUnlockLevelHelper(helperId);
@@ -59,7 +82,7 @@ namespace _IEC.Features.Gameplay
 
         public string GetUnlockCondition(HelperId helperId)
         {
-            return "Lv." + GetUnlockLevelHelper(helperId);
+            return "" + GetUnlockLevelHelper(helperId);
         }
 
         public Color GetTimeColorByRemainingTimeState(GameplayTimer.RemainingTimeState remainingTimeState)
@@ -101,5 +124,11 @@ namespace _IEC.Features.Gameplay
         public int unlockLevel;
         public int price;
         public int numberBuyingResult;
+    }
+    [System.Serializable]
+    public class CustomLevelData
+    {
+        public int level;
+        public int timeExpand;
     }
 }

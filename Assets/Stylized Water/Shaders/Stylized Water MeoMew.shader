@@ -353,8 +353,11 @@ float4 frag (v2f i) : SV_Target
 
         // Apply wave height undulation and rotation.
         float waveHeight = GetWaveHeight(rotatedUV) * 2.0; // Increase wave height amplitude
+        #if !UNITY_EDITOR
         i.worldPosition.y -= waveHeight * (1.0 - distance / _WhirlpoolRadius); // Move downwards
-
+        #else
+        i.worldPosition.y -= waveHeight * (distance / _WhirlpoolRadius); // Move downwards
+        #endif
         // Change color based on distance to the center
         float3 innerColor = lerp(_DeepColor, _FarColor, distance / _WhirlpoolRadius);
         float3 middleColor = lerp(_ShallowColor, _DeepColor, distance / _WhirlpoolRadius);

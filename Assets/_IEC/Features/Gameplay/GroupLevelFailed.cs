@@ -40,7 +40,9 @@ namespace _IEC.Features.Gameplay
             SetEvent(homeButton, () =>
             {
                 //SoundController.PlayExitBtnAudio();
-                GameController.OpenScene(GameScene.Main);
+                OnClose?.Invoke();
+                //GameController.OpenScene(GameScene.Main);
+                EventController.RaiseEvent(EventList.Audio.ACTIVE_BUTTON_CLICK);
             });
         }
         

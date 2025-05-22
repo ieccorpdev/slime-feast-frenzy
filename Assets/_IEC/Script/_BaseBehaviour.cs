@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using IEC.Wind.Leaderboard;
 using UnityEngine;
 
 namespace IEC
@@ -47,7 +46,5 @@ namespace IEC
         }
         //("LeaderBoard")
         protected static LeaderboardController LeaderboardController => Controllers.Get<LeaderboardController>();
-        protected static LeaderboardConfig LeaderboardConfig => Pool.Get<LeaderboardConfig>();
-        protected static LeaderboardSaveData LeaderboardData => Pool.Get<LeaderboardSaveData>();
     }
 }

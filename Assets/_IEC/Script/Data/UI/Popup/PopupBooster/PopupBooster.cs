@@ -29,6 +29,9 @@ namespace IEC
         [Header("Info panel")]
         public GameObject infoPanel;
 
+        public GameEventInfoBar starChaseInfoBar;
+        public GameEventInfoBar sharkRaceInfoBar;
+
         public List<GameObject> listInfoObjects = new();
 
         public Sequence showInfoSequence;
@@ -51,6 +54,32 @@ namespace IEC
             
             UpdateBoosterButton();
             UpdateStreakDisplay();
+
+            CheckShowGameEventInfoBar();
+        }
+
+        private void CheckShowGameEventInfoBar()
+        {
+            sharkRaceInfoBar.gameObject.SetActive(false);
+            starChaseInfoBar.gameObject.SetActive(false);
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            {
+                if (!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0)
+                {
+                    sharkRaceInfoBar.gameObject.SetActive(true);
+                    starChaseInfoBar.gameObject.SetActive(false);
+                    sharkRaceInfoBar.SetupData();
+                }
+            }
+            // else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)
+            // {
+            //     if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
+            //     {
+            //         starChaseInfoBar.gameObject.SetActive(true);
+            //         sharkRaceInfoBar.gameObject.SetActive(false);
+            //         starChaseInfoBar.SetupData();
+            //     }
+            // }
         }
 
         protected override void OnHideClick()
@@ -78,8 +107,14 @@ namespace IEC
         {
             levelUnlockStreak.text ="Unlock at lv."+ Config.AllBoosterConfig.levelUnlockStreak.ToString();
             streakLockObj.SetActive(PlayerData.level < Config.AllBoosterConfig.levelUnlockStreak);
-            streakUnlockObj.SetActive(PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak);
-
+            bool isUnlockFeature = PlayerData.level >= Config.AllBoosterConfig.levelUnlockStreak;
+            streakUnlockObj.SetActive(isUnlockFeature);
+            if (isUnlockFeature && PlayerData.currentBoosterStreak == 0 && !PlayerData.wasAddFirstTime)
+            {
+                //MeoMew fix Task #67920, unlock first phase
+                PlayerData.currentBoosterStreak = 1;
+                PlayerData.wasAddFirstTime = true;
+            }
             for (int i = 0; i < streakDisplayObject.Count; i++)
             {
                 streakDisplayObject[i].gameObject.SetActive(i <= PlayerData.currentBoosterStreak - 1);

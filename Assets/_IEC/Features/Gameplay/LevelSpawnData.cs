@@ -11,6 +11,18 @@ namespace _IEC.Features.Gameplay
     {
         public List<ItemSpawn> listItemSpawns;
 
+        [Button]
+        public void SetAllSpawnDataKinematic()
+        {
+            foreach (var item in listItemSpawns)
+            {
+                foreach (var data in item.listSpawnDatas)
+                {
+                    data.kinematic = true;
+                }
+            }
+        }
+
         public void CloneTo(LevelSpawnData spawnData)
         {
             spawnData.listItemSpawns = new(listItemSpawns);

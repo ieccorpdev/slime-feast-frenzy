@@ -31,9 +31,16 @@ namespace IEC
 
         public void Play()
         {
+            gameObject.SetActive(true);
             audioSource.clip = GetRandomAudioClip();
-            if (!audioSource.isPlaying)
+            if (Info.isPlayMultiple)
+            {
+                audioSource.PlayOneShot(audioSource.clip);
+            }
+            else
+            {
                 audioSource.Play();
+            }
         }
 
         public void PlayOnLoop()
@@ -85,6 +92,7 @@ namespace IEC
         public void Stop()
         {
             audioSource.Stop();
+            gameObject.SetActive(false);
         }
 
         public void SetMute(bool isMute)

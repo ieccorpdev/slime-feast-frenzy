@@ -65,6 +65,11 @@ namespace IEC
             countText.text = PlayerData.GetPlayerCurrencyCount(boosterType).ToString();
             bgImage.sprite = Config.AllBoosterConfig.GetBgSprite(State);
             levelLockText.text ="Lvl." + BoosterData.levelUnlock.ToString();
+            
+            if (PlayerData.level >= BoosterData.levelUnlock && PlayerData.CheckUnlockBooster(boosterType))
+            {
+                PlayerData.AddCurrency(boosterType, Config.popupAddHelperConfig.GetAddHelperData(boosterType).addGoldAmount);
+            }
         }
 
         private void CheckCurrentState(bool isCheckOnClick = false)
@@ -79,7 +84,14 @@ namespace IEC
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) > 0)
             {
-                if(State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
+                if (State != BoosterBaseState.Using || (State == BoosterBaseState.Using && !isCheckOnClick))
+                {
+                    State = BoosterBaseState.Usable;
+                }
+                    
+                if(State == BoosterBaseState.Using && isCheckOnClick)
+                    State = BoosterBaseState.Usable;
+                if(State == BoosterBaseState.Using && isCheckOnClick)
                     State = BoosterBaseState.Usable;
             }
             else if (PlayerData.GetPlayerCurrencyCount(boosterType) == 0)
@@ -103,6 +115,11 @@ namespace IEC
                 return;
 
             unlimitedTimeText.text = PlayerData.GetTimeLeftUnlimitedBooster(boosterType);
+
+            if (!PlayerData.IsUnlimitedBooster(boosterType))
+            {
+                Setup();
+            }
         }
     }
     

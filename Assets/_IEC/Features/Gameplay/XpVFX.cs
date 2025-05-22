@@ -20,14 +20,17 @@ namespace _IEC.Features.Gameplay
         {
             rectTransform.anchoredPosition = position;
         }
-        public void Show(int xp)
+
+        public void SetTargetColor(Color color)
+        {
+            targetColor = color;
+        }
+
+        public void Show(int xp, float size = 1f)
         {
             textUI.text = $"+{xp}";
             gameObject.SetActive(true);
-            //var currentAnchorPos = rectTransform.anchoredPosition;
-            //var targetAnchorPos = anchorPosOffset + currentAnchorPos;
-
-            rectTransform.localScale = Vector3.one;
+            rectTransform.localScale = Vector3.one * size;
 
             var currentAnchorPos = new Vector2(Random.Range(-50f, 50f), Random.Range(-20f, 20f));
 
@@ -51,6 +54,8 @@ namespace _IEC.Features.Gameplay
             gameObject.SetActive(false);
             rectTransform.localScale = Vector3.one;
             textUI.color = defaultColor;
+            targetColor = defaultColor;
+            rectTransform.localScale = Vector3.one;
         }
     }
 }

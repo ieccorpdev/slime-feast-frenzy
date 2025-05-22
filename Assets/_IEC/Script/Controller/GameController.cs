@@ -43,6 +43,12 @@ namespace IEC
                     Pool.Get<ConfettiGroup>().StopConfetti();
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
                     break;
+                case EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM:
+                    GamePlay.SetGameState(Locator.Game.ScreenInGame);
+                    OnNewGameDebugAllItems();
+                    Pool.Get<ConfettiGroup>().StopConfetti();
+                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,false);
+                    break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
@@ -57,6 +63,14 @@ namespace IEC
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
+
+                    if (PlayerData.level != PlayerData.levelLostStreak)
+                    {
+                        PlayerData.UpdatePlayerStat(
+                            PlayerGeneralStat.FirstTryWin
+                            , PlayerData.GetPlayerStat(PlayerGeneralStat.FirstTryWin) + 1);
+                    }
+                    
                     if(GamePlay.IsInLevelHard)
                         GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     else
@@ -121,8 +135,7 @@ namespace IEC
                 }
                 else
                 {
-                    OpenScene(GameScene.Main);
-                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
+                    OpenScene(GameScene.Main, () => EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME));
                 }
                 
                 //Check reset progress reward when player start game
@@ -142,6 +155,16 @@ namespace IEC
             GamePlay.SetGameState(Locator.Game.ScreenInGame);
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             PushPlayLevelEvent();
+        }
+
+        void OnNewGameDebugAllItems()
+        {
+            GamePlay.SetLevelDebugAllItems();
+            Locator.Game.ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
+            Locator.Game.ScreenInGame.Show();
+            GamePlay.StartGamePlay();
+            GamePlay.SetGameState(Locator.Game.ScreenInGame);
+            this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         }
 
         void OnNewGameHardLevel()
@@ -262,12 +285,19 @@ namespace IEC
                 {
                     Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
                     {
+#if UNITY_IOS
+
                         //if (scene != GameScene.Game)
                         {
                             onLoadDone?.Invoke();
                             if(raiseFirstEventScene) EventController.RaiseEvent(sceneName);
                         }
+#endif
                     });
+#if UNITY_ANDROID
+                    onLoadDone?.Invoke();
+                    if (raiseFirstEventScene) EventController.RaiseEvent(sceneName);
+#endif
                 });
             }
         }
