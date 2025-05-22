@@ -34,9 +34,9 @@ namespace IEC
         {
             base.InitEvent();
             
-            if (!PlayerData.isShownPopupStartSharkRace)
+            if (!PlayerData.isShownPopupStartStarChase)
             {
-                PlayerData.isShownPopupStartSharkRace = true;
+                PlayerData.isShownPopupStartStarChase = true;
             }
         }
     }
