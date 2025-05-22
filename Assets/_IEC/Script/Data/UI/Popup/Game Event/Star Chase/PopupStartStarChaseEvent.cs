@@ -24,10 +24,10 @@ namespace IEC
                 {
                     Locator.Main.PopupStarChase.Show();
                 }
-                else
-                {
-                    Locator.Main.PopupStarChase.InitEvent();
-                }
+                // else
+                // {
+                //     Locator.Main.PopupStarChase.InitEvent();
+                // }
 
                 OnHideClick();
             });
