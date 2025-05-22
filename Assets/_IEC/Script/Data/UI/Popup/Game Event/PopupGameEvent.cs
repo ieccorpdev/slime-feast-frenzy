@@ -281,16 +281,20 @@ namespace IEC
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
 
+            var titleData = _eventConfig.GetRewardTitleData(playerRank);
+
             if (eventRewardData != null && eventRewardData.listReward.Count > 0)
             {
+                string subtitle = String.Format(titleData.claimRewardSubtitleText, ClaimBonusRewardPanel.GetOrdinal(playerRank));
+                Locator.Main.ClaimBonusRewardPanel.SetupTempTitle(titleData.claimRewardTitleSprite, subtitle);
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
                     {
                         listDataReward = new List<Reward>(eventRewardData.listReward),
                     });
 
-                Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
-                {
+                // Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
+                // {
                     // if (stage != -1)
                     // {
                     //     // StartNewEventStage(stage);
@@ -300,7 +304,7 @@ namespace IEC
                     // }
                     // else
                         // Hide();
-                });
+                // });
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
