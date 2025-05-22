@@ -1588,7 +1588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0.00856781, y: 57.104538}
+  m_AnchoredPosition: {x: 0.00856781, y: 61.4}
   m_SizeDelta: {x: 82, y: 74.19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1631334360887618457
@@ -1646,12 +1646,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50
+  m_fontSize: 45
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 50
+  m_fontSizeMax: 45
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -8814,6 +8814,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3626825717729368709}
     m_Modifications:
+    - target: {fileID: 687361152302040782, guid: 328243e2e6db12649bfd37d623f4e873,
+        type: 3}
+      propertyPath: m_fontSize
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 687361152302040782, guid: 328243e2e6db12649bfd37d623f4e873,
+        type: 3}
+      propertyPath: m_fontSizeMax
+      value: 45
+      objectReference: {fileID: 0}
     - target: {fileID: 2689548647630969721, guid: 328243e2e6db12649bfd37d623f4e873,
         type: 3}
       propertyPath: m_Pivot.x
@@ -8919,6 +8929,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4793291426293555499, guid: 328243e2e6db12649bfd37d623f4e873,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6219117890005521840, guid: 328243e2e6db12649bfd37d623f4e873,
         type: 3}
       propertyPath: m_Name
@@ -8929,6 +8944,11 @@ PrefabInstance:
       propertyPath: buttonDisplayImage
       value: 
       objectReference: {fileID: 1985987354334128539}
+    - target: {fileID: 8707180644843805889, guid: 328243e2e6db12649bfd37d623f4e873,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 328243e2e6db12649bfd37d623f4e873, type: 3}
 --- !u!1 &1985987354334128539 stripped
