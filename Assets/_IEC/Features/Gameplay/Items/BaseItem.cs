@@ -414,10 +414,10 @@ namespace _IEC.Features.Gameplay
                }
             }
             //MeoMew disable, rb.velocity is heavy when call 1k object
-            //else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
-            //{
-            //    rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
-            //}
+            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
+            {
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
+            }
         }
 
         public void SetPosOnwater(TCP2_GetPosOnWater pow)
