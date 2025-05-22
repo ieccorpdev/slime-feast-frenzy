@@ -72,6 +72,8 @@ namespace _IEC.Features.Gameplay
             Observer.AddObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
         }
 
+        
+
         private void HandleLockedOnClick()
         {
             UpdateLockDescription();
@@ -411,6 +413,7 @@ namespace _IEC.Features.Gameplay
         {
             DOTween.Kill(imgIcon.GetInstanceID()+"_Shiny");
             DOTween.Kill(IconPunchScale);
+            Observer.RemoveObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
         }
 
         private enum  State
