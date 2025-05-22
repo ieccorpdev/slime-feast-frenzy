@@ -24,7 +24,7 @@ namespace IEC
         public SpineAnimOT shopIconSpine;
         public SpineAnimOT homeIconSpine;
         public SpineAnimOT leaderBoardIconSpine;
-        private float localPosIconOff = -35;
+        private float localPosIconOff = -72.48f;
         private void Start()
         {
             m_Btn.onClick.AddListener(()=>
@@ -82,8 +82,8 @@ namespace IEC
             //m_Icon.gameObject.SetActive(!isLock);
             if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
             m_Lock.SetActive(isLock);
-            if(isLock) m_Lock.transform.SetAsLastSibling();
-            
+            m_Lock.transform.localPosition = Vector3.up * -3f;
+            //if(isLock) m_Lock.transform.SetAsLastSibling();
         }
 
         public void SetActiveNoti(bool isShowNoti)

@@ -366,20 +366,13 @@ namespace IEC
             return true;
         }
 
-        protected virtual void CheckInitEventProgress()
+        public virtual int GetNextEventStageIndex()
         {
             if (_eventRankController == null)
             {
                 Init();
             }
             var data = _eventRankController.GetEventSaveData(eventType);
-            
-            if (data.listPlayerData.Count > 0 )
-            {
-                listPlayerData.Clear();
-                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
-            }
-            
             int stage = 0;
 
             if (IsEventMultipleStage && !IsEndEvent())
@@ -398,6 +391,25 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+
+            return stage;
+        }
+
+        protected virtual void CheckInitEventProgress()
+        {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            var data = _eventRankController.GetEventSaveData(eventType);
+            
+            if (data.listPlayerData.Count > 0 )
+            {
+                listPlayerData.Clear();
+                listPlayerData = new List<EventPlayerData>(data.listPlayerData);
+            }
+
+            int stage = GetNextEventStageIndex();
             
             if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
             {
@@ -482,7 +494,7 @@ namespace IEC
 
             var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
 
-            if ((timeToCheck - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
@@ -490,7 +502,7 @@ namespace IEC
 
                     if (!player.isPlayer)
                     {
-                        player.progress = Mathf.FloorToInt((float)(DateTime.Now - data.timeStart).TotalSeconds / player.speed);
+                        player.progress = Mathf.FloorToInt((float)(timeToCheck - data.timeStart).TotalSeconds / player.speed);
 
                         if (eventData.eventTarget > 0 && player.progress > eventData.eventTarget)
                             player.progress = eventData.eventTarget;

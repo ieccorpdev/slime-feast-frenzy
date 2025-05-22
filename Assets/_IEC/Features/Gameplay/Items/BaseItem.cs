@@ -90,7 +90,7 @@ namespace _IEC.Features.Gameplay
             {
                 if (collision.contactCount == 0) return;
                 if (hasSplashed) return;
-                float velocityY = lastVelocity.y;
+                float velocityY = rb.velocity.y;
                 float relVelocityY = collision.relativeVelocity.y;
                 if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
@@ -380,11 +380,11 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedLateUpdate()
         {
-            if (hasRigidbody)
-            {
-                lastVelocity = rb.velocity;
-            }
-
+            //if (hasRigidbody)
+            //{
+            //    //temporary keep, ugly if remove
+            //    lastVelocity = rb.velocity;
+            //}
             if (hasSpringOscillation)
             {
                 springOscillation.CheckSpringObject();
@@ -402,22 +402,22 @@ namespace _IEC.Features.Gameplay
             }
             if (!hasRigidbody)
             {
-               //if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
-               //{
-               //    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-               //    curentPlanes = sharedPlanes;
-               //}
-
-                if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
-                {
-                    RestoreRigidbody();
-                    AppearInScreen();
-                }
+               if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+               {
+                   sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+                   curentPlanes = sharedPlanes;
+               }
+               if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+               {
+                   RestoreRigidbody();
+                   AppearInScreen();
+               }
             }
-            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
-            {
-                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
-            }
+            //MeoMew disable, rb.velocity is heavy when call 1k object
+            //else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
+            //{
+            //    rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
+            //}
         }
 
         public void SetPosOnwater(TCP2_GetPosOnWater pow)
