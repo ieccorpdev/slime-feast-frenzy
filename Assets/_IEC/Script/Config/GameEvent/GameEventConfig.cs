@@ -393,6 +393,7 @@ namespace IEC
     public class EventData
     {
         public int eventTarget; //For event with multiple stages 
+        public int eventStageTimeInSeconds; // For event stage with limited time
         public List<EventBotData> listEventBotData = new();
         public List<EventRewardData> listEventRewardData = new();
     }

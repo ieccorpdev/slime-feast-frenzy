@@ -211,6 +211,9 @@ namespace IEC
 
         protected virtual void CheckSetMainPlayerUI()
         {
+            if (displayFrame == null)
+                return;
+            
             if (EventPlayerData.isPlayer)
             {
                 displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerFrameSprite;

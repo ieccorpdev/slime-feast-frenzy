@@ -127,6 +127,7 @@ namespace IEC
     {
         StarChase,
         SharkRace,
+        ChompOff
     }
     
     [System.Serializable]
