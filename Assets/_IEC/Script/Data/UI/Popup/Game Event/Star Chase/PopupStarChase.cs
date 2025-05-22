@@ -23,7 +23,7 @@ namespace IEC
             Locator.Main.PopupStartStarChaseEvent.Show();
         }
 
-        protected override bool CheckShowStartPopup()
+        public override bool CheckShowStartPopup()
         {
             if (!PlayerData.isShownPopupStartStarChase)
                 return false;
