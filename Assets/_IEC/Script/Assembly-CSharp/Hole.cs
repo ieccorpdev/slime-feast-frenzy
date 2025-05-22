@@ -485,25 +485,10 @@ public class Hole : _BaseBehaviour
 			characterAnimator.Play("HoleToShark");
 		}
 	}
-	private GameObject GetObjectInDistanceAnimation()
+	private BaseItem GetObjectInDistanceAnimation()
 	{
-		float distance = GetDistanceToObject();
-		int maxColliders = 40;
-		Collider[] hitColliders = new Collider[maxColliders];
-    
-		LayerMask layerMask = LayerMask.GetMask("Default"); // hoặc "Item" nếu object ở layer khác
-
-		int numColliders = Physics.OverlapSphereNonAlloc(transform.position, distance, hitColliders, layerMask);
-    
-		for (int i = 0; i < numColliders; i++)
-		{
-			var col = hitColliders[i];
-			if (col != null)
-			{
-				return col.gameObject;
-			}
-		}
-		return null;
+		return GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
+			x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
 	}
 
 	public void PlayEffectSharkDriveIn()
