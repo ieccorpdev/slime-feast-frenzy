@@ -328,7 +328,7 @@ namespace _IEC.Features.Gameplay
                     }
                     
                     res.Add(itemComponent);
-                    if (Pool.Get<Game>().objectBobbingWater)
+                    if (Pool.Get<Game>().iosFeature)
                     {
                         TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
                         waterWave.WaterMaterial = Config.waveWaterMaterial;

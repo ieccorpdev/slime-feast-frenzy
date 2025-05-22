@@ -380,32 +380,35 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedLateUpdate()
         {
-            //if (hasRigidbody)
-            //{
-            //    //temporary keep, ugly if remove
-            //    lastVelocity = rb.velocity;
-            //}
+
+            if (GameG.iosFeature )
+            {
+                if (hasRigidbody)
+                {
+                    lastVelocity = rb.velocity;
+                }
+                if(hasPosOnWater)
+                {
+                    if (hasRigidbody && posOnWater.enabled)
+                    {
+                        posOnWater.enabled = false;
+                    }
+                    else
+                    {
+                        posOnWater.CheckPosWater();
+                    }
+                }
+            }
             if (hasSpringOscillation)
             {
                 springOscillation.CheckSpringObject();
-            }
-            if (GameG.objectBobbingWater && hasPosOnWater)
-            {
-                if (rb && posOnWater.enabled)
-                {
-                    posOnWater.enabled = false;
-                }
-                else
-                {
-                    posOnWater.CheckPosWater();
-                }
             }
             if (!hasRigidbody)
             {
                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
                {
                    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-                   curentPlanes = sharedPlanes;
+                   curentPlanes = sharedPlanes;     
                }
                if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
                {
@@ -413,7 +416,6 @@ namespace _IEC.Features.Gameplay
                    AppearInScreen();
                }
             }
-            //MeoMew disable, rb.velocity is heavy when call 1k object
             else if (m_CurrentState != State.Collectable && rb != null && rb.velocity != Vector3.zero)
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
