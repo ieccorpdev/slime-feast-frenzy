@@ -22,6 +22,7 @@ namespace IEC
         public List<GameEventDisplaySprite> listDisplaySprites = new();
 
         public List<EventData> listEventData = new();
+        public List<EventRewardTitleData> listTitleData = new();
         
         [Header("Load data from csv (file format speed|range + reward)")]
         public string csv1;
@@ -331,6 +332,11 @@ namespace IEC
 
             return GetDisplaySprite(spriteSetIndex).listRewardButtonSprites[rank - 1];
         }
+
+        public EventRewardTitleData GetRewardTitleData(int rank)
+        {
+            return listTitleData.Find(data => data.rankStartReward <= rank && (data.rankEndReward >= rank || data.rankEndReward == -1));
+        }
         
         private List<List<string>> DownloadCsvFromAuthUrl(string url)
         {
@@ -404,5 +410,14 @@ namespace IEC
         public int rankStartReward;
         public int rankEndReward;
         public List<Reward> listReward = new();
+    }
+
+    [System.Serializable]
+    public class EventRewardTitleData
+    {
+        public int rankStartReward;
+        public int rankEndReward;
+        public Sprite claimRewardTitleSprite;
+        [TextArea]public string claimRewardSubtitleText;
     }
 }
