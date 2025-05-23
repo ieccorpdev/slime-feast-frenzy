@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using IEC.Helper;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,11 @@ namespace IEC
     {
         public Button playButton;
         public GameEventPlayerDataUI playerUI;
+        public Image playerProgressImg;
         public GameEventPlayerDataUI opponentUI;
+        public Image opponentProgressImg;
+
+        private DateTime _currentTimeEndEventStage;
         protected override void Awake()
         {
             base.Awake();
@@ -43,6 +48,8 @@ namespace IEC
             
             playerUI.Setup(_eventConfig, eventData, player, 0);
             opponentUI.Setup(_eventConfig, eventData, opponent, 0);
+
+            _currentTimeEndEventStage = eventSaveData.timeStart.AddSeconds(eventData.eventStageTimeInSeconds);
         }
         
         public override bool IsEndEventStage()
@@ -70,6 +77,20 @@ namespace IEC
 
             return player.progress > opponent.progress;
 
+        }
+
+        protected override void UpdateTimer()
+        {
+            if (_currentTimeEndEventStage <= DateTime.Now)
+            {
+                eventTimerText.text = "Finished";
+            }
+            else
+            {
+                eventTimerText.text =
+                    DateTimeHelper.GetFormattedTimeHMS(
+                        _currentTimeEndEventStage - DateTime.Now);
+            }
         }
     }
 }

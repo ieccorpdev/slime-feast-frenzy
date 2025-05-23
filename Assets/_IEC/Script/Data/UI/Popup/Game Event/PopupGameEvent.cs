@@ -522,7 +522,7 @@ namespace IEC
             }
         }
 
-        private void UpdateTimer()
+        protected virtual void UpdateTimer()
         {
             if (IsEndEvent())
             {
