@@ -11,10 +11,10 @@ public class ScreenRatioAdjuster : MonoBehaviour
 
     void Start()
     {
-        AdjustCanvasScaler();
+        AdjustCanvasScaler(true);
     }
 
-    void AdjustCanvasScaler()
+    void AdjustCanvasScaler(bool withLog = false)
     {
         if (targetCamera == null)
         {
@@ -36,7 +36,11 @@ public class ScreenRatioAdjuster : MonoBehaviour
             scaler.matchWidthOrHeight = matchDownRatio;
         }
 
-        Debug.Log($"Aspect Ratio: {aspectRatio}, matchWidthOrHeight set to: {scaler.matchWidthOrHeight}");
+        if (withLog)
+        {
+            Debug.Log($"Aspect Ratio: {aspectRatio}, matchWidthOrHeight set to: {scaler.matchWidthOrHeight}");
+        }
+
     }
 
     private void OnDrawGizmos()
