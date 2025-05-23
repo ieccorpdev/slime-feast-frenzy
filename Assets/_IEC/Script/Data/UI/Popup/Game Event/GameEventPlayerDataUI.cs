@@ -192,6 +192,17 @@ namespace IEC
             playerProgress.text = EventPlayerData.progress.ToString();
         }
 
+        public void SetAvatar(Sprite sprite)
+        {
+            avatarImage.sprite = sprite;
+            avatarImage.SetNativeSize();
+        }
+
+        public void SetName(string text)
+        {
+            playerName.text = text;
+        }
+
         public void Setup(GameEventConfig gameEventConfig, EventData eventData, EventPlayerData playerData, int rank)
         {
             _gameEventConfig = gameEventConfig;

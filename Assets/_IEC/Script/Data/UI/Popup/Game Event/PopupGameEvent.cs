@@ -297,18 +297,18 @@ namespace IEC
                         listDataReward = new List<Reward>(eventRewardData.listReward),
                     });
 
-                // Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
-                // {
-                    // if (stage != -1)
-                    // {
-                    //     // StartNewEventStage(stage);
-                    //     // CheckInitEventProgress();
-                    //     // UpdateUI();
-                    //     ShowStartPopup();
-                    // }
+                Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
+                {
+                    if (stage != -1)
+                    {
+                        // StartNewEventStage(stage);
+                        // CheckInitEventProgress();
+                        // UpdateUI();
+                        ShowStartPopup();
+                    }
                     // else
-                        // Hide();
-                // });
+                    //     Hide();
+                });
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else

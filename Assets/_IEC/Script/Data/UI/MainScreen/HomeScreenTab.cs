@@ -46,11 +46,11 @@ public class HomeScreenTab : ScreenNavigateUI
     public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
     [Header("Star Chase Event")] 
-    public Button btnStarChase;
     public GameEventHomeButton starChaseButton;
     [Header("Shark Race Event")] 
-    public Button btnSharkRace;
     public GameEventHomeButton sharkRaceButton;
+    [Header("Chomp Off Event")] 
+    public GameEventHomeButton chompOffButton;
     
     [Space(10)]
 
@@ -191,7 +191,7 @@ public class HomeScreenTab : ScreenNavigateUI
         //            });
         //    });
            
-        SetEvent(btnStarChase,
+        SetEvent(starChaseButton.button,
             () =>
             {
                 if (Locator.Main.PopupStarChase.CheckShowStartPopup())
@@ -203,7 +203,7 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Main.PopupStarChase.Show();
                 }
             });
-        SetEvent(btnSharkRace,
+        SetEvent(sharkRaceButton.button,
             () =>
             {
                 if (Locator.Main.PopupSharkRace.CheckShowStartPopup())
@@ -213,6 +213,18 @@ public class HomeScreenTab : ScreenNavigateUI
                 else
                 {
                     Locator.Main.PopupSharkRace.Show();
+                }
+            });
+        SetEvent(chompOffButton.button,
+            () =>
+            {
+                // if (Locator.Main.PopupChompOff.CheckShowStartPopup())
+                // {
+                //     //Locator.Main.PopupStartSharkRaceEvent.Show();
+                // }
+                // else
+                {
+                    Locator.Main.PopupChompOff.Show();
                 }
             });
         SetupUIHome();
@@ -500,6 +512,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         starChaseButton.InitUI();
         sharkRaceButton.InitUI();
+        chompOffButton.InitUI();
     }
 
     private void UpdateLifeOffer()
