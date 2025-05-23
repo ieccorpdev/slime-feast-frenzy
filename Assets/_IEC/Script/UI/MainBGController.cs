@@ -12,8 +12,8 @@ public class MainBGController : _BaseBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        staticImage.gameObject.SetActive(Game.iosFeature);
-        spineImage.gameObject.SetActive(!Game.iosFeature);
+        staticImage.gameObject.SetActive(!Game.iosFeature);
+        spineImage.gameObject.SetActive(Game.iosFeature);
     }
 
     // Update is called once per frame
