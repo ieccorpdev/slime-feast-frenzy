@@ -363,6 +363,7 @@ namespace _IEC.Features.Gameplay
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
+                hasPosOnWater = false;  
             }
             // if (_specialItemHighlightEffect != null)
             // {
@@ -389,9 +390,10 @@ namespace _IEC.Features.Gameplay
                 }
                 if(hasPosOnWater)
                 {
-                    if (hasRigidbody && posOnWater.enabled)
+                    if (hasRigidbody && !rb.isKinematic )
                     {
                         posOnWater.enabled = false;
+                        hasPosOnWater = false;  
                     }
                     else
                     {
