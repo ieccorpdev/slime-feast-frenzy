@@ -12,6 +12,8 @@ namespace _IEC.Features.Gameplay
         public List<GroundThemeConfigModel> groundThemeConfigModels;
 
         public List<GroundThemeModel> groundThemeModels;
+        
+        public List<WaterThemeConfig> waterThemeConfigs;
 
         [SerializeField] private string themeNeedToFind;
 
@@ -100,6 +102,17 @@ namespace _IEC.Features.Gameplay
                 }
             }
         }
+
+        public WaterThemeConfig GetWaterThemeConfig()
+        {
+            int crId = Pool.Get<GamePlayGroup>().currentThemeSelect;
+            var reuslt = waterThemeConfigs.Find(x => x.themeId == crId);
+            if (reuslt == null)
+            {
+                return waterThemeConfigs[0];
+            }
+            return reuslt;
+        }
     }
     
     [Serializable]
@@ -119,5 +132,13 @@ namespace _IEC.Features.Gameplay
         public string themeId;
         public List<Material> materials;
         public List<Texture2D> textures;
+    }
+    [Serializable]
+    public class WaterThemeConfig
+    {
+        public int themeId;
+        public Material waterSeaMaterial;
+        public GameObject whirlPoolHole;
+        public ParticleSystem splashEffect;
     }
 }

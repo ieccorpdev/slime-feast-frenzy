@@ -35,7 +35,8 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
         [SerializeField] private Transform allItemHolder;
-        
+       
+        public ThemeController themeController;
 
         private bool _isShowEnding = false;
         private State m_CurrentState;
@@ -192,7 +193,9 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
-
+            
+            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeConfig());
+            
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();

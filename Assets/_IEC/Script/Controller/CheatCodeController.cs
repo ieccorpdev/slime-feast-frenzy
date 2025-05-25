@@ -98,7 +98,15 @@ namespace IEC
             {
                 value = 0
             });
-            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme ", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                Pool.Get<GamePlayGroup>().currentThemeSelect = count;
+                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());

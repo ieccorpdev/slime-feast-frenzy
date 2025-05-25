@@ -31,9 +31,8 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
-	[SerializeField] private ParticleSystem waterSplashFx;
+	public ParticleSystem waterSplashFx;
 	[SerializeField] private ParticleSystem speedLinesVFX;
-	[SerializeField] private MeshRenderer waterGround;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -41,7 +40,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField]public Animator sharkBiteAnimator;
 	[SerializeField]private Transform characterParent;
 	[SerializeField]private Transform sharkBiteParent;
-	
+	[Header("ThemeConfig")]
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
@@ -318,7 +317,6 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-		SetEffectWhirlPoolMagnet();
         EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
         //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
         //VibrationController.Vibrate(HapticTypes.Selection);
@@ -355,23 +353,12 @@ public class Hole : _BaseBehaviour
 	{
 		holeMagnet.gameObject.SetActive(true);
 		magnetVfx.Play();
-		SetEffectWhirlPoolMagnet(true);
 	}
 
-	public void SetEffectWhirlPoolMagnet(bool force = false)
-	{
-		if (force || GamePlay.levelController.GetTimeMagnetHelper > 0)
-		{
-			int valueSize = (int)Math.Round(1.75 * m_Level + 1.1);
-			waterGround.material.SetFloat(WaterMagnetEffect,valueSize);			
-		}
-
-	}
 	public void StopMagnetHelper()
 	{
 		holeMagnet.gameObject.SetActive(false);
 		magnetVfx.Stop();
-		waterGround.material.SetFloat(WaterMagnetEffect,0);
 	}
 
 	public void CollectABomb()
