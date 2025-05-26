@@ -44,7 +44,7 @@ public class Hole : _BaseBehaviour
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
-	private float defaultPosYCharacter = -0.6f;
+	private float defaultPosYCharacter = -0.9f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
