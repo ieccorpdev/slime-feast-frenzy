@@ -116,6 +116,23 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Chomp Off progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupChompOff,
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.ChompOff,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {

@@ -287,6 +287,9 @@ namespace IEC
 
             var titleData = _eventConfig.GetRewardTitleData(playerRank);
 
+            if (stage == -1)
+                titleData = _eventConfig.GetWinAllEventStagesTitleData(playerRank);
+
             if (eventRewardData != null && eventRewardData.listReward.Count > 0)
             {
                 string subtitle = String.Format(titleData.claimRewardSubtitleText, ClaimBonusRewardPanel.GetOrdinal(playerRank));
@@ -504,6 +507,7 @@ namespace IEC
 
             if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {
+                data.lastUpdateTime = DateTime.Now;
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
                     var player = data.listPlayerData[i];
