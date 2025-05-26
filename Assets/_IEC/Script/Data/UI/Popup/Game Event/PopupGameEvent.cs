@@ -488,7 +488,7 @@ namespace IEC
                     eventStageIndex,
                     DateTime.Now,
                     //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
-                    DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours).Date,
+                    DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours),
                     new List<EventPlayerData>(listPlayerData)
                 );
             

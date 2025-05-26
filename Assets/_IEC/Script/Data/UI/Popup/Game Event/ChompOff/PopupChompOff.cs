@@ -97,7 +97,6 @@ namespace IEC
                 {
                     _eventStarted = true;
                     playButton.gameObject.SetActive(true);
-                    startEventButton.gameObject.SetActive(false);
                     
                     playButton.transform.localScale = new Vector3(0, 1, 1);
                     playButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack);
@@ -132,7 +131,20 @@ namespace IEC
 
         private void OnRetryButtonClick()
         {
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+
+            eventSaveData.claimedReward = true;
+            
+            _currentTimeEndEvent = eventSaveData.timeEnd;
+            
+            SetEventStartUI();
+            
             InitEvent();
+            //playButton.gameObject.SetActive(true);
+            retryButton.gameObject.SetActive(false);
+            
+            // playButton.transform.localScale = new Vector3(0, 1, 1);
+            // playButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack);
         }
 
         protected override void OnClaimReward()
@@ -145,26 +157,48 @@ namespace IEC
             Show();
         }
 
+        protected override void CheckShowReward()
+        {
+            playButton.gameObject.SetActive(false);
+            base.CheckShowReward();
+
+            if (!IsEventStageCompleted())
+            {
+                claimRewardGroup.SetActive(false);
+                retryButton.gameObject.SetActive(true);
+            }
+        }
+
+        public override void Hide()
+        {
+            base.Hide();
+
+            if (_startEventSequence.IsActive())
+            {
+                DOTween.Kill(_startEventSequence);
+                _startEventSequence = null;
+                
+                playButton.transform.localScale = Vector3.one;
+                playButton.gameObject.SetActive(true);
+            }
+        }
+
         public override void Show()
         {
-            Init();
-            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            
-            if (eventSaveData != null)
-            {
-                _currentTimeEndEvent = eventSaveData.timeEnd;
-            }
-            else
-            {
-                _currentTimeEndEvent = DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours).Date;
-            }
-            
-            base.Show();
+            //startEventButton.gameObject.SetActive(false);
+            retryButton.gameObject.SetActive(false);
             
             if (CheckShowStartPopup())
             {
                 SetEventStartUI();
             }
+            
+            base.Show();
+            
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            
+            _currentTimeEndEvent = eventSaveData.timeEnd;
+
             
             // Init();
             //
@@ -175,7 +209,7 @@ namespace IEC
         }
 
         public override void InitEvent()
-        {
+        {            
             base.InitEvent();
             
             UpdateUI();

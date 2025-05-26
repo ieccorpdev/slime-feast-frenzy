@@ -46,7 +46,9 @@ namespace IEC.Helper
 
         public static string GetFormattedTimeHMS(TimeSpan timeSpan)
         {
-            string hours = timeSpan.Hours < 10 ? $"0{timeSpan.Hours}" : timeSpan.Hours.ToString();
+            var day = timeSpan.Days;
+            var hour = timeSpan.Days * 24 + timeSpan.Hours;
+            string hours = hour < 10 ? $"0{hour}" : hour.ToString();
             string minutes = timeSpan.Minutes < 10 ? $"0{timeSpan.Minutes}" : timeSpan.Minutes.ToString();
             string seconds = timeSpan.Seconds < 10 ? $"0{timeSpan.Seconds}" : timeSpan.Seconds.ToString();
             return $"{hours}:{minutes}:{seconds}";
