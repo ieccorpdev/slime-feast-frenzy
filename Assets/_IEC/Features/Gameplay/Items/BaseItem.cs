@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
+using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
@@ -11,7 +12,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour
+    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
     {
         [SerializeField] private Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -32,6 +33,11 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
         private Camera mainCam;
         public bool IsCollected => _isCollected;
+        private bool hasRenderer;
+        private bool hasRigidbody;
+        private bool hasSpringOscillation;
+        private bool hasPosOnWater;
+        private Game GameG;
         public Rigidbody Rb
         {
             get
@@ -50,6 +56,7 @@ namespace _IEC.Features.Gameplay
 
         private void Start()
         {
+            this.GameG = Pool.Get<Game>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
@@ -59,19 +66,22 @@ namespace _IEC.Features.Gameplay
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
-        
+        void OnEnable()
+        {
+            UpdateManager.Instance.RegisterLateUpdate(this);
+        }
+
+        void OnDisable()
+        {
+            DOTween.Kill(RecycleTweenId);
+            UpdateManager.Instance.UnregisterLateUpdate(this);
+        }
+
         [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
         private Vector3 lastVelocity;
 
-        void FixedUpdate()
-        {
-            if (rb != null)
-            {
-                lastVelocity = rb.velocity;
-            }
-        }
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -80,7 +90,7 @@ namespace _IEC.Features.Gameplay
             {
                 if (collision.contactCount == 0) return;
                 if (hasSplashed) return;
-                float velocityY = lastVelocity.y;
+                float velocityY = rb.velocity.y;
                 float relVelocityY = collision.relativeVelocity.y;
                 if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
@@ -244,11 +254,13 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
+                hasRenderer = true;
             }
 
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
+                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
@@ -281,6 +293,8 @@ namespace _IEC.Features.Gameplay
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
             }
+
+            hasRigidbody = false;
         }
 
         private void RestoreRigidbody()
@@ -298,6 +312,8 @@ namespace _IEC.Features.Gameplay
                 rb.interpolation = savedData.interpolation;
                 rb.collisionDetectionMode = savedData.collisionDetectionMode;
             }
+
+            hasRigidbody = true;
         }
 
         protected void ChangeState(State newState)
@@ -347,6 +363,7 @@ namespace _IEC.Features.Gameplay
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
+                hasPosOnWater = false;  
             }
             // if (_specialItemHighlightEffect != null)
             // {
@@ -359,40 +376,59 @@ namespace _IEC.Features.Gameplay
 
         public bool onDraging = false;
         public Transform targetObject; // Object B
-        public float pullSpeed = 2.5f;   // Speed towards object B
-        public float stopPullDistance = 0.1f;
-        public float gravityStrength = -50f; // Simulated gravity
-        public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
-        public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
-
-        void LateUpdate()
+    
+        public void ManagedLateUpdate()
         {
-            if (posOnWater != null && rb && posOnWater.enabled)
-            {
-                posOnWater.enabled = false;
-            }
-            if (rb == null)
-            {
-                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
-                {
-                    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-                    curentPlanes = sharedPlanes;
-                }
 
-                if (myRenderer != null && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+            if (GameG.iosFeature )
+            {
+                if (hasRigidbody)
                 {
-                    RestoreRigidbody();
-                    AppearInScreen();
+                    lastVelocity = rb.velocity;
+                }
+                if(hasPosOnWater)
+                {
+                    if (hasRigidbody && !rb.isKinematic )
+                    {
+                        posOnWater.enabled = false;
+                        hasPosOnWater = false;  
+                    }
+                    else
+                    {
+                        posOnWater.CheckPosWater();
+                    }
                 }
             }
-            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
+            if (hasSpringOscillation)
+            {
+                springOscillation.CheckSpringObject();
+            }
+            if (!hasRigidbody)
+            {
+               if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+               {
+                   sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+                   curentPlanes = sharedPlanes;     
+               }
+               if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+               {
+                   RestoreRigidbody();
+                   AppearInScreen();
+               }
+            }
+            else if (m_CurrentState != State.Collectable && rb != null && rb.velocity != Vector3.zero)
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
         }
 
+        public void SetPosOnwater(TCP2_GetPosOnWater pow)
+        {
+            posOnWater = pow;
+            hasPosOnWater = true;
+        }
         protected virtual void AppearInScreen() { }
         
         #endregion
@@ -407,10 +443,6 @@ namespace _IEC.Features.Gameplay
             //itemCollider.gameObject.layer = newLayer;
         }
 
-        protected virtual void OnDisable()
-        {
-            DOTween.Kill(RecycleTweenId);
-        }
 
         public enum State
         {
@@ -433,6 +465,5 @@ namespace _IEC.Features.Gameplay
             public RigidbodyInterpolation interpolation;
             public CollisionDetectionMode collisionDetectionMode;
         }
-
     }
 }

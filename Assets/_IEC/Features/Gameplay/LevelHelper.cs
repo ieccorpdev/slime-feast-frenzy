@@ -328,18 +328,21 @@ namespace _IEC.Features.Gameplay
                     }
                     
                     res.Add(itemComponent);
-                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
-                    waterWave.WaterMaterial = Config.waveWaterMaterial;
-
-                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
-                    float objectOffset = 0;
-                    if (newLogicWhirlpool)
+                    if (Pool.Get<Game>().iosFeature)
                     {
-                        objectOffset = -objectSize / 2;
+                        TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
+                        waterWave.WaterMaterial = Config.waveWaterMaterial;
+
+                        float objectSize = itemComponent.MyRenderer.bounds.size.y;
+                        float objectOffset = 0;
+                        if (newLogicWhirlpool)
+                        {
+                            objectOffset = -objectSize / 2;
+                        }
+                        waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
+                        waterWave.InitShader();
+                        itemComponent.SetPosOnwater(waterWave);
                     }
-                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
-                    waterWave.InitShader();
-                    itemComponent.posOnWater = waterWave; 
                     itemIds.Add(itemSpawn.id);
                 }
                 

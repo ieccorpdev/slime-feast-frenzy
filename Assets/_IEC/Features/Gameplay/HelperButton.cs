@@ -72,6 +72,8 @@ namespace _IEC.Features.Gameplay
             Observer.AddObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
         }
 
+        
+
         private void HandleLockedOnClick()
         {
             UpdateLockDescription();
@@ -257,6 +259,7 @@ namespace _IEC.Features.Gameplay
             //PlaySoundHelper(SoundController.dictSoundActiveByHelperId, helperId);
             
             Locator.Game.ScreenInGame.GetGameplayTimer().StartTimer();
+            imgIcon.transform.DOKill();
             imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
             actionEffect?.Invoke();
             Services.PushEvent(new UserHelper(helperId.ToString()));
@@ -293,6 +296,7 @@ namespace _IEC.Features.Gameplay
         {
             imgIcon.material.SetFloat("_ShineLocation",0);
             imgIcon.material.DOFloat(1f, "_ShineLocation", 0.3f).SetId(imgIcon.GetInstanceID()+"_Shiny");
+            imgIcon.DOKill();
             imgIcon.transform.DOPunchScale(Vector3.one*0.2f, 0.3f,1,0.15f).SetId(IconPunchScale);
         }
         void PlaySoundHelper(Dictionary<HelperId, AudioInfo> dict, HelperId id)
@@ -366,6 +370,7 @@ namespace _IEC.Features.Gameplay
             groupPlaying.SetActive(newState == State.Playing);
             UpdatePoolNumberUI();
             fillAnim.Play("idle");
+            imgIcon.transform.localScale = Vector3.one;
             switch (newState)
             {
                 case State.Playing:
@@ -408,6 +413,7 @@ namespace _IEC.Features.Gameplay
         {
             DOTween.Kill(imgIcon.GetInstanceID()+"_Shiny");
             DOTween.Kill(IconPunchScale);
+            Observer.RemoveObserver(EventList.GamePlay.UPDATE_HELPER_UI, UpdateHelperUI);
         }
 
         private enum  State

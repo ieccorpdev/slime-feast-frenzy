@@ -194,12 +194,26 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnStarChase,
             () =>
             {
-                Locator.Main.PopupStarChase.Show();
+                if (Locator.Main.PopupStarChase.CheckShowStartPopup())
+                {
+                    Locator.Main.PopupStartStarChaseEvent.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupStarChase.Show();
+                }
             });
         SetEvent(btnSharkRace,
             () =>
             {
-                Locator.Main.PopupSharkRace.Show();
+                if (Locator.Main.PopupSharkRace.CheckShowStartPopup())
+                {
+                    Locator.Main.PopupStartSharkRaceEvent.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupSharkRace.Show();
+                }
             });
         SetupUIHome();
     }
@@ -401,18 +415,17 @@ public class HomeScreenTab : ScreenNavigateUI
         
         #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OnEnable()
     {
         //UpdateMainHome();
-
+        EventController.RaiseEvent(EventList.Audio.HOMEPAGE_IDLE);
     }
-    
+
+    private void OnDisable()
+    {
+        SoundController.StopSound(EventList.Audio.HOMEPAGE_IDLE);
+    }
+
     public override void Show()
     {
         UpdateMainHome();

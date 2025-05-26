@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using IEC;
 
 namespace WaterRippleForScreens
 {
     [RequireComponent(typeof(Camera))]
-    public class RippleEffect : MonoBehaviour
+    public class RippleEffect : _BaseBehaviour
     {
-        public bool
-            detectClick = true; //true -> This script detects left mouse click / false -> Won't detect mouse click
+        public bool detectClick = true; //true -> This script detects left mouse click / false -> Won't detect mouse click
 
         [Range(0, 10)] public int waveCount = 10; //Quantity of ripple effects supported at the same time
 
@@ -48,6 +48,10 @@ namespace WaterRippleForScreens
         // Creates a private material used to the effect
         void Awake()
         {
+            if (!Game.iosFeature)
+            {
+                this.enabled = false;
+            }
             //Init all arrays
             currentInternalRadio = new float[10];
             waveAmplitude = new float[10];
