@@ -22,8 +22,8 @@ public class ThemeController :  _BaseBehaviour, IGroup
         waterGround.material = dataTheme.waterSeaMaterial;
         if (whirlPoolHole != null)
         {
-            var newWhirlPool = Instantiate(dataTheme.whirlPoolHole, whirlPoolHole.transform.parent, true);
-            newWhirlPool.transform.CopyTransform(whirlPoolHole.transform);
+            var newWhirlPool = Instantiate(dataTheme.whirlPoolHole, whirlPoolHole.transform.parent);
+            newWhirlPool.transform.CopyLocalTransform(whirlPoolHole.transform);
             Destroy(whirlPoolHole.gameObject);
             whirlPoolHole = newWhirlPool;
         }
