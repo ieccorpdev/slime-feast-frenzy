@@ -105,7 +105,7 @@ namespace _IEC.Features.Gameplay
 
         public WaterThemeConfig GetWaterThemeConfig()
         {
-            int crId = Pool.Get<GamePlayGroup>().currentThemeSelect;
+            int crId = Pool.Get<InGamePlayGroup>().currentThemeSelect;
             var reuslt = waterThemeConfigs.Find(x => x.themeId == crId);
             if (reuslt == null)
             {

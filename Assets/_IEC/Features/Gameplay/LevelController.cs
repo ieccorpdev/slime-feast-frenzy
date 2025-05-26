@@ -195,6 +195,7 @@ namespace _IEC.Features.Gameplay
             );
             
             themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeConfig());
+            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);

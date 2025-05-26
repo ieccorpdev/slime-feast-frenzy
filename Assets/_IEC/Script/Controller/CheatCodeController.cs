@@ -3,6 +3,7 @@ using UnityEngine;
 using _IECModules;
 using _IEC.Features.Gameplay;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IEC
 {
@@ -101,12 +102,24 @@ namespace IEC
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme ", param =>
             {
                 int count = int.Parse(param.inputParams[0].value.ToString());
-                Pool.Get<GamePlayGroup>().currentThemeSelect = count;
+                Pool.Get<InGamePlayGroup>().currentThemeSelect = count;
                 EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             }, new CheatCode.InputParam
             {
                 value = 0
             });
+            var weatherIndex = (int)(Pool.Get<InGamePlayGroup>().currentWeatherSelect);
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set Weather Effect",
+                cheatCodeParam =>
+                {
+                    var weatherInt = cheatCodeParam.dropdownParam.value;
+                    Pool.Get<InGamePlayGroup>().currentWeatherSelect = (WeatherTheme)weatherInt;
+                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                },
+                Enum.GetNames(typeof(WeatherTheme)).ToList(),
+                weatherIndex
+            );
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());

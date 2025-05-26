@@ -22,6 +22,9 @@ namespace IEC
         public bool IsInLevelHard { get; private set; } = false;
         private ILevelController m_CurrentLevelController;
         public LevelType currentLevelType => GetLevelController().GetLevelData().levelType;
+        
+        public int currentThemeSelect = 0;
+        public WeatherTheme currentWeatherSelect = WeatherTheme.NONE;
         public void Awake()
         {
 
