@@ -27,7 +27,6 @@ namespace IEC
     public class RewardByJourney
     {
         public int idJourney;
-        public int chestModel;
         public int fuelNeed;
         public Rewards RewardsVips;
         public Rewards RewardsNormal;

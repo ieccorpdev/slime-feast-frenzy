@@ -45,6 +45,8 @@ namespace IEC
         public SpineAnimOT carAnim;
         public SpineAnimOT carVipAnim;
         public bool inAnimCar;
+        [SerializeField] private JourneyTripConfig journeyTripConfig;
+
         private void Start()
         {
             SetEvent(tutorialJourneyBtn, OnClickButtonTutorialJourney);
@@ -61,17 +63,15 @@ namespace IEC
         public override void Hide()
         {
             base.Hide();
-            //UI.buildCityUI.ShowScale();
         }
         [Button]
         public override void Show()
         {
-            //PlayerData.wasOpenJourney = true;
-            //if (PlayerData.timeStartJourneyTrip == DateTime.MinValue)
-            //{
-            //    PlayerData.timeStartJourneyTrip = DateTime.Now;
-            //}
-            //UI.buildCityUI.DeactiveBuildCity();
+            PlayerData.journeyData.wasOpenJourney = true;
+            if (PlayerData.journeyData.timeStartJourneyTrip == DateTime.MinValue)
+            {
+                PlayerData.journeyData.timeStartJourneyTrip = DateTime.Now;
+            }
             SetUpUI();
             base.Show();
             carAnim.SetAnimation("2-Idle", true);
@@ -84,7 +84,7 @@ namespace IEC
             carVipAnim.gameObject.SetActive(false);
             carVipAnim.ResetAnim();
             carAnim.ResetAnim();
-            if (!PlayerData.purchasedJourneyPass)
+            if (!PlayerData.journeyData.purchasedJourneyPass)
             {
                 carAnim.gameObject.SetActive(true);
                 carAnim.SetAnimation("1-In",false, () =>
@@ -163,7 +163,7 @@ namespace IEC
         {
             for (int i = 0; i < listItemJourney.Count; i++)
             {
-                //listItemJourney[i].SetUpDataItemJourney(Config.JourneyTripConfig.GetRewardsByLevelJourney(i));
+                listItemJourney[i].SetUpDataItemJourney(journeyTripConfig.GetRewardsByLevelJourney(i));
             }
         }
 
@@ -211,7 +211,7 @@ namespace IEC
         }
         void SetProgressBar(bool snap = true)
         {
-            int currentTarget = PlayerData.currentTargetJourney+1;
+            int currentTarget = PlayerData.journeyData.currentTargetJourney+1;
             //int currentTarget = 20;
             if (currentTarget > listItemJourney.Count)
             {
@@ -270,7 +270,7 @@ namespace IEC
                 {
                     foreach (var dataReward in item.regularPass.dataReward.listRewards)
                     {
-                        AddDataReward(ref listReward, dataReward);
+                        AddDataReward(ref listReward, dataReward.reward);
                     }
 
                     listItem.Add(item.regularPass);
@@ -280,7 +280,7 @@ namespace IEC
                 {
                     foreach (var dataReward in item.vipPass.dataReward.listRewards)
                     {
-                        AddDataReward(ref listReward, dataReward);
+                        AddDataReward(ref listReward, dataReward.reward);
                     }
 
                     listItem.Add(item.vipPass);
@@ -308,7 +308,7 @@ namespace IEC
             InitData();
             List<Reward> listReward = new List<Reward>();
             listReward = GetAllReward(out var listItem);
-            if (PlayerData.purchasedJourneyPass)
+            if (PlayerData.journeyData.purchasedJourneyPass)
             {
                 Reward rewardLastChest = new Reward();
                 rewardLastChest.typeReward = ResourceType.Gold;
@@ -320,11 +320,11 @@ namespace IEC
         bool AnyItemCanClaimed()
         {
             //Logic claim all
-            foreach (var item in PlayerData.vipJourneyPass)
+            foreach (var item in PlayerData.journeyData.vipJourneyPass)
             {
                 if (item.Value == JourneyItemStatus.CANCLAIM) return true;
             }              
-            foreach (var item in PlayerData.regularJourneyPass)
+            foreach (var item in PlayerData.journeyData.regularJourneyPass)
             {
                 if (item.Value == JourneyItemStatus.CANCLAIM) return true;
             }
@@ -334,18 +334,18 @@ namespace IEC
         {
             collectEndJourneyTripBtn.gameObject.SetActive(false);
             //Add logic collect end season
-            bottomChestVipPassNotPurchase.gameObject.SetActive(!PlayerData.purchasedJourneyPass);
-            bottomChestVipPassPurchase.gameObject.SetActive(PlayerData.purchasedJourneyPass);
+            bottomChestVipPassNotPurchase.gameObject.SetActive(!PlayerData.journeyData.purchasedJourneyPass);
+            bottomChestVipPassPurchase.gameObject.SetActive(PlayerData.journeyData.purchasedJourneyPass);
         }
 
         private void SetBannerBottom()
         {
-            bottomBannerVipPassPurchase.gameObject.SetActive(PlayerData.purchasedJourneyPass);
-            activeVipPassBtn.gameObject.SetActive(!PlayerData.purchasedJourneyPass);
+            bottomBannerVipPassPurchase.gameObject.SetActive(PlayerData.journeyData.purchasedJourneyPass);
+            activeVipPassBtn.gameObject.SetActive(!PlayerData.journeyData.purchasedJourneyPass);
             //Add Logic active when can claim;
             Vector2 pos = PlayerData.level >= 15 ? new Vector2(vipPassBar.anchoredPosition.x, Services.Ads().GetBannerHeight()) : Vector2.zero;
             vipPassBar.anchoredPosition = pos;
-            if (PlayerData.purchasedJourneyPass)
+            if (PlayerData.journeyData.purchasedJourneyPass)
             {
                 if (AnyItemCanClaimed())
                 {

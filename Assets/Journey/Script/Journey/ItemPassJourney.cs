@@ -8,14 +8,6 @@ using UnityEngine.UI;
 
 namespace IEC
 {
-    public enum JourneyItemStatus
-    {
-        LOCK,
-        UNLOCK,
-        CANCLAIM,
-        CLAIMED
-    }
-
     public class ItemPassJourney : _BaseBehaviour
     {
         private int currentID;
@@ -109,10 +101,10 @@ namespace IEC
             switch (typePass)
             {
                 case TypePassJourney.REGULAR:
-                    PlayerData.SetStatusRegularPass(currentID, JourneyItemStatus.CLAIMED);
+                    PlayerData.journeyData.SetStatusRegularPass(currentID, JourneyItemStatus.CLAIMED);
                     break;
                 case TypePassJourney.VIP:
-                    PlayerData.SetStatusVipPass(currentID, JourneyItemStatus.CLAIMED);
+                    PlayerData.journeyData.SetStatusVipPass(currentID, JourneyItemStatus.CLAIMED);
                     break;
             }
         }
@@ -156,7 +148,7 @@ namespace IEC
         public void SetupDataItemPass(RewardByJourney data, Rewards dataItemPass, int id)
         {
             BaseSetupDataItem(data, dataItemPass, id);
-            statusItem = PlayerData.GetStatusRegularPass(currentID);
+            statusItem = PlayerData.journeyData.GetStatusRegularPass(currentID);
             typePass = TypePassJourney.REGULAR;
             switch (statusItem)
             {
@@ -179,7 +171,7 @@ namespace IEC
         public void SetupDataItemVipPass(RewardByJourney data, Rewards dataItemPass, int id)
         {
             BaseSetupDataItem(data, dataItemPass, id);
-            statusItem = PlayerData.GetStatusVipPass(currentID);
+            statusItem = PlayerData.journeyData.GetStatusVipPass(currentID);
             typePass = TypePassJourney.VIP;
             switch (statusItem)
             {
@@ -217,23 +209,23 @@ namespace IEC
             {
                 var type = dataItemPass.listRewards[0];
                 valueReward.gameObject.SetActive(true);
-                valueReward.text = type.typeReward == ResourceType.UnlimitedLive ? (type.rewardAmount + "m") : ("x" + type.rewardAmount);
+                valueReward.text = type.reward.typeReward == ResourceType.UnlimitedLive ? (type.reward.rewardAmount + "m") : ("x" + type.reward.rewardAmount);
                 typeReward = TypeItemPassJourney.NORMAL;
-                switch (type.typeReward)
+                switch (type.reward.typeReward)
                 {
                     case ResourceType.Gold:
 
-                        if (type.rewardAmount > 80)
+                        if (type.reward.rewardAmount > 80)
                         {
                             goldReward4.gameObject.SetActive(true);
                             break;
                         }
-                        if (type.rewardAmount > 40)
+                        if (type.reward.rewardAmount > 40)
                         {
                             goldReward3.gameObject.SetActive(true);
                             break;
                         }
-                        if (type.rewardAmount > 20)
+                        if (type.reward.rewardAmount > 20)
                         {
                             goldReward2.gameObject.SetActive(true);
                             break;
@@ -265,15 +257,15 @@ namespace IEC
             detailInfinityLifeObj.gameObject.SetActive(false);
             foreach (var type in dataItemPass.listRewards)
             {
-                switch (type.typeReward)
+                switch (type.reward.typeReward)
                 {
                     case ResourceType.Gold:
                         detailGoldObj.gameObject.SetActive(true);
-                        detailGoldValue.text = "x" + type.rewardAmount;
+                        detailGoldValue.text = "x" + type.reward.rewardAmount;
                         break;
                     case ResourceType.UnlimitedLive:
                         detailInfinityLifeObj.gameObject.SetActive(true);
-                        detailInfinityLifeValue.text = type.rewardAmount + "m";
+                        detailInfinityLifeValue.text = type.reward.rewardAmount + "m";
                         break;
                     //case ResourceType.HAMMER:
                     //    detailHammerObj.gameObject.SetActive(true);
