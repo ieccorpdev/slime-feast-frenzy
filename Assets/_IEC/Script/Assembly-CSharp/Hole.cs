@@ -44,7 +44,7 @@ public class Hole : _BaseBehaviour
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
-
+	private float defaultPosYCharacter = -0.6f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
@@ -447,7 +447,7 @@ public class Hole : _BaseBehaviour
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		StartAnimationCharacter();
 	}
 
@@ -456,7 +456,7 @@ public class Hole : _BaseBehaviour
 		var obj = GetObjectInDistanceAnimation();
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, -defaultPosYCharacter, 0);
 		readyForSharkBite = true;
 		if (obj != null)//Have object near
 		{
@@ -500,7 +500,7 @@ public class Hole : _BaseBehaviour
 		holePipe.DOScale(Vector3.zero, 0.5f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterParent.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
         EventController.RaiseEvent(EventList.Audio.SHARK_UP);
     }
@@ -511,7 +511,7 @@ public class Hole : _BaseBehaviour
 		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("Dive Into Water 0");
     }
 	#endregion
