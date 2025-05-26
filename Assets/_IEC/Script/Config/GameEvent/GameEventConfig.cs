@@ -319,6 +319,9 @@ namespace IEC
 
         public Sprite GetRankSprite(int spriteSetIndex, int rank)
         {
+            if (GetDisplaySprite(spriteSetIndex) == null)
+                return null;
+            
             if (rank > GetDisplaySprite(spriteSetIndex).listRankSprites.Count)
                 return null;
 

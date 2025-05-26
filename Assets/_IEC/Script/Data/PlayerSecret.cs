@@ -100,6 +100,7 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
                 levelLostStreak = -1;
+                chompOffCurrentLevelLost = -1;
                 chompOffCurrentLevelLostCount = 0;
             }
             InitDailyReward();
@@ -902,6 +903,7 @@ namespace IEC
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
         public bool isShownPopupStartSharkRace;
+        public int chompOffCurrentLevelLost;
         public int chompOffCurrentLevelLostCount;
 
         public EventSaveData GetEventSaveData(EventType eventType)
@@ -933,10 +935,17 @@ namespace IEC
             if (level < Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
                 return;
 
-            if (level != levelLostStreak)
+            if (level != chompOffCurrentLevelLost)
                 chompOffCurrentLevelLostCount = 0;
-                
+
+            chompOffCurrentLevelLost = level;
             chompOffCurrentLevelLostCount++;
+        }
+
+        public void ResetChompOffLevelLostCount()
+        {
+            chompOffCurrentLevelLost = -1;
+            chompOffCurrentLevelLostCount = 0;
         }
 
         #endregion

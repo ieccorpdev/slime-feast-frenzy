@@ -97,6 +97,7 @@ namespace IEC
                     id = PlayerData.playerName,
                     progressAmount = Config.AllGameEventConfig.chompOffProgressConfig.GetProgress(PlayerData.chompOffCurrentLevelLostCount),
                 });
+            PlayerData.ResetChompOffLevelLostCount();
         }
 
         public EventSaveData GetEventSaveData(EventType eventType)

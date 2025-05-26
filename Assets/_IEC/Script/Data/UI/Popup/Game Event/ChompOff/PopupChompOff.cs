@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using IEC.Helper;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,8 +23,12 @@ namespace IEC
         [Header("Random Opponent Avatar")] 
         public Sprite randomAvatar;
         public string randomName = "???";
+        public int randomAvatarCount = 20;
 
         private DateTime _currentTimeEndEventStage;
+
+        private Sequence _startEventSequence;
+        
         protected override void Awake()
         {
             base.Awake();
@@ -36,7 +41,19 @@ namespace IEC
 
         private void OnStartEventButtonClick()
         {
+            DOTween.Kill(_startEventSequence);
+
+            _startEventSequence = DOTween.Sequence();
             
+            var nameList =
+                Config.AllGameEventConfig.GenerateAllNames(randomAvatarCount, PlayerData.playerName);
+            
+        }
+
+        private void SetEventStartUI()
+        {
+            playButton.gameObject.SetActive(false);
+            startEventButton.gameObject.SetActive(true);
         }
 
         private void OnPlayButtonClick()
@@ -62,12 +79,18 @@ namespace IEC
 
         public override void Show()
         {
-            //base.Show();
+            // var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            // if (IsEndEventStage() && (eventSaveData.claimedReward || eventSaveData.listPlayerData.Count == 0))
+            // {
+            //     SetEventStartUI();
+            // }
             
-            Init();
+            base.Show();
             
-            if (PlayerData.level < _eventConfig.levelUnlock)
-                return;
+            // Init();
+            //
+            // if (PlayerData.level < _eventConfig.levelUnlock)
+            //     return;
             
             UpdateUI();
         }
@@ -139,7 +162,7 @@ namespace IEC
             );
 
             // Set connector position
-            connectorImage.anchoredPosition = localPoint;
+            connectorImage.anchoredPosition = new Vector3(localPoint.x, connectorImage.anchoredPosition.y);
         }
         
         public override bool IsEndEventStage()
@@ -171,7 +194,7 @@ namespace IEC
 
         protected override void UpdateTimer()
         {
-            if (_currentTimeEndEventStage <= DateTime.Now)
+            if (_currentTimeEndEventStage <= DateTime.Now || _startEventSequence != null)
             {
                 eventTimerText.text = "Finished";
             }
