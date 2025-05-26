@@ -8,6 +8,7 @@ namespace IEC
         public Dictionary<int, JourneyItemStatus> regularJourneyPass = new Dictionary<int, JourneyItemStatus>();//0 to lock, 1 to unlock, 2 is can claimed,3 is unlock
         public Dictionary<int, JourneyItemStatus> vipJourneyPass = new Dictionary<int, JourneyItemStatus>();
         public int currentTargetJourney;
+        public int currentFuelJourney;
         public bool purchasedJourneyPass;
         public bool wasOpenJourney;
         public DateTime timeStartJourneyTrip;
@@ -41,7 +42,7 @@ namespace IEC
 
         public JourneyItemStatus GetStatusRegularPass(int id)
         {
-            if (!regularJourneyPass.ContainsKey(id)) regularJourneyPass[id] = JourneyItemStatus.LOCK;
+            if (!regularJourneyPass.ContainsKey(id)) regularJourneyPass[id] = JourneyItemStatus.UNLOCK;
             if (id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
             {
                 regularJourneyPass[id] = JourneyItemStatus.CANCLAIM;

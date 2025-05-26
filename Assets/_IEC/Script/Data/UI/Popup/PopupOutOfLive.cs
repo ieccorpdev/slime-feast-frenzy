@@ -79,8 +79,9 @@ namespace _IEC
 
         private void UpdateUI()
         {
-            countdownGroup.gameObject.SetActive(PlayerData.playerLife < Config.maxHealth);
-            fullGroup.gameObject.SetActive(PlayerData.playerLife == Config.maxHealth);
+            int maxHealth = PlayerData.journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth;
+            countdownGroup.gameObject.SetActive(PlayerData.playerLife < maxHealth);
+            fullGroup.gameObject.SetActive(PlayerData.playerLife == maxHealth);
             playerLifeText.text = PlayerData.playerLife.ToString();
         }
 

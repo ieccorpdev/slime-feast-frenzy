@@ -330,9 +330,14 @@ namespace _IEC.Features.Gameplay
         {
             CollectNormalItem(data);
             if (data.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
                 KingdomCollected++;
+                PlayerData.journeyData.currentFuelJourney++;
+            }
             else
+            {
                 SpecialProgressRewardObjCollected++;
+            }
             EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);

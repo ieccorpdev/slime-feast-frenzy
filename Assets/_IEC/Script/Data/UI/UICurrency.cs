@@ -56,7 +56,7 @@ public class UICurrency : _BaseBehaviour
             case ResourceType.Live:
                 if (Locator.Main.PopupOutOfLive.IsShow)
                     return;
-                if (!PlayerData.IsInUnlimitedLife() && PlayerData.playerLife < Config.maxHealth)
+                if (!PlayerData.IsInUnlimitedLife() && PlayerData.playerLife < (PlayerData.journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth))
                 {
                     Locator.Main.PopupOutOfLive.Show();
                 }

@@ -186,29 +186,29 @@ namespace IEC
         
         void SetProgressFuel()
         {
-            //int currentFuel = PlayerData.currentFuelJourney;
-            //int targetFuel = Config.JourneyTripConfig.GetRewardsByLevelJourney(PlayerData.currentTargetJourney).fuelNeed;
-            //while (currentFuel >= targetFuel)
-            //{
-            //    PlayerData.currentFuelJourney -= targetFuel;
-            //    currentFuel = PlayerData.currentFuelJourney;
-            //    PlayerData.currentTargetJourney++;
-            //    targetFuel = Config.JourneyTripConfig.GetRewardsByLevelJourney(PlayerData.currentTargetJourney).fuelNeed;
-            //}
-            //if (PlayerData.currentTargetJourney >= Config.JourneyTripConfig.listRewardByJourneys.Count)
-            //{
-            //    fillFuelBar.fillAmount = 1;
-            //    currentProgressTextTMP.text = targetFuel + "/" + targetFuel;
-            //    currentTarget.text = Config.JourneyTripConfig.GetRewardsByLevelJourney(PlayerData.currentTargetJourney).idJourney.ToString();
-            //}
-            //else
-            //{
-            //    fillFuelBar.fillAmount = (float)currentFuel / (float)targetFuel;
-            //    currentProgressTextTMP.text = currentFuel + "/" + targetFuel;
-            //    currentTarget.text = PlayerData.currentTargetJourney.ToString();
-            //}
-
+            int currentFuel = PlayerData.journeyData.currentFuelJourney;
+            int targetFuel = journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            while (currentFuel >= targetFuel)
+            {
+                PlayerData.journeyData.currentFuelJourney -= targetFuel;
+                currentFuel = PlayerData.journeyData.currentFuelJourney;
+                PlayerData.journeyData.currentTargetJourney++;
+                targetFuel = journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            }
+            if (PlayerData.journeyData.currentTargetJourney >= journeyTripConfig.listRewardsByJourneys.Count)
+            {
+                fillFuelBar.fillAmount = 1;
+                currentProgressTextTMP.text = targetFuel + "/" + targetFuel;
+                currentTarget.text = journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
+            }
+            else
+            {
+                fillFuelBar.fillAmount = (float)currentFuel / (float)targetFuel;
+                currentProgressTextTMP.text = currentFuel + "/" + targetFuel;
+                currentTarget.text = PlayerData.journeyData.currentTargetJourney.ToString();
+            }
         }
+
         void SetProgressBar(bool snap = true)
         {
             int currentTarget = PlayerData.journeyData.currentTargetJourney+1;

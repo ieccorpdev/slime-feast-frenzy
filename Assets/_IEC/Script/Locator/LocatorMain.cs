@@ -40,5 +40,8 @@ public static partial class Locator
         public static PopupSharkRace PopupSharkRace => Pool.Get<PopupSharkRace>();
 
         public static PopupStartSharkRaceEvent PopupStartSharkRaceEvent => Pool.Get<PopupStartSharkRaceEvent>();
+
+        public static PopupJourney PopupJourney => Pool.Get<PopupJourney>();
+
     } 
 }

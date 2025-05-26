@@ -2,6 +2,7 @@ using MoreMountains.NiceVibrations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -61,38 +62,8 @@ namespace IEC
         }
         public void OnClaimItem()
         {
-            //switch (typeReward)
-            //{
-            //    case TypeItemPassJourney.NORMAL:
-            //        foreach (var itr in dataReward.listReward)
-            //        {
-            //            switch (itr.typeReward)
-            //            {
-            //                case BonusDataReward.Gold:
-            //                    PlayerData.AddGold(itr.rewardAmount);
-            //                    break;
-            //                case BonusDataReward.UnlimitedLives:
-            //                    PlayerData.AddTimeUnlimitedLife(itr.rewardAmount);
-            //                    break;
-            //                case BonusDataReward.HAMMER:
-            //                    PlayerData.numHammer += itr.rewardAmount;
-            //                    break;
-            //                case BonusDataReward.EXTRAHOLE:
-            //                    PlayerData.numAddSlot += itr.rewardAmount;
-            //                    break;
-            //                case BonusDataReward.DOUBLETOOLSBOX:
-            //                    PlayerData.numToolsBox += itr.rewardAmount;
-            //                    break;
-            //            }
-            //        }
-            //        EndClaim();
-            //        break;
-            //    case TypeItemPassJourney.CHEST:
-            //        UI.popupJourney.ClaimBonusRewardPanel.gameObject.SetActive(true);
-            //        UI.popupJourney.ClaimBonusRewardPanel.SetupRewardPanel(dataReward.listReward, EndClaim);
-            //        UI.popupJourney.ClaimBonusRewardPanel.ShowingRewardPanel();
-            //        break;
-            //}
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(dataReward.listRewards.Select(x => x.reward).ToList(), null, true);
+            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
             PlayerData.Vibrate(HapticTypes.Failure);
         }
 
@@ -200,10 +171,9 @@ namespace IEC
                 {
                     typeReward = TypeItemPassJourney.CHEST;
                     chestIcon.gameObject.SetActive(true);
-                    SetupInfoButton(dataItemPass);
+                    //SetupInfoButton(dataItemPass);
                     //chestIcon.sprite = Config.JourneyTripConfig.lstSprChest[data.chestModel - 1];
                 }
-
             }
             else
             {
