@@ -13,7 +13,7 @@ namespace IEC
     /// object contain player secret data (need save and secure)
     /// </summary>
     [System.Serializable]
-    public class PlayerSecret : IData
+    public partial class PlayerSecret : IData
     {
         public long lastTickPlayTime;
         public long startTickPlayTime;
@@ -96,7 +96,7 @@ namespace IEC
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
-            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
+            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking.Count < 0)
             {
                 ClearAndInitTrackingLevelType();
                 levelLostStreak = -1;
@@ -865,7 +865,16 @@ namespace IEC
             return Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone) && currentProgress >= Config.progressRewardConfig.listRewardData.Count;
         }
         #endregion
-        
+
+        #region ArtifactCollector
+        public ArtifactData artifactData;
+
+        public void CheckResetTimeArtifactEvent()
+        {
+            artifactData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
+        }
+
+        #endregion
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();

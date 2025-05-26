@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _IEC.Script.Config
 {
@@ -8,21 +9,25 @@ namespace _IEC.Script.Config
     public class ArtifactCollectorConfig : ScriptableObject
     {
         public int daysEachReset = 3;
-        public List<ArtifactNodeModel> ArtifactNodeModels = new List<ArtifactNodeModel>();
+        public List<ArtifactLevelNodeModel> ArtifactLevels = new List<ArtifactLevelNodeModel>();
 
-        private void OnValidate()
-        {
-            for (int i = 0; i < ArtifactNodeModels.Count; i++)
-            {
-                ArtifactNodeModels[i].id = i + 1;
-            }
-        }
+        // private void OnValidate()
+        // {
+        //     for (int i = 0; i < ArtifactNodeModels.Count; i++)
+        //     {
+        //         ArtifactNodeModels[i].id = i + 1;
+        //     }
+        // }
     }
-
+    [System.Serializable]
+    public class ArtifactLevelNodeModel
+    {
+        public List<ArtifactNodeModel> artifactLevelRewards = new List<ArtifactNodeModel>();
+    }
     [System.Serializable]
     public class ArtifactNodeModel
     {
-        public int id;
+      //  public int id;
         public int tokenCost;
         public List<ArtifactRewardData> artifactRewards = new List<ArtifactRewardData>();
     }

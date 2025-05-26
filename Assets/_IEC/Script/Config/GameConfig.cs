@@ -3,6 +3,7 @@ using System.Linq;
 using _IEC.Features.Booster;
 using _IEC.Features.Common.Config;
 using _IEC.Features.Gameplay;
+using _IEC.Script.Config;
 using UnityEngine;
 
 namespace IEC
@@ -48,6 +49,8 @@ namespace IEC
         public DataDailyReward dataDailyRewardConfig;
         [Header("Progress Reward Config")]
         public ProgressRewardConfig progressRewardConfig;
+        [Header("Artifact Collector")]
+        public ArtifactCollectorConfig artifactCollectorConfig;
         [Header("City Build")] 
         public int brickWinReward = 15;
         public BuildCityConfig buildCityConfig;
