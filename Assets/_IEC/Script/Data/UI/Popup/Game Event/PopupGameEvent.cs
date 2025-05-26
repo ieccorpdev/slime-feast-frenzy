@@ -488,7 +488,7 @@ namespace IEC
                     eventStageIndex,
                     DateTime.Now,
                     //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
-                    DateTime.Now.AddDays(1).Date, //hard code to end of day - events last one day
+                    DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours).Date,
                     new List<EventPlayerData>(listPlayerData)
                 );
             

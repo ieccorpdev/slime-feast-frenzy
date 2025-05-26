@@ -207,6 +207,11 @@ namespace IEC
             playerName.text = text;
         }
 
+        public void SetProgressText(string text)
+        {
+            playerProgress.text = text;
+        }
+
         public void Setup(GameEventConfig gameEventConfig, EventData eventData, EventPlayerData playerData, int rank)
         {
             _gameEventConfig = gameEventConfig;
@@ -215,6 +220,17 @@ namespace IEC
 
             CurrentRank = rank;
 
+            playerName.text = EventPlayerData.id;
+            
+            UpdatePlayerRank();
+            UpdatePlayerProgress();
+            
+            CheckSetMainPlayerUI();
+            UpdatePlayerAvatar();
+        }
+
+        public void UpdateUI()
+        {
             playerName.text = EventPlayerData.id;
             
             UpdatePlayerRank();
