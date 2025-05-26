@@ -1,26 +1,37 @@
 using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
-using TMPro;
 using UnityEngine;
 
 public class SplashVFX : MonoBehaviour
 {
     public ParticleSystem effectParticle;
-    private string TweenID => gameObject.GetInstanceID() + "_Particle";
+    private Coroutine recycleCoroutine;
 
     public void Show()
     {
         effectParticle.Play();
-        DOTween.Sequence().AppendInterval(2f).OnComplete(() =>
+
+        if (recycleCoroutine != null)
         {
-            gameObject.Recycle();
-        });
+            StopCoroutine(recycleCoroutine);
+        }
+
+        recycleCoroutine = StartCoroutine(DelayedRecycle(2f));
+    }
+
+    private IEnumerator DelayedRecycle(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        gameObject.Recycle();
+        recycleCoroutine = null;
     }
 
     private void OnDisable()
     {
-        DOTween.Kill(TweenID);
+        if (recycleCoroutine != null)
+        {
+            StopCoroutine(recycleCoroutine);
+            recycleCoroutine = null;
+        }
     }
 
     public void Reset()

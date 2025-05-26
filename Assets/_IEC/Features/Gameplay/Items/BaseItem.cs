@@ -34,7 +34,6 @@ namespace _IEC.Features.Gameplay
         private Camera mainCam;
         public bool IsCollected => _isCollected;
         private bool hasRenderer;
-        private bool hasRigidbody;
         private bool hasSpringOscillation;
         private bool hasPosOnWater;
         private Game GameG;
@@ -293,8 +292,6 @@ namespace _IEC.Features.Gameplay
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
             }
-
-            hasRigidbody = false;
         }
 
         private void RestoreRigidbody()
@@ -312,8 +309,6 @@ namespace _IEC.Features.Gameplay
                 rb.interpolation = savedData.interpolation;
                 rb.collisionDetectionMode = savedData.collisionDetectionMode;
             }
-
-            hasRigidbody = true;
         }
 
         protected void ChangeState(State newState)
@@ -384,13 +379,13 @@ namespace _IEC.Features.Gameplay
 
             if (GameG.iosFeature )
             {
-                if (hasRigidbody)
+                if (rb)
                 {
                     lastVelocity = rb.velocity;
                 }
                 if(hasPosOnWater)
                 {
-                    if (hasRigidbody && !rb.isKinematic )
+                    if (rb && !rb.isKinematic )
                     {
                         posOnWater.enabled = false;
                         hasPosOnWater = false;  
@@ -405,7 +400,7 @@ namespace _IEC.Features.Gameplay
             {
                 springOscillation.CheckSpringObject();
             }
-            if (!hasRigidbody)
+            if (rb == null)
             {
                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
                {
