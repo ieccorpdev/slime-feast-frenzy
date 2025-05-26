@@ -27,6 +27,7 @@ namespace IEC
             public const string GET_STAR_3 = "Audio.GET_STAR_3";
             public const string SPECIAL_ITEM_NEAR = "Audio.SPECIAL_ITEM_NEAR";
             public const string SPECIAL_ITEM_GET = "Audio.SPECIAL_ITEM_GET";
+            public const string RELIC_ITEM_GET = "Audio.RELIC_ITEM_GET";
             public const string SPECIAL_ITEM_HIT = "Audio.SPECIAL_ITEM_HIT";
             public const string COMPASS = "Audio.COMPASS";
             public const string MAGNET_START = "Audio.MAGNET_START";

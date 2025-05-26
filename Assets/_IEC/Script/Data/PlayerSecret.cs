@@ -867,11 +867,17 @@ namespace IEC
         #endregion
 
         #region ArtifactCollector
-        public ArtifactData artifactData;
+
+        private RelicData _relicData;
+        public RelicData relicData => _relicData ??= new();
 
         public void CheckResetTimeArtifactEvent()
         {
-            artifactData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
+            _relicData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
+        }
+        public bool ReachMaxRelicReward()
+        {
+            return false;
         }
 
         #endregion

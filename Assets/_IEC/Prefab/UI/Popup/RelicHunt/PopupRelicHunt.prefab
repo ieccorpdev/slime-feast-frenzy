@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1023949821637617003}
   - component: {fileID: 3917913961942771374}
-  - component: {fileID: 5288853790672896577}
   m_Layer: 5
   m_Name: PopupRelicHunt
   m_TagString: Untagged
@@ -49,58 +48,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1602621543218724179}
   m_CullTransparentMesh: 1
---- !u!114 &5288853790672896577
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602621543218724179}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2073f5a174df50f4daa121e73d65f21a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isHideAllOtherScreen: 0
-  listHideHaveEffect: []
-  listHideNoEffect: []
-  onShow:
-    m_PersistentCalls:
-      m_Calls: []
-  onHide:
-    m_PersistentCalls:
-      m_Calls: []
-  onShowDone:
-    m_PersistentCalls:
-      m_Calls: []
-  onHideDone:
-    m_PersistentCalls:
-      m_Calls: []
-  tempOnHideDone:
-    m_PersistentCalls:
-      m_Calls: []
-  onHaveFocus:
-    m_PersistentCalls:
-      m_Calls: []
-  onLostFocus:
-    m_PersistentCalls:
-      m_Calls: []
-  btnClose: {fileID: 8712597036974863923}
-  blackPanel: {fileID: 0}
-  mainPanel: {fileID: 8768172439336369322}
-  isHaveAnim: 1
-  isHaveAnimClose: 1
-  isShowBlackPanel: 1
-  isShowTopResourceBar: 0
-  dailyReward:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  dailyCountdownText: {fileID: 0}
 --- !u!1 &1912965417923080409
 GameObject:
   m_ObjectHideFlags: 0
@@ -211,7 +158,7 @@ RectTransform:
   m_Children:
   - {fileID: 9140051265330672856}
   m_Father: {fileID: 4208591193812571455}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -688,8 +635,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7712605615693274602}
+  - {fileID: 6875728441974442377}
   m_Father: {fileID: 4208591193812571455}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -766,7 +714,7 @@ RectTransform:
   m_Children:
   - {fileID: 2363143976469574094}
   m_Father: {fileID: 4208591193812571455}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -841,13 +789,13 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4208591193812571455}
-  m_RootOrder: 0
+  m_Father: {fileID: 1326259404851654223}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2, y: -32}
-  m_SizeDelta: {x: 180, y: 842}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 804, y: 1229}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7077820420221005312
 CanvasRenderer:
@@ -877,7 +825,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 5791c50a29f7177429f016753120e7dd, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 56ecaf646dd34bb4fb003afe419f5f62, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -917,7 +865,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6875728441974442377}
   - {fileID: 1326259404851654223}
   - {fileID: 2049064314588618845}
   - {fileID: 2743308889670312695}

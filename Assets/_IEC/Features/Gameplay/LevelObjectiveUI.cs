@@ -97,6 +97,42 @@ namespace _IEC.Features.Gameplay
             itemId = levelObjective.itemId;
             m_IsSpecial = isSpecial;
             //SetText(isSpecial ? "0" : levelObjective.number.ToString());
+            SetTextObject(levelObjective, isSpecial);
+            SetSpriteObject(levelObjective, isSpecial);
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+
+            var delta = RectTransform.sizeDelta;
+            delta.y = imgIcon.rectTransform.sizeDelta.y;
+            RectTransform.sizeDelta = delta;
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
+        }
+        public void LoadDataRelic(LevelObjective levelObjective, bool isSpecial)
+        {
+            Reset();
+            itemId = levelObjective.itemId;
+            m_IsSpecial = isSpecial;
+            //SetText(isSpecial ? "0" : levelObjective.number.ToString());
+            int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
+            var totalNumberCollected = GamePlay.levelController.RelicObjCollected;
+            SetText(totalNumberCollected+"/"+maxSpecialObject);
+            var itemDefinition = Config.relicObjectConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+            imgIcon.sprite = itemDefinition.GetIcon();
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+
+            var delta = RectTransform.sizeDelta;
+            delta.y = imgIcon.rectTransform.sizeDelta.y;
+            RectTransform.sizeDelta = delta;
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
+        }
+
+        private void SetTextObject(LevelObjective levelObjective, bool isSpecial)
+        {
             if (isSpecial)
             {
                 if (isGoldObj) // MeoMew hard Code;
@@ -115,6 +151,10 @@ namespace _IEC.Features.Gameplay
             {
                 SetText(levelObjective.number.ToString());  
             }
+        }
+
+        private void SetSpriteObject(LevelObjective levelObjective, bool isSpecial)
+        {
             if (isSpecial)
             {
                 //Change method load 
@@ -134,15 +174,6 @@ namespace _IEC.Features.Gameplay
             {
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
-            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
-            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
-
-            var delta = RectTransform.sizeDelta;
-            delta.y = imgIcon.rectTransform.sizeDelta.y;
-            RectTransform.sizeDelta = delta;
-            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
-            dirFlyX = Random.value < 0.5 ? 1 : -1;
-            m_isLoaded = true;
         }
 
         public void Reset()

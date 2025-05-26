@@ -3,9 +3,10 @@ using System;
 namespace IEC
 {
     [Serializable]
-    public class ArtifactData
+    public class RelicData
     {
-        public int currentArtifactTokenCount;       
+        public int relicItemIndex = 0;
+        public int currentRelicTokenCount;       
         public DateTime lastTimeResetEvent;
         
         public void SaveTimeResetEvent()
@@ -14,11 +15,11 @@ namespace IEC
         }
         public void ResetTokenCount()
         {
-            currentArtifactTokenCount = 0;
+            currentRelicTokenCount = 0;
         }
         public void AddTokenCount(int amount)
         {
-            currentArtifactTokenCount += amount;
+            currentRelicTokenCount += amount;
         }
 
         public void CheckResetTimeEvent(int daysToReset)

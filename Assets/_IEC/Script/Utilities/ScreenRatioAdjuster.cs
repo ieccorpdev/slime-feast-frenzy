@@ -39,8 +39,8 @@ public class ScreenRatioAdjuster : MonoBehaviour
         Debug.Log($"Aspect Ratio: {aspectRatio}, matchWidthOrHeight set to: {scaler.matchWidthOrHeight}");
     }
 
-    private void OnDrawGizmos()
-    {
-        AdjustCanvasScaler();
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     AdjustCanvasScaler();
+    // }
 }

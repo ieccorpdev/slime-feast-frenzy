@@ -39,6 +39,8 @@ namespace IEC
 
         [Header("Special Object Spawn Config")]
         public SpecialObjectConfig specialObjectConfig;
+        [Header("Relic Object Spawn Config")]
+        public RelicObjectConfig relicObjectConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
         [Header("Lucky Wheel Config")]

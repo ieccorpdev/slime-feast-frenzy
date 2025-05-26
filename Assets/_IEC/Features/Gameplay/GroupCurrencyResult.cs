@@ -12,31 +12,34 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private TextMeshProUGUI txtNumberHeart;
         [SerializeField] private TextMeshProUGUI txtNumberStar;
         [SerializeField] private TextMeshProUGUI txtNumberSpecialObject;
+        [SerializeField] private TextMeshProUGUI txtNumberRelicObject;
         [SerializeField] private TextMeshProUGUI txtNumberCoin;
         [SerializeField] private Image imgIconSpecialObject;
+        [SerializeField] private Image imgIconRelicObject;
         public void UpdateUI()
         {
             txtNumberHeart.text = 1.ToString();
             UpdateStarDisplay();
             UpdateGoldDisplay();
             UpdateSpecialItemDisplay();
-           //var remainingTime = UI.ScreenInGame.GetGameplayTimer().GetRemainingTime();
-           //txtNumberStar.text = Config.gamePlayConfig.GetStarByRemainingTime(remainingTime, UI.ScreenInGame.GetGameplayTimer().GetMaxTime()).ToString();
-           //txtNumberCoin.text = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN).ToString();
-           //txtNumberSpecialObject.text = GamePlay.gamePlayData.GetAchievementItemCount(ProgressRewardHelper.GetCurrentSpecialObjectIdInString()).ToString();
-           //imgIconSpecialObject.sprite = ProgressRewardHelper.GetCurrentSpecialObjectSprite();
-           ////imgIconSpecialObject.rectTransform.ForceToWidth(imgIconSpecialObject.sprite,178);
-           //
-           //if (!Game.enableTreasureHunt || PlayerData.level < Config.treasureHuntProgressConfig.unlockLevel || TreasureHuntController.treasureHuntData.currentProgressIndex >= Config.treasureHuntProgressConfig.rewardProgressModels.Count)
-           //{
-           //    imgIconSpecialObject.gameObject.SetActive(false);
-           //    txtNumberSpecialObject.gameObject.SetActive(false);
-           //}
-           //else
-           //{
-           //    imgIconSpecialObject.gameObject.SetActive(true);
-           //    txtNumberSpecialObject.gameObject.SetActive(true);
-           //}
+            UpdateRelicItemDisplay();
+            //var remainingTime = UI.ScreenInGame.GetGameplayTimer().GetRemainingTime();
+            //txtNumberStar.text = Config.gamePlayConfig.GetStarByRemainingTime(remainingTime, UI.ScreenInGame.GetGameplayTimer().GetMaxTime()).ToString();
+            //txtNumberCoin.text = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN).ToString();
+            //txtNumberSpecialObject.text = GamePlay.gamePlayData.GetAchievementItemCount(ProgressRewardHelper.GetCurrentSpecialObjectIdInString()).ToString();
+            //imgIconSpecialObject.sprite = ProgressRewardHelper.GetCurrentSpecialObjectSprite();
+            ////imgIconSpecialObject.rectTransform.ForceToWidth(imgIconSpecialObject.sprite,178);
+            //
+            //if (!Game.enableTreasureHunt || PlayerData.level < Config.treasureHuntProgressConfig.unlockLevel || TreasureHuntController.treasureHuntData.currentProgressIndex >= Config.treasureHuntProgressConfig.rewardProgressModels.Count)
+            //{
+            //    imgIconSpecialObject.gameObject.SetActive(false);
+            //    txtNumberSpecialObject.gameObject.SetActive(false);
+            //}
+            //else
+            //{
+            //    imgIconSpecialObject.gameObject.SetActive(true);
+            //    txtNumberSpecialObject.gameObject.SetActive(true);
+            //}
         }
 
         void UpdateStarDisplay()
@@ -72,6 +75,11 @@ namespace _IEC.Features.Gameplay
         {
             txtNumberSpecialObject.text = GamePlay.levelController.SpecialProgressRewardObjCollected.ToString();
             imgIconSpecialObject.sprite = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
+        }
+        void UpdateRelicItemDisplay()
+        {
+            // txtNumberRelicObject.text = GamePlay.levelController.RelicObjCollected.ToString();
+            // imgIconRelicObject.sprite = Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon();
         }
     }
 }
