@@ -78,7 +78,7 @@ namespace IEC
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
             chompOffInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
             {
                 if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
                 {

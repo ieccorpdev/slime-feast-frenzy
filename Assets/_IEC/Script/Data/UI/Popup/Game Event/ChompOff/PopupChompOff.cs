@@ -157,8 +157,12 @@ namespace IEC
 
         protected override void CheckShowReward()
         {
-            playButton.gameObject.SetActive(false);
             base.CheckShowReward();
+
+            if (claimRewardButton.gameObject.activeInHierarchy)
+            {
+                playButton.gameObject.SetActive(false);
+            }
 
             if (!IsEventStageCompleted())
             {
@@ -183,12 +187,17 @@ namespace IEC
 
         public override void Show()
         {
-            //startEventButton.gameObject.SetActive(false);
+            startEventButton.gameObject.SetActive(false);
             retryButton.gameObject.SetActive(false);
+            playButton.gameObject.SetActive(true);
             
             if (CheckShowStartPopup())
             {
                 SetEventStartUI();
+            }
+            else
+            {
+                _eventStarted = true;
             }
             
             base.Show();
