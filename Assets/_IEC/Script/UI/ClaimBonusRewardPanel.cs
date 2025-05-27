@@ -198,7 +198,6 @@ public class ClaimBonusRewardPanel : BasePopup
         DOTween.Kill(AutoClaimTween);
         //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
-        EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);
         //Showing
@@ -229,6 +228,7 @@ public class ClaimBonusRewardPanel : BasePopup
             Pool.Get<ConfettiGroup>().StopConfetti();
             targetSpineAnimObject.SetAnimation("1_Start", false, () =>
             {
+                EventController.RaiseEvent(EventList.Audio.CHEST_DROP);
                 targetSpineAnimObject.SetAnimation("2_Idle", false, () =>
                 {
                     OpenChest();
@@ -363,6 +363,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
+            EventController.RaiseEvent(EventList.Audio.CHEST_OPEN);
             targetSpineAnimObject.SetAnimation("3_Open", false, () =>
             {
                 EndingChestOpen();
@@ -373,6 +374,7 @@ public class ClaimBonusRewardPanel : BasePopup
 
     private void EndingChestOpen()
     {
+        EventController.RaiseEvent(EventList.Audio.CHEST_IDLE);
         ShowRewardInChest();
         targetSpineAnimObject.SetAnimation("4_OpenIdle", false, () =>
         {

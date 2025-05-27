@@ -1,3 +1,4 @@
+using _IEC.Script.GamePlay;
 using IEC;
 using UnityEngine;
 
@@ -46,7 +47,12 @@ public class SpringOscillation : _BaseBehaviour
         movementLimit = maxSize * sizeMovementLimitMultiplier;
     }
 
-    void Update()
+    public void ManagedUpdate()
+    {
+        CheckSpringObject();
+    }
+
+    public void CheckSpringObject()
     {
         if (!isOscillating) return;
 
@@ -68,7 +74,7 @@ public class SpringOscillation : _BaseBehaviour
             worldBasePosition.z
         );
 
-        if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < 0.01f)
+        if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < minAmplitude)
         {
             isOscillating = false;
             amplitude = 0f;
