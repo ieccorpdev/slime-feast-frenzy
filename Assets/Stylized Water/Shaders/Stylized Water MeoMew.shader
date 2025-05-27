@@ -5,7 +5,8 @@
         [Header(Densities)]
         _DepthDensity ("Depth", Range(0.0, 1.0)) = 0.5
         _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.1
-        
+        _MinDistanceFade ("Min Fade Distance", Float) = 1.0
+        _FadeSharpness ("Fade Sharpness", Range(0.01, 4.0)) = 0.25
         [Header(Waves)]
         [NoScaleOffset]
         _WaveNormalMap ("Normal Map", 2D) = "bump"{}
@@ -111,7 +112,8 @@
             // Densities.
             float _DepthDensity;
             float _DistanceDensity;
-
+            float _MinDistanceFade;
+            float _FadeSharpness;
             // Wave Normal Map.
             sampler2D _WaveNormalMap;
             float _WaveNormalScale;
@@ -175,6 +177,7 @@
             struct appdata
             {
                 float4 vertex : POSITION;
+                float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
@@ -183,6 +186,7 @@
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 worldPosition : TEXCOORD1;
+                float3 worldNormal : TEXCOORD4;
                 float4 grabPosition : TEXCOORD2;
                 UNITY_FOG_COORDS(3)
             };
@@ -225,7 +229,7 @@
                 o.worldPosition = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.worldPosition.y += GetWaveHeight(o.worldPosition.xz);
                 o.vertex = mul(UNITY_MATRIX_VP, float4(o.worldPosition, 1));
-
+                o.worldNormal = UnityObjectToWorldNormal(v.normal);
                 // We don't want to offset the grab position by the wave height,
                 // because we get nice refraction effects for free essentially.
                 // o.grabPosition = ComputeGrabScreenPos(mul(UNITY_MATRIX_VP, float4(mul(unity_ObjectToWorld, v.vertex).xyz, 1)));
@@ -270,13 +274,23 @@
                 // ------------------------ //
 
                 // Calculate the distance the viewing ray travels underwater,
-                // as well as the transmittance for that distance.
+                // as well as the transmittance for that distance. 
                 float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
                 float transmittance = exp(-_DepthDensity * opticalDepth);
 
                 // Also calculate how far away the fragment is from the camera.
-                float distanceMask = exp(-_DistanceDensity * length(i.worldPosition - _WorldSpaceCameraPos));
+                //float distanceMask = exp(-_DistanceDensity * length(i.worldPosition - _WorldSpaceCameraPos));
+// Tính khoảng cách thô giữa camera và điểm đang render
+float rawDist = length(i.worldPosition - _WorldSpaceCameraPos);
 
+// Không để distance quá nhỏ gây mất hiệu ứng fade
+float adjustedDist = max(rawDist, _MinDistanceFade);
+
+float3 viewDir = normalize(_WorldSpaceCameraPos - i.worldPosition);
+float viewAngleFactor = saturate(dot(i.worldNormal, viewDir));
+float fadeFactor = lerp(0.5, 1.0, viewAngleFactor);
+float linearFade = saturate((adjustedDist - _MinDistanceFade) * _DistanceDensity);
+float distanceMask = pow(linearFade, _FadeSharpness);
                 // ----------- //
                 // SHADOW MASK //
                 // ----------- //
@@ -381,7 +395,6 @@
 
                 // Apply fog.
                 UNITY_APPLY_FOG(i.fogCoord, color);
-
                 return float4(color, 1);
             }
             ENDCG
