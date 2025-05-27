@@ -12,6 +12,12 @@ namespace _IEC.Features.Gameplay
         {
             //EventController.RaiseEvent(EventList.Audio.BOMB_IDLE);
         }
+        public virtual void Start()
+        {
+            base.Start();
+            rb.drag = Config.gamePlayConfig.ItemDrag/2;
+            rb.angularDrag = 0;
+        }
         public override void OnCollected(Vector3 position)
         {
             this.RaiseEvent(EventList.GamePlay.COLLECT_ITEM,new CollectItemData()
