@@ -23,7 +23,7 @@ Shader "Stylized/Water Custom MeoMew"
         _DeepColor ("Deep", Color) = (0.0, 0.05, 0.19, 1.0)
         [HDR]
         _FarColor ("Far", Color) = (0.04, 0.27, 0.75, 1.0)
-
+        _FarAlpha ("Far Color Alpha Multiplier", Range(0,1)) = 1.0
         [Header(Reflections)]
         _ReflectionContribution ("Contribution", Range(0.0, 1.0)) = 1.0
 
@@ -117,6 +117,7 @@ Shader "Stylized/Water Custom MeoMew"
             float _DistanceDensity;
             float _ScreenYThreshold;
             float _ScreenYCurve;
+            float _FarAlpha;
             int _EaseType;
             // Wave Normal Map.
             sampler2D _WaveNormalMap;
@@ -320,7 +321,8 @@ Shader "Stylized/Water Custom MeoMew"
                 // Calculate the base color based on the transmittance and distance mask.
                 float3 baseColor = fragColor * _ShallowColor;
                 baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
-                baseColor = lerp(_FarColor, baseColor, distanceMask);
+                float blendFactor = (1.0 - distanceMask) * _FarAlpha;
+                baseColor = lerp(baseColor, _FarColor.rgb, blendFactor);
 
                 // --------------- //
                 // REFLECTED COLOR //
