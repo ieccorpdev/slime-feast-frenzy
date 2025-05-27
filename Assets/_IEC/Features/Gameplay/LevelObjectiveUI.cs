@@ -36,6 +36,8 @@ namespace _IEC.Features.Gameplay
         public bool isKingdomObj => itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId();
         [SerializeField] private Animator anim;
         [SerializeField] private Transform subIconPos;
+        [SerializeField] private Image fill;
+        [SerializeField] private TMP_Text passTockenCounter;
 
         public RectTransform RectTransform
         {
@@ -83,6 +85,11 @@ namespace _IEC.Features.Gameplay
 
         public void SetNumber(string newNumber, bool isCompleted)
         {
+            if (isKingdomObj)
+            {
+                int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
+                fill.fillAmount = GamePlay.levelController.KingdomCollected / (float)maxSpecialObject;
+            }
             effectCollect.Play();
             SetText(newNumber);
             if (isCompleted)
@@ -97,6 +104,8 @@ namespace _IEC.Features.Gameplay
         
         public Sprite GetSprite()
         {
+            if (isKingdomObj)
+                return Config.specialObjectConfig.kingdomSpecialObjective.GetIcon();
             return imgIcon.sprite;
         }
 
@@ -115,7 +124,9 @@ namespace _IEC.Features.Gameplay
                 else if (isKingdomObj) // FireFire hard Code;
                 {
                     int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
+                    fill.fillAmount = GamePlay.levelController.KingdomCollected / (float)maxSpecialObject;
                     SetText(GamePlay.levelController.KingdomCollected.ToString() + "/" + maxSpecialObject);
+                    passTockenCounter.text = "1";
                 }
                 else
                 {
@@ -140,7 +151,7 @@ namespace _IEC.Features.Gameplay
                 else if (isKingdomObj) // FireFire hard Code;
                 {
                     var itemDefinition = Config.specialObjectConfig.kingdomSpecialObjective;
-                    imgIcon.sprite = itemDefinition.GetIcon();
+                    //imgIcon.sprite = itemDefinition.GetIcon();
                 }
                 else
                 {
@@ -154,11 +165,13 @@ namespace _IEC.Features.Gameplay
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
             //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
-            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
-
-            var delta = RectTransform.sizeDelta;
-            delta.y = imgIcon.rectTransform.sizeDelta.y;
-            RectTransform.sizeDelta = delta;
+            if (!isKingdomObj)
+            {
+                imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+                var delta = RectTransform.sizeDelta;
+                delta.y = imgIcon.rectTransform.sizeDelta.y;
+                RectTransform.sizeDelta = delta;
+            }
             offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
             dirFlyX = Random.value < 0.5 ? 1 : -1;
             m_isLoaded = true;
@@ -169,7 +182,8 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(TWEEN_LEVEL_OBJECTIVE);
             pivot.localScale = Vector3.one;
             pivot.localEulerAngles = Vector3.zero;
-            imgCheckComplete.gameObject.SetActive(false);
+            if (imgCheckComplete)
+                imgCheckComplete.gameObject.SetActive(false);
             txtNumber.gameObject.SetActive(true);
             m_isLoaded = false;
         }
@@ -180,7 +194,8 @@ namespace _IEC.Features.Gameplay
             if (!GamePlay.IsWin)
                 EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
             txtNumber.gameObject.SetActive(false);
-            imgCheckComplete.gameObject.SetActive(true);
+            if (imgCheckComplete)
+                imgCheckComplete.gameObject.SetActive(true);
         }
 
         [Button]

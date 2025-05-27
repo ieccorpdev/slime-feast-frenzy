@@ -43,5 +43,7 @@ public static partial class Locator
 
         public static PopupJourney PopupJourney => Pool.Get<PopupJourney>();
 
+        public static PopupUnderseaVoyageIntro PopupUnderseaVoyageIntro => Pool.Get<PopupUnderseaVoyageIntro>();
+
     } 
 }

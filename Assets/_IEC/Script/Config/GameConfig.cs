@@ -80,6 +80,9 @@ namespace IEC
         [Header("Game Event")] 
         public AllGameEventConfig AllGameEventConfig;
 
+        [Header("Journey Trip Config")]
+        public JourneyTripConfig journeyTripConfig;
+
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here
