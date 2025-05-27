@@ -79,6 +79,9 @@ namespace IEC
         [Header("Game Event")] 
         public AllGameEventConfig AllGameEventConfig;
 
+        [Header("Game Event Live Ops")] 
+        public GameEventLiveOpsConfig eventLiveOpsConfig;
+
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here

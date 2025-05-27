@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
 using TMPro;
+using EventType = IEC.EventType;
 
 
 public class HomeScreenTab : ScreenNavigateUI
@@ -480,6 +481,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateLifeOffer();
         UpdateStarChest();
         UpdateGameEventButton();
+        CheckAllEventsAvailable();
         progressRewardBar.Setup();
         levelChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
         levelChestHomeFeature.SetProgressBar(
@@ -497,6 +499,20 @@ public class HomeScreenTab : ScreenNavigateUI
         playButton.gameObject.SetActive(!PlayerData.IsHardLevel());
         playHardButton.gameObject.SetActive(PlayerData.IsHardLevel());
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+    }
+
+    public void CheckAllEventsAvailable()
+    {
+        int daysPlayed = PlayerData.GetDaysSinceDownload();
+        
+        //Check chomp-off
+        chompOffButton.gameObject.SetActive(
+            Config.eventLiveOpsConfig.IsEventAvailable(
+                EventType.ChompOff,
+                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).eventDurationInHours / 24), 
+                daysPlayed));
+        
+        
     }
 
     private void UpdateStarChest()

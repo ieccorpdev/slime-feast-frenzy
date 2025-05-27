@@ -143,7 +143,9 @@ namespace IEC
     {
         StarChase,
         SharkRace,
-        ChompOff
+        ChompOff,
+        RelicHunt,
+        UnderseaVoyage
     }
     
     [System.Serializable]

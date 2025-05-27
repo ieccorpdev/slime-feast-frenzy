@@ -81,6 +81,15 @@ namespace IEC
             startTickPlayTime = Math.Max(lastTickPlayTime, DateTime.Now.Ticks);
         }
 
+        public int GetDaysSinceDownload()
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (DateTime.Now - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+        }
+
         public DateTime GetLastPlayDateTime()
         {
             if (lastTickPlayTime == 0) return DateTime.Now;
