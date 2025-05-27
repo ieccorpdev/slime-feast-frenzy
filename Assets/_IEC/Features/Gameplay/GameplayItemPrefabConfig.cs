@@ -477,6 +477,36 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        
+        [Button]
+        void CheckRidbody()
+        {
+            Debug.LogError($"Start CheckRidbody");
+            for (int i = 0; i < listItemDefinitionShp.Count; i++)
+            {
+                var itemDef = listItemDefinitionShp[i];
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    continue;
+                }
+                GameObject prefab = listItemDefinitionShp[i].GetPrefab();
+                if (prefab != null)
+                {
+                   var sping =  prefab.GetComponent<SpringOscillation>();
+                   if (sping != null)
+                   {
+                       if (sping.GetComponent<Rigidbody>())
+                       {
+                           Debug.LogError(itemDef.name + "Error");
+                       }
+                   }
+                }
+            }
+            Debug.LogError($"End CheckRidbody");
+            //AssetDatabase.SaveAssets();
+            //AssetDatabase.Refresh();
+        }    
         void CheckOverlap(Collider[] colliders, MeshRenderer[] meshs,string nameObj)
         {
             // Lấy danh sách GameObject từ mỗi mảng
