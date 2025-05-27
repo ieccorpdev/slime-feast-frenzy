@@ -912,6 +912,7 @@ namespace IEC
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
         public bool isShownPopupStartSharkRace;
+        public bool isShownPopupInfoChompOff;
         public int chompOffCurrentLevelLost;
         public int chompOffCurrentLevelLostCount;
 
@@ -925,6 +926,7 @@ namespace IEC
                 {
                     eventType = eventType,
                     eventIndex = 0,
+                    claimedReward = true,
                 };
                 listEventSaveData.Add(data);
             }

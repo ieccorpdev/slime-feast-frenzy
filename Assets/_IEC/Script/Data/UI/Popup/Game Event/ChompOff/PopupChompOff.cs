@@ -99,7 +99,7 @@ namespace IEC
                     playButton.transform.localScale = new Vector3(0, 1, 1);
                     playButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack);
                     
-                    UpdateUI();
+                    InitEvent();
 
                     DOTween.Kill(_startEventSequence);
                     _startEventSequence = null;
@@ -201,9 +201,15 @@ namespace IEC
             }
             
             base.Show();
-            
-            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            
+            //
+            //var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+
+            if (!PlayerData.isShownPopupInfoChompOff)
+            {
+                OnShowInfo();
+                PlayerData.isShownPopupInfoChompOff = true;
+            }
+
             _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
                 eventType, 
                 Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
@@ -215,12 +221,18 @@ namespace IEC
             // if (PlayerData.level < _eventConfig.levelUnlock)
             //     return;
             
-            //UpdateUI();
+            UpdateUI();
+        }
+
+        protected override bool IsShowInfo()
+        {
+            return false;
         }
 
         public override void InitEvent()
         {            
-            base.InitEvent();
+            if(_eventStarted)
+                base.InitEvent();
             
             UpdateUI();
         }
@@ -232,9 +244,17 @@ namespace IEC
             
             var player = eventSaveData.listPlayerData.Find(data => data.isPlayer);
             var opponent = eventSaveData.listPlayerData.Find(data => !data.isPlayer);
-            
+
+            if (player == null)
+                player = new EventPlayerData()
+                {
+                    id = PlayerData.playerName
+                };
+                
             playerUI.Setup(_eventConfig, eventData, player, 0);
-            opponentUI.Setup(_eventConfig, eventData, opponent, 0);
+            
+            if(opponent != null)
+                opponentUI.Setup(_eventConfig, eventData, opponent, 0);
 
             if (!_eventStarted)
             {
@@ -242,7 +262,7 @@ namespace IEC
                 opponentUI.SetName(randomName);
             }
             
-            UpdateProgressBarUI(player, opponent);
+            progressBarUI.UpdateProgressBarUI(player, opponent);
             
             UpdateRewardUI();
 
@@ -257,17 +277,24 @@ namespace IEC
         {
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
 
+            int activeIndex = 0;
+
+            if (eventSaveData != null)
+            {
+                activeIndex = eventSaveData.eventIndex;
+            }
+
             for (int i = 0; i < listRewardUI.Count; i++)
             {
-                listRewardUI[i].SetUITextActive(i == eventSaveData.eventIndex);
+                listRewardUI[i].SetUITextActive(i == activeIndex);
 
-                if (i < eventSaveData.eventIndex)
+                if (i < activeIndex)
                 {
                     listRewardUI[i].SetRewardUIState(ChompOffRewardUIState.Opened);
                 }
-                else if (i == eventSaveData.eventIndex && IsEventStageCompleted())
+                else if (i == activeIndex && IsEventStageCompleted())
                 {
-                    if(eventSaveData.claimedReward)
+                    if(eventSaveData != null && eventSaveData.claimedReward)
                         listRewardUI[i].SetRewardUIState(ChompOffRewardUIState.Opened);
                     else
                         listRewardUI[i].SetRewardUIState(ChompOffRewardUIState.Available);
@@ -277,11 +304,6 @@ namespace IEC
                     listRewardUI[i].SetRewardUIState(ChompOffRewardUIState.Unavailable);
                 }
             }
-        }
-
-        private void UpdateProgressBarUI(EventPlayerData player, EventPlayerData opponent)
-        {
-            progressBarUI.UpdateProgressBarUI(player, opponent);
         }
 
         public override DateTime GetTimeEndStage()
@@ -315,8 +337,10 @@ namespace IEC
             var player = eventSaveData.listPlayerData.Find(data => data.isPlayer);
             var opponent = eventSaveData.listPlayerData.Find(data => !data.isPlayer);
 
-            return player.progress > opponent.progress;
+            if (player == null || opponent == null)
+                return false;
 
+            return player.progress > opponent.progress;
         }
 
         protected override void UpdateTimer()

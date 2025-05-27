@@ -416,6 +416,12 @@ namespace IEC
             return stage;
         }
 
+        protected virtual bool IsShowInfo()
+        {            
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return data.listPlayerData.Count == 0;
+        }
+
         protected virtual void CheckInitEventProgress()
         {
             if (_eventRankController == null)
@@ -436,7 +442,7 @@ namespace IEC
             {
                 IsInEvent = false;
 
-                if (data.listPlayerData.Count == 0) // First time in star chase
+                if (IsShowInfo())
                 {
                     OnShowInfo();
                     StartNewEventStage(0);

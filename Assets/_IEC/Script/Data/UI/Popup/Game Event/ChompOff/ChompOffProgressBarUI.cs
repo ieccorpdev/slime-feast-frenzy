@@ -13,11 +13,18 @@ namespace IEC
         
         public void UpdateProgressBarUI(EventPlayerData player, EventPlayerData opponent)
         {
-            float total = player.progress + opponent.progress;
+            UpdateProgressBarUI(
+                player?.progress ?? 0, 
+                opponent?.progress ?? 0);
+        }
+
+        private void UpdateProgressBarUI(int playerProgress, int opponentProgress)
+        {
+            float total = playerProgress + opponentProgress;
             if (total == 0) total = 1;
             
-            playerProgressImg.flexibleWidth = player.progress / total * 100;
-            opponentProgressImg.flexibleWidth = opponent.progress / total * 100;
+            playerProgressImg.flexibleWidth = playerProgress / total * 100;
+            opponentProgressImg.flexibleWidth = opponentProgress / total * 100;
             
             LayoutRebuilder.ForceRebuildLayoutImmediate(playerProgressImg.transform.parent.GetComponent<RectTransform>());
             
