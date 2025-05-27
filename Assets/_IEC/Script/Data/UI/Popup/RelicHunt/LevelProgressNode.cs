@@ -7,6 +7,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         public GameObject lockGO;
         public GameObject unlockGO;
         public float vitrualPercent;
+        public bool hasClaim = false;
 
         public void SetLock(bool locked)
         {

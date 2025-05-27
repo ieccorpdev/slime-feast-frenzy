@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using TMPro;
 
 
@@ -51,6 +52,8 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Shark Race Event")] 
     public Button btnSharkRace;
     public GameEventHomeButton sharkRaceButton;
+    [Header("Relic Hunt")] 
+    public Button btnRelicHunt;
     
     [Space(10)]
 
@@ -215,6 +218,14 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Main.PopupSharkRace.Show();
                 }
             });
+        SetEvent(btnRelicHunt,
+                ()=>
+        {
+            if (Locator.Main.PopupRelicHunt.CheckShowPopup())
+            {
+                Locator.Main.PopupRelicHunt.Show();
+            }
+        });
         SetupUIHome();
     }
 
@@ -496,6 +507,21 @@ public class HomeScreenTab : ScreenNavigateUI
         // btnStarChestReward.interactable = isEnoughLevel;
     }
 
+    [Button]
+    private void TestRelic()
+    {
+        Locator.Main.PopupRelicHunt.Show();
+    }
+    [Button]
+    private void TestAddRelic(int amount)
+    {
+        PlayerData.relicData.AddTokenCount(amount);
+    }
+    [Button]
+    private void ResetRelic()
+    {
+        PlayerData.ResetRelicData();   
+    }
     private void UpdateGameEventButton()
     {
         starChaseButton.InitUI();

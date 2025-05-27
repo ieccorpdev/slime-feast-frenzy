@@ -871,6 +871,10 @@ namespace IEC
         private RelicData _relicData;
         public RelicData relicData => _relicData ??= new();
 
+        public void ResetRelicData()
+        {
+            _relicData = new();
+        }
         public void CheckResetTimeArtifactEvent()
         {
             _relicData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
@@ -878,6 +882,11 @@ namespace IEC
         public bool ReachMaxRelicReward()
         {
             return false;
+        }
+
+        public void AddRelicToken(int amount)
+        {
+            
         }
 
         #endregion

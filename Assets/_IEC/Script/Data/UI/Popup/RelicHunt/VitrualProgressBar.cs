@@ -21,6 +21,14 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         {
         }
 
+        public void OnNewLevel()
+        {
+            foreach (var levelProgressNode in levelProgressNodes)
+            {
+                levelProgressNode.SetLock(true);
+                levelProgressNode.hasClaim = false;
+            }
+        }
         private void UnlockLevelNode(int index)
         {
             for (int i = 0; i < levelProgressNodes.Count; i++)

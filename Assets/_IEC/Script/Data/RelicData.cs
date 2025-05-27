@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace IEC
 {
@@ -6,12 +7,32 @@ namespace IEC
     public class RelicData
     {
         public int relicItemIndex = 0;
-        public int currentRelicTokenCount;       
+        public int currentRelicTokenCount; 
+        public int curRelicLevel = 1;
+
+        public Dictionary<int, bool> levelClaimDict = new()
+        {
+            { 0, false },
+            { 1, false },
+            { 2, false },
+        };
         public DateTime lastTimeResetEvent;
+        public DateTime eventTimeEnd;
         
         public void SaveTimeResetEvent()
         {
             lastTimeResetEvent = DateTime.Now;
+        }
+
+        public void LevelUp()
+        {
+            curRelicLevel++;
+            levelClaimDict = new(){
+                { 0, false },
+                { 1, false },
+                { 2, false },
+            };
+            
         }
         public void ResetTokenCount()
         {
