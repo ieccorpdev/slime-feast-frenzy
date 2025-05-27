@@ -59,7 +59,6 @@ GameObject:
   - component: {fileID: 114787145586566980}
   - component: {fileID: 54482504114732450}
   - component: {fileID: -5973045525996653574}
-  - component: {fileID: 6132425376394628372}
   m_Layer: 0
   m_Name: food_229
   m_TagString: Untagged
@@ -142,23 +141,6 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 5104949403896025000}
---- !u!114 &6132425376394628372
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1601213832267133}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42fb2b3f5fb16ac4cb58b4ecf99e0b60, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damping: 0.8
-  frequency: 1
-  minAmplitude: 0.01
-  movementLimit: 2
-  amplitudeSmoothSpeed: 5
 --- !u!1001 &5372954056207267829
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -287,5 +269,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5
