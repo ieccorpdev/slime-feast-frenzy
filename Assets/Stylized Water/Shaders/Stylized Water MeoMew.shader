@@ -3,11 +3,13 @@ Shader "Stylized/Water Custom MeoMew"
 {
     Properties
     {
-    _ScreenYThreshold ("Screen Y Blend Threshold", Range(0,1)) = 0.5
+        _ScreenYThreshold ("Screen Y Blend Threshold", Range(0,1)) = 0.5
+        _ScreenYCurve ("Screen Y Blend Curve", Range(0.1, 5.0)) = 1.0
+        _EaseType ("Ease Type (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
         [Header(Densities)]
         _DepthDensity ("Depth", Range(0.0, 1.0)) = 0.5
         _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.1
-        
+
         [Header(Waves)]
         [NoScaleOffset]
         _WaveNormalMap ("Normal Map", 2D) = "bump"{}
@@ -18,10 +20,10 @@ Shader "Stylized/Water Custom MeoMew"
         [HDR]
         _ShallowColor ("Shallow", Color) = (0.44, 0.95, 0.36, 1.0)
         [HDR]
-        _DeepColor ("Deep", Color) =  (0.0, 0.05, 0.19, 1.0)
+        _DeepColor ("Deep", Color) = (0.0, 0.05, 0.19, 1.0)
         [HDR]
         _FarColor ("Far", Color) = (0.04, 0.27, 0.75, 1.0)
-        
+
         [Header(Reflections)]
         _ReflectionContribution ("Contribution", Range(0.0, 1.0)) = 1.0
 
@@ -93,11 +95,11 @@ Shader "Stylized/Water Custom MeoMew"
         {
             Tags
             {
-                "LightMode" = "Always" 
+                "LightMode" = "Always"
             }
             Stencil
             {
-                Ref 2  // Use the property value as the stencil reference
+                Ref 2 // Use the property value as the stencil reference
                 Comp greater // Only render where the stencil buffer is equal to the reference value
             }
             CGPROGRAM
@@ -114,6 +116,8 @@ Shader "Stylized/Water Custom MeoMew"
             float _DepthDensity;
             float _DistanceDensity;
             float _ScreenYThreshold;
+            float _ScreenYCurve;
+            int _EaseType;
             // Wave Normal Map.
             sampler2D _WaveNormalMap;
             float _WaveNormalScale;
@@ -142,7 +146,7 @@ Shader "Stylized/Water Custom MeoMew"
             float _SunSpecularExponent;
 
             // Sparkles.
-             sampler2D _SparklesNormalMap;
+            sampler2D _SparklesNormalMap;
             float _SparkleScale;
             float _SparkleSpeed;
             float _SparkleExponent;
@@ -182,7 +186,8 @@ Shader "Stylized/Water Custom MeoMew"
 
             struct v2f
             {
-    float4 screenPos : TEXCOORD3;                float4 vertex : SV_POSITION;
+                float4 screenPos : TEXCOORD3;
+                float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 worldPosition : TEXCOORD1;
                 float4 grabPosition : TEXCOORD2;
@@ -207,7 +212,7 @@ Shader "Stylized/Water Custom MeoMew"
                 float waveHeight = GetWaveHeight(worldPosition);
                 float waveHeightDX = GetWaveHeight(worldPosition - float2(d, 0));
                 float waveHeightDZ = GetWaveHeight(worldPosition - float2(0, d));
-                
+
                 // Calculate the partial derivatives in the Z and X directions, which
                 // are the tangent and binormal vectors respectively.
                 float3 tangent = normalize(float3(0, waveHeight - waveHeightDZ, d));
@@ -220,7 +225,7 @@ Shader "Stylized/Water Custom MeoMew"
                 return transpose(float3x3(tangent, binormal, normal));
             }
 
-            v2f vert (appdata v)
+            v2f vert(appdata v)
             {
                 v2f o;
 
@@ -235,11 +240,11 @@ Shader "Stylized/Water Custom MeoMew"
                 o.grabPosition = ComputeGrabScreenPos(o.vertex);
 
                 o.uv = v.uv;
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                UNITY_TRANSFER_FOG(o, o.vertex);
                 return o;
             }
 
-            float4 frag (v2f i) : SV_Target
+            float4 frag(v2f i) : SV_Target
             {
                 // Calculate the view vector.
                 float3 viewDirWS = normalize(i.worldPosition - _WorldSpaceCameraPos);
@@ -252,7 +257,8 @@ Shader "Stylized/Water Custom MeoMew"
                 float3x3 tangentToWorld = GetWaveTBN(i.worldPosition.xz, 0.01);
 
                 // Sample the wave normal map and calculate the world-space normal for this fragment.
-                float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz/_WaveNormalScale, _WaveNormalSpeed, true);
+                float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz / _WaveNormalScale,
+                                                     _WaveNormalSpeed, true);
                 float3 normalWS = mul(tangentToWorld, normalTS);
 
                 // ------------------------------ //
@@ -279,7 +285,22 @@ Shader "Stylized/Water Custom MeoMew"
 
                 // Also calculate how far away the fragment is from the camera.
                 float2 screenUV = i.screenPos.xy / i.screenPos.w;
-                float distanceMask = smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
+                float t = smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
+
+                float distanceMask;
+                if (_EaseType == 0)
+                {
+                    distanceMask = t; // Linear
+                }
+                else if (_EaseType == 1)
+                {
+                    distanceMask = pow(t, _ScreenYCurve); // Pow based
+                }
+                else
+                {
+                    float ease = t * t * (3.0 - 2.0 * t); // Hermite EaseInOut
+                    distanceMask = pow(ease, _ScreenYCurve);
+                }
 
                 // ----------- //
                 // SHADOW MASK //
@@ -289,7 +310,7 @@ Shader "Stylized/Water Custom MeoMew"
 
                 // If shadows are enabled, sample the shadow map.
                 #ifdef SHADOWS
-                    shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
+                shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
                 #endif
 
                 // ---------- //
@@ -310,7 +331,7 @@ Shader "Stylized/Water Custom MeoMew"
 
                 // Sample the reflection cubemap to get the reflections at this fragment.
                 float3 reflectedColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, reflect(viewDirWS, normalWS));
-                
+
                 // Modulate the reflected color by the fresnel coefficient, distance mask, and shadow.
                 reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
                 reflectedColor = reflectedColor * _ReflectionContribution;
@@ -357,11 +378,14 @@ Shader "Stylized/Water Custom MeoMew"
                 // ------------- //
 
                 // Get some random sparkly normals.
-                float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,2,3,4), _SparkleSpeed);
-                float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,0.5,2.5,2), _SparkleSpeed);
-                
+                float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
+                                                       float4(1, 2, 3, 4), _SparkleSpeed);
+                float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
+                                                       float4(1, 0.5, 2.5, 2), _SparkleSpeed);
+
                 // Dot them to make a sparkly mask.
-                float sparkleMask = dot(sparkly1, sparkly2) * saturate(3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
+                float sparkleMask = dot(sparkly1, sparkly2) * saturate(
+                    3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
                 sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
 
                 // Get the sparkle specular color to add later on.
