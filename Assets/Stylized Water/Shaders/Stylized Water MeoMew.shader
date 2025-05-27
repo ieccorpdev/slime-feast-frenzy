@@ -1,15 +1,25 @@
-﻿// MODIFIED: Using screen-space Y to drive _FarColor blending
-Shader "Stylized/Water Custom MeoMew"
+﻿Shader "Stylized/Water Custom MeoMew"
 {
     Properties
     {
-        _ScreenYThreshold ("Screen Y Blend Threshold", Range(0,1)) = 0.5
-        _ScreenYCurve ("Screen Y Blend Curve", Range(0.1, 5.0)) = 1.0
-        _EaseType ("Ease Type (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
+
         [Header(Densities)]
         _DepthDensity ("Depth", Range(0.0, 1.0)) = 0.5
-        _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.1
-
+        _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.
+        [Header(Top far)]
+        _ScreenYThreshold ("Screen Y Blend Threshold (Top)", Range(0,1)) = 0.5
+        _ScreenYCurve ("Screen Y Blend Curve (Top)", Range(0.1, 5.0)) = 1.0
+        _EaseType ("Ease Type Top (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
+        [HDR]
+        _FarColor ("Far ", Color) = (0.04, 0.27, 0.75, 1.0)
+        _FarAlpha ("Far Color Alpha Multiplier", Range(0,1)) = 1.0
+        [Header(Bottom near)]
+        // Existing properties
+        _ScreenYThresholdBottom ("Screen Y Blend Threshold (Bottom)", Range(0,1)) = 0.5
+        _ScreenYCurveBottom ("Screen Y Blend Curve (Bottom)", Range(0.1, 5.0)) = 1.0
+        _EaseTypeBottom ("Ease Type Bottom (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
+        [HDR] _NearColor ("Near (Bottom)", Color) = (0.04, 0.27, 0.75, 1.0)
+        _NearAlpha ("Near Color Alpha Multiplier", Range(0,1)) = 1.0
         [Header(Waves)]
         [NoScaleOffset]
         _WaveNormalMap ("Normal Map", 2D) = "bump"{}
@@ -21,9 +31,7 @@ Shader "Stylized/Water Custom MeoMew"
         _ShallowColor ("Shallow", Color) = (0.44, 0.95, 0.36, 1.0)
         [HDR]
         _DeepColor ("Deep", Color) = (0.0, 0.05, 0.19, 1.0)
-        [HDR]
-        _FarColor ("Far", Color) = (0.04, 0.27, 0.75, 1.0)
-        _FarAlpha ("Far Color Alpha Multiplier", Range(0,1)) = 1.0
+
         [Header(Reflections)]
         _ReflectionContribution ("Contribution", Range(0.0, 1.0)) = 1.0
 
@@ -123,7 +131,12 @@ Shader "Stylized/Water Custom MeoMew"
             sampler2D _WaveNormalMap;
             float _WaveNormalScale;
             float _WaveNormalSpeed;
-
+            //Near
+            float _ScreenYThresholdBottom;
+            float _ScreenYCurveBottom;
+            int _EaseTypeBottom;
+            float3 _NearColor;
+            float _NearAlpha;
             // Base Color.
             float3 _ShallowColor;
             float3 _DeepColor;
@@ -286,8 +299,13 @@ Shader "Stylized/Water Custom MeoMew"
 
                 // Also calculate how far away the fragment is from the camera.
                 float2 screenUV = i.screenPos.xy / i.screenPos.w;
-                float t = smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
-
+                float t =       smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
+                float invertedY = smoothstep(0.0, _ScreenYThresholdBottom, screenUV.y); // đảo Y để blend từ dưới lên
+                // Đối chiếu rõ ràng với _ScreenYThresholdBottom
+                
+                //float distanceMaskBottom = saturate((invertedY - _ScreenYThresholdBottom) / (1.0 - _ScreenYThresholdBottom));
+                //distanceMaskBottom = pow(distanceMaskBottom, _ScreenYCurveBottom);
+                float distanceMaskBottom;
                 float distanceMask;
                 if (_EaseType == 0)
                 {
@@ -302,7 +320,20 @@ Shader "Stylized/Water Custom MeoMew"
                     float ease = t * t * (3.0 - 2.0 * t); // Hermite EaseInOut
                     distanceMask = pow(ease, _ScreenYCurve);
                 }
-
+                // Ease Type Bottom
+                if (_EaseTypeBottom == 0)
+                {
+                    distanceMaskBottom = invertedY; // Linear
+                }
+                else if (_EaseTypeBottom == 1)
+                {
+                    distanceMaskBottom = pow(invertedY, _ScreenYCurveBottom); // Pow based
+                }
+                else
+                {
+                    float ease = invertedY * invertedY * (3.0 - 2.0 * invertedY); // Hermite EaseInOut
+                    distanceMaskBottom = pow(ease, _ScreenYCurveBottom);
+                }
                 // ----------- //
                 // SHADOW MASK //
                 // ----------- //
@@ -323,10 +354,15 @@ Shader "Stylized/Water Custom MeoMew"
                 baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
                 float blendFactor = (1.0 - distanceMask) * _FarAlpha;
                 baseColor = lerp(baseColor, _FarColor.rgb, blendFactor);
-
+                
+                // Tính blend factor giống logic distanceMask hiện tại
+                float blendFactorBottom = (1.0 - distanceMaskBottom) * _NearAlpha;
+                // Thực hiện blending từ dưới lên
+                baseColor.rgb = lerp(baseColor.rgb, _NearColor.rgb, blendFactorBottom);
+                
                 // --------------- //
                 // REFLECTED COLOR //
-                // --------------- //
+                // --------------- // 
 
                 // Calculate the fresnel reflection coefficient.
                 float fresnelMask = 0.0 + 1.0 * pow(1.0 + dot(normalWS, -viewDirWS), 5.0);
