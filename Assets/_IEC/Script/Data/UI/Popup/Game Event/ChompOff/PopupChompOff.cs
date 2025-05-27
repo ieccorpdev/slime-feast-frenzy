@@ -15,10 +15,8 @@ namespace IEC
         public Button playButton;
         public Button retryButton;
         public GameEventPlayerDataUI playerUI;
-        public LayoutElement playerProgressImg;
         public GameEventPlayerDataUI opponentUI;
-        public LayoutElement opponentProgressImg;
-        public RectTransform connectorImage;
+        public ChompOffProgressBarUI progressBarUI;
         public List<ChompOffRewardUI> listRewardUI = new();
 
         [Header("Random Opponent Avatar")] 
@@ -268,28 +266,7 @@ namespace IEC
 
         private void UpdateProgressBarUI(EventPlayerData player, EventPlayerData opponent)
         {
-            float total = player.progress + opponent.progress;
-            if (total == 0) total = 1;
-            
-            playerProgressImg.flexibleWidth = player.progress / total;
-            opponentProgressImg.flexibleWidth = opponent.progress / total;
-            
-            // Get world corners of imageA
-            Vector3[] corners = new Vector3[4];
-            playerProgressImg.GetComponent<RectTransform>().GetWorldCorners(corners);
-            Vector3 rightEdgeWorld = corners[3]; // Top Right
-
-            // Convert world position to local position relative to the parent canvas or connector's parent
-            Vector2 localPoint;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                connectorImage.parent as RectTransform,
-                RectTransformUtility.WorldToScreenPoint(null, rightEdgeWorld),
-                null,
-                out localPoint
-            );
-
-            // Set connector position
-            connectorImage.anchoredPosition = new Vector3(localPoint.x, connectorImage.anchoredPosition.y);
+            progressBarUI.UpdateProgressBarUI(player, opponent);
         }
         
         public override bool IsEndEventStage()

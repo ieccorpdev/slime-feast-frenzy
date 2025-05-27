@@ -481,14 +481,19 @@ namespace IEC
             {
                 listPlayerData[i].indexInUI = i;
             }
+            
+            var data = _eventRankController.GetEventSaveData(eventType);
+
+            var timeStart = DateTime.Now;
+            var timeEnd = eventStageIndex != 0 ? data.timeEnd : DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours);
                 
             _eventRankController
                 .InitData(
                     eventType,
                     eventStageIndex,
-                    DateTime.Now,
+                    timeStart,
                     //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
-                    DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours),
+                    timeEnd,
                     new List<EventPlayerData>(listPlayerData)
                 );
             
