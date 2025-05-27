@@ -315,6 +315,26 @@ namespace IEC
                         _currentTimeEndEventStage - DateTime.Now);
             }
         }
+
+        public string GetTimerText()
+        {
+            if (!_eventStarted)
+            {
+                return 
+                    DateTimeHelper.GetFormattedTimeHMS(
+                        _currentTimeEndEvent - DateTime.Now);
+            }
+            else if (_currentTimeEndEventStage <= DateTime.Now)
+            {
+                return "Finished";
+            }
+            else
+            {
+                return 
+                    DateTimeHelper.GetFormattedTimeHMS(
+                        _currentTimeEndEventStage - DateTime.Now);
+            }
+        }
     }
     
     public static class TweenDurationDistributor

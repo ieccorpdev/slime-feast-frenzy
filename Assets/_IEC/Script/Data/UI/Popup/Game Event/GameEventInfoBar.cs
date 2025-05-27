@@ -28,7 +28,7 @@ namespace IEC
         protected EventRankController _eventRankController;
         protected GameEventConfig _eventConfig;
 
-        private EventSaveData eventSaveData;
+        protected EventSaveData eventSaveData;
         private PopupGameEvent popup;
         
         
@@ -86,13 +86,21 @@ namespace IEC
             UpdateTimer();
         }
 
-        public void SetupData()
+        public virtual void SetupData()
         {
             Init();
             eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            popup = eventType == EventType.SharkRace ? Locator.Main.PopupSharkRace : Locator.Main.PopupStarChase;
+            popup = eventType switch
+            {
+                EventType.StarChase => Locator.Main.PopupStarChase,
+                EventType.SharkRace => Locator.Main.PopupSharkRace,
+                EventType.ChompOff => Locator.Main.PopupChompOff,
+                _=> null,
+            };
             
-            scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
+            if(scroller != null)
+                scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
+            
             startGroup.SetActive(eventSaveData.listPlayerData.Count == 0 || eventSaveData.claimedReward);
 
             if (eventTargetGroup != null)
@@ -104,7 +112,7 @@ namespace IEC
             ReloadData();
         }
         
-        private void UpdateTimer()
+        protected virtual void UpdateTimer()
         {
 
             if (popup.IsEndEvent() || popup.IsEndEventStage())
