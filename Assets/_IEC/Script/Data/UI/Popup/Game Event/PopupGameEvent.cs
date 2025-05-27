@@ -365,6 +365,16 @@ namespace IEC
             return DateTime.Now >= data.timeEnd;
         }
 
+        public virtual DateTime GetTimeEndStage()
+        {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return data.timeEnd;
+        }
+
         public virtual bool IsHaveNextEventStage()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
@@ -485,7 +495,12 @@ namespace IEC
             var data = _eventRankController.GetEventSaveData(eventType);
 
             var timeStart = DateTime.Now;
-            var timeEnd = eventStageIndex != 0 ? data.timeEnd : DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours);
+            //var timeEnd = eventStageIndex != 0 ? data.timeEnd : DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours);
+            var timeEnd = eventStageIndex != 0 ? data.timeEnd 
+                : Config.eventLiveOpsConfig.GetTimeEndEvent(
+                    eventType, 
+                    Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                    PlayerData.GetDaysSinceDownload());
                 
             _eventRankController
                 .InitData(
@@ -508,7 +523,7 @@ namespace IEC
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);
 
-            var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
+            var timeToCheck = DateTime.Now <= GetTimeEndStage() ? DateTime.Now : GetTimeEndStage();
 
             if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
             {

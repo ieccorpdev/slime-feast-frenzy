@@ -30,7 +30,8 @@ namespace IEC
 
         protected EventSaveData eventSaveData;
         private PopupGameEvent popup;
-        
+
+        protected DateTime _timeEndEvent;
         
         // Start is called before the first frame update
         void Start()
@@ -89,6 +90,10 @@ namespace IEC
         public virtual void SetupData()
         {
             Init();
+            _timeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
             eventSaveData = _eventRankController.GetEventSaveData(eventType);
             popup = eventType switch
             {
@@ -125,14 +130,14 @@ namespace IEC
                 {
                     timerText.text =
                         DateTimeHelper.GetFormattedTimeHMS(
-                            DateTime.Now.AddDays(1).Date - DateTime.Now);
+                            _timeEndEvent - DateTime.Now);
                 }
             }
             else
             {
                 timerText.text =
                     DateTimeHelper.GetFormattedTimeHMS(
-                        eventSaveData.timeEnd - DateTime.Now);
+                        _timeEndEvent - DateTime.Now);
             }
         }
 

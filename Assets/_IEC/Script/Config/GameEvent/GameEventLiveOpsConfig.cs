@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -80,6 +81,13 @@ namespace IEC
             }
 
             return -1;
+        }
+
+        public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
+        {
+            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
+
+            return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
         }
 
         public bool IsEventAvailable(EventType eventType, int eventDurationInDays, int currentDay)

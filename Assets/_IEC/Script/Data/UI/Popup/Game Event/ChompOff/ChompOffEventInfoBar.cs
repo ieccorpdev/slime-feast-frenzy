@@ -42,6 +42,9 @@ namespace IEC
 
         protected override void UpdateTimer()
         {
+            if (!gameObject.activeInHierarchy)
+                return;
+            
             timerText.text = _popupChompOff.GetTimerText();
         }
     }

@@ -204,7 +204,10 @@ namespace IEC
             
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             
-            _currentTimeEndEvent = eventSaveData.timeEnd;
+            _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType, 
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                PlayerData.GetDaysSinceDownload());
 
             
             // Init();
@@ -244,7 +247,10 @@ namespace IEC
             UpdateRewardUI();
 
             _currentTimeEndEventStage = eventSaveData.timeStart.AddSeconds(eventData.eventStageTimeInSeconds);
-            _currentTimeEndEvent = eventSaveData.timeEnd;
+            _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType, 
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                PlayerData.GetDaysSinceDownload());
         }
 
         private void UpdateRewardUI()
@@ -277,7 +283,15 @@ namespace IEC
         {
             progressBarUI.UpdateProgressBarUI(player, opponent);
         }
-        
+
+        public override DateTime GetTimeEndStage()
+        {
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            var data = _eventConfig.GetEventData(eventSaveData.eventIndex);
+
+            return eventSaveData.timeStart.AddSeconds(data.eventStageTimeInSeconds);
+        }
+
         public override bool IsEndEventStage()
         {
             if (_eventRankController == null)
@@ -329,6 +343,12 @@ namespace IEC
         {
             if (!_eventStarted)
             {
+                if (_currentTimeEndEvent <= DateTime.Now)
+                    _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                        eventType,
+                        Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                        PlayerData.GetDaysSinceDownload());
+                
                 return 
                     DateTimeHelper.GetFormattedTimeHMS(
                         _currentTimeEndEvent - DateTime.Now);
