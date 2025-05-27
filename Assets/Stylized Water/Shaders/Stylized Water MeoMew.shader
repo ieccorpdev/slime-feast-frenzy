@@ -1,13 +1,13 @@
-﻿Shader "Stylized/Water Custom MeoMew"
+﻿// MODIFIED: Using screen-space Y to drive _FarColor blending
+Shader "Stylized/Water Custom MeoMew"
 {
     Properties
     {
+    _ScreenYThreshold ("Screen Y Blend Threshold", Range(0,1)) = 0.5
         [Header(Densities)]
         _DepthDensity ("Depth", Range(0.0, 1.0)) = 0.5
         _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.1
-        _MinDistanceFade ("Min Fade Distance", Float) = 1.0
-        _FadeSharpness ("Fade Sharpness", Range(0.01, 4.0)) = 0.25
-        _DistanceMultify ("Distance Multify", Range(0.01, 10.0)) = 4.0
+        
         [Header(Waves)]
         [NoScaleOffset]
         _WaveNormalMap ("Normal Map", 2D) = "bump"{}
@@ -18,10 +18,10 @@
         [HDR]
         _ShallowColor ("Shallow", Color) = (0.44, 0.95, 0.36, 1.0)
         [HDR]
-        _DeepColor ("Deep", Color) = (0.0, 0.05, 0.19, 1.0)
+        _DeepColor ("Deep", Color) =  (0.0, 0.05, 0.19, 1.0)
         [HDR]
         _FarColor ("Far", Color) = (0.04, 0.27, 0.75, 1.0)
-
+        
         [Header(Reflections)]
         _ReflectionContribution ("Contribution", Range(0.0, 1.0)) = 1.0
 
@@ -93,11 +93,11 @@
         {
             Tags
             {
-                "LightMode" = "Always"
+                "LightMode" = "Always" 
             }
             Stencil
             {
-                Ref 2 // Use the property value as the stencil reference
+                Ref 2  // Use the property value as the stencil reference
                 Comp greater // Only render where the stencil buffer is equal to the reference value
             }
             CGPROGRAM
@@ -113,9 +113,7 @@
             // Densities.
             float _DepthDensity;
             float _DistanceDensity;
-            float _MinDistanceFade;
-            float _FadeSharpness;
-            float _DistanceMultify;
+            float _ScreenYThreshold;
             // Wave Normal Map.
             sampler2D _WaveNormalMap;
             float _WaveNormalScale;
@@ -144,7 +142,7 @@
             float _SunSpecularExponent;
 
             // Sparkles.
-            sampler2D _SparklesNormalMap;
+             sampler2D _SparklesNormalMap;
             float _SparkleScale;
             float _SparkleSpeed;
             float _SparkleExponent;
@@ -179,16 +177,14 @@
             struct appdata
             {
                 float4 vertex : POSITION;
-                float3 normal : NORMAL;
                 float2 uv : TEXCOORD0;
             };
 
             struct v2f
             {
-                float4 vertex : SV_POSITION;
+    float4 screenPos : TEXCOORD3;                float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 worldPosition : TEXCOORD1;
-                float3 worldNormal : TEXCOORD4;
                 float4 grabPosition : TEXCOORD2;
                 UNITY_FOG_COORDS(3)
             };
@@ -211,7 +207,7 @@
                 float waveHeight = GetWaveHeight(worldPosition);
                 float waveHeightDX = GetWaveHeight(worldPosition - float2(d, 0));
                 float waveHeightDZ = GetWaveHeight(worldPosition - float2(0, d));
-
+                
                 // Calculate the partial derivatives in the Z and X directions, which
                 // are the tangent and binormal vectors respectively.
                 float3 tangent = normalize(float3(0, waveHeight - waveHeightDZ, d));
@@ -224,25 +220,26 @@
                 return transpose(float3x3(tangent, binormal, normal));
             }
 
-            v2f vert(appdata v)
+            v2f vert (appdata v)
             {
                 v2f o;
 
                 o.worldPosition = mul(unity_ObjectToWorld, v.vertex).xyz;
                 o.worldPosition.y += GetWaveHeight(o.worldPosition.xz);
                 o.vertex = mul(UNITY_MATRIX_VP, float4(o.worldPosition, 1));
-                o.worldNormal = UnityObjectToWorldNormal(v.normal);
+                o.screenPos = ComputeScreenPos(o.vertex);
+
                 // We don't want to offset the grab position by the wave height,
                 // because we get nice refraction effects for free essentially.
                 // o.grabPosition = ComputeGrabScreenPos(mul(UNITY_MATRIX_VP, float4(mul(unity_ObjectToWorld, v.vertex).xyz, 1)));
                 o.grabPosition = ComputeGrabScreenPos(o.vertex);
 
                 o.uv = v.uv;
-                UNITY_TRANSFER_FOG(o, o.vertex);
+                UNITY_TRANSFER_FOG(o,o.vertex);
                 return o;
             }
 
-            float4 frag(v2f i) : SV_Target
+            float4 frag (v2f i) : SV_Target
             {
                 // Calculate the view vector.
                 float3 viewDirWS = normalize(i.worldPosition - _WorldSpaceCameraPos);
@@ -255,8 +252,7 @@
                 float3x3 tangentToWorld = GetWaveTBN(i.worldPosition.xz, 0.01);
 
                 // Sample the wave normal map and calculate the world-space normal for this fragment.
-                float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz / _WaveNormalScale,
-                                                     _WaveNormalSpeed, true);
+                float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz/_WaveNormalScale, _WaveNormalSpeed, true);
                 float3 normalWS = mul(tangentToWorld, normalTS);
 
                 // ------------------------------ //
@@ -277,19 +273,14 @@
                 // ------------------------ //
 
                 // Calculate the distance the viewing ray travels underwater,
-                // as well as the transmittance for that distance. 
+                // as well as the transmittance for that distance.
                 float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
                 float transmittance = exp(-_DepthDensity * opticalDepth);
 
                 // Also calculate how far away the fragment is from the camera.
+                float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                float distanceMask = smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
 
-                float rawDist = length(i.worldPosition - _WorldSpaceCameraPos);
-                float adjustedDist = max(rawDist, _MinDistanceFade); // giữ không bị âm
-
-                float linearFade = saturate((adjustedDist - _MinDistanceFade) * _DistanceDensity * _DistanceMultify);
-
-                // Càng nhỏ => chuyển màu càng "gắt", càng đậm
-                float distanceMask = pow(linearFade, _FadeSharpness);
                 // ----------- //
                 // SHADOW MASK //
                 // ----------- //
@@ -298,7 +289,7 @@
 
                 // If shadows are enabled, sample the shadow map.
                 #ifdef SHADOWS
-                shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
+                    shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
                 #endif
 
                 // ---------- //
@@ -308,7 +299,7 @@
                 // Calculate the base color based on the transmittance and distance mask.
                 float3 baseColor = fragColor * _ShallowColor;
                 baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
-                baseColor = lerp(_FarColor, baseColor, 1.0 - distanceMask);
+                baseColor = lerp(_FarColor, baseColor, distanceMask);
 
                 // --------------- //
                 // REFLECTED COLOR //
@@ -319,7 +310,7 @@
 
                 // Sample the reflection cubemap to get the reflections at this fragment.
                 float3 reflectedColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, reflect(viewDirWS, normalWS));
-
+                
                 // Modulate the reflected color by the fresnel coefficient, distance mask, and shadow.
                 reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
                 reflectedColor = reflectedColor * _ReflectionContribution;
@@ -366,14 +357,11 @@
                 // ------------- //
 
                 // Get some random sparkly normals.
-                float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
-                                                       float4(1, 2, 3, 4), _SparkleSpeed);
-                float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
-                                                       float4(1, 0.5, 2.5, 2), _SparkleSpeed);
-
+                float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,2,3,4), _SparkleSpeed);
+                float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,0.5,2.5,2), _SparkleSpeed);
+                
                 // Dot them to make a sparkly mask.
-                float sparkleMask = dot(sparkly1, sparkly2) * saturate(
-                    3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
+                float sparkleMask = dot(sparkly1, sparkly2) * saturate(3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
                 sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
 
                 // Get the sparkle specular color to add later on.
@@ -397,6 +385,7 @@
 
                 // Apply fog.
                 UNITY_APPLY_FOG(i.fogCoord, color);
+
                 return float4(color, 1);
             }
             ENDCG
