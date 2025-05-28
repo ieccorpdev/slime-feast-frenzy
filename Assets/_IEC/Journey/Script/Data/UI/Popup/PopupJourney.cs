@@ -14,49 +14,29 @@ namespace IEC
         public ClaimBonusRewardPanel ClaimBonusRewardPanel => Locator.Main.ClaimBonusRewardPanel;
         [Header("MainJourney")]
         public Button tutorialJourneyBtn;
-        public Image lightBGFilled;
-        public Image darkBGFilled;
-        public SlicedFilledImage middleFilledBar;
-        public GameObject progressbarEffect;
         public GameObject progressbarMove;
-        public GameObject progressbarLockEnd;
         public VerticalLayoutGroup verticalItemJouney;
         public ScrollRect scrollRect;
         public RectTransform contentPanel;
         public List<ItemJourney> listItemJourney;
         [Header("TutorialJourney")]
         public TutorialJourney tutorialJourneyPanel;
-
-        [Header("ChestBottom")] 
-        public Button collectEndJourneyTripBtn;
-        public GameObject bottomChestVipPassNotPurchase;
-        public GameObject bottomChestVipPassPurchase;
-        [Header("Bannerbottom")]
-        public RectTransform vipPassBar;
-        public GameObject bottomBannerVipPassPurchase;
-        public Button activeVipPassBtn;
-        public Button collectAllBtn;
         [Header("FuelBar")]
         public Image fillFuelBar;
         public TextMeshProUGUI currentProgressTextTMP;
         public TextMeshProUGUI currentTarget;
-        [Header("Anim")] 
-        public SpineAnimOT cloudAim;
-        public SpineAnimOT carAnim;
-        public SpineAnimOT carVipAnim;
-        public bool inAnimCar;
+        public TextMeshProUGUI timerTxt;
+        [SerializeField] private float offsetMove = 25;
+        [SerializeField] private float offsetScrollTo = -100;
 
         private void Start()
         {
             SetEvent(tutorialJourneyBtn, OnClickButtonTutorialJourney);
-            SetEvent(activeVipPassBtn, OnClickActiveVipPass);
-            SetEvent(collectAllBtn, OnCollectAllButtonClick);
         }
 
-        private void OnDisable()
+        private void OnEnable()
         {
-            carAnim.ResetAnim();
-            carVipAnim.ResetAnim();
+            StartCoroutine(UpdateTimer());
         }
 
         public override void Hide()
@@ -68,74 +48,18 @@ namespace IEC
         {
             SetUpUI();
             base.Show();
-            carAnim.SetAnimation("2-Idle", true);
-            AnimCarStart();
-        }
-
-        public void AnimCarStart()
-        {
-            carAnim.gameObject.SetActive(false);
-            carVipAnim.gameObject.SetActive(false);
-            carVipAnim.ResetAnim();
-            carAnim.ResetAnim();
-            if (!PlayerData.journeyData.purchasedJourneyPass)
+            if (!PlayerData.journeyData.isShowTutorialInPopup)
             {
-                carAnim.gameObject.SetActive(true);
-                carAnim.SetAnimation("1-In",false, () =>
-                {
-                    carAnim.SetAnimation("2-Idle", true);
-                    inAnimCar = false;
-                });
-            }
-            else
-            {
-                carVipAnim.gameObject.SetActive(true);
-                carVipAnim.SetAnimation("1-In",false, () =>
-                {
-                    carVipAnim.SetAnimation("2-Idle", true);
-                    inAnimCar = false;
-                });
+                tutorialJourneyPanel.Show();
+                PlayerData.journeyData.isShowTutorialInPopup = true;
             }
         }
 
-        public void PlayChangeCarSelectVipPass()
-        {
-            if(inAnimCar) return;
-            inAnimCar = true;
-            carAnim.SetAnimation("3-Out",false, () =>
-            {
-                carAnim.gameObject.SetActive(false);
-                carVipAnim.gameObject.SetActive(true);
-                carVipAnim.ResetAnim();
-                carVipAnim.SetAnimation("1-In", false, () =>
-                {
-                    carVipAnim.SetAnimation("2-Idle", true);
-                    TweenControl.GetInstance().DelayCall(gameObject.transform,2f, () =>
-                    {
-                        carVipAnim.SetAnimation("3-Out", false, () =>
-                        {
-                            carAnim.gameObject.SetActive(true);
-                            carVipAnim.gameObject.SetActive(false);
-                            carAnim.ResetAnim();
-                            carAnim.SetAnimation("1-In",false, () =>
-                            {
-                                TweenControl.GetInstance().DelayCall(gameObject.transform, 2f, () => { inAnimCar = false;});
-                                carAnim.SetAnimation("2-Idle", true, () =>
-                                {
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        }
         public void SetUpUI()
         {
             InitData();
             SetProgressFuel();
             SetProgressBar();
-            SetChestBottom();
-            SetBannerBottom();
         }
 
         public void RefreshUI()
@@ -143,8 +67,6 @@ namespace IEC
             InitData();
             SetProgressFuel();
             SetProgressBar(false);
-            SetChestBottom();
-            SetBannerBottom();
             CheckNotiHomeScreen();
         }
 
@@ -161,15 +83,10 @@ namespace IEC
             }
         }
 
-        private void Update()
+        IEnumerator UpdateTimer()
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0))
-            {
-                if (tutorialJourneyPanel.gameObject.activeInHierarchy && tutorialJourneyPanel.canDisable)
-                {
-                    tutorialJourneyPanel.gameObject.SetActive(false);
-                }
-            }
+            timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+            yield return new WaitForSeconds(1f);
         }
 
         void OnClickButtonTutorialJourney()
@@ -211,28 +128,10 @@ namespace IEC
             {
                 currentTarget = listItemJourney.Count;
             }
-            lightBGFilled.fillAmount = (float)(currentTarget-0.5f)/ (float)(listItemJourney.Count-1);
-            darkBGFilled.fillAmount = 1-lightBGFilled.fillAmount;
-            darkBGFilled.gameObject.SetActive(darkBGFilled.fillAmount>0);
-            middleFilledBar.fillAmount =(float) currentTarget / (float)(listItemJourney.Count-1);
-            
-            progressbarEffect.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,CaculatePositionYProgressBar(currentTarget));
-            progressbarMove.GetComponent<RectTransform>().anchoredPosition = new Vector2(0,CaculatePositionYProgressBar(currentTarget));
-            if(snap) SnapTo(listItemJourney[currentTarget-1].GetComponent<RectTransform>());
-        }
-        
-        int CaculatePositionYProgressBar(int id)
-        {
-            int padding = verticalItemJouney.padding.bottom;
-            float spacing = verticalItemJouney.spacing;
-            int itemHeight = (int) padding + (int) (spacing+100) * (listItemJourney.Count - id)+450;
-            int diffY = (int)verticalItemJouney.GetComponent<RectTransform>().anchoredPosition.y*-1;
-            return itemHeight + diffY-50;
-        }
-
-        void OnClickActiveVipPass()
-        {
-            //UI.popupJourneyIAP.Show();
+            RectTransform target = listItemJourney[currentTarget - 1].GetComponent<RectTransform>();
+            if (snap) 
+                SnapTo(target);
+            progressbarMove.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, target.anchoredPosition.y + offsetMove);
         }
 
         void OnCollectAllButtonClick()
@@ -257,7 +156,6 @@ namespace IEC
         {
             List<Reward> listReward = new List<Reward>();
             listItem = new List<ItemPassJourney>();
-            TypeItemPassJourney type = TypeItemPassJourney.NORMAL;
             foreach (var item in listItemJourney)
             {
                 if (item.regularPass.statusItem == JourneyItemStatus.CANCLAIM)
@@ -311,46 +209,13 @@ namespace IEC
             }
             return listReward;
         }
-        
-        void SetChestBottom()
-        {
-            collectEndJourneyTripBtn.gameObject.SetActive(false);
-            //Add logic collect end season
-            bottomChestVipPassNotPurchase.gameObject.SetActive(!PlayerData.journeyData.purchasedJourneyPass);
-            bottomChestVipPassPurchase.gameObject.SetActive(PlayerData.journeyData.purchasedJourneyPass);
-        }
 
-        private void SetBannerBottom()
-        {
-            bottomBannerVipPassPurchase.gameObject.SetActive(PlayerData.journeyData.purchasedJourneyPass);
-            activeVipPassBtn.gameObject.SetActive(!PlayerData.journeyData.purchasedJourneyPass);
-            //Add Logic active when can claim;
-            Vector2 pos = PlayerData.level >= 15 ? new Vector2(vipPassBar.anchoredPosition.x, Services.Ads().GetBannerHeight()) : Vector2.zero;
-            vipPassBar.anchoredPosition = pos;
-            if (PlayerData.journeyData.purchasedJourneyPass)
-            {
-                if (PlayerData.journeyData.AnyItemCanClaimed())
-                {
-                    collectAllBtn.gameObject.SetActive(true);
-                    bottomBannerVipPassPurchase.gameObject.SetActive(false);
-                }
-                else
-                {
-                    collectAllBtn.gameObject.SetActive(false);
-                    bottomBannerVipPassPurchase.gameObject.SetActive(true);
-                }
-            }
-            else
-            {
-                collectAllBtn.gameObject.SetActive(PlayerData.journeyData.AnyItemCanClaimed());
-            }
-
-        }
         public void SnapTo(RectTransform target)
         {
             Canvas.ForceUpdateCanvases();
             contentPanel.anchoredPosition =
                 (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position) - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
+            contentPanel.anchoredPosition = new Vector2(contentPanel.anchoredPosition.x, contentPanel.anchoredPosition.y + offsetScrollTo);
         }
     }
 }

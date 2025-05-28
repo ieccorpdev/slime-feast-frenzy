@@ -14,6 +14,8 @@ public static class ClaimBonusRewardSkin
 {
     public const string Chest_1 = "Chest_1";
     public const string Chest_2 = "Chest_2";
+    public const string Chest_UnderseaVoyageFree = "Chest_UV_0";
+    public const string Chest_UnderseaVoyageVip = "Chest_UV_1";
     public const string Gift_Box_1 = "Gift_Box_1";
     public const string Gift_Box_2 = "Gift_Box_2";
     public const string Gift_Box_3 = "Gift_Box_3";

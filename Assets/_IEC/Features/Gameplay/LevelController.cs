@@ -70,7 +70,6 @@ namespace _IEC.Features.Gameplay
         public int SpecialProgressRewardObjCollected { get; private set; } = 0;
         
         public int GoldCollected { get; private set; }
-        public int KingdomCollected { get; private set; }
 
         private void OnEnable()
         {
@@ -248,7 +247,6 @@ namespace _IEC.Features.Gameplay
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
             GoldCollected = 0;
-            KingdomCollected = 0;
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -331,7 +329,6 @@ namespace _IEC.Features.Gameplay
             CollectNormalItem(data);
             if (data.itemID.Equals(EventList.GamePlay.Kingdom_Special))
             {
-                KingdomCollected++;
                 PlayerData.journeyData.currentFuelJourney++;
             }
             else

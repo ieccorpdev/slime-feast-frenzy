@@ -16,6 +16,7 @@ namespace IEC
         public bool inJourneyProgress;
         public DateTime timeStartJourneyTrip;
         public bool IsJourneyExpired;
+        public bool isShowTutorialInPopup;
 
         public void SetStartJourneyTimeNow()
         {
@@ -82,9 +83,9 @@ namespace IEC
             }
 
             if (remaining.Days > 0)
-                return $"{remaining.Days:D2}:{remaining.Hours:D2}:{remaining.Minutes:D2}"; // dd:hh:mm
+                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}m"; // dd:hh:mm
             else
-                return $"{remaining.Hours:D2}:{remaining.Minutes:D2}:{remaining.Seconds:D2}"; // hh:mm:ss
+                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}m:{remaining.Seconds:D2}s"; // hh:mm:ss
         }
 
         private TimeSpan GetTimeRemaining()
@@ -123,7 +124,7 @@ namespace IEC
 
         public JourneyItemStatus GetStatusRegularPass(int id)
         {
-            if (!regularJourneyPass.ContainsKey(id)) regularJourneyPass[id] = JourneyItemStatus.UNLOCK;
+            if (!regularJourneyPass.ContainsKey(id)) regularJourneyPass[id] = JourneyItemStatus.LOCK;
             if (id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
             {
                 regularJourneyPass[id] = JourneyItemStatus.CANCLAIM;

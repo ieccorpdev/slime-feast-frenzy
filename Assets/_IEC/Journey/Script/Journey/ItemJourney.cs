@@ -19,7 +19,7 @@ namespace IEC
             currentIdItem.text = data.idJourney.ToString();
             //SetChestModel
             regularPass.SetupDataItemPass(data,data.RewardsNormal,data.idJourney);
-            vipPass.SetupDataItemVipPass(data,data.RewardsVips,data.idJourney);
+            vipPass.SetupDataItemPass(data,data.RewardsVips,data.idJourney);
         }
     }
 

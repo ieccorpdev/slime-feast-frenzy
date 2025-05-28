@@ -131,11 +131,10 @@ namespace _IEC.Features.Gameplay
             }
             else if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
             {
-                int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
                 objectiveUI.PlayAnim();
                 EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
                 {
-                    objectiveUI.SetNumber(GamePlay.levelController.KingdomCollected + "/" + maxSpecialObject, false);
+                    objectiveUI.SetNumber("", false);
                 }, true);
                 //objectiveUI.PlayAnim();
             }
