@@ -13,7 +13,7 @@ namespace _IEC.Features.Gameplay
         public List<GroundThemeConfigModel> groundThemeConfigModels;
 
         public List<GroundThemeModel> groundThemeModels;
-        
+
         public List<WaterThemeConfig> waterThemeConfigs;
 
         [SerializeField] private string themeNeedToFind;
@@ -27,6 +27,7 @@ namespace _IEC.Features.Gameplay
                 //Debug.LogError("Cant find theme: " + themeId);
                 themeModel = groundThemeConfigModels[0];
             }
+
             var prefab = themeModel.GetElementById(id);
             if (prefab == null)
             {
@@ -40,7 +41,7 @@ namespace _IEC.Features.Gameplay
         [Button]
         public void FindLevelTheme()
         {
-            var config = Pool.Get<GameConfig>();  
+            var config = Pool.Get<GameConfig>();
             var levelIds = new List<int>();
 
             for (int i = 0; i < config.levelConfig.levelConfigDataEdited.Count; i++)
@@ -51,6 +52,7 @@ namespace _IEC.Features.Gameplay
                     levelIds.Add(i + 1);
                 }
             }
+
             Debug.LogError(new JsonDotNetModule().ToJson(levelIds));
         }
 
@@ -96,78 +98,117 @@ namespace _IEC.Features.Gameplay
                             {
                                 groundThemeModel.textures.Add(texture as Texture2D);
                             }
-
                         }
                     }
-
                 }
             }
-        }
-
-        public WaterThemeConfig GetWaterThemeConfig()
+        }   
+        public WaterThemeConfig GetWaterThemeById(int id)
         {
-            int crId = Pool.Get<InGamePlayGroup>().currentThemeSelect;
-            var reuslt = waterThemeConfigs.Find(x => x.themeId == crId);
-            if (reuslt == null)
+            var result = waterThemeConfigs.Find(x => x.themeId == id);
+            if (result == null)
             {
                 return waterThemeConfigs[0];
             }
-            return reuslt;
-        }
-        public WaterThemeConfig GetWaterThemeConfig(int id )
-        {
-            var reuslt = waterThemeConfigs.Find(x => x.themeId == id);
-            if (reuslt == null)
-            {
-                return waterThemeConfigs[0];
-            }
-            return reuslt;
+            return waterThemeConfigs.Find(x => x.themeId == id);
         }
         public WaterThemeConfig GetWaterThemeForLevel(int level)
         {
-            //MeoMew LGTM by chatGPT
-            if (level < 25 || waterThemeConfigs == null || waterThemeConfigs.Count == 0)
-                return waterThemeConfigs[0];
+            // Still not random
+            if (waterThemeConfigs == null || waterThemeConfigs.Count == 0)
+                throw new Exception("Danh sách waterThemeConfigs rỗng.");
 
-            int groupIndex = (level - 25) / 25; 
-            
-            WaterThemeType expectedType = (groupIndex % 2 == 0) ? WaterThemeType.Day : WaterThemeType.Night;
-            
-            var filtered = waterThemeConfigs.Where(c => c.themeType == expectedType).ToList();
+            const int defaultThemeId = 0;
+            const int SEED_DAY = 42;
+            const int SEED_NIGHT = 999;
 
-            if (filtered.Count == 0)
+            if (level < 15)
+                return waterThemeConfigs.FirstOrDefault(c => c.themeId == defaultThemeId) ?? waterThemeConfigs[0];
+
+            int groupSize = 25;
+
+            // Lọc tất cả theme hợp lệ và bỏ trùng theo themeId
+            var dayThemes = waterThemeConfigs
+                .Where(c => c.themeType == WaterThemeType.Day && c.themeId != defaultThemeId)
+                .GroupBy(c => c.themeId)
+                .Select(g => g.First())
+                .ToList();
+
+            var nightThemes = waterThemeConfigs
+                .Where(c => c.themeType == WaterThemeType.Night && c.themeId != defaultThemeId)
+                .GroupBy(c => c.themeId)
+                .Select(g => g.First())
+                .ToList();
+
+            int totalGroups = dayThemes.Count + nightThemes.Count;
+            int cycleLength = totalGroups * groupSize;
+
+            int levelInCycle = (level - 15) % cycleLength;
+            int groupIndex = levelInCycle / groupSize;
+
+            bool isDay = groupIndex % 2 == 0;
+            int indexInType = groupIndex / 2;
+
+            var baseList = isDay ? dayThemes : nightThemes;
+            int seed = isDay ? SEED_DAY : SEED_NIGHT;
+
+            var shuffled = new List<WaterThemeConfig>(baseList);
+            System.Random rng = new System.Random(seed);
+            for (int i = 0; i < shuffled.Count; i++)
             {
-                //Not day / night
-                return waterThemeConfigs[0];
+                int swap = rng.Next(i, shuffled.Count);
+                (shuffled[i], shuffled[swap]) = (shuffled[swap], shuffled[i]);
             }
-            // Tính số lượt đã qua cho mỗi loại (vì cứ 2 lần mới quay lại cùng 1 loại)
-            int roundIndex = groupIndex / 2;
 
-            // Xáo trộn theo index ổn định mà không cần cache
-            // Sử dụng phép hoán vị theo seed riêng
-            int seed = roundIndex + (int)expectedType * 1000;
-            var shuffledIndex = PseudoShuffleIndex(seed, filtered.Count);
+            if (indexInType < shuffled.Count)
+            {
+                var selected = shuffled[indexInType];
+                if (selected.themeId == defaultThemeId)
+                    throw new Exception($"⚠ Logic error: themeId = 0 xuất hiện ngoài vùng level < 15 (level={level}).");
+                return selected;
+            }
 
-            return filtered[shuffledIndex];
+            // fallback triệt để: lấy theme bất kỳ khác 0
+            var fallback = baseList.FirstOrDefault(c => c.themeId != defaultThemeId);
+            if (fallback == null)
+                throw new Exception("⚠ Không tìm thấy theme hợp lệ để fallback.");
+
+            return fallback;
         }
-        int PseudoShuffleIndex(int seed, int length)
+
+
+        [Button]
+        public void TestSceneTheme()
         {
-            List<int> indices = Enumerable.Range(0, length).ToList();
-            System.Random rng = new System.Random(seed / length); // Cố định seed theo "vòng"
-            for (int i = 0; i < length; i++)
+            listTest.Clear();
+            for (int i = 0; i < 1000; i += 25)
             {
-                int swapIndex = rng.Next(i, length);
-                (indices[i], indices[swapIndex]) = (indices[swapIndex], indices[i]);
+                listTest.Add(new TestLevelTheme(i, GetWaterThemeForLevel(i).themeId));
             }
-            return indices[seed % length];
         }
+
+        public List<TestLevelTheme> listTest = new List<TestLevelTheme>();
     }
-    
+
+    [Serializable]
+    public class TestLevelTheme
+    {
+        public TestLevelTheme(int level, int themeID)
+        {
+            this.level = level;
+            this.themeID = themeID;
+        }
+
+        public int level;
+        public int themeID;
+    }
+
     [Serializable]
     public class GroundThemeConfigModel
     {
         public string themeId;
         public List<GroundElement> groundElements;
+
         public GroundElement GetElementById(string id)
         {
             return groundElements.Find(x => x.Id == id);
@@ -181,6 +222,7 @@ namespace _IEC.Features.Gameplay
         public List<Material> materials;
         public List<Texture2D> textures;
     }
+
     [Serializable]
     public class WaterThemeConfig
     {

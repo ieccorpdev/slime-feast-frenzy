@@ -286,7 +286,7 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
-                var themeConfig = Config.themeConfig.GetWaterThemeConfig();
+                var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
                 MaterialPropertyBlock block = new MaterialPropertyBlock();
                 block.SetColor("_BaseColor", themeConfig.baseItemColor);
                 bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;

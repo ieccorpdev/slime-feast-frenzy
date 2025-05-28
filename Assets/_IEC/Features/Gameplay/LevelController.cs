@@ -148,8 +148,7 @@ namespace _IEC.Features.Gameplay
             //     levelConfig = Config.levelConfig.GetFTUELevelData(level);
             // }
          
-            m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
-                ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
+            m_LevelConfig = Config.levelConfig.GetLevelDataSOSHP(level);
             #if UNITY_EDITOR
             if (EditorPrefs.GetBool("isPlayTest"))
             {
@@ -193,8 +192,15 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
-            
-            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeConfig());
+            if (GamePlay.currentThemeSelect >= 0)
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
+            }
+            else
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
+            }
+
             themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
