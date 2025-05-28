@@ -18,7 +18,6 @@ namespace IEC
 
         public LevelController levelController;
 
-        
         public void LocateGroup()
         {
             Pool.Set(this);
@@ -33,8 +32,7 @@ namespace IEC
         {
 
         }
-
-
+        
         public void OnShowScreenHome()
         {
             homeCamera.gameObject.SetActive(true);

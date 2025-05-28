@@ -34,6 +34,7 @@ public class ClaimBonusRewardPanel : BasePopup
 
     public List<Reward> listDataReward;
     public Action actionClose;
+    public Action actionOnAnimRewardDone;
     private bool canClaim;
     private bool canOpen;
     private bool showAimChest = true;
@@ -198,7 +199,6 @@ public class ClaimBonusRewardPanel : BasePopup
         DOTween.Kill(AutoClaimTween);
         //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
-        EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);
         //Showing
@@ -229,6 +229,7 @@ public class ClaimBonusRewardPanel : BasePopup
             Pool.Get<ConfettiGroup>().StopConfetti();
             targetSpineAnimObject.SetAnimation("1_Start", false, () =>
             {
+                EventController.RaiseEvent(EventList.Audio.CHEST_DROP);
                 targetSpineAnimObject.SetAnimation("2_Idle", false, () =>
                 {
                     OpenChest();
@@ -350,7 +351,18 @@ public class ClaimBonusRewardPanel : BasePopup
             Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.rewardType, collectedItem.rewardAmount,collectedItem.startPos,collectedItem.startSize);
         }
 
-        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null,0f);
+        Locator.Main.ScreenMain.DoAnimAllAvailableReward(CallActionOnAnimRewardDone,0f);
+    }
+
+    public void SetActionOnceOnAnimRewardDone(Action action)
+    {
+        actionOnAnimRewardDone = action;
+    }
+
+    private void CallActionOnAnimRewardDone()
+    {
+        actionOnAnimRewardDone?.Invoke();
+        actionOnAnimRewardDone = null;
     }
 
     private void OpenChest(bool fastOpen = false)
@@ -363,6 +375,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
+            EventController.RaiseEvent(EventList.Audio.CHEST_OPEN);
             targetSpineAnimObject.SetAnimation("3_Open", false, () =>
             {
                 EndingChestOpen();
@@ -373,6 +386,7 @@ public class ClaimBonusRewardPanel : BasePopup
 
     private void EndingChestOpen()
     {
+        EventController.RaiseEvent(EventList.Audio.CHEST_IDLE);
         ShowRewardInChest();
         targetSpineAnimObject.SetAnimation("4_OpenIdle", false, () =>
         {

@@ -7,7 +7,9 @@ using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
 using Sirenix.OdinInspector;
+using IEC.Common.Event;
 using TMPro;
+using EventType = IEC.EventType;
 
 
 public class HomeScreenTab : ScreenNavigateUI
@@ -36,11 +38,14 @@ public class HomeScreenTab : ScreenNavigateUI
     public BaseHomeFeatureButton levelChestHomeFeature;
     [Header("Star Chest Reward")] public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
-    [Header("Star Chase Event")] public Button btnStarChase;
+    [Header("Star Chase Event")] 
     public GameEventHomeButton starChaseButton;
-    [Header("Shark Race Event")] public Button btnSharkRace;
+    [Header("Shark Race Event")] 
     public GameEventHomeButton sharkRaceButton;
+    [Header("Chomp Off Event")] 
+    public GameEventHomeButton chompOffButton;
     [Header("Relic Hunt")] public Button btnRelicHunt;
+    [Space(10)]
 
     [Space(10)] public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -131,26 +136,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(playButton,
             () =>
             {
-                //Block play button when have reward on way claim
-                if (Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
-                    Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
-                if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
-                {
-                    Locator.Main.PopupOutOfLive.Show();
-                }
-                else
-                {
-                    //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                    // DoMoveOutAllObj(0.3f,
-                    //     () =>
-                    //     {
-                    //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                    //         GameController.OpenScene(GameScene.Game);
-                    //     });
-
-                    //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                    Locator.Main.PopupBooster.Show();
-                }
+                OnClickPlayButton();
             });
 
         SetEvent(playHardButton,
@@ -175,8 +161,8 @@ public class HomeScreenTab : ScreenNavigateUI
         //                Locator.Main.HomeScreenTab.buildCityUI.Show();
         //            });
         //    });
-
-        SetEvent(btnStarChase,
+           
+        SetEvent(starChaseButton.button,
             () =>
             {
                 if (Locator.Main.PopupStarChase.CheckShowStartPopup())
@@ -188,7 +174,7 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Main.PopupStarChase.Show();
                 }
             });
-        SetEvent(btnSharkRace,
+        SetEvent(sharkRaceButton.button,
             () =>
             {
                 if (Locator.Main.PopupSharkRace.CheckShowStartPopup())
@@ -200,7 +186,19 @@ public class HomeScreenTab : ScreenNavigateUI
                     Locator.Main.PopupSharkRace.Show();
                 }
             });
-        SetEvent(btnRelicHunt,
+        SetEvent(chompOffButton.button,
+            () =>
+            {
+                // if (Locator.Main.PopupChompOff.CheckShowStartPopup())
+                // {
+                //     //Locator.Main.PopupStartSharkRaceEvent.Show();
+                // }
+                // else
+                {
+                    Locator.Main.PopupChompOff.Show();
+                }
+            });
+         SetEvent(btnRelicHunt,
             () =>
             {
                 if (Locator.Main.PopupRelicHunt.CheckShowPopup())
@@ -209,8 +207,32 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         SetupUIHome();
+        gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, CheckAllEventsAvailable);
     }
 
+    public void OnClickPlayButton()
+    {
+        //Block play button when have reward on way claim
+        if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+           Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
+        if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
+        {
+            Locator.Main.PopupOutOfLive.Show();
+        }
+        else
+        {
+            //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            // DoMoveOutAllObj(0.3f,
+            //     () =>
+            //     {
+            //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+            //         GameController.OpenScene(GameScene.Game);
+            //     });
+                    
+            //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+            Locator.Main.PopupBooster.Show();
+        }
+    }
     public void SetupUIHome()
     {
         InitMoveOutAnimation();
@@ -405,14 +427,15 @@ public class HomeScreenTab : ScreenNavigateUI
 
     #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void OnEnable()
     {
         //UpdateMainHome();
+        EventController.RaiseEvent(EventList.Audio.HOMEPAGE_IDLE);
+    }
+
+    private void OnDisable()
+    {
+        SoundController.StopSound(EventList.Audio.HOMEPAGE_IDLE);
     }
 
     public override void Show()
@@ -487,6 +510,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateLifeOffer();
         UpdateStarChest();
         UpdateGameEventButton();
+        CheckAllEventsAvailable();
         progressRewardBar.Setup();
         levelChestHomeFeature.SetLock(PlayerData.level <
                                       Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
@@ -508,6 +532,22 @@ public class HomeScreenTab : ScreenNavigateUI
         playButton.gameObject.SetActive(!PlayerData.IsHardLevel());
         playHardButton.gameObject.SetActive(PlayerData.IsHardLevel());
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+    }
+
+    public void CheckAllEventsAvailable()
+    {
+        int daysPlayed = PlayerData.GetDaysSinceDownload();
+        
+        //Check chomp-off
+        if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        {
+            chompOffButton.gameObject.SetActive(
+                Config.eventLiveOpsConfig.IsEventAvailable(
+                    EventType.ChompOff,
+                    Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                        .eventDurationInHours / 24),
+                    daysPlayed));
+        }
     }
 
     private void UpdateStarChest()
@@ -540,6 +580,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         starChaseButton.InitUI();
         sharkRaceButton.InitUI();
+        chompOffButton.InitUI();
     }
 
     private void UpdateLifeOffer()

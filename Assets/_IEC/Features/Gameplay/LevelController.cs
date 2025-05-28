@@ -35,7 +35,8 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
         [SerializeField] private Transform allItemHolder;
-        
+       
+        public ThemeController themeController;
 
         private bool _isShowEnding = false;
         private State m_CurrentState;
@@ -150,8 +151,7 @@ namespace _IEC.Features.Gameplay
             //     levelConfig = Config.levelConfig.GetFTUELevelData(level);
             // }
          
-            m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
-                ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
+            m_LevelConfig = Config.levelConfig.GetLevelDataSOSHP(level);
             #if UNITY_EDITOR
             if (EditorPrefs.GetBool("isPlayTest"))
             {
@@ -195,6 +195,16 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
+            
+            if (GamePlay.currentThemeSelect >= 0)
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
+            }
+            else
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
+            }
+            
             if (PlayerData.relicData.isAvaiableToSpawn)
             {
                 m_AllRelicItems.Clear();
@@ -206,7 +216,8 @@ namespace _IEC.Features.Gameplay
                     Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
                 );
             }
-
+            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();

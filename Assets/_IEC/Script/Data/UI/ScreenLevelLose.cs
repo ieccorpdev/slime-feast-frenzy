@@ -31,6 +31,7 @@ namespace IEC
                 {
                     Hide();
                     PlayerData.ResetBoosterStreak();
+                    PlayerData.AddLevelLostCountForChompOffEvent();
                     GameController.OpenScene(GameScene.Main);
                 };
                 
@@ -45,6 +46,7 @@ namespace IEC
                 System.Action actionClose = () =>
                 {
                     PlayerData.ResetBoosterStreak();
+                    PlayerData.AddLevelLostCountForChompOffEvent();
                     if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
                     {
                         Hide();
