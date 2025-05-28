@@ -74,7 +74,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
         }
 
-        private void Start()
+        public virtual void Start()
         {
             if(scroller != null)
                 scroller.OnBeingDrag+=DisableRewardPopupMini;
@@ -210,8 +210,8 @@ namespace IEC
 
         public virtual void InitEvent()
         {
-            CheckInitEventProgress();
             CheckUpdateEventProgress();
+            CheckInitEventProgress();
             ReloadData();
         }
         
@@ -280,6 +280,16 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+            
+            bool eventAvailable = Config.eventLiveOpsConfig.IsEventAvailable(
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
+
+            if (!eventAvailable)
+            {
+                stage = -1;
+            }
 
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
@@ -300,18 +310,14 @@ namespace IEC
                         listDataReward = new List<Reward>(eventRewardData.listReward),
                     });
 
-                Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
+                if (stage != -1)
                 {
-                    if (stage != -1)
+                    Locator.Main.ClaimBonusRewardPanel.SetActionOnceOnAnimRewardDone(() =>
                     {
-                        // StartNewEventStage(stage);
-                        // CheckInitEventProgress();
-                        // UpdateUI();
                         ShowStartPopup();
-                    }
-                    // else
-                    //     Hide();
-                });
+                    });
+                }
+
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
@@ -521,17 +527,22 @@ namespace IEC
             CheckUpdateEventProgress();
         }
 
-        protected virtual void CheckUpdateEventProgress()
+        public virtual void CheckUpdateEventProgress()
         {
             // if (!IsInEvent)
             //     return;
+            
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);
 
             var timeToCheck = DateTime.Now <= GetTimeEndStage() ? DateTime.Now : GetTimeEndStage();
 
-            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours || IsEndEventStage())
             {
                 data.lastUpdateTime = DateTime.Now;
                 for (int i = 0; i < data.listPlayerData.Count; i++)

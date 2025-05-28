@@ -34,6 +34,7 @@ public class ClaimBonusRewardPanel : BasePopup
 
     public List<Reward> listDataReward;
     public Action actionClose;
+    public Action actionOnAnimRewardDone;
     private bool canClaim;
     private bool canOpen;
     private bool showAimChest = true;
@@ -350,7 +351,18 @@ public class ClaimBonusRewardPanel : BasePopup
             Locator.Main.ScreenMain.AddRewardClaimEffect(collectedItem.rewardType, collectedItem.rewardAmount,collectedItem.startPos,collectedItem.startSize);
         }
 
-        Locator.Main.ScreenMain.DoAnimAllAvailableReward(null,0f);
+        Locator.Main.ScreenMain.DoAnimAllAvailableReward(CallActionOnAnimRewardDone,0f);
+    }
+
+    public void SetActionOnceOnAnimRewardDone(Action action)
+    {
+        actionOnAnimRewardDone = action;
+    }
+
+    private void CallActionOnAnimRewardDone()
+    {
+        actionOnAnimRewardDone?.Invoke();
+        actionOnAnimRewardDone = null;
     }
 
     private void OpenChest(bool fastOpen = false)

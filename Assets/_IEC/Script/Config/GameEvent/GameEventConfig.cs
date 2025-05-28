@@ -344,7 +344,7 @@ namespace IEC
 
         public EventRewardTitleData GetWinAllEventStagesTitleData(int rank)
         {
-            if (titleDataWinAllEventStages != null)
+            if (titleDataWinAllEventStages.claimRewardTitleSprite != null)
                 return titleDataWinAllEventStages;
             else
                 return GetRewardTitleData(rank);
