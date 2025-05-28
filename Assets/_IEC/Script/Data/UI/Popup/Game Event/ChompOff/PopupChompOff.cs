@@ -112,6 +112,8 @@ namespace IEC
             playButton.gameObject.SetActive(false);
             startEventButton.gameObject.SetActive(true);
             
+            progressBarUI.UpdateProgressBarUI(null, null);
+            
             playerUI.SetAvatar(Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName));
             playerUI.SetName(PlayerData.playerName);
             playerUI.SetProgressText("0");
@@ -135,10 +137,9 @@ namespace IEC
             
             _currentTimeEndEvent = eventSaveData.timeEnd;
             
-            SetEventStartUI();
-            
             InitEvent();
             //playButton.gameObject.SetActive(true);
+            SetEventStartUI();
             retryButton.gameObject.SetActive(false);
             
             // playButton.transform.localScale = new Vector3(0, 1, 1);
