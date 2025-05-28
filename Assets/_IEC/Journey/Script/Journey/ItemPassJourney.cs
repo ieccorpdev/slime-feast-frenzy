@@ -27,6 +27,7 @@ namespace IEC
         public GameObject info;
         private static GameObject currentInfo;
         public List<GameObject> lockGroups, unlockGroups;
+        private bool isUseChest;
 
         private void Awake()
         {
@@ -62,15 +63,19 @@ namespace IEC
 
         public void OnClaimItem()
         {
-            //Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(dataReward, null, true);
-            //Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(
-            //  typePass == TypePassJourney.REGULAR ? ClaimBonusRewardSkin.Chest_UnderseaVoyageFree
-            //  : ClaimBonusRewardSkin.Chest_UnderseaVoyageVip);
-            //PlayerData.Vibrate(HapticTypes.Failure);
-            Locator.Main.PopupJourney.OnCollectAllButtonClick();
+            if (currentID == Config.journeyTripConfig.listRewardsByJourneys[0].idJourney && typePass == TypePassJourney.VIP)
+            {
+                PlayerData.journeyData.isEnableMaxHeart = true;
+                PlayerData.RaiseToMaxHealth();
+            }
+            Locator.Main.PopupJourney.OnCollectAllButtonClick(isUseChest);
             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(
-              typePass == TypePassJourney.REGULAR ? ClaimBonusRewardSkin.Chest_UnderseaVoyageFree
-              : ClaimBonusRewardSkin.Chest_UnderseaVoyageVip);
+                currentID != Config.journeyTripConfig.bonusReward.idJourney ?
+                isUseChest ?
+              typePass == TypePassJourney.REGULAR ? 
+              ClaimBonusRewardSkin.Chest_2
+              : ClaimBonusRewardSkin.Chest_UnderseaVoyageFree : "" : 
+              ClaimBonusRewardSkin.Chest_UnderseaVoyageVip);
             PlayerData.Vibrate(HapticTypes.Failure);
         }
 
@@ -110,7 +115,23 @@ namespace IEC
         {
             dataReward = dataItemPass.listRewards.Select(x => x.reward).ToList();
             BaseSetupDataItem(dataReward, id);
-            if (typePass == TypePassJourney.VIP)
+            if (id == Config.journeyTripConfig.bonusReward.idJourney)
+            {
+                if (PlayerData.journeyData.GetStatusVipPass(currentID) == JourneyItemStatus.CLAIMED)
+                {
+                    statusItem = JourneyItemStatus.CLAIMED;
+                }
+                else if (PlayerData.journeyData.currentTargetJourney == Config.journeyTripConfig.listRewardsByJourneys.Count + 1 && PlayerData.journeyData.isBuyIAP)
+                {
+                    statusItem = JourneyItemStatus.CANCLAIM;
+                    PlayerData.journeyData.SetStatusVipPass(id, JourneyItemStatus.CANCLAIM);
+                }
+                else
+                {
+                    statusItem = JourneyItemStatus.LOCK;
+                }
+            }
+            else if (typePass == TypePassJourney.VIP)
             {
                 statusItem = PlayerData.journeyData.GetStatusVipPass(currentID);
             }
@@ -142,7 +163,7 @@ namespace IEC
                     }
                     break;
                 case JourneyItemStatus.CLAIMED:
-                    
+
                     foreach (var go in lockGroups)
                     {
                         go.SetActive(false);
@@ -168,11 +189,10 @@ namespace IEC
 
         public void ShowIconItem()
         {
-            bool canInteracInfo = dataReward.Count > 2;
-            infor.interactable = canInteracInfo;
-            chest.SetActive(canInteracInfo);
-            rootIcon.SetActive(!canInteracInfo);
-            if (!canInteracInfo)
+            isUseChest = dataReward.Count > 2;
+            chest.SetActive(isUseChest);
+            rootIcon.SetActive(!isUseChest);
+            if (!isUseChest)
             {
                 foreach (var rewardUI in listRewardIMain)
                 {

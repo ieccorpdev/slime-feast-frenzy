@@ -13,14 +13,12 @@ namespace IEC
     public class PopupJourney : BasePopup
     {
         public ClaimBonusRewardPanel ClaimBonusRewardPanel => Locator.Main.ClaimBonusRewardPanel;
-        [Header("MainJourney")]
         public Button tutorialJourneyBtn;
         public GameObject progressbarMove;
         public VerticalLayoutGroup verticalItemJouney;
         public ScrollRect scrollRect;
         public RectTransform contentPanel;
         public List<ItemJourney> listItemJourney;
-        [Header("TutorialJourney")]
         public TutorialJourney tutorialJourneyPanel;
         [Header("FuelBar")]
         public Image fillFuelBar;
@@ -29,35 +27,50 @@ namespace IEC
         public TextMeshProUGUI timerTxt;
         [SerializeField] private float offsetMove = 25;
         [SerializeField] private float offsetScrollTo = -100;
-        private bool CanShow;
+        private bool _canShow;
+        [SerializeField] private Button buyIAP, doneBuyIAP;
+        public ItemPassJourney hiddenTreasure;
 
         private void Start()
         {
             SetEvent(tutorialJourneyBtn, OnClickButtonTutorialJourney);
+            base.SetEvent(buyIAP, () =>
+            {
+                Locator.Main.PopupVoyagePassIAPInfor.Show();
+            });
+            base.SetEvent(doneBuyIAP, () =>
+            {
+                Locator.Main.PopupVoyagePassIAPInfor.Show();
+            });
+            Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += () =>
+            {
+                PlayerData.journeyData.isBuyIAP = true;
+                RefreshUI();
+                doneBuyIAP.gameObject.SetActive(true);
+                buyIAP.gameObject.SetActive(false);
+            };
         }
 
         private void CheckShow()
         {
-            if (CanShow)
+            if (_canShow)
             {
-                DOVirtual.DelayedCall(1f, () =>
+                DOVirtual.DelayedCall(2f, () =>
                 {
                     Locator.Main.ScreenMain.SetInteractive(true);
                     Show();
                 });
-                CanShow = false;
+                _canShow = false;
             }
-        }
-
-        private void OnEnable()
-        {
-            StartCoroutine(UpdateTimer());
         }
 
         public override void Hide()
         {
             base.Hide();
+            StopAllCoroutines();
+            Pool.Get<UnderseaVoyageButton>().InitStatusButton();
         }
+
         [Button]
         public override void Show()
         {
@@ -68,6 +81,7 @@ namespace IEC
                 tutorialJourneyPanel.Show();
                 PlayerData.journeyData.isShowTutorialInPopup = true;
             }
+            StartCoroutine(UpdateTimer());
         }
 
         public void SetUpUI()
@@ -83,18 +97,29 @@ namespace IEC
             InitData();
             SetProgressBar(false);
         }
-        
+
+        public int GetAvailableClaimCount()
+        {
+            InitData();
+            GetAllReward(out var listItem);
+            return listItem.Count;
+        }
+
         public void InitData()
         {
             for (int i = 0; i < listItemJourney.Count; i++)
             {
                 listItemJourney[i].SetUpDataItemJourney(Config.journeyTripConfig.GetRewardsByLevelJourney(i));
             }
+            hiddenTreasure.SetupDataItemPass(Config.journeyTripConfig.bonusReward.RewardsVips, Config.journeyTripConfig.bonusReward.idJourney);
         }
 
         IEnumerator UpdateTimer()
         {
             timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+            bool value = PlayerData.journeyData.isBuyIAP;
+            doneBuyIAP.gameObject.SetActive(value);
+            buyIAP.gameObject.SetActive(!value);
             yield return new WaitForSeconds(1f);
         }
 
@@ -117,6 +142,8 @@ namespace IEC
             }
             if (PlayerData.journeyData.currentTargetJourney >= Config.journeyTripConfig.listRewardsByJourneys.Count)
             {
+                progressbarMove.SetActive(false);
+                PlayerData.journeyData.currentTargetJourney = Config.journeyTripConfig.listRewardsByJourneys.Count + 1;
                 fillFuelBar.fillAmount = 1;
                 currentProgressTextTMP.text = targetFuel + "/" + targetFuel;
                 currentTarget.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
@@ -143,7 +170,7 @@ namespace IEC
             progressbarMove.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, target.anchoredPosition.y + offsetMove);
         }
 
-        public void OnCollectAllButtonClick()
+        public void OnCollectAllButtonClick(bool isUseChest)
         {
             var listReward = GetAllReward(out var listItem);
             //Claim all Chest
@@ -153,11 +180,12 @@ namespace IEC
                 {
                     item.MakeItemClaimed();
                 }
+                CheckShow();
                 RefreshUI();
-            });
+                Pool.Get<UnderseaVoyageButton>().InitStatusButton();
+            }, isUseChest);
             Hide();
-            ClaimBonusRewardPanel.actionClose += CheckShow;
-            CanShow = true;
+            _canShow = true;
             Locator.Main.ScreenMain.SetInteractive(false);
         }
 
@@ -187,7 +215,14 @@ namespace IEC
                     listItem.Add(item.vipPass);
                 }
             }
-
+            if (hiddenTreasure.statusItem == JourneyItemStatus.CANCLAIM)
+            {
+                foreach (var dataReward in hiddenTreasure.dataReward)
+                {
+                    AddDataReward(ref listReward, dataReward);
+                }
+                listItem.Add(hiddenTreasure);
+            }
             return listReward;
         }
 
@@ -209,7 +244,7 @@ namespace IEC
             InitData();
             List<Reward> listReward = new List<Reward>();
             listReward = GetAllReward(out var listItem);
-            if (PlayerData.journeyData.isPurchasedJourneyPass)
+            if (PlayerData.journeyData.isEnableMaxHeart)
             {
                 Reward rewardLastChest = new Reward();
                 rewardLastChest.typeReward = ResourceType.Gold;

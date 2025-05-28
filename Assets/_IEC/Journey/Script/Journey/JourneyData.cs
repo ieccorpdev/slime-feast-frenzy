@@ -10,7 +10,8 @@ namespace IEC
         public int currentTargetJourney;
         public int currentTargetJourneyClaimed;
         public int currentFuelJourney;
-        public bool isPurchasedJourneyPass;
+        public bool isEnableMaxHeart;
+        public bool isBuyIAP;
         public bool wasOpenJourney;
         public int lifeCycleCount;
         public bool inJourneyProgress;
@@ -22,7 +23,7 @@ namespace IEC
         {
             if (!inJourneyProgress)
             {
-                timeStartJourneyTrip = DateTime.UtcNow;
+                timeStartJourneyTrip = DateTime.Now;
                 inJourneyProgress = true;
             }
             if (!wasOpenJourney)
@@ -39,23 +40,10 @@ namespace IEC
             currentTargetJourney = 0;
             currentTargetJourneyClaimed = 0;
             currentFuelJourney = 0;
-            isPurchasedJourneyPass = false;
+            isEnableMaxHeart = false;
+            isBuyIAP = false;
             wasOpenJourney = false;
             IsJourneyExpired = false;
-        }
-
-        public bool AnyItemCanClaimed()
-        {
-            //Logic claim all
-            foreach (var item in vipJourneyPass)
-            {
-                if (item.Value == JourneyItemStatus.CANCLAIM) return true;
-            }
-            foreach (var item in regularJourneyPass)
-            {
-                if (item.Value == JourneyItemStatus.CANCLAIM) return true;
-            }
-            return false;
         }
 
         public string GetTimeRemainingString()
@@ -91,7 +79,7 @@ namespace IEC
         private TimeSpan GetTimeRemaining()
         {
             DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
-            TimeSpan remaining = endTime - DateTime.UtcNow;
+            TimeSpan remaining = endTime - DateTime.Now;
             return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
         }
 
@@ -100,13 +88,13 @@ namespace IEC
             if (!vipJourneyPass.ContainsKey(id)) vipJourneyPass[id] = JourneyItemStatus.LOCK;
             if (id < currentTargetJourney && vipJourneyPass[id] == JourneyItemStatus.LOCK || vipJourneyPass[id] == JourneyItemStatus.UNLOCK)
             {
-                if (isPurchasedJourneyPass)
+                if (isBuyIAP)
                 {
                     vipJourneyPass[id] = JourneyItemStatus.CANCLAIM;
                 }
                 else
                 {
-                    vipJourneyPass[id] = JourneyItemStatus.UNLOCK;
+                    vipJourneyPass[id] = JourneyItemStatus.LOCK;
                 }
             }
             return vipJourneyPass[id];
@@ -126,7 +114,7 @@ namespace IEC
         {
             if (!regularJourneyPass.ContainsKey(id)) 
                 regularJourneyPass[id] = JourneyItemStatus.LOCK;
-            if (id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
+            if (id >= 0 && id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
             {
                 regularJourneyPass[id] = JourneyItemStatus.CANCLAIM;
             }

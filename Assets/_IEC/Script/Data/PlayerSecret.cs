@@ -271,7 +271,7 @@ namespace IEC
         public bool dailyShowLifeOfferPack;
         public void DecreasePlayerLife()
         {
-            if (playerLife == (journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth))
+            if (playerLife == (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 if (timeStartCountAddLife < DateTime.Now)
                 {
@@ -357,7 +357,7 @@ namespace IEC
                 if(!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
-            while (playerLife < (journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth))
+            while (playerLife < (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 diffTime = DateTime.Now - timeStartCountAddLife;
                 if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= Config.timeRefillLife)
@@ -383,7 +383,7 @@ namespace IEC
         public string GetTimeToNextLife()
         {
             CheckPlayerAddLifeByTime();
-            if (playerLife >= (journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth))
+            if (playerLife >= (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 return "MAX";
             }
@@ -403,7 +403,7 @@ namespace IEC
 
         public void RaiseToMaxHealth()
         {
-            playerLife = (journeyData.wasOpenJourney ? Config.maxHealthInKingdomPass : Config.maxHealth);
+            playerLife = (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth);
         }
 
         #endregion

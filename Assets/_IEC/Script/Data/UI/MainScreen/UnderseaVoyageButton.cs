@@ -14,13 +14,13 @@ namespace IEC
         [SerializeField] private TMP_Text txtNotiCount, txtTimer, txtTitle, levelUnlockTxt;
         private Button button;
         public UnderseaVoyageState currentState = UnderseaVoyageState.Lock;
+        private int notiCount = 0;
 
         public void SetState(UnderseaVoyageState state)
         {
-            bool showNoti = state == UnderseaVoyageState.Normal || state == UnderseaVoyageState.Claim;
-            notiGroup.SetActive(showNoti);
-            if (showNoti) SetNotiCount();
             currentState = state;
+            bool showNoti = state == UnderseaVoyageState.Normal || state == UnderseaVoyageState.Claim;
+            notiGroup.SetActive(showNoti && notiCount > 0);
             switch (state)
             {
                 case UnderseaVoyageState.Normal:
@@ -57,10 +57,8 @@ namespace IEC
 
         private void SetNotiCount()
         {
-            int count = PlayerData.journeyData.currentFuelJourney;
-            bool hasNoti = count > 0;
-            txtNotiCount.text = count.ToString();
-            notiGroup.SetActive(hasNoti);
+            notiCount = Locator.Main.PopupJourney.GetAvailableClaimCount();
+            txtNotiCount.text = notiCount.ToString();
         }
 
         private void SetGroupActive(bool Lock, bool claim, bool normal)
@@ -75,8 +73,9 @@ namespace IEC
             imgMainIcon.sprite = icon;
         }
 
-        private void InitStatusButton()
+        public void InitStatusButton()
         {
+            SetNotiCount();
             if (PlayerData.level <= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn)
             {
                 SetState(UnderseaVoyageState.Lock);
@@ -93,7 +92,7 @@ namespace IEC
                 }
                 else
                 {
-                    if (PlayerData.journeyData.AnyItemCanClaimed())
+                    if (notiCount > 0)
                     {
                         SetState(UnderseaVoyageState.Claim);
                     }
@@ -103,6 +102,11 @@ namespace IEC
                     }
                 }
             }
+        }
+
+        private void Awake()
+        {
+            Pool.Set(this);
         }
 
         private IEnumerator Start()
