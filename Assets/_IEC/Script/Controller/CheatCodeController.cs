@@ -242,6 +242,15 @@ namespace IEC
                 Locator.Main.PopupStarChase.ResetEvent();
             });
 
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Jellyfish Item", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.journeyData.currentFuelJourney += count;
+            }, new CheatCode.InputParam
+            {
+                value = 100
+            });
+
             ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
             {
                 Locator.Service.GameResourceDisplay.SetAllObjPosOut();

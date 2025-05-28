@@ -26,6 +26,8 @@ namespace _IEC.Features.Gameplay
         private List<Sequence> sequences = new List<Sequence>();
         private List<LevelObjectiveVfx> listObjectiveVfx = new List<LevelObjectiveVfx>();
 
+        public LevelObjectiveUI specialBottleUI;
+
         // private void Awake()
         // {
         //     this.RegisterListener(EventList.GamePlay.RESUME_GAME, OnGameResume);
@@ -127,13 +129,22 @@ namespace _IEC.Features.Gameplay
                     objectiveUI.SetNumber(GamePlay.levelController.GoldCollected.ToString(),false);
                 },true);
             }
+            else if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                objectiveUI.PlayAnim();
+                EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+                {
+                    objectiveUI.SetNumber("", false);
+                }, true);
+                //objectiveUI.PlayAnim();
+            }
             else
             {
                 int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
                 EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
                 {
-                    objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
-                },true);
+                    objectiveUI.SetNumber(number + "/" + maxSpecialObject, false);
+                }, true);
                 //objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
             }
 
@@ -186,7 +197,11 @@ namespace _IEC.Features.Gameplay
         {
             if (itemData.GetCoinValue() > 0)
             {
-               return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.goldSpecialObjective.GetId());
+                return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.goldSpecialObjective.GetId());
+            }
+            if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                return specialBottleUI;
             }
             return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemData.itemID.ToLower()));
         }
@@ -243,11 +258,25 @@ namespace _IEC.Features.Gameplay
         {
             HandleGoldSpecialObjective(levelType);
             HandleOceanGiftObject();
+            HandleKingdomSpecialObjective();
             HandleRelicObject();
             specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
             StartCoroutine(RebuildNextFrame());
         }
-        
+
+        public void HandleKingdomSpecialObjective()
+        {
+            var dataKingdom = Config.specialObjectConfig.kingdomSpecialObjective;
+            var kingdomObjective = new LevelObjective();
+            int kingdomCount = GamePlay.levelController.AllkingdomSpecialItems.Count;
+            kingdomObjective.itemId = dataKingdom.GetId();
+            kingdomObjective.number = kingdomCount;
+            LevelObjectiveUI kingdomObjectiveContain = specialBottleUI;
+            kingdomObjectiveContain.LoadData(kingdomObjective, true);
+            m_ActiveObjectiveUIs.Add(kingdomObjectiveContain);
+            kingdomObjectiveContain.gameObject.SetActive(kingdomCount > 0);
+        }
+
         IEnumerator RebuildNextFrame()
         {
             yield return null; // wait 1 frame
