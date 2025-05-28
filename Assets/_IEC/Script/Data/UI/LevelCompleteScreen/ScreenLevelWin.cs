@@ -251,6 +251,19 @@ namespace IEC
                 );
                 popupQueue.Enqueue(StartSharkRace);
             }
+            
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock && !PlayerData.isShownPopupInfoChompOff)
+            {
+                PopupData StartChompOff = new PopupData(
+                    Locator.Main.PopupChompOff,
+                    () =>
+                    {
+                        Locator.Main.PopupChompOff.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(StartChompOff);
+            }
 
             if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
                 && Locator.Main.PopupSharkRace.IsEndEventStage() 
@@ -282,6 +295,22 @@ namespace IEC
                     ShowNext
                 );
                 popupQueue.Enqueue(ClaimStarChase);
+            }
+            
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock 
+                && Locator.Main.PopupChompOff.IsEndEventStage() 
+                && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
+                && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+            {
+                PopupData ClaimChompOff = new PopupData(
+                    Locator.Main.PopupChompOff,
+                    () =>
+                    {
+                        Locator.Main.PopupChompOff.Show();
+                    },
+                    ShowNext
+                );
+                popupQueue.Enqueue(ClaimChompOff);
             }
             
             #endregion

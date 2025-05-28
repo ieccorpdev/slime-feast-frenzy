@@ -98,9 +98,9 @@ namespace IEC
                     
                     playButton.transform.localScale = new Vector3(0, 1, 1);
                     playButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack);
-                    
-                    InitEvent();
 
+                    InitEvent();
+                    
                     DOTween.Kill(_startEventSequence);
                     _startEventSequence = null;
                 });
@@ -171,18 +171,27 @@ namespace IEC
             }
         }
 
+        private void OnDisable()
+        {
+            if (_startEventSequence != null)
+            {
+                //DOTween.Kill(_startEventSequence);
+                _startEventSequence.Kill();
+                _startEventSequence = null;
+
+                DOTween.Kill(playButton.transform);
+                playButton.transform.localScale = Vector3.one;
+                playButton.gameObject.SetActive(true);
+
+                _eventStarted = true;
+                
+                InitEvent();
+            }
+        }
+
         public override void Hide()
         {
             base.Hide();
-
-            if (_startEventSequence.IsActive())
-            {
-                DOTween.Kill(_startEventSequence);
-                _startEventSequence = null;
-                
-                playButton.transform.localScale = Vector3.one;
-                playButton.gameObject.SetActive(true);
-            }
         }
 
         public override void Show()
