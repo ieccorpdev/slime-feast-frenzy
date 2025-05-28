@@ -112,6 +112,8 @@ namespace IEC
             playButton.gameObject.SetActive(false);
             startEventButton.gameObject.SetActive(true);
             
+            progressBarUI.UpdateProgressBarUI(null, null);
+            
             playerUI.SetAvatar(Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName));
             playerUI.SetName(PlayerData.playerName);
             playerUI.SetProgressText("0");
@@ -135,10 +137,9 @@ namespace IEC
             
             _currentTimeEndEvent = eventSaveData.timeEnd;
             
-            SetEventStartUI();
-            
             InitEvent();
             //playButton.gameObject.SetActive(true);
+            SetEventStartUI();
             retryButton.gameObject.SetActive(false);
             
             // playButton.transform.localScale = new Vector3(0, 1, 1);
@@ -215,7 +216,7 @@ namespace IEC
 
             if (!PlayerData.isShownPopupInfoChompOff)
             {
-                OnShowInfo();
+                //OnShowInfo();
                 PlayerData.isShownPopupInfoChompOff = true;
             }
 
@@ -231,11 +232,6 @@ namespace IEC
             //     return;
             
             UpdateUI();
-        }
-
-        protected override bool IsShowInfo()
-        {
-            return false;
         }
 
         public override void InitEvent()
@@ -261,9 +257,13 @@ namespace IEC
                 };
                 
             playerUI.Setup(_eventConfig, eventData, player, 0);
-            
-            if(opponent != null)
+
+            if (opponent != null)
+            {
+                opponent.progress = NumberSolver.GetClosestSmaller(opponent.progress,
+                    Config.AllGameEventConfig.chompOffProgressConfig.listProgressAfterWin);
                 opponentUI.Setup(_eventConfig, eventData, opponent, 0);
+            }
 
             if (!_eventStarted)
             {
@@ -275,6 +275,17 @@ namespace IEC
             
             UpdateRewardUI();
 
+            _currentTimeEndEventStage = eventSaveData.timeStart.AddSeconds(eventData.eventStageTimeInSeconds);
+            _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType, 
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                PlayerData.GetDaysSinceDownload());
+        }
+
+        public void UpdateCurrentTimeEndEvent()
+        {
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            var eventData = _eventConfig.GetEventData(eventSaveData.eventIndex);
             _currentTimeEndEventStage = eventSaveData.timeStart.AddSeconds(eventData.eventStageTimeInSeconds);
             _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
                 eventType, 
@@ -428,6 +439,42 @@ namespace IEC
             }
 
             return durations;
+        }
+    }
+    
+    public class NumberSolver
+    {
+        // Check if target can be expressed using any combination of the given numbers
+        public static bool CanBeExpressed(int target, List<int> values)
+        {
+            // DP table: dp[i] is true if i can be made with the values
+            bool[] dp = new bool[target + 1];
+            dp[0] = true;
+
+            for (int i = 1; i <= target; i++)
+            {
+                foreach (int val in values)
+                {
+                    if (i - val >= 0 && dp[i - val])
+                    {
+                        dp[i] = true;
+                        break;
+                    }
+                }
+            }
+
+            return dp[target];
+        }
+
+        // Get the closest smaller number that can be expressed with the given values
+        public static int GetClosestSmaller(int n, List<int> values)
+        {
+            for (int k = n; k >= 0; k--)
+            {
+                if (CanBeExpressed(k, values))
+                    return k;
+            }
+            return 0;
         }
     }
 }

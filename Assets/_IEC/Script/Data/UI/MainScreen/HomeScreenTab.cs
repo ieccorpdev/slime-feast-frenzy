@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
+using IEC.Common.Event;
 using TMPro;
 using EventType = IEC.EventType;
 
@@ -147,26 +148,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(playButton,
             () =>
             {
-                //Block play button when have reward on way claim
-                if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
-                   Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
-                if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
-                {
-                    Locator.Main.PopupOutOfLive.Show();
-                }
-                else
-                {
-                    //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
-                    // DoMoveOutAllObj(0.3f,
-                    //     () =>
-                    //     {
-                    //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                    //         GameController.OpenScene(GameScene.Game);
-                    //     });
-                    
-                    //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
-                    Locator.Main.PopupBooster.Show();
-                }
+                OnClickPlayButton();
             });
         
         SetEvent(playHardButton,
@@ -229,8 +211,32 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         SetupUIHome();
+        gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, CheckAllEventsAvailable);
     }
 
+    public void OnClickPlayButton()
+    {
+        //Block play button when have reward on way claim
+        if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+           Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
+        if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
+        {
+            Locator.Main.PopupOutOfLive.Show();
+        }
+        else
+        {
+            //EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            // DoMoveOutAllObj(0.3f,
+            //     () =>
+            //     {
+            //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+            //         GameController.OpenScene(GameScene.Game);
+            //     });
+                    
+            //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
+            Locator.Main.PopupBooster.Show();
+        }
+    }
     public void SetupUIHome()
     {
         InitMoveOutAnimation();
@@ -506,11 +512,15 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysPlayed = PlayerData.GetDaysSinceDownload();
         
         //Check chomp-off
-        chompOffButton.gameObject.SetActive(
-            Config.eventLiveOpsConfig.IsEventAvailable(
-                EventType.ChompOff,
-                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).eventDurationInHours / 24), 
-                daysPlayed));
+        if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        {
+            chompOffButton.gameObject.SetActive(
+                Config.eventLiveOpsConfig.IsEventAvailable(
+                    EventType.ChompOff,
+                    Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                        .eventDurationInHours / 24),
+                    daysPlayed));
+        }
     }
 
     private void UpdateStarChest()

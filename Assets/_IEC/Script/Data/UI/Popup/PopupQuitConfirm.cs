@@ -29,6 +29,7 @@ namespace IEC
                     {
                         PlayerData.DecreasePlayerLife();
                         PlayerData.ResetBoosterStreak();
+                        PlayerData.AddLevelLostCountForChompOffEvent();
                         EventController.RaiseEvent(EventList.Audio.LIFE_LOST);
                         GameController.OpenScene(GameScene.Main);
                         EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);

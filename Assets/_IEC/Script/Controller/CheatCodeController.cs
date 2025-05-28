@@ -133,6 +133,21 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+
+                var data = PlayerData.GetEventSaveData(EventType.ChompOff);
+
+                data.timeStart = data.timeStart.AddMinutes(-value);
+                data.lastUpdateTime = data.lastUpdateTime.AddMinutes(-value);
+                Locator.Main.PopupChompOff.UpdateCurrentTimeEndEvent();
+
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Level", param =>
             {

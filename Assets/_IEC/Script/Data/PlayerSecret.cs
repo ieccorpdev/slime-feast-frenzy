@@ -124,6 +124,7 @@ namespace IEC
             isKilledAppGamePlay = false;
             
             ResetBoosterStreak();
+            AddLevelLostCountForChompOffEvent();
             
         }
 
