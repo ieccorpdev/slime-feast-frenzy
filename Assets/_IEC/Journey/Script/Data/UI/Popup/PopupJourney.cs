@@ -6,6 +6,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace IEC
 {
@@ -28,10 +29,24 @@ namespace IEC
         public TextMeshProUGUI timerTxt;
         [SerializeField] private float offsetMove = 25;
         [SerializeField] private float offsetScrollTo = -100;
+        private bool CanShow;
 
         private void Start()
         {
             SetEvent(tutorialJourneyBtn, OnClickButtonTutorialJourney);
+        }
+
+        private void CheckShow()
+        {
+            if (CanShow)
+            {
+                DOVirtual.DelayedCall(1f, () =>
+                {
+                    Locator.Main.ScreenMain.SetInteractive(true);
+                    Show();
+                });
+                CanShow = false;
+            }
         }
 
         private void OnEnable()
@@ -57,24 +72,18 @@ namespace IEC
 
         public void SetUpUI()
         {
-            InitData();
             SetProgressFuel();
+            InitData();
             SetProgressBar();
         }
 
         public void RefreshUI()
         {
-            InitData();
             SetProgressFuel();
+            InitData();
             SetProgressBar(false);
-            CheckNotiHomeScreen();
         }
-
-        public void CheckNotiHomeScreen()
-        {
-            //var item = UI.popupJourney.GetAllReward(out var listItem);
-            //UI.screenHome.journeyHomeIcon.SetNoti(item.Count>0);
-        }
+        
         public void InitData()
         {
             for (int i = 0; i < listItemJourney.Count; i++)
@@ -134,12 +143,10 @@ namespace IEC
             progressbarMove.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, target.anchoredPosition.y + offsetMove);
         }
 
-        void OnCollectAllButtonClick()
+        public void OnCollectAllButtonClick()
         {
             var listReward = GetAllReward(out var listItem);
-
             //Claim all Chest
-            ClaimBonusRewardPanel.gameObject.SetActive(true);
             ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
             {
                 foreach (var item in listItem)
@@ -148,8 +155,10 @@ namespace IEC
                 }
                 RefreshUI();
             });
-            ClaimBonusRewardPanel.ShowingRewardPanel("Wooden_Chest");
-            //UI.screenHome.journeyHomeIcon.SetNoti();
+            Hide();
+            ClaimBonusRewardPanel.actionClose += CheckShow;
+            CanShow = true;
+            Locator.Main.ScreenMain.SetInteractive(false);
         }
 
         public List<Reward> GetAllReward(out List<ItemPassJourney> listItem)
@@ -160,9 +169,9 @@ namespace IEC
             {
                 if (item.regularPass.statusItem == JourneyItemStatus.CANCLAIM)
                 {
-                    foreach (var dataReward in item.regularPass.dataReward.listRewards)
+                    foreach (var dataReward in item.regularPass.dataReward)
                     {
-                        AddDataReward(ref listReward, dataReward.reward);
+                        AddDataReward(ref listReward, dataReward);
                     }
 
                     listItem.Add(item.regularPass);
@@ -170,9 +179,9 @@ namespace IEC
 
                 if (item.vipPass.statusItem == JourneyItemStatus.CANCLAIM)
                 {
-                    foreach (var dataReward in item.vipPass.dataReward.listRewards)
+                    foreach (var dataReward in item.vipPass.dataReward)
                     {
-                        AddDataReward(ref listReward, dataReward.reward);
+                        AddDataReward(ref listReward, dataReward);
                     }
 
                     listItem.Add(item.vipPass);
@@ -200,7 +209,7 @@ namespace IEC
             InitData();
             List<Reward> listReward = new List<Reward>();
             listReward = GetAllReward(out var listItem);
-            if (PlayerData.journeyData.purchasedJourneyPass)
+            if (PlayerData.journeyData.isPurchasedJourneyPass)
             {
                 Reward rewardLastChest = new Reward();
                 rewardLastChest.typeReward = ResourceType.Gold;

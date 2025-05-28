@@ -10,7 +10,7 @@ namespace IEC
         public int currentTargetJourney;
         public int currentTargetJourneyClaimed;
         public int currentFuelJourney;
-        public bool purchasedJourneyPass;
+        public bool isPurchasedJourneyPass;
         public bool wasOpenJourney;
         public int lifeCycleCount;
         public bool inJourneyProgress;
@@ -39,7 +39,7 @@ namespace IEC
             currentTargetJourney = 0;
             currentTargetJourneyClaimed = 0;
             currentFuelJourney = 0;
-            purchasedJourneyPass = false;
+            isPurchasedJourneyPass = false;
             wasOpenJourney = false;
             IsJourneyExpired = false;
         }
@@ -100,7 +100,7 @@ namespace IEC
             if (!vipJourneyPass.ContainsKey(id)) vipJourneyPass[id] = JourneyItemStatus.LOCK;
             if (id < currentTargetJourney && vipJourneyPass[id] == JourneyItemStatus.LOCK || vipJourneyPass[id] == JourneyItemStatus.UNLOCK)
             {
-                if (purchasedJourneyPass)
+                if (isPurchasedJourneyPass)
                 {
                     vipJourneyPass[id] = JourneyItemStatus.CANCLAIM;
                 }
@@ -124,7 +124,8 @@ namespace IEC
 
         public JourneyItemStatus GetStatusRegularPass(int id)
         {
-            if (!regularJourneyPass.ContainsKey(id)) regularJourneyPass[id] = JourneyItemStatus.LOCK;
+            if (!regularJourneyPass.ContainsKey(id)) 
+                regularJourneyPass[id] = JourneyItemStatus.LOCK;
             if (id < currentTargetJourney && (regularJourneyPass[id] == JourneyItemStatus.LOCK || regularJourneyPass[id] == JourneyItemStatus.UNLOCK))
             {
                 regularJourneyPass[id] = JourneyItemStatus.CANCLAIM;

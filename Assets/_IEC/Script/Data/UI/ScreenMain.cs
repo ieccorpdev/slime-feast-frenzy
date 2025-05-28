@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
@@ -30,10 +31,12 @@ namespace IEC
         [Header("Claim reward effect")] 
         public EffectRewardClaim effectRewardClaim;
         public Stack<RewardClaimData> listClaimRewardData = new();
-        
+        private CanvasGroup _canvasGroup;
+
         private void Awake()
         {
             Init();
+            _canvasGroup = this.GetComponent<CanvasGroup>();
             gameObject.OnEvent(EventList.GamePlay.ON_CHOOSE_TAB, () =>
             {
                 if(m_DictTab[Game.hybrid.currentTab].activeInHierarchy)
@@ -106,6 +109,14 @@ namespace IEC
             {
                 UI.ShowScreen(Locator.Service.PopupSettingInHome);
             });
+        }
+
+        public bool SetInteractive(bool isInteractive)
+        {
+            if (_canvasGroup == null) return false;
+            _canvasGroup.interactable = isInteractive;
+            _canvasGroup.blocksRaycasts = isInteractive;
+            return true;
         }
 
         private void Init()
