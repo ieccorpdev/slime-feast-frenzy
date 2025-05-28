@@ -448,38 +448,51 @@ namespace _IEC.Features.Gameplay
                 return res;
             }
 
-            Vector3? spawnPos = null;
-            for (int i = 0; i < count; i++)
+            var spawmAmount = Config.relicObjectConfig.GetRandomSpawnAmount();
+            var spawnSize = Config.relicObjectConfig.GetRandomSpawnSize();
+            List<BaseItem> tempList = new();
+            for (int i = 0; i < spawmAmount; i++)
             {
-                var newItem = prefab.Spawn();
-                spawnPos ??= FindValidSpawnPosition(
-                    bounds,
-                    newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
-                    1000,
-                    newItem.gameObject.layer
-                );
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
+                Vector3? spawnPos = null;
+                for (int j = 0; j < count; j++)
                 {
-                    itemComponent = newItem.AddComponent<BaseItem>();
+                    var newItem = prefab.Spawn();
+                    spawnPos ??= FindValidSpawnPosition(
+                        bounds,
+                        newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                        1000,
+                        newItem.gameObject.layer
+                    );
+                    var itemComponent = newItem.GetComponent<BaseItem>();
+                    if (itemComponent == null)
+                    {
+                        itemComponent = newItem.AddComponent<BaseItem>();
+                    }
+                    var itemTransform = itemComponent.transform;
+                    var itemData = new ItemData()
+                    {
+                        itemId = itemDefinition.GetId(),
+                        position = spawnPos.Value, 
+                        eulerAngle = Vector3.zero,
+                        localScale = Vector3.one *  spawnSize,
+                        isStartKinematic =  true,
+                    };
+                    itemTransform.parent = levelObjectHolder;
+                    //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
+                    itemComponent.LoadData(itemData, itemDefinition);
+                    itemComponent.transform.position = spawnPos.Value;
+                    Debug.Log(itemComponent.transform.position);
+                    res.Add(itemComponent);
+                    itemIds.Add(itemData.itemId);
+                    tempList.Add(itemComponent);
                 }
-                var itemTransform = itemComponent.transform;
-                var itemData = new ItemData()
+
+                for (int j = 0; j < tempList.Count; j++)
                 {
-                    itemId = itemDefinition.GetId(),
-                    position = spawnPos.Value, 
-                    eulerAngle = Vector3.zero,
-                    localScale = Vector3.one,
-                    isStartKinematic =  true,
-                };
-                itemTransform.parent = levelObjectHolder;
-                //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
-                itemComponent.LoadData(itemData, itemDefinition);
-                itemComponent.transform.position = spawnPos.Value;
-                Debug.Log(itemComponent.transform.position);
-                res.Add(itemComponent);
-                itemIds.Add(itemData.itemId);
+                    tempList[i].transform.position = spawnPos.Value;
+                }
             }
+            
             return res;
         }
 

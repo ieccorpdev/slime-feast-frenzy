@@ -198,6 +198,11 @@ namespace IEC
                     startPos += Vector3.down * 300;
                     AddSpecialObjectToClaim(amount,startPos,startSize, 1f);
                     break;
+                case ResourceType.Relic:
+                    startPos = EffectRewardClaim.SwitchToRectTransform(Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>());
+                    startPos += Vector3.down * 300;
+                    AddRelicObjectToClaim(amount,startPos,startSize, 1f);
+                    break;
                 case ResourceType.LevelStar:
                     AddLevelStarToClaim(amount,startPos,startSize, 1f, 0.15f);
                     break;
@@ -255,7 +260,31 @@ namespace IEC
                 animTime
             );
         }
-        
+        private void AddRelicObjectToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
+        {
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.btnRelicHunt.GetComponent<RectTransform>();
+            
+            AddCustomRewardToClaimEffect(
+                ResourceType.Relic, 
+                Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon(),
+                startPos, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                startSize,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay,
+                animTime
+            );
+        }
         private void AddRewardHelperToClaim(ResourceType helperType, int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home

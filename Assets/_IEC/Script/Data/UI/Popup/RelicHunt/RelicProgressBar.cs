@@ -10,9 +10,9 @@ using UnityEngine.UI;
 
 namespace _IEC.Script.Data.UI.Popup.RelicHunt
 {
-    public class VitrualProgressBar : MonoBehaviour
+    public class RelicProgressBar : MonoBehaviour
     {
-        [SerializeField] List<LevelProgressNode> levelProgressNodes = new List<LevelProgressNode>();
+        public List<LevelProgressNode> levelProgressNodes = new List<LevelProgressNode>();
 
 
         [SerializeField] private Image fillImage;
@@ -21,13 +21,13 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         private void Start()
         {
         }
-
+        
         public void OnNewLevel()
         {
             foreach (var levelProgressNode in levelProgressNodes)
             {
                 levelProgressNode.SetLock(true);
-                levelProgressNode.hasClaim = false;
+                levelProgressNode.ClearReward();
             }
         }
 
@@ -40,11 +40,16 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         }
 
         [Button]
-        public void SetVitrualProgress(int currentToken, int currentLevelIndex)
+        public void SetVitrualProgress(int currentToken, int currentLevelIndex, bool isMax = false)
         {
+            if (isMax)
+            {
+                fillImage.fillAmount = 1;
+                return;
+            }
             if (currentLevelIndex >= config.ArtifactLevels.Count)
             {
-                OnUnlockAll();
+                //OnUnlockAll();
                 return;
             }
 
@@ -58,7 +63,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             var aboveNode = relicReward.FirstOrDefault(x => x.tokenCost > currentToken);
             if (aboveNode == null)
             {
-                OnUnlockAll();
+                //OnUnlockAll();
                 return;
             }
 
@@ -74,7 +79,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
                     (levelProgressNodes[aboveNodeIndex].vitrualPercent -
                      levelProgressNodes[aboveNodeIndex - 1].vitrualPercent) * fillRange / range;
 
-                UnlockLevelNode(aboveNodeIndex - 1);
+                //UnlockLevelNode(aboveNodeIndex - 1);
                 fillImage.DOFillAmount(fillAmountSum, 0.5f);
 
             }
@@ -83,7 +88,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
                 float range = relicReward[aboveNodeIndex].tokenCost;
                 float fillRange = currentToken;
                 fillAmountSum = levelProgressNodes[aboveNodeIndex].vitrualPercent * fillRange / range;
-                UnlockLevelNode(aboveNodeIndex - 1);
+                //UnlockLevelNode(aboveNodeIndex - 1);
                 fillImage.fillAmount = fillAmountSum;
             }
         }

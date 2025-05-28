@@ -13,21 +13,25 @@ MonoBehaviour:
   m_Name: ArtifactCollectorConfig
   m_EditorClassIdentifier: 
   daysEachReset: 3
+  levelUnlockFeature: 15
   ArtifactLevels:
   - artifactLevelRewards:
-    - tokenCost: 20
+    - id: 0
+      tokenCost: 20
       artifactRewards:
       - artifactRewardType: 0
         value: 20
       - artifactRewardType: 1
         value: 15
-    - tokenCost: 30
+    - id: 1
+      tokenCost: 30
       artifactRewards:
       - artifactRewardType: 0
         value: 40
       - artifactRewardType: 3
         value: 15
-    - tokenCost: 60
+    - id: 2
+      tokenCost: 60
       artifactRewards:
       - artifactRewardType: 0
         value: 80
@@ -36,19 +40,22 @@ MonoBehaviour:
       - artifactRewardType: 4
         value: 1
   - artifactLevelRewards:
-    - tokenCost: 30
+    - id: 3
+      tokenCost: 30
       artifactRewards:
       - artifactRewardType: 0
         value: 20
       - artifactRewardType: 1
         value: 15
-    - tokenCost: 40
+    - id: 4
+      tokenCost: 40
       artifactRewards:
       - artifactRewardType: 0
         value: 40
       - artifactRewardType: 2
         value: 15
-    - tokenCost: 80
+    - id: 5
+      tokenCost: 80
       artifactRewards:
       - artifactRewardType: 0
         value: 80
@@ -57,13 +64,15 @@ MonoBehaviour:
       - artifactRewardType: 6
         value: 1
   - artifactLevelRewards:
-    - tokenCost: 40
+    - id: 6
+      tokenCost: 40
       artifactRewards:
       - artifactRewardType: 0
         value: 40
       - artifactRewardType: 1
         value: 30
-    - tokenCost: 80
+    - id: 7
+      tokenCost: 80
       artifactRewards:
       - artifactRewardType: 0
         value: 80
@@ -71,7 +80,8 @@ MonoBehaviour:
         value: 30
       - artifactRewardType: 5
         value: 1
-    - tokenCost: 120
+    - id: 8
+      tokenCost: 120
       artifactRewards:
       - artifactRewardType: 0
         value: 120
@@ -80,13 +90,15 @@ MonoBehaviour:
       - artifactRewardType: 7
         value: 1
   - artifactLevelRewards:
-    - tokenCost: 50
+    - id: 9
+      tokenCost: 50
       artifactRewards:
       - artifactRewardType: 0
         value: 40
       - artifactRewardType: 1
         value: 30
-    - tokenCost: 60
+    - id: 10
+      tokenCost: 60
       artifactRewards:
       - artifactRewardType: 0
         value: 80
@@ -94,7 +106,8 @@ MonoBehaviour:
         value: 30
       - artifactRewardType: 4
         value: 1
-    - tokenCost: 120
+    - id: 11
+      tokenCost: 120
       artifactRewards:
       - artifactRewardType: 0
         value: 120
@@ -103,13 +116,15 @@ MonoBehaviour:
       - artifactRewardType: 6
         value: 1
   - artifactLevelRewards:
-    - tokenCost: 60
+    - id: 12
+      tokenCost: 60
       artifactRewards:
       - artifactRewardType: 0
         value: 80
       - artifactRewardType: 1
         value: 60
-    - tokenCost: 70
+    - id: 13
+      tokenCost: 70
       artifactRewards:
       - artifactRewardType: 0
         value: 100
@@ -117,7 +132,8 @@ MonoBehaviour:
         value: 30
       - artifactRewardType: 4
         value: 1
-    - tokenCost: 150
+    - id: 14
+      tokenCost: 150
       artifactRewards:
       - artifactRewardType: 0
         value: 150
@@ -125,8 +141,10 @@ MonoBehaviour:
         value: 30
       - artifactRewardType: 5
         value: 1
-  - artifactLevelRewards:
-    - tokenCost: 0
+  grandPrizeReward:
+    artifactLevelRewards:
+    - id: 15
+      tokenCost: 0
       artifactRewards:
       - artifactRewardType: 0
         value: 1000

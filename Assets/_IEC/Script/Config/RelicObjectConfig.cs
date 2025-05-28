@@ -7,6 +7,8 @@ namespace IEC
     [CreateAssetMenu(menuName = "Game/RelicObjectConfig")]
     public class RelicObjectConfig : ScriptableObject
     {
+        public float maxSpawnAmount = 6;
+        public float minSpawnAmount = 3;
         public float maxSpawnSize = 6;
         public float minSpawnSize = 3;
         public List<RelicObjectSpawnData> listSpecialObjectSpawnData = new();
@@ -20,6 +22,8 @@ namespace IEC
 
             return spawnData?.GetSpawnAmount() ?? 0;
         }
+
+      
 
         public int GetLevelUnlockProgressReward()
         {
@@ -35,6 +39,10 @@ namespace IEC
             return listRelicItemDefinition[index];
         }
 
+        public float GetRandomSpawnAmount()
+        {
+            return Random.Range(minSpawnAmount, maxSpawnAmount);
+        }
         public float GetRandomSpawnSize()
         {
             return Random.Range(minSpawnSize, maxSpawnSize);

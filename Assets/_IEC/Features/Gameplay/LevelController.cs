@@ -195,14 +195,17 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
-            m_AllRelicItems.Clear();
-            int countRelicProgressReward = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicObjectConfig.GetSpawnAmount(PlayerData.level);
-            m_AllRelicItems = LevelHelper.SpawnRelicItems(
-                GroundExtend.CalculateBounds(m_AllItems),
-                countRelicProgressReward, 
-                allItemHolder,
-                Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
-            );
+            if (PlayerData.relicData.isAvaiableToSpawn)
+            {
+                m_AllRelicItems.Clear();
+                int countRelicProgressReward = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicObjectConfig.GetSpawnAmount(PlayerData.level);
+                m_AllRelicItems = LevelHelper.SpawnRelicItems(
+                    GroundExtend.CalculateBounds(m_AllItems),
+                    countRelicProgressReward, 
+                    allItemHolder,
+                    Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
+                );
+            }
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
