@@ -420,12 +420,13 @@ namespace _IEC.Features.Gameplay
                     itemComponent = newItem.AddComponent<BaseItem>();
                 }
                 var itemTransform = itemComponent.transform;
+                float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
                 var itemData = new ItemData()
                 {
                     itemId = itemDefinition.GetId(),
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
-                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
+                    localScale = Vector3.one * scale,
                     isStartKinematic =  false,
                 };
                 itemTransform.parent = levelObjectHolder;

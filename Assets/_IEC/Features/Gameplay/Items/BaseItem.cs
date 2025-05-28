@@ -252,7 +252,7 @@ namespace _IEC.Features.Gameplay
             
             if (myRenderer == null)
             {
-                myRenderer = GetComponentInChildren<MeshRenderer>();
+                myRenderer = GetComponentInChildren<Renderer>();
                 hasRenderer = true;
             }
 

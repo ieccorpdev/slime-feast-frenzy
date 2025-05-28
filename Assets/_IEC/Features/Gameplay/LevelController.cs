@@ -52,6 +52,7 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
         private List<BaseItem> m_AllRelicItems = new List<BaseItem>();
+        private List<BaseItem> m_AllkingdomSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
@@ -59,6 +60,7 @@ namespace _IEC.Features.Gameplay
         private List<SpawnBoosterData> listSpawnBoosterData = new();
         public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
         public List<BaseItem> AllRelicItems => m_AllRelicItems;
+        public List<BaseItem> AllkingdomSpecialItems => m_AllkingdomSpecialItems;
         public float GetTimeMagnetHelper => m_MagnetHelperCoolDown;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
@@ -195,7 +197,16 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
-            
+            m_AllkingdomSpecialItems.Clear();
+            int countAllkingdomSpecialItems = PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn ?
+                Config.specialObjectConfig.GetSpawnAmount() : 0;
+            m_AllkingdomSpecialItems = LevelHelper.SpawnSpecialItems(
+                GroundExtend.CalculateBounds(m_AllItems),
+                countAllkingdomSpecialItems,
+                allItemHolder,
+                Config.specialObjectConfig.kingdomSpecialObjective
+            );
+
             if (GamePlay.currentThemeSelect >= 0)
             {
                 themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
@@ -285,6 +296,7 @@ namespace _IEC.Features.Gameplay
         public List<BaseItem> GetAllItems() => m_AllItems
             .Concat(m_AllRelicItems)
             .Concat(m_AllSpecialItems)
+            .Concat(m_AllkingdomSpecialItems)
             .Concat(m_AllBoosters).ToList();
             
         public Transform GetLevelObjectHolder() => levelObjectHolder;
@@ -340,7 +352,7 @@ namespace _IEC.Features.Gameplay
         private bool IsSpecialObject(string itemId)
         {
             //return itemId.Contains("SpecialItem");
-            return itemId.Contains("Ocean");
+            return itemId.Contains("Ocean") || itemId.Contains(EventList.GamePlay.Kingdom_Special);
             //return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId)) != null;
         }
 
@@ -352,10 +364,14 @@ namespace _IEC.Features.Gameplay
         private void CollectSpecialObject(CollectItemData data)
         {
             CollectNormalItem(data);
-            //if (data.itemID.Contains("Ocean"))
-            //{
+            if (data.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                PlayerData.journeyData.currentFuelJourney++;
+            }
+            else
+            {
                 SpecialProgressRewardObjCollected++;
-            //}
+            }
             EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);

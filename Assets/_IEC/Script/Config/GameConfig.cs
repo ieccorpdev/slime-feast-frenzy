@@ -16,6 +16,7 @@ namespace IEC
     {
         [Space(10)]
         public int maxHealth = 5;
+        public int maxHealthInKingdomPass = 8;
         public int levelUnlockLife = 10;
         public int timeRefillLife = 15;//By Minutes
         public int goldToRefill = 900;
@@ -84,6 +85,8 @@ namespace IEC
         [Header("Game Event")] 
         public AllGameEventConfig AllGameEventConfig;
 
+        [Header("Journey Trip Config")]
+        public JourneyTripConfig journeyTripConfig;
         [Header("Game Event Live Ops")] 
         public GameEventLiveOpsConfig eventLiveOpsConfig;
 
