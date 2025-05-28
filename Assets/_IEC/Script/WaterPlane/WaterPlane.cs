@@ -10,9 +10,6 @@ namespace IEC
 {
     public class WaterPlane : _BaseBehaviour
     {
-        [SerializeField] private MeshRenderer waterMeshRenderer;
-        [SerializeField] private WaterPlaneThemeConfig waterThemeConfig;
-
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.ON_LEVEL_LOADED, UpdateWaterPlaneRenderer);

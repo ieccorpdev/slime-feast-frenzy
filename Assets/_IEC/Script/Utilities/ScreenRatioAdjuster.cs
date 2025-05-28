@@ -43,8 +43,8 @@ public class ScreenRatioAdjuster : MonoBehaviour
 
     }
 
-    private void OnDrawGizmos()
-    {
-        AdjustCanvasScaler();
-    }
+    // private void OnDrawGizmos()
+    // {
+    //     AdjustCanvasScaler();
+    // }
 }

@@ -62,6 +62,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    PlayerData.relicData.AddTokenCount(GamePlay.levelController.RelicObjCollected);
                     PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
 
                     if (PlayerData.level != PlayerData.levelLostStreak)
