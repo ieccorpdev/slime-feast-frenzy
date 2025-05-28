@@ -300,18 +300,14 @@ namespace IEC
                         listDataReward = new List<Reward>(eventRewardData.listReward),
                     });
 
-                Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
+                if (stage != -1)
                 {
-                    if (stage != -1)
+                    Locator.Main.ClaimBonusRewardPanel.SetActionOnceOnAnimRewardDone(() =>
                     {
-                        // StartNewEventStage(stage);
-                        // CheckInitEventProgress();
-                        // UpdateUI();
                         ShowStartPopup();
-                    }
-                    // else
-                    //     Hide();
-                });
+                    });
+                }
+
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
