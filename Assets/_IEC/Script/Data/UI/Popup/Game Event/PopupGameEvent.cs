@@ -517,10 +517,15 @@ namespace IEC
             CheckUpdateEventProgress();
         }
 
-        protected virtual void CheckUpdateEventProgress()
+        public virtual void CheckUpdateEventProgress()
         {
             // if (!IsInEvent)
             //     return;
+            
+            if (_eventRankController == null)
+            {
+                Init();
+            }
             
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);

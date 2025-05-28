@@ -103,6 +103,9 @@ namespace IEC
                 _=> null,
             };
             
+            if(popup != null)
+                popup.CheckUpdateEventProgress();
+            
             if(scroller != null)
                 scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
             
