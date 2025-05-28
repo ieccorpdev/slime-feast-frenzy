@@ -17,7 +17,19 @@ namespace UnityUtils {
             Vector3 directionToTarget = (target.position - source.position).With(y: 0);
             return directionToTarget.magnitude <= maxDistance && Vector3.Angle(source.forward, directionToTarget) <= maxAngle / 2;
         }
-        
+        public static void CopyTransform(this Transform target, Transform source)
+        {
+            target.position = source.position;
+            target.rotation = source.rotation;
+            target.localScale = source.localScale;
+        }
+
+        public static void CopyLocalTransform(this Transform target, Transform source)
+        {
+            target.localPosition = source.localPosition;
+            target.localRotation = source.localRotation;
+            target.localScale = source.localScale;
+        }
         /// <summary>
         /// Retrieves all the children of a given Transform.
         /// </summary>

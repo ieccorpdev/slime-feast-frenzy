@@ -28,10 +28,6 @@ namespace _IEC.Features.Gameplay
             SpawnMap(level.GetMapData(), levelObjectHolder, config);
         }
         
-        public static void SpawnMap(LevelConfigModel level, Transform levelObjectHolder, ThemeConfig config = null)
-        {
-            SpawnMap(level.GetMapData(), levelObjectHolder, config);
-        }
 
         public static void SpawnMap(PrefabMapData prefabMapData, Transform levelObjectHolder)
         {
@@ -44,8 +40,8 @@ namespace _IEC.Features.Gameplay
 
         public static void SpawnMap(MapData mapData, Transform levelObjectHolder, ThemeConfig config = null)
         {
-            var themeConfig = config == null ? Config.themeConfig : config;
-            var listTileObjects = new List<GroundElement>();
+            var themeConfig = config == null ? Config.themeConfig : config; 
+            var listTileObjects = new List<GroundElement>();    
             foreach (var tileMapData in mapData.listMapTileData)
             {
                 var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
@@ -290,6 +286,9 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
+                var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                block.SetColor("_BaseColor", themeConfig.baseItemColor);
                 bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
                 foreach (var spawnData in itemSpawn.listSpawnDatas)
                 {
@@ -342,6 +341,13 @@ namespace _IEC.Features.Gameplay
                         waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                         waterWave.InitShader();
                         itemComponent.SetPosOnwater(waterWave);
+                    }
+                    //Set ColorTheme
+                    var meshRederers = itemComponent.gameObject.GetComponentsInChildren<MeshRenderer>();
+
+                    foreach (var mr in meshRederers)
+                    {
+                        mr.SetPropertyBlock(block);
                     }
                     itemIds.Add(itemSpawn.id);
                 }
