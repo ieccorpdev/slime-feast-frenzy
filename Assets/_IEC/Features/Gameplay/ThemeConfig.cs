@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using IEC;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -113,6 +114,53 @@ namespace _IEC.Features.Gameplay
             }
             return reuslt;
         }
+        public WaterThemeConfig GetWaterThemeConfig(int id )
+        {
+            var reuslt = waterThemeConfigs.Find(x => x.themeId == id);
+            if (reuslt == null)
+            {
+                return waterThemeConfigs[0];
+            }
+            return reuslt;
+        }
+        public WaterThemeConfig GetWaterThemeForLevel(int level)
+        {
+            //MeoMew LGTM by chatGPT
+            if (level < 25 || waterThemeConfigs == null || waterThemeConfigs.Count == 0)
+                return waterThemeConfigs[0];
+
+            int groupIndex = (level - 25) / 25; 
+            
+            WaterThemeType expectedType = (groupIndex % 2 == 0) ? WaterThemeType.Day : WaterThemeType.Night;
+            
+            var filtered = waterThemeConfigs.Where(c => c.themeType == expectedType).ToList();
+
+            if (filtered.Count == 0)
+            {
+                //Not day / night
+                return waterThemeConfigs[0];
+            }
+            // Tính số lượt đã qua cho mỗi loại (vì cứ 2 lần mới quay lại cùng 1 loại)
+            int roundIndex = groupIndex / 2;
+
+            // Xáo trộn theo index ổn định mà không cần cache
+            // Sử dụng phép hoán vị theo seed riêng
+            int seed = roundIndex + (int)expectedType * 1000;
+            var shuffledIndex = PseudoShuffleIndex(seed, filtered.Count);
+
+            return filtered[shuffledIndex];
+        }
+        int PseudoShuffleIndex(int seed, int length)
+        {
+            List<int> indices = Enumerable.Range(0, length).ToList();
+            System.Random rng = new System.Random(seed / length); // Cố định seed theo "vòng"
+            for (int i = 0; i < length; i++)
+            {
+                int swapIndex = rng.Next(i, length);
+                (indices[i], indices[swapIndex]) = (indices[swapIndex], indices[i]);
+            }
+            return indices[seed % length];
+        }
     }
     
     [Serializable]
@@ -140,6 +188,7 @@ namespace _IEC.Features.Gameplay
         public WaterThemeType themeType;
         public Material waterSeaMaterial;
         public GameObject whirlPoolHole;
+        public Sprite bgSprite;
         public ParticleSystem splashEffect;
         public Color baseItemColor = Color.white;
     }
