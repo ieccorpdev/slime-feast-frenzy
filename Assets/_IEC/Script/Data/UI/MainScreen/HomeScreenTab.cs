@@ -44,7 +44,9 @@ public class HomeScreenTab : ScreenNavigateUI
     public GameEventHomeButton sharkRaceButton;
     [Header("Chomp Off Event")] 
     public GameEventHomeButton chompOffButton;
-    [Header("Relic Hunt")] public Button btnRelicHunt;
+    [Header("Relic Hunt")] 
+    public Button btnRelicHunt;
+    public RelicButtonEvent RelicHuntEvent;
     [Space(10)]
 
     [Space(10)] public GameObject starChestRewardLock;
