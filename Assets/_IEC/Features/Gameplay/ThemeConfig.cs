@@ -140,5 +140,6 @@ namespace _IEC.Features.Gameplay
         public Material waterSeaMaterial;
         public GameObject whirlPoolHole;
         public ParticleSystem splashEffect;
+        public Color baseItemColor = Color.white;
     }
 }

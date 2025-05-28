@@ -286,6 +286,9 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
+                var themeConfig = Config.themeConfig.GetWaterThemeConfig();
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                block.SetColor("_BaseColor", themeConfig.baseItemColor);
                 bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
                 foreach (var spawnData in itemSpawn.listSpawnDatas)
                 {
@@ -338,6 +341,13 @@ namespace _IEC.Features.Gameplay
                         waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                         waterWave.InitShader();
                         itemComponent.SetPosOnwater(waterWave);
+                    }
+                    //Set ColorTheme
+                    var meshRederers = itemComponent.gameObject.GetComponentsInChildren<MeshRenderer>();
+
+                    foreach (var mr in meshRederers)
+                    {
+                        mr.SetPropertyBlock(block);
                     }
                     itemIds.Add(itemSpawn.id);
                 }
