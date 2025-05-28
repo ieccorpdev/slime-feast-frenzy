@@ -40,7 +40,9 @@ public class HomeScreenTab : ScreenNavigateUI
     public GameEventHomeButton starChaseButton;
     [Header("Shark Race Event")] public Button btnSharkRace;
     public GameEventHomeButton sharkRaceButton;
-    [Header("Relic Hunt")] public Button btnRelicHunt;
+    [Header("Relic Hunt")] 
+    public Button btnRelicHunt;
+    public RelicButtonEvent RelicHuntEvent;
 
     [Space(10)] public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -439,29 +441,7 @@ public class HomeScreenTab : ScreenNavigateUI
 
     private void UpdateButtonRelic()
     {
-        var levelToUnlock = Config.relicObjectConfig.GetLevelUnlockProgressReward();
-        var btnTxt = btnRelicHunt.GetComponentInChildren<TextMeshProUGUI>();
-
-        if (PlayerData.level < levelToUnlock)
-        {
-            btnTxt.text = "Level " + levelToUnlock;
-        }
-        else if (PlayerData.level >= levelToUnlock)
-        {
-            var relicLevel = PlayerData.relicData.curRelicLevel;
-            var config = Config.artifactCollectorConfig;
-            var isMaxLevel = relicLevel == config.ArtifactLevels.Count;
-            var rwdCount = PlayerData.relicData.GetAllUnClaimRelicLevelReward(config, isMaxLevel).Count;
-
-            if (rwdCount > 0)
-            {
-                btnTxt.text = "Claim";
-            }
-            else
-            {
-                btnTxt.text = isMaxLevel ? "Finished" : "Join";
-            }
-        }
+        RelicHuntEvent.UpdateUI();
     }
 
     public void UpdateBuildCity()

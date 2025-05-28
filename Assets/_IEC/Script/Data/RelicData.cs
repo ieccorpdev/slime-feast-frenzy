@@ -20,6 +20,17 @@ namespace IEC
             lastTimeResetEvent = DateTime.Now;
         }
 
+        public bool CheckIfHasReward(ArtifactCollectorConfig config)
+        {
+            var level = curRelicLevel;
+            foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
+            {
+                if (HasRewardedLevel(x.id)) continue;
+                if (x.tokenCost > currentRelicTokenCount) continue;
+                if (!claimedRewardIds.Contains(x.id)) return true;
+            }
+            return false;   
+        }
         public Dictionary<ArtifactRewardType, int> GetAllUnClaimRelicLevelReward(ArtifactCollectorConfig config,
             bool isMaxLevel = false)
         {
