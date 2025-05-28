@@ -9,6 +9,7 @@ namespace IEC
     {
         public List<GameEventConfig> listAllGameEventConfig = new();
         public List<string> listRandomNames = new();
+        public ChompOffProgressConfig chompOffProgressConfig;
 
         public GameEventConfig GetGameEventConfig(EventType eventType)
         {

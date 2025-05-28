@@ -6,7 +6,9 @@ using DG.Tweening;
 using IEC;
 using MoreMountains.NiceVibrations;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 public static class ClaimBonusRewardSkin
 {
@@ -26,6 +28,9 @@ public class ClaimBonusRewardPanel : BasePopup
     public Button tapToClaim;
     public GameObject textTapToClaim;
     public GameObject Aura;
+    public Image mainTitleImage;
+    public Sprite mainImageSprite;
+    public TextMeshProUGUI tempSubtitleText;
 
     public List<Reward> listDataReward;
     public Action actionClose;
@@ -69,11 +74,38 @@ public class ClaimBonusRewardPanel : BasePopup
     void Start()
     {
         tapToClaim.onClick.AddListener(OnClaimReward);
+        //HideTempTitle();
     }
 
     public bool IsHaveShowClaimRewardAnim()
     {
         return queueShowClaimReward.Count > 0;
+    }
+
+    public void SetupTempTitle(Sprite titleSprite, string subtitleText)
+    {
+        if (titleSprite != null)
+        {
+            mainTitleImage.sprite = titleSprite;
+            mainTitleImage.SetNativeSize();
+        }
+
+        if (tempSubtitleText != null)
+        {
+            tempSubtitleText.gameObject.SetActive(true);
+            tempSubtitleText.text = subtitleText;
+        }
+    }
+
+    public void HideTempTitle()
+    {
+        mainTitleImage.sprite = mainImageSprite;
+        mainTitleImage.SetNativeSize();
+
+        if (tempSubtitleText != null)
+        {
+            tempSubtitleText.gameObject.SetActive(false);
+        }
     }
 
     public void AddClaimRewardData(ShowClaimRewardData data)
@@ -166,7 +198,6 @@ public class ClaimBonusRewardPanel : BasePopup
         DOTween.Kill(AutoClaimTween);
         //Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
         Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
-        EventController.RaiseEvent(EventList.Audio.GET_REWARD);
         Pool.Get<ConfettiGroup>().ShowConfetti();
         gameObject.SetActive(true);
         //Showing
@@ -197,6 +228,7 @@ public class ClaimBonusRewardPanel : BasePopup
             Pool.Get<ConfettiGroup>().StopConfetti();
             targetSpineAnimObject.SetAnimation("1_Start", false, () =>
             {
+                EventController.RaiseEvent(EventList.Audio.CHEST_DROP);
                 targetSpineAnimObject.SetAnimation("2_Idle", false, () =>
                 {
                     OpenChest();
@@ -331,6 +363,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
+            EventController.RaiseEvent(EventList.Audio.CHEST_OPEN);
             targetSpineAnimObject.SetAnimation("3_Open", false, () =>
             {
                 EndingChestOpen();
@@ -341,6 +374,7 @@ public class ClaimBonusRewardPanel : BasePopup
 
     private void EndingChestOpen()
     {
+        EventController.RaiseEvent(EventList.Audio.CHEST_IDLE);
         ShowRewardInChest();
         targetSpineAnimObject.SetAnimation("4_OpenIdle", false, () =>
         {
@@ -360,6 +394,7 @@ public class ClaimBonusRewardPanel : BasePopup
         Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(true);
         base.Hide();
         CallTempOnHide();
+        HideTempTitle();
     }
 
     public void SetTargetObjectAnimOt(string skinName)
@@ -380,6 +415,33 @@ public class ClaimBonusRewardPanel : BasePopup
                 targetSpineAnimObject = giftBoxAnim;
             }
         }
+    }
+    
+    public static string GetOrdinal(int number)
+    {
+        if (number <= 0) return number.ToString();
+
+        int lastTwoDigits = number % 100;
+        int lastDigit = number % 10;
+
+        string suffix;
+
+        if (lastTwoDigits >= 11 && lastTwoDigits <= 13)
+        {
+            suffix = "th";
+        }
+        else
+        {
+            switch (lastDigit)
+            {
+                case 1: suffix = "st"; break;
+                case 2: suffix = "nd"; break;
+                case 3: suffix = "rd"; break;
+                default: suffix = "th"; break;
+            }
+        }
+
+        return $"{number}{suffix}";
     }
 }
 

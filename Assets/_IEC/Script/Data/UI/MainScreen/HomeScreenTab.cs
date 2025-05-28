@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
 using TMPro;
+using EventType = IEC.EventType;
 
 
 public class HomeScreenTab : ScreenNavigateUI
@@ -46,11 +47,11 @@ public class HomeScreenTab : ScreenNavigateUI
     public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
     [Header("Star Chase Event")] 
-    public Button btnStarChase;
     public GameEventHomeButton starChaseButton;
     [Header("Shark Race Event")] 
-    public Button btnSharkRace;
     public GameEventHomeButton sharkRaceButton;
+    [Header("Chomp Off Event")] 
+    public GameEventHomeButton chompOffButton;
     
     [Space(10)]
 
@@ -191,15 +192,41 @@ public class HomeScreenTab : ScreenNavigateUI
         //            });
         //    });
            
-        SetEvent(btnStarChase,
+        SetEvent(starChaseButton.button,
             () =>
             {
-                Locator.Main.PopupStarChase.Show();
+                if (Locator.Main.PopupStarChase.CheckShowStartPopup())
+                {
+                    Locator.Main.PopupStartStarChaseEvent.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupStarChase.Show();
+                }
             });
-        SetEvent(btnSharkRace,
+        SetEvent(sharkRaceButton.button,
             () =>
             {
-                Locator.Main.PopupSharkRace.Show();
+                if (Locator.Main.PopupSharkRace.CheckShowStartPopup())
+                {
+                    Locator.Main.PopupStartSharkRaceEvent.Show();
+                }
+                else
+                {
+                    Locator.Main.PopupSharkRace.Show();
+                }
+            });
+        SetEvent(chompOffButton.button,
+            () =>
+            {
+                // if (Locator.Main.PopupChompOff.CheckShowStartPopup())
+                // {
+                //     //Locator.Main.PopupStartSharkRaceEvent.Show();
+                // }
+                // else
+                {
+                    Locator.Main.PopupChompOff.Show();
+                }
             });
         SetupUIHome();
     }
@@ -401,18 +428,17 @@ public class HomeScreenTab : ScreenNavigateUI
         
         #endregion
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void OnEnable()
     {
         //UpdateMainHome();
-
+        EventController.RaiseEvent(EventList.Audio.HOMEPAGE_IDLE);
     }
-    
+
+    private void OnDisable()
+    {
+        SoundController.StopSound(EventList.Audio.HOMEPAGE_IDLE);
+    }
+
     public override void Show()
     {
         UpdateMainHome();
@@ -455,6 +481,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateLifeOffer();
         UpdateStarChest();
         UpdateGameEventButton();
+        CheckAllEventsAvailable();
         progressRewardBar.Setup();
         levelChestHomeFeature.SetLock(PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Level).levelUnlock);
         levelChestHomeFeature.SetProgressBar(
@@ -474,6 +501,18 @@ public class HomeScreenTab : ScreenNavigateUI
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
     }
 
+    public void CheckAllEventsAvailable()
+    {
+        int daysPlayed = PlayerData.GetDaysSinceDownload();
+        
+        //Check chomp-off
+        chompOffButton.gameObject.SetActive(
+            Config.eventLiveOpsConfig.IsEventAvailable(
+                EventType.ChompOff,
+                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).eventDurationInHours / 24), 
+                daysPlayed));
+    }
+
     private void UpdateStarChest()
     {
         // bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
@@ -486,6 +525,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         starChaseButton.InitUI();
         sharkRaceButton.InitUI();
+        chompOffButton.InitUI();
     }
 
     private void UpdateLifeOffer()

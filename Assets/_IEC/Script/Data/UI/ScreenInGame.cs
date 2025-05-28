@@ -213,9 +213,7 @@ namespace IEC
         {
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
-
-            var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
-            xpVFX.transform.parent = xpParentRT.transform;
+            var xpVFX = Config.prefabConfig.xpVFX.Spawn(xpParentRT.transform, true);
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);

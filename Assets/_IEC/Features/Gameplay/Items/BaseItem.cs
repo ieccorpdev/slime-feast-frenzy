@@ -4,6 +4,7 @@ using System.Collections;
 using System.Linq;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
+using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
@@ -11,9 +12,9 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour
+    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
     {
-        [SerializeField] private Rigidbody rb;
+        [SerializeField] protected Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
         [SerializeField] private Renderer myRenderer;
         [SerializeField] private ItemDefinition itemDefinition;
@@ -30,8 +31,12 @@ namespace _IEC.Features.Gameplay
         public ItemData ItemData => m_ItemData;
         public Renderer MyRenderer => myRenderer;
         public ItemDefinition ItemDefinition => m_ItemDefinition;
-
+        private Camera mainCam;
         public bool IsCollected => _isCollected;
+        private bool hasRenderer;
+        private bool hasSpringOscillation;
+        private bool hasPosOnWater;
+        private Game GameG;
         public Rigidbody Rb
         {
             get
@@ -48,30 +53,34 @@ namespace _IEC.Features.Gameplay
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
         private RigidbodyData savedData;
 
-        private void Start()
+        public virtual void Start()
         {
+            this.GameG = Pool.Get<Game>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
             }
-
+            mainCam = Camera.main;
             rb.drag = Config.gamePlayConfig.ItemDrag;
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
-        
+        void OnEnable()
+        {
+            UpdateManager.Instance.RegisterLateUpdate(this);
+        }
+
+        void OnDisable()
+        {
+            DOTween.Kill(RecycleTweenId);
+            UpdateManager.Instance.UnregisterLateUpdate(this);
+        }
+
         [SerializeField] private float minImpactVelocity = 0.2f;
         [SerializeField] private float splashYOffset = 0.15f; // Tùy chỉnh chiều cao splash
         private bool hasSplashed = false;
         private Vector3 lastVelocity;
 
-        void FixedUpdate()
-        {
-            if (rb != null)
-            {
-                lastVelocity = rb.velocity;
-            }
-        }
 
         private void OnCollisionEnter(Collision collision)
         {
@@ -80,7 +89,7 @@ namespace _IEC.Features.Gameplay
             {
                 if (collision.contactCount == 0) return;
                 if (hasSplashed) return;
-                float velocityY = lastVelocity.y;
+                float velocityY = rb.velocity.y;
                 float relVelocityY = collision.relativeVelocity.y;
                 if (velocityY < -minImpactVelocity && relVelocityY > 0)
                 {
@@ -164,13 +173,15 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle();
-            DOVirtual.DelayedCall(3, () =>
-            {
-                if (gameObject != null)
-                {
-                    gameObject.Recycle();
-                }
-            }).SetId(RecycleTweenId);
+            StartCoroutine(DelayDisable(3));
+
+            //DOVirtual.DelayedCall(3, () =>
+            //{
+            //    if (gameObject != null)
+            //    {
+            //        gameObject.Recycle();
+            //    }
+            //}).SetId(RecycleTweenId);
             if (!GamePlay.IsWin)
             {
                 Locator.Game.ScreenInGame.HandleEatCombo();
@@ -182,7 +193,16 @@ namespace _IEC.Features.Gameplay
                 }
             }
         }
-        
+
+        IEnumerator DelayDisable(float delay)
+        {
+            yield return new WaitForSeconds(delay);
+            if (gameObject != null)
+            {
+                gameObject.SetActive(false);
+            }
+        }
+
         //TODO: cache colliders
         protected virtual void DisableAllCollider()
         {
@@ -233,11 +253,13 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<MeshRenderer>();
+                hasRenderer = true;
             }
 
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
+                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
@@ -247,16 +269,10 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-#if UNITY_ANDROID
             if (itemData.isStartKinematic)
             {
-                rb.isKinematic = false;
                 SaveAndDestroyRigidbody();
-                Destroy(this.GetComponent<Rigidbody>());
             }
-#else
-            rb.isKinematic = itemData.isStartKinematic;
-#endif
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -271,7 +287,7 @@ namespace _IEC.Features.Gameplay
                 savedData.drag = rb.drag;
                 savedData.angularDrag = rb.angularDrag;
                 savedData.useGravity = rb.useGravity;
-                savedData.isKinematic = rb.isKinematic;
+                savedData.isKinematic = true;
                 savedData.interpolation = rb.interpolation;
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
@@ -336,15 +352,13 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-#if UNITY_ANDROID
                 RestoreRigidbody();
-#else
                 rb.isKinematic = false;
-#endif
             }
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
+                hasPosOnWater = false;  
             }
             // if (_specialItemHighlightEffect != null)
             // {
@@ -357,68 +371,61 @@ namespace _IEC.Features.Gameplay
 
         public bool onDraging = false;
         public Transform targetObject; // Object B
-        public float pullSpeed = 2.5f;   // Speed towards object B
-        public float stopPullDistance = 0.1f;
-        public float gravityStrength = -50f; // Simulated gravity
-        private Vector3 velocity;
-        private bool shouldPull = true;
-        public float rotationSpeedMin = 0f; // Min rotation speed (degrees per second)
-        public float rotationSpeedMax = 360f; // Max rotation speed (degrees per second)
-
-        void Update()
+        private static Plane[] sharedPlanes;
+        private Plane[] curentPlanes;
+    
+        public void ManagedLateUpdate()
         {
-            if(posOnWater !=null && rb && posOnWater.enabled )
+
+            if (GameG.iosFeature )
             {
-                posOnWater.enabled = false;
+                if (rb)
+                {
+                    lastVelocity = rb.velocity;
+                }
+                if(hasPosOnWater)
+                {
+                    if (rb && !rb.isKinematic )
+                    {
+                        posOnWater.enabled = false;
+                        hasPosOnWater = false;  
+                    }
+                    else
+                    {
+                        posOnWater.CheckPosWater();
+                    }
+                }
             }
-            if (targetObject == null || !onDraging) return;
-            // Distance check
-            float distance = Vector3.Distance(transform.position, targetObject.position);
-            if (distance <= stopPullDistance)
-                shouldPull = false;
-
-            Vector3 move = Vector3.zero;
-
-            // Horizontal pull
-            if (shouldPull)
+            if (hasSpringOscillation)
             {
-                // Calculate direction to Object B in world space
-                Vector3 directionToTarget = targetObject.position - transform.position;
-                directionToTarget.y = 0; // Ignore vertical for horizontal pull
-                directionToTarget.Normalize(); // Normalize the direction vector
-
-                // Apply pull speed towards Object B
-                move += directionToTarget * pullSpeed * Time.deltaTime;
+                springOscillation.CheckSpringObject();
             }
-
-            // Gravity
-            velocity.y += gravityStrength * Time.deltaTime;
-            move += velocity * Time.deltaTime;
-
-            // Apply movement to object
-            transform.position += move;
-
-            // Random rotation in all directions
-            if (shouldPull)
+            if (rb == null)
             {
-                // Generate random rotation vector
-                Vector3 randomRotation = new Vector3(
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax),
-                    UnityEngine.Random.Range(rotationSpeedMin, rotationSpeedMax)
-                );
-
-                // Apply random rotation to the object
-                transform.Rotate(randomRotation * Time.deltaTime);
+               if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+               {
+                   sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+                   curentPlanes = sharedPlanes;     
+               }
+               if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
+               {
+                   RestoreRigidbody();
+                   AppearInScreen();
+               }
+            }
+            else if (m_CurrentState != State.Collectable && rb != null && rb.velocity != Vector3.zero)
+            {
+                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
         }
 
-        // Optional: Reset pull if needed
-        public void ResetPull()
+        public void SetPosOnwater(TCP2_GetPosOnWater pow)
         {
-            shouldPull = true;
+            posOnWater = pow;
+            hasPosOnWater = true;
         }
-
+        protected virtual void AppearInScreen() { }
+        
         #endregion
 
         protected void SetLayer(int newLayer)
@@ -431,10 +438,6 @@ namespace _IEC.Features.Gameplay
             //itemCollider.gameObject.layer = newLayer;
         }
 
-        protected virtual void OnDisable()
-        {
-            DOTween.Kill(RecycleTweenId);
-        }
 
         public enum State
         {
@@ -457,6 +460,5 @@ namespace _IEC.Features.Gameplay
             public RigidbodyInterpolation interpolation;
             public CollisionDetectionMode collisionDetectionMode;
         }
-
     }
 }

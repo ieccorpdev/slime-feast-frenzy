@@ -81,6 +81,15 @@ namespace IEC
             startTickPlayTime = Math.Max(lastTickPlayTime, DateTime.Now.Ticks);
         }
 
+        public int GetDaysSinceDownload()
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (DateTime.Now - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+        }
+
         public DateTime GetLastPlayDateTime()
         {
             if (lastTickPlayTime == 0) return DateTime.Now;
@@ -100,6 +109,8 @@ namespace IEC
             {
                 ClearAndInitTrackingLevelType();
                 levelLostStreak = -1;
+                chompOffCurrentLevelLost = -1;
+                chompOffCurrentLevelLostCount = 0;
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
@@ -901,6 +912,9 @@ namespace IEC
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
         public bool isShownPopupStartSharkRace;
+        public bool isShownPopupInfoChompOff;
+        public int chompOffCurrentLevelLost;
+        public int chompOffCurrentLevelLostCount;
 
         public EventSaveData GetEventSaveData(EventType eventType)
         {
@@ -912,6 +926,7 @@ namespace IEC
                 {
                     eventType = eventType,
                     eventIndex = 0,
+                    claimedReward = true,
                 };
                 listEventSaveData.Add(data);
             }
@@ -924,6 +939,24 @@ namespace IEC
             var saveData = GetEventSaveData(eventType);
             var eventData = Config.AllGameEventConfig.GetGameEventConfig(eventType).GetEventData(saveData.eventIndex);
             return false;
+        }
+
+        public void AddLevelLostCountForChompOffEvent()
+        {
+            if (level < Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+                return;
+
+            if (level != chompOffCurrentLevelLost)
+                chompOffCurrentLevelLostCount = 0;
+
+            chompOffCurrentLevelLost = level;
+            chompOffCurrentLevelLostCount++;
+        }
+
+        public void ResetChompOffLevelLostCount()
+        {
+            chompOffCurrentLevelLost = -1;
+            chompOffCurrentLevelLostCount = 0;
         }
 
         #endregion
