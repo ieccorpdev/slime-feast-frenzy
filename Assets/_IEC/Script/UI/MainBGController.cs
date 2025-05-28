@@ -28,6 +28,7 @@ public class MainBGController : _BaseBehaviour
        if (themeConfig.bgSprite != null)
        {
            spineImage.gameObject.SetActive(false);
+           staticImage.gameObject.SetActive(true);
            staticImage.sprite = themeConfig.bgSprite;
        }
     }
