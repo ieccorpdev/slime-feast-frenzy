@@ -12,13 +12,24 @@ public class MainBGController : _BaseBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        staticImage.gameObject.SetActive(!Game.iosFeature);
-        spineImage.gameObject.SetActive(Game.iosFeature);
+        SetupBGByTheme();
     }
 
-    // Update is called once per frame
-    void Update()
+    public void SetupBGByTheme()
     {
-        
+       var themeConfig = Config.themeConfig.GetWaterThemeConfig();
+       if (themeConfig.themeId == 0)
+       {
+           //theme id 0 have a spine background, hard code, update if update another spine bg
+           staticImage.sprite = themeConfig.bgSprite;
+           staticImage.gameObject.SetActive(!Game.iosFeature);
+           spineImage.gameObject.SetActive(Game.iosFeature);
+       }
+       if (themeConfig.bgSprite != null)
+       {
+           spineImage.gameObject.SetActive(false);
+           staticImage.gameObject.SetActive(true);
+           staticImage.sprite = themeConfig.bgSprite;
+       }
     }
 }
