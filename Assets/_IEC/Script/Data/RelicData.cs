@@ -24,7 +24,7 @@ namespace IEC
             lastTimeResetEvent = DateTime.Now;
         }
 
-        public void LevelUp()
+        public void LevelUp(int tokenToLevelUp)
         {
             curRelicLevel++;
             levelClaimDict = new(){
@@ -32,7 +32,8 @@ namespace IEC
                 { 1, false },
                 { 2, false },
             };
-            
+            currentRelicTokenCount -= tokenToLevelUp;
+
         }
         public void ResetTokenCount()
         {

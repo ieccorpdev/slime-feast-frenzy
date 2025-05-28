@@ -9,6 +9,7 @@ namespace _IEC.Script.Config
     public class ArtifactCollectorConfig : ScriptableObject
     {
         public int daysEachReset = 3;
+        public int levelUnlockFeature = 15;
         public List<ArtifactLevelNodeModel> ArtifactLevels = new List<ArtifactLevelNodeModel>();
 
         // private void OnValidate()

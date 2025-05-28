@@ -26,6 +26,7 @@ public class PopupRelicHunt : BasePopup
     public Sprite wellDoneSprite;
     public Sprite amazingSprite;
     public bool isMaxLevel;
+    [SerializeField] private RelicLevelVisual levelVisual;
     [SerializeField] VitrualProgressBar vitrualProgressBar;
     private List<Reward> rewards = new();
 
@@ -47,10 +48,26 @@ public class PopupRelicHunt : BasePopup
 
     public override void Show()
     {
+        var curLevelIndex = EvaluateRelicStatus(out var aboveNode);
+        SetRelicToClaim(isMaxLevel ? -1 : aboveNode.tokenCost - PlayerData.relicData.currentRelicTokenCount);
+        vitrualProgressBar.SetVitrualProgress(PlayerData.relicData.currentRelicTokenCount, curLevelIndex);
+        levelVisual.DoShowLevelVisual(isMaxLevel ? levelVisual.listLevelGO.Length : PlayerData.relicData.curRelicLevel);
+        base.Show();
+    }
+
+    private int EvaluateRelicStatus(out ArtifactNodeModel aboveNode)
+    {
         var curToken = PlayerData.relicData.currentRelicTokenCount;
         int curLevelIndex = PlayerData.relicData.curRelicLevel - 1;
+        aboveNode = null;
+        
+        if (curLevelIndex >= Config.artifactCollectorConfig.ArtifactLevels.Count)
+        {
+            isMaxLevel = true;
+            return curLevelIndex;
+        }
+
         var relicReward = Config.artifactCollectorConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
-        ArtifactNodeModel aboveNode = null;
         for (int i = 0; i < relicReward.Count; i++)
         {
             if (relicReward[i].tokenCost > curToken)
@@ -60,21 +77,19 @@ public class PopupRelicHunt : BasePopup
             }
         }
 
-        int maxLevel = Config.artifactCollectorConfig.ArtifactLevels.Count; // temp
+        int maxLevel = Config.artifactCollectorConfig.ArtifactLevels.Count;
         if (aboveNode == null)
         {
             if (curLevelIndex < maxLevel)
             {
-                PlayerData.relicData.LevelUp();
-                PlayerData.relicData.currentRelicTokenCount -= relicReward.Max(x => x.tokenCost);
+                var tokenToLevelUp = relicReward.Max(x => x.tokenCost);
+                PlayerData.relicData.LevelUp(tokenToLevelUp);
                 aboveNode = Config.artifactCollectorConfig.ArtifactLevels[++curLevelIndex].artifactLevelRewards.First();
-                
             }
             else
             {
                 isMaxLevel = true;
             }
-
         }
         else
         {
@@ -91,11 +106,10 @@ public class PopupRelicHunt : BasePopup
             }
         }
 
-        SetRelicToClaim(aboveNode.tokenCost - PlayerData.relicData.currentRelicTokenCount);
-        vitrualProgressBar.SetVitrualProgress(PlayerData.relicData.currentRelicTokenCount, curLevelIndex);
-        base.Show();
+        return curLevelIndex;
     }
 
+    /// <param name="relicLeft">Set negative to disactive text.</param>
     private void SetRelicToClaim(int relicLeft)
     {
         if (relicLeft < 0)
