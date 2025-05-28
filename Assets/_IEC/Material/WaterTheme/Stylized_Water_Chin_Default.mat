@@ -46,20 +46,28 @@ Material:
     m_Floats:
     - _DepthDensity: 1
     - _DistanceDensity: 0.025
+    - _EaseType: 2
+    - _EaseTypeBottom: 2
     - _EdgeFoamDepth: 0.22
     - _FancyShadows: 0
-    - _FoamContribution: 0.5
+    - _FarAlpha: 0.5
+    - _FoamContribution: 0.263
     - _FoamNoiseScale: 0.5
-    - _FoamScale: 10
-    - _FoamSpeed: 0.1
+    - _FoamScale: 15
+    - _FoamSpeed: 0.01
     - _MaxSampleDistance: 49
     - _MaxShadowDistance: 32.5
+    - _NearAlpha: 0.25
     - _ReflectionContribution: 0.5
     - _RefractionStrength: 0
     - _RotationSpeed: -0.5
+    - _ScreenYCurve: 0.1
+    - _ScreenYCurveBottom: 0.1
+    - _ScreenYThreshold: 1
+    - _ScreenYThresholdBottom: 1
     - _SparkleExponent: 25000
     - _SparkleScale: 30
-    - _SparkleSpeed: 0.05
+    - _SparkleSpeed: 0.03
     - _SunSpecularExponent: 3.44
     - _VertexNormalDelta: 0.01
     - _Wave1Amplitude: 0
@@ -78,10 +86,11 @@ Material:
     m_Colors:
     - _DeepColor: {r: 0.29214135, g: 0.7429231, b: 0.9528302, a: 1}
     - _EdgeFoamColor: {r: 0.514151, g: 0.8754339, b: 1, a: 1}
-    - _FarColor: {r: 0.4481132, g: 1, b: 0.72640336, a: 1}
+    - _FarColor: {r: 0.8349056, g: 0.97241265, b: 1, a: 1}
+    - _NearColor: {r: 0, g: 0.203542, b: 1, a: 1}
     - _SSSColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowColor: {r: 1, g: 1, b: 1, a: 1}
-    - _ShallowColor: {r: 0.20358667, g: 0.3032968, b: 0.7075472, a: 1}
+    - _ShallowColor: {r: 0.28862584, g: 0.5002803, b: 0.8867924, a: 1}
     - _SparkleColor: {r: 0.11213957, g: 0.374893, b: 0.5283019, a: 1}
     - _SunSpecularColor: {r: 0, g: 0, b: 0, a: 1}
     - _WhirlpoolCenter: {r: 0, g: 0, b: 0, a: 0}
