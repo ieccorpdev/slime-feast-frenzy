@@ -91,6 +91,7 @@ namespace IEC
          
 
             public const string ON_LEVEL_LOADED = "Gameplay.ON_LEVEL_LOADED";
+            public const string Kingdom_Special = "Kingdom_Special";
             public const string ON_LEVEL_DEBUG_LOADED = "Gameplay.ON_LEVEL_DEBUG_LOADED";
             
             public const string SHOW_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS";
