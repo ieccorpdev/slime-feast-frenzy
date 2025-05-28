@@ -138,6 +138,17 @@ namespace _IEC.Features.Gameplay
             }
 
         }
+        public void CollectARelicObject(CollectItemData itemData,int number,Vector2 startAnchorPosition)
+        {
+            var objectiveUI = GetLevelObjectiveUI(itemData);
+            if (objectiveUI == null) return;
+            int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
+            EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+            {
+                objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+            },true);
+
+        }
         
         public void DisposeAll()
         {
@@ -232,6 +243,7 @@ namespace _IEC.Features.Gameplay
         {
             HandleGoldSpecialObjective(levelType);
             HandleOceanGiftObject();
+            HandleRelicObject();
             specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
             StartCoroutine(RebuildNextFrame());
         }
@@ -265,6 +277,18 @@ namespace _IEC.Features.Gameplay
             specialObjective.number = count;
             LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
             objectiveContain.LoadData(specialObjective,true);
+            m_ActiveObjectiveUIs.Add(objectiveContain);
+            objectiveContain.gameObject.SetActive(count > 0);
+        }
+        public void HandleRelicObject()
+        {
+            var dataSpecial = Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
+            var relicObjective = new LevelObjective();
+            int count = GamePlay.levelController.AllRelicItems.Count;
+            relicObjective.itemId = dataSpecial.GetId();
+            relicObjective.number = count;
+            LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
+            objectiveContain.LoadDataRelic(relicObjective,true);
             m_ActiveObjectiveUIs.Add(objectiveContain);
             objectiveContain.gameObject.SetActive(count > 0);
         }

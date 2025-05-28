@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using IEC;
 using UnityEngine;
 
@@ -28,10 +29,6 @@ namespace _IEC.Features.Gameplay
             SpawnMap(level.GetMapData(), levelObjectHolder, config);
         }
         
-        public static void SpawnMap(LevelConfigModel level, Transform levelObjectHolder, ThemeConfig config = null)
-        {
-            SpawnMap(level.GetMapData(), levelObjectHolder, config);
-        }
 
         public static void SpawnMap(PrefabMapData prefabMapData, Transform levelObjectHolder)
         {
@@ -44,8 +41,8 @@ namespace _IEC.Features.Gameplay
 
         public static void SpawnMap(MapData mapData, Transform levelObjectHolder, ThemeConfig config = null)
         {
-            var themeConfig = config == null ? Config.themeConfig : config;
-            var listTileObjects = new List<GroundElement>();
+            var themeConfig = config == null ? Config.themeConfig : config; 
+            var listTileObjects = new List<GroundElement>();    
             foreach (var tileMapData in mapData.listMapTileData)
             {
                 var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
@@ -290,6 +287,9 @@ namespace _IEC.Features.Gameplay
                     continue;
                 }
 
+                var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
+                MaterialPropertyBlock block = new MaterialPropertyBlock();
+                block.SetColor("_BaseColor", themeConfig.baseItemColor);
                 bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
                 foreach (var spawnData in itemSpawn.listSpawnDatas)
                 {
@@ -342,6 +342,13 @@ namespace _IEC.Features.Gameplay
                         waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
                         waterWave.InitShader();
                         itemComponent.SetPosOnwater(waterWave);
+                    }
+                    //Set ColorTheme
+                    var meshRederers = itemComponent.gameObject.GetComponentsInChildren<MeshRenderer>();
+
+                    foreach (var mr in meshRederers)
+                    {
+                        mr.SetPropertyBlock(block);
                     }
                     itemIds.Add(itemSpawn.id);
                 }
@@ -435,6 +442,63 @@ namespace _IEC.Features.Gameplay
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
+            return res;
+        }
+        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
+        {
+            var res = new List<BaseItem>();
+            if (itemDefinition == null) return res;
+            var prefab = itemDefinition.GetPrefab();
+            if (prefab == null)
+            {
+                return res;
+            }
+
+            var spawmAmount = Config.relicObjectConfig.GetRandomSpawnAmount();
+            var spawnSize = Config.relicObjectConfig.GetRandomSpawnSize();
+            List<BaseItem> tempList = new();
+            for (int i = 0; i < spawmAmount; i++)
+            {
+                Vector3? spawnPos = null;
+                for (int j = 0; j < count; j++)
+                {
+                    var newItem = prefab.Spawn();
+                    spawnPos ??= FindValidSpawnPosition(
+                        bounds,
+                        newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                        1000,
+                        newItem.gameObject.layer
+                    );
+                    var itemComponent = newItem.GetComponent<BaseItem>();
+                    if (itemComponent == null)
+                    {
+                        itemComponent = newItem.AddComponent<BaseItem>();
+                    }
+                    var itemTransform = itemComponent.transform;
+                    var itemData = new ItemData()
+                    {
+                        itemId = itemDefinition.GetId(),
+                        position = spawnPos.Value, 
+                        eulerAngle = Vector3.zero,
+                        localScale = Vector3.one *  spawnSize,
+                        isStartKinematic =  true,
+                    };
+                    itemTransform.parent = levelObjectHolder;
+                    //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
+                    itemComponent.LoadData(itemData, itemDefinition);
+                    itemComponent.transform.position = spawnPos.Value;
+                    Debug.Log(itemComponent.transform.position);
+                    res.Add(itemComponent);
+                    itemIds.Add(itemData.itemId);
+                    tempList.Add(itemComponent);
+                }
+
+                for (int j = 0; j < tempList.Count; j++)
+                {
+                    tempList[i].transform.position = spawnPos.Value;
+                }
+            }
+            
             return res;
         }
 

@@ -35,7 +35,8 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
         [SerializeField] private Transform allItemHolder;
-        
+       
+        public ThemeController themeController;
 
         private bool _isShowEnding = false;
         private State m_CurrentState;
@@ -50,12 +51,14 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
+        private List<BaseItem> m_AllRelicItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
         private List<BaseItem> m_AllBoosters = new List<BaseItem>();
         //private List<SpecialObject> m_AllSpecialObjects = new List<SpecialObject>();
 
         private List<SpawnBoosterData> listSpawnBoosterData = new();
         public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
+        public List<BaseItem> AllRelicItems => m_AllRelicItems;
         public float GetTimeMagnetHelper => m_MagnetHelperCoolDown;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
@@ -66,6 +69,7 @@ namespace _IEC.Features.Gameplay
         }
 
         public int SpecialProgressRewardObjCollected { get; private set; } = 0;
+        public int RelicObjCollected { get; private set; } = 0;
         
         public int GoldCollected { get; private set; }
 
@@ -147,8 +151,7 @@ namespace _IEC.Features.Gameplay
             //     levelConfig = Config.levelConfig.GetFTUELevelData(level);
             // }
          
-            m_LevelConfig = PlayerData.level <= 50 && PlayerData.level % 20 != 0
-                ? Config.levelConfig.GetLevelDataSOSHP(level) : Config.levelConfig.GetLevelDataSO(level);
+            m_LevelConfig = Config.levelConfig.GetLevelDataSOSHP(level);
             #if UNITY_EDITOR
             if (EditorPrefs.GetBool("isPlayTest"))
             {
@@ -192,7 +195,29 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
-
+            
+            if (GamePlay.currentThemeSelect >= 0)
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
+            }
+            else
+            {
+                themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
+            }
+            
+            if (PlayerData.relicData.isAvaiableToSpawn)
+            {
+                m_AllRelicItems.Clear();
+                int countRelicProgressReward = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicObjectConfig.GetSpawnAmount(PlayerData.level);
+                m_AllRelicItems = LevelHelper.SpawnRelicItems(
+                    GroundExtend.CalculateBounds(m_AllItems),
+                    countRelicProgressReward, 
+                    allItemHolder,
+                    Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
+                );
+            }
+            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();
@@ -258,8 +283,10 @@ namespace _IEC.Features.Gameplay
         public Hole GetHolePlayer() => playerHole;
         
         public List<BaseItem> GetAllItems() => m_AllItems
+            .Concat(m_AllRelicItems)
             .Concat(m_AllSpecialItems)
             .Concat(m_AllBoosters).ToList();
+            
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
 
@@ -297,6 +324,10 @@ namespace _IEC.Features.Gameplay
                 {
                     CollectSpecialObject(data);
                 }
+                else if (IsRelicObject(itemId))
+                {
+                    CollectRelicObject(data);
+                }
                 else
                 {
                     CollectNormalItem(data);
@@ -312,6 +343,11 @@ namespace _IEC.Features.Gameplay
             return itemId.Contains("Ocean");
             //return m_AllSpecialItems.Find(item => item.ItemDefinition.GetId().Equals(itemId)) != null;
         }
+
+        private bool IsRelicObject(string itemId)
+        {
+            return itemId.Contains("Relic");
+        }
         
         private void CollectSpecialObject(CollectItemData data)
         {
@@ -323,6 +359,17 @@ namespace _IEC.Features.Gameplay
             EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
+        }
+        private void CollectRelicObject(CollectItemData data)
+        {
+            CollectNormalItem(data);
+            //if (data.itemID.Contains("Ocean"))
+            //{
+            RelicObjCollected++;
+            //}
+            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
+            this.RaiseEvent(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI,data);
         }
         
         private void OnLevelTimeOut(object param)
