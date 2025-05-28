@@ -37,7 +37,10 @@ public class UICurrency : _BaseBehaviour
 
     public void TriggredPressButton()
     {
-        clickEffectAnimator.Play("PunchScale");
+        if (clickEffectAnimator != null)
+        {
+            clickEffectAnimator.Play("PunchScale");
+        }
     }
     public void OnEnable()
     {

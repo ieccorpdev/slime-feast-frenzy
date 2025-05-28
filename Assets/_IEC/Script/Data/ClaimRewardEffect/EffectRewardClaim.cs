@@ -69,7 +69,7 @@ namespace IEC
                 {
                     effectCurrency.Add(ObjectPool.Spawn(baseObjectToSpawn.gameObject, transform).GetComponent<RectTransform>());
                 }
-                var posStart = (Vector3)UnityEngine.Random.insideUnitCircle * 0.8f *200 ;
+                var posStart = (Vector3)UnityEngine.Random.insideUnitCircle * 0.8f *50 ;
                 currencyObj = effectCurrency[i];
                 currencyObj.transform.localScale = Vector3.one;
                 currencyObj.anchoredPosition = posSpawn + (rewardType == ResourceType.Gold? posStart : Vector2.zero );
@@ -100,9 +100,8 @@ namespace IEC
                 img.rectTransform.sizeDelta = startSize;
                 currencyObj.gameObject.SetActive(true);
 
-                var index = i;
-                float delayTime = i * ratioTime /2f;
-                float delayTimeToStart = i * ratioTime;
+                float delayTime = 0.1f;
+
                 if (rewardType == ResourceType.Gold)
                 {
                     EventController.RaiseEvent(EventList.Audio.COIN_APPEAR);
@@ -112,11 +111,12 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.ITEM_APPEAR);
                 }
 
-                float timeEffect = 0.5f + delayTimeToStart * ratioTime;
+                img.color = new Color(1, 1, 1, 0);
+                float timeEffect = 0.5f ;
                 sequence
-                    //.Insert(0f, currencyObj.DOAnchorPos(posStart, timeToPostart + delayTime).SetEase(Ease.OutQuad))
+                    .Insert(i*delayTime, img.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad))
                     .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.InBack))
-                    .Insert(i*0.01f, currencyObj.DOAnchorPos(posEnd, timeEffect).SetEase(Ease.InBack)
+                    .Insert(i*delayTime + 0.2f, CreateBezierMoveTween(currencyObj.GetComponent<RectTransform>(), posEnd, timeEffect, curveHeight: 180f).SetEase(Ease.InBack)
                         .OnComplete(() =>
                         {
                             if (rewardType == ResourceType.Gold)
@@ -148,42 +148,34 @@ namespace IEC
                             
             //EventController.RaiseEvent(EventList.GamePlay.ON_CLAIM_GOLD);
         }
+        public static Tween CreateBezierMoveTween(RectTransform target, Vector2 endPos, float duration, float curveHeight)
+        {
+            Vector2 startPos = target.anchoredPosition;
+            Vector2 control = (startPos + endPos) * 0.5f + Vector2.left * curveHeight;
 
+            float t = 0f;
+            return DOTween.To(() => t, x => t = x, 1f, duration)
+                .OnUpdate(() => {
+                    target.anchoredPosition = BezierCurve(startPos, control, endPos, t);
+                })
+                .SetEase(Ease.Linear); // Curve tự xử lý easing, nên giữ Linear
+        }
+
+        public static Vector2 BezierCurve(Vector2 p0, Vector2 p1, Vector2 p2, float t)
+        {
+            return Mathf.Pow(1 - t, 2) * p0 +
+                   2 * (1 - t) * t * p1 +
+                   Mathf.Pow(t, 2) * p2;
+        }
         public void ActiveVFXStartExplosion(Vector2 anchorPos)
         {
-            var vfx = listStartExplosion.Find(x => !x.isPlaying);
+            var vfx = listStartExplosion.Find(x => !x.IsAlive(true));
             if (vfx != null)
             {
                 vfx.GetComponent<RectTransform>().anchoredPosition = anchorPos;
                 vfx.Play();
             }
         }
-        private Vector3 PosRandomSpawnRuby(Vector3 posSpawn)
-        {
-            posSpawn.x += UnityEngine.Random.Range(-300f, 300f);
-            posSpawn.y += UnityEngine.Random.Range(-150f, 150f);
-            return posSpawn;
-        }
-        
-        // public static Vector2 SwitchToRectTransform(RectTransform from, RectTransform to)
-        // {
-        //     // Vector2 localPoint;
-        //     // Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin);
-        //     // Vector2 screenP = RectTransformUtility.WorldToScreenPoint(null, from.position);
-        //     // screenP += fromPivotDerivedOffset;
-        //     // RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, null, out localPoint);
-        //     // Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin);
-        //     // return to.anchoredPosition + localPoint - pivotDerivedOffset;
-        //     
-        //     // Convert world position of 'from' to screen space
-        //     Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(GamePlay.uiCamera, from.position);
-        //
-        //     // Convert screen point to local point in 'to' RectTransform
-        //     RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenPoint, GamePlay.uiCamera, out Vector2 localPoint);
-        //
-        //     return localPoint;
-        // }
-        
         public static Vector2 SwitchToRectTransform(RectTransform from, RectTransform to)
         {
             Vector2 localPoint;

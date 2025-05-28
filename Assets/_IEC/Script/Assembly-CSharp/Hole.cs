@@ -132,7 +132,7 @@ public class Hole : _BaseBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
-            EventController.RaiseEvent(EventList.Audio.SHARK_BITE);
+            EventController.RaiseEvent(EventList.Audio.SHARK_BITE_VARIANT);
         }
 	}
 	private void CheckSharkForm()

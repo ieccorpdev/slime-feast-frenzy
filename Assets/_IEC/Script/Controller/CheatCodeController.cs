@@ -87,6 +87,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupStarChase,
                     new AddEventProgressData()
                     {
                         eventType = EventType.StarChase,
@@ -103,9 +104,27 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupSharkRace,
                     new AddEventProgressData()
                     {
                         eventType = EventType.SharkRace,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Chomp Off progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupChompOff,
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.ChompOff,
                         id = PlayerData.playerName,
                         progressAmount = value,
                     });

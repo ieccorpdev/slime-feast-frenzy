@@ -127,7 +127,15 @@ public class CubeScreenshot : MonoBehaviour
     {
         // Instantiate the cube at the specified position
         //cube = Instantiate(prefab, cubePosition, Quaternion.identity);
-        cube = Instantiate(prefab, cubePosition, Quaternion.Euler(0f, 30f, 0f));
+        if (objRotation != Vector3.zero)
+        {
+            cube = Instantiate(prefab, cubePosition, Quaternion.Euler(objRotation));
+        }
+        else
+        {
+            cube = Instantiate(prefab, cubePosition, Quaternion.Euler(0f, 30f, 0f));
+        }
+
         cube.transform.localScale = new Vector3(1f, 1f, 1f);
     }
 
