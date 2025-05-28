@@ -280,6 +280,16 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+            
+            bool eventAvailable = Config.eventLiveOpsConfig.IsEventAvailable(
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
+
+            if (!eventAvailable)
+            {
+                stage = -1;
+            }
 
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>

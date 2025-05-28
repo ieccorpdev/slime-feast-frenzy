@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
+using IEC.Common.Event;
 using TMPro;
 using EventType = IEC.EventType;
 
@@ -229,6 +230,7 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
         SetupUIHome();
+        gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, CheckAllEventsAvailable);
     }
 
     public void SetupUIHome()
@@ -506,11 +508,15 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysPlayed = PlayerData.GetDaysSinceDownload();
         
         //Check chomp-off
-        chompOffButton.gameObject.SetActive(
-            Config.eventLiveOpsConfig.IsEventAvailable(
-                EventType.ChompOff,
-                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).eventDurationInHours / 24), 
-                daysPlayed));
+        if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        {
+            chompOffButton.gameObject.SetActive(
+                Config.eventLiveOpsConfig.IsEventAvailable(
+                    EventType.ChompOff,
+                    Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                        .eventDurationInHours / 24),
+                    daysPlayed));
+        }
     }
 
     private void UpdateStarChest()
