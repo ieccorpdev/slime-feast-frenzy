@@ -36,7 +36,7 @@ namespace _IEC.Features.Gameplay
         public bool isKingdomObj => itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId();
         [SerializeField] private Animator anim;
         [SerializeField] private Transform subIconPos;
-        [SerializeField] private Image fill;
+        [SerializeField] private Image fillFuelBar;
         [SerializeField] private TMP_Text passTockenCounter;
 
         public RectTransform RectTransform
@@ -87,11 +87,13 @@ namespace _IEC.Features.Gameplay
         {
             if (isKingdomObj)
             {
-                int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
-                fill.fillAmount = GamePlay.levelController.KingdomCollected / (float)maxSpecialObject;
+                SetProgressFuel();
+            }
+            else
+            {
+                SetText(newNumber);
             }
             effectCollect.Play();
-            SetText(newNumber);
             if (isCompleted)
             {
                 PlayDoneAnimation();
@@ -109,6 +111,31 @@ namespace _IEC.Features.Gameplay
             return imgIcon.sprite;
         }
 
+        void SetProgressFuel()
+        {
+            int currentFuel = PlayerData.journeyData.currentFuelJourney;
+            int targetFuel = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            while (currentFuel >= targetFuel)
+            {
+                PlayerData.journeyData.currentFuelJourney -= targetFuel;
+                currentFuel = PlayerData.journeyData.currentFuelJourney;
+                PlayerData.journeyData.currentTargetJourney++;
+                targetFuel = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            }
+            if (PlayerData.journeyData.currentTargetJourney >= Config.journeyTripConfig.listRewardsByJourneys.Count)
+            {
+                fillFuelBar.fillAmount = 1;
+                SetText(targetFuel + "/" + targetFuel);
+                passTockenCounter.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
+            }
+            else
+            {
+                fillFuelBar.fillAmount = (float)currentFuel / (float)targetFuel;
+                SetText(currentFuel + "/" + targetFuel);
+                passTockenCounter.text = PlayerData.journeyData.currentTargetJourney.ToString();
+            }
+        }
+
         public void LoadData(LevelObjective levelObjective, bool isSpecial)
         {
             Reset();
@@ -123,10 +150,7 @@ namespace _IEC.Features.Gameplay
                 }
                 else if (isKingdomObj) // FireFire hard Code;
                 {
-                    int maxSpecialObject = GamePlay.levelController.AllkingdomSpecialItems.Count;
-                    fill.fillAmount = GamePlay.levelController.KingdomCollected / (float)maxSpecialObject;
-                    SetText(GamePlay.levelController.KingdomCollected.ToString() + "/" + maxSpecialObject);
-                    passTockenCounter.text = "1";
+                    SetProgressFuel();
                 }
                 else
                 {

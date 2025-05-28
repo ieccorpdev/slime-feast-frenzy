@@ -11,7 +11,7 @@ namespace IEC
 {
     public class PopupJourney : BasePopup
     {
-        public ClaimBonusRewardPanel ClaimBonusRewardPanel;
+        public ClaimBonusRewardPanel ClaimBonusRewardPanel => Locator.Main.ClaimBonusRewardPanel;
         [Header("MainJourney")]
         public Button tutorialJourneyBtn;
         public Image lightBGFilled;
