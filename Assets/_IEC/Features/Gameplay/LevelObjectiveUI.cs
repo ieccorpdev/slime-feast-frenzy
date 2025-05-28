@@ -51,11 +51,20 @@ namespace _IEC.Features.Gameplay
                 return m_RectTransform;
             }
         }
-        
+
         public void PlayAnim()
         {
-            anim.Play("Show");
+            var stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Show") && stateInfo.normalizedTime < 1f)
+            {
+                anim.Play("Show", 0, 0.2f);
+            }
+            else
+            {
+                anim.Play("Show");
+            }
         }
+
 
         public Vector3 GetIconPosition()
         {
@@ -124,13 +133,13 @@ namespace _IEC.Features.Gameplay
             }
             if (PlayerData.journeyData.currentTargetJourney >= Config.journeyTripConfig.listRewardsByJourneys.Count)
             {
-                fillFuelBar.fillAmount = 1;
+                fillFuelBar.DOFillAmount(1, 0.5f);
                 SetText(targetFuel + "/" + targetFuel);
                 passTockenCounter.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
             }
             else
             {
-                fillFuelBar.fillAmount = (float)currentFuel / (float)targetFuel;
+                fillFuelBar.DOFillAmount((float)currentFuel / (float)targetFuel, 0.5f);
                 SetText(currentFuel + "/" + targetFuel);
                 passTockenCounter.text = PlayerData.journeyData.currentTargetJourney.ToString();
             }
