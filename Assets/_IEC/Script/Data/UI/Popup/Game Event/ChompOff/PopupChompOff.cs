@@ -282,6 +282,17 @@ namespace IEC
                 PlayerData.GetDaysSinceDownload());
         }
 
+        public void UpdateCurrentTimeEndEvent()
+        {
+            var eventSaveData = _eventRankController.GetEventSaveData(eventType);
+            var eventData = _eventConfig.GetEventData(eventSaveData.eventIndex);
+            _currentTimeEndEventStage = eventSaveData.timeStart.AddSeconds(eventData.eventStageTimeInSeconds);
+            _currentTimeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType, 
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                PlayerData.GetDaysSinceDownload());
+        }
+
         private void UpdateRewardUI()
         {
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
