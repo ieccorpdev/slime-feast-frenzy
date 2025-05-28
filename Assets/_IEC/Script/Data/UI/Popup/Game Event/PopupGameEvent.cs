@@ -74,7 +74,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
         }
 
-        private void Start()
+        public virtual void Start()
         {
             if(scroller != null)
                 scroller.OnBeingDrag+=DisableRewardPopupMini;
