@@ -137,9 +137,16 @@ namespace _IEC.Features.Gameplay
     public class WaterThemeConfig
     {
         public int themeId;
+        public WaterThemeType themeType;
         public Material waterSeaMaterial;
         public GameObject whirlPoolHole;
         public ParticleSystem splashEffect;
         public Color baseItemColor = Color.white;
+    }
+
+    public enum WaterThemeType
+    {
+        Day,
+        Night
     }
 }
