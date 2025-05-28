@@ -456,7 +456,7 @@ public class Hole : _BaseBehaviour
 		var obj = GetObjectInDistanceAnimation();
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -defaultPosYCharacter, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		readyForSharkBite = true;
 		if (obj != null)//Have object near
 		{
