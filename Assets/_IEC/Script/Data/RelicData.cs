@@ -17,6 +17,10 @@ namespace IEC
         public bool hasJoinEvent;
         public bool hasDoneLevel;
 
+        public bool IsEventInRange()
+        {
+            return eventTimeEnd > DateTime.Now;
+        }
         private bool AvaiableToSpawn()
         {
             return hasJoinEvent && !hasDoneLevel;
