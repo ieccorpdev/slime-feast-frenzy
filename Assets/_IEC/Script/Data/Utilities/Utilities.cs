@@ -215,7 +215,19 @@ namespace IEC
             return null;
 #endif
         }
-        
+        public static int CountActiveImmediateChildren(Transform parent)
+        {
+            int count = 0;
+            for (int i = 0; i < parent.childCount; i++)
+            {
+                Transform child = parent.GetChild(i);
+                if (child.gameObject.activeInHierarchy)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
         public static void MoveDirectChildren(GameObject sourceParent, GameObject newParent, bool preserveWorldPosition = true)
         {
             if (sourceParent == null || newParent == null)
