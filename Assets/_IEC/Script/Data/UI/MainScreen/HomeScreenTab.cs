@@ -228,10 +228,10 @@ public class HomeScreenTab : ScreenNavigateUI
         DoMoveBackAllObj(0.8f,
             () =>
             {
-                CheckAllEventsClaimableReward();
-                CheckAllPacksPopup();
                 if (onOpenSceneActionOnce == null)
                 {
+                    CheckAllEventsClaimableReward();
+                    CheckAllPacksPopup();
                     ShowNextPopup();
                 }
                 else
@@ -546,15 +546,15 @@ public class HomeScreenTab : ScreenNavigateUI
     public void CheckAllPacksPopup()
     {
         //Check no ads
-        // if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
-        // {
-        //     AddPopupToShow(Locator.Main.PopupNoAds,
-        //         () =>
-        //         {
-        //             Locator.Main.PopupNoAds.Show();
-        //         },
-        //         ShowNextPopup);
-        // }
+        if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
+        {
+            AddPopupToShow(Locator.Main.PopupNoAds,
+                () =>
+                {
+                    Locator.Main.PopupNoAds.Show();
+                },
+                ShowNextPopup);
+        }
     }
 
     public void CheckAllEventsClaimableReward()

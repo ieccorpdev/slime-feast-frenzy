@@ -325,15 +325,8 @@ namespace IEC
                         Locator.Main.HomeScreenTab.AddPopupToShow(popup.popup, popup.onOpen, Locator.Main.HomeScreenTab.ShowNextPopup);
                     }
                     
-                    if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
-                    {
-                        Locator.Main.HomeScreenTab.AddPopupToShow(Locator.Main.PopupNoAds,
-                            () =>
-                            {
-                                Locator.Main.PopupNoAds.Show();
-                            },
-                            Locator.Main.HomeScreenTab.ShowNextPopup);
-                    }
+                    Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
+                    Locator.Main.HomeScreenTab.CheckAllPacksPopup();
                     
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
