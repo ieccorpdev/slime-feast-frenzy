@@ -85,6 +85,8 @@ namespace IEC
                 Init();
             }
             
+            CheckUpdateEventProgress();
+            
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
 

@@ -18,6 +18,7 @@ namespace IEC
         public DateTime timeStartJourneyTrip;
         public bool IsJourneyExpired;
         public bool isShowTutorialInPopup;
+        public bool isCompleteJourney;
 
         public void SetStartJourneyTimeNow()
         {
@@ -33,7 +34,7 @@ namespace IEC
             }
         }
 
-        private void ResetJourneyData()
+        public void ResetJourneyData()
         {
             regularJourneyPass.Clear();
             vipJourneyPass.Clear();
@@ -44,6 +45,7 @@ namespace IEC
             isBuyIAP = false;
             wasOpenJourney = false;
             IsJourneyExpired = false;
+            isCompleteJourney = false;
         }
 
         public string GetTimeRemainingString()
@@ -51,14 +53,11 @@ namespace IEC
             TimeSpan remaining = GetTimeRemaining();
             if (remaining == TimeSpan.Zero && wasOpenJourney)
             {
-                ResetJourneyData();
-                wasOpenJourney = false;
                 return "Finished";
             }
             return remaining.Days > 0 ? remaining.Days + "d " + remaining.Hours + "h" :
                    remaining.Hours + "h " + remaining.Minutes + "mn";
         }
-
 
         public string GetTimeRemainingStringInPopup()
         {
@@ -66,14 +65,15 @@ namespace IEC
 
             if (remaining <= TimeSpan.Zero && wasOpenJourney)
             {
-                wasOpenJourney = false;
                 return "Finished";
             }
 
             if (remaining.Days > 0)
-                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}m"; // dd:hh:mm
+                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}mn"; // dd:hh:mm
+            else if (remaining.Hours > 0)
+                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:sselse
             else
-                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}m:{remaining.Seconds:D2}s"; // hh:mm:ss
+                return $"{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:ss
         }
 
         private TimeSpan GetTimeRemaining()

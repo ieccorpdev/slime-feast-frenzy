@@ -64,6 +64,7 @@ namespace IEC
         public List<int> levelBeginnerPackWin;
         public List<int> levelNoAdsPackWin;
         public List<PackConfig> listAllIapPackConfig;
+        public List<int> listLevelShowPackNoAdsHome = new();
         [Header("Level Data Desgin")] 
         public bool usingLevelGDV1;
         [Header("Hard Level")]

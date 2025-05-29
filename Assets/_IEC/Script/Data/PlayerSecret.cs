@@ -391,6 +391,20 @@ namespace IEC
         public void AddPlayerLife()
         {
             playerLife++;
+            CheckPlayerMaxHealth();
+        }
+        public void AddPlayerLife(int amount)
+        {
+            playerLife+= amount;
+            CheckPlayerMaxHealth();
+        }
+        public void CheckPlayerMaxHealth()
+        {
+            int maxHealth = Pool.Get<GameConfig>().maxHealth;
+            if (playerLife > maxHealth)
+            {
+                playerLife = maxHealth;
+            }
         }
         public string GetTimeToNextLife()
         {
@@ -560,6 +574,9 @@ namespace IEC
             if (currencyType == ResourceType.UnlimitedLive)
             {
                 AddTimeUnlimitedLife(amount);
+            } else if (currencyType == ResourceType.Live)
+            {
+                AddPlayerLife(amount);
             }
             else if (currencyType == ResourceType.TimeUnlimitedEvolveStone)
             {

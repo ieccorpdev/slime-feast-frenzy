@@ -68,14 +68,19 @@ namespace IEC
                 PlayerData.journeyData.isEnableMaxHeart = true;
                 PlayerData.RaiseToMaxHealth();
             }
-            Locator.Main.PopupJourney.OnCollectAllButtonClick(isUseChest);
-            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(
-                currentID != Config.journeyTripConfig.bonusReward.idJourney ?
-                isUseChest ?
-              typePass == TypePassJourney.REGULAR ? 
-              ClaimBonusRewardSkin.Chest_2
-              : ClaimBonusRewardSkin.Chest_UnderseaVoyageFree : "" : 
-              ClaimBonusRewardSkin.Chest_UnderseaVoyageVip);
+            if (currentID == Config.journeyTripConfig.bonusReward.idJourney)
+            {
+                Locator.Main.PopupJourney.OnCollectAllButtonClick(dataReward, this);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_UnderseaVoyageVip);
+            }
+            else
+            {
+                Locator.Main.PopupJourney.OnCollectAllButtonClick();
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(
+                  PlayerData.journeyData.isBuyIAP ?
+                  ClaimBonusRewardSkin.Chest_UnderseaVoyageFree
+                  : ClaimBonusRewardSkin.Chest_2);
+            }
             PlayerData.Vibrate(HapticTypes.Failure);
         }
 

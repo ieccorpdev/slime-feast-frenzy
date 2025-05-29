@@ -13,6 +13,7 @@ namespace IEC
         [SerializeField] private Button buttonStart;
         [SerializeField] private Button buttonClose;
         public UnderseaVoyageState currentState = UnderseaVoyageState.Lock;
+        private bool isFinished;
 
         public override void Show()
         {
@@ -48,6 +49,16 @@ namespace IEC
             Hide();
         }
 
+        public override void Hide()
+        {
+            base.Hide();
+            if (isFinished)
+            {
+                isFinished = false;
+                Locator.Main.PopupJourney.ClaimAllItem();
+            }
+        }
+
         private IEnumerator Start()
         {
             buttonStart.onClick.AddListener(HandleEventClickShowPopupUnderseaVoyage);
@@ -60,6 +71,8 @@ namespace IEC
                     if (currentState != UnderseaVoyageState.Finish && timerTxt.text.Equals("Finished"))
                     {
                         SetState(UnderseaVoyageState.Finish);
+                        isFinished = true;
+                        yield break;
                     }
                     else if (currentState == UnderseaVoyageState.Finish)
                     {

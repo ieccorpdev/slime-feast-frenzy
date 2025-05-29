@@ -9,7 +9,6 @@ namespace IEC
 {
     public class PopupAddHelper : BasePopup
     {
-        public Button btnCloseAll;
         public Image helperIcon;
         public TextMeshProUGUI titleText;
 

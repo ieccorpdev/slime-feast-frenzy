@@ -12,14 +12,15 @@ namespace IEC
         public void OnTotalsItemUpdate(int totalIndices)
         {
             totalIndex = totalIndices;
-            scrollImageIndices[0].parentObj.SetActive(totalIndices == 4);
-            scrollImageIndices[1].parentObj.SetActive(totalIndices == 3);
-            scrollImageIndices[2].parentObj.SetActive(totalIndices == 2);
+            for (int i = 0; i < scrollImageIndices.Length; i++)
+            {
+                scrollImageIndices[i].parentObj.SetActive((5 - i) % totalIndices == 0);
+            }
         }
         
         public void SetIndex(RectTransform go, int index)
         {
-            scrollImageIndices[totalIndex == 4 ? 0 : totalIndex == 3 ? 1 : 2].SetIndex(go, index);
+            scrollImageIndices[5 - totalIndex].SetIndex(go, index);
         }
     }
 

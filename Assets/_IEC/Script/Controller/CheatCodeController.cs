@@ -109,6 +109,15 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            {
+                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
+                GameController.OpenScene(GameScene.Game,
+                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
+                    false);
+            });
+            
             var weatherIndex = (int)(Pool.Get<InGamePlayGroup>().currentWeatherSelect);
             
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set Weather Effect",
@@ -153,6 +162,15 @@ namespace IEC
             }, new CheatCode.InputParam
             {
                 value = 0
+            });           
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Relic Token Count", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.relicData.AddTokenCount(value);
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 5
             });
             
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
@@ -251,14 +269,6 @@ namespace IEC
                 value = 100
             });
 
-            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
-            {
-                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
-                GameController.OpenScene(GameScene.Game,
-                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
-                    false);
-            });
-            
             ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>
             {
                 Config.levelConfig.CheckValidAllLevel();
