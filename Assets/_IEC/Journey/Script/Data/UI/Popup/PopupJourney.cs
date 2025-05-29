@@ -132,8 +132,6 @@ namespace IEC
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
         }
 
-
-
         public void InitData()
         {
             for (int i = 0; i < listItemJourney.Count; i++)

@@ -19,6 +19,7 @@ namespace IEC
         public bool IsJourneyExpired;
         public bool isShowTutorialInPopup;
         public bool isCompleteJourney;
+        public bool isShowHandtut;
 
         public void SetStartJourneyTimeNow()
         {
@@ -51,7 +52,7 @@ namespace IEC
         public string GetTimeRemainingString()
         {
             TimeSpan remaining = GetTimeRemaining();
-            if (remaining == TimeSpan.Zero && wasOpenJourney)
+            if (remaining.Days < 1 && wasOpenJourney)
             {
                 return "Finished";
             }
@@ -78,9 +79,16 @@ namespace IEC
 
         private TimeSpan GetTimeRemaining()
         {
-            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
+            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
             TimeSpan remaining = endTime - DateTime.Now;
             return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+        }
+
+        public bool CheckFinishedDay()
+        {
+            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
+            TimeSpan remaining = endTime - DateTime.Now;
+            return remaining <= TimeSpan.Zero;
         }
 
         public JourneyItemStatus GetStatusVipPass(int id)

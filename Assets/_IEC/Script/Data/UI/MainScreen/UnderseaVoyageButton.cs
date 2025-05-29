@@ -38,7 +38,11 @@ namespace IEC
                     SetGroupActive(Lock: false, claim: true, normal: false);
                     SetIcon(sprIconUnlock);
                     txtTitle.text = "Join";
-                    Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
+                    if (!PlayerData.journeyData.isShowHandtut)
+                    {
+                        PlayerData.journeyData.isShowHandtut = true;
+                        Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
+                    }
                     break;
 
                 case UnderseaVoyageState.Finish:
@@ -124,7 +128,8 @@ namespace IEC
                         if (txtTimer.text.Equals("Finished"))
                         {
                             SetState(UnderseaVoyageState.Finish);
-                            Locator.Main.PopupUnderseaVoyageIntro.Show();
+                            if (PlayerData.journeyData.CheckFinishedDay())
+                                Locator.Main.PopupUnderseaVoyageIntro.Show();
                             yield break;
                         }
                         else if (currentState == UnderseaVoyageState.Finish)

@@ -55,7 +55,8 @@ namespace IEC
             if (isFinished)
             {
                 isFinished = false;
-                Locator.Main.PopupJourney.ClaimAllItem();
+                if (PlayerData.journeyData.CheckFinishedDay())
+                    Locator.Main.PopupJourney.ClaimAllItem();
             }
         }
 
