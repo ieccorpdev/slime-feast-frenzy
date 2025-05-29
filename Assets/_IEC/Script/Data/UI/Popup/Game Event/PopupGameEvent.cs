@@ -44,6 +44,8 @@ namespace IEC
         protected bool IsEventMultipleStage;
 
         public bool IsInEvent { get; private set; }
+
+        private Action _actionOnceOnClaimReward;
         
         protected override void Awake()
         {
@@ -72,6 +74,11 @@ namespace IEC
             base.Hide();
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
+
+            if (_actionOnceOnClaimReward != null)
+            {
+                _actionOnceOnClaimReward?.Invoke();
+            }
         }
 
         public virtual void Start()
@@ -248,6 +255,11 @@ namespace IEC
             eventTimerText.text = "Finished";
         }
 
+        public void SetActionOnceOnClaimReward(Action action)
+        {
+            _actionOnceOnClaimReward = action;
+        }
+
         protected virtual void OnClaimReward()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
@@ -312,9 +324,12 @@ namespace IEC
 
                 if (stage != -1)
                 {
+                    var actionClaimedReward = _actionOnceOnClaimReward;
                     Locator.Main.ClaimBonusRewardPanel.SetActionOnceOnAnimRewardDone(() =>
                     {
-                        ShowStartPopup();
+                        if(actionClaimedReward == null)
+                            ShowStartPopup();
+                        actionClaimedReward?.Invoke();
                     });
                 }
 
@@ -331,8 +346,10 @@ namespace IEC
                 // }
                 // else
                     // Hide();
+                    _actionOnceOnClaimReward?.Invoke();
             }
-            
+
+            _actionOnceOnClaimReward = null;
             Hide();
         }
 

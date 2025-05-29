@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using IEC;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,14 +12,9 @@ using IEC.Common.Event;
 using TMPro;
 using EventType = IEC.EventType;
 
-
 public class HomeScreenTab : ScreenNavigateUI
 {
     public RectTransform rightButtonBar, leftButtonBar;
-    [Header("Avatar Button")] public Button avatarButton;
-    public Image avatarImage;
-    [Header("LuckyWheel")] public Button luckyWheel;
-    public Image luckyWheelNotiImage;
     [Header("NoAdsPack")] public Button noAdsPack;
     [Header("LifeOfferPack")] public Button lifeOfferPack;
     public Image lifeOfferNotiImage;
@@ -69,18 +65,6 @@ public class HomeScreenTab : ScreenNavigateUI
     // Start is called before the first frame update
     void Start()
     {
-        SetEvent(avatarButton,
-            () =>
-            {
-                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupEditProfile.Show();
-            });
-        SetEvent(luckyWheel,
-            () =>
-            {
-                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupLuckyWheel.Show();
-            });
         SetEvent(noAdsPack,
             () =>
             {
@@ -163,7 +147,7 @@ public class HomeScreenTab : ScreenNavigateUI
         //                Locator.Main.HomeScreenTab.buildCityUI.Show();
         //            });
         //    });
-           
+
         SetEvent(starChaseButton.button,
             () =>
             {
@@ -215,8 +199,8 @@ public class HomeScreenTab : ScreenNavigateUI
     public void OnClickPlayButton()
     {
         //Block play button when have reward on way claim
-        if(Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
-           Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
+        if (Locator.Main.ScreenMain.listClaimRewardData.Count > 0 ||
+            Locator.Main.ClaimBonusRewardPanel.IsHaveShowClaimRewardAnim()) return;
         if (PlayerData.playerLife <= 0 && !PlayerData.IsInUnlimitedLife())
         {
             Locator.Main.PopupOutOfLive.Show();
@@ -230,11 +214,12 @@ public class HomeScreenTab : ScreenNavigateUI
             //         Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
             //         GameController.OpenScene(GameScene.Game);
             //     });
-                    
+
             //Services.PushEvent(new IEC.TrackingEvent.ClickPlayHomeScreen(PlayerData.GetPlayerCurrencyCount(ResourceType.Gold).ToString()));
             Locator.Main.PopupBooster.Show();
         }
     }
+
     public void SetupUIHome()
     {
         InitMoveOutAnimation();
@@ -243,8 +228,17 @@ public class HomeScreenTab : ScreenNavigateUI
         DoMoveBackAllObj(0.8f,
             () =>
             {
-                onOpenSceneActionOnce?.Invoke();
-                onOpenSceneActionOnce = null;
+                CheckAllEventsClaimableReward();
+                if (onOpenSceneActionOnce == null)
+                {
+                    ShowNextPopup();
+                }
+                else
+                {
+                    onOpenSceneActionOnce.Invoke();
+                    onOpenSceneActionOnce = null;
+                }
+
             });
     }
 
@@ -478,8 +472,6 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void UpdateMainHome()
     {
-        avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
-
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
         UpdateDailyReward();
@@ -514,19 +506,124 @@ public class HomeScreenTab : ScreenNavigateUI
         EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
     }
 
+    #region Check show popups on update home
+    
+    Queue<PopupData> popupQueue = new Queue<PopupData>();
+
+    public void AddPopupToShow(BasePopup popup, Action onOpen, Action onClose)
+    {
+        popupQueue.Enqueue(new PopupData(popup, onOpen, onClose));
+    }
+
+    public void ShowNextPopup()
+    {
+        if (popupQueue.Count > 0)
+        {
+            var popupData = popupQueue.Dequeue();
+            ShowPopup(popupData.popup, popupData.onOpen, popupData.onClose);
+        }
+    }
+    
+    private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)
+    {
+        if (popup != null)
+        {
+            popup.AddActionOnceOnClose(() =>
+            {
+                onClosed?.Invoke(); // Called when popup is closed
+            });
+            onOpen?.Invoke();
+        }
+        else
+        {
+            //Custom rating thread
+            onOpen?.Invoke();
+            onClosed?.Invoke();
+        }
+    }
+
+    public void CheckAllEventsClaimableReward()
+    {
+        //queueActionsClaimReward = new();
+
+        if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock
+            && Locator.Main.PopupStarChase.IsEndEventStage()
+            && PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count > 0
+            && !PlayerData.GetEventSaveData(EventType.StarChase).claimedReward)
+        {
+            AddPopupToShow(Locator.Main.PopupStarChase,
+                () =>
+                {
+                    Locator.Main.PopupStarChase.Show();
+                    Locator.Main.PopupStarChase.SetActionOnceOnClaimReward(ShowNextPopup);
+                },
+                null);
+            // queueActionsClaimReward.Enqueue(
+            //     () =>
+            //     {
+            //         Locator.Main.PopupStarChase.Show();
+            //         Locator.Main.PopupStarChase.SetActionOnceOnClaimReward(ShowNextPopup);
+            //     });
+        }
+
+        if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock
+            && Locator.Main.PopupSharkRace.IsEndEventStage()
+            && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
+            && !PlayerData.GetEventSaveData(EventType.SharkRace).claimedReward)
+        {
+            AddPopupToShow(Locator.Main.PopupSharkRace,
+                () =>
+                {
+                    Locator.Main.PopupSharkRace.Show();
+                    Locator.Main.PopupSharkRace.SetActionOnceOnClaimReward(ShowNextPopup);
+                },
+                null);
+            // queueActionsClaimReward.Enqueue(
+            //     () =>
+            //     {
+            //         Locator.Main.PopupSharkRace.Show();
+            //         Locator.Main.PopupSharkRace.SetActionOnceOnClaimReward(ShowNextPopup);
+            //     });
+        }
+
+        if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock
+            && Locator.Main.PopupChompOff.IsEndEventStage()
+            && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
+            && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        {
+            AddPopupToShow(Locator.Main.PopupSharkRace,
+                () =>
+                {
+                    Locator.Main.PopupChompOff.Show();
+                    Locator.Main.PopupChompOff.SetActionOnceOnClaimReward(ShowNextPopup);
+                },
+                null);
+            // queueActionsClaimReward.Enqueue(
+            //     () =>
+            //     {
+            //         Locator.Main.PopupChompOff.Show();
+            //         Locator.Main.PopupChompOff.SetActionOnceOnClaimReward(ShowNextPopup);
+            //     });
+        }
+
+        //ShowNextPopup();
+    }
+
+    #endregion
+
     public void CheckAllEventsAvailable()
     {
         int daysPlayed = PlayerData.GetDaysSinceDownload();
-        
+
         //Check chomp-off
         if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
         {
-            chompOffButton.gameObject.SetActive(
-                Config.eventLiveOpsConfig.IsEventAvailable(
-                    EventType.ChompOff,
-                    Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
-                        .eventDurationInHours / 24),
-                    daysPlayed));
+            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
+                EventType.ChompOff,
+                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                    .eventDurationInHours / 24),
+                daysPlayed) && chompOffButton.IsEventCanShow();
+            chompOffButton.gameObject.SetActive(active);
         }
     }
 
@@ -572,7 +669,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         //int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
         //luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
-        luckyWheel.gameObject.SetActive(false);
+        //luckyWheel.gameObject.SetActive(false);
         //uckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }
 
@@ -582,5 +679,20 @@ public class HomeScreenTab : ScreenNavigateUI
         //dailyRewardNotiImage.gameObject.SetActive(Locator.Main.PopupDailyReward.RewardAvailable);
         btnDailyReward.gameObject.SetActive(PlayerData.level >= Config.dataDailyRewardConfig.levelUnlock &&
                                             Game.haveDailyReward);
+    }
+
+}
+
+public class PopupData
+{
+    public BasePopup popup;
+    public Action onOpen;
+    public Action onClose;
+
+    public PopupData(BasePopup popup, Action onOpen = null, Action onClose = null)
+    {
+        this.popup = popup;
+        this.onOpen = onOpen;
+        this.onClose = onClose;
     }
 }
