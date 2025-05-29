@@ -38,6 +38,7 @@ namespace IEC
                     SetGroupActive(Lock: false, claim: true, normal: false);
                     SetIcon(sprIconUnlock);
                     txtTitle.text = "Join";
+                    Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
                     break;
 
                 case UnderseaVoyageState.Finish:
@@ -138,6 +139,10 @@ namespace IEC
 
         private void HandleEventClickShowPopupUnderseaVoyage()
         {
+            if (currentState == UnderseaVoyageState.Unlock)
+            {
+                Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
+            }
             if (currentState == UnderseaVoyageState.Finish)
             {
                 Locator.Main.PopupUnderseaVoyageIntro.Show();
