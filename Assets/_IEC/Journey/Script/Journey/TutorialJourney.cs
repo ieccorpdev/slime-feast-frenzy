@@ -29,11 +29,11 @@ public class TutorialJourney : MonoBehaviour
 
     IEnumerator IEShow()
     {
-        float timeEffect = 0.3f;
+        float timeEffect = 0.2f;
         foreach (var obj in listGameObjectEffect)
         {
             TweenControl.GetInstance().ScaleFromZero(obj, timeEffect);
-            yield return new WaitForSeconds(timeEffect);
+            yield return new WaitForSeconds(timeEffect / 2f);
         }
         tapToContinue.interactable = true;
         yield return new WaitForSeconds(timeEffect);

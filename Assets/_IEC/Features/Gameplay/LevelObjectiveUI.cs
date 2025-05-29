@@ -133,6 +133,7 @@ namespace _IEC.Features.Gameplay
             }
             if (PlayerData.journeyData.currentTargetJourney >= Config.journeyTripConfig.listRewardsByJourneys.Count)
             {
+                PlayerData.journeyData.isCompleteJourney = true;
                 fillFuelBar.DOFillAmount(1, 0.5f);
                 SetText(targetFuel + "/" + targetFuel);
                 passTockenCounter.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
