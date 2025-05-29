@@ -38,6 +38,10 @@ public class PopupVoyagePassIAPInfor : BasePopup
     IEnumerator UpdateTimer()
     {
         timerTxt.text = PlayerData.journeyData.GetTimeRemainingString();
+        if (timerTxt.text.Equals("Finished"))
+        {
+            yield break;
+        }
         bool value = PlayerData.journeyData.isBuyIAP;
         activeGroup.gameObject.SetActive(value);
         inactiveGroup.gameObject.SetActive(!value);
