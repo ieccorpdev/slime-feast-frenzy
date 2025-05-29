@@ -292,7 +292,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 42d3b1c4d961b2c4296867c36c33c60a, type: 2}
+      objectReference: {fileID: 2100000, guid: f307f87dc343aec428beac766ef658aa, type: 2}
     m_RemovedComponents:
     - {fileID: 2355560983377728626, guid: 5e4fd69007cd5bf4099b1919b6ca1828, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 5e4fd69007cd5bf4099b1919b6ca1828, type: 3}
@@ -323,7 +323,8 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5
 --- !u!23 &1312657399076638820 stripped
 MeshRenderer:
