@@ -55,6 +55,7 @@
             public const string RANK_UP = "Audio.RANK_UP";
             public const string RANK_SAFE = "Audio.RANK_SAFE";
             public const string RANK_DOWN = "Audio.RANK_DOWN";
+            public const string JELLYFISH_DOWN = "Audio.JELLYFISH_DOWN";
             public const string BOOSTER_APPEAR = "Audio.BOOSTER_APPEAR";
             public const string SHARK_SWIM = "Audio.SHARK_SWIM"; // Random swim_1/2, play khi hole hoặc cá mập di chuyển, delay 5-7s
             public const string SHARK_BITE_VARIANT = "Audio.SHARK_BITE_VARIANT"; // Random bite_1/2/3 khi cá mập cắn
