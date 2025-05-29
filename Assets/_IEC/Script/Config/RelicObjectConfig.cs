@@ -56,7 +56,9 @@ namespace IEC
 
         public int GetSpawnAmount()
         {
-            return Random.Range(minSpawn, maxSpawn + 1);
+            var rs = Random.Range(minSpawn, maxSpawn + 1);
+            Debug.Log($"GetSpawnAmount {rs}");
+            return rs;
         }
     }
 }
