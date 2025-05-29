@@ -109,6 +109,15 @@ namespace IEC
             {
                 value = 0
             });
+            
+            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            {
+                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
+                GameController.OpenScene(GameScene.Game,
+                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
+                    false);
+            });
+            
             var weatherIndex = (int)(Pool.Get<InGamePlayGroup>().currentWeatherSelect);
             
             ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set Weather Effect",
@@ -251,14 +260,6 @@ namespace IEC
                 value = 100
             });
 
-            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
-            {
-                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
-                GameController.OpenScene(GameScene.Game,
-                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
-                    false);
-            });
-            
             ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>
             {
                 Config.levelConfig.CheckValidAllLevel();
