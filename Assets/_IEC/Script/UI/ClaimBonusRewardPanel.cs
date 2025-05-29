@@ -332,15 +332,13 @@ public class ClaimBonusRewardPanel : BasePopup
             EffectRewardData dataEffectRW = new EffectRewardData(itr.typeReward, itr.rewardAmount,rectD.anchoredPosition,rectD.sizeDelta);
             listCollectedItems.Add(dataEffectRW);
         }
-        
         if (!IsHaveShowClaimRewardAnim())
         {
             //this.gameObject.SetActive(false);
             SpawnEffectClaimBonusInMainScreen();
             Hide();
-            
         }
-
+        EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         actionClose?.Invoke();
         PlayerData.Vibrate(HapticTypes.Failure);
         Pool.Get<ConfettiGroup>().StopConfetti();

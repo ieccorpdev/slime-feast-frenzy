@@ -78,6 +78,7 @@ namespace IEC
             }
             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null); 
             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+            EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         }
 
         void OnDestroy()

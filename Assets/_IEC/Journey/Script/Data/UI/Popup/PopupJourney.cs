@@ -128,12 +128,11 @@ namespace IEC
         private static void ResetData()
         {
             PlayerData.journeyData.ResetJourneyData();
-            if (PlayerData.playerLife > Config.maxHealth)
-            {
-                PlayerData.playerLife = Config.maxHealth;
-            }
+            PlayerData.CheckPlayerMaxHealth();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
         }
+
+
 
         public void InitData()
         {
