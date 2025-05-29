@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEditorInternal.VersionControl;
 
 namespace IEC
 {
@@ -51,7 +52,7 @@ namespace IEC
             };
         }
 
-        private void CheckShow()
+        public void CheckShow()
         {
             if (_canShow)
             {
@@ -105,6 +106,35 @@ namespace IEC
             return listItem.Count;
         }
 
+        public void ClaimAllItem()
+        {
+            InitData();
+            GetAllReward(out var listItem);
+            var listReward = GetAllReward(out List<ItemPassJourney> values);
+            if (listReward.Count > 0)
+            {
+                ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
+                {
+                    ResetData();
+                }, false);
+                ClaimBonusRewardPanel.ShowingRewardPanel();
+            }
+            else
+            {
+                ResetData();
+            }
+        }
+
+        private static void ResetData()
+        {
+            PlayerData.journeyData.ResetJourneyData();
+            if (PlayerData.playerLife > Config.maxHealth)
+            {
+                PlayerData.playerLife = Config.maxHealth;
+            }
+            Pool.Get<UnderseaVoyageButton>().InitStatusButton();
+        }
+
         public void InitData()
         {
             for (int i = 0; i < listItemJourney.Count; i++)
@@ -144,6 +174,7 @@ namespace IEC
             {
                 progressbarMove.SetActive(false);
                 PlayerData.journeyData.currentTargetJourney = Config.journeyTripConfig.listRewardsByJourneys.Count + 1;
+                PlayerData.journeyData.isCompleteJourney = true;
                 fillFuelBar.fillAmount = 1;
                 currentProgressTextTMP.text = targetFuel + "/" + targetFuel;
                 currentTarget.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
@@ -170,20 +201,33 @@ namespace IEC
             progressbarMove.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, target.anchoredPosition.y + offsetMove);
         }
 
-        public void OnCollectAllButtonClick(bool isUseChest)
+        public void OnCollectAllButtonClick(List<Reward> dataReward = null, ItemPassJourney item = null)
         {
-            var listReward = GetAllReward(out var listItem);
-            //Claim all Chest
-            ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
+            List<Reward> listReward = new List<Reward>();
+            if (dataReward != null)
             {
-                foreach (var item in listItem)
+                listReward = dataReward;
+                ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
                 {
                     item.MakeItemClaimed();
-                }
-                CheckShow();
-                RefreshUI();
-                Pool.Get<UnderseaVoyageButton>().InitStatusButton();
-            }, isUseChest);
+                    CheckShow();
+                    RefreshUI();
+                }, true);
+            }
+            else
+            {
+                listReward = GetAllReward(out var listItem);
+                ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
+                {
+                    foreach (var item in listItem)
+                    {
+                        item.MakeItemClaimed();
+                    }
+                    CheckShow();
+                    RefreshUI();
+                }, true);
+            }
+            
             Hide();
             _canShow = true;
             Locator.Main.ScreenMain.SetInteractive(false);
