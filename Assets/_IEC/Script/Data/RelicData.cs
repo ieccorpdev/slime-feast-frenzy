@@ -13,8 +13,14 @@ namespace IEC
         public List<int> claimedRewardIds = new();
         public DateTime lastTimeResetEvent;
         public DateTime eventTimeEnd;
-        public bool isAvaiableToSpawn = true;
+        public bool isAvaiableToSpawn => AvaiableToSpawn();
+        public bool hasJoinEvent;
+        public bool hasDoneLevel;
 
+        private bool AvaiableToSpawn()
+        {
+            return hasJoinEvent && !hasDoneLevel;
+        }
         public void SaveTimeResetEvent()
         {
             lastTimeResetEvent = DateTime.Now;

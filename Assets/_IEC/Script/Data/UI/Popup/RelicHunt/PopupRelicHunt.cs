@@ -189,7 +189,7 @@ public class PopupRelicHunt : BasePopup
 
     private void UpdateButtonState()
     {
-        PlayerData.relicData.isAvaiableToSpawn = !isDoneLevel;
+        PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.artifactCollectorConfig);
         playMainButton.transform.parent.gameObject.SetActive(!hasReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
