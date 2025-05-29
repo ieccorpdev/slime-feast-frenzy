@@ -15,10 +15,6 @@ using EventType = IEC.EventType;
 public class HomeScreenTab : ScreenNavigateUI
 {
     public RectTransform rightButtonBar, leftButtonBar;
-    [Header("Avatar Button")] public Button avatarButton;
-    public Image avatarImage;
-    [Header("LuckyWheel")] public Button luckyWheel;
-    public Image luckyWheelNotiImage;
     [Header("NoAdsPack")] public Button noAdsPack;
     [Header("LifeOfferPack")] public Button lifeOfferPack;
     public Image lifeOfferNotiImage;
@@ -69,18 +65,6 @@ public class HomeScreenTab : ScreenNavigateUI
     // Start is called before the first frame update
     void Start()
     {
-        SetEvent(avatarButton,
-            () =>
-            {
-                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupEditProfile.Show();
-            });
-        SetEvent(luckyWheel,
-            () =>
-            {
-                //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
-                Locator.Main.PopupLuckyWheel.Show();
-            });
         SetEvent(noAdsPack,
             () =>
             {
@@ -154,16 +138,6 @@ public class HomeScreenTab : ScreenNavigateUI
                 }
             });
 
-        //SetEvent(buildButton,
-        //    () =>
-        //    {
-        //        DoMoveOutAllObj(0.3f,
-        //            () =>
-        //            {
-        //                Locator.Main.HomeScreenTab.buildCityUI.Show();
-        //            });
-        //    });
-           
         SetEvent(starChaseButton.button,
             () =>
             {
@@ -478,8 +452,6 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void UpdateMainHome()
     {
-        avatarImage.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
-
         noAdsPack.gameObject.SetActive(!PlayerData.isNoAds);
         startedPackageBtn.gameObject.SetActive(!PlayerData.isBoughtStarterPack);
         UpdateDailyReward();
@@ -572,7 +544,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         //int levelUnlock = Config.dataRewardLuckyWheelConfig.levelUnlock;
         //luckyWheel.gameObject.SetActive(PlayerData.level >= levelUnlock);
-        luckyWheel.gameObject.SetActive(false);
+        //luckyWheel.gameObject.SetActive(false);
         //uckyWheelNotiImage.gameObject.SetActive(PlayerData.luckWheelDailyAdsSpin < Config.dataRewardLuckyWheelConfig.numberSpinAdsEachDay);
     }
 
