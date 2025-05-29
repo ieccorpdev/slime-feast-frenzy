@@ -243,6 +243,11 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9147972722060644075, guid: 2c4570de261f57c4988a69a774d5c346,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3cd7d269ba42bbb469712450527d28d7, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c4570de261f57c4988a69a774d5c346, type: 3}
 --- !u!23 &6984973645769244287 stripped
@@ -278,5 +283,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5
