@@ -68,24 +68,28 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(noAdsPack,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_No_Ads_Pack"));
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupNoAds.Show();
             });
         SetEvent(lifeOfferPack,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Life_Offer_pack"));
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupLifeOffer.Show();
             });
         SetEvent(startedPackageBtn,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Started_Pack"));
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupStarterPack.Show();
             });
         SetEvent(btnPiggyBank,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Piggy_pack"));
                 bool isEnoughLevel = PlayerData.level >= Config.dataPiggyBankConfig.levelUnlocked;
                 if (!isEnoughLevel) return;
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
@@ -94,14 +98,20 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(btnDailyReward,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Daily_Reward"));
                 //Services.PushEvent(new TrackingEvent.ClickBtnTracking("open_avatar"));
                 Locator.Main.PopupDailyReward.Show();
             });
         SetEvent(progressRewardButton,
-            () => { Locator.Main.PopupProgressReward.Show(); });
+            () =>
+            {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Ocean_Gift"));
+                Locator.Main.PopupProgressReward.Show();
+            });
         SetEvent(btnLevelChestReward,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Star_Chest"));
                 Locator.Main.PopupLevelChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Level)
                         .GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)),
@@ -113,6 +123,7 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 // bool isEnoughLevel = PlayerData.level >= m_gameConfig.allChestConfig.levelUnlock;
                 // if(!isEnoughLevel) return;
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Level_Chest"));
                 Locator.Main.PopupStarChestReward.Setup(
                     Config.allChestConfig.GetChestConfig(ChestType.Star)
                         .GetRewardData(PlayerData.GetChestMilestone(ChestType.Star)),
@@ -151,6 +162,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(starChaseButton.button,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Star_Chase"));
                 if (Locator.Main.PopupStarChase.CheckShowStartPopup())
                 {
                     Locator.Main.PopupStartStarChaseEvent.Show();
@@ -163,6 +175,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(sharkRaceButton.button,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Shark_Chase"));
                 if (Locator.Main.PopupSharkRace.CheckShowStartPopup())
                 {
                     Locator.Main.PopupStartSharkRaceEvent.Show();
@@ -175,6 +188,7 @@ public class HomeScreenTab : ScreenNavigateUI
         SetEvent(chompOffButton.button,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Chomp_Off"));
                 // if (Locator.Main.PopupChompOff.CheckShowStartPopup())
                 // {
                 //     //Locator.Main.PopupStartSharkRaceEvent.Show();
@@ -187,6 +201,7 @@ public class HomeScreenTab : ScreenNavigateUI
          SetEvent(btnRelicHunt,
             () =>
             {
+                Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Relic_Hunt"));
                 if (Locator.Main.PopupRelicHunt.CheckShowPopup())
                 {
                     Locator.Main.PopupRelicHunt.Show();
