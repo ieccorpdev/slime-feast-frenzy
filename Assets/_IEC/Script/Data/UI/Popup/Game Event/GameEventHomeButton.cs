@@ -44,8 +44,17 @@ namespace IEC
             gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, InitUI);
         }
 
+        public bool IsEventCanShow()
+        {
+            int level = PlayerData.level;
+            int levelUnlock = Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
+            return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+        }
         public void InitUI()
         {
+            bool show = IsEventCanShow();
+            gameObject.SetActive(show);
+            if(!show) return;
             completedGroup.SetActive(false);
             unlockedGroup.SetActive(false);
             lockedGroup.SetActive(false);
