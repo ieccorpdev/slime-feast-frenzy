@@ -543,15 +543,25 @@ public class HomeScreenTab : ScreenNavigateUI
         }
     }
 
-    public void CheckAllPacksPopup()
+    public void CheckAllPacksPopup(bool isWinLevel = false)
     {
-        //Check no ads
-        if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
+        //Check no ads - only after win levels
+        if (isWinLevel && Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
                 () =>
                 {
                     Locator.Main.PopupNoAds.Show();
+                },
+                ShowNextPopup);
+        }
+        if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
+                && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
+        {
+            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                () =>
+                {
+                    Locator.Main.PopupVoyagePassIAPInfor.Show();
                 },
                 ShowNextPopup);
         }

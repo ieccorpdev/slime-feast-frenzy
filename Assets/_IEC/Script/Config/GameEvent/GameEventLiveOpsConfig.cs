@@ -71,8 +71,8 @@ namespace IEC
 
         public int GetLatestDayStartEvent(EventType eventType, int currentDay)
         {
-            if (currentDay > listEventLiveOps.Count)
-                currentDay %= listEventLiveOps.Count;
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count - 1);
 
             for (int i = currentDay; i >= 0; i--)
             {
