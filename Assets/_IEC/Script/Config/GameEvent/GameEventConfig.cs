@@ -23,6 +23,7 @@ namespace IEC
 
         public List<EventData> listEventData = new();
         public List<EventRewardTitleData> listTitleData = new();
+        public EventRewardTitleData titleDataNoProgress;
         public EventRewardTitleData titleDataWinAllEventStages;
         
         [Header("Load data from csv (file format speed|range + reward)")]
@@ -340,6 +341,14 @@ namespace IEC
         public EventRewardTitleData GetRewardTitleData(int rank)
         {
             return listTitleData.Find(data => data.rankStartReward <= rank && (data.rankEndReward >= rank || data.rankEndReward == -1));
+        }
+        
+        public EventRewardTitleData GetRewardTitleDataNoProgress(int rank)
+        {
+            if (titleDataNoProgress.claimRewardTitleSprite != null)
+                return titleDataNoProgress;
+            else
+                return GetRewardTitleData(rank);
         }
 
         public EventRewardTitleData GetWinAllEventStagesTitleData(int rank)

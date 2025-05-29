@@ -128,12 +128,11 @@ namespace IEC
         private static void ResetData()
         {
             PlayerData.journeyData.ResetJourneyData();
-            if (PlayerData.playerLife > Config.maxHealth)
-            {
-                PlayerData.playerLife = Config.maxHealth;
-            }
+            PlayerData.CheckPlayerMaxHealth();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
         }
+
+
 
         public void InitData()
         {
@@ -146,11 +145,14 @@ namespace IEC
 
         IEnumerator UpdateTimer()
         {
-            timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
-            bool value = PlayerData.journeyData.isBuyIAP;
-            doneBuyIAP.gameObject.SetActive(value);
-            buyIAP.gameObject.SetActive(!value);
-            yield return new WaitForSeconds(1f);
+            while (true)
+            {
+                timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+                bool value = PlayerData.journeyData.isBuyIAP;
+                doneBuyIAP.gameObject.SetActive(value);
+                buyIAP.gameObject.SetActive(!value);
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         void OnClickButtonTutorialJourney()

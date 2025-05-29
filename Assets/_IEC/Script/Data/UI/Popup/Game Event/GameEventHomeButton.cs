@@ -134,13 +134,19 @@ namespace IEC
             UpdateUI();
         }
 
-
+        private TimeSpan countdownTimeSpan;
         public void UpdateUI()
         {
             if (timerText.gameObject.activeInHierarchy)
             {
+                countdownTimeSpan = PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now;
                 timerText.text = DateTimeHelper.GetFormattedTimeHMS(
-                    PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
+                    countdownTimeSpan);
+
+                if (countdownTimeSpan.TotalSeconds <= 0)
+                {
+                    InitUI();
+                }
             }
         }
     }

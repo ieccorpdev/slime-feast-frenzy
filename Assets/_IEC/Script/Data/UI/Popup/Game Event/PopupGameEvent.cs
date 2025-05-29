@@ -303,11 +303,17 @@ namespace IEC
                 stage = -1;
             }
 
+            var player = data.listPlayerData.Find(player => player.isPlayer);
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
 
             var titleData = _eventConfig.GetRewardTitleData(playerRank);
+
+            if (player.progress == 0)
+            {
+                titleData = _eventConfig.GetRewardTitleDataNoProgress(playerRank);
+            }
 
             if (stage == -1)
                 titleData = _eventConfig.GetWinAllEventStagesTitleData(playerRank);

@@ -74,7 +74,9 @@ namespace _IEC.Features.VipProHackerUITutorial
                 }
                 else
                 {
-                    handTut.transform.position = rectTransform.transform.position;
+                    handTut.transform.parent = rectTransform.transform;
+                    handTut.transform.localPosition = Vector3.zero;
+                    handTut.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
                 }
             }
         }
@@ -97,6 +99,7 @@ namespace _IEC.Features.VipProHackerUITutorial
             }
             imgDark.gameObject.SetActive(false);
             handTut.SetActive(false);
+            handTut.transform.parent = this.transform;
             m_CurrentHighLightUI = null;
             if (m_OldCanvas != null)
             {
