@@ -457,6 +457,19 @@ public class ClaimBonusRewardPanel : BasePopup
 
         return $"{number}{suffix}";
     }
+
+    private void OnApplicationQuit()
+    {
+        ClaimReward();
+
+        while (queueShowClaimReward.Count > 0)
+        {
+            var data = queueShowClaimReward.Dequeue();
+
+            listDataReward = new(data.listDataReward);
+            ClaimReward();
+        }
+    }
 }
 
 [Serializable]public class PositionGroupsRewardDataPanel
