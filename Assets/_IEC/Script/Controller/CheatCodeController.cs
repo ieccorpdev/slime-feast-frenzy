@@ -88,6 +88,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupStarChase,
                     new AddEventProgressData()
                     {
                         eventType = EventType.StarChase,
@@ -124,6 +125,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupSharkRace,
                     new AddEventProgressData()
                     {
                         eventType = EventType.SharkRace,
@@ -131,6 +133,38 @@ namespace IEC
                         progressAmount = value,
                     });
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Chomp Off progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupChompOff,
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.ChompOff,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+
+                var data = PlayerData.GetEventSaveData(EventType.ChompOff);
+
+                data.timeStart = data.timeStart.AddMinutes(-value);
+                data.lastUpdateTime = data.lastUpdateTime.AddMinutes(-value);
+                Locator.Main.PopupChompOff.UpdateCurrentTimeEndEvent();
+
             }, new CheatCode.InputParam
             {
                 value = 0
@@ -206,6 +240,15 @@ namespace IEC
             ModuleController.cheatCode.AddCheatCodeButton("Reset Star Chase", param =>
             {
                 Locator.Main.PopupStarChase.ResetEvent();
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Jellyfish Item", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.journeyData.currentFuelJourney += count;
+            }, new CheatCode.InputParam
+            {
+                value = 100
             });
 
             ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>

@@ -38,7 +38,17 @@ public static partial class Locator
         public static PopupStartStarChaseEvent PopupStartStarChaseEvent => Pool.Get<PopupStartStarChaseEvent>();
 
         public static PopupSharkRace PopupSharkRace => Pool.Get<PopupSharkRace>();
-
         public static PopupStartSharkRaceEvent PopupStartSharkRaceEvent => Pool.Get<PopupStartSharkRaceEvent>();
+
+        public static PopupJourney PopupJourney => Pool.Get<PopupJourney>();
+
+        public static PopupVoyagePassIAPInfor PopupVoyagePassIAPInfor => Pool.Get<PopupVoyagePassIAPInfor>();
+
+        public static PopupUnderseaVoyageIntro PopupUnderseaVoyageIntro => Pool.Get<PopupUnderseaVoyageIntro>();
+        
+        public static PopupChompOff PopupChompOff => Pool.Get<PopupChompOff>();
+
+        public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
+
     } 
 }

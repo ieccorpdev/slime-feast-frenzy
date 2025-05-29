@@ -28,9 +28,10 @@ namespace IEC
         protected EventRankController _eventRankController;
         protected GameEventConfig _eventConfig;
 
-        private EventSaveData eventSaveData;
+        protected EventSaveData eventSaveData;
         private PopupGameEvent popup;
-        
+
+        protected DateTime _timeEndEvent;
         
         // Start is called before the first frame update
         void Start()
@@ -86,13 +87,28 @@ namespace IEC
             UpdateTimer();
         }
 
-        public void SetupData()
+        public virtual void SetupData()
         {
             Init();
+            _timeEndEvent = Config.eventLiveOpsConfig.GetTimeEndEvent(
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
             eventSaveData = _eventRankController.GetEventSaveData(eventType);
-            popup = eventType == EventType.SharkRace ? Locator.Main.PopupSharkRace : Locator.Main.PopupStarChase;
+            popup = eventType switch
+            {
+                EventType.StarChase => Locator.Main.PopupStarChase,
+                EventType.SharkRace => Locator.Main.PopupSharkRace,
+                EventType.ChompOff => Locator.Main.PopupChompOff,
+                _=> null,
+            };
             
-            scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
+            if(popup != null)
+                popup.CheckUpdateEventProgress();
+            
+            if(scroller != null)
+                scroller.gameObject.SetActive(eventSaveData.listPlayerData.Count > 0 && !eventSaveData.claimedReward);
+            
             startGroup.SetActive(eventSaveData.listPlayerData.Count == 0 || eventSaveData.claimedReward);
 
             if (eventTargetGroup != null)
@@ -104,7 +120,7 @@ namespace IEC
             ReloadData();
         }
         
-        private void UpdateTimer()
+        protected virtual void UpdateTimer()
         {
 
             if (popup.IsEndEvent() || popup.IsEndEventStage())
@@ -117,14 +133,14 @@ namespace IEC
                 {
                     timerText.text =
                         DateTimeHelper.GetFormattedTimeHMS(
-                            DateTime.Now.AddDays(1).Date - DateTime.Now);
+                            _timeEndEvent - DateTime.Now);
                 }
             }
             else
             {
                 timerText.text =
                     DateTimeHelper.GetFormattedTimeHMS(
-                        eventSaveData.timeEnd - DateTime.Now);
+                        _timeEndEvent - DateTime.Now);
             }
         }
 

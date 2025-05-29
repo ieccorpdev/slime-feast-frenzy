@@ -55,6 +55,7 @@ namespace IEC
             public const string COLLECT_ITEM = "GamePlay.COLLECT_ITEM";
             public const string COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI = "GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI";
             public const string COLLECT_SPECIAL_ITEM_FOR_UI = "Gameplay.COLLECT_SPECIAL_ITEM_FOR_UI";
+            public const string COLLECT_RELIC_ITEM_FOR_UI = "Gameplay.COLLECT_RELIC_ITEM_FOR_UI";
 
             public const string UPDATE_CAMERA_TARGET = "Gameplay.UPDATE_CAMERA_TARGET";
             public const string TIMER_TIME_OUT = "Gameplay.TIMER_TIME_OUT";
@@ -90,6 +91,7 @@ namespace IEC
          
 
             public const string ON_LEVEL_LOADED = "Gameplay.ON_LEVEL_LOADED";
+            public const string Kingdom_Special = "Kingdom_Special";
             public const string ON_LEVEL_DEBUG_LOADED = "Gameplay.ON_LEVEL_DEBUG_LOADED";
             
             public const string SHOW_FULL_SCREEN_BY_MEDIATION_ADS = "Gameplay.SHOW_FULL_SCREEN_BY_MEDIATION_ADS";

@@ -17,7 +17,7 @@ public class MainBGController : _BaseBehaviour
 
     public void SetupBGByTheme()
     {
-       var themeConfig = Config.themeConfig.GetWaterThemeConfig();
+       var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
        if (themeConfig.themeId == 0)
        {
            //theme id 0 have a spine background, hard code, update if update another spine bg

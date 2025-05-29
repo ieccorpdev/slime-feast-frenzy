@@ -13,7 +13,7 @@ namespace IEC
     /// object contain player secret data (need save and secure)
     /// </summary>
     [System.Serializable]
-    public class PlayerSecret : IData
+    public partial class PlayerSecret : IData
     {
         public long lastTickPlayTime;
         public long startTickPlayTime;
@@ -53,10 +53,12 @@ namespace IEC
         public bool passHelperClear;
         
         public HybridData hybridData = new HybridData();
+        public JourneyData journeyData = new JourneyData();
 
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
+      
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
@@ -74,11 +76,20 @@ namespace IEC
         {
             level += 1;
         }
-
+       
         public void SaveLastPlayTime()
         {
             lastTickPlayTime = Math.Max(lastTickPlayTime, startTickPlayTime);
             startTickPlayTime = Math.Max(lastTickPlayTime, DateTime.Now.Ticks);
+        }
+
+        public int GetDaysSinceDownload()
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (DateTime.Now - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
 
         public DateTime GetLastPlayDateTime()
@@ -96,10 +107,12 @@ namespace IEC
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
-            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
+            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking.Count < 0)
             {
                 ClearAndInitTrackingLevelType();
                 levelLostStreak = -1;
+                chompOffCurrentLevelLost = -1;
+                chompOffCurrentLevelLostCount = 0;
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
@@ -113,6 +126,7 @@ namespace IEC
             isKilledAppGamePlay = false;
             
             ResetBoosterStreak();
+            AddLevelLostCountForChompOffEvent();
             
         }
 
@@ -269,7 +283,7 @@ namespace IEC
         public bool dailyShowLifeOfferPack;
         public void DecreasePlayerLife()
         {
-            if (playerLife == Config.maxHealth)
+            if (playerLife == (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 if (timeStartCountAddLife < DateTime.Now)
                 {
@@ -355,7 +369,7 @@ namespace IEC
                 if(!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
-            while (playerLife < Config.maxHealth)
+            while (playerLife < (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 diffTime = DateTime.Now - timeStartCountAddLife;
                 if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= Config.timeRefillLife)
@@ -381,7 +395,7 @@ namespace IEC
         public string GetTimeToNextLife()
         {
             CheckPlayerAddLifeByTime();
-            if (playerLife >= Config.maxHealth)
+            if (playerLife >= (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 return "MAX";
             }
@@ -401,7 +415,7 @@ namespace IEC
 
         public void RaiseToMaxHealth()
         {
-            playerLife = Config.maxHealth;
+            playerLife = (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth);
         }
 
         #endregion
@@ -865,7 +879,31 @@ namespace IEC
             return Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone) && currentProgress >= Config.progressRewardConfig.listRewardData.Count;
         }
         #endregion
-        
+
+        #region ArtifactCollector
+
+        private RelicData _relicData;
+        public RelicData relicData => _relicData ??= new();
+
+        public void ResetRelicData()
+        {
+            _relicData = new();
+        }
+        public void CheckResetTimeArtifactEvent()
+        {
+            _relicData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
+        }
+        public bool ReachMaxRelicReward()
+        {
+            return false;
+        }
+
+        public void AddRelicToken(int amount)
+        {
+            
+        }
+
+        #endregion
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();
@@ -901,6 +939,9 @@ namespace IEC
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
         public bool isShownPopupStartSharkRace;
+        public bool isShownPopupInfoChompOff;
+        public int chompOffCurrentLevelLost;
+        public int chompOffCurrentLevelLostCount;
 
         public EventSaveData GetEventSaveData(EventType eventType)
         {
@@ -912,6 +953,7 @@ namespace IEC
                 {
                     eventType = eventType,
                     eventIndex = 0,
+                    claimedReward = true,
                 };
                 listEventSaveData.Add(data);
             }
@@ -924,6 +966,24 @@ namespace IEC
             var saveData = GetEventSaveData(eventType);
             var eventData = Config.AllGameEventConfig.GetGameEventConfig(eventType).GetEventData(saveData.eventIndex);
             return false;
+        }
+
+        public void AddLevelLostCountForChompOffEvent()
+        {
+            if (level < Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+                return;
+
+            if (level != chompOffCurrentLevelLost)
+                chompOffCurrentLevelLostCount = 0;
+
+            chompOffCurrentLevelLost = level;
+            chompOffCurrentLevelLostCount++;
+        }
+
+        public void ResetChompOffLevelLostCount()
+        {
+            chompOffCurrentLevelLost = -1;
+            chompOffCurrentLevelLostCount = 0;
         }
 
         #endregion

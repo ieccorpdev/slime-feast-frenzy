@@ -31,10 +31,13 @@ namespace IEC
 
         private void Awake()
         {
-            if (eventType == EventType.StarChase)
-                _gameEventPopup = Locator.Main.PopupStarChase;
-            else if (eventType == EventType.SharkRace)
-                _gameEventPopup = Locator.Main.PopupSharkRace;
+            _gameEventPopup = eventType switch
+            {
+                EventType.StarChase => Locator.Main.PopupStarChase,
+                EventType.SharkRace => Locator.Main.PopupSharkRace,
+                EventType.ChompOff => Locator.Main.PopupChompOff,
+                _=> null,
+            };
 
             _eventRankController = Controllers.Get<EventRankController>();
             
