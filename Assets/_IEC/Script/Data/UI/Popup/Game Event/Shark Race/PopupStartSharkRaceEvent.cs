@@ -10,7 +10,6 @@ namespace IEC
 {
     public class PopupStartSharkRaceEvent : BasePopup
     {
-        public Button btnCloseAll;
         public Button btnClosePopup;
         public Button btnStart;
 
