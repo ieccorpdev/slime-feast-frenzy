@@ -261,9 +261,13 @@ namespace IEC
                 };
                 
             playerUI.Setup(_eventConfig, eventData, player, 0);
-            
-            if(opponent != null)
+
+            if (opponent != null)
+            {
+                opponent.progress = NumberSolver.GetClosestSmaller(opponent.progress,
+                    Config.AllGameEventConfig.chompOffProgressConfig.listProgressAfterWin);
                 opponentUI.Setup(_eventConfig, eventData, opponent, 0);
+            }
 
             if (!_eventStarted)
             {
@@ -439,6 +443,42 @@ namespace IEC
             }
 
             return durations;
+        }
+    }
+    
+    public class NumberSolver
+    {
+        // Check if target can be expressed using any combination of the given numbers
+        public static bool CanBeExpressed(int target, List<int> values)
+        {
+            // DP table: dp[i] is true if i can be made with the values
+            bool[] dp = new bool[target + 1];
+            dp[0] = true;
+
+            for (int i = 1; i <= target; i++)
+            {
+                foreach (int val in values)
+                {
+                    if (i - val >= 0 && dp[i - val])
+                    {
+                        dp[i] = true;
+                        break;
+                    }
+                }
+            }
+
+            return dp[target];
+        }
+
+        // Get the closest smaller number that can be expressed with the given values
+        public static int GetClosestSmaller(int n, List<int> values)
+        {
+            for (int k = n; k >= 0; k--)
+            {
+                if (CanBeExpressed(k, values))
+                    return k;
+            }
+            return 0;
         }
     }
 }

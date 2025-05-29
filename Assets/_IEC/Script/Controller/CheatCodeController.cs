@@ -141,6 +141,7 @@ namespace IEC
                 var data = PlayerData.GetEventSaveData(EventType.ChompOff);
 
                 data.timeStart = data.timeStart.AddMinutes(-value);
+                data.lastUpdateTime = data.lastUpdateTime.AddMinutes(-value);
                 Locator.Main.PopupChompOff.UpdateCurrentTimeEndEvent();
 
             }, new CheatCode.InputParam

@@ -210,8 +210,8 @@ namespace IEC
 
         public virtual void InitEvent()
         {
-            CheckInitEventProgress();
             CheckUpdateEventProgress();
+            CheckInitEventProgress();
             ReloadData();
         }
         
@@ -542,7 +542,7 @@ namespace IEC
 
             var timeToCheck = DateTime.Now <= GetTimeEndStage() ? DateTime.Now : GetTimeEndStage();
 
-            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours || IsEndEventStage())
             {
                 data.lastUpdateTime = DateTime.Now;
                 for (int i = 0; i < data.listPlayerData.Count; i++)
