@@ -207,6 +207,25 @@ namespace IEC
         {
             base.Hide();
         }
+        
+        protected override bool IsShowInfo()
+        {
+            return false;
+        }
+
+        protected override void OnShowInfo()
+        {
+            if (infoGroup != null && infoGroup.activeInHierarchy)
+            {
+                mainPanel.gameObject.SetActive(true);
+                Show();
+            }
+            else
+            {
+                mainPanel.gameObject.SetActive(false);
+            }
+            base.OnShowInfo();
+        }
 
         public override void Show()
         {
@@ -226,10 +245,11 @@ namespace IEC
             base.Show();
             //
             //var eventSaveData = _eventRankController.GetEventSaveData(eventType);
-
+            
             if (!PlayerData.isShownPopupInfoChompOff)
             {
-                //OnShowInfo();
+                //mainPanel.gameObject.SetActive(false);
+                OnShowInfo();
                 PlayerData.isShownPopupInfoChompOff = true;
             }
 
