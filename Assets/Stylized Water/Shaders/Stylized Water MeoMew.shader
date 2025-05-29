@@ -283,6 +283,10 @@
                 // use as uv's in screen-space texture look ups.
                 float2 screenCoord = i.grabPosition.xy / i.grabPosition.w;
 
+                
+                // MeoMew fix flip reflection, This fix only for iOS
+                screenCoord.y = 1.0 - screenCoord.y; // Flip the Y-coordinate
+                
                 // Sample the grab-pass and depth textures based on the screen coordinate
                 // to get the frag color and depth of the fragment behind this one.
                 float3 fragColor = tex2D(_GrabTexture, screenCoord.xy).rgb;
