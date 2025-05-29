@@ -3,6 +3,7 @@ using System.Linq;
 using _IEC.Features.Booster;
 using _IEC.Features.Common.Config;
 using _IEC.Features.Gameplay;
+using _IEC.Script.Config;
 using UnityEngine;
 
 namespace IEC
@@ -15,6 +16,7 @@ namespace IEC
     {
         [Space(10)]
         public int maxHealth = 5;
+        public int maxHealthInKingdomPass = 8;
         public int levelUnlockLife = 10;
         public int timeRefillLife = 15;//By Minutes
         public int goldToRefill = 900;
@@ -38,6 +40,8 @@ namespace IEC
 
         [Header("Special Object Spawn Config")]
         public SpecialObjectConfig specialObjectConfig;
+        [Header("Relic Object Spawn Config")]
+        public RelicObjectConfig relicObjectConfig;
         [Header(" Player Avatar Profile")]
         public PlayerAvatarConfig playerAvatarConfig;
         [Header("Lucky Wheel Config")]
@@ -48,6 +52,8 @@ namespace IEC
         public DataDailyReward dataDailyRewardConfig;
         [Header("Progress Reward Config")]
         public ProgressRewardConfig progressRewardConfig;
+        [Header("Artifact Collector")]
+        public ArtifactCollectorConfig artifactCollectorConfig;
         [Header("City Build")] 
         public int brickWinReward = 15;
         public BuildCityConfig buildCityConfig;
@@ -78,6 +84,11 @@ namespace IEC
 
         [Header("Game Event")] 
         public AllGameEventConfig AllGameEventConfig;
+
+        [Header("Journey Trip Config")]
+        public JourneyTripConfig journeyTripConfig;
+        [Header("Game Event Live Ops")] 
+        public GameEventLiveOpsConfig eventLiveOpsConfig;
 
         public void PreloadAllConfig()
         {

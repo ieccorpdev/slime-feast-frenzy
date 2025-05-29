@@ -74,7 +74,7 @@ namespace IEC
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
         }
 
-        private void Start()
+        public virtual void Start()
         {
             if(scroller != null)
                 scroller.OnBeingDrag+=DisableRewardPopupMini;
@@ -210,8 +210,8 @@ namespace IEC
 
         public virtual void InitEvent()
         {
-            CheckInitEventProgress();
             CheckUpdateEventProgress();
+            CheckInitEventProgress();
             ReloadData();
         }
         
@@ -280,12 +280,25 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
+            
+            bool eventAvailable = Config.eventLiveOpsConfig.IsEventAvailable(
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
+
+            if (!eventAvailable)
+            {
+                stage = -1;
+            }
 
             var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
 
             var titleData = _eventConfig.GetRewardTitleData(playerRank);
+
+            if (stage == -1)
+                titleData = _eventConfig.GetWinAllEventStagesTitleData(playerRank);
 
             if (eventRewardData != null && eventRewardData.listReward.Count > 0)
             {
@@ -297,18 +310,14 @@ namespace IEC
                         listDataReward = new List<Reward>(eventRewardData.listReward),
                     });
 
-                // Locator.Main.ClaimBonusRewardPanel.AddActionOnceOnClose(() =>
-                // {
-                    // if (stage != -1)
-                    // {
-                    //     // StartNewEventStage(stage);
-                    //     // CheckInitEventProgress();
-                    //     // UpdateUI();
-                    //     ShowStartPopup();
-                    // }
-                    // else
-                        // Hide();
-                // });
+                if (stage != -1)
+                {
+                    Locator.Main.ClaimBonusRewardPanel.SetActionOnceOnAnimRewardDone(() =>
+                    {
+                        ShowStartPopup();
+                    });
+                }
+
                 Locator.Main.ClaimBonusRewardPanel.ShowNext();
             }
             else
@@ -362,6 +371,16 @@ namespace IEC
             return DateTime.Now >= data.timeEnd;
         }
 
+        public virtual DateTime GetTimeEndStage()
+        {
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return data.timeEnd;
+        }
+
         public virtual bool IsHaveNextEventStage()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
@@ -403,6 +422,12 @@ namespace IEC
             return stage;
         }
 
+        protected virtual bool IsShowInfo()
+        {            
+            var data = _eventRankController.GetEventSaveData(eventType);
+            return data.listPlayerData.Count == 0;
+        }
+
         protected virtual void CheckInitEventProgress()
         {
             if (_eventRankController == null)
@@ -423,7 +448,7 @@ namespace IEC
             {
                 IsInEvent = false;
 
-                if (data.listPlayerData.Count == 0) // First time in star chase
+                if (IsShowInfo())
                 {
                     OnShowInfo();
                     StartNewEventStage(0);
@@ -478,32 +503,48 @@ namespace IEC
             {
                 listPlayerData[i].indexInUI = i;
             }
+            
+            var data = _eventRankController.GetEventSaveData(eventType);
+
+            var timeStart = DateTime.Now;
+            //var timeEnd = eventStageIndex != 0 ? data.timeEnd : DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours);
+            var timeEnd = eventStageIndex != 0 ? data.timeEnd 
+                : Config.eventLiveOpsConfig.GetTimeEndEvent(
+                    eventType, 
+                    Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                    PlayerData.GetDaysSinceDownload());
                 
             _eventRankController
                 .InitData(
                     eventType,
                     eventStageIndex,
-                    DateTime.Now,
+                    timeStart,
                     //DateTime.Now.AddHours(_eventConfig.eventDurationInHours),
-                    DateTime.Now.AddDays(1).Date, //hard code to end of day - events last one day
+                    timeEnd,
                     new List<EventPlayerData>(listPlayerData)
                 );
             
             CheckUpdateEventProgress();
         }
 
-        protected virtual void CheckUpdateEventProgress()
+        public virtual void CheckUpdateEventProgress()
         {
             // if (!IsInEvent)
             //     return;
             
+            if (_eventRankController == null)
+            {
+                Init();
+            }
+            
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);
 
-            var timeToCheck = DateTime.Now <= data.timeEnd ? DateTime.Now : data.timeEnd;
+            var timeToCheck = DateTime.Now <= GetTimeEndStage() ? DateTime.Now : GetTimeEndStage();
 
-            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours)
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours || IsEndEventStage())
             {
+                data.lastUpdateTime = DateTime.Now;
                 for (int i = 0; i < data.listPlayerData.Count; i++)
                 {
                     var player = data.listPlayerData[i];
@@ -522,7 +563,7 @@ namespace IEC
             }
         }
 
-        private void UpdateTimer()
+        protected virtual void UpdateTimer()
         {
             if (IsEndEvent())
             {

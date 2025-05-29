@@ -31,6 +31,7 @@ namespace IEC
 
         public GameEventInfoBar starChaseInfoBar;
         public GameEventInfoBar sharkRaceInfoBar;
+        public GameEventInfoBar chompOffInfoBar;
 
         public List<GameObject> listInfoObjects = new();
 
@@ -62,12 +63,20 @@ namespace IEC
         {
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
+            chompOffInfoBar.gameObject.SetActive(false);
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+            {
+                if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
+                {
+                    chompOffInfoBar.gameObject.SetActive(true);
+                    chompOffInfoBar.SetupData();
+                }
+            }
+            else if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)
             {
                 if (!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0)
                 {
                     sharkRaceInfoBar.gameObject.SetActive(true);
-                    starChaseInfoBar.gameObject.SetActive(false);
                     sharkRaceInfoBar.SetupData();
                 }
             }

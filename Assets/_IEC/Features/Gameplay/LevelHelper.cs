@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using IEC;
 using UnityEngine;
 
@@ -419,12 +420,13 @@ namespace _IEC.Features.Gameplay
                     itemComponent = newItem.AddComponent<BaseItem>();
                 }
                 var itemTransform = itemComponent.transform;
+                float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
                 var itemData = new ItemData()
                 {
                     itemId = itemDefinition.GetId(),
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
-                    localScale = Vector3.one * Config.specialObjectConfig.GetRandomSpawnSize(),
+                    localScale = Vector3.one * scale,
                     isStartKinematic =  false,
                 };
                 itemTransform.parent = levelObjectHolder;
@@ -441,6 +443,63 @@ namespace _IEC.Features.Gameplay
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
+            return res;
+        }
+        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
+        {
+            var res = new List<BaseItem>();
+            if (itemDefinition == null) return res;
+            var prefab = itemDefinition.GetPrefab();
+            if (prefab == null)
+            {
+                return res;
+            }
+
+            var spawmAmount = Config.relicObjectConfig.GetRandomSpawnAmount();
+            var spawnSize = Config.relicObjectConfig.GetRandomSpawnSize();
+            List<BaseItem> tempList = new();
+            for (int i = 0; i < spawmAmount; i++)
+            {
+                Vector3? spawnPos = null;
+                for (int j = 0; j < count; j++)
+                {
+                    var newItem = prefab.Spawn();
+                    spawnPos ??= FindValidSpawnPosition(
+                        bounds,
+                        newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                        1000,
+                        newItem.gameObject.layer
+                    );
+                    var itemComponent = newItem.GetComponent<BaseItem>();
+                    if (itemComponent == null)
+                    {
+                        itemComponent = newItem.AddComponent<BaseItem>();
+                    }
+                    var itemTransform = itemComponent.transform;
+                    var itemData = new ItemData()
+                    {
+                        itemId = itemDefinition.GetId(),
+                        position = spawnPos.Value, 
+                        eulerAngle = Vector3.zero,
+                        localScale = Vector3.one *  spawnSize,
+                        isStartKinematic =  true,
+                    };
+                    itemTransform.parent = levelObjectHolder;
+                    //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
+                    itemComponent.LoadData(itemData, itemDefinition);
+                    itemComponent.transform.position = spawnPos.Value;
+                    Debug.Log(itemComponent.transform.position);
+                    res.Add(itemComponent);
+                    itemIds.Add(itemData.itemId);
+                    tempList.Add(itemComponent);
+                }
+
+                for (int j = 0; j < tempList.Count; j++)
+                {
+                    tempList[i].transform.position = spawnPos.Value;
+                }
+            }
+            
             return res;
         }
 

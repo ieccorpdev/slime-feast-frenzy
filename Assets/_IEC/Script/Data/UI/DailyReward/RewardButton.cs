@@ -89,7 +89,6 @@ namespace _IEC
             SetButtonState(RewardButtonState.Available);
             RewardClaimed = false;
         }
-        
 
     }
 

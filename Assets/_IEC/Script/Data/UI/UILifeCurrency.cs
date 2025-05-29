@@ -30,8 +30,9 @@ namespace IEC
                 currencyTMP.text = PlayerData.playerLife.ToString();
                 lifeCountDownText.text = PlayerData.GetTimeToNextLife();
             }
-            button.interactable = PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife();
-            addButtonDisplay.SetActive(PlayerData.playerLife < Config.maxHealth && !PlayerData.IsInUnlimitedLife());
+            int maxLife = PlayerData.journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth;
+            button.interactable = PlayerData.playerLife < maxLife && !PlayerData.IsInUnlimitedLife();
+            addButtonDisplay.SetActive(PlayerData.playerLife < maxLife && !PlayerData.IsInUnlimitedLife());
         }
     }
 }
