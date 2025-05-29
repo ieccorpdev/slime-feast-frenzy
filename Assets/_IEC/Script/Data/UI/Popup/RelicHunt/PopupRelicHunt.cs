@@ -233,13 +233,15 @@ public class PopupRelicHunt : BasePopup
         return curLevelIndex;
     }
 
-    private void SetRelicToClaimText(int relicLeft, bool isMaxLevel = false)
+    private void SetRelicToClaimText(int relicLeft, bool isLevelDone = false)
     {
         relicToClaimText.gameObject.SetActive(true);
 
-        if (isMaxLevel)
+        if (isLevelDone)
         {
-            relicToClaimText.text = $"Claim all reward to continue";
+            bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.artifactCollectorConfig);
+            
+            relicToClaimText.text = HasReward ?  "Claim all reward to continue" : "New event is coming" ;
             return;
         }
 
