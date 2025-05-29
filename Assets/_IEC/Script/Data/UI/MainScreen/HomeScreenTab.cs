@@ -622,7 +622,7 @@ public class HomeScreenTab : ScreenNavigateUI
                 EventType.ChompOff,
                 Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
                     .eventDurationInHours / 24),
-                daysPlayed);
+                daysPlayed) && chompOffButton.IsEventCanShow();
             chompOffButton.gameObject.SetActive(active);
         }
     }
