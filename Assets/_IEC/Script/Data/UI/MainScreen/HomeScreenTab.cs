@@ -201,6 +201,8 @@ public class HomeScreenTab : ScreenNavigateUI
          SetEvent(btnRelicHunt,
             () =>
             {
+                if(PlayerData.relicData.hasJoinEvent == false) PlayerData.relicData.hasJoinEvent = true;
+                
                 Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Relic_Hunt"));
                 if (Locator.Main.PopupRelicHunt.CheckShowPopup())
                 {

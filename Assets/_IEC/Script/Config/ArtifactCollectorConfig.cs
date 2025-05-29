@@ -14,23 +14,16 @@ namespace _IEC.Script.Config
         public List<ArtifactLevelNodeModel> ArtifactLevels = new List<ArtifactLevelNodeModel>();
         public ArtifactLevelNodeModel grandPrizeReward;
 
-        public bool HasWardAvaialable(PlayerSecret playerData)
+        public int GetStackTokenCost(int id)
         {
-            var level = playerData.relicData.curRelicLevel;
-            var curToken = playerData.relicData.currentRelicTokenCount;
-            if (level >= ArtifactLevels.Count)
+            int rs = 0;
+            var level = ArtifactLevels.Find(x => x.artifactLevelRewards.Exists(y => y.id == id));
+            var curRwIndex = level.artifactLevelRewards.FindIndex(x => x.id == id);
+            for (int i = 0; i <= curRwIndex; i++)
             {
-                //check max level
-                var levelNodeCount = 3; //fixed
-                for (int i = 0; i < levelNodeCount; i++)
-                {
-                }
+                rs += level.artifactLevelRewards[i].tokenCost;
             }
-            else
-            {
-            }
-
-            return false;
+            return rs;
         }
 
         private void OnValidate()
@@ -68,4 +61,15 @@ namespace _IEC.Script.Config
         public int value;
     }
 
+    public enum ArtifactRewardType
+    {
+        Gold,
+        LivesInMinutes,
+        Booster_EvolvePillInMinutes,
+        Booster_WindsurfInMinutes,
+        Helper_EnlargeInAmount,
+        Helper_MagnetInAmount,
+        Helper_CompassInAmount,
+        Helper_TimeStopInAmount,
+    }
 }

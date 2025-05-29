@@ -13,8 +13,18 @@ namespace IEC
         public List<int> claimedRewardIds = new();
         public DateTime lastTimeResetEvent;
         public DateTime eventTimeEnd;
-        public bool isAvaiableToSpawn = true;
+        public bool isAvaiableToSpawn => AvaiableToSpawn();
+        public bool hasJoinEvent;
+        public bool hasDoneLevel;
 
+        public bool IsEventInRange()
+        {
+            return eventTimeEnd > DateTime.Now;
+        }
+        private bool AvaiableToSpawn()
+        {
+            return hasJoinEvent && !hasDoneLevel;
+        }
         public void SaveTimeResetEvent()
         {
             lastTimeResetEvent = DateTime.Now;
@@ -26,7 +36,7 @@ namespace IEC
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;
-                if (x.tokenCost > currentRelicTokenCount) continue;
+                if (config.GetStackTokenCost(x.id) > currentRelicTokenCount) continue;
                 if (!claimedRewardIds.Contains(x.id)) return true;
             }
             return false;   
@@ -35,8 +45,7 @@ namespace IEC
             bool isMaxLevel = false)
         {
             Dictionary<ResourceType, int> rs = new();
-            var lastLevel = isMaxLevel ? curRelicLevel : Math.Max(1, curRelicLevel - 1);
-            rs = CalculateRewardTotalsLastLevel(config, lastLevel);
+            rs = CalculateRewardInLevel(config, curRelicLevel);
             return rs;
         }
 
@@ -66,6 +75,13 @@ namespace IEC
             return rs;
         }
 
+        public bool AbleTolevelUp(ArtifactCollectorConfig config)
+        {
+            if(curRelicLevel >= config.ArtifactLevels.Count) return false;
+            var curLevelConfig = config.ArtifactLevels[curRelicLevel - 1];
+            var totalTokenCost = config.GetStackTokenCost(curLevelConfig.artifactLevelRewards[^1].id);
+            return currentRelicTokenCount >= totalTokenCost;
+        }
         private Dictionary<ResourceType, int> CalculateRewardInLevel(ArtifactCollectorConfig config, int level)
         {
             Dictionary<ResourceType, int> rs = new();
@@ -73,7 +89,7 @@ namespace IEC
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;
-                if (x.tokenCost > currentRelicTokenCount) continue;
+                if (config.GetStackTokenCost(x.id)> currentRelicTokenCount) continue;
                 foreach (var artifactRewardData in x.artifactRewards)
                 {
                     if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
