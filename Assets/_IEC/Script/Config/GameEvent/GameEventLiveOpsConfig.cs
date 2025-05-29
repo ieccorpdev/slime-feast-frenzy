@@ -94,6 +94,9 @@ namespace IEC
         {
             int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
+            if (latestDayStartEvent == -1)
+                return false;
+
             return (currentDay - latestDayStartEvent) < eventDurationInDays;
         }
     }
