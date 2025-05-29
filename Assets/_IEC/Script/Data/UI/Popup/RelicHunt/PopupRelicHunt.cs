@@ -265,36 +265,7 @@ public class PopupRelicHunt : BasePopup
 
     private Reward ConvertToReward(ArtifactRewardData relicData)
     {
-        Reward rs = new();
-        switch (relicData.artifactRewardType)
-        {
-            case ArtifactRewardType.Gold:
-                rs.typeReward = ResourceType.Gold;
-                break;
-            case ArtifactRewardType.LivesInMinutes:
-                rs.typeReward = ResourceType.UnlimitedLive;
-                break;
-            case ArtifactRewardType.Booster_EvolvePillInMinutes:
-                rs.typeReward = ResourceType.BonusExp;
-                break;
-            case ArtifactRewardType.Booster_WindsurfInMinutes:
-                rs.typeReward = ResourceType.WindSurf;
-                break;
-            case ArtifactRewardType.Helper_CompassInAmount:
-                rs.typeReward = ResourceType.Compass;
-                break;
-            case ArtifactRewardType.Helper_EnlargeInAmount:
-                rs.typeReward = ResourceType.Enlarge;
-                break;
-            case ArtifactRewardType.Helper_MagnetInAmount:
-                rs.typeReward = ResourceType.Compass;
-                break;
-            case ArtifactRewardType.Helper_TimeStopInAmount:
-                rs.typeReward = ResourceType.BonusTime;
-                break;
-        }
-
-        rs.rewardAmount = relicData.value;
+        Reward rs = new(relicData.value,relicData.artifactRewardType);
         return rs;
     }
 

@@ -10,7 +10,6 @@ namespace IEC
 {
     public class PopupStartSharkRaceEvent : BasePopup
     {
-        public Button btnCloseAll;
         public Button btnClosePopup;
         public Button btnStart;
 
@@ -65,6 +64,10 @@ namespace IEC
         {
             var eventSaveData = PlayerData.GetEventSaveData(EventType.SharkRace);
             int index = Locator.Main.PopupSharkRace.IsEventStageCompleted() ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
+            if (Locator.Main.PopupSharkRace.IsEndEvent())
+            {
+                index = 0;
+            }
             var eventData = Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).GetEventData(index);
             infoText.text = $"clear {eventData.eventTarget} levels!";
         }

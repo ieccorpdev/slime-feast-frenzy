@@ -16,6 +16,7 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private TextMeshProUGUI txtNumberCoin;
         [SerializeField] private Image imgIconSpecialObject;
         [SerializeField] private Image imgIconRelicObject;
+        [SerializeField] private GridLayoutGroup parent;
         public void UpdateUI()
         {
             txtNumberHeart.text = 1.ToString();
@@ -23,23 +24,7 @@ namespace _IEC.Features.Gameplay
             UpdateGoldDisplay();
             UpdateSpecialItemDisplay();
             UpdateRelicItemDisplay();
-            //var remainingTime = UI.ScreenInGame.GetGameplayTimer().GetRemainingTime();
-            //txtNumberStar.text = Config.gamePlayConfig.GetStarByRemainingTime(remainingTime, UI.ScreenInGame.GetGameplayTimer().GetMaxTime()).ToString();
-            //txtNumberCoin.text = GamePlay.gamePlayData.GetAchievementItemCount(LevelAchievementData.ID_COIN).ToString();
-            //txtNumberSpecialObject.text = GamePlay.gamePlayData.GetAchievementItemCount(ProgressRewardHelper.GetCurrentSpecialObjectIdInString()).ToString();
-            //imgIconSpecialObject.sprite = ProgressRewardHelper.GetCurrentSpecialObjectSprite();
-            ////imgIconSpecialObject.rectTransform.ForceToWidth(imgIconSpecialObject.sprite,178);
-            //
-            //if (!Game.enableTreasureHunt || PlayerData.level < Config.treasureHuntProgressConfig.unlockLevel || TreasureHuntController.treasureHuntData.currentProgressIndex >= Config.treasureHuntProgressConfig.rewardProgressModels.Count)
-            //{
-            //    imgIconSpecialObject.gameObject.SetActive(false);
-            //    txtNumberSpecialObject.gameObject.SetActive(false);
-            //}
-            //else
-            //{
-            //    imgIconSpecialObject.gameObject.SetActive(true);
-            //    txtNumberSpecialObject.gameObject.SetActive(true);
-            //}
+            SetSizeGroup();
         }
 
         void UpdateStarDisplay()
@@ -66,6 +51,23 @@ namespace _IEC.Features.Gameplay
             txtNumberStar.text = starLost.ToString();
         }
 
+        public void SetSizeGroup()
+        {
+            int childCount = Utilities.CountActiveImmediateChildren(parent.transform);
+
+            int result = 2;
+            switch (childCount)
+            {
+                case 5:
+                case 6:
+                    result = 3;
+                    break;
+                case >=7:
+                    result = 4;
+                    break;
+            }
+            parent.constraintCount = result;
+        }
         void UpdateGoldDisplay()
         {
             txtNumberCoin.text = GamePlay.levelController.GoldCollected.ToString();
@@ -78,8 +80,8 @@ namespace _IEC.Features.Gameplay
         }
         void UpdateRelicItemDisplay()
         {
-            // txtNumberRelicObject.text = GamePlay.levelController.RelicObjCollected.ToString();
-            // imgIconRelicObject.sprite = Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon();
+             txtNumberRelicObject.text = GamePlay.levelController.RelicObjCollected.ToString();
+             imgIconRelicObject.gameObject.SetActive(PlayerData.relicData.isAvaiableToSpawn && PlayerData.level >= Config.artifactCollectorConfig.levelUnlockFeature);
         }
     }
 }

@@ -19,6 +19,10 @@ public class TutorialJourney : MonoBehaviour
     public void Show()
     {
         gameObject.SetActive(true);
+    }
+
+    private void OnEnable()
+    {
         foreach (var obj in listGameObjectEffect)
         {
             obj.gameObject.SetActive(false);
@@ -29,16 +33,19 @@ public class TutorialJourney : MonoBehaviour
 
     IEnumerator IEShow()
     {
-        float timeEffect = 0.3f;
+        float timeEffect = 0.2f;
         foreach (var obj in listGameObjectEffect)
         {
             TweenControl.GetInstance().ScaleFromZero(obj, timeEffect);
-            yield return new WaitForSeconds(timeEffect);
+            yield return new WaitForSeconds(timeEffect / 2f);
         }
         tapToContinue.interactable = true;
         yield return new WaitForSeconds(timeEffect);
         if (pulseRoutine != null) StopCoroutine(pulseRoutine);
-        pulseRoutine = StartCoroutine(PulseButton(tapToContinue.transform.GetChild(0)));
+        if (tapToContinue.transform.childCount > 0)
+        {
+            pulseRoutine = StartCoroutine(PulseButton(tapToContinue.transform.GetChild(0)));
+        }
     }
 
     IEnumerator PulseButton(Transform target)

@@ -145,11 +145,11 @@ MonoBehaviour:
     enableLevelProgress: 0
     isUsingHardLevel: 0
     enableTreasureHunt: 0
-    enableRewardForDaily: 0
     isImmortal: 0
     isUsingGroundExtend: 0
     itemVersion: 0
     levelStartInterAds: 4
+    isUsingBtnAdsMoreLife: 1
     usingWaterTheme: 1
     enablePiggyBank: 0
     isHaveProfileAndLeaderboard: 0
@@ -157,8 +157,10 @@ MonoBehaviour:
     isAllowSkipHardLevelAds: 0
     levelStartHardLevelOverride: 31
     loseBeforeAllowSkipHardLevelOverride: 2
+    iosFeature: 1
     dropSplashWater: 0
     enableComboCount: 1
+    haveDailyReward: 1
     isOverrideDataRewardLuckyWheel: 0
     usingNewLogicPull: 0
     crLevelType: 0
@@ -197,6 +199,18 @@ MonoBehaviour:
     hybridData:
       timeRefillLeft: 0
       timeUnlimitedLive: 0
+    journeyData:
+      currentTargetJourney: 0
+      currentTargetJourneyClaimed: 0
+      currentFuelJourney: 0
+      isEnableMaxHeart: 0
+      isBuyIAP: 0
+      wasOpenJourney: 0
+      lifeCycleCount: 0
+      inJourneyProgress: 0
+      IsJourneyExpired: 0
+      isShowTutorialInPopup: 0
+      isCompleteJourney: 0
     helperData:
       numberMagnet: 0
       numberCompass: 0
@@ -218,8 +232,6 @@ MonoBehaviour:
     levelLostStreak: 0
     playerLife: 5
     realTimeUnlimidtedLife: 0
-    playerProfileName: 
-    playerProfileIconId: 0
     levelPending: 0
     isKilledAppGamePlay: 0
     dailyShowLifeOfferPack: 0
@@ -227,6 +239,7 @@ MonoBehaviour:
     currentCityBuild: 0
     screwCityBuild: 0
     playerAvatarSpriteName: 
+    playerAvatarFrameName: 
     playerName: 
     firstSpinTutorial: 0
     luckWheelDailyFreeSpin: 0
@@ -238,13 +251,16 @@ MonoBehaviour:
     wasShowPiggyBankFirstTime: 0
     dailyShowPiggyBank: 0
     currentDailyAdReward: 0
-    mainRewardCooldownTickTime: 0
-    claimMainReward: 0
     tempSpecialObjCollectedInLevel: 0
     currentProgress: 0
     currentProgressMilestone: 0
     currentSpecialItemIndex: 0
     listEventSaveData: []
+    isShownPopupStartStarChase: 0
+    isShownPopupStartSharkRace: 0
+    isShownPopupInfoChompOff: 0
+    chompOffCurrentLevelLost: 0
+    chompOffCurrentLevelLostCount: 0
 --- !u!1 &3150143569490634634
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,7 +850,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 15
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1420399972348908351
 MonoBehaviour:

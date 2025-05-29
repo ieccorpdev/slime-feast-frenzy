@@ -66,6 +66,11 @@ namespace IEC
             currentRankText.text = "Rank " +
                              (data.listPlayerData.FindIndex(data => data.isPlayer) +
                               1).ToString();
+            
+            if (eventType == EventType.ChompOff && !Locator.Main.PopupChompOff.IsEndEventStage()) // Custom for chomp off
+            {
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText();
+            }
 
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock)
             {
@@ -129,13 +134,19 @@ namespace IEC
             UpdateUI();
         }
 
-
+        private TimeSpan countdownTimeSpan;
         public void UpdateUI()
         {
             if (timerText.gameObject.activeInHierarchy)
             {
+                countdownTimeSpan = PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now;
                 timerText.text = DateTimeHelper.GetFormattedTimeHMS(
-                    PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
+                    countdownTimeSpan);
+
+                if (countdownTimeSpan.TotalSeconds <= 0)
+                {
+                    InitUI();
+                }
             }
         }
     }
