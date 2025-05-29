@@ -215,7 +215,7 @@ namespace IEC
 
             if (!PlayerData.isShownPopupInfoChompOff)
             {
-                OnShowInfo();
+                //OnShowInfo();
                 PlayerData.isShownPopupInfoChompOff = true;
             }
 
@@ -231,11 +231,6 @@ namespace IEC
             //     return;
             
             UpdateUI();
-        }
-
-        protected override bool IsShowInfo()
-        {
-            return false;
         }
 
         public override void InitEvent()
