@@ -41,7 +41,6 @@ namespace IEC
                     break;
 
                 case UnderseaVoyageState.Finish:
-                    PlayerData.journeyData.wasOpenJourney = false;
                     SetGroupActive(Lock: false, claim: false, normal: true);
                     SetIcon(sprIconLock);
                     txtTimer.text = "Finished";
@@ -124,6 +123,8 @@ namespace IEC
                         if (txtTimer.text.Equals("Finished"))
                         {
                             SetState(UnderseaVoyageState.Finish);
+                            Locator.Main.PopupUnderseaVoyageIntro.Show();
+                            yield break;
                         }
                         else if (currentState == UnderseaVoyageState.Finish)
                         {
@@ -137,7 +138,12 @@ namespace IEC
 
         private void HandleEventClickShowPopupUnderseaVoyage()
         {
-            if (currentState == UnderseaVoyageState.Finish || currentState == UnderseaVoyageState.Lock)
+            if (currentState == UnderseaVoyageState.Finish)
+            {
+                Locator.Main.PopupUnderseaVoyageIntro.Show();
+                return;
+            }
+            if (currentState == UnderseaVoyageState.Lock)
             {
                 return;
             }

@@ -162,6 +162,15 @@ namespace IEC
             }, new CheatCode.InputParam
             {
                 value = 0
+            });           
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Relic Token Count", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.relicData.AddTokenCount(value);
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 5
             });
             
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>

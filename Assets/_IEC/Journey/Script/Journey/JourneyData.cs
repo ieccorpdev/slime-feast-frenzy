@@ -18,6 +18,7 @@ namespace IEC
         public DateTime timeStartJourneyTrip;
         public bool IsJourneyExpired;
         public bool isShowTutorialInPopup;
+        public bool isCompleteJourney;
 
         public void SetStartJourneyTimeNow()
         {
@@ -33,7 +34,7 @@ namespace IEC
             }
         }
 
-        private void ResetJourneyData()
+        public void ResetJourneyData()
         {
             regularJourneyPass.Clear();
             vipJourneyPass.Clear();
@@ -44,6 +45,7 @@ namespace IEC
             isBuyIAP = false;
             wasOpenJourney = false;
             IsJourneyExpired = false;
+            isCompleteJourney = false;
         }
 
         public string GetTimeRemainingString()
@@ -51,8 +53,6 @@ namespace IEC
             TimeSpan remaining = GetTimeRemaining();
             if (remaining == TimeSpan.Zero && wasOpenJourney)
             {
-                ResetJourneyData();
-                wasOpenJourney = false;
                 return "Finished";
             }
             return remaining.Days > 0 ? remaining.Days + "d " + remaining.Hours + "h" :
@@ -66,7 +66,6 @@ namespace IEC
 
             if (remaining <= TimeSpan.Zero && wasOpenJourney)
             {
-                wasOpenJourney = false;
                 return "Finished";
             }
 
