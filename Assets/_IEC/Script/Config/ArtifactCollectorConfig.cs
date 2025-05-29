@@ -64,19 +64,8 @@ namespace _IEC.Script.Config
     [System.Serializable]
     public class ArtifactRewardData
     {
-        public ArtifactRewardType artifactRewardType;
+        public ResourceType artifactRewardType;
         public int value;
     }
 
-    public enum ArtifactRewardType
-    {
-        Gold,
-        LivesInMinutes,
-        Booster_EvolvePillInMinutes,
-        Booster_WindsurfInMinutes,
-        Helper_EnlargeInAmount,
-        Helper_MagnetInAmount,
-        Helper_CompassInAmount,
-        Helper_TimeStopInAmount,
-    }
 }

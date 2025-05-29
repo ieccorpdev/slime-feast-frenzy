@@ -31,20 +31,20 @@ namespace IEC
             }
             return false;   
         }
-        public Dictionary<ArtifactRewardType, int> GetAllUnClaimRelicLevelReward(ArtifactCollectorConfig config,
+        public Dictionary<ResourceType, int> GetAllUnClaimRelicLevelReward(ArtifactCollectorConfig config,
             bool isMaxLevel = false)
         {
-            Dictionary<ArtifactRewardType, int> rs = new();
+            Dictionary<ResourceType, int> rs = new();
             var lastLevel = isMaxLevel ? curRelicLevel : Math.Max(1, curRelicLevel - 1);
             rs = CalculateRewardTotalsLastLevel(config, lastLevel);
             return rs;
         }
 
-        private Dictionary<ArtifactRewardType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
+        private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
             int level
         )
         {
-            Dictionary<ArtifactRewardType, int> rs = new();
+            Dictionary<ResourceType, int> rs = new();
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;
@@ -66,9 +66,9 @@ namespace IEC
             return rs;
         }
 
-        private Dictionary<ArtifactRewardType, int> CalculateRewardInLevel(ArtifactCollectorConfig config, int level)
+        private Dictionary<ResourceType, int> CalculateRewardInLevel(ArtifactCollectorConfig config, int level)
         {
-            Dictionary<ArtifactRewardType, int> rs = new();
+            Dictionary<ResourceType, int> rs = new();
 
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {

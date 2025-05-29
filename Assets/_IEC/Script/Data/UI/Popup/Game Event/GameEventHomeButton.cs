@@ -66,6 +66,11 @@ namespace IEC
             currentRankText.text = "Rank " +
                              (data.listPlayerData.FindIndex(data => data.isPlayer) +
                               1).ToString();
+            
+            if (eventType == EventType.ChompOff && !Locator.Main.PopupChompOff.IsEndEventStage()) // Custom for chomp off
+            {
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText();
+            }
 
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock)
             {
