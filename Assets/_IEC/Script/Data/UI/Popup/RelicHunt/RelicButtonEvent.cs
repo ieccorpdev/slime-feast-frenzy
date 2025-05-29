@@ -34,16 +34,16 @@ public class RelicButtonEvent : _BaseBehaviour
             joinGroup.SetActive(true);
             return;
         }
-        if (PlayerData.level < Config.artifactCollectorConfig.levelUnlockFeature)
+        if (PlayerData.level < Config.relicConfig.levelUnlockFeature)
         {
-            levelUnlockText.text = "Lvl. " + Config.artifactCollectorConfig.levelUnlockFeature;
+            levelUnlockText.text = "Lvl. " + Config.relicConfig.levelUnlockFeature;
             lockedGroup.SetActive(true);
             button.interactable = false;
         }
         else
         {
             var relicLevel = PlayerData.relicData.curRelicLevel;
-            var config = Config.artifactCollectorConfig;
+            var config = Config.relicConfig;
             var isMaxLevel = relicLevel == config.ArtifactLevels.Count;
 
             if (PlayerData.relicData.CheckIfHasReward(config))
@@ -74,7 +74,7 @@ public class RelicButtonEvent : _BaseBehaviour
 
     private void OnTimeEventEnd()
     {
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
     }
 
     private void Update()

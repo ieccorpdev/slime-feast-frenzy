@@ -445,7 +445,7 @@ namespace _IEC.Features.Gameplay
             }
             return res;
         }
-        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
+        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int spawnTime, Transform levelObjectHolder, ItemDefinition itemDefinition)
         {
             var res = new List<BaseItem>();
             if (itemDefinition == null) return res;
@@ -455,13 +455,13 @@ namespace _IEC.Features.Gameplay
                 return res;
             }
 
-            var spawmAmount = Config.relicObjectConfig.GetRandomSpawnAmount();
-            var spawnSize = Config.relicObjectConfig.GetRandomSpawnSize();
-            List<BaseItem> tempList = new();
-            for (int i = 0; i < spawmAmount; i++)
+            //List<BaseItem> tempList = new();
+            for (int i = 0; i < spawnTime; i++)
             {
+                var spawnSize = Config.relicConfig.GetRandomSpawnSize();
+                var spawmAmount = Config.relicConfig.GetRandomSpawnAmount();
                 Vector3? spawnPos = null;
-                for (int j = 0; j < count; j++)
+                for (int j = 0; j < spawmAmount; j++)
                 {
                     var newItem = prefab.Spawn();
                     spawnPos ??= FindValidSpawnPosition(
@@ -485,19 +485,18 @@ namespace _IEC.Features.Gameplay
                         isStartKinematic =  true,
                     };
                     itemTransform.parent = levelObjectHolder;
-                    //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
                     itemComponent.LoadData(itemData, itemDefinition);
                     itemComponent.transform.position = spawnPos.Value;
-                    Debug.Log(itemComponent.transform.position);
+                    Debug.Log($"pos {itemComponent.transform.position} -- amount {spawmAmount}");
                     res.Add(itemComponent);
                     itemIds.Add(itemData.itemId);
-                    tempList.Add(itemComponent);
+                    //tempList.Add(itemComponent);
                 }
 
-                for (int j = 0; j < tempList.Count; j++)
-                {
-                    tempList[i].transform.position = spawnPos.Value;
-                }
+                // for (int j = 0; j < tempList.Count; j++)
+                // {
+                //     tempList[i].transform.position = spawnPos.Value;
+                // }
             }
             
             return res;

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ArtifactCollectorConfig
   m_EditorClassIdentifier: 
   daysEachReset: 3
-  levelUnlockFeature: 15
+  levelUnlockFeature: 35
   ArtifactLevels:
   - artifactLevelRewards:
     - id: 0
@@ -162,3 +162,13 @@ MonoBehaviour:
         value: 1
       - artifactRewardType: 7
         value: 1
+  maxSpawnAmount: 5
+  minSpawnAmount: 3
+  maxSpawnSize: 1.5
+  minSpawnSize: 0.8
+  listSpecialObjectSpawnData:
+  - levelStartSpawn: 35
+    minSpawn: 2
+    maxSpawn: 3
+  listRelicItemDefinition:
+  - {fileID: 11400000, guid: 6533fdaa21fc9d04eae681d9833e7e37, type: 2}

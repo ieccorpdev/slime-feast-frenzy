@@ -23,7 +23,8 @@ namespace IEC
         }
         private bool AvaiableToSpawn()
         {
-            return hasJoinEvent && !hasDoneLevel;
+            //return hasJoinEvent && !hasDoneLevel;
+            return true;
         }
         public void SaveTimeResetEvent()
         {

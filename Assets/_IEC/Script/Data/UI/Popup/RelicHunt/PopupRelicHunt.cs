@@ -29,7 +29,7 @@ public class PopupRelicHunt : BasePopup
     [SerializeField] private RelicLevelVisual levelVisual;
     [SerializeField] RelicProgressBar relicProgressBar;
     private List<Reward> rewards = new();
-    private ArtifactCollectorConfig relicConfig => Config.artifactCollectorConfig;
+    private ArtifactCollectorConfig relicConfig => Config.relicConfig;
 
     [Header("Info ui")] public List<Transform> listInfoUI = new();
 
@@ -97,7 +97,7 @@ public class PopupRelicHunt : BasePopup
     private void CaculateReward()
     {
         var curLevel = PlayerData.relicData.curRelicLevel;
-        var config = Config.artifactCollectorConfig.ArtifactLevels[curLevel - 1];
+        var config = Config.relicConfig.ArtifactLevels[curLevel - 1];
         var relicReward = config.artifactLevelRewards;
         for (var index = 0; index < relicReward.Count; index++)
         {
@@ -148,8 +148,8 @@ public class PopupRelicHunt : BasePopup
 
     private void CaculateAndShowReward()
     {
-        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.artifactCollectorConfig.ArtifactLevels.Count;
-        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.artifactCollectorConfig, isMaxLevel);
+        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.relicConfig.ArtifactLevels.Count;
+        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig, isMaxLevel);
         foreach (var keyValuePair in rwd)
         {
             rewards.Add(ConvertToReward(new ArtifactRewardData
@@ -166,8 +166,8 @@ public class PopupRelicHunt : BasePopup
     private ArtifactNodeModel FindNextRewardNode()
     {
         int curLevelIndex = GetCurrentLevelIndex();
-        var relicReward = Config.artifactCollectorConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
-        int maxLevel = Config.artifactCollectorConfig.ArtifactLevels.Count;
+        var relicReward = Config.relicConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
+        int maxLevel = Config.relicConfig.ArtifactLevels.Count;
         var curToken = PlayerData.relicData.currentRelicTokenCount;
         var aboveNode = relicReward.FirstOrDefault(t => relicConfig.GetStackTokenCost(t.id) > curToken);
 
@@ -190,7 +190,7 @@ public class PopupRelicHunt : BasePopup
     private void UpdateButtonState()
     {
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
-        bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.artifactCollectorConfig);
+        bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
         playMainButton.transform.parent.gameObject.SetActive(!hasReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
     }
@@ -198,16 +198,16 @@ public class PopupRelicHunt : BasePopup
     private void ClaimAllLevelReward()
     {
         CaculateAndShowReward();
-        if (PlayerData.relicData.AbleTolevelUp(Config.artifactCollectorConfig)) OnLevelUpRelicLevel();
+        if (PlayerData.relicData.AbleTolevelUp(Config.relicConfig)) OnLevelUpRelicLevel();
         ResetVisual();
     }
 
     private void OnLevelUpRelicLevel()
     {
         int curLevelIndex = GetCurrentLevelIndex();
-        var relicReward = Config.artifactCollectorConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
+        var relicReward = Config.relicConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
         var tokenToLevelUp = relicConfig.GetStackTokenCost(relicReward[^1].id);
-        if (PlayerData.relicData.LevelUp(tokenToLevelUp, Config.artifactCollectorConfig.ArtifactLevels.Count))
+        if (PlayerData.relicData.LevelUp(tokenToLevelUp, Config.relicConfig.ArtifactLevels.Count))
         {
             isDoneLevel = false;
             //reset visual
@@ -218,14 +218,14 @@ public class PopupRelicHunt : BasePopup
 
     private void OnAllLevelClaimState()
     {
-        levelVisual.DoShowLevelVisual(Config.artifactCollectorConfig.ArtifactLevels.Count);
+        levelVisual.DoShowLevelVisual(Config.relicConfig.ArtifactLevels.Count);
     }
 
     private int GetCurrentLevelIndex()
     {
         int curLevelIndex = PlayerData.relicData.curRelicLevel - 1;
 
-        if (curLevelIndex >= Config.artifactCollectorConfig.ArtifactLevels.Count)
+        if (curLevelIndex >= Config.relicConfig.ArtifactLevels.Count)
         {
             isDoneLevel = true;
         }
@@ -239,7 +239,7 @@ public class PopupRelicHunt : BasePopup
 
         if (isLevelDone)
         {
-            bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.artifactCollectorConfig);
+            bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
             
             relicToClaimText.text = HasReward ?  "Claim all reward to continue" : "New event is coming" ;
             return;
