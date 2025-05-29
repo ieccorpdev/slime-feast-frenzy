@@ -326,7 +326,7 @@ namespace IEC
                     }
                     
                     Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
-                    Locator.Main.HomeScreenTab.CheckAllPacksPopup();
+                    Locator.Main.HomeScreenTab.CheckAllPacksPopup(true);
                     
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
