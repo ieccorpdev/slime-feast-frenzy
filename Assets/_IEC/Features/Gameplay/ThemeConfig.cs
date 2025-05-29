@@ -15,7 +15,7 @@ namespace _IEC.Features.Gameplay
         public List<GroundThemeModel> groundThemeModels;
 
         public List<WaterThemeConfig> waterThemeConfigs;
-
+        public int stepChangeTheme = 25;
         [SerializeField] private string themeNeedToFind;
 
         public GroundElement GetLevelMapTile(string id, string themeId)
@@ -114,66 +114,23 @@ namespace _IEC.Features.Gameplay
         }
         public WaterThemeConfig GetWaterThemeForLevel(int level)
         {
-            // Still not random
-            if (waterThemeConfigs == null || waterThemeConfigs.Count == 0)
-                throw new Exception("Danh sách waterThemeConfigs rỗng.");
+            if (level < stepChangeTheme)
+                return waterThemeConfigs[0];
 
-            const int defaultThemeId = 0;
-            const int SEED_DAY = 42;
-            const int SEED_NIGHT = 999;
+            var listThemeNormal = waterThemeConfigs.FindAll(t => t.themeType != WaterThemeType.Hard);
+            int normalCount = listThemeNormal.Count;
 
-            if (level < 15)
-                return waterThemeConfigs.FirstOrDefault(c => c.themeId == defaultThemeId) ?? waterThemeConfigs[0];
+            int index = level / stepChangeTheme;
 
-            int groupSize = 25;
+            if (index < normalCount)
+                return listThemeNormal[index];
+            
+            int cycleLength = normalCount;
+            int cycleIndex = (index - normalCount) % cycleLength;
+            
+            int pseudoRandomIndex = (cycleIndex * 997 + 313) % normalCount;
 
-            // Lọc tất cả theme hợp lệ và bỏ trùng theo themeId
-            var dayThemes = waterThemeConfigs
-                .Where(c => c.themeType == WaterThemeType.Day && c.themeId != defaultThemeId)
-                .GroupBy(c => c.themeId)
-                .Select(g => g.First())
-                .ToList();
-
-            var nightThemes = waterThemeConfigs
-                .Where(c => c.themeType == WaterThemeType.Night && c.themeId != defaultThemeId)
-                .GroupBy(c => c.themeId)
-                .Select(g => g.First())
-                .ToList();
-
-            int totalGroups = dayThemes.Count + nightThemes.Count;
-            int cycleLength = totalGroups * groupSize;
-
-            int levelInCycle = (level - 15) % cycleLength;
-            int groupIndex = levelInCycle / groupSize;
-
-            bool isDay = groupIndex % 2 == 0;
-            int indexInType = groupIndex / 2;
-
-            var baseList = isDay ? dayThemes : nightThemes;
-            int seed = isDay ? SEED_DAY : SEED_NIGHT;
-
-            var shuffled = new List<WaterThemeConfig>(baseList);
-            System.Random rng = new System.Random(seed);
-            for (int i = 0; i < shuffled.Count; i++)
-            {
-                int swap = rng.Next(i, shuffled.Count);
-                (shuffled[i], shuffled[swap]) = (shuffled[swap], shuffled[i]);
-            }
-
-            if (indexInType < shuffled.Count)
-            {
-                var selected = shuffled[indexInType];
-                if (selected.themeId == defaultThemeId)
-                    throw new Exception($"⚠ Logic error: themeId = 0 xuất hiện ngoài vùng level < 15 (level={level}).");
-                return selected;
-            }
-
-            // fallback triệt để: lấy theme bất kỳ khác 0
-            var fallback = baseList.FirstOrDefault(c => c.themeId != defaultThemeId);
-            if (fallback == null)
-                throw new Exception("⚠ Không tìm thấy theme hợp lệ để fallback.");
-
-            return fallback;
+            return listThemeNormal[pseudoRandomIndex];
         }
 
 
@@ -238,6 +195,7 @@ namespace _IEC.Features.Gameplay
     public enum WaterThemeType
     {
         Day,
-        Night
+        Night,
+        Hard
     }
 }
