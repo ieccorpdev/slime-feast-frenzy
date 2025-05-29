@@ -135,6 +135,19 @@ namespace IEC
 
             eventSaveData.claimedReward = true;
             
+            int daysPlayed = PlayerData.GetDaysSinceDownload();
+            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
+                EventType.ChompOff,
+                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                    .eventDurationInHours / 24),
+                daysPlayed);
+
+            if (!active)
+            {
+                Hide();
+                return;
+            }
+            
             _currentTimeEndEvent = eventSaveData.timeEnd;
             
             InitEvent();
