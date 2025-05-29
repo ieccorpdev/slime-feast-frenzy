@@ -555,6 +555,16 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+        if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
+                && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
+        {
+            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                () =>
+                {
+                    Locator.Main.PopupVoyagePassIAPInfor.Show();
+                },
+                ShowNextPopup);
+        }
     }
 
     public void CheckAllEventsClaimableReward()
