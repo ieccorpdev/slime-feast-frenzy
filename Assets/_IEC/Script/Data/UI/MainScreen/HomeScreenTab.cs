@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using _IECModules;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using IEC.Common.Event;
 using TMPro;
 using EventType = IEC.EventType;
@@ -37,9 +38,16 @@ public class HomeScreenTab : ScreenNavigateUI
     public BaseHomeFeatureButton levelChestHomeFeature;
     [Header("Star Chest Reward")] public Button btnStarChestReward;
     public BaseHomeFeatureButton starChestHomeFeature;
-    [Header("Star Chase Event")] public GameEventHomeButton starChaseButton;
-    [Header("Shark Race Event")] public GameEventHomeButton sharkRaceButton;
-    [Header("Chomp Off Event")] public GameEventHomeButton chompOffButton;
+    [Header("Star Chase Event")] 
+    public GameEventHomeButton starChaseButton;
+    [Header("Shark Race Event")] 
+    public GameEventHomeButton sharkRaceButton;
+    [Header("Chomp Off Event")] 
+    public GameEventHomeButton chompOffButton;
+    [Header("Relic Hunt")] 
+    public Button btnRelicHunt;
+    public RelicButtonEvent RelicHuntEvent;
+    [Space(10)]
 
     [Space(10)] public GameObject starChestRewardLock;
     public GameObject starChestRewardUnlock;
@@ -128,7 +136,10 @@ public class HomeScreenTab : ScreenNavigateUI
                 Locator.Main.PopupStarChestReward.Show();
             });
         SetEvent(playButton,
-            () => { OnClickPlayButton(); });
+            () =>
+            {
+                OnClickPlayButton();
+            });
 
         SetEvent(playHardButton,
             () =>
@@ -187,6 +198,14 @@ public class HomeScreenTab : ScreenNavigateUI
                 // else
                 {
                     Locator.Main.PopupChompOff.Show();
+                }
+            });
+         SetEvent(btnRelicHunt,
+            () =>
+            {
+                if (Locator.Main.PopupRelicHunt.CheckShowPopup())
+                {
+                    Locator.Main.PopupRelicHunt.Show();
                 }
             });
         SetupUIHome();
@@ -261,7 +280,6 @@ public class HomeScreenTab : ScreenNavigateUI
         // }
         // _listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.bottomBar.GetComponent<RectTransform>(),UIElementMoveDir.DOWN));
         //_listObjMoveOut.Add(new UIMoveOutAnimation(Locator.Main.ScreenMain.topBar.GetComponent<RectTransform>(),UIElementMoveDir.UP));
-
     }
 
     public void DoMoveOutAllObjNoAnim()
@@ -360,8 +378,7 @@ public class HomeScreenTab : ScreenNavigateUI
                 Sequence sequence = DOTween.Sequence();
                 sequence.Append(progressRewardButton.transform.DOScale(new Vector3(1.1f, 1.1f, 1), 0.2f))
                     .Join(progressRewardButton.GetComponent<Image>().DOFade(1, 0.2f))
-                    .Append(
-                        progressRewardButton.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetEase(Ease.OutQuad));
+                    .Append(progressRewardButton.transform.DOScale(new Vector3(1, 1, 1), 0.1f).SetEase(Ease.OutQuad));
             });
         //_uiAnimSequence.InsertCallback(delay,
         //        () =>
@@ -436,7 +453,6 @@ public class HomeScreenTab : ScreenNavigateUI
     public override void Show()
     {
         UpdateMainHome();
-
     }
 
     public void UpdatePiggyBankButton()
@@ -454,6 +470,11 @@ public class HomeScreenTab : ScreenNavigateUI
         //    btnPiggyBank.onClick.Invoke();
         //}
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
+    }
+
+    private void UpdateButtonRelic()
+    {
+        RelicHuntEvent.UpdateUI();
     }
 
     public void UpdateBuildCity()
@@ -474,6 +495,7 @@ public class HomeScreenTab : ScreenNavigateUI
         UpdateDailyReward();
         UpdateLuckyWheel();
         UpdatePiggyBankButton();
+        UpdateButtonRelic();
         //UpdateBuildCity();
         UpdateLifeOffer();
         UpdateStarChest();
@@ -487,8 +509,8 @@ public class HomeScreenTab : ScreenNavigateUI
             Config.allChestConfig.GetChestConfig(ChestType.Level)
                 .GetRewardData(PlayerData.GetChestMilestone(ChestType.Level)).progressToReward
         );
-        starChestHomeFeature.SetLock(PlayerData.level <
-                                     Config.allChestConfig.GetChestConfig(ChestType.Star).levelUnlock);
+        starChestHomeFeature.SetLock(
+            PlayerData.level < Config.allChestConfig.GetChestConfig(ChestType.Star).levelUnlock);
         starChestHomeFeature.SetProgressBar(
             PlayerData.GetChestProgress(ChestType.Star),
             Config.allChestConfig.GetChestConfig(ChestType.Star)
@@ -629,6 +651,24 @@ public class HomeScreenTab : ScreenNavigateUI
         // starChestRewardLock.gameObject.SetActive(!isEnoughLevel);
         // starChestRewardUnlock.gameObject.SetActive(isEnoughLevel);
         // btnStarChestReward.interactable = isEnoughLevel;
+    }
+
+    [Button]
+    private void TestRelic()
+    {
+        Locator.Main.PopupRelicHunt.Show();
+    }
+
+    [Button]
+    private void TestAddRelic(int amount)
+    {
+        PlayerData.relicData.AddTokenCount(amount);
+    }
+
+    [Button]
+    private void ResetRelic()
+    {
+        PlayerData.ResetRelicData();
     }
 
     private void UpdateGameEventButton()

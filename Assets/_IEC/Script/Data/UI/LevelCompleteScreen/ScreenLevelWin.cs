@@ -307,6 +307,10 @@ namespace IEC
             {
                 listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.OceanGiftObject, GamePlay.levelController.SpecialProgressRewardObjCollected));
             }
+            if (GamePlay.levelController.RelicObjCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.Relic, GamePlay.levelController.RelicObjCollected));
+            }
             #endregion
 
             if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)

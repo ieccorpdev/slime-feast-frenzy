@@ -33,6 +33,7 @@ namespace IEC
         WindSurf,
         LevelStar,
         OceanGiftObject,
+        Relic,
     }
 
     [Serializable]
