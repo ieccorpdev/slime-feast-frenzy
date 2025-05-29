@@ -146,11 +146,14 @@ namespace IEC
 
         IEnumerator UpdateTimer()
         {
-            timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
-            bool value = PlayerData.journeyData.isBuyIAP;
-            doneBuyIAP.gameObject.SetActive(value);
-            buyIAP.gameObject.SetActive(!value);
-            yield return new WaitForSeconds(1f);
+            while (true)
+            {
+                timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+                bool value = PlayerData.journeyData.isBuyIAP;
+                doneBuyIAP.gameObject.SetActive(value);
+                buyIAP.gameObject.SetActive(!value);
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         void OnClickButtonTutorialJourney()

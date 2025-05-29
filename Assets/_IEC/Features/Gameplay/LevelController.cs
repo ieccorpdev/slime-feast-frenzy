@@ -369,15 +369,17 @@ namespace _IEC.Features.Gameplay
             if (data.itemID.Equals(EventList.GamePlay.Kingdom_Special))
             {
                 PlayerData.journeyData.currentFuelJourney++;
+                EventController.RaiseEvent(EventList.Audio.JELLYFISH_DOWN);
             }
             else
             {
                 SpecialProgressRewardObjCollected++;
+                EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             }
-            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI,data);
         }
+
         private void CollectRelicObject(CollectItemData data)
         {
             CollectNormalItem(data);

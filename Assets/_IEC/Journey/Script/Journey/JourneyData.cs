@@ -59,7 +59,6 @@ namespace IEC
                    remaining.Hours + "h " + remaining.Minutes + "mn";
         }
 
-
         public string GetTimeRemainingStringInPopup()
         {
             TimeSpan remaining = GetTimeRemaining();
@@ -70,9 +69,11 @@ namespace IEC
             }
 
             if (remaining.Days > 0)
-                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}m"; // dd:hh:mm
+                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}mn"; // dd:hh:mm
+            else if (remaining.Hours > 0)
+                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:sselse
             else
-                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}m:{remaining.Seconds:D2}s"; // hh:mm:ss
+                return $"{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:ss
         }
 
         private TimeSpan GetTimeRemaining()
