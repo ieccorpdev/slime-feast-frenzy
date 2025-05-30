@@ -56,6 +56,7 @@ namespace IEC
         public JourneyData journeyData = new JourneyData();
 
         public bool isShowPackPopupsInHomeOnStartGame;
+        public bool isShowStartedPackInStartGame;
 
         private GameConfig Config => Pool.Get<GameConfig>();
 
