@@ -19,6 +19,8 @@ namespace IEC
 
         public List<EditProfileTabSelection> listTabSelection = new();
 
+        public RectTransform selectionContentGroup;
+        public RectTransform specialAvatarSelectionContainer;
         public RectTransform avatarSelectionContainer;
         public AvatarSelection avatarSelectionPrefab;
         public List<AvatarSelection> listAvatarSelections = new();
@@ -78,7 +80,7 @@ namespace IEC
 
         public void InitAvatarTab()
         {
-
+            SetActiveSpecialAvatarFrameGroup(false);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarSpriteName))
             {
                 PlayerData.playerAvatarSpriteName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -109,10 +111,15 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
         }
 
         public void InitFrameTab()
         {
+            SetActiveSpecialAvatarFrameGroup(true);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName))
             {
                 PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -143,6 +150,15 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
+        }
+
+        public void SetActiveSpecialAvatarFrameGroup(bool isActive)
+        {
+            specialAvatarSelectionContainer.gameObject.SetActive(isActive);
         }
 
         public void OnSelectTab(EditProfileTabSelection tabSelection)
