@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using _IEC.Features.Gameplay;
+using IEC;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,7 +26,7 @@ public class AddForceOnCollision : MonoBehaviour
             var randomRangeZ = Random.Range(0, 180f);
             Vector3 direction = new Vector3(randomRangeX, randomRangeY, randomRangeZ).normalized;
             GetComponent<Rigidbody>()?.AddForce(direction * force, ForceMode.Impulse);
-            Debug.Log("Force added");
+            EventController.RaiseEvent(EventList.Audio.RELIC_CLONE);
         }
     }
 
