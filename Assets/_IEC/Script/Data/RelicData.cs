@@ -8,15 +8,15 @@ namespace IEC
     [Serializable]
     public class RelicData
     {
-        public int relicItemIndex = 0;
         public int currentRelicTokenCount;
         public int curRelicLevel = 1;
         public List<int> claimedRewardIds = new();
-        public DateTime lastTimeResetEvent;
         public DateTime eventTimeEnd;
         public bool isAvaiableToSpawn => AvaiableToSpawn();
         public bool hasJoinEvent;
         public bool hasDoneLevel;
+        public List<Reward> lastEventRewards = new();
+        public int relicItemIndex;
 
         public bool IsEventInRange()
         {
@@ -26,11 +26,7 @@ namespace IEC
         public bool IsDoneLevel(ArtifactCollectorConfig config)
         {
             bool rs = true;
-            if (curRelicLevel > config.ArtifactLevels.Count)
-            {
-                rs = true;
-            }
-            else
+            if (curRelicLevel <= config.ArtifactLevels.Count)
             {
                 var lastNodeCurLevel = config.ArtifactLevels[curRelicLevel - 1].artifactLevelRewards[^1];
                 rs = (currentRelicTokenCount >= config.GetStackTokenCost(lastNodeCurLevel.id));
@@ -46,9 +42,20 @@ namespace IEC
             //return true;
         }
 
-        public void SaveTimeResetEvent()
+        public void OnResetEvent(ArtifactCollectorConfig config)
         {
-            lastTimeResetEvent = DateTime.Now;
+            var rw = GetAllUnClaimRelicLevelReward(config);
+            if (rw.Count > 0)
+            {
+                foreach (var keyValuePair in rw)
+                {
+                    lastEventRewards.Add(new(keyValuePair.Value, keyValuePair.Key));
+                }
+            }
+
+            hasJoinEvent = false;
+            claimedRewardIds.Clear();
+
         }
 
         public bool CheckIfHasReward(ArtifactCollectorConfig config)
@@ -72,31 +79,31 @@ namespace IEC
             return rs;
         }
 
-        private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
-            int level
-        )
-        {
-            Dictionary<ResourceType, int> rs = new();
-            foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
-            {
-                if (HasRewardedLevel(x.id)) continue;
-                foreach (var artifactRewardData in x.artifactRewards)
-                {
-                    if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
-                    {
-                        rs.Add(artifactRewardData.artifactRewardType, artifactRewardData.value);
-                    }
-                    else
-                    {
-                        rs[artifactRewardData.artifactRewardType] += artifactRewardData.value;
-                    }
-                }
-
-                if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
-            }
-
-            return rs;
-        }
+        // private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
+        //     int level
+        // )
+        // {
+        //     Dictionary<ResourceType, int> rs = new();
+        //     foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
+        //     {
+        //         if (HasRewardedLevel(x.id)) continue;
+        //         foreach (var artifactRewardData in x.artifactRewards)
+        //         {
+        //             if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
+        //             {
+        //                 rs.Add(artifactRewardData.artifactRewardType, artifactRewardData.value);
+        //             }
+        //             else
+        //             {
+        //                 rs[artifactRewardData.artifactRewardType] += artifactRewardData.value;
+        //             }
+        //         }
+        //
+        //         if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
+        //     }
+        //
+        //     return rs;
+        // }
 
         public bool AbleTolevelUp(ArtifactCollectorConfig config)
         {
@@ -165,13 +172,10 @@ namespace IEC
             currentRelicTokenCount += amount;
         }
 
-        public void CheckResetTimeEvent(int daysToReset)
+        public void ResetEvent(ArtifactCollectorConfig config)
         {
-            if ((DateTime.Now - lastTimeResetEvent).TotalDays >= daysToReset)
-            {
-                SaveTimeResetEvent();
-                ResetTokenCount();
-            }
+            OnResetEvent(config);
+            ResetTokenCount();
         }
     }
 }
