@@ -23,7 +23,7 @@ public class MainBGController : _BaseBehaviour
        {
            //theme id 0 have a spine background, hard code, update if update another spine bg
            staticImage.sprite = themeConfig.bgSprite;
-           staticImage.gameObject.SetActive(!Game.iosFeature);
+           staticImage.gameObject.SetActive(true);
            //spineImage.gameObject.SetActive(Game.iosFeature);
        }
        if (themeConfig.bgSprite != null)

@@ -248,7 +248,12 @@ public class HomeScreenTab : ScreenNavigateUI
                 if (onOpenSceneActionOnce == null)
                 {
                     CheckAllEventsClaimableReward();
-                    CheckAllPacksPopup();
+                    if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
+                    {
+                        PlayerData.isShowPackPopupsInHomeOnStartGame = true;
+                        CheckAllPacksPopupOnStartHome();
+                    }
+
                     ShowNextPopup();
                 }
                 else
@@ -559,11 +564,10 @@ public class HomeScreenTab : ScreenNavigateUI
             onClosed?.Invoke();
         }
     }
-
-    public void CheckAllPacksPopup(bool isWinLevel = false)
+    
+    public void CheckAllPacksPopupOnWin()
     {
-        //Check no ads - only after win levels
-        if (isWinLevel && Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
+        if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
                 () =>
@@ -572,6 +576,11 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+
+    }
+
+    public void CheckAllPacksPopupOnStartHome()
+    {
         if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
                 && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
         {
@@ -658,13 +667,22 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysPlayed = PlayerData.GetDaysSinceDownload();
 
         //Check chomp-off
-        if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        var chompOffData = PlayerData.GetEventSaveData(EventType.ChompOff);
+        int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
+        int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+            .eventDurationInHours / 24);
+        bool active = Config.eventLiveOpsConfig.IsEventAvailable(
+            EventType.ChompOff,
+            chompOffDuration,
+            daysPlayed) && chompOffButton.IsEventCanShow();
+
+        if (Locator.Main.PopupChompOff.IsResetChompOff() )
         {
-            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-                EventType.ChompOff,
-                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
-                    .eventDurationInHours / 24),
-                daysPlayed) && chompOffButton.IsEventCanShow();
+            PlayerData.ResetEventSaveData(EventType.ChompOff);
+        }
+        
+        if (chompOffData.claimedReward)
+        {
             chompOffButton.gameObject.SetActive(active);
         }
     }

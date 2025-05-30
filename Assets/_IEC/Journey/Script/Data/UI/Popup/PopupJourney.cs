@@ -7,6 +7,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using UnityEditorInternal.VersionControl;
+using UnityEngine.EventSystems;
 
 namespace IEC
 {
@@ -30,6 +32,8 @@ namespace IEC
         private bool _canShow;
         [SerializeField] private Button buyIAP, doneBuyIAP;
         public ItemPassJourney hiddenTreasure;
+        public EventTrigger trigger;
+        public GameObject bgdark;
 
         private void Start()
         {
@@ -49,13 +53,26 @@ namespace IEC
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
             };
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerDown
+            };
+            entry.callback.AddListener((data) => {
+                var currentInfo = ItemPassJourney.currentInfo;
+                if (currentInfo)
+                {
+                    currentInfo.transform.DOKill();
+                    currentInfo.SetActive(false);
+                }
+            });
+            trigger.triggers.Add(entry);
         }
 
         public void CheckShow()
         {
             if (_canShow)
             {
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(1.68f, () =>
                 {
                     Locator.Main.ScreenMain.SetInteractive(true);
                     Show();
@@ -79,7 +96,6 @@ namespace IEC
             if (!PlayerData.journeyData.isShowTutorialInPopup)
             {
                 tutorialJourneyPanel.Show();
-                PlayerData.journeyData.isShowTutorialInPopup = true;
             }
             StartCoroutine(UpdateTimer());
         }
@@ -130,8 +146,6 @@ namespace IEC
             PlayerData.CheckPlayerMaxHealth();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
         }
-
-
 
         public void InitData()
         {
@@ -190,7 +204,7 @@ namespace IEC
 
         void SetProgressBar(bool snap = true)
         {
-            int currentTarget = PlayerData.journeyData.currentTargetJourney+1;
+            int currentTarget = PlayerData.journeyData.currentTargetJourney;
             //int currentTarget = 20;
             if (currentTarget > listItemJourney.Count)
             {
