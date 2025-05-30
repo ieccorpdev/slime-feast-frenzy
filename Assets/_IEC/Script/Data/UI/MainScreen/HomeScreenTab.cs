@@ -248,7 +248,12 @@ public class HomeScreenTab : ScreenNavigateUI
                 if (onOpenSceneActionOnce == null)
                 {
                     CheckAllEventsClaimableReward();
-                    CheckAllPacksPopup();
+                    if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
+                    {
+                        PlayerData.isShowPackPopupsInHomeOnStartGame = true;
+                        CheckAllPacksPopupOnStartHome();
+                    }
+
                     ShowNextPopup();
                 }
                 else
@@ -559,11 +564,10 @@ public class HomeScreenTab : ScreenNavigateUI
             onClosed?.Invoke();
         }
     }
-
-    public void CheckAllPacksPopup(bool isWinLevel = false)
+    
+    public void CheckAllPacksPopupOnWin()
     {
-        //Check no ads - only after win levels
-        if (isWinLevel && Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
+        if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
                 () =>
@@ -572,6 +576,11 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+
+    }
+
+    public void CheckAllPacksPopupOnStartHome()
+    {
         if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
                 && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
         {

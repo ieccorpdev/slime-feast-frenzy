@@ -55,6 +55,8 @@ namespace IEC
         public HybridData hybridData = new HybridData();
         public JourneyData journeyData = new JourneyData();
 
+        public bool isShowPackPopupsInHomeOnStartGame;
+
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
@@ -116,6 +118,21 @@ namespace IEC
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
+        }
+        
+        public void ResetDataDay()
+        {
+            //Another param need reset each 24 day come here
+            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
+            {
+                lastTimeOpenWheel = DateTime.Now;
+                luckWheelDailyFreeSpin = true;
+                luckWheelDailyAdsSpin = 0;
+                dailyShowPiggyBank = false;
+                dailyShowLifeOfferPack = false;
+            }
+
+            isShowPackPopupsInHomeOnStartGame = false;
         }
 
         private void CheckActionAfterQuitGame()
@@ -520,18 +537,6 @@ namespace IEC
         public bool luckWheelDailyFreeSpin;
         public int luckWheelDailyAdsSpin;
         public int luckWheelGoldTimeSpin;
-        public void ResetDataDay()
-        {
-            //Another param need reset each 24 day come here
-            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
-            {
-                lastTimeOpenWheel = DateTime.Now;
-                luckWheelDailyFreeSpin = true;
-                luckWheelDailyAdsSpin = 0;
-                dailyShowPiggyBank = false;
-                dailyShowLifeOfferPack = false;
-            }
-        }
 
 
         #endregion
