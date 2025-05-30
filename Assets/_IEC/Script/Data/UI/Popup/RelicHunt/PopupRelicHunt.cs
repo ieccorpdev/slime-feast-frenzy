@@ -19,7 +19,7 @@ public class PopupRelicHunt : BasePopup
     public Button infoButton;
     public Button closeInfoButton;
     public Button playMainButton;
-    public Button playInfoButton;
+    public Button claimButton;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI relicToClaimText;
     public Sprite goodJobSprite;
@@ -29,6 +29,7 @@ public class PopupRelicHunt : BasePopup
     [SerializeField] private RelicLevelVisual levelVisual;
     [SerializeField] RelicProgressBar relicProgressBar;
     private List<Reward> rewards = new();
+    private ArtifactCollectorConfig relicConfig => Config.relicConfig;
 
     [Header("Info ui")] public List<Transform> listInfoUI = new();
 
@@ -37,8 +38,8 @@ public class PopupRelicHunt : BasePopup
     {
         SetEvent(infoButton, OnShowInfo);
         SetEvent(closeInfoButton, OnShowInfo);
-        SetEvent(playInfoButton, OnPlayBtnClick);
         SetEvent(playMainButton, OnPlayBtnClick);
+        SetEvent(claimButton, ClaimAllLevelReward);
     }
 
     // Start is called before the first frame update
@@ -54,6 +55,7 @@ public class PopupRelicHunt : BasePopup
         {
             Locator.Main.PopupBooster.Show();
         }
+
         Locator.Main.PopupRelicHunt.Hide();
     }
 
@@ -71,14 +73,16 @@ public class PopupRelicHunt : BasePopup
     {
         var rewardPerlevel = 3;
         return PlayerData.relicData.claimedRewardIds.Count ==
-               Config.artifactCollectorConfig.ArtifactLevels.Count * rewardPerlevel;
+               relicConfig.ArtifactLevels.Count * rewardPerlevel;
     }
 
     private void ResetVisual()
     {
         var aboveNode = FindNextRewardNode();
 
-        if (aboveNode != null) SetRelicToClaimText(aboveNode.tokenCost - PlayerData.relicData.currentRelicTokenCount);
+        if (aboveNode != null)
+            SetRelicToClaimText(relicConfig.GetStackTokenCost(aboveNode.id) -
+                                PlayerData.relicData.currentRelicTokenCount);
         else
         {
             SetRelicToClaimText(0, true);
@@ -87,25 +91,25 @@ public class PopupRelicHunt : BasePopup
         relicProgressBar.SetVitrualProgress(PlayerData.relicData.currentRelicTokenCount, GetCurrentLevelIndex(),
             isDoneLevel);
         levelVisual.DoShowLevelVisual(PlayerData.relicData.curRelicLevel);
-        UpdateButtonPlayState();
+        UpdateButtonState();
     }
 
     private void CaculateReward()
     {
         var curLevel = PlayerData.relicData.curRelicLevel;
-        var config = Config.artifactCollectorConfig.ArtifactLevels[curLevel - 1];
+        var config = Config.relicConfig.ArtifactLevels[curLevel - 1];
         var relicReward = config.artifactLevelRewards;
         for (var index = 0; index < relicReward.Count; index++)
         {
             var rw = relicReward[index];
             var levelNode = relicProgressBar.levelProgressNodes[index];
 
-            if (rw.tokenCost <= PlayerData.relicData.currentRelicTokenCount)
+            if (relicConfig.GetStackTokenCost(rw.id) <= PlayerData.relicData.currentRelicTokenCount)
             {
                 if (!PlayerData.relicData.HasRewardedLevel(rw.id))
                 {
                     levelNode.ClearReward();
-                    levelNode.SetLock(true);
+                    levelNode.SetState(LevelProgressNode.RewardState.Claimable);
                     foreach (var artifactRewardData in rw.artifactRewards)
                     {
                         levelNode.AddReward(ConvertToReward(artifactRewardData));
@@ -118,12 +122,12 @@ public class PopupRelicHunt : BasePopup
                 }
                 else
                 {
-                    levelNode.SetLock(false);
+                    levelNode.SetState(LevelProgressNode.RewardState.Claimed);
                 }
             }
             else
             {
-                levelNode.SetLock(true);
+                levelNode.SetState(LevelProgressNode.RewardState.Lock);
             }
         }
     }
@@ -144,8 +148,8 @@ public class PopupRelicHunt : BasePopup
 
     private void CaculateAndShowReward()
     {
-        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.artifactCollectorConfig.ArtifactLevels.Count;
-        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.artifactCollectorConfig, isMaxLevel);
+        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.relicConfig.ArtifactLevels.Count;
+        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig, isMaxLevel);
         foreach (var keyValuePair in rwd)
         {
             rewards.Add(ConvertToReward(new ArtifactRewardData
@@ -162,10 +166,10 @@ public class PopupRelicHunt : BasePopup
     private ArtifactNodeModel FindNextRewardNode()
     {
         int curLevelIndex = GetCurrentLevelIndex();
-        var relicReward = Config.artifactCollectorConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
-        int maxLevel = Config.artifactCollectorConfig.ArtifactLevels.Count;
+        var relicReward = Config.relicConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
+        int maxLevel = Config.relicConfig.ArtifactLevels.Count;
         var curToken = PlayerData.relicData.currentRelicTokenCount;
-        var aboveNode = relicReward.FirstOrDefault(t => t.tokenCost > curToken);
+        var aboveNode = relicReward.FirstOrDefault(t => relicConfig.GetStackTokenCost(t.id) > curToken);
 
         if (aboveNode != null)
         {
@@ -183,55 +187,45 @@ public class PopupRelicHunt : BasePopup
     }
 
 
-    private void UpdateButtonPlayState()
+    private void UpdateButtonState()
     {
-        if (isDoneLevel)
-        {
-            PlayerData.relicData.isAvaiableToSpawn = false;
-
-            playMainButton.GetComponentInChildren<TextMeshProUGUI>().text = IsAllRewardClaim() ? "Finished" : "Claim";
-            SetEvent(playMainButton, ClaimAllLevelReward);
-        }
-        else
-        {
-            PlayerData.relicData.isAvaiableToSpawn = true;
-            playMainButton.GetComponentInChildren<TextMeshProUGUI>().text = "Play";
-            SetEvent(playMainButton, OnPlayBtnClick);
-        }
+        PlayerData.relicData.hasDoneLevel = !isDoneLevel;
+        bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
+        playMainButton.transform.parent.gameObject.SetActive(!hasReward);
+        claimButton.transform.parent.gameObject.SetActive(hasReward);
     }
 
     private void ClaimAllLevelReward()
     {
-        OnLevelUpRelicLevel();
         CaculateAndShowReward();
+        if (PlayerData.relicData.AbleTolevelUp(Config.relicConfig)) OnLevelUpRelicLevel();
+        ResetVisual();
     }
 
     private void OnLevelUpRelicLevel()
     {
         int curLevelIndex = GetCurrentLevelIndex();
-        var relicReward = Config.artifactCollectorConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
-        var tokenToLevelUp = relicReward.Max(x => x.tokenCost);
-        if (PlayerData.relicData.LevelUp(tokenToLevelUp, Config.artifactCollectorConfig.ArtifactLevels.Count))
+        var relicReward = Config.relicConfig.ArtifactLevels[curLevelIndex].artifactLevelRewards;
+        var tokenToLevelUp = relicConfig.GetStackTokenCost(relicReward[^1].id);
+        if (PlayerData.relicData.LevelUp(tokenToLevelUp, Config.relicConfig.ArtifactLevels.Count))
         {
             isDoneLevel = false;
             //reset visual
             relicProgressBar.OnNewLevel();
-            ResetVisual();
             CaculateReward();
-            UpdateButtonPlayState();
         }
     }
 
     private void OnAllLevelClaimState()
     {
-        levelVisual.DoShowLevelVisual(Config.artifactCollectorConfig.ArtifactLevels.Count);
+        levelVisual.DoShowLevelVisual(Config.relicConfig.ArtifactLevels.Count);
     }
 
     private int GetCurrentLevelIndex()
     {
         int curLevelIndex = PlayerData.relicData.curRelicLevel - 1;
 
-        if (curLevelIndex >= Config.artifactCollectorConfig.ArtifactLevels.Count)
+        if (curLevelIndex >= Config.relicConfig.ArtifactLevels.Count)
         {
             isDoneLevel = true;
         }
@@ -239,13 +233,15 @@ public class PopupRelicHunt : BasePopup
         return curLevelIndex;
     }
 
-    private void SetRelicToClaimText(int relicLeft, bool isMaxLevel = false)
+    private void SetRelicToClaimText(int relicLeft, bool isLevelDone = false)
     {
         relicToClaimText.gameObject.SetActive(true);
 
-        if (isMaxLevel)
+        if (isLevelDone)
         {
-            relicToClaimText.text = $"Claim all reward to continue";
+            bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
+            
+            relicToClaimText.text = HasReward ?  "Claim all reward to continue" : "New event is coming" ;
             return;
         }
 
@@ -265,7 +261,7 @@ public class PopupRelicHunt : BasePopup
 
     private Reward ConvertToReward(ArtifactRewardData relicData)
     {
-        Reward rs = new(relicData.value,relicData.artifactRewardType);
+        Reward rs = new(relicData.value, relicData.artifactRewardType);
         return rs;
     }
 

@@ -211,7 +211,7 @@ namespace _IEC.Features.Gameplay
             m_isLoaded = true;
         }
 
-        public void LoadDataRelic(LevelObjective levelObjective, bool isSpecial)
+        public void LoadDataRelic(LevelObjective levelObjective, bool isSpecial,Vector2 sizeObj = default)
         {
             Reset();
             itemId = levelObjective.itemId;
@@ -220,10 +220,11 @@ namespace _IEC.Features.Gameplay
             int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
             var totalNumberCollected = GamePlay.levelController.RelicObjCollected;
             SetText(totalNumberCollected+"/"+maxSpecialObject);
-            var itemDefinition = Config.relicObjectConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+            var itemDefinition = Config.relicConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
             imgIcon.sprite = itemDefinition.GetIcon();
             //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
-            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+            if (sizeObj == default) sizeObj = new Vector2(100, 100);
+            imgIcon.rectTransform.sizeDelta = sizeObj;
 
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;

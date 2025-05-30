@@ -37,14 +37,16 @@ public class PopupVoyagePassIAPInfor : BasePopup
 
     IEnumerator UpdateTimer()
     {
-        timerTxt.text = PlayerData.journeyData.GetTimeRemainingString();
-        if (timerTxt.text.Equals("Finished"))
+        while (true)
         {
-            yield break;
+            if (PlayerData.journeyData.wasOpenJourney)
+            {
+                timerTxt.text = PlayerData.journeyData.GetTimeRemainingString();
+                bool value = PlayerData.journeyData.isBuyIAP;
+                activeGroup.gameObject.SetActive(value);
+                inactiveGroup.gameObject.SetActive(!value);
+            }
+            yield return new WaitForSeconds(1f);
         }
-        bool value = PlayerData.journeyData.isBuyIAP;
-        activeGroup.gameObject.SetActive(value);
-        inactiveGroup.gameObject.SetActive(!value);
-        yield return new WaitForSeconds(1f);
     }
 }

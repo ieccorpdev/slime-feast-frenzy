@@ -311,13 +311,13 @@ namespace _IEC.Features.Gameplay
         }
         public void HandleRelicObject()
         {
-            var dataSpecial = Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
+            var dataSpecial = Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
             var relicObjective = new LevelObjective();
             int count = GamePlay.levelController.AllRelicItems.Count;
             relicObjective.itemId = dataSpecial.GetId();
             relicObjective.number = count;
             LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
-            objectiveContain.LoadDataRelic(relicObjective,true);
+            objectiveContain.LoadDataRelic(relicObjective,true,new Vector2(100,140));
             m_ActiveObjectiveUIs.Add(objectiveContain);
             objectiveContain.gameObject.SetActive(count > 0);
         }
