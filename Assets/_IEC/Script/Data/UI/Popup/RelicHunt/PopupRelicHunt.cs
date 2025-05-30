@@ -67,7 +67,6 @@ public class PopupRelicHunt : BasePopup
         base.Show();
     }
 
-   
 
     private void ResetVisual()
     {
@@ -164,7 +163,7 @@ public class PopupRelicHunt : BasePopup
         int maxLevel = Config.relicConfig.ArtifactLevels.Count;
         var curToken = PlayerData.relicData.currentRelicTokenCount;
         var aboveNode = relicReward.FirstOrDefault(t => relicConfig.GetStackTokenCost(t.id) > curToken);
-        
+
         return aboveNode;
     }
 
@@ -217,8 +216,8 @@ public class PopupRelicHunt : BasePopup
         if (isLevelDone)
         {
             bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-            
-            relicToClaimText.text = HasReward ?  "Claim all reward to continue" : "New event is coming" ;
+
+            relicToClaimText.text = HasReward ? "Claim all reward to continue" : "New event is coming";
             return;
         }
 
@@ -284,17 +283,52 @@ public class PopupRelicHunt : BasePopup
     private void UpdateTimer()
     {
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
-        
+
         if (IsEndEvent || isDoneLevel)
         {
             timerText.text = "Finished";
         }
         else
         {
-            timerText.text =
-                DateTimeHelper.GetFormattedTimeHMS(
-                    PlayerData.relicData.eventTimeEnd - DateTime.Now);
+            var timeLeft = PlayerData.relicData.eventTimeEnd - DateTime.Now;
+            if (timeLeft.TotalSeconds < 0)
+            {
+                Locator.Main.PopupRelicHunt.Hide();
+            }
+            else
+            {
+                timerText.text = GetTimeFormat(timeLeft);
+            }
+            
         }
+    }
+
+    private string GetTimeFormat(TimeSpan time)
+    {
+        string outputString = "";
+
+        var day = time.Days;
+        var hour = time.Hours;
+        var minute = time.Minutes;
+        var seconds = time.Seconds;
+        string days = day < 10 ? $"0{day}" : day.ToString();
+        string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+        string minutes = minute < 10 ? $"0{minute}" : minute.ToString();
+        string second = seconds.ToString();
+        if (day > 0)
+        {
+            outputString = $"{days}d {hours}h";
+        }
+        else if (hour > 0)
+        {
+            outputString = $"{hours}h {minutes}m";
+        }
+        else
+        {
+            outputString = $"{minutes}m {second}s";
+        }
+
+        return outputString;
     }
 
     public bool CheckShowPopup()

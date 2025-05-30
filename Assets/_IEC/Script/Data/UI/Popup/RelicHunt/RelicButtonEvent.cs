@@ -25,7 +25,7 @@ public class RelicButtonEvent : _BaseBehaviour
         //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
         int level = PlayerData.level;
         int levelUnlock = Config.relicConfig.levelUnlockFeature;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) && Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt, Config.relicConfig.eventDurationInHours, PlayerData.GetDaysSinceDownload());
     }
     public void UpdateUI()
     {
@@ -41,11 +41,7 @@ public class RelicButtonEvent : _BaseBehaviour
             return;
         }
 
-        if (PlayerData.relicData.hasJoinEvent == false)
-        {
-            joinGroup.SetActive(true);
-            return;
-        }
+
 
         if (PlayerData.level < Config.relicConfig.levelUnlockFeature)
         {
@@ -55,6 +51,7 @@ public class RelicButtonEvent : _BaseBehaviour
         }
         else
         {
+         
             var relicLevel = PlayerData.relicData.curRelicLevel;
             var config = Config.relicConfig;
             var isMaxLevel = relicLevel == config.ArtifactLevels.Count;
@@ -81,6 +78,11 @@ public class RelicButtonEvent : _BaseBehaviour
                         OnTimeEventEnd();
                     }
                 }
+            }
+            if (PlayerData.relicData.hasJoinEvent == false)
+            {
+                timerGroup.gameObject.SetActive(false);
+                joinGroup.SetActive(true);
             }
         }
     }
@@ -115,11 +117,27 @@ public class RelicButtonEvent : _BaseBehaviour
 
     private void OnTimeEventEnd()
     {
-        //gameObject.SetActive(false);
+        bool hasLastEventReward = PlayerData.relicData.lastEventRewards.Count > 0 ;
+        if (hasLastEventReward)
+        {
+            timerGroup.gameObject.SetActive(false);
+            claimRewardGroup.gameObject.SetActive(true);
+            button.onClick.RemoveAllListeners();
+            button.onClick.AddListener(() =>
+            {
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(PlayerData.relicData.lastEventRewards, () => { gameObject.SetActive(false); },
+                    true);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Gift_Box_3);
+            });
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void Update()
     {
-        //UpdateUI();
+        UpdateUI();
     }
 }
