@@ -584,10 +584,23 @@ public class HomeScreenTab : ScreenNavigateUI
         if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
                 && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
         {
-            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+            PlayerData.isShowStartedPackInStartGame = !PlayerData.isShowStartedPackInStartGame;
+            if (PlayerData.isShowStartedPackInStartGame)
+            {
+                AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                   () =>
+                   {
+                       Locator.Main.PopupVoyagePassIAPInfor.Show();
+                   },
+                   ShowNextPopup);
+            }
+        }
+        if (!PlayerData.isBoughtStarterPack && !PlayerData.isShowStartedPackInStartGame)
+        {
+            AddPopupToShow(Locator.Main.PopupStarterPack,
                 () =>
                 {
-                    Locator.Main.PopupVoyagePassIAPInfor.Show();
+                    Locator.Main.PopupStarterPack.Show();
                 },
                 ShowNextPopup);
         }

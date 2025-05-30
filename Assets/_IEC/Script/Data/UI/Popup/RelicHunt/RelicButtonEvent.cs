@@ -20,7 +20,13 @@ public class RelicButtonEvent : _BaseBehaviour
     public Button button;
     private TimeSpan countdownTimeSpan;
     [SerializeField] private GameEventConfig _eventConfig;
-
+    public bool IsEventCanShow()
+    {
+        //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
+        int level = PlayerData.level;
+        int levelUnlock = Config.relicConfig.levelUnlockFeature;
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+    }
     public void UpdateUI()
     {
         completedGroup.SetActive(false);
@@ -29,6 +35,11 @@ public class RelicButtonEvent : _BaseBehaviour
         claimRewardGroup.SetActive(false);
         timerGroup.SetActive(false);
         button.interactable = true;
+        gameObject.SetActive(IsEventCanShow());
+        if (!IsEventCanShow())
+        {
+            return;
+        }
 
         if (PlayerData.relicData.hasJoinEvent == false)
         {
@@ -109,6 +120,6 @@ public class RelicButtonEvent : _BaseBehaviour
 
     private void Update()
     {
-        UpdateUI();
+        //UpdateUI();
     }
 }
