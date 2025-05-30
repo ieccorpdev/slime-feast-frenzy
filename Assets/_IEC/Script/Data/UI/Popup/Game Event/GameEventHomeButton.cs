@@ -69,7 +69,7 @@ namespace IEC
             
             if (eventType == EventType.ChompOff && !Locator.Main.PopupChompOff.IsEndEventStage()) // Custom for chomp off
             {
-                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText();
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText(true);
             }
 
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock)
@@ -147,6 +147,11 @@ namespace IEC
                 {
                     InitUI();
                 }
+            }
+            
+            if (eventType == EventType.ChompOff && currentRankText.gameObject.activeInHierarchy) // Custom for chomp off
+            {
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText(true);
             }
         }
     }

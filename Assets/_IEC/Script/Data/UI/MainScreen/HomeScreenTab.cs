@@ -667,13 +667,22 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysPlayed = PlayerData.GetDaysSinceDownload();
 
         //Check chomp-off
-        if (PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+        var chompOffData = PlayerData.GetEventSaveData(EventType.ChompOff);
+        int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
+        int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+            .eventDurationInHours / 24);
+        bool active = Config.eventLiveOpsConfig.IsEventAvailable(
+            EventType.ChompOff,
+            chompOffDuration,
+            daysPlayed) && chompOffButton.IsEventCanShow();
+
+        if (Locator.Main.PopupChompOff.IsResetChompOff() )
         {
-            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-                EventType.ChompOff,
-                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
-                    .eventDurationInHours / 24),
-                daysPlayed) && chompOffButton.IsEventCanShow();
+            PlayerData.ResetEventSaveData(EventType.ChompOff);
+        }
+        
+        if (chompOffData.claimedReward)
+        {
             chompOffButton.gameObject.SetActive(active);
         }
     }

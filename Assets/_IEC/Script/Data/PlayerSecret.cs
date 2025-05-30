@@ -93,6 +93,15 @@ namespace IEC
                     null,
                     System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
+        
+        public int GetDaysFromDownloadToTime(DateTime time)
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (time - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+        }
 
         public DateTime GetLastPlayDateTime()
         {
@@ -981,6 +990,17 @@ namespace IEC
             }
 
             return data;
+        }
+
+        public void ResetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+            if (data != null)
+            {
+                data.listPlayerData = new();
+                data.eventIndex = 0;
+                data.claimedReward = true;
+            }
         }
         
         public bool IsEventCompleted(EventType eventType)
