@@ -317,7 +317,7 @@ namespace _IEC.Features.Gameplay
             relicObjective.itemId = dataSpecial.GetId();
             relicObjective.number = count;
             LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
-            objectiveContain.LoadDataRelic(relicObjective,true);
+            objectiveContain.LoadDataRelic(relicObjective,true,new Vector2(100,140));
             m_ActiveObjectiveUIs.Add(objectiveContain);
             objectiveContain.gameObject.SetActive(count > 0);
         }
