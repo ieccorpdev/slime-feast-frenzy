@@ -181,10 +181,8 @@ namespace IEC
                 .eventDurationInHours / 24);
             
             bool isNewEvent = (daysPlayed - daysLastChompOff) >= chompOffDuration;
-            
-            var data = _eventRankController.GetEventSaveData(eventType);
 
-            return isNewEvent && (data.claimedReward || !IsEventStageCompleted());
+            return isNewEvent && (chompOffData.claimedReward || !IsEventStageCompleted());
         }
 
         protected override void ShowStartPopup()
