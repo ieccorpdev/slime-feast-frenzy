@@ -595,6 +595,10 @@ public class HomeScreenTab : ScreenNavigateUI
                    ShowNextPopup);
             }
         }
+        else
+        {
+            PlayerData.isShowStartedPackInStartGame = false;
+        }
         if (!PlayerData.isBoughtStarterPack && !PlayerData.isShowStartedPackInStartGame)
         {
             AddPopupToShow(Locator.Main.PopupStarterPack,
