@@ -424,7 +424,15 @@ namespace _IEC.Features.Gameplay
             posOnWater = pow;
             hasPosOnWater = true;
         }
-        protected virtual void AppearInScreen() { }
+
+        protected virtual void AppearInScreen()
+        {
+            if (gameObject.name.Contains("Relic"))
+            {
+                EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
+            }
+            
+        }
         
         #endregion
 
