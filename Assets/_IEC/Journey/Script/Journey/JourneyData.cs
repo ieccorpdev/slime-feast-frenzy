@@ -16,15 +16,16 @@ namespace IEC
         public int lifeCycleCount;
         public bool inJourneyProgress;
         public DateTime timeStartJourneyTrip;
-        public bool IsJourneyExpired;
         public bool isShowTutorialInPopup;
         public bool isCompleteJourney;
+        public bool isShowHandtut;
+        public bool isEndEvent;
 
         public void SetStartJourneyTimeNow()
         {
             if (!inJourneyProgress)
             {
-                timeStartJourneyTrip = DateTime.Now;
+                timeStartJourneyTrip = DateTime.Now.Date;
                 inJourneyProgress = true;
             }
             if (!wasOpenJourney)
@@ -44,15 +45,16 @@ namespace IEC
             isEnableMaxHeart = false;
             isBuyIAP = false;
             wasOpenJourney = false;
-            IsJourneyExpired = false;
             isCompleteJourney = false;
+            isEndEvent = false;
         }
 
         public string GetTimeRemainingString()
         {
             TimeSpan remaining = GetTimeRemaining();
-            if (remaining == TimeSpan.Zero && wasOpenJourney)
+            if (remaining <= TimeSpan.Zero && wasOpenJourney)
             {
+                isEndEvent = true;
                 return "Finished";
             }
             return remaining.Days > 0 ? remaining.Days + "d " + remaining.Hours + "h" :
@@ -65,22 +67,30 @@ namespace IEC
 
             if (remaining <= TimeSpan.Zero && wasOpenJourney)
             {
+                isEndEvent = true;
                 return "Finished";
             }
 
             if (remaining.Days > 0)
-                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h:{remaining.Minutes:D2}mn"; // dd:hh:mm
+                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h";        
             else if (remaining.Hours > 0)
-                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:sselse
+                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}mn";    
             else
-                return $"{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s"; // hh:mm:ss
+                return $"{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s";    
         }
 
         private TimeSpan GetTimeRemaining()
         {
-            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
+            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
             TimeSpan remaining = endTime - DateTime.Now;
             return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+        }
+
+        public bool CheckFinishedDay()
+        {
+            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
+            TimeSpan remaining = endTime - DateTime.Now;
+            return remaining <= TimeSpan.Zero;
         }
 
         public JourneyItemStatus GetStatusVipPass(int id)

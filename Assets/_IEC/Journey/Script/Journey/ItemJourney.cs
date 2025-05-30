@@ -37,7 +37,7 @@ namespace IEC
                 idTextUnlock.gameObject.SetActive(false);
                 star.gameObject.SetActive(true);
             }
-            bool check = data.idJourney <= PlayerData.journeyData.currentTargetJourney;
+            bool check = data.idJourney < PlayerData.journeyData.currentTargetJourney;
             if (data.idJourney == PlayerData.journeyData.currentTargetJourney)
                 bgEnd.SetActive(true);
             foreach (var item in lockGroups)

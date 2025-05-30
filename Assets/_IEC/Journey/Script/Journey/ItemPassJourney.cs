@@ -25,7 +25,7 @@ namespace IEC
         public Button infor;
         public Button claim;
         public GameObject info;
-        private static GameObject currentInfo;
+        public static GameObject currentInfo;
         public List<GameObject> lockGroups, unlockGroups;
         private bool isUseChest;
 
@@ -61,8 +61,19 @@ namespace IEC
             }, false);
         }
 
+        IEnumerator WaitEndTut()
+        {
+            yield return new WaitUntil(() => PlayerData.journeyData.isShowTutorialInPopup);
+            HandleHandleTut();
+        }
+
         public void OnClaimItem()
         {
+            if (!PlayerData.journeyData.isShowHandtut && typePass == TypePassJourney.REGULAR && currentID == 0)
+            {
+                PlayerData.journeyData.isShowHandtut = true;
+                Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
+            }
             if (currentID == Config.journeyTripConfig.listRewardsByJourneys[0].idJourney && typePass == TypePassJourney.VIP)
             {
                 PlayerData.journeyData.isEnableMaxHeart = true;
@@ -94,6 +105,19 @@ namespace IEC
                 case TypePassJourney.VIP:
                     PlayerData.journeyData.SetStatusVipPass(currentID, JourneyItemStatus.CLAIMED);
                     break;
+            }
+        }
+
+        private void OnEnable()
+        {
+            StartCoroutine(WaitEndTut());
+        }
+
+        private void HandleHandleTut()
+        {
+            if (!PlayerData.journeyData.isShowHandtut && typePass == TypePassJourney.REGULAR && currentID == 0)
+            {
+                Locator.Main.HighLightCanvas.HighLightUI(claim.GetComponent<RectTransform>(), true, true);
             }
         }
 
