@@ -1,14 +1,14 @@
 ﻿using DG.Tweening;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace IEC
 {
 #if UNITY_EDITOR
+    using UnityEditor;
+    using UnityEditor.SceneManagement;
+    using UnityEngine.SceneManagement;
     public class AddButtonClickEffectEditor : EditorWindow
     {
         [MenuItem("Tools/Add ButtonClickEffect to All Buttons")]
