@@ -7,7 +7,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
-using UnityEditorInternal.VersionControl;
 using UnityEngine.EventSystems;
 
 namespace IEC
