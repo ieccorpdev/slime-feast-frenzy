@@ -277,7 +277,7 @@ namespace IEC
             
             AddCustomRewardToClaimEffect(
                 ResourceType.Relic, 
-                Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon(),
+                Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon(),
                 startPos, 
                 EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
                 amount,

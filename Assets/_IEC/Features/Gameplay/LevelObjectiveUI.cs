@@ -220,7 +220,7 @@ namespace _IEC.Features.Gameplay
             int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
             var totalNumberCollected = GamePlay.levelController.RelicObjCollected;
             SetText(totalNumberCollected+"/"+maxSpecialObject);
-            var itemDefinition = Config.relicObjectConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+            var itemDefinition = Config.relicConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
             imgIcon.sprite = itemDefinition.GetIcon();
             //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
             imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);

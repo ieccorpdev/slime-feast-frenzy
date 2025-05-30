@@ -13,6 +13,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
     {
         public GameObject lockGO;
         public GameObject unlockGO;
+        public GameObject claimableGO;
         public Button claimBtn;
         public float vitrualPercent;
         public Action OnClaimReward;
@@ -37,11 +38,10 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             claimBtn.onClick.AddListener(() =>
             {
                 if(_rewards.Count == 0) return;
-                Debug.Log("Claim Reward");
                 hasClaimReward = true;
                 ShowReward();
                 OnClaimReward?.Invoke();
-                SetLock(false);
+                SetState(RewardState.Claimed);
             });
         }
 
@@ -65,10 +65,17 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             hasClaimReward = false;
         }
 
-        public void SetLock(bool locked)
+        public void SetState(RewardState state)
         {
-            lockGO.SetActive(locked);
-            unlockGO.SetActive(!locked);
+            lockGO.SetActive(state == RewardState.Lock);
+            unlockGO.SetActive(state ==  RewardState.Claimed);
+            claimableGO.SetActive(state ==  RewardState.Claimable);
+        }
+        public enum RewardState
+        {
+            Lock,
+            Claimable,
+            Claimed,
         }
     }
 }
