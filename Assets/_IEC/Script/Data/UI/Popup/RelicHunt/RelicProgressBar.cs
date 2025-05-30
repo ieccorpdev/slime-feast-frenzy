@@ -18,26 +18,17 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         [SerializeField] private Image fillImage;
         [Header("Relic Config")] public ArtifactCollectorConfig config;
 
-        private void Start()
-        {
-        }
         
         public void OnNewLevel()
         {
             foreach (var levelProgressNode in levelProgressNodes)
             {
-                levelProgressNode.SetLock(true);
                 levelProgressNode.ClearReward();
+                levelProgressNode.SetState(LevelProgressNode.RewardState.Lock);
             }
         }
 
-        private void UnlockLevelNode(int index)
-        {
-            for (int i = 0; i < levelProgressNodes.Count; i++)
-            {
-                levelProgressNodes[i].SetLock(i > index);
-            }
-        }
+ 
 
         [Button]
         public void SetVitrualProgress(int currentToken, int currentLevelIndex, bool isMax = false)
@@ -49,7 +40,6 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             }
             if (currentLevelIndex >= config.ArtifactLevels.Count)
             {
-                //OnUnlockAll();
                 return;
             }
 
@@ -60,10 +50,9 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             }
 
             var relicReward = config.ArtifactLevels[currentLevelIndex].artifactLevelRewards;
-            var aboveNode = relicReward.FirstOrDefault(x => x.tokenCost > currentToken);
+            var aboveNode = relicReward.FirstOrDefault(x => config.GetStackTokenCost(x.id) > currentToken);
             if (aboveNode == null)
             {
-                //OnUnlockAll();
                 return;
             }
 
@@ -71,32 +60,26 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             float fillAmountSum = 0f;
             if (aboveNodeIndex >= 1)
             {
-                float range = relicReward[aboveNodeIndex].tokenCost - relicReward[aboveNodeIndex - 1].tokenCost;
-                float fillRange = currentToken - relicReward[aboveNodeIndex - 1].tokenCost;
+                float range = config.GetStackTokenCost(relicReward[aboveNodeIndex].id) -  config.GetStackTokenCost(relicReward[aboveNodeIndex-1].id);
+                float fillRange = currentToken - config.GetStackTokenCost(relicReward[aboveNodeIndex - 1].id);
 
                 fillAmountSum = levelProgressNodes[aboveNodeIndex - 1].vitrualPercent;
                 fillAmountSum +=
                     (levelProgressNodes[aboveNodeIndex].vitrualPercent -
                      levelProgressNodes[aboveNodeIndex - 1].vitrualPercent) * fillRange / range;
 
-                //UnlockLevelNode(aboveNodeIndex - 1);
                 fillImage.DOFillAmount(fillAmountSum, 0.5f);
 
             }
             else
             {
-                float range = relicReward[aboveNodeIndex].tokenCost;
+                float range =  config.GetStackTokenCost(relicReward[aboveNodeIndex].id);
                 float fillRange = currentToken;
                 fillAmountSum = levelProgressNodes[aboveNodeIndex].vitrualPercent * fillRange / range;
-                //UnlockLevelNode(aboveNodeIndex - 1);
                 fillImage.fillAmount = fillAmountSum;
             }
         }
 
-        private void OnUnlockAll()
-        {
-            fillImage.fillAmount = 1;
-            UnlockLevelNode(levelProgressNodes.Count);
-        }
+      
     }
 }

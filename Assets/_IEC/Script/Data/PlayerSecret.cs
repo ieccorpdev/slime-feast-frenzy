@@ -55,6 +55,8 @@ namespace IEC
         public HybridData hybridData = new HybridData();
         public JourneyData journeyData = new JourneyData();
 
+        public bool isShowPackPopupsInHomeOnStartGame;
+
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
@@ -91,6 +93,15 @@ namespace IEC
                     null,
                     System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
+        
+        public int GetDaysFromDownloadToTime(DateTime time)
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (time - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+        }
 
         public DateTime GetLastPlayDateTime()
         {
@@ -116,6 +127,21 @@ namespace IEC
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
+        }
+        
+        public void ResetDataDay()
+        {
+            //Another param need reset each 24 day come here
+            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
+            {
+                lastTimeOpenWheel = DateTime.Now;
+                luckWheelDailyFreeSpin = true;
+                luckWheelDailyAdsSpin = 0;
+                dailyShowPiggyBank = false;
+                dailyShowLifeOfferPack = false;
+            }
+
+            isShowPackPopupsInHomeOnStartGame = false;
         }
 
         private void CheckActionAfterQuitGame()
@@ -520,18 +546,6 @@ namespace IEC
         public bool luckWheelDailyFreeSpin;
         public int luckWheelDailyAdsSpin;
         public int luckWheelGoldTimeSpin;
-        public void ResetDataDay()
-        {
-            //Another param need reset each 24 day come here
-            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
-            {
-                lastTimeOpenWheel = DateTime.Now;
-                luckWheelDailyFreeSpin = true;
-                luckWheelDailyAdsSpin = 0;
-                dailyShowPiggyBank = false;
-                dailyShowLifeOfferPack = false;
-            }
-        }
 
 
         #endregion
@@ -908,7 +922,7 @@ namespace IEC
         }
         public void CheckResetTimeArtifactEvent()
         {
-            _relicData.CheckResetTimeEvent(Config.artifactCollectorConfig.daysEachReset);
+            _relicData.CheckResetTimeEvent(Config.relicConfig.daysEachReset);
         }
         public bool ReachMaxRelicReward()
         {
@@ -976,6 +990,17 @@ namespace IEC
             }
 
             return data;
+        }
+
+        public void ResetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+            if (data != null)
+            {
+                data.listPlayerData = new();
+                data.eventIndex = 0;
+                data.claimedReward = true;
+            }
         }
         
         public bool IsEventCompleted(EventType eventType)
