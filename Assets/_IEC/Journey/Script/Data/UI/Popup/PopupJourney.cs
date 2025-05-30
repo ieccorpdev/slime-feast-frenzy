@@ -159,7 +159,7 @@ namespace IEC
         {
             while (true)
             {
-                timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+                timerTxt.text = PlayerData.journeyData.GetTimeRemainingString();
                 bool value = PlayerData.journeyData.isBuyIAP;
                 doneBuyIAP.gameObject.SetActive(value);
                 buyIAP.gameObject.SetActive(!value);
