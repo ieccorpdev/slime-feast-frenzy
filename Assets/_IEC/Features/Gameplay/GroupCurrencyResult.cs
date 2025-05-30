@@ -81,7 +81,7 @@ namespace _IEC.Features.Gameplay
         void UpdateRelicItemDisplay()
         {
              txtNumberRelicObject.text = GamePlay.levelController.RelicObjCollected.ToString();
-             imgIconRelicObject.gameObject.SetActive(PlayerData.relicData.isAvaiableToSpawn && PlayerData.level >= Config.artifactCollectorConfig.levelUnlockFeature);
+             imgIconRelicObject.gameObject.SetActive(PlayerData.relicData.isAvaiableToSpawn && PlayerData.level >= Config.relicConfig.levelUnlockFeature);
         }
     }
 }

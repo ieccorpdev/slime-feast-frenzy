@@ -199,7 +199,7 @@ namespace _IEC.Features.Gameplay
             );
             m_AllkingdomSpecialItems.Clear();
             int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
-                && !PlayerData.journeyData.isCompleteJourney)
+                && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
                 ?
                 Config.specialObjectConfig.GetSpawnAmount() : 0;
             m_AllkingdomSpecialItems = LevelHelper.SpawnSpecialItems(
@@ -221,12 +221,12 @@ namespace _IEC.Features.Gameplay
             if (PlayerData.relicData.isAvaiableToSpawn)
             {
                 m_AllRelicItems.Clear();
-                int countRelicProgressReward = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicObjectConfig.GetSpawnAmount(PlayerData.level);
+                int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
                 m_AllRelicItems = LevelHelper.SpawnRelicItems(
                     GroundExtend.CalculateBounds(m_AllItems),
-                    countRelicProgressReward, 
+                    relicSpawnTime, 
                     allItemHolder,
-                    Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
+                    Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
                 );
             }
             themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);

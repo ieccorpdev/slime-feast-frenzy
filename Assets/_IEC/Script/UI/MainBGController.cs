@@ -8,7 +8,7 @@ public class MainBGController : _BaseBehaviour
 {
     public Image staticImage;
 
-    public SpineAnimOT spineImage;
+    //public SpineAnimOT spineImage;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,18 +16,19 @@ public class MainBGController : _BaseBehaviour
     }
 
     public void SetupBGByTheme()
-    {
-       var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
+    { 
+        //Temporary disable spineImage
+        var themeConfig = Config.themeConfig.GetWaterThemeForLevel(PlayerData.level);
        if (themeConfig.themeId == 0)
        {
            //theme id 0 have a spine background, hard code, update if update another spine bg
            staticImage.sprite = themeConfig.bgSprite;
-           staticImage.gameObject.SetActive(!Game.iosFeature);
-           spineImage.gameObject.SetActive(Game.iosFeature);
+           staticImage.gameObject.SetActive(true);
+           //spineImage.gameObject.SetActive(Game.iosFeature);
        }
        if (themeConfig.bgSprite != null)
        {
-           spineImage.gameObject.SetActive(false);
+           //spineImage.gameObject.SetActive(false);
            staticImage.gameObject.SetActive(true);
            staticImage.sprite = themeConfig.bgSprite;
        }

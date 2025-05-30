@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _IEC;
+using _IEC.Features.VipProHackerUITutorial;
 using IEC;
 using UnityEngine;
 
@@ -49,6 +50,8 @@ public static partial class Locator
         public static PopupChompOff PopupChompOff => Pool.Get<PopupChompOff>();
 
         public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
+
+        public static HighLightCanvas HighLightCanvas => Pool.Get<HighLightCanvas>();
 
     } 
 }
