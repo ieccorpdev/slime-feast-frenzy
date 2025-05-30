@@ -108,6 +108,7 @@ namespace IEC
 
         private void SetEventStartUI()
         {
+            UpdateRewardUI();
             _eventStarted = false;
             playButton.gameObject.SetActive(false);
             startEventButton.gameObject.SetActive(true);
@@ -131,19 +132,19 @@ namespace IEC
 
         private void OnRetryButtonClick()
         {
+            _eventStarted = true;
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
 
             eventSaveData.claimedReward = true;
             
-            int daysPlayed = PlayerData.GetDaysSinceDownload();
             bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-                EventType.ChompOff,
-                Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
-                    .eventDurationInHours / 24),
-                daysPlayed);
+                eventType,
+                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
+                PlayerData.GetDaysSinceDownload());
 
-            if (!active)
+            if (!active || IsResetChompOff())
             {
+                PlayerData.ResetEventSaveData(EventType.ChompOff);
                 Hide();
                 return;
             }
@@ -162,6 +163,28 @@ namespace IEC
         protected override void OnClaimReward()
         {
             base.OnClaimReward();
+
+            _eventStarted = false;
+
+            if (IsResetChompOff())
+            {
+                PlayerData.ResetEventSaveData(EventType.ChompOff);
+            }
+        }
+
+        public bool IsResetChompOff()
+        {
+            int daysPlayed = PlayerData.GetDaysSinceDownload();
+            var chompOffData = PlayerData.GetEventSaveData(EventType.ChompOff);
+            int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
+            int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                .eventDurationInHours / 24);
+            
+            bool isNewEvent = (daysPlayed - daysLastChompOff) >= chompOffDuration;
+            
+            var data = _eventRankController.GetEventSaveData(eventType);
+
+            return isNewEvent && (data.claimedReward || !IsEventStageCompleted());
         }
 
         protected override void ShowStartPopup()
@@ -233,15 +256,6 @@ namespace IEC
             retryButton.gameObject.SetActive(false);
             playButton.gameObject.SetActive(true);
             
-            if (CheckShowStartPopup())
-            {
-                SetEventStartUI();
-            }
-            else
-            {
-                _eventStarted = true;
-            }
-            
             base.Show();
             //
             //var eventSaveData = _eventRankController.GetEventSaveData(eventType);
@@ -265,6 +279,15 @@ namespace IEC
             //     return;
             
             UpdateUI();
+            
+            if (CheckShowStartPopup())
+            {
+                SetEventStartUI();
+            }
+            else
+            {
+                _eventStarted = true;
+            }
         }
 
         public override void InitEvent()
@@ -416,8 +439,18 @@ namespace IEC
             }
         }
 
-        public string GetTimerText()
+        public string GetTimerText(bool forcedGetTimeEndStage = false)
         {
+            if (forcedGetTimeEndStage)
+            {
+                if (_currentTimeEndEventStage <= DateTime.Now)
+                    _currentTimeEndEventStage = GetTimeEndStage();
+                
+                return 
+                    DateTimeHelper.GetFormattedTimeHMS(
+                        _currentTimeEndEventStage - DateTime.Now);
+            }
+            
             if (!_eventStarted)
             {
                 if (_currentTimeEndEvent <= DateTime.Now)
