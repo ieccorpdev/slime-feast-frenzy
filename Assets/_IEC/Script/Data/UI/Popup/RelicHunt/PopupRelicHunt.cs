@@ -106,12 +106,13 @@ public class PopupRelicHunt : BasePopup
                     foreach (var artifactRewardData in rw.artifactRewards)
                     {
                         levelNode.AddReward(ConvertToReward(artifactRewardData));
-                        levelNode.OnClaimReward = () =>
-                        {
-                            PlayerData.relicData.SetClaimReward(rw.id);
-                            UpdateState();
-                        };
                     }
+                    levelNode.OnClaimReward = () =>
+                    {
+                        PlayerData.relicData.SetClaimReward(rw.id);
+                        if (PlayerData.relicData.AbleTolevelUp(Config.relicConfig)) OnLevelUpRelicLevel();
+                        ResetVisual();
+                    };
                 }
                 else
                 {
@@ -127,22 +128,13 @@ public class PopupRelicHunt : BasePopup
 
     private void UpdateState()
     {
-        bool isClaimAll = true;
-        foreach (var levelProgressNode in relicProgressBar.levelProgressNodes)
-        {
-            isClaimAll = levelProgressNode.hasClaimReward;
-        }
-
-        if (isClaimAll)
-        {
-            ClaimAllLevelReward();
-        }
+ 
     }
 
     private void CaculateAndShowReward()
     {
-        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.relicConfig.ArtifactLevels.Count;
-        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig, isMaxLevel);
+        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig);
+        rewards.Clear();
         foreach (var keyValuePair in rwd)
         {
             rewards.Add(ConvertToReward(new ArtifactRewardData
@@ -152,7 +144,6 @@ public class PopupRelicHunt : BasePopup
         if (rewards.Count > 0)
         {
             ShowReward();
-            rewards.Clear();
         }
     }
 
@@ -299,7 +290,6 @@ public class PopupRelicHunt : BasePopup
             {
                 timerText.text = GetTimeFormat(timeLeft);
             }
-            
         }
     }
 

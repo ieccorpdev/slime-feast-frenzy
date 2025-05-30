@@ -28,7 +28,6 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             }
         }
 
- 
 
         [Button]
         public void SetVitrualProgress(int currentToken, int currentLevelIndex, bool isMax = false)

@@ -25,7 +25,7 @@ public class RelicButtonEvent : _BaseBehaviour
         //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
         int level = PlayerData.level;
         int levelUnlock = Config.relicConfig.levelUnlockFeature;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) && Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt, Config.relicConfig.eventDurationInHours, PlayerData.GetDaysSinceDownload());
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) && Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload());
     }
     public void UpdateUI()
     {
@@ -35,11 +35,11 @@ public class RelicButtonEvent : _BaseBehaviour
         claimRewardGroup.SetActive(false);
         timerGroup.SetActive(false);
         button.interactable = true;
-        gameObject.SetActive(IsEventCanShow());
-        if (!IsEventCanShow())
-        {
-            return;
-        }
+        // gameObject.SetActive(IsEventCanShow());
+        // if (!IsEventCanShow())
+        // {
+        //     return;
+        // }
 
 
 
@@ -62,7 +62,7 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel)
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
                 {
                     completedGroup.SetActive(true);
                     button.interactable = false;
