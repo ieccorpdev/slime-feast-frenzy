@@ -1179,11 +1179,11 @@ namespace IEC
         private int m_LogSize;
         private const int MB = 1024 * 1024;
         private const int MAX_LOG_SIZE = 9 * 1024 * 1024;
-        public void SendEmail()
+        public void SendEmail(string email = "", string content = "")
         {
             SaveLogToFile();
-            SendMail("");
-            FeedbackDiscord("test@ieccorp.vn", "Test Content");
+            SendMail(content);
+            FeedbackDiscord(email, string.IsNullOrEmpty(content) ? "null" : content);
         }
 
         public void FeedbackDiscord(string email, string contentFeedback)
@@ -1230,23 +1230,27 @@ namespace IEC
                                 new
                                 {
                                     name = "Game Id",
-                                    value = Application.identifier
+                                    value = Application.identifier,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Platform",
                                     value = isIOS ? "iOS" : "Android",
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "App Version",
-                                    value = Application.version
+                                    value = Application.version,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "AB Version",
                                     value = string.IsNullOrEmpty(m_ServiceData.curAbTestDate) 
-                                        ? "null" : m_ServiceData.curAbTestDate
+                                        ? "null" : m_ServiceData.curAbTestDate,
+                                    inline = true
                                 }
                             }
                         },
@@ -1258,27 +1262,32 @@ namespace IEC
                                 new
                                 {
                                     name = "IDFA",
-                                    value = string.IsNullOrEmpty(m_UserIDFA) ? "null" : m_UserIDFA
+                                    value = string.IsNullOrEmpty(m_UserIDFA) ? "null" : m_UserIDFA,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "IDFV",
-                                    value = string.IsNullOrEmpty(idfv) ? "null" : idfv
+                                    value = string.IsNullOrEmpty(idfv) ? "null" : idfv,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Adjust ID",
-                                    value = string.IsNullOrEmpty(adjustId) ? "null" : adjustId
+                                    value = string.IsNullOrEmpty(adjustId) ? "null" : adjustId,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Pseudo UID",
-                                    value = string.IsNullOrEmpty(firebasePseudoId) ? "null" : firebasePseudoId
+                                    value = string.IsNullOrEmpty(firebasePseudoId) ? "null" : firebasePseudoId,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Ticket ID",
-                                    value = m_TicketId
+                                    value = m_TicketId,
+                                    inline = true
                                 }
                             }
                         },
@@ -1290,17 +1299,20 @@ namespace IEC
                                 new
                                 {
                                     name = "Network",
-                                    value = string.IsNullOrEmpty(adjustNetwork) ? "null" : adjustNetwork
+                                    value = string.IsNullOrEmpty(adjustNetwork) ? "null" : adjustNetwork,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Campaign",
-                                    value = string.IsNullOrEmpty(adjustCampaign) ? "null" : adjustCampaign
+                                    value = string.IsNullOrEmpty(adjustCampaign) ? "null" : adjustCampaign,
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Creative",
-                                    value = string.IsNullOrEmpty(adjustCreative) ? "null" : adjustCreative
+                                    value = string.IsNullOrEmpty(adjustCreative) ? "null" : adjustCreative,
+                                    inline = true
                                 }
                             }
                         },
@@ -1312,22 +1324,26 @@ namespace IEC
                                 new
                                 {
                                     name = "Service Data Size",
-                                    value = StringHelper.GetFileSizeStr(m_ServiceDataSize)
+                                    value = StringHelper.GetFileSizeStr(m_ServiceDataSize),
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Player Data Size",
-                                    value = StringHelper.GetFileSizeStr(m_PlayerDataSize)
+                                    value = StringHelper.GetFileSizeStr(m_PlayerDataSize),
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Log Size",
-                                    value = StringHelper.GetFileSizeStr(m_LogSize)
+                                    value = StringHelper.GetFileSizeStr(m_LogSize),
+                                    inline = true
                                 },
                                 new
                                 {
                                     name = "Log Size Valid",
-                                    value = (isLogFileValid) ? "true" : "false"
+                                    value = (isLogFileValid) ? "true" : "false",
+                                    inline = true
                                 }
                             }
                         },
