@@ -311,7 +311,7 @@ namespace _IEC.Features.Gameplay
         }
         public void HandleRelicObject()
         {
-            var dataSpecial = Config.relicObjectConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
+            var dataSpecial = Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
             var relicObjective = new LevelObjective();
             int count = GamePlay.levelController.AllRelicItems.Count;
             relicObjective.itemId = dataSpecial.GetId();
