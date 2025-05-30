@@ -38,7 +38,10 @@ namespace IEC
                     SetGroupActive(Lock: false, claim: true, normal: false);
                     SetIcon(sprIconUnlock);
                     txtTitle.text = "Join";
-                    Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
+                    if (!PlayerData.journeyData.isShowHandtut)
+                    {
+                        Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
+                    }
                     break;
 
                 case UnderseaVoyageState.Finish:
@@ -86,7 +89,7 @@ namespace IEC
             }
             else
             {
-                if (PlayerData.journeyData.IsJourneyExpired)
+                if (PlayerData.journeyData.isEndEvent)
                 {
                     SetState(UnderseaVoyageState.Finish);
                 }
@@ -109,31 +112,34 @@ namespace IEC
             Pool.Set(this);
         }
 
-        private IEnumerator Start()
+        private void Start()
         {
             button = GetComponent<Button>();    
             button.onClick.AddListener(HandleEventClickShowPopupUnderseaVoyage);
             InitStatusButton();
-            while (true)
+        }
+
+        private void Update()
+        {
+            if (txtTimer != null)
             {
-                if (txtTimer != null)
+                if (PlayerData.journeyData.wasOpenJourney)
                 {
                     txtTimer.text = PlayerData.journeyData.GetTimeRemainingString();
-                    if (PlayerData.journeyData.wasOpenJourney)
+                    if (txtTimer.text.Equals("Finished"))
                     {
-                        if (txtTimer.text.Equals("Finished"))
+                        if (currentState != UnderseaVoyageState.Finish)
                         {
                             SetState(UnderseaVoyageState.Finish);
-                            Locator.Main.PopupUnderseaVoyageIntro.Show();
-                            yield break;
-                        }
-                        else if (currentState == UnderseaVoyageState.Finish)
-                        {
-                            SetState(UnderseaVoyageState.Unlock);
+                            if (PlayerData.journeyData.CheckFinishedDay())
+                                Locator.Main.PopupUnderseaVoyageIntro.Show();
                         }
                     }
+                    else if (currentState == UnderseaVoyageState.Finish)
+                    {
+                        SetState(UnderseaVoyageState.Unlock);
+                    }
                 }
-                yield return new WaitForSeconds(1f);
             }
         }
 
@@ -142,11 +148,6 @@ namespace IEC
             if (currentState == UnderseaVoyageState.Unlock)
             {
                 Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
-            }
-            if (currentState == UnderseaVoyageState.Finish)
-            {
-                Locator.Main.PopupUnderseaVoyageIntro.Show();
-                return;
             }
             if (currentState == UnderseaVoyageState.Lock)
             {
