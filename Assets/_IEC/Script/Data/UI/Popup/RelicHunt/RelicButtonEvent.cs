@@ -54,8 +54,7 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                bool isEndEvent = countdownTimeSpan.TotalSeconds <= 0;
-                if (isMaxLevel && !isEndEvent)
+                if (isMaxLevel)
                 {
                     completedGroup.SetActive(true);
                     button.interactable = false;
@@ -65,7 +64,7 @@ public class RelicButtonEvent : _BaseBehaviour
                     countdownTimeSpan = PlayerData.relicData.eventTimeEnd - DateTime.Now;
                     timerText.text = GetTimeFormat(countdownTimeSpan);
                     timerGroup.gameObject.SetActive(true);
-
+                    bool isEndEvent = countdownTimeSpan.TotalSeconds <= 0;
                     if (isEndEvent)
                     {
                         OnTimeEventEnd();

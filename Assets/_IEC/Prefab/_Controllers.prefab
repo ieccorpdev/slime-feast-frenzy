@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5392091698269571039}
-  - component: {fileID: 3132400545990832891}
+  - component: {fileID: 2269554108097978126}
   m_Layer: 0
   m_Name: GameEventRelicController
   m_TagString: Untagged
@@ -32,7 +32,7 @@ Transform:
   m_Father: {fileID: 4676664891199191328}
   m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3132400545990832891
+--- !u!114 &2269554108097978126
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,7 +41,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1211628361198731853}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b673340f7af4679885164d6e664172b, type: 3}
+  m_Script: {fileID: 11500000, guid: e88ef777e3b94b4881771b2e2fe97c01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1756024047977784514
@@ -252,9 +252,10 @@ MonoBehaviour:
       wasOpenJourney: 0
       lifeCycleCount: 0
       inJourneyProgress: 0
-      IsJourneyExpired: 0
       isShowTutorialInPopup: 0
       isCompleteJourney: 0
+      isShowHandtut: 0
+      isEndEvent: 0
     isShowPackPopupsInHomeOnStartGame: 0
     helperData:
       numberMagnet: 0
