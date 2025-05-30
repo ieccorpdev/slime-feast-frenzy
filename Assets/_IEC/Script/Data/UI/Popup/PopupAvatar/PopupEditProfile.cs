@@ -19,9 +19,12 @@ namespace IEC
 
         public List<EditProfileTabSelection> listTabSelection = new();
 
+        public RectTransform selectionContentGroup;
+        public RectTransform specialAvatarSelectionContainer;
         public RectTransform avatarSelectionContainer;
         public AvatarSelection avatarSelectionPrefab;
         public List<AvatarSelection> listAvatarSelections = new();
+        public List<AvatarSelection> listSpecialAvatarSelections = new();
 
         public EditProfileTabSelection CurrentTabSelection { get; private set; }
         public AvatarSelection CurrentSelectedAvatar { get; private set; }
@@ -78,7 +81,7 @@ namespace IEC
 
         public void InitAvatarTab()
         {
-
+            SetActiveSpecialAvatarFrameGroup(false);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarSpriteName))
             {
                 PlayerData.playerAvatarSpriteName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -109,10 +112,15 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
         }
 
         public void InitFrameTab()
         {
+            SetActiveSpecialAvatarFrameGroup(false);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName))
             {
                 PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -138,11 +146,53 @@ namespace IEC
                     listAvatarSelections[i].SetSelectedDisplay(false);
                 }
             }
-            
+
+            if (Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count > 0)
+            {
+                SetActiveSpecialAvatarFrameGroup(true);
+                for (int i = 0; i < Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count; i++)
+                {
+                    if (i >= listSpecialAvatarSelections.Count)
+                    {
+                        listSpecialAvatarSelections.Add(ObjectPool.Spawn(avatarSelectionPrefab,
+                            specialAvatarSelectionContainer));
+                    }
+
+                    listSpecialAvatarSelections[i].SetActive(true);
+                    listSpecialAvatarSelections[i].transform.localScale = Vector3.one;
+                    listSpecialAvatarSelections[i].Init(Config.playerAvatarConfig.listSpecialAvatarFrameSprites[i]);
+
+                    if (playerAvatar.playerAvatarFrame.sprite.name.Equals(Config.playerAvatarConfig
+                            .listSpecialAvatarFrameSprites[i].name))
+                    {
+                        listSpecialAvatarSelections[i].SetSelectedDisplay(true);
+                        CurrentSelectedAvatar = listSpecialAvatarSelections[i];
+                    }
+                    else
+                    {
+                        listSpecialAvatarSelections[i].SetSelectedDisplay(false);
+                    }
+                }
+                
+                for (int i = Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count; i < listSpecialAvatarSelections.Count; i++)
+                {
+                    listSpecialAvatarSelections[i].SetActive(false);
+                }
+            }
+
             for (int i = Config.playerAvatarConfig.listAvatarFrameSprites.Count; i < listAvatarSelections.Count; i++)
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
+        }
+
+        public void SetActiveSpecialAvatarFrameGroup(bool isActive)
+        {
+            specialAvatarSelectionContainer.gameObject.SetActive(isActive);
         }
 
         public void OnSelectTab(EditProfileTabSelection tabSelection)

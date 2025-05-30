@@ -1,13 +1,73 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using DG.Tweening;
+﻿using DG.Tweening;
+using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace IEC
 {
+#if UNITY_EDITOR
+    public class AddButtonClickEffectEditor : EditorWindow
+    {
+        [MenuItem("Tools/Add ButtonClickEffect to All Buttons")]
+        public static void AddEffectToAllButtons()
+        {
+            int addedCount = 0;
+            int removedAnimators = 0;
+
+            Button[] allButtons = GameObject.FindObjectsOfType<Button>(true); // include inactive
+
+            foreach (Button button in allButtons)
+            {
+                if (button == null || button.gameObject == null)
+                    continue;
+
+                GameObject go = button.gameObject;
+
+                // Record undo before making any changes
+                Undo.RegisterCompleteObjectUndo(go, "Modify Button");
+
+                // ✅ Remove Animator or Animation if exists
+                Animator animator = go.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    Object.DestroyImmediate(animator, true);
+                    removedAnimators++;
+                }
+
+                Animation animation = go.GetComponent<Animation>();
+                if (animation != null)
+                {
+                    Object.DestroyImmediate(animation, true);
+                    removedAnimators++;
+                }
+                var duplicates = go.GetComponents<ButtonClickEffect>();
+                if (duplicates.Length > 1)
+                {
+                    for (int i = 1; i < duplicates.Length; i++)
+                    {
+                        DestroyImmediate(duplicates[i]);
+                    }
+                }
+
+                if (go.GetComponent<ButtonClickEffect>() == null)
+                {
+                    go.AddComponent<ButtonClickEffect>();
+                    addedCount++;
+                }
+
+                EditorUtility.SetDirty(go);
+                EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
+            }
+
+            Debug.Log($"✅ Added ButtonClickEffect to {addedCount} button(s), removed {removedAnimators} Animator/Animation component(s).");
+        }
+    }
+#endif
+
+    [DisallowMultipleComponent]
     public class ButtonClickEffect : _BaseBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerExitHandler
     {
         public GameObject buttonDisplayImage;
@@ -36,6 +96,14 @@ namespace IEC
         {
             m_Button = GetComponent<Button>();
             baseScale = buttonDisplayImage == null ? gameObject.transform.localScale : buttonDisplayImage.gameObject.transform.localScale;
+            if (m_Button == null)
+            {
+                DestroyImmediate(this);
+            }
+            else
+            {
+                m_Button.transition = Selectable.Transition.None;
+            }
         }
 
         private void OnDisable()

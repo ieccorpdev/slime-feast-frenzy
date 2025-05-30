@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,12 +15,17 @@ namespace IEC
         public GameObject avatarSelectedGroup;
         public GameObject frameSelectedGroup;
         public GameObject selectedIcon;
+        public GameObject lockIcon;
+        
+        public AvatarSelectionUIState CurrentState { get; private set; }
 
         public void Init(Sprite sprite)
         {
             avatarSelectedGroup.SetActive(false);
             frameSelectedGroup.SetActive(false);
             selectedIcon.SetActive(false);
+            if(lockIcon != null)
+                lockIcon.SetActive(false);
             if (Locator.Main.PopupEditProfile.CurrentSelectedTab == ProfileSelectTab.Avatar)
             {
                 avatarImage.gameObject.SetActive(true);
@@ -31,6 +37,8 @@ namespace IEC
                 avatarFrameImage.sprite = sprite;
                 avatarImage.gameObject.SetActive(false);
             }
+            
+            CheckSetLockDisplay(Config.playerAvatarConfig.GetUnlockConfig(sprite.name));
         }
         
         public void OnPointerDown(PointerEventData eventData)
@@ -72,6 +80,9 @@ namespace IEC
 
         private void OnSelectAvatar()
         {
+            if (CurrentState == AvatarSelectionUIState.Lock)
+                return;
+            
             Locator.Main.PopupEditProfile.SelectAvatar(this);
             SetSelectedDisplay(true);
         }
@@ -89,5 +100,53 @@ namespace IEC
                 frameSelectedGroup.SetActive(isSelected);
             }
         }
+
+        public void CheckSetLockDisplay(AvatarNFrameUnlockConfig unlockConfig)
+        {
+            if (unlockConfig == null)
+            {
+                SetSelectionState(AvatarSelectionUIState.Unlock);
+                return;
+            }
+
+            switch (unlockConfig.conditionType)
+            {
+                case AvatarUnlockConditionType.Level:
+                    break;
+                case AvatarUnlockConditionType.KingdomPass:
+                    SetSelectionState(PlayerData.journeyData.isEnableMaxHeart
+                        ? AvatarSelectionUIState.Unlock
+                        : AvatarSelectionUIState.Lock);
+                    break;
+            }
+            
+            if(CurrentState == AvatarSelectionUIState.Lock)
+                SetLockDisplay(unlockConfig);
+        }
+
+        private void SetLockDisplay(AvatarNFrameUnlockConfig unlockConfig)
+        {
+            avatarFrameImage.sprite = unlockConfig.lockFrameSprite;
+
+            if(lockIcon != null)
+                lockIcon.SetActive(true);
+        }
+
+        public void SetSelectionState(AvatarSelectionUIState state)
+        {
+            CurrentState = state;
+        }
+    }
+
+    public enum AvatarSelectionUIState
+    {
+        Lock,
+        Unlock
+    }
+
+    public enum AvatarUnlockConditionType
+    {
+        Level,
+        KingdomPass,
     }
 }

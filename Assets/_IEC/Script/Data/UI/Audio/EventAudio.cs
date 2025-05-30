@@ -62,6 +62,9 @@
             public const string CHEST_IDLE = "Audio.CHEST_IDLE"; // Play chest idle anim (chest hoặc gift)
             public const string HOMEPAGE_IDLE = "Audio.HOMEPAGE_IDLE"; // Loop ở homepage
             public const string HOMEPAGE_TAP = "Audio.HOMEPAGE_TAP"; // Play khi tap vào màn hình homepage ngoài UI
+            public const string RELIC_APEAR = "Audio.RELIC_APEAR"; 
+            public const string RELIC_CLONE = "Audio.RELIC_CLONE"; 
+
         }
     }
 }
