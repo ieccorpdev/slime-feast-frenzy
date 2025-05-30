@@ -25,7 +25,6 @@ public class PopupRelicHunt : BasePopup
     public Sprite goodJobSprite;
     public Sprite wellDoneSprite;
     public Sprite amazingSprite;
-    public bool isDoneLevel;
     [SerializeField] private RelicLevelVisual levelVisual;
     [SerializeField] RelicProgressBar relicProgressBar;
     private List<Reward> rewards = new();
@@ -61,7 +60,6 @@ public class PopupRelicHunt : BasePopup
 
     public override void Show()
     {
-        isDoneLevel = IsAllRewardClaim();
         ResetVisual();
         //CaculateAndShowReward();
         CaculateReward();
@@ -69,15 +67,11 @@ public class PopupRelicHunt : BasePopup
         base.Show();
     }
 
-    private bool IsAllRewardClaim()
-    {
-        var rewardPerlevel = 3;
-        return PlayerData.relicData.claimedRewardIds.Count ==
-               relicConfig.ArtifactLevels.Count * rewardPerlevel;
-    }
+   
 
     private void ResetVisual()
     {
+        var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         var aboveNode = FindNextRewardNode();
 
         if (aboveNode != null)
@@ -170,25 +164,14 @@ public class PopupRelicHunt : BasePopup
         int maxLevel = Config.relicConfig.ArtifactLevels.Count;
         var curToken = PlayerData.relicData.currentRelicTokenCount;
         var aboveNode = relicReward.FirstOrDefault(t => relicConfig.GetStackTokenCost(t.id) > curToken);
-
-        if (aboveNode != null)
-        {
-            isDoneLevel = false;
-            return aboveNode;
-        }
-
-        if (curLevelIndex <= maxLevel)
-        {
-            isDoneLevel = true;
-        }
-
-
+        
         return aboveNode;
     }
 
 
     private void UpdateButtonState()
     {
+        var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
         playMainButton.transform.parent.gameObject.SetActive(!hasReward);
@@ -209,7 +192,6 @@ public class PopupRelicHunt : BasePopup
         var tokenToLevelUp = relicConfig.GetStackTokenCost(relicReward[^1].id);
         if (PlayerData.relicData.LevelUp(tokenToLevelUp, Config.relicConfig.ArtifactLevels.Count))
         {
-            isDoneLevel = false;
             //reset visual
             relicProgressBar.OnNewLevel();
             CaculateReward();
@@ -224,11 +206,6 @@ public class PopupRelicHunt : BasePopup
     private int GetCurrentLevelIndex()
     {
         int curLevelIndex = PlayerData.relicData.curRelicLevel - 1;
-
-        if (curLevelIndex >= Config.relicConfig.ArtifactLevels.Count)
-        {
-            isDoneLevel = true;
-        }
 
         return curLevelIndex;
     }
@@ -306,6 +283,8 @@ public class PopupRelicHunt : BasePopup
 
     private void UpdateTimer()
     {
+        var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
+        
         if (IsEndEvent || isDoneLevel)
         {
             timerText.text = "Finished";
