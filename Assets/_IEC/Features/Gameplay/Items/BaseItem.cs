@@ -259,9 +259,9 @@ namespace _IEC.Features.Gameplay
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
-                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
+                    hasSpringOscillation = true;
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
                 }
             }
