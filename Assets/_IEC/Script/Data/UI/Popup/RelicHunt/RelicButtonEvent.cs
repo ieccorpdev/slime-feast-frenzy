@@ -23,17 +23,19 @@ public class RelicButtonEvent : _BaseBehaviour
 
     public void UpdateUI()
     {
-        Config.eventLiveOpsConfig.GetTimeEndEvent(EventType.RelicHunt,Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), PlayerData.GetDaysSinceDownload());
         completedGroup.SetActive(false);
         lockedGroup.SetActive(false);
         joinGroup.SetActive(false);
         claimRewardGroup.SetActive(false);
         timerGroup.SetActive(false);
+        button.interactable = true;
+
         if (PlayerData.relicData.hasJoinEvent == false)
         {
             joinGroup.SetActive(true);
             return;
         }
+
         if (PlayerData.level < Config.relicConfig.levelUnlockFeature)
         {
             levelUnlockText.text = "Lvl. " + Config.relicConfig.levelUnlockFeature;
@@ -52,17 +54,18 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                countdownTimeSpan = PlayerData.relicData.eventTimeEnd - DateTime.Now;
                 bool isEndEvent = countdownTimeSpan.TotalSeconds <= 0;
                 if (isMaxLevel && !isEndEvent)
                 {
                     completedGroup.SetActive(true);
+                    button.interactable = false;
                 }
                 else
                 {
+                    countdownTimeSpan = PlayerData.relicData.eventTimeEnd - DateTime.Now;
+                    timerText.text = GetTimeFormat(countdownTimeSpan);
                     timerGroup.gameObject.SetActive(true);
-                    timerText.text = DateTimeHelper.GetFormattedTimeHMS(
-                        countdownTimeSpan);
+
                     if (isEndEvent)
                     {
                         OnTimeEventEnd();
@@ -70,6 +73,34 @@ public class RelicButtonEvent : _BaseBehaviour
                 }
             }
         }
+    }
+
+    private string GetTimeFormat(TimeSpan time)
+    {
+        string outputString = "";
+
+        var day = time.Days;
+        var hour = time.Hours;
+        var minute = time.Minutes;
+        var seconds = time.Seconds;
+        string days = day < 10 ? $"0{day}" : day.ToString();
+        string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+        string minutes = minute < 10 ? $"0{minute}" : minute.ToString();
+        string second = seconds.ToString();
+        if (day > 0)
+        {
+            outputString = $"{days}d {hours}h";
+        }
+        else if (hour > 0)
+        {
+            outputString = $"{hours}h {minutes}m";
+        }
+        else
+        {
+            outputString = $"{minutes}m {second}s";
+        }
+
+        return outputString;
     }
 
     private void OnTimeEventEnd()
