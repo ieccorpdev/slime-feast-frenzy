@@ -24,7 +24,8 @@ namespace _IEC.Script.Config
         public float minSpawnSize = 0.8f;
         public List<RelicObjectSpawnData> listSpecialObjectSpawnData = new();
         public List<ItemDefinition> listRelicItemDefinition = new();
-        
+        public int eventDurationInHours = 48;
+
         public int GetSpawnAmount(int level)
         {
             var spawnData = listSpecialObjectSpawnData
