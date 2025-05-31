@@ -41,7 +41,8 @@ namespace IEC
         {
             DateTime timeEnd = Config.eventLiveOpsConfig.GetTimeEndEvent(EventType.RelicHunt,
                 Mathf.FloorToInt(Config.relicConfig.eventDurationInHours / 24), PlayerData.GetDaysSinceDownload());
-            bool isNewEvent = (timeEnd - PlayerData.relicData.eventTimeEnd).TotalDays != 0;
+            //DateTime timeEnd = DateTime.Now.AddSeconds(10);
+            bool isNewEvent = (timeEnd.Day - PlayerData.relicData.eventTimeEnd.Day) != 0;
             if (isNewEvent)
             {
                 PlayerData.relicData.eventTimeEnd = timeEnd;
