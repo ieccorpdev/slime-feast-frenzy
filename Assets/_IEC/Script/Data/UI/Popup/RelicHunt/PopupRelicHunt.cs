@@ -20,6 +20,7 @@ public class PopupRelicHunt : BasePopup
     public Button closeInfoButton;
     public Button playMainButton;
     public Button claimButton;
+    public GameObject finishGroup;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI relicToClaimText;
     public Sprite goodJobSprite;
@@ -60,9 +61,14 @@ public class PopupRelicHunt : BasePopup
 
     public override void Show()
     {
+        if (PlayerData.relicData.hasJoinEvent == false)
+        {
+            DOVirtual.DelayedCall(0.5f, OnShowInfo);
+            PlayerData.relicData.hasJoinEvent = true;
+        }
         ResetVisual();
         //CaculateAndShowReward();
-        CaculateReward();
+        UpdateRewardLevelNode();
 
         base.Show();
     }
@@ -87,7 +93,7 @@ public class PopupRelicHunt : BasePopup
         UpdateButtonState();
     }
 
-    private void CaculateReward()
+    private void UpdateRewardLevelNode()
     {
         var curLevel = PlayerData.relicData.curRelicLevel;
         var config = Config.relicConfig.ArtifactLevels[curLevel - 1];
@@ -125,11 +131,7 @@ public class PopupRelicHunt : BasePopup
             }
         }
     }
-
-    private void UpdateState()
-    {
- 
-    }
+    
 
     private void CaculateAndShowReward()
     {
@@ -164,8 +166,10 @@ public class PopupRelicHunt : BasePopup
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-        playMainButton.transform.parent.gameObject.SetActive(!hasReward);
+        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig);
+        playMainButton.transform.parent.gameObject.SetActive(!hasReward && hasLockReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
+        finishGroup.SetActive(!hasLockReward && !hasReward);
     }
 
     private void ClaimAllLevelReward()
@@ -184,14 +188,10 @@ public class PopupRelicHunt : BasePopup
         {
             //reset visual
             relicProgressBar.OnNewLevel();
-            CaculateReward();
+            UpdateRewardLevelNode();
         }
     }
-
-    private void OnAllLevelClaimState()
-    {
-        levelVisual.DoShowLevelVisual(Config.relicConfig.ArtifactLevels.Count);
-    }
+    
 
     private int GetCurrentLevelIndex()
     {
@@ -208,7 +208,7 @@ public class PopupRelicHunt : BasePopup
         {
             bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
 
-            relicToClaimText.text = HasReward ? "Claim all reward to continue" : "New event is coming";
+            relicToClaimText.text = HasReward ? "Claim all reward to continue" : "More treasure will soon come.";
             return;
         }
 

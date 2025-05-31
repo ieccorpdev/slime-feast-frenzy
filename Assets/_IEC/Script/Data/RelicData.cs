@@ -18,11 +18,8 @@ namespace IEC
         public bool hasDoneLevel;
         public List<Reward> lastEventRewards = new();
         public int relicItemIndex;
+        public bool isNewEvent;
 
-        public bool IsEventInRange()
-        {
-            return eventTimeEnd > DateTime.Now;
-        }
 
         public bool IsDoneLevel(ArtifactCollectorConfig config)
         {
@@ -46,6 +43,7 @@ namespace IEC
         public void OnResetEvent(ArtifactCollectorConfig config)
         {
             var rw = GetAllUnClaimRelicLevelReward(config);
+            lastEventRewards.Clear();
             if (rw.Count > 0)
             {
                 foreach (var keyValuePair in rw)
@@ -53,11 +51,10 @@ namespace IEC
                     lastEventRewards.Add(new(keyValuePair.Value, keyValuePair.Key));
                 }
             }
-
             hasJoinEvent = false;
             curRelicLevel = 1;
             claimedRewardIds.Clear();
-
+            isNewEvent = true;
         }
 
         public bool CheckIfHasReward(ArtifactCollectorConfig config)
