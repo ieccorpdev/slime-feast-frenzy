@@ -31,9 +31,23 @@ namespace IEC
             else
             {
                 gameObject.SetActive(true);
+                CheckReward();
                 UpdateProgressBar();   
             }
 
+        }
+
+        private static void CheckReward()
+        {
+            var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            if (PlayerData.CheckClaimProgressReward(reward))
+            {
+                System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
+                reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            }
+            Locator.Main.HomeScreenTab.progressRewardBar.DoAnimProgressBar();
         }
 
         private void Update()

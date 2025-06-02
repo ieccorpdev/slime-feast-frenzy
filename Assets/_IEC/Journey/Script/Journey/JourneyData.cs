@@ -20,6 +20,7 @@ namespace IEC
         public bool isCompleteJourney;
         public bool isShowHandtut;
         public bool isEndEvent;
+        public bool isShowNoti;
 
         public void SetStartJourneyTimeNow()
         {
@@ -47,6 +48,7 @@ namespace IEC
             wasOpenJourney = false;
             isCompleteJourney = false;
             isEndEvent = false;
+            isShowNoti = false;
         }
 
         public string GetTimeRemainingString()
