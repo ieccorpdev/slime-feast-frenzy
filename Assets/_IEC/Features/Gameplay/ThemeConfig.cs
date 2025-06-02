@@ -114,6 +114,7 @@ namespace _IEC.Features.Gameplay
         }
         public WaterThemeConfig GetWaterThemeForLevel(int level)
         {
+            level =level + 1;// ADd 1 level for bug Task #69952, theme change from 1-25
             if (level < stepChangeTheme)
                 return waterThemeConfigs[0];
 
