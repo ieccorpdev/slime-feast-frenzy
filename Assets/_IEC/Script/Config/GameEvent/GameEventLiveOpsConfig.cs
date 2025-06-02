@@ -85,6 +85,9 @@ namespace IEC
 
         public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
         {
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count - 1);
+            
             int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
             return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
