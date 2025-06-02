@@ -1,5 +1,19 @@
 {
   "dependencies": {
+    "com.apple.unityplugin.core": {
+      "version": "file:../Assets/Plugins/com.apple.unityplugin.core-3.1.8.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
+    "com.apple.unityplugin.gamekit": {
+      "version": "file:../Assets/Plugins/com.apple.unityplugin.gamekit-3.0.2.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.apple.unityplugin.core": "3.1.8"
+      }
+    },
     "com.google.android.appbundle": {
       "version": "https://gitlab.com/iec-public-registry/com.google.android.appbundle.git#1.9.0",
       "depth": 0,

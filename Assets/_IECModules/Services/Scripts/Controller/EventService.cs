@@ -21,6 +21,8 @@ namespace IEC
             public const string PUSH_SHOW_INTER = "Service.PUSH_SHOW_INTER";
 
             public const string ON_ADD_ANALYTIC_SAVE_DATA = "Service.ON_ADD_ANALYTIC_SAVE_DATA";
+            
+            public const string CLOUD_APPLY_COMPLETED = "Service.CLOUD_SAVE_COMPLETED";
         }
 
         public static class Leaderboard

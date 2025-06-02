@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using IEC.CloudSave;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -23,6 +24,12 @@ namespace IEC
 
         public List<ScreenUI> ListScreen => 
             SingleCreateIfNotExist("ListScreen", () => transform.GetComponentsInChildren<ScreenUI>(true).ToList());
+
+        public ScreenUI ScreenHome;
+        public PopupCloudSave PopupCloudSave => Pool.Get<PopupCloudSave>();
+        public PopUpHomeSettings PopUpHomeSettings => Pool.Get<PopUpHomeSettings>();
+        // public ScreenUI ScreenHome => Pool.Get<ScreenHome>();
+
 
         public void LocateGroup()
         {
@@ -74,6 +81,11 @@ namespace IEC
                 screen.listHideHaveEffect.ForEach(s => HideScreen(s, true));
             }
             screen.Show();
+            
+            this.RaiseEvent(EventList.GamePlay.SCREEN_CHANGE, new ScreenChangeData
+            {
+                screenUI = screen
+            });
         }
 
         public void HideScreen(ScreenUI screen, bool isUseEffect)

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using _IECModules;
+using IEC.CloudSave;
+using Newtonsoft.Json;
 using UnityEngine;
 
 namespace IEC
@@ -114,6 +116,46 @@ namespace IEC
             {
                 SaveData();
             }
+        }
+        
+        // Convert from local data, param save is used to hold the reference
+        public CloudSaveData ConvertToCloudSaveData(CloudSaveData save)
+        {
+            foreach (var kv in m_DictAutoSave)
+            {
+                save.dictDatas[kv.Key] = kv.Value.JsonSerialize();
+            }
+
+            return save;
+        }
+
+        public void ApplyCloudSave(CloudSaveData data)
+        {
+            if (data == null || data.dictDatas == null) return;
+
+            Debug.LogWarning("[CLOUD SAVE] Data Controller Apply Cloud Save Data");
+            foreach (var kv in data.dictDatas)
+            {
+                var dataKey = kv.Key;
+                var dataValue = kv.Value;
+                
+                if (m_DictAutoSave.TryGetValue(dataKey, out var value))
+                {
+                    var deserializedData = JsonConvert.DeserializeObject(dataValue);
+                    Debug.LogWarning($"BEFORE: DataKey: {dataKey}, DATA TYPE: {deserializedData}, DeserializedData: {deserializedData.JsonSerialize()}");
+                    value.CopyValuesFrom(deserializedData);
+                    Debug.LogWarning($"AFTER: DataKey: {dataKey}, DATA TYPE: {value}, Value: {value.JsonSerialize()}");
+                }
+            }
+
+            if (PlayerData.isNoAds) // Only apply if no ads = true
+            {
+                Services.ActiveNoAds(true);
+                // TODO: Uncommnent and modify this if your code already has an event when no ads is successfully applied
+                // this.RaiseEvent(EventList.IAP.BUY_NO_ADS_SUCCESSFULLY, "");
+            }
+            
+            EventController.RaiseEvent(EventList.Service.CLOUD_APPLY_COMPLETED);
         }
     }
 }

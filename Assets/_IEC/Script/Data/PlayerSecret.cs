@@ -59,5 +59,10 @@ namespace IEC
             return new DateTime(lastTickPlayTime);
         }
 
+        #region CloudSave
+
+        public string cloudSaveUserId;
+
+        #endregion
     }
 }
