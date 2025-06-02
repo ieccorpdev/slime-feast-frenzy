@@ -32,7 +32,6 @@ namespace IEC
         {
             if (root)
             {
-                PlayerData.journeyData.isBuyIAP = true;
                 this.gameObject.SetActive(false);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(root);
             }

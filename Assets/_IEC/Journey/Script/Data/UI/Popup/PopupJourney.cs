@@ -47,7 +47,6 @@ namespace IEC
             });
             Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += () =>
             {
-                PlayerData.journeyData.isBuyIAP = true;
                 RefreshUI();
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
