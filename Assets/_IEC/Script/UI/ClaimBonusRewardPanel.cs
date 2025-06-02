@@ -132,7 +132,7 @@ public class ClaimBonusRewardPanel : BasePopup
     {
         canOpen = false;
         canClaim = false;
-        this.listDataReward = listDataReward;
+        this.listDataReward = new(listDataReward);
         this.showAimChest = showAimChest;
         this.actionClose = null;
         this.actionClose = actionClose;
