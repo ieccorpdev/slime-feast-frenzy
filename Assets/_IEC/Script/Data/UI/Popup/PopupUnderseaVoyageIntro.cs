@@ -64,11 +64,7 @@ namespace IEC
             {
                 isFinished = false;
                 if (PlayerData.journeyData.CheckFinishedDay())
-                {
-                    Debug.LogError("CheckFinishedDay true");
                     Locator.Main.PopupJourney.ClaimAllItem();
-                }
-                    
             }
         }
 

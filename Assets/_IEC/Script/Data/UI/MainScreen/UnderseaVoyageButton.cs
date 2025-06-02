@@ -113,36 +113,34 @@ namespace IEC
             Pool.Set(this);
         }
 
-        private IEnumerator Start()
+        private void Start()
         {
             button = GetComponent<Button>();    
             button.onClick.AddListener(HandleEventClickShowPopupUnderseaVoyage);
             InitStatusButton();
-            while (true)
+        }
+
+        private void Update()
+        {
+            if (txtTimer != null)
             {
-                if (txtTimer != null)
+                if (PlayerData.journeyData.wasOpenJourney)
                 {
-                    if (PlayerData.journeyData.wasOpenJourney)
+                    txtTimer.text = PlayerData.journeyData.GetTimeRemainingString();
+                    if (txtTimer.text.Equals("Finished"))
                     {
-                        txtTimer.text = PlayerData.journeyData.GetTimeRemainingString();
-                        if (txtTimer.text.Equals("Finished"))
+                        SetState(UnderseaVoyageState.Finish);
+                        if (PlayerData.journeyData.CheckFinishedDay() && !isShowNewVersion)
                         {
-                            SetState(UnderseaVoyageState.Finish);
-                            Debug.LogError("Update true" + isShowNewVersion);
-                            if (PlayerData.journeyData.CheckFinishedDay() && !isShowNewVersion)
-                            {
-                                Debug.LogError("CheckFinishedDay trueee");
-                                isShowNewVersion = true;
-                                Locator.Main.PopupUnderseaVoyageIntro.Show();
-                            }
-                        }
-                        else if (currentState == UnderseaVoyageState.Finish)
-                        {
-                            SetState(UnderseaVoyageState.Unlock);
+                            isShowNewVersion = true;
+                            Locator.Main.PopupUnderseaVoyageIntro.Show();
                         }
                     }
+                    else if (currentState == UnderseaVoyageState.Finish)
+                    {
+                        SetState(UnderseaVoyageState.Unlock);
+                    }
                 }
-                yield return new WaitForSeconds(1f);
             }
         }
 
