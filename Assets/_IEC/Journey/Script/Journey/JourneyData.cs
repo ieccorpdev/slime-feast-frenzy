@@ -36,8 +36,7 @@ namespace IEC
                 lifeCycleCount++;
                 wasOpenJourney = true;
             }
-            Debug.LogError("SetStartJourneyTimeNow: lifeCycleCount + " + lifeCycleCount);
-            Debug.LogError("SetStartJourneyTimeNow: timeStartJourneyTrip + " + timeStartJourneyTrip);
+            Debug.Log("fix bug complete");
         }
 
         public void ResetJourneyData()
@@ -91,8 +90,6 @@ namespace IEC
         {
             DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
             TimeSpan remaining = endTime - DateTime.Now;
-            Debug.LogError("CheckFinishedDay : endTime" + endTime);
-            Debug.LogError("CheckFinishedDay : remaining" + remaining);
             return remaining <= TimeSpan.Zero;
         }
 

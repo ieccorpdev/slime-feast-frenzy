@@ -17,6 +17,7 @@ public class PopupVoyagePassIAPInfor : BasePopup
             Hide();
             activeGroup.SetActive(true);
             inactiveGroup.SetActive(false);
+            PlayerData.journeyData.isBuyIAP = true;
         };
     }
 
