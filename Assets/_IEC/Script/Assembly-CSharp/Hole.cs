@@ -74,6 +74,8 @@ public class Hole : _BaseBehaviour
 
 	public HoleConfig Settings => m_settings;
 
+	public CharacterConfig CurrentCharacterConfig { get; private set; }
+
 	private void Awake()
 	{
 		m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
@@ -341,6 +343,47 @@ public class Hole : _BaseBehaviour
 	{
 		SetXp(m_Xp + xp,true);
 	}
+
+	public void DecreaseXp(int xp)
+	{
+		var totalDecreaseXp = xp;
+
+		while (totalDecreaseXp > 0)
+		{
+			if (totalDecreaseXp > m_Xp)
+			{
+				totalDecreaseXp -= m_Xp;
+				if(m_Level > 1)
+					m_Level--;
+				SetLevel(Level);
+				
+				if(m_Level == 0)
+				{
+					//totalDecreaseXp = 0;
+					if (m_Xp > totalDecreaseXp)
+					{
+						SetXp(m_Xp - totalDecreaseXp,true);
+					}
+					else
+					{
+						SetXp(0,true);
+					}
+
+					totalDecreaseXp = 0;
+				}
+				else
+				{
+					SetXp(Settings.GetRequiredXp(Level, false) - 1, true);
+					m_Xp = Settings.GetRequiredXp(Level, false);
+				}
+			}
+			else
+			{
+				SetXp(m_Xp - totalDecreaseXp,true);
+				totalDecreaseXp = 0;
+			}
+		}
+	}
 	
 	public void SetActive(bool active)
 	{
@@ -364,18 +407,21 @@ public class Hole : _BaseBehaviour
 		magnetVfx.Stop();
 	}
 
-	public void CollectABomb()
+	public void CollectABomb(bool isDoAnim = true)
 	{
 		SpawnVfx(exploreVfx);
 		SpawnVfx(deathVfx);
-		DOTween.Sequence()
-			.AppendInterval(0.2f)
-			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.InsertCallback(0.3f, () =>
-			{
-				//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
-			});
+		if (isDoAnim)
+		{
+			DOTween.Sequence()
+				.AppendInterval(0.2f)
+				.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.InsertCallback(0.3f, () =>
+				{
+					//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
+				});
+		}
 	}
 
 	public void ResetSize()
@@ -421,9 +467,9 @@ public class Hole : _BaseBehaviour
 	{
 		m_AdditionalSpeedFromCharacterTrait = 1;
 		m_AdditionalSizeFromCharacterTrait = 1;
-		var config = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
 
-		foreach (var trait in config.listCharacterTraits)
+		foreach (var trait in CurrentCharacterConfig.listCharacterTraits)
 		{
 			switch (trait.traitType)
 			{
@@ -435,6 +481,28 @@ public class Hole : _BaseBehaviour
 					break;
 			}
 		}
+	}
+
+	public bool CheckApplyCharacterPowerOnDead(CharacterPowerType powerType)
+	{
+		var power = CurrentCharacterConfig.GetPower(powerType);
+
+		if (power == null)
+			return false;
+
+		switch (power.powerType)
+		{
+			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
+				// DOTween.Kill(holeGraphics);
+				// DOTween.Kill(holeCanvases);
+				// holeGraphics.localScale = Vector3.one;
+				// holeCanvases.localScale = Vector3.one;
+				DecreaseXp((int)power.buffAmount);
+				break;
+		}
+		
+		
+		return true;
 	}
 
 	public void HideLevelText()

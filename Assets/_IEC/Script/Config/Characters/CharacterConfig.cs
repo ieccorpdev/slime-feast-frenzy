@@ -52,6 +52,7 @@ namespace IEC
 
     public enum CharacterPowerType
     {
+        LoseXpInsteadOfDeadOnBomb,
         IncreaseHelperTime
     }
 }

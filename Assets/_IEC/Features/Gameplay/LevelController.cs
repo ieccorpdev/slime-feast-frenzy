@@ -637,8 +637,8 @@ namespace _IEC.Features.Gameplay
             
             if (IsInResultState() == false)
             {
-                playerHole.CollectABomb();
-                
+                var checkCharPowerOnBomb = playerHole.CheckApplyCharacterPowerOnDead(CharacterPowerType.LoseXpInsteadOfDeadOnBomb);
+                playerHole.CollectABomb(!checkCharPowerOnBomb);
                 GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
                 TweenControl.GetInstance().Shake(
                     target: GamePlay.mainCamera.gameObject,
@@ -656,17 +656,21 @@ namespace _IEC.Features.Gameplay
                     easeType: EaseType.InOutQuad,
                     delay: 0f
                 );
-                if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                if (!checkCharPowerOnBomb)
                 {
-                    ChangeState(State.Lose);
-                    DOVirtual.DelayedCall(1.5f, () =>
+                    if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                     {
-                        //Double check for sure
-                        if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                        ChangeState(State.Lose);
+                        DOVirtual.DelayedCall(1.5f, () =>
                         {
-                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                        }
-                    });
+                            //Double check for sure
+                            if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                            {
+                                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,
+                                    new EventParam() { p0 = LoseReason.Boom });
+                            }
+                        });
+                    }
                 }
 
             }
