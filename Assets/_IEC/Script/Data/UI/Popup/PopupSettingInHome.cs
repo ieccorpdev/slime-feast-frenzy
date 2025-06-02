@@ -28,9 +28,9 @@ namespace IEC
             //Cloud Save
             SetEvent(btnCloudSave, OnBtnCloudSaveClick);
 
-            btnCloudSaveState.isOn = CloudSaveController.cloudSaveInstallData.isCloudSaveOn;
-            btnCloudSaveOn.SetActive(CloudSaveController.cloudSaveInstallData.isCloudSaveOn);
-            btnCloudSaveOff.SetActive(!CloudSaveController.cloudSaveInstallData.isCloudSaveOn);
+            //btnCloudSaveState.isOn = CloudSaveController.cloudSaveInstallData.isCloudSaveOn;
+            //btnCloudSaveOn.SetActive(CloudSaveController.cloudSaveInstallData.isCloudSaveOn);
+            //btnCloudSaveOff.SetActive(!CloudSaveController.cloudSaveInstallData.isCloudSaveOn);
         }
 
         public void OnGiftCodeClick()
@@ -74,13 +74,13 @@ namespace IEC
         [Header("Buttons")]
         [SerializeField] private Button btnCloudSave;
 
-        [Header("Cloud Save")]
-        [SerializeField] private Toggle btnCloudSaveState;
-        [SerializeField] private GameObject btnCloudSaveOn;
-        [SerializeField] private GameObject btnCloudSaveOff;
-        [SerializeField] private CanvasGroup groupCloudSaveActivated;
-        [SerializeField] private CanvasGroup groupCloudSaveNotAvailable;
-        [SerializeField] private CanvasGroup groupCloudSaveNotBelong;
+        //[Header("Cloud Save")]
+        //[SerializeField] private Toggle btnCloudSaveState;
+        //[SerializeField] private GameObject btnCloudSaveOn;
+        //[SerializeField] private GameObject btnCloudSaveOff;
+        //[SerializeField] private CanvasGroup groupCloudSaveActivated;
+        //[SerializeField] private CanvasGroup groupCloudSaveNotAvailable;
+        //[SerializeField] private CanvasGroup groupCloudSaveNotBelong;
 
         private CloudSaveController CloudSaveController => Controllers.Get<CloudSaveController>();
         
@@ -114,18 +114,18 @@ namespace IEC
         private void SetBtnCloudSaveState(bool isOn)
         {
             CloudSaveController.cloudSaveInstallData.isCloudSaveOn = isOn;
-            btnCloudSaveState.isOn = isOn;
-            btnCloudSaveOn.SetActive(isOn);
-            btnCloudSaveOff.SetActive(!isOn);
+            //btnCloudSaveState.isOn = isOn;
+            //btnCloudSaveOn.SetActive(isOn);
+            //btnCloudSaveOff.SetActive(!isOn);
         }
 
         private void OnCloudSaveActivated()
         {
             DOTween.Kill("CloudSaveActivated");
-            groupCloudSaveActivated.alpha = 1;
+           // groupCloudSaveActivated.alpha = 1;
             DOVirtual.DelayedCall(0.5f, () =>
             {
-                groupCloudSaveActivated.DOFade(0, 1f).SetEase(Ease.InQuad);
+                //groupCloudSaveActivated.DOFade(0, 1f).SetEase(Ease.InQuad);
             }).SetId("CloudSaveActivated");
 
             SetBtnCloudSaveState(true);
@@ -135,10 +135,10 @@ namespace IEC
         {
             Debug.LogError("[CLOUD SAVE] Not belong to user");
             DOTween.Kill("CloudSaveNotBelong");
-            groupCloudSaveNotBelong.alpha = 1;
+            //groupCloudSaveNotBelong.alpha = 1;
             DOVirtual.DelayedCall(1.5f, () =>
             {
-                groupCloudSaveNotBelong.DOFade(0, 1f).SetEase(Ease.InQuad);
+                //groupCloudSaveNotBelong.DOFade(0, 1f).SetEase(Ease.InQuad);
             }).SetId("CloudSaveNotBelong");
 
             SetBtnCloudSaveState(false);
@@ -148,10 +148,10 @@ namespace IEC
         {
             Debug.LogError("[CLOUD SAVE] Not available");
             DOTween.Kill("CloudSaveNotAvailable");
-            groupCloudSaveNotAvailable.alpha = 1;
+            //groupCloudSaveNotAvailable.alpha = 1;
             DOVirtual.DelayedCall(1.5f, () =>
             {
-                groupCloudSaveNotAvailable.DOFade(0, 1f).SetEase(Ease.InQuad);
+                //groupCloudSaveNotAvailable.DOFade(0, 1f).SetEase(Ease.InQuad);
             }).SetId("CloudSaveNotAvailable");
 
             SetBtnCloudSaveState(false);
