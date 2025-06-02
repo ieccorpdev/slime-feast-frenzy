@@ -201,7 +201,6 @@ public class HomeScreenTab : ScreenNavigateUI
          SetEvent(btnRelicHunt,
             () =>
             {
-                if(PlayerData.relicData.hasJoinEvent == false) PlayerData.relicData.hasJoinEvent = true;
                 
                 Services.PushEvent(new IEC.TrackingEvent.ClickBtnTracking("click_Relic_Hunt"));
                 if (Locator.Main.PopupRelicHunt.CheckShowPopup())
@@ -584,10 +583,27 @@ public class HomeScreenTab : ScreenNavigateUI
         if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
                 && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
         {
-            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+            PlayerData.isShowStartedPackInStartGame = !PlayerData.isShowStartedPackInStartGame;
+            if (PlayerData.isShowStartedPackInStartGame)
+            {
+                AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                   () =>
+                   {
+                       Locator.Main.PopupVoyagePassIAPInfor.Show();
+                   },
+                   ShowNextPopup);
+            }
+        }
+        else
+        {
+            PlayerData.isShowStartedPackInStartGame = false;
+        }
+        if (!PlayerData.isBoughtStarterPack && !PlayerData.isShowStartedPackInStartGame)
+        {
+            AddPopupToShow(Locator.Main.PopupStarterPack,
                 () =>
                 {
-                    Locator.Main.PopupVoyagePassIAPInfor.Show();
+                    Locator.Main.PopupStarterPack.Show();
                 },
                 ShowNextPopup);
         }

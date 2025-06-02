@@ -50,7 +50,7 @@ namespace IEC
             int levelUnlock = Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
             return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
         }
-        public void InitUI()
+        public void InitUI() 
         {
             bool show = IsEventCanShow();
             gameObject.SetActive(show);
