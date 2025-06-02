@@ -69,9 +69,16 @@ namespace IEC
 
         private TimeSpan GetTimeRemaining()
         {
-            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
-            TimeSpan remaining = endTime - DateTime.Now;
-            return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            try
+            {
+                DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
+                TimeSpan remaining = endTime - DateTime.Now;
+                return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            }
+            catch
+            {
+                return TimeSpan.Zero;
+            }
         }
 
         public bool CheckFinishedDay()
