@@ -921,10 +921,7 @@ namespace IEC
         {
             _relicData = new();
         }
-        public void CheckResetTimeArtifactEvent()
-        {
-            _relicData.CheckResetTimeEvent(Config.relicConfig.daysEachReset);
-        }
+   
         public bool ReachMaxRelicReward()
         {
             return false;
