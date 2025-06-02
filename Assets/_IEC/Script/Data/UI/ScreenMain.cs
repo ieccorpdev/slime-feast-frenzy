@@ -107,7 +107,7 @@ namespace IEC
             });
             SetEvent(m_BtnSetting, () =>
             {
-                UI.ShowScreen(Locator.Service.PopupSettingInHome);
+                UI.ShowScreen(Locator.Main.PopupSettingInHome);
             });
         }
 

@@ -23,6 +23,8 @@ namespace IEC
             public const string RESTORE_PURCHASE = "Service.RESTORE_PURCHASE";
 
             public const string ON_ADD_ANALYTIC_SAVE_DATA = "Service.ON_ADD_ANALYTIC_SAVE_DATA";
+            
+            public const string CLOUD_APPLY_COMPLETED = "Service.CLOUD_SAVE_COMPLETED";
             public const string CLOSE_LOADING_SCREEN = "Service.CLOSE_LOADING_SCREEN";
             public const string ON_BANNER_STATE_CHANGED = "Service.ON_BANNER_STATE_CHANGED";
         }
