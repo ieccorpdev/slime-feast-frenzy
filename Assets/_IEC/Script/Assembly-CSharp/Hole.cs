@@ -44,14 +44,17 @@ public class Hole : _BaseBehaviour
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
+	private float m_AdditionalSizeFromCharacterTrait = 1;
+	private float m_AdditionalSpeedFromCharacterTrait = 1;
 	private float defaultPosYCharacter = -0.9f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) * m_AdditionalSpeedFromCharacterTrait 
 	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
-	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
+	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) * m_AdditionalSizeFromCharacterTrait
+	                     + m_AdditionalSize;
 
 	public int Level => m_Level;
 
@@ -406,11 +409,32 @@ public class Hole : _BaseBehaviour
 		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
+		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
 		xpBar.SetAmount(m_Xp,false);
 		SetLevel(1);
 		ResetCharacter();
+	}
+
+	private void CheckApplyCharacterTrait()
+	{
+		m_AdditionalSpeedFromCharacterTrait = 1;
+		m_AdditionalSizeFromCharacterTrait = 1;
+		var config = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+
+		foreach (var trait in config.listCharacterTraits)
+		{
+			switch (trait.traitType)
+			{
+				case CharacterTraitType.IncreaseSpeed:
+					m_AdditionalSpeedFromCharacterTrait += trait.buffAmount;
+					break;
+				case CharacterTraitType.IncreaseSize:
+					m_AdditionalSizeFromCharacterTrait += trait.buffAmount;
+					break;
+			}
+		}
 	}
 
 	public void HideLevelText()

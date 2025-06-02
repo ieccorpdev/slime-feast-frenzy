@@ -90,6 +90,8 @@ namespace IEC
         public JourneyTripConfig journeyTripConfig;
         [Header("Game Event Live Ops")] 
         public GameEventLiveOpsConfig eventLiveOpsConfig;
+        [Header("Characters")] 
+        public AllCharactersConfig allCharactersConfig;
 
         public void PreloadAllConfig()
         {

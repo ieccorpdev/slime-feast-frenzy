@@ -116,6 +116,10 @@ namespace IEC
             {
                 playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
             }
+            if (String.IsNullOrEmpty(playerCharacterName))
+            {
+                playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[0]?.characterName ?? "";
+            }
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
@@ -494,6 +498,10 @@ namespace IEC
             }
         }
         
+        #endregion
+        
+        #region Player Character
+        public string playerCharacterName;
         #endregion
         
         #region Player Avatar Profile
