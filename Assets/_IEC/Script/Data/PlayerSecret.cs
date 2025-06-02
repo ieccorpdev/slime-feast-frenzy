@@ -1027,5 +1027,10 @@ namespace IEC
         }
 
         #endregion
+        
+        #region CloudSave
+
+        public string cloudSaveUserId;
+        #endregion
     }
 }

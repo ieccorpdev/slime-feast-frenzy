@@ -72,9 +72,9 @@ namespace IEC
         public void ReceiveGiftCode(List<Reward> rewards)
         {
             Hide();
-            if (Locator.Service.PopupSettingInHome.gameObject.activeInHierarchy)
+            if (Locator.Main.PopupSettingInHome.gameObject.activeInHierarchy)
             {
-                Locator.Service.PopupSettingInHome.Hide();
+                Locator.Main.PopupSettingInHome.Hide();
             }
             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null); 
             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();

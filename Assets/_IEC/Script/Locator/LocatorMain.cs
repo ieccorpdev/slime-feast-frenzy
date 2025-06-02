@@ -4,6 +4,7 @@ using _IEC;
 using _IEC.Features.VipProHackerUITutorial;
 using IEC;
 using UnityEngine;
+using IEC.CloudSave;
 
 public static partial class Locator
 {
@@ -34,7 +35,8 @@ public static partial class Locator
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
         public static PopupGiftCode PopupGiftCode => Pool.Get<PopupGiftCode>();
-
+        public static PopupCloudSave PopupCloudSave => Pool.Get<PopupCloudSave>();
+        public static PopupSettingInHome PopupSettingInHome => Pool.Get<PopupSettingInHome>();
         public static PopupStarChase PopupStarChase => Pool.Get<PopupStarChase>();
         public static PopupStartStarChaseEvent PopupStartStarChaseEvent => Pool.Get<PopupStartStarChaseEvent>();
 
