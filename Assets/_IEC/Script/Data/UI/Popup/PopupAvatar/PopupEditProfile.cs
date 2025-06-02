@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace IEC
@@ -19,15 +21,19 @@ namespace IEC
 
         public List<EditProfileTabSelection> listTabSelection = new();
 
+        public RectTransform selectionContentGroup;
+        public RectTransform specialAvatarSelectionContainer;
         public RectTransform avatarSelectionContainer;
         public AvatarSelection avatarSelectionPrefab;
         public List<AvatarSelection> listAvatarSelections = new();
+        public List<AvatarSelection> listSpecialAvatarSelections = new();
 
         public EditProfileTabSelection CurrentTabSelection { get; private set; }
         public AvatarSelection CurrentSelectedAvatar { get; private set; }
         
         public ProfileSelectTab CurrentSelectedTab { get; private set; }
-        
+        [SerializeField] private GameObject notiLockInfo;
+        [SerializeField] private EventTrigger trigger;
         public bool Dragging { get; set; }
 
         protected override void Awake()
@@ -57,6 +63,14 @@ namespace IEC
             UpdatePlayerName();
 
             //InitAvatarTab();
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerDown
+            };
+            entry.callback.AddListener((data) => {
+                HideNoti();
+            });
+            trigger.triggers.Add(entry);
         }
 
         public override void Show()
@@ -76,9 +90,21 @@ namespace IEC
             base.Hide();
         }
 
+        public void ShowNoti()
+        {
+            TweenControl.GetInstance().ScaleFromZero(notiLockInfo, 0.5f);
+            DOVirtual.DelayedCall(3f, () => notiLockInfo.gameObject.SetActive(false)).SetId(this.GetHashCode() + "noti");
+        }
+
+        public void HideNoti()
+        {
+            DOTween.Kill(this.GetHashCode() + "noti");
+            notiLockInfo.gameObject.SetActive(false);
+        }
+
         public void InitAvatarTab()
         {
-
+            SetActiveSpecialAvatarFrameGroup(false);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarSpriteName))
             {
                 PlayerData.playerAvatarSpriteName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -109,10 +135,15 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
         }
 
         public void InitFrameTab()
         {
+            SetActiveSpecialAvatarFrameGroup(false);
             if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName))
             {
                 PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
@@ -138,11 +169,53 @@ namespace IEC
                     listAvatarSelections[i].SetSelectedDisplay(false);
                 }
             }
-            
+
+            if (Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count > 0)
+            {
+                SetActiveSpecialAvatarFrameGroup(true);
+                for (int i = 0; i < Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count; i++)
+                {
+                    if (i >= listSpecialAvatarSelections.Count)
+                    {
+                        listSpecialAvatarSelections.Add(ObjectPool.Spawn(avatarSelectionPrefab,
+                            specialAvatarSelectionContainer));
+                    }
+
+                    listSpecialAvatarSelections[i].SetActive(true);
+                    listSpecialAvatarSelections[i].transform.localScale = Vector3.one;
+                    listSpecialAvatarSelections[i].Init(Config.playerAvatarConfig.listSpecialAvatarFrameSprites[i]);
+
+                    if (playerAvatar.playerAvatarFrame.sprite.name.Equals(Config.playerAvatarConfig
+                            .listSpecialAvatarFrameSprites[i].name))
+                    {
+                        listSpecialAvatarSelections[i].SetSelectedDisplay(true);
+                        CurrentSelectedAvatar = listSpecialAvatarSelections[i];
+                    }
+                    else
+                    {
+                        listSpecialAvatarSelections[i].SetSelectedDisplay(false);
+                    }
+                }
+                
+                for (int i = Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count; i < listSpecialAvatarSelections.Count; i++)
+                {
+                    listSpecialAvatarSelections[i].SetActive(false);
+                }
+            }
+
             for (int i = Config.playerAvatarConfig.listAvatarFrameSprites.Count; i < listAvatarSelections.Count; i++)
             {
                 listAvatarSelections[i].SetActive(false);
             }
+            
+            LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
+            LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
+        }
+
+        public void SetActiveSpecialAvatarFrameGroup(bool isActive)
+        {
+            specialAvatarSelectionContainer.gameObject.SetActive(isActive);
         }
 
         public void OnSelectTab(EditProfileTabSelection tabSelection)

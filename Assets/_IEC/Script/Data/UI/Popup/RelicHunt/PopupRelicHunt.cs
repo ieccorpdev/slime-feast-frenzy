@@ -20,6 +20,7 @@ public class PopupRelicHunt : BasePopup
     public Button closeInfoButton;
     public Button playMainButton;
     public Button claimButton;
+    public GameObject finishGroup;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI relicToClaimText;
     public Sprite goodJobSprite;
@@ -60,14 +61,18 @@ public class PopupRelicHunt : BasePopup
 
     public override void Show()
     {
+        if (PlayerData.relicData.hasJoinEvent == false)
+        {
+            DOVirtual.DelayedCall(0.5f, OnShowInfo);
+            PlayerData.relicData.hasJoinEvent = true;
+        }
         ResetVisual();
         //CaculateAndShowReward();
-        CaculateReward();
+        UpdateRewardLevelNode();
 
         base.Show();
     }
 
-   
 
     private void ResetVisual()
     {
@@ -88,7 +93,7 @@ public class PopupRelicHunt : BasePopup
         UpdateButtonState();
     }
 
-    private void CaculateReward()
+    private void UpdateRewardLevelNode()
     {
         var curLevel = PlayerData.relicData.curRelicLevel;
         var config = Config.relicConfig.ArtifactLevels[curLevel - 1];
@@ -107,12 +112,13 @@ public class PopupRelicHunt : BasePopup
                     foreach (var artifactRewardData in rw.artifactRewards)
                     {
                         levelNode.AddReward(ConvertToReward(artifactRewardData));
-                        levelNode.OnClaimReward = () =>
-                        {
-                            PlayerData.relicData.SetClaimReward(rw.id);
-                            UpdateState();
-                        };
                     }
+                    levelNode.OnClaimReward = () =>
+                    {
+                        PlayerData.relicData.SetClaimReward(rw.id);
+                        if (PlayerData.relicData.AbleTolevelUp(Config.relicConfig)) OnLevelUpRelicLevel();
+                        ResetVisual();
+                    };
                 }
                 else
                 {
@@ -125,25 +131,12 @@ public class PopupRelicHunt : BasePopup
             }
         }
     }
-
-    private void UpdateState()
-    {
-        bool isClaimAll = true;
-        foreach (var levelProgressNode in relicProgressBar.levelProgressNodes)
-        {
-            isClaimAll = levelProgressNode.hasClaimReward;
-        }
-
-        if (isClaimAll)
-        {
-            ClaimAllLevelReward();
-        }
-    }
+    
 
     private void CaculateAndShowReward()
     {
-        bool isMaxLevel = PlayerData.relicData.curRelicLevel >= Config.relicConfig.ArtifactLevels.Count;
-        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig, isMaxLevel);
+        var rwd = PlayerData.relicData.GetAllUnClaimRelicLevelReward(Config.relicConfig);
+        rewards.Clear();
         foreach (var keyValuePair in rwd)
         {
             rewards.Add(ConvertToReward(new ArtifactRewardData
@@ -153,7 +146,6 @@ public class PopupRelicHunt : BasePopup
         if (rewards.Count > 0)
         {
             ShowReward();
-            rewards.Clear();
         }
     }
 
@@ -164,7 +156,7 @@ public class PopupRelicHunt : BasePopup
         int maxLevel = Config.relicConfig.ArtifactLevels.Count;
         var curToken = PlayerData.relicData.currentRelicTokenCount;
         var aboveNode = relicReward.FirstOrDefault(t => relicConfig.GetStackTokenCost(t.id) > curToken);
-        
+
         return aboveNode;
     }
 
@@ -174,8 +166,10 @@ public class PopupRelicHunt : BasePopup
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-        playMainButton.transform.parent.gameObject.SetActive(!hasReward);
+        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig);
+        playMainButton.transform.parent.gameObject.SetActive(!hasReward && hasLockReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
+        finishGroup.SetActive(!hasLockReward && !hasReward);
     }
 
     private void ClaimAllLevelReward()
@@ -194,14 +188,10 @@ public class PopupRelicHunt : BasePopup
         {
             //reset visual
             relicProgressBar.OnNewLevel();
-            CaculateReward();
+            UpdateRewardLevelNode();
         }
     }
-
-    private void OnAllLevelClaimState()
-    {
-        levelVisual.DoShowLevelVisual(Config.relicConfig.ArtifactLevels.Count);
-    }
+    
 
     private int GetCurrentLevelIndex()
     {
@@ -217,8 +207,8 @@ public class PopupRelicHunt : BasePopup
         if (isLevelDone)
         {
             bool HasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-            
-            relicToClaimText.text = HasReward ?  "Claim all reward to continue" : "New event is coming" ;
+
+            relicToClaimText.text = HasReward ? "Claim all reward to continue" : "More treasure will soon come.";
             return;
         }
 
@@ -284,17 +274,51 @@ public class PopupRelicHunt : BasePopup
     private void UpdateTimer()
     {
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
-        
+
         if (IsEndEvent || isDoneLevel)
         {
             timerText.text = "Finished";
         }
         else
         {
-            timerText.text =
-                DateTimeHelper.GetFormattedTimeHMS(
-                    PlayerData.relicData.eventTimeEnd - DateTime.Now);
+            var timeLeft = PlayerData.relicData.eventTimeEnd - DateTime.Now;
+            if (timeLeft.TotalSeconds < 0)
+            {
+                Locator.Main.PopupRelicHunt.Hide();
+            }
+            else
+            {
+                timerText.text = GetTimeFormat(timeLeft);
+            }
         }
+    }
+
+    private string GetTimeFormat(TimeSpan time)
+    {
+        string outputString = "";
+
+        var day = time.Days;
+        var hour = time.Hours;
+        var minute = time.Minutes;
+        var seconds = time.Seconds;
+        string days = day < 10 ? $"0{day}" : day.ToString();
+        string hours = hour < 10 ? $"0{hour}" : hour.ToString();
+        string minutes = minute < 10 ? $"0{minute}" : minute.ToString();
+        string second = seconds.ToString();
+        if (day > 0)
+        {
+            outputString = $"{days}d {hours}h";
+        }
+        else if (hour > 0)
+        {
+            outputString = $"{hours}h {minutes}m";
+        }
+        else
+        {
+            outputString = $"{minutes}m {second}s";
+        }
+
+        return outputString;
     }
 
     public bool CheckShowPopup()

@@ -2,35 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Script.Config;
+using UnityEngine;
 
 namespace IEC
 {
     [Serializable]
     public class RelicData
     {
-        public int relicItemIndex = 0;
         public int currentRelicTokenCount;
         public int curRelicLevel = 1;
         public List<int> claimedRewardIds = new();
-        public DateTime lastTimeResetEvent;
         public DateTime eventTimeEnd;
         public bool isAvaiableToSpawn => AvaiableToSpawn();
         public bool hasJoinEvent;
         public bool hasDoneLevel;
+        public List<Reward> lastEventRewards = new();
+        public int relicItemIndex;
+        public bool isNewEvent;
 
-        public bool IsEventInRange()
-        {
-            return eventTimeEnd > DateTime.Now;
-        }
 
         public bool IsDoneLevel(ArtifactCollectorConfig config)
         {
             bool rs = true;
-            if (curRelicLevel > config.ArtifactLevels.Count)
-            {
-                rs = true;
-            }
-            else
+            if (curRelicLevel <= config.ArtifactLevels.Count)
             {
                 var lastNodeCurLevel = config.ArtifactLevels[curRelicLevel - 1].artifactLevelRewards[^1];
                 rs = (currentRelicTokenCount >= config.GetStackTokenCost(lastNodeCurLevel.id));
@@ -46,9 +40,21 @@ namespace IEC
             //return true;
         }
 
-        public void SaveTimeResetEvent()
+        public void OnResetEvent(ArtifactCollectorConfig config)
         {
-            lastTimeResetEvent = DateTime.Now;
+            var rw = GetAllUnClaimRelicLevelReward(config);
+            lastEventRewards.Clear();
+            if (rw.Count > 0)
+            {
+                foreach (var keyValuePair in rw)
+                {
+                    lastEventRewards.Add(new(keyValuePair.Value, keyValuePair.Key));
+                }
+            }
+            hasJoinEvent = false;
+            curRelicLevel = 1;
+            claimedRewardIds.Clear();
+            isNewEvent = true;
         }
 
         public bool CheckIfHasReward(ArtifactCollectorConfig config)
@@ -63,56 +69,66 @@ namespace IEC
 
             return false;
         }
-
-        public Dictionary<ResourceType, int> GetAllUnClaimRelicLevelReward(ArtifactCollectorConfig config,
-            bool isMaxLevel = false)
+        public bool CheckIfHasLockReward(ArtifactCollectorConfig config)
         {
-            Dictionary<ResourceType, int> rs = new();
-            rs = CalculateRewardInLevel(config, curRelicLevel);
-            return rs;
-        }
-
-        private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
-            int level
-        )
-        {
-            Dictionary<ResourceType, int> rs = new();
+            var level = curRelicLevel;
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;
-                foreach (var artifactRewardData in x.artifactRewards)
-                {
-                    if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
-                    {
-                        rs.Add(artifactRewardData.artifactRewardType, artifactRewardData.value);
-                    }
-                    else
-                    {
-                        rs[artifactRewardData.artifactRewardType] += artifactRewardData.value;
-                    }
-                }
-
-                if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
+                if (config.GetStackTokenCost(x.id) > currentRelicTokenCount) return true;
             }
+            return false;
+        }
 
+        public Dictionary<ResourceType, int> GetAllUnClaimRelicLevelReward(ArtifactCollectorConfig config)
+        {
+            Dictionary<ResourceType, int> rs = new();
+            rs = CalculateAndSetClaimRewardInLevel(config, curRelicLevel);
             return rs;
         }
+
+        // private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
+        //     int level
+        // )
+        // {
+        //     Dictionary<ResourceType, int> rs = new();
+        //     foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
+        //     {
+        //         if (HasRewardedLevel(x.id)) continue;
+        //         foreach (var artifactRewardData in x.artifactRewards)
+        //         {
+        //             if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
+        //             {
+        //                 rs.Add(artifactRewardData.artifactRewardType, artifactRewardData.value);
+        //             }
+        //             else
+        //             {
+        //                 rs[artifactRewardData.artifactRewardType] += artifactRewardData.value;
+        //             }
+        //         }
+        //
+        //         if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
+        //     }
+        //
+        //     return rs;
+        // }
 
         public bool AbleTolevelUp(ArtifactCollectorConfig config)
         {
             if (curRelicLevel >= config.ArtifactLevels.Count) return false;
             var curLevelConfig = config.ArtifactLevels[curRelicLevel - 1];
             var totalTokenCost = config.GetStackTokenCost(curLevelConfig.artifactLevelRewards[^1].id);
-            return currentRelicTokenCount >= totalTokenCost;
+            bool hasAvailableReward = CheckClaimRewardInLevel(config, curRelicLevel);
+            return currentRelicTokenCount >= totalTokenCost && !hasAvailableReward;
         }
 
-        private Dictionary<ResourceType, int> CalculateRewardInLevel(ArtifactCollectorConfig config, int level)
+        private Dictionary<ResourceType, int> CalculateAndSetClaimRewardInLevel(ArtifactCollectorConfig config, int level)
         {
             Dictionary<ResourceType, int> rs = new();
 
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
-                if (HasRewardedLevel(x.id)) continue;
+                if (HasRewardedLevel(x.id)) continue; 
                 if (config.GetStackTokenCost(x.id) > currentRelicTokenCount) continue;
                 foreach (var artifactRewardData in x.artifactRewards)
                 {
@@ -126,12 +142,22 @@ namespace IEC
                     }
                 }
 
-                if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
+                if (!claimedRewardIds.Contains(x.id)) SetClaimReward(x.id);
             }
 
             return rs;
         }
+        private bool CheckClaimRewardInLevel(ArtifactCollectorConfig config, int level)
+        {
+            foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
+            {
+                if (HasRewardedLevel(x.id)) continue; 
+                if (config.GetStackTokenCost(x.id) > currentRelicTokenCount) continue;
+                return true;
+            }
 
+            return false;
+        }
         public bool HasRewardedLevel(int rewardLevelId)
         {
             return claimedRewardIds.Contains(rewardLevelId);
@@ -139,6 +165,7 @@ namespace IEC
 
         public void SetClaimReward(int rewardLevelId)
         {
+            Debug.Log($"Claiming relic level {rewardLevelId}");
             if (!claimedRewardIds.Contains(rewardLevelId)) claimedRewardIds.Add(rewardLevelId);
         }
 
@@ -165,13 +192,10 @@ namespace IEC
             currentRelicTokenCount += amount;
         }
 
-        public void CheckResetTimeEvent(int daysToReset)
+        public void ResetEvent(ArtifactCollectorConfig config)
         {
-            if ((DateTime.Now - lastTimeResetEvent).TotalDays >= daysToReset)
-            {
-                SaveTimeResetEvent();
-                ResetTokenCount();
-            }
+            OnResetEvent(config);
+            ResetTokenCount();
         }
     }
 }

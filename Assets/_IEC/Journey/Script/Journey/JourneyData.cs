@@ -20,6 +20,7 @@ namespace IEC
         public bool isCompleteJourney;
         public bool isShowHandtut;
         public bool isEndEvent;
+        public bool isShowNoti;
 
         public void SetStartJourneyTimeNow()
         {
@@ -47,21 +48,10 @@ namespace IEC
             wasOpenJourney = false;
             isCompleteJourney = false;
             isEndEvent = false;
+            isShowNoti = false;
         }
 
         public string GetTimeRemainingString()
-        {
-            TimeSpan remaining = GetTimeRemaining();
-            if (remaining <= TimeSpan.Zero && wasOpenJourney)
-            {
-                isEndEvent = true;
-                return "Finished";
-            }
-            return remaining.Days > 0 ? remaining.Days + "d " + remaining.Hours + "h" :
-                   remaining.Hours + "h " + remaining.Minutes + "mn";
-        }
-
-        public string GetTimeRemainingStringInPopup()
         {
             TimeSpan remaining = GetTimeRemaining();
 
@@ -72,18 +62,25 @@ namespace IEC
             }
 
             if (remaining.Days > 0)
-                return $"{remaining.Days:D2}d:{remaining.Hours:D2}h";        
+                return $"{remaining.Days:D2}d{remaining.Hours:D2}h";
             else if (remaining.Hours > 0)
-                return $"{remaining.Hours:D2}h:{remaining.Minutes:D2}mn";    
+                return $"{remaining.Hours:D2}h{remaining.Minutes:D2}mn";
             else
-                return $"{remaining.Minutes:D2}mn:{remaining.Seconds:D2}s";    
+                return $"{remaining.Minutes:D2}mn{remaining.Seconds:D2}s";
         }
 
         private TimeSpan GetTimeRemaining()
         {
-            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
-            TimeSpan remaining = endTime - DateTime.Now;
-            return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            try
+            {
+                DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
+                TimeSpan remaining = endTime - DateTime.Now;
+                return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            }
+            catch
+            {
+                return TimeSpan.Zero;
+            }
         }
 
         public bool CheckFinishedDay()

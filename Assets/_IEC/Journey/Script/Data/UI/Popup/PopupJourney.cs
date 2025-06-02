@@ -76,8 +76,12 @@ namespace IEC
                     Locator.Main.ScreenMain.SetInteractive(true);
                     Show();
                 });
-                _canShow = false;
             }
+        }
+
+        public bool GetHideStatus()
+        {
+            return !_canShow && !IsShow;
         }
 
         public override void Hide()
@@ -85,6 +89,7 @@ namespace IEC
             base.Hide();
             StopAllCoroutines();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
+            _canShow = false;
         }
 
         [Button]
@@ -159,7 +164,7 @@ namespace IEC
         {
             while (true)
             {
-                timerTxt.text = PlayerData.journeyData.GetTimeRemainingStringInPopup();
+                timerTxt.text = PlayerData.journeyData.GetTimeRemainingString();
                 bool value = PlayerData.journeyData.isBuyIAP;
                 doneBuyIAP.gameObject.SetActive(value);
                 buyIAP.gameObject.SetActive(!value);

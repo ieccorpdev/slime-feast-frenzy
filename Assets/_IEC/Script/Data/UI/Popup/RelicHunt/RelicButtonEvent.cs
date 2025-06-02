@@ -21,6 +21,17 @@ public class RelicButtonEvent : _BaseBehaviour
     private TimeSpan countdownTimeSpan;
     [SerializeField] private GameEventConfig _eventConfig;
 
+    public bool IsEventCanShow()
+    {
+        //return true;
+        //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
+        int level = PlayerData.level;
+        int levelUnlock = Config.relicConfig.levelUnlockFeature;
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) &&
+               Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt,
+                   Config.relicConfig.eventDurationInHours / 24, PlayerData.GetDaysSinceDownload());
+    }
+
     public void UpdateUI()
     {
         completedGroup.SetActive(false);
@@ -29,12 +40,17 @@ public class RelicButtonEvent : _BaseBehaviour
         claimRewardGroup.SetActive(false);
         timerGroup.SetActive(false);
         button.interactable = true;
-
-        if (PlayerData.relicData.hasJoinEvent == false)
+        gameObject.SetActive(IsEventCanShow());
+        if (!IsEventCanShow())
         {
-            joinGroup.SetActive(true);
             return;
         }
+        if (PlayerData.relicData.isNewEvent && PlayerData.relicData.lastEventRewards.Count > 0)
+        {
+            SetClaimLastEventState();
+            return;
+        }
+
 
         if (PlayerData.level < Config.relicConfig.levelUnlockFeature)
         {
@@ -54,7 +70,7 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel)
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
                 {
                     completedGroup.SetActive(true);
                     button.interactable = false;
@@ -70,6 +86,12 @@ public class RelicButtonEvent : _BaseBehaviour
                         OnTimeEventEnd();
                     }
                 }
+            }
+
+            if (PlayerData.relicData.hasJoinEvent == false)
+            {
+                timerGroup.gameObject.SetActive(false);
+                joinGroup.SetActive(true);
             }
         }
     }
@@ -104,7 +126,41 @@ public class RelicButtonEvent : _BaseBehaviour
 
     private void OnTimeEventEnd()
     {
-        //gameObject.SetActive(false);
+        bool hasLastEventReward = PlayerData.relicData.lastEventRewards.Count > 0;
+        if (hasLastEventReward)
+        {
+            SetClaimLastEventState();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
+    }
+
+    private void SetClaimLastEventState()
+    {
+        timerGroup.gameObject.SetActive(false);
+        claimRewardGroup.gameObject.SetActive(true);
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(PlayerData.relicData.lastEventRewards,
+                () =>
+                {
+                    if (IsEventCanShow())
+                    {
+                        Locator.Main.PopupRelicHunt.Show();
+                    }
+                    else
+                    {
+                        gameObject.SetActive(false);
+                    }
+                    PlayerData.relicData.lastEventRewards.Clear();
+                    PlayerData.relicData.isNewEvent = false;
+                },
+                true);
+            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Gift_Box_3);
+        });
     }
 
     private void Update()

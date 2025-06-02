@@ -259,9 +259,9 @@ namespace _IEC.Features.Gameplay
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
-                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
+                    hasSpringOscillation = true;
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
                 }
             }
@@ -424,7 +424,15 @@ namespace _IEC.Features.Gameplay
             posOnWater = pow;
             hasPosOnWater = true;
         }
-        protected virtual void AppearInScreen() { }
+
+        protected virtual void AppearInScreen()
+        {
+            if (gameObject.name.Contains("Relic"))
+            {
+                EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
+            }
+            
+        }
         
         #endregion
 

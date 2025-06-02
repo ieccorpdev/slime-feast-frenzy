@@ -56,6 +56,7 @@ namespace IEC
         public JourneyData journeyData = new JourneyData();
 
         public bool isShowPackPopupsInHomeOnStartGame;
+        public bool isShowStartedPackInStartGame;
 
         private GameConfig Config => Pool.Get<GameConfig>();
 
@@ -920,10 +921,7 @@ namespace IEC
         {
             _relicData = new();
         }
-        public void CheckResetTimeArtifactEvent()
-        {
-            _relicData.CheckResetTimeEvent(Config.relicConfig.daysEachReset);
-        }
+   
         public bool ReachMaxRelicReward()
         {
             return false;
