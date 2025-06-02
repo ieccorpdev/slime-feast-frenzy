@@ -69893,6 +69893,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 157333157648494940}
+  - component: {fileID: 889272869}
   m_Layer: 0
   m_Name: WeatherFx
   m_TagString: Untagged
@@ -69921,6 +69922,32 @@ Transform:
   m_Father: {fileID: 253555676001710379}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &889272869
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2960116104233862664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 893c9a1dace28ee4fbfdd5009ee287c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waterGround: {fileID: 0}
+  whirlPoolHole: {fileID: 0}
+  splashEffect: {fileID: 0}
+  dataWeatherScene:
+  - WeatherName: 1
+    weatherParticle: {fileID: 7635259637530405574}
+  - WeatherName: 2
+    weatherParticle: {fileID: 475527137329618315}
+  - WeatherName: 3
+    weatherParticle: {fileID: 1062841732986879290}
+  - WeatherName: 4
+    weatherParticle: {fileID: 4937398213753231100}
+  - WeatherName: 5
+    weatherParticle: {fileID: 474192894224177410}
 --- !u!1 &5865811086137912389
 GameObject:
   m_ObjectHideFlags: 0
