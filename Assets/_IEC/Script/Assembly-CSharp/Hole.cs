@@ -465,6 +465,7 @@ public class Hole : _BaseBehaviour
 		ResetCharacter();
 	}
 
+	#region Character Power
 	private void CheckCurrentCharacter()
 	{
 		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
@@ -513,17 +514,33 @@ public class Hole : _BaseBehaviour
 		switch (power.powerType)
 		{
 			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
-				// DOTween.Kill(holeGraphics);
-				// DOTween.Kill(holeCanvases);
-				// holeGraphics.localScale = Vector3.one;
-				// holeCanvases.localScale = Vector3.one;
 				DecreaseXp((int)power.buffAmount);
 				break;
 		}
 		
-		
 		return true;
 	}
+
+	public CharacterPower CheckApplyCharacterPowerOnUseHelper(CharacterPowerType powerType, ResourceType helperType)
+	{
+		var power = CurrentCharacterConfig.GetPower(powerType, helperType);
+		
+		if (power == null)
+			return null;
+		
+		switch (power.powerType)
+		{
+			case CharacterPowerType.SpeedBoostOnUseHelper:
+				_speedBoosterIncrease = Config.AllBoosterConfig.GetBoosterData(ResourceType.WindSurf).effectValue;
+				timeEffectSpeedBooster += power.buffAmount;
+				speedLinesVFX.Play();
+				break;
+		}
+		
+		return power;
+	}
+	
+	#endregion
 
 	public void HideLevelText()
 	{

@@ -600,6 +600,20 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
             }
+            
+            CheckCharacterPowerOnUseHelper(data.helperId switch {
+                HelperId.Magnet => ResourceType.Vortex,
+                HelperId.FrozenTime => ResourceType.TimeStop,
+                HelperId.ScaleUp => ResourceType.Enlarge,
+                HelperId.Compass => ResourceType.Compass,
+                HelperId.None => ResourceType.Vortex,
+            });
+        }
+
+        private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
+        {
+            playerHole.CheckApplyCharacterPowerOnUseHelper(CharacterPowerType.SpeedBoostOnUseHelper,
+                helperType);
         }
 
         private void CollectObjectiveItem(CollectItemData data)
