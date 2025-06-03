@@ -612,8 +612,21 @@ namespace _IEC.Features.Gameplay
 
         private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
         {
-            playerHole.CheckApplyCharacterPowerOnUseHelper(CharacterPowerType.SpeedBoostOnUseHelper,
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
                 helperType);
+        }
+
+        public int CheckCharacterPowerOnGainXp(int xp)
+        {
+            var checkXpPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.BonusXpOnSmallItems);
+            if (checkXpPower != null)
+            {
+                if (xp == checkXpPower.conditionValueForPower)
+                {
+                    xp = Mathf.FloorToInt(xp * checkXpPower.buffAmount);
+                }
+            }
+            return xp;
         }
 
         private void CollectObjectiveItem(CollectItemData data)
@@ -642,7 +655,9 @@ namespace _IEC.Features.Gameplay
         
         private void CollectNormalItem(CollectItemData data)
         {
-            playerHole.AddXp(data.xp);
+            var xp = CheckCharacterPowerOnGainXp(data.xp);
+            
+            playerHole.AddXp(xp);
         }
 
         private void CollectBomb()
@@ -651,8 +666,8 @@ namespace _IEC.Features.Gameplay
             
             if (IsInResultState() == false)
             {
-                var checkCharPowerOnBomb = playerHole.CheckApplyCharacterPowerOnDead(CharacterPowerType.LoseXpInsteadOfDeadOnBomb);
-                playerHole.CollectABomb(!checkCharPowerOnBomb);
+                var checkCharPowerOnBomb = playerHole.CheckApplyCharacterPower(CharacterPowerType.LoseXpInsteadOfDeadOnBomb);
+                playerHole.CollectABomb(checkCharPowerOnBomb == null);
                 GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
                 TweenControl.GetInstance().Shake(
                     target: GamePlay.mainCamera.gameObject,
@@ -670,7 +685,7 @@ namespace _IEC.Features.Gameplay
                     easeType: EaseType.InOutQuad,
                     delay: 0f
                 );
-                if (!checkCharPowerOnBomb)
+                if (checkCharPowerOnBomb == null)
                 {
                     if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                     {

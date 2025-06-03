@@ -32,7 +32,8 @@ namespace IEC
     public class CharacterPower
     {
         public CharacterPowerType powerType;
-        public ResourceType resourceAffected; //For helper
+        public ResourceType resourceAffected;
+        public int conditionValueForPower; // for example item xp to apply power
         public float buffAmount;
 
         public float ApplyBuff(float value)
@@ -58,6 +59,7 @@ namespace IEC
     {
         LoseXpInsteadOfDeadOnBomb,
         SpeedBoostOnUseHelper,
+        BonusXpOnSmallItems,
         IncreaseHelperTime
     }
 }

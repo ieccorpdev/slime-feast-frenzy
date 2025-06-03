@@ -518,36 +518,24 @@ public class Hole : _BaseBehaviour
 		}
 	}
 
-	public bool CheckApplyCharacterPowerOnDead(CharacterPowerType powerType)
+	public CharacterPower CheckApplyCharacterPower(CharacterPowerType powerType, ResourceType resourceAffected = default)
 	{
-		var power = CurrentCharacterConfig.GetPower(powerType);
-
-		if (power == null)
-			return false;
-
-		switch (power.powerType)
-		{
-			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
-				DecreaseXp((int)power.buffAmount);
-				break;
-		}
-		
-		return true;
-	}
-
-	public CharacterPower CheckApplyCharacterPowerOnUseHelper(CharacterPowerType powerType, ResourceType helperType)
-	{
-		var power = CurrentCharacterConfig.GetPower(powerType, helperType);
+		var power = CurrentCharacterConfig.GetPower(powerType, resourceAffected);
 		
 		if (power == null)
 			return null;
 		
 		switch (power.powerType)
 		{
+			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
+				DecreaseXp((int)power.buffAmount);
+				break;
 			case CharacterPowerType.SpeedBoostOnUseHelper:
 				_speedBoosterIncrease = Config.AllBoosterConfig.GetBoosterData(ResourceType.WindSurf).effectValue;
 				timeEffectSpeedBooster += power.buffAmount;
 				speedLinesVFX.Play();
+				break;
+			case CharacterPowerType.BonusXpOnSmallItems:
 				break;
 		}
 		
