@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+
 namespace IEC
 {
     [Serializable]
@@ -34,6 +36,7 @@ namespace IEC
                 lifeCycleCount++;
                 wasOpenJourney = true;
             }
+            Debug.Log("fix bug complete");
         }
 
         public void ResetJourneyData()
