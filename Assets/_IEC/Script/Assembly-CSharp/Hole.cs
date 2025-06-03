@@ -470,17 +470,31 @@ public class Hole : _BaseBehaviour
 	{
 		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
 		
-		var charObj = CurrentCharacterConfig.characterControlPrefab.Spawn(characterAnimator.transform.parent);
+		var charObj = CurrentCharacterConfig.characterControlPrefab
+			.Spawn(
+				characterAnimator.transform.parent, 
+				CurrentCharacterConfig.characterControlPrefab.transform.position,
+				CurrentCharacterConfig.characterControlPrefab.transform.rotation
+				);
 		Destroy(characterAnimator.gameObject);
 		characterAnimator = charObj;
 		charObj.GetComponent<SharkControl>().SetHole(this);
-		charObj.transform.localScale = Vector3.one;
+		charObj.transform.localScale = CurrentCharacterConfig.characterControlPrefab.transform.localScale;
+
+		charObj.speed = CurrentCharacterConfig.characterAnimSpeed;
 		
-		var biteObj = CurrentCharacterConfig.characterBitePrefab.Spawn(sharkBiteAnimator.transform.parent);
+		var biteObj = CurrentCharacterConfig.characterBitePrefab
+			.Spawn(
+				sharkBiteAnimator.transform.parent,
+				CurrentCharacterConfig.characterBitePrefab.transform.position,
+				CurrentCharacterConfig.characterBitePrefab.transform.rotation
+				);
 		Destroy(sharkBiteAnimator.gameObject);
 		sharkBiteAnimator = biteObj;
 		biteObj.GetComponent<SharkControl>().SetHole(this);
-		biteObj.transform.localScale = Vector3.one;
+		biteObj.transform.localScale = CurrentCharacterConfig.characterBitePrefab.transform.localScale;
+		
+		biteObj.speed = CurrentCharacterConfig.characterAnimSpeed;
 
 		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
 	}
