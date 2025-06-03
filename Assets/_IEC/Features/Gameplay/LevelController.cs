@@ -574,7 +574,7 @@ namespace _IEC.Features.Gameplay
                     break;
                 case HelperId.Magnet:
                     playerHole.StartMagnetHelper();
-                    m_MagnetHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                    m_MagnetHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Vortex, Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet));
                     m_MagnetHelperActive = true;
                     break;
                 case HelperId.FrozenTime:
@@ -582,7 +582,7 @@ namespace _IEC.Features.Gameplay
                 case HelperId.ScaleUp:
                     playerHole.StartScaleByHelper();
                     m_ScaleUpHelperActive = true;
-                    m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
+                    m_ScaleUpHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Enlarge, Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp));
                     break;
                 case HelperId.Compass:
                     playerHole.StartCompassHelper();
@@ -608,6 +608,16 @@ namespace _IEC.Features.Gameplay
                 HelperId.Compass => ResourceType.Compass,
                 HelperId.None => ResourceType.Vortex,
             });
+        }
+
+        public float CheckCharacterPowerOnHelperDuration(ResourceType helperType, float helperTime)
+        {
+            var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
+            if (checkPowerHelperTime != null)
+            {
+                helperTime *= checkPowerHelperTime.buffAmount;
+            }
+            return helperTime;
         }
 
         private void CheckCharacterPowerOnUseHelper(ResourceType helperType)

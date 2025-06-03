@@ -89,7 +89,7 @@ namespace _IEC.Features.Gameplay
 
         private void TurnOn()
         {
-            m_CoolDownTime = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
+            m_CoolDownTime = GamePlay.levelController.CheckCharacterPowerOnHelperDuration(ResourceType.Compass, Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass));
             //gameObject.SetActive(true);
         }
         

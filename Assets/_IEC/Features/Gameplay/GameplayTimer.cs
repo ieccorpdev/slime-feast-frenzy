@@ -126,7 +126,7 @@ namespace _IEC.Features.Gameplay
         
         public void StartFreezeTime()
         {
-            m_FrozenTimeCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime);
+            m_FrozenTimeCoolDown = GamePlay.levelController.CheckCharacterPowerOnHelperDuration(ResourceType.TimeStop, Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime));
             SetActiveFrozenMark(true);
             OnUpdateFrozenState?.Invoke(true);
         }
