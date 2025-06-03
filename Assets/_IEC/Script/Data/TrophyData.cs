@@ -18,6 +18,26 @@ namespace IEC
            tdc.timeCompleted += 1;
         }
 
+        public void CheckLevelTrophy(int level)
+        {
+            var levelTrophy = GetTrophyDataConfig(TrophyType.GrandVoyage);
+            if (level < 50)
+            {
+                levelTrophy.timeCompleted = 0;
+            } 
+            else if (level < 100)
+            {
+                levelTrophy.timeCompleted = 1;
+            }
+            else if (level < 500)
+            {
+                levelTrophy.timeCompleted = 2;
+            }
+            else if (level < 1000)
+            {
+                levelTrophy.timeCompleted = 3;
+            }
+        }
         public TrophyDataConfig GetTrophyDataConfig(TrophyType type)
         {
             var result = data.Find(x => x.typeTrophy == type);
@@ -42,12 +62,14 @@ namespace IEC
         public int trophyCollected = 0;// 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
     }
     public enum TrophyType{
-        OceanGift,
-        SharkRace,
-        RelicHunt,
-        StarRace,
-        ChompOff,
+        GrandVoyage,
+        SharkFrenzyForce,
         UnderseaVoyage,
+        SharkRace,
+        ChompOff,
+        OceanGift,
+        StarRace,
+        RelicHunt,
         //
         //
     }

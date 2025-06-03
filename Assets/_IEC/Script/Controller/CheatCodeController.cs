@@ -208,6 +208,7 @@ namespace IEC
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 PlayerData.level = level;
+                PlayerData.trophyData.CheckLevelTrophy(level);
                 EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             }, new CheatCode.InputParam
             {

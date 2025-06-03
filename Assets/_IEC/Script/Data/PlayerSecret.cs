@@ -78,6 +78,7 @@ namespace IEC
         public void AddLevel()
         {
             level += 1;
+            trophyData.CheckLevelTrophy(level);
         }
        
         public void SaveLastPlayTime()
