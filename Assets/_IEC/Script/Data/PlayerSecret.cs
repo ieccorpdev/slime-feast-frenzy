@@ -1027,5 +1027,11 @@ namespace IEC
         }
 
         #endregion
+
+        #region MyRegion
+
+        public TrophyData trophyData = new TrophyData();
+
+        #endregion
     }
 }

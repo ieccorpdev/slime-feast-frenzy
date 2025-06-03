@@ -80,8 +80,9 @@ public class PopupRelicHunt : BasePopup
         var aboveNode = FindNextRewardNode();
 
         if (aboveNode != null)
-            SetRelicToClaimText(relicConfig.GetStackTokenCost(aboveNode.id) -
-                                PlayerData.relicData.currentRelicTokenCount);
+        {
+            SetRelicToClaimText(relicConfig.GetStackTokenCost(aboveNode.id) - PlayerData.relicData.currentRelicTokenCount);
+        }
         else
         {
             SetRelicToClaimText(0, true);
@@ -220,7 +221,14 @@ public class PopupRelicHunt : BasePopup
     private void ShowReward()
     {
         //Locator.Main.ClaimBonusRewardPanel.SetupTempTitle();
-        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards, () => { Locator.Main.PopupRelicHunt.Show(); },
+        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards, () =>
+            {
+                Locator.Main.PopupRelicHunt.Show();
+                if (PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig))
+                {
+                    PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
+                }
+            },
             true);
         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Gift_Box_3);
         Locator.Main.PopupRelicHunt.Hide();

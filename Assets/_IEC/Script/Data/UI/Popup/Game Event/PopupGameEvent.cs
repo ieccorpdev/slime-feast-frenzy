@@ -359,6 +359,33 @@ namespace IEC
             Hide();
         }
 
+        public void CheckAddTrophy(int playerRank)
+        {
+            switch (eventType)
+            {
+                case EventType.SharkRace:
+                    CollectTrophy(playerRank,TrophyType.SharkRace); 
+                    break;
+                case EventType.ChompOff:
+                    CollectTrophy(playerRank,TrophyType.ChompOff); 
+                    break;
+                case EventType.StarChase:
+                    CollectTrophy(playerRank,TrophyType.StarRace); 
+                    break;
+                case EventType.RelicHunt:
+                    CollectTrophy(playerRank,TrophyType.RelicHunt); 
+                    break;
+            }
+        }
+
+        private static void CollectTrophy(int playerRank,TrophyType trophyType)
+        {
+            if (playerRank <= 2)
+            {
+                PlayerData.trophyData.CollectTrophy(trophyType);
+            }
+        }
+
         protected virtual void ShowEventCompletedScreen()
         {
             

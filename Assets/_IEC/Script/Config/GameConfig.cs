@@ -90,7 +90,8 @@ namespace IEC
         public JourneyTripConfig journeyTripConfig;
         [Header("Game Event Live Ops")] 
         public GameEventLiveOpsConfig eventLiveOpsConfig;
-
+        [Header("Trophy")]
+        public TrophyRewardConfig trophyRewardConfig;
         public void PreloadAllConfig()
         {
             //if add New config encrypted, load here

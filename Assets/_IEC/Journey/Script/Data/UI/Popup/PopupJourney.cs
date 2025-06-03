@@ -225,8 +225,10 @@ namespace IEC
             if (dataReward != null)
             {
                 listReward = dataReward;
+
                 ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
                 {
+                    CheckAddTrophy();
                     item.MakeItemClaimed();
                     CheckShow();
                     RefreshUI();
@@ -235,8 +237,10 @@ namespace IEC
             else
             {
                 listReward = GetAllReward(out var listItem);
+
                 ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
                 {
+                    CheckAddTrophy();
                     foreach (var item in listItem)
                     {
                         item.MakeItemClaimed();
@@ -322,6 +326,15 @@ namespace IEC
             contentPanel.anchoredPosition =
                 (Vector2)scrollRect.transform.InverseTransformPoint(contentPanel.position) - (Vector2)scrollRect.transform.InverseTransformPoint(target.position);
             contentPanel.anchoredPosition = new Vector2(contentPanel.anchoredPosition.x, contentPanel.anchoredPosition.y + offsetScrollTo);
+        }
+
+        public void CheckAddTrophy()
+        {
+            if (hiddenTreasure.statusItem == JourneyItemStatus.CANCLAIM)
+            {
+                PlayerData.trophyData.CollectTrophy(TrophyType.UnderseaVoyage);
+            }
+            
         }
     }
 }
