@@ -46,7 +46,7 @@ public class Hole : _BaseBehaviour
 	private float m_AdditionalSize = 0;
 	private float m_AdditionalSizeFromCharacterTrait = 1;
 	private float m_AdditionalSpeedFromCharacterTrait = 1;
-	private float defaultPosYCharacter = -0.9f;
+	private float defaultPosYCharacter = -0f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
@@ -455,6 +455,7 @@ public class Hole : _BaseBehaviour
 		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
+		CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
@@ -463,11 +464,29 @@ public class Hole : _BaseBehaviour
 		ResetCharacter();
 	}
 
+	private void CheckCurrentCharacter()
+	{
+		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		
+		var charObj = CurrentCharacterConfig.characterControlPrefab.Spawn(characterAnimator.transform.parent);
+		Destroy(characterAnimator.gameObject);
+		characterAnimator = charObj;
+		charObj.GetComponent<SharkControl>().SetHole(this);
+		charObj.transform.localScale = Vector3.one;
+		
+		var biteObj = CurrentCharacterConfig.characterBitePrefab.Spawn(sharkBiteAnimator.transform.parent);
+		Destroy(sharkBiteAnimator.gameObject);
+		sharkBiteAnimator = biteObj;
+		biteObj.GetComponent<SharkControl>().SetHole(this);
+		biteObj.transform.localScale = Vector3.one;
+
+		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
+	}
+
 	private void CheckApplyCharacterTrait()
 	{
 		m_AdditionalSpeedFromCharacterTrait = 1;
 		m_AdditionalSizeFromCharacterTrait = 1;
-		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
 
 		foreach (var trait in CurrentCharacterConfig.listCharacterTraits)
 		{

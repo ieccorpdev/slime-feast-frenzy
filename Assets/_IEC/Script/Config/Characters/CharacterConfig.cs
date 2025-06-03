@@ -9,6 +9,9 @@ namespace IEC
     public class CharacterConfig : ScriptableObject
     {
         public string characterName;
+        public float defaultCharacterPosY;
+        public Animator characterControlPrefab;
+        public Animator characterBitePrefab;
         public List<CharacterTrait> listCharacterTraits;
         public List<CharacterPower> listCharacterPowers;
 

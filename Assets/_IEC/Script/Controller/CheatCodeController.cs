@@ -130,6 +130,19 @@ namespace IEC
                 Enum.GetNames(typeof(WeatherTheme)).ToList(),
                 weatherIndex
             );
+            
+            var characterIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(ch => ch.characterName.Equals(PlayerData.playerCharacterName));
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Select Character",
+                cheatCodeParam =>
+                {
+                    var characterInt = cheatCodeParam.dropdownParam.value;
+                    PlayerData.playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[characterInt].characterName;
+                },
+                Config.allCharactersConfig.listAllCharactersConfig.Select(ch => ch.characterName).ToList(),
+                characterIndex
+            );
+            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
