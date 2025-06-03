@@ -10,7 +10,6 @@ namespace IEC
 {
     public class PopupProgressReward : BasePopup
     {
-        public Button btnCloseAll;
 
         public ProgressRewardItem progressRewardItemPrefab;
         [Header("Progress bar")]

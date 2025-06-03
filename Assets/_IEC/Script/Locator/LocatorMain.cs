@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using _IEC;
+using _IEC.Features.VipProHackerUITutorial;
 using IEC;
 using UnityEngine;
+using IEC.CloudSave;
 
 public static partial class Locator
 {
@@ -33,12 +35,25 @@ public static partial class Locator
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
         public static PopupGiftCode PopupGiftCode => Pool.Get<PopupGiftCode>();
-
+        public static PopupCloudSave PopupCloudSave => Pool.Get<PopupCloudSave>();
+        public static PopupSettingInHome PopupSettingInHome => Pool.Get<PopupSettingInHome>();
         public static PopupStarChase PopupStarChase => Pool.Get<PopupStarChase>();
         public static PopupStartStarChaseEvent PopupStartStarChaseEvent => Pool.Get<PopupStartStarChaseEvent>();
 
         public static PopupSharkRace PopupSharkRace => Pool.Get<PopupSharkRace>();
-
         public static PopupStartSharkRaceEvent PopupStartSharkRaceEvent => Pool.Get<PopupStartSharkRaceEvent>();
+
+        public static PopupJourney PopupJourney => Pool.Get<PopupJourney>();
+
+        public static PopupVoyagePassIAPInfor PopupVoyagePassIAPInfor => Pool.Get<PopupVoyagePassIAPInfor>();
+
+        public static PopupUnderseaVoyageIntro PopupUnderseaVoyageIntro => Pool.Get<PopupUnderseaVoyageIntro>();
+        
+        public static PopupChompOff PopupChompOff => Pool.Get<PopupChompOff>();
+
+        public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
+
+        public static HighLightCanvas HighLightCanvas => Pool.Get<HighLightCanvas>();
+
     } 
 }

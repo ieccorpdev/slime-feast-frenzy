@@ -254,6 +254,8 @@ namespace IEC
 
         public void StopSound(string id)
         {
+            if (this == null)
+                return;
             var sound = GetPlayerSound(id);
 
             if (sound != null)

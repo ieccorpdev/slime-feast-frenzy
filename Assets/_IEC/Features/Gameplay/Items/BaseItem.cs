@@ -14,7 +14,7 @@ namespace _IEC.Features.Gameplay
     [RequireComponent(typeof(ConditionalSelectionBase))]
     public class BaseItem : _BaseBehaviour, IManagedLateUpdate
     {
-        [SerializeField] private Rigidbody rb;
+        [SerializeField] protected Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
         [SerializeField] private Renderer myRenderer;
         [SerializeField] private ItemDefinition itemDefinition;
@@ -34,7 +34,6 @@ namespace _IEC.Features.Gameplay
         private Camera mainCam;
         public bool IsCollected => _isCollected;
         private bool hasRenderer;
-        private bool hasRigidbody;
         private bool hasSpringOscillation;
         private bool hasPosOnWater;
         private Game GameG;
@@ -54,7 +53,7 @@ namespace _IEC.Features.Gameplay
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
         private RigidbodyData savedData;
 
-        private void Start()
+        public virtual void Start()
         {
             this.GameG = Pool.Get<Game>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
@@ -253,16 +252,16 @@ namespace _IEC.Features.Gameplay
             
             if (myRenderer == null)
             {
-                myRenderer = GetComponentInChildren<MeshRenderer>();
+                myRenderer = GetComponentInChildren<Renderer>();
                 hasRenderer = true;
             }
 
             if (springOscillation == null)
             {
                 springOscillation = GetComponentInChildren<SpringOscillation>();
-                hasSpringOscillation = true;
                 if (springOscillation != null)
                 {
+                    hasSpringOscillation = true;
                     springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
                 }
             }
@@ -293,8 +292,6 @@ namespace _IEC.Features.Gameplay
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
                 Destroy(rb);
             }
-
-            hasRigidbody = false;
         }
 
         private void RestoreRigidbody()
@@ -312,8 +309,6 @@ namespace _IEC.Features.Gameplay
                 rb.interpolation = savedData.interpolation;
                 rb.collisionDetectionMode = savedData.collisionDetectionMode;
             }
-
-            hasRigidbody = true;
         }
 
         protected void ChangeState(State newState)
@@ -363,6 +358,7 @@ namespace _IEC.Features.Gameplay
             if (posOnWater != null)
             {
                 posOnWater.enabled = false;
+                hasPosOnWater = false;  
             }
             // if (_specialItemHighlightEffect != null)
             // {
@@ -380,32 +376,36 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedLateUpdate()
         {
-            //if (hasRigidbody)
-            //{
-            //    //temporary keep, ugly if remove
-            //    lastVelocity = rb.velocity;
-            //}
+
+            if (GameG.iosFeature )
+            {
+                if (rb)
+                {
+                    lastVelocity = rb.velocity;
+                }
+                if(hasPosOnWater)
+                {
+                    if (rb && !rb.isKinematic )
+                    {
+                        posOnWater.enabled = false;
+                        hasPosOnWater = false;  
+                    }
+                    else
+                    {
+                        posOnWater.CheckPosWater();
+                    }
+                }
+            }
             if (hasSpringOscillation)
             {
                 springOscillation.CheckSpringObject();
             }
-            if (GameG.objectBobbingWater && hasPosOnWater)
-            {
-                if (rb && posOnWater.enabled)
-                {
-                    posOnWater.enabled = false;
-                }
-                else
-                {
-                    posOnWater.CheckPosWater();
-                }
-            }
-            if (!hasRigidbody)
+            if (rb == null)
             {
                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
                {
                    sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-                   curentPlanes = sharedPlanes;
+                   curentPlanes = sharedPlanes;     
                }
                if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
                {
@@ -413,7 +413,6 @@ namespace _IEC.Features.Gameplay
                    AppearInScreen();
                }
             }
-            //MeoMew disable, rb.velocity is heavy when call 1k object
             else if (m_CurrentState != State.Collectable && rb != null && rb.velocity != Vector3.zero)
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
@@ -425,7 +424,15 @@ namespace _IEC.Features.Gameplay
             posOnWater = pow;
             hasPosOnWater = true;
         }
-        protected virtual void AppearInScreen() { }
+
+        protected virtual void AppearInScreen()
+        {
+            if (gameObject.name.Contains("Relic"))
+            {
+                EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
+            }
+            
+        }
         
         #endregion
 

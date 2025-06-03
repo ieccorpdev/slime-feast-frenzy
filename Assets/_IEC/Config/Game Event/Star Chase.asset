@@ -49,6 +49,7 @@ MonoBehaviour:
     listRewardButtonSprites: []
   listEventData:
   - eventTarget: 0
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 617
       speedRange: 0.15
@@ -225,16 +226,22 @@ MonoBehaviour:
 
       this time!'
   - rankStartReward: 2
-    rankEndReward: 10
+    rankEndReward: -1
     claimRewardTitleSprite: {fileID: 21300000, guid: f3b97e2f9d622a545a90c8e9cf873564,
       type: 3}
     claimRewardSubtitleText: 'You ranked {0} in this
 
       star chase!'
-  - rankStartReward: 11
+  titleDataNoProgress:
+    rankStartReward: -1
     rankEndReward: -1
     claimRewardTitleSprite: {fileID: 21300000, guid: 224b27af13538a74db086a59d9431995,
       type: 3}
     claimRewardSubtitleText: Join the fun next time!
+  titleDataWinAllEventStages:
+    rankStartReward: 0
+    rankEndReward: 0
+    claimRewardTitleSprite: {fileID: 0}
+    claimRewardSubtitleText: 
   csv1: https://docs.google.com/spreadsheets/d/1tyEl45QPe1oH8uTK4RoDM7uq7_mWkaTIlz0mq1MPNl4/edit?gid=0#gid=0
   csv2: 
