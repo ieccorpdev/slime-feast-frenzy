@@ -26,6 +26,8 @@ namespace _IEC.Features.Gameplay
         private List<Sequence> sequences = new List<Sequence>();
         private List<LevelObjectiveVfx> listObjectiveVfx = new List<LevelObjectiveVfx>();
 
+        public LevelObjectiveUI specialBottleUI;
+
         // private void Awake()
         // {
         //     this.RegisterListener(EventList.GamePlay.RESUME_GAME, OnGameResume);
@@ -127,15 +129,35 @@ namespace _IEC.Features.Gameplay
                     objectiveUI.SetNumber(GamePlay.levelController.GoldCollected.ToString(),false);
                 },true);
             }
+            else if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                objectiveUI.PlayAnim();
+                EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+                {
+                    objectiveUI.SetNumber("", false);
+                }, true);
+                //objectiveUI.PlayAnim();
+            }
             else
             {
                 int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
                 EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
                 {
-                    objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
-                },true);
+                    objectiveUI.SetNumber(number + "/" + maxSpecialObject, false);
+                }, true);
                 //objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
             }
+
+        }
+        public void CollectARelicObject(CollectItemData itemData,int number,Vector2 startAnchorPosition)
+        {
+            var objectiveUI = GetLevelObjectiveUI(itemData);
+            if (objectiveUI == null) return;
+            int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
+            EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+            {
+                objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+            },true);
 
         }
         
@@ -175,7 +197,11 @@ namespace _IEC.Features.Gameplay
         {
             if (itemData.GetCoinValue() > 0)
             {
-               return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.goldSpecialObjective.GetId());
+                return m_ActiveObjectiveUIs.Find(x => x.itemId == Config.specialObjectConfig.goldSpecialObjective.GetId());
+            }
+            if (itemData.itemID.Equals(EventList.GamePlay.Kingdom_Special))
+            {
+                return specialBottleUI;
             }
             return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemData.itemID.ToLower()));
         }
@@ -232,10 +258,25 @@ namespace _IEC.Features.Gameplay
         {
             HandleGoldSpecialObjective(levelType);
             HandleOceanGiftObject();
+            HandleKingdomSpecialObjective();
+            HandleRelicObject();
             specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
             StartCoroutine(RebuildNextFrame());
         }
-        
+
+        public void HandleKingdomSpecialObjective()
+        {
+            var dataKingdom = Config.specialObjectConfig.kingdomSpecialObjective;
+            var kingdomObjective = new LevelObjective();
+            int kingdomCount = GamePlay.levelController.AllkingdomSpecialItems.Count;
+            kingdomObjective.itemId = dataKingdom.GetId();
+            kingdomObjective.number = kingdomCount;
+            LevelObjectiveUI kingdomObjectiveContain = specialBottleUI;
+            kingdomObjectiveContain.LoadData(kingdomObjective, true);
+            m_ActiveObjectiveUIs.Add(kingdomObjectiveContain);
+            kingdomObjectiveContain.gameObject.SetActive(kingdomCount > 0);
+        }
+
         IEnumerator RebuildNextFrame()
         {
             yield return null; // wait 1 frame
@@ -265,6 +306,18 @@ namespace _IEC.Features.Gameplay
             specialObjective.number = count;
             LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
             objectiveContain.LoadData(specialObjective,true);
+            m_ActiveObjectiveUIs.Add(objectiveContain);
+            objectiveContain.gameObject.SetActive(count > 0);
+        }
+        public void HandleRelicObject()
+        {
+            var dataSpecial = Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex);
+            var relicObjective = new LevelObjective();
+            int count = GamePlay.levelController.AllRelicItems.Count;
+            relicObjective.itemId = dataSpecial.GetId();
+            relicObjective.number = count;
+            LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
+            objectiveContain.LoadDataRelic(relicObjective,true,new Vector2(100,140));
             m_ActiveObjectiveUIs.Add(objectiveContain);
             objectiveContain.gameObject.SetActive(count > 0);
         }

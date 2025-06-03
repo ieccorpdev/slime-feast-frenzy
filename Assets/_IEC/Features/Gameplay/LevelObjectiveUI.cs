@@ -33,6 +33,12 @@ namespace _IEC.Features.Gameplay
         private float offsetFlyX;
         private int dirFlyX;
         public bool isGoldObj => itemId == Config.specialObjectConfig.goldSpecialObjective.GetId();
+        public bool isKingdomObj => itemId == Config.specialObjectConfig.kingdomSpecialObjective.GetId();
+        [SerializeField] private Animator anim;
+        [SerializeField] private Transform subIconPos;
+        [SerializeField] private Image fillFuelBar;
+        [SerializeField] private TMP_Text passTockenCounter;
+
         public RectTransform RectTransform
         {
             get
@@ -45,10 +51,24 @@ namespace _IEC.Features.Gameplay
                 return m_RectTransform;
             }
         }
-        
+
+        public void PlayAnim()
+        {
+            var stateInfo = anim.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Show") && stateInfo.normalizedTime < 1f)
+            {
+                anim.Play("Show", 0, 0.2f);
+            }
+            else
+            {
+                anim.Play("Show");
+            }
+        }
+
+
         public Vector3 GetIconPosition()
         {
-            return imgIcon.transform.position;
+            return subIconPos ? subIconPos.position : imgIcon.transform.position;
         }
 
         public float GetOffsetItemCurve()
@@ -74,8 +94,15 @@ namespace _IEC.Features.Gameplay
 
         public void SetNumber(string newNumber, bool isCompleted)
         {
+            if (isKingdomObj)
+            {
+                SetProgressFuel();
+            }
+            else
+            {
+                SetText(newNumber);
+            }
             effectCollect.Play();
-            SetText(newNumber);
             if (isCompleted)
             {
                 PlayDoneAnimation();
@@ -88,7 +115,35 @@ namespace _IEC.Features.Gameplay
         
         public Sprite GetSprite()
         {
+            if (isKingdomObj)
+                return Config.specialObjectConfig.kingdomSpecialObjective.GetIcon();
             return imgIcon.sprite;
+        }
+
+        void SetProgressFuel()
+        {
+            int currentFuel = PlayerData.journeyData.currentFuelJourney;
+            int targetFuel = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            while (currentFuel >= targetFuel)
+            {
+                PlayerData.journeyData.currentFuelJourney -= targetFuel;
+                currentFuel = PlayerData.journeyData.currentFuelJourney;
+                PlayerData.journeyData.currentTargetJourney++;
+                targetFuel = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).fuelNeed;
+            }
+            if (PlayerData.journeyData.currentTargetJourney >= Config.journeyTripConfig.listRewardsByJourneys.Count)
+            {
+                PlayerData.journeyData.isCompleteJourney = true;
+                fillFuelBar.DOFillAmount(1, 0.5f);
+                SetText(targetFuel + "/" + targetFuel);
+                passTockenCounter.text = Config.journeyTripConfig.GetRewardsByLevelJourney(PlayerData.journeyData.currentTargetJourney).idJourney.ToString();
+            }
+            else
+            {
+                fillFuelBar.DOFillAmount((float)currentFuel / (float)targetFuel, 0.5f);
+                SetText(currentFuel + "/" + targetFuel);
+                passTockenCounter.text = PlayerData.journeyData.currentTargetJourney.ToString();
+            }
         }
 
         public void LoadData(LevelObjective levelObjective, bool isSpecial)
@@ -103,17 +158,21 @@ namespace _IEC.Features.Gameplay
                 {
                     SetText(GamePlay.levelController.GoldCollected.ToString());
                 }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    SetProgressFuel();
+                }
                 else
                 {
                     int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
                     var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
-                    SetText(totalNumberCollected+"/"+maxSpecialObject);
+                    SetText(totalNumberCollected + "/" + maxSpecialObject);
                 }
 
             }
             else
             {
-                SetText(levelObjective.number.ToString());  
+                SetText(levelObjective.number.ToString());
             }
             if (isSpecial)
             {
@@ -122,6 +181,11 @@ namespace _IEC.Features.Gameplay
                 {
                     var itemDefinition = Config.specialObjectConfig.goldSpecialObjective;
                     imgIcon.sprite = itemDefinition.GetIcon();
+                }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    var itemDefinition = Config.specialObjectConfig.kingdomSpecialObjective;
+                    //imgIcon.sprite = itemDefinition.GetIcon();
                 }
                 else
                 {
@@ -135,11 +199,101 @@ namespace _IEC.Features.Gameplay
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
             //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
-            imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+            if (!isKingdomObj)
+            {
+                imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+                var delta = RectTransform.sizeDelta;
+                delta.y = imgIcon.rectTransform.sizeDelta.y;
+                RectTransform.sizeDelta = delta;
+            }
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
+        }
+
+        public void LoadDataRelic(LevelObjective levelObjective, bool isSpecial,Vector2 sizeObj = default)
+        {
+            Reset();
+            itemId = levelObjective.itemId;
+            m_IsSpecial = isSpecial;
+            //SetText(isSpecial ? "0" : levelObjective.number.ToString());
+            int maxSpecialObject = GamePlay.levelController.AllRelicItems.Count;
+            var totalNumberCollected = GamePlay.levelController.RelicObjCollected;
+            SetText(totalNumberCollected+"/"+maxSpecialObject);
+            var itemDefinition = Config.relicConfig.listRelicItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+            imgIcon.sprite = itemDefinition.GetIcon();
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            if (sizeObj == default) sizeObj = new Vector2(100, 100);
+            imgIcon.rectTransform.sizeDelta = sizeObj;
 
             var delta = RectTransform.sizeDelta;
             delta.y = imgIcon.rectTransform.sizeDelta.y;
             RectTransform.sizeDelta = delta;
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
+        }
+
+        private void SetTextObject(LevelObjective levelObjective, bool isSpecial)
+        {
+            if (isSpecial)
+            {
+                if (isGoldObj) // MeoMew hard Code;
+                {
+                    SetText(GamePlay.levelController.GoldCollected.ToString());
+                }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    SetProgressFuel();
+                }
+                else
+                {
+                    int maxSpecialObject = GamePlay.levelController.AllSpecialItems.Count;
+                    var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
+                    SetText(totalNumberCollected+"/"+maxSpecialObject);
+                }
+
+            }
+            else
+            {
+                SetText(levelObjective.number.ToString());  
+            }
+        }
+
+        private void SetSpriteObject(LevelObjective levelObjective, bool isSpecial)
+        {
+            if (isSpecial)
+            {
+                //Change method load 
+                if (isGoldObj)// MeoMew hard Code;
+                {
+                    var itemDefinition = Config.specialObjectConfig.goldSpecialObjective;
+                    imgIcon.sprite = itemDefinition.GetIcon();
+                }
+                else if (isKingdomObj) // FireFire hard Code;
+                {
+                    var itemDefinition = Config.specialObjectConfig.kingdomSpecialObjective;
+                    //imgIcon.sprite = itemDefinition.GetIcon();
+                }
+                else
+                {
+                    var itemDefinition = Config.specialObjectConfig.listSpecialItemDefinition.Find(x => x.GetId() == levelObjective.itemId);
+                    imgIcon.sprite = itemDefinition.GetIcon();
+                }
+
+            }
+            else
+            {
+                imgIcon.sprite = LoadSpriteIconFromId(itemId);
+            }
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            if (!isKingdomObj)
+            {
+                imgIcon.rectTransform.sizeDelta = new Vector2(100, 100);
+                var delta = RectTransform.sizeDelta;
+                delta.y = imgIcon.rectTransform.sizeDelta.y;
+                RectTransform.sizeDelta = delta;
+            }
             offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
             dirFlyX = Random.value < 0.5 ? 1 : -1;
             m_isLoaded = true;
@@ -150,7 +304,8 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(TWEEN_LEVEL_OBJECTIVE);
             pivot.localScale = Vector3.one;
             pivot.localEulerAngles = Vector3.zero;
-            imgCheckComplete.gameObject.SetActive(false);
+            if (imgCheckComplete)
+                imgCheckComplete.gameObject.SetActive(false);
             txtNumber.gameObject.SetActive(true);
             m_isLoaded = false;
         }
@@ -161,7 +316,8 @@ namespace _IEC.Features.Gameplay
             if (!GamePlay.IsWin)
                 EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
             txtNumber.gameObject.SetActive(false);
-            imgCheckComplete.gameObject.SetActive(true);
+            if (imgCheckComplete)
+                imgCheckComplete.gameObject.SetActive(true);
         }
 
         [Button]

@@ -20,6 +20,7 @@ namespace IEC
         
         public GameEventInfoBar starChaseInfoBar;
         public GameEventInfoBar sharkRaceInfoBar;
+        public GameEventInfoBar chompOffInfoBar;
 
         public GameObject groupGoldDisplay;
         public TextMeshProUGUI goldDisplayText;
@@ -76,12 +77,20 @@ namespace IEC
             Controllers.Get<EventRankController>().CheckAddPlayerProgress();
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)//Dont show first time -> show start popup at home
+            chompOffInfoBar.gameObject.SetActive(false);
+            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+            {
+                if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
+                {
+                    chompOffInfoBar.gameObject.SetActive(true);
+                    chompOffInfoBar.SetupData();
+                }
+            }
+            else if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)//Dont show first time -> show start popup at home
             {
                 if ((!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0))
                 {
                     sharkRaceInfoBar.gameObject.SetActive(true);
-                    starChaseInfoBar.gameObject.SetActive(false);
                     sharkRaceInfoBar.SetupData();
                 }
             }
@@ -129,24 +138,11 @@ namespace IEC
             #region check add popup
             Queue<PopupData> popupQueue = new Queue<PopupData>();
             List<KeyValuePair<ResourceType, int>> listCollectedItems = new();
-
-            #region Helper functions
-
-            void ShowNext()
-            {
-                if (popupQueue.Count > 0)
-                {
-                    var popupData = popupQueue.Dequeue();
-                    ShowPopup(popupData.popup, popupData.onOpen, popupData.onClose);
-                }
-            }
-            #endregion
             if (PlayerData.level > Config.levelShowRating && !PlayerData.wasRateUs)
             {
                 PopupData CallNativeReview = new PopupData(
                     null,
-                    Services.RateUs,
-                    ShowNext
+                    Services.RateUs
                 );
                 popupQueue.Enqueue(CallNativeReview);
             }
@@ -173,7 +169,7 @@ namespace IEC
             }
             
             //Check level chest
-            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1, ShowNext);
+            var levelChestRewardPopup = CheckAddChestRewardPopup(ChestType.Level, 1);
             if (levelChestRewardPopup != null)
             {
                 //popupQueue.Enqueue(levelChestRewardPopup);
@@ -190,7 +186,7 @@ namespace IEC
             }
 
             //Check star chest
-            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon, ShowNext);
+            var starChestRewardPopup = CheckAddChestRewardPopup(ChestType.Star, groupStar.StarWon);
             if (starChestRewardPopup != null)
             {
                 //popupQueue.Enqueue(starChestRewardPopup);
@@ -210,8 +206,7 @@ namespace IEC
             {
                 popupQueue.Enqueue(new PopupData(
                     Locator.Main.ClaimBonusRewardPanel,
-                    Locator.Main.ClaimBonusRewardPanel.ShowNext,
-                    ShowNext
+                    Locator.Main.ClaimBonusRewardPanel.ShowNext
                 ));
             }
             
@@ -223,8 +218,7 @@ namespace IEC
                     {
                         Locator.Main.PopupStartStarChaseEvent.Show();
                         PlayerData.isShownPopupStartStarChase = true;
-                    },
-                    ShowNext
+                    }
                 );
                 popupQueue.Enqueue(StartStarChase);
             }
@@ -237,43 +231,67 @@ namespace IEC
                     {
                         Locator.Main.PopupStartSharkRaceEvent.Show();
                         PlayerData.isShownPopupStartSharkRace = true;
-                    },
-                    ShowNext
+                    }
                 );
                 popupQueue.Enqueue(StartSharkRace);
             }
-
-            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
-                && Locator.Main.PopupSharkRace.IsEndEventStage() 
-                && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
-                && !PlayerData.GetEventSaveData(EventType.SharkRace).claimedReward)
-            {
-                PopupData ClaimSharkRace = new PopupData(
-                    Locator.Main.PopupSharkRace,
-                    () =>
-                    {
-                        Locator.Main.PopupSharkRace.Show();
-                    },
-                    ShowNext
-                );
-                popupQueue.Enqueue(ClaimSharkRace);
-            }
             
-            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock 
-                && Locator.Main.PopupStarChase.IsEndEventStage() 
-                && PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count > 0
-                && !PlayerData.GetEventSaveData(EventType.StarChase).claimedReward)
+            if (PlayerData.level == Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock && !PlayerData.isShownPopupInfoChompOff)
             {
-                PopupData ClaimStarChase = new PopupData(
-                    Locator.Main.PopupStarChase,
+                PopupData StartChompOff = new PopupData(
+                    Locator.Main.PopupChompOff,
                     () =>
                     {
-                        Locator.Main.PopupStarChase.Show();
-                    },
-                    ShowNext
+                        Locator.Main.PopupChompOff.Show();
+                    }
                 );
-                popupQueue.Enqueue(ClaimStarChase);
+                popupQueue.Enqueue(StartChompOff);
             }
+
+            // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
+            //     && Locator.Main.PopupSharkRace.IsEndEventStage() 
+            //     && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
+            //     && !PlayerData.GetEventSaveData(EventType.SharkRace).claimedReward)
+            // {
+            //     PopupData ClaimSharkRace = new PopupData(
+            //         Locator.Main.PopupSharkRace,
+            //         () =>
+            //         {
+            //             Locator.Main.PopupSharkRace.Show();
+            //         }
+            //     );
+            //     popupQueue.Enqueue(ClaimSharkRace);
+            // }
+            //
+            // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock 
+            //     && Locator.Main.PopupStarChase.IsEndEventStage() 
+            //     && PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count > 0
+            //     && !PlayerData.GetEventSaveData(EventType.StarChase).claimedReward)
+            // {
+            //     PopupData ClaimStarChase = new PopupData(
+            //         Locator.Main.PopupStarChase,
+            //         () =>
+            //         {
+            //             Locator.Main.PopupStarChase.Show();
+            //         }
+            //     );
+            //     popupQueue.Enqueue(ClaimStarChase);
+            // }
+            //
+            // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock 
+            //     && Locator.Main.PopupChompOff.IsEndEventStage() 
+            //     && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
+            //     && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
+            // {
+            //     PopupData ClaimChompOff = new PopupData(
+            //         Locator.Main.PopupChompOff,
+            //         () =>
+            //         {
+            //             Locator.Main.PopupChompOff.Show();
+            //         }
+            //     );
+            //     popupQueue.Enqueue(ClaimChompOff);
+            // }
             
             #endregion
             
@@ -289,6 +307,10 @@ namespace IEC
             {
                 listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.OceanGiftObject, GamePlay.levelController.SpecialProgressRewardObjCollected));
             }
+            if (GamePlay.levelController.RelicObjCollected > 0)
+            {
+                listCollectedItems.Add(new KeyValuePair<ResourceType, int>(ResourceType.Relic, GamePlay.levelController.RelicObjCollected));
+            }
             #endregion
 
             if (PlayerData.level >= Config.levelWinBackHome || popupQueue.Count > 0)
@@ -297,10 +319,19 @@ namespace IEC
                 GameController.OpenScene(GameScene.Main, ()=>
                 {
                     //ShowNext();
+                    while(popupQueue.Count > 0)
+                    {
+                        var popup = popupQueue.Dequeue();
+                        Locator.Main.HomeScreenTab.AddPopupToShow(popup.popup, popup.onOpen, Locator.Main.HomeScreenTab.ShowNextPopup);
+                    }
+                    
+                    Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
+                    Locator.Main.HomeScreenTab.CheckAllPacksPopupOnWin();
+                    
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
                         {
-                            Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, ShowNext);
+                            Locator.Main.HomeScreenTab.SpawnCollectItemOnEndGameEffect(listCollectedItems, Locator.Main.HomeScreenTab.ShowNextPopup);
                         });
                 });
             }
@@ -361,20 +392,6 @@ namespace IEC
         public void DeactiveMedalObj()
         {
             //medalObj.gameObject.SetActive(false);
-        }
-    }
-    
-    public class PopupData
-    {
-        public BasePopup popup;
-        public Action onOpen;
-        public Action onClose;
-
-        public PopupData(BasePopup popup, Action onOpen = null, Action onClose = null)
-        {
-            this.popup = popup;
-            this.onOpen = onOpen;
-            this.onClose = onClose;
         }
     }
 

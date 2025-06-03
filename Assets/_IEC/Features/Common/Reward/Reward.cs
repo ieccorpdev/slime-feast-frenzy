@@ -37,7 +37,7 @@ namespace IEC
     [Serializable]
     public class Rewards
     {
-        public List<Reward> listRewards;
+        public List<ProgressRewardData> listRewards;
     }
 
     public enum RewardTypes

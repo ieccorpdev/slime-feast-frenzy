@@ -157,6 +157,11 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 268527033326348345, guid: 450fd4164f2064048b0223198bd8b2bb,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a3588f48aaec9e744805bbf3c5d9f3ca, type: 2}
     - target: {fileID: 443522843202301997, guid: 450fd4164f2064048b0223198bd8b2bb,
         type: 3}
       propertyPath: m_CookingOptions
@@ -273,5 +278,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5

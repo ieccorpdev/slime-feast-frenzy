@@ -9,7 +9,6 @@ namespace IEC
 {
     public class PopupChestReward : BasePopup
     {
-        public Button btnCloseAll;
         public TextMeshProUGUI chestProgressText;
         public Image progressFillImage;
 
@@ -20,9 +19,7 @@ namespace IEC
         protected override void Awake()
         {
             base.Awake();
-            
             SetEvent(continueButton, OnHideClick);
-            SetEvent(btnCloseAll, OnHideClick);
         }
 
         public void Setup(ChestRewardData chestRewardData, int currentChestProgress)

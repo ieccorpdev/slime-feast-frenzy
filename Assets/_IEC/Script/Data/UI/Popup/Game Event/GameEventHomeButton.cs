@@ -31,18 +31,30 @@ namespace IEC
 
         private void Awake()
         {
-            if (eventType == EventType.StarChase)
-                _gameEventPopup = Locator.Main.PopupStarChase;
-            else if (eventType == EventType.SharkRace)
-                _gameEventPopup = Locator.Main.PopupSharkRace;
+            _gameEventPopup = eventType switch
+            {
+                EventType.StarChase => Locator.Main.PopupStarChase,
+                EventType.SharkRace => Locator.Main.PopupSharkRace,
+                EventType.ChompOff => Locator.Main.PopupChompOff,
+                _=> null,
+            };
 
             _eventRankController = Controllers.Get<EventRankController>();
             
             gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, InitUI);
         }
 
-        public void InitUI()
+        public bool IsEventCanShow()
         {
+            int level = PlayerData.level;
+            int levelUnlock = Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
+            return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+        }
+        public void InitUI() 
+        {
+            bool show = IsEventCanShow();
+            gameObject.SetActive(show);
+            if(!show) return;
             completedGroup.SetActive(false);
             unlockedGroup.SetActive(false);
             lockedGroup.SetActive(false);
@@ -54,6 +66,11 @@ namespace IEC
             currentRankText.text = "Rank " +
                              (data.listPlayerData.FindIndex(data => data.isPlayer) +
                               1).ToString();
+            
+            if (eventType == EventType.ChompOff && !Locator.Main.PopupChompOff.IsEndEventStage()) // Custom for chomp off
+            {
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText(true);
+            }
 
             if (PlayerData.level < Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock)
             {
@@ -117,13 +134,24 @@ namespace IEC
             UpdateUI();
         }
 
-
+        private TimeSpan countdownTimeSpan;
         public void UpdateUI()
         {
             if (timerText.gameObject.activeInHierarchy)
             {
+                countdownTimeSpan = PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now;
                 timerText.text = DateTimeHelper.GetFormattedTimeHMS(
-                    PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
+                    countdownTimeSpan);
+
+                if (countdownTimeSpan.TotalSeconds <= 0)
+                {
+                    InitUI();
+                }
+            }
+            
+            if (eventType == EventType.ChompOff && currentRankText.gameObject.activeInHierarchy) // Custom for chomp off
+            {
+                currentRankText.text = Locator.Main.PopupChompOff.GetTimerText(true);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using IEC;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,6 +14,8 @@ namespace _IEC.Features.Gameplay
 
         public List<GroundThemeModel> groundThemeModels;
 
+        public List<WaterThemeConfig> waterThemeConfigs;
+        public int stepChangeTheme = 25;
         [SerializeField] private string themeNeedToFind;
 
         public GroundElement GetLevelMapTile(string id, string themeId)
@@ -24,6 +27,7 @@ namespace _IEC.Features.Gameplay
                 //Debug.LogError("Cant find theme: " + themeId);
                 themeModel = groundThemeConfigModels[0];
             }
+
             var prefab = themeModel.GetElementById(id);
             if (prefab == null)
             {
@@ -37,7 +41,7 @@ namespace _IEC.Features.Gameplay
         [Button]
         public void FindLevelTheme()
         {
-            var config = Pool.Get<GameConfig>();  
+            var config = Pool.Get<GameConfig>();
             var levelIds = new List<int>();
 
             for (int i = 0; i < config.levelConfig.levelConfigDataEdited.Count; i++)
@@ -48,6 +52,7 @@ namespace _IEC.Features.Gameplay
                     levelIds.Add(i + 1);
                 }
             }
+
             Debug.LogError(new JsonDotNetModule().ToJson(levelIds));
         }
 
@@ -93,20 +98,75 @@ namespace _IEC.Features.Gameplay
                             {
                                 groundThemeModel.textures.Add(texture as Texture2D);
                             }
-
                         }
                     }
-
                 }
             }
+        }   
+        public WaterThemeConfig GetWaterThemeById(int id)
+        {
+            var result = waterThemeConfigs.Find(x => x.themeId == id);
+            if (result == null)
+            {
+                return waterThemeConfigs[0];
+            }
+            return waterThemeConfigs.Find(x => x.themeId == id);
         }
+        public WaterThemeConfig GetWaterThemeForLevel(int level)
+        {
+            level =level + 1;// ADd 1 level for bug Task #69952, theme change from 1-25
+            if (level < stepChangeTheme)
+                return waterThemeConfigs[0];
+
+            var listThemeNormal = waterThemeConfigs.FindAll(t => t.themeType != WaterThemeType.Hard);
+            int normalCount = listThemeNormal.Count;
+
+            int index = level / stepChangeTheme;
+
+            if (index < normalCount)
+                return listThemeNormal[index];
+            
+            int cycleLength = normalCount;
+            int cycleIndex = (index - normalCount) % cycleLength;
+            
+            int pseudoRandomIndex = (cycleIndex * 997 + 313) % normalCount;
+
+            return listThemeNormal[pseudoRandomIndex];
+        }
+
+
+        [Button]
+        public void TestSceneTheme()
+        {
+            listTest.Clear();
+            for (int i = 0; i < 1000; i += 25)
+            {
+                listTest.Add(new TestLevelTheme(i, GetWaterThemeForLevel(i).themeId));
+            }
+        }
+
+        public List<TestLevelTheme> listTest = new List<TestLevelTheme>();
     }
-    
+
+    [Serializable]
+    public class TestLevelTheme
+    {
+        public TestLevelTheme(int level, int themeID)
+        {
+            this.level = level;
+            this.themeID = themeID;
+        }
+
+        public int level;
+        public int themeID;
+    }
+
     [Serializable]
     public class GroundThemeConfigModel
     {
         public string themeId;
         public List<GroundElement> groundElements;
+
         public GroundElement GetElementById(string id)
         {
             return groundElements.Find(x => x.Id == id);
@@ -119,5 +179,24 @@ namespace _IEC.Features.Gameplay
         public string themeId;
         public List<Material> materials;
         public List<Texture2D> textures;
+    }
+
+    [Serializable]
+    public class WaterThemeConfig
+    {
+        public int themeId;
+        public WaterThemeType themeType;
+        public Material waterSeaMaterial;
+        public GameObject whirlPoolHole;
+        public Sprite bgSprite;
+        public ParticleSystem splashEffect;
+        public Color baseItemColor = Color.white;
+    }
+
+    public enum WaterThemeType
+    {
+        Day,
+        Night,
+        Hard
     }
 }

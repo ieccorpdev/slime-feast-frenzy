@@ -8,7 +8,6 @@ public static partial class Locator
     {
         public static GameResourceDisplay GameResourceDisplay => Pool.Get<GameResourceDisplay>();
         public static PopupSettingIngame PopupSettingIngame => Pool.Get<PopupSettingIngame>();
-        public static PopupSettingInHome PopupSettingInHome => Pool.Get<PopupSettingInHome>();
         public static PopupRating PopupRating => Pool.Get<PopupRating>();
         public static ScreenLoading ScreenLoading => Pool.Get<ScreenLoading>();
         public static MoneyPanel MoneyPanel => Pool.Get<MoneyPanel>();

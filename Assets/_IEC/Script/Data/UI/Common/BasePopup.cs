@@ -8,7 +8,9 @@ namespace IEC
 {
     public class BasePopup : ScreenUI
     {
+        
         public Button btnClose;
+        public Button btnCloseAll;
         public GameObject blackPanel;
         public GameObject mainPanel;
         public bool isHaveAnim = true;
@@ -29,6 +31,7 @@ namespace IEC
         protected virtual void Awake()
         {
             SetEvent(btnClose, OnHideClick);
+            if(btnCloseAll !=null) SetEvent(btnCloseAll, OnHideClick);
         }
 
         public override void Show()

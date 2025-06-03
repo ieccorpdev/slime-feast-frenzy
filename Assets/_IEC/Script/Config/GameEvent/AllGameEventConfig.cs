@@ -9,7 +9,8 @@ namespace IEC
     {
         public List<GameEventConfig> listAllGameEventConfig = new();
         public List<string> listRandomNames = new();
-
+        public ChompOffProgressConfig chompOffProgressConfig;
+        public int diffLevelShow = 10;
         public GameEventConfig GetGameEventConfig(EventType eventType)
         {
             return listAllGameEventConfig.Find(config => config.eventType == eventType);

@@ -152,7 +152,6 @@ GameObject:
   - component: {fileID: 2276671985735516429}
   - component: {fileID: 2897932832193531560}
   - component: {fileID: 1140380232311028322}
-  - component: {fileID: 1734699936137881323}
   - component: {fileID: 1393136516281894871}
   m_Layer: 0
   m_Name: Burger_Veggie_01 (1)
@@ -226,22 +225,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &1734699936137881323
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1500698919194663863}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0.1
-  m_AngularDrag: 0.1
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &1393136516281894871
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -257,5 +240,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5

@@ -3,6 +3,7 @@ using UnityEngine;
 using _IECModules;
 using _IEC.Features.Gameplay;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IEC
 {
@@ -73,7 +74,23 @@ namespace IEC
             {
                 value = 0
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set time cooldown Undersea Voyage", param =>
+            {
+                JourneyTripConfig.maxDay = int.Parse(param.inputParams[0].value.ToString());
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set level hole", param =>
+            {
+                GamePlay.levelController.GetHolePlayer().SetLevel(int.Parse(param.inputParams[0].value.ToString()));
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Profile Name", param =>
             {
                 string name = param.inputParams[0].value.ToString();
@@ -87,6 +104,7 @@ namespace IEC
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupStarChase,
                     new AddEventProgressData()
                     {
                         eventType = EventType.StarChase,
@@ -98,11 +116,41 @@ namespace IEC
             {
                 value = 0
             });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Theme ", param =>
+            {
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                Pool.Get<InGamePlayGroup>().currentThemeSelect = count;
+                EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
             
+            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            {
+                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
+                GameController.OpenScene(GameScene.Game,
+                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
+                    false);
+            });
+            
+            var weatherIndex = (int)(Pool.Get<InGamePlayGroup>().currentWeatherSelect);
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Set Weather Effect",
+                cheatCodeParam =>
+                {
+                    var weatherInt = cheatCodeParam.dropdownParam.value;
+                    Pool.Get<InGamePlayGroup>().currentWeatherSelect = (WeatherTheme)weatherInt;
+                    EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+                },
+                Enum.GetNames(typeof(WeatherTheme)).ToList(),
+                weatherIndex
+            );
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
                 Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupSharkRace,
                     new AddEventProgressData()
                     {
                         eventType = EventType.SharkRace,
@@ -110,6 +158,47 @@ namespace IEC
                         progressAmount = value,
                     });
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Chomp Off progress", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                Controllers.Get<EventRankController>().AddPlayerEventProgress(
+                    Locator.Main.PopupChompOff,
+                    new AddEventProgressData()
+                    {
+                        eventType = EventType.ChompOff,
+                        id = PlayerData.playerName,
+                        progressAmount = value,
+                    });
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });           
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Relic Token Count", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.relicData.AddTokenCount(value);
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI);
+            }, new CheatCode.InputParam
+            {
+                value = 5
+            });
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+
+                var data = PlayerData.GetEventSaveData(EventType.ChompOff);
+
+                data.timeStart = data.timeStart.AddMinutes(-value);
+                data.lastUpdateTime = data.lastUpdateTime.AddMinutes(-value);
+                Locator.Main.PopupChompOff.UpdateCurrentTimeEndEvent();
+
             }, new CheatCode.InputParam
             {
                 value = 0
@@ -187,14 +276,15 @@ namespace IEC
                 Locator.Main.PopupStarChase.ResetEvent();
             });
 
-            ModuleController.cheatCode.AddCheatCodeButton("Spawn Level Test All Item", cheatCodeParam =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add Jellyfish Item", param =>
             {
-                Locator.Service.GameResourceDisplay.SetAllObjPosOut();
-                GameController.OpenScene(GameScene.Game,
-                    () => { EventController.RaiseEvent(EventList.GamePlay.NEW_GAME_LEVEL_ALL_ITEM); },
-                    false);
+                int count = int.Parse(param.inputParams[0].value.ToString());
+                PlayerData.journeyData.currentFuelJourney += count;
+            }, new CheatCode.InputParam
+            {
+                value = 100
             });
-            
+
             ModuleController.cheatCode.AddCheatCodeButton("Check Valid All Level", cheatCodeParam =>
             {
                 Config.levelConfig.CheckValidAllLevel();

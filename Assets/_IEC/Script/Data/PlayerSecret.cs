@@ -13,7 +13,7 @@ namespace IEC
     /// object contain player secret data (need save and secure)
     /// </summary>
     [System.Serializable]
-    public class PlayerSecret : IData
+    public partial class PlayerSecret : IData
     {
         public long lastTickPlayTime;
         public long startTickPlayTime;
@@ -53,10 +53,15 @@ namespace IEC
         public bool passHelperClear;
         
         public HybridData hybridData = new HybridData();
+        public JourneyData journeyData = new JourneyData();
+
+        public bool isShowPackPopupsInHomeOnStartGame;
+        public bool isShowStartedPackInStartGame;
 
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
+      
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
@@ -74,11 +79,29 @@ namespace IEC
         {
             level += 1;
         }
-
+       
         public void SaveLastPlayTime()
         {
             lastTickPlayTime = Math.Max(lastTickPlayTime, startTickPlayTime);
             startTickPlayTime = Math.Max(lastTickPlayTime, DateTime.Now.Ticks);
+        }
+
+        public int GetDaysSinceDownload()
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (DateTime.Now - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+        }
+        
+        public int GetDaysFromDownloadToTime(DateTime time)
+        {
+            return Mathf.FloorToInt(
+                (float)
+                (time - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                    null,
+                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
 
         public DateTime GetLastPlayDateTime()
@@ -96,13 +119,30 @@ namespace IEC
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
-            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking .Count < 0)
+            if (IsFirstTime || levelFirstTimeTracking == null || levelFirstTimeTracking.Count < 0)
             {
                 ClearAndInitTrackingLevelType();
                 levelLostStreak = -1;
+                chompOffCurrentLevelLost = -1;
+                chompOffCurrentLevelLostCount = 0;
             }
             InitDailyReward();
             CheckActionAfterQuitGame();
+        }
+        
+        public void ResetDataDay()
+        {
+            //Another param need reset each 24 day come here
+            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
+            {
+                lastTimeOpenWheel = DateTime.Now;
+                luckWheelDailyFreeSpin = true;
+                luckWheelDailyAdsSpin = 0;
+                dailyShowPiggyBank = false;
+                dailyShowLifeOfferPack = false;
+            }
+
+            isShowPackPopupsInHomeOnStartGame = false;
         }
 
         private void CheckActionAfterQuitGame()
@@ -113,6 +153,7 @@ namespace IEC
             isKilledAppGamePlay = false;
             
             ResetBoosterStreak();
+            AddLevelLostCountForChompOffEvent();
             
         }
 
@@ -269,7 +310,7 @@ namespace IEC
         public bool dailyShowLifeOfferPack;
         public void DecreasePlayerLife()
         {
-            if (playerLife == Config.maxHealth)
+            if (playerLife == (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 if (timeStartCountAddLife < DateTime.Now)
                 {
@@ -355,7 +396,7 @@ namespace IEC
                 if(!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
-            while (playerLife < Config.maxHealth)
+            while (playerLife < (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 diffTime = DateTime.Now - timeStartCountAddLife;
                 if ((diffTime.Minutes + diffTime.Hours * 60 + diffTime.Days * 60 * 24) >= Config.timeRefillLife)
@@ -377,11 +418,25 @@ namespace IEC
         public void AddPlayerLife()
         {
             playerLife++;
+            CheckPlayerMaxHealth();
+        }
+        public void AddPlayerLife(int amount)
+        {
+            playerLife+= amount;
+            CheckPlayerMaxHealth();
+        }
+        public void CheckPlayerMaxHealth()
+        {
+            int maxHealth = Pool.Get<GameConfig>().maxHealth;
+            if (playerLife > maxHealth)
+            {
+                playerLife = maxHealth;
+            }
         }
         public string GetTimeToNextLife()
         {
             CheckPlayerAddLifeByTime();
-            if (playerLife >= Config.maxHealth)
+            if (playerLife >= (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 return "MAX";
             }
@@ -401,7 +456,7 @@ namespace IEC
 
         public void RaiseToMaxHealth()
         {
-            playerLife = Config.maxHealth;
+            playerLife = (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth);
         }
 
         #endregion
@@ -492,18 +547,6 @@ namespace IEC
         public bool luckWheelDailyFreeSpin;
         public int luckWheelDailyAdsSpin;
         public int luckWheelGoldTimeSpin;
-        public void ResetDataDay()
-        {
-            //Another param need reset each 24 day come here
-            if (lastTimeOpenWheel.Day != DateTime.Now.Day)
-            {
-                lastTimeOpenWheel = DateTime.Now;
-                luckWheelDailyFreeSpin = true;
-                luckWheelDailyAdsSpin = 0;
-                dailyShowPiggyBank = false;
-                dailyShowLifeOfferPack = false;
-            }
-        }
 
 
         #endregion
@@ -546,6 +589,9 @@ namespace IEC
             if (currencyType == ResourceType.UnlimitedLive)
             {
                 AddTimeUnlimitedLife(amount);
+            } else if (currencyType == ResourceType.Live)
+            {
+                AddPlayerLife(amount);
             }
             else if (currencyType == ResourceType.TimeUnlimitedEvolveStone)
             {
@@ -865,7 +911,28 @@ namespace IEC
             return Config.progressRewardConfig.IsCompleteReward(currentProgressMilestone) && currentProgress >= Config.progressRewardConfig.listRewardData.Count;
         }
         #endregion
-        
+
+        #region ArtifactCollector
+
+        private RelicData _relicData;
+        public RelicData relicData => _relicData ??= new();
+
+        public void ResetRelicData()
+        {
+            _relicData = new();
+        }
+   
+        public bool ReachMaxRelicReward()
+        {
+            return false;
+        }
+
+        public void AddRelicToken(int amount)
+        {
+            
+        }
+
+        #endregion
         #region Add Helper Popup
 
         public Dictionary<ResourceType, int> adRewardUsedAddHelper = new();
@@ -901,6 +968,9 @@ namespace IEC
         public List<EventSaveData> listEventSaveData = new();
         public bool isShownPopupStartStarChase;
         public bool isShownPopupStartSharkRace;
+        public bool isShownPopupInfoChompOff;
+        public int chompOffCurrentLevelLost;
+        public int chompOffCurrentLevelLostCount;
 
         public EventSaveData GetEventSaveData(EventType eventType)
         {
@@ -912,11 +982,23 @@ namespace IEC
                 {
                     eventType = eventType,
                     eventIndex = 0,
+                    claimedReward = true,
                 };
                 listEventSaveData.Add(data);
             }
 
             return data;
+        }
+
+        public void ResetEventSaveData(EventType eventType)
+        {
+            var data = listEventSaveData.Find(data => data.eventType == eventType);
+            if (data != null)
+            {
+                data.listPlayerData = new();
+                data.eventIndex = 0;
+                data.claimedReward = true;
+            }
         }
         
         public bool IsEventCompleted(EventType eventType)
@@ -926,6 +1008,29 @@ namespace IEC
             return false;
         }
 
+        public void AddLevelLostCountForChompOffEvent()
+        {
+            if (level < Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+                return;
+
+            if (level != chompOffCurrentLevelLost)
+                chompOffCurrentLevelLostCount = 0;
+
+            chompOffCurrentLevelLost = level;
+            chompOffCurrentLevelLostCount++;
+        }
+
+        public void ResetChompOffLevelLostCount()
+        {
+            chompOffCurrentLevelLost = -1;
+            chompOffCurrentLevelLostCount = 0;
+        }
+
+        #endregion
+        
+        #region CloudSave
+
+        public string cloudSaveUserId;
         #endregion
     }
 }

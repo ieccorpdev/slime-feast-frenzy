@@ -74,7 +74,7 @@ public class SpringOscillation : _BaseBehaviour
             worldBasePosition.z
         );
 
-        if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < 0.01f)
+        if (Mathf.Abs(offset) < minAmplitude && Mathf.Abs(targetAmplitude - amplitude) < minAmplitude)
         {
             isOscillating = false;
             amplitude = 0f;

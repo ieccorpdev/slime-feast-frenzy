@@ -158,6 +158,11 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 293068347833038182, guid: 8cab977fab8abac4a9949aa26c267448,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2c6c844c4d87dde458541c42f80fa3bd, type: 2}
     - target: {fileID: 2379129521916331436, guid: 8cab977fab8abac4a9949aa26c267448,
         type: 3}
       propertyPath: m_RootOrder
@@ -248,6 +253,11 @@ PrefabInstance:
       propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7401514115902003486, guid: 8cab977fab8abac4a9949aa26c267448,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2c6c844c4d87dde458541c42f80fa3bd, type: 2}
     m_RemovedComponents:
     - {fileID: 5062338242136474527, guid: 8cab977fab8abac4a9949aa26c267448, type: 3}
     - {fileID: 1799810760078524304, guid: 8cab977fab8abac4a9949aa26c267448, type: 3}
@@ -279,5 +289,6 @@ MonoBehaviour:
   damping: 0.8
   frequency: 1
   minAmplitude: 0.01
-  movementLimit: 2
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
   amplitudeSmoothSpeed: 5

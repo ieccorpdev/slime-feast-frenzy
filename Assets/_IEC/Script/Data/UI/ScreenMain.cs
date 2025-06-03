@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
@@ -30,10 +31,12 @@ namespace IEC
         [Header("Claim reward effect")] 
         public EffectRewardClaim effectRewardClaim;
         public Stack<RewardClaimData> listClaimRewardData = new();
-        
+        private CanvasGroup _canvasGroup;
+
         private void Awake()
         {
             Init();
+            _canvasGroup = this.GetComponent<CanvasGroup>();
             gameObject.OnEvent(EventList.GamePlay.ON_CHOOSE_TAB, () =>
             {
                 if(m_DictTab[Game.hybrid.currentTab].activeInHierarchy)
@@ -104,8 +107,16 @@ namespace IEC
             });
             SetEvent(m_BtnSetting, () =>
             {
-                UI.ShowScreen(Locator.Service.PopupSettingInHome);
+                UI.ShowScreen(Locator.Main.PopupSettingInHome);
             });
+        }
+
+        public bool SetInteractive(bool isInteractive)
+        {
+            if (_canvasGroup == null) return false;
+            _canvasGroup.interactable = isInteractive;
+            _canvasGroup.blocksRaycasts = isInteractive;
+            return true;
         }
 
         private void Init()
@@ -198,6 +209,11 @@ namespace IEC
                     startPos += Vector3.down * 300;
                     AddSpecialObjectToClaim(amount,startPos,startSize, 1f);
                     break;
+                case ResourceType.Relic:
+                    startPos = EffectRewardClaim.SwitchToRectTransform(Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>());
+                    startPos += Vector3.down * 300;
+                    AddRelicObjectToClaim(amount,startPos,startSize, 1f);
+                    break;
                 case ResourceType.LevelStar:
                     AddLevelStarToClaim(amount,startPos,startSize, 1f, 0.15f);
                     break;
@@ -255,7 +271,31 @@ namespace IEC
                 animTime
             );
         }
-        
+        private void AddRelicObjectToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
+        {
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.btnRelicHunt.GetComponent<RectTransform>();
+            
+            AddCustomRewardToClaimEffect(
+                ResourceType.Relic, 
+                Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon(),
+                startPos, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                startSize,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay,
+                animTime
+            );
+        }
         private void AddRewardHelperToClaim(ResourceType helperType, int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home

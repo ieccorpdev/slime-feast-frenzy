@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IEC
 {
     public class PopupSharkRace : PopupGameEvent
     {
+        public Button playButton;
+        public GameObject playGroups;
         public TextMeshProUGUI eventTargetText;
         protected override void Awake()
         {
@@ -15,7 +18,15 @@ namespace IEC
 
             IsEventMultipleStage = true;
         }
-
+        public override void Start()
+        {
+           base.Start();
+           SetEvent(playButton,()=>
+           {
+               Hide();
+               Locator.Main.HomeScreenTab.OnClickPlayButton();
+           });
+        }
         public override void Show()
         {
             base.Show();
@@ -74,6 +85,8 @@ namespace IEC
                 Init();
             }
             
+            CheckUpdateEventProgress();
+            
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
             var data = PlayerData.GetEventSaveData(eventType);
 
@@ -131,6 +144,7 @@ namespace IEC
                         eventSaveData.listPlayerData.IndexOf(data[i]) + 1);
                 (listPlayerDataUI[i] as SharkRacePlayerDataUI).UpdateUI((float)data[i].progress / eventData.eventTarget);
             }
+            playGroups.gameObject.SetActive(!claimRewardGroup.gameObject.activeInHierarchy);
         }
         
     }
