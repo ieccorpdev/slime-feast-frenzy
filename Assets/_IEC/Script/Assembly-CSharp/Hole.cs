@@ -357,7 +357,7 @@ public class Hole : _BaseBehaviour
 					m_Level--;
 				SetLevel(Level);
 				
-				if(m_Level == 0)
+				if(m_Level == 1)
 				{
 					//totalDecreaseXp = 0;
 					if (m_Xp > totalDecreaseXp)
@@ -373,7 +373,8 @@ public class Hole : _BaseBehaviour
 				}
 				else
 				{
-					SetXp(Settings.GetRequiredXp(Level, false) - 1, true);
+					//SetXp(Settings.GetRequiredXp(Level, false) - 1, true);
+					//SetXp(0,true);
 					m_Xp = Settings.GetRequiredXp(Level, false);
 				}
 			}
