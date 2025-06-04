@@ -35,7 +35,7 @@ public class UpdateManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        int count = managedFixedUpdates.Count;
+        int count = managedLateUpdates.Count;
         for (int i = 0; i < count; i++)
             managedLateUpdates[i].ManagedLateUpdate();
     }
