@@ -69,6 +69,7 @@ namespace IEC
         LoseXpInsteadOfDeadOnBomb,
         SpeedBoostOnUseHelper,
         BonusXpOnSmallItems,
-        IncreaseHelperTime
+        IncreaseHelperTime,
+        CompassOceanGiftItem,
     }
 }

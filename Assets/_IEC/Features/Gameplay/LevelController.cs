@@ -275,6 +275,8 @@ namespace _IEC.Features.Gameplay
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
             GoldCollected = 0;
+            
+            CheckCharacterPowerOnStartGame();
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -637,6 +639,11 @@ namespace _IEC.Features.Gameplay
                 }
             }
             return xp;
+        }
+
+        public void CheckCharacterPowerOnStartGame()
+        {
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
         }
 
         private void CollectObjectiveItem(CollectItemData data)

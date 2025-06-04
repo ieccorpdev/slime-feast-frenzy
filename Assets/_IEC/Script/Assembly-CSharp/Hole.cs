@@ -537,6 +537,16 @@ public class Hole : _BaseBehaviour
 				break;
 			case CharacterPowerType.BonusXpOnSmallItems:
 				break;
+			case CharacterPowerType.CompassOceanGiftItem:
+				int itemCount = power.buffAmount < 0
+					? GamePlay.levelController.AllSpecialItems.Count
+					: (int)power.buffAmount;
+				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,new TurnOnCompassDirector()
+				{
+					remainingObjectiveItems = GamePlay.levelController.AllSpecialItems.GetRange(0, itemCount),
+					holeTransform = transform
+				});
+				break;
 		}
 		
 		return power;
