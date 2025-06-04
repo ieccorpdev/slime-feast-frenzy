@@ -229,7 +229,16 @@ namespace _IEC.Features.Gameplay
                     Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
                 );
             }
-            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
+            {
+                themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            }
+            else
+            {
+                var weatherSelected = Config.themeConfig.GetWeatherForLevel(PlayerData.level);
+                //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
+                themeController.ActiveWeatherEffect(weatherSelected);
+            }
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
