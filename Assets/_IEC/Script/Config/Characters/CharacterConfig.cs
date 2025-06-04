@@ -14,6 +14,7 @@ namespace IEC
         public Animator characterHomePrefab;
         public Animator characterControlPrefab;
         public Animator characterBitePrefab;
+        public List<CharacterUpgradeCost> listCharacterUpgradeCost = new();
         public List<CharacterTrait> listCharacterTraits;
         public List<CharacterPower> listCharacterPowers;
 
@@ -27,6 +28,13 @@ namespace IEC
         {
             return listCharacterTraits.Find(trait => trait.traitType == traitType);
         }
+    }
+
+    [System.Serializable]
+    public class CharacterUpgradeCost
+    {
+        public int shardCost;
+        public int goldCost;
     }
 
     [System.Serializable]

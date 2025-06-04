@@ -502,6 +502,26 @@ namespace IEC
         
         #region Player Character
         public string playerCharacterName;
+        public Dictionary<string, int> characterLevel = new();
+
+        public int GetCharacterLevel(string characterName)
+        {
+            characterLevel.TryAdd(characterName, 0);
+
+            return characterLevel[characterName];
+        }
+
+        public void LevelUpCharacter(string characterName)
+        {
+            var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
+            characterLevel.TryAdd(characterName, 0);
+
+            if (characterLevel[characterName] < characterConfig.listCharacterUpgradeCost.Count - 1)
+            {
+                characterLevel[characterName]++;
+            }
+        }
+        
         #endregion
         
         #region Player Avatar Profile
