@@ -543,8 +543,8 @@ public class Hole : _BaseBehaviour
 				DecreaseXp(Mathf.FloorToInt(value.buffAmount * GetCurrentXp()));
 				break;
 			case CharacterPowerType.SpeedBoostOnUseHelper:
-				_speedBoosterIncrease = Config.AllBoosterConfig.GetBoosterData(ResourceType.WindSurf).effectValue;
-				timeEffectSpeedBooster += value.buffAmount;
+				_speedBoosterIncrease = value.buffAmount;
+				timeEffectSpeedBooster += GamePlay.levelController.GetDurationHelper(resourceAffected);
 				speedLinesVFX.Play();
 				break;
 			case CharacterPowerType.BonusXpOnSmallItems:

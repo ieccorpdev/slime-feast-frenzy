@@ -612,6 +612,19 @@ namespace _IEC.Features.Gameplay
             });
         }
 
+        public float GetDurationHelper(ResourceType helperType)
+        {
+            var helperId = helperType switch
+            {
+                ResourceType.Vortex => HelperId.Magnet,
+                ResourceType.TimeStop => HelperId.FrozenTime,
+                ResourceType.Enlarge => HelperId.ScaleUp,
+                ResourceType.Compass => HelperId.Compass,
+            };
+            
+            return CheckCharacterPowerOnHelperDuration(helperType, Config.gamePlayConfig.GetHelperActiveTime(helperId));
+        }
+
         public float CheckCharacterPowerOnHelperDuration(ResourceType helperType, float helperTime)
         {
             var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
