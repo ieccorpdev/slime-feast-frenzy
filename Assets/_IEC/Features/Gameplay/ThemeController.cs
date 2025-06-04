@@ -9,11 +9,15 @@ using UnityUtils;
 public enum WeatherTheme
 {
     NONE,
+    SUNLIGHT,
+    MOONLIGHT,
+    AURORA,
+    RAIN,
     SNOW,
     SNOW_STORM,
-    RAIN,
+    SAND_STORM,
+    FIREFLY,
     WIND,
-    LEAVES
 }
 [Serializable]
 public class WeatherConfig

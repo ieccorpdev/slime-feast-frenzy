@@ -538,6 +538,7 @@ GameObject:
   - component: {fileID: 7982402975872410195}
   - component: {fileID: 3174138194718820666}
   - component: {fileID: 4264586738903859655}
+  - component: {fileID: 329084921838965080}
   m_Layer: 5
   m_Name: BtnClose
   m_TagString: Untagged
@@ -623,7 +624,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -648,6 +649,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &329084921838965080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4472017980760890473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &5864389847317756242
 GameObject:
   m_ObjectHideFlags: 0
@@ -995,6 +1018,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   btnClose: {fileID: 4264586738903859655}
+  btnCloseAll: {fileID: 0}
   blackPanel: {fileID: 8110778893721223781}
   mainPanel: {fileID: 4431131509735729740}
   isHaveAnim: 1
@@ -1125,6 +1149,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3203960724336291552}
     m_Modifications:
+    - target: {fileID: 177276810725620468, guid: 4b3e89a835c6b4a4ba176e029ee434c8,
+        type: 3}
+      propertyPath: m_Transition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 930528593917480084, guid: 4b3e89a835c6b4a4ba176e029ee434c8,
         type: 3}
       propertyPath: m_Type
@@ -1337,7 +1366,8 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 9146517109745003755, guid: 4b3e89a835c6b4a4ba176e029ee434c8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 4b3e89a835c6b4a4ba176e029ee434c8, type: 3}
 --- !u!224 &2291089015100697387 stripped
 RectTransform:
@@ -1345,6 +1375,34 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4000218095812847341}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2389427305424734712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1633489808392613653, guid: 4b3e89a835c6b4a4ba176e029ee434c8,
+    type: 3}
+  m_PrefabInstance: {fileID: 4000218095812847341}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7336262537974473880
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2389427305424734712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1001 &4172654543011423711
 PrefabInstance:
   m_ObjectHideFlags: 0
