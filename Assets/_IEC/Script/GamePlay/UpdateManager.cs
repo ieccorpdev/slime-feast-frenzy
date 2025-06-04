@@ -28,13 +28,15 @@ public class UpdateManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        for (int i = 0; i < managedFixedUpdates.Count; i++)
+        var count = managedFixedUpdates.Count;
+        for (int i = 0; i < count; i++)
             managedFixedUpdates[i].ManagedFixedUpdate();
     }
 
     private void LateUpdate()
     {
-        for (int i = 0; i < managedLateUpdates.Count; i++)
+        int count = managedLateUpdates.Count;
+        for (int i = 0; i < count; i++)
             managedLateUpdates[i].ManagedLateUpdate();
     }
 
