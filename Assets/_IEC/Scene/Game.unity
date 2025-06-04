@@ -123,12 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!198 &762290569 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 475527137329618315, guid: 34d48f42031e8e3408b62de0c18d4913,
-    type: 3}
-  m_PrefabInstance: {fileID: 889272865}
-  m_PrefabAsset: {fileID: 0}
 --- !u!850595691 &857988303
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -296,12 +290,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 893c9a1dace28ee4fbfdd5009ee287c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!198 &1039248633 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7635259637530405574, guid: 34d48f42031e8e3408b62de0c18d4913,
-    type: 3}
-  m_PrefabInstance: {fileID: 889272865}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1239883818
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,6 +666,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -75.399994
       objectReference: {fileID: 0}
+    - target: {fileID: 1914017349366625419, guid: 432c61ec2ef554a42b0051ebd7fcba35,
+        type: 3}
+      propertyPath: targetCamera
+      value: 
+      objectReference: {fileID: 1355430567}
     - target: {fileID: 2152554280110133100, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
       propertyPath: m_AnchorMax.y
@@ -833,6 +826,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 144.70001
       objectReference: {fileID: 0}
+    - target: {fileID: 3699463693306402521, guid: 432c61ec2ef554a42b0051ebd7fcba35,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -20.800003
+      objectReference: {fileID: 0}
     - target: {fileID: 3738234674503621494, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -847,6 +845,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3802756305308208659, guid: 432c61ec2ef554a42b0051ebd7fcba35,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -54.199997
       objectReference: {fileID: 0}
     - target: {fileID: 4161954915152038253, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
@@ -917,6 +920,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5186572679563432196, guid: 432c61ec2ef554a42b0051ebd7fcba35,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -13.400002
       objectReference: {fileID: 0}
     - target: {fileID: 5243789668895545506, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
@@ -1267,12 +1275,12 @@ PrefabInstance:
         type: 3}
       propertyPath: dataWeatherScene.Array.data[0].weatherParticle
       value: 
-      objectReference: {fileID: 1039248633}
+      objectReference: {fileID: 0}
     - target: {fileID: 7800267201284177202, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
       propertyPath: dataWeatherScene.Array.data[1].weatherParticle
       value: 
-      objectReference: {fileID: 762290569}
+      objectReference: {fileID: 0}
     - target: {fileID: 7800267201284177202, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
       propertyPath: dataWeatherScene.Array.data[2].weatherParticle
@@ -1306,7 +1314,7 @@ PrefabInstance:
     - target: {fileID: 7941541029552273189, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -217.89996
+      value: -217.89998
       objectReference: {fileID: 0}
     - target: {fileID: 7986384951275912866, guid: 432c61ec2ef554a42b0051ebd7fcba35,
         type: 3}
@@ -1462,6 +1470,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9035661919669700985, guid: 432c61ec2ef554a42b0051ebd7fcba35,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 6.299999
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 432c61ec2ef554a42b0051ebd7fcba35, type: 3}
