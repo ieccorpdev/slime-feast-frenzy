@@ -14,6 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Dolphin
   defaultCharacterPosY: -0.8
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 2d873c22f54b8ce40978aa272ce2cb09,
+    type: 3}
   characterControlPrefab: {fileID: 2743966393455320600, guid: 417962036fc0e6944b0d4864512ec4d5,
     type: 3}
   characterBitePrefab: {fileID: 3405999012308954229, guid: c95923dab89f1674296a7b006ef87d52,
@@ -26,4 +29,5 @@ MonoBehaviour:
   listCharacterPowers:
   - powerType: 1
     resourceAffected: 6
+    conditionValueForPower: 0
     buffAmount: 10

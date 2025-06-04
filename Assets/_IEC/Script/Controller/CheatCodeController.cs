@@ -138,6 +138,7 @@ namespace IEC
                 {
                     var characterInt = cheatCodeParam.dropdownParam.value;
                     PlayerData.playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[characterInt].characterName;
+                    EventController.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER);
                 },
                 Config.allCharactersConfig.listAllCharactersConfig.Select(ch => ch.characterName).ToList(),
                 characterIndex

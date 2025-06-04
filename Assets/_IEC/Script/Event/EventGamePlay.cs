@@ -56,6 +56,8 @@ namespace IEC
             public const string COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI = "GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI";
             public const string COLLECT_SPECIAL_ITEM_FOR_UI = "Gameplay.COLLECT_SPECIAL_ITEM_FOR_UI";
             public const string COLLECT_RELIC_ITEM_FOR_UI = "Gameplay.COLLECT_RELIC_ITEM_FOR_UI";
+            
+            public const string SELECT_NEW_CHARACTER = "GamePlay.SELECT_NEW_CHARACTER";
 
             public const string UPDATE_CAMERA_TARGET = "Gameplay.UPDATE_CAMERA_TARGET";
             public const string TIMER_TIME_OUT = "Gameplay.TIMER_TIME_OUT";

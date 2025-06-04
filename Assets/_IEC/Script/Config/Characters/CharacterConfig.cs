@@ -11,6 +11,7 @@ namespace IEC
         public string characterName;
         public float defaultCharacterPosY;
         public float characterAnimSpeed = 1f;
+        public Animator characterHomePrefab;
         public Animator characterControlPrefab;
         public Animator characterBitePrefab;
         public List<CharacterTrait> listCharacterTraits;
