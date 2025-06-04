@@ -516,7 +516,7 @@ namespace IEC
             var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
             characterLevel.TryAdd(characterName, 0);
 
-            if (characterLevel[characterName] < characterConfig.listCharacterUpgradeCost.Count - 1)
+            if (characterLevel[characterName] < characterConfig.listCharacterUpgrade.Count - 1)
             {
                 characterLevel[characterName]++;
             }

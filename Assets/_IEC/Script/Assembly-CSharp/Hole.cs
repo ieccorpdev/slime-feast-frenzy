@@ -524,23 +524,25 @@ public class Hole : _BaseBehaviour
 		
 		if (power == null)
 			return null;
+
+		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerName));
 		
 		switch (power.powerType)
 		{
 			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
-				DecreaseXp((int)power.buffAmount);
+				DecreaseXp((int)value.buffAmount);
 				break;
 			case CharacterPowerType.SpeedBoostOnUseHelper:
 				_speedBoosterIncrease = Config.AllBoosterConfig.GetBoosterData(ResourceType.WindSurf).effectValue;
-				timeEffectSpeedBooster += power.buffAmount;
+				timeEffectSpeedBooster += value.buffAmount;
 				speedLinesVFX.Play();
 				break;
 			case CharacterPowerType.BonusXpOnSmallItems:
 				break;
 			case CharacterPowerType.CompassOceanGiftItem:
-				int itemCount = power.buffAmount < 0
+				int itemCount = value.buffAmount < 0
 					? GamePlay.levelController.AllSpecialItems.Count
-					: (int)power.buffAmount;
+					: (int)value.buffAmount;
 				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,new TurnOnCompassDirector()
 				{
 					remainingObjectiveItems = GamePlay.levelController.AllSpecialItems.GetRange(0, itemCount),

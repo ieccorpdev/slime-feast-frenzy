@@ -21,6 +21,7 @@ MonoBehaviour:
     type: 3}
   characterBitePrefab: {fileID: 3405999012308954229, guid: bcadebd6bcbc5c247b7e739eec0bbc84,
     type: 3}
+  listCharacterUpgrade: []
   listCharacterTraits:
   - traitType: 0
     buffAmount: -0.2
@@ -30,4 +31,12 @@ MonoBehaviour:
   - powerType: 0
     resourceAffected: 0
     conditionValueForPower: 0
-    buffAmount: 1000
+    buffAmount: 0
+    helperDurationIncrease: 0
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 0.5
+    - conditionValueForPower: 0
+      buffAmount: 0.4
+    - conditionValueForPower: 0
+      buffAmount: 0.3

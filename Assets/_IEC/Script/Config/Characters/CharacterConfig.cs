@@ -14,7 +14,7 @@ namespace IEC
         public Animator characterHomePrefab;
         public Animator characterControlPrefab;
         public Animator characterBitePrefab;
-        public List<CharacterUpgradeCost> listCharacterUpgradeCost = new();
+        public List<CharacterUpgrade> listCharacterUpgrade = new();
         public List<CharacterTrait> listCharacterTraits;
         public List<CharacterPower> listCharacterPowers;
 
@@ -31,7 +31,7 @@ namespace IEC
     }
 
     [System.Serializable]
-    public class CharacterUpgradeCost
+    public class CharacterUpgrade
     {
         public int shardCost;
         public int goldCost;
@@ -42,13 +42,21 @@ namespace IEC
     {
         public CharacterPowerType powerType;
         public ResourceType resourceAffected;
+        public List<CharacterPowerValue> listCharacterPowerValue = new();
+
+        public CharacterPowerValue GetCharacterPowerValue(int characterLevel)
+        {
+            characterLevel = Mathf.Clamp(characterLevel, 0, listCharacterPowerValue.Count);
+
+            return listCharacterPowerValue[characterLevel];
+        }
+    }
+
+    [System.Serializable]
+    public class CharacterPowerValue
+    {
         public int conditionValueForPower; // for example item xp to apply power
         public float buffAmount;
-
-        public float ApplyBuff(float value)
-        {
-            return value * (1 + buffAmount);
-        }
     }
 
     [System.Serializable]
@@ -71,5 +79,7 @@ namespace IEC
         BonusXpOnSmallItems,
         IncreaseHelperTime,
         CompassOceanGiftItem,
+        IncreaseCameraSize,
+        BombShieldOnHelper,
     }
 }

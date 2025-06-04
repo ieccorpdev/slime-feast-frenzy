@@ -617,7 +617,7 @@ namespace _IEC.Features.Gameplay
             var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
             if (checkPowerHelperTime != null)
             {
-                helperTime *= checkPowerHelperTime.buffAmount;
+                helperTime *= checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
             }
             return helperTime;
         }
@@ -633,9 +633,11 @@ namespace _IEC.Features.Gameplay
             var checkXpPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.BonusXpOnSmallItems);
             if (checkXpPower != null)
             {
-                if (xp == checkXpPower.conditionValueForPower)
+                var value = checkXpPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                if (xp == value.conditionValueForPower)
                 {
-                    xp = Mathf.FloorToInt(xp * checkXpPower.buffAmount);
+                    xp = Mathf.FloorToInt(xp * value.buffAmount);
                 }
             }
             return xp;
