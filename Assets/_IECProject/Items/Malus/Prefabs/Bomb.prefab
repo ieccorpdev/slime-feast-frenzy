@@ -111,13 +111,11 @@ MonoBehaviour:
   m_CurrentState: 0
   _isCollected: 0
   posOnWater: {fileID: 0}
+  springOscillation: {fileID: 0}
+  minImpactVelocity: 0.2
+  splashYOffset: 0.15
   onDraging: 0
   targetObject: {fileID: 0}
-  pullSpeed: 2.5
-  stopPullDistance: 0.1
-  gravityStrength: -50
-  rotationSpeedMin: 0
-  rotationSpeedMax: 360
 --- !u!114 &2149591517795363538
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -147,7 +145,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4127863999166880
 Transform:
   m_ObjectHideFlags: 0
