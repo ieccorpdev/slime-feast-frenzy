@@ -344,6 +344,16 @@ public class Hole : _BaseBehaviour
 		SetXp(m_Xp + xp,true);
 	}
 
+	public int GetCurrentXp()
+	{
+		int xp = m_Xp;
+		for (int i = 0; i < m_Level; i++)
+		{
+			xp += Settings.GetRequiredXp(i, false);
+		}
+		return xp;
+	}
+
 	public void DecreaseXp(int xp)
 	{
 		var totalDecreaseXp = xp;
@@ -530,7 +540,7 @@ public class Hole : _BaseBehaviour
 		switch (power.powerType)
 		{
 			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
-				DecreaseXp((int)value.buffAmount);
+				DecreaseXp(Mathf.FloorToInt(value.buffAmount * GetCurrentXp()));
 				break;
 			case CharacterPowerType.SpeedBoostOnUseHelper:
 				_speedBoosterIncrease = Config.AllBoosterConfig.GetBoosterData(ResourceType.WindSurf).effectValue;

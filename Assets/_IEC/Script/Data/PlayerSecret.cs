@@ -508,7 +508,7 @@ namespace IEC
         {
             characterLevel.TryAdd(characterName, 0);
 
-            return characterLevel[characterName];
+            return characterLevel[characterName] - 1;
         }
 
         public void LevelUpCharacter(string characterName)
