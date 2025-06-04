@@ -69,6 +69,7 @@ GameObject:
   - component: {fileID: 7711859755168264514}
   - component: {fileID: 7097953518254998218}
   - component: {fileID: 2831418217723090657}
+  - component: {fileID: 2939385875014181704}
   m_Layer: 5
   m_Name: UIGameGroups
   m_TagString: Untagged
@@ -172,6 +173,22 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4599
+--- !u!114 &2939385875014181704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5868297259203405260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16514e976835c6d4bb529df4c64d05fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetCamera: {fileID: 0}
+  threshold: 2.2222223
+  matchUpRatio: 0
+  matchDownRatio: 1
 --- !u!1 &8794653180826100974
 GameObject:
   m_ObjectHideFlags: 0
@@ -2253,6 +2270,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -70
       objectReference: {fileID: 0}
+    - target: {fileID: 6850655185682100985, guid: 1d3124c07fefd1a479b036a71f71ab9d,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6850655185682100985, guid: 1d3124c07fefd1a479b036a71f71ab9d,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6850655185682100985, guid: 1d3124c07fefd1a479b036a71f71ab9d,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6861298648355317549, guid: 1d3124c07fefd1a479b036a71f71ab9d,
         type: 3}
       propertyPath: m_SortingLayer
@@ -2342,6 +2374,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -70
+      objectReference: {fileID: 0}
+    - target: {fileID: 8342353994406894897, guid: 1d3124c07fefd1a479b036a71f71ab9d,
+        type: 3}
+      propertyPath: m_SortingLayer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8354087831038970085, guid: 1d3124c07fefd1a479b036a71f71ab9d,
         type: 3}
