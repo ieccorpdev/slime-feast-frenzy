@@ -67,6 +67,9 @@ public class Hole : _BaseBehaviour
 
 	private float _speedBoosterIncrease;
 	private float timeEffectSpeedBooster;
+
+	private float timeAdditionalCamSize;
+	private float _additionalCamSize;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -107,6 +110,23 @@ public class Hole : _BaseBehaviour
 				if (speedLinesVFX.isPlaying)
 				{
 					speedLinesVFX.Stop();
+				}
+			}
+
+			if (timeAdditionalCamSize > 0)
+			{
+				timeAdditionalCamSize =
+					Mathf.Clamp(timeAdditionalCamSize - Time.deltaTime, 0, timeAdditionalCamSize);
+
+				if (timeAdditionalCamSize <= 0)
+				{
+					this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+					{
+						target =  transform,
+						//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+						cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+						                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+					});
 				}
 			}
 		}
@@ -236,7 +256,8 @@ public class Hole : _BaseBehaviour
 			{
 				target =  myTransform,
 				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-				cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel)
+				cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel) 
+				                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
 			});
 		});
 		SetXp(0,false);
@@ -562,6 +583,17 @@ public class Hole : _BaseBehaviour
 				break;
 			case CharacterPowerType.BombShieldOnHelper:
 				holeBombShield.SetupShield((int)value.buffAmount, GamePlay.levelController.GetDurationHelper(resourceAffected));
+				break;
+			case CharacterPowerType.IncreaseCameraSizeOnHelper:
+				timeAdditionalCamSize = GamePlay.levelController.GetDurationHelper(resourceAffected);
+				_additionalCamSize = value.buffAmount;
+				this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+				{
+					target =  transform,
+					//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+					cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+					                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+				});
 				break;
 		}
 		

@@ -630,7 +630,7 @@ namespace _IEC.Features.Gameplay
             var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
             if (checkPowerHelperTime != null)
             {
-                helperTime *= checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
             }
             return helperTime;
         }
@@ -640,6 +640,8 @@ namespace _IEC.Features.Gameplay
             playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
                 helperType);
             playerHole.CheckApplyCharacterPower(CharacterPowerType.BombShieldOnHelper,
+                helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseCameraSizeOnHelper,
                 helperType);
         }
 

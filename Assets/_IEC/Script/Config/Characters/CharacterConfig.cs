@@ -79,7 +79,7 @@ namespace IEC
         BonusXpOnSmallItems,
         IncreaseHelperTime,
         CompassOceanGiftItem,
-        IncreaseCameraSize,
+        IncreaseCameraSizeOnHelper,
         BombShieldOnHelper,
     }
 }
