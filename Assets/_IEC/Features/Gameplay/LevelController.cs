@@ -639,6 +639,8 @@ namespace _IEC.Features.Gameplay
         {
             playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
                 helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.BombShieldOnHelper,
+                helperType);
         }
 
         public int CheckCharacterPowerOnGainXp(int xp)

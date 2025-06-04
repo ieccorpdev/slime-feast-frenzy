@@ -13,6 +13,7 @@ using UnityEngine;
 
 public class Hole : _BaseBehaviour
 {
+	public HoleBombShield holeBombShield;
 	[SerializeField] private Transform holeGraphics;
 	[SerializeField] private Transform holeCanvases;
 	
@@ -558,6 +559,9 @@ public class Hole : _BaseBehaviour
 					remainingObjectiveItems = GamePlay.levelController.AllSpecialItems.GetRange(0, itemCount),
 					holeTransform = transform
 				});
+				break;
+			case CharacterPowerType.BombShieldOnHelper:
+				holeBombShield.SetupShield((int)value.buffAmount, GamePlay.levelController.GetDurationHelper(resourceAffected));
 				break;
 		}
 		
