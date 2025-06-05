@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using IEC;
+using IEC.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -15,6 +17,8 @@ namespace _IEC.Features.Gameplay
         public List<GroundThemeModel> groundThemeModels;
 
         public List<WaterThemeConfig> waterThemeConfigs;
+        public List<WeatherWaterConfig> weatherWaterConfigs;
+        public List<HardFixWeatherByLevel> weatherWaterHardFixes;
         public int stepChangeTheme = 25;
         [SerializeField] private string themeNeedToFind;
 
@@ -114,6 +118,7 @@ namespace _IEC.Features.Gameplay
         }
         public WaterThemeConfig GetWaterThemeForLevel(int level)
         {
+            level =level + 1;// ADd 1 level for bug Task #69952, theme change from 1-25
             if (level < stepChangeTheme)
                 return waterThemeConfigs[0];
 
@@ -133,18 +138,88 @@ namespace _IEC.Features.Gameplay
             return listThemeNormal[pseudoRandomIndex];
         }
 
+        [Button]
+        public WeatherTheme GetWeatherForLevel(int level)
+        {
+            if (level <= 10)
+            {
+                //Under level 10, remove weather
+                return WeatherTheme.NONE;
+            }
+
+            var levelSeaTheme = GetWaterThemeForLevel(level);
+            List<WeatherWaterConfig> listWeatherValid = new List<WeatherWaterConfig>();
+            listWeatherValid = weatherWaterConfigs.FindAll(x => x.listIDWaterThemeValid.Contains(levelSeaTheme.themeId) && x.weatherType != WeatherThemeType.Customize);
+
+            string result = "";
+            foreach (var weatherWaterConfig in listWeatherValid)
+            {
+                result += weatherWaterConfig.weatherTheme.ToString() + ",";
+            }
+            //Debug.LogError("WeatherThemeCanChose: " + result);
+            int group = level / 10;      
+            var dataHardFix = weatherWaterHardFixes.Find(x=>x.levelByFive == level /5);
+            if (dataHardFix != null)
+            {
+                return dataHardFix.weatherThemeChoose;
+            }
+            if (listWeatherValid.Count < 0)
+            { 
+                return WeatherTheme.NONE;
+            }
+            else
+            {
+                int seed = (int)(((group ^ 0x45d9f3b) * 0x45d9f3b) & 0x7FFFFFFF);
+                return ShuffleAndPickOne(listWeatherValid, seed).weatherTheme;
+            }
+        }
+        WeatherWaterConfig ShuffleAndPickOne(List<WeatherWaterConfig> source, int seed)
+        {
+            var list = new List<WeatherWaterConfig>(source); // tránh thay đổi danh sách gốc
+            System.Random rng = new System.Random(seed);
+
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = rng.Next(0, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+            return list[0]; // đảm bảo độ phân tán
+        }
+
+        public List<ThemeExport> listExport = new List<ThemeExport>();
 
         [Button]
         public void TestSceneTheme()
         {
-            listTest.Clear();
-            for (int i = 0; i < 1000; i += 25)
+            listExport.Clear();
+            for (int i = 1; i < 1000; i += 1)
             {
-                listTest.Add(new TestLevelTheme(i, GetWaterThemeForLevel(i).themeId));
+                ThemeExport dt = new ThemeExport();
+                dt.level = i;
+                dt.waterThemeId = GetWaterThemeForLevel(i).themeId;
+                dt.waterType = GetWeatherForLevel(i);
+                listExport.Add(dt);
             }
+
+            string path = Path.Combine(Application.dataPath, "ThemeExport.csv");
+            ExportThemeListToCSV(listExport, path);
         }
 
         public List<TestLevelTheme> listTest = new List<TestLevelTheme>();
+        public static void ExportThemeListToCSV(List<ThemeExport> list, string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine("level,waterType,waterThemeId");
+
+                foreach (var item in list)
+                {
+                    writer.WriteLine($"{item.level},{item.waterType},{item.waterThemeId}");
+                }
+            }
+
+            Debug.Log("CSV export completed: " + filePath);
+        }
     }
 
     [Serializable]
@@ -192,10 +267,38 @@ namespace _IEC.Features.Gameplay
         public Color baseItemColor = Color.white;
     }
 
+    [Serializable]
+    public class WeatherWaterConfig
+    {
+        public WeatherTheme weatherTheme;
+        public WeatherThemeType weatherType;
+        public List<int> listIDWaterThemeValid = new List<int>();
+    }
+
+    [Serializable]
+    public class HardFixWeatherByLevel
+    {
+        //Step
+        public int levelByFive;
+        public WeatherTheme weatherThemeChoose;
+    }
     public enum WaterThemeType
     {
         Day,
         Night,
         Hard
+    }
+    public enum WeatherThemeType
+    {
+        Normal,
+        Customize
+    }
+
+    [Serializable]
+    public class ThemeExport
+    {
+        public int level;
+        public WeatherTheme waterType;
+        public int waterThemeId;
     }
 }

@@ -74,7 +74,23 @@ namespace IEC
             {
                 value = 0
             });
-            
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set time cooldown Undersea Voyage", param =>
+            {
+                JourneyTripConfig.maxDay = int.Parse(param.inputParams[0].value.ToString());
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set level hole", param =>
+            {
+                GamePlay.levelController.GetHolePlayer().SetLevel(int.Parse(param.inputParams[0].value.ToString()));
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set Player Profile Name", param =>
             {
                 string name = param.inputParams[0].value.ToString();

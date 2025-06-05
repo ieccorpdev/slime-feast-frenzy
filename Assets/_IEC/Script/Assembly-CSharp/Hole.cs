@@ -525,7 +525,7 @@ public class Hole : _BaseBehaviour
 	public void CollectABomb(bool isDoAnim = true)
 	{
 		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
+		//SpawnVfx(deathVfx);
 		if (isDoAnim)
 		{
 			DOTween.Sequence()

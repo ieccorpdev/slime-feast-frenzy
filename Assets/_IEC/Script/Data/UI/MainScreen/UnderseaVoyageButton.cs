@@ -118,6 +118,9 @@ namespace IEC
             button = GetComponent<Button>();    
             button.onClick.AddListener(HandleEventClickShowPopupUnderseaVoyage);
             InitStatusButton();
+            if (PlayerData.level <= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn - 15){
+                this.gameObject.SetActive(false);
+            }
         }
 
         private void Update()

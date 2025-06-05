@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+
 namespace IEC
 {
     [Serializable]
@@ -20,6 +22,7 @@ namespace IEC
         public bool isCompleteJourney;
         public bool isShowHandtut;
         public bool isEndEvent;
+        public bool isShowNoti;
 
         public void SetStartJourneyTimeNow()
         {
@@ -33,6 +36,7 @@ namespace IEC
                 lifeCycleCount++;
                 wasOpenJourney = true;
             }
+            Debug.Log("fix bug complete");
         }
 
         public void ResetJourneyData()
@@ -47,6 +51,7 @@ namespace IEC
             wasOpenJourney = false;
             isCompleteJourney = false;
             isEndEvent = false;
+            isShowNoti = false;
         }
 
         public string GetTimeRemainingString()

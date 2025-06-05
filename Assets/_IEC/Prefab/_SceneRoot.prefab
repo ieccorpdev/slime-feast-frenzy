@@ -84,7 +84,6 @@ MonoBehaviour:
   homeCamera: {fileID: 0}
   ingameDebugConsole: {fileID: 0}
   levelController: {fileID: 3240537236585179349}
-  currentThemeSelect: 0
 --- !u!114 &1729791858133236843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -112,6 +111,8 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   uiCamera: {fileID: 1283112826819049777}
   levelController: {fileID: 3240537236585179349}
+  currentThemeSelect: -1
+  currentWeatherSelect: 0
 --- !u!114 &8924430689641417242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -728,7 +729,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3204546307396076241}
   - component: {fileID: 3240537236585179349}
-  - component: {fileID: 7800267201284177202}
   m_Layer: 0
   m_Name: LevelController
   m_TagString: Untagged
@@ -773,22 +773,7 @@ MonoBehaviour:
   playerHole: {fileID: 7769055446088212174}
   levelObjectHolder: {fileID: 8205614176103802560}
   allItemHolder: {fileID: 7542084622121733772}
-  themeController: {fileID: 7800267201284177202}
---- !u!114 &7800267201284177202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7349492146883595875}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 893c9a1dace28ee4fbfdd5009ee287c8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waterGround: {fileID: 1145534289378435913}
-  whirlPoolHole: {fileID: 5467782242690740108}
-  splashEffect: {fileID: 4467307532764085102}
+  themeController: {fileID: 0}
 --- !u!1 &7518073256763557271
 GameObject:
   m_ObjectHideFlags: 0
@@ -1316,6 +1301,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -70
       objectReference: {fileID: 0}
+    - target: {fileID: 2412986618831025932, guid: fef19c7c1b7ca284b9bf6495c4c87841,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -75.399994
+      objectReference: {fileID: 0}
     - target: {fileID: 2490470387436827127, guid: fef19c7c1b7ca284b9bf6495c4c87841,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -1469,6 +1459,21 @@ PrefabInstance:
     - target: {fileID: 4152563622742437489, guid: fef19c7c1b7ca284b9bf6495c4c87841,
         type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439802346321268633, guid: fef19c7c1b7ca284b9bf6495c4c87841,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439802346321268633, guid: fef19c7c1b7ca284b9bf6495c4c87841,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439802346321268633, guid: fef19c7c1b7ca284b9bf6495c4c87841,
+        type: 3}
+      propertyPath: m_LocalScale.z
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4566391244237169055, guid: fef19c7c1b7ca284b9bf6495c4c87841,
@@ -2241,18 +2246,6 @@ PrefabInstance:
       objectReference: {fileID: 1145534289378435913}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c8f3cd0e53694ea4c97bcd061fb9b9ae, type: 3}
---- !u!198 &4467307532764085102 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6321166551868899092, guid: c8f3cd0e53694ea4c97bcd061fb9b9ae,
-    type: 3}
-  m_PrefabInstance: {fileID: 7657909322787947642}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &5467782242690740108 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2424956463692164086, guid: c8f3cd0e53694ea4c97bcd061fb9b9ae,
-    type: 3}
-  m_PrefabInstance: {fileID: 7657909322787947642}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &7662446844321060216 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4540132904161538, guid: c8f3cd0e53694ea4c97bcd061fb9b9ae,

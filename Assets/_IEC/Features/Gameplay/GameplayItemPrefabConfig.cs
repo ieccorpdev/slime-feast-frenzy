@@ -585,6 +585,58 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }    
+                [Button]
+        void LogMaterialColor(int min,int max)
+        {
+            Debug.LogError($"Start LogMaterial");
+            // Khai báo tên shader gốc và shader mới
+            List<string> listResult = new List<string>();
+            for (int i = min; i < max; i++)
+            {
+                if(i >= listItemDefinitionShp.Count) break;
+                var itemDef = listItemDefinitionShp[i];
+                GameObject prefab = itemDef.GetPrefab();
+
+                if (prefab == null)
+                {
+                    Debug.LogWarning($"❌ Prefab null tại index {i} - {itemDef.name}");
+                    continue;
+                }
+
+                var meshRenderers = prefab.GetComponentsInChildren<MeshRenderer>();
+
+
+                foreach (var meshRenderer in meshRenderers)
+                {
+                    if (meshRenderer == null)
+                    {
+                        Debug.LogWarning($"❌ Không tìm thấy MeshRenderer trong prefab {itemDef.name}");
+                        continue;
+                    }
+                    var mat = meshRenderer.sharedMaterial;
+                    if (mat == null)
+                    {
+                        Debug.LogWarning($"❌ Không có sharedMaterial trong {itemDef.name}");
+                        continue;
+                    }
+
+                    if (mat.GetColor("_BaseColor") != Color.white)
+                    {
+                        listResult.Add(prefab.name);
+                    }
+
+                }
+
+            }
+
+            string sl = "";
+            foreach (var result in listResult)
+            {
+                sl += result + ",";
+            }
+            Debug.LogError("Result:" + sl);
+            Debug.LogError($"End LogMaterial");
+        }    
         void CheckOverlap(Collider[] colliders, MeshRenderer[] meshs,string nameObj)
         {
             // Lấy danh sách GameObject từ mỗi mảng

@@ -47,7 +47,6 @@ namespace IEC
             });
             Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += () =>
             {
-                PlayerData.journeyData.isBuyIAP = true;
                 RefreshUI();
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
@@ -76,8 +75,12 @@ namespace IEC
                     Locator.Main.ScreenMain.SetInteractive(true);
                     Show();
                 });
-                _canShow = false;
             }
+        }
+
+        public bool GetHideStatus()
+        {
+            return !_canShow && !IsShow;
         }
 
         public override void Hide()
@@ -85,6 +88,7 @@ namespace IEC
             base.Hide();
             StopAllCoroutines();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
+            _canShow = false;
         }
 
         [Button]

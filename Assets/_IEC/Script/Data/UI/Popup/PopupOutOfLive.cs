@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using DG.Tweening;
 using IEC;
 using IEC.TrackingEvent;
 using TMPro;
@@ -36,6 +38,8 @@ namespace _IEC
             Services.ShowRewardAds(() =>
             {
                 PlayerData.AddPlayerLife();
+                var lifeCount = 1;
+                ShowLifeRewardAnim(lifeCount);
                 Services.PushEvent(new IEC.TrackingEvent.SRApostition($"Ads_More_life"));
                 //UI.screenHome.Hide();
                 // UI.GetGroupsGold().EffectLifeClaim(pos, 1, PlayerData.playerLife, () =>
@@ -49,19 +53,51 @@ namespace _IEC
             , 60);
         }
 
+        private void ShowRewardInChest(List<UIItemReward> listRewardUI)
+        {
+            int inx = 0;
+            foreach (var itm in listRewardUI)
+            {
+                if (itm.haveData)
+                {
+                    TweenControl.GetInstance().DelayCall(itm.transform, inx * 0.07f,
+                        () =>
+                        {
+                            itm.GetComponent<RectTransform>().transform.position = Vector3.zero;
+                               
+                        }, () =>
+                        {
+                            TweenControl.GetInstance().ScaleFromZero(itm.gameObject, 0.3f,
+                                () => { itm.transform.DOPunchScale(Vector3.one * 0.2f, 0.4f, 1, 0.3f); });
+
+                            TweenControl.GetInstance().MoveRect(itm.GetComponent<RectTransform>(), itm.targetAnchorPos,
+                                0.5f, null,
+                                EaseType.OutQuint);
+                        });
+                    inx++;
+                }
+            }
+        }
+
         void OnRequestRefill(bool success)
         {
             if (success)
             {
+                int lifeCount = 0;
                 //UI.GetGroupsGold().EffectLifeClaim(pos, Config.maxHealth, PlayerData.playerLife, () => { });
                 if (IsRaiseToMaxLife)
                 {
+                    lifeCount = Config.maxHealth - PlayerData.playerLife;
                     PlayerData.RaiseToMaxHealth();
+
                 }
                 else
                 {
                     PlayerData.AddPlayerLife();
+                    lifeCount = 1;
                 }
+                
+                ShowLifeRewardAnim(lifeCount);
 
                 Locator.Main.HomeScreenTab.UpdateMainHome();
                 //UI.GetGroupsGold().UpdateUI();
@@ -75,6 +111,13 @@ namespace _IEC
                 Locator.Main.PopupGoldOffer.Show();
                 //Hide();
             }
+        }
+
+        private void ShowLifeRewardAnim(int lifeCount)
+        {
+            Locator.Main.ScreenMain.AddRewardClaimEffect(ResourceType.Live, lifeCount );
+            Debug.Log($"ResourceType.Live {ResourceType.Live} lifeCount {lifeCount}");
+            Locator.Main.ScreenMain.DoAnimAllAvailableReward();
         }
 
         private void UpdateUI()

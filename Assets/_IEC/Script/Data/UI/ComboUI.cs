@@ -132,12 +132,16 @@ namespace IEC
             if (combo < 10000)
             {
                 comboTxt.transform.localPosition = comboTxtPos[comboTxt.text.Length - 1].localPosition;
+                comboTxt.fontSize = comboTxtPos[comboTxt.text.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
                 subComboTxt.transform.localPosition = subComboTxtPos[comboTxt.text.Length - 1].localPosition;
+                subComboTxt.fontSize = subComboTxtPos[comboTxt.text.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
             }
             else
             {
                 comboTxt.transform.position = comboTxtPos[comboTxtPos.Length - 1].position;
+                comboTxt.fontSize = comboTxtPos[comboTxtPos.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
                 subComboTxt.transform.position = subComboTxtPos[comboTxtPos.Length - 1].position;
+                subComboTxt.fontSize = subComboTxtPos[comboTxtPos.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
             }
 
             Show();

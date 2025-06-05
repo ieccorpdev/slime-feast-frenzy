@@ -16,7 +16,6 @@ namespace IEC
         public GameObject frameSelectedGroup;
         public GameObject selectedIcon;
         public GameObject lockIcon;
-        
         public AvatarSelectionUIState CurrentState { get; private set; }
 
         public void Init(Sprite sprite)
@@ -37,7 +36,7 @@ namespace IEC
                 avatarFrameImage.sprite = sprite;
                 avatarImage.gameObject.SetActive(false);
             }
-            
+            Locator.Main.PopupEditProfile.HideNoti();
             CheckSetLockDisplay(Config.playerAvatarConfig.GetUnlockConfig(sprite.name));
         }
         
@@ -52,6 +51,11 @@ namespace IEC
                 return;
             
             OnSelectAvatar();
+        }
+
+        private void ShowWarning()
+        {
+            Locator.Main.PopupEditProfile.ShowNoti();
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -81,8 +85,10 @@ namespace IEC
         private void OnSelectAvatar()
         {
             if (CurrentState == AvatarSelectionUIState.Lock)
+            {
+                ShowWarning();
                 return;
-            
+            }
             Locator.Main.PopupEditProfile.SelectAvatar(this);
             SetSelectedDisplay(true);
         }

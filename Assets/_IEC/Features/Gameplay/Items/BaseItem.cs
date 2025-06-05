@@ -376,16 +376,16 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedLateUpdate()
         {
-
+            bool hasRb = rb;
             if (GameG.iosFeature )
             {
-                if (rb)
+                if (hasRb)
                 {
                     lastVelocity = rb.velocity;
                 }
                 if(hasPosOnWater)
                 {
-                    if (rb && !rb.isKinematic )
+                    if (hasRb && !rb.isKinematic )
                     {
                         posOnWater.enabled = false;
                         hasPosOnWater = false;  
@@ -400,7 +400,7 @@ namespace _IEC.Features.Gameplay
             {
                 springOscillation.CheckSpringObject();
             }
-            if (rb == null)
+            if (!hasRb)
             {
                if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
                {
@@ -413,7 +413,7 @@ namespace _IEC.Features.Gameplay
                    AppearInScreen();
                }
             }
-            else if (m_CurrentState != State.Collectable && rb != null && rb.velocity != Vector3.zero)
+            else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
