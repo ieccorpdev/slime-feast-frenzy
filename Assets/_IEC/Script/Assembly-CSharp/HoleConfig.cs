@@ -54,6 +54,11 @@ public class HoleConfig : ScriptableObject
 		{
 			index = requiredXpPerLevel.Length - 2;
 		}
+
+		if (level >= requiredXpPerLevel.Length)
+		{
+			return int.MaxValue;
+		}
 		return requiredXpPerLevel[index];
 	}
 }
