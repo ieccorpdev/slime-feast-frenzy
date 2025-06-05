@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -609,13 +610,14 @@ namespace IEC
             return listPlayerData.Count;
         }
 
+        [SerializeField] private float cellSize = 162;
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
         {
             if (listPlayerData[dataIndex].isPlayer)
             {
                 return 192;
             }
-            return 162;
+            return cellSize;
         }
 
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)

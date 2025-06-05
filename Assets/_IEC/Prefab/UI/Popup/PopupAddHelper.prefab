@@ -240,7 +240,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -344,13 +344,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   btnClose: {fileID: 990234380608499987}
+  btnCloseAll: {fileID: 1759578377273033129}
   blackPanel: {fileID: 2463285986500418333}
   mainPanel: {fileID: 2033697013591891807}
   isHaveAnim: 1
   isHaveAnimClose: 1
   isShowBlackPanel: 1
   isShowTopResourceBar: 1
-  btnCloseAll: {fileID: 1759578377273033129}
   helperIcon: {fileID: 663885184386545817}
   titleText: {fileID: 6357639361241776094}
   buyGoldButton: {fileID: 7171361466703786636}
@@ -870,7 +870,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -907,7 +907,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonDisplayImage: {fileID: 0}
+  buttonDisplayImage: {fileID: 4626268990845120685}
   setNative: 1
   isChangeButtonSpriteOnClick: 0
   pressSprite: {fileID: 0}
@@ -1309,6 +1309,7 @@ GameObject:
   - component: {fileID: 5973353072981880073}
   - component: {fileID: 7312052945017465455}
   - component: {fileID: 990234380608499987}
+  - component: {fileID: 73072816905159895}
   m_Layer: 5
   m_Name: Button-Close
   m_TagString: Untagged
@@ -1394,7 +1395,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1419,6 +1420,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &73072816905159895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7072143939783865692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &7515361678048507774
 GameObject:
   m_ObjectHideFlags: 0
