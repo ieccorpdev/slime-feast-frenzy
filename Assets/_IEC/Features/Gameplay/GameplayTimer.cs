@@ -42,6 +42,8 @@ namespace _IEC.Features.Gameplay
         public event Action<bool> OnUpdateFrozenState; 
         
         public RemainingTimeState CurrentRemainingTimeState => m_CurrentRemainingTimeState;
+
+        public bool GameStarted => m_IsGameStarted;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);

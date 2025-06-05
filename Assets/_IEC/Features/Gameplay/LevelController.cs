@@ -663,6 +663,7 @@ namespace _IEC.Features.Gameplay
         public void CheckCharacterPowerOnStartGame()
         {
             playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
         }
 
         private void CollectObjectiveItem(CollectItemData data)

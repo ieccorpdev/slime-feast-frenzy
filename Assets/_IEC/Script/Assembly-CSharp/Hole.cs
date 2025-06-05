@@ -47,6 +47,13 @@ public class Hole : _BaseBehaviour
 	private float m_AdditionalSize = 0;
 	private float m_AdditionalSizeFromCharacterTrait = 1;
 	private float m_AdditionalSpeedFromCharacterTrait = 1;
+	private float m_AdditionalSizeFromCharacterPower = 1;
+	//Increase size while idle
+	private float m_characterIdleSizeIncrease = 0f;
+	private float m_characterIdleSizeIncreaseInterval = 1f;
+	private float m_currentIntervalIdleSizeIncrease = 0f;
+	private float m_characterMaxSize;
+	
 	private float defaultPosYCharacter = -0f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
@@ -54,7 +61,9 @@ public class Hole : _BaseBehaviour
 	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) * m_AdditionalSpeedFromCharacterTrait 
 	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
 
-	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) * m_AdditionalSizeFromCharacterTrait
+	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) 
+	                     * m_AdditionalSizeFromCharacterTrait 
+	                     * m_AdditionalSizeFromCharacterPower
 	                     + m_AdditionalSize;
 
 	public int Level => m_Level;
@@ -86,6 +95,11 @@ public class Hole : _BaseBehaviour
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
+		
+		m_characterMaxSize = CalculateIndices(Settings.BaseSize, Settings.GetListLevel().Length - 1,
+			                     Settings.SizeIncreasePerLevel)
+		                     * m_AdditionalSizeFromCharacterTrait
+		                     + m_AdditionalSize;
 		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
@@ -124,15 +138,80 @@ public class Hole : _BaseBehaviour
 					{
 						target =  transform,
 						//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-						cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
-						                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+						// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+						//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+						cameraDistance = GetCamSize()
 					});
 				}
 			}
+
+			CheckIncreaseCharacterSizeOnIdle();
 		}
 
 		CheckSharkForm();
 		UpdateGravityBySpeed();
+	}
+
+	private void CheckIncreaseCharacterSizeOnIdle()
+	{
+		if (!Locator.Game.ScreenInGame.gameplayTimer.GameStarted)
+			return;
+		
+		if (m_characterIdleSizeIncrease < Mathf.Epsilon)
+			return;
+		
+		m_currentIntervalIdleSizeIncrease += Time.deltaTime;
+		if (m_currentIntervalIdleSizeIncrease >= m_characterIdleSizeIncreaseInterval)
+		{
+			m_currentIntervalIdleSizeIncrease = 0f;
+			
+			if (!holeController.IsMoving)
+			{
+				if (Size <= m_characterMaxSize)
+				{
+					m_AdditionalSizeFromCharacterPower *= m_characterIdleSizeIncrease;
+					if (m_AdditionalSizeFromCharacterPower > 1f)
+					{
+
+						SetSize(Size, true, null);
+					}
+				}
+			}
+			else
+			{
+				// if (m_AdditionalSizeFromCharacterPower > 1f)
+				// {
+				// 	m_AdditionalSizeFromCharacterPower = 1f;
+				// 	ResetSize();
+				// }
+
+				if (Mathf.Abs(m_AdditionalSizeFromCharacterPower - 1f) > Mathf.Epsilon)
+				{
+					m_AdditionalSizeFromCharacterPower /= m_characterIdleSizeIncrease;
+					m_AdditionalSizeFromCharacterPower = Mathf.Max(m_AdditionalSizeFromCharacterPower, 1f);
+					
+					if (m_AdditionalSizeFromCharacterPower < 1f)
+						m_AdditionalSizeFromCharacterPower = 1f;
+					
+					SetSize(Size, true, null, false);
+				}
+			}
+			
+			this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET, new UpdateCameraTarget()
+			{
+				target = transform,
+				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+				cameraDistance = GetCamSize()
+			});
+		}
+	}
+
+	private float GetCamSize()
+	{
+		return CalculateIndices(Settings.BaseCameraDistance, m_Level,
+			       Settings.CameraDistanceIncreasePerLevel)
+		       * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0)) *
+		       Mathf.Max((m_AdditionalSizeFromCharacterPower / 2f), 1f);
 	}
 
 	private void UpdateGravityBySpeed()
@@ -189,7 +268,7 @@ public class Hole : _BaseBehaviour
 
 	public float GetDistanceToObject()
 	{
-		return Speed * 1.1f  + Level * 0.4f;
+		return (Speed * 1.1f  + Level * 0.4f) * m_AdditionalSizeFromCharacterTrait * m_AdditionalSizeFromCharacterPower;
 	}
 	void OnCollectLightningBooster(object param)
 	{
@@ -256,15 +335,16 @@ public class Hole : _BaseBehaviour
 			{
 				target =  myTransform,
 				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-				cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel) 
-				                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+				// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel) 
+				//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+				cameraDistance = GetCamSize()
 			});
 		});
 		SetXp(0,false);
 
 	}
 
-	public void SetSize(float targetSize,bool isLerpSize,Action callback)
+	public void SetSize(float targetSize,bool isLerpSize,Action callback, bool playVfx = true)
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
@@ -272,7 +352,9 @@ public class Hole : _BaseBehaviour
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
-			sizeUpVfx.Play();
+			if(playVfx)
+				sizeUpVfx.Play();
+			
 			//levelUpVfx.Play();
 			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
@@ -463,6 +545,14 @@ public class Hole : _BaseBehaviour
 		// Debug.LogError("Level: " + Level);
 		m_AdditionalSize = 0;
 		SetSize(Size,false,null);
+		this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+			//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+			cameraDistance = GetCamSize()
+		});
 		holeGraphics.localScale = _defaultScaleGraphic;
 		holeCanvases.localScale = _defaultScaleCanvas;
 	}
@@ -591,9 +681,13 @@ public class Hole : _BaseBehaviour
 				{
 					target =  transform,
 					//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-					cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
-					                 * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+					// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+					//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+					cameraDistance = GetCamSize()
 				});
+				break;
+			case CharacterPowerType.IncreaseSizeOnIdle:
+				m_characterIdleSizeIncrease = value.buffAmount;
 				break;
 		}
 		
@@ -637,6 +731,11 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
+		
+		m_characterIdleSizeIncrease = 0f;
+		m_currentIntervalIdleSizeIncrease = 0f;
+		m_characterIdleSizeIncreaseInterval = 1f;
+		
 		StartAnimationCharacter();
 	}
 

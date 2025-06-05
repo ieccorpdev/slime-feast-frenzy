@@ -81,5 +81,6 @@ namespace IEC
         CompassOceanGiftItem,
         IncreaseCameraSizeOnHelper,
         BombShieldOnHelper,
+        IncreaseSizeOnIdle,
     }
 }
