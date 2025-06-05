@@ -14,7 +14,7 @@ namespace IEC
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
-        [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_Tab2, m_Tab4, m_Tab5;
+        [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_TabTrophy, m_TabLeaderBoard, m_TabCharacter;
         public RectTransform topBar; 
         public BottomBar bottomBar;
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
@@ -124,9 +124,9 @@ namespace IEC
             // Debug.LogError("Init");
             m_DictTab[TabType.Home] = m_Home;
             m_DictTab[TabType.Shop] = m_Shop;
-            m_DictTab[TabType.Tab2] = m_Tab2;
-            m_DictTab[TabType.LeaderBoard] = m_Tab4;
-            m_DictTab[TabType.Tab5] = m_Tab5;
+            m_DictTab[TabType.Trophy] = m_TabTrophy;
+            m_DictTab[TabType.LeaderBoard] = m_TabLeaderBoard;
+            m_DictTab[TabType.Character] = m_TabCharacter;
             HideAllTab();
             PlayAnimCollectedLeaderBoardRank();
             CheckBannerHome();

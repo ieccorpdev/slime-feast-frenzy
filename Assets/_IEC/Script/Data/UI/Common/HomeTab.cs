@@ -60,6 +60,7 @@ namespace IEC
                     iconSpine = shopIconSpine;
                     break;
                 case TabType.LeaderBoard:
+                case TabType.Trophy:
                     iconSpine = leaderBoardIconSpine;
                     break;
             }
