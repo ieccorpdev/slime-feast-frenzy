@@ -82,5 +82,6 @@ namespace IEC
         IncreaseCameraSizeOnHelper,
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
+        AddTimerOnCombo,
     }
 }

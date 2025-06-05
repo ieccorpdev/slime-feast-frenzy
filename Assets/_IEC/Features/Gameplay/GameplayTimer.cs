@@ -251,6 +251,11 @@ namespace _IEC.Features.Gameplay
             CurrentTime = time;
         }
 
+        public void AddTime(float time)
+        {
+            CurrentTime += time;
+        }
+
         public void Pause()
         {
             ChangeState(State.Inactive);

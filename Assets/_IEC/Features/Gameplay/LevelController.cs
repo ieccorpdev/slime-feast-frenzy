@@ -669,6 +669,20 @@ namespace _IEC.Features.Gameplay
             return xp;
         }
 
+        public void CheckCharacterPowerOnCombo(int comboCount)
+        {
+            var checkPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.AddTimerOnCombo);
+            if (checkPower != null)
+            {
+                var value = checkPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                if (comboCount >= value.conditionValueForPower)
+                {
+                    Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);
+                }
+            }
+        }
+
         public void CheckCharacterPowerOnStartGame()
         {
             playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
