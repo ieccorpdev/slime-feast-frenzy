@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Common.Extension;
@@ -61,7 +62,9 @@ public class Hole : MonoBehaviour
 
 	private float _speedBoosterIncrease;
 	private float timeEffectSpeedBooster;
-	public float baseSpeed
+    private bool isScaling = false;
+
+    public float baseSpeed
 	{
 		get => _baseSpeed;
 		set => _baseSpeed = value;
@@ -212,33 +215,64 @@ public class Hole : MonoBehaviour
 
 	}
 
-	public void SetSize(float targetSize,bool isLerpSize,Action callback)
-	{
-		var targetScale = targetSize * Vector3.one;
-		var myTransform = transform;
-		
-		DOTween.Kill(TweenIdScale);
-		if (isLerpSize)
-		{
-			sizeUpVfx.Play();
-			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
-			{
-				callback?.Invoke();
-			}).SetId(TweenIdScale);
-		}
-		else
-		{
-			myTransform.localScale = targetScale;
-			callback?.Invoke();
-		}
 
-		holeController.SetScale(targetSize);
-	}
-	
-	#if UNITY_EDITOR
-	
-	
-	public void DebugResetLevel()
+    public void SetSize(float targetSize, bool isLerpSize, Action callback)
+    {
+        if (isScaling) return; // Prevent re-entrant scaling
+
+        var targetScale = targetSize * Vector3.one;
+
+        StopCoroutine("ScaleCoroutine");
+
+        if (isLerpSize)
+        {
+            sizeUpVfx.Play();
+            isScaling = true;
+            StartCoroutine(ScaleCoroutine(targetScale, 0.5f, () =>
+            {
+                isScaling = false;
+                callback?.Invoke();
+            }));
+        }
+        else
+        {
+            transform.localScale = targetScale;
+            callback?.Invoke();
+        }
+
+        holeController.SetScale(targetSize);
+    }
+
+
+    private IEnumerator ScaleCoroutine(Vector3 targetScale, float duration, Action callback)
+    {
+        Vector3 startScale = transform.localScale;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float easedT = EaseOutBack(t);
+            transform.localScale = Vector3.LerpUnclamped(startScale, targetScale, easedT);
+            yield return null;
+        }
+
+        transform.localScale = targetScale;
+        callback?.Invoke();
+    }
+
+    private float EaseOutBack(float t, float overshoot = 1.70158f)
+    {
+        t -= 1f;
+        return t * t * ((overshoot + 1) * t + overshoot) + 1f;
+    }
+
+
+#if UNITY_EDITOR
+
+
+    public void DebugResetLevel()
 	{
 		//LevelUp(0, 1);
 		SetLevel(0,false);
