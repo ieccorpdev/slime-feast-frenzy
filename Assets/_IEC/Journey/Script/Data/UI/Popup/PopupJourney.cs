@@ -47,7 +47,7 @@ namespace IEC
             });
             Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += () =>
             {
-                RefreshUI();
+                DOVirtual.DelayedCall(0.02f, RefreshUI);
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
             };
