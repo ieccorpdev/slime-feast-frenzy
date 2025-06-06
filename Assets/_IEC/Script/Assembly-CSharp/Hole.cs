@@ -639,7 +639,7 @@ public class Hole : _BaseBehaviour
 		yield return new WaitForSeconds(1f);
 		readyForSharkBite = true;
 		onSharkForm = false;
-		sharkBiteAnimator.transform.localScale *= 1.5f;
+		sharkBiteAnimator.transform.localScale *= 2f;
 		TriggerdBite();
 		
 		yield return new WaitForSeconds(0.5f);
