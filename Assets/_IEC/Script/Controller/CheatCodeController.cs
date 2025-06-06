@@ -85,7 +85,9 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set level hole", param =>
             {
-                GamePlay.levelController.GetHolePlayer().SetLevel(int.Parse(param.inputParams[0].value.ToString()));
+                int level = int.Parse(param.inputParams[0].value.ToString());
+                GamePlay.levelController.GetHolePlayer().SetLevel(level);
+                PlayerData.trophyData.CheckLevelTrophy(level);
             }, new CheatCode.InputParam
             {
                 value = 1
@@ -459,11 +461,13 @@ namespace IEC
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     if (!GamePlay.IsWin) PlayerData.level = Mathf.Max(1, PlayerData.level + 1);
+                    GamePlay.levelController.GetHolePlayer().SetLevel(PlayerData.level);
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
                 else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     PlayerData.level = Mathf.Max(1, PlayerData.level - 1);
+                    GamePlay.levelController.GetHolePlayer().SetLevel(PlayerData.level);
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
             }

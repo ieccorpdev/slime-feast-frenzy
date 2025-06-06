@@ -61,7 +61,7 @@ namespace IEC
             int start = config.listTimeToCollect[dataSave.trophyCollected];
             if (dataSave.timeCompleted == 0)
             {
-                return new Vector2(0, start);
+                return new Vector2(dataSave.timeCompleted, start);
             }
             else
             {
@@ -77,22 +77,6 @@ namespace IEC
         {
             var levelTrophy = GetTrophyDataConfig(TrophyType.GrandVoyage);
             levelTrophy.timeCompleted = level;
-            if (level < 50)
-            {
-                levelTrophy.timeCompleted = 0;
-            } 
-            else if (level < 100)
-            {
-                levelTrophy.timeCompleted = 1;
-            }
-            else if (level < 500)
-            {
-                levelTrophy.timeCompleted = 2;
-            }
-            else if (level < 1000)
-            {
-                levelTrophy.timeCompleted = 3;
-            }
         }
         public TrophyDataConfig GetTrophyDataConfig(TrophyType type)
         {
