@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Common.Extension;
 using IEC;
 using IEC.Common.Event;
 using UnityEngine;
@@ -18,13 +19,13 @@ namespace IEC
         // Start is called before the first frame update
         void Start()
         {
-            gameObject.OnEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, UpdateCharacter);
+            this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, UpdateCharacter);
             UpdateCharacter();
         }
 
         public LayerMask fishLayer;
 
-        private void UpdateCharacter()
+        private void UpdateCharacter(object param = null)
         {
             var currentCharacter = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
 

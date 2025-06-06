@@ -4,6 +4,7 @@ using _IECModules;
 using _IEC.Features.Gameplay;
 using System.Collections.Generic;
 using System.Linq;
+using _IEC.Features.Common.Extension;
 
 namespace IEC
 {
@@ -154,7 +155,10 @@ namespace IEC
                 {
                     var characterInt = cheatCodeParam.dropdownParam.value;
                     PlayerData.playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[characterInt].characterName;
-                    EventController.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER);
+                    this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new SelectCharacterData()
+                    {
+                        characterName = PlayerData.playerCharacterName
+                    });
                 },
                 Config.allCharactersConfig.listAllCharactersConfig.Select(ch => ch.characterName).ToList(),
                 characterIndex
