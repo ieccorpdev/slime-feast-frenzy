@@ -17,6 +17,7 @@ namespace IEC
         public Image currentProgressRewardIcon;
         public TextMeshProUGUI progressRewardAmountText;
         public ProgressBarFillEffect progressFillBar;
+        [SerializeField] GameObject iconDoubleTag;
         [Header("Timer")] public TextMeshProUGUI resetTimerText;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
@@ -32,9 +33,16 @@ namespace IEC
             {
                 gameObject.SetActive(true);
                 CheckReward();
-                UpdateProgressBar();   
+                UpdateProgressBar();
+                SetAtiveIcon();
             }
 
+        }
+
+        private void SetAtiveIcon()
+        {
+            bool isOnDouble = PlayerData.IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount);
+            iconDoubleTag.gameObject.SetActive(isOnDouble);
         }
 
         private static void CheckReward()
