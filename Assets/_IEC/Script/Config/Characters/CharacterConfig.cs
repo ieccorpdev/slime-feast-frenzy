@@ -9,6 +9,7 @@ namespace IEC
     public class CharacterConfig : ScriptableObject
     {
         public string characterName;
+        public int comboCountToChange;
         public float defaultCharacterPosY;
         public float characterAnimSpeed = 1f;
         public Animator characterHomePrefab;

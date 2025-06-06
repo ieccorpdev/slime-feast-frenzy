@@ -10,6 +10,14 @@ namespace IEC
     {
         public List<CharacterConfig> listAllCharactersConfig;
 
+        public CharacterConfig GetDefaultCharacter()
+        {
+            if (listAllCharactersConfig.Count == 0)
+                return null;
+            
+            return listAllCharactersConfig[0];
+        }
+
         public CharacterConfig GetCharacterConfig(string characterName)
         {
             return listAllCharactersConfig.Find(character => character.characterName.Equals(characterName));

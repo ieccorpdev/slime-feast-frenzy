@@ -86,6 +86,7 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.RegisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void OnDisable()
@@ -99,6 +100,7 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.UnregisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void Update()
@@ -669,8 +671,9 @@ namespace _IEC.Features.Gameplay
             return xp;
         }
 
-        public void CheckCharacterPowerOnCombo(int comboCount)
+        public void CheckCharacterPowerOnCombo(object param)
         {
+            var comboCount = (int)param;
             var checkPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.AddTimerOnCombo);
             if (checkPower != null)
             {
