@@ -28,7 +28,8 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] public Button btnDailyReward;
     public Image dailyRewardNotiImage;
     public DailyRewardHomeButton dailyRewardHomeButton;
-    [Header("Progress Reward")] public Button progressRewardButton;
+    [Header("Progress Reward")] 
+    public Button progressRewardButton;
     public ProgressRewardProgressBar progressRewardBar;
     [Header("Level Chest Reward")] public Button btnLevelChestReward;
     public BaseHomeFeatureButton levelChestHomeFeature;

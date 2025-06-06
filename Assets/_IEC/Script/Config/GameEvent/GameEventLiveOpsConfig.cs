@@ -24,6 +24,7 @@ namespace IEC
             {"Relic Hunt", EventType.RelicHunt},
         };
 
+
         [Button]
         public void LoadData()
         {
