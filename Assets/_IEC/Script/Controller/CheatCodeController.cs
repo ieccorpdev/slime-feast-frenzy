@@ -87,7 +87,7 @@ namespace IEC
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 GamePlay.levelController.GetHolePlayer().SetLevel(level);
-                PlayerData.trophyData.CheckLevelTrophy(level);
+                PlayerData.trophyData.SetLevelTrophy(level);
             }, new CheatCode.InputParam
             {
                 value = 1
@@ -210,7 +210,7 @@ namespace IEC
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 PlayerData.level = level;
-                PlayerData.trophyData.CheckLevelTrophy(level);
+                PlayerData.trophyData.SetLevelTrophy(level);
                 EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             }, new CheatCode.InputParam
             {
@@ -461,13 +461,13 @@ namespace IEC
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     if (!GamePlay.IsWin) PlayerData.level = Mathf.Max(1, PlayerData.level + 1);
-                    GamePlay.levelController.GetHolePlayer().SetLevel(PlayerData.level);
+                    PlayerData.trophyData.SetLevelTrophy(PlayerData.level );
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
                 else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     PlayerData.level = Mathf.Max(1, PlayerData.level - 1);
-                    GamePlay.levelController.GetHolePlayer().SetLevel(PlayerData.level);
+                    PlayerData.trophyData.SetLevelTrophy(PlayerData.level );
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
             }

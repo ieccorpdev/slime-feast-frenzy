@@ -66,14 +66,14 @@ namespace IEC
             else
             {
                 int end = start;
-                if (dataSave.trophyCollected < config.listTimeToCollect.Count)
+                if (dataSave.trophyCollected < config.listTimeToCollect.Count-1)
                 {
                     end = config.listTimeToCollect[dataSave.trophyCollected+1];
                 }
                 return new Vector2(dataSave.timeCompleted - start, end - start);
             }
         }
-        public void CheckLevelTrophy(int level)
+        public void SetLevelTrophy(int level)
         {
             var levelTrophy = GetTrophyDataConfig(TrophyType.GrandVoyage);
             levelTrophy.timeCompleted = level;
