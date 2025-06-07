@@ -8,6 +8,7 @@ using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
 {
@@ -52,7 +53,9 @@ namespace _IEC.Features.Gameplay
 
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
         private RigidbodyData savedData;
-
+        private static bool _isInit = false;
+        private static bool canSpawn = false;
+        private static bool isFirstStart = true;
         public virtual void Start()
         {
             this.GameG = Pool.Get<Game>();
@@ -64,7 +67,25 @@ namespace _IEC.Features.Gameplay
             rb.drag = Config.gamePlayConfig.ItemDrag;
             rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
+            if (!_isInit)
+            {
+                _isInit = true;
+                isExplore = false;
+            }
+            else
+            {
+                StartCoroutine(DelayEnable(1f));
+            }
         }
+
+        IEnumerator DelayEnable(float delay)
+        {
+            yield return new WaitForSeconds(0.04f);
+            Rb.AddForce(Vector3.up * 16, ForceMode.Impulse);
+            yield return new WaitForSeconds(1f);
+            isExplore = false;
+        }
+
         void OnEnable()
         {
             UpdateManager.Instance.RegisterLateUpdate(this);
@@ -125,9 +146,17 @@ namespace _IEC.Features.Gameplay
                 springOscillation.ApplyForce(velocityY);
             }
         }
+        bool isExplore = true;
 
         public void EnterHoleTrigger()
         {
+            if (!isExplore && (canSpawn || isFirstStart))
+            {
+                GamePlay.levelController.SpawnRelic(this.transform.position, this.transform.rotation.eulerAngles, 8);
+                isExplore = true;
+                canSpawn = false;
+                isFirstStart = false;
+            }
             ChangeState(State.Collectable);
             
             if (_specialItemHighlightEffect != null)
@@ -345,6 +374,8 @@ namespace _IEC.Features.Gameplay
 
         protected virtual void OnBecomeCollectable()
         {
+            canSpawn = true;
+
             if (Game.usingNewLogicPull)
             {
                 onDraging = true;
@@ -429,7 +460,7 @@ namespace _IEC.Features.Gameplay
         {
             if (gameObject.name.Contains("Relic"))
             {
-                EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
+                //EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
             }
             
         }

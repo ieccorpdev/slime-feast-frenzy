@@ -445,10 +445,11 @@ namespace _IEC.Features.Gameplay
             }
             return res;
         }
-        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int spawnTime, Transform levelObjectHolder, ItemDefinition itemDefinition)
+        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int spawnTime, Transform levelObjectHolder, ItemDefinition itemDefinition, Vector3 spawnPos, Vector3 rot)
         {
             var res = new List<BaseItem>();
             if (itemDefinition == null) return res;
+            itemDefinition.SetXp(1);
             var prefab = itemDefinition.GetPrefab();
             if (prefab == null)
             {
@@ -458,18 +459,18 @@ namespace _IEC.Features.Gameplay
             //List<BaseItem> tempList = new();
             for (int i = 0; i < spawnTime; i++)
             {
-                var spawnSize = Config.relicConfig.GetRandomSpawnSize();
-                var spawmAmount = Config.relicConfig.GetRandomSpawnAmount();
-                Vector3? spawnPos = null;
+                var spawnSize = Config.relicConfig.minSpawnSize;
+                var spawmAmount = 1;
                 for (int j = 0; j < spawmAmount; j++)
                 {
                     var newItem = prefab.Spawn();
-                    spawnPos ??= FindValidSpawnPosition(
-                        bounds,
-                        newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
-                        1000,
-                        newItem.gameObject.layer
-                    );
+                    
+                    //spawnPos ??= FindValidSpawnPosition(
+                    //    bounds,
+                    //    newItem.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                    //    1000,
+                    //    newItem.gameObject.layer
+                    //);
                     var itemComponent = newItem.GetComponent<BaseItem>();
                     if (itemComponent == null)
                     {
@@ -478,15 +479,15 @@ namespace _IEC.Features.Gameplay
                     var itemTransform = itemComponent.transform;
                     var itemData = new ItemData()
                     {
-                        itemId = itemDefinition.GetId(),
-                        position = spawnPos.Value, 
-                        eulerAngle = Vector3.zero,
+                        itemId = "rubberduck_0",
+                        position = spawnPos, 
+                        eulerAngle = rot,
                         localScale = Vector3.one *  spawnSize,
                         isStartKinematic =  true,
                     };
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(itemData, itemDefinition);
-                    itemComponent.transform.position = spawnPos.Value;
+                    itemComponent.transform.position = spawnPos;
                     Debug.Log($"pos {itemComponent.transform.position} -- amount {spawmAmount}");
                     res.Add(itemComponent);
                     itemIds.Add(itemData.itemId);
