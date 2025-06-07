@@ -53,13 +53,13 @@ public class TutorialJourney : _BaseBehaviour
         Vector3 originalScale = target.localScale;
         float scaleAmount = 1.1f;
         float speed = 1.5f;
-
+        float duration = 0.6f;
         while (true)
         {
             // Scale up
-            yield return ScaleTo(target, originalScale * scaleAmount, 0.3f / speed);
+            yield return ScaleTo(target, originalScale * scaleAmount, duration / speed);
             // Scale down
-            yield return ScaleTo(target, originalScale, 0.3f / speed);
+            yield return ScaleTo(target, originalScale, duration / speed);
         }
     }
 

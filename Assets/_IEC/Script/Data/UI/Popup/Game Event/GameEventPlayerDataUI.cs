@@ -185,7 +185,9 @@ namespace IEC
                 else
                 {
                     rewardInfoButtonImage.gameObject.SetActive(true);
-                    rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    var sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    rewardInfoButtonImage.sprite = sprite;
+                    rewardInfoButtonImage.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
                     rewardInfoButtonImage.SetNativeSize();
                 }
             }

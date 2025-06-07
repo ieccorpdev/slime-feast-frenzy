@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using IEC;
 using IEC.Linq;
@@ -184,17 +185,41 @@ namespace _IEC.Features.Gameplay
             }
             return list[0]; // đảm bảo độ phân tán
         }
+
+        public List<ThemeExport> listExport = new List<ThemeExport>();
+
         [Button]
         public void TestSceneTheme()
         {
-            listTest.Clear();
-            for (int i = 0; i < 1000; i += 25)
+            listExport.Clear();
+            for (int i = 1; i < 1000; i += 1)
             {
-                listTest.Add(new TestLevelTheme(i, GetWaterThemeForLevel(i).themeId));
+                ThemeExport dt = new ThemeExport();
+                dt.level = i;
+                dt.waterThemeId = GetWaterThemeForLevel(i).themeId;
+                dt.waterType = GetWeatherForLevel(i);
+                listExport.Add(dt);
             }
+
+            string path = Path.Combine(Application.dataPath, "ThemeExport.csv");
+            ExportThemeListToCSV(listExport, path);
         }
 
         public List<TestLevelTheme> listTest = new List<TestLevelTheme>();
+        public static void ExportThemeListToCSV(List<ThemeExport> list, string filePath)
+        {
+            using (StreamWriter writer = new StreamWriter(filePath))
+            {
+                writer.WriteLine("level,waterType,waterThemeId");
+
+                foreach (var item in list)
+                {
+                    writer.WriteLine($"{item.level},{item.waterType},{item.waterThemeId}");
+                }
+            }
+
+            Debug.Log("CSV export completed: " + filePath);
+        }
     }
 
     [Serializable]
@@ -267,5 +292,13 @@ namespace _IEC.Features.Gameplay
     {
         Normal,
         Customize
+    }
+
+    [Serializable]
+    public class ThemeExport
+    {
+        public int level;
+        public WeatherTheme waterType;
+        public int waterThemeId;
     }
 }

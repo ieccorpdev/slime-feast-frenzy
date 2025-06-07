@@ -38,6 +38,7 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
+                    Locator.Service.GameResourceDisplay.gameObject.SetActive(false);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
