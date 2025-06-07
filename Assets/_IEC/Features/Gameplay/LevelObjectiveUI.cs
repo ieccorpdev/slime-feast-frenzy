@@ -102,7 +102,7 @@ namespace _IEC.Features.Gameplay
             {
                 SetText(newNumber);
             }
-            effectCollect.Play();
+            if(effectCollect) effectCollect.Play();
             if (isCompleted)
             {
                 PlayDoneAnimation();

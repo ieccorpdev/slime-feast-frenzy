@@ -12,7 +12,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
+    public class BaseItem : _BaseBehaviour
     {
         [SerializeField] protected Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -41,10 +41,6 @@ namespace _IEC.Features.Gameplay
         {
             get
             {
-                if (rb == null)
-                {
-                    RestoreRigidbody();
-                }
                 return rb;
             }
         }
@@ -67,13 +63,11 @@ namespace _IEC.Features.Gameplay
         }
         void OnEnable()
         {
-            UpdateManager.Instance.RegisterLateUpdate(this);
         }
 
         void OnDisable()
         {
             DOTween.Kill(RecycleTweenId);
-            UpdateManager.Instance.UnregisterLateUpdate(this);
         }
 
         [SerializeField] private float minImpactVelocity = 0.2f;
@@ -269,47 +263,12 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-            if (itemData.isStartKinematic)
-            {
-                SaveAndDestroyRigidbody();
-            }
+            rb.isKinematic = itemData.isStartKinematic;
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
 
-        private void SaveAndDestroyRigidbody()
-        {
-            if (rb != null)
-            {
-                savedData.velocity = rb.velocity;
-                savedData.angularVelocity = rb.angularVelocity;
-                savedData.mass = rb.mass;
-                savedData.drag = rb.drag;
-                savedData.angularDrag = rb.angularDrag;
-                savedData.useGravity = rb.useGravity;
-                savedData.isKinematic = true;
-                savedData.interpolation = rb.interpolation;
-                savedData.collisionDetectionMode = rb.collisionDetectionMode;
-                Destroy(rb);
-            }
-        }
 
-        private void RestoreRigidbody()
-        {
-            if (rb == null)
-            {
-                rb = gameObject.AddComponent<Rigidbody>();
-                rb.velocity = savedData.velocity;
-                rb.angularVelocity = savedData.angularVelocity;
-                rb.mass = savedData.mass;
-                rb.drag = savedData.drag;
-                rb.angularDrag = savedData.angularDrag;
-                rb.useGravity = savedData.useGravity;
-                rb.isKinematic = savedData.isKinematic;
-                rb.interpolation = savedData.interpolation;
-                rb.collisionDetectionMode = savedData.collisionDetectionMode;
-            }
-        }
 
         protected void ChangeState(State newState)
         {
@@ -352,7 +311,6 @@ namespace _IEC.Features.Gameplay
             }
             else
             {
-                RestoreRigidbody();
                 rb.isKinematic = false;
             }
             if (posOnWater != null)
@@ -409,7 +367,6 @@ namespace _IEC.Features.Gameplay
                }
                if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
                {
-                   RestoreRigidbody();
                    AppearInScreen();
                }
             }
