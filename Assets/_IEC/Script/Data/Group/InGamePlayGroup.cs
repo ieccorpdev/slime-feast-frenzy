@@ -22,6 +22,9 @@ namespace IEC
         public bool IsInLevelHard { get; private set; } = false;
         private ILevelController m_CurrentLevelController;
         public LevelType currentLevelType => GetLevelController().GetLevelData().levelType;
+        
+        public int currentThemeSelect = -1;
+        public WeatherTheme currentWeatherSelect = WeatherTheme.NONE;
         public void Awake()
         {
 
@@ -33,6 +36,7 @@ namespace IEC
 
         public void Start()
         {
+            currentThemeSelect = -1;
             GamePlay.Init();
         }
 

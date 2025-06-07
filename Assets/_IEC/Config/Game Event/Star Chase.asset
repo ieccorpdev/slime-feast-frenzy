@@ -29,6 +29,7 @@ MonoBehaviour:
     listRankSprites:
     - {fileID: 21300000, guid: f61609f6102149f489d1e79ca8f7d1de, type: 3}
     - {fileID: 21300000, guid: 2a52eda60b92fc742b2127c48d5f015a, type: 3}
+    - {fileID: 21300000, guid: 45e72838dbd8c6e479e9c4f6e1a1e8e5, type: 3}
     listRewardButtonSprites:
     - {fileID: 21300000, guid: 760840b9588ac6b4e9a1ca88989ccc27, type: 3}
     - {fileID: 21300000, guid: 42fb9567dc882c346855c1e226826361, type: 3}
@@ -49,6 +50,7 @@ MonoBehaviour:
     listRewardButtonSprites: []
   listEventData:
   - eventTarget: 0
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 617
       speedRange: 0.15
@@ -216,5 +218,31 @@ MonoBehaviour:
       listReward:
       - typeReward: 0
         rewardAmount: 10
+  listTitleData:
+  - rankStartReward: 1
+    rankEndReward: 1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 173c0bbaad9aabb47b028723a23302db,
+      type: 3}
+    claimRewardSubtitleText: 'You''re the best star chaser
+
+      this time!'
+  - rankStartReward: 2
+    rankEndReward: -1
+    claimRewardTitleSprite: {fileID: 21300000, guid: f3b97e2f9d622a545a90c8e9cf873564,
+      type: 3}
+    claimRewardSubtitleText: 'You ranked {0} in this
+
+      star chase!'
+  titleDataNoProgress:
+    rankStartReward: -1
+    rankEndReward: -1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 224b27af13538a74db086a59d9431995,
+      type: 3}
+    claimRewardSubtitleText: Join the fun next time!
+  titleDataWinAllEventStages:
+    rankStartReward: 0
+    rankEndReward: 0
+    claimRewardTitleSprite: {fileID: 0}
+    claimRewardSubtitleText: 
   csv1: https://docs.google.com/spreadsheets/d/1tyEl45QPe1oH8uTK4RoDM7uq7_mWkaTIlz0mq1MPNl4/edit?gid=0#gid=0
   csv2: 

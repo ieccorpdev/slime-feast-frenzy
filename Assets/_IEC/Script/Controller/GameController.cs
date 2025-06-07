@@ -38,6 +38,7 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
+                    Locator.Service.GameResourceDisplay.gameObject.SetActive(false);
                     GamePlay.SetGameState(Locator.Game.ScreenInGame);
                     OnNewGame();
                     Pool.Get<ConfettiGroup>().StopConfetti();
@@ -62,6 +63,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayerData.IncreaseBoosterStreak();
                     PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    PlayerData.relicData.AddTokenCount(GamePlay.levelController.RelicObjCollected);
                     PlayerData.AddCurrency(ResourceType.Gold, GamePlay.levelController.GoldCollected);
 
                     if (PlayerData.level != PlayerData.levelLostStreak)

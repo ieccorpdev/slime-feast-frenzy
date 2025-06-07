@@ -26,9 +26,9 @@ MonoBehaviour:
     mainPlayerProgressFrameSprite: {fileID: 0}
     listRankSprites: []
     listRewardButtonSprites:
-    - {fileID: 21300000, guid: d61f7a4679373dd46b1ad00717a4cbf1, type: 3}
-    - {fileID: 21300000, guid: efa07498e9c27bb4599e6beba8c6e2cb, type: 3}
-    - {fileID: 21300000, guid: cbe85062063dab145bdba525dd5d3767, type: 3}
+    - {fileID: 21300000, guid: ea079aa8aa948694fb711f1ed5d19421, type: 3}
+    - {fileID: 21300000, guid: 25ae7ce2309a0aa41be84835ea4d2191, type: 3}
+    - {fileID: 21300000, guid: 2748be618cd4f2c4388bc6ba04a0e330, type: 3}
   - normalFrameSprite: {fileID: 21300000, guid: c33498fcab469704982f11fdf6d1c114,
       type: 3}
     normalProgressFrameSprite: {fileID: 21300000, guid: 441595346ef453e4ea06b962bcdcf878,
@@ -44,6 +44,7 @@ MonoBehaviour:
     listRewardButtonSprites: []
   listEventData:
   - eventTarget: 5
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 648
       speedRange: 0.15
@@ -86,6 +87,7 @@ MonoBehaviour:
       - typeReward: 7
         rewardAmount: 1
   - eventTarget: 10
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 583
       speedRange: 0.15
@@ -132,6 +134,7 @@ MonoBehaviour:
       - typeReward: 10
         rewardAmount: 1
   - eventTarget: 15
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 544
       speedRange: 0.15
@@ -178,6 +181,7 @@ MonoBehaviour:
       - typeReward: 10
         rewardAmount: 1
   - eventTarget: 20
+    eventStageTimeInSeconds: 0
     listEventBotData:
     - baseSpeed: 572
       speedRange: 0.15
@@ -237,5 +241,35 @@ MonoBehaviour:
         rewardAmount: 1
       - typeReward: 3
         rewardAmount: 15
+  listTitleData:
+  - rankStartReward: 1
+    rankEndReward: 1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 173c0bbaad9aabb47b028723a23302db,
+      type: 3}
+    claimRewardSubtitleText: 'You''re the fastest Shark
+
+      in the 7 seas!'
+  - rankStartReward: 2
+    rankEndReward: 2
+    claimRewardTitleSprite: {fileID: 21300000, guid: f3b97e2f9d622a545a90c8e9cf873564,
+      type: 3}
+    claimRewardSubtitleText: 'You ranked {0} in this
+
+      shark race!'
+  - rankStartReward: 3
+    rankEndReward: -1
+    claimRewardTitleSprite: {fileID: 21300000, guid: 224b27af13538a74db086a59d9431995,
+      type: 3}
+    claimRewardSubtitleText: Join the fun next time!
+  titleDataNoProgress:
+    rankStartReward: 0
+    rankEndReward: 0
+    claimRewardTitleSprite: {fileID: 0}
+    claimRewardSubtitleText: 
+  titleDataWinAllEventStages:
+    rankStartReward: 0
+    rankEndReward: 0
+    claimRewardTitleSprite: {fileID: 0}
+    claimRewardSubtitleText: 
   csv1: 
   csv2: https://docs.google.com/spreadsheets/d/1tyEl45QPe1oH8uTK4RoDM7uq7_mWkaTIlz0mq1MPNl4/edit?gid=0#gid=0

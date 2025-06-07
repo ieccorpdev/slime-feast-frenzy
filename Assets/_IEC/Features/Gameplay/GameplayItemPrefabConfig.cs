@@ -477,6 +477,166 @@ namespace _IEC.Features.Gameplay
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
         }
+        
+        [Button]
+        void CheckRidbody()
+        {
+            Debug.LogError($"Start CheckRidbody");
+            for (int i = 0; i < listItemDefinitionShp.Count; i++)
+            {
+                var itemDef = listItemDefinitionShp[i];
+                var itemDefPath = AssetDatabase.GetAssetPath(itemDef.GetPrefab());
+                if (string.IsNullOrEmpty(itemDefPath))
+                {
+                    continue;
+                }
+                GameObject prefab = listItemDefinitionShp[i].GetPrefab();
+                if (prefab != null)
+                {
+                   var sping =  prefab.GetComponent<SpringOscillation>();
+                   if (sping != null)
+                   {
+                       if (sping.GetComponent<Rigidbody>())
+                       {
+                           Debug.LogError(itemDef.name + "Error");
+                       }
+                   }
+                }
+            }
+            Debug.LogError($"End CheckRidbody");
+            //AssetDatabase.SaveAssets();
+            //AssetDatabase.Refresh();
+        }    
+        [Button]
+        void LogMaterial(int min,int max)
+        {
+            Debug.LogError($"Start LogMaterial");
+            // Khai báo tên shader gốc và shader mới
+            string shaderAName = "Unlit/ThanhdayVipPro2"; // Shader cũ có _MainTex
+            string shaderBName = "Toony Colors Pro 2/Hybrid Shader 200"; // Shader mới có _BaseMap
+
+            Shader shaderA = Shader.Find(shaderAName);
+            Shader shaderB = Shader.Find(shaderBName);
+
+            if (shaderA == null || shaderB == null)
+            {
+                Debug.LogError("❌ Không tìm thấy shader cần thiết. Dừng quá trình.");
+                return;
+            }
+            
+            for (int i = min; i < max; i++)
+            {
+                if(i >= listItemDefinitionShp.Count) break;
+                var itemDef = listItemDefinitionShp[i];
+                GameObject prefab = itemDef.GetPrefab();
+
+                if (prefab == null)
+                {
+                    Debug.LogWarning($"❌ Prefab null tại index {i} - {itemDef.name}");
+                    continue;
+                }
+
+                var meshRenderers = prefab.GetComponentsInChildren<MeshRenderer>();
+
+
+                foreach (var meshRenderer in meshRenderers)
+                {
+                    if (meshRenderer == null)
+                    {
+                        Debug.LogWarning($"❌ Không tìm thấy MeshRenderer trong prefab {itemDef.name}");
+                        continue;
+                    }
+                    var mat = meshRenderer.sharedMaterial;
+                    if (mat == null)
+                    {
+                        Debug.LogWarning($"❌ Không có sharedMaterial trong {itemDef.name}");
+                        continue;
+                    }
+
+                    string shaderName = mat.shader.name;
+
+                    // TH1: Đang dùng Shader A → chuyển sang Shader B
+                    if (mat.shader.name == shaderAName)
+                    {
+                        Texture mainTex = mat.GetTexture("_MainTex");
+                        Color color = mat.HasProperty("_Color") ? mat.GetColor("_Color") : Color.white;
+
+                        mat.shader = shaderB;
+                        if (mainTex != null && mat.HasProperty("_BaseMap"))
+                            mat.SetTexture("_BaseMap", mainTex);
+
+                        if (mat.HasProperty("_BaseColor"))
+                            mat.SetColor("_BaseColor", color);
+                    
+                        mat.SetFloat("_ReceiveShadowsOff",0);
+                    
+                        Debug.LogError($"🔁 Đã chuyển {itemDef.name} sang shader mới: {shaderBName}");
+                        EditorUtility.SetDirty(mat);
+                    }
+                    // TH2: Không đúng shader yêu cầu
+                    else if (shaderName != shaderBName)
+                    {
+                        Debug.LogError($"⚠️ {itemDef.name} đang dùng shader KHÁC: {shaderName}");
+                    }
+                }
+
+            }
+            Debug.LogError($"End LogMaterial");
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+        }    
+                [Button]
+        void LogMaterialColor(int min,int max)
+        {
+            Debug.LogError($"Start LogMaterial");
+            // Khai báo tên shader gốc và shader mới
+            List<string> listResult = new List<string>();
+            for (int i = min; i < max; i++)
+            {
+                if(i >= listItemDefinitionShp.Count) break;
+                var itemDef = listItemDefinitionShp[i];
+                GameObject prefab = itemDef.GetPrefab();
+
+                if (prefab == null)
+                {
+                    Debug.LogWarning($"❌ Prefab null tại index {i} - {itemDef.name}");
+                    continue;
+                }
+
+                var meshRenderers = prefab.GetComponentsInChildren<MeshRenderer>();
+
+
+                foreach (var meshRenderer in meshRenderers)
+                {
+                    if (meshRenderer == null)
+                    {
+                        Debug.LogWarning($"❌ Không tìm thấy MeshRenderer trong prefab {itemDef.name}");
+                        continue;
+                    }
+                    var mat = meshRenderer.sharedMaterial;
+                    if (mat == null)
+                    {
+                        Debug.LogWarning($"❌ Không có sharedMaterial trong {itemDef.name}");
+                        continue;
+                    }
+
+                    if (mat.GetColor("_BaseColor") != Color.white)
+                    {
+                        listResult.Add(prefab.name);
+                    }
+
+                }
+
+            }
+
+            string sl = "";
+            foreach (var result in listResult)
+            {
+                sl += result + ",";
+            }
+            Debug.LogError("Result:" + sl);
+            Debug.LogError($"End LogMaterial");
+        }    
         void CheckOverlap(Collider[] colliders, MeshRenderer[] meshs,string nameObj)
         {
             // Lấy danh sách GameObject từ mỗi mảng

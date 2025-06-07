@@ -1,5 +1,49 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1211628361198731853
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5392091698269571039}
+  - component: {fileID: 2269554108097978126}
+  m_Layer: 0
+  m_Name: GameEventRelicController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5392091698269571039
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211628361198731853}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4676664891199191328}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2269554108097978126
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1211628361198731853}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e88ef777e3b94b4881771b2e2fe97c01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1756024047977784514
 GameObject:
   m_ObjectHideFlags: 0
@@ -84,6 +128,50 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2550440326074927813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8802326203760658526}
+  - component: {fileID: 5110595682894149917}
+  m_Layer: 0
+  m_Name: NotificationController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8802326203760658526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2550440326074927813}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4676664891199191328}
+  m_RootOrder: 18
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5110595682894149917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2550440326074927813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa0e550207b0da143af646ae929aaeb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2610566525891495341
 GameObject:
   m_ObjectHideFlags: 0
@@ -145,11 +233,11 @@ MonoBehaviour:
     enableLevelProgress: 0
     isUsingHardLevel: 0
     enableTreasureHunt: 0
-    enableRewardForDaily: 0
     isImmortal: 0
     isUsingGroundExtend: 0
     itemVersion: 0
     levelStartInterAds: 4
+    isUsingBtnAdsMoreLife: 1
     usingWaterTheme: 1
     enablePiggyBank: 0
     isHaveProfileAndLeaderboard: 0
@@ -157,8 +245,10 @@ MonoBehaviour:
     isAllowSkipHardLevelAds: 0
     levelStartHardLevelOverride: 31
     loseBeforeAllowSkipHardLevelOverride: 2
+    iosFeature: 1
     dropSplashWater: 0
     enableComboCount: 1
+    haveDailyReward: 1
     isOverrideDataRewardLuckyWheel: 0
     usingNewLogicPull: 0
     crLevelType: 0
@@ -197,6 +287,22 @@ MonoBehaviour:
     hybridData:
       timeRefillLeft: 0
       timeUnlimitedLive: 0
+    journeyData:
+      currentTargetJourney: 0
+      currentTargetJourneyClaimed: 0
+      currentFuelJourney: 0
+      isEnableMaxHeart: 0
+      isBuyIAP: 0
+      wasOpenJourney: 0
+      lifeCycleCount: 0
+      inJourneyProgress: 0
+      isShowTutorialInPopup: 0
+      isCompleteJourney: 0
+      isShowHandtut: 0
+      isEndEvent: 0
+      isShowNoti: 0
+    isShowPackPopupsInHomeOnStartGame: 0
+    isShowStartedPackInStartGame: 0
     helperData:
       numberMagnet: 0
       numberCompass: 0
@@ -218,8 +324,6 @@ MonoBehaviour:
     levelLostStreak: 0
     playerLife: 5
     realTimeUnlimidtedLife: 0
-    playerProfileName: 
-    playerProfileIconId: 0
     levelPending: 0
     isKilledAppGamePlay: 0
     dailyShowLifeOfferPack: 0
@@ -227,6 +331,7 @@ MonoBehaviour:
     currentCityBuild: 0
     screwCityBuild: 0
     playerAvatarSpriteName: 
+    playerAvatarFrameName: 
     playerName: 
     firstSpinTutorial: 0
     luckWheelDailyFreeSpin: 0
@@ -238,13 +343,16 @@ MonoBehaviour:
     wasShowPiggyBankFirstTime: 0
     dailyShowPiggyBank: 0
     currentDailyAdReward: 0
-    mainRewardCooldownTickTime: 0
-    claimMainReward: 0
     tempSpecialObjCollectedInLevel: 0
     currentProgress: 0
     currentProgressMilestone: 0
     currentSpecialItemIndex: 0
     listEventSaveData: []
+    isShownPopupStartStarChase: 0
+    isShownPopupStartSharkRace: 0
+    isShownPopupInfoChompOff: 0
+    chompOffCurrentLevelLost: 0
+    chompOffCurrentLevelLostCount: 0
 --- !u!1 &3150143569490634634
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,7 +437,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &4070404404716458937
 MonoBehaviour:
@@ -433,6 +541,8 @@ Transform:
   - {fileID: 339356625463092080}
   - {fileID: 6951623619024931522}
   - {fileID: 8235030710609336856}
+  - {fileID: 5392091698269571039}
+  - {fileID: 8802326203760658526}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -523,7 +633,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7476218560192324324
 MonoBehaviour:
@@ -567,7 +677,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3828051038236555892
 MonoBehaviour:
@@ -789,7 +899,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1420399972348908351
 MonoBehaviour:
@@ -877,7 +987,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4676664891199191328}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2891573581640184618
 MonoBehaviour:

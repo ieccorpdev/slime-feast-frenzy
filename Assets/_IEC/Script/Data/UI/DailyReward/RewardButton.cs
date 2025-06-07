@@ -72,9 +72,9 @@ namespace _IEC
         {
             HandleRewardClaim();
             SetButtonState(RewardButtonState.Claimed);
-
             //Locator.Main.HomeScreenTab.UpdateMainHome();
             onClaim?.Invoke(this);
+            Locator.Main.PopupDailyReward.Hide();
         }
 
 
@@ -89,7 +89,6 @@ namespace _IEC
             SetButtonState(RewardButtonState.Available);
             RewardClaimed = false;
         }
-        
 
     }
 

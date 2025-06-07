@@ -37,7 +37,10 @@ public class UICurrency : _BaseBehaviour
 
     public void TriggredPressButton()
     {
-        clickEffectAnimator.Play("PunchScale");
+        if (clickEffectAnimator != null)
+        {
+            clickEffectAnimator.Play("PunchScale");
+        }
     }
     public void OnEnable()
     {
@@ -56,7 +59,7 @@ public class UICurrency : _BaseBehaviour
             case ResourceType.Live:
                 if (Locator.Main.PopupOutOfLive.IsShow)
                     return;
-                if (!PlayerData.IsInUnlimitedLife() && PlayerData.playerLife < Config.maxHealth)
+                if (!PlayerData.IsInUnlimitedLife() && PlayerData.playerLife < (PlayerData.journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
                 {
                     Locator.Main.PopupOutOfLive.Show();
                 }

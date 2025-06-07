@@ -125,6 +125,7 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.RegisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
+            this.RegisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
             comboUI.gameObject.SetActive(Game.enableComboCount);
         }
 
@@ -135,6 +136,7 @@ namespace IEC
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER, OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.UnregisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
+            this.UnregisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
 
         }
 
@@ -157,6 +159,13 @@ namespace IEC
             }
             var totalNumberCollected = GamePlay.levelController.SpecialProgressRewardObjCollected;
             groupLevelObjectives.CollectASpecialObject(data, totalNumberCollected, Vector2.zero);
+        }
+        private void OnCollectRelicItem(object param)
+        {
+            CollectItemData data = (CollectItemData)param;
+            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            var totalNumberCollected = GamePlay.levelController.RelicObjCollected;
+            groupLevelObjectives.CollectARelicObject(data, totalNumberCollected, Vector2.zero);
         }
 
         private void OnCollectItem(object param)
@@ -213,9 +222,7 @@ namespace IEC
         {
             if (xp == 0) return;
             if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
-
-            var xpVFX = Config.prefabConfig.xpVFX.Spawn(transform);
-            xpVFX.transform.parent = xpParentRT.transform;
+            var xpVFX = Config.prefabConfig.xpVFX.Spawn(xpParentRT.transform, true);
             xpVFX.Reset();
             var localPoint = GetLocalAnchorPos(position);
             xpVFX.SetAnchorPosition(localPoint);

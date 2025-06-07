@@ -10,6 +10,7 @@ using UnityEngine.UI;
 
 namespace IEC
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
@@ -30,10 +31,12 @@ namespace IEC
         [Header("Claim reward effect")] 
         public EffectRewardClaim effectRewardClaim;
         public Stack<RewardClaimData> listClaimRewardData = new();
-        
+        private CanvasGroup _canvasGroup;
+
         private void Awake()
         {
             Init();
+            _canvasGroup = this.GetComponent<CanvasGroup>();
             gameObject.OnEvent(EventList.GamePlay.ON_CHOOSE_TAB, () =>
             {
                 if(m_DictTab[Game.hybrid.currentTab].activeInHierarchy)
@@ -108,6 +111,14 @@ namespace IEC
             });
         }
 
+        public bool SetInteractive(bool isInteractive)
+        {
+            if (_canvasGroup == null) return false;
+            _canvasGroup.interactable = isInteractive;
+            _canvasGroup.blocksRaycasts = isInteractive;
+            return true;
+        }
+
         private void Init()
         {
             // Debug.LogError("Init");
@@ -164,7 +175,10 @@ namespace IEC
                     AddRewardGoldToClaim(amount,startPos,startSize);
                     break;           
                 case ResourceType.Live:
-                    AddRewardLifeToClaim(amount,startPos,startSize);
+                    AddRewardLifeToClaim(amount, startPos, startSize);
+                    break;
+                case ResourceType.UnlimitedLive:
+                    AddRewardUnlimitedLiveToClaim(startPos, startSize);
                     break;
                 case ResourceType.Vortex:
                     AddRewardHelperToClaim(resourceType, amount,startPos,startSize,1f,0.3f);
@@ -194,6 +208,11 @@ namespace IEC
                     startPos = EffectRewardClaim.SwitchToRectTransform(Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>());
                     startPos += Vector3.down * 300;
                     AddSpecialObjectToClaim(amount,startPos,startSize, 1f);
+                    break;
+                case ResourceType.Relic:
+                    startPos = EffectRewardClaim.SwitchToRectTransform(Locator.Main.HomeScreenTab.progressRewardBar.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>());
+                    startPos += Vector3.down * 300;
+                    AddRelicObjectToClaim(amount,startPos,startSize, 1f);
                     break;
                 case ResourceType.LevelStar:
                     AddLevelStarToClaim(amount,startPos,startSize, 1f, 0.15f);
@@ -252,7 +271,31 @@ namespace IEC
                 animTime
             );
         }
-        
+        private void AddRelicObjectToClaim(int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
+        {
+            RectTransform targetTransform = Locator.Main.HomeScreenTab.btnRelicHunt.GetComponent<RectTransform>();
+            
+            AddCustomRewardToClaimEffect(
+                ResourceType.Relic, 
+                Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex).GetIcon(),
+                startPos, 
+                EffectRewardClaim.SwitchToRectTransform(targetTransform, Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                amount,
+                startSize,
+                () =>
+                {
+                    
+                },
+                () =>
+                {
+                    DOTween.Kill(targetTransform);
+                    targetTransform.localScale = Vector3.one;
+                    targetTransform.DOPunchScale(Vector3.one * 0.1f, 0.2f);
+                },
+                delay,
+                animTime
+            );
+        }
         private void AddRewardHelperToClaim(ResourceType helperType, int amount,Vector3 startPos,Vector2 startSize, float animTime = 1f, float delay = 0f)
         {
             RectTransform targetTransform = bottomBar.BigHomeTab.type == TabType.Home
@@ -312,7 +355,7 @@ namespace IEC
             LifeCurrencyDisplay.ForceUpdateCurrencyText(PlayerData.playerLife - amount);
             LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
             AddCustomRewardToClaimEffect(
-                ResourceType.Gold, 
+                ResourceType.Live, 
                 Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.Live),
                 startPos, 
                 EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
@@ -332,12 +375,40 @@ namespace IEC
                 animTime
             );
         }
-        
-        
+
+        private void AddRewardUnlimitedLiveToClaim(Vector3 startPos, Vector2 startSize, float animTime = 2f, float delay = 0f)
+        {
+            LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(true);
+            AddCustomRewardToClaimEffect(
+                ResourceType.UnlimitedLive,
+                Config.dataEffectRewardClaimConfig.GetRewardSprite(ResourceType.UnlimitedLive),
+                startPos,
+                EffectRewardClaim.SwitchToRectTransform(Locator.Main.ScreenMain.LifeCurrencyDisplay.GetComponent<RectTransform>(), Locator.Main.ScreenMain.effectRewardClaim.GetComponent<RectTransform>()),
+                1,
+                startSize,
+                () =>
+                {
+                    LifeCurrencyDisplay.SetIsForcedCurrencyDisplay(false);
+                    //goldCurrencyDisplay.UpdateCurrency();
+                    EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
+                },
+                () =>
+                {
+                    LifeCurrencyDisplay.ForceUpdateCurrencyText(LifeCurrencyDisplay.GetCurrentCurrencyTextAmount() + Mathf.FloorToInt((float)1 / effectRewardClaim.maxSpawn));
+                },
+                delay,
+                animTime
+            );
+        }
         public void AddCustomRewardToClaimEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
         {
-           var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);
-           dataEffect.SetStartSize(startSize);
+            if (rewardType != ResourceType.Gold)
+            {
+                addAmount = 1;
+            }
+            
+            var dataEffect = new RewardClaimData(rewardType, rewardSprite, posSpawn, posEnd, addAmount, onComplete, onEndMove, delay, animTime);
+            dataEffect.SetStartSize(startSize);
             listClaimRewardData.Push(dataEffect);
         }
 

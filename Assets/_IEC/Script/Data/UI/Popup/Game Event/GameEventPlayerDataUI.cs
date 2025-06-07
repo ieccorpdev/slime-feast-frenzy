@@ -139,13 +139,17 @@ namespace IEC
             var playerData = Pool.Get<PlayerSecret>();
             if (EventPlayerData.isPlayer)
             {
-                avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(playerData.playerAvatarSpriteName);
-                avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(playerData.playerAvatarFrameName);
+                if(avatarImage != null)
+                    avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(playerData.playerAvatarSpriteName);
+                if(avatarFrameImage != null)
+                    avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(playerData.playerAvatarFrameName);
             }
             else
             {
-                avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(EventPlayerData.avatarID);
-                avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(EventPlayerData.avatarFrameID);
+                if(avatarImage != null)
+                    avatarImage.sprite = config.playerAvatarConfig.GetAvatarSprite(EventPlayerData.avatarID);
+                if(avatarFrameImage != null)
+                    avatarFrameImage.sprite = config.playerAvatarConfig.GetAvatarFrameSprite(EventPlayerData.avatarFrameID);
             }
         }
 
@@ -181,7 +185,9 @@ namespace IEC
                 else
                 {
                     rewardInfoButtonImage.gameObject.SetActive(true);
-                    rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    var sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    rewardInfoButtonImage.sprite = sprite;
+                    rewardInfoButtonImage.transform.GetChild(0).GetComponent<Image>().sprite = sprite;
                     rewardInfoButtonImage.SetNativeSize();
                 }
             }
@@ -190,6 +196,22 @@ namespace IEC
         protected virtual void UpdatePlayerProgress()
         {
             playerProgress.text = EventPlayerData.progress.ToString();
+        }
+
+        public void SetAvatar(Sprite sprite)
+        {
+            avatarImage.sprite = sprite;
+            avatarImage.SetNativeSize();
+        }
+
+        public void SetName(string text)
+        {
+            playerName.text = text;
+        }
+
+        public void SetProgressText(string text)
+        {
+            playerProgress.text = text;
         }
 
         public void Setup(GameEventConfig gameEventConfig, EventData eventData, EventPlayerData playerData, int rank)
@@ -209,8 +231,22 @@ namespace IEC
             UpdatePlayerAvatar();
         }
 
+        public void UpdateUI()
+        {
+            playerName.text = EventPlayerData.id;
+            
+            UpdatePlayerRank();
+            UpdatePlayerProgress();
+            
+            CheckSetMainPlayerUI();
+            UpdatePlayerAvatar();
+        }
+
         protected virtual void CheckSetMainPlayerUI()
         {
+            if (displayFrame == null)
+                return;
+            
             if (EventPlayerData.isPlayer)
             {
                 displayFrame.sprite = _gameEventConfig.GetDisplaySprite(spriteSetIndex).mainPlayerFrameSprite;

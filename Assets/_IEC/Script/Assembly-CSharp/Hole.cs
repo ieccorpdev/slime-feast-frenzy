@@ -31,9 +31,8 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
-	[SerializeField] private ParticleSystem waterSplashFx;
+	public ParticleSystem waterSplashFx;
 	[SerializeField] private ParticleSystem speedLinesVFX;
-	[SerializeField] private MeshRenderer waterGround;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -41,11 +40,11 @@ public class Hole : _BaseBehaviour
 	[SerializeField]public Animator sharkBiteAnimator;
 	[SerializeField]private Transform characterParent;
 	[SerializeField]private Transform sharkBiteParent;
-	
+	[Header("ThemeConfig")]
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
-
+	private float defaultPosYCharacter = -0.9f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
@@ -132,7 +131,7 @@ public class Hole : _BaseBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
-            EventController.RaiseEvent(EventList.Audio.SHARK_BITE);
+            EventController.RaiseEvent(EventList.Audio.SHARK_BITE_VARIANT);
         }
 	}
 	private void CheckSharkForm()
@@ -318,7 +317,6 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-		SetEffectWhirlPoolMagnet();
         EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
         //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
         //VibrationController.Vibrate(HapticTypes.Selection);
@@ -355,29 +353,18 @@ public class Hole : _BaseBehaviour
 	{
 		holeMagnet.gameObject.SetActive(true);
 		magnetVfx.Play();
-		SetEffectWhirlPoolMagnet(true);
 	}
 
-	public void SetEffectWhirlPoolMagnet(bool force = false)
-	{
-		if (force || GamePlay.levelController.GetTimeMagnetHelper > 0)
-		{
-			int valueSize = (int)Math.Round(1.75 * m_Level + 1.1);
-			waterGround.material.SetFloat(WaterMagnetEffect,valueSize);			
-		}
-
-	}
 	public void StopMagnetHelper()
 	{
 		holeMagnet.gameObject.SetActive(false);
 		magnetVfx.Stop();
-		waterGround.material.SetFloat(WaterMagnetEffect,0);
 	}
 
 	public void CollectABomb()
 	{
 		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
+		//SpawnVfx(deathVfx);
 		DOTween.Sequence()
 			.AppendInterval(0.2f)
 			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
@@ -460,7 +447,7 @@ public class Hole : _BaseBehaviour
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		StartAnimationCharacter();
 	}
 
@@ -469,7 +456,7 @@ public class Hole : _BaseBehaviour
 		var obj = GetObjectInDistanceAnimation();
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		readyForSharkBite = true;
 		if (obj != null)//Have object near
 		{
@@ -513,7 +500,7 @@ public class Hole : _BaseBehaviour
 		holePipe.DOScale(Vector3.zero, 0.5f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterParent.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
         EventController.RaiseEvent(EventList.Audio.SHARK_UP);
     }
@@ -524,7 +511,7 @@ public class Hole : _BaseBehaviour
 		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("Dive Into Water 0");
     }
 	#endregion

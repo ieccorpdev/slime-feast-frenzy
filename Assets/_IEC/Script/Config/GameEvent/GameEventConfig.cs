@@ -22,6 +22,9 @@ namespace IEC
         public List<GameEventDisplaySprite> listDisplaySprites = new();
 
         public List<EventData> listEventData = new();
+        public List<EventRewardTitleData> listTitleData = new();
+        public EventRewardTitleData titleDataNoProgress;
+        public EventRewardTitleData titleDataWinAllEventStages;
         
         [Header("Load data from csv (file format speed|range + reward)")]
         public string csv1;
@@ -318,6 +321,9 @@ namespace IEC
 
         public Sprite GetRankSprite(int spriteSetIndex, int rank)
         {
+            if (GetDisplaySprite(spriteSetIndex) == null)
+                return null;
+            
             if (rank > GetDisplaySprite(spriteSetIndex).listRankSprites.Count)
                 return null;
 
@@ -330,6 +336,27 @@ namespace IEC
                 return GetDisplaySprite(spriteSetIndex).listRewardButtonSprites[^1];
 
             return GetDisplaySprite(spriteSetIndex).listRewardButtonSprites[rank - 1];
+        }
+
+        public EventRewardTitleData GetRewardTitleData(int rank)
+        {
+            return listTitleData.Find(data => data.rankStartReward <= rank && (data.rankEndReward >= rank || data.rankEndReward == -1));
+        }
+        
+        public EventRewardTitleData GetRewardTitleDataNoProgress(int rank)
+        {
+            if (titleDataNoProgress.claimRewardTitleSprite != null)
+                return titleDataNoProgress;
+            else
+                return GetRewardTitleData(rank);
+        }
+
+        public EventRewardTitleData GetWinAllEventStagesTitleData(int rank)
+        {
+            if (titleDataWinAllEventStages.claimRewardTitleSprite != null)
+                return titleDataWinAllEventStages;
+            else
+                return GetRewardTitleData(rank);
         }
         
         private List<List<string>> DownloadCsvFromAuthUrl(string url)
@@ -387,6 +414,7 @@ namespace IEC
     public class EventData
     {
         public int eventTarget; //For event with multiple stages 
+        public int eventStageTimeInSeconds; // For event stage with limited time
         public List<EventBotData> listEventBotData = new();
         public List<EventRewardData> listEventRewardData = new();
     }
@@ -404,5 +432,14 @@ namespace IEC
         public int rankStartReward;
         public int rankEndReward;
         public List<Reward> listReward = new();
+    }
+
+    [System.Serializable]
+    public class EventRewardTitleData
+    {
+        public int rankStartReward;
+        public int rankEndReward;
+        public Sprite claimRewardTitleSprite;
+        [TextArea]public string claimRewardSubtitleText;
     }
 }

@@ -10,7 +10,7 @@ namespace IEC
 {
     public class PopupStartStarChaseEvent : BasePopup
     {
-        public Button btnCloseAll;
+        public Button btnClosePopup;
         public Button btnStart;
 
         public TextMeshProUGUI timerText;
@@ -23,14 +23,29 @@ namespace IEC
                 {
                     Locator.Main.PopupStarChase.Show();
                 }
-                else
-                {
-                    Locator.Main.PopupStarChase.InitEvent();
-                }
+                // else
+                // {
+                //     Locator.Main.PopupStarChase.InitEvent();
+                // }
 
                 OnHideClick();
             });
-            SetEvent(btnCloseAll, OnHideClick);
+            SetEvent(btnCloseAll, ()=>
+            {
+                if (Locator.Main.PopupStarChase.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupStarChase.Hide();
+                }
+                OnHideClick();
+            });
+            SetEvent(btnClosePopup, ()=>
+            {
+                if (Locator.Main.PopupStarChase.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupStarChase.Hide();
+                }
+                OnHideClick();
+            });
         }
 
         public override void Show()

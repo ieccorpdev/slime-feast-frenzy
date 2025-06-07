@@ -10,7 +10,7 @@ namespace IEC
 {
     public class PopupStartSharkRaceEvent : BasePopup
     {
-        public Button btnCloseAll;
+        public Button btnClosePopup;
         public Button btnStart;
 
         public TextMeshProUGUI timerText;
@@ -25,13 +25,29 @@ namespace IEC
                 {
                     Locator.Main.PopupSharkRace.Show();
                 }
-                else
+                // else
+                // {
+                //     Locator.Main.PopupSharkRace.InitEvent();
+                // }
+                OnHideClick();
+            });
+            SetEvent(btnCloseAll, ()=>
+            {
+                if (Locator.Main.PopupSharkRace.gameObject.activeInHierarchy)
                 {
-                    Locator.Main.PopupSharkRace.InitEvent();
+                    Locator.Main.PopupSharkRace.Hide();
                 }
                 OnHideClick();
             });
-            SetEvent(btnCloseAll, OnHideClick);
+            
+            SetEvent(btnClosePopup, ()=>
+            {
+                if (Locator.Main.PopupSharkRace.gameObject.activeInHierarchy)
+                {
+                    Locator.Main.PopupSharkRace.Hide();
+                }
+                OnHideClick();
+            });
         }
 
         public override void Show()
@@ -47,7 +63,11 @@ namespace IEC
         private void UpdateInfoText()
         {
             var eventSaveData = PlayerData.GetEventSaveData(EventType.SharkRace);
-            int index = eventSaveData.claimedReward ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
+            int index = Locator.Main.PopupSharkRace.IsEventStageCompleted() ? eventSaveData.eventIndex + 1 : eventSaveData.eventIndex;
+            if (Locator.Main.PopupSharkRace.IsEndEvent())
+            {
+                index = 0;
+            }
             var eventData = Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).GetEventData(index);
             infoText.text = $"clear {eventData.eventTarget} levels!";
         }

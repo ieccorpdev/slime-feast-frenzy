@@ -1,0 +1,629 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e038203d7c87de4fbeb05adb00dceea, type: 3}
+  m_Name: Journey Trip Config
+  m_EditorClassIdentifier: 
+  maxDayInspector: 15
+  listRewardsByJourneys:
+  - idJourney: 0
+    fuelNeed: 0
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 15
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 2000
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 15
+  - idJourney: 1
+    fuelNeed: 3
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 300
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 100
+  - idJourney: 2
+    fuelNeed: 6
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 15
+  - idJourney: 3
+    fuelNeed: 10
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 15
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 15
+  - idJourney: 4
+    fuelNeed: 20
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+  - idJourney: 5
+    fuelNeed: 15
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 300
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 15
+  - idJourney: 6
+    fuelNeed: 20
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 15
+  - idJourney: 7
+    fuelNeed: 30
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 30
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 100
+  - idJourney: 8
+    fuelNeed: 35
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+  - idJourney: 9
+    fuelNeed: 20
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 300
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 15
+  - idJourney: 10
+    fuelNeed: 25
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 15
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+  - idJourney: 11
+    fuelNeed: 35
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 60
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 200
+  - idJourney: 12
+    fuelNeed: 40
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 300
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+  - idJourney: 13
+    fuelNeed: 45
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+  - idJourney: 14
+    fuelNeed: 30
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+  - idJourney: 15
+    fuelNeed: 40
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 500
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 45
+  - idJourney: 16
+    fuelNeed: 50
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+  - idJourney: 17
+    fuelNeed: 30
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 45
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 45
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 45
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 200
+  - idJourney: 18
+    fuelNeed: 45
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 60
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 200
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+  - idJourney: 19
+    fuelNeed: 55
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+  - idJourney: 20
+    fuelNeed: 30
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 500
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+  - idJourney: 21
+    fuelNeed: 50
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 2
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 300
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 30
+  - idJourney: 22
+    fuelNeed: 70
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 60
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+  - idJourney: 23
+    fuelNeed: 50
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 2
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 30
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+  - idJourney: 24
+    fuelNeed: 75
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 10
+          rewardAmount: 60
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 11
+          rewardAmount: 60
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 2
+        reward:
+          typeReward: 3
+          rewardAmount: 60
+  - idJourney: 25
+    fuelNeed: 99
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 1000
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 4
+          rewardAmount: 2
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 5
+          rewardAmount: 2
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+    RewardsNormal:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 500
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 6
+          rewardAmount: 1
+      - progress: 0
+        progressRewardType: 1
+        reward:
+          typeReward: 7
+          rewardAmount: 1
+  bonusReward:
+    idJourney: -1
+    fuelNeed: 0
+    RewardsVips:
+      listRewards:
+      - progress: 0
+        progressRewardType: 0
+        reward:
+          typeReward: 0
+          rewardAmount: 5000
+    RewardsNormal:
+      listRewards: []
