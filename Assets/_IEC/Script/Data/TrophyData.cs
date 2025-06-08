@@ -28,22 +28,22 @@ namespace IEC
         {
             int times = GetCurrentTimeComplete(type);
             int trophyCol = GetCurrentCollectedTrophy(type);
-            int trophyTarget = GetTrophyByTimeComplete(type, times);
-            return trophyTarget > trophyCol;
+            int trophyTarget = GetTargetToGetTrophy(type, times,trophyCol);//Target
+            return times >= trophyTarget;
         }
 
-        public int GetTrophyByTimeComplete(TrophyType type,int times)
+        public int GetTargetToGetTrophy(TrophyType type,int times,int trophyCol)
         {
            var dataConfig = trophyRewardConfig.listTrophyReward.Find(x => x.type == type);
-            for (int i = 0; i < dataConfig.listTimeToCollect.Count; i++)
-            {
-                if (dataConfig.listTimeToCollect[i] >= times)
-                {
-                    return i + 1;
-                }
-            }
-
-            return 0;
+           if (trophyCol == 0)
+           {
+               return dataConfig.listTimeToCollect[0];
+           }
+           else
+           {
+               return dataConfig.listTimeToCollect[trophyCol];
+           }
+           return 0;
         }
         public int GetCurrentTimeComplete(TrophyType type)
         {
@@ -59,17 +59,15 @@ namespace IEC
             var config = trophyRewardConfig.GetReward(type);
             var dataSave = GetTrophyDataConfig(type);
             int start = config.listTimeToCollect[dataSave.trophyCollected];
-            if (dataSave.timeCompleted == 0)
+            if (dataSave.trophyCollected == 0)
             {
                 return new Vector2(dataSave.timeCompleted, start);
             }
             else
             {
+
                 int end = start;
-                if (dataSave.trophyCollected < config.listTimeToCollect.Count-1)
-                {
-                    end = config.listTimeToCollect[dataSave.trophyCollected+1];
-                }
+                start = config.listTimeToCollect[dataSave.trophyCollected-1];
                 return new Vector2(dataSave.timeCompleted - start, end - start);
             }
         }
