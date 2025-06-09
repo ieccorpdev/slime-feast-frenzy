@@ -8,10 +8,14 @@ namespace IEC
     public class CharacterSelectionUIScroller : _BaseBehaviour, IEnhancedScrollerDelegate
     {
         public EnhancedScroller scroller;
+        public float cellSize = 205;
         public CharacterSelectionUI characterSelectionUIPrefab;
+        
+        public CharacterSelectionTab CharacterSelectionTab { get; private set; }
 
-        public void Init()
+        public void Init(CharacterSelectionTab tab)
         {
+            CharacterSelectionTab = tab;
             InitScroller();
             ReloadData();
         }
@@ -53,7 +57,7 @@ namespace IEC
 
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
         {
-            return 162;
+            return cellSize;
         }
 
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
@@ -61,7 +65,7 @@ namespace IEC
             CharacterSelectionUI cellView = scroller.GetCellView(characterSelectionUIPrefab) as CharacterSelectionUI;
 
             if(cellView != null)
-                cellView.Setup(Config.allCharactersConfig.listAllCharactersConfig[dataIndex]);
+                cellView.Setup(Config.allCharactersConfig.listAllCharactersConfig[dataIndex], CharacterSelectionTab.CurrentCharacterConfig.characterName);
             
             return cellView;
         }

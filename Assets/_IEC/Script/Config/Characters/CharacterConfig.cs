@@ -9,6 +9,9 @@ namespace IEC
     public class CharacterConfig : ScriptableObject
     {
         public string characterName;
+        public Sprite characterSelectionSprite;
+        public Sprite characterLockedSprite;
+        public Sprite characterMainSprite;
         public float defaultCharacterPosY;
         public float characterAnimSpeed = 1f;
         public Animator characterHomePrefab;

@@ -13,6 +13,12 @@ MonoBehaviour:
   m_Name: Whale Character Config
   m_EditorClassIdentifier: 
   characterName: Whale
+  characterSelectionSprite: {fileID: 21300000, guid: fc7aa96af485a7243aeb5f234fea03b4,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 4417f06b756cff042a639bf2d59e2b3f,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: fc7aa96af485a7243aeb5f234fea03b4,
+    type: 3}
   defaultCharacterPosY: -1.1
   characterAnimSpeed: 0.7
   characterHomePrefab: {fileID: 5419666077812410434, guid: 0f1c5b1aa1f152c4e836b17c22994c45,
@@ -30,9 +36,6 @@ MonoBehaviour:
   listCharacterPowers:
   - powerType: 0
     resourceAffected: 0
-    conditionValueForPower: 0
-    buffAmount: 0
-    helperDurationIncrease: 0
     listCharacterPowerValue:
     - conditionValueForPower: 0
       buffAmount: 0.5

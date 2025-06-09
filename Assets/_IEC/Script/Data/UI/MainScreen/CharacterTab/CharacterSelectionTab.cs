@@ -9,6 +9,7 @@ namespace IEC
 {
     public class CharacterSelectionTab : _BaseBehaviour
     {
+        public Image mainCharacterImage;
         public Button selectCharacterButton;
         public Button characterInUseButton;
         public CharacterSelectionUIScroller selectionScroller;
@@ -51,7 +52,12 @@ namespace IEC
         private void UpdateCurrentCharacterUI()
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
-            
+            if (mainCharacterImage != null)
+            {
+                mainCharacterImage.sprite = CurrentCharacterConfig.characterMainSprite;
+                mainCharacterImage.SetNativeSize();
+            }
+
             UpdateGroupButtonsUI();
         }
 
@@ -65,7 +71,7 @@ namespace IEC
         {
             CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
             UpdateCurrentCharacterUI();
-            selectionScroller.Init();
+            selectionScroller.Init(this);
         }
     }
 }

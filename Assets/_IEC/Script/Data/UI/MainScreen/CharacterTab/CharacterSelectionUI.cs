@@ -10,10 +10,14 @@ namespace IEC
 {
     public class CharacterSelectionUI : EnhancedScrollerCellView
     {
+        public Image characterAvatar;
+        public Image selectedFrame;
+        public Vector2 selectedAvatarMaskSize = new Vector2(205, 205);
+        public Image normalFrame;
+        public Vector2 normalAvatarMaskSize = new Vector2(175, 175);
+        public Image avatarMask;
         public Button btn;
         public CharacterConfig CharacterConfig { get; private set; }
-
-        public PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
 
         private void Start()
         {
@@ -23,10 +27,13 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, CheckCurrentCharacter);
         }
 
-        public void Setup(CharacterConfig characterConfig)
+        public void Setup(CharacterConfig characterConfig, string currentCharacterName)
         {
             CharacterConfig = characterConfig;
-            SetSelectedUI(CharacterConfig.characterName.Equals(PlayerData.playerCharacterName));
+            if(characterAvatar != null)
+                characterAvatar.sprite = CharacterConfig.characterSelectionSprite;
+            
+            SetSelectedUI(CharacterConfig.characterName.Equals(currentCharacterName));
         }
 
         public void OnSelectCharacter()
@@ -54,7 +61,13 @@ namespace IEC
 
         private void SetSelectedUI(bool isSelected)
         {
-            
+            selectedFrame.gameObject.SetActive(isSelected);
+            normalFrame.gameObject.SetActive(!isSelected);
+
+            avatarMask.GetComponent<RectTransform>().sizeDelta =
+                isSelected 
+                    ? selectedAvatarMaskSize 
+                    : normalAvatarMaskSize;
         }
     }
 
