@@ -44,6 +44,7 @@ public class TrophyScreenTab : ScreenNavigateUI
                     {
                         PlayerData.trophyData.CollectTrophyReward(item.type);
                         LoadData();
+                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
                     },false); 
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
             });

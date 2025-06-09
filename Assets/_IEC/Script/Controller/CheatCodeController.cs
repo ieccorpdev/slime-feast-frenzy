@@ -191,6 +191,23 @@ namespace IEC
                 value = 5
             });
             
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add 1 Trophy Type", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+
+                TrophyType type = (TrophyType)(value-1);
+                
+                PlayerData.trophyData.CollectTrophy(type);
+
+                if (Locator.Main.ScreenMain)
+                {
+                    Locator.Main.ScreenMain.trophyTab.LoadData();
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
