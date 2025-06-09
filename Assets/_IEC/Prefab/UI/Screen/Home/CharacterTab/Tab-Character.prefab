@@ -1543,6 +1543,10 @@ MonoBehaviour:
   levelUpCharacterButton: {fileID: 50870909912821331}
   selectionScroller: {fileID: 4774737089805136375}
   characterNameText: {fileID: 7977279747189094963}
+  listCharacterStatUI:
+  - {fileID: 6908326420667640806}
+  - {fileID: 8392413749901288082}
+  - {fileID: 1725089747247415039}
   listStarUI:
   - {fileID: 6053434968703202146}
   - {fileID: 866726707273904862}
@@ -2394,6 +2398,7 @@ GameObject:
   - component: {fileID: 7563713185068796827}
   - component: {fileID: 4655799236616184130}
   - component: {fileID: 2954533907297873991}
+  - component: {fileID: 8392413749901288082}
   m_Layer: 5
   m_Name: Size
   m_TagString: Untagged
@@ -2461,6 +2466,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8392413749901288082
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3960778311624481542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5c160dcec3b734896d3fe273d641e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 1
+  fillImage: {fileID: 5646614953195458661}
 --- !u!1 &4044582428685235294
 GameObject:
   m_ObjectHideFlags: 0
@@ -2472,6 +2491,7 @@ GameObject:
   - component: {fileID: 3680752040556021758}
   - component: {fileID: 738710933715700668}
   - component: {fileID: 4436997554758208703}
+  - component: {fileID: 1725089747247415039}
   m_Layer: 5
   m_Name: Transform
   m_TagString: Untagged
@@ -2539,6 +2559,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1725089747247415039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4044582428685235294}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5c160dcec3b734896d3fe273d641e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 2
+  fillImage: {fileID: 6202601558896940454}
 --- !u!1 &4090071263959507686
 GameObject:
   m_ObjectHideFlags: 0
@@ -2742,6 +2776,7 @@ MonoBehaviour:
       m_Calls: []
   tabType: 1
   mainPanel: {fileID: 4951125856928184975}
+  characterListButton: {fileID: 0}
   characterSelectionTab: {fileID: 5930436219928891359}
 --- !u!1 &4353553393696757373
 GameObject:
@@ -5382,6 +5417,7 @@ GameObject:
   - component: {fileID: 4305662360669417418}
   - component: {fileID: 5040298191862307422}
   - component: {fileID: 777589614809818382}
+  - component: {fileID: 6908326420667640806}
   m_Layer: 5
   m_Name: Speed
   m_TagString: Untagged
@@ -5449,6 +5485,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6908326420667640806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8610635416329406753}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b5c160dcec3b734896d3fe273d641e6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  statType: 0
+  fillImage: {fileID: 5071216894533525588}
 --- !u!1 &8838501391069256633
 GameObject:
   m_ObjectHideFlags: 0

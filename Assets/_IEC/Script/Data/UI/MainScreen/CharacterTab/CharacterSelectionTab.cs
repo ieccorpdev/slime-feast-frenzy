@@ -16,6 +16,9 @@ namespace IEC
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
 
+        [Header("Character Stat UI")] 
+        public List<CharacterTabStatDisplay> listCharacterStatUI = new();
+
         [Header("Star UI")] 
         public List<CharacterTabStarUI> listStarUI = new();
         
@@ -80,6 +83,7 @@ namespace IEC
             UpdateGroupButtonsUI();
             UpdateUpgradeButtonUI();
             UpdateCurrentLevelStarUI();
+            UpdateStatUI();
         }
 
         private void UpdateUpgradeButtonUI()
@@ -129,6 +133,14 @@ namespace IEC
             for (int i = listStarUI.Count - 1; i > 0; i--)
             {
                 listStarUI[i].SetStarActive(i <= CurrentCharacterLevel);
+            }
+        }
+
+        private void UpdateStatUI()
+        {
+            foreach (var statUI in listCharacterStatUI)
+            {
+                statUI.Setup(CurrentCharacterConfig.GetStat(statUI.statType));
             }
         }
 

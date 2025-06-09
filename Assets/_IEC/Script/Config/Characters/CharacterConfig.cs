@@ -19,6 +19,7 @@ namespace IEC
         public Animator characterBitePrefab;
         public List<CharacterUpgrade> listCharacterUpgrade = new();
         public List<CharacterTrait> listCharacterTraits;
+        public List<CharacterStat> listCharacterStat;
         public List<CharacterPower> listCharacterPowers;
 
         [Header("Character unlock")] 
@@ -30,6 +31,11 @@ namespace IEC
         {
             return listCharacterPowers.Find(power =>
                 power.powerType == powerType && power.resourceAffected == resourceAffected);
+        }
+
+        public CharacterStat GetStat(CharacterStatType statType)
+        {
+            return listCharacterStat.Find(stat => stat.statType == statType);
         }
 
         public CharacterTrait GetTrait(CharacterTraitType traitType)
@@ -72,6 +78,13 @@ namespace IEC
     }
 
     [System.Serializable]
+    public class CharacterStat
+    {
+        public CharacterStatType statType;
+        [Range(0,1)]public float statValue;
+    }
+
+    [System.Serializable]
     public class CharacterPowerValue
     {
         public int conditionValueForPower; // for example item xp to apply power
@@ -102,5 +115,12 @@ namespace IEC
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
         AddTimerOnCombo,
+    }
+
+    public enum CharacterStatType
+    {
+        Speed,
+        Size,
+        Transform,
     }
 }
