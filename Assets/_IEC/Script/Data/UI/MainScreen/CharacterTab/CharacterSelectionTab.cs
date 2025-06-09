@@ -10,10 +10,15 @@ namespace IEC
     public class CharacterSelectionTab : _BaseBehaviour
     {
         public Button selectCharacterButton;
+        public Button characterInUseButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
         
         public CharacterConfig CurrentCharacterConfig { get; private set; }
+
+        public bool IsCurrentShowingSelected => CurrentCharacterConfig != null &&
+                                                CurrentCharacterConfig.characterName
+                                                    .Equals(PlayerData.playerCharacterName);
         
         // Start is called before the first frame update
         void Start()
@@ -29,6 +34,7 @@ namespace IEC
             {
                 characterName = PlayerData.playerCharacterName
             });
+            UpdateCurrentCharacterUI();
         }
 
         private void SetCurrentCharacter(object param)
@@ -45,6 +51,14 @@ namespace IEC
         private void UpdateCurrentCharacterUI()
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
+            
+            UpdateGroupButtonsUI();
+        }
+
+        private void UpdateGroupButtonsUI()
+        {
+            selectCharacterButton.gameObject.SetActive(!IsCurrentShowingSelected);
+            characterInUseButton.gameObject.SetActive(IsCurrentShowingSelected);
         }
 
         public void Setup()
