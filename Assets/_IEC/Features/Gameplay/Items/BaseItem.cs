@@ -61,8 +61,12 @@ namespace _IEC.Features.Gameplay
                 m_ItemDefinition = this.itemDefinition;
             }
             mainCam = Camera.main;
-            rb.drag = Config.gamePlayConfig.ItemDrag;
-            rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            if (rb)
+            {
+                rb.drag = Config.gamePlayConfig.ItemDrag;
+                rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            }
+
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
         void OnEnable()
@@ -290,7 +294,11 @@ namespace _IEC.Features.Gameplay
                 savedData.isKinematic = true;
                 savedData.interpolation = rb.interpolation;
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
+                #if UNITY_EDITOR
+                DestroyImmediate(rb);
+                #else
                 Destroy(rb);
+                #endif
             }
         }
 

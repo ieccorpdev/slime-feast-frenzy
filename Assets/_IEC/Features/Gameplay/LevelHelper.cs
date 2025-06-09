@@ -43,6 +43,7 @@ namespace _IEC.Features.Gameplay
         {
             var themeConfig = config == null ? Config.themeConfig : config; 
             var listTileObjects = new List<GroundElement>();    
+            if(mapData == null) return;
             foreach (var tileMapData in mapData.listMapTileData)
             {
                 var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
