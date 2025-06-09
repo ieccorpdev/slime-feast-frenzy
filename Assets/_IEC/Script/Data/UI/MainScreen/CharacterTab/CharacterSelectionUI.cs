@@ -31,10 +31,9 @@ namespace IEC
 
         public void OnSelectCharacter()
         {
-            PlayerData.playerCharacterName = CharacterConfig.characterName;
             this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new SelectCharacterData()
             {
-                characterName = PlayerData.playerCharacterName
+                characterName = CharacterConfig.characterName
             });
         }
 

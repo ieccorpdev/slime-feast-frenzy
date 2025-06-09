@@ -19,7 +19,7 @@ namespace IEC
         // Start is called before the first frame update
         void Start()
         {
-            this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, UpdateCharacter);
+            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCharacter);
             UpdateCharacter();
         }
 

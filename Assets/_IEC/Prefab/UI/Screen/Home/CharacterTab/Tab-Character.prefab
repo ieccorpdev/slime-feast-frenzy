@@ -285,6 +285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48174020654c2104a8caac32001d1205, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectCharacterButton: {fileID: 245550762838595004}
   selectionScroller: {fileID: 4774737089805136375}
   characterNameText: {fileID: 7977279747189094963}
 --- !u!1 &4297082567057330896
@@ -676,7 +677,7 @@ GameObject:
   - component: {fileID: 5986457718928069829}
   - component: {fileID: 3787344813202239822}
   m_Layer: 5
-  m_Name: PlayLevelText
+  m_Name: SelectButtonText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -730,9 +731,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'In Use
-
-'
+  m_text: Select
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 9f120cb01c5043647b084e12d83e5a13, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: e152765432c8bbc468008fafb4ee4c2b, type: 2}

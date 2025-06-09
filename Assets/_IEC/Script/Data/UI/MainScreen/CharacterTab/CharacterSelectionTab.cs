@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace IEC
 {
     public class CharacterSelectionTab : _BaseBehaviour
     {
+        public Button selectCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
         
@@ -16,7 +18,17 @@ namespace IEC
         // Start is called before the first frame update
         void Start()
         {
+            selectCharacterButton.onClick.AddListener(OnSelectCharacter);
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+        }
+
+        private void OnSelectCharacter()
+        {
+            PlayerData.playerCharacterName = CurrentCharacterConfig.characterName;
+            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new SelectCharacterData()
+            {
+                characterName = PlayerData.playerCharacterName
+            });
         }
 
         private void SetCurrentCharacter(object param)
