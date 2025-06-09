@@ -11,6 +11,7 @@ public class AddForceOnCollision : MonoBehaviour
     public Rigidbody rb;
     public float force = 20f;
     private bool hasBounced = false;
+    public Action OnCollision;
     //public List<BaseItem> listItem = new List<BaseItem>();
 
 
@@ -26,7 +27,8 @@ public class AddForceOnCollision : MonoBehaviour
             var randomRangeZ = Random.Range(0, 180f);
             Vector3 direction = new Vector3(randomRangeX, randomRangeY, randomRangeZ).normalized;
             GetComponent<Rigidbody>()?.AddForce(direction * force, ForceMode.Impulse);
-            EventController.RaiseEvent(EventList.Audio.RELIC_CLONE);
+            //EventController.RaiseEvent(EventList.Audio.RELIC_CLONE);
+            OnCollision?.Invoke();
         }
     }
 

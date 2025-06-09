@@ -396,7 +396,7 @@ namespace _IEC.Features.Gameplay
             //{
             RelicObjCollected++;
             //}
-            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI,data);
         }
