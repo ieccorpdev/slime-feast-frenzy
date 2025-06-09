@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using IEC;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -29,7 +30,63 @@ public class ItemTrophyTab : MonoBehaviour
     public Image fillImage;
 
     public TextMeshProUGUI progressText;
+    [Header("Popup Region")]
+    public Button infoButton;
+    
+    public GameObject groupsLock;
+    public TextMeshProUGUI lockTrophyNameTMP;
+    public TextMeshProUGUI levelUnlockTrophyNameTMP;
+    
+    public GameObject groupsNoti;
+    public TextMeshProUGUI infoTrophyNameTMP;
+    public TextMeshProUGUI infoTrophyTMP;
+    public TextMeshProUGUI timeUnlockEvent;
 
+    private bool isLocked;
+    void Start()
+    {
+        infoButton.onClick.AddListener(OnClickInfoTrophy);   
+        gameObject.OnEvent(EventList.Trophy.CLICK_INFO_TROPHY, ResetInfo);
+    }
+
+    public void ResetInfo()
+    {
+        groupsLock.gameObject.SetActive(false);
+        groupsNoti.gameObject.SetActive(false);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void OnClickInfoTrophy()
+    {
+        EventController.RaiseEvent(EventList.Trophy.CLICK_INFO_TROPHY);
+        //Progress lock and info action
+        groupsLock.gameObject.SetActive(isLocked);
+        groupsNoti.gameObject.SetActive(!isLocked);
+        lockTrophyNameTMP.text = GetRealNameTrophy();
+
+        if (isLocked)
+        {
+            OnClickLocked();
+        }
+        else
+        {
+            OnClickInfoGroups();
+        }
+    }
+
+    public void OnClickLocked()
+    {
+        levelUnlockTrophyNameTMP.text =
+            "Unlock at level " + Locator.Main.ScreenMain.trophyTab.GetLevelUnlockTrophy(type);
+    }
+    public void OnClickInfoGroups()
+    {
+        groupsNoti.gameObject.SetActive(false);//Test
+    }
     public void TurnBgCoral(bool stt)
     {
         normalBg.gameObject.SetActive(!stt);
@@ -54,7 +111,10 @@ public class ItemTrophyTab : MonoBehaviour
     }
     public void UpdateStateAquarium(ItemTrophyState state)
     {
-        bool isLocked = state == ItemTrophyState.Locked;
+        groupsLock.gameObject.SetActive(false);
+        groupsNoti.gameObject.SetActive(false);
+        this.state = state;
+        isLocked = state == ItemTrophyState.Locked;
         lockObj.gameObject.SetActive(isLocked);
         newsTagObj.gameObject.SetActive(false);
         TurnBgCoral(!isLocked);
@@ -95,16 +155,40 @@ public class ItemTrophyTab : MonoBehaviour
         progressText.text = current + "/" + max;
         fillImage.fillAmount = (float) current / (float) max;
     }
-    void Start()
+
+    public string GetRealNameTrophy()
     {
-        
+        switch (type)
+        {
+            case TrophyType.GrandVoyage:
+                return "Grand Voyage";
+                break;
+            case TrophyType.SharkFrenzyForce:
+                return "Shark Frenzy Force";
+                break;
+            case TrophyType.UnderseaVoyage:
+                return "Undersea Voyage";
+                break;
+            case TrophyType.SharkRace:
+                return "Shark Race";
+                break;
+            case TrophyType.ChompOff:
+                return "Chomp-off";
+                break;
+            case TrophyType.OceanGift:
+                return "Ocean Gift";
+                break;
+            case TrophyType.StarRace:
+                return "Star Race";
+                break;
+            case TrophyType.RelicHunt:
+                return "Relic Hunt";
+                break;
+        }
+
+        return "Error";
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
 
 public enum ItemTrophyState

@@ -88,19 +88,19 @@ public class TrophyScreenTab : ScreenNavigateUI
                 return Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn;
                 break;
             case TrophyType.SharkRace:
-                Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.SharkRace);
+                return Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.SharkRace);
                 break;
             case TrophyType.ChompOff:
-                Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.ChompOff);
+                return  Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.ChompOff);
                 break;
             case TrophyType.OceanGift:
                 return 1;
                 break;
             case TrophyType.StarRace:
-                Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.StarChase);
+                return Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.StarChase);
                 break;
             case TrophyType.RelicHunt:
-                Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.RelicHunt);
+                return Config.AllGameEventConfig.GetLevelUnlockEvent(EventType.RelicHunt);
                 break;
             default:
                 return 999;
