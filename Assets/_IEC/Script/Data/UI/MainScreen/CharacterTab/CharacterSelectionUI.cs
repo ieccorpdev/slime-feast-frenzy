@@ -16,8 +16,11 @@ namespace IEC
         public Image normalFrame;
         public Vector2 normalAvatarMaskSize = new Vector2(175, 175);
         public Image avatarMask;
+        public List<CharacterTabStarUI> listStarUI = new();
         public Button btn;
         public CharacterConfig CharacterConfig { get; private set; }
+        
+        public int CurrentCharacterLevel { get; private set; }
 
         private void Start()
         {
@@ -27,12 +30,14 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, CheckCurrentCharacter);
         }
 
-        public void Setup(CharacterConfig characterConfig, string currentCharacterName)
+        public void Setup(CharacterConfig characterConfig, string currentCharacterName, int level)
         {
             CharacterConfig = characterConfig;
+            CurrentCharacterLevel = level;
             if(characterAvatar != null)
                 characterAvatar.sprite = CharacterConfig.characterSelectionSprite;
-            
+
+            UpdateCurrentLevelStarUI();
             SetSelectedUI(CharacterConfig.characterName.Equals(currentCharacterName));
         }
 
@@ -56,6 +61,14 @@ namespace IEC
                 // }
                 
                 SetSelectedUI(CharacterConfig.characterName.Equals(data.characterName));
+            }
+        }
+        
+        private void UpdateCurrentLevelStarUI()
+        {
+            for (int i = listStarUI.Count - 1; i > 0; i--)
+            {
+                listStarUI[i].SetStarActive(i <= CurrentCharacterLevel);
             }
         }
 

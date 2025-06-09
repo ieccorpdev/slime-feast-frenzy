@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
+using UnityUtils;
 
 namespace IEC
 {
@@ -43,10 +45,20 @@ namespace IEC
             JumpToCurrent();
         }
         
-        private void JumpToCurrent()
+        private void JumpToCurrent(string currentCharName = "")
+        {
+            if (String.IsNullOrEmpty(currentCharName))
+                currentCharName = PlayerData.playerCharacterName;
+            
+            //InitScroller();
+            int index = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(data => data.characterName.Equals(currentCharName));
+            //scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
+            JumpToCurrent(index);
+        }
+        
+        private void JumpToCurrent(int index)
         {
             InitScroller();
-            int index = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(data => data.characterName.Equals(PlayerData.playerCharacterName));
             scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
         
@@ -64,8 +76,12 @@ namespace IEC
         {
             CharacterSelectionUI cellView = scroller.GetCellView(characterSelectionUIPrefab) as CharacterSelectionUI;
 
+            var charConfig = Config.allCharactersConfig.listAllCharactersConfig[dataIndex];
+
             if(cellView != null)
-                cellView.Setup(Config.allCharactersConfig.listAllCharactersConfig[dataIndex], CharacterSelectionTab.CurrentCharacterConfig.characterName);
+                cellView.Setup(charConfig, 
+                    CharacterSelectionTab.CurrentCharacterConfig.characterName, 
+                    PlayerData.GetCharacterLevel(charConfig.characterName));
             
             return cellView;
         }

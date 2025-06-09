@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
   m_Name: Hammerhead Character Config
   m_EditorClassIdentifier: 
-  characterName: Hammerhead
+  characterName: Hammerhead Shark
   characterSelectionSprite: {fileID: 21300000, guid: ee4c1d7f36ec15e4da27eb9f3b548031,
     type: 3}
   characterLockedSprite: {fileID: 21300000, guid: 8b72ecf2c8837db4691e24a44c81f405,
@@ -27,7 +27,13 @@ MonoBehaviour:
     type: 3}
   characterBitePrefab: {fileID: 3405999012308954229, guid: 89f6b4230323d284f8fdb6555d099589,
     type: 3}
-  listCharacterUpgrade: []
+  listCharacterUpgrade:
+  - shardCost: 50
+    goldCost: 0
+  - shardCost: 100
+    goldCost: 0
+  - shardCost: 200
+    goldCost: 0
   listCharacterTraits: []
   listCharacterPowers:
   - powerType: 3
@@ -48,3 +54,5 @@ MonoBehaviour:
       buffAmount: 0.3
     - conditionValueForPower: 0
       buffAmount: 0.4
+  levelUnlock: 0
+  characterLevelOnUnlock: 0

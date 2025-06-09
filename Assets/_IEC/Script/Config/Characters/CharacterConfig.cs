@@ -21,6 +21,11 @@ namespace IEC
         public List<CharacterTrait> listCharacterTraits;
         public List<CharacterPower> listCharacterPowers;
 
+        [Header("Character unlock")] 
+        public int levelUnlock;
+
+        public int characterLevelOnUnlock;
+
         public CharacterPower GetPower(CharacterPowerType powerType, ResourceType resourceAffected = default)
         {
             return listCharacterPowers.Find(power =>
@@ -30,6 +35,17 @@ namespace IEC
         public CharacterTrait GetTrait(CharacterTraitType traitType)
         {
             return listCharacterTraits.Find(trait => trait.traitType == traitType);
+        }
+
+        public CharacterUpgrade GetCharacterUpgrade(int index)
+        {
+            if (listCharacterUpgrade.Count == 0)
+                return null;
+
+            if (index < 0 || index >= listCharacterUpgrade.Count)
+                return null;
+            
+            return listCharacterUpgrade[index];
         }
     }
 

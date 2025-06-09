@@ -12,10 +12,22 @@ namespace IEC
         public Image mainCharacterImage;
         public Button selectCharacterButton;
         public Button characterInUseButton;
+        public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
+
+        [Header("Star UI")] 
+        public List<CharacterTabStarUI> listStarUI = new();
+        
+        [Header(" Upgrade button UI")] 
+        public TextMeshProUGUI shardCountText;
+        public TextMeshProUGUI inactiveShardCountText;
+        public GameObject upgradeBtnUpgradableGroup;
+        public GameObject upgradeBtnInactiveGroup;
+        public GameObject upgradeBtnMaxLevelGroup;
         
         public CharacterConfig CurrentCharacterConfig { get; private set; }
+        public int CurrentCharacterLevel { get; private set; }
 
         public bool IsCurrentShowingSelected => CurrentCharacterConfig != null &&
                                                 CurrentCharacterConfig.characterName
@@ -25,6 +37,7 @@ namespace IEC
         void Start()
         {
             selectCharacterButton.onClick.AddListener(OnSelectCharacter);
+            levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
         }
 
@@ -38,6 +51,11 @@ namespace IEC
             UpdateCurrentCharacterUI();
         }
 
+        private void OnLevelUpCharacter()
+        {
+            PlayerData.CheckLevelUpCharacter(CurrentCharacterConfig.characterName);
+        }
+
         private void SetCurrentCharacter(object param)
         {
             var data = (SelectCharacterData)param;
@@ -46,6 +64,7 @@ namespace IEC
                 return;
 
             CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(data.characterName);
+            CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             UpdateCurrentCharacterUI();
         }
 
@@ -59,6 +78,58 @@ namespace IEC
             }
 
             UpdateGroupButtonsUI();
+            UpdateUpgradeButtonUI();
+            UpdateCurrentLevelStarUI();
+        }
+
+        private void UpdateUpgradeButtonUI()
+        {
+            upgradeBtnUpgradableGroup.SetActive(false);
+            upgradeBtnInactiveGroup.SetActive(false);
+            upgradeBtnMaxLevelGroup.SetActive(false);
+
+            levelUpCharacterButton.interactable = false;
+            
+            var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
+
+            var clickEffect = levelUpCharacterButton.GetComponent<ButtonClickEffect>();
+            
+            if(clickEffect != null)
+                clickEffect.enabled = false;
+            
+            if (upgradeConfig == null)
+            {
+                //shardCountText.text = "Max";
+                upgradeBtnMaxLevelGroup.SetActive(true);
+                return;
+            }
+            
+            var upgradeShardCost = upgradeConfig.shardCost;
+            var currentShard = PlayerData.GetCharacterShards(CurrentCharacterConfig.characterName);
+            
+            shardCountText.text = $"{currentShard}/{upgradeShardCost}";
+            inactiveShardCountText.text = $"{currentShard}/{upgradeShardCost}";
+
+            if (currentShard < upgradeShardCost)
+            {
+                upgradeBtnInactiveGroup.SetActive(true);
+                return;
+            }
+            
+            levelUpCharacterButton.interactable = true;
+            
+            if(clickEffect != null)
+                clickEffect.enabled = true;
+
+            upgradeBtnUpgradableGroup.SetActive(true);
+        }
+
+        private void UpdateCurrentLevelStarUI()
+        {
+            for (int i = listStarUI.Count - 1; i > 0; i--)
+            {
+                listStarUI[i].SetStarActive(i <= CurrentCharacterLevel);
+            }
         }
 
         private void UpdateGroupButtonsUI()
@@ -69,6 +140,10 @@ namespace IEC
 
         public void Setup()
         {
+            foreach(var character in Config.allCharactersConfig.listAllCharactersConfig)
+            {
+                PlayerData.CheckUnlockCharacter(character.characterName);
+            }
             CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
             UpdateCurrentCharacterUI();
             selectionScroller.Init(this);

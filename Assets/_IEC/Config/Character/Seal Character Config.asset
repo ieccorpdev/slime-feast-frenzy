@@ -27,7 +27,13 @@ MonoBehaviour:
     type: 3}
   characterBitePrefab: {fileID: 3141785404682211741, guid: ac60b4e21456a05499133a35ecd67b2e,
     type: 3}
-  listCharacterUpgrade: []
+  listCharacterUpgrade:
+  - shardCost: 30
+    goldCost: 0
+  - shardCost: 60
+    goldCost: 0
+  - shardCost: 120
+    goldCost: 0
   listCharacterTraits: []
   listCharacterPowers:
   - powerType: 4
@@ -39,3 +45,5 @@ MonoBehaviour:
       buffAmount: 2
     - conditionValueForPower: 0
       buffAmount: -1
+  levelUnlock: 0
+  characterLevelOnUnlock: 0

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
   m_Name: Ostar Character Config
   m_EditorClassIdentifier: 
-  characterName: Ostar
+  characterName: Orca
   characterSelectionSprite: {fileID: 21300000, guid: 86e8d4bef83eae945bc071ba2013d4f1,
     type: 3}
   characterLockedSprite: {fileID: 21300000, guid: e359b5c55d3adae409f9524792a09279,
@@ -27,7 +27,13 @@ MonoBehaviour:
     type: 3}
   characterBitePrefab: {fileID: 3405999012308954229, guid: e5447515ae48e254995762a3f18e7727,
     type: 3}
-  listCharacterUpgrade: []
+  listCharacterUpgrade:
+  - shardCost: 80
+    goldCost: 0
+  - shardCost: 160
+    goldCost: 0
+  - shardCost: 320
+    goldCost: 0
   listCharacterTraits: []
   listCharacterPowers:
   - powerType: 6
@@ -39,3 +45,5 @@ MonoBehaviour:
       buffAmount: 2
     - conditionValueForPower: 0
       buffAmount: 3
+  levelUnlock: 0
+  characterLevelOnUnlock: 0

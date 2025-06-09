@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 1240464428238930407}
   - component: {fileID: 8137195685352088285}
   - component: {fileID: 6647328705577882603}
+  - component: {fileID: 211362965271640748}
   m_Layer: 5
   m_Name: StarImg
   m_TagString: Untagged
@@ -153,6 +154,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &211362965271640748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380137766300247096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e5281b54c38994890a37cab3da705c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeStarObject: {fileID: 57490512112395230}
 --- !u!1 &2044013694230661835
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,6 +178,7 @@ GameObject:
   - component: {fileID: 235330352669566151}
   - component: {fileID: 706608685813056123}
   - component: {fileID: 183900239416610369}
+  - component: {fileID: 9114788324063009737}
   m_Layer: 5
   m_Name: StarImg (2)
   m_TagString: Untagged
@@ -230,6 +245,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9114788324063009737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2044013694230661835}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e5281b54c38994890a37cab3da705c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeStarObject: {fileID: 7366549458691043093}
 --- !u!1 &2124977433844689846
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,6 +360,10 @@ MonoBehaviour:
   normalFrame: {fileID: 6787537249287703859}
   normalAvatarMaskSize: {x: 175, y: 175}
   avatarMask: {fileID: 2180341497870971649}
+  listStarUI:
+  - {fileID: 211362965271640748}
+  - {fileID: 6559243878198578875}
+  - {fileID: 9114788324063009737}
   btn: {fileID: 3673777961460385504}
 --- !u!114 &3673777961460385504
 MonoBehaviour:
@@ -974,6 +1006,7 @@ GameObject:
   - component: {fileID: 6607261753101600204}
   - component: {fileID: 4973897130977842914}
   - component: {fileID: 3390930701324757641}
+  - component: {fileID: 6559243878198578875}
   m_Layer: 5
   m_Name: StarImg (1)
   m_TagString: Untagged
@@ -1040,3 +1073,16 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6559243878198578875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7750049560538873121}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82e5281b54c38994890a37cab3da705c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeStarObject: {fileID: 3868725360969144997}

@@ -503,23 +503,59 @@ namespace IEC
         #region Player Character
         public string playerCharacterName;
         public Dictionary<string, int> characterLevel = new();
+        public Dictionary<string, int> characterShards = new();
 
         public int GetCharacterLevel(string characterName)
         {
-            characterLevel.TryAdd(characterName, 0);
+            characterLevel.TryAdd(characterName, -1);
 
-            return characterLevel[characterName] - 1;
+            return characterLevel[characterName];
+        }
+        
+        public int GetCharacterShards(string characterName)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            return characterShards[characterName];
         }
 
-        public void LevelUpCharacter(string characterName)
+        public void CheckUnlockCharacter(string characterName)
         {
             var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
-            characterLevel.TryAdd(characterName, 0);
+            characterLevel.TryAdd(characterName, -1);
+
+            if (characterLevel[characterName] != -1)
+                return;
+
+            if (level < characterConfig.levelUnlock)
+                return;
+
+            characterLevel[characterName] = characterConfig.characterLevelOnUnlock;
+        }
+
+        public void CheckLevelUpCharacter(string characterName)
+        {
+            var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
+            characterLevel.TryAdd(characterName, -1);
+            characterShards.TryAdd(characterName, 0);
+
+            var upgradeConfig = characterConfig.GetCharacterUpgrade(characterLevel[characterName]);
+
+            if (upgradeConfig == null)
+                return;
+
+            var shardCost = upgradeConfig.shardCost;
+
+            if (shardCost > characterShards[characterName])
+                return;
+
+            characterShards[characterName] -= shardCost;
 
             if (characterLevel[characterName] < characterConfig.listCharacterUpgrade.Count - 1)
             {
                 characterLevel[characterName]++;
             }
+            
         }
         
         #endregion
