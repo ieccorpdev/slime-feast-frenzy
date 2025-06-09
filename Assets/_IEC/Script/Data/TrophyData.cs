@@ -10,7 +10,7 @@ namespace IEC
     public class TrophyData
     {
         public List<TrophyDataConfig> data = new List<TrophyDataConfig>();
-        public TrophyRewardConfig trophyRewardConfig => Pool.Get<GameConfig>().trophyRewardConfig;
+
         public void CollectTrophy(TrophyType type)
         {
             Debug.LogError("Collect Trophy:" + type);
@@ -34,7 +34,7 @@ namespace IEC
 
         public int GetTargetToGetTrophy(TrophyType type,int times,int trophyCol)
         {
-           var dataConfig = trophyRewardConfig.listTrophyReward.Find(x => x.type == type);
+           var dataConfig = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
            if (trophyCol == 0)
            {
                return dataConfig.listTimeToCollect[0];
@@ -56,7 +56,7 @@ namespace IEC
 
         public Vector2 GetMinMaxProgressBar(TrophyType type)
         {
-            var config = trophyRewardConfig.GetReward(type);
+            var config = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
             var dataSave = GetTrophyDataConfig(type);
             int start = config.listTimeToCollect[dataSave.trophyCollected];
             if (dataSave.trophyCollected == 0)

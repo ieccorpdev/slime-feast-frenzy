@@ -38,7 +38,8 @@ public class TrophyScreenTab : ScreenNavigateUI
             item.newsClaimButton.onClick.RemoveAllListeners();
             item.newsClaimButton.onClick.AddListener(() =>
             {
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(Config.trophyRewardConfig.GetReward(item.type).listTrophyReward[trophyCollect].listTrophyReward,
+                var reward = Config.trophyRewardConfig.GetReward(item.type).listTrophyReward[trophyCollect].listTrophyReward;
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(reward,
                     ()=>
                     {
                         PlayerData.trophyData.CollectTrophyReward(item.type);
