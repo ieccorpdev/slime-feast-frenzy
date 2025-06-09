@@ -69,9 +69,10 @@ namespace IEC
 
             return false;
         }
-        public bool CheckIfHasLockReward(ArtifactCollectorConfig config)
+        public bool CheckIfHasLockReward(ArtifactCollectorConfig config, bool checkCurrentLevelOnly = false)
         {
             var level = curRelicLevel;
+            if (!checkCurrentLevelOnly && curRelicLevel < config.ArtifactLevels.Count) return true;
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;

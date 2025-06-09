@@ -70,7 +70,7 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config, true))
                 {
                     completedGroup.SetActive(true);
                     button.interactable = false;
