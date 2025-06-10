@@ -260,8 +260,13 @@ public class PopupRelicHunt : BasePopup
             }
             var scaleMulti = 1.1f;
             var duration = 0.6f;
-            listInfoUI[^1].transform.DOScale(Vector3.one * scaleMulti, duration)
-                .SetLoops(-1, LoopType.Yoyo);
+            showInfoSequence.AppendCallback(() =>
+            {
+                listInfoUI[^1].transform.localScale = Vector3.one;
+                listInfoUI[^1].transform.DOScale(Vector3.one * scaleMulti, duration)
+                    .SetLoops(-1, LoopType.Yoyo);
+            });
+            
 
             //showInfoSequence.Insert(delay, closeInfoButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
 
