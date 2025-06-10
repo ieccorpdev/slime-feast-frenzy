@@ -93,4 +93,36 @@ public class TrophyScreenTab : ScreenNavigateUI
         }
         return 999;
     }
+    public string GetRealNameTrophy(TrophyType type)
+    {
+        switch (type)
+        {
+            case TrophyType.GrandVoyage:
+                return "Grand Voyage";
+                break;
+            case TrophyType.SharkFrenzyForce:
+                return "Shark Frenzy Force";
+                break;
+            case TrophyType.UnderseaVoyage:
+                return "Undersea Voyage";
+                break;
+            case TrophyType.SharkRace:
+                return "Shark Race";
+                break;
+            case TrophyType.ChompOff:
+                return "Chomp-off";
+                break;
+            case TrophyType.OceanGift:
+                return "Ocean Gift";
+                break;
+            case TrophyType.StarRace:
+                return "Star Race";
+                break;
+            case TrophyType.RelicHunt:
+                return "Relic Hunt";
+                break;
+        }
+
+        return "Error";
+    }
 }

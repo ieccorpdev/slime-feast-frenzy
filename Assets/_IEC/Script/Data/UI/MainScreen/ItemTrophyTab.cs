@@ -92,28 +92,34 @@ public class ItemTrophyTab : _BaseBehaviour
             return;
         }
 
-        if (isLocked)
+        if (state == ItemTrophyState.Locked )
         {
             groupsLock.gameObject.SetActive(true);
             OnClickLocked();
+            //
+
         }
-        else
+        else if ( state == ItemTrophyState.Missing)
         {
             groupsNoti.gameObject.SetActive(true);
             OnClickInfoGroups();
+        }
+        else
+        {   
+            Locator.Main.PopupTrophyDetails.ShowTrophy(type,state);
         }
     }
 
     public void OnClickLocked()
     {
-        lockTrophyNameTMP.text = GetRealNameTrophy();
+        lockTrophyNameTMP.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
         levelUnlockTrophyNameTMP.text =
             "Unlock at level " + Locator.Main.ScreenMain.trophyTab.GetLevelUnlockTrophy(type);
     }
     public void OnClickInfoGroups()
     {
         //groupsNoti.gameObject.SetActive(false);//Test
-        infoTrophyNameTMP.text = GetRealNameTrophy();
+        infoTrophyNameTMP.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
         
         string textRS = "";
         string targetReach = targetToTrophy.ToString();
@@ -233,38 +239,7 @@ public class ItemTrophyTab : _BaseBehaviour
         targetToTrophy = max - current;
     }
 
-    public string GetRealNameTrophy()
-    {
-        switch (type)
-        {
-            case TrophyType.GrandVoyage:
-                return "Grand Voyage";
-                break;
-            case TrophyType.SharkFrenzyForce:
-                return "Shark Frenzy Force";
-                break;
-            case TrophyType.UnderseaVoyage:
-                return "Undersea Voyage";
-                break;
-            case TrophyType.SharkRace:
-                return "Shark Race";
-                break;
-            case TrophyType.ChompOff:
-                return "Chomp-off";
-                break;
-            case TrophyType.OceanGift:
-                return "Ocean Gift";
-                break;
-            case TrophyType.StarRace:
-                return "Star Race";
-                break;
-            case TrophyType.RelicHunt:
-                return "Relic Hunt";
-                break;
-        }
 
-        return "Error";
-    }
 
 }
 
