@@ -21,6 +21,7 @@ namespace IEC
         public TextMeshProUGUI trophyUnlockText;
         [Header("Idle Groups")]
         public GameObject infoGroups;
+        public Image infoGRBG;
         public GameObject eventTimeObj;
         public TextMeshProUGUI timeEventTMP;
         public TextMeshProUGUI infoTrophyTMP;
@@ -65,10 +66,22 @@ namespace IEC
             infoGroups.gameObject.SetActive(true);   
             int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
-            //TOdo
             for (int i = 0; i < listSpriteTrophy.Count; i++)
             {
                 listSpriteTrophy[i].tick.gameObject.SetActive(i < index);
+            }
+
+            switch (type)
+            {
+                case TrophyType.GrandVoyage:
+                case TrophyType.SharkFrenzyForce:
+                    infoGRBG.sprite = defaultBg;
+                    eventTimeObj.gameObject.SetActive(false);
+                    break;
+                default:
+                    //Then load time
+                    infoGRBG.sprite = eventTimeBg;
+                    break;
             }
         }
 
