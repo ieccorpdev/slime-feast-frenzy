@@ -36,7 +36,14 @@ namespace IEC
 
         public void OnInfoItem()
         {
-            rewardInfoGroup.Show();
+            if (currentID == Config.journeyTripConfig.bonusReward.idJourney && !PlayerData.journeyData.isBuyIAP)
+            {
+                Locator.Main.PopupVoyagePassIAPInfor.Show();
+            }
+            else
+            {
+                rewardInfoGroup.Show();
+            }
         }
 
         IEnumerator WaitEndTut()
