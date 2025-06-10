@@ -155,10 +155,9 @@ namespace _IEC.Features.Gameplay
          
             m_LevelConfig = Config.levelConfig.GetLevelDataSOSHP(level);
             #if UNITY_EDITOR
-            if (EditorPrefs.GetBool("isPlayTest"))
+            if (Config.levelConfig.playTestData)
             {
                 m_LevelConfig = Config.levelConfig.playTestData;
-                EditorPrefs.SetBool("isPlayTest", false);
             }
             #endif
             if (m_LevelConfig == null)
@@ -189,25 +188,25 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             }
-            m_AllSpecialItems.Clear();
-            int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
-            m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
-                GroundExtend.CalculateBounds(m_AllItems),
-                countSpecialProgressReward, 
-                allItemHolder,
-                Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
-            );
-            m_AllkingdomSpecialItems.Clear();
-            int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
-                && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
-                ?
-                Config.specialObjectConfig.GetSpawnAmount() : 0;
-            m_AllkingdomSpecialItems = LevelHelper.SpawnSpecialItems(
-                GroundExtend.CalculateBounds(m_AllItems),
-                countAllkingdomSpecialItems,
-                allItemHolder,
-                Config.specialObjectConfig.kingdomSpecialObjective
-            );
+            //m_AllSpecialItems.Clear();
+            //int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
+            //m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
+            //    GroundExtend.CalculateBounds(m_AllItems),
+            //    countSpecialProgressReward, 
+            //    allItemHolder,
+            //    Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
+            //);
+            //m_AllkingdomSpecialItems.Clear();
+            //int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
+            //    && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
+            //    ?
+            //    Config.specialObjectConfig.GetSpawnAmount() : 0;
+            //m_AllkingdomSpecialItems = LevelHelper.SpawnSpecialItems(
+            //    GroundExtend.CalculateBounds(m_AllItems),
+            //    countAllkingdomSpecialItems,
+            //    allItemHolder,
+            //    Config.specialObjectConfig.kingdomSpecialObjective
+            //);
 
             if (GamePlay.currentThemeSelect >= 0)
             {
@@ -218,17 +217,17 @@ namespace _IEC.Features.Gameplay
                 themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
             }
             
-            if (PlayerData.relicData.isAvaiableToSpawn)
-            {
-                m_AllRelicItems.Clear();
-                int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
-                m_AllRelicItems = LevelHelper.SpawnRelicItems(
-                    GroundExtend.CalculateBounds(m_AllItems),
-                    relicSpawnTime, 
-                    allItemHolder,
-                    Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
-                );
-            }
+            //if (PlayerData.relicData.isAvaiableToSpawn)
+            //{
+            //    m_AllRelicItems.Clear();
+            //    int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
+            //    m_AllRelicItems = LevelHelper.SpawnRelicItems(
+            //        GroundExtend.CalculateBounds(m_AllItems),
+            //        relicSpawnTime, 
+            //        allItemHolder,
+            //        Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
+            //    );
+            //}
             if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
             {
                 themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);

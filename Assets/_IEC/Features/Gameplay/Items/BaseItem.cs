@@ -273,10 +273,7 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-            if (itemData.isStartKinematic)
-            {
-                SaveAndDestroyRigidbody();
-            }
+            SaveAndDestroyRigidbody();
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
