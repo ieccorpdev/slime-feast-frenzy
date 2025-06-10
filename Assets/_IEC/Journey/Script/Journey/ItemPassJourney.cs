@@ -18,16 +18,15 @@ namespace IEC
         public JourneyItemStatus statusItem;
         public int currentID;
         [Header("Reference")]
-        public List<GameEventRewardInfoUI> listRewardInfoUI = new();
         public List<GameEventRewardInfoUI> listRewardIMain = new();
         public GameObject chest;
         public GameObject rootIcon;
         public Button infor;
         public Button claim;
-        public GameObject info;
-        public static GameObject currentInfo;
         public List<GameObject> lockGroups, unlockGroups;
         private bool isUseChest;
+        public RewardInfoGroup rewardInfoGroup;
+        public static GameObject currentInfo;
 
         private void Awake()
         {
@@ -37,28 +36,7 @@ namespace IEC
 
         public void OnInfoItem()
         {
-            if (currentInfo)
-            {
-                currentInfo.transform.DOKill();
-                currentInfo.SetActive(false);
-            }
-            currentInfo = info;
-            info.transform.parent = transform.parent.parent.parent;
-            info.transform.SetAsLastSibling();
-            info.SetActive(true);
-            info.transform.localScale = Vector3.zero;
-            info.transform.DOScale(Vector3.one, 0.3f).SetEase(Ease.OutBack);
-
-            DOVirtual.DelayedCall(3f, () =>
-            {
-                if (currentInfo == info)
-                {
-                    info.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack).OnComplete(() =>
-                    {
-                        info.SetActive(false);
-                    });
-                }
-            }, false);
+            rewardInfoGroup.Show();
         }
 
         IEnumerator WaitEndTut()
@@ -127,19 +105,7 @@ namespace IEC
         {
             ShowIconItem();
             currentID = id;
-            foreach (var rewardUI in listRewardInfoUI)
-            {
-                Reward rewardData;
-                if ((rewardData = dataItemPass.Find(data => data.typeReward == rewardUI.resourceType)) != null)
-                {
-                    rewardUI.gameObject.SetActive(true);
-                    rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
-                }
-                else
-                {
-                    rewardUI.gameObject.SetActive(false);
-                }
-            }
+            rewardInfoGroup.SetupDataItem(dataItemPass);
         }
 
         public void SetupDataItemPass(Rewards dataItemPass, int id)

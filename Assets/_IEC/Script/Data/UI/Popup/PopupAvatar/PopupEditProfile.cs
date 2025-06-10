@@ -30,7 +30,7 @@ namespace IEC
 
         public EditProfileTabSelection CurrentTabSelection { get; private set; }
         public AvatarSelection CurrentSelectedAvatar { get; private set; }
-        
+
         public ProfileSelectTab CurrentSelectedTab { get; private set; }
         [SerializeField] private GameObject notiLockInfo;
         [SerializeField] private EventTrigger trigger;
@@ -39,13 +39,13 @@ namespace IEC
         protected override void Awake()
         {
             base.Awake();
-            
+
             SetEvent(saveButton,
                 () =>
                 {
                     SaveProfile();
                 });
-            
+
             SetEvent(btnEditProfileName,
                 () =>
                 {
@@ -54,11 +54,11 @@ namespace IEC
 
             foreach (var selection in listTabSelection)
             {
-                SetEvent(selection.btn, ()=>{OnSelectTab(selection);});
+                SetEvent(selection.btn, () => { OnSelectTab(selection); });
             }
-            
+
             SetEvent(allBGButton, OnHideClick);
-            
+
             gameObject.OnEvent(EventList.GamePlay.UPDATE_PLAYER_NAME, UpdatePlayerName);
             UpdatePlayerName();
 
@@ -78,9 +78,9 @@ namespace IEC
             base.Show();
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_NAME);
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
-            
+
             //playerAvatar.playerAvatar.sprite = Config.playerAvatarConfig.GetAvatarSprite(PlayerData.playerAvatarSpriteName);
-            
+
             OnSelectTab(listTabSelection.Find(selection => selection.profileSelectTab == ProfileSelectTab.Avatar));
         }
 
@@ -109,7 +109,7 @@ namespace IEC
             {
                 PlayerData.playerAvatarSpriteName = Config.playerAvatarConfig.GetAvatarSprite("").name;
             }
-            
+
             for (int i = 0; i < Config.playerAvatarConfig.listAvatarSprites.Count; i++)
             {
                 if (i >= listAvatarSelections.Count)
@@ -119,8 +119,8 @@ namespace IEC
                 listAvatarSelections[i].SetActive(true);
                 listAvatarSelections[i].transform.localScale = Vector3.one;
                 listAvatarSelections[i].Init(Config.playerAvatarConfig.listAvatarSprites[i]);
-                
-                if(playerAvatar.playerAvatar.sprite.name.Equals(Config.playerAvatarConfig.listAvatarSprites[i].name))
+
+                if (playerAvatar.playerAvatar.sprite.name.Equals(Config.playerAvatarConfig.listAvatarSprites[i].name))
                 {
                     listAvatarSelections[i].SetSelectedDisplay(true);
                     CurrentSelectedAvatar = listAvatarSelections[i];
@@ -135,7 +135,7 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
-            
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
             LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
             LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
@@ -144,11 +144,12 @@ namespace IEC
         public void InitFrameTab()
         {
             SetActiveSpecialAvatarFrameGroup(false);
-            if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName))
+
+            if (String.IsNullOrEmpty(PlayerData.playerAvatarFrameName) || (!PlayerData.journeyData.isEnableMaxHeart && PlayerData.playerAvatarFrameName.Equals("Ava_Frame_Pass_1")))
             {
                 PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
             }
-            
+
             for (int i = 0; i < Config.playerAvatarConfig.listAvatarFrameSprites.Count; i++)
             {
                 if (i >= listAvatarSelections.Count)
@@ -158,8 +159,8 @@ namespace IEC
                 listAvatarSelections[i].SetActive(true);
                 listAvatarSelections[i].transform.localScale = Vector3.one;
                 listAvatarSelections[i].Init(Config.playerAvatarConfig.listAvatarFrameSprites[i]);
-                
-                if(playerAvatar.playerAvatarFrame.sprite.name.Equals(Config.playerAvatarConfig.listAvatarFrameSprites[i].name))
+
+                if (playerAvatar.playerAvatarFrame.sprite.name.Equals(Config.playerAvatarConfig.listAvatarFrameSprites[i].name))
                 {
                     listAvatarSelections[i].SetSelectedDisplay(true);
                     CurrentSelectedAvatar = listAvatarSelections[i];
@@ -196,7 +197,7 @@ namespace IEC
                         listSpecialAvatarSelections[i].SetSelectedDisplay(false);
                     }
                 }
-                
+
                 for (int i = Config.playerAvatarConfig.listSpecialAvatarFrameSprites.Count; i < listSpecialAvatarSelections.Count; i++)
                 {
                     listSpecialAvatarSelections[i].SetActive(false);
@@ -207,7 +208,7 @@ namespace IEC
             {
                 listAvatarSelections[i].SetActive(false);
             }
-            
+
             LayoutRebuilder.ForceRebuildLayoutImmediate(specialAvatarSelectionContainer);
             LayoutRebuilder.ForceRebuildLayoutImmediate(avatarSelectionContainer);
             LayoutRebuilder.ForceRebuildLayoutImmediate(selectionContentGroup);
@@ -227,7 +228,7 @@ namespace IEC
 
             CurrentTabSelection = tabSelection;
             CurrentTabSelection.SetSelected(true);
-            
+
             CurrentSelectedTab = tabSelection.profileSelectTab;
 
             if (tabSelection.profileSelectTab == ProfileSelectTab.Avatar)
@@ -246,7 +247,7 @@ namespace IEC
             {
                 CurrentSelectedAvatar.SetSelectedDisplay(false);
             }
-            
+
             CurrentSelectedAvatar = avatar;
 
             if (CurrentSelectedTab == ProfileSelectTab.Avatar)

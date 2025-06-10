@@ -1,5 +1,4 @@
 using System;
-using NaughtyAttributes;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 
 namespace IEC
 {
@@ -124,6 +124,7 @@ namespace IEC
             return listItem.Count;
         }
 
+        [Button]
         public void ClaimAllItem()
         {
             InitData();
@@ -143,11 +144,16 @@ namespace IEC
             }
         }
 
-        private static void ResetData()
+        private void ResetData()
         {
             PlayerData.journeyData.ResetJourneyData();
             PlayerData.CheckPlayerMaxHealth();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
+            if (!PlayerData.journeyData.isEnableMaxHeart && PlayerData.playerAvatarFrameName.Equals("Ava_Frame_Pass_1"))
+            {
+                PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
+                EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
+            }
         }
 
         public void InitData()
