@@ -535,6 +535,7 @@ MonoBehaviour:
   lightBg: {fileID: 49224781011736467}
   lockObj: {fileID: 7367028421631782445}
   newsTagObj: {fileID: 3050155296974342983}
+  newsClaimButton: {fileID: 156900881697777756}
   progressBar: {fileID: 707616883768158394}
   hiddenBar: {fileID: 5646089532448241721}
   completeBar: {fileID: 4289951987575630359}
@@ -550,9 +551,6 @@ MonoBehaviour:
   infoTrophyNameTMP: {fileID: 3451206282324768520}
   infoTrophyTMP: {fileID: 2173085181627981411}
   timeUnlockEvent: {fileID: 3334510454929459482}
-  fontMain: {fileID: 11400000, guid: 3029473b834d074458a00794604d14f7, type: 2}
-  timesMaterial: {fileID: 2100000, guid: a8c2a04b1725a89488d594b7d5aac02f, type: 2}
-  bronzeMaterial: {fileID: 2100000, guid: 57930e288d35814439415a84c75a4e94, type: 2}
 --- !u!1 &1419336814840844885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1366,6 +1364,8 @@ GameObject:
   - component: {fileID: 8902305550472101753}
   - component: {fileID: 1554588249955746389}
   - component: {fileID: 8902596334218056525}
+  - component: {fileID: 156900881697777756}
+  - component: {fileID: 4417190021748906876}
   m_Layer: 5
   m_Name: ClaimProgressBar
   m_TagString: Untagged
@@ -1434,6 +1434,72 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &156900881697777756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4048598628170087975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 3
+    m_WrapAround: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 8902596334218056525}
+  m_OnClick:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!114 &4417190021748906876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4048598628170087975}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 4048598628170087975}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &4192340838615491741
 GameObject:
   m_ObjectHideFlags: 0

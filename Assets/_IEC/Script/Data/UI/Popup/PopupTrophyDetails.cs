@@ -28,6 +28,7 @@ namespace IEC
         [Header("Unlocked Groups")]
         public GameObject unlockedGroups;
         public Image badgeImage;
+        public List<Sprite> ListBadgeSprites;
         public Button trophyRoomButton;
 
         public void ShowTrophy(TrophyType type,ItemTrophyState state)
@@ -42,7 +43,7 @@ namespace IEC
             LoadDefaultData();
             if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
             {
-                
+                ShowCompleteGroups();
             }
             else
             {
@@ -55,23 +56,42 @@ namespace IEC
             int crTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
             var dataFont = GetTrophyType(crTrophy);
             mainTileTrophy.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
-            mainTileTrophy.material = dataFont.fontMaterial;
+            mainTileTrophy.fontMaterial  = dataFont.fontMaterial;
             mainTileTrophy.colorGradientPreset = dataFont.colorGradient;
             trophyUnlockText.gameObject.SetActive(state == ItemTrophyState.New);
         }
         public void ShowInfoGroups()
         {
             infoGroups.gameObject.SetActive(true);   
+            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+            int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
             //TOdo
+            for (int i = 0; i < listSpriteTrophy.Count; i++)
+            {
+                listSpriteTrophy[i].tick.gameObject.SetActive(i < index);
+            }
         }
 
+        public void ShowCompleteGroups()
+        {
+            unlockedGroups.gameObject.SetActive(true);
+            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+            int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
+            badgeImage.sprite = ListBadgeSprites[index];
+            trophyRoomButton.onClick.AddListener(OnTrophyRoomClick);
+        }
+
+        public void OnTrophyRoomClick()
+        {
+            Hide();
+            Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Trophy).onClick?.Invoke();
+        }
         public TrophyCustomTitle GetTrophyType(int crTrophy)
         {
-            int index = Mathf.Clamp(crTrophy,0, listFontMaterial.Count);
+            int index = Mathf.Clamp(crTrophy,0, listFontMaterial.Count-1);
             return listFontMaterial[index];
-        }
+        } 
     }
-    
     [Serializable]
     public class TrophyCustomTitle
     {

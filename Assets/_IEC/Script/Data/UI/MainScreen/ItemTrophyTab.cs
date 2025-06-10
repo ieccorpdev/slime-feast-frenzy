@@ -19,6 +19,7 @@ public class ItemTrophyTab : _BaseBehaviour
     
     public GameObject lockObj;
     public GameObject newsTagObj;
+    public Button newsClaimButton;
     [Header("ProgressBar")]
     public GameObject progressBar;
     public GameObject hiddenBar;
@@ -39,10 +40,7 @@ public class ItemTrophyTab : _BaseBehaviour
     public TextMeshProUGUI infoTrophyNameTMP;
     public TextMeshProUGUI infoTrophyTMP;
     public TextMeshProUGUI timeUnlockEvent;
-    [Header("Text Custom")]
-    public TMP_FontAsset fontMain;
-    public Material timesMaterial;
-    public Material bronzeMaterial;
+
     private bool isLocked;
     private int targetToTrophy;
     void Start()
@@ -51,7 +49,11 @@ public class ItemTrophyTab : _BaseBehaviour
         gameObject.OnEvent(EventList.Trophy.CLICK_INFO_TROPHY, ResetInfo);
     }
 
-
+    public void RegisterEventButton()
+    {
+        newsClaimButton.onClick.RemoveAllListeners();
+        newsClaimButton.onClick.AddListener(ActionClaim);
+    }
     public void ActionClaim()
     {
         int trophyCollect = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
@@ -86,18 +88,10 @@ public class ItemTrophyTab : _BaseBehaviour
         EventController.RaiseEvent(EventList.Trophy.CLICK_INFO_TROPHY);
         //Progress lock and info action
         ResetInfo();
-        if (state == ItemTrophyState.New)
-        {
-            ActionClaim();
-            return;
-        }
-
         if (state == ItemTrophyState.Locked )
         {
             groupsLock.gameObject.SetActive(true);
             OnClickLocked();
-            //
-
         }
         else if ( state == ItemTrophyState.Missing)
         {
@@ -155,16 +149,16 @@ public class ItemTrophyTab : _BaseBehaviour
         //    Bronze, Silver, Gold, Diamond
         if (PlayerData.trophyData.GetCurrentTimeComplete(type) == 0)
         {
-            return "Bronze";
+            return "Bronze Trophy";
         }
         switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
         {
             case 0:
-                return "Silver";
+                return "Silver Trophy";
             case 1:
-                return "Gold";
+                return "Gold Trophy";
             case 2:
-                return "Diamond";
+                return "Diamond Trophy";
             default:
                 return "";
         }

@@ -33,7 +33,7 @@ public class TrophyScreenTab : ScreenNavigateUI
                 var data = PlayerData.trophyData.GetMinMaxProgressBar(item.type);
                 item.SetProgressBar((int)data.x,(int)data.y);
             }
-
+            item.RegisterEventButton();
         }
     }
     

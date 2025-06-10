@@ -578,7 +578,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -808,7 +808,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0.003921569}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -909,6 +909,8 @@ MonoBehaviour:
   isHaveAnimClose: 1
   isShowBlackPanel: 0
   isShowTopResourceBar: 0
+  type: 0
+  state: 0
   listFontMaterial:
   - fontMaterial: {fileID: 2100000, guid: 50494d4f722788846b66e3cbae48ae34, type: 2}
     colorGradient: {fileID: 11400000, guid: 9a34a9632e7e2094985a20bbfb1d5acd, type: 2}
@@ -938,6 +940,11 @@ MonoBehaviour:
     tick: {fileID: 9087632548323076062}
   unlockedGroups: {fileID: 1805912532003957708}
   badgeImage: {fileID: 1022524785452421938}
+  ListBadgeSprites:
+  - {fileID: 21300000, guid: 761851e367d34064b98003f72d462195, type: 3}
+  - {fileID: 21300000, guid: 3bc87549d1775c447856f5d1bb33905f, type: 3}
+  - {fileID: 21300000, guid: 52510b3bedb1bb34b86490e6280a6c74, type: 3}
+  - {fileID: 21300000, guid: c111ca9a58355624ea581458dc5bd974, type: 3}
   trophyRoomButton: {fileID: 3963847042824554704}
 --- !u!1 &2515722042778657433
 GameObject:
