@@ -34,20 +34,6 @@ public class TrophyScreenTab : ScreenNavigateUI
                 item.SetProgressBar((int)data.x,(int)data.y);
             }
 
-            int trophyCollect = PlayerData.trophyData.GetCurrentCollectedTrophy(item.type);
-            item.newsClaimButton.onClick.RemoveAllListeners();
-            item.newsClaimButton.onClick.AddListener(() =>
-            {
-                var reward = Config.trophyRewardConfig.GetReward(item.type).listTrophyReward[trophyCollect].listTrophyReward;
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(reward,
-                    ()=>
-                    {
-                        PlayerData.trophyData.CollectTrophyReward(item.type);
-                        LoadData();
-                        Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
-                    },false); 
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-            });
         }
     }
     

@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ItemTrophyTab : MonoBehaviour
+public class ItemTrophyTab : _BaseBehaviour
 {
     public TrophyType type;
     public ItemTrophyState state;
@@ -24,8 +24,6 @@ public class ItemTrophyTab : MonoBehaviour
     public GameObject hiddenBar;
     public GameObject completeBar;
     public GameObject claimBar;
-
-    public Button newsClaimButton;
     public Image mainTrophy;
     public Image fillImage;
 
@@ -41,14 +39,32 @@ public class ItemTrophyTab : MonoBehaviour
     public TextMeshProUGUI infoTrophyNameTMP;
     public TextMeshProUGUI infoTrophyTMP;
     public TextMeshProUGUI timeUnlockEvent;
-
+    [Header("Text Custom")]
+    public TMP_FontAsset fontMain;
+    public Material timesMaterial;
+    public Material bronzeMaterial;
     private bool isLocked;
+    private int targetToTrophy;
     void Start()
     {
         infoButton.onClick.AddListener(OnClickInfoTrophy);   
         gameObject.OnEvent(EventList.Trophy.CLICK_INFO_TROPHY, ResetInfo);
     }
 
+
+    public void ActionClaim()
+    {
+        int trophyCollect = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+        var reward = Config.trophyRewardConfig.GetReward(type).listTrophyReward[trophyCollect].listTrophyReward;
+        Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(reward,
+            ()=>
+            {
+                PlayerData.trophyData.CollectTrophyReward(type);
+                Locator.Main.ScreenMain.trophyTab.LoadData();
+                Locator.Service.GameResourceDisplay.ToggleDisplayAllResources(false);
+            },false); 
+        Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+    }
     public void ResetInfo()
     {
         groupsLock.gameObject.SetActive(false);
@@ -62,30 +78,90 @@ public class ItemTrophyTab : MonoBehaviour
 
     public void OnClickInfoTrophy()
     {
+        if (groupsLock.gameObject.activeInHierarchy || groupsNoti.gameObject.activeInHierarchy)
+        {
+            ResetInfo();
+            return;
+        }
         EventController.RaiseEvent(EventList.Trophy.CLICK_INFO_TROPHY);
         //Progress lock and info action
-        groupsLock.gameObject.SetActive(isLocked);
-        groupsNoti.gameObject.SetActive(!isLocked);
-        lockTrophyNameTMP.text = GetRealNameTrophy();
+        ResetInfo();
+        if (state == ItemTrophyState.New)
+        {
+            ActionClaim();
+            return;
+        }
 
         if (isLocked)
         {
+            groupsLock.gameObject.SetActive(true);
             OnClickLocked();
         }
         else
         {
+            groupsNoti.gameObject.SetActive(true);
             OnClickInfoGroups();
         }
     }
 
     public void OnClickLocked()
     {
+        lockTrophyNameTMP.text = GetRealNameTrophy();
         levelUnlockTrophyNameTMP.text =
             "Unlock at level " + Locator.Main.ScreenMain.trophyTab.GetLevelUnlockTrophy(type);
     }
     public void OnClickInfoGroups()
     {
-        groupsNoti.gameObject.SetActive(false);//Test
+        //groupsNoti.gameObject.SetActive(false);//Test
+        infoTrophyNameTMP.text = GetRealNameTrophy();
+        
+        string textRS = "";
+        string targetReach = targetToTrophy.ToString();
+        string trophy = GetTrophyTarget();
+        infoTrophyTMP.text = "Complete the event <material=\"{materialTimesName}\">999 Times</material>";
+        switch (type)
+        {
+            case TrophyType.GrandVoyage:
+                textRS += "Clear " + targetReach + " to get the" + trophy + "!";
+                break;
+            case TrophyType.SharkFrenzyForce:
+                textRS += "Unlock more " + targetReach + " skin to get the" + trophy + "!";
+                break;
+            case TrophyType.UnderseaVoyage:
+                textRS += "Complete the pass " + targetReach + " times to get the" + trophy + "!";
+                break;
+            case TrophyType.SharkRace:
+            case TrophyType.StarRace:
+                textRS += "Complete the event and make top " + targetReach + " to get the" + trophy + "!";
+                break;
+            case TrophyType.ChompOff:
+            case TrophyType.RelicHunt:
+            case TrophyType.OceanGift:
+                textRS += "Complete the event  " + targetReach + " times to get the" + trophy + "!";
+                break;
+            
+        }
+        infoTrophyTMP.text = textRS;
+    }
+
+    public string GetTrophyTarget()
+    {
+        //    Bronze, Silver, Gold, Diamond
+        if (PlayerData.trophyData.GetCurrentTimeComplete(type) == 0)
+        {
+            return "Bronze";
+        }
+        switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
+        {
+            case 0:
+                return "Silver";
+            case 1:
+                return "Gold";
+            case 2:
+                return "Diamond";
+            default:
+                return "";
+        }
     }
     public void TurnBgCoral(bool stt)
     {
@@ -154,6 +230,7 @@ public class ItemTrophyTab : MonoBehaviour
     {
         progressText.text = current + "/" + max;
         fillImage.fillAmount = (float) current / (float) max;
+        targetToTrophy = max - current;
     }
 
     public string GetRealNameTrophy()
