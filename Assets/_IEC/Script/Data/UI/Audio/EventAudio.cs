@@ -64,6 +64,9 @@
             public const string HOMEPAGE_TAP = "Audio.HOMEPAGE_TAP"; // Play khi tap vào màn hình homepage ngoài UI
             public const string RELIC_APEAR = "Audio.RELIC_APEAR"; 
             public const string RELIC_CLONE = "Audio.RELIC_CLONE"; 
+            public const string RELIC_CLONE_3 = "Audio.RELIC_CLONE_3"; 
+            public const string RELIC_CLONE_4 = "Audio.RELIC_CLONE_4"; 
+            public const string RELIC_CLONE_5 = "Audio.RELIC_CLONE_5"; 
 
         }
     }

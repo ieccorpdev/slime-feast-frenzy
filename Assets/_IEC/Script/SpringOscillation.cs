@@ -42,9 +42,12 @@ public class SpringOscillation : _BaseBehaviour
     public void SetSizeDependentLimits(Vector3 boundsSize)
     {
         float maxSize = Mathf.Max(boundsSize.x, boundsSize.y, boundsSize.z);
+        if ( Config.gamePlayConfig != null)
+        {
+            amplitude = Config.gamePlayConfig.amplitude * maxSize * sizeAmplitudeMultiplier;
+            movementLimit = maxSize * sizeMovementLimitMultiplier;
+        }
 
-        amplitude = Config.gamePlayConfig.amplitude * maxSize * sizeAmplitudeMultiplier;
-        movementLimit = maxSize * sizeMovementLimitMultiplier;
     }
 
     public void ManagedUpdate()

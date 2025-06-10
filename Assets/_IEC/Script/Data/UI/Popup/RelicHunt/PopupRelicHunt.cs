@@ -166,7 +166,7 @@ public class PopupRelicHunt : BasePopup
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig);
+        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig, true);
         playMainButton.transform.parent.gameObject.SetActive(!hasReward && hasLockReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
         finishGroup.SetActive(!hasLockReward && !hasReward);
