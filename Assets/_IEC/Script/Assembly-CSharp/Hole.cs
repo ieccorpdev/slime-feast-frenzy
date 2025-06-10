@@ -101,7 +101,8 @@ public class Hole : _BaseBehaviour
 				if (speedLinesVFX.isPlaying)
 				{
 					speedLinesVFX.Stop();
-				}
+				} 
+				SoundController.StopSound(EventList.Audio.BOOSTER_WINDSURF);
 			}
 		}
 

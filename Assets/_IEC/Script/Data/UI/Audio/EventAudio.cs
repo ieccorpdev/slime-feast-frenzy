@@ -67,6 +67,10 @@
             public const string RELIC_CLONE_3 = "Audio.RELIC_CLONE_3"; 
             public const string RELIC_CLONE_4 = "Audio.RELIC_CLONE_4"; 
             public const string RELIC_CLONE_5 = "Audio.RELIC_CLONE_5"; 
+            public const string GET_BOOSTER = "Audio.GET_BOOSTER"; 
+            public const string BOOSTER_WINDSURF = "Audio.BOOSTER_WINDSURF"; 
+            public const string REWARD_POPUP = "Audio.REWARD_POPUP"; 
+            
 
         }
     }

@@ -461,10 +461,14 @@ namespace _IEC.Features.Gameplay
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
                         playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
+                        
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
                         playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
+                        
                     }
                 };
 

@@ -66,14 +66,16 @@ namespace _IEC.Features.Gameplay
             muzzleFrozen.Play();
             missleFrozen.transform.position = frozenHelper.transform.position;
             missleFrozen.Play();
-            missleFrozen.transform.DOMove(Locator.Game.ScreenInGame.GetGameplayTimer().timeTextTMP.transform.position, 0.5f).SetId(missleFrozen.gameObject.GetInstanceID()+"_Frozen").OnComplete(
-                () =>
+            missleFrozen.transform
+                .DOMove(Locator.Game.ScreenInGame.GetGameplayTimer().timeTextTMP.transform.position, 0.5f)
+                .SetId(missleFrozen.gameObject.GetInstanceID() + "_Frozen").OnComplete(() =>
                 {
-                    explosionFrozen.Play();   
-                    missleFrozen.Stop();   
+                    explosionFrozen.Play();
+                    missleFrozen.Stop();
                     frozenHelper.completeActionEffect?.Invoke();
                     Locator.Game.ScreenInGame.groupMark.SetActiveFrozenMark(true);
                     Locator.Game.ScreenInGame.gameplayTimer.StartFreezeTime();
+                    EventController.RaiseEvent(EventList.Audio.GET_BOOSTER); // ngân gd kêu add
                 });
         }
     }
