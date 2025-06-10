@@ -10,6 +10,7 @@ namespace IEC
     {
         public List<CharacterShardSlotData> listShardSlotData = new();
         public List<CharacterShardRarity> listShardRarity = new();
+        public List<int> shopRefreshPrice = new();
 
         public CharacterConfig GetRandomCharacterShard(CharacterShardSlotData slotData)
         {
@@ -18,6 +19,16 @@ namespace IEC
             var listCharacter = listShardRarity.Find(r => r.rarity == rarity).listCharacterConfig;
 
             return listCharacter[Random.Range(0, listCharacter.Count)];
+        }
+
+        public int GetShopRefreshPrice(int refreshTime)
+        {
+            refreshTime = Mathf.Clamp(refreshTime, 0, shopRefreshPrice.Count - 1);
+            
+            if (shopRefreshPrice.Count == 0)
+                return 0;
+
+            return shopRefreshPrice[refreshTime];
         }
         
     }

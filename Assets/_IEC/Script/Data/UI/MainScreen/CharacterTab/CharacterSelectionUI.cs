@@ -33,12 +33,17 @@ namespace IEC
         public void Setup(CharacterConfig characterConfig, string currentCharacterName, int level)
         {
             CharacterConfig = characterConfig;
-            CurrentCharacterLevel = level;
             if(characterAvatar != null)
                 characterAvatar.sprite = CharacterConfig.characterSelectionSprite;
 
-            UpdateCurrentLevelStarUI();
+            UpdateCharacterLevel(level);
             SetSelectedUI(CharacterConfig.characterName.Equals(currentCharacterName));
+        }
+
+        public void UpdateCharacterLevel(int level)
+        {
+            CurrentCharacterLevel = level;
+            UpdateCurrentLevelStarUI();
         }
 
         public void OnSelectCharacter()

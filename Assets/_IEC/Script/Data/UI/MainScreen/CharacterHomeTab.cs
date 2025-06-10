@@ -29,19 +29,20 @@ public class CharacterHomeTab : ScreenNavigateUI
         characterSelectionTab.gameObject.SetActive(type == CharacterTabType.Character);
         characterShardTab.gameObject.SetActive(type == CharacterTabType.Shard);
 
-        // if (characterSelectionTab.gameObject.activeInHierarchy)
-        // {
-        //     characterSelectionTab.Setup();
-        // }
-        // else if (characterShardTab.gameObject.activeInHierarchy)
-        // {
-        //     characterShardTab.Setup();
-        // }
+        if (characterSelectionTab.gameObject.activeInHierarchy)
+        {
+            //characterSelectionTab.Setup();
+            characterSelectionTab.UpdateCurrentCharacterUI();
+        }
+        else if (characterShardTab.gameObject.activeInHierarchy)
+        {
+            //characterShardTab.Setup();
+        }
     }
 
     public override void Show()
     {
-        this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Character);
+        //this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Character);
         
         characterSelectionTab.Setup();
         

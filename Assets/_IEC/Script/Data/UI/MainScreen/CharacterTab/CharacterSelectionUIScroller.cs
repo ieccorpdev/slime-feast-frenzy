@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 using UnityUtils;
@@ -20,6 +21,17 @@ namespace IEC
             CharacterSelectionTab = tab;
             InitScroller();
             ReloadData();
+        }
+
+        public void UpdateCharacterLevel(string characterName, int level)
+        {
+            var characterUI = GetComponentsInChildren<CharacterSelectionUI>().ToList()
+                .Find(ui => ui.CharacterConfig.characterName.Equals(characterName));
+
+            if (characterUI != null)
+            {
+                characterUI.UpdateCharacterLevel(level);
+            }
         }
         
         private void InitScroller()

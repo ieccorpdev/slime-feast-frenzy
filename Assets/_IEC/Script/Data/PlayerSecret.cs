@@ -506,6 +506,7 @@ namespace IEC
         public Dictionary<string, int> characterLevel = new();
         public Dictionary<string, int> characterShards = new();
         public List<CharacterShardPackData> listCharacterPackData = new();
+        public int shardShopRefreshTime;
         public long lastTimeUpdateCharacterShardShop;
 
         public void SaveCharacterShardPackData(CharacterShardPackData packData)
@@ -524,12 +525,19 @@ namespace IEC
 
             if (DateTime.Now.Date > lastTimeUpdate.Date || listCharacterPackData.Count == 0)
             {
+                shardShopRefreshTime = 0;
                 listCharacterPackData.Clear();
                 lastTimeUpdateCharacterShardShop = DateTime.Now.Ticks;
                 return true;
             }
 
             return false;
+        }
+
+        public void OnRefreshShardShop()
+        {
+            listCharacterPackData.Clear();
+            shardShopRefreshTime++;
         }
 
         public int GetCharacterLevel(string characterName)
@@ -583,7 +591,7 @@ namespace IEC
             characterLevel.TryAdd(characterName, -1);
             characterShards.TryAdd(characterName, 0);
 
-            var upgradeConfig = characterConfig.GetCharacterUpgrade(characterLevel[characterName]);
+            var upgradeConfig = characterConfig.GetCharacterUpgrade(characterLevel[characterName] + 1);
 
             if (upgradeConfig == null)
                 return;

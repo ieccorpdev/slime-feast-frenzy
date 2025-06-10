@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
@@ -57,6 +58,11 @@ namespace IEC
         private void OnLevelUpCharacter()
         {
             PlayerData.CheckLevelUpCharacter(CurrentCharacterConfig.characterName);
+            CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
+            
+            selectionScroller.UpdateCharacterLevel(CurrentCharacterConfig.characterName, CurrentCharacterLevel);
+            
+            UpdateCurrentCharacterUI();
         }
 
         private void SetCurrentCharacter(object param)
@@ -71,7 +77,7 @@ namespace IEC
             UpdateCurrentCharacterUI();
         }
 
-        private void UpdateCurrentCharacterUI()
+        public void UpdateCurrentCharacterUI()
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
             if (mainCharacterImage != null)
