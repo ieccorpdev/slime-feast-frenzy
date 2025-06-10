@@ -501,9 +501,36 @@ namespace IEC
         #endregion
         
         #region Player Character
+        [Header("Player Character")] 
         public string playerCharacterName;
         public Dictionary<string, int> characterLevel = new();
         public Dictionary<string, int> characterShards = new();
+        public List<CharacterShardPackData> listCharacterPackData = new();
+        public long lastTimeUpdateCharacterShardShop;
+
+        public void SaveCharacterShardPackData(CharacterShardPackData packData)
+        {
+            listCharacterPackData.Add(packData);
+        }
+
+        public CharacterShardPackData GetPackData(CharacterShardSlotData slotData)
+        {
+            return listCharacterPackData.Find(data => data.slotData == slotData);
+        }
+
+        public bool CheckRefreshCharacterShardShop()
+        {
+            var lastTimeUpdate = new DateTime(lastTimeUpdateCharacterShardShop);
+
+            if (DateTime.Now.Date > lastTimeUpdate.Date || listCharacterPackData.Count == 0)
+            {
+                listCharacterPackData.Clear();
+                lastTimeUpdateCharacterShardShop = DateTime.Now.Ticks;
+                return true;
+            }
+
+            return false;
+        }
 
         public int GetCharacterLevel(string characterName)
         {
@@ -517,6 +544,23 @@ namespace IEC
             characterShards.TryAdd(characterName, 0);
 
             return characterShards[characterName];
+        }
+
+        public void AddCharacterShards(string characterName, int shardAmount)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            characterShards[characterName] += shardAmount;
+        }
+        
+        public void SubtractCharacterShards(string characterName, int shardAmount)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            if (characterShards[characterName] < shardAmount)
+                return;
+
+            characterShards[characterName] -= shardAmount;
         }
 
         public void CheckUnlockCharacter(string characterName)

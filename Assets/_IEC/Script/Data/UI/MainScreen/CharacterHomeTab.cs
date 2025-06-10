@@ -42,7 +42,18 @@ public class CharacterHomeTab : ScreenNavigateUI
     public override void Show()
     {
         this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Character);
+        
         characterSelectionTab.Setup();
+        
+        if (PlayerData.CheckRefreshCharacterShardShop())
+        {
+            characterShardTab.Setup();
+        }
+        else
+        {
+            characterShardTab.LoadData();
+        }
+
         base.Show();
     }
 }

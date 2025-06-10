@@ -92,6 +92,7 @@ namespace IEC
         public GameEventLiveOpsConfig eventLiveOpsConfig;
         [Header("Characters")] 
         public AllCharactersConfig allCharactersConfig;
+        public CharacterShopConfig characterShopConfig;
 
         public void PreloadAllConfig()
         {
