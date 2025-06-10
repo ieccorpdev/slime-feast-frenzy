@@ -27,7 +27,9 @@ namespace IEC
         public TextMeshProUGUI shardCountText;
         public TextMeshProUGUI inactiveShardCountText;
         public GameObject upgradeBtnUpgradableGroup;
+        public TextMeshProUGUI upgradeBtnUpgradableText;
         public GameObject upgradeBtnInactiveGroup;
+        public TextMeshProUGUI upgradeBtnInactiveText;
         public GameObject upgradeBtnMaxLevelGroup;
         
         public CharacterConfig CurrentCharacterConfig { get; private set; }
@@ -98,6 +100,9 @@ namespace IEC
             upgradeBtnInactiveGroup.SetActive(false);
             upgradeBtnMaxLevelGroup.SetActive(false);
 
+            upgradeBtnUpgradableText.text = CurrentCharacterLevel >= 0 ? "Upgrade now!" : "Collect";
+            upgradeBtnInactiveText.text = CurrentCharacterLevel >= 0 ? "Upgrade" : "Collect";
+
             levelUpCharacterButton.interactable = false;
             
             var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
@@ -136,7 +141,7 @@ namespace IEC
 
         private void UpdateCurrentLevelStarUI()
         {
-            for (int i = listStarUI.Count - 1; i > 0; i--)
+            for (int i = listStarUI.Count - 1; i >= 0; i--)
             {
                 listStarUI[i].SetStarActive(i <= CurrentCharacterLevel);
             }
@@ -152,8 +157,16 @@ namespace IEC
 
         private void UpdateGroupButtonsUI()
         {
-            selectCharacterButton.gameObject.SetActive(!IsCurrentShowingSelected);
-            characterInUseButton.gameObject.SetActive(IsCurrentShowingSelected);
+            if (CurrentCharacterLevel >=0)
+            {
+                selectCharacterButton.gameObject.SetActive(!IsCurrentShowingSelected);
+                characterInUseButton.gameObject.SetActive(IsCurrentShowingSelected);
+            }
+            else
+            {
+                selectCharacterButton.gameObject.SetActive(false);
+                characterInUseButton.gameObject.SetActive(false);
+            }
         }
 
         public void Setup()

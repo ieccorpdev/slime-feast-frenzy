@@ -71,7 +71,7 @@ namespace IEC
         
         private void UpdateCurrentLevelStarUI()
         {
-            for (int i = listStarUI.Count - 1; i > 0; i--)
+            for (int i = listStarUI.Count - 1; i >= 0; i--)
             {
                 listStarUI[i].SetStarActive(i <= CurrentCharacterLevel);
             }
