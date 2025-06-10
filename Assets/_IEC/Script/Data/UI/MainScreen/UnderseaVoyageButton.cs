@@ -1,4 +1,5 @@
 using System.Collections;
+using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,6 +17,8 @@ namespace IEC
         public UnderseaVoyageState currentState = UnderseaVoyageState.Lock;
         private int notiCount = 0;
         private bool isShowNewVersion;
+        private SkeletonGraphic _skeletonGraphic;
+
 
         public void SetState(UnderseaVoyageState state)
         {
@@ -30,7 +33,8 @@ namespace IEC
                     break;
 
                 case UnderseaVoyageState.Lock:
-                    levelUnlockTxt.text = $"Lvl.{Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn + 1}";
+                    levelUnlockTxt.text =
+                        $"Lvl.{Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn + 1}";
                     SetGroupActive(Lock: true, claim: false, normal: false);
                     SetIcon(sprIconLock);
                     break;
@@ -43,6 +47,7 @@ namespace IEC
                     {
                         Locator.Main.HighLightCanvas.HighLightUI(this.GetComponent<RectTransform>(), true, true);
                     }
+
                     break;
 
                 case UnderseaVoyageState.Finish:
@@ -57,6 +62,8 @@ namespace IEC
                     txtTitle.text = "Claim";
                     break;
             }
+
+            _skeletonGraphic?.gameObject.SetActive(state is not UnderseaVoyageState.Lock or UnderseaVoyageState.Finish);
         }
 
         private void SetNotiCount()
@@ -67,7 +74,7 @@ namespace IEC
 
         private void SetGroupActive(bool Lock, bool claim, bool normal)
         {
-            lockGroup.SetActive(Lock) ;
+            lockGroup.SetActive(Lock);
             claimGroup.SetActive(claim);
             normalGroup.SetActive(normal);
         }
@@ -111,14 +118,16 @@ namespace IEC
         private void Awake()
         {
             Pool.Set(this);
+            _skeletonGraphic = GetComponentInChildren<SkeletonGraphic>();
         }
 
         private void Start()
         {
-            button = GetComponent<Button>();    
+            button = GetComponent<Button>();
             button.onClick.AddListener(HandleEventClickShowPopupUnderseaVoyage);
             InitStatusButton();
-            if (PlayerData.level <= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn - 15){
+            if (PlayerData.level <= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn - 15)
+            {
                 this.gameObject.SetActive(false);
             }
         }
@@ -153,10 +162,12 @@ namespace IEC
             {
                 Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
             }
+
             if (currentState == UnderseaVoyageState.Lock)
             {
                 return;
             }
+
             if (PlayerData.journeyData.wasOpenJourney)
             {
                 Locator.Main.PopupJourney.Show();
@@ -166,6 +177,7 @@ namespace IEC
                 PlayerData.journeyData.SetStartJourneyTimeNow();
                 Locator.Main.PopupUnderseaVoyageIntro.Show();
             }
+
             InitStatusButton();
         }
     }
