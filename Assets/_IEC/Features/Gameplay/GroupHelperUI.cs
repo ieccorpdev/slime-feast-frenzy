@@ -75,7 +75,6 @@ namespace _IEC.Features.Gameplay
                     frozenHelper.completeActionEffect?.Invoke();
                     Locator.Game.ScreenInGame.groupMark.SetActiveFrozenMark(true);
                     Locator.Game.ScreenInGame.gameplayTimer.StartFreezeTime();
-                    EventController.RaiseEvent(EventList.Audio.GET_BOOSTER); // ngân gd kêu add
                 });
         }
     }
