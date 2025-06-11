@@ -59,6 +59,7 @@ namespace IEC
             
             public const string SELECT_NEW_CHARACTER = "GamePlay.SELECT_NEW_CHARACTER";
             public const string SET_NEW_CHARACTER = "GamePlay.SET_NEW_CHARACTER";
+            public const string UPGRADE_CHARACTER = "GamePlay.UPGRADE_CHARACTER";
             public const string CHANGE_TAB_CHARACTER_SHOP = "GamePlay.CHANGE_TAB_CHARACTER_SHOP";
 
             public const string UPDATE_CAMERA_TARGET = "Gameplay.UPDATE_CAMERA_TARGET";

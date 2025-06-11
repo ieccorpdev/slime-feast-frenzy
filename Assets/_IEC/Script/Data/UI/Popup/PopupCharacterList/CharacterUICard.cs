@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,7 +40,51 @@ namespace IEC
         public CharacterConfig CharacterConfig { get; private set; }
         
         public int CharacterLevel { get; private set; }
-        
+
+        private void Start()
+        {
+            selectButton.onClick.AddListener(OnSelect);
+            upgradeButton.onClick.AddListener(OnUpgrade);
+        }
+
+        private void OnEnable()
+        {
+            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER,CheckUpdateUIOnSelectNewCharacter);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SET_NEW_CHARACTER,CheckUpdateUIOnSelectNewCharacter);
+        }
+
+        private void OnSelect()
+        {
+            PlayerData.playerCharacterName = CharacterConfig.characterName;
+            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
+            {
+                characterName = PlayerData.playerCharacterName
+            });
+            UpdateUI();
+        }
+
+        private void OnUpgrade()
+        {
+            PlayerData.CheckLevelUpCharacter(CharacterConfig.characterName);
+            CharacterLevel = PlayerData.GetCharacterLevel(CharacterConfig.characterName);
+            
+            this.RaiseEvent(EventList.GamePlay.UPGRADE_CHARACTER, new CharacterEventData()
+            {
+                characterName = CharacterConfig.characterName
+            });
+            
+            UpdateUI();
+        }
+
+        private void CheckUpdateUIOnSelectNewCharacter(object param)
+        {
+            UpdateUI();
+        }
+
         public void Setup(CharacterConfig characterConfig)
         {
             CharacterConfig = characterConfig;
@@ -91,6 +137,8 @@ namespace IEC
 
             upgradeShardCountText.text = upgradeShardCost.ToString();
             upgradeShardCountText.color = upgradable ? upgradableTextColor : notEnoughShardTextColor;
+
+            upgradeButton.interactable = upgradable;
 
             if (upgradable)
             {

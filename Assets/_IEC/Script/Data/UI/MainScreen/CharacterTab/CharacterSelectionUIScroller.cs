@@ -22,17 +22,6 @@ namespace IEC
             InitScroller();
             ReloadData();
         }
-
-        public void UpdateCharacterLevel(string characterName, int level)
-        {
-            var characterUI = GetComponentsInChildren<CharacterSelectionUI>().ToList()
-                .Find(ui => ui.CharacterConfig.characterName.Equals(characterName));
-
-            if (characterUI != null)
-            {
-                characterUI.UpdateCharacterLevel(level);
-            }
-        }
         
         private void InitScroller()
         {
@@ -91,9 +80,7 @@ namespace IEC
             var charConfig = Config.allCharactersConfig.listAllCharactersConfig[dataIndex];
 
             if(cellView != null)
-                cellView.Setup(charConfig, 
-                    CharacterSelectionTab.CurrentCharacterConfig.characterName, 
-                    PlayerData.GetCharacterLevel(charConfig.characterName));
+                cellView.Setup(charConfig);
             
             return cellView;
         }

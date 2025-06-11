@@ -50,7 +50,7 @@ namespace IEC
         private void OnSelectCharacter()
         {
             PlayerData.playerCharacterName = CurrentCharacterConfig.characterName;
-            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new SelectCharacterData()
+            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
             {
                 characterName = PlayerData.playerCharacterName
             });
@@ -62,14 +62,19 @@ namespace IEC
             PlayerData.CheckLevelUpCharacter(CurrentCharacterConfig.characterName);
             CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             
-            selectionScroller.UpdateCharacterLevel(CurrentCharacterConfig.characterName, CurrentCharacterLevel);
+            //selectionScroller.UpdateCharacterLevel(CurrentCharacterConfig.characterName, CurrentCharacterLevel);
+            
+            this.RaiseEvent(EventList.GamePlay.UPGRADE_CHARACTER, new CharacterEventData()
+            {
+                characterName = CurrentCharacterConfig.characterName
+            });
             
             UpdateCurrentCharacterUI();
         }
 
         private void SetCurrentCharacter(object param)
         {
-            var data = (SelectCharacterData)param;
+            var data = (CharacterEventData)param;
 
             if (data == null)
                 return;

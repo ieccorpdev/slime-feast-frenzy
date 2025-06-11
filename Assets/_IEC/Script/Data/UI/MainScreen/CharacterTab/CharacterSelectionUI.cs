@@ -22,22 +22,25 @@ namespace IEC
         
         public int CurrentCharacterLevel { get; private set; }
 
+        private PlayerSecret m_playerData => Pool.Get<PlayerSecret>();
+
         private void Start()
         {
             if(btn != null)
                 btn.onClick.AddListener(OnSelectCharacter);
             
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, CheckCurrentCharacter);
+            this.RegisterListener(EventList.GamePlay.UPGRADE_CHARACTER, CheckUpdateCurrentCharacter);
         }
 
-        public void Setup(CharacterConfig characterConfig, string currentCharacterName, int level)
+        public void Setup(CharacterConfig characterConfig)
         {
             CharacterConfig = characterConfig;
             if(characterAvatar != null)
                 characterAvatar.sprite = CharacterConfig.characterSelectionSprite;
 
-            UpdateCharacterLevel(level);
-            SetSelectedUI(CharacterConfig.characterName.Equals(currentCharacterName));
+            UpdateCharacterLevel(m_playerData.GetCharacterLevel(CharacterConfig.characterName));
+            SetSelectedUI(CharacterConfig.characterName.Equals(m_playerData.playerCharacterName));
         }
 
         public void UpdateCharacterLevel(int level)
@@ -48,15 +51,25 @@ namespace IEC
 
         public void OnSelectCharacter()
         {
-            this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new SelectCharacterData()
+            this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new CharacterEventData()
             {
                 characterName = CharacterConfig.characterName
             });
         }
 
+        private void CheckUpdateCurrentCharacter(object param = null)
+        {
+            var data = (CharacterEventData)param;
+
+            if (data != null && CharacterConfig.characterName.Equals(data.characterName))
+            {
+                UpdateCharacterLevel(m_playerData.GetCharacterLevel(CharacterConfig.characterName));
+            }
+        }
+
         private void CheckCurrentCharacter(object param = null)
         {
-            var data = (SelectCharacterData)param;
+            var data = (CharacterEventData)param;
 
             if (data != null)
             {
@@ -90,7 +103,7 @@ namespace IEC
     }
 
     [Serializable]
-    public class SelectCharacterData
+    public class CharacterEventData
     {
         public string characterName;
     }
