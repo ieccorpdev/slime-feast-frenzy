@@ -31,7 +31,6 @@ namespace IEC
         private bool _canShow;
         [SerializeField] private Button buyIAP, doneBuyIAP;
         public ItemPassJourney hiddenTreasure;
-        public EventTrigger trigger;
         public GameObject bgdark;
 
         private void Start()
@@ -51,23 +50,6 @@ namespace IEC
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
             };
-            SetUpEventTrigger();
-        }
-
-        private void SetUpEventTrigger()
-        {
-            EventTrigger.Entry entry = new EventTrigger.Entry
-            {
-                eventID = EventTriggerType.PointerDown
-            };
-            entry.callback.AddListener((data) => {
-                var currentInfo = RewardInfoGroup.currentInfo;
-                if (currentInfo)
-                {
-                    currentInfo.SetActive(false);
-                }
-            });
-            trigger.triggers.Add(entry);
         }
 
         public void CheckShow()

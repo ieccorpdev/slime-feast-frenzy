@@ -27,6 +27,7 @@ namespace IEC
                Locator.Main.HomeScreenTab.OnClickPlayButton();
            });
         }
+        
         public override void Show()
         {
             base.Show();

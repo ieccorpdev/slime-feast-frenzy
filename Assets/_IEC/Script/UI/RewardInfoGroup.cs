@@ -3,7 +3,6 @@ using IEC;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static GameSettings;
 
 public class RewardInfoGroup : ScreenUI
 {
@@ -11,7 +10,6 @@ public class RewardInfoGroup : ScreenUI
     [SerializeField] List<GameObject> bgRewardInfos;
     [SerializeField] List<GameEventRewardInfoUI> listRewardInfoUI = new();
     [SerializeField] private GameObject mainPopup;
-    public static GameObject currentInfo;
     private bool needSetup = true;
     private bool isFirstSetup;
     
@@ -19,18 +17,22 @@ public class RewardInfoGroup : ScreenUI
     {
         if (mainPopup == null)
             return;
-        if (currentInfo != null)
-        {
-            currentInfo.SetActive(false);
-        }
         mainPopup.transform.DOKill();
         mainPopup.transform.localScale = Vector3.zero;
         mainPopup.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack);
         gameObject.SetActive(true);
         StartCoroutine(WaitToHide());
-        currentInfo = gameObject;
     }
-    
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            StopAllCoroutines();
+            Hide();
+        }
+    }
+
     IEnumerator WaitToHide()
     {
         yield return new WaitForSeconds(3f);
@@ -46,7 +48,7 @@ public class RewardInfoGroup : ScreenUI
     {
         if (mainPopup != null)
         {
-            mainPopup.transform.DOScale(Vector3.zero, 0.4f).SetEase(Ease.InBack).OnComplete(() =>
+            mainPopup.transform.DOScale(Vector3.zero, 0.2f).SetEase(Ease.InBack).OnComplete(() =>
             {
                 this.gameObject.SetActive(false);
             });
@@ -101,6 +103,7 @@ public class RewardInfoGroup : ScreenUI
             if ((rewardData = dataItem.Find(data => data.typeReward == rewardUI.resourceType)) != null)
             {
                 rewardUI.gameObject.SetActive(true);
+                rewardUI.gameObject.transform.localScale = Vector3.one;
                 rewardUI.transform.SetParent(parent.transform.GetChild(0));
                 rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
             }
