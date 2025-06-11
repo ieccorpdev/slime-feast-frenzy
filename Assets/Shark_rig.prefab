@@ -31,37 +31,6 @@ Transform:
   m_Father: {fileID: 4236323132564405035}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -0.16884974, y: 1.5292342, z: -29.234598}
---- !u!1 &1022605302409623819
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1378844914953097325}
-  m_Layer: 0
-  m_Name: Rig
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1378844914953097325
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1022605302409623819}
-  m_LocalRotation: {x: -0.50000006, y: 0.50000006, z: 0.49999997, w: -0.49999997}
-  m_LocalPosition: {x: -0, y: 0, z: -4.3508194e-33}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3221047689435242054}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: -90.00001, z: -90}
 --- !u!1 &1065801334636800922
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,7 +93,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3221047689435242054}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &1052238000440190858
 SkinnedMeshRenderer:
@@ -298,6 +267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3221047689435242054}
   - component: {fileID: 8814486864973825084}
+  - component: {fileID: 260162167798401414}
   m_Layer: 0
   m_Name: Shark_rig
   m_TagString: Untagged
@@ -317,7 +287,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1378844914953097325}
   - {fileID: 4040086953844041690}
   - {fileID: 6585322608278300859}
   m_Father: {fileID: 0}
@@ -344,6 +313,20 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &260162167798401414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2880233803636344060}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: beeba82f96db0cc4ebfc3a6eb4adbce6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  renderer: {fileID: 1052238000440190858}
+  m_hole: {fileID: 0}
 --- !u!1 &3237151096405210892
 GameObject:
   m_ObjectHideFlags: 0
@@ -472,7 +455,7 @@ Transform:
   - {fileID: 4668165377095709892}
   - {fileID: 3817549509328833725}
   m_Father: {fileID: 3221047689435242054}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -3.5017405, y: -103.20143, z: 170.40533}
 --- !u!1 &5122517795821608715
 GameObject:

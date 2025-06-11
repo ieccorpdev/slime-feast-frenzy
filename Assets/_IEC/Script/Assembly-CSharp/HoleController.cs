@@ -16,6 +16,8 @@ public class HoleController : _BaseBehaviour
 
     private Coroutine movingCoroutine;
 
+    public bool IsMoving => wasMoving;
+
     private void Awake()
     {
         m_Hole = GetComponent<Hole>();

@@ -42,6 +42,8 @@ namespace _IEC.Features.Gameplay
         public event Action<bool> OnUpdateFrozenState; 
         
         public RemainingTimeState CurrentRemainingTimeState => m_CurrentRemainingTimeState;
+
+        public bool GameStarted => m_IsGameStarted;
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
@@ -126,7 +128,7 @@ namespace _IEC.Features.Gameplay
         
         public void StartFreezeTime()
         {
-            m_FrozenTimeCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime);
+            m_FrozenTimeCoolDown = GamePlay.levelController.CheckCharacterPowerOnHelperDuration(ResourceType.TimeStop, Config.gamePlayConfig.GetHelperActiveTime(HelperId.FrozenTime));
             SetActiveFrozenMark(true);
             OnUpdateFrozenState?.Invoke(true);
         }
@@ -247,6 +249,11 @@ namespace _IEC.Features.Gameplay
         public void CheatTime(float time)
         {
             CurrentTime = time;
+        }
+
+        public void AddTime(float time)
+        {
+            CurrentTime += time;
         }
 
         public void Pause()

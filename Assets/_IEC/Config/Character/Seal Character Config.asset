@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Seal Character Config
+  m_EditorClassIdentifier: 
+  characterName: Seal
+  characterSelectionSprite: {fileID: 21300000, guid: 279545ee4c10b0b41a4bb14ca72b385e,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 96c6fba5d48031f40a45e9f28bc1245c,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: a8dd4e9ca410fda44ab0aabbae9a8549,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: 2a9d9395c6563af4899690f51e4d44b3,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: d5e252d95a355b74991ef6d9a8bed5d4,
+    type: 3}
+  defaultCharacterPosY: -1.1
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 156e565fe0038a34aaefb674cc8c7552,
+    type: 3}
+  characterControlPrefab: {fileID: 7676823836891351737, guid: 386028e710628074b9e9eaab68d5ae05,
+    type: 3}
+  characterBitePrefab: {fileID: 3141785404682211741, guid: ac60b4e21456a05499133a35ecd67b2e,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 30
+    goldCost: 0
+  - shardCost: 60
+    goldCost: 0
+  - shardCost: 120
+    goldCost: 0
+  listCharacterTraits: []
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.6
+  - statType: 1
+    statValue: 0.6
+  - statType: 2
+    statValue: 0.6
+  listCharacterPowers:
+  - powerType: 4
+    resourceAffected: 0
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 1
+    - conditionValueForPower: 0
+      buffAmount: 2
+    - conditionValueForPower: 0
+      buffAmount: -1
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

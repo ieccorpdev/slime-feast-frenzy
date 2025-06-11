@@ -78,6 +78,7 @@ namespace IEC
         public void AddLevel()
         {
             level += 1;
+            trophyData.SetLevelTrophy(level);
         }
        
         public void SaveLastPlayTime()
@@ -115,6 +116,10 @@ namespace IEC
             if (String.IsNullOrEmpty(playerName))
             {
                 playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
+            }
+            if (String.IsNullOrEmpty(playerCharacterName))
+            {
+                playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[0]?.characterName ?? "";
             }
             InitCurrency();
             ResetDataDay();
@@ -492,6 +497,118 @@ namespace IEC
 
                 buildCityData[i] = itemCity;
             }
+        }
+        
+        #endregion
+        
+        #region Player Character
+        [Header("Player Character")] 
+        public string playerCharacterName;
+        public Dictionary<string, int> characterLevel = new();
+        public Dictionary<string, int> characterShards = new();
+        public List<CharacterShardPackData> listCharacterPackData = new();
+        public int shardShopRefreshTime;
+        public long lastTimeUpdateCharacterShardShop;
+
+        public void SaveCharacterShardPackData(CharacterShardPackData packData)
+        {
+            listCharacterPackData.Add(packData);
+        }
+
+        public CharacterShardPackData GetPackData(CharacterShardSlotData slotData)
+        {
+            return listCharacterPackData.Find(data => data.slotData == slotData);
+        }
+
+        public bool CheckRefreshCharacterShardShop()
+        {
+            var lastTimeUpdate = new DateTime(lastTimeUpdateCharacterShardShop);
+
+            if (DateTime.Now.Date > lastTimeUpdate.Date || listCharacterPackData.Count == 0)
+            {
+                shardShopRefreshTime = 0;
+                listCharacterPackData.Clear();
+                lastTimeUpdateCharacterShardShop = DateTime.Now.Ticks;
+                return true;
+            }
+
+            return false;
+        }
+
+        public void OnRefreshShardShop()
+        {
+            listCharacterPackData.Clear();
+            shardShopRefreshTime++;
+        }
+
+        public int GetCharacterLevel(string characterName)
+        {
+            characterLevel.TryAdd(characterName, -1);
+
+            return characterLevel[characterName];
+        }
+        
+        public int GetCharacterShards(string characterName)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            return characterShards[characterName];
+        }
+
+        public void AddCharacterShards(string characterName, int shardAmount)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            characterShards[characterName] += shardAmount;
+        }
+        
+        public void SubtractCharacterShards(string characterName, int shardAmount)
+        {
+            characterShards.TryAdd(characterName, 0);
+
+            if (characterShards[characterName] < shardAmount)
+                return;
+
+            characterShards[characterName] -= shardAmount;
+        }
+
+        public void CheckUnlockCharacter(string characterName)
+        {
+            var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
+            characterLevel.TryAdd(characterName, -1);
+
+            if (characterLevel[characterName] != -1)
+                return;
+
+            if (level < characterConfig.levelUnlock)
+                return;
+
+            characterLevel[characterName] = characterConfig.characterLevelOnUnlock;
+        }
+
+        public void CheckLevelUpCharacter(string characterName)
+        {
+            var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
+            characterLevel.TryAdd(characterName, -1);
+            characterShards.TryAdd(characterName, 0);
+
+            var upgradeConfig = characterConfig.GetCharacterUpgrade(characterLevel[characterName] + 1);
+
+            if (upgradeConfig == null)
+                return;
+
+            var shardCost = upgradeConfig.shardCost;
+
+            if (shardCost > characterShards[characterName])
+                return;
+
+            characterShards[characterName] -= shardCost;
+
+            if (characterLevel[characterName] < characterConfig.listCharacterUpgrade.Count - 1)
+            {
+                characterLevel[characterName]++;
+            }
+            
         }
         
         #endregion
@@ -1025,6 +1142,12 @@ namespace IEC
             chompOffCurrentLevelLost = -1;
             chompOffCurrentLevelLostCount = 0;
         }
+
+        #endregion
+
+        #region MyRegion
+
+        public TrophyData trophyData = new TrophyData();
 
         #endregion
     }

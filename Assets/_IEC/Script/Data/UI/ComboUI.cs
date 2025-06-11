@@ -61,6 +61,7 @@ namespace IEC
         IEnumerator CheckInCombo()
         {
             yield return new WaitForSeconds(comboTimeRange);
+            GamePlay.levelController.CheckCharacterPowerOnCombo(currentComboCount);
             currentComboCount = 0;
             currentComboIndex = 0;
             canVibrate = true;
