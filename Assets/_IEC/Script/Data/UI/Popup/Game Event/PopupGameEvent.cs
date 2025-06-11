@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -18,26 +19,22 @@ namespace IEC
         public Button closeInfoButton;
         public GameObject infoGroup;
 
-        [Header("Reward Group")] 
-        public Button claimRewardButton;
+        [Header("Reward Group")] public Button claimRewardButton;
         public TextMeshProUGUI claimRewardButtonText;
         public GameObject claimRewardGroup;
-        
-        [Header("Info ui")]
-        public List<Transform> listInfoUI = new();
+
+        [Header("Info ui")] public List<Transform> listInfoUI = new();
 
         private Sequence showInfoSequence;
-        
-        [Space(10)]
 
-        public EventType eventType;
-        
+        [Space(10)] public EventType eventType;
+
         public TextMeshProUGUI eventTimerText;
 
         public GameEventPlayerDataUI playerDataUIPrefab;
         public List<GameEventPlayerDataUI> listPlayerDataUI = new();
-        public List<EventPlayerData> listPlayerData = new ();
-        
+        public List<EventPlayerData> listPlayerData = new();
+
         protected EventRankController _eventRankController;
         protected GameEventConfig _eventConfig;
 
@@ -46,11 +43,11 @@ namespace IEC
         public bool IsInEvent { get; private set; }
 
         private Action _actionOnceOnClaimReward;
-        
+
         protected override void Awake()
         {
             base.Awake();
-            
+
             SetEvent(infoButton, OnShowInfo);
             SetEvent(closeInfoButton, OnShowInfo);
             SetEvent(claimRewardButton, OnClaimReward);
@@ -65,7 +62,7 @@ namespace IEC
             }
 
             IsEventMultipleStage = false;
-            
+
             Init();
         }
 
@@ -83,14 +80,14 @@ namespace IEC
 
         public virtual void Start()
         {
-            if(scroller != null)
-                scroller.OnBeingDrag+=DisableRewardPopupMini;
+            if (scroller != null)
+                scroller.OnBeingDrag += DisableRewardPopupMini;
         }
 
         protected virtual void OnShowInfo()
         {
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
-            
+
             if (infoGroup != null)
             {
                 infoGroup.SetActive(!infoGroup.activeInHierarchy);
@@ -108,22 +105,26 @@ namespace IEC
 
                 closeInfoButton.transform.localScale = new Vector3(0, 1, 1);
 
-                float delay = 0f;
-                foreach (var ui in listInfoUI)
+                float delay = 0.1f;
+                for (var index = 0; index < listInfoUI.Count; index++)
                 {
+                    var ui = listInfoUI[index];
+
                     showInfoSequence.Insert(delay, ui.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
                     delay += 0.1f;
                 }
 
                 showInfoSequence.Insert(delay, closeInfoButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
-
+                var scaleMulti = 1.1f;
+                var duration = 0.6f;
+                closeInfoButton.transform.GetChild(0)?.DOScale(Vector3.one * scaleMulti, duration)
+                    .SetLoops(-1, LoopType.Yoyo);
                 showInfoSequence.Play();
             }
         }
 
         protected virtual void ShowStartPopup()
         {
-            
         }
 
         public virtual bool CheckShowStartPopup()
@@ -132,6 +133,7 @@ namespace IEC
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
             return (IsEndEventStage() && data.claimedReward) || data == null || data.listPlayerData.Count == 0;
         }
@@ -140,7 +142,7 @@ namespace IEC
         {
             _eventRankController = Controllers.Get<EventRankController>();
             _eventConfig = Config.AllGameEventConfig.GetGameEventConfig(eventType);
-            
+
             InitScroller();
         }
 
@@ -153,7 +155,7 @@ namespace IEC
         {
             if (scroller == null)
                 return;
-            
+
             if (scroller.Delegate == null)
             {
                 scroller.Delegate = this;
@@ -163,12 +165,12 @@ namespace IEC
                 LoadData();
             }
         }
-        
+
         public void LoadData()
         {
             if (scroller == null)
                 return;
-            
+
             scroller.RefreshActiveCellViews();
         }
 
@@ -176,22 +178,22 @@ namespace IEC
         {
             if (scroller == null)
                 return;
-            
+
             scroller.ReloadData();
             JumpToPlayer();
         }
-        
+
         private void JumpToPlayer()
         {
             if (scroller == null)
                 return;
-            
+
             InitScroller();
             int index = listPlayerData.FindIndex(data => data.isPlayer);
             scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
-        
-         private void Update()
+
+        private void Update()
         {
             UpdateTimer();
         }
@@ -199,7 +201,7 @@ namespace IEC
         public override void Show()
         {
             Init();
-            
+
             if (PlayerData.level < _eventConfig.levelUnlock)
                 return;
 
@@ -221,7 +223,7 @@ namespace IEC
             CheckInitEventProgress();
             ReloadData();
         }
-        
+
         public void DisableRewardPopupMini()
         {
             EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
@@ -230,7 +232,8 @@ namespace IEC
         protected virtual void CheckShowReward()
         {
             var data = _eventRankController.GetEventSaveData(eventType);
-            var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
+            var playerRank =
+                data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
             if (claimRewardGroup != null)
@@ -268,11 +271,12 @@ namespace IEC
             // {
             //     return;
             // }
-            
+
             if (claimRewardGroup != null)
             {
                 claimRewardGroup.SetActive(false);
             }
+
             data.claimedReward = true;
             int stage = 0;
 
@@ -292,7 +296,7 @@ namespace IEC
                 else
                     stage = data.eventIndex;
             }
-            
+
             bool eventAvailable = Config.eventLiveOpsConfig.IsEventAvailable(
                 eventType,
                 Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
@@ -304,7 +308,8 @@ namespace IEC
             }
 
             var player = data.listPlayerData.Find(player => player.isPlayer);
-            var playerRank = data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
+            var playerRank =
+                data.listPlayerData.FindIndex(player => player.isPlayer) + 1; // index in list starts from 0
             var eventRewardData = _eventConfig.GetEventData(data.eventIndex).listEventRewardData.Find(data =>
                 data.rankStartReward <= playerRank && (data.rankEndReward >= playerRank || data.rankEndReward == -1));
 
@@ -320,7 +325,8 @@ namespace IEC
 
             if (eventRewardData != null && eventRewardData.listReward.Count > 0)
             {
-                string subtitle = String.Format(titleData.claimRewardSubtitleText, ClaimBonusRewardPanel.GetOrdinal(playerRank));
+                string subtitle = String.Format(titleData.claimRewardSubtitleText,
+                    ClaimBonusRewardPanel.GetOrdinal(playerRank));
                 Locator.Main.ClaimBonusRewardPanel.SetupTempTitle(titleData.claimRewardTitleSprite, subtitle);
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
@@ -333,7 +339,7 @@ namespace IEC
                     var actionClaimedReward = _actionOnceOnClaimReward;
                     Locator.Main.ClaimBonusRewardPanel.SetActionOnceOnAnimRewardDone(() =>
                     {
-                        if(actionClaimedReward == null)
+                        if (actionClaimedReward == null)
                             ShowStartPopup();
                         actionClaimedReward?.Invoke();
                     });
@@ -351,8 +357,8 @@ namespace IEC
                 //     ShowStartPopup();
                 // }
                 // else
-                    // Hide();
-                    _actionOnceOnClaimReward?.Invoke();
+                // Hide();
+                _actionOnceOnClaimReward?.Invoke();
             }
 
             _actionOnceOnClaimReward = null;
@@ -388,12 +394,10 @@ namespace IEC
 
         protected virtual void ShowEventCompletedScreen()
         {
-            
         }
 
         protected virtual void UpdateUI()
         {
-            
         }
 
         public virtual bool IsEventCompleted()
@@ -407,16 +411,18 @@ namespace IEC
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd;
         }
-        
+
         public virtual bool IsEndEventStage()
         {
             if (_eventRankController == null)
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
             return DateTime.Now >= data.timeEnd;
         }
@@ -427,6 +433,7 @@ namespace IEC
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
             return data.timeEnd;
         }
@@ -449,6 +456,7 @@ namespace IEC
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
             int stage = 0;
 
@@ -473,7 +481,7 @@ namespace IEC
         }
 
         protected virtual bool IsShowInfo()
-        {            
+        {
             var data = _eventRankController.GetEventSaveData(eventType);
             return data.listPlayerData.Count == 0;
         }
@@ -484,16 +492,17 @@ namespace IEC
             {
                 Init();
             }
+
             var data = _eventRankController.GetEventSaveData(eventType);
-            
-            if (data.listPlayerData.Count > 0 )
+
+            if (data.listPlayerData.Count > 0)
             {
                 listPlayerData.Clear();
                 listPlayerData = new List<EventPlayerData>(data.listPlayerData);
             }
 
             int stage = GetNextEventStageIndex();
-            
+
             if (IsEndEvent() || (IsEventMultipleStage && IsEndEventStage()))
             {
                 IsInEvent = false;
@@ -505,7 +514,7 @@ namespace IEC
                 }
                 else
                 {
-                    if(!data.claimedReward)
+                    if (!data.claimedReward)
                         CheckShowReward();
                     else
                         StartNewEventStage(stage);
@@ -517,7 +526,7 @@ namespace IEC
         {
             IsInEvent = true;
             listPlayerData.Clear();
-            
+
             var nameList =
                 Config.AllGameEventConfig.GenerateAllNames(
                     _eventConfig.GetEventData(eventStageIndex).listEventBotData.Count, PlayerData.playerName);
@@ -526,7 +535,7 @@ namespace IEC
             {
                 var botData = _eventConfig.GetEventData(eventStageIndex).listEventBotData[i];
                 var randomSpeedRange = Random.Range(-botData.speedRange * 100, botData.speedRange * 100);
-                    
+
                 listPlayerData.Add(
                     new EventPlayerData()
                     {
@@ -534,13 +543,13 @@ namespace IEC
                         avatarID = Config.playerAvatarConfig.GetRandomAvatarSprite().name,
                         avatarFrameID = Config.playerAvatarConfig.GetRandomAvatarFrameSprite().name,
                         progress = 0,
-                        speed = botData.baseSpeed * (100 + randomSpeedRange) / 100, 
+                        speed = botData.baseSpeed * (100 + randomSpeedRange) / 100,
                         isPlayer = false,
                     });
             }
-            
+
             //Insert player data to middle
-            listPlayerData.Insert( listPlayerData.Count / 2,
+            listPlayerData.Insert(listPlayerData.Count / 2,
                 new EventPlayerData()
                 {
                     id = PlayerData.playerName,
@@ -553,17 +562,18 @@ namespace IEC
             {
                 listPlayerData[i].indexInUI = i;
             }
-            
+
             var data = _eventRankController.GetEventSaveData(eventType);
 
             var timeStart = DateTime.Now;
             //var timeEnd = eventStageIndex != 0 ? data.timeEnd : DateTime.Now.Date.AddHours(_eventConfig.eventDurationInHours);
-            var timeEnd = eventStageIndex != 0 ? data.timeEnd 
+            var timeEnd = eventStageIndex != 0
+                ? data.timeEnd
                 : Config.eventLiveOpsConfig.GetTimeEndEvent(
-                    eventType, 
-                    Mathf.FloorToInt(_eventConfig.eventDurationInHours/24), 
+                    eventType,
+                    Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
                     PlayerData.GetDaysSinceDownload());
-                
+
             _eventRankController
                 .InitData(
                     eventType,
@@ -573,7 +583,7 @@ namespace IEC
                     timeEnd,
                     new List<EventPlayerData>(listPlayerData)
                 );
-            
+
             CheckUpdateEventProgress();
         }
 
@@ -581,18 +591,19 @@ namespace IEC
         {
             // if (!IsInEvent)
             //     return;
-            
+
             if (_eventRankController == null)
             {
                 Init();
             }
-            
+
             var data = _eventRankController.GetEventSaveData(eventType);
             var eventData = _eventConfig.GetEventData(data.eventIndex);
 
             var timeToCheck = DateTime.Now <= GetTimeEndStage() ? DateTime.Now : GetTimeEndStage();
 
-            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours || IsEndEventStage())
+            if ((DateTime.Now - data.lastUpdateTime).TotalHours >= _eventConfig.timeUpdateEventProgressInHours ||
+                IsEndEventStage())
             {
                 data.lastUpdateTime = DateTime.Now;
                 for (int i = 0; i < data.listPlayerData.Count; i++)
@@ -601,7 +612,8 @@ namespace IEC
 
                     if (!player.isPlayer)
                     {
-                        player.progress = Mathf.FloorToInt((float)(timeToCheck - data.timeStart).TotalSeconds / player.speed);
+                        player.progress =
+                            Mathf.FloorToInt((float)(timeToCheck - data.timeStart).TotalSeconds / player.speed);
 
                         if (eventData.eventTarget > 0 && player.progress > eventData.eventTarget)
                             player.progress = eventData.eventTarget;
@@ -625,7 +637,7 @@ namespace IEC
 
                 return;
             }
-            
+
             eventTimerText.text =
                 DateTimeHelper.GetFormattedTimeHMS(
                     PlayerData.GetEventSaveData(eventType).timeEnd - DateTime.Now);
@@ -636,13 +648,16 @@ namespace IEC
             return listPlayerData.Count;
         }
 
+        [SerializeField] private float cellSize = 162;
+
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
         {
             if (listPlayerData[dataIndex].isPlayer)
             {
                 return 192;
             }
-            return 162;
+
+            return cellSize;
         }
 
         public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
@@ -651,9 +666,10 @@ namespace IEC
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
 
             GameEventPlayerDataUI cellView = scroller.GetCellView(playerDataUIPrefab) as GameEventPlayerDataUI;
-            
-            cellView.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),  eventSaveData.listPlayerData[dataIndex], dataIndex + 1);
-            
+
+            cellView.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),
+                eventSaveData.listPlayerData[dataIndex], dataIndex + 1);
+
 
             return cellView;
         }

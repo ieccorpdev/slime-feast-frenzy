@@ -790,7 +790,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -827,7 +827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonDisplayImage: {fileID: 0}
+  buttonDisplayImage: {fileID: 7400385883914224995}
   setNative: 1
   isChangeButtonSpriteOnClick: 0
   pressSprite: {fileID: 0}
@@ -985,6 +985,7 @@ GameObject:
   - component: {fileID: 6403211695257831632}
   - component: {fileID: 3287232411109377219}
   - component: {fileID: 2344550433839674939}
+  - component: {fileID: 5209310032137047831}
   m_Layer: 5
   m_Name: BtnClose
   m_TagString: Untagged
@@ -1070,7 +1071,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1095,6 +1096,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &5209310032137047831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1930082770242227530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &2048763634056680419
 GameObject:
   m_ObjectHideFlags: 0
@@ -1471,6 +1494,7 @@ GameObject:
   - component: {fileID: 6340509705856581504}
   - component: {fileID: 4180570760925801839}
   - component: {fileID: 4331288720675913560}
+  - component: {fileID: 186559433680239971}
   m_Layer: 5
   m_Name: ButtonBuy
   m_TagString: Untagged
@@ -1560,7 +1584,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -1585,6 +1609,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &186559433680239971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2483418803555805388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 4026270477333990060}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &2794460566191754520
 GameObject:
   m_ObjectHideFlags: 0
@@ -2831,6 +2877,7 @@ GameObject:
   - component: {fileID: 2612517974149149144}
   - component: {fileID: 5172962889982516566}
   - component: {fileID: 5284473703505259318}
+  - component: {fileID: 2189811244669745839}
   m_Layer: 5
   m_Name: ButtonBuy
   m_TagString: Untagged
@@ -2920,7 +2967,7 @@ MonoBehaviour:
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
-  m_Transition: 1
+  m_Transition: 0
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
@@ -2945,6 +2992,28 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &2189811244669745839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6739842276233739991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 2214960859305544661}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!1 &7187412008785024450
 GameObject:
   m_ObjectHideFlags: 0
@@ -3243,6 +3312,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   btnClose: {fileID: 2344550433839674939}
+  btnCloseAll: {fileID: 0}
   blackPanel: {fileID: 0}
   mainPanel: {fileID: 664999163920156472}
   isHaveAnim: 1
@@ -4038,6 +4108,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2496170706021047293, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_Transition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2550496229528548893, guid: 4e9414cf2feeaf646866221b3a567127,
         type: 3}
       propertyPath: m_Name
@@ -4053,10 +4128,20 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3931063478766538402, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_Transition
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4123214582407430660, guid: 4e9414cf2feeaf646866221b3a567127,
         type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455908020282881480, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 1130364919
       objectReference: {fileID: 0}
     - target: {fileID: 4568386836615369372, guid: 4e9414cf2feeaf646866221b3a567127,
         type: 3}
@@ -4183,8 +4268,107 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 240
       objectReference: {fileID: 0}
+    - target: {fileID: 6012218278159677485, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 1130364919
+      objectReference: {fileID: 0}
+    - target: {fileID: 7461110050820814043, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 1130364919
+      objectReference: {fileID: 0}
+    - target: {fileID: 8758831480107498907, guid: 4e9414cf2feeaf646866221b3a567127,
+        type: 3}
+      propertyPath: m_Transition
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e9414cf2feeaf646866221b3a567127, type: 3}
+--- !u!1 &1856204149178723089 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2835140141215257076, guid: 4e9414cf2feeaf646866221b3a567127,
+    type: 3}
+  m_PrefabInstance: {fileID: 4511198597646220005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &113702378117393413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1856204149178723089}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
+--- !u!1 &1922230194675948113 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2609797588559454388, guid: 4e9414cf2feeaf646866221b3a567127,
+    type: 3}
+  m_PrefabInstance: {fileID: 4511198597646220005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3377367267894059242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922230194675948113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
+--- !u!1 &5744584748770081830 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8152116061397862083, guid: 4e9414cf2feeaf646866221b3a567127,
+    type: 3}
+  m_PrefabInstance: {fileID: 4511198597646220005}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6085319550431627594
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5744584748770081830}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06b19daf64f261842be5d7cf0ceb2bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonDisplayImage: {fileID: 0}
+  setNative: 1
+  isChangeButtonSpriteOnClick: 0
+  pressSprite: {fileID: 0}
+  releaseSprite: {fileID: 0}
+  isChangeButtonSpriteOnInactive: 0
+  activeSprite: {fileID: 0}
+  inactiveSprite: {fileID: 0}
+  activeGroup: {fileID: 0}
+  inactiveGroup: {fileID: 0}
 --- !u!224 &8555454532182572167 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5197694553247581794, guid: 4e9414cf2feeaf646866221b3a567127,

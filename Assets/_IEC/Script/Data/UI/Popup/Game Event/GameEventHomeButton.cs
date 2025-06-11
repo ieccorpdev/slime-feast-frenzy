@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using IEC.Common.Event;
 using IEC.Helper;
 using IEC.TrackingEvent;
+using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -28,6 +29,7 @@ namespace IEC
         private PopupGameEvent _gameEventPopup;
 
         private EventRankController _eventRankController;
+        private SkeletonGraphic  _skeletonGraphic;
 
         private void Awake()
         {
@@ -42,6 +44,7 @@ namespace IEC
             _eventRankController = Controllers.Get<EventRankController>();
             
             gameObject.OnEvent(EventList.GamePlay.UPDATE_GAME_EVENT_UI, InitUI);
+            _skeletonGraphic = GetComponentInChildren<SkeletonGraphic>();
         }
 
         public bool IsEventCanShow()
@@ -76,6 +79,7 @@ namespace IEC
             {
                 levelUnlockText.text = "Lvl. " + Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
                 lockedGroup.SetActive(true);
+                _skeletonGraphic?.gameObject.SetActive(false);
                 button.interactable = false;
             }
             else
@@ -111,6 +115,8 @@ namespace IEC
                                 if (completedGroup != null)
                                 {
                                     completedGroup.SetActive(true);
+                                    _skeletonGraphic?.gameObject.SetActive(false);
+                                    
                                     unlockedGroup.SetActive(false);
                                 }
 

@@ -229,7 +229,16 @@ namespace _IEC.Features.Gameplay
                     Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
                 );
             }
-            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
+            {
+                themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            }
+            else
+            {
+                var weatherSelected = Config.themeConfig.GetWeatherForLevel(PlayerData.level);
+                //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
+                themeController.ActiveWeatherEffect(weatherSelected);
+            }
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
@@ -387,7 +396,7 @@ namespace _IEC.Features.Gameplay
             //{
             RelicObjCollected++;
             //}
-            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI,data);
         }
@@ -452,10 +461,14 @@ namespace _IEC.Features.Gameplay
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
                         playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
+                        
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
                         playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
+                        
                     }
                 };
 

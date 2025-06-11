@@ -101,7 +101,8 @@ public class Hole : _BaseBehaviour
 				if (speedLinesVFX.isPlaying)
 				{
 					speedLinesVFX.Stop();
-				}
+				} 
+				SoundController.StopSound(EventList.Audio.BOOSTER_WINDSURF);
 			}
 		}
 
@@ -364,7 +365,7 @@ public class Hole : _BaseBehaviour
 	public void CollectABomb()
 	{
 		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
+		//SpawnVfx(deathVfx);
 		DOTween.Sequence()
 			.AppendInterval(0.2f)
 			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))

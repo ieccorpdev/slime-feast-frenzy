@@ -167,7 +167,7 @@ public class PopupRelicHunt : BasePopup
         var isDoneLevel = PlayerData.relicData.IsDoneLevel(relicConfig);
         PlayerData.relicData.hasDoneLevel = !isDoneLevel;
         bool hasReward = PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
-        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig);
+        bool hasLockReward = PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig, true);
         playMainButton.transform.parent.gameObject.SetActive(!hasReward && hasLockReward);
         claimButton.transform.parent.gameObject.SetActive(hasReward);
         finishGroup.SetActive(!hasLockReward && !hasReward);
@@ -260,11 +260,21 @@ public class PopupRelicHunt : BasePopup
             //closeInfoButton.transform.localScale = new Vector3(0, 1, 1);
 
             float delay = 0f;
-            foreach (var ui in listInfoUI)
+            for (var index = 0; index < listInfoUI.Count; index++)
             {
+                var ui = listInfoUI[index];
                 showInfoSequence.Insert(delay, ui.DOScale(Vector3.one, 0.2f).SetEase(Ease.OutBack));
                 delay += 0.1f;
             }
+            var scaleMulti = 1.1f;
+            var duration = 0.6f;
+            showInfoSequence.AppendCallback(() =>
+            {
+                listInfoUI[^1].transform.localScale = Vector3.one;
+                listInfoUI[^1].transform.DOScale(Vector3.one * scaleMulti, duration)
+                    .SetLoops(-1, LoopType.Yoyo);
+            });
+            
 
             //showInfoSequence.Insert(delay, closeInfoButton.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
 

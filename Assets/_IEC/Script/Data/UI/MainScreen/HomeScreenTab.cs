@@ -581,25 +581,49 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void CheckAllPacksPopupOnStartHome()
     {
-        if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
-                && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
+        bool avaliableToShowVoyage =
+            PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
+            && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney;
+        bool avaliableToShowStarterPack = !PlayerData.isBoughtStarterPack;
+        Debug.Log($"avaliableToShowVoyage {avaliableToShowVoyage} -- avaliableToShowStarterPack {avaliableToShowStarterPack}");
+        if (avaliableToShowVoyage && avaliableToShowStarterPack)
         {
-            PlayerData.isShowStartedPackInStartGame = !PlayerData.isShowStartedPackInStartGame;
-            if (PlayerData.isShowStartedPackInStartGame)
+            if (PlayerData.isShowStartedPackInStartGame == false)
             {
                 AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
-                   () =>
-                   {
-                       Locator.Main.PopupVoyagePassIAPInfor.Show();
-                   },
-                   ShowNextPopup);
+                    () =>
+                    {
+                        Locator.Main.PopupVoyagePassIAPInfor.Show();
+                    },
+                    ShowNextPopup);
+                PlayerData.isShowStartedPackInStartGame = true;
             }
+            else
+            {
+                AddPopupToShow(Locator.Main.PopupStarterPack,
+                    () =>
+                    {
+                        Locator.Main.PopupStarterPack.Show();
+                    },
+                    ShowNextPopup);
+                PlayerData.isShowStartedPackInStartGame = false;
+                
+            }
+            return;
         }
-        else
+
+
+        if (avaliableToShowVoyage)
         {
-            PlayerData.isShowStartedPackInStartGame = false;
+            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                () =>
+                {
+                    Locator.Main.PopupVoyagePassIAPInfor.Show();
+                },
+                ShowNextPopup);
         }
-        if (!PlayerData.isBoughtStarterPack && !PlayerData.isShowStartedPackInStartGame)
+
+        if (avaliableToShowStarterPack)
         {
             AddPopupToShow(Locator.Main.PopupStarterPack,
                 () =>
@@ -608,6 +632,7 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+
     }
 
     public void CheckAllEventsClaimableReward()

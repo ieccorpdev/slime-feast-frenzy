@@ -18,20 +18,24 @@ namespace IEC
         private Dictionary<ResourceType, List<RectTransform>> m_ListEffectByType = new();
         public List<ParticleSystem> listStartExplosion;
         private float allTimeSpawn = 2f;
-        public RuntimeAnimatorController coinAnimator;//may be switch to prefab after this...
+        public RuntimeAnimatorController coinAnimator; //may be switch to prefab after this...
         public bool AnimCompleted { get; private set; }
 
         public void SpawnEffect(RewardClaimData effectData)
         {
-            SpawnEffect(effectData.rewardType, effectData.rewardSprite, effectData.posSpawn, effectData.posEnd, effectData.rewardAmount,effectData.startSize ,effectData.onComplete, effectData.onEndMove, effectData.delay, effectData.animTime);
+            SpawnEffect(effectData.rewardType, effectData.rewardSprite, effectData.posSpawn, effectData.posEnd,
+                effectData.rewardAmount, effectData.startSize, effectData.onComplete, effectData.onEndMove,
+                effectData.delay, effectData.animTime);
         }
 
-        public void SpawnEffect(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount,Vector2 startSize, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 1f)
+        public void SpawnEffect(ResourceType rewardType, Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd,
+            int addAmount, Vector2 startSize, Action onComplete = null, Action onEndMove = null, float delay = 0f,
+            float animTime = 1f)
         {
             if (addAmount <= 0)
             {
                 onComplete?.Invoke();
-                return; 
+                return;
             }
 
             AnimCompleted = false;
@@ -42,7 +46,7 @@ namespace IEC
             }
 
             List<RectTransform> effectCurrency = m_ListEffectByType[rewardType];
-            
+
 
             for (int i = 0; i < effectCurrency.Count; i++)
             {
@@ -61,18 +65,21 @@ namespace IEC
             {
                 ActiveVFXStartExplosion(posSpawn);
             }
+
             for (int i = 0; i < currencyCount; i++)
             {
                 RectTransform currencyObj;
 
                 if (i >= effectCurrency.Count)
                 {
-                    effectCurrency.Add(ObjectPool.Spawn(baseObjectToSpawn.gameObject, transform).GetComponent<RectTransform>());
+                    effectCurrency.Add(ObjectPool.Spawn(baseObjectToSpawn.gameObject, transform)
+                        .GetComponent<RectTransform>());
                 }
-                var posStart = (Vector3)UnityEngine.Random.insideUnitCircle * 0.8f *50 ;
+
+                var posStart = (Vector3)UnityEngine.Random.insideUnitCircle * 0.8f * 50;
                 currencyObj = effectCurrency[i];
                 currencyObj.transform.localScale = Vector3.one;
-                currencyObj.anchoredPosition = posSpawn + (rewardType == ResourceType.Gold? posStart : Vector2.zero );
+                currencyObj.anchoredPosition = posSpawn + (rewardType == ResourceType.Gold ? posStart : Vector2.zero);
                 var img = currencyObj.GetComponent<Image>();
                 //Animation
                 if (rewardType == ResourceType.Gold)
@@ -94,9 +101,10 @@ namespace IEC
                         animator.enabled = false;
                     }
                 }
+
                 //
                 img.sprite = rewardSprite;
-                
+
                 img.rectTransform.sizeDelta = startSize;
                 currencyObj.gameObject.SetActive(true);
 
@@ -112,30 +120,34 @@ namespace IEC
                 }
 
                 img.color = new Color(1, 1, 1, 0);
-                float timeEffect = 0.5f ;
+                float timeEffect = 0.5f;
                 sequence
-                    .Insert(i*delayTime, img.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad))
-                    .Insert(0f,img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta*0.75f,timeEffect).SetEase(Ease.InBack))
-                    .Insert(i*delayTime + 0.2f, CreateBezierMoveTween(currencyObj.GetComponent<RectTransform>(), posEnd, timeEffect, curveHeight: 180f).SetEase(Ease.InBack)
-                        .OnComplete(() =>
-                        {
-                            if (rewardType == ResourceType.Gold)
+                    .Insert(i * delayTime, img.DOColor(Color.white, 0.2f).SetEase(Ease.OutQuad))
+                    .Insert(0f,
+                        img.rectTransform.DOSizeDelta(img.rectTransform.sizeDelta * 0.75f, timeEffect)
+                            .SetEase(Ease.InBack))
+                    .Insert(i * delayTime + 0.2f,
+                        CreateBezierMoveTween(currencyObj.GetComponent<RectTransform>(), posEnd, timeEffect,
+                                curveHeight: 180f).SetEase(Ease.InBack)
+                            .OnComplete(() =>
                             {
-                                Locator.Main.ScreenMain.GoldCurrencyDisplay.TriggredPressButton();
-                            }
-                            onEndMove?.Invoke();
-                            currencyObj.gameObject.SetActive(false);
-                            if (rewardType == ResourceType.Gold)
-                            {
-                                EventController.RaiseEvent(EventList.Audio.COIN_GET);
-                            }
-                            else
-                            {
-                                EventController.RaiseEvent(EventList.Audio.ITEM_GET);
-                            }
+                                if (rewardType == ResourceType.Gold)
+                                {
+                                    Locator.Main.ScreenMain.GoldCurrencyDisplay.TriggredPressButton();
+                                }
 
-                            ActiveVFXStartExplosion(posEnd);
-                        }));
+                                onEndMove?.Invoke();
+                                currencyObj.gameObject.SetActive(false);
+                                if (rewardType != ResourceType.Gold)
+                                {
+                                    EventController.RaiseEvent(EventList.Audio.ITEM_GET);
+                                }
+                                ActiveVFXStartExplosion(posEnd);
+                            }));
+                if (i == 0 && rewardType == ResourceType.Gold) //trigger sound gold one time
+                {
+                    sequence.AppendCallback(() => { EventController.RaiseEvent(EventList.Audio.COIN_GET); });
+                }
             }
 
             sequence.OnComplete(() =>
@@ -145,19 +157,19 @@ namespace IEC
                 AnimCompleted = true;
             });
             sequence.Play();
-                            
+
             //EventController.RaiseEvent(EventList.GamePlay.ON_CLAIM_GOLD);
         }
-        public static Tween CreateBezierMoveTween(RectTransform target, Vector2 endPos, float duration, float curveHeight)
+
+        public static Tween CreateBezierMoveTween(RectTransform target, Vector2 endPos, float duration,
+            float curveHeight)
         {
             Vector2 startPos = target.anchoredPosition;
             Vector2 control = (startPos + endPos) * 0.5f + Vector2.left * curveHeight;
 
             float t = 0f;
             return DOTween.To(() => t, x => t = x, 1f, duration)
-                .OnUpdate(() => {
-                    target.anchoredPosition = BezierCurve(startPos, control, endPos, t);
-                })
+                .OnUpdate(() => { target.anchoredPosition = BezierCurve(startPos, control, endPos, t); })
                 .SetEase(Ease.Linear); // Curve tự xử lý easing, nên giữ Linear
         }
 
@@ -167,6 +179,7 @@ namespace IEC
                    2 * (1 - t) * t * p1 +
                    Mathf.Pow(t, 2) * p2;
         }
+
         public void ActiveVFXStartExplosion(Vector2 anchorPos)
         {
             var vfx = listStartExplosion.Find(x => !x.IsAlive(true));
@@ -176,24 +189,27 @@ namespace IEC
                 vfx.Play();
             }
         }
+
         public static Vector2 SwitchToRectTransform(RectTransform from, RectTransform to)
         {
             Vector2 localPoint;
             Canvas fromCanvas = from.GetComponentInParent<Canvas>();
             Canvas toCanvas = to.GetComponentInParent<Canvas>();
-        
+
             Camera fromCamera = fromCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : fromCanvas.worldCamera;
             Camera toCamera = toCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : toCanvas.worldCamera;
-        
+
             // Convert world position to screen position
             Vector2 screenP = RectTransformUtility.WorldToScreenPoint(fromCamera, from.position);
-        
+
             // Convert screen position to local position in the target rect
             RectTransformUtility.ScreenPointToLocalPointInRectangle(to, screenP, toCamera, out localPoint);
-        
-            Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin, from.rect.height * from.pivot.y + from.rect.yMin);
-            Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin, to.rect.height * to.pivot.y + to.rect.yMin);
-        
+
+            Vector2 fromPivotDerivedOffset = new Vector2(from.rect.width * from.pivot.x + from.rect.xMin,
+                from.rect.height * from.pivot.y + from.rect.yMin);
+            Vector2 pivotDerivedOffset = new Vector2(to.rect.width * to.pivot.x + to.rect.xMin,
+                to.rect.height * to.pivot.y + to.rect.yMin);
+
             return to.anchoredPosition + localPoint - pivotDerivedOffset;
         }
     }
@@ -204,10 +220,12 @@ namespace IEC
         public int rewardAmount;
         public Vector3 startPos;
         public Vector2 startSize;
-        public EffectRewardData()   
+
+        public EffectRewardData()
         {
         }
-        public EffectRewardData(ResourceType rewardType, int addAmount, Vector3 startPos,Vector2 startSize)
+
+        public EffectRewardData(ResourceType rewardType, int addAmount, Vector3 startPos, Vector2 startSize)
         {
             this.rewardType = rewardType;
             this.rewardAmount = addAmount;
@@ -226,10 +244,14 @@ namespace IEC
         public Action onComplete;
         public Action onEndMove;
         public float delay;
+
         public float animTime;
+
         //Custom
         public Vector2 startSize;
-        public RewardClaimData(ResourceType rewardType,Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd, int addAmount, Action onComplete = null,Action onEndMove = null, float delay = 0f, float animTime = 2f)
+
+        public RewardClaimData(ResourceType rewardType, Sprite rewardSprite, Vector2 posSpawn, Vector2 posEnd,
+            int addAmount, Action onComplete = null, Action onEndMove = null, float delay = 0f, float animTime = 2f)
         {
             this.rewardType = rewardType;
             this.rewardSprite = rewardSprite;
@@ -247,5 +269,4 @@ namespace IEC
             this.startSize = startSize;
         }
     }
-    
 }
