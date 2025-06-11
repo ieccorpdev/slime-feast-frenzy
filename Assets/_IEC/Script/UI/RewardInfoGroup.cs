@@ -3,6 +3,7 @@ using IEC;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static GameSettings;
 
 public class RewardInfoGroup : ScreenUI
 {
@@ -10,26 +11,35 @@ public class RewardInfoGroup : ScreenUI
     [SerializeField] List<GameObject> bgRewardInfos;
     [SerializeField] List<GameEventRewardInfoUI> listRewardInfoUI = new();
     [SerializeField] private GameObject mainPopup;
-
+    public static GameObject currentInfo;
+    private bool needSetup = true;
+    private bool isFirstSetup;
+    
     public override void Show()
     {
-        if (ItemPassJourney.currentInfo != null)
+        if (mainPopup == null)
+            return;
+        if (currentInfo != null)
         {
-            ItemPassJourney.currentInfo.SetActive(false);
+            currentInfo.SetActive(false);
         }
+        mainPopup.transform.DOKill();
         mainPopup.transform.localScale = Vector3.zero;
         mainPopup.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack);
-        this.transform.parent = Locator.Main.PopupJourney.contentPanel;
-        this.transform.SetAsLastSibling();
         gameObject.SetActive(true);
         StartCoroutine(WaitToHide());
-        ItemPassJourney.currentInfo = gameObject;
+        currentInfo = gameObject;
     }
-
+    
     IEnumerator WaitToHide()
     {
         yield return new WaitForSeconds(3f);
         Hide();
+    }
+
+    private void OnDisable()
+    {
+        this.gameObject.SetActive(false);
     }
 
     public override void Hide()
@@ -41,10 +51,25 @@ public class RewardInfoGroup : ScreenUI
                 this.gameObject.SetActive(false);
             });
         }
+        else
+        {
+            this.gameObject.SetActive(false);
+        }
     }
+
+    private void FirstSetup()
+    {
+        if (!isFirstSetup)
+        {
+            needSetup = mainPopup == null;
+            isFirstSetup = true;
+        }
+    }
+
 
     public void SetupDataItem(List<Reward> dataItem)
     {
+        FirstSetup();
         if (dataItem == null || dataItem.Count == 0)
         {
             return;
@@ -66,7 +91,7 @@ public class RewardInfoGroup : ScreenUI
                 parent = bgRewardInfos[6 - dataItem.Count];
                 break;
         }
-        if (mainPopup == null)
+        if (needSetup)
             mainPopup = parent;
         parent.SetActive(true);
 

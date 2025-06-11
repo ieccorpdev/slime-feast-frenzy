@@ -26,7 +26,6 @@ namespace IEC
         public List<GameObject> lockGroups, unlockGroups;
         private bool isUseChest;
         public RewardInfoGroup rewardInfoGroup;
-        public static GameObject currentInfo;
 
         private void Awake()
         {
@@ -43,6 +42,8 @@ namespace IEC
             else
             {
                 rewardInfoGroup.Show();
+                rewardInfoGroup.transform.parent = Locator.Main.PopupJourney.contentPanel;
+                rewardInfoGroup.transform.SetAsLastSibling();
             }
         }
 

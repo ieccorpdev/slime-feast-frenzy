@@ -51,15 +51,19 @@ namespace IEC
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
             };
+            SetUpEventTrigger();
+        }
+
+        private void SetUpEventTrigger()
+        {
             EventTrigger.Entry entry = new EventTrigger.Entry
             {
                 eventID = EventTriggerType.PointerDown
             };
             entry.callback.AddListener((data) => {
-                var currentInfo = ItemPassJourney.currentInfo;
+                var currentInfo = RewardInfoGroup.currentInfo;
                 if (currentInfo)
                 {
-                    currentInfo.transform.DOKill();
                     currentInfo.SetActive(false);
                 }
             });
@@ -149,7 +153,7 @@ namespace IEC
             PlayerData.journeyData.ResetJourneyData();
             PlayerData.CheckPlayerMaxHealth();
             Pool.Get<UnderseaVoyageButton>().InitStatusButton();
-            if (!PlayerData.journeyData.isEnableMaxHeart && PlayerData.playerAvatarFrameName.Equals("Ava_Frame_Pass_1"))
+            if (!string.IsNullOrEmpty(PlayerData.playerAvatarFrameName) && PlayerData.playerAvatarFrameName.Equals("Ava_Frame_Pass_1"))
             {
                 PlayerData.playerAvatarFrameName = Config.playerAvatarConfig.GetAvatarSprite("").name;
                 EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
