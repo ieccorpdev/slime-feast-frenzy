@@ -136,22 +136,22 @@ public class TrophyScreenTab : ScreenNavigateUI
         switch (type)
         {
             case TrophyType.GrandVoyage:
-                textRS += "Clear " + targetReach + " level to get the " + trophy + "!";
+                textRS += "Clear " + targetReach + " levels to get the " + trophy + "!";
                 break;
             case TrophyType.SharkFrenzyForce:
-                textRS += "Unlock more " + targetReach + " skin to get the " + trophy + "!";
+                textRS += "Collect " + targetReach + " characters to get the " + trophy + "!";
                 break;
             case TrophyType.UnderseaVoyage:
                 textRS += "Complete the pass " + targetReach + " times to get the " + trophy + "!";
                 break;
             case TrophyType.SharkRace:
             case TrophyType.StarRace:
-                textRS += "Complete the event and make top " + targetReach + " to get the " + trophy + "!";
+                textRS += "Complete the event and make top 3 " + targetReach + " to get the " + trophy + "!";
                 break;
             case TrophyType.ChompOff:
             case TrophyType.RelicHunt:
             case TrophyType.OceanGift:
-                textRS += "Complete the event  " + targetReach + " times to get the " + trophy + "!";
+                textRS += "Complete the event " + targetReach + " times to get the " + trophy + "!";
                 break;
             
         }
