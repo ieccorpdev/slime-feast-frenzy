@@ -21,7 +21,16 @@ public class CharacterHomeTab : ScreenNavigateUI
     {
         this.UnregisterListener(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, OnChangeTabEvent);
     }
-    
+
+    private void Start()
+    {
+        SetEvent(characterListButton,
+            () =>
+            {
+                Locator.Main.PopupCharacterList.Show();
+            });
+    }
+
     private void OnChangeTabEvent(object param)
     {
         var type = (CharacterTabType)param;
