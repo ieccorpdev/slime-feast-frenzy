@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace IEC
         public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
+        public TextMeshProUGUI characterDescriptionText;
 
         [Header("Navigate Button")] 
         public Button nextButton;
@@ -105,6 +107,7 @@ namespace IEC
                 characterShardImage.sprite = CurrentCharacterConfig.characterShardSpriteSmall;
             }
 
+            UpdateDescriptionText();
             UpdateGroupButtonsUI();
             UpdateUpgradeButtonUI();
             UpdateCurrentLevelStarUI();
@@ -196,6 +199,28 @@ namespace IEC
             UpdateCurrentCharacterUI();
             selectionScroller.Init(this);
             CheckNavigateButton();
+        }
+
+        private void UpdateDescriptionText()
+        {
+            characterDescriptionText.text = CurrentCharacterConfig.characterDescription;
+
+            List<object> formatValues = new List<object>();
+
+            foreach (var power in CurrentCharacterConfig.listCharacterPowers)
+            {
+                if (power != null)
+                {
+                    float powerValue = power.GetCharacterPowerValue(CurrentCharacterLevel).buffAmount;
+
+                    if (powerValue < 1f)
+                        powerValue *= 100f;
+
+                    formatValues.Add(powerValue);
+                }
+            }
+
+            characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
         }
 
         private void OnNextButtonClick()

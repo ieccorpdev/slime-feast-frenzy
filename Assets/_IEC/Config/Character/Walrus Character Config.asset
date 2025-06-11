@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Walrus Character Config
   m_EditorClassIdentifier: 
   characterName: Walrus
+  characterDescription: +{0}% speed and +{1}s duration when using [icon Timefreeze]
   characterSelectionSprite: {fileID: 21300000, guid: ca0c1b1cc2121c54aa012c68aedde105,
     type: 3}
   characterLockedSprite: {fileID: 21300000, guid: a70dab4a1aefefa4aa128c6719d179a6,
@@ -49,15 +50,6 @@ MonoBehaviour:
   - statType: 2
     statValue: 0.8
   listCharacterPowers:
-  - powerType: 3
-    resourceAffected: 7
-    listCharacterPowerValue:
-    - conditionValueForPower: 0
-      buffAmount: 3
-    - conditionValueForPower: 0
-      buffAmount: 5
-    - conditionValueForPower: 0
-      buffAmount: 8
   - powerType: 1
     resourceAffected: 7
     listCharacterPowerValue:
@@ -67,5 +59,14 @@ MonoBehaviour:
       buffAmount: 30
     - conditionValueForPower: 0
       buffAmount: 40
+  - powerType: 3
+    resourceAffected: 7
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 3
+    - conditionValueForPower: 0
+      buffAmount: 5
+    - conditionValueForPower: 0
+      buffAmount: 8
   levelUnlock: 0
   characterLevelOnUnlock: -1
