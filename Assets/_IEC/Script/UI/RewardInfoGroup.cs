@@ -108,9 +108,12 @@ public class RewardInfoGroup : ScreenUI
             {
                 rewardUI.gameObject.SetActive(true);
                 rewardUI.gameObject.transform.localScale = Vector3.one;
-                rewardUI.transform.SetParent(parent.transform.GetChild(0));
+                if (rewardUI.transform.parent != parent.transform.GetChild(0))
+                {
+                    rewardUI.transform.SetParent(parent.transform.GetChild(0));
+                    rewardUI.transform.SetAsFirstSibling();
+                }
                 rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
-                rewardUI.transform.SetAsFirstSibling();
             }
             else
             {

@@ -4,6 +4,7 @@ using _IECModules;
 using _IEC.Features.Gameplay;
 using System.Collections.Generic;
 using System.Linq;
+using _IEC.Features.Common.Extension;
 
 namespace IEC
 {
@@ -85,7 +86,9 @@ namespace IEC
 
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set level hole", param =>
             {
-                GamePlay.levelController.GetHolePlayer().SetLevel(int.Parse(param.inputParams[0].value.ToString()));
+                int level = int.Parse(param.inputParams[0].value.ToString());
+                GamePlay.levelController.GetHolePlayer().SetLevel(level);
+                PlayerData.trophyData.SetLevelTrophy(level);
             }, new CheatCode.InputParam
             {
                 value = 1
@@ -146,6 +149,23 @@ namespace IEC
                 Enum.GetNames(typeof(WeatherTheme)).ToList(),
                 weatherIndex
             );
+            
+            var characterIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(ch => ch.characterName.Equals(PlayerData.playerCharacterName));
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Select Character",
+                cheatCodeParam =>
+                {
+                    var characterInt = cheatCodeParam.dropdownParam.value;
+                    PlayerData.playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[characterInt].characterName;
+                    this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
+                    {
+                        characterName = PlayerData.playerCharacterName
+                    });
+                },
+                Config.allCharactersConfig.listAllCharactersConfig.Select(ch => ch.characterName).ToList(),
+                characterIndex
+            );
+            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
@@ -189,6 +209,34 @@ namespace IEC
                 value = 5
             });
             
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set [Trophy Type] with [TimeComplete]", param =>
+            {
+                int trophyType = int.Parse(param.inputParams[0].value.ToString());
+                int timesComp = int.Parse(param.inputParams[1].value.ToString());
+                TrophyType type = (TrophyType)(trophyType-1);
+                
+                PlayerData.trophyData.SetTrophyTimes(type,timesComp);
+
+                if (Locator.Main.ScreenMain)
+                {
+                    Locator.Main.ScreenMain.trophyTab.LoadData();
+                }
+            }, new CheatCode.InputParam { value = 1 }, new CheatCode.InputParam { value = 1 });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Reset [Trophy Type] with to tier 0", param =>
+            {
+                int trophyType = int.Parse(param.inputParams[0].value.ToString());
+                TrophyType type = (TrophyType)(trophyType-1);
+                PlayerData.trophyData.SetTrophyCollected(type,0);
+                if (Locator.Main.ScreenMain)
+                {
+                    Locator.Main.ScreenMain.trophyTab.LoadData();
+                }
+            }, new CheatCode.InputParam
+            {
+                value = 1
+            });
+
+            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());
@@ -208,6 +256,7 @@ namespace IEC
             {
                 int level = int.Parse(param.inputParams[0].value.ToString());
                 PlayerData.level = level;
+                PlayerData.trophyData.SetLevelTrophy(level);
                 EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
             }, new CheatCode.InputParam
             {
@@ -344,6 +393,9 @@ namespace IEC
             }, new CheatCode.InputParam
             {
                 value = 1
+            }, new CheatCode.InputParam
+            {
+                value = 1
             });    
             ModuleController.cheatCode.onCheatCodeOpen.AddListener(() =>
             {
@@ -458,11 +510,13 @@ namespace IEC
                 if (Input.GetKeyDown(KeyCode.RightArrow))
                 {
                     if (!GamePlay.IsWin) PlayerData.level = Mathf.Max(1, PlayerData.level + 1);
+                    PlayerData.trophyData.SetLevelTrophy(PlayerData.level );
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
                 else if (Input.GetKeyDown(KeyCode.LeftArrow))
                 {
                     PlayerData.level = Mathf.Max(1, PlayerData.level - 1);
+                    PlayerData.trophyData.SetLevelTrophy(PlayerData.level );
                     EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
                 }
             }

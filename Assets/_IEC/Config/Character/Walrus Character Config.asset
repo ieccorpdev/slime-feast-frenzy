@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Walrus Character Config
+  m_EditorClassIdentifier: 
+  characterName: Walrus
+  characterSelectionSprite: {fileID: 21300000, guid: ca0c1b1cc2121c54aa012c68aedde105,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: a70dab4a1aefefa4aa128c6719d179a6,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: ddaac8ef4b7a5b248aad8a41df640c10,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: 1342ffdf0cf06d348a37949fab1fa1a0,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: 3d4f9dedb0931c34dbfb6bffd5360182,
+    type: 3}
+  defaultCharacterPosY: -1.1
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 70bfdc2cea0620444afe4145a145b6ef,
+    type: 3}
+  characterControlPrefab: {fileID: 7676823836891351737, guid: f66f1ab8be4bbd845a7515d68e47c6f4,
+    type: 3}
+  characterBitePrefab: {fileID: 3141785404682211741, guid: d461f7cda72cd134588e253fe491b7ca,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 50
+    goldCost: 0
+  - shardCost: 100
+    goldCost: 0
+  - shardCost: 200
+    goldCost: 0
+  listCharacterTraits:
+  - traitType: 0
+    buffAmount: -0.2
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.2
+  - statType: 1
+    statValue: 0.6
+  - statType: 2
+    statValue: 0.8
+  listCharacterPowers:
+  - powerType: 3
+    resourceAffected: 7
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 3
+    - conditionValueForPower: 0
+      buffAmount: 5
+    - conditionValueForPower: 0
+      buffAmount: 8
+  - powerType: 1
+    resourceAffected: 7
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 20
+    - conditionValueForPower: 0
+      buffAmount: 30
+    - conditionValueForPower: 0
+      buffAmount: 40
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

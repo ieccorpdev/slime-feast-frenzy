@@ -32,14 +32,4 @@ public class AddForceOnCollision : MonoBehaviour
         }
     }
 
-    // IEnumerator IAddForce()
-    // {
-    //     var was = new WaitForSeconds(0.5f);
-    //     foreach (BaseItem item in listItem)
-    //     {
-    //         item.gameObject.SetActive(true);
-    //         item.Rb.AddForce(direction * force, ForceMode.Impulse);
-    //         yield return was;
-    //     }
-    // }
 }

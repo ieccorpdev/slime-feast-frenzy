@@ -51,7 +51,13 @@ namespace IEC
             if (PlayerData.CheckClaimProgressReward(reward))
             {
                 System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, ()=>
+                {
+                    if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+                    {
+                        PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
+                    }
+                },true);
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
