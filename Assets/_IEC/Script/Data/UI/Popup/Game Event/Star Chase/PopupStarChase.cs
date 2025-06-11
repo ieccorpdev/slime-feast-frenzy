@@ -7,6 +7,7 @@ using EnhancedUI.EnhancedScroller;
 using IEC.Helper;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace IEC
@@ -74,12 +75,44 @@ namespace IEC
                     playerDataIndex = listPlayerData.IndexOf(eventPlayerData);
                 }
             }
+           
+            SetupStickBar();
+        }
 
+        private void SetupStickBar()
+        {
+            if(playerDataUIBarBot == null || playerDataUIBarTop == null)
+            {
+                return;
+            }
             var eventSaveData = _eventRankController.GetEventSaveData(EventType.StarChase);
-            playerDataUIBarBot?.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),
+            playerDataUIBarBot.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),
                 eventSaveData.listPlayerData[playerDataIndex], playerDataIndex + 1);
-            playerDataUIBarTop?.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),
+            playerDataUIBarTop.Setup(_eventConfig, _eventConfig.GetEventData(eventSaveData.eventIndex),
                 eventSaveData.listPlayerData[playerDataIndex], playerDataIndex + 1);
+            var btnBot = playerDataUIBarBot.GetComponent<Button>();
+            if(btnBot == null) 
+            {
+                btnBot = playerDataUIBarBot.gameObject.AddComponent<Button>();
+            }
+            btnBot.onClick.RemoveAllListeners();
+            btnBot.onClick.AddListener(JumpToPlayer);
+            var btnTop = playerDataUIBarTop.GetComponent<Button>();
+            if(btnTop == null) 
+            {
+                btnTop = playerDataUIBarTop.gameObject.AddComponent<Button>();
+            }
+            btnTop.onClick.RemoveAllListeners();
+            btnTop.onClick.AddListener(JumpToPlayer);
+        }
+
+        private void JumpToPlayer()
+        {
+            if (scroller == null || playerDataIndex < 0)
+                return;
+
+            // Jump to the player's data index
+            scroller.JumpToDataIndex(playerDataIndex, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
         }
 
         private void OnScrollerScrolled(EnhancedScroller scroller, Vector2 val, float scrollPosition)
