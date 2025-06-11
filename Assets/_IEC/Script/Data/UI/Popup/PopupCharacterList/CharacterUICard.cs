@@ -95,7 +95,7 @@ namespace IEC
 
         private void UpdateUI()
         {
-            mainImage.sprite = CharacterConfig.characterMainSprite;
+            mainImage.sprite = CharacterConfig.characterSelectionSprite;
             UpdateSelectedUI();
             UpdateUpgradableUI();
             UpdateLockUI();
