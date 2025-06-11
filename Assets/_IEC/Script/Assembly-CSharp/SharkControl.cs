@@ -7,7 +7,7 @@ using UnityEngine;
 public class SharkControl : MonoBehaviour
 {
     private Animator m_Animator;
-    [SerializeField]private Hole m_hole;
+    [SerializeField] private Hole m_hole;
     private void Start()
     {
         m_Animator = GetComponent<Animator>();
@@ -15,7 +15,7 @@ public class SharkControl : MonoBehaviour
 
     public void DriveInWater()
     {
-      //Call by animator triggerd event 
+        //Call by animator triggerd event 
         m_hole.PlayEffectSharkDriveIn();
         EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
     }

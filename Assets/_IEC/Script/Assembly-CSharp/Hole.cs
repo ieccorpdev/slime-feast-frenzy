@@ -70,6 +70,8 @@ public class Hole : _BaseBehaviour
 	}
 
 	public HoleConfig Settings => m_settings;
+	public GameObject root;
+	public float timeAnim = 3f;
 
 	private void Awake()
 	{
@@ -77,8 +79,8 @@ public class Hole : _BaseBehaviour
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
-		
-		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+        root.SetActive(false);
+        this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
 
 	private void OnDestroy()
@@ -109,7 +111,14 @@ public class Hole : _BaseBehaviour
 		UpdateGravityBySpeed();
 	}
 
-	private void UpdateGravityBySpeed()
+	[Button]
+	public void HandleScaleUp()
+	{
+		root.SetActive(true);
+		DOVirtual.DelayedCall(timeAnim, () => root.SetActive(false));
+    }
+
+    private void UpdateGravityBySpeed()
 	{
 		//This function must stay in another class
 		float baseGravity = -30 -(Speed - 4) * 5;
@@ -234,8 +243,8 @@ public class Hole : _BaseBehaviour
 			});
 		});
 		SetXp(0,false);
-
-	}
+		HandleScaleUp();
+    }
 
 	public void SetSize(float targetSize,bool isLerpSize,Action callback)
 	{
