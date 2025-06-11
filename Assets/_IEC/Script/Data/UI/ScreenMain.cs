@@ -14,13 +14,14 @@ namespace IEC
     public class ScreenMain : ScreenUI
     {
         [SerializeField] private Button m_BtnSetting;
-        [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_Character, m_Tab4, m_Tab5;
+        [SerializeField] private GameObject m_ResourceUI, m_Shop, m_Home, m_TabTrophy, m_TabLeaderBoard, m_TabCharacter;
         public RectTransform topBar; 
         public BottomBar bottomBar;
         private Dictionary<TabType, GameObject> m_DictTab = new Dictionary<TabType, GameObject>();
         private List<GameObject> m_ListTabObj = new List<GameObject>();
         private ScreenNavigateUI _currentScreen;
         public GameObject shopTab => m_Shop;
+        public TrophyScreenTab trophyTab => m_TabTrophy.GetComponent<TrophyScreenTab>();
         public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
         public UICurrency LifeCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Live);
         
@@ -124,9 +125,9 @@ namespace IEC
             // Debug.LogError("Init");
             m_DictTab[TabType.Home] = m_Home;
             m_DictTab[TabType.Shop] = m_Shop;
-            m_DictTab[TabType.Character] = m_Character;
-            m_DictTab[TabType.LeaderBoard] = m_Tab4;
-            m_DictTab[TabType.Tab5] = m_Tab5;
+            m_DictTab[TabType.Trophy] = m_TabTrophy;
+            m_DictTab[TabType.LeaderBoard] = m_TabLeaderBoard;
+            m_DictTab[TabType.Character] = m_TabCharacter;
             HideAllTab();
             PlayAnimCollectedLeaderBoardRank();
             CheckBannerHome();

@@ -11,7 +11,7 @@ namespace IEC
         Character,
         Home,
         LeaderBoard,
-        Tab5
+        Trophy,
     }
 
     public enum ResourceType

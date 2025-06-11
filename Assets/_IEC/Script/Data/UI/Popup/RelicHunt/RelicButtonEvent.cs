@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using IEC;
 using IEC.Helper;
+using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,6 +21,12 @@ public class RelicButtonEvent : _BaseBehaviour
     public Button button;
     private TimeSpan countdownTimeSpan;
     [SerializeField] private GameEventConfig _eventConfig;
+    private SkeletonGraphic spine;
+
+    private void Start()
+    {
+        spine = GetComponentInChildren<SkeletonGraphic>();
+    }
 
     public bool IsEventCanShow()
     {
@@ -45,6 +52,7 @@ public class RelicButtonEvent : _BaseBehaviour
         {
             return;
         }
+
         if (PlayerData.relicData.isNewEvent && PlayerData.relicData.lastEventRewards.Count > 0)
         {
             SetClaimLastEventState();
@@ -56,6 +64,7 @@ public class RelicButtonEvent : _BaseBehaviour
         {
             levelUnlockText.text = "Lvl. " + Config.relicConfig.levelUnlockFeature;
             lockedGroup.SetActive(true);
+            spine?.gameObject.SetActive(false);
             button.interactable = false;
         }
         else
@@ -70,9 +79,10 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config, true))
                 {
                     completedGroup.SetActive(true);
+                    spine?.gameObject.SetActive(false);
                     button.interactable = false;
                 }
                 else
@@ -155,6 +165,7 @@ public class RelicButtonEvent : _BaseBehaviour
                     {
                         gameObject.SetActive(false);
                     }
+
                     PlayerData.relicData.lastEventRewards.Clear();
                     PlayerData.relicData.isNewEvent = false;
                 },

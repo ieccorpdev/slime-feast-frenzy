@@ -28,7 +28,7 @@ namespace _IEC.Features.Gameplay
         {
             SpawnMap(level.GetMapData(), levelObjectHolder, config);
         }
-        
+
 
         public static void SpawnMap(PrefabMapData prefabMapData, Transform levelObjectHolder)
         {
@@ -41,8 +41,9 @@ namespace _IEC.Features.Gameplay
 
         public static void SpawnMap(MapData mapData, Transform levelObjectHolder, ThemeConfig config = null)
         {
-            var themeConfig = config == null ? Config.themeConfig : config; 
-            var listTileObjects = new List<GroundElement>();    
+            var themeConfig = config == null ? Config.themeConfig : config;
+            var listTileObjects = new List<GroundElement>();
+            if (mapData == null) return;
             foreach (var tileMapData in mapData.listMapTileData)
             {
                 var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
@@ -86,45 +87,46 @@ namespace _IEC.Features.Gameplay
             //     }
             // }
         }
-        
-        public static List<BaseItem> GenerateRandomLevelAllItems(Transform levelObjectHolder, GameplayItemPrefabConfig itemConfig)
+
+        public static List<BaseItem> GenerateRandomLevelAllItems(Transform levelObjectHolder,
+            GameplayItemPrefabConfig itemConfig)
         {
             List<BaseItem> listBaseItems = new();
             float spacing = 1f;
             Vector2 cursor = Vector2.zero;
             float rowHeight = 0f;
             float levelWidth = 0f;
-            
+
             float estimatedSide = Mathf.Sqrt(itemConfig.ListItemDefinition.Count) * 10f; // tweak this estimate
-            
+
             List<Bounds> placedBounds = new();
-            
+
             // bool IsOverlapping(Bounds newBounds) {
             //     foreach (var existing in placedBounds) {
             //         if (existing.Intersects(newBounds)) return true;
             //     }
             //     return false;
             // }
-            
-            for (int i = 0; i < itemConfig.ListItemDefinition.Count; i++) {
-                
-                if(itemConfig.ListItemDefinition[i].GetPrefab() == null)
+
+            for (int i = 0; i < itemConfig.ListItemDefinition.Count; i++)
+            {
+                if (itemConfig.ListItemDefinition[i].GetPrefab() == null)
                     continue;
-            
+
                 var bound = GroundExtend.GetRendererBounds(itemConfig.ListItemDefinition[i].GetPrefab());
                 var boundSize = bound.size;
-            
+
                 // Try to place it at cursor position
                 UnityEngine.Vector3 tryPosition = new UnityEngine.Vector3(cursor.x, 0f, cursor.y);
                 Bounds futureBounds = new Bounds(bound.center + tryPosition, boundSize);
-            
+
                 //if (!IsOverlapping(futureBounds)) 
                 {
                     var newItem = itemConfig.ListItemDefinition[i].GetPrefab().Spawn();
                     //GameObject instance = Instantiate(Config.itemPrefabConfig.ListItemDefinition[i].GetPrefab(), tryPosition, Quaternion.identity, itemHolder);
                     Bounds placed = GroundExtend.GetRendererBounds(newItem);
                     placed.center += tryPosition;
-                    
+
                     var itemComponent = newItem.GetComponent<BaseItem>();
                     if (itemComponent == null)
                     {
@@ -132,32 +134,33 @@ namespace _IEC.Features.Gameplay
                     }
 
                     newItem.transform.parent = levelObjectHolder;
-                    
+
                     itemComponent.LoadData(new ItemData()
-                    {
-                        itemId = itemConfig.ListItemDefinition[i].GetId(),
-                        //position = newItem.transform.position,
-                        position = tryPosition,
-                        eulerAngle = newItem.transform.eulerAngles,
-                        isStartKinematic = true
-                    }, 
-                    itemConfig.ListItemDefinition[i]);
-            
+                        {
+                            itemId = itemConfig.ListItemDefinition[i].GetId(),
+                            //position = newItem.transform.position,
+                            position = tryPosition,
+                            eulerAngle = newItem.transform.eulerAngles,
+                            isStartKinematic = true
+                        },
+                        itemConfig.ListItemDefinition[i]);
+
                     placedBounds.Add(placed);
-            
+
                     // Move cursor forward
                     cursor.x += boundSize.x + spacing;
                     rowHeight = Mathf.Max(rowHeight, boundSize.z);
-            
+
                     // Wrap if we get too wide
                     levelWidth += boundSize.x + spacing;
-                    if (levelWidth > estimatedSide) {
+                    if (levelWidth > estimatedSide)
+                    {
                         cursor.x = 0f;
                         cursor.y += rowHeight + spacing;
                         rowHeight = 0f;
                         levelWidth = 0f;
                     }
-                    
+
                     listBaseItems.Add(itemComponent);
                 }
             }
@@ -205,7 +208,7 @@ namespace _IEC.Features.Gameplay
                         groupHolder.transform.parent = levelObjectHolder;
                         groupHolder.transform.position = itemData.groupPosition;
                     }
-                    
+
                     itemTransform.parent = groupHolder.transform;
                 }
                 else
@@ -267,7 +270,8 @@ namespace _IEC.Features.Gameplay
             return res;
         }
 
-        public static List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
+        public static List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder,
+            int versionItem)
         {
             itemIds.Clear();
             var res = new List<BaseItem>();
@@ -308,7 +312,7 @@ namespace _IEC.Features.Gameplay
                     }
 
                     var itemTransform = itemComponent.transform;
-                    
+
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
 
@@ -323,10 +327,10 @@ namespace _IEC.Features.Gameplay
                             groupHolder.transform.parent = levelObjectHolder;
                             groupHolder.transform.position = itemData.groupPosition;
                         }
-                    
+
                         itemTransform.parent = groupHolder.transform;
                     }
-                    
+
                     res.Add(itemComponent);
                     if (Pool.Get<Game>().iosFeature)
                     {
@@ -339,10 +343,12 @@ namespace _IEC.Features.Gameplay
                         {
                             objectOffset = -objectSize / 2;
                         }
-                        waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
+
+                        waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset;
                         waterWave.InitShader();
                         itemComponent.SetPosOnwater(waterWave);
                     }
+
                     //Set ColorTheme
                     var meshRederers = itemComponent.gameObject.GetComponentsInChildren<MeshRenderer>();
 
@@ -350,9 +356,9 @@ namespace _IEC.Features.Gameplay
                     {
                         mr.SetPropertyBlock(block);
                     }
+
                     itemIds.Add(itemSpawn.id);
                 }
-                
             }
 
             return res;
@@ -363,10 +369,10 @@ namespace _IEC.Features.Gameplay
         {
             var res = new List<BaseItem>();
             var prefab = boosterData.itemDefinition.GetPrefab();
-            
+
             if (count <= 0)
                 return res;
-            
+
             if (prefab == null)
             {
                 return res;
@@ -380,16 +386,16 @@ namespace _IEC.Features.Gameplay
                 {
                     itemComponent = newItem.AddComponent<BaseBoosterItem>();
                 }
-                
+
                 itemComponent.SetBoosterData(boosterData);
-                
+
                 var itemData = new ItemData()
                 {
                     itemId = boosterData.itemDefinition.GetId(),
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
                     localScale = Vector3.one,
-                    isStartKinematic =  true,
+                    isStartKinematic = true,
                 };
 
                 var itemTransform = itemComponent.transform;
@@ -401,8 +407,9 @@ namespace _IEC.Features.Gameplay
 
             return res;
         }
-        
-        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder, ItemDefinition itemDefinition)
+
+        public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder,
+            ItemDefinition itemDefinition)
         {
             var res = new List<BaseItem>();
             if (itemDefinition == null) return res;
@@ -411,6 +418,7 @@ namespace _IEC.Features.Gameplay
             {
                 return res;
             }
+
             for (int i = 0; i < count; i++)
             {
                 var newItem = prefab.Spawn();
@@ -419,6 +427,7 @@ namespace _IEC.Features.Gameplay
                 {
                     itemComponent = newItem.AddComponent<BaseItem>();
                 }
+
                 var itemTransform = itemComponent.transform;
                 float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
                 var itemData = new ItemData()
@@ -427,7 +436,7 @@ namespace _IEC.Features.Gameplay
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
                     localScale = Vector3.one * scale,
-                    isStartKinematic =  false,
+                    isStartKinematic = false,
                 };
                 itemTransform.parent = levelObjectHolder;
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
@@ -443,9 +452,12 @@ namespace _IEC.Features.Gameplay
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
             }
+
             return res;
         }
-        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int spawnTime, Transform levelObjectHolder, ItemDefinition itemDefinition)
+
+        public static List<BaseItem> SpawnRelicItems(Bounds bounds, int spawnTime, Transform levelObjectHolder,
+            ItemDefinition itemDefinition)
         {
             var res = new List<BaseItem>();
             if (itemDefinition == null) return res;
@@ -475,22 +487,47 @@ namespace _IEC.Features.Gameplay
                     {
                         itemComponent = newItem.AddComponent<BaseItem>();
                     }
+
                     var itemTransform = itemComponent.transform;
                     var itemData = new ItemData()
                     {
                         itemId = itemDefinition.GetId(),
-                        position = spawnPos.Value, 
+                        position = spawnPos.Value,
                         eulerAngle = Vector3.zero,
-                        localScale = Vector3.one *  spawnSize,
-                        isStartKinematic =  true,
+                        localScale = Vector3.one * spawnSize,
+                        isStartKinematic = true,
                     };
                     itemTransform.parent = levelObjectHolder;
                     itemComponent.LoadData(itemData, itemDefinition);
                     itemComponent.transform.position = spawnPos.Value;
-                    Debug.Log($"pos {itemComponent.transform.position} -- amount {spawmAmount}");
                     res.Add(itemComponent);
                     itemIds.Add(itemData.itemId);
-                    //tempList.Add(itemComponent);
+                    // hard code logic
+                    if (j == 0) //first object spawn
+                    {
+                        Debug.Log($"itemComponent.GetComponent<AddForceOnCollision>().OnCollision");
+
+                        itemComponent.GetComponent<AddForceOnCollision>().OnCollision = () =>
+                        {
+                            switch (spawmAmount)
+                            {
+                                case 3:
+                                    EventController.RaiseEvent(EventList.Audio.RELIC_CLONE_3);
+                                    Debug.Log($"EventList.Audio.RELIC_CLONE_3");
+                                    break;
+                                case 4:
+                                    EventController.RaiseEvent(EventList.Audio.RELIC_CLONE_4);
+                                    Debug.Log($"EventList.Audio.RELIC_CLONE_4");
+
+                                    break;
+                                case 5:
+                                    EventController.RaiseEvent(EventList.Audio.RELIC_CLONE_5);
+                                    Debug.Log($"EventList.Audio.RELIC_CLONE_5");
+
+                                    break;
+                            }
+                        };
+                    }
                 }
 
                 // for (int j = 0; j < tempList.Count; j++)
@@ -498,7 +535,7 @@ namespace _IEC.Features.Gameplay
                 //     tempList[i].transform.position = spawnPos.Value;
                 // }
             }
-            
+
             return res;
         }
 
@@ -650,29 +687,36 @@ namespace _IEC.Features.Gameplay
 //
         //    return res;
         //}
-        
-        public static Vector3 FindValidSpawnPosition(Bounds bounds, float checkRadius, int maxAttempts, LayerMask itemLayer) {
-            for (int i = 0; i < maxAttempts; i++) {
+
+        public static Vector3 FindValidSpawnPosition(Bounds bounds, float checkRadius, int maxAttempts,
+            LayerMask itemLayer)
+        {
+            for (int i = 0; i < maxAttempts; i++)
+            {
                 Vector3 randomPos = new Vector3(
                     Random.Range(bounds.min.x, bounds.max.x),
                     0,
                     Random.Range(bounds.min.z, bounds.max.z)
                 );
 
-                if (IsPositionAvailable(randomPos, checkRadius, itemLayer)) {
+                if (IsPositionAvailable(randomPos, checkRadius, itemLayer))
+                {
                     return randomPos;
                 }
             }
 
             return Vector3.zero; // Couldn't find a free spot
         }
-        
-        public static bool IsPositionAvailable(Vector3 position, float checkRadius, LayerMask itemLayerMask) {
+
+        public static bool IsPositionAvailable(Vector3 position, float checkRadius, LayerMask itemLayerMask)
+        {
             // Check for any colliders in the area
             Collider[] hits = Physics.OverlapSphere(position, checkRadius);
-    
-            foreach (var hit in hits) {
-                if (hit.transform.parent.GetComponent<BaseItem>() != null) {
+
+            foreach (var hit in hits)
+            {
+                if (hit.transform.parent.GetComponent<BaseItem>() != null)
+                {
                     return false; // Space is occupied
                 }
             }

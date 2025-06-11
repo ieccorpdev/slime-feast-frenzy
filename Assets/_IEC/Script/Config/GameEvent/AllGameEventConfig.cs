@@ -15,7 +15,15 @@ namespace IEC
         {
             return listAllGameEventConfig.Find(config => config.eventType == eventType);
         }
-        
+        public int GetLevelUnlockEvent(EventType type)
+        {
+            var data = listAllGameEventConfig.Find(x => x.eventType == type);
+            if (data)
+            {
+                return data.levelUnlock;
+            }
+            return 999;
+        }
         public List<string> GenerateAllNames(int num, string nameToIgnore = "")
         {
             List<string> result = new List<string>();

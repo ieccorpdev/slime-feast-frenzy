@@ -78,6 +78,7 @@ namespace IEC
         public void AddLevel()
         {
             level += 1;
+            trophyData.SetLevelTrophy(level);
         }
        
         public void SaveLastPlayTime()
@@ -1141,6 +1142,12 @@ namespace IEC
             chompOffCurrentLevelLost = -1;
             chompOffCurrentLevelLostCount = 0;
         }
+
+        #endregion
+
+        #region MyRegion
+
+        public TrophyData trophyData = new TrophyData();
 
         #endregion
     }

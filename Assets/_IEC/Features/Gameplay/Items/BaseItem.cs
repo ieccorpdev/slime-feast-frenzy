@@ -61,8 +61,12 @@ namespace _IEC.Features.Gameplay
                 m_ItemDefinition = this.itemDefinition;
             }
             mainCam = Camera.main;
-            rb.drag = Config.gamePlayConfig.ItemDrag;
-            rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            if (rb)
+            {
+                rb.drag = Config.gamePlayConfig.ItemDrag;
+                rb.angularDrag = Config.gamePlayConfig.ItemAngularDrag;
+            }
+
             _specialItemHighlightEffect = GetComponentInChildren<SpecialItemParticleEffectHighlight>();
         }
         void OnEnable()
@@ -290,7 +294,11 @@ namespace _IEC.Features.Gameplay
                 savedData.isKinematic = true;
                 savedData.interpolation = rb.interpolation;
                 savedData.collisionDetectionMode = rb.collisionDetectionMode;
+                #if UNITY_EDITOR
+                DestroyImmediate(rb);
+                #else
                 Destroy(rb);
+                #endif
             }
         }
 
@@ -373,10 +381,13 @@ namespace _IEC.Features.Gameplay
         public Transform targetObject; // Object B
         private static Plane[] sharedPlanes;
         private Plane[] curentPlanes;
+        private bool alreadyAppear = false;
     
         public void ManagedLateUpdate()
         {
             bool hasRb = rb;
+            bool isSpecialItem = gameObject.name.Contains("Ocean") || gameObject.name.Contains("Kingdom"); //temp logic need improve
+            
             if (GameG.iosFeature )
             {
                 if (hasRb)
@@ -400,23 +411,22 @@ namespace _IEC.Features.Gameplay
             {
                 springOscillation.CheckSpringObject();
             }
-            if (!hasRb)
+            if (!hasRb || isSpecialItem)
             {
-               if (curentPlanes == null || ((sharedPlanes == null || Time.frameCount % 5 == 0) && curentPlanes != sharedPlanes))
+               if ( Time.frameCount % 5 == 0)
                {
-                   sharedPlanes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
-                   curentPlanes = sharedPlanes;     
-               }
-               if (hasRenderer && GeometryUtility.TestPlanesAABB(sharedPlanes, myRenderer.bounds))
-               {
-                   RestoreRigidbody();
-                   AppearInScreen();
+                   if (hasRenderer && IsInScreen(mainCam))
+                   {
+                       if(!isSpecialItem) RestoreRigidbody();
+                       if(!alreadyAppear) AppearInScreen();
+                   }
                }
             }
             else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
+            
         }
 
         public void SetPosOnwater(TCP2_GetPosOnWater pow)
@@ -431,7 +441,13 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.Audio.RELIC_APEAR);
             }
-            
+            else if(gameObject.name.Contains("Ocean") || gameObject.name.Contains("Kingdom")) // isspecial item
+            {
+                EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_NEAR);
+            }
+
+            alreadyAppear = true;
+
         }
         
         #endregion
