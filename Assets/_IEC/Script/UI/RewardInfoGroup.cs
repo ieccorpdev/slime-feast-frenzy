@@ -22,6 +22,10 @@ public class RewardInfoGroup : ScreenUI
         mainPopup.transform.DOScale(Vector3.one, 0.4f).SetEase(Ease.OutBack);
         gameObject.SetActive(true);
         StartCoroutine(WaitToHide());
+        foreach (var rewardUI in listRewardInfoUI)
+        {
+            rewardUI.gameObject.transform.localScale = Vector3.one;
+        }
     }
 
     private void Update()
@@ -106,6 +110,7 @@ public class RewardInfoGroup : ScreenUI
                 rewardUI.gameObject.transform.localScale = Vector3.one;
                 rewardUI.transform.SetParent(parent.transform.GetChild(0));
                 rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
+                rewardUI.transform.SetAsFirstSibling();
             }
             else
             {
