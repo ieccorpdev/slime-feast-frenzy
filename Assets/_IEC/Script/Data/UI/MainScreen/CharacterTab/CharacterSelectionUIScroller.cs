@@ -80,7 +80,7 @@ namespace IEC
             var charConfig = Config.allCharactersConfig.listAllCharactersConfig[dataIndex];
 
             if(cellView != null)
-                cellView.Setup(charConfig);
+                cellView.Setup(charConfig, CharacterSelectionTab.CurrentCharacterConfig.characterName);
             
             return cellView;
         }

@@ -18,6 +18,10 @@ namespace IEC
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
 
+        [Header("Navigate Button")] 
+        public Button nextButton;
+        public Button previousButton;
+
         [Header("Character Stat UI")] 
         public List<CharacterTabStatDisplay> listCharacterStatUI = new();
 
@@ -45,6 +49,8 @@ namespace IEC
         {
             selectCharacterButton.onClick.AddListener(OnSelectCharacter);
             levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
+            previousButton.onClick.AddListener(OnPreviousButtonClick);
+            nextButton.onClick.AddListener(OnNextButtonClick);
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
         }
 
@@ -189,6 +195,58 @@ namespace IEC
             CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
             UpdateCurrentCharacterUI();
             selectionScroller.Init(this);
+            CheckNavigateButton();
+        }
+
+        private void OnNextButtonClick()
+        {
+            if(!previousButton.gameObject.activeInHierarchy)
+                previousButton.gameObject.SetActive(true);
+
+            var currentIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(character =>
+                character.characterName.Equals(CurrentCharacterConfig.characterName));
+            var nextIndex = currentIndex + 1;
+            
+            this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new CharacterEventData()
+            {
+                characterName = Config.allCharactersConfig.listAllCharactersConfig[nextIndex].characterName
+            });
+
+            CheckNavigateButton();
+                
+        }
+
+        private void OnPreviousButtonClick()
+        {
+            if(!nextButton.gameObject.activeInHierarchy)
+                nextButton.gameObject.SetActive(true);
+            
+            var currentIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(character =>
+                character.characterName.Equals(CurrentCharacterConfig.characterName));
+            var previousIndex = currentIndex - 1;
+            
+            this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new CharacterEventData()
+            {
+                characterName = Config.allCharactersConfig.listAllCharactersConfig[previousIndex].characterName
+            });
+            
+            CheckNavigateButton();
+        }
+
+        private void CheckNavigateButton()
+        {
+            var currentIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(character =>
+                character.characterName.Equals(CurrentCharacterConfig.characterName));
+            
+            if (currentIndex == 0)
+            {
+                previousButton.gameObject.SetActive(false);
+            }
+
+            if (currentIndex == Config.allCharactersConfig.listAllCharactersConfig.Count - 1)
+            {
+                nextButton.gameObject.SetActive(false);
+            }
         }
     }
 }
