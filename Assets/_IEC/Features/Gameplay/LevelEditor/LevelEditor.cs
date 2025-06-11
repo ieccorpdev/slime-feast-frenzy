@@ -16,6 +16,8 @@ using Vector3 = System.Numerics.Vector3;
 using System.IO;
 using System.Text;
 #if UNITY_EDITOR
+using PathCreation;
+using PathCreation.Examples;
 using UnityEditor;
 #endif
 
@@ -1261,6 +1263,19 @@ namespace IEC
                         s = new Scale(baseItem.transform.lossyScale),
                         kinematic = baseItem.ItemData.isStartKinematic
                     };
+                    
+                    var pathComponent = baseItem.gameObject.GetComponentInChildren<PathFollower>();
+                    if (pathComponent)
+                    {
+                        int numPoints = pathComponent.pathCreator.bezierPath.NumPoints;
+                        itemSpawnData.pathPoints = new List<UnityEngine.Vector3>(numPoints);
+                        for (int i = 0; i < numPoints; i++)
+                        {
+                            UnityEngine.Vector3 localPos = pathComponent.pathCreator.bezierPath.GetPoint(i);
+                            UnityEngine.Vector3 worldPos = transform.TransformPoint(localPos);
+                            itemSpawnData.pathPoints.Add(worldPos);
+                        }
+                    }
                     
                     spawnData.listSpawnDatas.Add(itemSpawnData);
                 }

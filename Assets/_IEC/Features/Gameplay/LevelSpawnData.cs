@@ -45,6 +45,7 @@ namespace _IEC.Features.Gameplay
         public Rotation r;
         public Scale s;
         public bool kinematic;
+        public List<Vector3> pathPoints;
         
         public ItemData ToItemData(string id)
         {

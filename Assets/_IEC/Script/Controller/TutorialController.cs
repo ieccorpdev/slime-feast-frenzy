@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _IEC.Features.Common.Extension;
+using _IEC.Features.Gameplay;
 using _IEC.Features.VipProHackerUITutorial;
 using UnityEngine;
 
@@ -59,18 +61,39 @@ namespace IEC
             {
                 Locator.Game.ScreenInGame.OnStartTutorial(GamePlay.GetLevelController().GetHolePlayer().transform);
             }
-            else
-            {
+            // else
+            // {
                 Locator.Game.ScreenInGame.DeActiveStartGameTutorial();
-                var helperConfig =
-                    Config.gamePlayConfig.helperConfigs.Find(x => x.unlockLevel == PlayerData.level);
-                if (helperConfig != null && PlayerData.helperData.IsCompleteTutorial(helperConfig.id) == false)
-                {
-                    Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);
-                }
-            }
+                // var helperConfig =
+                //     Config.gamePlayConfig.helperConfigs.Find(x => x.unlockLevel == PlayerData.level);
+                // if (helperConfig != null && PlayerData.helperData.IsCompleteTutorial(helperConfig.id) == false)
+                // {
+                    // Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);
+                // }
+            // }
+            StartCoroutine(MagnetTutorialDelay());
+            this.RegisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);
         }
 
+        private void StartScaleUpTutorialDelay(object param)
+        {
+            StartCoroutine(ScaleUpTutorialDelay());
+        }
+
+        private IEnumerator MagnetTutorialDelay()
+        {
+            yield return new WaitForSecondsRealtime(10f);
+            Locator.Game.ScreenInGame.StartTutorialHelper(HelperId.Magnet);
+            yield return null;
+        }
+        
+        private IEnumerator ScaleUpTutorialDelay()
+        {
+            yield return new WaitForSecondsRealtime(3f);
+            Locator.Game.ScreenInGame.StartTutorialHelper(HelperId.ScaleUp);
+            this.UnregisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);
+            yield return null;
+        }
 
         public void SetStatusAllPanelTutorial(bool stt)
         {

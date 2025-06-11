@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
 using IEC;
+using PathCreation;
+using PathCreation.Examples;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay
@@ -358,6 +360,13 @@ namespace _IEC.Features.Gameplay
                     }
 
                     itemIds.Add(itemSpawn.id);
+
+                    var pathComponent = newItem.GetComponentInChildren<PathFollower>();
+                    if (pathComponent)
+                    {
+                        BezierPath newPath = new BezierPath(spawnData.pathPoints, PathSpace.xz);
+                        pathComponent.pathCreator.bezierPath = newPath;
+                    }
                 }
             }
 

@@ -17,17 +17,21 @@ namespace _IEC.Features.Tutorial
         public void StartTutorial()
         {
             this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
-            popupUnlockHelper.Show();
+            popupUnlockHelper.Hide();
+            helperButton.ShowHint();
+            HighLightCanvas.HighLightUI(helperButton.GetComponent<RectTransform>(),true,true);
+            // popupUnlockHelper.Show();
         }
         private void Awake()
         {
+            popupUnlockHelper.Hide();
             helperButton.OnClick += CompleteHelper;
 
-            popupUnlockHelper.OnClose += () =>
-            {
-                helperButton.ShowHint();
-                HighLightCanvas.HighLightUI(helperButton.GetComponent<RectTransform>(),true,true);
-            };
+            // popupUnlockHelper.OnClose += () =>
+            // {
+                // helperButton.ShowHint();
+                // HighLightCanvas.HighLightUI(helperButton.GetComponent<RectTransform>(),true,true);
+            // };
         }
 
         private void CompleteHelper()
