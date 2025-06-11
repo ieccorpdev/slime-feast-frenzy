@@ -3,13 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
 {
     public class CharacterShardPack : _BaseBehaviour
     {
-        public Image characterMainImage;
+        public Image characterShardImage;
         public TextMeshProUGUI shardAmountText;
 
         [Header("Buy Group")] 
@@ -68,12 +69,12 @@ namespace IEC
         private void UpdateUI()
         {
             var playerConfig = Config.allCharactersConfig.GetCharacterConfig(PackData.characterName);
-            characterMainImage.sprite = playerConfig.characterSelectionSprite;
+            characterShardImage.sprite = playerConfig.characterShardSpriteNormal;
             shardAmountText.text = $"x{PackData.slotData.shardCount}";
             goldText.text = $"{PackData.slotData.goldCost}";
             lockLevelText.text = $"Lv.{PackData.slotData.levelUnlockSlot}";
             
-            characterMainImage.gameObject.SetActive(false);
+            characterShardImage.gameObject.SetActive(false);
             shardAmountText.gameObject.SetActive(false);
             buyButton.gameObject.SetActive(false);
             boughtGroup.SetActive(false);
@@ -82,10 +83,12 @@ namespace IEC
             if (PlayerData.level < PackData.slotData.levelUnlockSlot)
             {
                 lockGroup.SetActive(true);
+                GetComponent<Image>().enabled = true;
             }
             else
             {
-                characterMainImage.gameObject.SetActive(true);
+                GetComponent<Image>().enabled = false;
+                characterShardImage.gameObject.SetActive(true);
                 shardAmountText.gameObject.SetActive(true);
                 if (PackData.isBought)
                 {

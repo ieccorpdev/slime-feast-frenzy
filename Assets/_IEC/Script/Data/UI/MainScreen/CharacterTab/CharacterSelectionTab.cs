@@ -11,6 +11,7 @@ namespace IEC
     public class CharacterSelectionTab : _BaseBehaviour
     {
         public Image mainCharacterImage;
+        public Image characterShardImage;
         public Button selectCharacterButton;
         public Button characterInUseButton;
         public Button levelUpCharacterButton;
@@ -91,6 +92,11 @@ namespace IEC
             {
                 mainCharacterImage.sprite = CurrentCharacterConfig.characterMainSprite;
                 mainCharacterImage.SetNativeSize();
+            }
+
+            if (characterShardImage != null)
+            {
+                characterShardImage.sprite = CurrentCharacterConfig.characterShardSpriteSmall;
             }
 
             UpdateGroupButtonsUI();

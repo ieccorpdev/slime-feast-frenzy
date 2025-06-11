@@ -23,7 +23,7 @@ namespace IEC
         public Image normalFrame;
         public Image lockFrame;
         public Vector2 normalAvatarMaskSize = new Vector2(175, 175);
-        public Image avatarMask;
+        public RectTransform avatarGroup;
         public CharacterTabStarGroup starGroup;
         public Button btn;
         public CharacterConfig CharacterConfig { get; private set; }
@@ -103,7 +103,7 @@ namespace IEC
             normalFrame.gameObject.SetActive(!isSelected);
             lockFrame.gameObject.SetActive(!isSelected);
 
-            avatarMask.GetComponent<RectTransform>().sizeDelta =
+            avatarGroup.sizeDelta =
                 isSelected 
                     ? selectedAvatarMaskSize 
                     : normalAvatarMaskSize;
@@ -118,14 +118,14 @@ namespace IEC
             bool isLock = level == -1;
             characterAvatar.sprite = isLock ? CharacterConfig.characterLockedSprite : CharacterConfig.characterSelectionSprite;
             lockGroup.SetActive(isLock);
-            shardUnlockGroup.SetActive(isLock);
-            starGroup.gameObject.SetActive(!isLock);
+            //shardUnlockGroup.SetActive(isLock);
+            //starGroup.gameObject.SetActive(!isLock);
             
-            var upgradeConfig = CharacterConfig.GetCharacterUpgrade(level + 1);
-            if (upgradeConfig != null)
-            {
-                shardUnlockCountText.text = upgradeConfig.shardCost.ToString();
-            }
+            // var upgradeConfig = CharacterConfig.GetCharacterUpgrade(level + 1);
+            // if (upgradeConfig != null)
+            // {
+            //     shardUnlockCountText.text = upgradeConfig.shardCost.ToString();
+            // }
         }
     }
 

@@ -12,6 +12,8 @@ namespace IEC
         public Sprite characterSelectionSprite;
         public Sprite characterLockedSprite;
         public Sprite characterMainSprite;
+        public Sprite characterShardSpriteNormal;
+        public Sprite characterShardSpriteSmall;
         public float defaultCharacterPosY;
         public float characterAnimSpeed = 1f;
         public Animator characterHomePrefab;
