@@ -174,7 +174,7 @@ namespace IEC
             scroller.RefreshActiveCellViews();
         }
 
-        public void ReloadData()
+        public virtual void ReloadData()
         {
             if (scroller == null)
                 return;
@@ -657,7 +657,7 @@ namespace IEC
             return cellSize;
         }
 
-        public EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
+        public virtual EnhancedScrollerCellView GetCellView(EnhancedScroller scroller, int dataIndex, int cellIndex)
         {
             //var data = listPlayerData[dataIndex];
             var eventSaveData = _eventRankController.GetEventSaveData(eventType);
