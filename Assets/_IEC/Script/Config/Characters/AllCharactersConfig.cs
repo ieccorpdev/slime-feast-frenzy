@@ -11,6 +11,14 @@ namespace IEC
     {
         public List<CharacterConfig> listAllCharactersConfig;
 
+        public List<CharacterConfig> GetListCharacterConfigNotDefault()
+        {
+            var listNotDefault = new List<CharacterConfig>(listAllCharactersConfig);
+            listNotDefault.Remove(listNotDefault.Find(character => character.isDefaultCharacter));
+
+            return listNotDefault;
+        }
+
         public CharacterConfig GetDefaultCharacter()
         {
             if (listAllCharactersConfig.Count == 0)
