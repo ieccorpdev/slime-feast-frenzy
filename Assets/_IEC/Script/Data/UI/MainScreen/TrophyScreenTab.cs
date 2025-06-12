@@ -25,6 +25,7 @@ public class TrophyScreenTab : ScreenNavigateUI
 
     public override void Show()
     {
+        Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
         tutorialTrophyPanel.gameObject.SetActive(false);
         if (!PlayerData.trophyData.isShowJourneyTutorial)
         {
