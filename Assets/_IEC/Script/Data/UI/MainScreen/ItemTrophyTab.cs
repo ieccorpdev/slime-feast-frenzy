@@ -48,7 +48,7 @@ public class ItemTrophyTab : _BaseBehaviour
     public TrophyEventData dataEventTime;
     private bool isLocked;
     private int targetToTrophy;
-    public Sprite eventInfoSprite;
+    private Sprite eventInfoSprite;
     public Sprite defaultInfoSprite;
     void Start()
     {
@@ -156,6 +156,7 @@ public class ItemTrophyTab : _BaseBehaviour
         TurnLight(false);
         mainTrophy.gameObject.SetActive(false);
         DeactiveAllBar();
+        UpdateMainTrophy();
         switch (state)
         {
             case ItemTrophyState.Idle:
@@ -184,6 +185,11 @@ public class ItemTrophyTab : _BaseBehaviour
         }
     }
 
+    public void UpdateMainTrophy()
+    {
+        int curTrophyCol = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+        mainTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(curTrophyCol);
+    }
     public void SetProgressBar(int current,int max)
     {
         progressText.text = current + "/" + max;

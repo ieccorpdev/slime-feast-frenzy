@@ -41,8 +41,8 @@ namespace IEC
             this.dataEventTime = dataEventTime;
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
-            var crState = Locator.Main.ScreenMain.trophyTab.GetStateTrophy(type);
             var data = PlayerData.trophyData.GetTrophyDataConfig(type);
+            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(data.trophyCollected);
             LoadDefaultData();
             if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
             {
@@ -92,9 +92,11 @@ namespace IEC
             infoGroups.gameObject.SetActive(true);   
             int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type)-1;
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
+            var listSpriteData = Config.trophyRewardConfig.GetReward(type).listSpiteTrophy;
             for (int i = 0; i < listSpriteTrophy.Count; i++)
             {
                 listSpriteTrophy[i].tick.gameObject.SetActive(i <= index);
+                listSpriteTrophy[i].trophy.sprite = listSpriteData[i];
             }
 
             switch (type)
