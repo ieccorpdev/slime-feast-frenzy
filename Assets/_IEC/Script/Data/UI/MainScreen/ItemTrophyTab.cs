@@ -15,13 +15,15 @@ public class ItemTrophyTab : _BaseBehaviour
     [Header("Aquarium")]
     public GameObject normalBg;
     public GameObject coralBg;
-
+    public ParticleSystem startFx;
     public GameObject blurBG;
     public GameObject lightBg;
-    
+    public Image chestImage;
     public GameObject lockObj;
     public GameObject newsTagObj;
     public Button newsClaimButton;
+    public Sprite normalChest;
+    public Sprite auraChest;
     [Header("ProgressBar")]
     public GameObject progressBar;
     public GameObject hiddenBar;
@@ -34,11 +36,11 @@ public class ItemTrophyTab : _BaseBehaviour
     [Header("Popup Region")]
     public Button infoButton;
     
-    public GameObject groupsLock;
+    public PopupInfoGroup groupsLock;
     public TextMeshProUGUI lockTrophyNameTMP;
     public TextMeshProUGUI levelUnlockTrophyNameTMP;
     
-    public GameObject groupsNoti;
+    public PopupInfoGroup groupsNoti;
     public GameObject groupsNotiTime;
     public Image bgGroupsNoti;
     public TextMeshProUGUI infoTrophyNameTMP;
@@ -48,7 +50,7 @@ public class ItemTrophyTab : _BaseBehaviour
     public TrophyEventData dataEventTime;
     private bool isLocked;
     private int targetToTrophy;
-    public Sprite eventInfoSprite;
+    private Sprite eventInfoSprite;
     public Sprite defaultInfoSprite;
     void Start()
     {
@@ -94,11 +96,13 @@ public class ItemTrophyTab : _BaseBehaviour
         if (state == ItemTrophyState.Locked )
         {
             groupsLock.gameObject.SetActive(true);
+            groupsLock.Show();
             OnClickLocked();
         }
         else if ( state == ItemTrophyState.Missing)
         {
             groupsNoti.gameObject.SetActive(true);
+            groupsNoti.Show();
             OnClickInfoGroups();
             UpdateUIByTimeDataEvent();
         }
@@ -145,6 +149,7 @@ public class ItemTrophyTab : _BaseBehaviour
     }
     public void UpdateStateAquarium(ItemTrophyState state)
     {
+        startFx.Stop();
         groupsLock.gameObject.SetActive(false);
         groupsNoti.gameObject.SetActive(false);
         this.state = state;
@@ -156,6 +161,8 @@ public class ItemTrophyTab : _BaseBehaviour
         TurnLight(false);
         mainTrophy.gameObject.SetActive(false);
         DeactiveAllBar();
+        UpdateMainTrophy();
+        chestImage.sprite = normalChest;
         switch (state)
         {
             case ItemTrophyState.Idle:
@@ -175,6 +182,7 @@ public class ItemTrophyTab : _BaseBehaviour
                 mainTrophy.gameObject.SetActive(true);
                 newsTagObj.gameObject.SetActive(true);
                 claimBar.gameObject.SetActive(true);
+                chestImage.sprite = auraChest;
                 break;
             case ItemTrophyState.Complete:
                 mainTrophy.gameObject.SetActive(true);
@@ -182,8 +190,22 @@ public class ItemTrophyTab : _BaseBehaviour
                 TurnLight(true);
                 break;
         }
+
+        CheckPlayStarFx();
     }
 
+    public void CheckPlayStarFx()
+    {
+        if (PlayerData.trophyData.GetCurrentCollectedTrophy(type) >= 4)
+        {
+            startFx.Play();
+        }
+    }
+    public void UpdateMainTrophy()
+    {
+        int curTrophyCol = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+        mainTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(curTrophyCol);
+    }
     public void SetProgressBar(int current,int max)
     {
         progressText.text = current + "/" + max;

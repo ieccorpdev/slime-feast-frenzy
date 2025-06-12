@@ -33,6 +33,25 @@ namespace IEC
         public List<Sprite> ListBadgeSprites;
         public Button trophyRoomButton;
         public TrophyEventData dataEventTime;
+        private Tween floatingTween;
+        
+        public void StartFloatingTrophy()
+        {
+            if (mainSpriteTrophy == null) return;
+            floatingTween?.Kill();
+            Vector3 startPos = mainSpriteTrophy.rectTransform.anchoredPosition;
+            floatingTween = mainSpriteTrophy.rectTransform
+                .DOAnchorPosY(startPos.y + 20f, 1f)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetEase(Ease.InOutSine);
+        }
+
+        public void StopFloatingTrophy()
+        {
+            floatingTween?.Kill();
+            floatingTween = null;
+        }
+
         public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime)
         {
             base.Show();
@@ -41,8 +60,9 @@ namespace IEC
             this.dataEventTime = dataEventTime;
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
-            var crState = Locator.Main.ScreenMain.trophyTab.GetStateTrophy(type);
             var data = PlayerData.trophyData.GetTrophyDataConfig(type);
+            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(data.trophyCollected);
+            
             LoadDefaultData();
             if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
             {
@@ -53,6 +73,7 @@ namespace IEC
                 ShowInfoGroups();
                 UpdateUIByTimeDataEvent();
             }
+            StartFloatingTrophy();
         }
         public void UpdateUIByTimeDataEvent()
         {
@@ -92,9 +113,11 @@ namespace IEC
             infoGroups.gameObject.SetActive(true);   
             int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type)-1;
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
+            var listSpriteData = Config.trophyRewardConfig.GetReward(type).listSpiteTrophy;
             for (int i = 0; i < listSpriteTrophy.Count; i++)
             {
                 listSpriteTrophy[i].tick.gameObject.SetActive(i <= index);
+                listSpriteTrophy[i].trophy.sprite = listSpriteData[i];
             }
 
             switch (type)
@@ -122,10 +145,15 @@ namespace IEC
             badgeImage.sprite = ListBadgeSprites[index];
             trophyRoomButton.onClick.AddListener(OnTrophyRoomClick);
         }
-
+        public void Hide()
+        {
+            base.Hide();
+            StopFloatingTrophy();
+        }
         public void OnTrophyRoomClick()
         {
             Hide();
+            StopFloatingTrophy();
             Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Trophy).onClick?.Invoke();
         }
         public TrophyCustomTitle GetTrophyType(int crTrophy)

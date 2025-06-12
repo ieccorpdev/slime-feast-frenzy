@@ -113,18 +113,7 @@ namespace IEC
             return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
         }
 
-        public bool IsEventAvailable(EventType eventType, int eventDurationInDays, int currentDay)
-        {
-            if (currentDay > listEventLiveOps.Count - 1)
-                currentDay %= (listEventLiveOps.Count);
-            
-            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
-            if (latestDayStartEvent == -1)
-                return false;
-
-            return (currentDay - latestDayStartEvent) < eventDurationInDays;
-        }
     }
 
     [System.Serializable]

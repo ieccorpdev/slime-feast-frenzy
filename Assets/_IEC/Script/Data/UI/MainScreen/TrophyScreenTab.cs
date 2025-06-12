@@ -146,7 +146,7 @@ public class TrophyScreenTab : ScreenNavigateUI
                 break;
             case TrophyType.SharkRace:
             case TrophyType.StarRace:
-                textRS += "Complete the event and make top 3 " + targetReach + " to get the " + trophy + "!";
+                textRS += "Complete the event and make top 3 " + targetReach + " times to get the " + trophy + "!";
                 break;
             case TrophyType.ChompOff:
             case TrophyType.RelicHunt:
@@ -204,17 +204,19 @@ public class TrophyScreenTab : ScreenNavigateUI
     private void SetEventStatus(TrophyEventData dataEvent, EventType eventType)
     {
         dataEvent.isEvent = true;
-        bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-            eventType,
-            Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(eventType).eventDurationInHours / 24),
-            PlayerData.GetDaysSinceDownload());
+        bool active = IsEventCanShow(eventType);
         dataEvent.isEventActive = active;
         if (!active)
         {
             dataEvent.timeStartEvent = Config.eventLiveOpsConfig.GetNextTimeStartEvent(eventType, PlayerData.GetDaysSinceDownload());
         }
     }
-
+    public bool IsEventCanShow(EventType eventType)
+    {
+        int level = PlayerData.level;
+        int levelUnlock = Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+    }
     public string GetTrophyTarget(TrophyType type)
     {
         //    Bronze, Silver, Gold, Diamond

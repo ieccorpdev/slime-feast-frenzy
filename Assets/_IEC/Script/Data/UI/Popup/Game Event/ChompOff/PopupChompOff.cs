@@ -137,10 +137,7 @@ namespace IEC
 
             eventSaveData.claimedReward = true;
             
-            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-                eventType,
-                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
-                PlayerData.GetDaysSinceDownload());
+            bool active = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(eventType);
 
             if (!active || IsResetChompOff())
             {

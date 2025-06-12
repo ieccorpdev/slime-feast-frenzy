@@ -35,8 +35,7 @@ public class RelicButtonEvent : _BaseBehaviour
         int level = PlayerData.level;
         int levelUnlock = Config.relicConfig.levelUnlockFeature;
         return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) &&
-               Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt,
-                   Config.relicConfig.eventDurationInHours / 24, PlayerData.GetDaysSinceDownload());
+               Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt);
     }
 
     public void UpdateUI()

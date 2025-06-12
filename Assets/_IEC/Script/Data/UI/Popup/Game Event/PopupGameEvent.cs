@@ -297,10 +297,7 @@ namespace IEC
                     stage = data.eventIndex;
             }
 
-            bool eventAvailable = Config.eventLiveOpsConfig.IsEventAvailable(
-                eventType,
-                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
-                PlayerData.GetDaysSinceDownload());
+            bool eventAvailable = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(eventType);
 
             if (!eventAvailable)
             {
