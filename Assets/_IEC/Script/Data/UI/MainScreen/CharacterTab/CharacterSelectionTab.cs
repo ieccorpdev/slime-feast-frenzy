@@ -18,7 +18,11 @@ namespace IEC
         public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
+        
+        [Header("Description Text")]
         public TextMeshProUGUI characterDescriptionText;
+        public float highlightTextSizeIncrease;
+        public Color highlightTextColor;
 
         [Header("Navigate Button")] 
         public Button nextButton;
@@ -242,11 +246,24 @@ namespace IEC
                     if (powerValue < 1f)
                         powerValue *= 100f;
 
-                    formatValues.Add(powerValue);
+                    string stringValue = GetHighlightedText(powerValue);
+                    formatValues.Add(stringValue);
                 }
             }
 
             characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
+        }
+        
+        private string GetHighlightedText(float value)
+        {
+            string colorHex = ColorToHex(highlightTextColor);
+            return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease}><color={colorHex}>{value}</color></size>";
+        }
+        
+        private string ColorToHex(Color color)
+        {
+            Color32 color32 = color; // Converts to 0–255 range
+            return $"#{color32.r:X2}{color32.g:X2}{color32.b:X2}";
         }
 
         private void OnNextButtonClick()
