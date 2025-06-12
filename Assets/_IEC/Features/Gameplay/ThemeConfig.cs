@@ -10,7 +10,7 @@ using UnityEngine;
 namespace _IEC.Features.Gameplay
 {
     [CreateAssetMenu(menuName = "Gameplay/ThemeConfig")]
-    public class ThemeConfig : ScriptableObject
+    public class ThemeConfig : SerializedScriptableObject
     {
         public List<GroundThemeConfigModel> groundThemeConfigModels;
 
@@ -19,6 +19,7 @@ namespace _IEC.Features.Gameplay
         public List<WaterThemeConfig> waterThemeConfigs;
         public List<WeatherWaterConfig> weatherWaterConfigs;
         public List<HardFixWeatherByLevel> weatherWaterHardFixes;
+        public Dictionary<int, WeatherTheme> weatherWaterHardFixesBySingleLevel;
         public int stepChangeTheme = 25;
         [SerializeField] private string themeNeedToFind;
 
@@ -157,7 +158,13 @@ namespace _IEC.Features.Gameplay
                 result += weatherWaterConfig.weatherTheme.ToString() + ",";
             }
             //Debug.LogError("WeatherThemeCanChose: " + result);
-            int group = level / 10;      
+            int group = level / 10;
+
+            if (weatherWaterHardFixesBySingleLevel.TryGetValue(level, out var weatherTheme))
+            {
+                return weatherTheme;
+            }
+            
             var dataHardFix = weatherWaterHardFixes.Find(x=>x.levelByFive == level /5);
             if (dataHardFix != null)
             {
