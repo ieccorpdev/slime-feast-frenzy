@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
@@ -251,7 +252,17 @@ namespace IEC
                 }
             }
 
-            characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
+            //characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
+            characterDescriptionText.text = ReplaceIconTags(String.Format(characterDescriptionText.text, formatValues.ToArray()));
+        }
+        
+        private string ReplaceIconTags(string inputText)
+        {
+            return Regex.Replace(inputText, @"\[(\w+)\]", match =>
+            {
+                string iconName = match.Groups[1].Value;
+                return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease * 2}><sprite name={iconName}></size>";
+            });
         }
         
         private string GetHighlightedText(float value)
