@@ -32,6 +32,7 @@ public static partial class Locator
         public static PopupHardLevel PopupHardLevel => Pool.Get<PopupHardLevel>();
 
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
+        public static PopupTrophyDetails PopupTrophyDetails => Pool.Get<PopupTrophyDetails>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
         public static PopupGiftCode PopupGiftCode => Pool.Get<PopupGiftCode>();
 
@@ -50,6 +51,7 @@ public static partial class Locator
         public static PopupChompOff PopupChompOff => Pool.Get<PopupChompOff>();
 
         public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
+        public static PopupCharacterList PopupCharacterList => Pool.Get<PopupCharacterList>();
 
         public static HighLightCanvas HighLightCanvas => Pool.Get<HighLightCanvas>();
 

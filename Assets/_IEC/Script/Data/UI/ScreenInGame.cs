@@ -178,7 +178,8 @@ namespace IEC
             }
             else
             {
-                SpawnXpVFX(data.xp, data.position);
+                var xp = GamePlay.levelController.CheckCharacterPowerOnGainXp(data.xp);
+                SpawnXpVFX(xp, data.position);
             }
         }
 

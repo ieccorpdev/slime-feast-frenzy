@@ -284,6 +284,8 @@ namespace _IEC.Features.Gameplay
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
             GoldCollected = 0;
+            
+            CheckCharacterPowerOnStartGame();
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -396,7 +398,7 @@ namespace _IEC.Features.Gameplay
             //{
             RelicObjCollected++;
             //}
-            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI,data);
         }
@@ -461,10 +463,14 @@ namespace _IEC.Features.Gameplay
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
                         playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
+                        
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
                         playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
+                        
                     }
                 };
 
@@ -583,7 +589,7 @@ namespace _IEC.Features.Gameplay
                     break;
                 case HelperId.Magnet:
                     playerHole.StartMagnetHelper();
-                    m_MagnetHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                    m_MagnetHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Vortex, Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet));
                     m_MagnetHelperActive = true;
                     break;
                 case HelperId.FrozenTime:
@@ -591,7 +597,7 @@ namespace _IEC.Features.Gameplay
                 case HelperId.ScaleUp:
                     playerHole.StartScaleByHelper();
                     m_ScaleUpHelperActive = true;
-                    m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
+                    m_ScaleUpHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Enlarge, Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp));
                     break;
                 case HelperId.Compass:
                     playerHole.StartCompassHelper();
@@ -609,6 +615,82 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
             }
+            
+            CheckCharacterPowerOnUseHelper(data.helperId switch {
+                HelperId.Magnet => ResourceType.Vortex,
+                HelperId.FrozenTime => ResourceType.TimeStop,
+                HelperId.ScaleUp => ResourceType.Enlarge,
+                HelperId.Compass => ResourceType.Compass,
+                HelperId.None => ResourceType.Vortex,
+            });
+        }
+
+        public float GetDurationHelper(ResourceType helperType)
+        {
+            var helperId = helperType switch
+            {
+                ResourceType.Vortex => HelperId.Magnet,
+                ResourceType.TimeStop => HelperId.FrozenTime,
+                ResourceType.Enlarge => HelperId.ScaleUp,
+                ResourceType.Compass => HelperId.Compass,
+            };
+            
+            return CheckCharacterPowerOnHelperDuration(helperType, Config.gamePlayConfig.GetHelperActiveTime(helperId));
+        }
+
+        public float CheckCharacterPowerOnHelperDuration(ResourceType helperType, float helperTime)
+        {
+            var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
+            if (checkPowerHelperTime != null)
+            {
+                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+            }
+            return helperTime;
+        }
+
+        private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
+        {
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
+                helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.BombShieldOnHelper,
+                helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseCameraSizeOnHelper,
+                helperType);
+        }
+
+        public int CheckCharacterPowerOnGainXp(int xp)
+        {
+            var checkXpPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.BonusXpOnSmallItems);
+            if (checkXpPower != null)
+            {
+                var value = checkXpPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                if (xp == value.conditionValueForPower)
+                {
+                    xp = Mathf.FloorToInt(xp * value.buffAmount);
+                }
+            }
+            return xp;
+        }
+
+        public void CheckCharacterPowerOnCombo(int comboCount)
+        {
+            var checkPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.AddTimerOnCombo);
+            if (checkPower != null)
+            {
+                var value = checkPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                if (comboCount >= value.conditionValueForPower)
+                {
+                    Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);
+                }
+            }
+        }
+
+        public void CheckCharacterPowerOnStartGame()
+        {
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
         }
 
         private void CollectObjectiveItem(CollectItemData data)
@@ -637,7 +719,9 @@ namespace _IEC.Features.Gameplay
         
         private void CollectNormalItem(CollectItemData data)
         {
-            playerHole.AddXp(data.xp);
+            var xp = CheckCharacterPowerOnGainXp(data.xp);
+            
+            playerHole.AddXp(xp);
         }
 
         private void CollectBomb()
@@ -646,8 +730,8 @@ namespace _IEC.Features.Gameplay
             
             if (IsInResultState() == false)
             {
-                playerHole.CollectABomb();
-                
+                var checkCharPowerOnBomb = playerHole.CheckApplyCharacterPower(CharacterPowerType.LoseXpInsteadOfDeadOnBomb);
+                playerHole.CollectABomb(checkCharPowerOnBomb == null);
                 GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
                 TweenControl.GetInstance().Shake(
                     target: GamePlay.mainCamera.gameObject,
@@ -665,17 +749,21 @@ namespace _IEC.Features.Gameplay
                     easeType: EaseType.InOutQuad,
                     delay: 0f
                 );
-                if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                if (checkCharPowerOnBomb == null)
                 {
-                    ChangeState(State.Lose);
-                    DOVirtual.DelayedCall(1.5f, () =>
+                    if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                     {
-                        //Double check for sure
-                        if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                        ChangeState(State.Lose);
+                        DOVirtual.DelayedCall(1.5f, () =>
                         {
-                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                        }
-                    });
+                            //Double check for sure
+                            if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                            {
+                                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,
+                                    new EventParam() { p0 = LoseReason.Boom });
+                            }
+                        });
+                    }
                 }
 
             }

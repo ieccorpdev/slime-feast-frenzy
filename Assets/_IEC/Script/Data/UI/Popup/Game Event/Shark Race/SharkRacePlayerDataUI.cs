@@ -9,6 +9,7 @@ namespace IEC
     {
         public Image filledImage;
         public Image playerDisplayImage;
+        public Image shadow;
 
         public void UpdateUI(float progressPercent)
         {
@@ -34,6 +35,12 @@ namespace IEC
             }
 
             playerDisplayImage.transform.localPosition = newPos;
+        }
+
+        protected override void UpdatePlayerRank()
+        {
+            base.UpdatePlayerRank();
+            shadow.sprite = rewardInfoButtonImage.sprite;
         }
     }
 }

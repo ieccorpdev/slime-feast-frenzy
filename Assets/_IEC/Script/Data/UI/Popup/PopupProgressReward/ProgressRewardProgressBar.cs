@@ -17,6 +17,7 @@ namespace IEC
         public Image currentProgressRewardIcon;
         public TextMeshProUGUI progressRewardAmountText;
         public ProgressBarFillEffect progressFillBar;
+        [SerializeField] GameObject iconDoubleTag;
         [Header("Timer")] public TextMeshProUGUI resetTimerText;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
@@ -32,9 +33,16 @@ namespace IEC
             {
                 gameObject.SetActive(true);
                 CheckReward();
-                UpdateProgressBar();   
+                UpdateProgressBar();
+                SetAtiveIcon();
             }
 
+        }
+
+        private void SetAtiveIcon()
+        {
+            bool isOnDouble = PlayerData.IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount);
+            iconDoubleTag.gameObject.SetActive(isOnDouble);
         }
 
         private static void CheckReward()
@@ -43,7 +51,13 @@ namespace IEC
             if (PlayerData.CheckClaimProgressReward(reward))
             {
                 System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, ()=>
+                {
+                    if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+                    {
+                        PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
+                    }
+                },true);
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
