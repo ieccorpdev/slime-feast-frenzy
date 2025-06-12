@@ -53,6 +53,9 @@ public static partial class Locator
         public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
         public static PopupCharacterList PopupCharacterList => Pool.Get<PopupCharacterList>();
 
+        public static PopupInsufficientCharacterShard PopupInsufficientCharacterShard =>
+            Pool.Get<PopupInsufficientCharacterShard>();
+
         public static HighLightCanvas HighLightCanvas => Pool.Get<HighLightCanvas>();
 
     } 
