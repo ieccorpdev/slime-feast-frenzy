@@ -24,6 +24,7 @@ namespace IEC
             {"Relic Hunt", EventType.RelicHunt},
         };
 
+
         [Button]
         public void LoadData()
         {
@@ -82,7 +83,26 @@ namespace IEC
 
             return -1;
         }
+        public DateTime GetNextTimeStartEvent(EventType eventType, int currentDay)
+        {
+            if (listEventLiveOps.Count == 0)
+                return DateTime.MaxValue;
 
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= listEventLiveOps.Count;
+
+            int totalDays = listEventLiveOps.Count;
+            for (int i = 1; i <= totalDays; i++)
+            {
+                int nextDay = (currentDay + i) % totalDays;
+                if (listEventLiveOps[nextDay].listEvents.Contains(eventType))
+                {
+                    // Trả về thời điểm bắt đầu event tiếp theo
+                    return DateTime.Now.Date.AddDays(i);
+                }
+            }
+            return DateTime.MaxValue;
+        }
         public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
         {
             if (currentDay > listEventLiveOps.Count - 1)
@@ -93,18 +113,7 @@ namespace IEC
             return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
         }
 
-        public bool IsEventAvailable(EventType eventType, int eventDurationInDays, int currentDay)
-        {
-            if (currentDay > listEventLiveOps.Count - 1)
-                currentDay %= (listEventLiveOps.Count);
-            
-            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
-            if (latestDayStartEvent == -1)
-                return false;
-
-            return (currentDay - latestDayStartEvent) < eventDurationInDays;
-        }
     }
 
     [System.Serializable]

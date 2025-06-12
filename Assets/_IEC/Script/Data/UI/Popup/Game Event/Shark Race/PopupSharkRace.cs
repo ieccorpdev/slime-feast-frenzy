@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -12,12 +10,14 @@ namespace IEC
         public Button playButton;
         public GameObject playGroups;
         public TextMeshProUGUI eventTargetText;
+
         protected override void Awake()
         {
             base.Awake();
 
             IsEventMultipleStage = true;
         }
+
         public override void Start()
         {
            base.Start();
@@ -27,6 +27,7 @@ namespace IEC
                Locator.Main.HomeScreenTab.OnClickPlayButton();
            });
         }
+        
         public override void Show()
         {
             base.Show();

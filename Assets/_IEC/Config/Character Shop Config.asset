@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10351afb57b778e439d16782725c4543, type: 3}
+  m_Name: Character Shop Config
+  m_EditorClassIdentifier: 
+  listShardSlotData:
+  - levelUnlockSlot: 10
+    shardCount: 1
+    goldCost: 500
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 6
+    - rarity: 1
+      randomChance: 3
+    - rarity: 2
+      randomChance: 1
+  - levelUnlockSlot: 10
+    shardCount: 3
+    goldCost: 1200
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 5
+    - rarity: 1
+      randomChance: 3
+    - rarity: 2
+      randomChance: 2
+  - levelUnlockSlot: 10
+    shardCount: 7
+    goldCost: 2100
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 5
+    - rarity: 1
+      randomChance: 3
+    - rarity: 2
+      randomChance: 2
+  - levelUnlockSlot: 50
+    shardCount: 2
+    goldCost: 2000
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 1
+    - rarity: 1
+      randomChance: 5
+    - rarity: 2
+      randomChance: 4
+  - levelUnlockSlot: 100
+    shardCount: 2
+    goldCost: 1800
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 1
+    - rarity: 1
+      randomChance: 4
+    - rarity: 2
+      randomChance: 5
+  - levelUnlockSlot: 200
+    shardCount: 2
+    goldCost: 1600
+    rarityRandomChances:
+    - rarity: 0
+      randomChance: 1
+    - rarity: 1
+      randomChance: 3
+    - rarity: 2
+      randomChance: 6
+  listShardRarity:
+  - rarity: 0
+    listCharacterConfig:
+    - {fileID: 11400000, guid: bf0038687e81ca8449f2626ad566ec10, type: 2}
+    - {fileID: 11400000, guid: 4eb703d40fdb76a4b9f271dbc142493f, type: 2}
+  - rarity: 1
+    listCharacterConfig:
+    - {fileID: 11400000, guid: 4a67a8fdbe2a85c41b56fda74ee820ab, type: 2}
+    - {fileID: 11400000, guid: 8d49a2828cf0e3342af299b0f9c7b9c0, type: 2}
+  - rarity: 2
+    listCharacterConfig:
+    - {fileID: 11400000, guid: 0281a771590c8bf468579513c15ec16e, type: 2}
+    - {fileID: 11400000, guid: 09bef1c91d5a43d46a70f1a3d85b1073, type: 2}
+    - {fileID: 11400000, guid: 6d7319e18f01c4c448fba3e727479e9d, type: 2}
+    - {fileID: 11400000, guid: 823699d5002c5b44d98f39e74adc7fe6, type: 2}
+  shopRefreshPrice: 3200000064000000c80000002c010000f4010000

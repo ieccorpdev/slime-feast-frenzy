@@ -13,6 +13,11 @@ public class SharkControl : MonoBehaviour
         m_Animator = GetComponent<Animator>();
     }
 
+    public void SetHole(Hole hole)
+    {
+        m_hole = hole;
+    }
+
     public void DriveInWater()
     {
       //Call by animator triggerd event 

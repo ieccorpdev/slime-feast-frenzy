@@ -32,6 +32,11 @@ public class HoleConfig : ScriptableObject
 	public float CameraDistanceIncreasePerLevel;
 	public float magnetForce;
 
+	public int[] GetListLevel()
+	{
+		return UseSlowXp ? RequiredXpPerLevelSlow : RequiredXpPerLevel;
+	}
+
 	public int GetRequiredXp(int level, bool isCoinLevel)
 	{
 		int index;
@@ -48,6 +53,11 @@ public class HoleConfig : ScriptableObject
 		if (index == -1)
 		{
 			index = requiredXpPerLevel.Length - 2;
+		}
+
+		if (level >= requiredXpPerLevel.Length)
+		{
+			return int.MaxValue;
 		}
 		return requiredXpPerLevel[index];
 	}
