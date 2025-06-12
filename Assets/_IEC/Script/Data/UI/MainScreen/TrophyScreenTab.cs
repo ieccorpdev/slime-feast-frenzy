@@ -15,13 +15,32 @@ using EventType = IEC.EventType;
 public class TrophyScreenTab : ScreenNavigateUI
 {
     public List<ItemTrophyTab> listAllTrophy;
-    public override void Show()
+    public Button tutorialTtrophyButton;
+    public TutorialJourney tutorialTrophyPanel;
+
+    public void Start()
     {
-        LoadData();
+        tutorialTtrophyButton.onClick.AddListener(OnClickButtonTutorial);
     }
 
+    public override void Show()
+    {
+        tutorialTrophyPanel.gameObject.SetActive(false);
+        if (!PlayerData.trophyData.isShowJourneyTutorial)
+        {
+            PlayerData.trophyData.isShowJourneyTutorial = true;
+            OnClickButtonTutorial();
+        }
+        LoadData();
+    }
+    void OnClickButtonTutorial()
+    {
+        tutorialTrophyPanel.gameObject.SetActive(true);
+        tutorialTrophyPanel.Show();
+    }
     public void LoadData()
     {
+
         foreach (var item in listAllTrophy)
         {
             var crState = GetStateTrophy(item.type);
