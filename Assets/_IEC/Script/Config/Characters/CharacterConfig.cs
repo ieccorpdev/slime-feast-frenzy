@@ -8,6 +8,7 @@ namespace IEC
     [CreateAssetMenu(menuName = "Game/Character/CharacterConfig")]
     public class CharacterConfig : ScriptableObject
     {
+        public bool isDefaultCharacter;
         public string characterName;
         public string characterDescription;
         [Header("UI")]

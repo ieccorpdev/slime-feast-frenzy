@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,6 +14,11 @@ namespace IEC
         public CharacterConfig GetCharacterConfig(string characterName)
         {
             return listAllCharactersConfig.Find(character => character.characterName.Equals(characterName));
+        }
+
+        public CharacterConfig GetDefaultCharacterConfig()
+        {
+            return listAllCharactersConfig.FirstOrDefault(character => character.isDefaultCharacter);
         }
 
         public CharacterPower GetCharacterPower(string characterName, CharacterPowerType powerType,

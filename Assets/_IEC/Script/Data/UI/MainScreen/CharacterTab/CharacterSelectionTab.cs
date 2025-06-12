@@ -50,6 +50,7 @@ namespace IEC
         void Start()
         {
             selectCharacterButton.onClick.AddListener(OnSelectCharacter);
+            characterInUseButton.onClick.AddListener(OnDeselectCharacter);
             levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
             previousButton.onClick.AddListener(OnPreviousButtonClick);
             nextButton.onClick.AddListener(OnNextButtonClick);
@@ -59,6 +60,16 @@ namespace IEC
         private void OnSelectCharacter()
         {
             PlayerData.playerCharacterName = CurrentCharacterConfig.characterName;
+            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
+            {
+                characterName = PlayerData.playerCharacterName
+            });
+            UpdateCurrentCharacterUI();
+        }
+        
+        private void OnDeselectCharacter()
+        {
+            PlayerData.playerCharacterName = Config.allCharactersConfig.GetDefaultCharacterConfig().characterName;
             this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
             {
                 characterName = PlayerData.playerCharacterName
@@ -112,6 +123,8 @@ namespace IEC
             UpdateUpgradeButtonUI();
             UpdateCurrentLevelStarUI();
             UpdateStatUI();
+            UpdateDefaultCharacterUI();
+            CheckNavigateButton();
         }
 
         private void UpdateUpgradeButtonUI()
@@ -189,6 +202,15 @@ namespace IEC
             }
         }
 
+        private void UpdateDefaultCharacterUI()
+        {
+            if (!CurrentCharacterConfig.isDefaultCharacter)
+                return;
+            
+            characterInUseButton.gameObject.SetActive(false);
+            selectCharacterButton.gameObject.SetActive(false);
+        }
+
         public void Setup()
         {
             foreach(var character in Config.allCharactersConfig.listAllCharactersConfig)
@@ -225,9 +247,6 @@ namespace IEC
 
         private void OnNextButtonClick()
         {
-            if(!previousButton.gameObject.activeInHierarchy)
-                previousButton.gameObject.SetActive(true);
-
             var currentIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(character =>
                 character.characterName.Equals(CurrentCharacterConfig.characterName));
             var nextIndex = currentIndex + 1;
@@ -236,16 +255,11 @@ namespace IEC
             {
                 characterName = Config.allCharactersConfig.listAllCharactersConfig[nextIndex].characterName
             });
-
-            CheckNavigateButton();
-                
+            
         }
 
         private void OnPreviousButtonClick()
         {
-            if(!nextButton.gameObject.activeInHierarchy)
-                nextButton.gameObject.SetActive(true);
-            
             var currentIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(character =>
                 character.characterName.Equals(CurrentCharacterConfig.characterName));
             var previousIndex = currentIndex - 1;
@@ -254,8 +268,6 @@ namespace IEC
             {
                 characterName = Config.allCharactersConfig.listAllCharactersConfig[previousIndex].characterName
             });
-            
-            CheckNavigateButton();
         }
 
         private void CheckNavigateButton()
@@ -267,10 +279,18 @@ namespace IEC
             {
                 previousButton.gameObject.SetActive(false);
             }
+            else if (!previousButton.gameObject.activeInHierarchy)
+            {
+                previousButton.gameObject.SetActive(true);
+            }
 
             if (currentIndex == Config.allCharactersConfig.listAllCharactersConfig.Count - 1)
             {
                 nextButton.gameObject.SetActive(false);
+            }
+            else if (!nextButton.gameObject.activeInHierarchy)
+            {
+                nextButton.gameObject.SetActive(true);
             }
         }
     }
