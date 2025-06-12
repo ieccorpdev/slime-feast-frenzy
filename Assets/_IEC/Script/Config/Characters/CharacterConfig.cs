@@ -10,6 +10,7 @@ namespace IEC
     {
         public bool isDefaultCharacter;
         public string characterName;
+        public int comboCountToChange;
         public string characterDescription;
         [Header("UI")]
         public Sprite characterSelectionSprite;
