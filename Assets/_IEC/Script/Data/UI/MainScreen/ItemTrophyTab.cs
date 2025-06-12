@@ -15,7 +15,7 @@ public class ItemTrophyTab : _BaseBehaviour
     [Header("Aquarium")]
     public GameObject normalBg;
     public GameObject coralBg;
-
+    public ParticleSystem startFx;
     public GameObject blurBG;
     public GameObject lightBg;
     
@@ -145,6 +145,7 @@ public class ItemTrophyTab : _BaseBehaviour
     }
     public void UpdateStateAquarium(ItemTrophyState state)
     {
+        startFx.Stop();
         groupsLock.gameObject.SetActive(false);
         groupsNoti.gameObject.SetActive(false);
         this.state = state;
@@ -183,8 +184,17 @@ public class ItemTrophyTab : _BaseBehaviour
                 TurnLight(true);
                 break;
         }
+
+        CheckPlayStarFx();
     }
 
+    public void CheckPlayStarFx()
+    {
+        if (PlayerData.trophyData.GetCurrentCollectedTrophy(type) >= 4)
+        {
+            startFx.Play();
+        }
+    }
     public void UpdateMainTrophy()
     {
         int curTrophyCol = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
