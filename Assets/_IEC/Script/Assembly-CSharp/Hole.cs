@@ -84,7 +84,7 @@ public class Hole : _BaseBehaviour
 		get => _baseSpeed;
 		set => _baseSpeed = value;
 	}
-
+	public GameObject rootTentacle;
 	public HoleConfig Settings => m_settings;
 
 	public CharacterConfig CurrentCharacterConfig { get; private set; }
@@ -230,6 +230,7 @@ public class Hole : _BaseBehaviour
 			{
 				randomRotationY = UnityEngine.Random.Range(0f, 360f);
 				sharkBiteAnimator.Play( "Bite" );
+
 			}
 			else
 			{
@@ -760,8 +761,18 @@ public class Hole : _BaseBehaviour
 			onSharkForm = true;
 			characterAnimator.Play("HoleToShark");
 		}
-	}
-	private BaseItem GetObjectInDistanceAnimation()
+		PlayAnim("OC_Appear");
+        rootTentacle.transform.DOKill();
+        rootTentacle.transform.localScale = Vector3.one;
+        rootTentacle.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InOutQuad);
+    }
+
+	public void PlayAnim(string clipName)
+	{
+        characterAnimator.transform.GetChild(2).GetComponent<Animator>().CrossFade(clipName, 0.2f);
+    }
+
+    private BaseItem GetObjectInDistanceAnimation()
 	{
 		return GamePlay.levelController.GetAllItems().FirstOrDefault(x =>
 			x != null && Vector3.Distance(x.transform.position, transform.position) < GetDistanceToObject());
@@ -791,7 +802,11 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
+        PlayAnim("OC_Appear");
         EventController.RaiseEvent(EventList.Audio.SHARK_UP);
+        rootTentacle.transform.DOKill();
+        rootTentacle.transform.localScale = Vector3.one;
+        rootTentacle.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InOutQuad);
     }
 	public void TurnSharkToHole()
 	{
@@ -802,6 +817,10 @@ public class Hole : _BaseBehaviour
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("Dive Into Water 0");
+        PlayAnim("OC_Out");
+        rootTentacle.transform.DOKill();
+        rootTentacle.transform.localScale = Vector3.zero;
+        rootTentacle.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
     }
 	#endregion
 

@@ -47,6 +47,7 @@ public class HoleController : _BaseBehaviour
             {
                 StopTryCallCoroutine();
                 wasMoving = false;
+                m_Hole.PlayAnim("OC_Idle 0");
             }
             return;
         }
@@ -67,6 +68,7 @@ public class HoleController : _BaseBehaviour
             {
                 StopTryCallCoroutine();
                 wasMoving = false;
+                m_Hole.PlayAnim("OC_Idle 0");
             }
             return;
         }
@@ -74,6 +76,7 @@ public class HoleController : _BaseBehaviour
         if (!wasMoving && isCurrentlyMoving)
         {
             TryCallOnStartMoving();
+            m_Hole.PlayAnim("OC_Attack");
         }
 
         wasMoving = isCurrentlyMoving;
