@@ -86,6 +86,7 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.RegisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void OnDisable()
@@ -99,6 +100,7 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.UnregisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void Update()
@@ -460,15 +462,18 @@ namespace _IEC.Features.Gameplay
             addBoosterAction +=
                 () =>
                 {
+                    var value = CheckCharacterPowerOnBoosterEffect(data.effectValue);
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
-                        playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        //playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        playerHole.AddXp(Mathf.FloorToInt(value));
                         EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
                         
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
-                        playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        //playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        playerHole.OnCollectSpeedBooster(value, data.effectTime);
                         EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
                         
                     }
@@ -648,6 +653,18 @@ namespace _IEC.Features.Gameplay
             return helperTime;
         }
 
+        public float CheckCharacterPowerOnBoosterEffect(float value)
+        {
+            var checkPowerBooster = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseEffectBooster);
+
+            if (checkPowerBooster != null)
+            {
+                value *= checkPowerBooster
+                    .GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+            }
+            return value;
+        }
+
         private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
         {
             playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
@@ -673,8 +690,9 @@ namespace _IEC.Features.Gameplay
             return xp;
         }
 
-        public void CheckCharacterPowerOnCombo(int comboCount)
+        public void CheckCharacterPowerOnCombo(object param)
         {
+            var comboCount = (int)param;
             var checkPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.AddTimerOnCombo);
             if (checkPower != null)
             {

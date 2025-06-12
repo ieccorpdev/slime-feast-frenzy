@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Common.Extension;
@@ -88,6 +89,11 @@ public class Hole : _BaseBehaviour
 	public HoleConfig Settings => m_settings;
 
 	public CharacterConfig CurrentCharacterConfig { get; private set; }
+	public CharacterConfig TargetCharacterConfig { get; private set; }
+
+	private bool _isChangedToCurrentCharacter = false;
+	private bool _isInChangeCharacterAnim = false;
+	private Coroutine _changeCharacterCoroutine;
 
 	private void Awake()
 	{
@@ -102,16 +108,21 @@ public class Hole : _BaseBehaviour
 		                     + m_AdditionalSize;
 		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+		this.RegisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
 	}
 
 	private void OnDestroy()
 	{
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+		this.UnregisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
 	}
 	private float cTime = 0;
 	public bool readyForSharkBite;
 	public void Update()
 	{
+		if (_isInChangeCharacterAnim)
+			return;
+		
 		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
 		{
 			if (timeEffectSpeedBooster > 0)
@@ -579,7 +590,10 @@ public class Hole : _BaseBehaviour
 		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
-		CheckCurrentCharacter();
+		_isChangedToCurrentCharacter = false;
+		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacter();
+		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		//CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
@@ -589,17 +603,78 @@ public class Hole : _BaseBehaviour
 	}
 
 	#region Character Power
+
+	public void CheckChangeCharacterOnComboReach(object param)
+	{
+		if (_isChangedToCurrentCharacter)
+			return;
+		
+		var comboCount = (int)param;
+		if (comboCount >= TargetCharacterConfig.comboCountToChange)
+		{
+			this.RaiseEvent(EventList.GamePlay.COMBO_RESET);
+			_isChangedToCurrentCharacter = true;
+			_isInChangeCharacterAnim = true;
+
+			if (_changeCharacterCoroutine != null)
+			{
+				StopCoroutine(_changeCharacterCoroutine);
+			}
+
+			_changeCharacterCoroutine = StartCoroutine(ChangeCharacterAnim());
+		}
+	}
+
+	IEnumerator ChangeCharacterAnim()
+	{
+		this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
+		onSharkForm = true;
+		TurnHoleToShark();
+		
+		var animator = characterAnimator;
+		characterAnimator = null;
+		CheckCurrentCharacter();
+		if(characterAnimator != null)
+			characterAnimator.gameObject.SetActive(false);
+
+		yield return new WaitForSeconds(1f);
+		readyForSharkBite = true;
+		onSharkForm = false;
+		sharkBiteAnimator.transform.localScale *= 2f;
+		TriggerdBite();
+		
+		yield return new WaitForSeconds(0.5f);
+		if(animator != null)
+			Destroy(animator.gameObject);
+		yield return new WaitForSeconds(0.5f);
+		sharkBiteAnimator.transform.localScale  /= 2f;
+		
+		if(characterAnimator != null)
+			characterAnimator.gameObject.SetActive(true);
+		//TurnHoleToShark();
+		
+		//yield return new WaitForSeconds(1f);
+		
+		this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
+		_isInChangeCharacterAnim = false;
+		StopCoroutine(_changeCharacterCoroutine);
+		_changeCharacterCoroutine = null;
+	}
+	
 	private void CheckCurrentCharacter()
 	{
-		CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		CurrentCharacterConfig = TargetCharacterConfig;
 		
 		var charObj = CurrentCharacterConfig.characterControlPrefab
 			.Spawn(
-				characterAnimator.transform.parent, 
+				characterParent, 
 				CurrentCharacterConfig.characterControlPrefab.transform.position,
 				CurrentCharacterConfig.characterControlPrefab.transform.rotation
 				);
-		Destroy(characterAnimator.gameObject);
+		
+		if(characterAnimator != null)
+			Destroy(characterAnimator.gameObject);
+		
 		characterAnimator = charObj;
 		charObj.GetComponent<SharkControl>().SetHole(this);
 		charObj.transform.localScale = CurrentCharacterConfig.characterControlPrefab.transform.localScale;
@@ -608,7 +683,7 @@ public class Hole : _BaseBehaviour
 		
 		var biteObj = CurrentCharacterConfig.characterBitePrefab
 			.Spawn(
-				sharkBiteAnimator.transform.parent,
+				sharkBiteParent,
 				CurrentCharacterConfig.characterBitePrefab.transform.position,
 				CurrentCharacterConfig.characterBitePrefab.transform.rotation
 				);
