@@ -23,11 +23,8 @@ namespace IEC
 
         public Button rewardInfoButton;
         public Image rewardInfoButtonImage;
-        public GameObject rewardInfoGroup;
-        public GameObject rewardInfoDownImg;
-        public GameObject rewardInfoUpImg;
 
-        public List<GameEventRewardInfoUI> listRewardInfoUI = new();
+        public RewardInfoGroup rewardInfo;
         public EventPlayerData EventPlayerData { get; private set; }
 
         private GameEventConfig _gameEventConfig;
@@ -41,72 +38,23 @@ namespace IEC
             {
                 rewardInfoButton.onClick.AddListener(OnShowRewardInfoUI);
             }
-
-            OnHideRewardInfoUI();
-            gameObject.OnEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT, OnHideRewardInfoUI);
         }
 
-        private void OnHideRewardInfoUI()
-        {
-            if (rewardInfoButton == null)
-                return;
+        protected virtual void SetRewardInfoDown() { }
 
-            if (rewardInfoGroup == null)
-                return;
-            
-            rewardInfoGroup.SetActive(false);
-            
-            if(rewardInfoDownImg != null)
-                rewardInfoDownImg.gameObject.SetActive(false);
-            if(rewardInfoUpImg != null)
-                rewardInfoUpImg.gameObject.SetActive(false);
-        }
-
-        private void SetRewardInfoDown()
-        {
-            if (rewardInfoButton == null)
-                return;
-
-            if (rewardInfoDownImg == null)
-                return;
-            
-            rewardInfoDownImg.gameObject.SetActive(true);
-            rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
-                rewardInfoDownImg.GetComponent<RectTransform>().anchoredPosition;
-        }
-
-        private void SetRewardInfoUp()
-        {
-            if (rewardInfoButton == null)
-                return;
-            
-            if (rewardInfoUpImg == null)
-                return;
-            
-            rewardInfoUpImg.gameObject.SetActive(true);
-            rewardInfoGroup.GetComponent<RectTransform>().anchoredPosition =
-                rewardInfoUpImg.GetComponent<RectTransform>().anchoredPosition + Vector2.up * 30;
-        }
+        protected virtual void SetRewardInfoUp() { }
 
         private void OnShowRewardInfoUI()
         {
             if (rewardInfoButton == null)
                 return;
-            
-            bool wasActive = rewardInfoGroup.gameObject.activeInHierarchy;
-            EventController.RaiseEvent(EventList.GamePlay.SHOW_REWARD_INFO_GAME_EVENT);
+            var pos = GetHalf(Locator.Main.PopupStarChase.scroller.GetComponent<RectTransform>(),
+                GetComponent<RectTransform>());
             var eventRewardData = _eventData.listEventRewardData.Find(data =>
                 data.rankStartReward <= CurrentRank && (data.rankEndReward >= CurrentRank || data.rankEndReward == -1)); // = -1 means from rank start reward to the end of the leaderboard
 
             if (eventRewardData == null)
                 return;
-            
-            if (wasActive)
-                return;
-
-            var pos = GetHalf(Locator.Main.PopupStarChase.scroller.GetComponent<RectTransform>(),
-                GetComponent<RectTransform>());
-
             if (pos == HalfPosition.Top)
             {
                 SetRewardInfoDown();
@@ -115,22 +63,8 @@ namespace IEC
             {
                 SetRewardInfoUp();
             }
-            
-            rewardInfoGroup.SetActive(true);
-            
-            foreach (var rewardUI in listRewardInfoUI)
-            {
-                Reward rewardData;
-                if ((rewardData = eventRewardData.listReward.Find(data => data.typeReward == rewardUI.resourceType)) != null)
-                {
-                    rewardUI.gameObject.SetActive(true);
-                    rewardUI.UpdateAmountText(rewardData.rewardAmount.ToString());
-                }
-                else
-                {
-                    rewardUI.gameObject.SetActive(false);
-                }
-            }
+            rewardInfo.SetupDataItem(eventRewardData.listReward);
+            rewardInfo.Show();
         }
 
         protected virtual void UpdatePlayerAvatar()
@@ -185,7 +119,8 @@ namespace IEC
                 else
                 {
                     rewardInfoButtonImage.gameObject.SetActive(true);
-                    rewardInfoButtonImage.sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    var sprite = _gameEventConfig.GetRewardButtonSprite(spriteSetIndex, CurrentRank);
+                    rewardInfoButtonImage.sprite = sprite;
                     rewardInfoButtonImage.SetNativeSize();
                 }
             }
