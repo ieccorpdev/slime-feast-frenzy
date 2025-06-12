@@ -32,6 +32,7 @@ public class TrophyScreenTab : ScreenNavigateUI
             {
                 var data = PlayerData.trophyData.GetMinMaxProgressBar(item.type);
                 item.SetProgressBar((int)data.x,(int)data.y);
+                item.dataEventTime = GetStatusEventConfig(item.type);
             }
             item.RegisterEventButton();
         }
@@ -125,4 +126,119 @@ public class TrophyScreenTab : ScreenNavigateUI
 
         return "Error";
     }
+
+    public string GetTextInfoTrophy(TrophyType type,int targetToTrophy)
+    {
+                
+        string textRS = "";
+        string targetReach = targetToTrophy.ToString();
+        string trophy = GetTrophyTarget(type);
+        switch (type)
+        {
+            case TrophyType.GrandVoyage:
+                textRS += "Clear " + targetReach + " level to get the " + trophy + "!";
+                break;
+            case TrophyType.SharkFrenzyForce:
+                textRS += "Unlock more " + targetReach + " skin to get the " + trophy + "!";
+                break;
+            case TrophyType.UnderseaVoyage:
+                textRS += "Complete the pass " + targetReach + " times to get the " + trophy + "!";
+                break;
+            case TrophyType.SharkRace:
+            case TrophyType.StarRace:
+                textRS += "Complete the event and make top " + targetReach + " to get the " + trophy + "!";
+                break;
+            case TrophyType.ChompOff:
+            case TrophyType.RelicHunt:
+            case TrophyType.OceanGift:
+                textRS += "Complete the event  " + targetReach + " times to get the " + trophy + "!";
+                break;
+            
+        }
+        return textRS;
+    }
+
+    public TrophyEventData GetStatusEventConfig(TrophyType type)
+    {
+        TrophyEventData dataEvent = new TrophyEventData();
+        switch (type)
+        {
+            case TrophyType.GrandVoyage:
+                dataEvent.isEvent = false;
+                break;
+            case TrophyType.SharkFrenzyForce:
+                dataEvent.isEvent = false;
+                break;
+            case TrophyType.UnderseaVoyage:
+                dataEvent.isEvent = true;
+                //Run another calculate 
+                dataEvent.isEvent = true;
+                bool active = PlayerData.journeyData.wasOpenJourney;
+                dataEvent.isEventActive = PlayerData.journeyData.wasOpenJourney;
+                if (!active)
+                {
+                    dataEvent.timeStartEvent = DateTime.Now.Add(PlayerData.journeyData.GetTimeRemaining());
+                }
+                break;
+            case TrophyType.SharkRace:
+                SetEventStatus(dataEvent, EventType.SharkRace);
+                break;
+            case TrophyType.ChompOff:
+                SetEventStatus(dataEvent, EventType.ChompOff);
+                break;
+            case TrophyType.OceanGift:
+                dataEvent.isEvent = true;
+                dataEvent.isEventActive = true;
+                break;
+            case TrophyType.StarRace:
+                SetEventStatus(dataEvent, EventType.StarChase);
+                break;
+            case TrophyType.RelicHunt:
+                SetEventStatus(dataEvent, EventType.RelicHunt);
+                break;
+        }
+        
+        return dataEvent;
+    }
+
+    private void SetEventStatus(TrophyEventData dataEvent, EventType eventType)
+    {
+        dataEvent.isEvent = true;
+        bool active = Config.eventLiveOpsConfig.IsEventAvailable(
+            eventType,
+            Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(eventType).eventDurationInHours / 24),
+            PlayerData.GetDaysSinceDownload());
+        dataEvent.isEventActive = active;
+        if (!active)
+        {
+            dataEvent.timeStartEvent = Config.eventLiveOpsConfig.GetNextTimeStartEvent(eventType, PlayerData.GetDaysSinceDownload());
+        }
+    }
+
+    public string GetTrophyTarget(TrophyType type)
+    {
+        //    Bronze, Silver, Gold, Diamond
+        if (PlayerData.trophyData.GetCurrentTimeComplete(type) == 0)
+        {
+            return "Bronze Trophy";
+        }
+        switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
+        {
+            case 1:
+                return "Silver Trophy";
+            case 2:
+                return "Gold Trophy";
+            case 3:
+                return "Diamond Trophy";
+            default:
+                return "Diamond Trophy";
+        }
+    }
+}
+
+public class TrophyEventData
+{
+    public bool isEvent = false;
+    public bool isEventActive = false;
+    public DateTime timeStartEvent;
 }

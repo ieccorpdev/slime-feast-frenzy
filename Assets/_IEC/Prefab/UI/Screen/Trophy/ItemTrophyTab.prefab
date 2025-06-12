@@ -548,9 +548,13 @@ MonoBehaviour:
   lockTrophyNameTMP: {fileID: 974240114192712400}
   levelUnlockTrophyNameTMP: {fileID: 3647706176787486382}
   groupsNoti: {fileID: 7773508500251293657}
+  groupsNotiTime: {fileID: 7630771276589130829}
+  bgGroupsNoti: {fileID: 3645778303856020264}
   infoTrophyNameTMP: {fileID: 3451206282324768520}
   infoTrophyTMP: {fileID: 2173085181627981411}
   timeUnlockEvent: {fileID: 3334510454929459482}
+  eventInfoSprite: {fileID: 0}
+  defaultInfoSprite: {fileID: 21300000, guid: 370aca77bf2133949a03aedc5422feef, type: 3}
 --- !u!1 &1419336814840844885
 GameObject:
   m_ObjectHideFlags: 0
@@ -923,17 +927,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2654641327377018040}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5109529691990765080}
-  m_RootOrder: 4
+  m_Father: {fileID: 9077415193310760698}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 121.431725, y: 153.90457}
+  m_AnchoredPosition: {x: 272.43173, y: -1.3953552}
   m_SizeDelta: {x: 259.0345, y: 40.6032}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &311321002677907923
@@ -2922,8 +2926,9 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5228009842573518938}
+  - {fileID: 1421536849304310566}
   m_Father: {fileID: 5109529691990765080}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3138,7 +3143,6 @@ RectTransform:
   - {fileID: 63614814073720437}
   - {fileID: 147718092829647322}
   - {fileID: 2681103987695302223}
-  - {fileID: 1421536849304310566}
   - {fileID: 9077415193310760698}
   m_Father: {fileID: 4809614575915042323}
   m_RootOrder: 1
@@ -3434,7 +3438,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 5.9997, y: 36}
-  m_SizeDelta: {x: 407.5812, y: 400}
+  m_SizeDelta: {x: 350, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2019767676447993415
 CanvasRenderer:

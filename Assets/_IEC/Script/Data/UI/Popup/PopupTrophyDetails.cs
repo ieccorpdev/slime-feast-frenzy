@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using IEC.Common.Event;
+using IEC.Helper;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -31,12 +32,13 @@ namespace IEC
         public Image badgeImage;
         public List<Sprite> ListBadgeSprites;
         public Button trophyRoomButton;
-
-        public void ShowTrophy(TrophyType type,ItemTrophyState state)
+        public TrophyEventData dataEventTime;
+        public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime)
         {
             base.Show();
             this.type = type;
             this.state = state;
+            this.dataEventTime = dataEventTime;
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
             var crState = Locator.Main.ScreenMain.trophyTab.GetStateTrophy(type);
@@ -49,6 +51,30 @@ namespace IEC
             else
             {
                 ShowInfoGroups();
+                UpdateUIByTimeDataEvent();
+            }
+        }
+        public void UpdateUIByTimeDataEvent()
+        {
+            if (!dataEventTime.isEvent)
+            {
+                infoGRBG.sprite = defaultBg;
+                eventTimeObj.gameObject.SetActive(false);
+                //Non event item
+            }
+            else
+            {
+                if (dataEventTime.isEventActive)
+                {
+                    infoGRBG.sprite = defaultBg;
+                    eventTimeObj.gameObject.SetActive(false);
+                }
+                else
+                {
+                    infoGRBG.sprite = eventTimeBg;
+                    eventTimeObj.gameObject.SetActive(true);
+                    timeEventTMP.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
+                }
             }
         }
 
@@ -64,11 +90,11 @@ namespace IEC
         public void ShowInfoGroups()
         {
             infoGroups.gameObject.SetActive(true);   
-            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type)-1;
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
             for (int i = 0; i < listSpriteTrophy.Count; i++)
             {
-                listSpriteTrophy[i].tick.gameObject.SetActive(i < index);
+                listSpriteTrophy[i].tick.gameObject.SetActive(i <= index);
             }
 
             switch (type)
@@ -83,6 +109,9 @@ namespace IEC
                     infoGRBG.sprite = eventTimeBg;
                     break;
             }
+            var dataMinMax = PlayerData.trophyData.GetMinMaxProgressBar(type);
+            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,(int)dataMinMax.y-(int)dataMinMax.x);
+            infoTrophyTMP.text = textRS;
         }
 
         public void ShowCompleteGroups()
@@ -101,7 +130,7 @@ namespace IEC
         }
         public TrophyCustomTitle GetTrophyType(int crTrophy)
         {
-            int index = Mathf.Clamp(crTrophy,0, listFontMaterial.Count-1);
+            int index = Mathf.Clamp(crTrophy+1,0, listFontMaterial.Count-1);
             return listFontMaterial[index];
         } 
     }

@@ -191,14 +191,24 @@ namespace IEC
                 value = 5
             });
             
-            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add 1 Trophy Type", param =>
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Set [Trophy Type] with [TimeComplete]", param =>
             {
-                int value = int.Parse(param.inputParams[0].value.ToString());
-
-                TrophyType type = (TrophyType)(value-1);
+                int trophyType = int.Parse(param.inputParams[0].value.ToString());
+                int timesComp = int.Parse(param.inputParams[1].value.ToString());
+                TrophyType type = (TrophyType)(trophyType-1);
                 
-                PlayerData.trophyData.CollectTrophy(type);
+                PlayerData.trophyData.SetTrophyTimes(type,timesComp);
 
+                if (Locator.Main.ScreenMain)
+                {
+                    Locator.Main.ScreenMain.trophyTab.LoadData();
+                }
+            }, new CheatCode.InputParam { value = 1 }, new CheatCode.InputParam { value = 1 });
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Reset [Trophy Type] with to tier 0", param =>
+            {
+                int trophyType = int.Parse(param.inputParams[0].value.ToString());
+                TrophyType type = (TrophyType)(trophyType-1);
+                PlayerData.trophyData.SetTrophyCollected(type,0);
                 if (Locator.Main.ScreenMain)
                 {
                     Locator.Main.ScreenMain.trophyTab.LoadData();
@@ -207,6 +217,7 @@ namespace IEC
             {
                 value = 1
             });
+
             
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Decrease chompOff countdown (minutes)", param =>
             {
@@ -361,6 +372,9 @@ namespace IEC
                 }
                 Locator.Main.HomeScreenTab.UpdateMainHome();
                 Locator.Main.HomeScreenTab.progressRewardBar.DoAnimProgressBar();
+            }, new CheatCode.InputParam
+            {
+                value = 1
             }, new CheatCode.InputParam
             {
                 value = 1

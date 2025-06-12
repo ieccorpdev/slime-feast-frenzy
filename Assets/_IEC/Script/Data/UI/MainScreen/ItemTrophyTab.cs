@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using IEC;
 using IEC.Common.Event;
+using IEC.Helper;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -37,16 +39,22 @@ public class ItemTrophyTab : _BaseBehaviour
     public TextMeshProUGUI levelUnlockTrophyNameTMP;
     
     public GameObject groupsNoti;
+    public GameObject groupsNotiTime;
+    public Image bgGroupsNoti;
     public TextMeshProUGUI infoTrophyNameTMP;
     public TextMeshProUGUI infoTrophyTMP;
     public TextMeshProUGUI timeUnlockEvent;
-
+    
+    public TrophyEventData dataEventTime;
     private bool isLocked;
     private int targetToTrophy;
+    public Sprite eventInfoSprite;
+    public Sprite defaultInfoSprite;
     void Start()
     {
         infoButton.onClick.AddListener(OnClickInfoTrophy);   
         gameObject.OnEvent(EventList.Trophy.CLICK_INFO_TROPHY, ResetInfo);
+        eventInfoSprite = bgGroupsNoti.sprite;
     }
 
     public void RegisterEventButton()
@@ -72,11 +80,6 @@ public class ItemTrophyTab : _BaseBehaviour
         groupsLock.gameObject.SetActive(false);
         groupsNoti.gameObject.SetActive(false);
     }
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void OnClickInfoTrophy()
     {
@@ -97,10 +100,11 @@ public class ItemTrophyTab : _BaseBehaviour
         {
             groupsNoti.gameObject.SetActive(true);
             OnClickInfoGroups();
+            UpdateUIByTimeDataEvent();
         }
         else
         {   
-            Locator.Main.PopupTrophyDetails.ShowTrophy(type,state);
+            Locator.Main.PopupTrophyDetails.ShowTrophy(type,state,dataEventTime);
         }
     }
 
@@ -112,57 +116,11 @@ public class ItemTrophyTab : _BaseBehaviour
     }
     public void OnClickInfoGroups()
     {
-        //groupsNoti.gameObject.SetActive(false);//Test
         infoTrophyNameTMP.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
-        
-        string textRS = "";
-        string targetReach = targetToTrophy.ToString();
-        string trophy = GetTrophyTarget();
-        infoTrophyTMP.text = "Complete the event <material=\"{materialTimesName}\">999 Times</material>";
-        switch (type)
-        {
-            case TrophyType.GrandVoyage:
-                textRS += "Clear " + targetReach + " to get the" + trophy + "!";
-                break;
-            case TrophyType.SharkFrenzyForce:
-                textRS += "Unlock more " + targetReach + " skin to get the" + trophy + "!";
-                break;
-            case TrophyType.UnderseaVoyage:
-                textRS += "Complete the pass " + targetReach + " times to get the" + trophy + "!";
-                break;
-            case TrophyType.SharkRace:
-            case TrophyType.StarRace:
-                textRS += "Complete the event and make top " + targetReach + " to get the" + trophy + "!";
-                break;
-            case TrophyType.ChompOff:
-            case TrophyType.RelicHunt:
-            case TrophyType.OceanGift:
-                textRS += "Complete the event  " + targetReach + " times to get the" + trophy + "!";
-                break;
-            
-        }
+        string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,targetToTrophy);
         infoTrophyTMP.text = textRS;
     }
 
-    public string GetTrophyTarget()
-    {
-        //    Bronze, Silver, Gold, Diamond
-        if (PlayerData.trophyData.GetCurrentTimeComplete(type) == 0)
-        {
-            return "Bronze Trophy";
-        }
-        switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
-        {
-            case 0:
-                return "Silver Trophy";
-            case 1:
-                return "Gold Trophy";
-            case 2:
-                return "Diamond Trophy";
-            default:
-                return "";
-        }
-    }
     public void TurnBgCoral(bool stt)
     {
         normalBg.gameObject.SetActive(!stt);
@@ -233,7 +191,37 @@ public class ItemTrophyTab : _BaseBehaviour
         targetToTrophy = max - current;
     }
 
+    public void UpdateUIByTimeDataEvent()
+    {
+        if (!dataEventTime.isEvent)
+        {
+            bgGroupsNoti.sprite = defaultInfoSprite;
+            groupsNotiTime.gameObject.SetActive(false);
+            //Non event item
+        }
+        else
+        {
+            if (dataEventTime.isEventActive)
+            {
+                bgGroupsNoti.sprite = defaultInfoSprite;
+                groupsNotiTime.gameObject.SetActive(false);
+            }
+            else
+            {
+                bgGroupsNoti.sprite = eventInfoSprite;
+                groupsNotiTime.gameObject.SetActive(true);
+                timeUnlockEvent.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
+            }
+        }
+    }
 
+    public void Update()
+    {
+        if (dataEventTime != null && dataEventTime.isEvent && dataEventTime.isEventActive)
+        {
+            timeUnlockEvent.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
+        }
+    }
 
 }
 

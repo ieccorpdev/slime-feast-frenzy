@@ -11,11 +11,21 @@ namespace IEC
     {
         public List<TrophyDataConfig> data = new List<TrophyDataConfig>();
 
-        public void CollectTrophy(TrophyType type)
+        public void CollectTrophy(TrophyType type,int value = 1)
         {
             Debug.LogError("Collect Trophy:" + type);
             var tdc = GetTrophyDataConfig(type);
-            tdc.timeCompleted += 1;
+            tdc.timeCompleted += value;
+        }
+        public void SetTrophyTimes(TrophyType type,int value)
+        {
+            var tdc = GetTrophyDataConfig(type);
+            tdc.timeCompleted = value;
+        }
+        public void SetTrophyCollected(TrophyType type,int value)
+        {
+            var tdc = GetTrophyDataConfig(type);
+            tdc.trophyCollected = value;
         }
         public void CollectTrophyReward(TrophyType type)
         {
