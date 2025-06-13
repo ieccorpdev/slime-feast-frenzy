@@ -247,12 +247,13 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 if (onOpenSceneActionOnce == null)
                 {
-                    CheckAllEventsClaimableReward();
-                    if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
-                    {
-                        PlayerData.isShowPackPopupsInHomeOnStartGame = true;
-                        CheckAllPacksPopupOnStartHome();
-                    }
+                    // CheckAllEventsClaimableReward();
+                    // if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
+                    // {
+                    //     PlayerData.isShowPackPopupsInHomeOnStartGame = true;
+                    //     CheckAllPacksPopupOnStartHome();
+                    // }
+                    CheckShowTutorial();
 
                     ShowNextPopup();
                 }
@@ -562,6 +563,20 @@ public class HomeScreenTab : ScreenNavigateUI
             //Custom rating thread
             onOpen?.Invoke();
             onClosed?.Invoke();
+        }
+    }
+
+    public void CheckShowTutorial()
+    {
+        if (PlayerData.level == Config.characterShopConfig.levelUnlock)
+        {
+            AddPopupToShow(
+                null,
+                () =>
+                {
+                    Locator.Main.ScreenMain.homeScreenTutorial.DoTutorialCharacterShop();
+                }, 
+                ShowNextPopup);
         }
     }
     

@@ -327,6 +327,7 @@ namespace IEC
                     
                     Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
                     Locator.Main.HomeScreenTab.CheckAllPacksPopupOnWin();
+                    Locator.Main.HomeScreenTab.CheckShowTutorial();
                     
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
