@@ -36,8 +36,9 @@ namespace IEC
         private Tween floatingTween;
         private Vector3 basePos;
 
-        public void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             basePos = mainSpriteTrophy.rectTransform.anchoredPosition;
         }
 
