@@ -555,6 +555,14 @@ namespace IEC
             return characterShards[characterName];
         }
 
+        public void CollectCharacterShardsOnEndgame(List<string> listCharacterShard)
+        {
+            foreach (var shard in listCharacterShard)
+            {
+                AddCharacterShards(shard, 1);
+            }
+        }
+
         public void AddCharacterShards(string characterName, int shardAmount)
         {
             characterShards.TryAdd(characterName, 0);
