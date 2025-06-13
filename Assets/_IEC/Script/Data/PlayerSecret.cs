@@ -508,6 +508,7 @@ namespace IEC
         public Dictionary<string, int> characterShards = new();
         public List<CharacterShardPackData> listCharacterPackData = new();
         public int shardShopRefreshTime;
+        public DateTime timeEndCountdownRefreshShardShop;
         public long lastTimeUpdateCharacterShardShop;
 
         public void SaveCharacterShardPackData(CharacterShardPackData packData)
@@ -524,7 +525,7 @@ namespace IEC
         {
             var lastTimeUpdate = new DateTime(lastTimeUpdateCharacterShardShop);
 
-            if (DateTime.Now.Date > lastTimeUpdate.Date || listCharacterPackData.Count == 0)
+            if ((DateTime.Now-lastTimeUpdate).TotalHours >= Config.characterShopConfig.shopRefreshTimeInHours || listCharacterPackData.Count == 0)
             {
                 shardShopRefreshTime = 0;
                 listCharacterPackData.Clear();
