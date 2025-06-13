@@ -67,6 +67,10 @@ namespace IEC
             public const string USER_USE_HELPER = "Gameplay.USER_USE_HELPER";
             public const string TURN_ON_COMPASS_DIRECTOR = "Gameplay.TURN_ON_COMPASS_DIRECTOR";
             public const string TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT = "Gameplay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT";
+            
+            public const string COMBO_REACHED = "Gameplay.COMBO_REACHED";
+            public const string COMBO_LOST = "Gameplay.COMBO_LOST";
+            public const string COMBO_RESET = "Gameplay.COMBO_RESET";
 
             public const string PAUSE_GAME = "Gameplay.PAUSE_GAME";
             public const string RESUME_GAME = "Gameplay.RESUME_GAME";

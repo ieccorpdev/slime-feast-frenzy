@@ -53,7 +53,9 @@ public class HoleController : _BaseBehaviour
 
         transform.position = transformer.transform.position;
         var dir = Joystick.Direction;
-        m_Hole.characterAnimator.SetFloat("moveAxis", dir.magnitude);
+        
+        if(m_Hole.characterAnimator != null)
+            m_Hole.characterAnimator.SetFloat("moveAxis", dir.magnitude);
 
         bool isCurrentlyMoving = dir.magnitude >= Mathf.Epsilon;
 
