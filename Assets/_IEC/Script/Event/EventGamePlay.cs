@@ -53,6 +53,7 @@ namespace IEC
             public const string GOLD_CHANGE = "GamePlay.GOLD_CHANGE";
             public const string LIVES_TO_PLAY_CHANGE = "GamePlay.LIVES_TO_PLAY_CHANGE";
             public const string COLLECT_ITEM = "GamePlay.COLLECT_ITEM";
+            public const string COLLECT_CHARACTER_SHARD = "GamePlay.COLLECT_CHARACTER_SHARD";
             public const string COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI = "GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI";
             public const string COLLECT_SPECIAL_ITEM_FOR_UI = "Gameplay.COLLECT_SPECIAL_ITEM_FOR_UI";
             public const string COLLECT_RELIC_ITEM_FOR_UI = "Gameplay.COLLECT_RELIC_ITEM_FOR_UI";

@@ -84,7 +84,14 @@ namespace IEC
 
         private void OnLevelUpCharacter()
         {
+            if (!PlayerData.CheckEnoughShardToLevelUp(CurrentCharacterConfig.characterName))
+            {
+                Locator.Main.PopupInsufficientCharacterShard.Show();
+                return;
+            }
+            
             PlayerData.CheckLevelUpCharacter(CurrentCharacterConfig.characterName);
+
             CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             
             //selectionScroller.UpdateCharacterLevel(CurrentCharacterConfig.characterName, CurrentCharacterLevel);
@@ -141,7 +148,7 @@ namespace IEC
             upgradeBtnUpgradableText.text = CurrentCharacterLevel >= 0 ? "Upgrade now!" : "Collect";
             upgradeBtnInactiveText.text = CurrentCharacterLevel >= 0 ? "Upgrade" : "Collect";
 
-            levelUpCharacterButton.interactable = false;
+            //levelUpCharacterButton.interactable = false;
             
             var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
 
@@ -169,7 +176,7 @@ namespace IEC
                 return;
             }
             
-            levelUpCharacterButton.interactable = true;
+            //levelUpCharacterButton.interactable = true;
             
             if(clickEffect != null)
                 clickEffect.enabled = true;
