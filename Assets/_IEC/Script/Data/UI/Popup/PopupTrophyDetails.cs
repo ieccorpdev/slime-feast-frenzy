@@ -60,7 +60,7 @@ namespace IEC
             floatingTween = null;
         }
 
-        public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime)
+        public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime,bool isTrophyUnlock = false)
         {
             base.Show();
             this.type = type;
@@ -73,12 +73,13 @@ namespace IEC
             mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(index);
             
             LoadDefaultData();
-            if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
+            if (isTrophyUnlock)
             {
                 ShowCompleteGroups();
             }
             else
             {
+                
                 ShowInfoGroups();
                 UpdateUIByTimeDataEvent();
             }
@@ -86,7 +87,8 @@ namespace IEC
         }
         public void UpdateUIByTimeDataEvent()
         {
-            if (!dataEventTime.isEvent)
+
+            if (dataEventTime == null || !dataEventTime.isEvent)
             {
                 infoGRBG.sprite = defaultBg;
                 eventTimeObj.gameObject.SetActive(false);
@@ -142,7 +144,16 @@ namespace IEC
                     break;
             }
             var dataMinMax = PlayerData.trophyData.GetMinMaxProgressBar(type);
-            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,(int)dataMinMax.y-(int)dataMinMax.x);
+            string textRS = "";
+            if (state == ItemTrophyState.Complete)
+            {
+                textRS = "You've unlocked all trophies for this event!";
+            }
+            else
+            {
+                 textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,(int)dataMinMax.y-(int)dataMinMax.x);   
+            }
+
             infoTrophyTMP.text = textRS;
         }
 
@@ -167,7 +178,7 @@ namespace IEC
         }
         public TrophyCustomTitle GetTrophyType(int crTrophy)
         {
-            int index = Mathf.Clamp(crTrophy+1,0, listFontMaterial.Count-1);
+            int index = Mathf.Clamp(crTrophy-1,0, listFontMaterial.Count-1);
             return listFontMaterial[index];
         } 
     }
