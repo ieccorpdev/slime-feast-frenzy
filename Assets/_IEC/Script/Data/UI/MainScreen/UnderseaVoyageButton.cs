@@ -130,8 +130,10 @@ namespace IEC
                     if (txtTimer.text.Equals("Finished"))
                     {
                         SetState(UnderseaVoyageState.Finish);
+                        Debug.LogError("Update true" + isShowNewVersion);
                         if (PlayerData.journeyData.CheckFinishedDay() && !isShowNewVersion)
                         {
+                            Debug.LogError("CheckFinishedDay trueee");
                             isShowNewVersion = true;
                             Locator.Main.PopupUnderseaVoyageIntro.Show();
                         }
