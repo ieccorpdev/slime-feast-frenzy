@@ -34,11 +34,18 @@ namespace IEC
         public Button trophyRoomButton;
         public TrophyEventData dataEventTime;
         private Tween floatingTween;
-        
+        private Vector3 basePos;
+
+        public void Awake()
+        {
+            basePos = mainSpriteTrophy.rectTransform.anchoredPosition;
+        }
+
         public void StartFloatingTrophy()
         {
             if (mainSpriteTrophy == null) return;
             floatingTween?.Kill();
+            mainSpriteTrophy.rectTransform.anchoredPosition = basePos;
             Vector3 startPos = mainSpriteTrophy.rectTransform.anchoredPosition;
             floatingTween = mainSpriteTrophy.rectTransform
                 .DOAnchorPosY(startPos.y + 20f, 1f)

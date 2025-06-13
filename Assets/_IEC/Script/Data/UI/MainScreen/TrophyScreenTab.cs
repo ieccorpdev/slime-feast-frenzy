@@ -147,11 +147,33 @@ public class TrophyScreenTab : ScreenNavigateUI
         return "Error";
     }
 
+    //HardCode
+    public string GetColorTrophy(TrophyType type)
+    {
+        //    Bronze, Silver, Gold, Diamond
+        if (PlayerData.trophyData.GetCurrentTimeComplete(type) == 0)
+        {
+            return "#ff9727";
+        }
+        switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
+        {
+            case 1:
+                return "#85cdff";
+            case 2:
+                return "#ffde00";
+            case 3:
+                return "#ff7ff1";
+            default:
+                return "#ff7ff1";
+        }
+    }
     public string GetTextInfoTrophyMerged(TrophyType type, int targetToTrophy, bool isMiniPopup = false)
     {
         string textRS = "";
-        string targetReach = targetToTrophy.ToString();
-        string trophy = GetTrophyTarget(type);
+        string colorTrophy = GetColorTrophy(type);
+        string trophy = $"<color={colorTrophy}>{GetTrophyTarget(type)}</color>";
+        string targetReachColor = "#ffd400"; // Màu vàng nổi bật cho targetReach
+        string targetReach = $"<color={targetReachColor}>{targetToTrophy}</color>";
         switch (type)
         {
             case TrophyType.GrandVoyage:
@@ -166,9 +188,9 @@ public class TrophyScreenTab : ScreenNavigateUI
             case TrophyType.SharkRace:
             case TrophyType.StarRace:
                 if (isMiniPopup)
-                    textRS += $"Complete the event in 3rd place or higher to get the {trophy}!";
+                    textRS += $"Complete the event in <color={targetReachColor}>3rd place</color> or higher to get the {trophy}!";
                 else
-                    textRS += $"Complete the event in 3rd place or higher {targetReach} times to get the {trophy}!";
+                    textRS += $"Complete the event in <color={targetReachColor}>3rd place</color> or higher {targetReach} times to get the {trophy}!";
                 break;
             case TrophyType.ChompOff:
             case TrophyType.RelicHunt:
