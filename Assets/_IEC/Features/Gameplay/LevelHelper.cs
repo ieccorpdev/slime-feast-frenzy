@@ -220,6 +220,14 @@ namespace _IEC.Features.Gameplay
 
                 itemComponent.LoadData(itemData, itemDefinition);
                 res.Add(itemComponent);
+                
+                var pathComponent = newItem.GetComponentInChildren<PathFollower>();
+                if (pathComponent)
+                {
+                    BezierPath newPath = new BezierPath(itemData.pathPoints, PathSpace.xz);
+                    pathComponent.pathCreator.bezierPath = newPath;
+                }
+                
                 itemIds.Add(itemData.itemId);
             }
 

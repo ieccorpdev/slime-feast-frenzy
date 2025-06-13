@@ -7,6 +7,7 @@ using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Script.GamePlay;
 using DG.Tweening;
 using IEC;
+using PathCreation.Examples;
 using UnityEngine;
 
 namespace _IEC.Features.Gameplay
@@ -53,8 +54,11 @@ namespace _IEC.Features.Gameplay
         private SpecialItemParticleEffectHighlight _specialItemHighlightEffect;
         private RigidbodyData savedData;
 
+        private PathFollower _pathFollower;
+
         public virtual void Start()
         {
+            _pathFollower = GetComponentInChildren<PathFollower>();
             this.GameG = Pool.Get<Game>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
@@ -319,6 +323,12 @@ namespace _IEC.Features.Gameplay
         protected void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
+
+            if (newState == State.Collectable && _pathFollower)
+            {
+                _pathFollower.StopMove();
+            }
+            
             switch (m_CurrentState)
             {
                 case State.None:
@@ -333,6 +343,12 @@ namespace _IEC.Features.Gameplay
             }
 
             m_CurrentState = newState;
+            
+            if (m_CurrentState == State.Idle && _pathFollower)
+            {
+                _pathFollower.StartMoveDelay();
+            }
+            
             switch (m_CurrentState)
             {
                 case State.None:

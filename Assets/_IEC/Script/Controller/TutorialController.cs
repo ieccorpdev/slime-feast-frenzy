@@ -71,13 +71,20 @@ namespace IEC
                     // Locator.Game.ScreenInGame.StartTutorialHelper(helperConfig.id);
                 // }
             // }
-            StartCoroutine(MagnetTutorialDelay());
-            this.RegisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);
+            if (PlayerData.helperData.numberMagnet > 0)
+            {
+                StartCoroutine(MagnetTutorialDelay());
+                this.RegisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);   
+            }
         }
 
         private void StartScaleUpTutorialDelay(object param)
         {
-            StartCoroutine(ScaleUpTutorialDelay());
+            this.UnregisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);
+            if (PlayerData.helperData.numberScaleUp > 0)
+            {
+                StartCoroutine(ScaleUpTutorialDelay());
+            }
         }
 
         private IEnumerator MagnetTutorialDelay()
@@ -91,7 +98,6 @@ namespace IEC
         {
             yield return new WaitForSecondsRealtime(3f);
             Locator.Game.ScreenInGame.StartTutorialHelper(HelperId.ScaleUp);
-            this.UnregisterListener(EventList.GamePlay.RESUME_GAME, StartScaleUpTutorialDelay);
             yield return null;
         }
 

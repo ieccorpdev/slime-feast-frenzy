@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using _IEC.Features.Common.Extension;
+using DG.Tweening;
 using IEC;
 using UnityEngine;
 
@@ -78,6 +79,18 @@ namespace PathCreation.Examples
         // is as close as possible to its position on the old path
         void OnPathChanged() {
             distanceTravelled = pathCreator.path.GetClosestDistanceAlongPath(transform.position);
+        }
+
+        public void StopMove()
+        {
+            StopAllCoroutines();
+            moving = false;
+        }
+        
+        public void StartMoveDelay()
+        {
+            StartCoroutine(DelayStart(2f));
+            transform.DORotate(Vector3.zero, 0.5f);
         }
     }
 }
