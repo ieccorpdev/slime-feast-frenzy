@@ -42,6 +42,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
                 ShowReward();
                 OnClaimReward?.Invoke();
                 SetState(RewardState.Claimed);
+                Debug.Log($"OnClaimReward?.Invoke() {animReward}");
             });
         }
 

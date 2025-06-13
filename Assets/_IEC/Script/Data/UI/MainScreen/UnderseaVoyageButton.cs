@@ -15,6 +15,7 @@ namespace IEC
         private Button button;
         public UnderseaVoyageState currentState = UnderseaVoyageState.Lock;
         private int notiCount = 0;
+        private bool isShowNewVersion;
 
         public void SetState(UnderseaVoyageState state)
         {
@@ -128,11 +129,13 @@ namespace IEC
                     txtTimer.text = PlayerData.journeyData.GetTimeRemainingString();
                     if (txtTimer.text.Equals("Finished"))
                     {
-                        if (currentState != UnderseaVoyageState.Finish)
+                        SetState(UnderseaVoyageState.Finish);
+                        Debug.LogError("Update true" + isShowNewVersion);
+                        if (PlayerData.journeyData.CheckFinishedDay() && !isShowNewVersion)
                         {
-                            SetState(UnderseaVoyageState.Finish);
-                            if (PlayerData.journeyData.CheckFinishedDay())
-                                Locator.Main.PopupUnderseaVoyageIntro.Show();
+                            Debug.LogError("CheckFinishedDay trueee");
+                            isShowNewVersion = true;
+                            Locator.Main.PopupUnderseaVoyageIntro.Show();
                         }
                     }
                     else if (currentState == UnderseaVoyageState.Finish)
