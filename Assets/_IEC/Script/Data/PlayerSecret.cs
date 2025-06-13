@@ -504,12 +504,23 @@ namespace IEC
         #region Player Character
         [Header("Player Character")] 
         public string playerCharacterName;
+        public List<string> listCharacterShownUnlockPopup = new();
         public Dictionary<string, int> characterLevel = new();
         public Dictionary<string, int> characterShards = new();
         public List<CharacterShardPackData> listCharacterPackData = new();
         public int shardShopRefreshTime;
         public DateTime timeEndCountdownRefreshShardShop;
         public long lastTimeUpdateCharacterShardShop;
+
+        public bool CheckShowCharacterUnlockPopup(string characterName)
+        {
+            if (listCharacterShownUnlockPopup.Contains(characterName))
+                return false;
+            
+            listCharacterShownUnlockPopup.Add(characterName);
+
+            return true;
+        }
 
         public void SaveCharacterShardPackData(CharacterShardPackData packData)
         {
