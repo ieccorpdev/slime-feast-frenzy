@@ -83,6 +83,12 @@ namespace IEC
             });
             
             UpdateUI();
+            
+            if (PlayerData.CheckShowCharacterUnlockPopup(CharacterConfig.characterName))
+            {
+                Locator.Main.PopupUnlockCharacter.Setup(CharacterConfig);
+                Locator.Main.PopupUnlockCharacter.Show();
+            }
         }
 
         private void CheckUpdateUIOnSelectNewCharacter(object param)
