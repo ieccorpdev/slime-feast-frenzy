@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace IEC
@@ -30,7 +32,8 @@ namespace IEC
         public AvatarSelection CurrentSelectedAvatar { get; private set; }
         
         public ProfileSelectTab CurrentSelectedTab { get; private set; }
-        
+        [SerializeField] private GameObject notiLockInfo;
+        [SerializeField] private EventTrigger trigger;
         public bool Dragging { get; set; }
 
         protected override void Awake()
@@ -60,6 +63,14 @@ namespace IEC
             UpdatePlayerName();
 
             //InitAvatarTab();
+            EventTrigger.Entry entry = new EventTrigger.Entry
+            {
+                eventID = EventTriggerType.PointerDown
+            };
+            entry.callback.AddListener((data) => {
+                HideNoti();
+            });
+            trigger.triggers.Add(entry);
         }
 
         public override void Show()
@@ -77,6 +88,18 @@ namespace IEC
         {
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_PLAYER_AVATAR_PROFILE);
             base.Hide();
+        }
+
+        public void ShowNoti()
+        {
+            TweenControl.GetInstance().ScaleFromZero(notiLockInfo, 0.5f);
+            DOVirtual.DelayedCall(3f, () => notiLockInfo.gameObject.SetActive(false)).SetId(this.GetHashCode() + "noti");
+        }
+
+        public void HideNoti()
+        {
+            DOTween.Kill(this.GetHashCode() + "noti");
+            notiLockInfo.gameObject.SetActive(false);
         }
 
         public void InitAvatarTab()

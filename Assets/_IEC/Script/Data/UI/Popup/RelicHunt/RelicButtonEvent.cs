@@ -20,13 +20,18 @@ public class RelicButtonEvent : _BaseBehaviour
     public Button button;
     private TimeSpan countdownTimeSpan;
     [SerializeField] private GameEventConfig _eventConfig;
+
     public bool IsEventCanShow()
     {
+        //return true;
         //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
         int level = PlayerData.level;
         int levelUnlock = Config.relicConfig.levelUnlockFeature;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) && Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt, Config.relicConfig.eventDurationInHours, PlayerData.GetDaysSinceDownload());
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) &&
+               Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt,
+                   Config.relicConfig.eventDurationInHours / 24, PlayerData.GetDaysSinceDownload());
     }
+
     public void UpdateUI()
     {
         completedGroup.SetActive(false);
@@ -40,7 +45,11 @@ public class RelicButtonEvent : _BaseBehaviour
         {
             return;
         }
-
+        if (PlayerData.relicData.isNewEvent && PlayerData.relicData.lastEventRewards.Count > 0)
+        {
+            SetClaimLastEventState();
+            return;
+        }
 
 
         if (PlayerData.level < Config.relicConfig.levelUnlockFeature)
@@ -51,7 +60,6 @@ public class RelicButtonEvent : _BaseBehaviour
         }
         else
         {
-         
             var relicLevel = PlayerData.relicData.curRelicLevel;
             var config = Config.relicConfig;
             var isMaxLevel = relicLevel == config.ArtifactLevels.Count;
@@ -62,7 +70,7 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel)
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
                 {
                     completedGroup.SetActive(true);
                     button.interactable = false;
@@ -79,6 +87,7 @@ public class RelicButtonEvent : _BaseBehaviour
                     }
                 }
             }
+
             if (PlayerData.relicData.hasJoinEvent == false)
             {
                 timerGroup.gameObject.SetActive(false);
@@ -117,23 +126,41 @@ public class RelicButtonEvent : _BaseBehaviour
 
     private void OnTimeEventEnd()
     {
-        bool hasLastEventReward = PlayerData.relicData.lastEventRewards.Count > 0 ;
+        bool hasLastEventReward = PlayerData.relicData.lastEventRewards.Count > 0;
         if (hasLastEventReward)
         {
-            timerGroup.gameObject.SetActive(false);
-            claimRewardGroup.gameObject.SetActive(true);
-            button.onClick.RemoveAllListeners();
-            button.onClick.AddListener(() =>
-            {
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(PlayerData.relicData.lastEventRewards, () => { gameObject.SetActive(false); },
-                    true);
-                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Gift_Box_3);
-            });
+            SetClaimLastEventState();
         }
         else
         {
             gameObject.SetActive(false);
         }
+    }
+
+    private void SetClaimLastEventState()
+    {
+        timerGroup.gameObject.SetActive(false);
+        claimRewardGroup.gameObject.SetActive(true);
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() =>
+        {
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(PlayerData.relicData.lastEventRewards,
+                () =>
+                {
+                    if (IsEventCanShow())
+                    {
+                        Locator.Main.PopupRelicHunt.Show();
+                    }
+                    else
+                    {
+                        gameObject.SetActive(false);
+                    }
+                    PlayerData.relicData.lastEventRewards.Clear();
+                    PlayerData.relicData.isNewEvent = false;
+                },
+                true);
+            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Gift_Box_3);
+        });
     }
 
     private void Update()

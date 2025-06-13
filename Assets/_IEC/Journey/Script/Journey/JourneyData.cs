@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
+
 namespace IEC
 {
     [Serializable]
@@ -20,6 +22,7 @@ namespace IEC
         public bool isCompleteJourney;
         public bool isShowHandtut;
         public bool isEndEvent;
+        public bool isShowNoti;
 
         public void SetStartJourneyTimeNow()
         {
@@ -33,6 +36,8 @@ namespace IEC
                 lifeCycleCount++;
                 wasOpenJourney = true;
             }
+            Debug.LogError("SetStartJourneyTimeNow: lifeCycleCount + " + lifeCycleCount);
+            Debug.LogError("SetStartJourneyTimeNow: timeStartJourneyTrip + " + timeStartJourneyTrip);
         }
 
         public void ResetJourneyData()
@@ -47,6 +52,7 @@ namespace IEC
             wasOpenJourney = false;
             isCompleteJourney = false;
             isEndEvent = false;
+            isShowNoti = false;
         }
 
         public string GetTimeRemainingString()
@@ -69,15 +75,24 @@ namespace IEC
 
         private TimeSpan GetTimeRemaining()
         {
-            DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
-            TimeSpan remaining = endTime - DateTime.Now;
-            return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            try
+            {
+                DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount - 1);
+                TimeSpan remaining = endTime - DateTime.Now;
+                return remaining < TimeSpan.Zero ? TimeSpan.Zero : remaining;
+            }
+            catch
+            {
+                return TimeSpan.Zero;
+            }
         }
 
         public bool CheckFinishedDay()
         {
             DateTime endTime = timeStartJourneyTrip.AddDays(JourneyTripConfig.maxDay * lifeCycleCount);
             TimeSpan remaining = endTime - DateTime.Now;
+            Debug.LogError("CheckFinishedDay : endTime" + endTime);
+            Debug.LogError("CheckFinishedDay : remaining" + remaining);
             return remaining <= TimeSpan.Zero;
         }
 

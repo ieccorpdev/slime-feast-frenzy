@@ -72,7 +72,7 @@ namespace IEC
         public int GetLatestDayStartEvent(EventType eventType, int currentDay)
         {
             if (currentDay > listEventLiveOps.Count - 1)
-                currentDay %= (listEventLiveOps.Count - 1);
+                currentDay %= (listEventLiveOps.Count);
 
             for (int i = currentDay; i >= 0; i--)
             {
@@ -85,6 +85,9 @@ namespace IEC
 
         public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
         {
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count);
+            
             int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
             return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
@@ -92,6 +95,9 @@ namespace IEC
 
         public bool IsEventAvailable(EventType eventType, int eventDurationInDays, int currentDay)
         {
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count);
+            
             int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
 
             if (latestDayStartEvent == -1)
