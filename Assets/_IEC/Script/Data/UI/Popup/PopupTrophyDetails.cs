@@ -34,11 +34,18 @@ namespace IEC
         public Button trophyRoomButton;
         public TrophyEventData dataEventTime;
         private Tween floatingTween;
-        
+        private Vector3 basePos;
+
+        public void Awake()
+        {
+            basePos = mainSpriteTrophy.rectTransform.anchoredPosition;
+        }
+
         public void StartFloatingTrophy()
         {
             if (mainSpriteTrophy == null) return;
             floatingTween?.Kill();
+            mainSpriteTrophy.rectTransform.anchoredPosition = basePos;
             Vector3 startPos = mainSpriteTrophy.rectTransform.anchoredPosition;
             floatingTween = mainSpriteTrophy.rectTransform
                 .DOAnchorPosY(startPos.y + 20f, 1f)
@@ -61,7 +68,8 @@ namespace IEC
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
             var data = PlayerData.trophyData.GetTrophyDataConfig(type);
-            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(data.trophyCollected);
+            int index = Mathf.Clamp(data.trophyCollected - 1, 0, 3);
+            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(index);
             
             LoadDefaultData();
             if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
@@ -133,7 +141,7 @@ namespace IEC
                     break;
             }
             var dataMinMax = PlayerData.trophyData.GetMinMaxProgressBar(type);
-            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,(int)dataMinMax.y-(int)dataMinMax.x);
+            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,(int)dataMinMax.y-(int)dataMinMax.x);
             infoTrophyTMP.text = textRS;
         }
 
