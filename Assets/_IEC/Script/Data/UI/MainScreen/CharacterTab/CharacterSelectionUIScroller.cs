@@ -52,7 +52,7 @@ namespace IEC
                 currentCharName = PlayerData.playerCharacterName;
             
             //InitScroller();
-            int index = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(data => data.characterName.Equals(currentCharName));
+            int index = Config.allCharactersConfig.GetListCharacterConfigNotDefault().FindIndex(data => data.characterName.Equals(currentCharName));
             //scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
             JumpToCurrent(index);
         }
@@ -65,7 +65,7 @@ namespace IEC
         
         public int GetNumberOfCells(EnhancedScroller scroller)
         {
-            return Config.allCharactersConfig.listAllCharactersConfig.Count;
+            return Config.allCharactersConfig.GetListCharacterConfigNotDefault().Count;
         }
 
         public float GetCellViewSize(EnhancedScroller scroller, int dataIndex)
@@ -77,10 +77,10 @@ namespace IEC
         {
             CharacterSelectionUI cellView = scroller.GetCellView(characterSelectionUIPrefab) as CharacterSelectionUI;
 
-            var charConfig = Config.allCharactersConfig.listAllCharactersConfig[dataIndex];
+            var charConfig = Config.allCharactersConfig.GetListCharacterConfigNotDefault()[dataIndex];
 
             if(cellView != null)
-                cellView.Setup(charConfig);
+                cellView.Setup(charConfig, CharacterSelectionTab.CurrentCharacterConfig.characterName);
             
             return cellView;
         }
