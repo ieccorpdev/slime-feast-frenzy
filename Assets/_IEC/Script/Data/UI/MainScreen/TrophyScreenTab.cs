@@ -71,7 +71,7 @@ public class TrophyScreenTab : ScreenNavigateUI
         {
             return ItemTrophyState.Complete;
         }
-        if (timesCollected == 0)
+        if (timesCollected == 0 && trophyCollected == 0)
         {
             return ItemTrophyState.Missing;
         }
@@ -147,33 +147,34 @@ public class TrophyScreenTab : ScreenNavigateUI
         return "Error";
     }
 
-    public string GetTextInfoTrophy(TrophyType type,int targetToTrophy)
+    public string GetTextInfoTrophyMerged(TrophyType type, int targetToTrophy, bool isMiniPopup = false)
     {
-                
         string textRS = "";
         string targetReach = targetToTrophy.ToString();
         string trophy = GetTrophyTarget(type);
         switch (type)
         {
             case TrophyType.GrandVoyage:
-                textRS += "Clear " + targetReach + " levels to get the " + trophy + "!";
+                textRS += $"Clear {targetReach} levels to get the {trophy}!";
                 break;
             case TrophyType.SharkFrenzyForce:
-                textRS += "Collect " + targetReach + " characters to get the " + trophy + "!";
+                textRS += $"Collect {targetReach} characters to get the {trophy}!";
                 break;
             case TrophyType.UnderseaVoyage:
-                textRS += "Complete the pass " + targetReach + " times to get the " + trophy + "!";
+                textRS += $"Complete the pass {targetReach} times to get the {trophy}!";
                 break;
             case TrophyType.SharkRace:
             case TrophyType.StarRace:
-                textRS += "Complete the event and make top 3 " + targetReach + " times to get the " + trophy + "!";
+                if (isMiniPopup)
+                    textRS += $"Complete the event in 3rd place or higher to get the {trophy}!";
+                else
+                    textRS += $"Complete the event in 3rd place or higher {targetReach} times to get the {trophy}!";
                 break;
             case TrophyType.ChompOff:
             case TrophyType.RelicHunt:
             case TrophyType.OceanGift:
-                textRS += "Complete the event " + targetReach + " times to get the " + trophy + "!";
+                textRS += $"Complete the event {targetReach} times to get the {trophy}!";
                 break;
-            
         }
         return textRS;
     }

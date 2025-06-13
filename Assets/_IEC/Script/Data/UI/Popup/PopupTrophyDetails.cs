@@ -61,7 +61,8 @@ namespace IEC
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
             var data = PlayerData.trophyData.GetTrophyDataConfig(type);
-            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(data.trophyCollected);
+            int index = Mathf.Clamp(data.trophyCollected - 1, 0, 3);
+            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(index);
             
             LoadDefaultData();
             if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
@@ -133,7 +134,7 @@ namespace IEC
                     break;
             }
             var dataMinMax = PlayerData.trophyData.GetMinMaxProgressBar(type);
-            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,(int)dataMinMax.y-(int)dataMinMax.x);
+            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,(int)dataMinMax.y-(int)dataMinMax.x);
             infoTrophyTMP.text = textRS;
         }
 

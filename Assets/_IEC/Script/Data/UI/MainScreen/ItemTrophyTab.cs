@@ -121,7 +121,8 @@ public class ItemTrophyTab : _BaseBehaviour
     public void OnClickInfoGroups()
     {
         infoTrophyNameTMP.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
-        string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,targetToTrophy);
+        //Allway  return bronze here
+        string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,targetToTrophy,true);
         infoTrophyTMP.text = textRS;
     }
 
@@ -204,7 +205,8 @@ public class ItemTrophyTab : _BaseBehaviour
     public void UpdateMainTrophy()
     {
         int curTrophyCol = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
-        mainTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(curTrophyCol);
+        int index = Mathf.Clamp(curTrophyCol - 1, 0, 3);
+        mainTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(index);
     }
     public void SetProgressBar(int current,int max)
     {
