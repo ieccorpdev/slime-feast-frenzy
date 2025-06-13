@@ -24,6 +24,7 @@ namespace IEC
         public SpineAnimOT shopIconSpine;
         public SpineAnimOT homeIconSpine;
         public SpineAnimOT leaderBoardIconSpine;
+        public SpineAnimOT characterIconSpine;
         private float localPosIconOff = -72.48f;
         private void Start()
         {
@@ -50,6 +51,7 @@ namespace IEC
             shopIconSpine.gameObject.SetActive(false);
             homeIconSpine.gameObject.SetActive(false);
             leaderBoardIconSpine.gameObject.SetActive(false);
+            characterIconSpine.gameObject.SetActive(false);
             m_Icon.gameObject.SetActive(false);
             switch (type)
             {
@@ -62,6 +64,9 @@ namespace IEC
                 case TabType.LeaderBoard:
                 case TabType.Trophy:
                     iconSpine = leaderBoardIconSpine;
+                    break;                
+                case TabType.Character:
+                    iconSpine = characterIconSpine;
                     break;
             }
         }
@@ -83,7 +88,7 @@ namespace IEC
             //m_Icon.gameObject.SetActive(!isLock);
             if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
             m_Lock.SetActive(isLock);
-            m_Lock.transform.localPosition = Vector3.up * -3f;
+            m_Lock.transform.localPosition = Vector3.up * -60f;
             //if(isLock) m_Lock.transform.SetAsLastSibling();
         }
 

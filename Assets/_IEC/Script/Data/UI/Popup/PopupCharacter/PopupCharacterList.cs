@@ -22,8 +22,10 @@ namespace IEC
             {
                 card.gameObject.SetActive(false);
             }
+
+            var characterList = Config.allCharactersConfig.GetListCharacterConfigNotDefault();
             
-            for (int i = 0; i < Config.allCharactersConfig.listAllCharactersConfig.Count; i++)
+            for (int i = 0; i < characterList.Count; i++)
             {
                 if (i >= listCharacterUICard.Count)
                 {
@@ -33,7 +35,7 @@ namespace IEC
                 var uiCard = listCharacterUICard[i];
                 uiCard.transform.localScale = Vector3.one;
                 
-                uiCard.Setup(Config.allCharactersConfig.listAllCharactersConfig[i]);
+                uiCard.Setup(characterList[i]);
                 uiCard.gameObject.SetActive(true);
             }
         }

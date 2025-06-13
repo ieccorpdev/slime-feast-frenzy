@@ -69,6 +69,11 @@ namespace IEC
 
         private void OnUpgrade()
         {
+            if (!PlayerData.CheckEnoughShardToLevelUp(CharacterConfig.characterName))
+            {
+                Locator.Main.PopupInsufficientCharacterShard.Show();
+                return;
+            }
             PlayerData.CheckLevelUpCharacter(CharacterConfig.characterName);
             CharacterLevel = PlayerData.GetCharacterLevel(CharacterConfig.characterName);
             
@@ -138,7 +143,7 @@ namespace IEC
             upgradeShardCountText.text = upgradeShardCost.ToString();
             upgradeShardCountText.color = upgradable ? upgradableTextColor : notEnoughShardTextColor;
 
-            upgradeButton.interactable = upgradable;
+            //upgradeButton.interactable = upgradable;
 
             if (upgradable)
             {

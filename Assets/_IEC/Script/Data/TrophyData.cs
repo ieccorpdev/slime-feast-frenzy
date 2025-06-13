@@ -10,7 +10,7 @@ namespace IEC
     public class TrophyData
     {
         public List<TrophyDataConfig> data = new List<TrophyDataConfig>();
-
+        public bool isShowJourneyTutorial;
         public void CollectTrophy(TrophyType type,int value = 1)
         {
             Debug.LogError("Collect Trophy:" + type);

@@ -555,6 +555,14 @@ namespace IEC
             return characterShards[characterName];
         }
 
+        public void CollectCharacterShardsOnEndgame(List<string> listCharacterShard)
+        {
+            foreach (var shard in listCharacterShard)
+            {
+                AddCharacterShards(shard, 1);
+            }
+        }
+
         public void AddCharacterShards(string characterName, int shardAmount)
         {
             characterShards.TryAdd(characterName, 0);
@@ -586,6 +594,25 @@ namespace IEC
             characterLevel[characterName] = characterConfig.characterLevelOnUnlock;
         }
 
+        public bool CheckEnoughShardToLevelUp(string characterName)
+        {
+            var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
+            characterLevel.TryAdd(characterName, -1);
+            characterShards.TryAdd(characterName, 0);
+
+            var upgradeConfig = characterConfig.GetCharacterUpgrade(characterLevel[characterName] + 1);
+
+            if (upgradeConfig == null)
+                return true;
+
+            var shardCost = upgradeConfig.shardCost;
+
+            if (shardCost > characterShards[characterName])
+                return false;
+
+            return true;
+        }
+
         public void CheckLevelUpCharacter(string characterName)
         {
             var characterConfig = Config.allCharactersConfig.GetCharacterConfig(characterName);
@@ -608,7 +635,7 @@ namespace IEC
             {
                 characterLevel[characterName]++;
             }
-            
+
         }
         
         #endregion

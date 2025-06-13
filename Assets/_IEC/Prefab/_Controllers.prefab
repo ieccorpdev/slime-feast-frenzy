@@ -286,6 +286,10 @@ MonoBehaviour:
     shownFirstTimeBuildCityTut: 0
     currentCityBuild: 0
     screwCityBuild: 0
+    playerCharacterName: 
+    listCharacterPackData: []
+    shardShopRefreshTime: 0
+    lastTimeUpdateCharacterShardShop: 0
     playerAvatarSpriteName: 
     playerAvatarFrameName: 
     playerName: 
@@ -309,6 +313,8 @@ MonoBehaviour:
     isShownPopupInfoChompOff: 0
     chompOffCurrentLevelLost: 0
     chompOffCurrentLevelLostCount: 0
+    trophyData:
+      data: []
 --- !u!1 &3150143569490634634
 GameObject:
   m_ObjectHideFlags: 0
@@ -1286,56 +1292,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SoundController
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[51].id
-      value: Audio.RELIC_CLONE_3
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[52].id
-      value: Audio.RELIC_CLONE_4
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[53].id
-      value: Audio.RELIC_CLONE_5
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[21].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: dbc6e58ce113e004f87b52f3bdd08298, type: 3}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[51].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 95dd7be6005891440b0baecaad464b66, type: 3}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[52].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 7e2f06afcc471c744b5b032051128169, type: 3}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[53].clip
-      value: 
-      objectReference: {fileID: 8300000, guid: 98a6f8ec17255434c81bd9ce5056b984, type: 3}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[51].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[52].volume
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8256336304938062895, guid: c6e731e57f63e1644a934741d7c11320,
-        type: 3}
-      propertyPath: listSoundConfig.Array.data[53].volume
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9049274688606409165, guid: c6e731e57f63e1644a934741d7c11320,
         type: 3}
