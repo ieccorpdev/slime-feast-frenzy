@@ -108,7 +108,11 @@ namespace IEC
             //lock leaderboard and trophy for now
             m_ListTab.ForEach(x =>
             {
-                x.SetLock(x.type == TabType.LeaderBoard || (x.type == TabType.Trophy && PlayerData.level < Config.trophyRewardConfig.levelUnlock));
+                x.SetLock(
+                    x.type == TabType.LeaderBoard 
+                    ||(x.type == TabType.Trophy && PlayerData.level < Config.trophyRewardConfig.levelUnlock)
+                    //||(x.type == TabType.Character && PlayerData.level < Config.characterShopConfig.levelUnlock)
+                    );
             });
         }
         IEnumerator IE_SetLockTabs()
