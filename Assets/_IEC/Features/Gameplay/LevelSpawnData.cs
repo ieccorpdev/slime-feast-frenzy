@@ -45,6 +45,7 @@ namespace _IEC.Features.Gameplay
         public Rotation r;
         public Scale s;
         public bool kinematic;
+        public List<Vector3> pathPoints;
         
         public ItemData ToItemData(string id)
         {
@@ -56,6 +57,10 @@ namespace _IEC.Features.Gameplay
             itemData.eulerAngle = r.ToVector3();
             itemData.localScale = s.ToVector3();
             itemData.isStartKinematic = kinematic;
+            if (pathPoints != null)
+            {
+                itemData.pathPoints = new List<Vector3>(pathPoints);   
+            }
             return itemData;
         }
     }

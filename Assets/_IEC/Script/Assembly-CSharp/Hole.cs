@@ -753,18 +753,23 @@ public class Hole : _BaseBehaviour
 			characterAnimator.Play("Spawn_Game");
 			//Hole call from EndAnimationCharacter
 			onSharkForm = false;
-		}
+            PlayAnim("OC_Out");
+            rootTentacle.transform.DOKill();
+            rootTentacle.transform.localScale = Vector3.zero;
+            rootTentacle.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+        }
 		else
 		{
 			onInitAnimNewGame = true;
 			holePipe.transform.localScale = Vector3.zero;
 			onSharkForm = true;
 			characterAnimator.Play("HoleToShark");
-		}
-		PlayAnim("OC_Appear");
-        rootTentacle.transform.DOKill();
-        rootTentacle.transform.localScale = Vector3.one;
-        rootTentacle.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InOutQuad);
+            PlayAnim("OC_Appear");
+            EventController.RaiseEvent(EventList.Audio.SHARK_UP);
+            rootTentacle.transform.DOKill();
+            rootTentacle.transform.localScale = Vector3.one;
+            rootTentacle.transform.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InOutQuad);
+        }
     }
 
 	public void PlayAnim(string clipName)

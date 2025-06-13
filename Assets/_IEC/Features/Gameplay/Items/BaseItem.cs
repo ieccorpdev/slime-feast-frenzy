@@ -138,6 +138,15 @@ namespace _IEC.Features.Gameplay
             {
                 _specialItemHighlightEffect.gameObject.SetActive(false);
             }
+            if (ItemData.itemId == "JellyFish")
+            {
+                var rigs = this.transform.parent.GetComponentsInChildren<Rigidbody>();
+                foreach(var rig in rigs)
+                {
+                    rig.isKinematic = false;
+                    rig.AddForce(new Vector3(UnityEngine.Random.Range(-0.1f, 0.1f), 1, UnityEngine.Random.Range(-0.1f, 0.1f)) * 6f, ForceMode.Impulse);
+                }
+            }
         }
 
         public Sprite GetIcon()
@@ -273,10 +282,7 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-            if (itemData.isStartKinematic)
-            {
-                SaveAndDestroyRigidbody();
-            }
+            SaveAndDestroyRigidbody();
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -322,6 +328,7 @@ namespace _IEC.Features.Gameplay
         protected void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
+            
             switch (m_CurrentState)
             {
                 case State.None:
@@ -336,6 +343,7 @@ namespace _IEC.Features.Gameplay
             }
 
             m_CurrentState = newState;
+            
             switch (m_CurrentState)
             {
                 case State.None:
@@ -424,7 +432,8 @@ namespace _IEC.Features.Gameplay
             }
             else if (m_CurrentState != State.Collectable && rb.velocity != Vector3.zero)
             {
-                rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
+                if (ItemData.itemId != "JellyFish")
+                    rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
             
         }
