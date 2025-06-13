@@ -68,7 +68,7 @@ namespace IEC
                     if (isClick) return;
                     //lock leaderboard temporary
                     if(tab.type == TabType.LeaderBoard) return;
-                    
+
                     if (tab.type != Game.hybrid.currentTab)
                     {
                         isClick = true;
@@ -105,10 +105,14 @@ namespace IEC
         [Sirenix.OdinInspector.Button]
         private void SetLockTabs()
         {
-            //lock leaderboard for now
+            //lock leaderboard and trophy for now
             m_ListTab.ForEach(x =>
             {
-                x.SetLock(x.type == TabType.LeaderBoard);
+                x.SetLock(
+                    x.type == TabType.LeaderBoard 
+                    ||(x.type == TabType.Trophy && PlayerData.level < Config.trophyRewardConfig.levelUnlock)
+                    //||(x.type == TabType.Character && PlayerData.level < Config.characterShopConfig.levelUnlock)
+                    );
             });
         }
         IEnumerator IE_SetLockTabs()

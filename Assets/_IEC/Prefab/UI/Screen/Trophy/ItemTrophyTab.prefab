@@ -535,9 +535,12 @@ MonoBehaviour:
   startFx: {fileID: 312847745105935007}
   blurBG: {fileID: 8096831027462385566}
   lightBg: {fileID: 49224781011736467}
+  chestImage: {fileID: 6677949165493684952}
   lockObj: {fileID: 7367028421631782445}
   newsTagObj: {fileID: 3050155296974342983}
   newsClaimButton: {fileID: 156900881697777756}
+  normalChest: {fileID: 21300000, guid: 7eb76324be956644f8f71e2a4c2aaa43, type: 3}
+  auraChest: {fileID: 21300000, guid: 341c5d0c39d574c4d911c4f115d3799a, type: 3}
   progressBar: {fileID: 707616883768158394}
   hiddenBar: {fileID: 5646089532448241721}
   completeBar: {fileID: 4289951987575630359}
@@ -546,10 +549,10 @@ MonoBehaviour:
   fillImage: {fileID: 4432378424274090372}
   progressText: {fileID: 7239718294758308649}
   infoButton: {fileID: 705451863047786067}
-  groupsLock: {fileID: 7444605074400426433}
+  groupsLock: {fileID: 32799195897745798}
   lockTrophyNameTMP: {fileID: 974240114192712400}
   levelUnlockTrophyNameTMP: {fileID: 3647706176787486382}
-  groupsNoti: {fileID: 7773508500251293657}
+  groupsNoti: {fileID: 894997887393404395}
   groupsNotiTime: {fileID: 7630771276589130829}
   bgGroupsNoti: {fileID: 3645778303856020264}
   infoTrophyNameTMP: {fileID: 3451206282324768520}
@@ -700,9 +703,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Complete the event '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 0f733752784376b44bab411fe75796ee, type: 2}
-  m_sharedMaterial: {fileID: 3410841258376615703, guid: 0f733752784376b44bab411fe75796ee,
-    type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 9f120cb01c5043647b084e12d83e5a13, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 6056e5fdca6f0f54b857c41e2af3f27b, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -6716,7 +6718,7 @@ GameObject:
   - component: {fileID: 8739199330839567211}
   - component: {fileID: 8470903322462899361}
   m_Layer: 5
-  m_Name: Progress
+  m_Name: ChestReward
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6740,7 +6742,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 122.600006, y: 3.0000458}
-  m_SizeDelta: {x: 120, y: 120}
+  m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8739199330839567211
 CanvasRenderer:
@@ -6770,7 +6772,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 152bdd477c7c377459ac5eff8b180888, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 341c5d0c39d574c4d911c4f115d3799a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6892,7 +6894,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 122.600006, y: 3.0000458}
-  m_SizeDelta: {x: 120, y: 120}
+  m_SizeDelta: {x: 160, y: 160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2235724929882485053
 CanvasRenderer:
@@ -6922,7 +6924,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 152bdd477c7c377459ac5eff8b180888, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 7eb76324be956644f8f71e2a4c2aaa43, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7700,6 +7702,7 @@ GameObject:
   - component: {fileID: 2874518223666940180}
   - component: {fileID: 5180174345254164707}
   - component: {fileID: 2057344127477525993}
+  - component: {fileID: 32799195897745798}
   m_Layer: 5
   m_Name: LockLevelNoti
   m_TagString: Untagged
@@ -7728,9 +7731,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -244}
+  m_AnchoredPosition: {x: 0, y: 11.999954}
   m_SizeDelta: {x: 718.1, y: 512}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &2874518223666940180
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7791,6 +7794,43 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &32799195897745798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7444605074400426433}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aefa9bf7b61cb94e916a400bf6577bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isHideAllOtherScreen: 0
+  listHideHaveEffect: []
+  listHideNoEffect: []
+  onShow:
+    m_PersistentCalls:
+      m_Calls: []
+  onHide:
+    m_PersistentCalls:
+      m_Calls: []
+  onShowDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  tempOnHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHaveFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  onLostFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  mainPopup: {fileID: 7444605074400426433}
 --- !u!1 &7630771276589130829
 GameObject:
   m_ObjectHideFlags: 0
@@ -8016,13 +8056,14 @@ GameObject:
   - component: {fileID: 5109529691990765080}
   - component: {fileID: 1697684482127218141}
   - component: {fileID: 3645778303856020264}
+  - component: {fileID: 894997887393404395}
   m_Layer: 5
   m_Name: InfoTrophyMiniPopup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5109529691990765080
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8045,9 +8086,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -242}
+  m_AnchoredPosition: {x: 0, y: 13.999954}
   m_SizeDelta: {x: 900, y: 512}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1697684482127218141
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8086,6 +8127,43 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &894997887393404395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7773508500251293657}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aefa9bf7b61cb94e916a400bf6577bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isHideAllOtherScreen: 0
+  listHideHaveEffect: []
+  listHideNoEffect: []
+  onShow:
+    m_PersistentCalls:
+      m_Calls: []
+  onHide:
+    m_PersistentCalls:
+      m_Calls: []
+  onShowDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  tempOnHideDone:
+    m_PersistentCalls:
+      m_Calls: []
+  onHaveFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  onLostFocus:
+    m_PersistentCalls:
+      m_Calls: []
+  mainPopup: {fileID: 7773508500251293657}
 --- !u!1 &8096831027462385566
 GameObject:
   m_ObjectHideFlags: 0

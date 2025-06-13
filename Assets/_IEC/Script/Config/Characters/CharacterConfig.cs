@@ -8,17 +8,25 @@ namespace IEC
     [CreateAssetMenu(menuName = "Game/Character/CharacterConfig")]
     public class CharacterConfig : ScriptableObject
     {
+        public bool isDefaultCharacter;
         public string characterName;
+        public int comboCountToChange;
+        public string characterDescription;
+        [Header("UI")]
         public Sprite characterSelectionSprite;
         public Sprite characterLockedSprite;
         public Sprite characterMainSprite;
         public Sprite characterShardSpriteNormal;
         public Sprite characterShardSpriteSmall;
+        
+        [Header("Character Anim")]
         public float defaultCharacterPosY;
         public float characterAnimSpeed = 1f;
         public Animator characterHomePrefab;
         public Animator characterControlPrefab;
         public Animator characterBitePrefab;
+        
+        [Header("Character Stat")]
         public List<CharacterUpgrade> listCharacterUpgrade = new();
         public List<CharacterTrait> listCharacterTraits;
         public List<CharacterStat> listCharacterStat;
@@ -33,6 +41,16 @@ namespace IEC
         {
             return listCharacterPowers.Find(power =>
                 power.powerType == powerType && power.resourceAffected == resourceAffected);
+        }
+
+        public CharacterPower GetPower(int index)
+        {
+            if (listCharacterPowers.Count == 0)
+                return null;
+            
+            index = Mathf.Clamp(index, 0, listCharacterPowers.Count - 1);
+
+            return listCharacterPowers[index];
         }
 
         public CharacterStat GetStat(CharacterStatType statType)
@@ -117,6 +135,7 @@ namespace IEC
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
         AddTimerOnCombo,
+        IncreaseEffectBooster
     }
 
     public enum CharacterStatType

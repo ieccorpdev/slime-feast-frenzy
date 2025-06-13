@@ -8,9 +8,12 @@ namespace IEC
     [CreateAssetMenu(menuName = "Game/CharacterShopConfig")]
     public class CharacterShopConfig : ScriptableObject
     {
+        public int levelUnlock = 10;
         public List<CharacterShardSlotData> listShardSlotData = new();
         public List<CharacterShardRarity> listShardRarity = new();
         public List<int> shopRefreshPrice = new();
+        public float shopRefreshTimeInHours;
+        public float countdownBetweenRefresh = 10f;
 
         public CharacterConfig GetRandomCharacterShard(CharacterShardSlotData slotData)
         {

@@ -41,14 +41,14 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.UPGRADE_CHARACTER, CheckUpdateCurrentCharacter);
         }
 
-        public void Setup(CharacterConfig characterConfig)
+        public void Setup(CharacterConfig characterConfig, string currentCharacterName)
         {
             CharacterConfig = characterConfig;
             // if(characterAvatar != null)
             //     characterAvatar.sprite = CharacterConfig.characterSelectionSprite;
 
             UpdateCharacterLevel(m_playerData.GetCharacterLevel(CharacterConfig.characterName));
-            SetSelectedUI(CharacterConfig.characterName.Equals(m_playerData.playerCharacterName));
+            SetSelectedUI(CharacterConfig.characterName.Equals(currentCharacterName));
             CheckSetLockUI();
         }
 
