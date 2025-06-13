@@ -11,6 +11,7 @@ namespace IEC
         public List<CharacterShardSlotData> listShardSlotData = new();
         public List<CharacterShardRarity> listShardRarity = new();
         public List<int> shopRefreshPrice = new();
+        public float countdownBetweenRefresh = 10f;
 
         public CharacterConfig GetRandomCharacterShard(CharacterShardSlotData slotData)
         {

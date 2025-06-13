@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using _IEC.Features.Common.Extension;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,6 +38,16 @@ namespace IEC
             ChangeComboColor();
         }
 
+        private void OnEnable()
+        {
+            this.RegisterListener(EventList.GamePlay.COMBO_RESET, ResetCombo);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.COMBO_RESET, ResetCombo);
+        }
+
         private void Show()
         {
             animator.Play("Show");
@@ -52,6 +64,8 @@ namespace IEC
             StartCoroutine(CheckInCombo());
             currentComboCount += bonusCombo;
             SetCombo(currentComboCount);
+            
+            this.RaiseEvent(EventList.GamePlay.COMBO_REACHED, currentComboCount);
 
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.HighestComboCount
@@ -61,7 +75,17 @@ namespace IEC
         IEnumerator CheckInCombo()
         {
             yield return new WaitForSeconds(comboTimeRange);
-            GamePlay.levelController.CheckCharacterPowerOnCombo(currentComboCount);
+            this.RaiseEvent(EventList.GamePlay.COMBO_LOST, currentComboCount);
+            currentComboCount = 0;
+            currentComboIndex = 0;
+            canVibrate = true;
+            subComboTxt.transform.parent.DOKill();
+            Hide();
+        }
+
+        private void ResetCombo(object param)
+        {
+            StopAllCoroutines();
             currentComboCount = 0;
             currentComboIndex = 0;
             canVibrate = true;

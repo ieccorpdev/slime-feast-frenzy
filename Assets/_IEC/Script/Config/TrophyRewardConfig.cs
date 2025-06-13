@@ -6,6 +6,7 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "Game/TrophyReward")]
 public class TrophyRewardConfig : ScriptableObject
 {
+    public int levelUnlock = 50;
     public List<TroyphyReward> listTrophyReward  = new();
 
     public TroyphyReward GetReward(TrophyType type)

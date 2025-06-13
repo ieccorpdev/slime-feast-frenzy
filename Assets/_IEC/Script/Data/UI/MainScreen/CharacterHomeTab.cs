@@ -55,14 +55,7 @@ public class CharacterHomeTab : ScreenNavigateUI
         
         characterSelectionTab.Setup();
         
-        if (PlayerData.CheckRefreshCharacterShardShop())
-        {
-            characterShardTab.Setup();
-        }
-        else
-        {
-            characterShardTab.LoadData();
-        }
+        characterShardTab.CheckSetupDataShop();
 
         base.Show();
     }
