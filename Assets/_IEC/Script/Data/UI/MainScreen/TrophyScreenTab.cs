@@ -169,6 +169,7 @@ public class TrophyScreenTab : ScreenNavigateUI
     }
     public string GetTextInfoTrophyMerged(TrophyType type, int targetToTrophy, bool isMiniPopup = false)
     {
+        targetToTrophy = targetToTrophy < 0 ? 0 : targetToTrophy;
         string textRS = "";
         string colorTrophy = GetColorTrophy(type);
         string trophy = $"<color={colorTrophy}>{GetTrophyTarget(type)}</color>";

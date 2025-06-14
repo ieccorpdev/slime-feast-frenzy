@@ -47,11 +47,30 @@ namespace IEC
         {
             return type != TrophyType.GrandVoyage && type != TrophyType.SharkFrenzyForce;
         }
+
+        public (bool found,TrophyType type) GetTrophyNotiUnlocked()
+        {
+            foreach (var name in Enum.GetValues(typeof(TrophyType)))
+            {
+                //So heavy, need optimizationi, indexTrophyWasNoti
+                var typeTemp = (TrophyType)name;
+                var data = GetTrophyDataConfig(typeTemp);
+                int times = data.timeCompleted;
+                int trophyCol = data.trophyCollected;
+                int trophyTarget = GetTargetToGetTrophy(typeTemp,trophyCol);//Target
+                if (times >= trophyTarget && data.indexTrophyWasNoti <= trophyCol)
+                {
+                    return (true,(TrophyType)name);
+                }
+            }
+
+            return (false,TrophyType.GrandVoyage);
+        }
         public bool IsTrophyCanCollect(TrophyType type)
         {
-            int times = GetCurrentTimeComplete(type);
-
-            int trophyCol = GetCurrentCollectedTrophy(type);
+            var data = GetTrophyDataConfig(type);
+            int times = data.timeCompleted;
+            int trophyCol = data.trophyCollected;
             int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
             return times >= trophyTarget;
         }
