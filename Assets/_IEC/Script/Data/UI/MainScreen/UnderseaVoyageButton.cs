@@ -149,11 +149,6 @@ namespace IEC
             {
                 Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
             }
-            if (currentState == UnderseaVoyageState.Finish)
-            {
-                Locator.Main.PopupUnderseaVoyageIntro.Show();
-                return;
-            }
             if (currentState == UnderseaVoyageState.Lock)
             {
                 return;
