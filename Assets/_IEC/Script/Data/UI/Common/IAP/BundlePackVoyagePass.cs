@@ -10,16 +10,22 @@ namespace IEC
     public class BundlePackVoyagePass : _BaseBehaviour
     {
         public RectTransform root;
-        public BundlePackUI bundlePackUI;
+        public Button buyIAP;
 
         private void Awake()
         {
-            bundlePackUI.OnPurchaseSuccess += OnPurchaseSuccess;
+            Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += OnPurchaseSuccess;
+            buyIAP.onClick.AddListener(Locator.Main.PopupVoyagePassIAPInfor.Show);
             if (PlayerData.journeyData.isBuyIAP || PlayerData.level <= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn)
             {
                 this.gameObject.SetActive(false);
                 LayoutRebuilder.ForceRebuildLayoutImmediate(root);
             }
+        }
+
+        private void OnDestroy()
+        {
+            Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess -= OnPurchaseSuccess;
         }
 
         private void OnPurchaseSuccess()
