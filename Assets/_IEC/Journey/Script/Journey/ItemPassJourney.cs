@@ -73,6 +73,7 @@ namespace IEC
             {
                 PlayerData.journeyData.isShowHandtut = true;
                 Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
+                Locator.Main.PopupJourney.bgdark.SetActive(false);
             }
             if (currentID == Config.journeyTripConfig.listRewardsByJourneys[0].idJourney && typePass == TypePassJourney.VIP)
             {
@@ -118,6 +119,7 @@ namespace IEC
             if (!PlayerData.journeyData.isShowHandtut && typePass == TypePassJourney.REGULAR && currentID == 0)
             {
                 Locator.Main.HighLightCanvas.HighLightUI(claim.GetComponent<RectTransform>(), true, true);
+                Locator.Main.PopupJourney.bgdark.SetActive(true);
             }
         }
 

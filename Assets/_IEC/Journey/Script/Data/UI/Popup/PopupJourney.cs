@@ -33,6 +33,7 @@ namespace IEC
         [SerializeField] private Button buyIAP, doneBuyIAP;
         public ItemPassJourney hiddenTreasure;
         public EventTrigger trigger;
+        public GameObject bgdark;
 
         private void Start()
         {
@@ -71,7 +72,7 @@ namespace IEC
         {
             if (_canShow)
             {
-                DOVirtual.DelayedCall(2f, () =>
+                DOVirtual.DelayedCall(1.68f, () =>
                 {
                     Locator.Main.ScreenMain.SetInteractive(true);
                     Show();
