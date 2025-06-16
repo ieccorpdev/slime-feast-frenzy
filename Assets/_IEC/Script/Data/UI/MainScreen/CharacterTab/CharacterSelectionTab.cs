@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -15,7 +16,7 @@ namespace IEC
         public Image mainCharacterImage;
         public Image characterShardImage;
         public Button selectCharacterButton;
-        public Button characterInUseButton;
+        public Button deselectCharacterButton;
         public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
@@ -55,7 +56,7 @@ namespace IEC
         void Start()
         {
             selectCharacterButton.onClick.AddListener(OnSelectCharacter);
-            characterInUseButton.onClick.AddListener(OnDeselectCharacter);
+            deselectCharacterButton.onClick.AddListener(OnDeselectCharacter);
             levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
             previousButton.onClick.AddListener(OnPreviousButtonClick);
             nextButton.onClick.AddListener(OnNextButtonClick);
@@ -225,12 +226,12 @@ namespace IEC
             if (CurrentCharacterLevel >=0)
             {
                 selectCharacterButton.gameObject.SetActive(!IsCurrentShowingSelected);
-                characterInUseButton.gameObject.SetActive(IsCurrentShowingSelected);
+                deselectCharacterButton.gameObject.SetActive(IsCurrentShowingSelected);
             }
             else
             {
                 selectCharacterButton.gameObject.SetActive(false);
-                characterInUseButton.gameObject.SetActive(false);
+                deselectCharacterButton.gameObject.SetActive(false);
             }
         }
 
@@ -239,7 +240,7 @@ namespace IEC
             if (!CurrentCharacterConfig.isDefaultCharacter)
                 return;
             
-            characterInUseButton.gameObject.SetActive(false);
+            deselectCharacterButton.gameObject.SetActive(false);
             selectCharacterButton.gameObject.SetActive(false);
         }
 
