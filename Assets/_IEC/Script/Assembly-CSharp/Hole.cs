@@ -593,6 +593,7 @@ public class Hole : _BaseBehaviour
 		_isChangedToCurrentCharacter = false;
 		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
 		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
+		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
 		//CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
