@@ -204,6 +204,8 @@ public class TrophyScreenTab : ScreenNavigateUI
     public TrophyEventData GetStatusEventConfig(TrophyType type)
     {
         TrophyEventData dataEvent = new TrophyEventData();
+        dataEvent.isEvent = false;
+        dataEvent.isEventActive = true;
         switch (type)
         {
             case TrophyType.GrandVoyage:
