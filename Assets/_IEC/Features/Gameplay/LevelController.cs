@@ -492,18 +492,17 @@ namespace _IEC.Features.Gameplay
             addBoosterAction +=
                 () =>
                 {
-                    var value = CheckCharacterPowerOnBoosterEffect(data.effectValue);
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
                         //playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
-                        playerHole.AddXp(Mathf.FloorToInt(value));
+                        playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
                         EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
                         
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
                         //playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
-                        playerHole.OnCollectSpeedBooster(value, data.effectTime);
+                        playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
                         EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
                         
                     }
@@ -681,18 +680,6 @@ namespace _IEC.Features.Gameplay
                 helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
             }
             return helperTime;
-        }
-
-        public float CheckCharacterPowerOnBoosterEffect(float value)
-        {
-            var checkPowerBooster = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseEffectBooster);
-
-            if (checkPowerBooster != null)
-            {
-                value *= checkPowerBooster
-                    .GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
-            }
-            return value;
         }
 
         private void CheckCharacterPowerOnUseHelper(ResourceType helperType)

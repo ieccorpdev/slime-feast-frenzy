@@ -135,7 +135,7 @@ namespace IEC
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
         AddTimerOnCombo,
-        IncreaseEffectBooster
+        SpeedBoostOnSpawn
     }
 
     public enum CharacterStatType
