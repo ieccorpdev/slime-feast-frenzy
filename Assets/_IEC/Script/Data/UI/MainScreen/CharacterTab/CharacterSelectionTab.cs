@@ -65,11 +65,13 @@ namespace IEC
         private void OnEnable()
         {
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
         }
 
         private void OnDisable()
         {
             this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+            this.UnregisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
         }
 
         private void OnSelectCharacter()
@@ -80,7 +82,7 @@ namespace IEC
                 characterName = PlayerData.playerCharacterName
             });
             EventController.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER);
-            UpdateCurrentCharacterUI();
+            //UpdateCurrentCharacterUI();
         }
         
         private void OnDeselectCharacter()
@@ -90,7 +92,7 @@ namespace IEC
             {
                 characterName = PlayerData.playerCharacterName
             });
-            UpdateCurrentCharacterUI();
+            //UpdateCurrentCharacterUI();
         }
 
         private void OnLevelUpCharacter()
@@ -134,7 +136,7 @@ namespace IEC
             UpdateCurrentCharacterUI();
         }
 
-        public void UpdateCurrentCharacterUI()
+        public void UpdateCurrentCharacterUI(object param = null)
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
             if (mainCharacterImage != null)
