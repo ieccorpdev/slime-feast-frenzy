@@ -108,6 +108,7 @@ namespace IEC
             }
             onHide.Invoke();
             onLostFocus.Invoke(true);
+            CallTempOnHide();
 
             if (isPlayAudioPopup && isAudioOpenPlayed)
             {

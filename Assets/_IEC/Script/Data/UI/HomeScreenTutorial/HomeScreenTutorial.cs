@@ -76,7 +76,7 @@ namespace IEC
                 .GetComponent<RectTransform>();
             HighlightTarget(characterTabBtn, new Vector2(0, 0.01f));
             Locator.Main.HighLightCanvas.HighLightUI(characterTabBtn, true, true, null, false);
-            SetTutText("Open the\nCharacter Shop", "Character Shop", characterTabBtn.transform.position + Vector3.up);
+            SetTutText("Open the\nCharacter Shop", "Character Shop", characterTabBtn.transform.position + Vector3.up * 1.3f + Vector3.left * 0.2f);
             while (!Locator.Main.CharacterHomeTab.gameObject.activeInHierarchy)
                 yield return null;
             Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
@@ -85,12 +85,12 @@ namespace IEC
 
             var levelUpBtn = Locator.Main.CharacterHomeTab.characterSelectionTab.levelUpCharacterButton
                 .GetComponent<RectTransform>();
-            //HighlightTarget(levelUpBtn);
+            HighlightTarget(Locator.Main.CharacterHomeTab.characterSelectionTab.mainCharacterImage.GetComponent<RectTransform>(), new Vector2(-0.1f, -0.03f));
             Locator.Main.HighLightCanvas.HighLightUI(levelUpBtn, true, true, null, false);
             // Locator.Main.HighLightCanvas.HighLightUI(
             //     Locator.Main.CharacterHomeTab.characterSelectionTab.mainCharacterImage.GetComponent<RectTransform>()
             //     , false, false, null, false);
-            SetTutText("Tap to collect\nJackie", "Jackie", levelUpBtn.transform.position + Vector3.up);
+            SetTutText("Tap to collect\nJackie", "Jackie", levelUpBtn.transform.position + Vector3.up * 1.2f);
             //yield return WaitForEvent("EventList.GamePlay.UPGRADE_CHARACTER");
             while (!Locator.Main.PopupUnlockCharacter.gameObject.activeInHierarchy)
                 yield return null;
@@ -105,7 +105,7 @@ namespace IEC
                 (character.characterName, 
                     character.GetCharacterUpgrade(1).shardCost);
             Locator.Main.CharacterHomeTab.characterSelectionTab.UpdateCurrentCharacterUI();
-            SetTutText("Use Jackie Shards\nto unlock its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up);
+            SetTutText("Use Jackie Shards\nto unlock its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up* 1.2f);
             // while (!Locator.Main.PopupUnlockCharacter.gameObject.activeInHierarchy)
             //     yield return null;
             while (PlayerData.GetCharacterLevel(character.characterName) == 0)
@@ -113,12 +113,12 @@ namespace IEC
             Locator.Main.HighLightCanvas.RemoveCurrentHighLight();
             //yield return WaitForEvent("EventList.GamePlay.UPGRADE_CHARACTER");
             ResetHole();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
 
             var selectBtn = Locator.Main.CharacterHomeTab.characterSelectionTab.selectCharacterButton
                 .GetComponent<RectTransform>();
             Locator.Main.HighLightCanvas.HighLightUI(selectBtn, true, true, null, false);
-            SetTutText("Switch to\nJackie", "Jackie", selectBtn.transform.position + Vector3.up);
+            SetTutText("Switch to\nJackie", "Jackie", selectBtn.transform.position + Vector3.up* 1.2f);
             //HighlightTarget(selectBtn);
             //yield return WaitForEvent("EventList.GamePlay.SET_NEW_CHARACTER");
             while (PlayerData.playerCharacterName.Equals(Config.allCharactersConfig.GetDefaultCharacter()

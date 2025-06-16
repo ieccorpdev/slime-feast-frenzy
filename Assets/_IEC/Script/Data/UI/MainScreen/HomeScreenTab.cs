@@ -247,12 +247,12 @@ public class HomeScreenTab : ScreenNavigateUI
             {
                 if (onOpenSceneActionOnce == null)
                 {
-                    // CheckAllEventsClaimableReward();
-                    // if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
-                    // {
-                    //     PlayerData.isShowPackPopupsInHomeOnStartGame = true;
-                    //     CheckAllPacksPopupOnStartHome();
-                    // }
+                    CheckAllEventsClaimableReward();
+                    if (!PlayerData.isShowPackPopupsInHomeOnStartGame)
+                    {
+                        PlayerData.isShowPackPopupsInHomeOnStartGame = true;
+                        CheckAllPacksPopupOnStartHome();
+                    }
                     CheckShowTutorial();
 
                     ShowNextPopup();
