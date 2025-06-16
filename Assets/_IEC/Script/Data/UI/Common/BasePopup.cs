@@ -140,7 +140,7 @@ namespace IEC
             }
         }
 
-        private void HandleHideTopResourceBar()
+        protected virtual void HandleHideTopResourceBar()
         {
             if (!isResoucreBarShownBeforeShowPopup)
             {
