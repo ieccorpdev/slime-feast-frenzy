@@ -526,8 +526,10 @@ namespace IEC
 
         #region Player Character
 
-        [Header("Player Character")] public string playerCharacterName;
+        [Header("Player Character")] 
+        public string playerCharacterName;
         public string tempCharacterName;
+        public string tempCharacterNameForCheatCodeAddShard;
         public List<string> listCharacterShownUnlockPopup = new();
         public Dictionary<string, int> characterLevel = new();
         public Dictionary<string, int> characterShards = new();
