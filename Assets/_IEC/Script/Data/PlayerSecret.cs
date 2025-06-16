@@ -535,6 +535,7 @@ namespace IEC
         public int shardShopRefreshTime;
         public DateTime timeEndCountdownRefreshShardShop;
         public long lastTimeUpdateCharacterShardShop;
+        public bool isShowCharacterTutorial;
 
         public void SetTempCharacter(string characterName)
         {
