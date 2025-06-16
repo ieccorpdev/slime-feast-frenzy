@@ -18,6 +18,8 @@ namespace IEC
         [Header("Tut Text")] 
         public GameObject tutTextGroup;
         public TextMeshProUGUI tutText;
+        public float highlightTextSizeIncrease;
+        public Color highlightTextColor;
 
         private Coroutine characterShopTutorialCoroutine;
 
@@ -105,7 +107,7 @@ namespace IEC
                 (character.characterName, 
                     character.GetCharacterUpgrade(1).shardCost);
             Locator.Main.CharacterHomeTab.characterSelectionTab.UpdateCurrentCharacterUI();
-            SetTutText("Use Jackie Shards\nto unlock its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up* 1.2f);
+            SetTutText("Use Jackie Shards\nto upgrade its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up* 1.2f);
             // while (!Locator.Main.PopupUnlockCharacter.gameObject.activeInHierarchy)
             //     yield return null;
             while (PlayerData.GetCharacterLevel(character.characterName) == 0)
@@ -147,7 +149,21 @@ namespace IEC
         {
             tutTextGroup.SetActive(true);
             tutTextGroup.transform.position = position;
-            tutText.text = text;
+            //tutText.text = text;
+
+            var highlightTextSize = tutText.fontSize + highlightTextSizeIncrease;
+            
+            string formattedHighlight = $"<color={ColorToHex(highlightTextColor)}>{highlightText}</size></color>";
+            
+            string highlightedText = text.Replace(highlightText, formattedHighlight);
+
+            tutText.text = highlightedText;
+        }
+        
+        public string ColorToHex(Color color)
+        {
+            Color32 color32 = color; // Converts to 0–255 range
+            return $"#{color32.r:X2}{color32.g:X2}{color32.b:X2}";
         }
 
         public void ResetHole()
