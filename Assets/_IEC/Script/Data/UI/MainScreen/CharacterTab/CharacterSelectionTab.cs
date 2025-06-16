@@ -69,6 +69,7 @@ namespace IEC
             {
                 characterName = PlayerData.playerCharacterName
             });
+            EventController.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER);
             UpdateCurrentCharacterUI();
         }
         
@@ -100,6 +101,7 @@ namespace IEC
             {
                 characterName = CurrentCharacterConfig.characterName
             });
+            EventController.RaiseEvent(EventList.GamePlay.UPGRADE_CHARACTER);
             
             UpdateCurrentCharacterUI();
 
