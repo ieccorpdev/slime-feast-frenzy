@@ -59,7 +59,16 @@ namespace IEC
             levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
             previousButton.onClick.AddListener(OnPreviousButtonClick);
             nextButton.onClick.AddListener(OnNextButtonClick);
+        }
+
+        private void OnEnable()
+        {
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
         }
 
         private void OnSelectCharacter()
