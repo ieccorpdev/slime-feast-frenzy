@@ -24,6 +24,9 @@ namespace IEC
         public TrophyScreenTab trophyTab => m_TabTrophy.GetComponent<TrophyScreenTab>();
         public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
         public UICurrency LifeCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Live);
+
+        [Header("Tutorial Screen")] 
+        public HomeScreenTutorial homeScreenTutorial;
         
         [Header("Avatar Button")] 
         public Button avatarButton;

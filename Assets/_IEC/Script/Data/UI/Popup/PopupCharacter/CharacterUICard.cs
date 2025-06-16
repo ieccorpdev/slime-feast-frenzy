@@ -5,6 +5,7 @@ using System.Linq;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -14,7 +15,7 @@ namespace IEC
         public Image mainImage;
 
         [Header("Button Group")] 
-        public GameObject inUseButton;
+        public Button deselectButton;
         public Button selectButton;
         public Button upgradeButton;
 
@@ -45,6 +46,7 @@ namespace IEC
         {
             selectButton.onClick.AddListener(OnSelect);
             upgradeButton.onClick.AddListener(OnUpgrade);
+            deselectButton.onClick.AddListener(OnDeselect);
         }
 
         private void OnEnable()
@@ -60,6 +62,16 @@ namespace IEC
         private void OnSelect()
         {
             PlayerData.playerCharacterName = CharacterConfig.characterName;
+            this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
+            {
+                characterName = PlayerData.playerCharacterName
+            });
+            UpdateUI();
+        }
+
+        private void OnDeselect()
+        {
+            PlayerData.playerCharacterName = Config.allCharactersConfig.GetDefaultCharacterConfig().characterName;
             this.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER, new CharacterEventData()
             {
                 characterName = PlayerData.playerCharacterName
@@ -121,7 +133,7 @@ namespace IEC
             
             selectedFrame.SetActive(selected);
             selectedTickImg.SetActive(selected);
-            inUseButton.SetActive(selected);
+            deselectButton.gameObject.SetActive(selected);
             
             selectButton.gameObject.SetActive(!selected);
         }
