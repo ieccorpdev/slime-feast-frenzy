@@ -591,8 +591,8 @@ public class Hole : _BaseBehaviour
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
 		_isChangedToCurrentCharacter = false;
-		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacter();
-		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
+		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
 		//CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();

@@ -678,7 +678,7 @@ namespace _IEC.Features.Gameplay
             var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
             if (checkPowerHelperTime != null)
             {
-                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
             }
             return helperTime;
         }
@@ -690,7 +690,7 @@ namespace _IEC.Features.Gameplay
             if (checkPowerBooster != null)
             {
                 value *= checkPowerBooster
-                    .GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+                    .GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
             }
             return value;
         }
@@ -711,7 +711,7 @@ namespace _IEC.Features.Gameplay
             if (checkXpPower != null)
             {
                 var value = checkXpPower.GetCharacterPowerValue(
-                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (xp == value.conditionValueForPower)
                 {
                     xp = Mathf.FloorToInt(xp * value.buffAmount);
@@ -727,7 +727,7 @@ namespace _IEC.Features.Gameplay
             if (checkPower != null)
             {
                 var value = checkPower.GetCharacterPowerValue(
-                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (comboCount >= value.conditionValueForPower)
                 {
                     Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);

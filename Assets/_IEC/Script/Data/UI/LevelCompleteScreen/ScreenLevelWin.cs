@@ -70,6 +70,8 @@ namespace IEC
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.CollectedStars
                 , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+            
+            PlayerData.ResetTempCharacter();
         }
         
         private void CheckShowGameEventInfoBar()

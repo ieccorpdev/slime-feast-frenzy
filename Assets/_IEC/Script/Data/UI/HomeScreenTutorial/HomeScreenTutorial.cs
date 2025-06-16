@@ -123,7 +123,7 @@ namespace IEC
             SetTutText("Switch to\nJackie", "Jackie", selectBtn.transform.position + Vector3.up* 1.2f);
             //HighlightTarget(selectBtn);
             //yield return WaitForEvent("EventList.GamePlay.SET_NEW_CHARACTER");
-            while (PlayerData.playerCharacterName.Equals(Config.allCharactersConfig.GetDefaultCharacter()
+            while (PlayerData.playerCharacterName.Equals(Config.allCharactersConfig.GetDefaultCharacterConfig()
                        .characterName))
                 yield return null;
             ResetHole();
