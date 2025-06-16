@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using IEC;
+using UnityEngine;
+
+public class HomeLeaderBoardTab : ScreenNavigateUI
+{
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        Locator.Main.PopupLeaderboard.Show();
+    }
+}
