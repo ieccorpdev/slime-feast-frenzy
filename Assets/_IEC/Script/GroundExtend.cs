@@ -115,10 +115,7 @@ namespace IEC
             if (platformExtend != null)
             {
                 //MeoMew block
-                if (!Application.isPlaying)
-                {
-                    platformExtend.transform.parent = null;
-                }
+                platformExtend.transform.parent = null;
 
                 platform.transform.localScale = new Vector3(
                     extendedSize.x,

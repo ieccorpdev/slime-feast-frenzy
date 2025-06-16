@@ -176,7 +176,7 @@ namespace Kino
 
 		void OnRenderImage(RenderTexture source, RenderTexture destination)
 		{
-			var useRGBM = Application.isMobilePlatform;
+			var useRGBM = true;
 
 			// source texture size
 			var tw = source.width;

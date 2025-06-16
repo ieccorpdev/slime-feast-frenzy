@@ -32,41 +32,13 @@ namespace IEC
         public void BehaviourAwake()
         {
         }
-
         public void BehaviourStart()
         {
-            if (Application.isEditor)
-            {
-                UpdateWhiteBannerSize();
-            }
+           
         }
 
         public void UpdateWhiteBannerSize()
         {
-            Debug.LogWarning("UpdateWhiteBannerSize");
-            var bannerHeight = 150;
-
-            Debug.LogWarning("screen DPI: " + Screen.dpi);
-            if (Application.platform == RuntimePlatform.Android)
-            {
-                var nativeDPI = GetNativeDPI();
-                Debug.LogWarning("native xdpi: " + nativeDPI.x);
-                Debug.LogWarning("native ydpi: " + nativeDPI.y);
-            }
-
-            Debug.LogWarning("bannerHeight: " + bannerHeight);
-            Debug.LogWarning("Screen.safeArea.height: " + Screen.safeArea.height);
-            Debug.LogWarning("screen height: " + Screen.height);
-            // var ratio = UI.canvasScaler.referenceResolution.y / Screen.height;
-            // bannerHeight *= ratio;
-            // bannerHeight += 10;
-            // Debug.LogWarning("scaleBannerHeight: " + bannerHeight);
-
-            // var listBannerAdsUI = UI.GetComponentsInChildren<BannerAdsUI>(true);
-            // foreach (var bannerAds in listBannerAdsUI)
-            // {
-            //     bannerAds.SetSize(bannerHeight);
-            // }
         }
 
         Vector2 GetNativeDPI()

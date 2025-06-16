@@ -36,7 +36,7 @@ namespace AllIn1VfxToolkit
 
         private void Update()
         {
-            if(matAssigned || Application.isPlaying || !gameObject.activeSelf) return;
+            if(matAssigned || !gameObject.activeSelf) return;
             Renderer sr = GetComponent<Renderer>();
             if(sr != null)
             {
@@ -119,7 +119,7 @@ namespace AllIn1VfxToolkit
         {
             Shader allIn1VfxShader = Resources.Load(shaderName, typeof(Shader)) as Shader;
 
-            if(!Application.isPlaying && Application.isEditor && allIn1VfxShader != null)
+            if(allIn1VfxShader != null)
             {
                 bool rendererExists = false;
                 Renderer sr = GetComponent<Renderer>();

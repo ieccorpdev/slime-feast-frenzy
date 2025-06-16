@@ -99,14 +99,7 @@ namespace IEC
 
         public bool IsRegionGDPR()
         {
-            if (Application.isEditor)
-            {
-                return true;
-            }
-            else
-            {
-                return GetRegion() == "gdpr";
-            }
+            return true;
         }
 
         public bool IsHasInfo()

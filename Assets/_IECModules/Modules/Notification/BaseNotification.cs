@@ -7,7 +7,7 @@ namespace _IECModules
 {
     public class BaseNotification
     {
-        public static string GameName => Application.productName;
+        public static string GameName => "";
 
         public const string NOTIFICATION_CHANNEL_ID = "notification_channel";
 

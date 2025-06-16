@@ -105,13 +105,7 @@ namespace IEC
             m_QuitAppEvents = GetEventArray<IEventQuitApp>();
             m_LateUpdateEvents = GetEventArray<IEventLateUpdate>();
 
-            if (Application.isEditor)
-            {
-                Debug.unityLogger.filterLogType = LogType.Log;
-            }
-
             //CameraHelper.SetMainCam(Camera.main);
-            Application.targetFrameRate = 60;
             //m_CustomFixedUpdate = new CustomFixedUpdate(OnCustomFixedUpdate, 10);
 
             for (int i = 0; i < m_AwakeEvents.Length; i++)

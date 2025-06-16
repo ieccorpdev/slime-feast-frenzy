@@ -70,7 +70,7 @@ namespace IEC
 #if PluginLocalization
                 return LocalizationManager.CurrentLanguage;
 #else
-                return Application.systemLanguage.ToString();
+                return "";
 #endif
             }
         }

@@ -298,7 +298,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
 
 
             renderM.floatValue = (float)(renderPreset);
-            if(tempValue != renderM.floatValue && !Application.isPlaying)
+            if(tempValue != renderM.floatValue)
             {
                 switch(renderPreset)
                 {
@@ -370,11 +370,11 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
             SetLabelAndFieldWidth(25, 50);
             tempValue = (float)(srcMode);
             srcMode = (UnityEngine.Rendering.BlendMode)EditorGUILayout.EnumPopup("Src", srcMode);
-            if(tempValue != (float)(srcMode) && !Application.isPlaying) SaveAndSetCustomConfig();
+            if(tempValue != (float)(srcMode)) SaveAndSetCustomConfig();
             EditorGUILayout.Space();
             tempValue = (float)(dstMode);
             dstMode = (UnityEngine.Rendering.BlendMode)EditorGUILayout.EnumPopup("Dst", dstMode);
-            if(tempValue != (float)(dstMode) && !Application.isPlaying) SaveAndSetCustomConfig();
+            if(tempValue != (float)(dstMode)) SaveAndSetCustomConfig();
             srcM.floatValue = (float)(srcMode);
             dstM.floatValue = (float)(dstMode);
         }
@@ -400,7 +400,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
             toggle = GUILayout.Toggle(toggle, new GUIContent("Enable Z Write"));
             if(toggle) zWrite.floatValue = 1.0f;
             else zWrite.floatValue = 0.0f;
-            if(tempValue != zWrite.floatValue && !Application.isPlaying) SaveAndSetCustomConfig();
+            if(tempValue != zWrite.floatValue) SaveAndSetCustomConfig();
         }
         EditorGUILayout.EndHorizontal();
     }
@@ -413,7 +413,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
         zTestMode = (UnityEngine.Rendering.CompareFunction)zTestM.floatValue;
         zTestMode = (UnityEngine.Rendering.CompareFunction)EditorGUILayout.EnumPopup("Z TestMode", zTestMode);
         zTestM.floatValue = (float)(zTestMode);
-        if(tempValue != zTestM.floatValue && !Application.isPlaying) SaveAndSetCustomConfig();
+        if(tempValue != zTestM.floatValue) SaveAndSetCustomConfig();
     }
 
     private void Culling()
@@ -424,7 +424,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
         cullMode = (UnityEngine.Rendering.CullMode)cullO.floatValue;
         cullMode = (UnityEngine.Rendering.CullMode)EditorGUILayout.EnumPopup("Culling Mode", cullMode);
         cullO.floatValue = (float)(cullMode);
-        if(tempValue != cullO.floatValue && !Application.isPlaying) SaveAndSetCustomConfig();
+        if(tempValue != cullO.floatValue) SaveAndSetCustomConfig();
     }
 
     private void ColorMask()
@@ -435,7 +435,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
         colorMask = (UnityEngine.Rendering.ColorWriteMask)colorM.floatValue;
         colorMask = (UnityEngine.Rendering.ColorWriteMask)EditorGUILayout.EnumPopup("Color Write Mask", colorMask);
         colorM.floatValue = (float)(colorMask);
-        if(tempValue != colorM.floatValue && !Application.isPlaying) SaveAndSetCustomConfig();
+        if(tempValue != colorM.floatValue) SaveAndSetCustomConfig();
     }
 
     private void Fog(string inspector, string keyword)
@@ -649,7 +649,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
             toggle = EditorGUILayout.BeginToggleGroup(effectNameLabel, toggle);
         }
 
-        if(ini != toggle && !Application.isPlaying)
+        if(ini != toggle)
         {
             if(toggle)
             {
@@ -721,8 +721,8 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
                     gradientTex = GUILayout.Toggle(gradientTex, new GUIContent("Use Editable Gradient?"));
                     if(useEditableGradient != gradientTex)
                     {
-                        if(!Application.isPlaying) Save();
-                        if(gradientTex)
+                        Save();
+                        if (gradientTex)
                         {
                             useEditableGradient = true;
                             targetMat.EnableKeyword(keyword2);
@@ -1022,7 +1022,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
         toggle = SpecialCaseEffectHeaderToggle(inspector, keyword, toggle);
 
         effectCount++;
-        if(ini != toggle && !Application.isPlaying)
+        if(ini != toggle)
         {
             if(toggle) targetMat.EnableKeyword(keyword);
             else
@@ -1197,7 +1197,7 @@ public class AllIn1VfxCustomMaterialEditor : ShaderGUI
 
     private void Save()
     {
-        if(!Application.isPlaying) EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         EditorUtility.SetDirty(targetMat);
     }
 }

@@ -36,11 +36,9 @@ namespace _IECModules
 
         private void InitConstParam()
         {
-            Application.targetFrameRate = 60;
-
             Debug.unityLogger.filterLogType = ((PlayerPrefs.HasKey(LOG_ENABLED_KEY) &&
                                             PlayerPrefs.GetInt(LOG_ENABLED_KEY) == 1)
-                                           || Application.isEditor) ? LogType.Log : LogType.Warning;
+                                           ) ? LogType.Log : LogType.Warning;
         }
     }
 }
