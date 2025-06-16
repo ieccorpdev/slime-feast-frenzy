@@ -253,6 +253,7 @@ public class HomeScreenTab : ScreenNavigateUI
                         PlayerData.isShowPackPopupsInHomeOnStartGame = true;
                         CheckAllPacksPopupOnStartHome();
                     }
+                    CheckShowTutorial();
 
                     ShowNextPopup();
                 }
@@ -562,6 +563,21 @@ public class HomeScreenTab : ScreenNavigateUI
             //Custom rating thread
             onOpen?.Invoke();
             onClosed?.Invoke();
+        }
+    }
+
+    public void CheckShowTutorial()
+    {
+        if (PlayerData.level == Config.characterShopConfig.levelUnlock && !PlayerData.isShowCharacterTutorial)
+        {
+            PlayerData.isShowCharacterTutorial = true;
+            AddPopupToShow(
+                null,
+                () =>
+                {
+                    Locator.Main.ScreenMain.homeScreenTutorial.DoTutorialCharacterShop();
+                }, 
+                ShowNextPopup);
         }
     }
     

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
@@ -19,8 +20,17 @@ namespace IEC
         // Start is called before the first frame update
         void Start()
         {
-            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCharacter);
             UpdateCharacter();
+        }
+
+        private void OnEnable()
+        {
+            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCharacter);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCharacter);
         }
 
         public LayerMask fishLayer;
