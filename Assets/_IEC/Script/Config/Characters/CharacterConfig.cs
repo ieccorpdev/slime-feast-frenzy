@@ -109,6 +109,7 @@ namespace IEC
     {
         public int conditionValueForPower; // for example item xp to apply power
         public float buffAmount;
+        public string overrideDescriptionString;
     }
 
     [System.Serializable]

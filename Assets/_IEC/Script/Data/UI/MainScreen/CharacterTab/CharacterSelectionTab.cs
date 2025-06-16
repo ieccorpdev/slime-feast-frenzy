@@ -271,12 +271,17 @@ namespace IEC
             {
                 if (power != null)
                 {
-                    float powerValue = power.GetCharacterPowerValue(CurrentCharacterLevel).buffAmount;
+                    var value = power.GetCharacterPowerValue(CurrentCharacterLevel);
+                    float powerValue = value.buffAmount;
 
                     if (powerValue < 1f)
                         powerValue *= 100f;
-
-                    string stringValue = GetHighlightedText(powerValue);
+                    
+                    string stringValue = GetHighlightedText(powerValue.ToString());
+                    if (!String.IsNullOrEmpty(value.overrideDescriptionString))
+                    {
+                        stringValue = GetHighlightedText(value.overrideDescriptionString);
+                    }
                     formatValues.Add(stringValue);
                 }
             }
@@ -294,7 +299,7 @@ namespace IEC
             });
         }
         
-        private string GetHighlightedText(float value)
+        private string GetHighlightedText(string value)
         {
             string colorHex = ColorToHex(highlightTextColor);
             return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease}><color={colorHex}>{value}</color></size>";
