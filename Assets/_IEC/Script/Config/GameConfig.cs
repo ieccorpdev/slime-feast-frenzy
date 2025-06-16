@@ -95,6 +95,7 @@ namespace IEC
         [Header("Characters")] 
         public AllCharactersConfig allCharactersConfig;
         public CharacterShopConfig characterShopConfig;
+        public CharacterShardObjectConfig characterShardObjectConfig;
 
         public void PreloadAllConfig()
         {

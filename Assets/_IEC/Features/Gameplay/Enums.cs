@@ -55,6 +55,7 @@ namespace _IEC.Features.Gameplay
         Ocean = 16,
         Relic = 17,
         KingdomSpecial = 18,
+        CharacterShard = 19,
     }
 
     public enum HelperId

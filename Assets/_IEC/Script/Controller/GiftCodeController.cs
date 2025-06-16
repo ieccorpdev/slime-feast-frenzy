@@ -92,6 +92,7 @@ namespace IEC
             Debug.LogError("UseGiftCode" + giftCode);
             giftCode = giftCode.Trim();
             var data = await GiftCodeModule.UseGiftCode(giftCode);
+            Locator.Service.PopupLoadingPurchaseIap.Hide();
             Debug.LogWarning("UseGiftCode data: "+data);
             if (string.IsNullOrEmpty(data)) return;
             var json = JSON.Parse(data);

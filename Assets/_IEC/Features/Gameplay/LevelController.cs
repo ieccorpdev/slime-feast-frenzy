@@ -51,6 +51,7 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
+        private List<BaseCharacterShardItem> m_AllCharacterShardItems = new List<BaseCharacterShardItem>();
         private List<BaseItem> m_AllRelicItems = new List<BaseItem>();
         private List<BaseItem> m_AllkingdomSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
@@ -75,10 +76,15 @@ namespace _IEC.Features.Gameplay
         
         public int GoldCollected { get; private set; }
 
+        private List<string> listCharacterShardCollected = new();
+
+        public List<string> ListCharacterShardCollected => listCharacterShardCollected;
+
         private void OnEnable()
         {
             this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.RegisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -93,6 +99,7 @@ namespace _IEC.Features.Gameplay
         {
             this.UnregisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.UnregisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -191,6 +198,7 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             }
+            
             m_AllSpecialItems.Clear();
             int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
@@ -199,6 +207,20 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
+            
+            m_AllCharacterShardItems.Clear();
+            int countShardItems = Config.characterShardObjectConfig.GetSpawnAmount(PlayerData.level);
+            m_AllCharacterShardItems = LevelHelper.SpawnCharacterShardItems(
+                GroundExtend.CalculateBounds(m_AllItems),
+                countShardItems, 
+                allItemHolder,
+                Config.characterShardObjectConfig.shardObjectItemDefinition
+            );
+            foreach (var shardItem in m_AllCharacterShardItems)
+            {
+                shardItem.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
+            }
+            
             m_AllkingdomSpecialItems.Clear();
             int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
                 && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
@@ -285,6 +307,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
+            listCharacterShardCollected.Clear();
             GoldCollected = 0;
             
             CheckCharacterPowerOnStartGame();
@@ -316,6 +339,13 @@ namespace _IEC.Features.Gameplay
             
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
+
+        private void OnCollectCharacterShard(object param)
+        {
+            var characterName = (string)param;
+            
+            listCharacterShardCollected.Add(characterName);
+        }
 
         private void OnCollectItem(object param)
         {

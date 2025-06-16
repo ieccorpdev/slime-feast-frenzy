@@ -84,7 +84,14 @@ namespace IEC
 
         private void OnLevelUpCharacter()
         {
+            if (!PlayerData.CheckEnoughShardToLevelUp(CurrentCharacterConfig.characterName))
+            {
+                Locator.Main.PopupInsufficientCharacterShard.Show();
+                return;
+            }
+            
             PlayerData.CheckLevelUpCharacter(CurrentCharacterConfig.characterName);
+
             CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             
             //selectionScroller.UpdateCharacterLevel(CurrentCharacterConfig.characterName, CurrentCharacterLevel);
@@ -95,6 +102,12 @@ namespace IEC
             });
             
             UpdateCurrentCharacterUI();
+
+            if (PlayerData.CheckShowCharacterUnlockPopup(CurrentCharacterConfig.characterName))
+            {
+                Locator.Main.PopupUnlockCharacter.Setup(CurrentCharacterConfig);
+                Locator.Main.PopupUnlockCharacter.Show();
+            }
         }
 
         private void SetCurrentCharacter(object param)
@@ -141,7 +154,7 @@ namespace IEC
             upgradeBtnUpgradableText.text = CurrentCharacterLevel >= 0 ? "Upgrade now!" : "Collect";
             upgradeBtnInactiveText.text = CurrentCharacterLevel >= 0 ? "Upgrade" : "Collect";
 
-            levelUpCharacterButton.interactable = false;
+            //levelUpCharacterButton.interactable = false;
             
             var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
 
@@ -162,6 +175,9 @@ namespace IEC
             
             shardCountText.text = $"{currentShard}/{upgradeShardCost}";
             inactiveShardCountText.text = $"{currentShard}/{upgradeShardCost}";
+            
+            if(upgradeShardCost == 0)
+                shardCountText.text = "Free";
 
             if (currentShard < upgradeShardCost)
             {
@@ -169,7 +185,7 @@ namespace IEC
                 return;
             }
             
-            levelUpCharacterButton.interactable = true;
+            //levelUpCharacterButton.interactable = true;
             
             if(clickEffect != null)
                 clickEffect.enabled = true;
@@ -227,6 +243,8 @@ namespace IEC
             if (CurrentCharacterConfig.isDefaultCharacter) //Hides default character
                 CurrentCharacterConfig = Config.allCharactersConfig.listAllCharactersConfig[1];
             
+            SetCurrentCharacter(new CharacterEventData() {characterName = CurrentCharacterConfig.characterName });
+            
             UpdateCurrentCharacterUI();
             selectionScroller.Init(this);
             CheckNavigateButton();
@@ -261,7 +279,7 @@ namespace IEC
             return Regex.Replace(inputText, @"\[(\w+)\]", match =>
             {
                 string iconName = match.Groups[1].Value;
-                return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease * 2}><sprite name={iconName}></size>";
+                return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease}><sprite name={iconName}></size>";
             });
         }
         
