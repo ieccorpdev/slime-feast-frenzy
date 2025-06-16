@@ -23,7 +23,7 @@ namespace IEC
 
         private float _countdownBetweenRefresh = 0f;
 
-        private DateTime timeEndDay;
+        private DateTime timeResetShop;
 
         private void Start()
         {
@@ -49,10 +49,12 @@ namespace IEC
                 listCharacterShardPacks[i].Setup(Config.characterShopConfig.listShardSlotData[i]);
             }
 
-            _countdownBetweenRefresh = 0f;
+            //_countdownBetweenRefresh = 0f;
+            _countdownBetweenRefresh =
+                (float)(PlayerData.timeEndCountdownRefreshShardShop - DateTime.Now).TotalSeconds;
             
             UpdateUI();
-            timeEndDay = DateTime.Now.Date.AddDays(1);
+            timeResetShop = new DateTime(PlayerData.lastTimeUpdateCharacterShardShop).AddHours(Config.characterShopConfig.shopRefreshTimeInHours);
         }
 
         public void LoadData()
@@ -61,16 +63,23 @@ namespace IEC
             {
                 listCharacterShardPacks[i].LoadData(PlayerData.listCharacterPackData[i]);
             }
+            
+            _countdownBetweenRefresh =
+                (float)(PlayerData.timeEndCountdownRefreshShardShop - DateTime.Now).TotalSeconds;
 
             UpdateUI();
+            timeResetShop = new DateTime(PlayerData.lastTimeUpdateCharacterShardShop).AddHours(Config.characterShopConfig.shopRefreshTimeInHours);
         }
 
         private void UpdateUI()
         {
             refreshGoldCostText.text = Config.characterShopConfig.GetShopRefreshPrice(PlayerData.shardShopRefreshTime).ToString();
+
+            bool isCountdown = _countdownBetweenRefresh > 0f &&
+                               _countdownBetweenRefresh <= Config.characterShopConfig.countdownBetweenRefresh;
             
-            btnRefreshGroup.SetActive(_countdownBetweenRefresh <= 0f);
-            btnCountdownGroup.SetActive(_countdownBetweenRefresh > 0f);
+            btnRefreshGroup.SetActive(!isCountdown);
+            btnCountdownGroup.SetActive(isCountdown);
 
             refreshButton.interactable = btnRefreshGroup.activeSelf;
         }
@@ -82,10 +91,11 @@ namespace IEC
 
         private void UpdateRefreshTimerText()
         {
-            timeToRefreshShopText.text = $"Shop reset in {DateTimeHelper.GetFormattedTimeHMS(timeEndDay - DateTime.Now)}";
+            timeToRefreshShopText.text = $"Shop reset in {DateTimeHelper.GetFormattedTimeHMS(timeResetShop - DateTime.Now)}";
 
-            if (_countdownBetweenRefresh > 0f)
+            if (_countdownBetweenRefresh >= 0f)
             {
+                //_countdownBetweenRefresh = (float)(PlayerData.timeEndCountdownRefreshShardShop - DateTime.Now).TotalSeconds;
                 int countdown = Mathf.FloorToInt(_countdownBetweenRefresh);
                 string cnt = countdown >= 10 ? $"{countdown}" : "0" + countdown;
                 countdownBetweenRefreshText.text = $"00:{cnt}";
@@ -111,7 +121,9 @@ namespace IEC
             {
                 PlayerData.OnRefreshShardShop();
                 PlayerData.SubtractCurrency(ResourceType.Gold, goldCost);
-                _countdownBetweenRefresh = Config.characterShopConfig.countdownBetweenRefresh;
+                PlayerData.timeEndCountdownRefreshShardShop = DateTime.Now.AddSeconds(Config.characterShopConfig.countdownBetweenRefresh);
+                // _countdownBetweenRefresh =
+                //     (float)(PlayerData.timeEndCountdownRefreshShardShop - DateTime.Now).TotalSeconds;
                 Setup();
                 UpdateUI();
             }
