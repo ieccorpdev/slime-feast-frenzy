@@ -37,21 +37,19 @@ namespace IEC
 
         public bool isDiscountedPackBought;
         public bool isClickedRate;
-        
+
         public DateTime lastTimeCollectFreeAdsGoldPack;
 
         public int sessionStartLevel;
         public int LevelSessionCount => session - sessionStartLevel + 1;
         public Dictionary<string, string> dictUserVersion = new Dictionary<string, string>();
         public bool wasRateUs;
-        [Header("CCJ")]
-        public bool isMusicOn = true;
+        [Header("CCJ")] public bool isMusicOn = true;
         public bool isSoundOn = true;
         public bool isVibrateOn = true;
-        [Header("Tutorial")]
-        public bool passHelperStack;
+        [Header("Tutorial")] public bool passHelperStack;
         public bool passHelperClear;
-        
+
         public HybridData hybridData = new HybridData();
         public JourneyData journeyData = new JourneyData();
 
@@ -61,14 +59,15 @@ namespace IEC
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
-      
+
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
-            if (!dictUserVersion.ContainsKey(version) && !isForceSet) 
+            if (!dictUserVersion.ContainsKey(version) && !isForceSet)
             {
                 dictUserVersion[version] = abVersion;
             }
+
             if (isForceSet)
             {
                 dictUserVersion[version] = abVersion;
@@ -80,7 +79,7 @@ namespace IEC
             level += 1;
             trophyData.SetLevelTrophy(level);
         }
-       
+
         public void SaveLastPlayTime()
         {
             lastTickPlayTime = Math.Max(lastTickPlayTime, startTickPlayTime);
@@ -95,7 +94,7 @@ namespace IEC
                     null,
                     System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
-        
+
         public int GetDaysFromDownloadToTime(DateTime time)
         {
             return Mathf.FloorToInt(
@@ -117,10 +116,12 @@ namespace IEC
             {
                 playerName = Config.AllGameEventConfig.GenerateNewPlayerName();
             }
+
             if (String.IsNullOrEmpty(playerCharacterName))
             {
                 playerCharacterName = Config.allCharactersConfig.listAllCharactersConfig[0]?.characterName ?? "";
             }
+
             InitCurrency();
             ResetDataDay();
             SetupNewBuildCityData();
@@ -131,10 +132,11 @@ namespace IEC
                 chompOffCurrentLevelLost = -1;
                 chompOffCurrentLevelLostCount = 0;
             }
+
             InitDailyReward();
             CheckActionAfterQuitGame();
         }
-        
+
         public void ResetDataDay()
         {
             //Another param need reset each 24 day come here
@@ -152,61 +154,66 @@ namespace IEC
 
         private void CheckActionAfterQuitGame()
         {
-            if(!isKilledAppGamePlay)
+            if (!isKilledAppGamePlay)
                 return;
 
             isKilledAppGamePlay = false;
-            
+
             ResetBoosterStreak();
             AddLevelLostCountForChompOffEvent();
-            
+
         }
 
         public void ClearAndInitTrackingLevelType()
         {
             levelFirstTimeTracking = new Dictionary<LevelType, int>();
-            foreach (LevelType type in (LevelType[]) Enum.GetValues(typeof(LevelType)))
+            foreach (LevelType type in (LevelType[])Enum.GetValues(typeof(LevelType)))
             {
-                levelFirstTimeTracking.Add(type,0);
+                levelFirstTimeTracking.Add(type, 0);
             }
         }
+
         public void Vibrate(HapticTypes hapticType)
         {
             if (!isVibrateOn) return;
             MMVibrationManager.Haptic(hapticType);
         }
-        
+
         public void AddReward(ResourceType type, int amount)
         {
             switch (type)
             {
                 case ResourceType.Gold:
-                    AddCurrency(ResourceType.Gold,amount);
+                    AddCurrency(ResourceType.Gold, amount);
                     break;
             }
         }
+
         #region GamePlay
+
         public PlayerHelperData helperData;
         public BoosterData boosterData;
+
         #endregion
+
         public bool IsHardLevel()
         {
             int levelStart = Game.isOverrideHardLevelConfig
                 ? Game.levelStartHardLevelOverride
                 : Config.levelStartHardLevel;
-            
+
             if (Game.isUsingHardLevel && level >= levelStart)
             {
                 // if (level == Config.levelStartHardLevel && isFirstTimePlayHardLevel)
                 //     return true;
-                
+
                 if (level - lastHardLevel >= Config.stepBetweenHardLevels)
                     return true;
             }
 
             return false;
         }
-        
+
         #region Booster
 
         public List<ResourceType> listUnlockedBoosters = new();
@@ -225,7 +232,7 @@ namespace IEC
 
             return false;
         }
-        
+
 
         public void IncreaseBoosterStreak()
         {
@@ -234,7 +241,7 @@ namespace IEC
 
             if (level == levelLostStreak && currentBoosterStreak > 0)
                 return;
-            
+
             currentBoosterStreak++;
         }
 
@@ -263,7 +270,7 @@ namespace IEC
             {
                 timeEndUnlimitedBoosters[boosterType] = DateTime.Now;
             }
-            
+
             timeEndUnlimitedBoosters[boosterType] = timeEndUnlimitedBoosters[boosterType].AddMinutes(minutes);
         }
 
@@ -276,18 +283,18 @@ namespace IEC
 
             return DateTime.Now <= timeEndUnlimitedBoosters[boosterType];
         }
-        
+
         public string GetTimeLeftUnlimitedBooster(ResourceType boosterType)
         {
             TimeSpan time = timeEndUnlimitedBoosters[boosterType] - DateTime.Now;
 
             string outputString = "";
-            
+
             var hour = time.Hours;
             var minute = time.Minutes;
             var seconds = time.Seconds;
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
-            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string minutes = minute < 10 ? $"0{minute}" : minute.ToString();
             string second = seconds.ToString();
             if (hour > 0)
             {
@@ -297,22 +304,24 @@ namespace IEC
             {
                 outputString = $"{minutes}m {second}s";
             }
+
             return outputString;
         }
-        
+
         #endregion
-        
+
         #region Player Life
-        [Header("Player Life")]
-        public int playerLife = 5;
+
+        [Header("Player Life")] public int playerLife = 5;
         public DateTime timeStartCountAddLife = DateTime.Now;
         public DateTime timeStartUnlimitedLife = DateTime.MinValue;
         public DateTime timeEndUnlimitedLife = DateTime.MinValue;
         public float realTimeUnlimidtedLife;
-        public bool levelPending;//check player quit in game
+        public bool levelPending; //check player quit in game
         public bool isKilledAppGamePlay;
 
         public bool dailyShowLifeOfferPack;
+
         public void DecreasePlayerLife()
         {
             if (playerLife == (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
@@ -333,9 +342,11 @@ namespace IEC
         public bool IsInUnlimitedLife()
         {
             bool passLevelLife = level < Config.levelUnlockLife;
-            bool inUnlimitedLife = DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife && realTimeUnlimidtedLife > 0;
+            bool inUnlimitedLife = DateTime.Now > timeStartUnlimitedLife && DateTime.Now < timeEndUnlimitedLife &&
+                                   realTimeUnlimidtedLife > 0;
             return passLevelLife || inUnlimitedLife;
         }
+
         public void AddTimeUnlimitedLife(int minutes)
         {
 
@@ -351,34 +362,39 @@ namespace IEC
 
                 timeEndUnlimitedLife = timeStartUnlimitedLife.AddMinutes(minutes);
             }
-            if(realTimeUnlimidtedLife < 0) realTimeUnlimidtedLife = 0;
+
+            if (realTimeUnlimidtedLife < 0) realTimeUnlimidtedLife = 0;
             realTimeUnlimidtedLife += minutes * 60;
         }
+
         public void SetTimeUnlimitedLife(int minutes)
         {
-            timeStartUnlimitedLife = DateTime.Now; 
+            timeStartUnlimitedLife = DateTime.Now;
             timeEndUnlimitedLife = timeStartUnlimitedLife.AddMinutes(minutes);
         }
+
         public string GetTimeLeftUnlimitedLife()
         {
-            TimeSpan diffTime =timeEndUnlimitedLife - DateTime.Now;
+            TimeSpan diffTime = timeEndUnlimitedLife - DateTime.Now;
             if (diffTime.TotalSeconds < 0 || realTimeUnlimidtedLife < 0)
             {
                 //cheat player
                 return "MAX";
             }
+
             TimeSpan time = timeEndUnlimitedLife - DateTime.Now;
             if (realTimeUnlimidtedLife < diffTime.TotalSeconds)
             {
                 time = DateTime.Now.AddSeconds((int)realTimeUnlimidtedLife) - DateTime.Now;
             }
+
             string outputString = "";
-            
+
             var hour = time.Hours + time.Days * 24;
             var minute = time.Minutes;
             var seconds = time.Seconds;
             string hours = hour < 10 ? $"0{hour}" : hour.ToString();
-            string minutes = minute < 10 ? $"0{minute}" :minute.ToString();
+            string minutes = minute < 10 ? $"0{minute}" : minute.ToString();
             string second = seconds.ToString();
             if (hour > 0)
             {
@@ -388,19 +404,21 @@ namespace IEC
             {
                 outputString = $"{minutes}m {second}s";
             }
+
             return outputString;
         }
 
         public void CheckPlayerAddLifeByTime()
         {
             TimeSpan diffTime = DateTime.Now - timeStartCountAddLife;
-            if (levelPending && playerLife > 0 )
+            if (levelPending && playerLife > 0)
             {
                 //ReducePlayer life when quit in time
                 levelPending = false;
-                if(!IsInUnlimitedLife()) DecreasePlayerLife();
+                if (!IsInUnlimitedLife()) DecreasePlayerLife();
                 Debug.LogWarning("Decrease life by quit in game Play");
             }
+
             while (playerLife < (journeyData.isEnableMaxHeart ? Config.maxHealthInKingdomPass : Config.maxHealth))
             {
                 diffTime = DateTime.Now - timeStartCountAddLife;
@@ -415,6 +433,7 @@ namespace IEC
                 }
             }
         }
+
         public void SetTimeToNextLife(int minues)
         {
             timeStartCountAddLife = DateTime.Now.AddMinutes(-minues);
@@ -425,11 +444,13 @@ namespace IEC
             playerLife++;
             CheckPlayerMaxHealth();
         }
+
         public void AddPlayerLife(int amount)
         {
-            playerLife+= amount;
+            playerLife += amount;
             CheckPlayerMaxHealth();
         }
+
         public void CheckPlayerMaxHealth()
         {
             int maxHealth = Pool.Get<GameConfig>().maxHealth;
@@ -438,6 +459,7 @@ namespace IEC
                 playerLife = maxHealth;
             }
         }
+
         public string GetTimeToNextLife()
         {
             CheckPlayerAddLifeByTime();
@@ -453,6 +475,7 @@ namespace IEC
                     //cheat player
                     return "00:00";
                 }
+
                 TimeSpan timeLeft = new TimeSpan(0, 0, Config.timeRefillLife, 0) - diffTime;
                 if (timeLeft.Ticks < 0) timeLeft = TimeSpan.Zero;
                 return new DateTime(timeLeft.Ticks).ToString("mm:ss");
@@ -465,25 +488,25 @@ namespace IEC
         }
 
         #endregion
-        
+
         #region City build
 
-        [Header("City Build")] 
-        public bool shownFirstTimeBuildCityTut;
+        [Header("City Build")] public bool shownFirstTimeBuildCityTut;
         public int currentCityBuild;
         public int screwCityBuild = 0;
         public Dictionary<int, CityData> buildCityData = new Dictionary<int, CityData>();
-        
+
         public class CityData
         {
             public bool isDone;
             public Dictionary<int, int> itemCity = new Dictionary<int, int>();
         }
-        
+
         public void AddScrewBuildCity(int value)
         {
             screwCityBuild += value;
         }
+
         public void SetupNewBuildCityData()
         {
             if (buildCityData.Count > 0) return;
@@ -498,12 +521,15 @@ namespace IEC
                 buildCityData[i] = itemCity;
             }
         }
-        
+
         #endregion
-        
+
         #region Player Character
+
         [Header("Player Character")] 
         public string playerCharacterName;
+        public string tempCharacterName;
+        public string tempCharacterNameForCheatCodeAddShard;
         public List<string> listCharacterShownUnlockPopup = new();
         public Dictionary<string, int> characterLevel = new();
         public Dictionary<string, int> characterShards = new();
@@ -511,6 +537,25 @@ namespace IEC
         public int shardShopRefreshTime;
         public DateTime timeEndCountdownRefreshShardShop;
         public long lastTimeUpdateCharacterShardShop;
+        public bool isShowCharacterTutorial;
+
+        public void SetTempCharacter(string characterName)
+        {
+            tempCharacterName = characterName;
+        }
+
+        public void ResetTempCharacter()
+        {
+            tempCharacterName = null;
+        }
+
+        public string GetCurrentCharacterName()
+        {
+            if (!String.IsNullOrEmpty(tempCharacterName))
+                return tempCharacterName;
+
+            return playerCharacterName;
+        }
 
         public bool CheckShowCharacterUnlockPopup(string characterName)
         {

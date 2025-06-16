@@ -36,9 +36,18 @@ namespace IEC
         {
             if(btn != null)
                 btn.onClick.AddListener(OnSelectCharacter);
-            
+        }
+
+        private void OnEnable()
+        {
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, CheckCurrentCharacter);
             this.RegisterListener(EventList.GamePlay.UPGRADE_CHARACTER, CheckUpdateCurrentCharacter);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, CheckCurrentCharacter);
+            this.UnregisterListener(EventList.GamePlay.UPGRADE_CHARACTER, CheckUpdateCurrentCharacter);
         }
 
         public void Setup(CharacterConfig characterConfig, string currentCharacterName)

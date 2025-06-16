@@ -16,6 +16,9 @@ namespace IEC
         public Button playButton;
         public Button closeAllButton;
 
+        [Header("Character Recommend")] 
+        public CharacterRecommendBar characterRecommendBar;
+
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
         public TextMeshProUGUI levelUnlockStreak;
@@ -57,6 +60,12 @@ namespace IEC
             UpdateStreakDisplay();
 
             CheckShowGameEventInfoBar();
+            CheckShowCharacterRecommendBar();
+        }
+
+        private void CheckShowCharacterRecommendBar()
+        {
+            characterRecommendBar.gameObject.SetActive(characterRecommendBar.CheckSetup());
         }
 
         private void CheckShowGameEventInfoBar()

@@ -114,7 +114,7 @@ namespace IEC
                 x.SetLock(
                     x.type == TabType.LeaderBoard 
                     ||(x.type == TabType.Trophy && PlayerData.level <= Config.trophyRewardConfig.levelUnlock)
-                    ||(x.type == TabType.Character && PlayerData.level <= Config.characterShopConfig.levelUnlock)
+                    ||(x.type == TabType.Character && PlayerData.level < Config.characterShopConfig.levelUnlock)
                     );
             });
         }
