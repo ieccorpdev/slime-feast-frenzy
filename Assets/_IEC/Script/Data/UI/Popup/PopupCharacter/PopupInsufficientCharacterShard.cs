@@ -27,6 +27,10 @@ namespace IEC
             {
                 Locator.Main.PopupCharacterList.Hide();
             }
+            if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
+            {
+                Locator.Main.PopupBooster.Hide();
+            }
             Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Shop).onClick?.Invoke();
         }
 
@@ -37,6 +41,11 @@ namespace IEC
             {
                 Locator.Main.PopupCharacterList.Hide();
             }
+            if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
+            {
+                Locator.Main.PopupBooster.Hide();
+            }
+            Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Character).onClick?.Invoke();
             this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Shard);
         }
 
@@ -46,6 +55,10 @@ namespace IEC
             if (Locator.Main.PopupCharacterList.gameObject.activeInHierarchy)
             {
                 Locator.Main.PopupCharacterList.Hide();
+            }
+            if (Locator.Main.PopupBooster.gameObject.activeInHierarchy)
+            {
+                return;
             }
             Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Home).onClick?.Invoke();
             Locator.Main.PopupBooster.Show();
