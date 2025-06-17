@@ -240,10 +240,16 @@ public class TrophyScreenTab : ScreenNavigateUI
                 SetEventStatus(dataEvent, EventType.StarChase);
                 break;
             case TrophyType.RelicHunt:
-                SetEventStatus(dataEvent, EventType.RelicHunt);
+                //Task #71160
+                //SetEventStatus(dataEvent, EventType.RelicHunt);
+                dataEvent.isEvent = true;
+                dataEvent.isEventActive =  IsEventCanShow(EventType.RelicHunt) &&  (PlayerData.relicData.hasJoinEvent || PlayerData.relicData.isNewEvent);
+                if (!dataEvent.isEventActive)
+                {
+                    dataEvent.timeStartEvent = Config.eventLiveOpsConfig.GetNextTimeStartEvent(EventType.RelicHunt, PlayerData.GetDaysSinceDownload());
+                }
                 break;
         }
-        
         return dataEvent;
     }
 
