@@ -72,6 +72,9 @@ namespace IEC
         IEnumerator IETutorialCharacterShop()
         {
             var character = Config.allCharactersConfig.GetListCharacterConfigNotDefault()[0];
+            PlayerData.AddCharacterShards
+            (character.characterName, 
+                character.GetTotalShardForMaxLevel());
             Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
             tutorialScreenImage.gameObject.SetActive(true);
             var characterTabBtn = Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Character)
@@ -103,9 +106,6 @@ namespace IEC
             
             //HighlightTarget(levelUpBtn);
             Locator.Main.HighLightCanvas.HighLightUI(levelUpBtn, true, true, null, false);
-            PlayerData.AddCharacterShards
-                (character.characterName, 
-                    character.GetTotalShardForMaxLevel());
             Locator.Main.CharacterHomeTab.characterSelectionTab.UpdateCurrentCharacterUI();
             SetTutText("Use Jackie Shards\nto upgrade its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up* 1.2f);
             // while (!Locator.Main.PopupUnlockCharacter.gameObject.activeInHierarchy)
