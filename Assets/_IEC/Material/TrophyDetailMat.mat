@@ -10,8 +10,11 @@ Material:
   m_Name: TrophyDetailMat
   m_Shader: {fileID: 4800000, guid: a36b7719ff0465b42ab1407d67672c5f, type: 3}
   m_ValidKeywords:
+  - GRADIENT_ON
+  - RADIALGRADIENT_ON
   - TEXTURESCROLL_ON
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _GRADISRADIAL_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -110,7 +113,7 @@ Material:
     - _ClipUvUp: 0
     - _ColorChangeLuminosity: 0
     - _ColorChangeTolerance: 0.25
-    - _ColorRampLuminosity: 0
+    - _ColorRampLuminosity: 1
     - _ColorRampOutline: 0
     - _ColorSwapBlueLuminosity: 0.5
     - _ColorSwapGreenLuminosity: 0.5
@@ -139,9 +142,9 @@ Material:
     - _Glow: 10
     - _GlowTexUsed: 0
     - _GradBlend: 1
-    - _GradBoostX: 1.2
-    - _GradBoostY: 1.2
-    - _GradIsRadial: 0
+    - _GradBoostX: 0.1
+    - _GradBoostY: 5
+    - _GradIsRadial: 1
     - _GrassManualAnim: 1
     - _GrassManualToggle: 0
     - _GrassRadialBend: 0.1
@@ -234,7 +237,7 @@ Material:
     - _ZWrite: 1
     - _ZoomUvAmount: 0.5
     m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 0.22899605, g: 0.34184542, b: 0.5849056, a: 0.105882354}
     - _ColorChangeNewCol: {r: 1, g: 1, b: 0, a: 1}
     - _ColorChangeTarget: {r: 1, g: 0, b: 0, a: 1}
     - _ColorSwapBlue: {r: 1, g: 1, b: 1, a: 1}
@@ -243,10 +246,10 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FadeBurnColor: {r: 1, g: 1, b: 0, a: 1}
     - _GlowColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GradBotLeftCol: {r: 0, g: 0, b: 1, a: 1}
-    - _GradBotRightCol: {r: 0, g: 0, b: 1, a: 1}
-    - _GradTopLeftCol: {r: 1, g: 0, b: 0, a: 1}
-    - _GradTopRightCol: {r: 1, g: 0, b: 0, a: 1}
+    - _GradBotLeftCol: {r: 1, g: 1, b: 1, a: 1}
+    - _GradBotRightCol: {r: 1, g: 1, b: 1, a: 1}
+    - _GradTopLeftCol: {r: 0.2216981, g: 0.65361285, b: 1, a: 1}
+    - _GradTopRightCol: {r: 0, g: 0, b: 0, a: 1}
     - _GreyscaleTintColor: {r: 1, g: 1, b: 1, a: 1}
     - _HitEffectColor: {r: 1, g: 1, b: 1, a: 1}
     - _HologramStripeColor: {r: 0, g: 1, b: 1, a: 1}

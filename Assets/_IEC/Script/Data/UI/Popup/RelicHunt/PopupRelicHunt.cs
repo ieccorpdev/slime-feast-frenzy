@@ -227,6 +227,7 @@ public class PopupRelicHunt : BasePopup
                 if (PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig))
                 {
                     PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
+                    Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
                 }
             },
             true);

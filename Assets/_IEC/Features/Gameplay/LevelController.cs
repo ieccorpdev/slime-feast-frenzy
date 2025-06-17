@@ -216,10 +216,10 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.characterShardObjectConfig.shardObjectItemDefinition
             );
-            foreach (var shardItem in m_AllCharacterShardItems)
-            {
-                shardItem.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
-            }
+            // foreach (var shardItem in m_AllCharacterShardItems)
+            // {
+            //     shardItem.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
+            // }
             
             m_AllkingdomSpecialItems.Clear();
             int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 

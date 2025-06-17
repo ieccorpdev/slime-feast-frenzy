@@ -255,6 +255,7 @@ public class HomeScreenTab : ScreenNavigateUI
                     }
                     CheckShowTutorial();
 
+                    CheckShowTrophyPopup();
                     ShowNextPopup();
                 }
                 else
@@ -568,7 +569,10 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void CheckShowTutorial()
     {
-        if (PlayerData.level == Config.characterShopConfig.levelUnlock && !PlayerData.isShowCharacterTutorial)
+        if (PlayerData.level >= Config.characterShopConfig.levelUnlock 
+            && !PlayerData.isShowCharacterTutorial
+            && PlayerData.GetCharacterLevel(Config.allCharactersConfig.GetListCharacterConfigNotDefault()[0].characterName) < 0
+            )
         {
             PlayerData.isShowCharacterTutorial = true;
             AddPopupToShow(
@@ -583,6 +587,7 @@ public class HomeScreenTab : ScreenNavigateUI
     
     public void CheckAllPacksPopupOnWin()
     {
+        //No Ads popup
         if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
@@ -592,9 +597,24 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
-
     }
 
+    public void CheckShowTrophyPopup()
+    {
+        //Trophy Reward 
+        var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
+        if (foundTrophy)
+        {
+            AddPopupToShow(Locator.Main.PopupTrophyDetails,
+                () =>
+                {
+                    var data = PlayerData.trophyData.GetTrophyDataConfig(typeTrophy);
+                    data.indexTrophyWasNoti = data.trophyCollected +1;// hmmm
+                    Locator.Main.PopupTrophyDetails.ShowTrophy(typeTrophy,ItemTrophyState.New,new TrophyEventData(),true);
+                },
+                ShowNextPopup);
+        }
+    }
     public void CheckAllPacksPopupOnStartHome()
     {
         bool avaliableToShowVoyage =
