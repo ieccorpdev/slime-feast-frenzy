@@ -39,7 +39,6 @@ namespace UnityEngine.UI
             }
         }
 
-        private DrivenRectTransformTracker m_Tracker;
 
         protected AspectRatioScaler()
         {
@@ -69,7 +68,6 @@ namespace UnityEngine.UI
 
         protected override void OnDisable()
         {
-            m_Tracker.Clear();
             LayoutRebuilder.MarkLayoutForRebuild(rectTransform);
             base.OnDisable();
         }
@@ -98,7 +96,6 @@ namespace UnityEngine.UI
                 return;
 
             m_DelayedSetDirty = false;
-            m_Tracker.Clear();
 
             switch (m_AspectMode)
             {
@@ -111,9 +108,6 @@ namespace UnityEngine.UI
 #endif
                 case AspectMode.FitInParent:
                 {
-                    m_Tracker.Add(this, rectTransform,
-                        DrivenTransformProperties.Scale);
-
                     Vector2 parentSize = GetParentSize();
 
                     var scale = GetScale(parentSize, m_ParentOriginSize);

@@ -68,6 +68,7 @@ public class Hole : MonoBehaviour
 	}
 
 	public HoleConfig Settings => m_settings;
+	public Animator subShark;
 
 	private void Awake()
 	{
@@ -464,7 +465,12 @@ public class Hole : MonoBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("HoleToShark");
-	}
+		DOVirtual.DelayedCall(0.5f, () =>
+		{
+			subShark.gameObject.SetActive(true);
+			subShark.Play("Idle");
+		});
+    }
 	public void TurnSharkToHole()
 	{
 		readyForSharkBite = false;
@@ -474,7 +480,8 @@ public class Hole : MonoBehaviour
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
 		characterAnimator.Play("Dive Into Water 0");
-	}
+        subShark.Play("Dive Into Water");
+    }
 	#endregion
 
 
