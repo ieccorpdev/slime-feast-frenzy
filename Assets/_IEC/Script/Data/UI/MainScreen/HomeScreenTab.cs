@@ -601,7 +601,6 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void CheckShowTrophyPopup()
     {
-        
         //Trophy Reward 
         var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
         if (foundTrophy)
@@ -615,7 +614,6 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
-        //Trophy 
     }
     public void CheckSkinUnlockTrophy2()
     {
