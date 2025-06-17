@@ -539,6 +539,16 @@ namespace IEC
         public long lastTimeUpdateCharacterShardShop;
         public bool isShowCharacterTutorial;
 
+        public int GetTotalCharacterUnlocked()
+        {
+            int count = 0;
+            foreach (var kv in characterLevel)
+            {
+                if (kv.Value >= 0) count++;
+            }
+
+            return count;
+        }
         public void SetTempCharacter(string characterName)
         {
             tempCharacterName = characterName;

@@ -117,7 +117,7 @@ namespace IEC
             mainTileTrophy.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
             mainTileTrophy.fontMaterial  = dataFont.fontMaterial;
             mainTileTrophy.colorGradientPreset = dataFont.colorGradient;
-            trophyUnlockText.gameObject.SetActive(state == ItemTrophyState.New);
+            trophyUnlockText.gameObject.SetActive(isTrophyUnlock);
         }
         public void ShowInfoGroups(bool isTrophyUnlock)
         {

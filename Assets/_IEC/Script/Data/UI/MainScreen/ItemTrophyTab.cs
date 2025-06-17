@@ -99,7 +99,7 @@ public class ItemTrophyTab : _BaseBehaviour
             groupsLock.Show();
             OnClickLocked();
         }
-        else if ( state == ItemTrophyState.Missing)
+        else if ( state == ItemTrophyState.Missing || PlayerData.trophyData.GetCurrentCollectedTrophy(type) == 0)
         {
             groupsNoti.gameObject.SetActive(true);
             groupsNoti.Show();
@@ -226,7 +226,7 @@ public class ItemTrophyTab : _BaseBehaviour
 
     public void UpdateUIByTimeDataEvent()
     {
-        if (!dataEventTime.isEvent)
+        if (dataEventTime == null || !dataEventTime.isEvent)
         {
             bgGroupsNoti.sprite = defaultInfoSprite;
             groupsNotiTime.gameObject.SetActive(false);
