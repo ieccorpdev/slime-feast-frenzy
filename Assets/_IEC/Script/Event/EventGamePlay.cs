@@ -72,6 +72,8 @@ namespace IEC
             public const string COMBO_REACHED = "Gameplay.COMBO_REACHED";
             public const string COMBO_LOST = "Gameplay.COMBO_LOST";
             public const string COMBO_RESET = "Gameplay.COMBO_RESET";
+            
+            public const string CHANGE_CHARACTER_ON_COMBO_REACHED = "Gameplay.CHANGE_CHARACTER_ON_COMBO_REACHED";
 
             public const string PAUSE_GAME = "Gameplay.PAUSE_GAME";
             public const string RESUME_GAME = "Gameplay.RESUME_GAME";

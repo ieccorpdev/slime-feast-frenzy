@@ -612,6 +612,7 @@ public class Hole : _BaseBehaviour
 		var comboCount = (int)param;
 		if (TargetCharacterConfig.comboCountToChange > 0 && comboCount >= TargetCharacterConfig.comboCountToChange)
 		{
+			this.RaiseEvent(EventList.GamePlay.CHANGE_CHARACTER_ON_COMBO_REACHED);
 			this.RaiseEvent(EventList.GamePlay.COMBO_RESET);
 			_isChangedToCurrentCharacter = true;
 			_isInChangeCharacterAnim = true;
