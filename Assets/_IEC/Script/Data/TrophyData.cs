@@ -79,14 +79,6 @@ namespace IEC
         {
             return IsTrophyReadyToCollect(type);
         }
-        public bool NeedShowTrophyPopupDetail(TrophyType type)
-        {
-            int times = GetCurrentTimeComplete(type);
-            int notiIndex = GetMaxTrophyNoti(type);
-            int trophyCol = GetCurrentCollectedTrophy(type);
-            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
-            return times >= trophyTarget && notiIndex < trophyTarget;
-        }
         public int GetTargetToGetTrophy(TrophyType type,int trophyCol)
         {
            var dataConfig = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
