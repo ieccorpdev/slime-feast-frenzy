@@ -169,6 +169,7 @@ public class TrophyScreenTab : ScreenNavigateUI
     }
     public string GetTextInfoTrophyMerged(TrophyType type, int targetToTrophy, bool isMiniPopup = false)
     {
+        targetToTrophy = targetToTrophy < 0 ? 0 : targetToTrophy;
         string textRS = "";
         string colorTrophy = GetColorTrophy(type);
         string trophy = $"<color={colorTrophy}>{GetTrophyTarget(type)}</color>";
@@ -271,6 +272,8 @@ public class TrophyScreenTab : ScreenNavigateUI
         }
         switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
         {
+            case 0:
+                return "Bronze Trophy";
             case 1:
                 return "Silver Trophy";
             case 2:
