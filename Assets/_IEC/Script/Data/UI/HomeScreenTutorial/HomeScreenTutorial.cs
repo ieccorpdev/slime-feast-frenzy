@@ -105,7 +105,7 @@ namespace IEC
             Locator.Main.HighLightCanvas.HighLightUI(levelUpBtn, true, true, null, false);
             PlayerData.AddCharacterShards
                 (character.characterName, 
-                    character.GetCharacterUpgrade(1).shardCost);
+                    character.GetTotalShardForMaxLevel());
             Locator.Main.CharacterHomeTab.characterSelectionTab.UpdateCurrentCharacterUI();
             SetTutText("Use Jackie Shards\nto upgrade its ability", "Jackie Shards", levelUpBtn.transform.position + Vector3.up* 1.2f);
             // while (!Locator.Main.PopupUnlockCharacter.gameObject.activeInHierarchy)

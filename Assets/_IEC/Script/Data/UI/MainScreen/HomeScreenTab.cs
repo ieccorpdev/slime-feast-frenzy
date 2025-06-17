@@ -569,7 +569,10 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void CheckShowTutorial()
     {
-        if (PlayerData.level == Config.characterShopConfig.levelUnlock && !PlayerData.isShowCharacterTutorial)
+        if (PlayerData.level >= Config.characterShopConfig.levelUnlock 
+            && !PlayerData.isShowCharacterTutorial
+            && PlayerData.GetCharacterLevel(Config.allCharactersConfig.GetListCharacterConfigNotDefault()[0].characterName) < 0
+            )
         {
             PlayerData.isShowCharacterTutorial = true;
             AddPopupToShow(

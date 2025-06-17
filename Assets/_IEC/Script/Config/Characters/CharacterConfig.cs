@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -34,7 +35,6 @@ namespace IEC
 
         [Header("Character unlock")] 
         public int levelUnlock;
-
         public int characterLevelOnUnlock;
 
         public CharacterPower GetPower(CharacterPowerType powerType, ResourceType resourceAffected = default)
@@ -72,6 +72,11 @@ namespace IEC
                 return null;
             
             return listCharacterUpgrade[index];
+        }
+
+        public int GetTotalShardForMaxLevel()
+        {
+            return listCharacterUpgrade.Sum(upgrade => upgrade.shardCost);
         }
     }
 
