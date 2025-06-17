@@ -52,7 +52,7 @@ public class UpdateManager : MonoBehaviour
         managedUpdates.Remove(obj);
     }
     // Đăng ký và huỷ đăng ký Late Update
-    public void RegisterLateUpdate(IManagedLateUpdate obj)
+    public void r(IManagedLateUpdate obj)
     {
         if (!managedLateUpdates.Contains(obj))
             managedLateUpdates.Add(obj);

@@ -143,6 +143,20 @@ MonoBehaviour:
     upToDate: 0
     keywords: []
   - shaderCompilerPlatform: 5
+    shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords: []
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords: []
+  - shaderCompilerPlatform: 5
     shader: {fileID: 211, guid: 0000000000000000f000000000000000, type: 0}
     passType: 0
     passId: 4
@@ -259,6 +273,7 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -270,6 +285,7 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -282,6 +298,7 @@ MonoBehaviour:
     - COLORRAMP_ON
     - MASK_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -294,6 +311,7 @@ MonoBehaviour:
     - COLORRAMP_ON
     - MASK_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -302,10 +320,15 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -315,10 +338,15 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -334,6 +362,7 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -349,6 +378,7 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -358,12 +388,16 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -373,12 +407,16 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -391,10 +429,15 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -407,10 +450,15 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
     - TWISTUV_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -426,12 +474,16 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - ADDITIVECONFIG_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -446,12 +498,16 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - ADDITIVECONFIG_ON
     - GLOW_ON
     - MASK_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -460,16 +516,23 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - GLOW_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
   - shaderCompilerPlatform: 9
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -478,16 +541,23 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - GLOW_ON
     - SHAPE1ROTATE_ON
     - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
   - shaderCompilerPlatform: 5
     shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
     passType: 0
@@ -502,6 +572,7 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - ADDITIVECONFIG_ON
     - MASK_ON
@@ -519,6 +590,7 @@ MonoBehaviour:
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
     - SHAPE2_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - ADDITIVECONFIG_ON
     - MASK_ON
@@ -533,6 +605,7 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - POSTERIZE_ON
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
@@ -549,6 +622,7 @@ MonoBehaviour:
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - POSTERIZE_ON
     - SHAPE2CONTRAST_ON
     - SHAPE2ROTATE_ON
@@ -562,12 +636,16 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - POSTERIZE_ON
     - SHAPE2CONTRAST_ON
@@ -581,12 +659,16 @@ MonoBehaviour:
     upToDate: 0
     keywords:
     - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
     - COLORRAMPGRAD_ON
     - COLORRAMP_ON
     - MASK_ON
     - POLARUVDISTORT_ON
     - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
     - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
     - TWISTUV_ON
     - POSTERIZE_ON
     - SHAPE2CONTRAST_ON
@@ -1413,20 +1495,6 @@ MonoBehaviour:
     keywords: []
   - shaderCompilerPlatform: 9
     shader: {fileID: 10720, guid: 0000000000000000f000000000000000, type: 0}
-    passType: 0
-    passId: 0
-    subShaderIndex: 0
-    upToDate: 0
-    keywords: []
-  - shaderCompilerPlatform: 5
-    shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
-    passType: 0
-    passId: 0
-    subShaderIndex: 0
-    upToDate: 0
-    keywords: []
-  - shaderCompilerPlatform: 9
-    shader: {fileID: 200, guid: 0000000000000000f000000000000000, type: 0}
     passType: 0
     passId: 0
     subShaderIndex: 0
@@ -2297,9 +2365,197 @@ MonoBehaviour:
     subShaderIndex: 0
     upToDate: 0
     keywords: []
+  - shaderCompilerPlatform: 5
+    shader: {fileID: -6465566751694194690, guid: df63357dff16a6742ae25705b0abbe96, type: 3}
+    passType: 4
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - DIRECTIONAL
+    - LIGHTPROBE_SH
+    - TCP2_REFLECTIONS_FRESNEL
+    - TCP2_RIM_LIGHTING
+    - TCP2_RIM_LIGHTING_LIGHTMASK
+    - TCP2_SHADOW_LIGHT_COLOR
+    - TCP2_SPECULAR
+    - TCP2_SPECULAR_STYLIZED
+    - _RECEIVE_SHADOWS_OFF
+  - shaderCompilerPlatform: 9
+    shader: {fileID: -6465566751694194690, guid: df63357dff16a6742ae25705b0abbe96, type: 3}
+    passType: 4
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - DIRECTIONAL
+    - LIGHTPROBE_SH
+    - TCP2_REFLECTIONS_FRESNEL
+    - TCP2_RIM_LIGHTING
+    - TCP2_RIM_LIGHTING_LIGHTMASK
+    - TCP2_SHADOW_LIGHT_COLOR
+    - TCP2_SPECULAR
+    - TCP2_SPECULAR_STYLIZED
+    - _RECEIVE_SHADOWS_OFF
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - MASK_ON
+    - POLARUVDISTORT_ON
+    - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - ALPHAFADEUSEREDCHANNEL_ON
+    - ALPHAFADEUSESHAPE1_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - MASK_ON
+    - POLARUVDISTORT_ON
+    - POLARUV_ON
+    - PREMULTIPLYCOLOR_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - GLOW_ON
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - MASK_ON
+    - PREMULTIPLYCOLOR_ON
+    - SHAPE1ROTATE_ON
+    - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - GLOW_ON
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - MASK_ON
+    - PREMULTIPLYCOLOR_ON
+    - SHAPE1ROTATE_ON
+    - SHAPE1SHAPECOLOR_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE3CONTRAST_ON
+    - SHAPE3DISTORT_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - MASK_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - MASK_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - POSTERIZE_ON
+    - SHAPE1CONTRAST_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE2ROTATE_ON
+    - SHAPE2_ON
+    - SPLITRGBA_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - POSTERIZE_ON
+    - SHAPE1CONTRAST_ON
+    - SHAPE2CONTRAST_ON
+    - SHAPE2ROTATE_ON
+    - SHAPE2_ON
+    - SPLITRGBA_ON
+    - TWISTUV_ON
+  - shaderCompilerPlatform: 5
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
+  - shaderCompilerPlatform: 9
+    shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
+    passType: 0
+    passId: 0
+    subShaderIndex: 0
+    upToDate: 0
+    keywords:
+    - ADDITIVECONFIG_ON
+    - COLORRAMPGRAD_ON
+    - COLORRAMP_ON
+    - SHAPE1CONTRAST_ON
+    - SPLITRGBA_ON
   _includedShaderVariants: []
   _excludedShaderVariants: []
-  version: 1727
+  version: 1803
   _shaderParsedShaders:
   - ParsedSubShaders:
     - Index: 0
@@ -2484,6 +2740,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -2569,6 +2826,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -2652,6 +2910,7 @@ MonoBehaviour:
           - COLORRAMP_ON
           - MASK_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -2745,6 +3004,7 @@ MonoBehaviour:
           - COLORRAMP_ON
           - MASK_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -2789,10 +3049,10 @@ MonoBehaviour:
             u_xlat16_3;\nvec2 u_xlat4;\nmediump vec3 u_xlat16_5;\nvec2 u_xlat6;\nmediump
             vec3 u_xlat16_7;\nmediump float u_xlat16_14;\nvec2 u_xlat15;\nlowp vec2
             u_xlat10_15;\nint u_xlati15;\nbvec2 u_xlatb15;\nvec2 u_xlat18;\nmediump
-            float u_xlat16_21;\nfloat u_xlat22;\nint u_xlati22;\nmediump float u_xlat16_23;\nvoid
-            main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_7.x
-            = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x * 0.5;\n   
-            u_xlat16_14 = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
+            float u_xlat16_21;\nfloat u_xlat22;\nint u_xlati22;\nvoid main()\n{\n   
+            u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_7.x = _MainTex_ST.y
+            + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x * 0.5;\n    u_xlat16_14
+            = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
             _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_21 =
             dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n   
             u_xlat16_7.x = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14
@@ -2830,26 +3090,32 @@ MonoBehaviour:
             = (u_xlatb15.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy
             * u_xlat4.xy;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
             u_xlat15.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_MainTex,
-            u_xlat1.xy).x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat10_1;\n    u_xlat16_7.x
-            = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x = u_xlat16_7.x * u_xlat16_0.x;\n   
-            u_xlat16_7.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_7.xyz =
-            vec3(u_xlat10_1) * u_xlat16_7.xyz;\n    u_xlat16_2.xyz = vs_COLOR0.xyz
-            * _Color.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz * _ShapeColor.xyz;\n   
-            u_xlat16_23 = dot(u_xlat16_2.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.xyz = u_xlat16_7.xyz * vec3(u_xlat16_23);\n    u_xlat16_7.xyz
-            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
-            + u_xlat16_7.xyz;\n    SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_7.xyz;\n   
-            SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            u_xlat1.xy).x;\n    u_xlat16_7.x = dot(_ShapeColor.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_14 = min(u_xlat10_1, u_xlat16_7.x);\n   
+            u_xlat16_2.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_2.xyz =
+            vec3(u_xlat16_14) * u_xlat16_2.xyz;\n    u_xlat16_0.x = u_xlat16_0.x
+            * u_xlat16_14;\n    u_xlat16_7.xyz = u_xlat16_7.xxx * u_xlat16_2.xyz;\n   
+            u_xlat16_2.xyz = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * _ShapeColor.xyz;\n    u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal,
+            _GlowGlobal, _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w
+            * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz
+            = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n   
+            return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - COLORRAMPGRAD_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -2905,14 +3171,13 @@ MonoBehaviour:
             u_xlat4;\nmediump vec3 u_xlat16_5;\nvec2 u_xlat6;\nmediump vec3 u_xlat16_7;\nmediump
             float u_xlat16_14;\nvec2 u_xlat15;\nmediump vec2 u_xlat16_15;\nint u_xlati15;\nbvec2
             u_xlatb15;\nvec2 u_xlat18;\nmediump float u_xlat16_21;\nfloat u_xlat22;\nint
-            u_xlati22;\nmediump float u_xlat16_23;\nvoid main()\n{\n    u_xlat16_0.x
-            = sin(_TwistUvAmount);\n    u_xlat16_7.x = _MainTex_ST.y + _MainTex_ST.x;\n   
-            u_xlat16_7.x = u_xlat16_7.x * 0.5;\n    u_xlat16_14 = u_xlat16_7.x *
-            _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX, _TwistUvPosY))
-            * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_21 = dot(u_xlat1.xy,
-            u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n    u_xlat16_7.x
-            = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14 =
-            u_xlat16_7.x / u_xlat16_14;\n    u_xlat16_14 = u_xlat16_14 * u_xlat16_14;\n   
+            u_xlati22;\nvoid main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n   
+            u_xlat16_7.x = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x
+            * 0.5;\n    u_xlat16_14 = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy
+            = (-vec2(_TwistUvPosX, _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n   
+            u_xlat16_21 = dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n   
+            u_xlat16_7.x = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14
+            = u_xlat16_7.x / u_xlat16_14;\n    u_xlat16_14 = u_xlat16_14 * u_xlat16_14;\n   
             u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14;\n    u_xlat16_0.x = u_xlat16_0.x
             * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n    u_xlat16_0.x = sin(u_xlat16_0.x);\n   
             u_xlat16_3.x = (-u_xlat16_0.x);\n    u_xlat16_3.y = u_xlat16_2.x;\n   
@@ -2947,26 +3212,31 @@ MonoBehaviour:
             ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy * u_xlat4.xy;\n   
             u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy = u_xlat15.xy * u_xlat4.xy
             + u_xlat1.xy;\n    u_xlat16_1 = texture(_MainTex, u_xlat1.xy).x;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_1;\n    u_xlat16_7.x = vs_COLOR0.w
-            * _Alpha;\n    u_xlat16_0.x = u_xlat16_7.x * u_xlat16_0.x;\n    u_xlat16_7.xyz
-            = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_7.xyz = vec3(u_xlat16_1)
-            * u_xlat16_7.xyz;\n    u_xlat16_2.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_2.xyz = u_xlat16_2.xyz * _ShapeColor.xyz;\n    u_xlat16_23 =
-            dot(u_xlat16_2.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.xyz = u_xlat16_7.xyz * vec3(u_xlat16_23);\n    u_xlat16_7.xyz
+            u_xlat16_7.x = dot(_ShapeColor.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
+            u_xlat16_14 = min(u_xlat16_1, u_xlat16_7.x);\n    u_xlat16_2.xyz = _GlowColor.xyz
+            * vec3(_Glow);\n    u_xlat16_2.xyz = vec3(u_xlat16_14) * u_xlat16_2.xyz;\n   
+            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14;\n    u_xlat16_7.xyz = u_xlat16_7.xxx
+            * u_xlat16_2.xyz;\n    u_xlat16_2.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * _ShapeColor.xyz;\n    u_xlat16_7.xyz
             = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
-            + u_xlat16_7.xyz;\n    SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_7.xyz;\n   
-            SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - COLORRAMPGRAD_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3000,10 +3270,11 @@ MonoBehaviour:
             \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
             \tmediump float _ColorRampBlend;\nuniform \tmediump float _PosterizeNumColors;\nuniform
@@ -3061,28 +3332,27 @@ MonoBehaviour:
             = u_xlat16_2.xyz * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness,
             _Shape2Brightness, _Shape2Brightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(vec4(_Shape2ColorWeight,
-            _Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n    u_xlatb1.xy
-            = greaterThanEqual(u_xlat4.xwxx, (-u_xlat4.xwxx)).xy;\n    u_xlat1.x
-            = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n    u_xlat1.y = (u_xlatb1.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat1.xy * u_xlat4.xw;\n   
-            u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy = u_xlat1.xy * u_xlat4.xy
-            + u_xlat17.xy;\n    u_xlat10_0 = texture2D(_MainTex, u_xlat1.xy);\n   
-            u_xlat16_3.xyz = u_xlat10_0.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_27 = u_xlat10_0.w * _ShapeColor.w;\n    u_xlat16_27
-            = u_xlat16_27 * _ShapeColorWeight;\n    u_xlat16_26 = u_xlat16_2.w *
-            u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26, 0.0, 1.0);\n    u_xlat16_3.xyz
-            = u_xlat16_3.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
-            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
-            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_ShapeColorWeight,
-            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_27 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat10_0
-            = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
+            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight, _Shape2AlphaWeight);\n    u_xlatb1.xy = greaterThanEqual(u_xlat4.xwxx,
+            (-u_xlat4.xwxx)).xy;\n    u_xlat1.x = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n   
+            u_xlat1.y = (u_xlatb1.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
+            = u_xlat1.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
+            u_xlat1.xy = u_xlat1.xy * u_xlat4.xy + u_xlat17.xy;\n    u_xlat10_0 =
+            texture2D(_MainTex, u_xlat1.xy);\n    u_xlat16_3.xyz = u_xlat10_0.xyz
+            * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_27 = u_xlat10_0.w
+            * _ShapeColor.w;\n    u_xlat16_27 = u_xlat16_27 * _ShapeAlphaWeight;\n   
+            u_xlat16_26 = u_xlat16_2.w * u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26,
+            0.0, 1.0);\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(_ShapeContrast)
+            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz
+            = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_3.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_2.xyz *
+            u_xlat16_3.xyz;\n    u_xlat16_27 = dot(u_xlat16_5.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n   
+            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
+            u_xlat10_0 = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
             = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat10_0.xyz;\n    u_xlat16_3.x
             = u_xlat10_0.w * u_xlat16_26;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
             0.0, 1.0);\n    u_xlat16_3.x = (-u_xlat16_26) + u_xlat16_3.x;\n    u_xlat16_26
@@ -3105,6 +3375,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3147,10 +3418,11 @@ MonoBehaviour:
             _Color;\nuniform \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
             \tmediump float _ColorRampBlend;\nuniform \tmediump float _PosterizeNumColors;\nuniform
@@ -3208,28 +3480,27 @@ MonoBehaviour:
             = u_xlat16_2.xyz * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness,
             _Shape2Brightness, _Shape2Brightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(vec4(_Shape2ColorWeight,
-            _Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n    u_xlatb1.xy
-            = greaterThanEqual(u_xlat4.xwxx, (-u_xlat4.xwxx)).xy;\n    u_xlat1.x
-            = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n    u_xlat1.y = (u_xlatb1.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat1.xy * u_xlat4.xw;\n   
-            u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy = u_xlat1.xy * u_xlat4.xy
-            + u_xlat17.xy;\n    u_xlat16_0 = texture(_MainTex, u_xlat1.xy);\n   
-            u_xlat16_3.xyz = u_xlat16_0.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_27 = u_xlat16_0.w * _ShapeColor.w;\n    u_xlat16_27
-            = u_xlat16_27 * _ShapeColorWeight;\n    u_xlat16_26 = u_xlat16_2.w *
-            u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26, 0.0, 1.0);\n    u_xlat16_3.xyz
-            = u_xlat16_3.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
-            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
-            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_ShapeColorWeight,
-            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_27 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat16_0
-            = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
+            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight, _Shape2AlphaWeight);\n    u_xlatb1.xy = greaterThanEqual(u_xlat4.xwxx,
+            (-u_xlat4.xwxx)).xy;\n    u_xlat1.x = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n   
+            u_xlat1.y = (u_xlatb1.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
+            = u_xlat1.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
+            u_xlat1.xy = u_xlat1.xy * u_xlat4.xy + u_xlat17.xy;\n    u_xlat16_0 =
+            texture(_MainTex, u_xlat1.xy);\n    u_xlat16_3.xyz = u_xlat16_0.xyz *
+            _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_27 = u_xlat16_0.w
+            * _ShapeColor.w;\n    u_xlat16_27 = u_xlat16_27 * _ShapeAlphaWeight;\n   
+            u_xlat16_26 = u_xlat16_2.w * u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26,
+            0.0, 1.0);\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(_ShapeContrast)
+            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz
+            = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_3.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_2.xyz *
+            u_xlat16_3.xyz;\n    u_xlat16_27 = dot(u_xlat16_5.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n   
+            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
+            u_xlat16_0 = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
             = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat16_0.xyz;\n    u_xlat16_3.x
             = u_xlat16_0.w * u_xlat16_26;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
             0.0, 1.0);\n    u_xlat16_3.x = (-u_xlat16_26) + u_xlat16_3.x;\n    u_xlat16_26
@@ -3252,6 +3523,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3294,90 +3566,93 @@ MonoBehaviour:
             lowp sampler2D _MaskTex;\nvarying highp vec4 vs_TEXCOORD0;\nvarying mediump
             vec4 vs_COLOR0;\n#define SV_Target0 gl_FragData[0]\nmediump vec2 u_xlat16_0;\nvec2
             u_xlat1;\nlowp vec4 u_xlat10_1;\nmediump vec3 u_xlat16_2;\nmediump vec3
-            u_xlat16_3;\nvec2 u_xlat4;\nlowp vec4 u_xlat10_4;\nbvec2 u_xlatb4;\nmediump
-            vec2 u_xlat16_5;\nmediump vec3 u_xlat16_6;\nmediump float u_xlat16_8;\nbool
-            u_xlatb10;\nmediump float u_xlat16_12;\nvec2 u_xlat13;\nlowp vec2 u_xlat10_13;\nint
-            u_xlati13;\nmediump float u_xlat16_18;\nfloat u_xlat19;\nint u_xlati19;\nbool
-            u_xlatb19;\nmediump float u_xlat16_20;\nvoid main()\n{\n    u_xlat16_0.x
-            = sin(_TwistUvAmount);\n    u_xlat16_6.x = _MainTex_ST.y + _MainTex_ST.x;\n   
-            u_xlat16_6.x = u_xlat16_6.x * 0.5;\n    u_xlat16_12 = u_xlat16_6.x *
-            _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX, _TwistUvPosY))
-            * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_18 = dot(u_xlat1.xy,
-            u_xlat1.xy);\n    u_xlat16_18 = sqrt(u_xlat16_18);\n    u_xlat16_6.x
-            = _TwistUvRadius * u_xlat16_6.x + (-u_xlat16_18);\n    u_xlat16_12 =
-            u_xlat16_6.x / u_xlat16_12;\n    u_xlat16_12 = u_xlat16_12 * u_xlat16_12;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_12;\n    u_xlat16_0.x = u_xlat16_0.x
-            * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n    u_xlat16_0.x = sin(u_xlat16_0.x);\n   
-            u_xlat16_3.x = (-u_xlat16_0.x);\n    u_xlat16_3.y = u_xlat16_2.x;\n   
-            u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y = dot(u_xlat1.yx, u_xlat16_3.yz);\n   
-            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati13 = int((0.0<u_xlat16_6.x)
-            ? -1 : 0);\n    u_xlati19 = int((u_xlat16_6.x<0.0) ? -1 : 0);\n    u_xlati13
-            = (-u_xlati13) + u_xlati19;\n    u_xlat13.x = float(u_xlati13);\n   
-            u_xlat13.x = max(u_xlat13.x, 0.0);\n    u_xlat16_0.x = (-u_xlat13.x)
-            + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n    u_xlat16_0.xy
-            = u_xlat16_2.xy * u_xlat13.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
-            _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n    u_xlat1.xy = u_xlat16_0.xy
-            + vec2(-0.5, -0.5);\n    u_xlat16_0.xy = u_xlat16_0.xy * _MaskTex_ST.xy
-            + _MaskTex_ST.zw;\n    u_xlat10_13.xy = texture2D(_MaskTex, u_xlat16_0.xy).xw;\n   
-            u_xlat16_0.x = min(u_xlat10_13.y, u_xlat10_13.x);\n    u_xlat16_0.x =
-            log2(u_xlat16_0.x);\n    u_xlat16_0.x = u_xlat16_0.x * _MaskPow;\n   
-            u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat13.x = max(abs(u_xlat1.x),
-            abs(u_xlat1.y));\n    u_xlat13.x = float(1.0) / u_xlat13.x;\n    u_xlat19
-            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat13.x = u_xlat13.x *
-            u_xlat19;\n    u_xlat19 = u_xlat13.x * u_xlat13.x;\n    u_xlat4.x = u_xlat19
-            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat19 * u_xlat4.x
-            + 0.180141002;\n    u_xlat4.x = u_xlat19 * u_xlat4.x + -0.330299497;\n   
-            u_xlat19 = u_xlat19 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat19
-            * u_xlat13.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb10
-            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb10 ? u_xlat4.x
-            : float(0.0);\n    u_xlat13.x = u_xlat13.x * u_xlat19 + u_xlat4.x;\n   
-            u_xlatb19 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat19 = u_xlatb19 ? -3.14159274
-            : float(0.0);\n    u_xlat13.x = u_xlat19 + u_xlat13.x;\n    u_xlat19
-            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb19 = u_xlat19<(-u_xlat19);\n   
+            u_xlat16_3;\nvec2 u_xlat4;\nbvec2 u_xlatb4;\nmediump vec3 u_xlat16_5;\nbool
+            u_xlatb9;\nmediump vec2 u_xlat16_10;\nvec2 u_xlat11;\nlowp vec2 u_xlat10_11;\nint
+            u_xlati11;\nmediump float u_xlat16_15;\nfloat u_xlat16;\nint u_xlati16;\nbool
+            u_xlatb16;\nvoid main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n   
+            u_xlat16_5.x = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_5.x = u_xlat16_5.x
+            * 0.5;\n    u_xlat16_10.x = u_xlat16_5.x * _TwistUvRadius;\n    u_xlat1.xy
+            = (-vec2(_TwistUvPosX, _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n   
+            u_xlat16_15 = dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_15 = sqrt(u_xlat16_15);\n   
+            u_xlat16_5.x = _TwistUvRadius * u_xlat16_5.x + (-u_xlat16_15);\n    u_xlat16_10.x
+            = u_xlat16_5.x / u_xlat16_10.x;\n    u_xlat16_10.x = u_xlat16_10.x *
+            u_xlat16_10.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_10.x;\n   
+            u_xlat16_0.x = u_xlat16_0.x * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n   
+            u_xlat16_0.x = sin(u_xlat16_0.x);\n    u_xlat16_3.x = (-u_xlat16_0.x);\n   
+            u_xlat16_3.y = u_xlat16_2.x;\n    u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y
+            = dot(u_xlat1.yx, u_xlat16_3.yz);\n    u_xlat16_2.x = dot(u_xlat1.yx,
+            u_xlat16_3.xy);\n    u_xlati11 = int((0.0<u_xlat16_5.x) ? -1 : 0);\n   
+            u_xlati16 = int((u_xlat16_5.x<0.0) ? -1 : 0);\n    u_xlati11 = (-u_xlati11)
+            + u_xlati16;\n    u_xlat11.x = float(u_xlati11);\n    u_xlat11.x = max(u_xlat11.x,
+            0.0);\n    u_xlat16_0.x = (-u_xlat11.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx
+            * u_xlat1.xy;\n    u_xlat16_0.xy = u_xlat16_2.xy * u_xlat11.xx + u_xlat16_0.xy;\n   
+            u_xlat16_0.xy = vec2(_TwistUvPosX, _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n   
+            u_xlat16_10.xy = u_xlat16_0.xy * _MaskTex_ST.xy + _MaskTex_ST.zw;\n   
+            u_xlat1.xy = u_xlat16_0.xy + vec2(-0.5, -0.5);\n    u_xlat10_11.xy =
+            texture2D(_MaskTex, u_xlat16_10.xy).xw;\n    u_xlat16_0.x = min(u_xlat10_11.y,
+            u_xlat10_11.x);\n    u_xlat16_0.x = log2(u_xlat16_0.x);\n    u_xlat16_0.x
+            = u_xlat16_0.x * _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n   
+            u_xlat11.x = max(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat11.x = float(1.0)
+            / u_xlat11.x;\n    u_xlat16 = min(abs(u_xlat1.x), abs(u_xlat1.y));\n   
+            u_xlat11.x = u_xlat11.x * u_xlat16;\n    u_xlat16 = u_xlat11.x * u_xlat11.x;\n   
+            u_xlat4.x = u_xlat16 * 0.0208350997 + -0.0851330012;\n    u_xlat4.x =
+            u_xlat16 * u_xlat4.x + 0.180141002;\n    u_xlat4.x = u_xlat16 * u_xlat4.x
+            + -0.330299497;\n    u_xlat16 = u_xlat16 * u_xlat4.x + 0.999866009;\n   
+            u_xlat4.x = u_xlat16 * u_xlat11.x;\n    u_xlat4.x = u_xlat4.x * -2.0
+            + 1.57079637;\n    u_xlatb9 = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x
+            = u_xlatb9 ? u_xlat4.x : float(0.0);\n    u_xlat11.x = u_xlat11.x * u_xlat16
+            + u_xlat4.x;\n    u_xlatb16 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat16 =
+            u_xlatb16 ? -3.14159274 : float(0.0);\n    u_xlat11.x = u_xlat16 + u_xlat11.x;\n   
+            u_xlat16 = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb16 = u_xlat16<(-u_xlat16);\n   
             u_xlat4.x = max(u_xlat1.x, u_xlat1.y);\n    u_xlat1.x = dot(u_xlat1.xy,
             u_xlat1.xy);\n    u_xlat1.x = sqrt(u_xlat1.x);\n    u_xlat1.y = u_xlat1.x
-            + u_xlat1.x;\n    u_xlatb4.x = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb19
-            = u_xlatb19 && u_xlatb4.x;\n    u_xlat13.x = (u_xlatb19) ? (-u_xlat13.x)
-            : u_xlat13.x;\n    u_xlat1.x = u_xlat13.x * 0.159154937;\n    u_xlat1.xy
+            + u_xlat1.x;\n    u_xlatb4.x = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb16
+            = u_xlatb16 && u_xlatb4.x;\n    u_xlat11.x = (u_xlatb16) ? (-u_xlat11.x)
+            : u_xlat11.x;\n    u_xlat1.x = u_xlat11.x * 0.159154937;\n    u_xlat1.xy
             = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat1.xy = u_xlat1.xy * _MainTex_ST.xy
-            + _MainTex_ST.zw;\n    u_xlat13.x = vs_TEXCOORD0.z + _TimingSeed;\n   
-            u_xlat13.x = u_xlat13.x + _Time.y;\n    u_xlat13.xy = u_xlat13.xx * vec2(_ShapeXSpeed,
-            _ShapeYSpeed);\n    u_xlatb4.xy = greaterThanEqual(u_xlat13.xyxx, (-u_xlat13.xyxx)).xy;\n   
+            + _MainTex_ST.zw;\n    u_xlat11.x = vs_TEXCOORD0.z + _TimingSeed;\n   
+            u_xlat11.x = u_xlat11.x + _Time.y;\n    u_xlat11.xy = u_xlat11.xx * vec2(_ShapeXSpeed,
+            _ShapeYSpeed);\n    u_xlatb4.xy = greaterThanEqual(u_xlat11.xyxx, (-u_xlat11.xyxx)).xy;\n   
             u_xlat4.x = (u_xlatb4.x) ? float(1.0) : float(-1.0);\n    u_xlat4.y =
-            (u_xlatb4.y) ? float(1.0) : float(-1.0);\n    u_xlat13.xy = u_xlat13.xy
-            * u_xlat4.xy;\n    u_xlat13.xy = fract(u_xlat13.xy);\n    u_xlat1.xy
-            = u_xlat4.xy * u_xlat13.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_MainTex,
-            u_xlat1.xy);\n    u_xlat16_6.xyz = u_xlat10_1.xyz * _ShapeColor.xyz +
-            vec3(-0.5, -0.5, -0.5);\n    u_xlat16_6.xyz = u_xlat16_6.xyz * vec3(_ShapeContrast)
-            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
-            u_xlat16_6.xyz = u_xlat16_6.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_6.xyz
-            = max(u_xlat16_6.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_2.xyz = vs_COLOR0.xyz
-            * _Color.xyz;\n    u_xlat16_3.xyz = u_xlat16_6.xyz * u_xlat16_2.xyz;\n   
-            u_xlat16_20 = dot(u_xlat16_3.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_5.x = u_xlat16_20 + _ColorRampLuminosity;\n    u_xlat16_5.x
-            = clamp(u_xlat16_5.x, 0.0, 1.0);\n    u_xlat16_5.y = 0.0;\n    u_xlat10_4
-            = texture2D(_ColorRampTexGradient, u_xlat16_5.xy);\n    u_xlat16_6.xyz
-            = (-u_xlat16_6.xyz) * u_xlat16_2.xyz + u_xlat10_4.xyz;\n    u_xlat16_6.xyz
-            = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend)) * u_xlat16_6.xyz
-            + u_xlat16_3.xyz;\n    u_xlat16_2.x = u_xlat10_1.w * _ShapeColor.w;\n   
-            u_xlat16_8 = u_xlat10_4.w * u_xlat16_2.x;\n    u_xlat16_8 = clamp(u_xlat16_8,
-            0.0, 1.0);\n    u_xlat16_8 = (-u_xlat10_1.w) * _ShapeColor.w + u_xlat16_8;\n   
-            u_xlat16_2.x = _ColorRampBlend * u_xlat16_8 + u_xlat16_2.x;\n    u_xlat16_0.x
-            = u_xlat16_0.x * u_xlat16_2.x;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx
-            * u_xlat16_6.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            (u_xlatb4.y) ? float(1.0) : float(-1.0);\n    u_xlat11.xy = u_xlat11.xy
+            * u_xlat4.xy;\n    u_xlat11.xy = fract(u_xlat11.xy);\n    u_xlat1.xy
+            = u_xlat4.xy * u_xlat11.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_MainTex,
+            u_xlat1.xy);\n    u_xlat16_5.x = u_xlat10_1.w * _ShapeColor.w;\n    u_xlat16_2.xyz
+            = u_xlat10_1.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_2.xyz
+            = u_xlat16_2.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
+            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
+            0.0, 0.0));\n    u_xlat16_10.x = dot(u_xlat16_2.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_5.x = min(u_xlat16_5.x, u_xlat16_10.x);\n   
+            u_xlat16_3.x = u_xlat16_10.x + _ColorRampLuminosity;\n    u_xlat16_3.x
+            = clamp(u_xlat16_3.x, 0.0, 1.0);\n    u_xlat16_3.y = 0.0;\n    u_xlat10_1
+            = texture2D(_ColorRampTexGradient, u_xlat16_3.xy);\n    u_xlat16_10.x
+            = u_xlat16_5.x * u_xlat10_1.w;\n    u_xlat16_10.x = clamp(u_xlat16_10.x,
+            0.0, 1.0);\n    u_xlat16_10.x = (-u_xlat16_5.x) + u_xlat16_10.x;\n   
+            u_xlat16_5.x = _ColorRampBlend * u_xlat16_10.x + u_xlat16_5.x;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_5.x;\n    u_xlat16_5.x = vs_COLOR0.w * _Alpha;\n   
+            u_xlat16_0.x = u_xlat16_5.x * u_xlat16_0.x;\n    u_xlat16_5.xyz = vs_COLOR0.xyz
+            * _Color.xyz;\n    u_xlat16_3.xyz = (-u_xlat16_2.xyz) * u_xlat16_5.xyz
+            + u_xlat10_1.xyz;\n    u_xlat16_5.xyz = u_xlat16_5.xyz * u_xlat16_2.xyz;\n   
+            u_xlat16_5.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend))
+            * u_xlat16_3.xyz + u_xlat16_5.xyz;\n    SV_Target0.xyz = u_xlat16_0.xxx
+            * u_xlat16_5.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3430,89 +3705,94 @@ MonoBehaviour:
             _MaskTex;\nin highp vec4 vs_TEXCOORD0;\nin mediump vec4 vs_COLOR0;\nlayout(location
             = 0) out mediump vec4 SV_Target0;\nmediump vec2 u_xlat16_0;\nvec2 u_xlat1;\nmediump
             vec4 u_xlat16_1;\nmediump vec3 u_xlat16_2;\nmediump vec3 u_xlat16_3;\nvec2
-            u_xlat4;\nmediump vec4 u_xlat16_4;\nbvec2 u_xlatb4;\nmediump vec2 u_xlat16_5;\nmediump
-            vec3 u_xlat16_6;\nmediump float u_xlat16_8;\nbool u_xlatb10;\nmediump
-            float u_xlat16_12;\nvec2 u_xlat13;\nmediump vec2 u_xlat16_13;\nint u_xlati13;\nmediump
-            float u_xlat16_18;\nfloat u_xlat19;\nint u_xlati19;\nbool u_xlatb19;\nmediump
-            float u_xlat16_20;\nvoid main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n   
-            u_xlat16_6.x = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_6.x = u_xlat16_6.x
-            * 0.5;\n    u_xlat16_12 = u_xlat16_6.x * _TwistUvRadius;\n    u_xlat1.xy
-            = (-vec2(_TwistUvPosX, _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n   
-            u_xlat16_18 = dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_18 = sqrt(u_xlat16_18);\n   
-            u_xlat16_6.x = _TwistUvRadius * u_xlat16_6.x + (-u_xlat16_18);\n    u_xlat16_12
-            = u_xlat16_6.x / u_xlat16_12;\n    u_xlat16_12 = u_xlat16_12 * u_xlat16_12;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_12;\n    u_xlat16_0.x = u_xlat16_0.x
-            * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n    u_xlat16_0.x = sin(u_xlat16_0.x);\n   
-            u_xlat16_3.x = (-u_xlat16_0.x);\n    u_xlat16_3.y = u_xlat16_2.x;\n   
-            u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y = dot(u_xlat1.yx, u_xlat16_3.yz);\n   
-            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati13 = int((0.0<u_xlat16_6.x)
-            ? 0xFFFFFFFFu : uint(0));\n    u_xlati19 = int((u_xlat16_6.x<0.0) ? 0xFFFFFFFFu
-            : uint(0));\n    u_xlati13 = (-u_xlati13) + u_xlati19;\n    u_xlat13.x
-            = float(u_xlati13);\n    u_xlat13.x = max(u_xlat13.x, 0.0);\n    u_xlat16_0.x
-            = (-u_xlat13.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n   
-            u_xlat16_0.xy = u_xlat16_2.xy * u_xlat13.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy
-            = vec2(_TwistUvPosX, _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n   
-            u_xlat1.xy = u_xlat16_0.xy + vec2(-0.5, -0.5);\n    u_xlat16_0.xy = u_xlat16_0.xy
-            * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat16_13.xy = texture(_MaskTex,
-            u_xlat16_0.xy).xw;\n    u_xlat16_0.x = min(u_xlat16_13.y, u_xlat16_13.x);\n   
-            u_xlat16_0.x = log2(u_xlat16_0.x);\n    u_xlat16_0.x = u_xlat16_0.x *
-            _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat13.x = max(abs(u_xlat1.x),
-            abs(u_xlat1.y));\n    u_xlat13.x = float(1.0) / u_xlat13.x;\n    u_xlat19
-            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat13.x = u_xlat13.x *
-            u_xlat19;\n    u_xlat19 = u_xlat13.x * u_xlat13.x;\n    u_xlat4.x = u_xlat19
-            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat19 * u_xlat4.x
-            + 0.180141002;\n    u_xlat4.x = u_xlat19 * u_xlat4.x + -0.330299497;\n   
-            u_xlat19 = u_xlat19 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat19
-            * u_xlat13.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb10
-            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb10 ? u_xlat4.x
-            : float(0.0);\n    u_xlat13.x = u_xlat13.x * u_xlat19 + u_xlat4.x;\n   
-            u_xlatb19 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat19 = u_xlatb19 ? -3.14159274
-            : float(0.0);\n    u_xlat13.x = u_xlat19 + u_xlat13.x;\n    u_xlat19
-            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb19 = u_xlat19<(-u_xlat19);\n   
+            u_xlat4;\nbvec2 u_xlatb4;\nmediump vec3 u_xlat16_5;\nbool u_xlatb9;\nmediump
+            vec2 u_xlat16_10;\nvec2 u_xlat11;\nmediump vec2 u_xlat16_11;\nint u_xlati11;\nmediump
+            float u_xlat16_15;\nfloat u_xlat16;\nint u_xlati16;\nbool u_xlatb16;\nvoid
+            main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_5.x
+            = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_5.x = u_xlat16_5.x * 0.5;\n   
+            u_xlat16_10.x = u_xlat16_5.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
+            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_15 =
+            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_15 = sqrt(u_xlat16_15);\n   
+            u_xlat16_5.x = _TwistUvRadius * u_xlat16_5.x + (-u_xlat16_15);\n    u_xlat16_10.x
+            = u_xlat16_5.x / u_xlat16_10.x;\n    u_xlat16_10.x = u_xlat16_10.x *
+            u_xlat16_10.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_10.x;\n   
+            u_xlat16_0.x = u_xlat16_0.x * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n   
+            u_xlat16_0.x = sin(u_xlat16_0.x);\n    u_xlat16_3.x = (-u_xlat16_0.x);\n   
+            u_xlat16_3.y = u_xlat16_2.x;\n    u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y
+            = dot(u_xlat1.yx, u_xlat16_3.yz);\n    u_xlat16_2.x = dot(u_xlat1.yx,
+            u_xlat16_3.xy);\n    u_xlati11 = int((0.0<u_xlat16_5.x) ? 0xFFFFFFFFu
+            : uint(0));\n    u_xlati16 = int((u_xlat16_5.x<0.0) ? 0xFFFFFFFFu : uint(0));\n   
+            u_xlati11 = (-u_xlati11) + u_xlati16;\n    u_xlat11.x = float(u_xlati11);\n   
+            u_xlat11.x = max(u_xlat11.x, 0.0);\n    u_xlat16_0.x = (-u_xlat11.x)
+            + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n    u_xlat16_0.xy
+            = u_xlat16_2.xy * u_xlat11.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
+            _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n    u_xlat16_10.xy =
+            u_xlat16_0.xy * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat1.xy = u_xlat16_0.xy
+            + vec2(-0.5, -0.5);\n    u_xlat16_11.xy = texture(_MaskTex, u_xlat16_10.xy).xw;\n   
+            u_xlat16_0.x = min(u_xlat16_11.y, u_xlat16_11.x);\n    u_xlat16_0.x =
+            log2(u_xlat16_0.x);\n    u_xlat16_0.x = u_xlat16_0.x * _MaskPow;\n   
+            u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat11.x = max(abs(u_xlat1.x),
+            abs(u_xlat1.y));\n    u_xlat11.x = float(1.0) / u_xlat11.x;\n    u_xlat16
+            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat11.x = u_xlat11.x *
+            u_xlat16;\n    u_xlat16 = u_xlat11.x * u_xlat11.x;\n    u_xlat4.x = u_xlat16
+            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat16 * u_xlat4.x
+            + 0.180141002;\n    u_xlat4.x = u_xlat16 * u_xlat4.x + -0.330299497;\n   
+            u_xlat16 = u_xlat16 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat16
+            * u_xlat11.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb9
+            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb9 ? u_xlat4.x
+            : float(0.0);\n    u_xlat11.x = u_xlat11.x * u_xlat16 + u_xlat4.x;\n   
+            u_xlatb16 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat16 = u_xlatb16 ? -3.14159274
+            : float(0.0);\n    u_xlat11.x = u_xlat16 + u_xlat11.x;\n    u_xlat16
+            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb16 = u_xlat16<(-u_xlat16);\n   
             u_xlat4.x = max(u_xlat1.x, u_xlat1.y);\n    u_xlat1.x = dot(u_xlat1.xy,
             u_xlat1.xy);\n    u_xlat1.x = sqrt(u_xlat1.x);\n    u_xlat1.y = u_xlat1.x
-            + u_xlat1.x;\n    u_xlatb4.x = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb19
-            = u_xlatb19 && u_xlatb4.x;\n    u_xlat13.x = (u_xlatb19) ? (-u_xlat13.x)
-            : u_xlat13.x;\n    u_xlat1.x = u_xlat13.x * 0.159154937;\n    u_xlat1.xy
+            + u_xlat1.x;\n    u_xlatb4.x = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb16
+            = u_xlatb16 && u_xlatb4.x;\n    u_xlat11.x = (u_xlatb16) ? (-u_xlat11.x)
+            : u_xlat11.x;\n    u_xlat1.x = u_xlat11.x * 0.159154937;\n    u_xlat1.xy
             = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat1.xy = u_xlat1.xy * _MainTex_ST.xy
-            + _MainTex_ST.zw;\n    u_xlat13.x = vs_TEXCOORD0.z + _TimingSeed;\n   
-            u_xlat13.x = u_xlat13.x + _Time.y;\n    u_xlat13.xy = u_xlat13.xx * vec2(_ShapeXSpeed,
-            _ShapeYSpeed);\n    u_xlatb4.xy = greaterThanEqual(u_xlat13.xyxx, (-u_xlat13.xyxx)).xy;\n   
+            + _MainTex_ST.zw;\n    u_xlat11.x = vs_TEXCOORD0.z + _TimingSeed;\n   
+            u_xlat11.x = u_xlat11.x + _Time.y;\n    u_xlat11.xy = u_xlat11.xx * vec2(_ShapeXSpeed,
+            _ShapeYSpeed);\n    u_xlatb4.xy = greaterThanEqual(u_xlat11.xyxx, (-u_xlat11.xyxx)).xy;\n   
             u_xlat4.x = (u_xlatb4.x) ? float(1.0) : float(-1.0);\n    u_xlat4.y =
-            (u_xlatb4.y) ? float(1.0) : float(-1.0);\n    u_xlat13.xy = u_xlat13.xy
-            * u_xlat4.xy;\n    u_xlat13.xy = fract(u_xlat13.xy);\n    u_xlat1.xy
-            = u_xlat4.xy * u_xlat13.xy + u_xlat1.xy;\n    u_xlat16_1 = texture(_MainTex,
-            u_xlat1.xy);\n    u_xlat16_6.xyz = u_xlat16_1.xyz * _ShapeColor.xyz +
-            vec3(-0.5, -0.5, -0.5);\n    u_xlat16_6.xyz = u_xlat16_6.xyz * vec3(_ShapeContrast)
-            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
-            u_xlat16_6.xyz = u_xlat16_6.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_6.xyz
-            = max(u_xlat16_6.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_2.xyz = vs_COLOR0.xyz
-            * _Color.xyz;\n    u_xlat16_3.xyz = u_xlat16_6.xyz * u_xlat16_2.xyz;\n   
-            u_xlat16_20 = dot(u_xlat16_3.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_5.x = u_xlat16_20 + _ColorRampLuminosity;\n    u_xlat16_5.x
-            = clamp(u_xlat16_5.x, 0.0, 1.0);\n    u_xlat16_5.y = 0.0;\n    u_xlat16_4
-            = texture(_ColorRampTexGradient, u_xlat16_5.xy);\n    u_xlat16_6.xyz
-            = (-u_xlat16_6.xyz) * u_xlat16_2.xyz + u_xlat16_4.xyz;\n    u_xlat16_6.xyz
-            = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend)) * u_xlat16_6.xyz
-            + u_xlat16_3.xyz;\n    u_xlat16_2.x = u_xlat16_1.w * _ShapeColor.w;\n   
-            u_xlat16_8 = u_xlat16_4.w * u_xlat16_2.x;\n    u_xlat16_8 = clamp(u_xlat16_8,
-            0.0, 1.0);\n    u_xlat16_8 = (-u_xlat16_1.w) * _ShapeColor.w + u_xlat16_8;\n   
-            u_xlat16_2.x = _ColorRampBlend * u_xlat16_8 + u_xlat16_2.x;\n    u_xlat16_0.x
-            = u_xlat16_0.x * u_xlat16_2.x;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx
-            * u_xlat16_6.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            (u_xlatb4.y) ? float(1.0) : float(-1.0);\n    u_xlat11.xy = u_xlat11.xy
+            * u_xlat4.xy;\n    u_xlat11.xy = fract(u_xlat11.xy);\n    u_xlat1.xy
+            = u_xlat4.xy * u_xlat11.xy + u_xlat1.xy;\n    u_xlat16_1 = texture(_MainTex,
+            u_xlat1.xy);\n    u_xlat16_5.x = u_xlat16_1.w * _ShapeColor.w;\n    u_xlat16_2.xyz
+            = u_xlat16_1.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_2.xyz
+            = u_xlat16_2.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
+            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
+            0.0, 0.0));\n    u_xlat16_10.x = dot(u_xlat16_2.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_5.x = min(u_xlat16_5.x, u_xlat16_10.x);\n   
+            u_xlat16_3.x = u_xlat16_10.x + _ColorRampLuminosity;\n    u_xlat16_3.x
+            = clamp(u_xlat16_3.x, 0.0, 1.0);\n    u_xlat16_3.y = 0.0;\n    u_xlat16_1
+            = texture(_ColorRampTexGradient, u_xlat16_3.xy);\n    u_xlat16_10.x =
+            u_xlat16_5.x * u_xlat16_1.w;\n    u_xlat16_10.x = clamp(u_xlat16_10.x,
+            0.0, 1.0);\n    u_xlat16_10.x = (-u_xlat16_5.x) + u_xlat16_10.x;\n   
+            u_xlat16_5.x = _ColorRampBlend * u_xlat16_10.x + u_xlat16_5.x;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_5.x;\n    u_xlat16_5.x = vs_COLOR0.w * _Alpha;\n   
+            u_xlat16_0.x = u_xlat16_5.x * u_xlat16_0.x;\n    u_xlat16_5.xyz = vs_COLOR0.xyz
+            * _Color.xyz;\n    u_xlat16_3.xyz = (-u_xlat16_2.xyz) * u_xlat16_5.xyz
+            + u_xlat16_1.xyz;\n    u_xlat16_5.xyz = u_xlat16_5.xyz * u_xlat16_2.xyz;\n   
+            u_xlat16_5.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend))
+            * u_xlat16_3.xyz + u_xlat16_5.xyz;\n    SV_Target0.xyz = u_xlat16_0.xxx
+            * u_xlat16_5.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3604,24 +3884,24 @@ MonoBehaviour:
             u_xlat1.xy).x;\n    u_xlat16_7.x = u_xlat10_1.x + -0.5;\n    u_xlat16_7.x
             = u_xlat16_7.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_7.x
             = u_xlat16_7.x + 0.5;\n    u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n   
-            u_xlat16_2.y = 0.0;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_3.xyz * _ShapeColor.xyz;\n    u_xlat16_14 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_2.x = u_xlat16_14 + _ColorRampLuminosity;\n    u_xlat16_2.x
-            = clamp(u_xlat16_2.x, 0.0, 1.0);\n    u_xlat10_1 = texture2D(_ColorRampTexGradient,
+            u_xlat16_14 = dot(_ShapeColor.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
+            u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n    u_xlat16_2.x = u_xlat16_14
+            + _ColorRampLuminosity;\n    u_xlat16_2.x = clamp(u_xlat16_2.x, 0.0,
+            1.0);\n    u_xlat16_2.y = 0.0;\n    u_xlat10_1 = texture2D(_ColorRampTexGradient,
             u_xlat16_2.xy);\n    u_xlat16_21 = u_xlat16_7.x * u_xlat10_1.w;\n   
-            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_2.xyz = (-_ShapeColor.xyz)
-            * u_xlat16_3.xyz + u_xlat10_1.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend,
-            _ColorRampBlend, _ColorRampBlend)) * u_xlat16_2.xyz + u_xlat16_5.xyz;\n   
-            u_xlat16_21 = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend
-            * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz = _GlowColor.xyz *
-            vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx * u_xlat16_3.xyz;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n    u_xlat16_7.xyz = vec3(u_xlat16_14)
-            * u_xlat16_3.xyz;\n    u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal,
-            _GlowGlobal, _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w
-            * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz
-            = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n   
-            return;\n}\n\n"
+            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_21 = (-u_xlat16_7.x)
+            + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend * u_xlat16_21 + u_xlat16_7.x;\n   
+            u_xlat16_2.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_2.xyz =
+            u_xlat16_7.xxx * u_xlat16_2.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.xyz = vec3(u_xlat16_14) * u_xlat16_2.xyz;\n    u_xlat16_2.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_3.xyz = (-_ShapeColor.xyz)
+            * u_xlat16_2.xyz + u_xlat10_1.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * _ShapeColor.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
+            _ColorRampBlend)) * u_xlat16_3.xyz + u_xlat16_2.xyz;\n    u_xlat16_7.xyz
+            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
@@ -3631,10 +3911,15 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3736,25 +4021,25 @@ MonoBehaviour:
             + u_xlat1.xy;\n    u_xlat16_1.x = texture(_MainTex, u_xlat1.xy).x;\n   
             u_xlat16_7.x = u_xlat16_1.x + -0.5;\n    u_xlat16_7.x = u_xlat16_7.x
             * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_7.x = u_xlat16_7.x
-            + 0.5;\n    u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_2.y
-            = 0.0;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz
-            = u_xlat16_3.xyz * _ShapeColor.xyz;\n    u_xlat16_14 = dot(u_xlat16_5.xyz,
-            vec3(0.300000012, 0.589999974, 0.109999999));\n    u_xlat16_2.x = u_xlat16_14
+            + 0.5;\n    u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_14
+            = dot(_ShapeColor.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
+            u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n    u_xlat16_2.x = u_xlat16_14
             + _ColorRampLuminosity;\n    u_xlat16_2.x = clamp(u_xlat16_2.x, 0.0,
-            1.0);\n    u_xlat16_1 = texture(_ColorRampTexGradient, u_xlat16_2.xy);\n   
-            u_xlat16_21 = u_xlat16_7.x * u_xlat16_1.w;\n    u_xlat16_21 = clamp(u_xlat16_21,
-            0.0, 1.0);\n    u_xlat16_2.xyz = (-_ShapeColor.xyz) * u_xlat16_3.xyz
-            + u_xlat16_1.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
-            _ColorRampBlend)) * u_xlat16_2.xyz + u_xlat16_5.xyz;\n    u_xlat16_21
-            = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend
-            * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz = _GlowColor.xyz *
-            vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx * u_xlat16_3.xyz;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n    u_xlat16_7.xyz = vec3(u_xlat16_14)
-            * u_xlat16_3.xyz;\n    u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal,
-            _GlowGlobal, _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w
-            * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz
-            = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n   
-            return;\n}\n\n"
+            1.0);\n    u_xlat16_2.y = 0.0;\n    u_xlat16_1 = texture(_ColorRampTexGradient,
+            u_xlat16_2.xy);\n    u_xlat16_21 = u_xlat16_7.x * u_xlat16_1.w;\n   
+            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_21 = (-u_xlat16_7.x)
+            + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend * u_xlat16_21 + u_xlat16_7.x;\n   
+            u_xlat16_2.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_2.xyz =
+            u_xlat16_7.xxx * u_xlat16_2.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.xyz = vec3(u_xlat16_14) * u_xlat16_2.xyz;\n    u_xlat16_2.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_3.xyz = (-_ShapeColor.xyz)
+            * u_xlat16_2.xyz + u_xlat16_1.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * _ShapeColor.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
+            _ColorRampBlend)) * u_xlat16_3.xyz + u_xlat16_2.xyz;\n    u_xlat16_7.xyz
+            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
@@ -3764,10 +4049,15 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
           Tags:
           - Key: CanUseSpriteAtlas
@@ -3801,11 +4091,12 @@ MonoBehaviour:
             \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump float _ShapeRotationOffset;\nuniform \tmediump float _ShapeRotationSpeed;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump float _ShapeRotationOffset;\nuniform
+            \tmediump float _ShapeRotationSpeed;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _GlowColor;\nuniform
             \tmediump float _Glow;\nuniform \tmediump float _GlowGlobal;\nuniform
@@ -3820,103 +4111,104 @@ MonoBehaviour:
             gl_FragData[0]\nmediump vec2 u_xlat16_0;\nvec2 u_xlat1;\nlowp vec4 u_xlat10_1;\nmediump
             vec3 u_xlat16_2;\nmediump vec3 u_xlat16_3;\nvec2 u_xlat4;\nlowp vec2
             u_xlat10_4;\nbool u_xlatb4;\nmediump vec3 u_xlat16_5;\nvec2 u_xlat6;\nmediump
-            vec2 u_xlat16_7;\nmediump vec3 u_xlat16_8;\nmediump vec2 u_xlat16_16;\nvec2
-            u_xlat17;\nint u_xlati17;\nbvec2 u_xlatb17;\nvec2 u_xlat20;\nbvec2 u_xlatb20;\nmediump
-            float u_xlat16_24;\nfloat u_xlat25;\nint u_xlati25;\nmediump float u_xlat16_26;\nvoid
-            main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_8.x
-            = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_8.x = u_xlat16_8.x * 0.5;\n   
-            u_xlat16_16.x = u_xlat16_8.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
-            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_24 =
-            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_24 = sqrt(u_xlat16_24);\n   
-            u_xlat16_8.x = _TwistUvRadius * u_xlat16_8.x + (-u_xlat16_24);\n    u_xlat16_16.x
-            = u_xlat16_8.x / u_xlat16_16.x;\n    u_xlat16_16.x = u_xlat16_16.x *
-            u_xlat16_16.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_16.x;\n   
+            vec3 u_xlat16_7;\nmediump vec2 u_xlat16_14;\nvec2 u_xlat15;\nint u_xlati15;\nbvec2
+            u_xlatb15;\nvec2 u_xlat18;\nbvec2 u_xlatb18;\nmediump float u_xlat16_21;\nfloat
+            u_xlat22;\nint u_xlati22;\nmediump float u_xlat16_23;\nvoid main()\n{\n   
+            u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_7.x = _MainTex_ST.y
+            + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x * 0.5;\n    u_xlat16_14.x
+            = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
+            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_21 =
+            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n   
+            u_xlat16_7.x = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14.x
+            = u_xlat16_7.x / u_xlat16_14.x;\n    u_xlat16_14.x = u_xlat16_14.x *
+            u_xlat16_14.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14.x;\n   
             u_xlat16_0.x = u_xlat16_0.x * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n   
             u_xlat16_0.x = sin(u_xlat16_0.x);\n    u_xlat16_3.x = (-u_xlat16_0.x);\n   
             u_xlat16_3.y = u_xlat16_2.x;\n    u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y
             = dot(u_xlat1.yx, u_xlat16_3.yz);\n    u_xlat16_2.x = dot(u_xlat1.yx,
-            u_xlat16_3.xy);\n    u_xlati17 = int((0.0<u_xlat16_8.x) ? -1 : 0);\n   
-            u_xlati25 = int((u_xlat16_8.x<0.0) ? -1 : 0);\n    u_xlati17 = (-u_xlati17)
-            + u_xlati25;\n    u_xlat17.x = float(u_xlati17);\n    u_xlat17.x = max(u_xlat17.x,
-            0.0);\n    u_xlat16_0.x = (-u_xlat17.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx
-            * u_xlat1.xy;\n    u_xlat16_0.xy = u_xlat16_2.xy * u_xlat17.xx + u_xlat16_0.xy;\n   
+            u_xlat16_3.xy);\n    u_xlati15 = int((0.0<u_xlat16_7.x) ? -1 : 0);\n   
+            u_xlati22 = int((u_xlat16_7.x<0.0) ? -1 : 0);\n    u_xlati15 = (-u_xlati15)
+            + u_xlati22;\n    u_xlat15.x = float(u_xlati15);\n    u_xlat15.x = max(u_xlat15.x,
+            0.0);\n    u_xlat16_0.x = (-u_xlat15.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx
+            * u_xlat1.xy;\n    u_xlat16_0.xy = u_xlat16_2.xy * u_xlat15.xx + u_xlat16_0.xy;\n   
             u_xlat16_0.xy = vec2(_TwistUvPosX, _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n   
-            u_xlat1.xy = u_xlat16_0.xy * _MainTex_ST.xy + _MainTex_ST.zw;\n    u_xlat16_16.xy
+            u_xlat1.xy = u_xlat16_0.xy * _MainTex_ST.xy + _MainTex_ST.zw;\n    u_xlat16_14.xy
             = _MainTex_ST.xy * vec2(0.5, 0.5) + _MainTex_ST.zw;\n    u_xlat1.xy =
-            (-u_xlat16_16.xy) + u_xlat1.xy;\n    u_xlat17.x = vs_TEXCOORD0.z + _TimingSeed;\n   
-            u_xlat17.x = u_xlat17.x + _Time.y;\n    u_xlat25 = u_xlat17.x * _ShapeRotationSpeed;\n   
-            u_xlat4.x = u_xlat25 * 6.28318548;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n   
+            (-u_xlat16_14.xy) + u_xlat1.xy;\n    u_xlat15.x = vs_TEXCOORD0.z + _TimingSeed;\n   
+            u_xlat15.x = u_xlat15.x + _Time.y;\n    u_xlat22 = u_xlat15.x * _ShapeRotationSpeed;\n   
+            u_xlat4.x = u_xlat22 * 6.28318548;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n   
             u_xlat4.xy = (bool(u_xlatb4)) ? vec2(6.28318548, 0.159154937) : vec2(-6.28318548,
-            -0.159154937);\n    u_xlat25 = u_xlat25 * u_xlat4.y;\n    u_xlat25 =
-            fract(u_xlat25);\n    u_xlat25 = u_xlat4.x * u_xlat25 + _ShapeRotationOffset;\n   
-            u_xlat16_2.x = sin(u_xlat25);\n    u_xlat16_3.x = cos(u_xlat25);\n   
+            -0.159154937);\n    u_xlat22 = u_xlat22 * u_xlat4.y;\n    u_xlat22 =
+            fract(u_xlat22);\n    u_xlat22 = u_xlat4.x * u_xlat22 + _ShapeRotationOffset;\n   
+            u_xlat16_2.x = sin(u_xlat22);\n    u_xlat16_3.x = cos(u_xlat22);\n   
             u_xlat16_5.x = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n   
             u_xlat16_5.z = u_xlat16_2.x;\n    u_xlat4.y = dot(u_xlat16_5.zy, u_xlat1.xy);\n   
-            u_xlat4.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_16.xy
-            + u_xlat4.xy;\n    u_xlat4.xy = u_xlat17.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n   
-            u_xlatb20.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
-            u_xlat20.x = (u_xlatb20.x) ? float(1.0) : float(-1.0);\n    u_xlat20.y
-            = (u_xlatb20.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat20.xy
+            u_xlat4.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_14.xy
+            + u_xlat4.xy;\n    u_xlat4.xy = u_xlat15.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n   
+            u_xlatb18.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
+            u_xlat18.x = (u_xlatb18.x) ? float(1.0) : float(-1.0);\n    u_xlat18.y
+            = (u_xlatb18.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat18.xy
             * u_xlat4.xy;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
-            u_xlat20.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1.x = texture2D(_MainTex,
-            u_xlat1.xy).x;\n    u_xlat16_16.x = u_xlat10_1.x + -0.5;\n    u_xlat16_16.x
-            = u_xlat16_16.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_16.x
-            = u_xlat16_16.x + 0.5;\n    u_xlat16_16.x = clamp(u_xlat16_16.x, 0.0,
-            1.0);\n    u_xlat16_16.x = u_xlat16_16.x * _ShapeColorWeight;\n    u_xlat1.xy
+            u_xlat18.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1.x = texture2D(_MainTex,
+            u_xlat1.xy).x;\n    u_xlat16_14.x = u_xlat10_1.x + -0.5;\n    u_xlat16_14.x
+            = u_xlat16_14.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_14.x
+            = u_xlat16_14.x + 0.5;\n    u_xlat16_14.x = clamp(u_xlat16_14.x, 0.0,
+            1.0);\n    u_xlat16_14.x = u_xlat16_14.x * _ShapeAlphaWeight;\n    u_xlat1.xy
             = u_xlat16_0.xy * _Shape2Tex_ST.xy + _Shape2Tex_ST.zw;\n    u_xlat16_0.xy
             = u_xlat16_0.xy * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat10_4.xy
             = texture2D(_MaskTex, u_xlat16_0.xy).xw;\n    u_xlat16_0.x = min(u_xlat10_4.y,
             u_xlat10_4.x);\n    u_xlat16_0.x = log2(u_xlat16_0.x);\n    u_xlat16_0.x
             = u_xlat16_0.x * _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n   
-            u_xlat16_8.xz = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
-            u_xlat1.xy = (-u_xlat16_8.xz) + u_xlat1.xy;\n    u_xlat25 = u_xlat17.x
-            * _Shape2RotationSpeed;\n    u_xlat4.xy = u_xlat17.xx * vec2(_Shape2XSpeed,
-            _Shape2YSpeed);\n    u_xlat17.x = u_xlat25 * 6.28318548;\n    u_xlatb17.x
-            = u_xlat17.x>=(-u_xlat17.x);\n    u_xlat20.xy = (u_xlatb17.x) ? vec2(6.28318548,
-            0.159154937) : vec2(-6.28318548, -0.159154937);\n    u_xlat17.x = u_xlat25
-            * u_xlat20.y;\n    u_xlat17.x = fract(u_xlat17.x);\n    u_xlat17.x =
-            u_xlat20.x * u_xlat17.x + _Shape2RotationOffset;\n    u_xlat16_2.x =
-            sin(u_xlat17.x);\n    u_xlat16_3.x = cos(u_xlat17.x);\n    u_xlat16_5.x
+            u_xlat16_7.xz = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
+            u_xlat1.xy = (-u_xlat16_7.xz) + u_xlat1.xy;\n    u_xlat22 = u_xlat15.x
+            * _Shape2RotationSpeed;\n    u_xlat4.xy = u_xlat15.xx * vec2(_Shape2XSpeed,
+            _Shape2YSpeed);\n    u_xlat15.x = u_xlat22 * 6.28318548;\n    u_xlatb15.x
+            = u_xlat15.x>=(-u_xlat15.x);\n    u_xlat18.xy = (u_xlatb15.x) ? vec2(6.28318548,
+            0.159154937) : vec2(-6.28318548, -0.159154937);\n    u_xlat15.x = u_xlat22
+            * u_xlat18.y;\n    u_xlat15.x = fract(u_xlat15.x);\n    u_xlat15.x =
+            u_xlat18.x * u_xlat15.x + _Shape2RotationOffset;\n    u_xlat16_2.x =
+            sin(u_xlat15.x);\n    u_xlat16_3.x = cos(u_xlat15.x);\n    u_xlat16_5.x
             = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n    u_xlat16_5.z
             = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat1.xy);\n   
-            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_8.xz
-            + u_xlat6.xy;\n    u_xlatb17.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
-            u_xlat17.x = (u_xlatb17.x) ? float(1.0) : float(-1.0);\n    u_xlat17.y
-            = (u_xlatb17.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat17.xy
+            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_7.xz
+            + u_xlat6.xy;\n    u_xlatb15.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
+            u_xlat15.x = (u_xlatb15.x) ? float(1.0) : float(-1.0);\n    u_xlat15.y
+            = (u_xlatb15.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy
             * u_xlat4.xy;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
-            u_xlat17.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_Shape2Tex,
-            u_xlat1.xy);\n    u_xlat16_8.x = u_xlat10_1.w * _Shape2Color.w;\n   
+            u_xlat15.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_Shape2Tex,
+            u_xlat1.xy);\n    u_xlat16_7.x = u_xlat10_1.w * _Shape2Color.w;\n   
             u_xlat16_2.xyz = u_xlat10_1.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
             -0.5);\n    u_xlat16_2.xyz = u_xlat16_2.xyz * vec3(_Shape2Contrast) +
             vec3(vec3(_Shape2Brightness, _Shape2Brightness, _Shape2Brightness));\n   
             u_xlat16_2.xyz = u_xlat16_2.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz
             = max(u_xlat16_2.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n   
-            u_xlat16_8.x = u_xlat16_8.x * _Shape2ColorWeight;\n    u_xlat16_8.x =
-            u_xlat16_8.x * u_xlat16_16.x;\n    u_xlat16_8.x = clamp(u_xlat16_8.x,
+            u_xlat16_7.x = u_xlat16_7.x * _Shape2AlphaWeight;\n    u_xlat16_7.x =
+            u_xlat16_7.x * u_xlat16_14.x;\n    u_xlat16_7.x = clamp(u_xlat16_7.x,
             0.0, 1.0);\n    u_xlat16_3.xyz = _ShapeColor.xyz * vec3(vec3(_ShapeColorWeight,
             _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_16.x
-            = dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_16.x + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat10_1
-            = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_24 =
-            u_xlat16_8.x * u_xlat10_1.w;\n    u_xlat16_24 = clamp(u_xlat16_24, 0.0,
-            1.0);\n    u_xlat16_2.xyz = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat10_1.xyz;\n   
-            u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend))
-            * u_xlat16_2.xyz + u_xlat16_5.xyz;\n    u_xlat16_24 = (-u_xlat16_8.x)
-            + u_xlat16_24;\n    u_xlat16_8.x = _ColorRampBlend * u_xlat16_24 + u_xlat16_8.x;\n   
-            u_xlat16_3.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_3.xyz =
-            u_xlat16_8.xxx * u_xlat16_3.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_8.x;\n   
-            u_xlat16_8.xyz = u_xlat16_16.xxx * u_xlat16_3.xyz;\n    u_xlat16_26 =
-            float(1.0) / _PosterizeNumColors;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            / vec3(u_xlat16_26);\n    u_xlat16_2.xyz = floor(u_xlat16_2.xyz);\n   
-            u_xlat16_2.xyz = vec3(u_xlat16_26) * u_xlat16_2.xyz;\n    u_xlat16_8.xyz
+            * u_xlat16_3.xyz;\n    u_xlat16_14.x = dot(u_xlat16_2.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14.x);\n   
+            u_xlat16_3.x = u_xlat16_14.x + _ColorRampLuminosity;\n    u_xlat16_3.x
+            = clamp(u_xlat16_3.x, 0.0, 1.0);\n    u_xlat16_3.y = 0.0;\n    u_xlat10_1
+            = texture2D(_ColorRampTexGradient, u_xlat16_3.xy);\n    u_xlat16_21 =
+            u_xlat16_7.x * u_xlat10_1.w;\n    u_xlat16_21 = clamp(u_xlat16_21, 0.0,
+            1.0);\n    u_xlat16_21 = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x
+            = _ColorRampBlend * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz =
+            _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx *
+            u_xlat16_3.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.xyz = u_xlat16_14.xxx * u_xlat16_3.xyz;\n    u_xlat16_3.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = (-u_xlat16_2.xyz)
+            * u_xlat16_3.xyz + u_xlat10_1.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * u_xlat16_3.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
+            _ColorRampBlend)) * u_xlat16_5.xyz + u_xlat16_2.xyz;\n    u_xlat16_23
+            = float(1.0) / _PosterizeNumColors;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            / vec3(u_xlat16_23);\n    u_xlat16_2.xyz = floor(u_xlat16_2.xyz);\n   
+            u_xlat16_2.xyz = vec3(u_xlat16_23) * u_xlat16_2.xyz;\n    u_xlat16_7.xyz
             = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
-            + u_xlat16_8.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
             = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
-            u_xlat16_8.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
@@ -3929,12 +4221,16 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -3976,11 +4272,12 @@ MonoBehaviour:
             _Color;\nuniform \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump float _ShapeRotationOffset;\nuniform \tmediump float _ShapeRotationSpeed;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump float _ShapeRotationOffset;\nuniform
+            \tmediump float _ShapeRotationSpeed;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _GlowColor;\nuniform
             \tmediump float _Glow;\nuniform \tmediump float _GlowGlobal;\nuniform
@@ -3995,105 +4292,105 @@ MonoBehaviour:
             mediump vec4 vs_COLOR0;\nlayout(location = 0) out mediump vec4 SV_Target0;\nmediump
             vec2 u_xlat16_0;\nvec2 u_xlat1;\nmediump vec4 u_xlat16_1;\nmediump vec3
             u_xlat16_2;\nmediump vec3 u_xlat16_3;\nvec2 u_xlat4;\nmediump vec2 u_xlat16_4;\nbool
-            u_xlatb4;\nmediump vec3 u_xlat16_5;\nvec2 u_xlat6;\nmediump vec2 u_xlat16_7;\nmediump
-            vec3 u_xlat16_8;\nmediump vec2 u_xlat16_16;\nvec2 u_xlat17;\nint u_xlati17;\nbvec2
-            u_xlatb17;\nvec2 u_xlat20;\nbvec2 u_xlatb20;\nmediump float u_xlat16_24;\nfloat
-            u_xlat25;\nint u_xlati25;\nmediump float u_xlat16_26;\nvoid main()\n{\n   
-            u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_8.x = _MainTex_ST.y
-            + _MainTex_ST.x;\n    u_xlat16_8.x = u_xlat16_8.x * 0.5;\n    u_xlat16_16.x
-            = u_xlat16_8.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
-            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_24 =
-            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_24 = sqrt(u_xlat16_24);\n   
-            u_xlat16_8.x = _TwistUvRadius * u_xlat16_8.x + (-u_xlat16_24);\n    u_xlat16_16.x
-            = u_xlat16_8.x / u_xlat16_16.x;\n    u_xlat16_16.x = u_xlat16_16.x *
-            u_xlat16_16.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_16.x;\n   
+            u_xlatb4;\nmediump vec3 u_xlat16_5;\nvec2 u_xlat6;\nmediump vec3 u_xlat16_7;\nmediump
+            vec2 u_xlat16_14;\nvec2 u_xlat15;\nint u_xlati15;\nbvec2 u_xlatb15;\nvec2
+            u_xlat18;\nbvec2 u_xlatb18;\nmediump float u_xlat16_21;\nfloat u_xlat22;\nint
+            u_xlati22;\nmediump float u_xlat16_23;\nvoid main()\n{\n    u_xlat16_0.x
+            = sin(_TwistUvAmount);\n    u_xlat16_7.x = _MainTex_ST.y + _MainTex_ST.x;\n   
+            u_xlat16_7.x = u_xlat16_7.x * 0.5;\n    u_xlat16_14.x = u_xlat16_7.x
+            * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX, _TwistUvPosY))
+            * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_21 = dot(u_xlat1.xy,
+            u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n    u_xlat16_7.x
+            = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14.x
+            = u_xlat16_7.x / u_xlat16_14.x;\n    u_xlat16_14.x = u_xlat16_14.x *
+            u_xlat16_14.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14.x;\n   
             u_xlat16_0.x = u_xlat16_0.x * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n   
             u_xlat16_0.x = sin(u_xlat16_0.x);\n    u_xlat16_3.x = (-u_xlat16_0.x);\n   
             u_xlat16_3.y = u_xlat16_2.x;\n    u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y
             = dot(u_xlat1.yx, u_xlat16_3.yz);\n    u_xlat16_2.x = dot(u_xlat1.yx,
-            u_xlat16_3.xy);\n    u_xlati17 = int((0.0<u_xlat16_8.x) ? 0xFFFFFFFFu
-            : uint(0));\n    u_xlati25 = int((u_xlat16_8.x<0.0) ? 0xFFFFFFFFu : uint(0));\n   
-            u_xlati17 = (-u_xlati17) + u_xlati25;\n    u_xlat17.x = float(u_xlati17);\n   
-            u_xlat17.x = max(u_xlat17.x, 0.0);\n    u_xlat16_0.x = (-u_xlat17.x)
+            u_xlat16_3.xy);\n    u_xlati15 = int((0.0<u_xlat16_7.x) ? 0xFFFFFFFFu
+            : uint(0));\n    u_xlati22 = int((u_xlat16_7.x<0.0) ? 0xFFFFFFFFu : uint(0));\n   
+            u_xlati15 = (-u_xlati15) + u_xlati22;\n    u_xlat15.x = float(u_xlati15);\n   
+            u_xlat15.x = max(u_xlat15.x, 0.0);\n    u_xlat16_0.x = (-u_xlat15.x)
             + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n    u_xlat16_0.xy
-            = u_xlat16_2.xy * u_xlat17.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
+            = u_xlat16_2.xy * u_xlat15.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
             _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n    u_xlat1.xy = u_xlat16_0.xy
-            * _MainTex_ST.xy + _MainTex_ST.zw;\n    u_xlat16_16.xy = _MainTex_ST.xy
-            * vec2(0.5, 0.5) + _MainTex_ST.zw;\n    u_xlat1.xy = (-u_xlat16_16.xy)
-            + u_xlat1.xy;\n    u_xlat17.x = vs_TEXCOORD0.z + _TimingSeed;\n    u_xlat17.x
-            = u_xlat17.x + _Time.y;\n    u_xlat25 = u_xlat17.x * _ShapeRotationSpeed;\n   
-            u_xlat4.x = u_xlat25 * 6.28318548;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n   
+            * _MainTex_ST.xy + _MainTex_ST.zw;\n    u_xlat16_14.xy = _MainTex_ST.xy
+            * vec2(0.5, 0.5) + _MainTex_ST.zw;\n    u_xlat1.xy = (-u_xlat16_14.xy)
+            + u_xlat1.xy;\n    u_xlat15.x = vs_TEXCOORD0.z + _TimingSeed;\n    u_xlat15.x
+            = u_xlat15.x + _Time.y;\n    u_xlat22 = u_xlat15.x * _ShapeRotationSpeed;\n   
+            u_xlat4.x = u_xlat22 * 6.28318548;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n   
             u_xlat4.xy = (bool(u_xlatb4)) ? vec2(6.28318548, 0.159154937) : vec2(-6.28318548,
-            -0.159154937);\n    u_xlat25 = u_xlat25 * u_xlat4.y;\n    u_xlat25 =
-            fract(u_xlat25);\n    u_xlat25 = u_xlat4.x * u_xlat25 + _ShapeRotationOffset;\n   
-            u_xlat16_2.x = sin(u_xlat25);\n    u_xlat16_3.x = cos(u_xlat25);\n   
+            -0.159154937);\n    u_xlat22 = u_xlat22 * u_xlat4.y;\n    u_xlat22 =
+            fract(u_xlat22);\n    u_xlat22 = u_xlat4.x * u_xlat22 + _ShapeRotationOffset;\n   
+            u_xlat16_2.x = sin(u_xlat22);\n    u_xlat16_3.x = cos(u_xlat22);\n   
             u_xlat16_5.x = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n   
             u_xlat16_5.z = u_xlat16_2.x;\n    u_xlat4.y = dot(u_xlat16_5.zy, u_xlat1.xy);\n   
-            u_xlat4.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_16.xy
-            + u_xlat4.xy;\n    u_xlat4.xy = u_xlat17.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n   
-            u_xlatb20.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
-            u_xlat20.x = (u_xlatb20.x) ? float(1.0) : float(-1.0);\n    u_xlat20.y
-            = (u_xlatb20.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat20.xy
+            u_xlat4.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_14.xy
+            + u_xlat4.xy;\n    u_xlat4.xy = u_xlat15.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n   
+            u_xlatb18.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
+            u_xlat18.x = (u_xlatb18.x) ? float(1.0) : float(-1.0);\n    u_xlat18.y
+            = (u_xlatb18.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat18.xy
             * u_xlat4.xy;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
-            u_xlat20.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1.x = texture(_MainTex,
-            u_xlat1.xy).x;\n    u_xlat16_16.x = u_xlat16_1.x + -0.5;\n    u_xlat16_16.x
-            = u_xlat16_16.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_16.x
-            = u_xlat16_16.x + 0.5;\n    u_xlat16_16.x = clamp(u_xlat16_16.x, 0.0,
-            1.0);\n    u_xlat16_16.x = u_xlat16_16.x * _ShapeColorWeight;\n    u_xlat1.xy
+            u_xlat18.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1.x = texture(_MainTex,
+            u_xlat1.xy).x;\n    u_xlat16_14.x = u_xlat16_1.x + -0.5;\n    u_xlat16_14.x
+            = u_xlat16_14.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_14.x
+            = u_xlat16_14.x + 0.5;\n    u_xlat16_14.x = clamp(u_xlat16_14.x, 0.0,
+            1.0);\n    u_xlat16_14.x = u_xlat16_14.x * _ShapeAlphaWeight;\n    u_xlat1.xy
             = u_xlat16_0.xy * _Shape2Tex_ST.xy + _Shape2Tex_ST.zw;\n    u_xlat16_0.xy
             = u_xlat16_0.xy * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat16_4.xy
             = texture(_MaskTex, u_xlat16_0.xy).xw;\n    u_xlat16_0.x = min(u_xlat16_4.y,
             u_xlat16_4.x);\n    u_xlat16_0.x = log2(u_xlat16_0.x);\n    u_xlat16_0.x
             = u_xlat16_0.x * _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n   
-            u_xlat16_8.xz = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
-            u_xlat1.xy = (-u_xlat16_8.xz) + u_xlat1.xy;\n    u_xlat25 = u_xlat17.x
-            * _Shape2RotationSpeed;\n    u_xlat4.xy = u_xlat17.xx * vec2(_Shape2XSpeed,
-            _Shape2YSpeed);\n    u_xlat17.x = u_xlat25 * 6.28318548;\n    u_xlatb17.x
-            = u_xlat17.x>=(-u_xlat17.x);\n    u_xlat20.xy = (u_xlatb17.x) ? vec2(6.28318548,
-            0.159154937) : vec2(-6.28318548, -0.159154937);\n    u_xlat17.x = u_xlat25
-            * u_xlat20.y;\n    u_xlat17.x = fract(u_xlat17.x);\n    u_xlat17.x =
-            u_xlat20.x * u_xlat17.x + _Shape2RotationOffset;\n    u_xlat16_2.x =
-            sin(u_xlat17.x);\n    u_xlat16_3.x = cos(u_xlat17.x);\n    u_xlat16_5.x
+            u_xlat16_7.xz = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
+            u_xlat1.xy = (-u_xlat16_7.xz) + u_xlat1.xy;\n    u_xlat22 = u_xlat15.x
+            * _Shape2RotationSpeed;\n    u_xlat4.xy = u_xlat15.xx * vec2(_Shape2XSpeed,
+            _Shape2YSpeed);\n    u_xlat15.x = u_xlat22 * 6.28318548;\n    u_xlatb15.x
+            = u_xlat15.x>=(-u_xlat15.x);\n    u_xlat18.xy = (u_xlatb15.x) ? vec2(6.28318548,
+            0.159154937) : vec2(-6.28318548, -0.159154937);\n    u_xlat15.x = u_xlat22
+            * u_xlat18.y;\n    u_xlat15.x = fract(u_xlat15.x);\n    u_xlat15.x =
+            u_xlat18.x * u_xlat15.x + _Shape2RotationOffset;\n    u_xlat16_2.x =
+            sin(u_xlat15.x);\n    u_xlat16_3.x = cos(u_xlat15.x);\n    u_xlat16_5.x
             = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n    u_xlat16_5.z
             = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat1.xy);\n   
-            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_8.xz
-            + u_xlat6.xy;\n    u_xlatb17.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
-            u_xlat17.x = (u_xlatb17.x) ? float(1.0) : float(-1.0);\n    u_xlat17.y
-            = (u_xlatb17.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat17.xy
+            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat1.xy);\n    u_xlat1.xy = u_xlat16_7.xz
+            + u_xlat6.xy;\n    u_xlatb15.xy = greaterThanEqual(u_xlat4.xyxy, (-u_xlat4.xyxy)).xy;\n   
+            u_xlat15.x = (u_xlatb15.x) ? float(1.0) : float(-1.0);\n    u_xlat15.y
+            = (u_xlatb15.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy
             * u_xlat4.xy;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
-            u_xlat17.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1 = texture(_Shape2Tex,
-            u_xlat1.xy);\n    u_xlat16_8.x = u_xlat16_1.w * _Shape2Color.w;\n   
+            u_xlat15.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1 = texture(_Shape2Tex,
+            u_xlat1.xy);\n    u_xlat16_7.x = u_xlat16_1.w * _Shape2Color.w;\n   
             u_xlat16_2.xyz = u_xlat16_1.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
             -0.5);\n    u_xlat16_2.xyz = u_xlat16_2.xyz * vec3(_Shape2Contrast) +
             vec3(vec3(_Shape2Brightness, _Shape2Brightness, _Shape2Brightness));\n   
             u_xlat16_2.xyz = u_xlat16_2.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz
             = max(u_xlat16_2.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n   
-            u_xlat16_8.x = u_xlat16_8.x * _Shape2ColorWeight;\n    u_xlat16_8.x =
-            u_xlat16_8.x * u_xlat16_16.x;\n    u_xlat16_8.x = clamp(u_xlat16_8.x,
+            u_xlat16_7.x = u_xlat16_7.x * _Shape2AlphaWeight;\n    u_xlat16_7.x =
+            u_xlat16_7.x * u_xlat16_14.x;\n    u_xlat16_7.x = clamp(u_xlat16_7.x,
             0.0, 1.0);\n    u_xlat16_3.xyz = _ShapeColor.xyz * vec3(vec3(_ShapeColorWeight,
             _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * u_xlat16_3.xyz;\n    u_xlat16_14.x = dot(u_xlat16_2.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14.x);\n   
+            u_xlat16_3.x = u_xlat16_14.x + _ColorRampLuminosity;\n    u_xlat16_3.x
+            = clamp(u_xlat16_3.x, 0.0, 1.0);\n    u_xlat16_3.y = 0.0;\n    u_xlat16_1
+            = texture(_ColorRampTexGradient, u_xlat16_3.xy);\n    u_xlat16_21 = u_xlat16_7.x
+            * u_xlat16_1.w;\n    u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n   
+            u_xlat16_21 = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend
+            * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz = _GlowColor.xyz *
+            vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx * u_xlat16_3.xyz;\n   
+            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n    u_xlat16_7.xyz = u_xlat16_14.xxx
             * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_16.x
-            = dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_16.x + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat16_1
-            = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_24 = u_xlat16_8.x
-            * u_xlat16_1.w;\n    u_xlat16_24 = clamp(u_xlat16_24, 0.0, 1.0);\n   
-            u_xlat16_2.xyz = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat16_1.xyz;\n   
-            u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend))
-            * u_xlat16_2.xyz + u_xlat16_5.xyz;\n    u_xlat16_24 = (-u_xlat16_8.x)
-            + u_xlat16_24;\n    u_xlat16_8.x = _ColorRampBlend * u_xlat16_24 + u_xlat16_8.x;\n   
-            u_xlat16_3.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_3.xyz =
-            u_xlat16_8.xxx * u_xlat16_3.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_8.x;\n   
-            u_xlat16_8.xyz = u_xlat16_16.xxx * u_xlat16_3.xyz;\n    u_xlat16_26 =
-            float(1.0) / _PosterizeNumColors;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            / vec3(u_xlat16_26);\n    u_xlat16_2.xyz = floor(u_xlat16_2.xyz);\n   
-            u_xlat16_2.xyz = vec3(u_xlat16_26) * u_xlat16_2.xyz;\n    u_xlat16_8.xyz
-            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
-            + u_xlat16_8.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
-            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
-            u_xlat16_8.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
+            u_xlat16_5.xyz = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat16_1.xyz;\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_2.xyz
+            = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend)) * u_xlat16_5.xyz
+            + u_xlat16_2.xyz;\n    u_xlat16_23 = float(1.0) / _PosterizeNumColors;\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz / vec3(u_xlat16_23);\n    u_xlat16_2.xyz
+            = floor(u_xlat16_2.xyz);\n    u_xlat16_2.xyz = vec3(u_xlat16_23) * u_xlat16_2.xyz;\n   
+            u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal,
+            _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n   
+            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx
+            * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
@@ -4106,12 +4403,16 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -4221,40 +4522,47 @@ MonoBehaviour:
             u_xlat1.xy).x;\n    u_xlat16_7.x = u_xlat10_1.x + -0.5;\n    u_xlat16_7.x
             = u_xlat16_7.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_7.x
             = u_xlat16_7.x + 0.5;\n    u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n   
-            u_xlat16_2.y = 0.0;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_3.xyz * _ShapeColor.xyz;\n    u_xlat16_14 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_2.x = u_xlat16_14 + _ColorRampLuminosity;\n    u_xlat16_2.x
-            = clamp(u_xlat16_2.x, 0.0, 1.0);\n    u_xlat10_1 = texture2D(_ColorRampTexGradient,
+            u_xlat16_14 = dot(_ShapeColor.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
+            u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n    u_xlat16_2.x = u_xlat16_14
+            + _ColorRampLuminosity;\n    u_xlat16_2.x = clamp(u_xlat16_2.x, 0.0,
+            1.0);\n    u_xlat16_2.y = 0.0;\n    u_xlat10_1 = texture2D(_ColorRampTexGradient,
             u_xlat16_2.xy);\n    u_xlat16_21 = u_xlat16_7.x * u_xlat10_1.w;\n   
-            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_2.xyz = (-_ShapeColor.xyz)
-            * u_xlat16_3.xyz + u_xlat10_1.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend,
-            _ColorRampBlend, _ColorRampBlend)) * u_xlat16_2.xyz + u_xlat16_5.xyz;\n   
-            u_xlat16_21 = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend
-            * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz = _GlowColor.xyz *
-            vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx * u_xlat16_3.xyz;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n    u_xlat16_7.xyz = vec3(u_xlat16_14)
-            * u_xlat16_3.xyz;\n    u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal,
-            _GlowGlobal, _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w
-            * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz
-            = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n   
-            return;\n}\n\n"
+            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_21 = (-u_xlat16_7.x)
+            + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend * u_xlat16_21 + u_xlat16_7.x;\n   
+            u_xlat16_2.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_2.xyz =
+            u_xlat16_7.xxx * u_xlat16_2.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.xyz = vec3(u_xlat16_14) * u_xlat16_2.xyz;\n    u_xlat16_2.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_3.xyz = (-_ShapeColor.xyz)
+            * u_xlat16_2.xyz + u_xlat10_1.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * _ShapeColor.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
+            _ColorRampBlend)) * u_xlat16_3.xyz + u_xlat16_2.xyz;\n    u_xlat16_7.xyz
+            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - GLOW_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -4374,40 +4682,47 @@ MonoBehaviour:
             u_xlat1.xy).x;\n    u_xlat16_7.x = u_xlat16_1.x + -0.5;\n    u_xlat16_7.x
             = u_xlat16_7.x * _ShapeContrast + _ShapeBrightness;\n    u_xlat16_7.x
             = u_xlat16_7.x + 0.5;\n    u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n   
-            u_xlat16_2.y = 0.0;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_3.xyz * _ShapeColor.xyz;\n    u_xlat16_14 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_2.x = u_xlat16_14 + _ColorRampLuminosity;\n    u_xlat16_2.x
-            = clamp(u_xlat16_2.x, 0.0, 1.0);\n    u_xlat16_1 = texture(_ColorRampTexGradient,
+            u_xlat16_14 = dot(_ShapeColor.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
+            u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n    u_xlat16_2.x = u_xlat16_14
+            + _ColorRampLuminosity;\n    u_xlat16_2.x = clamp(u_xlat16_2.x, 0.0,
+            1.0);\n    u_xlat16_2.y = 0.0;\n    u_xlat16_1 = texture(_ColorRampTexGradient,
             u_xlat16_2.xy);\n    u_xlat16_21 = u_xlat16_7.x * u_xlat16_1.w;\n   
-            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_2.xyz = (-_ShapeColor.xyz)
-            * u_xlat16_3.xyz + u_xlat16_1.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend,
-            _ColorRampBlend, _ColorRampBlend)) * u_xlat16_2.xyz + u_xlat16_5.xyz;\n   
-            u_xlat16_21 = (-u_xlat16_7.x) + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend
-            * u_xlat16_21 + u_xlat16_7.x;\n    u_xlat16_3.xyz = _GlowColor.xyz *
-            vec3(_Glow);\n    u_xlat16_3.xyz = u_xlat16_7.xxx * u_xlat16_3.xyz;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n    u_xlat16_7.xyz = vec3(u_xlat16_14)
-            * u_xlat16_3.xyz;\n    u_xlat16_7.xyz = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal,
-            _GlowGlobal, _GlowGlobal)) + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w
-            * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz
-            = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n   
-            return;\n}\n\n"
+            u_xlat16_21 = clamp(u_xlat16_21, 0.0, 1.0);\n    u_xlat16_21 = (-u_xlat16_7.x)
+            + u_xlat16_21;\n    u_xlat16_7.x = _ColorRampBlend * u_xlat16_21 + u_xlat16_7.x;\n   
+            u_xlat16_2.xyz = _GlowColor.xyz * vec3(_Glow);\n    u_xlat16_2.xyz =
+            u_xlat16_7.xxx * u_xlat16_2.xyz;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.xyz = vec3(u_xlat16_14) * u_xlat16_2.xyz;\n    u_xlat16_2.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_3.xyz = (-_ShapeColor.xyz)
+            * u_xlat16_2.xyz + u_xlat16_1.xyz;\n    u_xlat16_2.xyz = u_xlat16_2.xyz
+            * _ShapeColor.xyz;\n    u_xlat16_2.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend,
+            _ColorRampBlend)) * u_xlat16_3.xyz + u_xlat16_2.xyz;\n    u_xlat16_7.xyz
+            = u_xlat16_2.xyz * vec3(vec3(_GlowGlobal, _GlowGlobal, _GlowGlobal))
+            + u_xlat16_7.xyz;\n    u_xlat16_2.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_0.x * u_xlat16_2.x;\n    SV_Target0.xyz = u_xlat16_0.xxx *
+            u_xlat16_7.xyz;\n    SV_Target0.w = u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
           PassId: 0
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - GLOW_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           Tags:
           - Key: CanUseSpriteAtlas
             Value: true
@@ -4440,10 +4755,11 @@ MonoBehaviour:
             \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _MaskTex_ST;\nuniform
             \tmediump float _MaskPow;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
@@ -4499,7 +4815,7 @@ MonoBehaviour:
             + u_xlat1.xy;\n    u_xlat10_2 = texture2D(_Shape2Tex, u_xlat1.xy);\n   
             u_xlat16_3.xyz = u_xlat10_2.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
             -0.5);\n    u_xlat16_16.x = u_xlat10_2.w * _Shape2Color.w;\n    u_xlat16_16.x
-            = u_xlat16_16.x * _Shape2ColorWeight;\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            = u_xlat16_16.x * _Shape2AlphaWeight;\n    u_xlat16_3.xyz = u_xlat16_3.xyz
             * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness, _Shape2Brightness,
             _Shape2Brightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5,
             0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n   
@@ -4516,7 +4832,7 @@ MonoBehaviour:
             u_xlat1.xy = u_xlat1.xy * u_xlat17.xy + u_xlat4.xy;\n    u_xlat10_1 =
             texture2D(_MainTex, u_xlat1.xy);\n    u_xlat16_5.xyz = u_xlat10_1.xyz
             * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_8.x = u_xlat10_1.w
-            * _ShapeColor.w;\n    u_xlat16_8.x = u_xlat16_8.x * _ShapeColorWeight;\n   
+            * _ShapeColor.w;\n    u_xlat16_8.x = u_xlat16_8.x * _ShapeAlphaWeight;\n   
             u_xlat16_8.x = u_xlat16_16.x * u_xlat16_8.x;\n    u_xlat16_8.x = clamp(u_xlat16_8.x,
             0.0, 1.0);\n    u_xlat16_5.xyz = u_xlat16_5.xyz * vec3(_ShapeContrast)
             + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
@@ -4553,6 +4869,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - MASK_ON
@@ -4597,10 +4914,11 @@ MonoBehaviour:
             _Color;\nuniform \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _MaskTex_ST;\nuniform
             \tmediump float _MaskPow;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
@@ -4658,7 +4976,7 @@ MonoBehaviour:
             + u_xlat1.xy;\n    u_xlat16_2 = texture(_Shape2Tex, u_xlat1.xy);\n   
             u_xlat16_3.xyz = u_xlat16_2.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
             -0.5);\n    u_xlat16_16.x = u_xlat16_2.w * _Shape2Color.w;\n    u_xlat16_16.x
-            = u_xlat16_16.x * _Shape2ColorWeight;\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            = u_xlat16_16.x * _Shape2AlphaWeight;\n    u_xlat16_3.xyz = u_xlat16_3.xyz
             * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness, _Shape2Brightness,
             _Shape2Brightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5,
             0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n   
@@ -4675,7 +4993,7 @@ MonoBehaviour:
             u_xlat1.xy = u_xlat1.xy * u_xlat17.xy + u_xlat4.xy;\n    u_xlat16_1 =
             texture(_MainTex, u_xlat1.xy);\n    u_xlat16_5.xyz = u_xlat16_1.xyz *
             _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_8.x = u_xlat16_1.w
-            * _ShapeColor.w;\n    u_xlat16_8.x = u_xlat16_8.x * _ShapeColorWeight;\n   
+            * _ShapeColor.w;\n    u_xlat16_8.x = u_xlat16_8.x * _ShapeAlphaWeight;\n   
             u_xlat16_8.x = u_xlat16_16.x * u_xlat16_8.x;\n    u_xlat16_8.x = clamp(u_xlat16_8.x,
             0.0, 1.0);\n    u_xlat16_5.xyz = u_xlat16_5.xyz * vec3(_ShapeContrast)
             + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
@@ -4712,6 +5030,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - MASK_ON
@@ -4747,10 +5066,11 @@ MonoBehaviour:
             \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
             \tmediump float _ColorRampBlend;\nuniform \tmediump float _PosterizeNumColors;\nuniform
@@ -4808,28 +5128,27 @@ MonoBehaviour:
             = u_xlat16_2.xyz * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness,
             _Shape2Brightness, _Shape2Brightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(vec4(_Shape2ColorWeight,
-            _Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n    u_xlatb1.xy
-            = greaterThanEqual(u_xlat4.xwxx, (-u_xlat4.xwxx)).xy;\n    u_xlat1.x
-            = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n    u_xlat1.y = (u_xlatb1.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat1.xy * u_xlat4.xw;\n   
-            u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy = u_xlat1.xy * u_xlat4.xy
-            + u_xlat17.xy;\n    u_xlat10_0 = texture2D(_MainTex, u_xlat1.xy);\n   
-            u_xlat16_3.xyz = u_xlat10_0.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_27 = u_xlat10_0.w * _ShapeColor.w;\n    u_xlat16_27
-            = u_xlat16_27 * _ShapeColorWeight;\n    u_xlat16_26 = u_xlat16_2.w *
-            u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26, 0.0, 1.0);\n    u_xlat16_3.xyz
-            = u_xlat16_3.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
-            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
-            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_ShapeColorWeight,
-            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_27 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat10_0
-            = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
+            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight, _Shape2AlphaWeight);\n    u_xlatb1.xy = greaterThanEqual(u_xlat4.xwxx,
+            (-u_xlat4.xwxx)).xy;\n    u_xlat1.x = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n   
+            u_xlat1.y = (u_xlatb1.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
+            = u_xlat1.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
+            u_xlat1.xy = u_xlat1.xy * u_xlat4.xy + u_xlat17.xy;\n    u_xlat10_0 =
+            texture2D(_MainTex, u_xlat1.xy);\n    u_xlat16_3.xyz = u_xlat10_0.xyz
+            * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_27 = u_xlat10_0.w
+            * _ShapeColor.w;\n    u_xlat16_27 = u_xlat16_27 * _ShapeAlphaWeight;\n   
+            u_xlat16_26 = u_xlat16_2.w * u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26,
+            0.0, 1.0);\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(_ShapeContrast)
+            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz
+            = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_3.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_2.xyz *
+            u_xlat16_3.xyz;\n    u_xlat16_27 = dot(u_xlat16_5.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n   
+            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
+            u_xlat10_0 = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
             = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat10_0.xyz;\n    u_xlat16_3.x
             = u_xlat10_0.w * u_xlat16_26;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
             0.0, 1.0);\n    u_xlat16_3.x = (-u_xlat16_26) + u_xlat16_3.x;\n    u_xlat16_26
@@ -4850,6 +5169,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
@@ -4896,10 +5216,11 @@ MonoBehaviour:
             _Color;\nuniform \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
             \tmediump float _ColorRampBlend;\nuniform \tmediump float _PosterizeNumColors;\nuniform
@@ -4957,28 +5278,27 @@ MonoBehaviour:
             = u_xlat16_2.xyz * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness,
             _Shape2Brightness, _Shape2Brightness));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
             + vec3(0.5, 0.5, 0.5);\n    u_xlat16_2.xyz = max(u_xlat16_2.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(vec4(_Shape2ColorWeight,
-            _Shape2ColorWeight, _Shape2ColorWeight, _Shape2ColorWeight));\n    u_xlatb1.xy
-            = greaterThanEqual(u_xlat4.xwxx, (-u_xlat4.xwxx)).xy;\n    u_xlat1.x
-            = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n    u_xlat1.y = (u_xlatb1.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat1.xy * u_xlat4.xw;\n   
-            u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy = u_xlat1.xy * u_xlat4.xy
-            + u_xlat17.xy;\n    u_xlat16_0 = texture(_MainTex, u_xlat1.xy);\n   
-            u_xlat16_3.xyz = u_xlat16_0.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_27 = u_xlat16_0.w * _ShapeColor.w;\n    u_xlat16_27
-            = u_xlat16_27 * _ShapeColorWeight;\n    u_xlat16_26 = u_xlat16_2.w *
-            u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26, 0.0, 1.0);\n    u_xlat16_3.xyz
-            = u_xlat16_3.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
-            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
-            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0,
-            0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_ShapeColorWeight,
-            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_2.xyz = u_xlat16_2.xyz
-            * u_xlat16_3.xyz;\n    u_xlat16_3.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
-            u_xlat16_5.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_27 =
-            dot(u_xlat16_5.xyz, vec3(0.300000012, 0.589999974, 0.109999999));\n   
-            u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n    u_xlat16_7.x
-            = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n    u_xlat16_0
-            = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
+            0.0, 0.0));\n    u_xlat16_2 = u_xlat16_2 * vec4(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight, _Shape2AlphaWeight);\n    u_xlatb1.xy = greaterThanEqual(u_xlat4.xwxx,
+            (-u_xlat4.xwxx)).xy;\n    u_xlat1.x = (u_xlatb1.x) ? float(1.0) : float(-1.0);\n   
+            u_xlat1.y = (u_xlatb1.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
+            = u_xlat1.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
+            u_xlat1.xy = u_xlat1.xy * u_xlat4.xy + u_xlat17.xy;\n    u_xlat16_0 =
+            texture(_MainTex, u_xlat1.xy);\n    u_xlat16_3.xyz = u_xlat16_0.xyz *
+            _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_27 = u_xlat16_0.w
+            * _ShapeColor.w;\n    u_xlat16_27 = u_xlat16_27 * _ShapeAlphaWeight;\n   
+            u_xlat16_26 = u_xlat16_2.w * u_xlat16_27;\n    u_xlat16_26 = clamp(u_xlat16_26,
+            0.0, 1.0);\n    u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(_ShapeContrast)
+            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_3.xyz
+            = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
+            u_xlat16_2.xyz = u_xlat16_2.xyz * u_xlat16_3.xyz;\n    u_xlat16_3.xyz
+            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_2.xyz *
+            u_xlat16_3.xyz;\n    u_xlat16_27 = dot(u_xlat16_5.xyz, vec3(0.300000012,
+            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_27 + _ColorRampLuminosity;\n   
+            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
+            u_xlat16_0 = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_2.xyz
             = (-u_xlat16_2.xyz) * u_xlat16_3.xyz + u_xlat16_0.xyz;\n    u_xlat16_3.x
             = u_xlat16_0.w * u_xlat16_26;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
             0.0, 1.0);\n    u_xlat16_3.x = (-u_xlat16_26) + u_xlat16_3.x;\n    u_xlat16_26
@@ -4999,6 +5319,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
@@ -5036,10 +5357,11 @@ MonoBehaviour:
             \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _MaskTex_ST;\nuniform
             \tmediump float _MaskPow;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
@@ -5052,110 +5374,109 @@ MonoBehaviour:
             vec4 vs_COLOR0;\n#define SV_Target0 gl_FragData[0]\nmediump vec2 u_xlat16_0;\nvec2
             u_xlat1;\nlowp vec4 u_xlat10_1;\nmediump vec2 u_xlat16_2;\nlowp vec4
             u_xlat10_2;\nmediump vec3 u_xlat16_3;\nvec4 u_xlat4;\nbool u_xlatb4;\nmediump
-            vec3 u_xlat16_5;\nvec2 u_xlat6;\nbvec2 u_xlatb6;\nmediump vec2 u_xlat16_7;\nmediump
-            vec3 u_xlat16_8;\nmediump vec3 u_xlat16_11;\nvec2 u_xlat12;\nbool u_xlatb12;\nmediump
-            float u_xlat16_16;\nvec2 u_xlat17;\nlowp vec2 u_xlat10_17;\nint u_xlati17;\nbvec2
-            u_xlatb17;\nvec2 u_xlat20;\nbool u_xlatb20;\nmediump float u_xlat16_24;\nfloat
-            u_xlat25;\nint u_xlati25;\nbool u_xlatb25;\nmediump float u_xlat16_29;\nvoid
-            main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_8.x
-            = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_8.x = u_xlat16_8.x * 0.5;\n   
-            u_xlat16_16 = u_xlat16_8.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
-            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_24 =
-            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_24 = sqrt(u_xlat16_24);\n   
-            u_xlat16_8.x = _TwistUvRadius * u_xlat16_8.x + (-u_xlat16_24);\n    u_xlat16_16
-            = u_xlat16_8.x / u_xlat16_16;\n    u_xlat16_16 = u_xlat16_16 * u_xlat16_16;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_16;\n    u_xlat16_0.x = u_xlat16_0.x
+            vec3 u_xlat16_5;\nvec2 u_xlat6;\nbvec2 u_xlatb6;\nmediump vec3 u_xlat16_7;\nvec2
+            u_xlat11;\nbool u_xlatb11;\nmediump float u_xlat16_14;\nvec2 u_xlat15;\nlowp
+            vec2 u_xlat10_15;\nint u_xlati15;\nbvec2 u_xlatb15;\nvec2 u_xlat18;\nbool
+            u_xlatb18;\nmediump float u_xlat16_21;\nfloat u_xlat22;\nint u_xlati22;\nbool
+            u_xlatb22;\nvoid main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n   
+            u_xlat16_7.x = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x
+            * 0.5;\n    u_xlat16_14 = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy
+            = (-vec2(_TwistUvPosX, _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n   
+            u_xlat16_21 = dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n   
+            u_xlat16_7.x = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14
+            = u_xlat16_7.x / u_xlat16_14;\n    u_xlat16_14 = u_xlat16_14 * u_xlat16_14;\n   
+            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14;\n    u_xlat16_0.x = u_xlat16_0.x
             * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n    u_xlat16_0.x = sin(u_xlat16_0.x);\n   
             u_xlat16_3.x = (-u_xlat16_0.x);\n    u_xlat16_3.y = u_xlat16_2.x;\n   
             u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y = dot(u_xlat1.yx, u_xlat16_3.yz);\n   
-            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati17 = int((0.0<u_xlat16_8.x)
-            ? -1 : 0);\n    u_xlati25 = int((u_xlat16_8.x<0.0) ? -1 : 0);\n    u_xlati17
-            = (-u_xlati17) + u_xlati25;\n    u_xlat17.x = float(u_xlati17);\n   
-            u_xlat17.x = max(u_xlat17.x, 0.0);\n    u_xlat16_0.x = (-u_xlat17.x)
+            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati15 = int((0.0<u_xlat16_7.x)
+            ? -1 : 0);\n    u_xlati22 = int((u_xlat16_7.x<0.0) ? -1 : 0);\n    u_xlati15
+            = (-u_xlati15) + u_xlati22;\n    u_xlat15.x = float(u_xlati15);\n   
+            u_xlat15.x = max(u_xlat15.x, 0.0);\n    u_xlat16_0.x = (-u_xlat15.x)
             + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n    u_xlat16_0.xy
-            = u_xlat16_2.xy * u_xlat17.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
+            = u_xlat16_2.xy * u_xlat15.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy = vec2(_TwistUvPosX,
             _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n    u_xlat1.xy = u_xlat16_0.xy
             + vec2(-0.5, -0.5);\n    u_xlat16_0.xy = u_xlat16_0.xy * _MaskTex_ST.xy
-            + _MaskTex_ST.zw;\n    u_xlat10_17.xy = texture2D(_MaskTex, u_xlat16_0.xy).xw;\n   
-            u_xlat16_0.x = min(u_xlat10_17.y, u_xlat10_17.x);\n    u_xlat16_0.x =
+            + _MaskTex_ST.zw;\n    u_xlat10_15.xy = texture2D(_MaskTex, u_xlat16_0.xy).xw;\n   
+            u_xlat16_0.x = min(u_xlat10_15.y, u_xlat10_15.x);\n    u_xlat16_0.x =
             log2(u_xlat16_0.x);\n    u_xlat16_0.x = u_xlat16_0.x * _MaskPow;\n   
-            u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat17.x = max(abs(u_xlat1.x),
-            abs(u_xlat1.y));\n    u_xlat17.x = float(1.0) / u_xlat17.x;\n    u_xlat25
-            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat17.x = u_xlat17.x *
-            u_xlat25;\n    u_xlat25 = u_xlat17.x * u_xlat17.x;\n    u_xlat4.x = u_xlat25
-            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat25 * u_xlat4.x
-            + 0.180141002;\n    u_xlat4.x = u_xlat25 * u_xlat4.x + -0.330299497;\n   
-            u_xlat25 = u_xlat25 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat25
-            * u_xlat17.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb12
-            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb12 ? u_xlat4.x
-            : float(0.0);\n    u_xlat17.x = u_xlat17.x * u_xlat25 + u_xlat4.x;\n   
-            u_xlatb25 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat25 = u_xlatb25 ? -3.14159274
-            : float(0.0);\n    u_xlat17.x = u_xlat25 + u_xlat17.x;\n    u_xlat25
-            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb25 = u_xlat25<(-u_xlat25);\n   
+            u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat15.x = max(abs(u_xlat1.x),
+            abs(u_xlat1.y));\n    u_xlat15.x = float(1.0) / u_xlat15.x;\n    u_xlat22
+            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat15.x = u_xlat15.x *
+            u_xlat22;\n    u_xlat22 = u_xlat15.x * u_xlat15.x;\n    u_xlat4.x = u_xlat22
+            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat22 * u_xlat4.x
+            + 0.180141002;\n    u_xlat4.x = u_xlat22 * u_xlat4.x + -0.330299497;\n   
+            u_xlat22 = u_xlat22 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat22
+            * u_xlat15.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb11
+            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb11 ? u_xlat4.x
+            : float(0.0);\n    u_xlat15.x = u_xlat15.x * u_xlat22 + u_xlat4.x;\n   
+            u_xlatb22 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat22 = u_xlatb22 ? -3.14159274
+            : float(0.0);\n    u_xlat15.x = u_xlat22 + u_xlat15.x;\n    u_xlat22
+            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb22 = u_xlat22<(-u_xlat22);\n   
             u_xlat4.x = max(u_xlat1.x, u_xlat1.y);\n    u_xlat1.x = dot(u_xlat1.xy,
             u_xlat1.xy);\n    u_xlat1.x = sqrt(u_xlat1.x);\n    u_xlat1.y = u_xlat1.x
-            + u_xlat1.x;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb25
-            = u_xlatb25 && u_xlatb4;\n    u_xlat17.x = (u_xlatb25) ? (-u_xlat17.x)
-            : u_xlat17.x;\n    u_xlat1.x = u_xlat17.x * 0.159154937;\n    u_xlat1.xy
-            = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat17.xy = u_xlat1.xy * _Shape2Tex_ST.xy
+            + u_xlat1.x;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb22
+            = u_xlatb22 && u_xlatb4;\n    u_xlat15.x = (u_xlatb22) ? (-u_xlat15.x)
+            : u_xlat15.x;\n    u_xlat1.x = u_xlat15.x * 0.159154937;\n    u_xlat1.xy
+            = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat15.xy = u_xlat1.xy * _Shape2Tex_ST.xy
             + _Shape2Tex_ST.zw;\n    u_xlat1.xy = u_xlat1.xy * _MainTex_ST.xy + _MainTex_ST.zw;\n   
-            u_xlat16_8.xy = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
-            u_xlat17.xy = (-u_xlat16_8.xy) + u_xlat17.xy;\n    u_xlat4.x = vs_TEXCOORD0.z
-            + _TimingSeed;\n    u_xlat4.x = u_xlat4.x + _Time.y;\n    u_xlat12.x
-            = u_xlat4.x * _Shape2RotationSpeed;\n    u_xlat20.x = u_xlat12.x * 6.28318548;\n   
-            u_xlatb20 = u_xlat20.x>=(-u_xlat20.x);\n    u_xlat20.xy = (bool(u_xlatb20))
+            u_xlat16_7.xy = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
+            u_xlat15.xy = (-u_xlat16_7.xy) + u_xlat15.xy;\n    u_xlat4.x = vs_TEXCOORD0.z
+            + _TimingSeed;\n    u_xlat4.x = u_xlat4.x + _Time.y;\n    u_xlat11.x
+            = u_xlat4.x * _Shape2RotationSpeed;\n    u_xlat18.x = u_xlat11.x * 6.28318548;\n   
+            u_xlatb18 = u_xlat18.x>=(-u_xlat18.x);\n    u_xlat18.xy = (bool(u_xlatb18))
             ? vec2(6.28318548, 0.159154937) : vec2(-6.28318548, -0.159154937);\n   
-            u_xlat12.x = u_xlat20.y * u_xlat12.x;\n    u_xlat12.x = fract(u_xlat12.x);\n   
-            u_xlat12.x = u_xlat20.x * u_xlat12.x + _Shape2RotationOffset;\n    u_xlat16_2.x
-            = sin(u_xlat12.x);\n    u_xlat16_3.x = cos(u_xlat12.x);\n    u_xlat16_5.x
+            u_xlat11.x = u_xlat18.y * u_xlat11.x;\n    u_xlat11.x = fract(u_xlat11.x);\n   
+            u_xlat11.x = u_xlat18.x * u_xlat11.x + _Shape2RotationOffset;\n    u_xlat16_2.x
+            = sin(u_xlat11.x);\n    u_xlat16_3.x = cos(u_xlat11.x);\n    u_xlat16_5.x
             = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n    u_xlat16_5.z
-            = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat17.xy);\n   
-            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat17.xy);\n    u_xlat17.xy = u_xlat16_8.xy
-            + u_xlat6.xy;\n    u_xlat12.xy = u_xlat4.xx * vec2(_Shape2XSpeed, _Shape2YSpeed);\n   
+            = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat15.xy);\n   
+            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat15.xy);\n    u_xlat15.xy = u_xlat16_7.xy
+            + u_xlat6.xy;\n    u_xlat11.xy = u_xlat4.xx * vec2(_Shape2XSpeed, _Shape2YSpeed);\n   
             u_xlat4.xw = u_xlat4.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n    u_xlatb6.xy
-            = greaterThanEqual(u_xlat12.xyxx, (-u_xlat12.xyxx)).xy;\n    u_xlat6.x
+            = greaterThanEqual(u_xlat11.xyxx, (-u_xlat11.xyxx)).xy;\n    u_xlat6.x
             = (u_xlatb6.x) ? float(1.0) : float(-1.0);\n    u_xlat6.y = (u_xlatb6.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat12.xy = u_xlat12.xy * u_xlat6.xy;\n   
-            u_xlat12.xy = fract(u_xlat12.xy);\n    u_xlat17.xy = u_xlat6.xy * u_xlat12.xy
-            + u_xlat17.xy;\n    u_xlat10_2 = texture2D(_Shape2Tex, u_xlat17.xy);\n   
-            u_xlat16_8.xyz = u_xlat10_2.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_3.x = u_xlat10_2.w * _Shape2Color.w;\n    u_xlat16_3.x
-            = u_xlat16_3.x * _Shape2ColorWeight;\n    u_xlat16_8.xyz = u_xlat16_8.xyz
+            ? float(1.0) : float(-1.0);\n    u_xlat11.xy = u_xlat11.xy * u_xlat6.xy;\n   
+            u_xlat11.xy = fract(u_xlat11.xy);\n    u_xlat15.xy = u_xlat6.xy * u_xlat11.xy
+            + u_xlat15.xy;\n    u_xlat10_2 = texture2D(_Shape2Tex, u_xlat15.xy);\n   
+            u_xlat16_7.x = u_xlat10_2.w * _Shape2Color.w;\n    u_xlat16_3.xyz = u_xlat10_2.xyz
+            * _Shape2Color.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_3.xyz = u_xlat16_3.xyz
             * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness, _Shape2Brightness,
-            _Shape2Brightness));\n    u_xlat16_8.xyz = u_xlat16_8.xyz + vec3(0.5,
-            0.5, 0.5);\n    u_xlat16_8.xyz = max(u_xlat16_8.xyz, vec3(0.0, 0.0, 0.0));\n   
-            u_xlat16_8.xyz = u_xlat16_8.xyz * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight,
-            _Shape2ColorWeight));\n    u_xlatb17.xy = greaterThanEqual(u_xlat4.xwxw,
-            (-u_xlat4.xwxw)).xy;\n    u_xlat17.x = (u_xlatb17.x) ? float(1.0) : float(-1.0);\n   
-            u_xlat17.y = (u_xlatb17.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
-            = u_xlat17.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
-            u_xlat1.xy = u_xlat17.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1 =
-            texture2D(_MainTex, u_xlat1.xy);\n    u_xlat16_11.xyz = u_xlat10_1.xyz
-            * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_5.x = u_xlat10_1.w
-            * _ShapeColor.w;\n    u_xlat16_5.x = u_xlat16_5.x * _ShapeColorWeight;\n   
-            u_xlat16_3.x = u_xlat16_3.x * u_xlat16_5.x;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
-            0.0, 1.0);\n    u_xlat16_11.xyz = u_xlat16_11.xyz * vec3(_ShapeContrast)
-            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
-            u_xlat16_11.xyz = u_xlat16_11.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_11.xyz
-            = max(u_xlat16_11.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_11.xyz = u_xlat16_11.xyz
-            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
-            u_xlat16_8.xyz = u_xlat16_8.xyz * u_xlat16_11.xyz;\n    u_xlat16_11.xyz
-            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_8.xyz *
-            u_xlat16_11.xyz;\n    u_xlat16_29 = dot(u_xlat16_5.xyz, vec3(0.300000012,
-            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_29 + _ColorRampLuminosity;\n   
-            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
-            u_xlat10_1 = texture2D(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_8.xyz
-            = (-u_xlat16_8.xyz) * u_xlat16_11.xyz + u_xlat10_1.xyz;\n    u_xlat16_11.x
-            = u_xlat10_1.w * u_xlat16_3.x;\n    u_xlat16_11.x = clamp(u_xlat16_11.x,
-            0.0, 1.0);\n    u_xlat16_11.x = (-u_xlat16_3.x) + u_xlat16_11.x;\n   
-            u_xlat16_3.x = _ColorRampBlend * u_xlat16_11.x + u_xlat16_3.x;\n    u_xlat16_0.x
-            = u_xlat16_0.x * u_xlat16_3.x;\n    u_xlat16_8.xyz = vec3(vec3(_ColorRampBlend,
-            _ColorRampBlend, _ColorRampBlend)) * u_xlat16_8.xyz + u_xlat16_5.xyz;\n   
-            u_xlat16_3.x = float(1.0) / _PosterizeNumColors;\n    u_xlat16_8.xyz
-            = u_xlat16_8.xyz / u_xlat16_3.xxx;\n    u_xlat16_8.xyz = floor(u_xlat16_8.xyz);\n   
-            u_xlat16_8.xyz = u_xlat16_3.xxx * u_xlat16_8.xyz;\n    u_xlat16_3.x =
-            vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_3.x;\n   
-            SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_8.xyz;\n    SV_Target0.w =
+            _Shape2Brightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5,
+            0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight));\n    u_xlat16_7.x = u_xlat16_7.x * _Shape2AlphaWeight;\n   
+            u_xlatb15.xy = greaterThanEqual(u_xlat4.xwxw, (-u_xlat4.xwxw)).xy;\n   
+            u_xlat15.x = (u_xlatb15.x) ? float(1.0) : float(-1.0);\n    u_xlat15.y
+            = (u_xlatb15.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy
+            * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
+            u_xlat15.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat10_1 = texture2D(_MainTex,
+            u_xlat1.xy);\n    u_xlat16_14 = u_xlat10_1.w * _ShapeColor.w;\n    u_xlat16_5.xyz
+            = u_xlat10_1.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_5.xyz
+            = u_xlat16_5.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
+            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_5.xyz = u_xlat16_5.xyz
+            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_5.xyz = max(u_xlat16_5.xyz, vec3(0.0,
+            0.0, 0.0));\n    u_xlat16_5.xyz = u_xlat16_5.xyz * vec3(vec3(_ShapeColorWeight,
+            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * u_xlat16_5.xyz;\n    u_xlat16_14 = u_xlat16_14 * _ShapeAlphaWeight;\n   
+            u_xlat16_7.x = u_xlat16_7.x * u_xlat16_14;\n    u_xlat16_7.x = clamp(u_xlat16_7.x,
+            0.0, 1.0);\n    u_xlat16_14 = dot(u_xlat16_3.xyz, vec3(0.300000012, 0.589999974,
+            0.109999999));\n    u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n   
+            u_xlat16_5.x = u_xlat16_14 + _ColorRampLuminosity;\n    u_xlat16_5.x
+            = clamp(u_xlat16_5.x, 0.0, 1.0);\n    u_xlat16_5.y = 0.0;\n    u_xlat10_1
+            = texture2D(_ColorRampTexGradient, u_xlat16_5.xy);\n    u_xlat16_14 =
+            u_xlat16_7.x * u_xlat10_1.w;\n    u_xlat16_14 = clamp(u_xlat16_14, 0.0,
+            1.0);\n    u_xlat16_14 = (-u_xlat16_7.x) + u_xlat16_14;\n    u_xlat16_7.x
+            = _ColorRampBlend * u_xlat16_14 + u_xlat16_7.x;\n    u_xlat16_0.x = u_xlat16_0.x
+            * u_xlat16_7.x;\n    u_xlat16_7.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x
+            = u_xlat16_7.x * u_xlat16_0.x;\n    u_xlat16_7.xyz = vs_COLOR0.xyz *
+            _Color.xyz;\n    u_xlat16_5.xyz = (-u_xlat16_3.xyz) * u_xlat16_7.xyz
+            + u_xlat10_1.xyz;\n    u_xlat16_7.xyz = u_xlat16_7.xyz * u_xlat16_3.xyz;\n   
+            u_xlat16_7.xyz = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend))
+            * u_xlat16_5.xyz + u_xlat16_7.xyz;\n    u_xlat16_3.x = float(1.0) / _PosterizeNumColors;\n   
+            u_xlat16_7.xyz = u_xlat16_7.xyz / u_xlat16_3.xxx;\n    u_xlat16_7.xyz
+            = floor(u_xlat16_7.xyz);\n    u_xlat16_7.xyz = u_xlat16_3.xxx * u_xlat16_7.xyz;\n   
+            SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w =
             u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
@@ -5163,12 +5484,16 @@ MonoBehaviour:
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
@@ -5215,10 +5540,11 @@ MonoBehaviour:
             _Color;\nuniform \tmediump float _Alpha;\nuniform \tmediump vec4 _MainTex_ST;\nuniform
             \tmediump vec4 _ShapeColor;\nuniform \tmediump float _ShapeXSpeed;\nuniform
             \tmediump float _ShapeYSpeed;\nuniform \tmediump float _ShapeColorWeight;\nuniform
-            \tmediump float _ShapeContrast;\nuniform \tmediump float _ShapeBrightness;\nuniform
-            \tmediump vec4 _Shape2Tex_ST;\nuniform \tmediump vec4 _Shape2Color;\nuniform
-            \tmediump float _Shape2XSpeed;\nuniform \tmediump float _Shape2YSpeed;\nuniform
-            \tmediump float _Shape2ColorWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
+            \tmediump float _ShapeAlphaWeight;\nuniform \tmediump float _ShapeContrast;\nuniform
+            \tmediump float _ShapeBrightness;\nuniform \tmediump vec4 _Shape2Tex_ST;\nuniform
+            \tmediump vec4 _Shape2Color;\nuniform \tmediump float _Shape2XSpeed;\nuniform
+            \tmediump float _Shape2YSpeed;\nuniform \tmediump float _Shape2ColorWeight;\nuniform
+            \tmediump float _Shape2AlphaWeight;\nuniform \tmediump float _Shape2Contrast;\nuniform
             \tmediump float _Shape2Brightness;\nuniform \tmediump float _Shape2RotationOffset;\nuniform
             \tmediump float _Shape2RotationSpeed;\nuniform \tmediump vec4 _MaskTex_ST;\nuniform
             \tmediump float _MaskPow;\nuniform \tmediump float _ColorRampLuminosity;\nuniform
@@ -5232,110 +5558,109 @@ MonoBehaviour:
             vec4 vs_COLOR0;\nlayout(location = 0) out mediump vec4 SV_Target0;\nmediump
             vec2 u_xlat16_0;\nvec2 u_xlat1;\nmediump vec4 u_xlat16_1;\nmediump vec4
             u_xlat16_2;\nmediump vec3 u_xlat16_3;\nvec4 u_xlat4;\nbool u_xlatb4;\nmediump
-            vec3 u_xlat16_5;\nvec2 u_xlat6;\nbvec2 u_xlatb6;\nmediump vec2 u_xlat16_7;\nmediump
-            vec3 u_xlat16_8;\nmediump vec3 u_xlat16_11;\nvec2 u_xlat12;\nbool u_xlatb12;\nmediump
-            float u_xlat16_16;\nvec2 u_xlat17;\nmediump vec2 u_xlat16_17;\nint u_xlati17;\nbvec2
-            u_xlatb17;\nvec2 u_xlat20;\nbool u_xlatb20;\nmediump float u_xlat16_24;\nfloat
-            u_xlat25;\nint u_xlati25;\nbool u_xlatb25;\nmediump float u_xlat16_29;\nvoid
-            main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n    u_xlat16_8.x
-            = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_8.x = u_xlat16_8.x * 0.5;\n   
-            u_xlat16_16 = u_xlat16_8.x * _TwistUvRadius;\n    u_xlat1.xy = (-vec2(_TwistUvPosX,
-            _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n    u_xlat16_24 =
-            dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_24 = sqrt(u_xlat16_24);\n   
-            u_xlat16_8.x = _TwistUvRadius * u_xlat16_8.x + (-u_xlat16_24);\n    u_xlat16_16
-            = u_xlat16_8.x / u_xlat16_16;\n    u_xlat16_16 = u_xlat16_16 * u_xlat16_16;\n   
-            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_16;\n    u_xlat16_0.x = u_xlat16_0.x
+            vec3 u_xlat16_5;\nvec2 u_xlat6;\nbvec2 u_xlatb6;\nmediump vec3 u_xlat16_7;\nvec2
+            u_xlat11;\nbool u_xlatb11;\nmediump float u_xlat16_14;\nvec2 u_xlat15;\nmediump
+            vec2 u_xlat16_15;\nint u_xlati15;\nbvec2 u_xlatb15;\nvec2 u_xlat18;\nbool
+            u_xlatb18;\nmediump float u_xlat16_21;\nfloat u_xlat22;\nint u_xlati22;\nbool
+            u_xlatb22;\nvoid main()\n{\n    u_xlat16_0.x = sin(_TwistUvAmount);\n   
+            u_xlat16_7.x = _MainTex_ST.y + _MainTex_ST.x;\n    u_xlat16_7.x = u_xlat16_7.x
+            * 0.5;\n    u_xlat16_14 = u_xlat16_7.x * _TwistUvRadius;\n    u_xlat1.xy
+            = (-vec2(_TwistUvPosX, _TwistUvPosY)) * _MainTex_ST.xy + vs_TEXCOORD0.xy;\n   
+            u_xlat16_21 = dot(u_xlat1.xy, u_xlat1.xy);\n    u_xlat16_21 = sqrt(u_xlat16_21);\n   
+            u_xlat16_7.x = _TwistUvRadius * u_xlat16_7.x + (-u_xlat16_21);\n    u_xlat16_14
+            = u_xlat16_7.x / u_xlat16_14;\n    u_xlat16_14 = u_xlat16_14 * u_xlat16_14;\n   
+            u_xlat16_0.x = u_xlat16_0.x * u_xlat16_14;\n    u_xlat16_0.x = u_xlat16_0.x
             * 16.0;\n    u_xlat16_2.x = cos(u_xlat16_0.x);\n    u_xlat16_0.x = sin(u_xlat16_0.x);\n   
             u_xlat16_3.x = (-u_xlat16_0.x);\n    u_xlat16_3.y = u_xlat16_2.x;\n   
             u_xlat16_3.z = u_xlat16_0.x;\n    u_xlat16_2.y = dot(u_xlat1.yx, u_xlat16_3.yz);\n   
-            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati17 = int((0.0<u_xlat16_8.x)
-            ? 0xFFFFFFFFu : uint(0));\n    u_xlati25 = int((u_xlat16_8.x<0.0) ? 0xFFFFFFFFu
-            : uint(0));\n    u_xlati17 = (-u_xlati17) + u_xlati25;\n    u_xlat17.x
-            = float(u_xlati17);\n    u_xlat17.x = max(u_xlat17.x, 0.0);\n    u_xlat16_0.x
-            = (-u_xlat17.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n   
-            u_xlat16_0.xy = u_xlat16_2.xy * u_xlat17.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy
+            u_xlat16_2.x = dot(u_xlat1.yx, u_xlat16_3.xy);\n    u_xlati15 = int((0.0<u_xlat16_7.x)
+            ? 0xFFFFFFFFu : uint(0));\n    u_xlati22 = int((u_xlat16_7.x<0.0) ? 0xFFFFFFFFu
+            : uint(0));\n    u_xlati15 = (-u_xlati15) + u_xlati22;\n    u_xlat15.x
+            = float(u_xlati15);\n    u_xlat15.x = max(u_xlat15.x, 0.0);\n    u_xlat16_0.x
+            = (-u_xlat15.x) + 1.0;\n    u_xlat16_0.xy = u_xlat16_0.xx * u_xlat1.xy;\n   
+            u_xlat16_0.xy = u_xlat16_2.xy * u_xlat15.xx + u_xlat16_0.xy;\n    u_xlat16_0.xy
             = vec2(_TwistUvPosX, _TwistUvPosY) * _MainTex_ST.xy + u_xlat16_0.xy;\n   
             u_xlat1.xy = u_xlat16_0.xy + vec2(-0.5, -0.5);\n    u_xlat16_0.xy = u_xlat16_0.xy
-            * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat16_17.xy = texture(_MaskTex,
-            u_xlat16_0.xy).xw;\n    u_xlat16_0.x = min(u_xlat16_17.y, u_xlat16_17.x);\n   
+            * _MaskTex_ST.xy + _MaskTex_ST.zw;\n    u_xlat16_15.xy = texture(_MaskTex,
+            u_xlat16_0.xy).xw;\n    u_xlat16_0.x = min(u_xlat16_15.y, u_xlat16_15.x);\n   
             u_xlat16_0.x = log2(u_xlat16_0.x);\n    u_xlat16_0.x = u_xlat16_0.x *
-            _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat17.x = max(abs(u_xlat1.x),
-            abs(u_xlat1.y));\n    u_xlat17.x = float(1.0) / u_xlat17.x;\n    u_xlat25
-            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat17.x = u_xlat17.x *
-            u_xlat25;\n    u_xlat25 = u_xlat17.x * u_xlat17.x;\n    u_xlat4.x = u_xlat25
-            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat25 * u_xlat4.x
-            + 0.180141002;\n    u_xlat4.x = u_xlat25 * u_xlat4.x + -0.330299497;\n   
-            u_xlat25 = u_xlat25 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat25
-            * u_xlat17.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb12
-            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb12 ? u_xlat4.x
-            : float(0.0);\n    u_xlat17.x = u_xlat17.x * u_xlat25 + u_xlat4.x;\n   
-            u_xlatb25 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat25 = u_xlatb25 ? -3.14159274
-            : float(0.0);\n    u_xlat17.x = u_xlat25 + u_xlat17.x;\n    u_xlat25
-            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb25 = u_xlat25<(-u_xlat25);\n   
+            _MaskPow;\n    u_xlat16_0.x = exp2(u_xlat16_0.x);\n    u_xlat15.x = max(abs(u_xlat1.x),
+            abs(u_xlat1.y));\n    u_xlat15.x = float(1.0) / u_xlat15.x;\n    u_xlat22
+            = min(abs(u_xlat1.x), abs(u_xlat1.y));\n    u_xlat15.x = u_xlat15.x *
+            u_xlat22;\n    u_xlat22 = u_xlat15.x * u_xlat15.x;\n    u_xlat4.x = u_xlat22
+            * 0.0208350997 + -0.0851330012;\n    u_xlat4.x = u_xlat22 * u_xlat4.x
+            + 0.180141002;\n    u_xlat4.x = u_xlat22 * u_xlat4.x + -0.330299497;\n   
+            u_xlat22 = u_xlat22 * u_xlat4.x + 0.999866009;\n    u_xlat4.x = u_xlat22
+            * u_xlat15.x;\n    u_xlat4.x = u_xlat4.x * -2.0 + 1.57079637;\n    u_xlatb11
+            = abs(u_xlat1.x)<abs(u_xlat1.y);\n    u_xlat4.x = u_xlatb11 ? u_xlat4.x
+            : float(0.0);\n    u_xlat15.x = u_xlat15.x * u_xlat22 + u_xlat4.x;\n   
+            u_xlatb22 = u_xlat1.x<(-u_xlat1.x);\n    u_xlat22 = u_xlatb22 ? -3.14159274
+            : float(0.0);\n    u_xlat15.x = u_xlat22 + u_xlat15.x;\n    u_xlat22
+            = min(u_xlat1.x, u_xlat1.y);\n    u_xlatb22 = u_xlat22<(-u_xlat22);\n   
             u_xlat4.x = max(u_xlat1.x, u_xlat1.y);\n    u_xlat1.x = dot(u_xlat1.xy,
             u_xlat1.xy);\n    u_xlat1.x = sqrt(u_xlat1.x);\n    u_xlat1.y = u_xlat1.x
-            + u_xlat1.x;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb25
-            = u_xlatb25 && u_xlatb4;\n    u_xlat17.x = (u_xlatb25) ? (-u_xlat17.x)
-            : u_xlat17.x;\n    u_xlat1.x = u_xlat17.x * 0.159154937;\n    u_xlat1.xy
-            = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat17.xy = u_xlat1.xy * _Shape2Tex_ST.xy
+            + u_xlat1.x;\n    u_xlatb4 = u_xlat4.x>=(-u_xlat4.x);\n    u_xlatb22
+            = u_xlatb22 && u_xlatb4;\n    u_xlat15.x = (u_xlatb22) ? (-u_xlat15.x)
+            : u_xlat15.x;\n    u_xlat1.x = u_xlat15.x * 0.159154937;\n    u_xlat1.xy
+            = u_xlat1.xy * _MainTex_ST.xy;\n    u_xlat15.xy = u_xlat1.xy * _Shape2Tex_ST.xy
             + _Shape2Tex_ST.zw;\n    u_xlat1.xy = u_xlat1.xy * _MainTex_ST.xy + _MainTex_ST.zw;\n   
-            u_xlat16_8.xy = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
-            u_xlat17.xy = (-u_xlat16_8.xy) + u_xlat17.xy;\n    u_xlat4.x = vs_TEXCOORD0.z
-            + _TimingSeed;\n    u_xlat4.x = u_xlat4.x + _Time.y;\n    u_xlat12.x
-            = u_xlat4.x * _Shape2RotationSpeed;\n    u_xlat20.x = u_xlat12.x * 6.28318548;\n   
-            u_xlatb20 = u_xlat20.x>=(-u_xlat20.x);\n    u_xlat20.xy = (bool(u_xlatb20))
+            u_xlat16_7.xy = _Shape2Tex_ST.xy * vec2(0.5, 0.5) + _Shape2Tex_ST.zw;\n   
+            u_xlat15.xy = (-u_xlat16_7.xy) + u_xlat15.xy;\n    u_xlat4.x = vs_TEXCOORD0.z
+            + _TimingSeed;\n    u_xlat4.x = u_xlat4.x + _Time.y;\n    u_xlat11.x
+            = u_xlat4.x * _Shape2RotationSpeed;\n    u_xlat18.x = u_xlat11.x * 6.28318548;\n   
+            u_xlatb18 = u_xlat18.x>=(-u_xlat18.x);\n    u_xlat18.xy = (bool(u_xlatb18))
             ? vec2(6.28318548, 0.159154937) : vec2(-6.28318548, -0.159154937);\n   
-            u_xlat12.x = u_xlat20.y * u_xlat12.x;\n    u_xlat12.x = fract(u_xlat12.x);\n   
-            u_xlat12.x = u_xlat20.x * u_xlat12.x + _Shape2RotationOffset;\n    u_xlat16_2.x
-            = sin(u_xlat12.x);\n    u_xlat16_3.x = cos(u_xlat12.x);\n    u_xlat16_5.x
+            u_xlat11.x = u_xlat18.y * u_xlat11.x;\n    u_xlat11.x = fract(u_xlat11.x);\n   
+            u_xlat11.x = u_xlat18.x * u_xlat11.x + _Shape2RotationOffset;\n    u_xlat16_2.x
+            = sin(u_xlat11.x);\n    u_xlat16_3.x = cos(u_xlat11.x);\n    u_xlat16_5.x
             = (-u_xlat16_2.x);\n    u_xlat16_5.y = u_xlat16_3.x;\n    u_xlat16_5.z
-            = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat17.xy);\n   
-            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat17.xy);\n    u_xlat17.xy = u_xlat16_8.xy
-            + u_xlat6.xy;\n    u_xlat12.xy = u_xlat4.xx * vec2(_Shape2XSpeed, _Shape2YSpeed);\n   
+            = u_xlat16_2.x;\n    u_xlat6.y = dot(u_xlat16_5.zy, u_xlat15.xy);\n   
+            u_xlat6.x = dot(u_xlat16_5.yx, u_xlat15.xy);\n    u_xlat15.xy = u_xlat16_7.xy
+            + u_xlat6.xy;\n    u_xlat11.xy = u_xlat4.xx * vec2(_Shape2XSpeed, _Shape2YSpeed);\n   
             u_xlat4.xw = u_xlat4.xx * vec2(_ShapeXSpeed, _ShapeYSpeed);\n    u_xlatb6.xy
-            = greaterThanEqual(u_xlat12.xyxx, (-u_xlat12.xyxx)).xy;\n    u_xlat6.x
+            = greaterThanEqual(u_xlat11.xyxx, (-u_xlat11.xyxx)).xy;\n    u_xlat6.x
             = (u_xlatb6.x) ? float(1.0) : float(-1.0);\n    u_xlat6.y = (u_xlatb6.y)
-            ? float(1.0) : float(-1.0);\n    u_xlat12.xy = u_xlat12.xy * u_xlat6.xy;\n   
-            u_xlat12.xy = fract(u_xlat12.xy);\n    u_xlat17.xy = u_xlat6.xy * u_xlat12.xy
-            + u_xlat17.xy;\n    u_xlat16_2 = texture(_Shape2Tex, u_xlat17.xy);\n   
-            u_xlat16_8.xyz = u_xlat16_2.xyz * _Shape2Color.xyz + vec3(-0.5, -0.5,
-            -0.5);\n    u_xlat16_3.x = u_xlat16_2.w * _Shape2Color.w;\n    u_xlat16_3.x
-            = u_xlat16_3.x * _Shape2ColorWeight;\n    u_xlat16_8.xyz = u_xlat16_8.xyz
+            ? float(1.0) : float(-1.0);\n    u_xlat11.xy = u_xlat11.xy * u_xlat6.xy;\n   
+            u_xlat11.xy = fract(u_xlat11.xy);\n    u_xlat15.xy = u_xlat6.xy * u_xlat11.xy
+            + u_xlat15.xy;\n    u_xlat16_2 = texture(_Shape2Tex, u_xlat15.xy);\n   
+            u_xlat16_7.x = u_xlat16_2.w * _Shape2Color.w;\n    u_xlat16_3.xyz = u_xlat16_2.xyz
+            * _Shape2Color.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_3.xyz = u_xlat16_3.xyz
             * vec3(_Shape2Contrast) + vec3(vec3(_Shape2Brightness, _Shape2Brightness,
-            _Shape2Brightness));\n    u_xlat16_8.xyz = u_xlat16_8.xyz + vec3(0.5,
-            0.5, 0.5);\n    u_xlat16_8.xyz = max(u_xlat16_8.xyz, vec3(0.0, 0.0, 0.0));\n   
-            u_xlat16_8.xyz = u_xlat16_8.xyz * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight,
-            _Shape2ColorWeight));\n    u_xlatb17.xy = greaterThanEqual(u_xlat4.xwxw,
-            (-u_xlat4.xwxw)).xy;\n    u_xlat17.x = (u_xlatb17.x) ? float(1.0) : float(-1.0);\n   
-            u_xlat17.y = (u_xlatb17.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy
-            = u_xlat17.xy * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n   
-            u_xlat1.xy = u_xlat17.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1 =
-            texture(_MainTex, u_xlat1.xy);\n    u_xlat16_11.xyz = u_xlat16_1.xyz
-            * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_5.x = u_xlat16_1.w
-            * _ShapeColor.w;\n    u_xlat16_5.x = u_xlat16_5.x * _ShapeColorWeight;\n   
-            u_xlat16_3.x = u_xlat16_3.x * u_xlat16_5.x;\n    u_xlat16_3.x = clamp(u_xlat16_3.x,
-            0.0, 1.0);\n    u_xlat16_11.xyz = u_xlat16_11.xyz * vec3(_ShapeContrast)
-            + vec3(vec3(_ShapeBrightness, _ShapeBrightness, _ShapeBrightness));\n   
-            u_xlat16_11.xyz = u_xlat16_11.xyz + vec3(0.5, 0.5, 0.5);\n    u_xlat16_11.xyz
-            = max(u_xlat16_11.xyz, vec3(0.0, 0.0, 0.0));\n    u_xlat16_11.xyz = u_xlat16_11.xyz
-            * vec3(vec3(_ShapeColorWeight, _ShapeColorWeight, _ShapeColorWeight));\n   
-            u_xlat16_8.xyz = u_xlat16_8.xyz * u_xlat16_11.xyz;\n    u_xlat16_11.xyz
-            = vs_COLOR0.xyz * _Color.xyz;\n    u_xlat16_5.xyz = u_xlat16_8.xyz *
-            u_xlat16_11.xyz;\n    u_xlat16_29 = dot(u_xlat16_5.xyz, vec3(0.300000012,
-            0.589999974, 0.109999999));\n    u_xlat16_7.x = u_xlat16_29 + _ColorRampLuminosity;\n   
-            u_xlat16_7.x = clamp(u_xlat16_7.x, 0.0, 1.0);\n    u_xlat16_7.y = 0.0;\n   
-            u_xlat16_1 = texture(_ColorRampTexGradient, u_xlat16_7.xy);\n    u_xlat16_8.xyz
-            = (-u_xlat16_8.xyz) * u_xlat16_11.xyz + u_xlat16_1.xyz;\n    u_xlat16_11.x
-            = u_xlat16_1.w * u_xlat16_3.x;\n    u_xlat16_11.x = clamp(u_xlat16_11.x,
-            0.0, 1.0);\n    u_xlat16_11.x = (-u_xlat16_3.x) + u_xlat16_11.x;\n   
-            u_xlat16_3.x = _ColorRampBlend * u_xlat16_11.x + u_xlat16_3.x;\n    u_xlat16_0.x
-            = u_xlat16_0.x * u_xlat16_3.x;\n    u_xlat16_8.xyz = vec3(vec3(_ColorRampBlend,
-            _ColorRampBlend, _ColorRampBlend)) * u_xlat16_8.xyz + u_xlat16_5.xyz;\n   
-            u_xlat16_3.x = float(1.0) / _PosterizeNumColors;\n    u_xlat16_8.xyz
-            = u_xlat16_8.xyz / u_xlat16_3.xxx;\n    u_xlat16_8.xyz = floor(u_xlat16_8.xyz);\n   
-            u_xlat16_8.xyz = u_xlat16_3.xxx * u_xlat16_8.xyz;\n    u_xlat16_3.x =
-            vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_3.x;\n   
-            SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_8.xyz;\n    SV_Target0.w =
+            _Shape2Brightness));\n    u_xlat16_3.xyz = u_xlat16_3.xyz + vec3(0.5,
+            0.5, 0.5);\n    u_xlat16_3.xyz = max(u_xlat16_3.xyz, vec3(0.0, 0.0, 0.0));\n   
+            u_xlat16_3.xyz = u_xlat16_3.xyz * vec3(vec3(_Shape2ColorWeight, _Shape2ColorWeight,
+            _Shape2ColorWeight));\n    u_xlat16_7.x = u_xlat16_7.x * _Shape2AlphaWeight;\n   
+            u_xlatb15.xy = greaterThanEqual(u_xlat4.xwxw, (-u_xlat4.xwxw)).xy;\n   
+            u_xlat15.x = (u_xlatb15.x) ? float(1.0) : float(-1.0);\n    u_xlat15.y
+            = (u_xlatb15.y) ? float(1.0) : float(-1.0);\n    u_xlat4.xy = u_xlat15.xy
+            * u_xlat4.xw;\n    u_xlat4.xy = fract(u_xlat4.xy);\n    u_xlat1.xy =
+            u_xlat15.xy * u_xlat4.xy + u_xlat1.xy;\n    u_xlat16_1 = texture(_MainTex,
+            u_xlat1.xy);\n    u_xlat16_14 = u_xlat16_1.w * _ShapeColor.w;\n    u_xlat16_5.xyz
+            = u_xlat16_1.xyz * _ShapeColor.xyz + vec3(-0.5, -0.5, -0.5);\n    u_xlat16_5.xyz
+            = u_xlat16_5.xyz * vec3(_ShapeContrast) + vec3(vec3(_ShapeBrightness,
+            _ShapeBrightness, _ShapeBrightness));\n    u_xlat16_5.xyz = u_xlat16_5.xyz
+            + vec3(0.5, 0.5, 0.5);\n    u_xlat16_5.xyz = max(u_xlat16_5.xyz, vec3(0.0,
+            0.0, 0.0));\n    u_xlat16_5.xyz = u_xlat16_5.xyz * vec3(vec3(_ShapeColorWeight,
+            _ShapeColorWeight, _ShapeColorWeight));\n    u_xlat16_3.xyz = u_xlat16_3.xyz
+            * u_xlat16_5.xyz;\n    u_xlat16_14 = u_xlat16_14 * _ShapeAlphaWeight;\n   
+            u_xlat16_7.x = u_xlat16_7.x * u_xlat16_14;\n    u_xlat16_7.x = clamp(u_xlat16_7.x,
+            0.0, 1.0);\n    u_xlat16_14 = dot(u_xlat16_3.xyz, vec3(0.300000012, 0.589999974,
+            0.109999999));\n    u_xlat16_7.x = min(u_xlat16_7.x, u_xlat16_14);\n   
+            u_xlat16_5.x = u_xlat16_14 + _ColorRampLuminosity;\n    u_xlat16_5.x
+            = clamp(u_xlat16_5.x, 0.0, 1.0);\n    u_xlat16_5.y = 0.0;\n    u_xlat16_1
+            = texture(_ColorRampTexGradient, u_xlat16_5.xy);\n    u_xlat16_14 = u_xlat16_7.x
+            * u_xlat16_1.w;\n    u_xlat16_14 = clamp(u_xlat16_14, 0.0, 1.0);\n   
+            u_xlat16_14 = (-u_xlat16_7.x) + u_xlat16_14;\n    u_xlat16_7.x = _ColorRampBlend
+            * u_xlat16_14 + u_xlat16_7.x;\n    u_xlat16_0.x = u_xlat16_0.x * u_xlat16_7.x;\n   
+            u_xlat16_7.x = vs_COLOR0.w * _Alpha;\n    u_xlat16_0.x = u_xlat16_7.x
+            * u_xlat16_0.x;\n    u_xlat16_7.xyz = vs_COLOR0.xyz * _Color.xyz;\n   
+            u_xlat16_5.xyz = (-u_xlat16_3.xyz) * u_xlat16_7.xyz + u_xlat16_1.xyz;\n   
+            u_xlat16_7.xyz = u_xlat16_7.xyz * u_xlat16_3.xyz;\n    u_xlat16_7.xyz
+            = vec3(vec3(_ColorRampBlend, _ColorRampBlend, _ColorRampBlend)) * u_xlat16_5.xyz
+            + u_xlat16_7.xyz;\n    u_xlat16_3.x = float(1.0) / _PosterizeNumColors;\n   
+            u_xlat16_7.xyz = u_xlat16_7.xyz / u_xlat16_3.xxx;\n    u_xlat16_7.xyz
+            = floor(u_xlat16_7.xyz);\n    u_xlat16_7.xyz = u_xlat16_3.xxx * u_xlat16_7.xyz;\n   
+            SV_Target0.xyz = u_xlat16_0.xxx * u_xlat16_7.xyz;\n    SV_Target0.w =
             u_xlat16_0.x;\n    return;\n}\n\n"
           LOD: 0
           readDepth: 0
@@ -5343,12 +5668,16 @@ MonoBehaviour:
           SubShaderIndex: 0
           Keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
@@ -5736,6 +6065,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5747,6 +6077,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5759,6 +6090,7 @@ MonoBehaviour:
           - COLORRAMP_ON
           - MASK_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5771,6 +6103,7 @@ MonoBehaviour:
           - COLORRAMP_ON
           - MASK_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5779,10 +6112,15 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - COLORRAMPGRAD_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5792,10 +6130,15 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - COLORRAMPGRAD_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5811,6 +6154,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5826,6 +6170,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5835,12 +6180,16 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5850,12 +6199,16 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5868,10 +6221,15 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5884,10 +6242,15 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
           - TWISTUV_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -5903,12 +6266,16 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5923,12 +6290,16 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - GLOW_ON
           - MASK_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5937,16 +6308,23 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - GLOW_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
         - shaderCompilerPlatform: 9
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5955,16 +6333,23 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - GLOW_ON
           - SHAPE1ROTATE_ON
           - SHAPE1SHAPECOLOR_ON
+          - SHAPE2CONTRAST_ON
+          - SHAPE3CONTRAST_ON
+          - SHAPE3DISTORT_ON
         - shaderCompilerPlatform: 5
           shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
           passType: 0
@@ -5979,6 +6364,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - MASK_ON
@@ -5996,6 +6382,7 @@ MonoBehaviour:
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
           - SHAPE2_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - ADDITIVECONFIG_ON
           - MASK_ON
@@ -6010,6 +6397,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
@@ -6026,6 +6414,7 @@ MonoBehaviour:
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
           - SHAPE2ROTATE_ON
@@ -6039,12 +6428,16 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
@@ -6058,12 +6451,16 @@ MonoBehaviour:
           upToDate: 0
           keywords:
           - ADDITIVECONFIG_ON
+          - ALPHAFADEUSEREDCHANNEL_ON
+          - ALPHAFADEUSESHAPE1_ON
           - COLORRAMPGRAD_ON
           - COLORRAMP_ON
           - MASK_ON
           - POLARUVDISTORT_ON
           - POLARUV_ON
+          - PREMULTIPLYCOLOR_ON
           - SHAPE1CONTRAST_ON
+          - SPLITRGBA_ON
           - TWISTUV_ON
           - POSTERIZE_ON
           - SHAPE2CONTRAST_ON
@@ -6206,6 +6603,7 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6217,6 +6615,7 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6229,6 +6628,7 @@ MonoBehaviour:
       - COLORRAMP_ON
       - MASK_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6241,6 +6641,7 @@ MonoBehaviour:
       - COLORRAMP_ON
       - MASK_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6249,10 +6650,15 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - COLORRAMPGRAD_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6262,10 +6668,15 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - COLORRAMPGRAD_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6281,6 +6692,7 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6296,6 +6708,7 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6305,12 +6718,16 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6320,12 +6737,16 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6338,10 +6759,15 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6354,10 +6780,15 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
       - TWISTUV_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
@@ -6373,12 +6804,16 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - ADDITIVECONFIG_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6393,12 +6828,16 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - ADDITIVECONFIG_ON
       - GLOW_ON
       - MASK_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6407,16 +6846,23 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - GLOW_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
     - shaderCompilerPlatform: 9
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6425,16 +6871,23 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - GLOW_ON
       - SHAPE1ROTATE_ON
       - SHAPE1SHAPECOLOR_ON
+      - SHAPE2CONTRAST_ON
+      - SHAPE3CONTRAST_ON
+      - SHAPE3DISTORT_ON
     - shaderCompilerPlatform: 5
       shader: {fileID: 4800000, guid: 6eb86e4931b506a408fd1477edec61ea, type: 3}
       passType: 0
@@ -6449,6 +6902,7 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - ADDITIVECONFIG_ON
       - MASK_ON
@@ -6466,6 +6920,7 @@ MonoBehaviour:
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
       - SHAPE2_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - ADDITIVECONFIG_ON
       - MASK_ON
@@ -6480,6 +6935,7 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - POSTERIZE_ON
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
@@ -6496,6 +6952,7 @@ MonoBehaviour:
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - POSTERIZE_ON
       - SHAPE2CONTRAST_ON
       - SHAPE2ROTATE_ON
@@ -6509,12 +6966,16 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - POSTERIZE_ON
       - SHAPE2CONTRAST_ON
@@ -6528,12 +6989,16 @@ MonoBehaviour:
       upToDate: 0
       keywords:
       - ADDITIVECONFIG_ON
+      - ALPHAFADEUSEREDCHANNEL_ON
+      - ALPHAFADEUSESHAPE1_ON
       - COLORRAMPGRAD_ON
       - COLORRAMP_ON
       - MASK_ON
       - POLARUVDISTORT_ON
       - POLARUV_ON
+      - PREMULTIPLYCOLOR_ON
       - SHAPE1CONTRAST_ON
+      - SPLITRGBA_ON
       - TWISTUV_ON
       - POSTERIZE_ON
       - SHAPE2CONTRAST_ON
@@ -33817,9 +34282,9 @@ MonoBehaviour:
   _sceneLightData:
     PointLightCount: 0
     SpotLightCount: 0
-    DirectionalLightCount: 0
-    LightmapOn: 0
-    DirlightmapCombined: 0
+    DirectionalLightCount: 1
+    LightmapOn: 1
+    DirlightmapCombined: 1
     DirectionalCookieExists: 0
     PointCookieExists: 0
     SpotCookieExists: 0

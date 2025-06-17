@@ -13,7 +13,7 @@ using _IEC.Script.GamePlay;
 namespace _IEC.Features.Gameplay
 {
     [RequireComponent(typeof(ConditionalSelectionBase))]
-    public class BaseItem : _BaseBehaviour, IManagedLateUpdate
+    public class BaseItem : _BaseBehaviour, IManagedFixedUpdate
     {
         [SerializeField] protected Rigidbody rb;
         [SerializeField] protected List<GameObject> itemColliders;
@@ -63,13 +63,13 @@ namespace _IEC.Features.Gameplay
         }
         void OnEnable()
         {
-            UpdateManager.Instance.RegisterLateUpdate(this);
+            UpdateManager.Instance.RegisterFixedUpdate(this);
         }
 
         void OnDisable()
         {
             DOTween.Kill(RecycleTweenId);
-            UpdateManager.Instance.UnregisterLateUpdate(this);
+            UpdateManager.Instance.UnregisterFixedUpdate(this);
         }
 
         [SerializeField] private float minImpactVelocity = 0.2f;
@@ -217,6 +217,10 @@ namespace _IEC.Features.Gameplay
             {
                 SaveAndDestroyRigidbody();
             }
+            else
+            {
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
+            }
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -256,6 +260,7 @@ namespace _IEC.Features.Gameplay
                 rb.isKinematic = savedData.isKinematic;
                 rb.interpolation = savedData.interpolation;
                 rb.collisionDetectionMode = savedData.collisionDetectionMode;
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
             }
         }
 
@@ -323,7 +328,7 @@ namespace _IEC.Features.Gameplay
         private Plane[] curentPlanes;
         private bool alreadyAppear = false;
     
-        public void ManagedLateUpdate()
+        public void ManagedFixedUpdate()
         {
             bool hasRb = rb;
             bool isSpecialItem = gameObject.name.Contains("Ocean") || gameObject.name.Contains("Kingdom"); //temp logic need improve
@@ -342,7 +347,6 @@ namespace _IEC.Features.Gameplay
             {
                 rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.deltaTime * 6f);
             }
-            
         }
 
         public void SetPosOnwater(TCP2_GetPosOnWater pow)
