@@ -254,6 +254,7 @@ namespace IEC
                 int trophyType = int.Parse(param.inputParams[0].value.ToString());
                 TrophyType type = (TrophyType)(trophyType-1);
                 PlayerData.trophyData.SetTrophyCollected(type,0);
+                PlayerData.trophyData.SetTrophyNoti(type,0);
                 if (Locator.Main.ScreenMain)
                 {
                     Locator.Main.ScreenMain.trophyTab.LoadData();
