@@ -48,39 +48,36 @@ namespace IEC
             return type != TrophyType.GrandVoyage && type != TrophyType.SharkFrenzyForce;
         }
 
-        public (bool found,TrophyType type) GetTrophyNotiUnlocked()
-        {
-            foreach (var name in Enum.GetValues(typeof(TrophyType)))
-            {
-                //So heavy, need optimizationi, indexTrophyWasNoti
-                var typeTemp = (TrophyType)name;
-                var data = GetTrophyDataConfig(typeTemp);
-                int times = data.timeCompleted;
-                int trophyCol = data.trophyCollected;
-                int trophyTarget = GetTargetToGetTrophy(typeTemp,trophyCol);//Target
-                if (times >= trophyTarget && data.indexTrophyWasNoti <= trophyCol)
-                {
-                    return (true,(TrophyType)name);
-                }
-            }
-
-            return (false,TrophyType.GrandVoyage);
-        }
-        public bool IsTrophyCanCollect(TrophyType type)
+        public bool IsTrophyReadyToCollect(TrophyType type)
         {
             var data = GetTrophyDataConfig(type);
             int times = data.timeCompleted;
             int trophyCol = data.trophyCollected;
-            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
+            int trophyTarget = 0;
+            int max = Mathf.Clamp(trophyCol, 0, 3);
+            for (int i = 0; i <= max; i++)
+            {
+                trophyTarget += GetTargetToGetTrophy(type, i);
+            }
             return times >= trophyTarget;
         }
-        public bool NeedShowTrophyPopupDetail(TrophyType type)
+
+        public (bool found,TrophyType type) GetTrophyNotiUnlocked()
         {
-            int times = GetCurrentTimeComplete(type);
-            int notiIndex = GetMaxTrophyNoti(type);
-            int trophyCol = GetCurrentCollectedTrophy(type);
-            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
-            return times >= trophyTarget && notiIndex < trophyTarget;
+            foreach (var name in Enum.GetValues(typeof(TrophyType)))
+            {
+                var typeTemp = (TrophyType)name;
+                var data = GetTrophyDataConfig(typeTemp);
+                if (IsTrophyReadyToCollect(typeTemp) && data.indexTrophyWasNoti <= data.trophyCollected)
+                {
+                    return (true, typeTemp);
+                }
+            }
+            return (false,TrophyType.GrandVoyage);
+        }
+        public bool IsTrophyCanCollect(TrophyType type)
+        {
+            return IsTrophyReadyToCollect(type);
         }
         public int GetTargetToGetTrophy(TrophyType type,int trophyCol)
         {
@@ -91,7 +88,8 @@ namespace IEC
            }
            else
            {
-               return dataConfig.listTimeToCollect[trophyCol];
+               int index = Mathf.Clamp(trophyCol,0,dataConfig.listTimeToCollect.Count-1);
+               return dataConfig.listTimeToCollect[index];
            }
            return 0;
         }
@@ -138,7 +136,7 @@ namespace IEC
         public void SetLevelTrophy(int level)
         {
             var levelTrophy = GetTrophyDataConfig(TrophyType.GrandVoyage);
-            levelTrophy.timeCompleted = level;
+            levelTrophy.timeCompleted = level-1;
         }
         public TrophyDataConfig GetTrophyDataConfig(TrophyType type)
         {
