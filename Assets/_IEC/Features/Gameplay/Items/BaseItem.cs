@@ -141,6 +141,7 @@ namespace _IEC.Features.Gameplay
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
             rb.isKinematic = itemData.isStartKinematic;
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }

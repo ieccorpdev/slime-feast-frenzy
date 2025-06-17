@@ -4,7 +4,6 @@ namespace _IEC.Features.Gameplay
 {
     public class HoleTransformer : MonoBehaviour
     {
-        [SerializeField] private Rigidbody rb;
         private Vector3 targetVelocity = Vector3.zero;
 
         public void Move(Vector3 velocity)
@@ -12,12 +11,11 @@ namespace _IEC.Features.Gameplay
             targetVelocity = velocity;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (targetVelocity != Vector3.zero)
             {
-                Vector3 newPosition = rb.position + targetVelocity * Time.fixedDeltaTime;
-                rb.MovePosition(newPosition);
+                transform.Translate(targetVelocity * Time.deltaTime, Space.World);
             }
         }
     }

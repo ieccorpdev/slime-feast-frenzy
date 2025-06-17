@@ -8795,7 +8795,7 @@
             },
             {
                 "name": "DG.Tweening.Core.SafeModeReport.SafeModeReportType",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "DG.Tweening.Core.TargetType",
@@ -11356,14 +11356,6 @@
             {
                 "name": "DG.Tweening.Plugins.Core.ITPlugin$4",
                 "excluded": false
-            },
-            {
-                "name": "pc.Debugger.Components.EditorCamera",
-                "excluded": true
-            },
-            {
-                "name": "pc.Debugger.Components.EditorGUI",
-                "excluded": true
             }
         ],
         "unusedMethods": [
@@ -19167,7 +19159,7 @@
                     },
                     {
                         "name": "fixedDeltaTime#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "maximumParticleDeltaTime#get",
@@ -20399,7 +20391,7 @@
                     },
                     {
                         "name": "Translate$1",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "Translate$2",
@@ -32265,7 +32257,7 @@
                     },
                     {
                         "name": "interpolation#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "inertiaTensor#get",
@@ -35813,7 +35805,7 @@
                     },
                     {
                         "name": "Add",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetTotErrors",
@@ -36988,7 +36980,7 @@
                         "excluded": false
                     },
                     {
-                        "name": "FixedUpdate",
+                        "name": "Update",
                         "excluded": false
                     }
                 ]
@@ -39666,6 +39658,10 @@
                     {
                         "name": "OnMove",
                         "excluded": true
+                    },
+                    {
+                        "name": "GetItemDefinition",
+                        "excluded": false
                     }
                 ]
             },
@@ -39979,7 +39975,7 @@
                     },
                     {
                         "name": "ShouldLogSafeModeCapturedError",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "GetDebugDataMessage",
@@ -41908,11 +41904,11 @@
         "rules": {
             "texture": {
                 "default": {
-                    "maxWidth": 512,
-                    "maxHeight": 512,
-                    "format": "png32",
+                    "maxWidth": 1920,
+                    "maxHeight": 1080,
+                    "format": "webp",
                     "compression": "quantSize",
-                    "quality": 65,
+                    "quality": 48,
                     "script": "",
                     "ext": ""
                 },
@@ -41928,61 +41924,61 @@
                         "name": "Resources/unity_builtin_extra/Default-Particle"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF - Fallback.asset"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/TextMesh Pro/Resources/Fonts & Materials/LiberationSans SDF.asset"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular SDF.asset"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/LilitaOne-Regular Blue Outline.asset"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/UrbaneRound/Nunito-Black SDF.asset"
                     },
                     {
-                        "maxWidth": 512,
-                        "maxHeight": 512,
-                        "format": "png32",
+                        "maxWidth": 1920,
+                        "maxHeight": 1080,
+                        "format": "webp",
                         "compression": "none",
-                        "quality": 65,
+                        "quality": 48,
                         "script": "",
                         "ext": "",
                         "name": "Assets/_IEC/Font/UrbaneRound/UrbaneRounded-Bold SDF.asset"
@@ -41995,7 +41991,7 @@
                     "startTime": "00:00.000",
                     "endTime": "00:00.000",
                     "lengthInSeconds": 0.0,
-                    "bitrate": 128,
+                    "bitrate": 40,
                     "script": "",
                     "ext": ""
                 },

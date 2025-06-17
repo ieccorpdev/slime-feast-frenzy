@@ -1,10 +1,13 @@
 using System.Collections;
+using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.VipProHackerUITutorial;
 using DG.Tweening;
 using IEC;
+using Sirenix.OdinInspector;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -13,7 +16,6 @@ public class PlayableController : _BaseBehaviour
 {
     private static PlayableController instance;
     [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
-    public GameplayItemPrefabConfig GameplayItemPrefabConfig;
     public ScreenInGame ScreenInGame;
     public bool useHelper;
     public static PlayableController Instance
@@ -33,7 +35,7 @@ public class PlayableController : _BaseBehaviour
     //
     // [SerializeField] private GameObject stack;
      [Header("Playable Config")]
-     [LunaPlaygroundField("Level", 0, "Config")]
+     //[LunaPlaygroundField("Level", 0, "Config")]
      public int level;
 
      public PrefabConfig prefabConfig;
@@ -118,14 +120,44 @@ public class PlayableController : _BaseBehaviour
     public InGamePlayGroup InGamePlayGroup;
 
     public FloatingJoystick Joystick;
-    public LevelConfig levelConfig;
     public Material waveWaterMaterial;
+    public LevelDataSO levelData;
+    public List<ItemDefinition> ListItemDefinition;
+#if UNITY_EDITOR
+    public GameplayItemPrefabConfig itemPrefabConfig;
+
+    [Button]
+    public void InitItemDefinition()
+    {
+        if (ListItemDefinition == null)
+        {
+            ListItemDefinition = new List<ItemDefinition>();
+        }
+        ListItemDefinition.Clear();
+        foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
+        {
+            var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
+            if (itemDefinition == null)
+            {
+                Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
+                continue;
+            }
+            ListItemDefinition.Add(itemDefinition);
+        }
+        EditorUtility.SetDirty(this);
+    }
+#endif
+    public ItemDefinition GetItemDefinition(string itemId)
+    {
+        var itemDefinition = this.ListItemDefinition.Find(x => x.GetId() == itemId);
+        return itemDefinition;
+    }
 
     public void Awake()
     {
         instance = this;
     }
-    
+
     private void Start()
     {
 
@@ -163,10 +195,9 @@ public class PlayableController : _BaseBehaviour
         HighLightCanvas.gameObject.SetActive(true);
         this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
     }
-
+    [Button]
     private void OnMagnetButtonClicked()
     {
-        
         HighLightCanvas.gameObject.SetActive(false);
         this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
@@ -179,8 +210,9 @@ public class PlayableController : _BaseBehaviour
 
     public LevelDataSO GetLevelSpawnData(int level)
     {
-        return levelConfig.levelData.listAllLevelData[level];
+        return levelData;
     }
+
     IEnumerator IE_DelayLoadLevel()
     {
         yield return new WaitForSeconds(3);

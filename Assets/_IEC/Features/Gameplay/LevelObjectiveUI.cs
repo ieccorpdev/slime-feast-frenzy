@@ -139,7 +139,7 @@ namespace _IEC.Features.Gameplay
             {
                 itemId = "coin_small";
             }
-            var config = PlayableController.Instance.GameplayItemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
+            var config = PlayableController.Instance.ListItemDefinition.Find(x => x.GetId() == itemId);
             if (config != null)
             {
                 if (config.GetIcon() == null)

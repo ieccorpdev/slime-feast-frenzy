@@ -42,7 +42,7 @@ public class FPSCounter : MonoBehaviour
                 "FPS: {0:0}\nMax: {1:0}\nMin: {2:0}\nAvg: {3:0}",
                 fps, maxFps, minFps, avgFps
             );
-
+            
             time = 0.0f;
             frames = 0;
         }

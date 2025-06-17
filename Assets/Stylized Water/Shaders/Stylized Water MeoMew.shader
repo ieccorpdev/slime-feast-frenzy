@@ -2,10 +2,24 @@
 {
     Properties
     {
+
         [Header(Densities)]
         _DepthDensity ("Depth", Range(0.0, 1.0)) = 0.5
-        _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.1
-        
+        _DistanceDensity ("Distance", Range(0.0, 1.0)) = 0.
+        [Header(Top far)]
+        _ScreenYThreshold ("Screen Y Blend Threshold (Top)", Range(0,1)) = 0.5
+        _ScreenYCurve ("Screen Y Blend Curve (Top)", Range(0.1, 5.0)) = 1.0
+        _EaseType ("Ease Type Top (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
+        [HDR]
+        _FarColor ("Far ", Color) = (0.04, 0.27, 0.75, 1.0)
+        _FarAlpha ("Far Color Alpha Multiplier", Range(0,1)) = 1.0
+        [Header(Bottom near)]
+        // Existing properties
+        _ScreenYThresholdBottom ("Screen Y Blend Threshold (Bottom)", Range(0,1)) = 0.5
+        _ScreenYCurveBottom ("Screen Y Blend Curve (Bottom)", Range(0.1, 5.0)) = 1.0
+        _EaseTypeBottom ("Ease Type Bottom (0=Linear, 1=Pow, 2=EaseInOut)", Int) = 2
+        [HDR] _NearColor ("Near (Bottom)", Color) = (0.04, 0.27, 0.75, 1.0)
+        _NearAlpha ("Near Color Alpha Multiplier", Range(0,1)) = 1.0
         [Header(Waves)]
         [NoScaleOffset]
         _WaveNormalMap ("Normal Map", 2D) = "bump"{}
@@ -16,10 +30,8 @@
         [HDR]
         _ShallowColor ("Shallow", Color) = (0.44, 0.95, 0.36, 1.0)
         [HDR]
-        _DeepColor ("Deep", Color) =  (0.0, 0.05, 0.19, 1.0)
-        [HDR]
-        _FarColor ("Far", Color) = (0.04, 0.27, 0.75, 1.0)
-        
+        _DeepColor ("Deep", Color) = (0.0, 0.05, 0.19, 1.0)
+
         [Header(Reflections)]
         _ReflectionContribution ("Contribution", Range(0.0, 1.0)) = 1.0
 
@@ -71,14 +83,6 @@
         _Wave2Amplitude ("Amplitude", float) = 1
         _Wave2Wavelength ("Wavelength", float) = 1
         _Wave2Speed ("Speed", float) = 1
-
-        [Header(Whirlpool)]
-        _WhirlpoolCenter ("Center", Vector) = (0, 0, 0, 0)
-        _WhirlpoolStrength ("Strength", float) = 1.0
-        _WhirlpoolRadius ("Radius", float) = 5.0
-        _RotationSpeed ("Rotation Speed", float) = 1.0
-        [NoScaleOffset]
-        _WhirlpoolNormalMap ("Whirlpool Normal Map", 2D) = "bump"{}
     }
     SubShader
     {
@@ -99,11 +103,11 @@
         {
             Tags
             {
-                "LightMode" = "Always" 
+                "LightMode" = "Always"
             }
             Stencil
             {
-                Ref 2  // Use the property value as the stencil reference
+                Ref 2 // Use the property value as the stencil reference
                 Comp greater // Only render where the stencil buffer is equal to the reference value
             }
             CGPROGRAM
@@ -119,15 +123,20 @@
             // Densities.
             float _DepthDensity;
             float _DistanceDensity;
-
+            float _ScreenYThreshold;
+            float _ScreenYCurve;
+            float _FarAlpha;
+            int _EaseType;
             // Wave Normal Map.
             sampler2D _WaveNormalMap;
             float _WaveNormalScale;
             float _WaveNormalSpeed;
-
-            // Whirlpool Normal Map.
-            sampler2D _WhirlpoolNormalMap;
-
+            //Near
+            float _ScreenYThresholdBottom;
+            float _ScreenYCurveBottom;
+            int _EaseTypeBottom;
+            float3 _NearColor;
+            float _NearAlpha;
             // Base Color.
             float3 _ShallowColor;
             float3 _DeepColor;
@@ -179,12 +188,6 @@
             float _Wave2Wavelength;
             float _Wave2Speed;
 
-            // Whirlpool.
-            float4 _WhirlpoolCenter;
-            float _WhirlpoolStrength;
-            float _WhirlpoolRadius;
-            float _RotationSpeed;
-
             // Depth and color buffers.
             sampler2D _GrabTexture;
             sampler2D _CameraDepthTexture;
@@ -197,6 +200,7 @@
 
             struct v2f
             {
+                float4 screenPos : TEXCOORD3;
                 float4 vertex : SV_POSITION;
                 float2 uv : TEXCOORD0;
                 float3 worldPosition : TEXCOORD1;
@@ -222,7 +226,7 @@
                 float waveHeight = GetWaveHeight(worldPosition);
                 float waveHeightDX = GetWaveHeight(worldPosition - float2(d, 0));
                 float waveHeightDZ = GetWaveHeight(worldPosition - float2(0, d));
-                
+
                 // Calculate the partial derivatives in the Z and X directions, which
                 // are the tangent and binormal vectors respectively.
                 float3 tangent = normalize(float3(0, waveHeight - waveHeightDZ, d));
@@ -235,30 +239,14 @@
                 return transpose(float3x3(tangent, binormal, normal));
             }
 
-            // Adds a whirlpool effect to the vertex position.
-            float3 ApplyWhirlpool(float3 worldPosition)
-            {
-                float2 offset = worldPosition.xz - _WhirlpoolCenter.xy;
-                float distance = length(offset);
-                if (distance < _WhirlpoolRadius)
-                {
-                    float angle = _WhirlpoolStrength * (1.0 - distance / _WhirlpoolRadius) + _RotationSpeed * _Time.y * 2.0 * PI;
-                    float s = sin(angle);
-                    float c = cos(angle);
-                    offset = float2(offset.x * c - offset.y * s, offset.x * s + offset.y * c);
-                    worldPosition.xz = offset + _WhirlpoolCenter.xy;
-                }
-                return worldPosition;
-            }
-
-            v2f vert (appdata v)
+            v2f vert(appdata v)
             {
                 v2f o;
 
                 o.worldPosition = mul(unity_ObjectToWorld, v.vertex).xyz;
-                o.worldPosition = ApplyWhirlpool(o.worldPosition);
                 o.worldPosition.y += GetWaveHeight(o.worldPosition.xz);
                 o.vertex = mul(UNITY_MATRIX_VP, float4(o.worldPosition, 1));
+                o.screenPos = ComputeScreenPos(o.vertex);
 
                 // We don't want to offset the grab position by the wave height,
                 // because we get nice refraction effects for free essentially.
@@ -266,218 +254,202 @@
                 o.grabPosition = ComputeGrabScreenPos(o.vertex);
 
                 o.uv = v.uv;
-                UNITY_TRANSFER_FOG(o,o.vertex);
+                UNITY_TRANSFER_FOG(o, o.vertex);
                 return o;
             }
 
-float4 frag (v2f i) : SV_Target
-{
-    // Calculate the view vector.
-    float3 viewDirWS = normalize(i.worldPosition - _WorldSpaceCameraPos);
+            float4 frag(v2f i) : SV_Target
+            {
+                // Calculate the view vector.
+                float3 viewDirWS = normalize(i.worldPosition - _WorldSpaceCameraPos);
 
-    // ------------------- //
-    // NORMAL CALCULATIONS //
-    // ------------------- //
+                // ------------------- //
+                // NORMAL CALCULATIONS //
+                // ------------------- //
 
-    // Get the tangent to world matrix.
-    float3x3 tangentToWorld = GetWaveTBN(i.worldPosition.xz, 0.01);
+                // Get the tangent to world matrix.
+                float3x3 tangentToWorld = GetWaveTBN(i.worldPosition.xz, 0.01);
 
-    // Sample the wave normal map and calculate the world-space normal for this fragment.
-    float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz/_WaveNormalScale, _WaveNormalSpeed, true);
-    float3 normalWS = mul(tangentToWorld, normalTS);
+                // Sample the wave normal map and calculate the world-space normal for this fragment.
+                float3 normalTS = MotionFourWayChaos(_WaveNormalMap, i.worldPosition.xz / _WaveNormalScale,
+                                                     _WaveNormalSpeed, true);
+                float3 normalWS = mul(tangentToWorld, normalTS);
 
-    // ------------------------------ //
-    // SAMPLE DEPTH AND COLOR BUFFERS //
-    // ------------------------------ //
+                // ------------------------------ //
+                // SAMPLE DEPTH AND COLOR BUFFERS //
+                // ------------------------------ //
 
-    // Calculate the position of this fragment in screen space to
-    // use as uv's in screen-space texture look ups.
-    float2 screenCoord = i.grabPosition.xy / i.grabPosition.w;
+                // Calculate the position of this fragment in screen space to
+                // use as uv's in screen-space texture look ups.
+                float2 screenCoord = i.grabPosition.xy / i.grabPosition.w;
 
-    // Sample the grab-pass and depth textures based on the screen coordinate
-    // to get the frag color and depth of the fragment behind this one.
-    float3 fragColor = tex2D(_GrabTexture, screenCoord.xy).rgb;
-    float fragDepth = tex2D(_CameraDepthTexture, screenCoord.xy).x;
+                // Sample the grab-pass and depth textures based on the screen coordinate
+                // to get the frag color and depth of the fragment behind this one.
+                float3 fragColor = tex2D(_GrabTexture, screenCoord.xy).rgb;
+                float fragDepth = tex2D(_CameraDepthTexture, screenCoord.xy).x;
 
-    // ------------------------ //
-    // DEPTH AND DISTANCE MASKS //
-    // ------------------------ //
+                // ------------------------ //
+                // DEPTH AND DISTANCE MASKS //
+                // ------------------------ //
 
-    // Calculate the distance the viewing ray travels underwater,
-    // as well as the transmittance for that distance.
-    float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
-    float transmittance = exp(-_DepthDensity * opticalDepth);
+                // Calculate the distance the viewing ray travels underwater,
+                // as well as the transmittance for that distance.
+                float opticalDepth = abs(LinearEyeDepth(fragDepth) - LinearEyeDepth(i.vertex.z));
+                float transmittance = exp(-_DepthDensity * opticalDepth);
 
-    // Also calculate how far away the fragment is from the camera.
-    float distanceMask = exp(-_DistanceDensity * length(i.worldPosition - _WorldSpaceCameraPos));
+                // Also calculate how far away the fragment is from the camera.
+                float2 screenUV = i.screenPos.xy / i.screenPos.w;
+                float t =       smoothstep(0.0, _ScreenYThreshold, 1.0 - screenUV.y);
+                float invertedY = smoothstep(0.0, _ScreenYThresholdBottom, screenUV.y); // đảo Y để blend từ dưới lên
+                // Đối chiếu rõ ràng với _ScreenYThresholdBottom
+                
+                //float distanceMaskBottom = saturate((invertedY - _ScreenYThresholdBottom) / (1.0 - _ScreenYThresholdBottom));
+                //distanceMaskBottom = pow(distanceMaskBottom, _ScreenYCurveBottom);
+                float distanceMaskBottom;
+                float distanceMask;
+                if (_EaseType == 0)
+                {
+                    distanceMask = t; // Linear
+                }
+                else if (_EaseType == 1)
+                {
+                    distanceMask = pow(t, _ScreenYCurve); // Pow based
+                }
+                else
+                {
+                    float ease = t * t * (3.0 - 2.0 * t); // Hermite EaseInOut
+                    distanceMask = pow(ease, _ScreenYCurve);
+                }
+                // Ease Type Bottom
+                if (_EaseTypeBottom == 0)
+                {
+                    distanceMaskBottom = invertedY; // Linear
+                }
+                else if (_EaseTypeBottom == 1)
+                {
+                    distanceMaskBottom = pow(invertedY, _ScreenYCurveBottom); // Pow based
+                }
+                else
+                {
+                    float ease = invertedY * invertedY * (3.0 - 2.0 * invertedY); // Hermite EaseInOut
+                    distanceMaskBottom = pow(ease, _ScreenYCurveBottom);
+                }
+                // ----------- //
+                // SHADOW MASK //
+                // ----------- //
 
-    // ----------- //
-    // SHADOW MASK //
-    // ----------- //
+                float shadowMask = 1.0;
 
-    float shadowMask = 1.0;
+                // If shadows are enabled, sample the shadow map.
+                #ifdef SHADOWS
+                shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
+                #endif
 
-    // If shadows are enabled, sample the shadow map.
-    #ifdef SHADOWS
-        shadowMask = GetLightVisibility(_MainDirectionalShadowMap, i.worldPosition, _MaxShadowDistance);
-    #endif
+                // ---------- //
+                // BASE COLOR //
+                // ---------- //
 
-    // Calculate the distance from the center of the whirlpool.
-    float2 offset = i.worldPosition.xz - _WhirlpoolCenter.xy;
-    float distance = length(offset);
+                // Calculate the base color based on the transmittance and distance mask.
+                float3 baseColor = fragColor * _ShallowColor;
+                baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
+                float blendFactor = (1.0 - distanceMask) * _FarAlpha;
+                baseColor = lerp(baseColor, _FarColor.rgb, blendFactor);
+                
+                // Tính blend factor giống logic distanceMask hiện tại
+                float blendFactorBottom = (1.0 - distanceMaskBottom) * _NearAlpha;
+                // Thực hiện blending từ dưới lên
+                baseColor.rgb = lerp(baseColor.rgb, _NearColor.rgb, blendFactorBottom);
+                
+                // --------------- //
+                // REFLECTED COLOR //
+                // --------------- // 
 
-    // Check if the fragment is inside the whirlpool radius.
-    if (distance < _WhirlpoolRadius)
-    {
-        // Determine the rotation speed based on the distance from the center.
-        float rotationSpeed = _RotationSpeed;
-        if (distance > 0.8 * _WhirlpoolRadius)
-        {
-            rotationSpeed = 0.5 * _RotationSpeed;
-        }
-        else if (distance > 0.5 * _WhirlpoolRadius)
-        {
-            rotationSpeed = 0.8 * _RotationSpeed;
-        }
+                // Calculate the fresnel reflection coefficient.
+                float fresnelMask = 0.0 + 1.0 * pow(1.0 + dot(normalWS, -viewDirWS), 5.0);
 
-        // Inside the whirlpool, apply different wave logic.
-        float angle = rotationSpeed * _Time.y * 2.0 * PI + distance * _WhirlpoolStrength;
-        float s = sin(angle);
-        float c = cos(angle);
-        float2x2 rotationMatrix = float2x2(c, -s, s, c);
+                // Sample the reflection cubemap to get the reflections at this fragment.
+                float3 reflectedColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, reflect(viewDirWS, normalWS));
 
-        // Rotate the wave normal map coordinates.
-        float2 rotatedUV = mul(rotationMatrix, i.worldPosition.xz / _WaveNormalScale);
-        normalTS = MotionFourWayChaos(_WhirlpoolNormalMap, rotatedUV, _WaveNormalSpeed, true);
-        normalWS = mul(tangentToWorld, normalTS);
+                // Modulate the reflected color by the fresnel coefficient, distance mask, and shadow.
+                reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
+                reflectedColor = reflectedColor * _ReflectionContribution;
 
-        // Apply wave height undulation and rotation.
-        float waveHeight = GetWaveHeight(rotatedUV) * 2.0; // Increase wave height amplitude
-        i.worldPosition.y -= waveHeight * (1.0 - distance / _WhirlpoolRadius); // Move downwards
+                // --------------------------- //
+                // SUBSURFACE SCATTERING COLOR //
+                // --------------------------- //
 
-        // Change color based on distance to the center
-        float3 innerColor = lerp(_DeepColor, _FarColor, distance / _WhirlpoolRadius);
-        float3 middleColor = lerp(_ShallowColor, _DeepColor, distance / _WhirlpoolRadius);
-        float3 outerColor = _ShallowColor;
+                // Modulate the SSS color by the wave height.
+                float3 sssColor = _SSSColor * GetWaveHeight(i.worldPosition.xz);
 
-        // Blend colors based on distance
-        if (distance < _WhirlpoolRadius * 0.33)
-        {
-            fragColor = innerColor;
-        }
-        else if (distance < _WhirlpoolRadius * 0.66)
-        {
-            fragColor = middleColor;
-        }
-        else
-        {
-            fragColor = outerColor;
-        }
-    }
+                // Only draw it on wavetips that the sun is shining through (so it appears backlit).
+                sssColor *= saturate(dot(viewDirWS, _WorldSpaceLightPos0.xyz));
 
-    // ---------- //
-    // BASE COLOR //
-    // ---------- //
+                // ---------- //
+                // FOAM COLOR //
+                // ---------- //
 
-    // Calculate the base color based on the transmittance and distance mask.
-    float3 baseColor = fragColor * _ShallowColor;
-    //baseColor = lerp(_DeepColor, baseColor, 0 * max(0.5, shadowMask));
-    baseColor = lerp(_DeepColor, baseColor, transmittance * max(0.5, shadowMask));
+                // Distort the world space uv coordinates by the normal map.
+                float2 foamUV = (i.worldPosition.xz / _FoamScale) + (_FoamNoiseScale * normalTS.xz);
 
-    // --------------- //
-    // REFLECTED COLOR //
-    // --------------- //
+                // Sample the foam texture and modulate the result by the distance mask and shadow mask.
+                float3 foamColor = MotionFourWayChaos(_FoamTexture, foamUV, _FoamSpeed, false);
+                foamColor = foamColor * distanceMask * shadowMask;
+                foamColor = foamColor * _FoamContribution;
 
-    // Calculate the fresnel reflection coefficient.
-    float fresnelMask = 0.0 + 1.0 * pow(1.0 + dot(normalWS, -viewDirWS), 5.0);
+                // ------------------ //
+                // SUN SPECULAR COLOR //
+                // ------------------ //
 
-    // Sample the reflection cubemap to get the reflections at this fragment.
-    float3 reflectedColor = UNITY_SAMPLE_TEXCUBE(unity_SpecCube0, reflect(viewDirWS, normalWS));
-    
-    // Modulate the reflected color by the fresnel coefficient, distance mask, and shadow.
-    //reflectedColor = reflectedColor * fresnelMask * distanceMask * shadowMask;
-    //reflectedColor = reflectedColor * _ReflectionContribution;
+                // Reflect the viewing vector by the normal.
+                float3 viewR = reflect(viewDirWS, normalWS);
 
-    // --------------------------- //
-    // SUBSURFACE SCATTERING COLOR //
-    // --------------------------- //
+                // Calculate the specular mask.
+                float sunSpecularMask = saturate(dot(viewR, _WorldSpaceLightPos0));
+                sunSpecularMask = round(saturate(pow(sunSpecularMask, _SunSpecularExponent)));
+                sunSpecularMask = sunSpecularMask * shadowMask;
 
-    // Modulate the SSS color by the wave height.
-    float3 sssColor = _SSSColor * GetWaveHeight(i.worldPosition.xz);
+                // Get the sun specular color to add into the final color later on.
+                float3 sunSpecularColor = lerp(0, _SunSpecularColor, sunSpecularMask);
 
-    // Only draw it on wavetips that the sun is shining through (so it appears backlit).
-    sssColor *= saturate(dot(viewDirWS, _WorldSpaceLightPos0.xyz));
+                // ------------- //
+                // SPARKLE COLOR //
+                // ------------- //
 
-    // ---------- //
-    // FOAM COLOR //
-    // ---------- //
+                // Get some random sparkly normals.
+                float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
+                                                       float4(1, 2, 3, 4), _SparkleSpeed);
+                float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale,
+                                                       float4(1, 0.5, 2.5, 2), _SparkleSpeed);
 
-    // Distort the world space uv coordinates by the normal map.
-    float2 foamUV = (i.worldPosition.xz / _FoamScale) + (_FoamNoiseScale * normalTS.xz);
+                // Dot them to make a sparkly mask.
+                float sparkleMask = dot(sparkly1, sparkly2) * saturate(
+                    3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
+                sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
 
-    // Sample the foam texture and modulate the result by the distance mask and shadow mask.
-    float3 foamColor = MotionFourWayChaos(_FoamTexture, foamUV, _FoamSpeed, false);
-    foamColor = foamColor * distanceMask * shadowMask;
-    //foamColor = foamColor * shadowMask;
-    foamColor = foamColor * _FoamContribution;
+                // Get the sparkle specular color to add later on.
+                float3 sparkleColor = lerp(0, _SparkleColor, sparkleMask);
 
-    // ------------------ //
-    // SUN SPECULAR COLOR //
-    // ------------------ //
+                // --------------- //
+                // EDGE FOAM COLOR //
+                // --------------- //
 
-    // Reflect the viewing vector by the normal.
-    float3 viewR = reflect(viewDirWS, normalWS);
+                // Calculate edge foam mask, by on clipping the optical depth.
+                float edgeFoamMask = round(exp(-opticalDepth / _EdgeFoamDepth));
+                float3 edgeFoamColor = lerp(0, _EdgeFoamColor, edgeFoamMask);
+                edgeFoamColor = edgeFoamColor * lerp(_ShadowColor, 1, shadowMask);
 
-    // Calculate the specular mask.
-    float sunSpecularMask = saturate(dot(viewR, _WorldSpaceLightPos0));
-    sunSpecularMask = round(saturate(pow(sunSpecularMask, _SunSpecularExponent)));
-    sunSpecularMask = sunSpecularMask * shadowMask;
+                // ----------- //
+                // FINAL COLOR //
+                // ----------- //
 
-    // Get the sun specular color to add into the final color later on.
-    float3 sunSpecularColor = lerp(0, _SunSpecularColor, sunSpecularMask);
+                float3 color = baseColor + reflectedColor + sssColor + foamColor;
+                color += sunSpecularColor + sparkleColor + edgeFoamColor;
 
-    // ------------- //
-    // SPARKLE COLOR //
-    // ------------- //
+                // Apply fog.
+                UNITY_APPLY_FOG(i.fogCoord, color);
 
-    // Get some random sparkly normals.
-    float3 sparkly1 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,2,3,4), _SparkleSpeed);
-    float3 sparkly2 = MotionFourWaySparkle(_SparklesNormalMap, i.worldPosition.xz / _SparkleScale, float4(1,0.5,2.5,2), _SparkleSpeed);
-    
-    // Dot them to make a sparkly mask.
-    float sparkleMask = dot(sparkly1, sparkly2) * saturate(3.0 * sqrt(saturate(dot(sparkly1.x, sparkly2.x))));
-    //sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask * distanceMask;
-    sparkleMask = ceil(saturate(pow(sparkleMask, _SparkleExponent))) * shadowMask ;
-
-    // Get the sparkle specular color to add later on.
-    float3 sparkleColor = lerp(0, _SparkleColor, sparkleMask);
-
-    // --------------- //
-    // EDGE FOAM COLOR //
-    // --------------- //
-
-    // Calculate edge foam mask, by on clipping the optical depth.
-    float edgeFoamMask = round(exp(-opticalDepth / _EdgeFoamDepth));
-    float3 edgeFoamColor = lerp(0, _EdgeFoamColor, edgeFoamMask);
-    edgeFoamColor = edgeFoamColor * lerp(_ShadowColor, 1, shadowMask);
-
-    // ----------- //
-    // FINAL COLOR //
-    // ----------- //
-
-    float3 color = baseColor + reflectedColor + sssColor + foamColor;
-    color += sunSpecularColor + sparkleColor + edgeFoamColor;
-    //color += sunSpecularColor + sparkleColor;
-
-    // Apply fog.
-    UNITY_APPLY_FOG(i.fogCoord, color);
-
-    return float4(color, 1);
-}
-
-
-
-
+                return float4(color, 1);
+            }
             ENDCG
         }
     }

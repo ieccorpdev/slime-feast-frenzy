@@ -101,7 +101,7 @@ namespace _IEC.Features.Gameplay
             Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
             foreach (var itemSpawn in listItemData)
             {
-                var itemDefinition = PlayableController.Instance.levelConfig.GetItemDefinition(itemSpawn.id, versionItem);
+                var itemDefinition = PlayableController.Instance.GetItemDefinition(itemSpawn.id);
                 if (itemDefinition == null)
                 {
                     Debug.LogError("Cant find item definition with id: " + itemSpawn.id);
