@@ -77,14 +77,6 @@ public class TCP2_GetPosOnWater : MonoBehaviour
 	}
 #endif
 
-	void LateUpdate()
-	{
-		if(followWaterHeight)
-		{
-			this.transform.position = GetPositionOnWater(this.transform.position);
-		}
-	}
-
 	//Returns a world space position on a water plane, based on its material
 	public Vector3 GetPositionOnWater(Vector3 worldPosition)
 	{

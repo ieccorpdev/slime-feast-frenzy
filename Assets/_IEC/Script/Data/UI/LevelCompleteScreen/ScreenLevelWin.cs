@@ -20,12 +20,7 @@ namespace IEC
         private void Start()
         {
             listButtonHideOnClick.Add(btnNext);
-
-            SetEvent(btnNext, () =>
-            {
-                ActionCompletePopup();
-            });
-
+            btnNext.onClick.AddListener(ActionCompletePopup);
         }
 
         public override void Hide()
@@ -40,7 +35,6 @@ namespace IEC
 
         }
 
-
         public void SetMedalReward(int medal)
         {
             // bool showMedal = Game.isHaveLeaderboard && PlayerData.level >= LeaderboardConfig.levelUnlock;
@@ -52,8 +46,6 @@ namespace IEC
         
         private void ActionCompletePopup()
         {
-            Hide();
-            
             // Action callback = null;
             //
             // //if (PlayerData.level >= Config.levelWinBackHome)
@@ -61,10 +53,9 @@ namespace IEC
             //     // Define the callback to show popups once Home scene is loaded
             //     callback = ShowPostWinPopups;
             // }
-            
+
             //Add callbacks here
-            
-     
+            PlayableController.Instance.DownLoad();
         }
         
         

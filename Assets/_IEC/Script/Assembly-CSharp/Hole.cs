@@ -557,7 +557,7 @@ public class Hole : _BaseBehaviour
 	
 	private void SpawnVfx(ParticleSystem vfxPrefab)
 	{
-		var vfx = vfxPrefab.Spawn();
+		var vfx = Instantiate(vfxPrefab);
 		var vfxTransform = vfx.transform;
 		vfxTransform.position = transform.position;
 		vfxTransform.parent = null;
@@ -678,7 +678,7 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
-		DOVirtual.DelayedCall(0.5f, () =>
+		DOVirtual.DelayedCall(0.68f, () =>
 		{
 			subShark.gameObject.SetActive(true);
 			subShark.Play("Idle");

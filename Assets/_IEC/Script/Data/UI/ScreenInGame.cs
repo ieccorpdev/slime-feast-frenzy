@@ -9,6 +9,7 @@ using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
 using _IEC.Features.Tutorial;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.Playables;
 
 namespace IEC
 {
@@ -152,13 +153,13 @@ namespace IEC
 
         private void SpawnXpVFX(int xp, Vector3 position)
         {
-            if (xp == 0) return;
-            if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
-            var xpVFX = PlayableController.Instance.prefabConfig.xpVFX.Spawn(transform);
-            xpVFX.Reset();
-            var localPoint = GetLocalAnchorPos(position);
-            xpVFX.SetAnchorPosition(localPoint);
-            xpVFX.Show(xp);
+            //if (xp == 0) return;
+            //if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
+            //var xpVFX = Instantiate(PlayableController.Instance.prefabConfig.xpVFX, this.holderImage);
+            //xpVFX.Reset();
+            //var localPoint = GetLocalAnchorPos(position);
+            //xpVFX.SetAnchorPosition(localPoint);
+            //xpVFX.Show(xp);
         }
 
         private Vector2 GetLocalAnchorPos(Vector3 position)

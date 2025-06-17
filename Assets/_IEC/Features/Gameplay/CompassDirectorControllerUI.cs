@@ -69,13 +69,13 @@ namespace _IEC.Features.Gameplay
 
         private void LoadData(List<BaseItem> baseItems, Transform holeTransform)
         {
-            foreach (var baseItem in baseItems)
-            {
-                var director = PlayConfig.prefabConfig.itemDirectorUI.Spawn(transform);
-                director.Reset();
-                director.LoadData(holeTransform,baseItem);
-                m_ListDirectorUI.Add(director);
-            }
+            //foreach (var baseItem in baseItems)
+            //{
+            //    var director = PlayConfig.prefabConfig.itemDirectorUI.Spawn(transform);
+            //    director.Reset();
+            //    director.LoadData(holeTransform,baseItem);
+            //    m_ListDirectorUI.Add(director);
+            //}
         }
 
         private void TurnOn()
@@ -86,10 +86,10 @@ namespace _IEC.Features.Gameplay
         
         public void TurnOff()
         {
-            foreach (var directorUI in m_ListDirectorUI)
-            {
-                directorUI.gameObject.Recycle();
-            }
+            //foreach (var directorUI in m_ListDirectorUI)
+            //{
+            //    directorUI.gameObject.Recycle();
+            //}
             m_ListDirectorUI.Clear();
             gameObject.SetActive(false);
         }

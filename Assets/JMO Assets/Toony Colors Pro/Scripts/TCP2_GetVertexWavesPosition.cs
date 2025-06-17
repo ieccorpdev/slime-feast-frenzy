@@ -57,38 +57,7 @@ namespace ToonyColorsPro
 			static readonly int _Time = Shader.PropertyToID("_Time");
 			static int LastFrameTimeSampling;
 			static float ShaderTime = 0;
-
-			void LateUpdate()
-			{
-				float time;
-				if (useCustomTime)
-				{
-					time = Time.time;
-				}
-				else
-				{
-					// Avoid fetching the _Time value multiple times per frame
-					if (LastFrameTimeSampling < Time.frameCount)
-					{
-						//ShaderTime = Shader.GetGlobalVector(_Time).y;
-						LastFrameTimeSampling = Time.frameCount;
-					}
-
-					time = ShaderTime;
-				}
-				
-				if (followWaterHeight)
-				{
-					Vector3 worldPosition = GetPositionOnWater_SG2(time, transform.position);
-					transform.position = worldPosition;
-				}
-
-				if (followWaterNormal)
-				{
-					transform.rotation = Quaternion.FromToRotation(upAxis, GetNormalOnWater_SG2(time, transform.position));
-					transform.Rotate(postRotation, Space.Self);
-				}
-			}
+			
 
 			Vector4 CalculateSinePosition(float v1, float v2, Vector4 sinOffsets, Vector4 phaseOffsets, ref float phase)
 			{

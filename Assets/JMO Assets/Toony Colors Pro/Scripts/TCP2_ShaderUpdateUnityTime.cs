@@ -17,12 +17,6 @@ namespace ToonyColorsPro
 		{
 			static readonly int UnityTime = Shader.PropertyToID("unityTime");
 			static readonly int CustomTime = Shader.PropertyToID("_CustomTime");
-
-			void LateUpdate()
-			{
-				Shader.SetGlobalFloat(UnityTime, Time.time);
-				Shader.SetGlobalVector(CustomTime, new Vector4(Time.time / 20f, Time.time, Time.time * 2, Time.time * 3));
-			}
 		}
 	}
 }

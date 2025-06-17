@@ -32,46 +32,37 @@ namespace _IEC.Features.Gameplay
             SpawnMap(level.GetMapData(), levelObjectHolder, config);
         }
 
-        public static void SpawnMap(PrefabMapData prefabMapData, Transform levelObjectHolder)
-        {
-            var mapPrefab = prefabMapData.mapPrefab;
-            var map = mapPrefab.Spawn(levelObjectHolder);
-            map.transform.position = new Vector3(prefabMapData.pos.x, prefabMapData.pos.y, prefabMapData.pos.z);
-            map.transform.eulerAngles = new Vector3(prefabMapData.rot.x, prefabMapData.rot.y, prefabMapData.rot.z);
-            map.transform.localScale = new Vector3(prefabMapData.scale.x, prefabMapData.scale.y, prefabMapData.scale.z);
-        }
-
         public static void SpawnMap(MapData mapData, Transform levelObjectHolder, ThemeConfig config = null)
         {
-            var themeConfig = config;
-            var listTileObjects = new List<GroundElement>();
-            foreach (var tileMapData in mapData.listMapTileData)
-            {
-                var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
-                if (prefab == null) continue;
-                var tileObject = prefab.Spawn();
-                var tileTransform = tileObject.transform;
-                tileTransform.parent = levelObjectHolder;
-                tileTransform.position = new Vector3(tileMapData.position.x, 0, tileMapData.position.y);
-                tileTransform.localScale = new Vector3(tileMapData.scale.x, 1, tileMapData.scale.y);
-                tileTransform.rotation = Quaternion.AngleAxis(tileMapData.rotateAngle, Vector3.up);
-                if (prefab.name.Contains("Cave_Darkness"))
-                {
-                    tileTransform.position -= Vector3.up * 15f;
-                }
+            //var themeConfig = config;
+            //var listTileObjects = new List<GroundElement>();
+            //foreach (var tileMapData in mapData.listMapTileData)
+            //{
+            //    var prefab = themeConfig.GetLevelMapTile(tileMapData.id, mapData.groupSkinId);
+            //    if (prefab == null) continue;
+            //    //var tileObject = prefab.Spawn();
+            //    var tileTransform = tileObject.transform;
+            //    tileTransform.parent = levelObjectHolder;
+            //    tileTransform.position = new Vector3(tileMapData.position.x, 0, tileMapData.position.y);
+            //    tileTransform.localScale = new Vector3(tileMapData.scale.x, 1, tileMapData.scale.y);
+            //    tileTransform.rotation = Quaternion.AngleAxis(tileMapData.rotateAngle, Vector3.up);
+            //    if (prefab.name.Contains("Cave_Darkness"))
+            //    {
+            //        tileTransform.position -= Vector3.up * 15f;
+            //    }
 
-                tileObject.gameObject.layer = tileMapData.GetLayer();
-                var tileCollider = tileObject.GetComponentInChildren<Collider>();
-                if (tileCollider != null &&
-                    tileCollider.gameObject.layer != LayerMask.NameToLayer("GroundValidatorDebug"))
-                {
-                    tileCollider.gameObject.layer = tileMapData.GetLayer();
-                }
+            //    tileObject.gameObject.layer = tileMapData.GetLayer();
+            //    var tileCollider = tileObject.GetComponentInChildren<Collider>();
+            //    if (tileCollider != null &&
+            //        tileCollider.gameObject.layer != LayerMask.NameToLayer("GroundValidatorDebug"))
+            //    {
+            //        tileCollider.gameObject.layer = tileMapData.GetLayer();
+            //    }
 
-                listTileObjects.Add(tileObject);
-            }
+            //    listTileObjects.Add(tileObject);
+            //}
 
-            CheckMapCorners(listTileObjects);
+            //CheckMapCorners(listTileObjects);
         }
 
         private static void CheckMapCorners(List<GroundElement> listTileObjects)
@@ -92,132 +83,7 @@ namespace _IEC.Features.Gameplay
         
 
      
-        public static List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
-        {
-            Debug.Log("SpawnAllItem");
-            itemIds.Clear();
-            var res = new List<BaseItem>();
-            
-            Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
-            foreach (var itemSpawn in listItemData)
-            {
-                var itemDefinition = PlayableController.Instance.GetItemDefinition(itemSpawn.id);
-                if (itemDefinition == null)
-                {
-                    Debug.LogError("Cant find item definition with id: " + itemSpawn.id);
-                    continue;
-                }
-
-                var prefab = itemDefinition.GetPrefab();
-                if (prefab == null)
-                {
-                    Debug.LogError("Cant find prefab with id: " + itemSpawn.id);
-                    continue;
-                }
-
-                bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
-                foreach (var spawnData in itemSpawn.listSpawnDatas)
-                {
-                    var newItem = prefab.Spawn();
-                    var itemComponent = newItem.GetComponent<BaseItem>();
-                    if (itemComponent == null)
-                    {
-                        if (itemDefinition.GetId() == "Coin_Small" || itemDefinition.GetId() == "Coin_Medium")
-                        {
-                            itemComponent = newItem.AddComponent<CoinItem>();
-                        }
-                        else
-                        {
-                            itemComponent = newItem.AddComponent<BaseItem>();
-                        }
-                    }
-
-                    var itemTransform = itemComponent.transform;
-                    
-                    itemTransform.parent = levelObjectHolder;
-                    itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
-
-                    var itemData = itemComponent.ItemData;
-                    if (!string.IsNullOrEmpty(itemData.groupID))
-                    {
-                        GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
-                            .Find(obj => obj.name == itemData.groupID)?.gameObject;
-                        if (groupHolder == null)
-                        {
-                            groupHolder = new GameObject(itemData.groupID);
-                            groupHolder.transform.parent = levelObjectHolder;
-                            groupHolder.transform.position = itemData.groupPosition;
-                        }
-                    
-                        itemTransform.parent = groupHolder.transform;
-                    }
-                    
-                    res.Add(itemComponent);
-                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
-                    waterWave.WaterMaterial = PlayableController.Instance.waveWaterMaterial;
-
-                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
-                    float objectOffset = 0;
-                    if (newLogicWhirlpool)
-                    {
-                        objectOffset = -objectSize / 2;
-                    }
-                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset ;
-                    #if UNITY_EDITOR
-                    waterWave.OnValidate();
-                    #endif
-                    itemComponent.posOnWater = waterWave; 
-                    itemIds.Add(itemSpawn.id);
-                }
-                
-            }
-
-            return res;
-        }
-
-        public static List<BaseItem> SpawnBoosterItems(int count, Transform levelObjectHolder,
-            BoosterData boosterData)
-        {
-            var res = new List<BaseItem>();
-            var prefab = boosterData.itemDefinition.GetPrefab();
-            if (prefab == null)
-            {
-                return res;
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                var newItem = prefab.Spawn();
-                var itemComponent = newItem.GetComponent<BaseBoosterItem>();
-                if (itemComponent == null)
-                {
-                    itemComponent = newItem.AddComponent<BaseBoosterItem>();
-                }
-                
-                itemComponent.SetBoosterData(boosterData);
-                
-                var itemData = new ItemData()
-                {
-                    itemId = boosterData.itemDefinition.GetId(),
-                    position = Vector3.zero, //Do random pos later
-                    eulerAngle = Vector3.zero,
-                    localScale = Vector3.one,
-                    isStartKinematic =  true,
-                };
-
-                var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
-                itemComponent.LoadData(itemData, boosterData.itemDefinition);
-                res.Add(itemComponent);
-                itemIds.Add(itemData.itemId);
-            }
-
-            return res;
-        }
         
-       
-
-    
 
         public static List<BombItem> SpawnAllBomb(LevelDataSO levelConfigModel, List<BaseItem> allItemInMap,
             Transform levelObjectHolder, PrefabConfig config = null)

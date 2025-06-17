@@ -18,7 +18,6 @@ namespace _IEC.Features.Gameplay
             });
             
             DisableAllCollider();
-            gameObject.Recycle();
         }
     }
 }

@@ -197,15 +197,6 @@ namespace EnhancedScrollerDemos.SnappingDemo
             }
         }
 
-        void LateUpdate()
-        {
-            // We set the playing state here so that the game
-            // doesn't show a winner when it starts up (because
-            // there will always be three of a kind at startup). 
-            if (GameState == GameStateEnum.Initializing)
-                GameState = GameStateEnum.Playing;
-        }
-
         /// <summary>
         /// This function is linked in the editor to the Pull Lever Button's click event
         /// </summary>

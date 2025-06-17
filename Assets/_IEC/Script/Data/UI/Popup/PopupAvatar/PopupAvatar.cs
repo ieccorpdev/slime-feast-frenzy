@@ -55,27 +55,6 @@ namespace IEC
             {
                 PlayerData.playerAvatarSpriteName = PlayConfig.playerAvatarConfig.GetAvatarSprite("").name;
             }
-            
-            for (int i = 0; i < PlayConfig.playerAvatarConfig.listAvatarSprites.Count; i++)
-            {
-                if (i >= listAvatarSelections.Count)
-                {
-                    listAvatarSelections.Add(ObjectPool.Spawn(avatarSelectionPrefab, avatarSelectionContainer));
-                }
-
-                listAvatarSelections[i].transform.localScale = Vector3.one;
-                listAvatarSelections[i].Init(PlayConfig.playerAvatarConfig.listAvatarSprites[i]);
-                
-                if(PlayerData.playerAvatarSpriteName.Equals(PlayConfig.playerAvatarConfig.listAvatarSprites[i].name))
-                {
-                    listAvatarSelections[i].SetSelectedDisplay(true);
-                    CurrentSelectedAvatar = listAvatarSelections[i];
-                }
-                else
-                {
-                    listAvatarSelections[i].SetSelectedDisplay(false);
-                }
-            }
         }
         
 

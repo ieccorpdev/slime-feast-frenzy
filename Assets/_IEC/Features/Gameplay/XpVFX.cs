@@ -28,8 +28,8 @@ namespace _IEC.Features.Gameplay
 
         public void Show(int xp)
         {
+            this.gameObject.SetActive(true);
             textUI.text = $"+{xp}";
-            gameObject.SetActive(true);
             //var currentAnchorPos = rectTransform.anchoredPosition;
             //var targetAnchorPos = anchorPosOffset + currentAnchorPos;
 
@@ -64,14 +64,14 @@ namespace _IEC.Features.Gameplay
             // yield return StartCoroutine(ScaleTransform(transform, Vector3.one * 0.5f, time, easeColor));
 
             // Callback like AppendCallback
-            gameObject.Recycle(); // assuming Recycle() is your pooling logic
+            Destroy(gameObject); 
         }
 
         private IEnumerator MoveRectTransform(RectTransform rect, Vector2 target, float duration, AnimationCurve ease)
         {
             Vector2 start = rect.anchoredPosition;
             float elapsed = 0f;
-
+            textUI.color = new Color32((byte)255, (byte)255, (byte)255, (byte)255);
             while (elapsed < duration)
             {
                 float t = elapsed / duration;

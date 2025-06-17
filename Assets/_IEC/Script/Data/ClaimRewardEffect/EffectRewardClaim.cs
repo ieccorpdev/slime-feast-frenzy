@@ -64,7 +64,7 @@ namespace IEC
 
                 if (i >= effectCurrency.Count)
                 {
-                    effectCurrency.Add(ObjectPool.Spawn(baseObjectToSpawn.gameObject, transform).GetComponent<RectTransform>());
+                    effectCurrency.Add(Instantiate(baseObjectToSpawn.gameObject, transform).GetComponent<RectTransform>());
                 }
                 
                 currencyObj = effectCurrency[i];

@@ -2006,21 +2006,6 @@ namespace EnhancedUI.EnhancedScroller
 		/// <summary>
         /// Fired at the end of the frame.
         /// </summary>
-        void LateUpdate()
-        {
-			// if maxVelocity is not zero, we can set the speed cap based on the scroll direction
-			if (maxVelocity > 0)
-			{
-				if (scrollDirection == ScrollDirectionEnum.Horizontal)
-				{
-					Velocity = new Vector2(Mathf.Clamp(Mathf.Abs(Velocity.x), 0, maxVelocity) * Mathf.Sign(Velocity.x), Velocity.y);
-				}
-				else
-				{
-					Velocity = new Vector2(Velocity.x, Mathf.Clamp(Mathf.Abs(Velocity.y), 0, maxVelocity) * Mathf.Sign(Velocity.y));
-				}
-			}
-        }
 
         void OnEnable()
         {

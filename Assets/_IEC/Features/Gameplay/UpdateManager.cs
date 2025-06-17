@@ -33,13 +33,6 @@ public class UpdateManager : MonoBehaviour
             managedFixedUpdates[i].ManagedFixedUpdate();
     }
 
-    private void LateUpdate()
-    {
-        int count = managedLateUpdates.Count;
-        for (int i = 0; i < count; i++)
-            managedLateUpdates[i].ManagedLateUpdate();
-    }
-
     // Đăng ký và huỷ đăng ký Update
     public void RegisterUpdate(IManagedUpdate obj)
     {

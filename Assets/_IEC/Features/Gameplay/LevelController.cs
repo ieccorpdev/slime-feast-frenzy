@@ -97,6 +97,87 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.None);
         }
 
+        public List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
+        {
+            Debug.Log("SpawnAllItem");
+            var res = new List<BaseItem>();
+
+            Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
+            foreach (var itemSpawn in listItemData)
+            {
+                var itemDefinition = PlayableController.Instance.GetItemDefinition(itemSpawn.id);
+                if (itemDefinition == null)
+                {
+                    Debug.LogError("Cant find item definition with id: " + itemSpawn.id);
+                    continue;
+                }
+
+                var prefab = itemDefinition.GetPrefab();
+                if (prefab == null)
+                {
+                    Debug.LogError("Cant find prefab with id: " + itemSpawn.id);
+                    continue;
+                }
+
+                bool newLogicWhirlpool = Pool.Get<Game>().usingNewLogicPull;
+                foreach (var spawnData in itemSpawn.listSpawnDatas)
+                {
+                    var newItem = Instantiate(prefab);
+                    var itemComponent = newItem.GetComponent<BaseItem>();
+                    if (itemComponent == null)
+                    {
+                        if (itemDefinition.GetId() == "Coin_Small" || itemDefinition.GetId() == "Coin_Medium")
+                        {
+                            itemComponent = newItem.AddComponent<CoinItem>();
+                        }
+                        else
+                        {
+                            itemComponent = newItem.AddComponent<BaseItem>();
+                        }
+                    }
+
+                    var itemTransform = itemComponent.transform;
+
+                    itemTransform.parent = levelObjectHolder;
+                    itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
+
+                    var itemData = itemComponent.ItemData;
+                    if (!string.IsNullOrEmpty(itemData.groupID))
+                    {
+                        GameObject groupHolder = levelObjectHolder.GetComponentsInChildren<Transform>().ToList()
+                            .Find(obj => obj.name == itemData.groupID)?.gameObject;
+                        if (groupHolder == null)
+                        {
+                            groupHolder = new GameObject(itemData.groupID);
+                            groupHolder.transform.parent = levelObjectHolder;
+                            groupHolder.transform.position = itemData.groupPosition;
+                        }
+
+                        itemTransform.parent = groupHolder.transform;
+                    }
+
+                    res.Add(itemComponent);
+                    TCP2_GetPosOnWater waterWave = newItem.AddComponent<TCP2_GetPosOnWater>();
+                    waterWave.WaterMaterial = PlayableController.Instance.waveWaterMaterial;
+
+                    float objectSize = itemComponent.MyRenderer.bounds.size.y;
+                    float objectOffset = 0;
+                    if (newLogicWhirlpool)
+                    {
+                        objectOffset = -objectSize / 2;
+                    }
+                    waterWave.heightOffset = spawnData.ToItemData(itemSpawn.id).position.y - objectOffset;
+#if UNITY_EDITOR
+                    waterWave.OnValidate();
+#endif
+                    itemComponent.posOnWater = waterWave;
+                }
+
+            }
+
+            return res;
+        }
+
         public void LoadLevel(int level)
         {
             m_Level = level;
@@ -105,7 +186,7 @@ namespace _IEC.Features.Gameplay
 
             m_AllItems.Clear();
             var levelSpawnData = m_LevelConfig.levelSpawnData;
-            m_AllItems = LevelHelper.SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
+            m_AllItems = SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
                 LevelHelper.SpawnMap(m_LevelConfig, levelObjectHolder);
@@ -120,6 +201,7 @@ namespace _IEC.Features.Gameplay
             playerHole.HideLevelText();
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
+            PlayableController.Instance.ClearCacheData();
         }
 
         public void StartPlay()
@@ -458,14 +540,12 @@ namespace _IEC.Features.Gameplay
             for (int i = childCount - 1; i >= 0; i--)
             {
                 var child = levelObjectHolder.transform.GetChild(i);
-                child.gameObject.Recycle();
             }
 
             childCount = allItemHolder.transform.childCount;
             for (int i = childCount - 1; i >= 0; i--)
             {
                 var child = allItemHolder.transform.GetChild(i);
-                child.gameObject.Recycle();
             }
         }
 

@@ -13,16 +13,10 @@ MonoBehaviour:
   m_Name: GamePlayConfig
   m_EditorClassIdentifier: 
   helperConfigs:
-  - id: 3
-    activeTime: 10
-    startNumber: 4
-    unlockLevel: 4
-    price: 1800
-    numberBuyingResult: 3
   - id: 1
     activeTime: 10
     startNumber: 4
-    unlockLevel: 6
+    unlockLevel: 4
     price: 1800
     numberBuyingResult: 3
   - id: 4
@@ -31,10 +25,16 @@ MonoBehaviour:
     unlockLevel: 8
     price: 1800
     numberBuyingResult: 3
-  - id: 2
+  - id: 3
     activeTime: 10
     startNumber: 4
-    unlockLevel: 10
+    unlockLevel: 12
+    price: 1800
+    numberBuyingResult: 3
+  - id: 2
+    activeTime: 30
+    startNumber: 4
+    unlockLevel: 16
     price: 1800
     numberBuyingResult: 3
   scaleUpHelperAdditionalSize: 1.5
@@ -43,6 +43,16 @@ MonoBehaviour:
   reviveTimeForTimer: 60
   dangerousTime: 0.25
   warningTime: 0.6
-  dangerousTimeColor: {r: 0.8235295, g: 0.19215688, b: 0.17254902, a: 1}
-  warningTimeColor: {r: 0.91372555, g: 0.56078434, b: 0.15686275, a: 1}
-  safeTimeColor: {r: 0.2509804, g: 0.8862746, b: 0.29803923, a: 1}
+  dangerousTimeColor: {r: 0.95294124, g: 0.23137257, b: 0.20000002, a: 1}
+  warningTimeColor: {r: 0.96470594, g: 0.5882353, b: 0.16078432, a: 1}
+  safeTimeColor: {r: 0.41960788, g: 0.95294124, b: 0.18039216, a: 1}
+  ItemDrag: 2.2
+  ItemAngularDrag: 4
+  amplitude: 0
+  damping: 0.8
+  frequency: 0.8
+  minAmplitude: 0.001
+  amplitudeSmoothSpeed: 3
+  sizeAmplitudeMultiplier: 1
+  sizeMovementLimitMultiplier: 1
+  levelTimeBonusData: {fileID: 11400000, guid: dae40e95b58038a42b2648db5cfda282, type: 2}

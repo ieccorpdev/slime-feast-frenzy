@@ -52,35 +52,6 @@ namespace IEC
                 }
             }
         }
-
-        public void SpawnDebugObject(int start, int end, Transform levelObjectHolder)
-        {
-            var itemSpawnCount = 0;
-            for (var i = start; i < end; i++)
-            {
-                var itemDefinition = itemDefinitionsInLevelConfig[i];
-                var newItem = itemDefinition.GetPrefab().Spawn();
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
-                {
-                    itemComponent = newItem.AddComponent<BaseItem>();
-                }
-
-                var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
-                var row = itemSpawnCount / columns;
-                var column = itemSpawnCount % columns;
-                
-                itemComponent.LoadData(
-                    new _IEC.Features.Gameplay.ItemData
-                    {
-                        itemId = itemDefinition.GetId(),
-                        position = startPosition + new Vector3(column * gridOffset.x, 0, row * gridOffset.z),
-                        isStartKinematic = true
-                    },
-                    itemDefinition);
-                itemSpawnCount++;
-            }
-        }
+        
     }
 }

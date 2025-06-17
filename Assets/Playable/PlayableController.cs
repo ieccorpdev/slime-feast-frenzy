@@ -34,11 +34,11 @@ public class PlayableController : _BaseBehaviour
     // public LevelDataContainerSO LevelDataSO;
     //
     // [SerializeField] private GameObject stack;
-     [Header("Playable Config")]
-     //[LunaPlaygroundField("Level", 0, "Config")]
-     public int level;
-
-     public PrefabConfig prefabConfig;
+    [Header("Playable Config")]
+    [LunaPlaygroundField("Fixed Timestep", 2, "Config")]
+    public float fixedTimeStep = 0.12f;
+    public int level;
+    public PrefabConfig prefabConfig;
 
      // [LunaPlaygroundField("Limit Time", 0, "Config")]
     // public float limitTime;
@@ -146,6 +146,10 @@ public class PlayableController : _BaseBehaviour
         }
         EditorUtility.SetDirty(this);
     }
+    private void OnValidate()
+    {
+        InitItemDefinition();
+    }
 #endif
     public ItemDefinition GetItemDefinition(string itemId)
     {
@@ -156,6 +160,8 @@ public class PlayableController : _BaseBehaviour
     public void Awake()
     {
         instance = this;
+        Application.targetFrameRate = 60;
+        Time.fixedDeltaTime = fixedTimeStep;
     }
 
     private void Start()
@@ -343,6 +349,7 @@ public class PlayableController : _BaseBehaviour
     {
         Luna.Unity.Playable.InstallFullGame();
         Luna.Unity.LifeCycle.GameEnded();
+        Debug.Log("Download started");
     }
 
     public void OnMove()
@@ -355,4 +362,11 @@ public class PlayableController : _BaseBehaviour
         //     PlayableStarted = true;
 
     }
+
+    public void ClearCacheData()
+    {
+        levelData = null;
+    }
+
+    
 }

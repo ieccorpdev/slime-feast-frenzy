@@ -195,19 +195,6 @@ namespace IEC
             }
         }
 
-        void LateUpdate()
-        {
-            if (m_LateUpdateEvents == null) return;
-            float deltaTime = Time.deltaTime;
-            for (int i = 0; i < m_LateUpdateEvents.Length; i++)
-            {
-                if (m_LateUpdateEvents[i].IsActive())
-                {
-                    m_LateUpdateEvents[i].BehaviourLateUpdate(deltaTime);
-                }
-            }
-        }
-
         void OnApplicationPause(bool pause)
         {
             if (m_PauseAppEvents != null)

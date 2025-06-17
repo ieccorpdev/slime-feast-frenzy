@@ -48,7 +48,7 @@ namespace _IEC.Features.Gameplay
         {
             var objectiveUI = GetLevelObjectiveUI(itemId);
             //if (objectiveUI.IsComplete()) return;
-            var objectiveVfx = PlayableController.Instance.prefabConfig.levelObjectiveVfx.Spawn(vfxHolder);
+            var objectiveVfx = Instantiate(PlayableController.Instance.prefabConfig.levelObjectiveVfx, this.vfxHolder);
             objectiveVfx.Reset();
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());
@@ -68,7 +68,8 @@ namespace _IEC.Features.Gameplay
                 .AppendCallback(() =>
                 {
                     objectiveUI.SetNumber(newNumber, isCompleted);
-                    objectiveVfx.Recycle();
+                    Destroy(objectiveVfx.gameObject);
+                    //objectiveVfx.Recycle();
                 });
         }
 
