@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Common.Extension;
@@ -10,8 +11,9 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 
-public class Hole : MonoBehaviour
+public class Hole : _BaseBehaviour
 {
+	public HoleBombShield holeBombShield;
 	[SerializeField] private Transform holeGraphics;
 	[SerializeField] private Transform holeCanvases;
 	
@@ -25,11 +27,13 @@ public class Hole : MonoBehaviour
 	[SerializeField] private HoleMagnet holeMagnet;
 	[Header("VFX")] [SerializeField] private ParticleSystem levelUpVfx;
 	[SerializeField] private ParticleSystem sizeUpVfx;
+	[SerializeField] private ParticleSystem radialCompassVfx;
 	[SerializeField] private ParticleSystem magnetVfx;
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
-	[SerializeField] private ParticleSystem waterSplashFx;
+	public ParticleSystem waterSplashFx;
+	//[SerializeField] private ParticleSystem speedLinesVFX;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -37,19 +41,30 @@ public class Hole : MonoBehaviour
 	[SerializeField]public Animator sharkBiteAnimator;
 	[SerializeField]private Transform characterParent;
 	[SerializeField]private Transform sharkBiteParent;
-	protected static InGamePlayGroup GamePlay => Pool.Get<InGamePlayGroup>();
-
+	[Header("ThemeConfig")]
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
-
+	private float m_AdditionalSizeFromCharacterTrait = 1;
+	private float m_AdditionalSpeedFromCharacterTrait = 1;
+	private float m_AdditionalSizeFromCharacterPower = 1;
+	//Increase size while idle
+	private float m_characterIdleSizeIncrease = 0f;
+	private float m_characterIdleSizeIncreaseInterval = 1f;
+	private float m_currentIntervalIdleSizeIncrease = 0f;
+	private float m_characterMaxSize;
+	
+	private float defaultPosYCharacter = -0f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
-	
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
-	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
+	private string WaterMagnetEffect => "_WhirlpoolRadius";
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) * m_AdditionalSpeedFromCharacterTrait 
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0));
 
-	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
+	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) 
+	                     * m_AdditionalSizeFromCharacterTrait 
+	                     * m_AdditionalSizeFromCharacterPower
+	                     + m_AdditionalSize;
 
 	public int Level => m_Level;
 
@@ -58,9 +73,11 @@ public class Hole : MonoBehaviour
 	private float _baseSpeed;
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
-
 	private float _speedBoosterIncrease;
 	private float timeEffectSpeedBooster;
+
+	private float timeAdditionalCamSize;
+	private float _additionalCamSize;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -70,12 +87,20 @@ public class Hole : MonoBehaviour
 	public HoleConfig Settings => m_settings;
 	public Animator subShark;
 
+	private bool _isChangedToCurrentCharacter = false;
+	private bool _isInChangeCharacterAnim = false;
+	private Coroutine _changeCharacterCoroutine;
+
 	private void Awake()
 	{
-		//m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
 		_defaultScaleCanvas = holeCanvases.localScale;
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
+		
+		m_characterMaxSize = CalculateIndices(Settings.BaseSize, Settings.GetListLevel().Length - 1,
+			                     Settings.SizeIncreasePerLevel)
+		                     * m_AdditionalSizeFromCharacterTrait
+		                     + m_AdditionalSize;
 		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
@@ -88,6 +113,9 @@ public class Hole : MonoBehaviour
 	public bool readyForSharkBite;
 	public void Update()
 	{
+		if (_isInChangeCharacterAnim)
+			return;
+		
 		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
 		{
 			if (timeEffectSpeedBooster > 0)
@@ -95,16 +123,103 @@ public class Hole : MonoBehaviour
 				timeEffectSpeedBooster =
 					Mathf.Clamp(timeEffectSpeedBooster - Time.deltaTime, 0, timeEffectSpeedBooster);
 			}
+			else
+			{
+				//if (speedLinesVFX.isPlaying)
+				//{
+				//	speedLinesVFX.Stop();
+				//} 
+			}
+
+			if (timeAdditionalCamSize > 0)
+			{
+				timeAdditionalCamSize =
+					Mathf.Clamp(timeAdditionalCamSize - Time.deltaTime, 0, timeAdditionalCamSize);
+
+				if (timeAdditionalCamSize <= 0)
+				{
+					this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+					{
+						target =  transform,
+						//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+						// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+						//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+						cameraDistance = GetCamSize()
+					});
+				}
+			}
+
+			CheckIncreaseCharacterSizeOnIdle();
 		}
 
 		CheckSharkForm();
 		UpdateGravityBySpeed();
 	}
 
+	private void CheckIncreaseCharacterSizeOnIdle()
+	{
+		if (m_characterIdleSizeIncrease < Mathf.Epsilon)
+			return;
+		
+		m_currentIntervalIdleSizeIncrease += Time.deltaTime;
+		if (m_currentIntervalIdleSizeIncrease >= m_characterIdleSizeIncreaseInterval)
+		{
+			m_currentIntervalIdleSizeIncrease = 0f;
+			
+			if (!holeController.IsMoving)
+			{
+				if (Size <= m_characterMaxSize)
+				{
+					m_AdditionalSizeFromCharacterPower *= m_characterIdleSizeIncrease;
+					if (m_AdditionalSizeFromCharacterPower > 1f)
+					{
+
+						SetSize(Size, true, null);
+					}
+				}
+			}
+			else
+			{
+				// if (m_AdditionalSizeFromCharacterPower > 1f)
+				// {
+				// 	m_AdditionalSizeFromCharacterPower = 1f;
+				// 	ResetSize();
+				// }
+
+				if (Mathf.Abs(m_AdditionalSizeFromCharacterPower - 1f) > Mathf.Epsilon)
+				{
+					m_AdditionalSizeFromCharacterPower /= m_characterIdleSizeIncrease;
+					m_AdditionalSizeFromCharacterPower = Mathf.Max(m_AdditionalSizeFromCharacterPower, 1f);
+					
+					if (m_AdditionalSizeFromCharacterPower < 1f)
+						m_AdditionalSizeFromCharacterPower = 1f;
+					
+					SetSize(Size, true, null, false);
+				}
+			}
+			
+			this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET, new UpdateCameraTarget()
+			{
+				target = transform,
+				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+				cameraDistance = GetCamSize()
+			});
+		}
+	}
+
+	private float GetCamSize()
+	{
+		return CalculateIndices(Settings.BaseCameraDistance, m_Level,
+			       Settings.CameraDistanceIncreasePerLevel)
+		       * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0)) *
+		       Mathf.Max((m_AdditionalSizeFromCharacterPower / 2f), 1f);
+	}
+
 	private void UpdateGravityBySpeed()
 	{
 		//This function must stay in another class
-		Physics.gravity = new Vector3(0, -30+(Speed-4 *5)  , 0);
+		float baseGravity = -30 -(Speed - 4) * 5;
+		Physics.gravity = new Vector3(0, baseGravity , 0);
 	}
 	public void TriggerdBite()
 	{
@@ -122,7 +237,7 @@ public class Hole : MonoBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
-		}
+        }
 	}
 	private void CheckSharkForm()
 	{
@@ -153,7 +268,7 @@ public class Hole : MonoBehaviour
 
 	public float GetDistanceToObject()
 	{
-		return Speed * 1.1f  + Level * 0.4f;
+		return (Speed * 1.1f  + Level * 0.4f) * m_AdditionalSizeFromCharacterTrait * m_AdditionalSizeFromCharacterPower;
 	}
 	void OnCollectLightningBooster(object param)
 	{
@@ -168,6 +283,7 @@ public class Hole : MonoBehaviour
 	{
 		_speedBoosterIncrease = boosterIncrease;
 		timeEffectSpeedBooster += timeEffect;
+		//speedLinesVFX.Play();
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -186,6 +302,14 @@ public class Hole : MonoBehaviour
 		}
 	}
 
+	public void StartScaleByHelper()
+	{
+		SetSize(Size,true,null);
+	}
+	public void StartCompassHelper()
+	{
+		radialCompassVfx.Play();
+	}
 
 	public void StopScaleByHelper()
 	{
@@ -193,7 +317,10 @@ public class Hole : MonoBehaviour
 		m_AdditionalSize = 0;
 		SetSize(Size,true,null);
 	}
-	
+	public void StopCompassHelper()
+	{
+		radialCompassVfx.Stop();
+	}
 	public void SetLevel(int level, bool lerpSize = false)
 	{
 		gameObject.SetActive(true);
@@ -206,14 +333,17 @@ public class Hole : MonoBehaviour
 			this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
 			{
 				target =  myTransform,
-				cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+				// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel) 
+				//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+				cameraDistance = GetCamSize()
 			});
 		});
 		SetXp(0,false);
 
 	}
 
-	public void SetSize(float targetSize,bool isLerpSize,Action callback)
+	public void SetSize(float targetSize,bool isLerpSize,Action callback, bool playVfx = true)
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
@@ -221,7 +351,10 @@ public class Hole : MonoBehaviour
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
-			sizeUpVfx.Play();
+			if(playVfx)
+				sizeUpVfx.Play();
+			
+			//levelUpVfx.Play();
 			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
 				callback?.Invoke();
@@ -238,7 +371,9 @@ public class Hole : MonoBehaviour
 	
 	#if UNITY_EDITOR
 	
+	[PropertySpace(30)]
 	
+	[Button("Reset Level")]
 	public void DebugResetLevel()
 	{
 		//LevelUp(0, 1);
@@ -248,11 +383,15 @@ public class Hole : MonoBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 
-	
+	private bool LevelMax => (Settings.UseSlowXp
+		? Level >= Settings.RequiredXpPerLevelSlow.Length - 1
+		: Level >= Settings.RequiredXpPerLevel.Length - 1);
+	[ShowIf("@!LevelMax")]
+	[Button("Level Up")]
 	public void DebugLevelUp()
 	{
 		//LevelUp(0, 1);
@@ -262,10 +401,12 @@ public class Hole : MonoBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 	
+	[ShowIf("@(Level > 0)")]
+	[Button("Level Down")]
 	public void DebugLevelDown()
 	{
 		//LevelUp(0, -1);
@@ -274,7 +415,7 @@ public class Hole : MonoBehaviour
 		{
 			target =  transform,
 			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-			//cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
+			cameraDistance = CalculateIndices(Settings.BaseCameraDistance,Level,Settings.CameraDistanceIncreasePerLevel)
 		});
 	}
 	
@@ -284,10 +425,9 @@ public class Hole : MonoBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-		
-		//SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
-		//VibrationController.Vibrate(HapticTypes.Selection);
-	}
+        //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
+        //VibrationController.Vibrate(HapticTypes.Selection);
+    }
 
 	public void SetXp(int xp,bool isLerp)
 	{
@@ -304,6 +444,58 @@ public class Hole : MonoBehaviour
 	public void AddXp(int xp)
 	{
 		SetXp(m_Xp + xp,true);
+	}
+
+	public int GetCurrentXp()
+	{
+		int xp = m_Xp;
+		for (int i = 0; i < m_Level; i++)
+		{
+			xp += Settings.GetRequiredXp(i, false);
+		}
+		return xp;
+	}
+
+	public void DecreaseXp(int xp)
+	{
+		var totalDecreaseXp = xp;
+
+		while (totalDecreaseXp > 0)
+		{
+			if (totalDecreaseXp > m_Xp)
+			{
+				totalDecreaseXp -= m_Xp;
+				if(m_Level > 1)
+					m_Level--;
+				SetLevel(Level);
+				
+				if(m_Level == 1)
+				{
+					//totalDecreaseXp = 0;
+					if (m_Xp > totalDecreaseXp)
+					{
+						SetXp(m_Xp - totalDecreaseXp,true);
+					}
+					else
+					{
+						SetXp(0,true);
+					}
+
+					totalDecreaseXp = 0;
+				}
+				else
+				{
+					//SetXp(Settings.GetRequiredXp(Level, false) - 1, true);
+					//SetXp(0,true);
+					m_Xp = Settings.GetRequiredXp(Level, false);
+				}
+			}
+			else
+			{
+				SetXp(m_Xp - totalDecreaseXp,true);
+				totalDecreaseXp = 0;
+			}
+		}
 	}
 	
 	public void SetActive(bool active)
@@ -328,18 +520,21 @@ public class Hole : MonoBehaviour
 		magnetVfx.Stop();
 	}
 
-	public void CollectABomb()
+	public void CollectABomb(bool isDoAnim = true)
 	{
 		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
-		DOTween.Sequence()
-			.AppendInterval(0.2f)
-			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.InsertCallback(0.3f, () =>
-			{
-				//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
-			});
+		//SpawnVfx(deathVfx);
+		if (isDoAnim)
+		{
+			DOTween.Sequence()
+				.AppendInterval(0.2f)
+				.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.InsertCallback(0.3f, () =>
+				{
+					//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
+				});
+		}
 	}
 
 	public void ResetSize()
@@ -348,6 +543,14 @@ public class Hole : MonoBehaviour
 		// Debug.LogError("Level: " + Level);
 		m_AdditionalSize = 0;
 		SetSize(Size,false,null);
+		this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+			//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+			cameraDistance = GetCamSize()
+		});
 		holeGraphics.localScale = _defaultScaleGraphic;
 		holeCanvases.localScale = _defaultScaleCanvas;
 	}
@@ -373,6 +576,7 @@ public class Hole : MonoBehaviour
 		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
+		_isChangedToCurrentCharacter = false;
 		ResetSize();
 		m_Xp = 0;
 		xpBar.SetAmount(m_Xp,false);
@@ -401,10 +605,12 @@ public class Hole : MonoBehaviour
 	{
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
+		levelUpVfx.Stop();
+		//speedLinesVFX.Stop();
 	}
 
 	#region Character Animation
-	public string SHARK_TWEEN_MOVE_ID => characterParent.gameObject.GetInstanceID() + "_CHARACTER_ID_MOVE";
+	public string SHARK_TWEEN_HOLE_SCALE => characterParent.gameObject.GetInstanceID() + "_HOLE_SCALE";
 	public void ResetCharacter()
 	{
 		onInitAnimNewGame = false;
@@ -412,7 +618,12 @@ public class Hole : MonoBehaviour
 		holePipe.gameObject.SetActive(false);
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
+		
+		m_characterIdleSizeIncrease = 0f;
+		m_currentIntervalIdleSizeIncrease = 0f;
+		m_characterIdleSizeIncreaseInterval = 1f;
+		
 		StartAnimationCharacter();
 	}
 
@@ -421,7 +632,7 @@ public class Hole : MonoBehaviour
 		var obj = GetObjectInDistanceAnimation();
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		readyForSharkBite = true;
 		if (obj != null)//Have object near
 		{
@@ -445,25 +656,27 @@ public class Hole : MonoBehaviour
 
 	public void PlayEffectSharkDriveIn()
 	{
+		
 		//Apply position because animation diff with pos
 		waterSplashFx.Play();
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
 		holePipe.gameObject.SetActive(true);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 	}
 	public void EndAnimationCharacter()
 	{
 		characterParent.gameObject.SetActive(false);
 		onInitAnimNewGame = true;
 		readyForSharkBite = true;
-	}
+    }
 	public void TurnHoleToShark()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.zero, 0.5f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.zero, 0.5f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterParent.gameObject.SetActive(true);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
 		DOVirtual.DelayedCall(0.5f, () =>
 		{
@@ -474,11 +687,11 @@ public class Hole : MonoBehaviour
 	public void TurnSharkToHole()
 	{
 		readyForSharkBite = false;
-		DOTween.Kill(SHARK_TWEEN_MOVE_ID);
-		holePipe.DOScale(Vector3.one, 1.0f);
+		DOTween.Kill(SHARK_TWEEN_HOLE_SCALE);
+		holePipe.DOScale(Vector3.one, 1.0f).SetId(SHARK_TWEEN_HOLE_SCALE);
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
-		characterAnimator.transform.localPosition = new Vector3(0, -0.9f, 0);
+		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("Dive Into Water 0");
         subShark.Play("Dive Into Water");
     }

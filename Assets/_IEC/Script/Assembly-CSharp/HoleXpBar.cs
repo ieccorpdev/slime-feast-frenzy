@@ -27,7 +27,14 @@ public class HoleXpBar : MonoBehaviour
 	
 	public void SetAmount(float amount,bool isLerp)
 	{
-		mainImage.fillAmount = amount;
+		if (isLerp)
+		{
+			mainImage.DOFillAmount(amount, 0.2f);
+		}
+		else
+		{
+			mainImage.fillAmount = amount;
+		}
 		
 		transform.localScale = Mathf.Lerp(minScale, maxScale, amount) * (Vector3.right + Vector3.up) + Vector3.forward;
 	}
