@@ -20,7 +20,7 @@ namespace IEC
             var spawnData = listShardObjectSpawnData
                 .OrderBy(data => data.levelStartSpawn)
                 .LastOrDefault(data => data.levelStartSpawn <= level);
-            //return 1;
+            return 1;
             return GetRandomWithZeroBias(spawnData?.dropChance ?? 0);
         }
 
