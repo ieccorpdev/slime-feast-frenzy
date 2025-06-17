@@ -35,6 +35,16 @@ namespace IEC
                     });
             }
         }
+        
+        public CharacterRecommendData GetCharacterData(string name)
+        {
+            var data = listCharacterRecommendData.Find(data => data.characterName.Equals(name));
+
+            if (data == null)
+                return null;
+
+            return data;
+        }
 
         public CharacterRecommendData GetRecommendedCharacter(int level)
         {
