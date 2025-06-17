@@ -154,18 +154,15 @@ namespace IEC
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
-                // popupQueue.Enqueue(new PopupData(
-                //     Locator.Main.ClaimBonusRewardPanel,
-                //     () =>
-                //     {
-                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                //     }, 
-                //     ShowNext));
+
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
                     {
                         listDataReward = new List<Reward>(listReward),
+                        actionClose = () =>
+                        {
+                            Locator.Main.PopupProgressReward.progressBar.CheckShowTrophy();
+                        }
                     });
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }

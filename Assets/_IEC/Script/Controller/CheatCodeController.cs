@@ -412,7 +412,10 @@ namespace IEC
                 while (PlayerData.CheckClaimProgressReward(reward))
                 {
                     System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                    Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, () =>
+                    {
+                       Locator.Main.PopupProgressReward.progressBar.CheckShowTrophy();
+                    },true);
                     Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                     reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
                 }
