@@ -136,7 +136,7 @@ namespace IEC
         public void SetLevelTrophy(int level)
         {
             var levelTrophy = GetTrophyDataConfig(TrophyType.GrandVoyage);
-            levelTrophy.timeCompleted = level;
+            levelTrophy.timeCompleted = level-1;
         }
         public TrophyDataConfig GetTrophyDataConfig(TrophyType type)
         {
