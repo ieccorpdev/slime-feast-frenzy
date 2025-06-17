@@ -12,7 +12,8 @@ public class TrophyRewardConfig : ScriptableObject
     public TroyphyReward GetReward(TrophyType type)
     {
         var objF = listTrophyReward.Find(x => x.type == type);
-        TroyphyReward result = new TroyphyReward(objF.type,objF.listSpiteTrophy,objF.listTimeToCollect,objF.listTrophyReward);
+        //TroyphyReward result = new TroyphyReward(objF.type,objF.listSpiteTrophy,objF.listTimeToCollect,objF.listTrophyReward);
+        TroyphyReward result = objF.DeepCopy();
         return result;
     }
 }
@@ -25,6 +26,10 @@ public class TroyphyReward
         this.listTimeToCollect = listTimeToCollect;
         this.listSpiteTrophy = listSpiteTrophy;
         this.listTrophyReward = listTrophyReward;
+    }
+    public TroyphyReward DeepCopy()
+    {
+        return (TroyphyReward)MemberwiseClone();
     }
 
     public Sprite GetSpriteByIndex(int index)
