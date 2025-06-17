@@ -127,7 +127,7 @@ namespace IEC
             var listSpriteData = Config.trophyRewardConfig.GetReward(type).listSpiteTrophy;
             for (int i = 0; i < listSpriteTrophy.Count; i++)
             {
-                listSpriteTrophy[i].tick.gameObject.SetActive(i <= index);
+                listSpriteTrophy[i].tick.gameObject.SetActive(i <= index- (state == ItemTrophyState.New ? 1:0));
                 listSpriteTrophy[i].trophy.sprite = listSpriteData[i];
             }
 

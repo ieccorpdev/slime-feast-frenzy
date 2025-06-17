@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -10,11 +11,12 @@ namespace IEC
     public class CharacterRecommendBar : _BaseBehaviour
     {
         public TextMeshProUGUI characterNameText;
-        public Button interactButton;
+        public TextMeshProUGUI shardCostText;
+        public Image bgImage;
+        public Button selectButton;
         public GameObject freeTrialGroup;
-        public GameObject inUseGroup;
-        public GameObject unlockGroup;
-        public GameObject selectGroup;
+        public Button deselectButton;
+        public Button unlockButton;
         
         public CharacterRecommendData CharacterRecommendData { get; private set; }
         public CharacterRecommendState CharacterRecommendState { get; private set; }
@@ -22,7 +24,9 @@ namespace IEC
 
         private void Start()
         {
-            interactButton.onClick.AddListener(OnInteract);
+            selectButton.onClick.AddListener(OnSelect);
+            deselectButton.onClick.AddListener(OnDeselect);
+            unlockButton.onClick.AddListener(OnUnlock);
         }
 
         public bool CheckSetup()
@@ -43,6 +47,8 @@ namespace IEC
                 return false;
 
             characterNameText.text = CharacterRecommendData.characterName;
+            bgImage.sprite = Config.allCharactersConfig.GetCharacterConfig(CharacterRecommendData.characterName)
+                .characterRecommendBarSprite;
             
             UpdateUI();
 
@@ -52,71 +58,97 @@ namespace IEC
         private void UpdateUI()
         {
             freeTrialGroup.SetActive(false);
-            inUseGroup.SetActive(false);
-            unlockGroup.SetActive(false);
-            selectGroup.SetActive(false);
+            deselectButton.gameObject.SetActive(false);
+            unlockButton.gameObject.SetActive(false);
+            selectButton.gameObject.SetActive(false);
+
+            var currentCharName = PlayerData.GetCurrentCharacterName();
 
             if (IsForcedTrial)
             {
                 freeTrialGroup.SetActive(true);
-                interactButton.interactable = false;
+                selectButton.interactable = false;
                 CharacterRecommendState = CharacterRecommendState.FreeTrial;
             }
             else
             {
-                interactButton.interactable = true;
-                if (PlayerData.playerCharacterName.Equals(CharacterRecommendData.characterName))
+                selectButton.interactable = true;
+                if (currentCharName.Equals(CharacterRecommendData.characterName))
                 {
-                    inUseGroup.SetActive(true);
+                    deselectButton.gameObject.SetActive(true);
                     CharacterRecommendState = CharacterRecommendState.InUse;
-                    if (PlayerData.playerCharacterName.Equals(Config.allCharactersConfig.GetDefaultCharacterConfig().characterName))
-                    {
-                        interactButton.interactable = false;
-                    }
                 }
                 else
                 {
                     if (PlayerData.GetCharacterLevel(CharacterRecommendData.characterName) < 0)
                     {
-                        unlockGroup.SetActive(true);
+                        unlockButton.gameObject.SetActive(true);
                         CharacterRecommendState = CharacterRecommendState.Unlock;
+
+                        var config =
+                            Config.allCharactersConfig.GetCharacterConfig(CharacterRecommendData.characterName);
+
+                        var upgrade = config.GetCharacterUpgrade(0);
+                        shardCostText.text = upgrade.shardCost.ToString();
                     }
                     else
                     {
-                        selectGroup.SetActive(true);
+                        selectButton.gameObject.SetActive(true);
                         CharacterRecommendState = CharacterRecommendState.Select;
                     }
                 }
             }
         }
 
-        private void OnInteract()
-        {
-            switch (CharacterRecommendState)
-            {
-                case CharacterRecommendState.FreeTrial:
-                    break;
-                case CharacterRecommendState.InUse:
-                    PlayerData.ResetTempCharacter();
-                    break;
-                case CharacterRecommendState.Unlock:
-                    if (!PlayerData.CheckEnoughShardToLevelUp(CharacterRecommendData.characterName))
-                    {
-                        //Locator.Main.PopupInsufficientCharacterShard.Show();
-                        //return;
-                    }
-                    else
-                    {
-                        PlayerData.CheckLevelUpCharacter(CharacterRecommendData.characterName);
-                    }
+        // private void OnInteract()
+        // {
+        //     switch (CharacterRecommendState)
+        //     {
+        //         case CharacterRecommendState.FreeTrial:
+        //             break;
+        //         case CharacterRecommendState.InUse:
+        //             PlayerData.ResetTempCharacter();
+        //             break;
+        //         case CharacterRecommendState.Unlock:
+        //             if (!PlayerData.CheckEnoughShardToLevelUp(CharacterRecommendData.characterName))
+        //             {
+        //                 //Locator.Main.PopupInsufficientCharacterShard.Show();
+        //                 //return;
+        //             }
+        //             else
+        //             {
+        //                 PlayerData.CheckLevelUpCharacter(CharacterRecommendData.characterName);
+        //             }
+        //
+        //             break;
+        //         case CharacterRecommendState.Select:
+        //             PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+        //             break;
+        //     }
+        //     
+        //     UpdateUI();
+        // }
 
-                    break;
-                case CharacterRecommendState.Select:
-                    PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
-                    break;
+        public void OnSelect()
+        {
+            PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+        }
+
+        public void OnDeselect()
+        {
+            PlayerData.ResetTempCharacter();
+        }
+
+        public void OnUnlock()
+        {
+            if (!PlayerData.CheckEnoughShardToLevelUp(CharacterRecommendData.characterName))
+            {
+                Locator.Main.PopupInsufficientCharacterShard.Show();
             }
-            
-            UpdateUI();
+            else
+            {
+                PlayerData.CheckLevelUpCharacter(CharacterRecommendData.characterName);
+            }
         }
     }
 

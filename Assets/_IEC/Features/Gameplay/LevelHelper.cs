@@ -429,17 +429,18 @@ namespace _IEC.Features.Gameplay
                 }
 
                 var itemTransform = itemComponent.transform;
-                float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
+                //float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
                 var itemData = new ItemData()
                 {
                     itemId = itemDefinition.GetId(),
                     position = Vector3.zero, //Do random pos later
                     eulerAngle = Vector3.zero,
-                    localScale = Vector3.one * scale,
+                    localScale = Vector3.one,
                     isStartKinematic = false,
                 };
                 itemTransform.parent = levelObjectHolder;
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
+                itemComponent.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
                 itemComponent.LoadData(itemData, itemDefinition);
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(

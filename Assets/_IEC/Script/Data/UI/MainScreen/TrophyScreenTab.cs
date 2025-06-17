@@ -272,6 +272,8 @@ public class TrophyScreenTab : ScreenNavigateUI
         }
         switch (PlayerData.trophyData.GetCurrentCollectedTrophy(type))
         {
+            case 0:
+                return "Bronze Trophy";
             case 1:
                 return "Silver Trophy";
             case 2:
