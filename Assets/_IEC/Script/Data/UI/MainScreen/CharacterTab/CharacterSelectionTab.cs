@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace IEC
@@ -15,7 +16,7 @@ namespace IEC
         public Image mainCharacterImage;
         public Image characterShardImage;
         public Button selectCharacterButton;
-        public Button characterInUseButton;
+        public Button deselectCharacterButton;
         public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
@@ -55,11 +56,22 @@ namespace IEC
         void Start()
         {
             selectCharacterButton.onClick.AddListener(OnSelectCharacter);
-            characterInUseButton.onClick.AddListener(OnDeselectCharacter);
+            deselectCharacterButton.onClick.AddListener(OnDeselectCharacter);
             levelUpCharacterButton.onClick.AddListener(OnLevelUpCharacter);
             previousButton.onClick.AddListener(OnPreviousButtonClick);
             nextButton.onClick.AddListener(OnNextButtonClick);
+        }
+
+        private void OnEnable()
+        {
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+            this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
+            this.UnregisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
         }
 
         private void OnSelectCharacter()
@@ -69,7 +81,8 @@ namespace IEC
             {
                 characterName = PlayerData.playerCharacterName
             });
-            UpdateCurrentCharacterUI();
+            EventController.RaiseEvent(EventList.GamePlay.SET_NEW_CHARACTER);
+            //UpdateCurrentCharacterUI();
         }
         
         private void OnDeselectCharacter()
@@ -79,7 +92,7 @@ namespace IEC
             {
                 characterName = PlayerData.playerCharacterName
             });
-            UpdateCurrentCharacterUI();
+            //UpdateCurrentCharacterUI();
         }
 
         private void OnLevelUpCharacter()
@@ -100,8 +113,15 @@ namespace IEC
             {
                 characterName = CurrentCharacterConfig.characterName
             });
+            EventController.RaiseEvent(EventList.GamePlay.UPGRADE_CHARACTER);
             
             UpdateCurrentCharacterUI();
+
+            if (PlayerData.CheckShowCharacterUnlockPopup(CurrentCharacterConfig.characterName))
+            {
+                Locator.Main.PopupUnlockCharacter.Setup(CurrentCharacterConfig);
+                Locator.Main.PopupUnlockCharacter.Show();
+            }
         }
 
         private void SetCurrentCharacter(object param)
@@ -116,7 +136,7 @@ namespace IEC
             UpdateCurrentCharacterUI();
         }
 
-        public void UpdateCurrentCharacterUI()
+        public void UpdateCurrentCharacterUI(object param = null)
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
             if (mainCharacterImage != null)
@@ -169,6 +189,9 @@ namespace IEC
             
             shardCountText.text = $"{currentShard}/{upgradeShardCost}";
             inactiveShardCountText.text = $"{currentShard}/{upgradeShardCost}";
+            
+            if(upgradeShardCost == 0)
+                shardCountText.text = "Free";
 
             if (currentShard < upgradeShardCost)
             {
@@ -205,12 +228,12 @@ namespace IEC
             if (CurrentCharacterLevel >=0)
             {
                 selectCharacterButton.gameObject.SetActive(!IsCurrentShowingSelected);
-                characterInUseButton.gameObject.SetActive(IsCurrentShowingSelected);
+                deselectCharacterButton.gameObject.SetActive(IsCurrentShowingSelected);
             }
             else
             {
                 selectCharacterButton.gameObject.SetActive(false);
-                characterInUseButton.gameObject.SetActive(false);
+                deselectCharacterButton.gameObject.SetActive(false);
             }
         }
 
@@ -219,7 +242,7 @@ namespace IEC
             if (!CurrentCharacterConfig.isDefaultCharacter)
                 return;
             
-            characterInUseButton.gameObject.SetActive(false);
+            deselectCharacterButton.gameObject.SetActive(false);
             selectCharacterButton.gameObject.SetActive(false);
         }
 
@@ -233,6 +256,8 @@ namespace IEC
 
             if (CurrentCharacterConfig.isDefaultCharacter) //Hides default character
                 CurrentCharacterConfig = Config.allCharactersConfig.listAllCharactersConfig[1];
+            
+            SetCurrentCharacter(new CharacterEventData() {characterName = CurrentCharacterConfig.characterName });
             
             UpdateCurrentCharacterUI();
             selectionScroller.Init(this);
@@ -249,12 +274,17 @@ namespace IEC
             {
                 if (power != null)
                 {
-                    float powerValue = power.GetCharacterPowerValue(CurrentCharacterLevel).buffAmount;
+                    var value = power.GetCharacterPowerValue(CurrentCharacterLevel);
+                    float powerValue = value.buffAmount;
 
                     if (powerValue < 1f)
                         powerValue *= 100f;
-
-                    string stringValue = GetHighlightedText(powerValue);
+                    
+                    string stringValue = GetHighlightedText(powerValue.ToString());
+                    if (!String.IsNullOrEmpty(value.overrideDescriptionString))
+                    {
+                        stringValue = GetHighlightedText(value.overrideDescriptionString);
+                    }
                     formatValues.Add(stringValue);
                 }
             }
@@ -268,11 +298,11 @@ namespace IEC
             return Regex.Replace(inputText, @"\[(\w+)\]", match =>
             {
                 string iconName = match.Groups[1].Value;
-                return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease * 2}><sprite name={iconName}></size>";
+                return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease}><sprite name={iconName}></size>";
             });
         }
         
-        private string GetHighlightedText(float value)
+        private string GetHighlightedText(string value)
         {
             string colorHex = ColorToHex(highlightTextColor);
             return $"<size={characterDescriptionText.fontSize + highlightTextSizeIncrease}><color={colorHex}>{value}</color></size>";

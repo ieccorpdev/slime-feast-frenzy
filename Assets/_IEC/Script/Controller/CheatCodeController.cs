@@ -166,6 +166,33 @@ namespace IEC
                 characterIndex
             );
             
+            if (String.IsNullOrEmpty(PlayerData.tempCharacterNameForCheatCodeAddShard))
+            {
+                PlayerData.tempCharacterNameForCheatCodeAddShard =
+                    Config.allCharactersConfig.listAllCharactersConfig[0].characterName;
+            }
+            var tempCharacterIndex = Config.allCharactersConfig.listAllCharactersConfig.FindIndex(ch => ch.characterName.Equals(PlayerData.tempCharacterNameForCheatCodeAddShard));
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithDropdown("Select Character To Add Shard",
+                cheatCodeParam =>
+                {
+                    var characterInt = cheatCodeParam.dropdownParam.value;
+                    PlayerData.tempCharacterNameForCheatCodeAddShard = Config.allCharactersConfig.listAllCharactersConfig[characterInt].characterName;
+                },
+                Config.allCharactersConfig.listAllCharactersConfig.Select(ch => ch.characterName).ToList(),
+                tempCharacterIndex
+            );
+            
+            ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add character shard", param =>
+            {
+                int value = int.Parse(param.inputParams[0].value.ToString());
+                if(!String.IsNullOrEmpty(PlayerData.tempCharacterNameForCheatCodeAddShard))
+                    PlayerData.AddCharacterShards(PlayerData.tempCharacterNameForCheatCodeAddShard ,value);
+            }, new CheatCode.InputParam
+            {
+                value = 0
+            });
+            
             ModuleController.cheatCode.AddCheatCodeButtonWithInput("Add shark race progress", param =>
             {
                 int value = int.Parse(param.inputParams[0].value.ToString());

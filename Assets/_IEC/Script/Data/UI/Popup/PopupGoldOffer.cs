@@ -37,6 +37,7 @@ namespace IEC
         public override void Hide()
         {
             base.Hide();
+            HandleHideTopResourceBar();
         }
 
         public void SetScaleAnim()

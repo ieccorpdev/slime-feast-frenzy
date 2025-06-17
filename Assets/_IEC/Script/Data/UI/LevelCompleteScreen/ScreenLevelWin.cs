@@ -70,6 +70,8 @@ namespace IEC
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.CollectedStars
                 , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+            
+            PlayerData.ResetTempCharacter();
         }
         
         private void CheckShowGameEventInfoBar()
@@ -327,6 +329,7 @@ namespace IEC
                     
                     Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
                     Locator.Main.HomeScreenTab.CheckAllPacksPopupOnWin();
+                    Locator.Main.HomeScreenTab.CheckShowTutorial();
                     
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>

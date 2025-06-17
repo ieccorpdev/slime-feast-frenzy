@@ -60,7 +60,7 @@ public class Hole : _BaseBehaviour
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
 	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) * m_AdditionalSpeedFromCharacterTrait 
-	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0));
 
 	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) 
 	                     * m_AdditionalSizeFromCharacterTrait 
@@ -74,7 +74,6 @@ public class Hole : _BaseBehaviour
 	private float _baseSpeed;
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
-
 	private float _speedBoosterIncrease;
 	private float timeEffectSpeedBooster;
 
@@ -591,8 +590,9 @@ public class Hole : _BaseBehaviour
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
 		_isChangedToCurrentCharacter = false;
-		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacter();
-		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.playerCharacterName);
+		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
+		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
+		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
 		//CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
@@ -610,7 +610,7 @@ public class Hole : _BaseBehaviour
 			return;
 		
 		var comboCount = (int)param;
-		if (comboCount >= TargetCharacterConfig.comboCountToChange)
+		if (TargetCharacterConfig.comboCountToChange > 0 && comboCount >= TargetCharacterConfig.comboCountToChange)
 		{
 			this.RaiseEvent(EventList.GamePlay.COMBO_RESET);
 			_isChangedToCurrentCharacter = true;
@@ -657,6 +657,15 @@ public class Hole : _BaseBehaviour
 		
 		this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
 		_isInChangeCharacterAnim = false;
+
+		var power = CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnSpawn);
+		if (power != null)
+		{
+			var value = power.GetCharacterPowerValue(
+				PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName));
+			OnCollectSpeedBooster(80f, value.buffAmount);
+		}
+		
 		StopCoroutine(_changeCharacterCoroutine);
 		_changeCharacterCoroutine = null;
 	}

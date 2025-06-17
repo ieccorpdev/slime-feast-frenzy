@@ -325,8 +325,9 @@ namespace IEC
             if (hiddenTreasure.statusItem == JourneyItemStatus.CANCLAIM)
             {
                 PlayerData.trophyData.CollectTrophy(TrophyType.UnderseaVoyage);
+                Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
             }
-            
+
         }
     }
 }

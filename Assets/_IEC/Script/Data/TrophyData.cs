@@ -47,14 +47,41 @@ namespace IEC
         {
             return type != TrophyType.GrandVoyage && type != TrophyType.SharkFrenzyForce;
         }
+
+        public (bool found,TrophyType type) GetTrophyNotiUnlocked()
+        {
+            foreach (var name in Enum.GetValues(typeof(TrophyType)))
+            {
+                //So heavy, need optimizationi, indexTrophyWasNoti
+                var typeTemp = (TrophyType)name;
+                var data = GetTrophyDataConfig(typeTemp);
+                int times = data.timeCompleted;
+                int trophyCol = data.trophyCollected;
+                int trophyTarget = GetTargetToGetTrophy(typeTemp,trophyCol);//Target
+                if (times >= trophyTarget && data.indexTrophyWasNoti <= trophyCol)
+                {
+                    return (true,(TrophyType)name);
+                }
+            }
+
+            return (false,TrophyType.GrandVoyage);
+        }
         public bool IsTrophyCanCollect(TrophyType type)
         {
-            int times = GetCurrentTimeComplete(type);
-            int trophyCol = GetCurrentCollectedTrophy(type);
+            var data = GetTrophyDataConfig(type);
+            int times = data.timeCompleted;
+            int trophyCol = data.trophyCollected;
             int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
             return times >= trophyTarget;
         }
-
+        public bool NeedShowTrophyPopupDetail(TrophyType type)
+        {
+            int times = GetCurrentTimeComplete(type);
+            int notiIndex = GetMaxTrophyNoti(type);
+            int trophyCol = GetCurrentCollectedTrophy(type);
+            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
+            return times >= trophyTarget && notiIndex < trophyTarget;
+        }
         public int GetTargetToGetTrophy(TrophyType type,int trophyCol)
         {
            var dataConfig = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
@@ -72,6 +99,10 @@ namespace IEC
         {
             return GetTrophyDataConfig(type).timeCompleted;
         }
+        public int GetMaxTrophyNoti(TrophyType type)
+        {
+            return GetTrophyDataConfig(type).indexTrophyWasNoti;
+        }
         public int GetCurrentCollectedTrophy(TrophyType type)
         {
             return GetTrophyDataConfig(type).trophyCollected;
@@ -81,7 +112,8 @@ namespace IEC
         {
             var config = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
             var dataSave = GetTrophyDataConfig(type);
-            int target = config.listTimeToCollect[dataSave.trophyCollected];
+            int index = Mathf.Clamp(dataSave.trophyCollected, 0, 3);
+            int target = config.listTimeToCollect[index];
             int start = GetCurrentTimeComplete(type);
             if (IsEventTrophy(type) || dataSave.trophyCollected == 0)
             {
@@ -130,6 +162,7 @@ namespace IEC
         public TrophyType typeTrophy;
         public int timeCompleted;
         public int trophyCollected = 0;// 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
+        public int indexTrophyWasNoti;//Save the maximum trophy was noti for player, 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
     }
     public enum TrophyType{
         GrandVoyage,

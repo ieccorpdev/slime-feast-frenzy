@@ -358,6 +358,7 @@ namespace IEC
                 _actionOnceOnClaimReward?.Invoke();
             }
 
+            CheckAddTrophy(playerRank);
             _actionOnceOnClaimReward = null;
             Hide();
         }
@@ -386,6 +387,7 @@ namespace IEC
             if (playerRank <= 2)
             {
                 PlayerData.trophyData.CollectTrophy(trophyType);
+                Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
             }
         }
 

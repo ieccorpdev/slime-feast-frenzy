@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDefaultCharacter: 0
   characterName: Jackie
-  comboCountToChange: 10
-  characterDescription: x{0} the effect of [icon_windsurf][icon_evolvestone]
+  comboCountToChange: 100
+  characterDescription: Increase speed for {0} seconds
   characterSelectionSprite: {fileID: 21300000, guid: e042200660e9e7743b11ccb4e8746a68,
     type: 3}
   characterLockedSprite: {fileID: 21300000, guid: 061a871cc0178bb4e8ffc394f2bec877,
@@ -54,10 +54,13 @@ MonoBehaviour:
     resourceAffected: 0
     listCharacterPowerValue:
     - conditionValueForPower: 0
-      buffAmount: 2
+      buffAmount: 5
+      overrideDescriptionString: 
     - conditionValueForPower: 0
-      buffAmount: 3
+      buffAmount: 10
+      overrideDescriptionString: 
     - conditionValueForPower: 0
-      buffAmount: 3
+      buffAmount: 15
+      overrideDescriptionString: 
   levelUnlock: 0
-  characterLevelOnUnlock: 0
+  characterLevelOnUnlock: -1
