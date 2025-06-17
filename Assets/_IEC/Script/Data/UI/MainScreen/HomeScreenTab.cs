@@ -245,6 +245,8 @@ public class HomeScreenTab : ScreenNavigateUI
         DoMoveBackAllObj(0.8f,
             () =>
             {
+                CheckSkinUnlockTrophy2();
+                CheckShowTrophyPopup();
                 if (onOpenSceneActionOnce == null)
                 {
                     CheckAllEventsClaimableReward();
@@ -254,8 +256,6 @@ public class HomeScreenTab : ScreenNavigateUI
                         CheckAllPacksPopupOnStartHome();
                     }
                     CheckShowTutorial();
-
-                    CheckShowTrophyPopup();
                     ShowNextPopup();
                 }
                 else
@@ -601,6 +601,7 @@ public class HomeScreenTab : ScreenNavigateUI
 
     public void CheckShowTrophyPopup()
     {
+        
         //Trophy Reward 
         var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
         if (foundTrophy)
@@ -614,6 +615,11 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+        //Trophy 
+    }
+    public void CheckSkinUnlockTrophy2()
+    {
+        PlayerData.trophyData.SetTrophyTimes(TrophyType.SharkFrenzyForce,PlayerData.GetTotalCharacterUnlocked());
     }
     public void CheckAllPacksPopupOnStartHome()
     {
