@@ -24,6 +24,8 @@ namespace IEC
                 return;
 
             listCharacterRecommendData.Clear();
+            
+            Debug.Log(dataDefault);
 
             foreach (var row in dataDefault)
             {
@@ -31,7 +33,8 @@ namespace IEC
                     new CharacterRecommendData()
                     {
                         level = int.Parse(row[0]),
-                        characterName = row[1]
+                        characterName = row[1],
+                        isTrial = row[2].ToLower().Equals("true")
                     });
             }
         }
@@ -93,5 +96,6 @@ namespace IEC
     {
         public int level;
         public string characterName;
+        public bool isTrial;
     }
 }

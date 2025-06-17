@@ -22,7 +22,7 @@ namespace IEC
 
         public CharacterRecommendData CharacterRecommendData { get; private set; }
         public CharacterRecommendState CharacterRecommendState { get; private set; }
-        public bool IsForcedTrial { get; private set; }
+        public bool IsTrial { get; private set; }
 
         private void Start()
         {
@@ -56,13 +56,15 @@ namespace IEC
             CharacterRecommendData = Config.characterRecommendConfig.GetForcedTrialCharacter(PlayerData.level);
             if (CharacterRecommendData != null)
             {
-                IsForcedTrial = true;
+                //IsForcedTrial = true;
                 PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+                return false;
             }
-            else
+            //else
             {
-                IsForcedTrial = false;
+                //IsForcedTrial = false;
                 CharacterRecommendData = Config.characterRecommendConfig.GetRecommendedCharacter(PlayerData.level);
+                IsTrial = CharacterRecommendData.isTrial;
             }
 
             if (CharacterRecommendData == null)
@@ -93,7 +95,7 @@ namespace IEC
 
             var currentCharName = PlayerData.GetCurrentCharacterName();
 
-            if (IsForcedTrial)
+            if (IsTrial)
             {
                 freeTrialGroup.SetActive(true);
                 selectButton.interactable = false;

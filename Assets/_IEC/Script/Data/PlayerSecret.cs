@@ -602,6 +602,13 @@ namespace IEC
         {
             characterLevel.TryAdd(characterName, -1);
 
+            //Always max level in trial
+            if (characterName.Equals(tempCharacterName) 
+                && Locator.Game.ScreenInGame.gameObject.activeInHierarchy
+                && !Locator.Game.ScreenLevelWin.gameObject.activeInHierarchy
+                )
+                return 2;
+
             return characterLevel[characterName];
         }
         
