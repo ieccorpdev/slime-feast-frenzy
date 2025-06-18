@@ -99,7 +99,7 @@ public class ItemTrophyTab : _BaseBehaviour
             groupsLock.Show();
             OnClickLocked();
         }
-        else if ( state == ItemTrophyState.Missing)
+        else if ( state == ItemTrophyState.Missing || PlayerData.trophyData.GetCurrentCollectedTrophy(type) == 0)
         {
             groupsNoti.gameObject.SetActive(true);
             groupsNoti.Show();
@@ -164,6 +164,7 @@ public class ItemTrophyTab : _BaseBehaviour
         DeactiveAllBar();
         UpdateMainTrophy();
         chestImage.sprite = normalChest;
+        mainTrophy.color = new Color(1f, 1f, 1f,1f);
         switch (state)
         {
             case ItemTrophyState.Idle:
@@ -180,8 +181,16 @@ public class ItemTrophyTab : _BaseBehaviour
                 progressBar.gameObject.SetActive(true);
                 break;
             case ItemTrophyState.New:
-                mainTrophy.gameObject.SetActive(true);
                 newsTagObj.gameObject.SetActive(true);
+                if (PlayerData.trophyData.GetCurrentCollectedTrophy(type) == 0)
+                {
+                    //Not claim first trophy
+                    newsTagObj.gameObject.SetActive(false);
+                    mainTrophy.color = new Color(0.1f, 0.1f, 0.1f,1);
+                } 
+                
+                mainTrophy.gameObject.SetActive(true);
+
                 claimBar.gameObject.SetActive(true);
                 chestImage.sprite = auraChest;
                 break;
@@ -217,7 +226,7 @@ public class ItemTrophyTab : _BaseBehaviour
 
     public void UpdateUIByTimeDataEvent()
     {
-        if (!dataEventTime.isEvent)
+        if (dataEventTime == null || !dataEventTime.isEvent)
         {
             bgGroupsNoti.sprite = defaultInfoSprite;
             groupsNotiTime.gameObject.SetActive(false);

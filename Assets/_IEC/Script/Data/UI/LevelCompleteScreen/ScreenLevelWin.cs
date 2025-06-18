@@ -17,6 +17,8 @@ namespace IEC
     {
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
+
+        public CharacterRecommendBar characterRecommendBar;
         
         public GameEventInfoBar starChaseInfoBar;
         public GameEventInfoBar sharkRaceInfoBar;
@@ -26,6 +28,8 @@ namespace IEC
         public TextMeshProUGUI goldDisplayText;
 
         public Button btnNext;
+        
+        Queue<PopupData> actionAfterShowAllPopup = new Queue<PopupData>();
 
         public int StarWon => gameplayTimer.CurrentRemainingTimeState switch
         {
@@ -65,11 +69,13 @@ namespace IEC
             
             base.Show();
             
-            CheckShowGameEventInfoBar();
+            //CheckShowGameEventInfoBar();
             
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.CollectedStars
                 , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+            
+            characterRecommendBar.gameObject.SetActive(characterRecommendBar.CheckSetupWinScreen());
             
             PlayerData.ResetTempCharacter();
         }
@@ -154,18 +160,15 @@ namespace IEC
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
-                // popupQueue.Enqueue(new PopupData(
-                //     Locator.Main.ClaimBonusRewardPanel,
-                //     () =>
-                //     {
-                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                //     }, 
-                //     ShowNext));
+
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
                     {
                         listDataReward = new List<Reward>(listReward),
+                        actionClose = () =>
+                        {
+                            Locator.Main.PopupProgressReward.progressBar.CheckShowTrophy();
+                        }
                     });
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
@@ -331,6 +334,12 @@ namespace IEC
                     Locator.Main.HomeScreenTab.CheckAllPacksPopupOnWin();
                     Locator.Main.HomeScreenTab.CheckShowTutorial();
                     
+                    while(actionAfterShowAllPopup.Count > 0)
+                    {
+                        var popup = actionAfterShowAllPopup.Dequeue();
+                        Locator.Main.HomeScreenTab.AddPopupToShow(popup.popup, popup.onOpen, Locator.Main.HomeScreenTab.ShowNextPopup);
+                    }
+                    
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
                         {
@@ -370,6 +379,11 @@ namespace IEC
             }
 
             return popupData;
+        }
+
+        public void AddActionAfterShowAllPopup(BasePopup popup,Action onOpen, Action onClose)
+        {
+            actionAfterShowAllPopup.Enqueue(new PopupData(popup, onOpen, onClose));
         }
         
         private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)

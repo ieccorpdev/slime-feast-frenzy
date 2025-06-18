@@ -70,6 +70,8 @@ namespace IEC
                     //lock leaderboard temporary
                     if(tab.type == TabType.LeaderBoard) return;
 
+                    if (m_BigTab.type == tab.type) return;
+
                     if (tab.type != Game.hybrid.currentTab)
                     {
                         isClick = true;

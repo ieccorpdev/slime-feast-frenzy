@@ -365,6 +365,7 @@ namespace IEC
 
         public void CheckAddTrophy(int playerRank)
         {
+            if(!IsEventCompleted()) return;
             switch (eventType)
             {
                 case EventType.SharkRace:
@@ -377,7 +378,8 @@ namespace IEC
                     CollectTrophy(playerRank,TrophyType.StarRace); 
                     break;
                 case EventType.RelicHunt:
-                    CollectTrophy(playerRank,TrophyType.RelicHunt); 
+                    //Run with diffirent 
+                    //CollectTrophy(playerRank,TrophyType.RelicHunt); 
                     break;
             }
         }
@@ -388,6 +390,7 @@ namespace IEC
             {
                 PlayerData.trophyData.CollectTrophy(trophyType);
                 Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
+                Locator.Main.HomeScreenTab.ShowNextPopup();
             }
         }
 

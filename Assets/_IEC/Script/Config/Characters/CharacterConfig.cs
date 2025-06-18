@@ -19,6 +19,9 @@ namespace IEC
         public Sprite characterMainSprite;
         public Sprite characterShardSpriteNormal;
         public Sprite characterShardSpriteSmall;
+        public Sprite characterRecommendBarSprite;
+        public Sprite characterChangeIndicatorSprite;
+        public Sprite characterChangeIndicatorBg;
         
         [Header("Character Anim")]
         public float defaultCharacterPosY;

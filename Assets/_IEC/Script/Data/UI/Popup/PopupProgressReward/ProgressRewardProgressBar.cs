@@ -42,10 +42,11 @@ namespace IEC
         private void SetAtiveIcon()
         {
             bool isOnDouble = PlayerData.IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount);
-            iconDoubleTag.gameObject.SetActive(isOnDouble);
+            //MeoMew need call duy fix here
+            if(iconDoubleTag) iconDoubleTag.gameObject.SetActive(isOnDouble);
         }
 
-        private static void CheckReward()
+        private void CheckReward()
         {
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             if (PlayerData.CheckClaimProgressReward(reward))
@@ -53,16 +54,22 @@ namespace IEC
                 System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
                 Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, ()=>
                 {
-                    if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
-                    {
-                        PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
-                        Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
-                    }
+                    CheckShowTrophy();
                 },true);
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
             Locator.Main.HomeScreenTab.progressRewardBar.DoAnimProgressBar();
+        }
+
+        public void CheckShowTrophy()
+        {
+            if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+            {
+                PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
+                Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
+                Locator.Main.HomeScreenTab.ShowNextPopup();
+            }
         }
 
         private void Update()

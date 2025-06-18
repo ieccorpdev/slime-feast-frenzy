@@ -27,6 +27,11 @@ namespace IEC
             var tdc = GetTrophyDataConfig(type);
             tdc.trophyCollected = value;
         }
+        public void SetTrophyNoti(TrophyType type,int value)
+        {
+            var tdc = GetTrophyDataConfig(type);
+            tdc.indexTrophyWasNoti = value;
+        }
         public void CollectTrophyReward(TrophyType type)
         {
             Debug.LogError("CollectTrophyReward:" + type);

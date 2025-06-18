@@ -46,7 +46,7 @@ namespace IEC
             });
             Locator.Main.PopupVoyagePassIAPInfor.configBundle.OnPurchaseSuccess += () =>
             {
-                DOVirtual.DelayedCall(0.02f, RefreshUI);
+                DOVirtual.DelayedCall(0.1f, RefreshUI);
                 doneBuyIAP.gameObject.SetActive(true);
                 buyIAP.gameObject.SetActive(false);
             };
@@ -326,6 +326,7 @@ namespace IEC
             {
                 PlayerData.trophyData.CollectTrophy(TrophyType.UnderseaVoyage);
                 Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
+                Locator.Main.HomeScreenTab.ShowNextPopup();
             }
 
         }
