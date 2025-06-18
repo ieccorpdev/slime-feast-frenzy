@@ -667,6 +667,9 @@ public class Hole : _BaseBehaviour
 			OnCollectSpeedBooster(80f, value.buffAmount);
 		}
 		
+		CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+		CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
+		
 		StopCoroutine(_changeCharacterCoroutine);
 		_changeCharacterCoroutine = null;
 	}
