@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using IEC;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,10 +18,119 @@ namespace _IEC.Features.VipProHackerUITutorial
         private bool m_OldIsOverrideSorting;
         private int m_OldRenderSorting;
         private Canvas m_OldCanvas;
+
+        private List<HighlightGroup> listCurrentHightlighted = new();
+        
         public void Awake()
         {
             Pool.Set(this);
         }
+
+        public void TempHighlightUI(RectTransform rectTransform,bool isRaycastTarget,bool isUsingHandTut = false,Vector2? positionOffset = null, bool isDarkBg = true)
+        {
+            if (listCurrentHightlighted.Find(group => group.m_CurrentHighLightUI == rectTransform) != null)
+            {
+                RemoveTempHighlight(rectTransform);
+            }
+
+            var highlightGroup = new HighlightGroup()
+            {
+                m_OldCanvas = null,
+                m_GraphicRaycaster = null,
+                m_TempCanvas = null,
+                m_CurrentHighLightUI = rectTransform,
+                isHandTut =  isUsingHandTut,
+            };
+            listCurrentHightlighted.Add(highlightGroup);
+            
+            // m_OldCanvas = null;
+            // m_GraphicRaycaster = null;
+            // m_TempCanvas = null;
+            // m_CurrentHighLightUI = rectTransform;
+            //imgDark.gameObject.SetActive(true);
+            imgDark.gameObject.SetActive(isDarkBg);
+            var currentCanvas = rectTransform.GetComponent<Canvas>();
+            var currentGraphicTarget = rectTransform.GetComponent<GraphicRaycaster>();
+            if (currentCanvas == null)
+            {
+                highlightGroup.m_TempCanvas = rectTransform.gameObject.AddComponent<Canvas>();
+                highlightGroup.m_TempCanvas.overrideSorting = true;
+                highlightGroup.m_TempCanvas.sortingOrder = CanvasSortingOrder + 1;
+            }
+            else
+            {
+                currentCanvas.enabled = true;
+                highlightGroup.m_OldRenderSorting = currentCanvas.sortingOrder;
+                highlightGroup.m_OldIsOverrideSorting = currentCanvas.overrideSorting;
+                currentCanvas.overrideSorting = true;
+                currentCanvas.sortingOrder = CanvasSortingOrder + 1;
+                highlightGroup.m_OldCanvas = currentCanvas;
+            }
+
+            if (isRaycastTarget)
+            {
+                if (currentGraphicTarget == null)
+                {
+                    highlightGroup.m_GraphicRaycaster = rectTransform.gameObject.AddComponent<GraphicRaycaster>();
+                }
+                else
+                {
+                   currentGraphicTarget.enabled = true;
+                }
+            }
+
+            if (isUsingHandTut)
+            {
+                handTut.SetActive(true);
+                if (positionOffset != null)
+                {
+                    handTut.transform.position = rectTransform.transform.position;
+                    handTut.GetComponent<RectTransform>().anchoredPosition += positionOffset.Value;
+                }
+                else
+                {
+                    handTut.transform.parent = rectTransform.transform;
+                    handTut.transform.localPosition = Vector3.zero;
+                    handTut.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+                }
+            }
+        }
+
+        public void RemoveTempHighlight(RectTransform rectTransform)
+        {
+            var highlightGroup = listCurrentHightlighted.Find(group => group.m_CurrentHighLightUI == rectTransform);
+
+            if (highlightGroup == null)
+                return;
+            
+            if (highlightGroup.m_GraphicRaycaster != null)
+            {
+                highlightGroup.m_GraphicRaycaster.enabled = false;
+                DestroyImmediate(highlightGroup.m_GraphicRaycaster);
+            }
+            
+            if (highlightGroup.m_TempCanvas != null)
+            {
+                highlightGroup.m_TempCanvas.enabled = false;
+                DestroyImmediate(highlightGroup.m_TempCanvas);
+            }
+            //imgDark.gameObject.SetActive(false);
+            if (highlightGroup.isHandTut)
+            {
+                handTut.SetActive(false);
+                handTut.transform.parent = this.transform;
+            }
+
+            if (highlightGroup.m_OldCanvas != null)
+            {
+                highlightGroup.m_OldCanvas.overrideSorting = m_OldIsOverrideSorting;
+                highlightGroup.m_OldCanvas.sortingOrder = m_OldRenderSorting;
+            }
+
+            listCurrentHightlighted.Remove(highlightGroup);
+        }
+        
+        
         public void HighLightUI(RectTransform rectTransform,bool isRaycastTarget,bool isUsingHandTut = false,Vector2? positionOffset = null, bool isDarkBg = true)
         {
             //Debug.LogError("highligjht");
@@ -108,5 +218,16 @@ namespace _IEC.Features.VipProHackerUITutorial
                 m_OldCanvas.sortingOrder = m_OldRenderSorting;
             }
         }
+    }
+
+    public class HighlightGroup
+    {
+        public Canvas m_TempCanvas;
+        public GraphicRaycaster m_GraphicRaycaster;
+        public RectTransform m_CurrentHighLightUI;
+        public bool m_OldIsOverrideSorting;
+        public int m_OldRenderSorting;
+        public Canvas m_OldCanvas;
+        public bool isHandTut;
     }
 }

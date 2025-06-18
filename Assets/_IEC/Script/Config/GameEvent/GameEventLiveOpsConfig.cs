@@ -103,6 +103,25 @@ namespace IEC
             }
             return DateTime.MaxValue;
         }
+        /// <summary>
+        /// return true if event is on current day
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="eventDurationInDays"></param>
+        /// <param name="currentDay"></param>
+        /// <returns></returns>
+        public bool IsEventOnDay(EventType eventType, int eventDurationInDays, int currentDay)
+        {
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count);
+            
+            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
+
+            if (latestDayStartEvent == -1)
+                return false;
+
+            return (currentDay - latestDayStartEvent) < eventDurationInDays;
+        }
         public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
         {
             if (currentDay > listEventLiveOps.Count - 1)
