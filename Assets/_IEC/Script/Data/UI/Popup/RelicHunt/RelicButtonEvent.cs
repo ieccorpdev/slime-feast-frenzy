@@ -34,7 +34,7 @@ public class RelicButtonEvent : _BaseBehaviour
         //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
         int level = PlayerData.level;
         int levelUnlock = Config.relicConfig.levelUnlockFeature;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) &&
+        return Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload()) &&
                Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt);
     }
 
