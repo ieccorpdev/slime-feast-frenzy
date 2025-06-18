@@ -603,7 +603,7 @@ public class HomeScreenTab : ScreenNavigateUI
     {
         //Trophy Reward 
         var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
-        if (foundTrophy && PlayerData.level >= Config.trophyRewardConfig.levelUnlock)
+        if (foundTrophy && PlayerData.level > Config.trophyRewardConfig.levelUnlock)
         {
             AddPopupToShow(Locator.Main.PopupTrophyDetails,
                 () =>
