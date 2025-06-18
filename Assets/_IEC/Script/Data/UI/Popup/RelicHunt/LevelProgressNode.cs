@@ -37,7 +37,7 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
             claimBtn.onClick.RemoveAllListeners();
             claimBtn.onClick.AddListener(() =>
             {
-                if(_rewards.Count == 0) return;
+                if (_rewards.Count == 0) return;
                 hasClaimReward = true;
                 ShowReward();
                 OnClaimReward?.Invoke();
@@ -49,7 +49,14 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         private void ShowReward()
         {
             //Locator.Main.ClaimBonusRewardPanel.SetupTempTitle();
-            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(_rewards, () => { Locator.Main.PopupRelicHunt.Show(); },
+            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(_rewards, () =>
+                {
+                    if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) && !PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
+                    {
+                        PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
+                    }
+                    Locator.Main.PopupRelicHunt.Show();
+                },
                 true);
             Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(animReward);
             Locator.Main.PopupRelicHunt.Hide();
@@ -69,9 +76,10 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         public void SetState(RewardState state)
         {
             lockGO.SetActive(state == RewardState.Lock);
-            unlockGO.SetActive(state ==  RewardState.Claimed);
-            claimableGO.SetActive(state ==  RewardState.Claimable);
+            unlockGO.SetActive(state == RewardState.Claimed);
+            claimableGO.SetActive(state == RewardState.Claimable);
         }
+
         public enum RewardState
         {
             Lock,

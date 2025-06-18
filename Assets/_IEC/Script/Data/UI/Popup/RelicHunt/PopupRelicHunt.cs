@@ -224,7 +224,7 @@ public class PopupRelicHunt : BasePopup
             {
                 
                 // unlock relic and can't levle up, mean the last reward 
-                if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) )
+                if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) && !PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
                 {
                     PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
                     Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
