@@ -58,7 +58,7 @@ public class JoystickEditor : Editor
 
     protected virtual void DrawComponents()
     {
+        base.DrawDefaultInspector();
         EditorGUILayout.ObjectField(background, new GUIContent("Background", "The background's RectTransform component."));
-        EditorGUILayout.ObjectField(handle, new GUIContent("Handle", "The handle's RectTransform component."));
     }
 }

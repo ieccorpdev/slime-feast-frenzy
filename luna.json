@@ -80,8 +80,8 @@
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "17.12",
-            "monoVersion": "9.0.2",
+            "msbuildVersion": "17.13",
+            "monoVersion": "9.0.3",
             "dotnetVersion": ""
         },
         "assets": {
@@ -33765,7 +33765,7 @@
                     },
                     {
                         "name": "rectTransform#get",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "showMaskGraphic#get",
@@ -33813,7 +33813,7 @@
                     },
                     {
                         "name": "IsRaycastLocationValid",
-                        "excluded": false
+                        "excluded": true
                     }
                 ]
             },
@@ -34865,7 +34865,7 @@
                 "instanceMethods": [
                     {
                         "name": "init",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "VirtualCamera#get",
@@ -36544,6 +36544,10 @@
                         "excluded": false
                     },
                     {
+                        "name": "OnCollisionEnter",
+                        "excluded": false
+                    },
+                    {
                         "name": "DelayDisable",
                         "excluded": false
                     },
@@ -36561,10 +36565,6 @@
                     },
                     {
                         "name": "ManagedFixedUpdate",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnCollisionEnter",
                         "excluded": false
                     }
                 ]
@@ -39305,7 +39305,7 @@
                     },
                     {
                         "name": "DownLoad",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "OnMove",
@@ -40917,7 +40917,7 @@
                     },
                     {
                         "name": "RectangleContainsScreenPoint$1",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "RectangleContainsScreenPoint",
@@ -42935,15 +42935,15 @@
                     },
                     {
                         "name": "ChangeScale",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "OnPointerDown",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "OnPointerUp",
-                        "excluded": false
+                        "excluded": true
                     },
                     {
                         "name": "OnPointerExit",
