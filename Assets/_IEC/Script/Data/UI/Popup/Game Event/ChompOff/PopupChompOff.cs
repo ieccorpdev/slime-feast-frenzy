@@ -385,6 +385,14 @@ namespace IEC
             return eventSaveData.timeStart.AddSeconds(data.eventStageTimeInSeconds);
         }
 
+        public override bool IsEventCompleted()
+        {
+            if (IsEndEvent())
+                return true;
+            
+            return IsEventStageCompleted() && !IsHaveNextEventStage();
+        }
+
         public override bool IsEndEventStage()
         {
             if (_eventRankController == null)
