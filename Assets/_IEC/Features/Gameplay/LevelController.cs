@@ -62,6 +62,7 @@ namespace _IEC.Features.Gameplay
         public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
         public List<BaseItem> AllRelicItems => m_AllRelicItems;
         public List<BaseItem> AllkingdomSpecialItems => m_AllkingdomSpecialItems;
+        public List<BaseCharacterShardItem> AllCharacterShards => m_AllCharacterShardItems;
         public float GetTimeMagnetHelper => m_MagnetHelperCoolDown;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
