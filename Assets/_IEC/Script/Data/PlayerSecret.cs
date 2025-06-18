@@ -544,6 +544,9 @@ namespace IEC
             int count = 0;
             foreach (var kv in characterLevel)
             {
+                if(kv.Key.Equals(Config.allCharactersConfig.GetDefaultCharacterConfig().characterName))
+                    continue;
+                
                 if (kv.Value >= 0) count++;
             }
 
