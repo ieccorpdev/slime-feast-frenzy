@@ -12,6 +12,7 @@ namespace IEC
     {
         public Image indicatorBg;
         public Image indicatorFillImg;
+        public GameObject fireFxGroup;
 
         public CharacterConfig CurrentCharacterConfig { get; private set; }
 
@@ -62,6 +63,7 @@ namespace IEC
                 return;
             
             _isCharacterChanged = true;
+            fireFxGroup.SetActive(true);
             //Set fx
         }
 
@@ -77,6 +79,8 @@ namespace IEC
                 CurrentCharacterConfig = null;
                 return;
             }
+            
+            fireFxGroup.SetActive(false);
 
             CurrentCharacterConfig = characterConfig;
             
