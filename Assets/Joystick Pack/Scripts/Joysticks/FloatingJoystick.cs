@@ -34,6 +34,7 @@ public class FloatingJoystick : Joystick
     IEnumerator DelayShow()
     {
         yield return new WaitForSeconds(3f);
-        tutorial.SetActive(true);
+        if (!PlayableController.Instance.isEndGame)
+            tutorial.SetActive(true);
     }
 }

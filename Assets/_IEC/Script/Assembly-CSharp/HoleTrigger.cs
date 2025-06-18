@@ -16,7 +16,7 @@ public class HoleTrigger : MonoBehaviour
 		BaseItem baseItem = other.GetComponentInParent<BaseItem>();
 		if (baseItem == null) return;
 		baseItem.EnterHoleTrigger();
-		if(baseItem.ItemDefinition != null && baseItem.ItemDefinition.GetLevel() <= m_Hole.Level)
+		if(baseItem.ItemDefinition != null && baseItem.ItemDefinition.GetLevel() <= Hole.Level)
 		{
 			m_Hole.TriggerdBite();
 		}

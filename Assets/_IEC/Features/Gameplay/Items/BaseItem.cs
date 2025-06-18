@@ -34,6 +34,14 @@ namespace _IEC.Features.Gameplay
         private Camera mainCam;
         public bool IsCollected => _isCollected;
         private bool hasRenderer;
+        public static readonly Vector3[] forceDirections = new Vector3[]
+        {
+            Quaternion.Euler(0, 180, 0) * Vector3.up,       // 0 degree
+            Quaternion.Euler(0, 180, 120) * Vector3.up,     // 120 degree
+            Quaternion.Euler(0, 180, 240) * Vector3.up      // 240 degree
+        };
+        public static int forceIndex = 0;
+
         public Rigidbody Rb
         {
             get
@@ -48,6 +56,7 @@ namespace _IEC.Features.Gameplay
         private static bool CanPlaySFX = true;
 
         private RigidbodyData savedData;
+        private static bool _isInit = false;
 
         public virtual void Start()
         {
@@ -56,10 +65,33 @@ namespace _IEC.Features.Gameplay
                 m_ItemDefinition = this.itemDefinition;
             }
             mainCam = Camera.main;
-        }
-        void OnEnable()
-        {
+            if (!_isInit)
+            {
+                _isInit = true;
+                isExplore = false;
+            }
+            else
+            {
+                StartCoroutine(DelayEnable(1f));
+            }
             UpdateManager.Instance.RegisterFixedUpdate(this);
+        }
+
+        IEnumerator DelayEnable(float delay)
+        {
+            yield return new WaitForSeconds(0.04f);
+            Vector3 forceDir = GetNextForceDirection() * 8f * (1 + Hole.Level * 0.2f);
+            Rb.AddForce(forceDir, ForceMode.Impulse);
+
+            yield return new WaitForSeconds(1f);
+            isExplore = false;
+        }
+
+        private Vector3 GetNextForceDirection()
+        {
+            Vector3 dir = forceDirections[forceIndex];
+            forceIndex = (forceIndex + 1) % forceDirections.Length;
+            return dir;
         }
 
         void OnDestroy()
@@ -68,26 +100,35 @@ namespace _IEC.Features.Gameplay
             UpdateManager.Instance.UnregisterFixedUpdate(this);
         }
 
+        //private void OnCollisionEnter(Collision collision)
+        //{
+        //    if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
+        //    {
+        //        rb.isKinematic = true;
+        //    }
+        //}
+        bool isExplore = true;
+        private static bool canSpawn = false;
+        private static bool isFirstStart = true;
+
+        public void EnterHoleTrigger()
+        {
+            if (!isExplore && (canSpawn || isFirstStart) && !PlayableController.Instance.isEndGame)
+            {
+                GamePlay.levelController.SpawnRelic(this.transform.position, this.transform.rotation.eulerAngles, this.transform.localScale, 10);
+                isExplore = true;
+                canSpawn = false;
+                isFirstStart = false;
+            }
+            ChangeState(State.Collectable);
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
             {
-                if (this.transform.position.y < -0.2f)
-                {
-                    rb.isKinematic = false;
-                    OnCollected(this.transform.position);
-                }
-                else
-                {
-                    this.transform.position = new Vector3(this.transform.position.x, Mathf.Max(this.transform.position.y, 0f), this.transform.position.z);
-                    rb.isKinematic = true;
-                }
+                rb.velocity = Vector3.zero;
             }
-        }
-
-        public void EnterHoleTrigger()
-        {
-            ChangeState(State.Collectable);
         }
 
         public Sprite GetIcon()
@@ -112,6 +153,10 @@ namespace _IEC.Features.Gameplay
         }
         public virtual void OnCollected(Vector3 position)
         {
+            if (PlayableController.Instance.isEndGame)
+            {
+                return;
+            }
             this.RaiseEvent(EventList.GamePlay.COLLECT_ITEM,new CollectItemData()
             {
                 itemID = m_ItemData.itemId,
@@ -131,6 +176,12 @@ namespace _IEC.Features.Gameplay
             //        gameObject.Recycle();
             //    }
             //}).SetId(RecycleTweenId);
+            if (CanPlaySFX)
+            {
+                EventController.RaiseEvent(EventList.Audio.ITEM_DOWN);
+                CanPlaySFX = false;
+                DOVirtual.DelayedCall(SoundController.GetLengthSound(EventList.Audio.ITEM_DOWN), () => CanPlaySFX = true);
+            }
         }
 
         IEnumerator DelayDisable(float delay)
@@ -200,14 +251,7 @@ namespace _IEC.Features.Gameplay
             myTransform.position = itemData.position;
             myTransform.eulerAngles = itemData.eulerAngle;
             myTransform.transform.localScale = itemData.localScale;
-            if (itemData.isStartKinematic)
-            {
-                SaveAndDestroyRigidbody();
-            }
-            else
-            {
-                rb.interpolation = RigidbodyInterpolation.Interpolate;
-            }
+            rb.interpolation = RigidbodyInterpolation.Interpolate;
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
         }
@@ -234,19 +278,19 @@ namespace _IEC.Features.Gameplay
 
         private void RestoreRigidbody()
         {
-            if (rb == null)
-            {
-                rb = gameObject.AddComponent<Rigidbody>();
-                rb.velocity = savedData.velocity;
-                rb.angularVelocity = savedData.angularVelocity;
-                rb.mass = savedData.mass;
-                rb.drag = savedData.drag;
-                rb.angularDrag = savedData.angularDrag;
-                rb.useGravity = savedData.useGravity;
-                rb.isKinematic = savedData.isKinematic;
-                rb.collisionDetectionMode = savedData.collisionDetectionMode;
-                rb.interpolation = RigidbodyInterpolation.Interpolate;
-            }
+            //if (rb == null)
+            //{
+            //    rb = gameObject.AddComponent<Rigidbody>();
+            //    rb.velocity = savedData.velocity;
+            //    rb.angularVelocity = savedData.angularVelocity;
+            //    rb.mass = savedData.mass;
+            //    rb.drag = savedData.drag;
+            //    rb.angularDrag = savedData.angularDrag;
+            //    rb.useGravity = savedData.useGravity;
+            //    rb.isKinematic = savedData.isKinematic;
+            //    rb.collisionDetectionMode = savedData.collisionDetectionMode;
+            //    rb.interpolation = RigidbodyInterpolation.Interpolate;
+            //}
         }
 
         protected void ChangeState(State newState)
@@ -284,6 +328,8 @@ namespace _IEC.Features.Gameplay
 
         protected virtual void OnBecomeCollectable()
         {
+            canSpawn = true;
+
             if (Game.usingNewLogicPull)
             {
                 onDraging = true;
@@ -312,22 +358,9 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedFixedUpdate()
         {
-            bool hasRb = rb;
-            bool isSpecialItem = gameObject.name.Contains("Ocean") || gameObject.name.Contains("Kingdom"); //temp logic need improve
-            
-            if (!hasRb || isSpecialItem)
+            if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
             {
-                if (Time.frameCount % 2 == 0)
-                {
-                    if (hasRenderer && IsInScreen(mainCam))
-                    {
-                        if (!isSpecialItem) RestoreRigidbody();
-                    }
-                }
-            }
-            else if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
-            {
-                if (this.transform.position.y < 0f)
+                if (this.transform.position.y < -1f)
                 {
                     rb.isKinematic = false;
                     OnCollected(this.transform.position);

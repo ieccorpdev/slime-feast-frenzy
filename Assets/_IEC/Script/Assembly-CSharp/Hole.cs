@@ -42,9 +42,9 @@ public class Hole : _BaseBehaviour
 	[SerializeField]private Transform characterParent;
 	[SerializeField]private Transform sharkBiteParent;
 	[Header("ThemeConfig")]
-	private int m_Level;
+	private static int m_Level;
 	private int m_Xp;
-	private float m_AdditionalSize = 0;
+	private float m_AdditionalSize = 1;
 	private float m_AdditionalSizeFromCharacterTrait = 1;
 	private float m_AdditionalSpeedFromCharacterTrait = 1;
 	private float m_AdditionalSizeFromCharacterPower = 1;
@@ -66,7 +66,7 @@ public class Hole : _BaseBehaviour
 	                     * m_AdditionalSizeFromCharacterPower
 	                     + m_AdditionalSize;
 
-	public int Level => m_Level;
+	public static int Level => m_Level;
 
 	private Vector3 _defaultScaleGraphic;
 	private Vector3 _defaultScaleCanvas;
@@ -85,7 +85,7 @@ public class Hole : _BaseBehaviour
 	}
 
 	public HoleConfig Settings => m_settings;
-	public Animator subShark;
+	//public Animator subShark;
 
 	private bool _isChangedToCurrentCharacter = false;
 	private bool _isInChangeCharacterAnim = false;
@@ -237,6 +237,7 @@ public class Hole : _BaseBehaviour
 			}
 			sharkBiteParent.transform.Rotate(0f, randomRotationY, 0f);
 			readyForSharkBite = false;
+            EventController.RaiseEvent(EventList.Audio.SHARK_BITE_VARIANT);
         }
 	}
 	private void CheckSharkForm()
@@ -304,7 +305,8 @@ public class Hole : _BaseBehaviour
 
 	public void StartScaleByHelper()
 	{
-		SetSize(Size,true,null);
+        m_AdditionalSize = 2;
+        SetSize(Size,true,null);
 	}
 	public void StartCompassHelper()
 	{
@@ -315,7 +317,7 @@ public class Hole : _BaseBehaviour
 	{
 		if (m_AdditionalSize <= 0) return;
 		m_AdditionalSize = 0;
-		SetSize(Size,true,null);
+        SetSize(Size,true,null);
 	}
 	public void StopCompassHelper()
 	{
@@ -340,7 +342,6 @@ public class Hole : _BaseBehaviour
 			});
 		});
 		SetXp(0,false);
-
 	}
 
 	public void SetSize(float targetSize,bool isLerpSize,Action callback, bool playVfx = true)
@@ -425,8 +426,7 @@ public class Hole : _BaseBehaviour
 	{
 		SetLevel(Level + count,true);
 		SetXp(remaining,true);
-        //SoundController.PlaySound(new AudioInfo(Config.soundConfig.levelUp, false));
-        //VibrationController.Vibrate(HapticTypes.Selection);
+        EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
     }
 
 	public void SetXp(int xp,bool isLerp)
@@ -678,11 +678,7 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("HoleToShark");
-		DOVirtual.DelayedCall(0.68f, () =>
-		{
-			subShark.gameObject.SetActive(true);
-			subShark.Play("Idle");
-		});
+        EventController.RaiseEvent(EventList.Audio.SHARK_UP);
     }
 	public void TurnSharkToHole()
 	{
@@ -693,7 +689,7 @@ public class Hole : _BaseBehaviour
 		characterParent.transform.localPosition = new Vector3(0, 0, 0);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
 		characterAnimator.Play("Dive Into Water 0");
-        subShark.Play("Dive Into Water");
+        //subShark.Play("Dive Into Water");
     }
 	#endregion
 
