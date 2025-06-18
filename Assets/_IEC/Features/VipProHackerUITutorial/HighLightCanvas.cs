@@ -21,7 +21,7 @@ namespace _IEC.Features.VipProHackerUITutorial
         {
             Pool.Set(this);
         }
-        public void HighLightUI(RectTransform rectTransform,bool isRaycastTarget,bool isUsingHandTut = false,Vector2? positionOffset = null)
+        public void HighLightUI(RectTransform rectTransform,bool isRaycastTarget,bool isUsingHandTut = false,Vector2? positionOffset = null, bool isDarkBg = true)
         {
             //Debug.LogError("highligjht");
             if (m_CurrentHighLightUI != null)
@@ -33,7 +33,8 @@ namespace _IEC.Features.VipProHackerUITutorial
             m_GraphicRaycaster = null;
             m_TempCanvas = null;
             m_CurrentHighLightUI = rectTransform;
-            imgDark.gameObject.SetActive(true);
+            //imgDark.gameObject.SetActive(true);
+            imgDark.gameObject.SetActive(isDarkBg);
             var currentCanvas = rectTransform.GetComponent<Canvas>();
             var currentGraphicTarget = rectTransform.GetComponent<GraphicRaycaster>();
             if (currentCanvas == null)

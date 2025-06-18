@@ -253,7 +253,9 @@ public class HomeScreenTab : ScreenNavigateUI
                         PlayerData.isShowPackPopupsInHomeOnStartGame = true;
                         CheckAllPacksPopupOnStartHome();
                     }
+                    CheckShowTutorial();
 
+                    CheckShowTrophyPopup();
                     ShowNextPopup();
                 }
                 else
@@ -564,9 +566,25 @@ public class HomeScreenTab : ScreenNavigateUI
             onClosed?.Invoke();
         }
     }
+
+    public void CheckShowTutorial()
+    {
+        if (PlayerData.level == Config.characterShopConfig.levelUnlock && !PlayerData.isShowCharacterTutorial)
+        {
+            PlayerData.isShowCharacterTutorial = true;
+            AddPopupToShow(
+                null,
+                () =>
+                {
+                    Locator.Main.ScreenMain.homeScreenTutorial.DoTutorialCharacterShop();
+                }, 
+                ShowNextPopup);
+        }
+    }
     
     public void CheckAllPacksPopupOnWin()
     {
+        //No Ads popup
         if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
@@ -576,9 +594,24 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
-
     }
 
+    public void CheckShowTrophyPopup()
+    {
+        //Trophy Reward 
+        var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
+        if (foundTrophy)
+        {
+            AddPopupToShow(Locator.Main.PopupTrophyDetails,
+                () =>
+                {
+                    var data = PlayerData.trophyData.GetTrophyDataConfig(typeTrophy);
+                    data.indexTrophyWasNoti = data.trophyCollected +1;// hmmm
+                    Locator.Main.PopupTrophyDetails.ShowTrophy(typeTrophy,ItemTrophyState.New,new TrophyEventData(),true);
+                },
+                ShowNextPopup);
+        }
+    }
     public void CheckAllPacksPopupOnStartHome()
     {
         bool avaliableToShowVoyage =

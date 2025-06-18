@@ -407,6 +407,54 @@ namespace _IEC.Features.Gameplay
 
             return res;
         }
+        
+        public static List<BaseCharacterShardItem> SpawnCharacterShardItems(Bounds bounds, int count, Transform levelObjectHolder,
+            ItemDefinition itemDefinition)
+        {
+            var res = new List<BaseCharacterShardItem>();
+            if (itemDefinition == null) return res;
+            var prefab = itemDefinition.GetPrefab();
+            if (prefab == null)
+            {
+                return res;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                var newItem = prefab.Spawn();
+                var itemComponent = newItem.GetComponent<BaseCharacterShardItem>();
+                if (itemComponent == null)
+                {
+                    itemComponent = newItem.AddComponent<BaseCharacterShardItem>();
+                }
+
+                var itemTransform = itemComponent.transform;
+                float scale = Config.specialObjectConfig.GetRandomSpawnSize(itemDefinition.GetId());
+                var itemData = new ItemData()
+                {
+                    itemId = itemDefinition.GetId(),
+                    position = Vector3.zero, //Do random pos later
+                    eulerAngle = Vector3.zero,
+                    localScale = Vector3.one * scale,
+                    isStartKinematic = false,
+                };
+                itemTransform.parent = levelObjectHolder;
+                //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
+                itemComponent.LoadData(itemData, itemDefinition);
+                itemComponent.ItemData.position =
+                    FindValidSpawnPosition(
+                        bounds,
+                        itemComponent.GetComponentInChildren<Collider>()?.bounds.extents.magnitude ?? 2f,
+                        1000,
+                        itemComponent.gameObject.layer
+                    );
+                itemComponent.transform.position = itemComponent.ItemData.position + Vector3.up * 10;
+                res.Add(itemComponent);
+                itemIds.Add(itemData.itemId);
+            }
+
+            return res;
+        }
 
         public static List<BaseItem> SpawnSpecialItems(Bounds bounds, int count, Transform levelObjectHolder,
             ItemDefinition itemDefinition)

@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityUtils;
 
 namespace IEC
 {
-    public class CharacterSelectionUIScroller : _BaseBehaviour, IEnhancedScrollerDelegate
+    public class CharacterSelectionUIScroller : _BaseBehaviour, IEnhancedScrollerDelegate, IPointerDownHandler, IPointerUpHandler
     {
         public EnhancedScroller scroller;
         public float cellSize = 205;
         public CharacterSelectionUI characterSelectionUIPrefab;
         
         public CharacterSelectionTab CharacterSelectionTab { get; private set; }
+        
+        public bool IsDragging { get; private set; }
 
         public void Init(CharacterSelectionTab tab)
         {
@@ -83,6 +86,16 @@ namespace IEC
                 cellView.Setup(charConfig, CharacterSelectionTab.CurrentCharacterConfig.characterName);
             
             return cellView;
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            IsDragging = true;
+        }
+
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            IsDragging = false;
         }
     }
 }

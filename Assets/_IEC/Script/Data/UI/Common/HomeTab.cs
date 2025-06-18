@@ -86,7 +86,15 @@ namespace IEC
         {
             m_IsLock = isLock;
             //m_Icon.gameObject.SetActive(!isLock);
-            if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
+
+            if (iconSpine)
+            {
+                iconSpine.gameObject.SetActive(!isLock);
+            }
+            if (type == Locator.Main.ScreenMain.bottomBar.lastTabType)
+            {
+                SetAnimationSpineOff(type);
+            }
             m_Lock.SetActive(isLock);
             m_Lock.transform.localPosition = Vector3.up * -60f;
             //if(isLock) m_Lock.transform.SetAsLastSibling();

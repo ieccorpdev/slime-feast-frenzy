@@ -34,11 +34,19 @@ namespace IEC
         public Button trophyRoomButton;
         public TrophyEventData dataEventTime;
         private Tween floatingTween;
-        
+        private Vector3 basePos;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            basePos = mainSpriteTrophy.rectTransform.anchoredPosition;
+        }
+
         public void StartFloatingTrophy()
         {
             if (mainSpriteTrophy == null) return;
             floatingTween?.Kill();
+            mainSpriteTrophy.rectTransform.anchoredPosition = basePos;
             Vector3 startPos = mainSpriteTrophy.rectTransform.anchoredPosition;
             floatingTween = mainSpriteTrophy.rectTransform
                 .DOAnchorPosY(startPos.y + 20f, 1f)
@@ -52,7 +60,7 @@ namespace IEC
             floatingTween = null;
         }
 
-        public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime)
+        public void ShowTrophy(TrophyType type,ItemTrophyState state,TrophyEventData dataEventTime,bool isTrophyUnlock = false)
         {
             base.Show();
             this.type = type;
@@ -61,23 +69,26 @@ namespace IEC
             infoGroups.gameObject.SetActive(false);
             unlockedGroups.gameObject.SetActive(false);
             var data = PlayerData.trophyData.GetTrophyDataConfig(type);
-            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(data.trophyCollected);
+            int index = Mathf.Clamp(data.trophyCollected - (isTrophyUnlock ? 0 :1 ), 0, 3);
+            mainSpriteTrophy.sprite = Config.trophyRewardConfig.GetReward(type).GetSpriteByIndex(index);
             
-            LoadDefaultData();
-            if (state == ItemTrophyState.Complete || state == ItemTrophyState.New)
+            LoadDefaultData(isTrophyUnlock);
+            if (isTrophyUnlock)
             {
-                ShowCompleteGroups();
+                ShowCompleteGroups(isTrophyUnlock);
             }
             else
             {
-                ShowInfoGroups();
+                
+                ShowInfoGroups(isTrophyUnlock);
                 UpdateUIByTimeDataEvent();
             }
             StartFloatingTrophy();
         }
         public void UpdateUIByTimeDataEvent()
         {
-            if (!dataEventTime.isEvent)
+
+            if (dataEventTime == null || !dataEventTime.isEvent)
             {
                 infoGRBG.sprite = defaultBg;
                 eventTimeObj.gameObject.SetActive(false);
@@ -99,19 +110,19 @@ namespace IEC
             }
         }
 
-        public void LoadDefaultData()
+        public void LoadDefaultData(bool isTrophyUnlock)
         {
-            int crTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+            int crTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type) + (isTrophyUnlock ? 1 : 0);
             var dataFont = GetTrophyType(crTrophy);
             mainTileTrophy.text = Locator.Main.ScreenMain.trophyTab.GetRealNameTrophy(type);
             mainTileTrophy.fontMaterial  = dataFont.fontMaterial;
             mainTileTrophy.colorGradientPreset = dataFont.colorGradient;
             trophyUnlockText.gameObject.SetActive(state == ItemTrophyState.New);
         }
-        public void ShowInfoGroups()
+        public void ShowInfoGroups(bool isTrophyUnlock)
         {
             infoGroups.gameObject.SetActive(true);   
-            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type)-1;
+            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type)- (isTrophyUnlock ? 0 : 1);
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
             var listSpriteData = Config.trophyRewardConfig.GetReward(type).listSpiteTrophy;
             for (int i = 0; i < listSpriteTrophy.Count; i++)
@@ -133,14 +144,23 @@ namespace IEC
                     break;
             }
             var dataMinMax = PlayerData.trophyData.GetMinMaxProgressBar(type);
-            string textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophy(type,(int)dataMinMax.y-(int)dataMinMax.x);
+            string textRS = "";
+            if (state == ItemTrophyState.Complete)
+            {
+                textRS = "You've unlocked all trophies for this event!";
+            }
+            else
+            {
+                 textRS = Locator.Main.ScreenMain.trophyTab.GetTextInfoTrophyMerged(type,(int)dataMinMax.y-(int)dataMinMax.x);   
+            }
+
             infoTrophyTMP.text = textRS;
         }
 
-        public void ShowCompleteGroups()
+        public void ShowCompleteGroups(bool isTrophyUnlock)
         {
             unlockedGroups.gameObject.SetActive(true);
-            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type);
+            int currentTrophy = PlayerData.trophyData.GetCurrentCollectedTrophy(type) + (isTrophyUnlock? 0: +1);
             int index = Mathf.Clamp(currentTrophy,0, ListBadgeSprites.Count-1);
             badgeImage.sprite = ListBadgeSprites[index];
             trophyRoomButton.onClick.AddListener(OnTrophyRoomClick);
@@ -158,7 +178,7 @@ namespace IEC
         }
         public TrophyCustomTitle GetTrophyType(int crTrophy)
         {
-            int index = Mathf.Clamp(crTrophy+1,0, listFontMaterial.Count-1);
+            int index = Mathf.Clamp(crTrophy-1,0, listFontMaterial.Count-1);
             return listFontMaterial[index];
         } 
     }

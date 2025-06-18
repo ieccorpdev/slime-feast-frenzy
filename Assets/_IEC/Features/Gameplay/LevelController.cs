@@ -51,6 +51,7 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
+        private List<BaseCharacterShardItem> m_AllCharacterShardItems = new List<BaseCharacterShardItem>();
         private List<BaseItem> m_AllRelicItems = new List<BaseItem>();
         private List<BaseItem> m_AllkingdomSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
@@ -75,10 +76,15 @@ namespace _IEC.Features.Gameplay
         
         public int GoldCollected { get; private set; }
 
+        private List<string> listCharacterShardCollected = new();
+
+        public List<string> ListCharacterShardCollected => listCharacterShardCollected;
+
         private void OnEnable()
         {
             this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.RegisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -93,6 +99,7 @@ namespace _IEC.Features.Gameplay
         {
             this.UnregisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.UnregisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -191,6 +198,7 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             }
+            
             m_AllSpecialItems.Clear();
             int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
@@ -199,6 +207,20 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
+            
+            m_AllCharacterShardItems.Clear();
+            int countShardItems = Config.characterShardObjectConfig.GetSpawnAmount(PlayerData.level);
+            m_AllCharacterShardItems = LevelHelper.SpawnCharacterShardItems(
+                GroundExtend.CalculateBounds(m_AllItems),
+                countShardItems, 
+                allItemHolder,
+                Config.characterShardObjectConfig.shardObjectItemDefinition
+            );
+            foreach (var shardItem in m_AllCharacterShardItems)
+            {
+                shardItem.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
+            }
+            
             m_AllkingdomSpecialItems.Clear();
             int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
                 && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
@@ -285,6 +307,7 @@ namespace _IEC.Features.Gameplay
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
+            listCharacterShardCollected.Clear();
             GoldCollected = 0;
             
             CheckCharacterPowerOnStartGame();
@@ -316,6 +339,13 @@ namespace _IEC.Features.Gameplay
             
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
+
+        private void OnCollectCharacterShard(object param)
+        {
+            var characterName = (string)param;
+            
+            listCharacterShardCollected.Add(characterName);
+        }
 
         private void OnCollectItem(object param)
         {
@@ -462,18 +492,17 @@ namespace _IEC.Features.Gameplay
             addBoosterAction +=
                 () =>
                 {
-                    var value = CheckCharacterPowerOnBoosterEffect(data.effectValue);
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
                         //playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
-                        playerHole.AddXp(Mathf.FloorToInt(value));
+                        playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
                         EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
                         
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
                         //playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
-                        playerHole.OnCollectSpeedBooster(value, data.effectTime);
+                        playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
                         EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
                         
                     }
@@ -648,21 +677,9 @@ namespace _IEC.Features.Gameplay
             var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
             if (checkPowerHelperTime != null)
             {
-                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
+                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
             }
             return helperTime;
-        }
-
-        public float CheckCharacterPowerOnBoosterEffect(float value)
-        {
-            var checkPowerBooster = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseEffectBooster);
-
-            if (checkPowerBooster != null)
-            {
-                value *= checkPowerBooster
-                    .GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName)).buffAmount;
-            }
-            return value;
         }
 
         private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
@@ -681,7 +698,7 @@ namespace _IEC.Features.Gameplay
             if (checkXpPower != null)
             {
                 var value = checkXpPower.GetCharacterPowerValue(
-                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (xp == value.conditionValueForPower)
                 {
                     xp = Mathf.FloorToInt(xp * value.buffAmount);
@@ -697,7 +714,7 @@ namespace _IEC.Features.Gameplay
             if (checkPower != null)
             {
                 var value = checkPower.GetCharacterPowerValue(
-                    PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (comboCount >= value.conditionValueForPower)
                 {
                     Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);

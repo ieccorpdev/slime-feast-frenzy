@@ -10,7 +10,7 @@ namespace IEC
     public class TrophyData
     {
         public List<TrophyDataConfig> data = new List<TrophyDataConfig>();
-
+        public bool isShowJourneyTutorial;
         public void CollectTrophy(TrophyType type,int value = 1)
         {
             Debug.LogError("Collect Trophy:" + type);
@@ -30,19 +30,59 @@ namespace IEC
         public void CollectTrophyReward(TrophyType type)
         {
             Debug.LogError("CollectTrophyReward:" + type);
-            var tdc = GetTrophyDataConfig(type);
+            TrophyDataConfig tdc = GetTrophyDataConfig(type);
+            if (IsEventTrophy(type))
+            {
+                //for event, change method count
+                var config = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
+                tdc.timeCompleted -= config.listTimeToCollect[tdc.trophyCollected];
+                tdc.timeCompleted = tdc.timeCompleted <= 0 ? 0 : tdc.timeCompleted;
+            }
             tdc.trophyCollected += 1;
+            //After collect, reduce number times collected 
+
         }
 
+        public bool IsEventTrophy(TrophyType type)
+        {
+            return type != TrophyType.GrandVoyage && type != TrophyType.SharkFrenzyForce;
+        }
+
+        public (bool found,TrophyType type) GetTrophyNotiUnlocked()
+        {
+            foreach (var name in Enum.GetValues(typeof(TrophyType)))
+            {
+                //So heavy, need optimizationi, indexTrophyWasNoti
+                var typeTemp = (TrophyType)name;
+                var data = GetTrophyDataConfig(typeTemp);
+                int times = data.timeCompleted;
+                int trophyCol = data.trophyCollected;
+                int trophyTarget = GetTargetToGetTrophy(typeTemp,trophyCol);//Target
+                if (times >= trophyTarget && data.indexTrophyWasNoti <= trophyCol)
+                {
+                    return (true,(TrophyType)name);
+                }
+            }
+
+            return (false,TrophyType.GrandVoyage);
+        }
         public bool IsTrophyCanCollect(TrophyType type)
         {
-            int times = GetCurrentTimeComplete(type);
-            int trophyCol = GetCurrentCollectedTrophy(type);
-            int trophyTarget = GetTargetToGetTrophy(type, times,trophyCol);//Target
+            var data = GetTrophyDataConfig(type);
+            int times = data.timeCompleted;
+            int trophyCol = data.trophyCollected;
+            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
             return times >= trophyTarget;
         }
-
-        public int GetTargetToGetTrophy(TrophyType type,int times,int trophyCol)
+        public bool NeedShowTrophyPopupDetail(TrophyType type)
+        {
+            int times = GetCurrentTimeComplete(type);
+            int notiIndex = GetMaxTrophyNoti(type);
+            int trophyCol = GetCurrentCollectedTrophy(type);
+            int trophyTarget = GetTargetToGetTrophy(type,trophyCol);//Target
+            return times >= trophyTarget && notiIndex < trophyTarget;
+        }
+        public int GetTargetToGetTrophy(TrophyType type,int trophyCol)
         {
            var dataConfig = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
            if (trophyCol == 0)
@@ -59,6 +99,10 @@ namespace IEC
         {
             return GetTrophyDataConfig(type).timeCompleted;
         }
+        public int GetMaxTrophyNoti(TrophyType type)
+        {
+            return GetTrophyDataConfig(type).indexTrophyWasNoti;
+        }
         public int GetCurrentCollectedTrophy(TrophyType type)
         {
             return GetTrophyDataConfig(type).trophyCollected;
@@ -68,17 +112,27 @@ namespace IEC
         {
             var config = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
             var dataSave = GetTrophyDataConfig(type);
-            int start = config.listTimeToCollect[dataSave.trophyCollected];
-            if (dataSave.trophyCollected == 0)
+            int index = Mathf.Clamp(dataSave.trophyCollected, 0, 3);
+            int target = config.listTimeToCollect[index];
+            int start = GetCurrentTimeComplete(type);
+            if (IsEventTrophy(type) || dataSave.trophyCollected == 0)
             {
-                return new Vector2(dataSave.timeCompleted, start);
+                return new Vector2(dataSave.timeCompleted, target);
             }
             else
             {
-
-                int end = start;
-                start = config.listTimeToCollect[dataSave.trophyCollected-1];
-                return new Vector2(dataSave.timeCompleted - start, end - start);
+                //With another, sum need be all cal
+                int totalPerivousTarget = 0;
+                for (int i = 0; i < config.listTimeToCollect.Count; i++)
+                {
+                    if (i < dataSave.trophyCollected)
+                    {
+                        totalPerivousTarget += config.listTimeToCollect[i];
+                    }
+                }
+                int lastTarget = config.listTimeToCollect[dataSave.trophyCollected-1];
+                return new Vector2(dataSave.timeCompleted - totalPerivousTarget, target );
+                //return new Vector2(start,end);
             }
         }
         public void SetLevelTrophy(int level)
@@ -108,6 +162,7 @@ namespace IEC
         public TrophyType typeTrophy;
         public int timeCompleted;
         public int trophyCollected = 0;// 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
+        public int indexTrophyWasNoti;//Save the maximum trophy was noti for player, 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
     }
     public enum TrophyType{
         GrandVoyage,

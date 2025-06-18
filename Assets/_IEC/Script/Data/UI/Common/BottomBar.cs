@@ -35,6 +35,7 @@ namespace IEC
             m_IsStart = false;
         }
 
+        public TabType lastTabType;
         private void Init()
         {
             var tabShow = HybridConfig.listTabConfig.Count - 1;
@@ -68,7 +69,7 @@ namespace IEC
                     if (isClick) return;
                     //lock leaderboard temporary
                     if(tab.type == TabType.LeaderBoard) return;
-                    
+
                     if (tab.type != Game.hybrid.currentTab)
                     {
                         isClick = true;
@@ -77,18 +78,20 @@ namespace IEC
                             isClick = false;
                         });
                     }
-                    var lastTabType = Game.hybrid.currentTab;
+                    lastTabType = Game.hybrid.currentTab;
                     Game.hybrid.currentTab = tab.type;
                     var index = tab.transform.GetSiblingIndex();
                     m_BigTab.transform.SetSiblingIndex(index);
                     m_ListTab.Remove(m_BigTab);
                     m_ListTab.Insert(index, m_BigTab);
+
                     SetTabSprite(lastTabType);
                     m_BigTab.SetTabName();
                     m_BigTab.SetAnimationSpineOn();
                     var isStart = m_IsStart;
                     EventController.RaiseEvent(EventList.GamePlay.ON_CHOOSE_TAB, new EventParam(this));
                     EventController.RaiseEvent(EventList.Audio.HOME_PAGE_NAV_SLIDE);
+                    SetLockTabs();
                     StartCoroutine(IE_WaitRebuild(() => ChangeTabUI(!isStart)));
                 };
             }
@@ -105,10 +108,14 @@ namespace IEC
         [Sirenix.OdinInspector.Button]
         private void SetLockTabs()
         {
-            //lock leaderboard for now
+            //lock leaderboard and trophy for now
             m_ListTab.ForEach(x =>
             {
-                x.SetLock(x.type == TabType.LeaderBoard);
+                x.SetLock(
+                    x.type == TabType.LeaderBoard 
+                    ||(x.type == TabType.Trophy && PlayerData.level <= Config.trophyRewardConfig.levelUnlock)
+                    ||(x.type == TabType.Character && PlayerData.level < Config.characterShopConfig.levelUnlock)
+                    );
             });
         }
         IEnumerator IE_SetLockTabs()
@@ -138,7 +145,6 @@ namespace IEC
                 m_ChooseTab.anchoredPosition = new Vector2(m_BigTab.GetPosX(), m_ChooseTab.anchoredPosition.y);
                 return;
             }
-
             m_ChooseTab.DOAnchorPosX(m_BigTab.GetPosX(), 0.2f).SetEase(Ease.OutQuad);
         }
 
