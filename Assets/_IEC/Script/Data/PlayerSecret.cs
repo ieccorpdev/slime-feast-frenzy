@@ -539,6 +539,16 @@ namespace IEC
         public long lastTimeUpdateCharacterShardShop;
         public bool isShowCharacterTutorial;
 
+        public int GetTotalCharacterUnlocked()
+        {
+            int count = 0;
+            foreach (var kv in characterLevel)
+            {
+                if (kv.Value >= 0) count++;
+            }
+
+            return count;
+        }
         public void SetTempCharacter(string characterName)
         {
             tempCharacterName = characterName;
@@ -601,6 +611,13 @@ namespace IEC
         public int GetCharacterLevel(string characterName)
         {
             characterLevel.TryAdd(characterName, -1);
+
+            //Always max level in trial
+            if (characterName.Equals(tempCharacterName) 
+                && Locator.Game.ScreenInGame.gameObject.activeInHierarchy
+                && !Locator.Game.ScreenLevelWin.gameObject.activeInHierarchy
+                )
+                return 2;
 
             return characterLevel[characterName];
         }

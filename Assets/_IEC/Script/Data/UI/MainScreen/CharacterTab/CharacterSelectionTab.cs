@@ -264,17 +264,18 @@ namespace IEC
             CheckNavigateButton();
         }
 
-        private void UpdateDescriptionText()
+        public string GetDescriptionText(CharacterConfig characterConfig)
         {
-            characterDescriptionText.text = CurrentCharacterConfig.characterDescription;
+            var descriptionText = characterConfig.characterDescription;
+            var charLevel = PlayerData.GetCharacterLevel(characterConfig.characterName);
 
             List<object> formatValues = new List<object>();
 
-            foreach (var power in CurrentCharacterConfig.listCharacterPowers)
+            foreach (var power in characterConfig.listCharacterPowers)
             {
                 if (power != null)
                 {
-                    var value = power.GetCharacterPowerValue(CurrentCharacterLevel);
+                    var value = power.GetCharacterPowerValue(charLevel);
                     float powerValue = value.buffAmount;
 
                     if (powerValue < 1f)
@@ -288,9 +289,40 @@ namespace IEC
                     formatValues.Add(stringValue);
                 }
             }
+            
+            descriptionText = ReplaceIconTags(String.Format(descriptionText, formatValues.ToArray()));
 
-            //characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
-            characterDescriptionText.text = ReplaceIconTags(String.Format(characterDescriptionText.text, formatValues.ToArray()));
+            return descriptionText;
+        }
+
+        private void UpdateDescriptionText()
+        {
+            characterDescriptionText.text = GetDescriptionText(CurrentCharacterConfig);
+            // characterDescriptionText.text = CurrentCharacterConfig.characterDescription;
+
+            // List<object> formatValues = new List<object>();
+            //
+            // foreach (var power in CurrentCharacterConfig.listCharacterPowers)
+            // {
+            //     if (power != null)
+            //     {
+            //         var value = power.GetCharacterPowerValue(CurrentCharacterLevel);
+            //         float powerValue = value.buffAmount;
+            //
+            //         if (powerValue < 1f)
+            //             powerValue *= 100f;
+            //         
+            //         string stringValue = GetHighlightedText(powerValue.ToString());
+            //         if (!String.IsNullOrEmpty(value.overrideDescriptionString))
+            //         {
+            //             stringValue = GetHighlightedText(value.overrideDescriptionString);
+            //         }
+            //         formatValues.Add(stringValue);
+            //     }
+            // }
+            //
+            // //characterDescriptionText.text = String.Format(characterDescriptionText.text, formatValues.ToArray());
+            // characterDescriptionText.text = ReplaceIconTags(String.Format(characterDescriptionText.text, formatValues.ToArray()));
         }
         
         private string ReplaceIconTags(string inputText)

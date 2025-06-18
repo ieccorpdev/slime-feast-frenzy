@@ -25,6 +25,7 @@ public class TrophyScreenTab : ScreenNavigateUI
 
     public override void Show()
     {
+        CheckSkinUnlockTrophy2();
         Locator.Service.GameResourceDisplay.HideDisplayUnderBG();
         tutorialTrophyPanel.gameObject.SetActive(false);
         if (!PlayerData.trophyData.isShowJourneyTutorial)
@@ -41,7 +42,6 @@ public class TrophyScreenTab : ScreenNavigateUI
     }
     public void LoadData()
     {
-
         foreach (var item in listAllTrophy)
         {
             var crState = GetStateTrophy(item.type);
@@ -240,10 +240,16 @@ public class TrophyScreenTab : ScreenNavigateUI
                 SetEventStatus(dataEvent, EventType.StarChase);
                 break;
             case TrophyType.RelicHunt:
-                SetEventStatus(dataEvent, EventType.RelicHunt);
+                //Task #71160
+                //SetEventStatus(dataEvent, EventType.RelicHunt);
+                dataEvent.isEvent = true;
+                dataEvent.isEventActive =  IsEventCanShow(EventType.RelicHunt) &&  (PlayerData.relicData.hasJoinEvent || PlayerData.relicData.isNewEvent);
+                if (!dataEvent.isEventActive)
+                {
+                    dataEvent.timeStartEvent = Config.eventLiveOpsConfig.GetNextTimeStartEvent(EventType.RelicHunt, PlayerData.GetDaysSinceDownload());
+                }
                 break;
         }
-        
         return dataEvent;
     }
 
@@ -283,6 +289,11 @@ public class TrophyScreenTab : ScreenNavigateUI
             default:
                 return "Diamond Trophy";
         }
+    }
+
+    public void CheckSkinUnlockTrophy2()
+    {
+        PlayerData.trophyData.SetTrophyTimes(TrophyType.SharkFrenzyForce,PlayerData.GetTotalCharacterUnlocked());
     }
 }
 

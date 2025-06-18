@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _IEC.Features.Common.Extension;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,7 +26,26 @@ namespace IEC
             InitScroller();
             ReloadData();
         }
-        
+
+        private void OnEnable()
+        {
+            this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, OnSelectNewCharacter);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, OnSelectNewCharacter);
+        }
+
+        private void OnSelectNewCharacter(object param)
+        {
+            var data = (CharacterEventData)param;
+            if (data != null)
+            {
+                JumpToCurrent(data.characterName);
+            }
+        }
+
         private void InitScroller()
         {
             if (scroller.Delegate == null)

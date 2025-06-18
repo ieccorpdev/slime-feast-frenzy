@@ -42,6 +42,7 @@ namespace IEC
         [SerializeField] private GameObject timerFrozenMark;
         [SerializeField] private HelperIntro helperIntro;
         public ComboUI comboUI;
+        public IngameCharacterChangeIndicator characterChangeIndicator;
         private static bool CanPlaySFX = true;
 
         private void Awake()
@@ -252,6 +253,10 @@ namespace IEC
             UpdateUI();
             gameplayTimer.SetStartTime(levelData);
             gameplayTimer.ResetFreezeTime();
+
+            var config = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
+            characterChangeIndicator.gameObject.SetActive(config.comboCountToChange > 0);
+            characterChangeIndicator.Setup(config);
         }
     }
 }
