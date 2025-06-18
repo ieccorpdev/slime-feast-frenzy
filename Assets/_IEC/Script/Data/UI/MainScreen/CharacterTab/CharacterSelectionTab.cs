@@ -67,12 +67,14 @@ namespace IEC
         {
             this.RegisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
             this.RegisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
+            this.RegisterListener(EventList.GamePlay.UPGRADE_CHARACTER, UpdateCurrentCharacterUI);
         }
 
         private void OnDisable()
         {
             this.UnregisterListener(EventList.GamePlay.SELECT_NEW_CHARACTER, SetCurrentCharacter);
             this.UnregisterListener(EventList.GamePlay.SET_NEW_CHARACTER, UpdateCurrentCharacterUI);
+            this.UnregisterListener(EventList.GamePlay.UPGRADE_CHARACTER, UpdateCurrentCharacterUI);
         }
 
         private void OnSelectCharacter()
@@ -133,13 +135,14 @@ namespace IEC
                 return;
 
             CurrentCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(data.characterName);
-            CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
+            //CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             UpdateCurrentCharacterUI();
         }
 
         public void UpdateCurrentCharacterUI(object param = null)
         {
             characterNameText.text = CurrentCharacterConfig.characterName;
+            CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             if (mainCharacterImage != null)
             {
                 mainCharacterImage.sprite = CurrentCharacterConfig.characterMainSprite;
