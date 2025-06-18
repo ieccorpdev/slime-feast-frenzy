@@ -386,7 +386,7 @@ namespace IEC
 
         private static void CollectTrophy(int playerRank,TrophyType trophyType)
         {
-            if (playerRank <= 2)
+            if (playerRank <= 3 || trophyType == TrophyType.ChompOff)
             {
                 PlayerData.trophyData.CollectTrophy(trophyType);
                 Locator.Main.HomeScreenTab.CheckShowTrophyPopup();

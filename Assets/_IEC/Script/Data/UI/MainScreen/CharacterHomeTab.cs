@@ -46,6 +46,7 @@ public class CharacterHomeTab : ScreenNavigateUI
         else if (characterShardTab.gameObject.activeInHierarchy)
         {
             //characterShardTab.Setup();
+            characterShardTab.CheckSetupDataShop();
         }
     }
 
