@@ -60,15 +60,12 @@ namespace IEC
                 PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
                 return false;
             }
-            //else
-            {
-                //IsForcedTrial = false;
-                CharacterRecommendData = Config.characterRecommendConfig.GetRecommendedCharacter(PlayerData.level);
-                IsTrial = CharacterRecommendData.isTrial;
-            }
 
+            CharacterRecommendData = Config.characterRecommendConfig.GetRecommendedCharacter(PlayerData.level);
             if (CharacterRecommendData == null)
                 return false;
+            
+            IsTrial = CharacterRecommendData.isTrial;
 
             characterNameText.text = CharacterRecommendData.characterName;
             bgImage.sprite = Config.allCharactersConfig.GetCharacterConfig(CharacterRecommendData.characterName)
