@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _IEC.Features.Common.Extension;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -17,16 +18,37 @@ namespace IEC
         public GameObject freeTrialGroup;
         public Button deselectButton;
         public Button unlockButton;
-        
+        public Button getCharacterButton;
+
         public CharacterRecommendData CharacterRecommendData { get; private set; }
         public CharacterRecommendState CharacterRecommendState { get; private set; }
-        public bool IsForcedTrial { get; private set; }
+        public bool IsTrial { get; private set; }
 
         private void Start()
         {
             selectButton.onClick.AddListener(OnSelect);
             deselectButton.onClick.AddListener(OnDeselect);
             unlockButton.onClick.AddListener(OnUnlock);
+            getCharacterButton.onClick.AddListener(OnGetCharacter);
+        }
+
+        public bool CheckSetupWinScreen()
+        {
+            if (String.IsNullOrEmpty(PlayerData.tempCharacterName))
+                return false;
+            
+            if (PlayerData.GetCharacterLevel(PlayerData.tempCharacterName) >= 0)
+                return false;
+
+            characterNameText.text = PlayerData.tempCharacterName;
+            bgImage.sprite = Config.allCharactersConfig.GetCharacterConfig(PlayerData.tempCharacterName)
+                .characterRecommendBarSprite;
+
+            CharacterRecommendData = Config.characterRecommendConfig.GetCharacterData(PlayerData.tempCharacterName);
+            
+            UpdateUI(true);
+            
+            return true;
         }
 
         public bool CheckSetup()
@@ -34,13 +56,15 @@ namespace IEC
             CharacterRecommendData = Config.characterRecommendConfig.GetForcedTrialCharacter(PlayerData.level);
             if (CharacterRecommendData != null)
             {
-                IsForcedTrial = true;
+                //IsForcedTrial = true;
                 PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+                return false;
             }
-            else
+            //else
             {
-                IsForcedTrial = false;
+                //IsForcedTrial = false;
                 CharacterRecommendData = Config.characterRecommendConfig.GetRecommendedCharacter(PlayerData.level);
+                IsTrial = CharacterRecommendData.isTrial;
             }
 
             if (CharacterRecommendData == null)
@@ -55,16 +79,23 @@ namespace IEC
             return true;
         }
 
-        private void UpdateUI()
+        private void UpdateUI(bool isLevelWin = false)
         {
             freeTrialGroup.SetActive(false);
             deselectButton.gameObject.SetActive(false);
             unlockButton.gameObject.SetActive(false);
             selectButton.gameObject.SetActive(false);
+            getCharacterButton.gameObject.SetActive(false);
+
+            if (isLevelWin)
+            {
+                getCharacterButton.gameObject.SetActive(true);
+                return;
+            }
 
             var currentCharName = PlayerData.GetCurrentCharacterName();
 
-            if (IsForcedTrial)
+            if (IsTrial)
             {
                 freeTrialGroup.SetActive(true);
                 selectButton.interactable = false;
@@ -132,11 +163,13 @@ namespace IEC
         public void OnSelect()
         {
             PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+            UpdateUI();
         }
 
         public void OnDeselect()
         {
             PlayerData.ResetTempCharacter();
+            UpdateUI();
         }
 
         public void OnUnlock()
@@ -148,6 +181,31 @@ namespace IEC
             else
             {
                 PlayerData.CheckLevelUpCharacter(CharacterRecommendData.characterName);
+                UpdateUI();
+            }
+        }
+
+        public void OnGetCharacter()
+        {
+            if (Locator.Game.ScreenLevelWin.gameObject.activeInHierarchy)
+            {
+                Locator.Game.ScreenLevelWin.AddActionAfterShowAllPopup(
+                    null,
+                    () =>
+                    {
+                        var tab = Locator.Main.ScreenMain.bottomBar.GetTab(TabType.Character);
+                        tab.onClick?.Invoke();
+                        this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Character);
+                        TweenControl.GetInstance().DelayCall(tab.gameObject.transform, 0.75f, () =>
+                        {
+                            this.RaiseEvent(EventList.GamePlay.SELECT_NEW_CHARACTER, new CharacterEventData()
+                            {
+                                characterName = CharacterRecommendData.characterName
+                            });
+                        });
+                    }, 
+                    null);
+                Locator.Game.ScreenLevelWin.btnNext.onClick.Invoke();
             }
         }
     }

@@ -326,6 +326,7 @@ namespace IEC
             {
                 PlayerData.trophyData.CollectTrophy(TrophyType.UnderseaVoyage);
                 Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
+                Locator.Main.HomeScreenTab.ShowNextPopup();
             }
 
         }
