@@ -280,6 +280,8 @@ namespace _IEC.Features.Gameplay
 
         public Hole GetHolePlayer() => playerHole;
         public bool isMaxItem => GetAllItems().Count >= PlayableController.Instance.maxItemSpawn;
+        public bool isEnabeSpawnMaxItem = false;
+
         public List<BaseItem> GetAllItems()
         {
             for (int i = m_AllItems.Count - 1; i >= 0; i--)
@@ -290,6 +292,7 @@ namespace _IEC.Features.Gameplay
             if (m_AllItems.Count > 69)
             {
                 PlayableTutorial.ShowTut();
+                isEnabeSpawnMaxItem = true;
             }
             return m_AllItems;
         }  

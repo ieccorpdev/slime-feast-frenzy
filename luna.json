@@ -2,7 +2,7 @@
     "version": "6.3.0",
     "projectId": "38eebd4cf2b294042a597d2e76328ca7",
     "applicationID": 29428,
-    "creativeName": "SFF_v1_Special_Level",
+    "creativeName": "SFF_v3_Special_Level",
     "pgServer": "EU",
     "window": {
         "‐″": true
@@ -130,16 +130,18 @@
             ]
         },
         "scenes": [
-            "Assets/_IEC/Scene/Game.unity"
+            "Assets/_IEC/Scene/Game 2.unity"
         ],
         "disabledScenes": [
-            "Assets/Scenes/New Scene.unity"
+            "Assets/Scenes/New Scene.unity",
+            "Assets/_IEC/Scene/Game 1.unity",
+            "Assets/_IEC/Scene/Game.unity"
         ],
         "startupScene": 0,
         "packages": {
             "default": {
                 "applicationName": "",
-                "orientation": "unspecified",
+                "orientation": "portrait",
                 "languages": [
                     "en"
                 ]
@@ -1771,10 +1773,6 @@
             },
             {
                 "name": "UnityEngine.Scripting.CachedAssetBundle",
-                "excluded": true
-            },
-            {
-                "name": "UnityEngine.Serialization.FormerlySerializedAsAttribute",
                 "excluded": true
             },
             {
@@ -43988,6 +43986,20 @@
                         "excluded": true
                     }
                 ]
+            },
+            {
+                "className": "UnityEngine.Serialization.FormerlySerializedAsAttribute",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "oldName#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    }
+                ]
             }
         ],
         "stubberDataList": [],
@@ -44093,7 +44105,7 @@
                     "startTime": "00:00.000",
                     "endTime": "00:00.000",
                     "lengthInSeconds": 0.0,
-                    "bitrate": 40,
+                    "bitrate": 30,
                     "script": "",
                     "ext": ""
                 },

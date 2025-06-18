@@ -115,7 +115,8 @@ namespace _IEC.Features.Gameplay
         {
             if (!isExplore && (canSpawn || isFirstStart) && !PlayableController.Instance.isEndGame)
             {
-                GamePlay.levelController.SpawnRelic(this.transform.position, this.transform.rotation.eulerAngles, this.transform.localScale, 10);
+                GamePlay.levelController.SpawnRelic(this.transform.position, this.transform.rotation.eulerAngles, this.transform.localScale,
+                    GamePlay.levelController.isEnabeSpawnMaxItem ? 10 : 5);
                 isExplore = true;
                 canSpawn = false;
                 isFirstStart = false;
