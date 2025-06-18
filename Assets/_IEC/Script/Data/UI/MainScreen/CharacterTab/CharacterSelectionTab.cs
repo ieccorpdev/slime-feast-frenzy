@@ -20,6 +20,7 @@ namespace IEC
         public Button levelUpCharacterButton;
         public CharacterSelectionUIScroller selectionScroller;
         public TextMeshProUGUI characterNameText;
+        public GameObject groupCharacterInfo;
         
         [Header("Description Text")]
         public TextMeshProUGUI characterDescriptionText;

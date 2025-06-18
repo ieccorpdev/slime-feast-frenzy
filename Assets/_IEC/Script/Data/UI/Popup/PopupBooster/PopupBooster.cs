@@ -59,6 +59,7 @@ namespace IEC
             UpdateBoosterButton();
             UpdateStreakDisplay();
 
+            PlayerData.ResetTempCharacter();
             CheckShowGameEventInfoBar();
             CheckShowCharacterRecommendBar();
         }
