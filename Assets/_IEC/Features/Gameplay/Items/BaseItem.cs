@@ -67,7 +67,24 @@ namespace _IEC.Features.Gameplay
             DOTween.Kill(RecycleTweenId);
             UpdateManager.Instance.UnregisterFixedUpdate(this);
         }
-        
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
+            {
+                if (this.transform.position.y < -0.2f)
+                {
+                    rb.isKinematic = false;
+                    OnCollected(this.transform.position);
+                }
+                else
+                {
+                    this.transform.position = new Vector3(this.transform.position.x, Mathf.Max(this.transform.position.y, 0f), this.transform.position.z);
+                    rb.isKinematic = true;
+                }
+            }
+        }
+
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
@@ -310,15 +327,10 @@ namespace _IEC.Features.Gameplay
             }
             else if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
             {
-                if (this.transform.position.y < -0.2f)
+                if (this.transform.position.y < 0f)
                 {
                     rb.isKinematic = false;
                     OnCollected(this.transform.position);
-                }
-                else
-                {
-                    this.transform.position = new Vector3(this.transform.position.x, Mathf.Max(this.transform.position.y, 0f), this.transform.position.z);
-                    rb.isKinematic = true;
                 }
             }
         }

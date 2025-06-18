@@ -15,16 +15,28 @@ public class SharkControl : MonoBehaviour
 
     public void DriveInWater()
     {
-      //Call by animator triggerd event 
-      m_hole.PlayEffectSharkDriveIn();
+        if (m_hole == null)
+        {
+            return;
+        }
+        //Call by animator triggerd event 
+        m_hole.PlayEffectSharkDriveIn();
     }
     public void EndAnimation()
     {
+        if (m_hole == null)
+        {
+            return;
+        }
         //Call by animator triggerd event 
         m_hole.EndAnimationCharacter();
     }
     public void EndBite()
     {
+        if (m_hole == null)
+        {
+            return;
+        }
         //Call by animator triggerd event 
         //m_Animator.SetTrigger("Bite");
         //Pool.Get<GamePlayGroup>().levelController.GetHolePlayer().EndAnimationCharacter();
@@ -32,6 +44,10 @@ public class SharkControl : MonoBehaviour
     }
     public void EndBiteRotate()
     {
+        if (m_hole == null)
+        {
+            return;
+        }
         //Call by animator triggerd event 
         //m_Animator.SetTrigger("Bite");
         //Pool.Get<GamePlayGroup>().levelController.GetHolePlayer().EndAnimationCharacter();
