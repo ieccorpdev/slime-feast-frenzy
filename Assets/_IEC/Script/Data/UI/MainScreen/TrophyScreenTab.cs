@@ -243,7 +243,9 @@ public class TrophyScreenTab : ScreenNavigateUI
                 //Task #71160
                 //SetEventStatus(dataEvent, EventType.RelicHunt);
                 dataEvent.isEvent = true;
-                dataEvent.isEventActive =  IsEventCanShow(EventType.RelicHunt) &&  (PlayerData.relicData.hasJoinEvent || PlayerData.relicData.isNewEvent);
+                dataEvent.isEventActive =  
+                    IsEventCanShow(EventType.RelicHunt) && 
+                    Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt,Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload());
                 if (!dataEvent.isEventActive)
                 {
                     dataEvent.timeStartEvent = Config.eventLiveOpsConfig.GetNextTimeStartEvent(EventType.RelicHunt, PlayerData.GetDaysSinceDownload());
