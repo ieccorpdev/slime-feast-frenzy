@@ -346,6 +346,7 @@ namespace _IEC.Features.Gameplay
             var characterName = (string)param;
             
             listCharacterShardCollected.Add(characterName);
+            Locator.Game.ScreenInGame.OnCollectCharacterShard(null);
         }
 
         private void OnCollectItem(object param)
@@ -718,14 +719,16 @@ namespace _IEC.Features.Gameplay
                     PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (comboCount >= value.conditionValueForPower)
                 {
+                    var time = comboCount * value.buffAmount;
                     Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);
+                    Locator.Game.ScreenInGame.OnCollectMoreTimeFromCharacterPower((int)time, playerHole.transform.position + Vector3.up);
                 }
             }
         }
 
         public void CheckCharacterPowerOnStartGame()
         {
-            playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
             playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
         }
 

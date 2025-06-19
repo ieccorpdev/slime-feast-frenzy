@@ -67,6 +67,11 @@ namespace IEC
             
             IsTrial = CharacterRecommendData.isTrial;
 
+            if (IsTrial)
+            {
+                PlayerData.SetTempCharacter(CharacterRecommendData.characterName);
+            }
+
             characterNameText.text = CharacterRecommendData.characterName;
             bgImage.sprite = Config.allCharactersConfig.GetCharacterConfig(CharacterRecommendData.characterName)
                 .characterRecommendBarSprite;

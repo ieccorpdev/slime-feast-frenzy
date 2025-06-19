@@ -108,6 +108,9 @@ public class ItemTrophyTab : _BaseBehaviour
         }
         else
         {   
+            //Meomew fix Task #71187 
+            PlayerData.trophyData.SetNotiNewsTag(type,false);
+            newsTagObj.gameObject.SetActive(false);
             Locator.Main.PopupTrophyDetails.ShowTrophy(type,state,dataEventTime);
         }
     }
@@ -156,7 +159,7 @@ public class ItemTrophyTab : _BaseBehaviour
         this.state = state;
         isLocked = state == ItemTrophyState.Locked;
         lockObj.gameObject.SetActive(isLocked);
-        newsTagObj.gameObject.SetActive(false);
+        newsTagObj.gameObject.SetActive(PlayerData.trophyData.NeedShowNewsTag(type));
         TurnBgCoral(!isLocked);
         TurnBlur(!isLocked);
         TurnLight(false);
@@ -243,8 +246,22 @@ public class ItemTrophyTab : _BaseBehaviour
             {
                 bgGroupsNoti.sprite = eventInfoSprite;
                 groupsNotiTime.gameObject.SetActive(true);
-                timeUnlockEvent.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
+                if (timeEventCoroutine != null)
+                {
+                    StopCoroutine(timeEventCoroutine);
+                }
+                timeEventCoroutine = StartCoroutine(IUpdateTimeEvent());
+                //timeUnlockEvent.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
             }
+        }
+    }
+    private Coroutine timeEventCoroutine;
+    IEnumerator IUpdateTimeEvent()
+    {
+        while (groupsNotiTime.gameObject.activeSelf && !dataEventTime.isEventActive)
+        {
+            timeUnlockEvent.text = DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
+            yield return new WaitForSeconds(1f);
         }
     }
 

@@ -67,7 +67,7 @@ namespace IEC
             public const string TIMER_TIME_OUT = "Gameplay.TIMER_TIME_OUT";
             public const string USER_USE_HELPER = "Gameplay.USER_USE_HELPER";
             public const string TURN_ON_COMPASS_DIRECTOR = "Gameplay.TURN_ON_COMPASS_DIRECTOR";
-            public const string TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT = "Gameplay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT";
+            public const string TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM = "Gameplay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT";
             
             public const string COMBO_REACHED = "Gameplay.COMBO_REACHED";
             public const string COMBO_LOST = "Gameplay.COMBO_LOST";

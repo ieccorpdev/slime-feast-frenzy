@@ -253,7 +253,7 @@ namespace _IEC.Features.Gameplay
 
         public void AddTime(float time)
         {
-            CurrentTime += time;
+            AddMoreTime(time, false);
         }
 
         public void Pause()
@@ -387,21 +387,26 @@ namespace _IEC.Features.Gameplay
         {
             if (newState == m_CurrentRemainingTimeState) return;
             txtCoolDown.color = Config.gamePlayConfig.GetTimeColorByRemainingTimeState(newState);
+            
             switch (newState)
             {
                 case RemainingTimeState.Safe:
 
                     imgProgress.sprite = spriteSafe;
                     //txtCoolDown.fontMaterial = safeMaterialPreset;
+                    listStarTime.ForEach(star => star.transform.localScale = Vector3.one);
                     break;
                 case RemainingTimeState.Warning:
                     listStarTime[0].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[0].transform.GetInstanceID()+"_ANIM_STAR").SetEase(Ease.InBack);
                     imgProgress.sprite = spriteWarning;
+                    listStarTime[1].transform.localScale = Vector3.one;
+                    listStarTime[2].transform.localScale = Vector3.one;
                     //txtCoolDown.fontMaterial = warningMaterialPreset;
                     break;
                 case RemainingTimeState.Dangerous:
                     listStarTime[1].transform.DOScale(Vector3.zero, timeEffectStar).SetId(listStarTime[1].transform.GetInstanceID()+"_ANIM_STAR").SetEase(Ease.InBack);;
                     imgProgress.sprite = spriteDangerous;
+                    listStarTime[2].transform.localScale = Vector3.one;
                     //txtCoolDown.fontMaterial = dangerousMaterialPreset;
                     break;
                 case RemainingTimeState.None:
