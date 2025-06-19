@@ -198,7 +198,7 @@ public class Hole : _BaseBehaviour
 
 				if (Mathf.Abs(m_AdditionalSizeFromCharacterPower - 1f) > Mathf.Epsilon)
 				{
-					m_AdditionalSizeFromCharacterPower /= m_characterIdleSizeIncrease;
+					m_AdditionalSizeFromCharacterPower /= (m_characterIdleSizeIncrease * 1.5f);
 					m_AdditionalSizeFromCharacterPower = Mathf.Max(m_AdditionalSizeFromCharacterPower, 1f);
 					
 					if (m_AdditionalSizeFromCharacterPower < 1f)
@@ -670,6 +670,7 @@ public class Hole : _BaseBehaviour
 		
 		CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
 		CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
+		CheckApplyCharacterPower(CharacterPowerType.ChangeTheme);
 		
 		StopCoroutine(_changeCharacterCoroutine);
 		_changeCharacterCoroutine = null;
@@ -777,6 +778,10 @@ public class Hole : _BaseBehaviour
 				break;
 			case CharacterPowerType.IncreaseSizeOnIdle:
 				m_characterIdleSizeIncrease = value.buffAmount;
+				break;
+			case CharacterPowerType.ChangeTheme:
+				GamePlay.levelController.themeController
+					.ActiveWeatherEffect(Config.themeConfig.GetWaterThemeForCharacterPower(GamePlay.levelController.themeController.WaterThemeConfig.themeType));
 				break;
 		}
 		
