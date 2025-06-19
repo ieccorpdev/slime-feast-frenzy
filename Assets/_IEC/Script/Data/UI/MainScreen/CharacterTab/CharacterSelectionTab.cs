@@ -141,6 +141,9 @@ namespace IEC
 
         public void UpdateCurrentCharacterUI(object param = null)
         {
+            if(selectionScroller.gameObject.activeInHierarchy)
+                selectionScroller.Init(this);
+            
             characterNameText.text = CurrentCharacterConfig.characterName;
             CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
             if (mainCharacterImage != null)
@@ -264,7 +267,6 @@ namespace IEC
             SetCurrentCharacter(new CharacterEventData() {characterName = CurrentCharacterConfig.characterName });
             
             UpdateCurrentCharacterUI();
-            selectionScroller.Init(this);
             CheckNavigateButton();
         }
 

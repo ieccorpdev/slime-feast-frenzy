@@ -22,7 +22,9 @@ namespace IEC
         private ScreenNavigateUI _currentScreen;
         public GameObject shopTab => m_Shop;
         public TrophyScreenTab trophyTab => m_TabTrophy.GetComponent<TrophyScreenTab>();
-        public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
+        //public UICurrency GoldCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Gold);
+        public UICurrency GoldCurrencyDisplay => FindObjectsByType<UICurrency>(FindObjectsInactive.Exclude, FindObjectsSortMode.None)
+            .FirstOrDefault(obj => obj.typeCurrency == ResourceType.Gold);
         public UICurrency LifeCurrencyDisplay => Locator.Service.GameResourceDisplay.GetDisplay(ResourceType.Live);
 
         [Header("Tutorial Screen")] 

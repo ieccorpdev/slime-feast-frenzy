@@ -40,6 +40,21 @@ namespace IEC
         public int levelUnlock;
         public int characterLevelOnUnlock;
 
+        public int GetShardCountToMaximum(int level, int currentShard)
+        {
+            if (level == 2)
+                return 0;
+
+            var totalCount = listCharacterUpgrade.Sum(upgrade => upgrade.shardCost);
+            var currentShardCount = currentShard;
+            for (int i = 0; i <= level; i++)
+            {
+                currentShardCount += listCharacterUpgrade[i].shardCost;
+            }
+            
+            return totalCount - currentShardCount;
+        }
+
         public CharacterPower GetPower(CharacterPowerType powerType, ResourceType resourceAffected = default)
         {
             return listCharacterPowers.Find(power =>

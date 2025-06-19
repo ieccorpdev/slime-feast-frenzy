@@ -55,7 +55,7 @@ public class CharacterHomeTab : ScreenNavigateUI
         //this.RaiseEvent(EventList.GamePlay.CHANGE_TAB_CHARACTER_SHOP, CharacterTabType.Character);
         
         characterSelectionTab.Setup();
-        
+        //
         characterShardTab.CheckSetupDataShop();
 
         base.Show();

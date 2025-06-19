@@ -35,9 +35,23 @@ namespace IEC
         {
             if (PlayerData.GetPlayerCurrencyCount(ResourceType.Gold) >= PackData.slotData.goldCost)
             {
-                PlayerData.SubtractCurrency(ResourceType.Gold, PackData.slotData.goldCost);
                 PackData.isBought = true;
-                PlayerData.AddCharacterShards(PackData.characterName, PackData.slotData.shardCount);
+
+                var shardToMaxCount = Config.allCharactersConfig.GetCharacterConfig(PackData.characterName)
+                    .GetShardCountToMaximum(PlayerData.GetCharacterLevel(PackData.characterName), PlayerData.GetCharacterShards(PackData.characterName));
+
+                var shardCount = PackData.slotData.shardCount;
+                int goldChange = 0;
+
+                if (shardCount > shardToMaxCount)
+                {
+                    goldChange = (shardCount - shardToMaxCount) * (PackData.slotData.goldCost / shardCount);
+                    Locator.Main.ScreenMain.AddRewardClaimEffect(ResourceType.Gold, goldChange);
+                    Locator.Main.ScreenMain.DoAnimAllAvailableReward();
+                    shardCount = shardToMaxCount;
+                }
+                PlayerData.SubtractCurrency(ResourceType.Gold, PackData.slotData.goldCost - goldChange);
+                PlayerData.AddCharacterShards(PackData.characterName, shardCount);
                 UpdateUI();
             }
             else
