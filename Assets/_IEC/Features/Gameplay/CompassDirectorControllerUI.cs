@@ -14,12 +14,14 @@ namespace _IEC.Features.Gameplay
         private float m_CoolDownTime = 0;
         private bool m_IsPausing;
         private string m_CurrentID;
+
+        private int m_maxNumberSpecialDirectorUI;
         private int MaxNumberDirectorUI => Config.gamePlayConfig.maxNumberDirectorUI;
 
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
-            this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,OnTurnOnCompassDirectorOceanGift);
+            this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,OnTurnOnCompassDirectorSpecialItem);
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
         }
@@ -27,7 +29,7 @@ namespace _IEC.Features.Gameplay
         private void OnDestroy()
         {
             this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
-            this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,OnTurnOnCompassDirectorOceanGift);
+            this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,OnTurnOnCompassDirectorSpecialItem);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
         }
@@ -73,7 +75,7 @@ namespace _IEC.Features.Gameplay
             count = 0;
             foreach (var directorUI in m_ListSpecialObjectDirectorUI)
             {
-                if (directorUI.IsNeededDirector())
+                if (directorUI.IsNeededDirector() && count < m_maxNumberSpecialDirectorUI)
                 {
                     count++;
                     if(directorUI.gameObject.activeInHierarchy == false)
@@ -94,9 +96,10 @@ namespace _IEC.Features.Gameplay
             TurnOn();
         }
         
-        private void OnTurnOnCompassDirectorOceanGift(object param)
+        private void OnTurnOnCompassDirectorSpecialItem(object param)
         {
             var data = (TurnOnCompassDirector) param;
+            m_maxNumberSpecialDirectorUI = data.maxCount;
             foreach (var baseItem in data.remainingObjectiveItems)
             {
                 if(baseItem == null) continue;

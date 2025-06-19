@@ -280,6 +280,10 @@ namespace IEC
                 if (power != null)
                 {
                     var value = power.GetCharacterPowerValue(charLevel);
+                    
+                    if(value == null)
+                        continue;
+                    
                     float powerValue = value.buffAmount;
 
                     if (powerValue < 1f)

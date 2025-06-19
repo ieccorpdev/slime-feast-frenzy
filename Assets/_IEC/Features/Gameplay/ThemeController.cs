@@ -33,6 +33,8 @@ public class ThemeController :  _BaseBehaviour, IGroup
     [SerializeField] private ParticleSystem splashEffect;
     [Header("Weather")] 
     public List<WeatherConfig> dataWeatherScene;
+
+    public WaterThemeConfig WaterThemeConfig => dataTheme;
     public void LocateGroup()
     {
         Pool.Set(this);

@@ -31,6 +31,13 @@ namespace _IEC.Features.Gameplay
         {
             m_ScreenWidth = Screen.width;
             imgIcon.sprite = item.GetIcon();
+            
+            if (item is BaseCharacterShardItem shardItem)
+            {
+
+                imgIcon.sprite = shardItem.CharacterConfig.characterShardSpriteSmall;
+            }
+            
             imgIcon.rectTransform.ForceToWidth(imgIcon.sprite,baseIconWidth);
             m_HoleTransform = holeTransform;
             parentRectTransform = transform.parent.GetComponent<RectTransform>();

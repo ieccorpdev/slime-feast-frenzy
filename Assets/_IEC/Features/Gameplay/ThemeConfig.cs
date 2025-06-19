@@ -180,6 +180,20 @@ namespace _IEC.Features.Gameplay
                 return ShuffleAndPickOne(listWeatherValid, seed).weatherTheme;
             }
         }
+
+        public WeatherTheme GetWaterThemeForCharacterPower(WaterThemeType themeType)
+        {
+            switch (themeType)
+            {
+                case WaterThemeType.Day:
+                    return WeatherTheme.SUNLIGHT;
+                case WaterThemeType.Night:
+                    return WeatherTheme.MOONLIGHT;
+                default:
+                    return WeatherTheme.SUNLIGHT;
+            }
+        }
+        
         WeatherWaterConfig ShuffleAndPickOne(List<WeatherWaterConfig> source, int seed)
         {
             var list = new List<WeatherWaterConfig>(source); // tránh thay đổi danh sách gốc
