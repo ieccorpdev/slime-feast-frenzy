@@ -127,7 +127,7 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.RegisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
             this.RegisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
-            this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
+            //this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
             comboUI.gameObject.SetActive(Game.enableComboCount);
         }
 
@@ -139,7 +139,7 @@ namespace IEC
             this.UnregisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.UnregisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
             this.UnregisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
-            this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
+            //this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
 
         }
 
@@ -171,10 +171,10 @@ namespace IEC
             groupLevelObjectives.CollectARelicObject(data, totalNumberCollected, Vector2.zero);
         }
 
-        private void OnCollectCharacterShard(object param)
+        public void OnCollectCharacterShard(object param)
         {
             CollectItemData data = new CollectItemData() { itemID = Config.characterShardObjectConfig.shardObjectItemDefinition.GetId()};
-            groupLevelObjectives.CollectCharacterShard(data, 1, Vector2.zero);
+            groupLevelObjectives.CollectCharacterShard(data, GamePlay.levelController.ListCharacterShardCollected.Count, Vector2.zero);
         }
 
         private void OnCollectItem(object param)

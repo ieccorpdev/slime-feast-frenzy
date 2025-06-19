@@ -346,6 +346,7 @@ namespace _IEC.Features.Gameplay
             var characterName = (string)param;
             
             listCharacterShardCollected.Add(characterName);
+            Locator.Game.ScreenInGame.OnCollectCharacterShard(null);
         }
 
         private void OnCollectItem(object param)
