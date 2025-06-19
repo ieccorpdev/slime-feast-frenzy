@@ -108,6 +108,9 @@ public class ItemTrophyTab : _BaseBehaviour
         }
         else
         {   
+            //Meomew fix Task #71187 
+            PlayerData.trophyData.SetNotiNewsTag(type,false);
+            newsTagObj.gameObject.SetActive(false);
             Locator.Main.PopupTrophyDetails.ShowTrophy(type,state,dataEventTime);
         }
     }
@@ -156,7 +159,7 @@ public class ItemTrophyTab : _BaseBehaviour
         this.state = state;
         isLocked = state == ItemTrophyState.Locked;
         lockObj.gameObject.SetActive(isLocked);
-        newsTagObj.gameObject.SetActive(false);
+        newsTagObj.gameObject.SetActive(PlayerData.trophyData.NeedShowNewsTag(type));
         TurnBgCoral(!isLocked);
         TurnBlur(!isLocked);
         TurnLight(false);

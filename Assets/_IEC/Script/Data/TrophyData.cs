@@ -22,6 +22,11 @@ namespace IEC
             var tdc = GetTrophyDataConfig(type);
             tdc.timeCompleted = value;
         }
+        public void SetNotiNewsTag(TrophyType type,bool value)
+        {
+            var tdc = GetTrophyDataConfig(type);
+            tdc.needShowNewsTag = value;
+        }
         public void SetTrophyCollected(TrophyType type,int value)
         {
             var tdc = GetTrophyDataConfig(type);
@@ -44,8 +49,7 @@ namespace IEC
                 tdc.timeCompleted = tdc.timeCompleted <= 0 ? 0 : tdc.timeCompleted;
             }
             tdc.trophyCollected += 1;
-            //After collect, reduce number times collected 
-
+            tdc.needShowNewsTag = true;
         }
 
         public bool IsEventTrophy(TrophyType type)
@@ -110,7 +114,10 @@ namespace IEC
         {
             return GetTrophyDataConfig(type).trophyCollected;
         }
-
+        public bool NeedShowNewsTag(TrophyType type)
+        {
+            return GetTrophyDataConfig(type).needShowNewsTag;
+        }
         public Vector2 GetMinMaxProgressBar(TrophyType type)
         {
             var config = Pool.Get<GameConfig>().trophyRewardConfig.GetReward(type);
@@ -166,6 +173,7 @@ namespace IEC
         public int timeCompleted;
         public int trophyCollected = 0;// 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
         public int indexTrophyWasNoti;//Save the maximum trophy was noti for player, 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
+        public bool needShowNewsTag;//Save the maximum trophy was noti for player, 1 mean was collect bronze, 2 silver, 3 gold 4 diamond
     }
     public enum TrophyType{
         GrandVoyage,
