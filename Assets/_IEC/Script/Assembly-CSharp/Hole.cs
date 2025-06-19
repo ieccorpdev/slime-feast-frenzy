@@ -668,7 +668,7 @@ public class Hole : _BaseBehaviour
 			OnCollectSpeedBooster(80f, value.buffAmount);
 		}
 		
-		CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+		CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
 		CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
 		
 		StopCoroutine(_changeCharacterCoroutine);
@@ -735,7 +735,7 @@ public class Hole : _BaseBehaviour
 		if (power == null)
 			return null;
 
-		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerName));
+		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
 		
 		switch (power.powerType)
 		{
@@ -749,13 +749,14 @@ public class Hole : _BaseBehaviour
 				break;
 			case CharacterPowerType.BonusXpOnSmallItems:
 				break;
-			case CharacterPowerType.CompassOceanGiftItem:
+			case CharacterPowerType.CompassSpecialItem:
 				int itemCount = value.buffAmount < 0
 					? GamePlay.levelController.AllSpecialItems.Count
 					: (int)value.buffAmount;
-				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,new TurnOnCompassDirector()
+				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,new TurnOnCompassDirector()
 				{
-					remainingObjectiveItems = GamePlay.levelController.AllSpecialItems.GetRange(0, itemCount),
+					maxCount = itemCount,
+					remainingObjectiveItems = GetAllItemsForCompassDirector(),
 					holeTransform = transform
 				});
 				break;
@@ -780,6 +781,17 @@ public class Hole : _BaseBehaviour
 		}
 		
 		return power;
+	}
+
+	private List<BaseItem> GetAllItemsForCompassDirector()
+	{
+		List<BaseItem> listItems = new();
+		listItems.AddRange(GamePlay.levelController.AllSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllkingdomSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllRelicItems);
+		listItems.AddRange(GamePlay.levelController.AllCharacterShards);
+
+		return listItems;
 	}
 	
 	#endregion

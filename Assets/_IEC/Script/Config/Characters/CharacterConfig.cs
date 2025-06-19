@@ -139,7 +139,7 @@ namespace IEC
         SpeedBoostOnUseHelper,
         BonusXpOnSmallItems,
         IncreaseHelperTime,
-        CompassOceanGiftItem,
+        CompassSpecialItem,
         IncreaseCameraSizeOnHelper,
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
