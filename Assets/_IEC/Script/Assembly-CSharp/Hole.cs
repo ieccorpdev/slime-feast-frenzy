@@ -593,7 +593,7 @@ public class Hole : _BaseBehaviour
 		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
 		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
 		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
-		//CheckCurrentCharacter();
+		CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
@@ -634,6 +634,7 @@ public class Hole : _BaseBehaviour
 		
 		var animator = characterAnimator;
 		characterAnimator = null;
+		CurrentCharacterConfig = TargetCharacterConfig;
 		CheckCurrentCharacter();
 		if(characterAnimator != null)
 			characterAnimator.gameObject.SetActive(false);
@@ -676,8 +677,6 @@ public class Hole : _BaseBehaviour
 	
 	private void CheckCurrentCharacter()
 	{
-		CurrentCharacterConfig = TargetCharacterConfig;
-		
 		var charObj = CurrentCharacterConfig.characterControlPrefab
 			.Spawn(
 				characterParent, 
