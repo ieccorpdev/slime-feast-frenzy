@@ -480,10 +480,22 @@ public class HomeScreenTab : ScreenNavigateUI
         //}
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
     }
-
+    private Coroutine relicRoutine;
     private void UpdateButtonRelic()
     {
-        RelicHuntEvent.UpdateUI();
+        if (relicRoutine != null)
+        {
+            StopCoroutine(relicRoutine);
+        }
+        relicRoutine = StartCoroutine(IUpdateButtonRelic());
+    }
+    IEnumerator IUpdateButtonRelic()
+    {
+        while (Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt))
+        {
+            yield return new WaitForSeconds(0.1f);
+            RelicHuntEvent.UpdateUI();
+        }
     }
 
     public void UpdateBuildCity()
