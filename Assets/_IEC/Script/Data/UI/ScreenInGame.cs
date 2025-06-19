@@ -127,7 +127,7 @@ namespace IEC
             this.RegisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.RegisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
             this.RegisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
-            this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
+            //this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
             comboUI.gameObject.SetActive(Game.enableComboCount);
         }
 
@@ -139,7 +139,7 @@ namespace IEC
             this.UnregisterListener(EventList.GamePlay.COMPLETE_HELPER, OnUserCompleteHelper);
             this.UnregisterListener(EventList.GamePlay.COLLECT_SPECIAL_ITEM_FOR_UI, OnCollectSpecialItem);
             this.UnregisterListener(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI, OnCollectRelicItem);
-            this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
+            //this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD, OnCollectCharacterShard);
 
         }
 
@@ -171,10 +171,10 @@ namespace IEC
             groupLevelObjectives.CollectARelicObject(data, totalNumberCollected, Vector2.zero);
         }
 
-        private void OnCollectCharacterShard(object param)
+        public void OnCollectCharacterShard(object param)
         {
             CollectItemData data = new CollectItemData() { itemID = Config.characterShardObjectConfig.shardObjectItemDefinition.GetId()};
-            groupLevelObjectives.CollectCharacterShard(data, 1, Vector2.zero);
+            groupLevelObjectives.CollectCharacterShard(data, GamePlay.levelController.ListCharacterShardCollected.Count, Vector2.zero);
         }
 
         private void OnCollectItem(object param)
@@ -196,6 +196,11 @@ namespace IEC
         {
             var data = (CollectItemData)param;
             groupLevelObjectives.CollectAObject(data, Vector2.zero,true);
+        }
+
+        public void OnCollectMoreTimeFromCharacterPower(int amount, Vector3 position)
+        {
+            SpawnVFX($"+{amount}s", position,Color.green);
         }
 
         private void OnUserUseHelper(object param)
@@ -226,6 +231,26 @@ namespace IEC
         {
             tutorialStartGame.gameObject.SetActive(true);
             tutorialStartGame.StartTutorial(holeTransform);
+        }
+        
+        private void SpawnVFX(string txt, Vector3 position, Color? color = null)
+        {
+            if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
+            var xpVFX = Config.prefabConfig.xpVFX.Spawn(xpParentRT.transform, true);
+            xpVFX.Reset();
+            var localPoint = GetLocalAnchorPos(position);
+            xpVFX.SetAnchorPosition(localPoint);
+            if (color.HasValue)
+            {
+                xpVFX.SetTargetColor(color.Value);
+                xpVFX.Show(txt,1.5f);
+            }
+            else
+            {
+                xpVFX.Show(txt);
+            }
+
+
         }
 
         private void SpawnXpVFX(int xp, Vector3 position, Color? color = null)

@@ -198,7 +198,7 @@ public class Hole : _BaseBehaviour
 
 				if (Mathf.Abs(m_AdditionalSizeFromCharacterPower - 1f) > Mathf.Epsilon)
 				{
-					m_AdditionalSizeFromCharacterPower /= m_characterIdleSizeIncrease;
+					m_AdditionalSizeFromCharacterPower /= (m_characterIdleSizeIncrease * 1.5f);
 					m_AdditionalSizeFromCharacterPower = Mathf.Max(m_AdditionalSizeFromCharacterPower, 1f);
 					
 					if (m_AdditionalSizeFromCharacterPower < 1f)
@@ -462,7 +462,7 @@ public class Hole : _BaseBehaviour
 	public int GetCurrentXp()
 	{
 		int xp = m_Xp;
-		for (int i = 0; i < m_Level; i++)
+		for (int i = 1; i < m_Level; i++)
 		{
 			xp += Settings.GetRequiredXp(i, false);
 		}
@@ -593,7 +593,7 @@ public class Hole : _BaseBehaviour
 		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
 		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
 		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
-		//CheckCurrentCharacter();
+		CheckCurrentCharacter();
 		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
@@ -634,6 +634,7 @@ public class Hole : _BaseBehaviour
 		
 		var animator = characterAnimator;
 		characterAnimator = null;
+		CurrentCharacterConfig = TargetCharacterConfig;
 		CheckCurrentCharacter();
 		if(characterAnimator != null)
 			characterAnimator.gameObject.SetActive(false);
@@ -667,8 +668,9 @@ public class Hole : _BaseBehaviour
 			OnCollectSpeedBooster(80f, value.buffAmount);
 		}
 		
-		CheckApplyCharacterPower(CharacterPowerType.CompassOceanGiftItem);
+		CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
 		CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
+		CheckApplyCharacterPower(CharacterPowerType.ChangeTheme);
 		
 		StopCoroutine(_changeCharacterCoroutine);
 		_changeCharacterCoroutine = null;
@@ -676,8 +678,6 @@ public class Hole : _BaseBehaviour
 	
 	private void CheckCurrentCharacter()
 	{
-		CurrentCharacterConfig = TargetCharacterConfig;
-		
 		var charObj = CurrentCharacterConfig.characterControlPrefab
 			.Spawn(
 				characterParent, 
@@ -736,7 +736,7 @@ public class Hole : _BaseBehaviour
 		if (power == null)
 			return null;
 
-		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerName));
+		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
 		
 		switch (power.powerType)
 		{
@@ -750,13 +750,14 @@ public class Hole : _BaseBehaviour
 				break;
 			case CharacterPowerType.BonusXpOnSmallItems:
 				break;
-			case CharacterPowerType.CompassOceanGiftItem:
+			case CharacterPowerType.CompassSpecialItem:
 				int itemCount = value.buffAmount < 0
 					? GamePlay.levelController.AllSpecialItems.Count
 					: (int)value.buffAmount;
-				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT,new TurnOnCompassDirector()
+				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,new TurnOnCompassDirector()
 				{
-					remainingObjectiveItems = GamePlay.levelController.AllSpecialItems.GetRange(0, itemCount),
+					maxCount = itemCount,
+					remainingObjectiveItems = GetAllItemsForCompassDirector(),
 					holeTransform = transform
 				});
 				break;
@@ -778,9 +779,24 @@ public class Hole : _BaseBehaviour
 			case CharacterPowerType.IncreaseSizeOnIdle:
 				m_characterIdleSizeIncrease = value.buffAmount;
 				break;
+			case CharacterPowerType.ChangeTheme:
+				GamePlay.levelController.themeController
+					.ActiveWeatherEffect(Config.themeConfig.GetWaterThemeForCharacterPower(GamePlay.levelController.themeController.WaterThemeConfig.themeType));
+				break;
 		}
 		
 		return power;
+	}
+
+	private List<BaseItem> GetAllItemsForCompassDirector()
+	{
+		List<BaseItem> listItems = new();
+		listItems.AddRange(GamePlay.levelController.AllSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllkingdomSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllRelicItems);
+		listItems.AddRange(GamePlay.levelController.AllCharacterShards);
+
+		return listItems;
 	}
 	
 	#endregion

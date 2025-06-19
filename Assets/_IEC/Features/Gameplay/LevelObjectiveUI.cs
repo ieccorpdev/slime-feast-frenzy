@@ -152,7 +152,7 @@ namespace _IEC.Features.Gameplay
             itemId = levelObjective.itemId;
             m_IsSpecial = false;
             
-            SetText(levelObjective.number.ToString());
+            SetText(GamePlay.levelController.ListCharacterShardCollected.Count + "/" + levelObjective.number.ToString());
             imgIcon.sprite = sprite;
             
             if (sizeObj == default) sizeObj = new Vector2(100, 100);

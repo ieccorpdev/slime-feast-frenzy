@@ -30,5 +30,12 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             gameObject.Recycle();
         }
+
+        public void SetExplode()
+        {
+            EventController.RaiseEvent(EventList.Audio.BOMB_EXPLODE);
+            DisableAllCollider();
+            gameObject.Recycle();
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace IEC
                 SetAnimationSpineOff(type);
             }
             m_Lock.SetActive(isLock);
-            m_Lock.transform.localPosition = Vector3.up * -60f;
+            m_Lock.transform.localPosition = Vector3.up * -8;
             //if(isLock) m_Lock.transform.SetAsLastSibling();
         }
 

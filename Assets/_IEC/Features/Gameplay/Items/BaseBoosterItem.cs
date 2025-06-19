@@ -62,9 +62,21 @@ namespace _IEC.Features.Gameplay
                 });
         }
 
+        // void OnDisable()
+        // {
+        //     DOTween.Kill(TWEEN_ANIM_MOVE);
+        // }
+        
+        // void OnEnable()
+        // {
+        //     UpdateManager.Instance.RegisterLateUpdate(this);
+        // }
+        //
         void OnDisable()
         {
             DOTween.Kill(TWEEN_ANIM_MOVE);
+            DOTween.Kill(RecycleTweenId);
+            UpdateManager.Instance.UnregisterLateUpdate(this);
         }
     }
 }

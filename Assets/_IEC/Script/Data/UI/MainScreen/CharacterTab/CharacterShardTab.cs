@@ -91,7 +91,15 @@ namespace IEC
 
         private void UpdateRefreshTimerText()
         {
-            timeToRefreshShopText.text = $"Shop reset in {DateTimeHelper.GetFormattedTimeHMS(timeResetShop - DateTime.Now)}";
+            var timeLeft = timeResetShop - DateTime.Now;
+            if (timeLeft.TotalSeconds <= 0)
+            {
+                OnRefresh();
+            }
+            else
+            {
+                timeToRefreshShopText.text = $"Shop reset in {DateTimeHelper.GetFormattedTimeHMS(timeLeft)}";
+            }   
 
             if (_countdownBetweenRefresh >= 0f)
             {

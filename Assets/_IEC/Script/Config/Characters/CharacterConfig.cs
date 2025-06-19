@@ -99,6 +99,8 @@ namespace IEC
 
         public CharacterPowerValue GetCharacterPowerValue(int characterLevel)
         {
+            if (listCharacterPowerValue.Count == 0)
+                return null;
             characterLevel = Mathf.Clamp(characterLevel, 0, listCharacterPowerValue.Count);
 
             return listCharacterPowerValue[characterLevel];
@@ -139,12 +141,13 @@ namespace IEC
         SpeedBoostOnUseHelper,
         BonusXpOnSmallItems,
         IncreaseHelperTime,
-        CompassOceanGiftItem,
+        CompassSpecialItem,
         IncreaseCameraSizeOnHelper,
         BombShieldOnHelper,
         IncreaseSizeOnIdle,
         AddTimerOnCombo,
-        SpeedBoostOnSpawn
+        SpeedBoostOnSpawn,
+        ChangeTheme
     }
 
     public enum CharacterStatType
