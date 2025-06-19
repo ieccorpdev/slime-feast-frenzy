@@ -27,13 +27,8 @@ public class RelicButtonEvent : _BaseBehaviour
     {
         spine = GetComponentInChildren<SkeletonGraphic>();
     }
-
     public bool IsEventCanShow()
-    {
-        //return true;
-        //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
-        int level = PlayerData.level;
-        int levelUnlock = Config.relicConfig.levelUnlockFeature;
+    {   
         return Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload()) &&
                Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt);
     }
@@ -173,8 +168,5 @@ public class RelicButtonEvent : _BaseBehaviour
         });
     }
 
-    private void Update()
-    {
-        UpdateUI();
-    }
+
 }

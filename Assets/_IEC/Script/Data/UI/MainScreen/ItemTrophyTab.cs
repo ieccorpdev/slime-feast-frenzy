@@ -243,12 +243,16 @@ public class ItemTrophyTab : _BaseBehaviour
             {
                 bgGroupsNoti.sprite = eventInfoSprite;
                 groupsNotiTime.gameObject.SetActive(true);
-                StopCoroutine(IUpdateTimeEvent());
-                StartCoroutine(IUpdateTimeEvent());
+                if (timeEventCoroutine != null)
+                {
+                    StopCoroutine(timeEventCoroutine);
+                }
+                timeEventCoroutine = StartCoroutine(IUpdateTimeEvent());
                 //timeUnlockEvent.text =  DateTimeHelper.GetFormattedTimeHMS((dataEventTime.timeStartEvent - DateTime.Now));
             }
         }
     }
+    private Coroutine timeEventCoroutine;
     IEnumerator IUpdateTimeEvent()
     {
         while (groupsNotiTime.gameObject.activeSelf && !dataEventTime.isEventActive)
