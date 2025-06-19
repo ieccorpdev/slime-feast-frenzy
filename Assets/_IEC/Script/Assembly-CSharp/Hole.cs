@@ -462,7 +462,7 @@ public class Hole : _BaseBehaviour
 	public int GetCurrentXp()
 	{
 		int xp = m_Xp;
-		for (int i = 0; i < m_Level; i++)
+		for (int i = 1; i < m_Level; i++)
 		{
 			xp += Settings.GetRequiredXp(i, false);
 		}
