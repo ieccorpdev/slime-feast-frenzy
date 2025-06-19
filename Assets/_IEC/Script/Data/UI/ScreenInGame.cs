@@ -198,6 +198,11 @@ namespace IEC
             groupLevelObjectives.CollectAObject(data, Vector2.zero,true);
         }
 
+        public void OnCollectMoreTimeFromCharacterPower(int amount, Vector3 position)
+        {
+            SpawnVFX($"+{amount}s", position,Color.green);
+        }
+
         private void OnUserUseHelper(object param)
         {
             var data = (UserUseHelper)param;
@@ -226,6 +231,26 @@ namespace IEC
         {
             tutorialStartGame.gameObject.SetActive(true);
             tutorialStartGame.StartTutorial(holeTransform);
+        }
+        
+        private void SpawnVFX(string txt, Vector3 position, Color? color = null)
+        {
+            if (GamePlay.GetLevelController().GetLevelData().levelType == LevelType.COIN) return;
+            var xpVFX = Config.prefabConfig.xpVFX.Spawn(xpParentRT.transform, true);
+            xpVFX.Reset();
+            var localPoint = GetLocalAnchorPos(position);
+            xpVFX.SetAnchorPosition(localPoint);
+            if (color.HasValue)
+            {
+                xpVFX.SetTargetColor(color.Value);
+                xpVFX.Show(txt,1.5f);
+            }
+            else
+            {
+                xpVFX.Show(txt);
+            }
+
+
         }
 
         private void SpawnXpVFX(int xp, Vector3 position, Color? color = null)

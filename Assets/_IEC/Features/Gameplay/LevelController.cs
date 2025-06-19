@@ -718,7 +718,9 @@ namespace _IEC.Features.Gameplay
                     PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
                 if (comboCount >= value.conditionValueForPower)
                 {
+                    var time = comboCount * value.buffAmount;
                     Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);
+                    Locator.Game.ScreenInGame.OnCollectMoreTimeFromCharacterPower((int)time, playerHole.transform.position + Vector3.up);
                 }
             }
         }
