@@ -483,6 +483,7 @@ public class HomeScreenTab : ScreenNavigateUI
     private Coroutine relicRoutine;
     private void UpdateButtonRelic()
     {
+        if(!gameObject.activeSelf) return;
         if (relicRoutine != null)
         {
             StopCoroutine(relicRoutine);
@@ -491,6 +492,7 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     IEnumerator IUpdateButtonRelic()
     {
+        RelicHuntEvent.UpdateUI();
         while (Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt))
         {
             yield return new WaitForSeconds(0.1f);
@@ -736,7 +738,7 @@ public class HomeScreenTab : ScreenNavigateUI
             && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
             && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
         {
-            AddPopupToShow(Locator.Main.PopupSharkRace,
+            AddPopupToShow(Locator.Main.PopupChompOff,
                 () =>
                 {
                     Locator.Main.PopupChompOff.Show();
