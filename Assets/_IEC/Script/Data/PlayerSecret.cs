@@ -90,7 +90,7 @@ namespace IEC
         {
             return Mathf.FloorToInt(
                 (float)
-                (DateTime.Now - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                (DateTime.Now.Date - DateTime.Parse(Pool.Get<ServiceData>().installTime,
                     null,
                     System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
@@ -99,7 +99,7 @@ namespace IEC
         {
             return Mathf.FloorToInt(
                 (float)
-                (time - DateTime.Parse(Pool.Get<ServiceData>().installTime,
+                (time.Date - DateTime.Parse(Pool.Get<ServiceData>().installTime,
                     null,
                     System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
         }
