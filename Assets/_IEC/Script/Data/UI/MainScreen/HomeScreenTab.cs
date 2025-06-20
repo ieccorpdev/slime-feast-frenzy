@@ -738,7 +738,7 @@ public class HomeScreenTab : ScreenNavigateUI
             && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
             && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
         {
-            AddPopupToShow(Locator.Main.PopupSharkRace,
+            AddPopupToShow(Locator.Main.PopupChompOff,
                 () =>
                 {
                     Locator.Main.PopupChompOff.Show();
