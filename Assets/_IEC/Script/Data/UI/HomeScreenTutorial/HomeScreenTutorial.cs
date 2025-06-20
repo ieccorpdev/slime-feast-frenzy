@@ -252,6 +252,7 @@ namespace IEC
         public void ResetHole()
         {
             // Collapse the hole: set min == max so no area is discarded
+            holeTarget = null;
             maskMaterial.SetVector("_HoleRect", new Vector4(0, 0, 0, 0));
             tutTextGroup.SetActive(false);
         }
