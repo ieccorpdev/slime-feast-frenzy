@@ -6516,6 +6516,9 @@ MonoBehaviour:
   ScreenInGame: {fileID: 5013068276028292672}
   useHelper: 0
   screenLevelWin: {fileID: 2029316458}
+  spawnMaxCount: 30
+  spawnMinCount: 20
+  countShowTutorial: 5
   fixedTimeStep: 0.05
   level: 3
   prefabConfig: {fileID: 11400000, guid: 812db71aeabcbfa45b4abf07413290b6, type: 2}
@@ -6525,9 +6528,9 @@ MonoBehaviour:
   InGamePlayGroup: {fileID: 1118379855}
   Joystick: {fileID: 7449795621115547962}
   waveWaterMaterial: {fileID: 2100000, guid: c52413938de4a8a4a855d475300d4c41, type: 2}
-  levelData: {fileID: 11400000, guid: c5c15e5a3ba7f8c4e823e0fad491e999, type: 2}
+  levelData: {fileID: 11400000, guid: bb51fa24ee9d201459400916bdd8197f, type: 2}
   ListItemDefinition:
-  - {fileID: 11400000, guid: 6533fdaa21fc9d04eae681d9833e7e37, type: 2}
+  - {fileID: 11400000, guid: 963cb077480be6c418e151de26aa6710, type: 2}
   itemPrefabConfig: {fileID: 11400000, guid: 210586fbc29b543418f774f19e467e22, type: 2}
   magnetButton: {fileID: 0}
 --- !u!4 &1286157493
@@ -6564,17 +6567,25 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3917094392472747195}
     m_Modifications:
-    - target: {fileID: 6837290372173172569, guid: e877e67ae8807c14398011430c9901aa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -2.893
+    - target: {fileID: 6837290371650424378, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
-    - target: {fileID: 6837290372173172569, guid: e877e67ae8807c14398011430c9901aa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0.309
+    - target: {fileID: 6837290371659658478, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290372173172568, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 6837290372437709288, guid: e877e67ae8807c14398011430c9901aa, type: 3}
       propertyPath: m_Name
       value: Whirlpool_Hole_Turquoise
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290372437709288, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 6837290372437709289, guid: e877e67ae8807c14398011430c9901aa, type: 3}
       propertyPath: m_RootOrder
@@ -6619,6 +6630,22 @@ PrefabInstance:
     - target: {fileID: 6837290372437709289, guid: e877e67ae8807c14398011430c9901aa, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290372465847289, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290372624844941, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290373004463097, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
+      objectReference: {fileID: 0}
+    - target: {fileID: 6837290373294503417, guid: e877e67ae8807c14398011430c9901aa, type: 3}
+      propertyPath: m_Layer
+      value: 18
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e877e67ae8807c14398011430c9901aa, type: 3}

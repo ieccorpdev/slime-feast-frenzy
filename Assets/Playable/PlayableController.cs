@@ -35,6 +35,13 @@ public class PlayableController : _BaseBehaviour
     //
     // [SerializeField] private GameObject stack;
     [Header("Playable Config")]
+    [LunaPlaygroundField("spawnMaxCount", 0, "Config")]
+    public int spawnMaxCount = 10;
+    [LunaPlaygroundField("spawnMinCount", 0, "Config")]
+    public int spawnMinCount = 5;
+    [LunaPlaygroundField("countShowTutorial", 0, "Config")]
+    public int countShowTutorial = 69;
+
     public float fixedTimeStep = 0.12f;
     public int level;
     public PrefabConfig prefabConfig;
@@ -146,10 +153,6 @@ public class PlayableController : _BaseBehaviour
             ListItemDefinition.Add(itemDefinition);
         }
         EditorUtility.SetDirty(this);
-    }
-    private void OnValidate()
-    {
-        InitItemDefinition();
     }
 #endif
     public ItemDefinition GetItemDefinition(string itemId)

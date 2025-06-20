@@ -289,7 +289,7 @@ namespace _IEC.Features.Gameplay
                 if (m_AllItems[i] == null || m_AllItems[i].gameObject == null)
                     m_AllItems.RemoveAt(i);
             }
-            if (m_AllItems.Count > 69)
+            if (m_AllItems.Count > PlayableController.Instance.countShowTutorial)
             {
                 PlayableTutorial.ShowTut();
                 isEnabeSpawnMaxItem = true;
