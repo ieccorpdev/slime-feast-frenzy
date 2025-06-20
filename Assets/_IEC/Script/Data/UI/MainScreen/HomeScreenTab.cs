@@ -483,6 +483,7 @@ public class HomeScreenTab : ScreenNavigateUI
     private Coroutine relicRoutine;
     private void UpdateButtonRelic()
     {
+        if(!gameObject.activeSelf) return;
         if (relicRoutine != null)
         {
             StopCoroutine(relicRoutine);

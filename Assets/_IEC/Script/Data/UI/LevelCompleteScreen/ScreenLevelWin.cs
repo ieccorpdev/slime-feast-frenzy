@@ -253,6 +253,17 @@ namespace IEC
                 popupQueue.Enqueue(StartChompOff);
             }
 
+            if (PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
+            {
+                PopupData relicPopup = new PopupData(
+                    Locator.Main.PopupRelicHunt,
+                    () =>
+                    {
+                        Locator.Main.PopupRelicHunt.Show();
+                    }
+                );
+                popupQueue.Enqueue(relicPopup);
+            }
             // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
             //     && Locator.Main.PopupSharkRace.IsEndEventStage() 
             //     && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
