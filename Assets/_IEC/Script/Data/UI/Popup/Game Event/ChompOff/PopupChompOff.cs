@@ -172,6 +172,7 @@ namespace IEC
         public bool IsResetChompOff()
         {
             int daysPlayed = PlayerData.GetDaysSinceDownload();
+            int daysLastStarted = Config.eventLiveOpsConfig.GetLatestDayStartEvent(EventType.ChompOff, daysPlayed);
             var chompOffData = PlayerData.GetEventSaveData(EventType.ChompOff);
             int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
             int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)

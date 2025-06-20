@@ -36,8 +36,10 @@ namespace IEC
         }
 
         public TabType lastTabType;
+
         private void Init()
         {
+            Game.hybrid.currentTab = TabType.Shop;
             var tabShow = HybridConfig.listTabConfig.Count - 1;
             var listHomeTab = GetComponentsInChildren<HomeTab>(true).ToList();
             listHomeTab.Remove(m_BigTab);

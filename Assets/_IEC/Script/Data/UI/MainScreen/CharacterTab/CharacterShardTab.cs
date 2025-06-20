@@ -12,6 +12,7 @@ namespace IEC
     public class CharacterShardTab : _BaseBehaviour
     {
         public List<CharacterShardPack> listCharacterShardPacks = new();
+        public UICurrency goldDisplayCurrency;
         
         [Header("Refresh")] 
         public Button refreshButton;

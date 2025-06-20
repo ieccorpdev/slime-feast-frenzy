@@ -92,7 +92,7 @@ namespace IEC
                 (float)
                 (DateTime.Now.Date - DateTime.Parse(Pool.Get<ServiceData>().installTime,
                     null,
-                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+                    System.Globalization.DateTimeStyles.RoundtripKind).Date).TotalDays);
         }
 
         public int GetDaysFromDownloadToTime(DateTime time)
@@ -101,7 +101,7 @@ namespace IEC
                 (float)
                 (time.Date - DateTime.Parse(Pool.Get<ServiceData>().installTime,
                     null,
-                    System.Globalization.DateTimeStyles.RoundtripKind)).TotalDays);
+                    System.Globalization.DateTimeStyles.RoundtripKind).Date).TotalDays);
         }
 
         public DateTime GetLastPlayDateTime()
