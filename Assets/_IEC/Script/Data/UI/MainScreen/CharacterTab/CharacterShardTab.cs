@@ -94,7 +94,9 @@ namespace IEC
             var timeLeft = timeResetShop - DateTime.Now;
             if (timeLeft.TotalSeconds <= 0)
             {
-                OnRefresh();
+                PlayerData.OnRefreshShardShop();
+                Setup();
+                UpdateUI();
             }
             else
             {

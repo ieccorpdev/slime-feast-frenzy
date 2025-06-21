@@ -491,6 +491,7 @@ public class HomeScreenTab : ScreenNavigateUI
     }
     IEnumerator IUpdateButtonRelic()
     {
+        RelicHuntEvent.UpdateUI();
         while (Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt))
         {
             yield return new WaitForSeconds(0.1f);
