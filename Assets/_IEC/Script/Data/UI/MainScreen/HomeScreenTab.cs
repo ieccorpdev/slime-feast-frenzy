@@ -767,7 +767,8 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
         int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
             .eventDurationInHours / 24);
-        bool active = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.ChompOff);
+        bool active = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.ChompOff) 
+                      && Config.eventLiveOpsConfig.IsEventOnDay(EventType.ChompOff, chompOffDuration, daysPlayed);
 
         if (Locator.Main.PopupChompOff.IsResetChompOff() )
         {
