@@ -14,6 +14,7 @@ using MoreMountains.NiceVibrations;
 using UnityEditor;
 using UnityEngine;
 using BoosterData = IEC.BoosterData;
+using EventType = IEC.EventType;
 using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
@@ -243,7 +244,8 @@ namespace _IEC.Features.Gameplay
                 themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
             }
             
-            if (PlayerData.relicData.isAvaiableToSpawn)
+            if (PlayerData.relicData.isAvaiableToSpawn && 
+                Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload()))
             {
                 m_AllRelicItems.Clear();
                 int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
