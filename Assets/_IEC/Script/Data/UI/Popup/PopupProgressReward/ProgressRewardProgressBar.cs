@@ -66,7 +66,6 @@ namespace IEC
         {
             if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
             {
-                PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
                 Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
                 Locator.Main.HomeScreenTab.ShowNextPopup();
             }
