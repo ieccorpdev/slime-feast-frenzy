@@ -35,7 +35,8 @@ namespace IEC
 
         private bool AvaiableToSpawn()
         {
-            return hasJoinEvent && !hasDoneLevel;
+            bool isEnd = eventTimeEnd <= DateTime.Now;
+            return hasJoinEvent && !hasDoneLevel && !isEnd;
             //return true;
         }
 

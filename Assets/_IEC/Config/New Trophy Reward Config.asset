@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62140d786494fc64ab03dd2742c7ce6b, type: 3}
   m_Name: New Trophy Reward Config
   m_EditorClassIdentifier: 
+  levelUnlock: 50
   listTrophyReward:
   - type: 0
     listSpiteTrophy:
@@ -70,7 +71,7 @@ MonoBehaviour:
     - listTrophyReward:
       - typeReward: 0
         rewardAmount: 300
-      - typeReward: 3
+      - typeReward: 10
         rewardAmount: 60
       - typeReward: 7
         rewardAmount: 1
@@ -143,8 +144,6 @@ MonoBehaviour:
         rewardAmount: 60
       - typeReward: 4
         rewardAmount: 2
-      - typeReward: 5
-        rewardAmount: 1
   - type: 4
     listSpiteTrophy:
     - {fileID: 21300000, guid: 5bf98bdf89b501f4b8058f2f537c1b59, type: 3}
@@ -186,11 +185,13 @@ MonoBehaviour:
     - listTrophyReward:
       - typeReward: 11
         rewardAmount: 30
+      - typeReward: 4
+        rewardAmount: 1
     - listTrophyReward:
       - typeReward: 3
         rewardAmount: 30
     - listTrophyReward:
-      - typeReward: 3
+      - typeReward: 10
         rewardAmount: 60
       - typeReward: 7
         rewardAmount: 1
@@ -250,7 +251,7 @@ MonoBehaviour:
       - typeReward: 4
         rewardAmount: 1
     - listTrophyReward:
-      - typeReward: 3
+      - typeReward: 10
         rewardAmount: 60
       - typeReward: 7
         rewardAmount: 1
