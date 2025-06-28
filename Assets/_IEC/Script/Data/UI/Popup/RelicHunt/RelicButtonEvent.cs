@@ -97,6 +97,7 @@ public class RelicButtonEvent : _BaseBehaviour
                 timerGroup.gameObject.SetActive(false);
                 joinGroup.SetActive(true);
             }
+            
         }
     }
 
@@ -138,7 +139,15 @@ public class RelicButtonEvent : _BaseBehaviour
         else
         {
             gameObject.SetActive(false);
+            UpdateTimeEnd();
         }
+    }
+
+    private static void UpdateTimeEnd()
+    {
+        DateTime timeEnd = Config.eventLiveOpsConfig.GetTimeEndEvent(EventType.RelicHunt,
+            Mathf.FloorToInt(Config.relicConfig.eventDurationInHours / 24), PlayerData.GetDaysSinceDownload());
+        PlayerData.relicData.eventTimeEnd = timeEnd;
     }
 
     private void SetClaimLastEventState()
