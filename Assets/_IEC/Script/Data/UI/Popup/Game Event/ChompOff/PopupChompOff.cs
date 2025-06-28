@@ -283,6 +283,7 @@ namespace IEC
             else
             {
                 _eventStarted = true;
+                InitEvent();
             }
         }
 

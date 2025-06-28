@@ -93,6 +93,7 @@ public class Hole : _BaseBehaviour
 	private bool _isChangedToCurrentCharacter = false;
 	private bool _isInChangeCharacterAnim = false;
 	private Coroutine _changeCharacterCoroutine;
+	private bool isPausing;
 
 	private void Awake()
 	{
@@ -108,12 +109,28 @@ public class Hole : _BaseBehaviour
 		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 		this.RegisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
+		this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
+		this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
+            
+		
+	}
+
+	private void OnResumeGame(object obj)
+	{
+		isPausing = false;
+	}
+
+	private void OnPauseGame(object param)
+	{
+		isPausing = true;
 	}
 
 	private void OnDestroy()
 	{
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 		this.UnregisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
+		this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
+		this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
 	}
 	private float cTime = 0;
 	public bool readyForSharkBite;
@@ -156,7 +173,7 @@ public class Hole : _BaseBehaviour
 				}
 			}
 
-			CheckIncreaseCharacterSizeOnIdle();
+			if(!isPausing) CheckIncreaseCharacterSizeOnIdle();
 		}
 
 		CheckSharkForm();
@@ -219,10 +236,11 @@ public class Hole : _BaseBehaviour
 
 	private float GetCamSize()
 	{
-		return CalculateIndices(Settings.BaseCameraDistance, m_Level,
-			       Settings.CameraDistanceIncreasePerLevel)
-		       * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0)) *
-		       Mathf.Max((m_AdditionalSizeFromCharacterPower / 2f), 1f);
+		var baseSize = CalculateIndices(Settings.BaseCameraDistance, m_Level,
+			Settings.CameraDistanceIncreasePerLevel);
+		var bonusSize =  (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0)) *
+		                 Mathf.Max((m_AdditionalSizeFromCharacterPower / 2f), 1f);
+		 return baseSize * bonusSize;
 	}
 
 	private void UpdateGravityBySpeed()

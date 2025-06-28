@@ -49,12 +49,12 @@ namespace _IEC.Script.Data.UI.Popup.RelicHunt
         private void ShowReward()
         {
             //Locator.Main.ClaimBonusRewardPanel.SetupTempTitle();
+            if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) && !PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
+            {
+                PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
+            }
             Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(_rewards, () =>
                 {
-                    if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) && !PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
-                    {
-                        PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
-                    }
                     Locator.Main.PopupRelicHunt.Show();
                 },
                 true);
