@@ -4,7 +4,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TutorialJourney : MonoBehaviour
+public class TutorialJourney : _BaseBehaviour
 {
     public List<GameObject> listGameObjectEffect;
     public Button tapToContinue;
@@ -82,5 +82,6 @@ public class TutorialJourney : MonoBehaviour
         // Stop animation when disabled
         if (pulseRoutine != null) StopCoroutine(pulseRoutine);
         tapToContinue.transform.localScale = Vector3.one;
+        PlayerData.journeyData.isShowTutorialInPopup = true;
     }
 }
