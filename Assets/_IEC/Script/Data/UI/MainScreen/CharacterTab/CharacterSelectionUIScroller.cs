@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Common.Extension;
+using DG.Tweening;
 using EnhancedUI.EnhancedScroller;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -79,11 +80,15 @@ namespace IEC
             //scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
             JumpToCurrent(index);
         }
-        
+
+
         private void JumpToCurrent(int index)
         {
-            InitScroller();
-            scroller.JumpToDataIndex(index, 0.5f, 0, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
+            //InitScroller();
+            //scroller.JumpToDataIndex(index, 0.5f, 0.5f, true, EnhancedScroller.TweenType.easeInOutQuart, 0.2f);
+            var space = 50;
+            var pos = scroller.GetScrollPositionForDataIndex(index, EnhancedScroller.CellViewPositionEnum.Before) - (scroller.ScrollSize + space)/2 + cellSize;
+            scroller.SetScrollPositionImmediately(pos);
         }
         
         public int GetNumberOfCells(EnhancedScroller scroller)

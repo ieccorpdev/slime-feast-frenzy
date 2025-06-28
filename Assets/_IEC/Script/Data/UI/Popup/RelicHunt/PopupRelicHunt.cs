@@ -220,13 +220,18 @@ public class PopupRelicHunt : BasePopup
     private void ShowReward()
     {
         //Locator.Main.ClaimBonusRewardPanel.SetupTempTitle();
+        bool doneAllReward = !PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) &&
+                             !PlayerData.relicData.CheckIfHasReward(Config.relicConfig);
+        if (doneAllReward)
+        {
+            PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
+        }
         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards, () =>
             {
                 
                 // unlock relic and can't levle up, mean the last reward 
-                if (!PlayerData.relicData.CheckIfHasLockReward(Config.relicConfig) && !PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
+                if (doneAllReward)
                 {
-                    PlayerData.trophyData.CollectTrophy(TrophyType.RelicHunt);
                     Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
                     Locator.Main.HomeScreenTab.ShowNextPopup();
                 }

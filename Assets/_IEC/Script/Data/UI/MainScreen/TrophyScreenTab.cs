@@ -57,6 +57,18 @@ public class TrophyScreenTab : ScreenNavigateUI
             item.RegisterEventButton();
         }
     }
+
+    public bool HasNewTrophy()
+    {
+        foreach (var item in listAllTrophy)
+        {
+            if (PlayerData.trophyData.NeedShowNewsTag(item.type))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     
     public ItemTrophyState GetStateTrophy(TrophyType type)
     {

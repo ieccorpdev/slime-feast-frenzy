@@ -184,7 +184,6 @@ public class ItemTrophyTab : _BaseBehaviour
                 progressBar.gameObject.SetActive(true);
                 break;
             case ItemTrophyState.New:
-                newsTagObj.gameObject.SetActive(true);
                 if (PlayerData.trophyData.GetCurrentCollectedTrophy(type) == 0)
                 {
                     //Not claim first trophy
