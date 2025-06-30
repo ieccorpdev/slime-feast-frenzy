@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
-using _IEC.Features.VipProHackerUITutorial;
 using DG.Tweening;
 using IEC;
 using Sirenix.OdinInspector;
@@ -41,8 +40,6 @@ public class PlayableController : _BaseBehaviour
     public float fixedTimeStep = 0.12f;
     public PrefabConfig prefabConfig;
     public bool isEndGame = false;
-    [LunaPlaygroundField("max Item Spawn", 0, "Config")]
-    public int maxItemSpawn = 200;
     public int countShowTutorial;
 
     public bool PlayableStarted

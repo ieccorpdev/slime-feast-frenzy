@@ -7,7 +7,6 @@ using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using _IEC.Script.GamePlay;
 using PathCreation.Examples;
 
@@ -68,25 +67,18 @@ namespace _IEC.Features.Gameplay
             UpdateManager.Instance.UnregisterFixedUpdate(this);
         }
 
-        //private void OnCollisionEnter(Collision collision)
-        //{
-        //    if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
-        //    {
-        //        rb.isKinematic = true;
-        //    }
-        //}
-
-        public void EnterHoleTrigger()
-        {
-            ChangeState(State.Collectable);
-        }
-
         private void OnCollisionEnter(Collision collision)
         {
             if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
             {
-                rb.velocity = Vector3.zero;
+                rb.isKinematic = true;
             }
+        }
+
+        public void EnterHoleTrigger()
+        {
+            StopAllCoroutines();
+            ChangeState(State.Collectable);
         }
 
         public Sprite GetIcon()
@@ -311,6 +303,8 @@ namespace _IEC.Features.Gameplay
             {
                 posOnWater.enabled = false;
             }
+            StopAllCoroutines();
+
             // if (_specialItemHighlightEffect != null)
             // {
             //     _specialItemHighlightEffect.gameObject.SetActive(false);
@@ -326,7 +320,7 @@ namespace _IEC.Features.Gameplay
         public void ManagedFixedUpdate()
         {
             bool hasRb = rb;
-
+            
             if (!hasRb)
             {
                 if (Time.frameCount % 2 == 0)
@@ -337,17 +331,28 @@ namespace _IEC.Features.Gameplay
                     }
                 }
             }
-            else if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
+            else
             {
-                if (this.transform.position.y < PlayableController.Instance.mapHeight)
+                if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
                 {
-                    rb.isKinematic = false;
-                    OnCollected(this.transform.position);
+                    if (this.transform.position.y < PlayableController.Instance.mapHeight)
+                    {
+                        rb.isKinematic = false;
+                        OnCollected(this.transform.position);
+                    }
                 }
             }
         }
         
         #endregion
+
+        public void DisableMove()
+        {
+            if (_pathFollower)
+            {
+                _pathFollower.StopMove();
+            }
+        }
 
         protected void SetLayer(int newLayer)
         {
@@ -357,6 +362,28 @@ namespace _IEC.Features.Gameplay
                 item.layer = newLayer;
             }
             //itemCollider.gameObject.layer = newLayer;
+        }
+
+        public void MoveToTarget(Transform target, float speed)
+        {
+            StopAllCoroutines();
+            StartCoroutine(MoveToXZPosition(target, speed));
+        }
+
+        public IEnumerator MoveToXZPosition(Transform targetTransform, float speed)
+        {
+            rb.isKinematic = true;
+            // Only move in X and Z, keep current Y
+            Vector3 start = transform.position;
+            Vector3 destination = new Vector3(targetTransform.position.x, start.y, targetTransform.position.z);
+            while (Vector3.Distance(transform.position, destination) > 0.2f)
+            {
+                DisableMove();
+                transform.position = Vector3.MoveTowards(transform.position, destination, speed * 0.068f);
+                yield return null;
+                destination = new Vector3(targetTransform.position.x, start.y, targetTransform.position.z);
+            }
+            rb.isKinematic = false;
         }
 
 

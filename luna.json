@@ -2,7 +2,7 @@
     "version": "6.3.0",
     "projectId": "38eebd4cf2b294042a597d2e76328ca7",
     "applicationID": 29428,
-    "creativeName": "SFF_v3_Special_Level",
+    "creativeName": "SFF_v1_Special_Level_Explore",
     "pgServer": "EU",
     "window": {
         "‐″": true
@@ -4612,7 +4612,7 @@
             },
             {
                 "name": "UnityEngine.QueryTriggerInteraction",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.QueueMode",
@@ -11257,14 +11257,6 @@
             {
                 "name": "_IEC.Features.Gameplay.ItemSpawn",
                 "excluded": false
-            },
-            {
-                "name": "pc.Debugger.Components.EditorCamera",
-                "excluded": true
-            },
-            {
-                "name": "pc.Debugger.Components.EditorGUI",
-                "excluded": true
             }
         ],
         "unusedMethods": [
@@ -17932,7 +17924,7 @@
                     },
                     {
                         "name": "value#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "value#set",
@@ -25518,7 +25510,7 @@
                     },
                     {
                         "name": "HandleEndOfFrame",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MoveNext",
@@ -26292,7 +26284,7 @@
                 "instanceMethods": [
                     {
                         "name": "uiScaleMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "uiScaleMode#set",
@@ -26300,7 +26292,7 @@
                     },
                     {
                         "name": "screenMatchMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "screenMatchMode#set",
@@ -26308,7 +26300,7 @@
                     },
                     {
                         "name": "referenceResolution#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referenceResolution#set",
@@ -26324,7 +26316,7 @@
                     },
                     {
                         "name": "matchWidthOrHeight#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "matchWidthOrHeight#set",
@@ -26332,7 +26324,7 @@
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referencePixelsPerUnit#set",
@@ -31164,7 +31156,7 @@
                 "instanceMethods": [
                     {
                         "name": "World#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "gravity#get",
@@ -31300,7 +31292,7 @@
                     },
                     {
                         "name": "OverlapSphere",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OverlapSphereNonAlloc",
@@ -31416,7 +31408,7 @@
                     },
                     {
                         "name": "ShouldHitTriggers",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -36539,6 +36531,18 @@
                     {
                         "name": "OnCollisionEnter",
                         "excluded": false
+                    },
+                    {
+                        "name": "DisableMove",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveToTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveToXZPosition",
+                        "excluded": false
                     }
                 ]
             },
@@ -37977,15 +37981,7 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
                         "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTriggerEnter",
                         "excluded": false
                     },
                     {
@@ -37993,15 +37989,11 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnTriggerExit",
-                        "excluded": false
-                    },
-                    {
                         "name": "PullObject",
                         "excluded": false
                     },
                     {
-                        "name": "OnDisable",
+                        "name": "init",
                         "excluded": false
                     }
                 ]
@@ -38986,14 +38978,6 @@
                     },
                     {
                         "name": "SpawnAllItem",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SpawnRelic",
-                        "excluded": false
-                    },
-                    {
-                        "name": "isMaxItem#get",
                         "excluded": false
                     }
                 ]
