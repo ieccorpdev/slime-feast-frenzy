@@ -111,7 +111,7 @@ namespace IEC
 
         public void OnNewGame()
         {
-            GamePlay.SetNewLevel(PlayableController.Instance.level);
+            GamePlay.SetNewLevel();
             ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
             ScreenInGame.Show();
             GamePlay.StartGamePlay();

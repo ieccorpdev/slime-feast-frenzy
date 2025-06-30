@@ -154,7 +154,7 @@ namespace _IEC.Features.Gameplay
             return true; // No BaseItem found nearby
         }
 
-        public static LevelData CreateLevelData(LevelConfigModel levelConfigModel, int level)
+        public static LevelData CreateLevelData(LevelConfigModel levelConfigModel)
         {
             var levelData = new LevelData();
             levelData.time = levelConfigModel.duration;
@@ -173,11 +173,10 @@ namespace _IEC.Features.Gameplay
                 levelData.levelType = LevelType.COIN;
             }
 
-            levelData.level = level;
             return levelData;
         }
 
-        public static LevelData CreateLevelData(LevelDataSO levelConfigModel, int level)
+        public static LevelData CreateLevelData(LevelDataSO levelConfigModel)
         {
             var levelData = new LevelData();
             levelData.time = levelConfigModel.time;
@@ -196,7 +195,6 @@ namespace _IEC.Features.Gameplay
                 levelData.levelType = LevelType.COIN;
             }
 
-            levelData.level = level;
             return levelData;
         }
     }

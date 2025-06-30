@@ -1,40 +1,20 @@
 using System;
 using System.Collections.Generic;
 using _IEC.Features.ExportLevel.OriginalLevel;
-using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace _IEC.Features.Gameplay
 {
-    [Serializable]
     public class LevelSpawnData : ScriptableObject
     {
-        [Button]
-        public void SetAllSpawnDataKinematic()
-        {
-            foreach (var item in listItemSpawns)
-            {
-                foreach (var data in item.listSpawnDatas)
-                {
-                    data.kinematic = true;
-                }
-            }
-        }
         public List<ItemSpawn> listItemSpawns = new List<ItemSpawn>();
-
-        public void CloneTo(LevelSpawnData spawnData)
-        {
-            spawnData.listItemSpawns = new List<ItemSpawn>(listItemSpawns);
-        }
     }
-    
 
     [Serializable]
     public class ItemSpawn
     {
         public string id;
-        public List<ItemSpawnData> listSpawnDatas = new List<ItemSpawnData>();
+        public List<ItemSpawnData> listSpawnDatas;
     }
 
     [Serializable]
@@ -46,7 +26,8 @@ namespace _IEC.Features.Gameplay
         public Rotation r;
         public Scale s;
         public bool kinematic;
-        
+        public List<Vector3> pathPoints;
+
         public ItemData ToItemData(string id)
         {
             ItemData itemData = new ItemData();
@@ -57,6 +38,10 @@ namespace _IEC.Features.Gameplay
             itemData.eulerAngle = r.ToVector3();
             itemData.localScale = s.ToVector3();
             itemData.isStartKinematic = kinematic;
+            if (pathPoints != null)
+            {
+                itemData.pathPoints = new List<Vector3>(pathPoints);
+            }
             return itemData;
         }
     }

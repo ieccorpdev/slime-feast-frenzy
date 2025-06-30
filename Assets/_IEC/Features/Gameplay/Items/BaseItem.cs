@@ -9,6 +9,7 @@ using IEC;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using _IEC.Script.GamePlay;
+using PathCreation.Examples;
 
 namespace _IEC.Features.Gameplay
 {
@@ -48,9 +49,11 @@ namespace _IEC.Features.Gameplay
         private static bool CanPlaySFX = true;
 
         private RigidbodyData savedData;
+        private PathFollower _pathFollower;
 
         public virtual void Start()
         {
+            _pathFollower = GetComponentInChildren<PathFollower>();
             if (m_ItemDefinition == null && this.itemDefinition != null)
             {
                 m_ItemDefinition = this.itemDefinition;
@@ -251,6 +254,12 @@ namespace _IEC.Features.Gameplay
         protected void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;
+
+            if (newState == State.Collectable && _pathFollower)
+            {
+                _pathFollower.StopMove();
+            }
+
             switch (m_CurrentState)
             {
                 case State.None:
@@ -258,7 +267,6 @@ namespace _IEC.Features.Gameplay
                 case State.Idle:
                     break;
                 case State.Collectable:
-                    rb.isKinematic = false;
                     SetLayer(LayerMainWorld);
                     break;
                 case State.Falling:
@@ -266,6 +274,12 @@ namespace _IEC.Features.Gameplay
             }
 
             m_CurrentState = newState;
+
+            if (m_CurrentState == State.Idle && _pathFollower)
+            {
+                _pathFollower.StartMoveDelay();
+            }
+
             switch (m_CurrentState)
             {
                 case State.None:

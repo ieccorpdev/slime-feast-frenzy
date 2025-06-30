@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
-using System.Security.Cryptography;
 using _IEC.Features.Booster;
 using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay.ObserverEventData;
 using DG.Tweening;
 using IEC;
+using PathCreation.Examples;
+using PathCreation;
 using UnityEngine;
 using BoosterData = IEC.BoosterData;
 using Game = IEC.Game;
@@ -27,7 +29,7 @@ namespace _IEC.Features.Gameplay
         }
     }
 
-    public class LevelController : _BaseBehaviour, ILevelController, IGroup
+    public class LevelController : _BaseBehaviour, IGroup
     {
         [SerializeField] private Hole playerHole;
         [SerializeField] private Transform levelObjectHolder;
@@ -200,6 +202,12 @@ namespace _IEC.Features.Gameplay
                     waterWave.OnValidate();
 #endif
                     itemComponent.posOnWater = waterWave;
+                    var pathComponent = newItem.GetComponentInChildren<PathFollower>();
+                    if (pathComponent)
+                    {
+                        BezierPath newPath = new BezierPath(itemData.pathPoints, PathSpace.xz);
+                        pathComponent.pathCreator.bezierPath = newPath;
+                    }
                 }
 
             }
@@ -207,12 +215,11 @@ namespace _IEC.Features.Gameplay
             return res;
         }
 
-        public void LoadLevel(int level)
+        public void LoadLevel()
         {
-            m_Level = level;
-            int index = Mathf.Max(0, level - 1);
-            var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData(index);
-
+            var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData();
+            Debug.Log(m_LevelConfig.listObjectives.Count);
+            Debug.Log(m_LevelConfig.levelSpawnData.listItemSpawns.Count);
             m_AllItems.Clear();
             var levelSpawnData = m_LevelConfig.levelSpawnData;
             m_AllItems = SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
@@ -222,7 +229,7 @@ namespace _IEC.Features.Gameplay
             }
 
             m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
-            m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
+            m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig);
 
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);

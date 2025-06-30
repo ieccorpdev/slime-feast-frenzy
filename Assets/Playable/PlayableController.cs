@@ -39,7 +39,6 @@ public class PlayableController : _BaseBehaviour
     public float mapHeight = 0;
     [LunaPlaygroundField("fixedTimeStep", 0, "Config")]
     public float fixedTimeStep = 0.12f;
-    public int level;
     public PrefabConfig prefabConfig;
     public bool isEndGame = false;
     [LunaPlaygroundField("max Item Spawn", 0, "Config")]
@@ -106,33 +105,9 @@ public class PlayableController : _BaseBehaviour
 
     private void Start()
     {
-
         EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
-        LoadLevel(level);
-
+        LoadLevel();
         ShowTutorial();
-
-        switch (level)
-        {
-            case 1:
-                break;
-            case 2:
-                if (useHelper)
-                {
-                    magnetButton.onClick.RemoveAllListeners();
-                    magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                    StartCoroutine(IShowHighLight());
-                }
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
-        
-
     }
 
     IEnumerator IShowHighLight()
@@ -158,7 +133,7 @@ public class PlayableController : _BaseBehaviour
     }
     public Button magnetButton;
 
-    public LevelDataSO GetLevelSpawnData(int level)
+    public LevelDataSO GetLevelSpawnData()
     {
         return levelData;
     }
@@ -176,9 +151,8 @@ public class PlayableController : _BaseBehaviour
         }
         return Color.black; // fallback
     }
-    public void LoadLevel(int level)
+    public void LoadLevel()
     {
-        this.level = level;
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
     }
 
@@ -244,12 +218,12 @@ public class PlayableController : _BaseBehaviour
         // }
         if(Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            LoadLevel(level - 1);
+            LoadLevel();
         }
         
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            LoadLevel(level + 1);
+            LoadLevel();
         }
     }
     public void OnEndOfTime()

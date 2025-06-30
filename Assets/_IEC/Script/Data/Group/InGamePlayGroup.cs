@@ -12,12 +12,12 @@ namespace IEC
         public LevelController levelController;
         
         public bool IsInLevelHard { get; private set; } = false;
-        private ILevelController m_CurrentLevelController;
+        private LevelController m_CurrentLevelController;
         public void Awake()
         {
 
         }
-        public ILevelController GetLevelController()
+        public LevelController GetLevelController()
         {
             return levelController;
         }
@@ -41,9 +41,9 @@ namespace IEC
             GameState = screen;
         }
 
-        public void SetNewLevel(int level)
+        public void SetNewLevel()
         {
-            levelController.LoadLevel(level);
+            levelController.LoadLevel();
         }
         public LevelType GetCurrentLevelType()
         {

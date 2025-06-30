@@ -102,6 +102,32 @@ namespace PathCreation
 			this.Space = space;
 			this.IsClosed = isClosed;
 		}
+        
+        public BezierPath(IEnumerable<Vector3> points, PathSpace space = PathSpace.xyz)
+        {
+            Vector3[] pointsArray = points.ToArray();
+
+            if (pointsArray.Length < 2)
+            {
+                Debug.LogError("Path requires at least 2 anchor points.");
+            }
+            else
+            {
+                controlMode = ControlMode.Automatic;
+                this.points = new List<Vector3>(pointsArray.Length);
+                perAnchorNormalsAngle = new List<float>(new float[] { 0, 0 });
+
+                for (int i = 0; i < pointsArray.Length; i++)
+                {
+                    this.points.Add(pointsArray[i]);
+                    perAnchorNormalsAngle.Add(0);
+                }
+            }
+
+            this.Space = space;
+            this.IsClosed = isClosed;
+            NotifyPathModified();
+        }
 
 		/// <summary> Creates a path from the positions of the supplied 2D points </summary>
 		///<param name="transforms"> List or array of transforms to create the path from. </param>

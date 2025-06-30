@@ -88,11 +88,11 @@ namespace _IEC.Features.Gameplay
             {
                 imgIcon.sprite = LoadSpriteIconFromId(itemId);
             }
-            imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
+            //imgIcon.rectTransform.ForceToWidth(imgIcon.sprite, baseWidth);
 
-            var delta = RectTransform.sizeDelta;
-            delta.y = imgIcon.rectTransform.sizeDelta.y;
-            RectTransform.sizeDelta = delta;
+            //var delta = RectTransform.sizeDelta;
+            //delta.y = imgIcon.rectTransform.sizeDelta.y;
+            //RectTransform.sizeDelta = delta;
         }
 
         public void Reset()
