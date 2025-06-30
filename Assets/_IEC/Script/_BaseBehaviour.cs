@@ -19,7 +19,10 @@ namespace IEC
         protected static GameConfig PlayConfig => Pool.Get<GameConfig>();
 
         protected static HybridConfig HybridConfig => PlayConfig.hybridConfig;
-		public virtual void SetActive(bool isActive)
+
+        protected static SoundController SoundController => Pool.Get<SoundController>();
+
+        public virtual void SetActive(bool isActive)
         {
             gameObject.SetActive(isActive);
         }

@@ -1,0 +1,484 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4900320109233837601
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9049274688606409165}
+  - component: {fileID: 8256336304938062895}
+  m_Layer: 0
+  m_Name: SoundController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!4 &9049274688606409165
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4900320109233837601}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8256336304938062895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4900320109233837601}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afbf8c8b95d2e80429a7b10c24914d21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  audioPlayerPrefab: {fileID: 6921869917988125337, guid: d92186cbcd6ea8a4eafae267c2c00b1c,
+    type: 3}
+  listSoundConfig:
+  - id: Audio.START
+    clip: {fileID: 8300000, guid: 43c2217eca1db9b42aeee38f44783df1, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SHARK_UP
+    clip: {fileID: 8300000, guid: bb635e35c0293df498ad2b61259e3f92, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SHARK_DOWN
+    clip: {fileID: 8300000, guid: 5d327833a1129a84a970354e6feba199, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.ITEM_DOWN
+    clip: {fileID: 8300000, guid: 3d1c989b32c4ee54fa283aa98ccdc8d0, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.4
+  - id: Audio.OBJECTIVE_GET
+    clip: {fileID: 8300000, guid: c70028d7b1360ef42aa579f39163ac82, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.751
+  - id: Audio.OBJECTIVE_CLEAR
+    clip: {fileID: 8300000, guid: c114875f0f7852b43b32e01b4b085dbf, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.HOLE_LEVELUP
+    clip: {fileID: 8300000, guid: beb88eb50a934a04f9bac90f6a7bb07c, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.71
+  - id: Audio.BOMB_IDLE
+    clip: {fileID: 8300000, guid: 1d4c49092d9b3e04baf9f71449d064ed, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.6
+  - id: Audio.BOMB_EXPLODE
+    clip: {fileID: 8300000, guid: 20dae133af88d304383867dad11b6446, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.HOLE_IDLE
+    clip: {fileID: 0}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.WIN
+    clip: {fileID: 8300000, guid: 5a8c7113874ec1b4d9b5ef397b34b26e, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.GET_STAR_3
+    clip: {fileID: 8300000, guid: 513f46f1ab833d545891bb88aefcee5d, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SPECIAL_ITEM_NEAR
+    clip: {fileID: 8300000, guid: 33ef7f985c1ebbc4c891ebf84d6aa3df, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SPECIAL_ITEM_GET
+    clip: {fileID: 8300000, guid: 101e607029304f748851fa2d475a2705, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SPECIAL_ITEM_HIT
+    clip: {fileID: 8300000, guid: df4d92ba2d5dd1a4fbf49455fa2aeda0, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.5
+  - id: Audio.COMPASS
+    clip: {fileID: 8300000, guid: e46296793c2e37440b5db12538758013, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.9
+  - id: Audio.MAGNET_START
+    clip: {fileID: 8300000, guid: c9d7bf86be6377b44b756be5b7ac17d9, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.6
+  - id: Audio.MAGNET_IDLE
+    clip: {fileID: 8300000, guid: 99a6b237012a6f1429d52f2aecb336fe, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.7
+  - id: Audio.ICE_START
+    clip: {fileID: 8300000, guid: 43c2217eca1db9b42aeee38f44783df1, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.ICE_IDLE
+    clip: {fileID: 8300000, guid: 9882ed877c1143d4993c472b5f8d1954, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.COIN_APPEAR
+    clip: {fileID: 8300000, guid: a6ed174393d740846a54cb46cbd8bcac, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.8
+  - id: Audio.COIN_GET
+    clip: {fileID: 8300000, guid: a4ace24608d72f143a10041575948a86, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 1
+    volume: 0.5
+  - id: Audio.ITEM_APPEAR
+    clip: {fileID: 8300000, guid: 122dd1c4dd310a84f85c77d7c7d8feac, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.ITEM_GET
+    clip: {fileID: 8300000, guid: 9a9b5bdd7935c7b4ca03e0b93a97f7ab, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 1
+    volume: 1
+  - id: Audio.CHEST_DROP
+    clip: {fileID: 8300000, guid: 3397e20768a5440479b4819bbd69ff8f, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.7
+  - id: Audio.CHEST_OPEN
+    clip: {fileID: 8300000, guid: df5abe4193f71ca4a8da611932b8b38a, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.GET_REWARD
+    clip: {fileID: 0}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.POPUP_OPEN
+    clip: {fileID: 8300000, guid: 3e34785b31f98da458580f56c269139e, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.5
+  - id: Audio.POPUP_CLOSE
+    clip: {fileID: 8300000, guid: ed56be4761bf9a04e94879215b608e66, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.5
+  - id: Audio.ACTIVE_BUTTON_CLICK
+    clip: {fileID: 8300000, guid: 2ac20706e48905b47a890f34af1db555, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.INACTIVE_BUTTON_CLICK
+    clip: {fileID: 8300000, guid: 36ddc766712ff6f498908988eb005240, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.HOME_PAGE_NAV_SLIDE
+    clip: {fileID: 8300000, guid: 928bbf6a248c79449b818a624863e5fe, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.STARTER_PACK_POPUP_OPEN
+    clip: {fileID: 8300000, guid: 203286623f70a9941ae53c25b26ab643, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.VITALITY_PACK_POPUP_OPEN
+    clip: {fileID: 8300000, guid: 12adc762f6203fb4ea95c2d07d12519a, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.PIGGY_BANK_POPUP_OPEN
+    clip: {fileID: 8300000, guid: 9a0de2defd235f741b6109348852b47a, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.LUCKY_WHEEL_POPUP
+    clip: {fileID: 8300000, guid: 10cc5f0bdef8d844a83676be04bcb2bc, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.NO_ADS_POPUP
+    clip: {fileID: 8300000, guid: dba956049c1b0154f8efc8e03204a8ab, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.LIFE_LOST
+    clip: {fileID: 8300000, guid: 0b2ed2d9265e12443b9c2f0494224a76, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RANK_UP
+    clip: {fileID: 8300000, guid: 588fb2400d285fc438a53b4b95a81882, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RANK_SAFE
+    clip: {fileID: 8300000, guid: 221e55ac840addc4b853d576d87b5c93, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RANK_DOWN
+    clip: {fileID: 8300000, guid: 63aa9b6b1aa15304e957d3d462d85eef, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.LOSE
+    clip: {fileID: 8300000, guid: 5051e1d749c6c9b4c8bcf825ee567e00, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.BOOSTER_APPEAR
+    clip: {fileID: 8300000, guid: 624e36c571b17ac428a8526b72eea298, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SHARK_SWIM
+    clip: {fileID: 8300000, guid: 4ef4a0a279fd50d4f872fd95e59ce98f, type: 3}
+    listRandomAudioClips:
+    - {fileID: 8300000, guid: 4ef4a0a279fd50d4f872fd95e59ce98f, type: 3}
+    - {fileID: 8300000, guid: 734f2b272b1b2ce45b7f12ff83d57432, type: 3}
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.SHARK_BITE_VARIANT
+    clip: {fileID: 8300000, guid: a7b6d2a6f5ac81a46b5717c98c0ba7a2, type: 3}
+    listRandomAudioClips:
+    - {fileID: 8300000, guid: a7b6d2a6f5ac81a46b5717c98c0ba7a2, type: 3}
+    - {fileID: 8300000, guid: 86fdf65a2c7db754f8121fdaa3cb0aa5, type: 3}
+    - {fileID: 8300000, guid: f9a762a6b078d854a9e8512a5e831a8e, type: 3}
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 0.7
+  - id: Audio.CHEST_IDLE
+    clip: {fileID: 8300000, guid: 2dccb1b6797861d4a94886ec3038e294, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.HOMEPAGE_IDLE
+    clip: {fileID: 8300000, guid: eac9621dd60728a45b7a1f480bb0d6e3, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.HOMEPAGE_TAP
+    clip: {fileID: 8300000, guid: 2e5b707001fd98c44b57e81969beac71, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.JELLYFISH_DOWN
+    clip: {fileID: 8300000, guid: 932a70150fde0e84b8ea14027c64ce76, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_APEAR
+    clip: {fileID: 8300000, guid: 5705522191ed8394ba6751ccf0d288d4, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE
+    clip: {fileID: 8300000, guid: 7b35924c4a5d7904bbddee8bd49cac18, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_3
+    clip: {fileID: 8300000, guid: 95dd7be6005891440b0baecaad464b66, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_4
+    clip: {fileID: 8300000, guid: 7e2f06afcc471c744b5b032051128169, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_5
+    clip: {fileID: 8300000, guid: 98a6f8ec17255434c81bd9ce5056b984, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.BOOSTER_WINDSURF
+    clip: {fileID: 8300000, guid: d99da4f73b75176419a113a1901636c5, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.GET_BOOSTER
+    clip: {fileID: 8300000, guid: ef2a9f933e9c50941a51f176fe228bf0, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.REWARD_POPUP
+    clip: {fileID: 8300000, guid: a8611ec849398944ba4bd930bb987088, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  listMusicConfig:
+  - id: Audio.BACKGROUND_HOME
+    clip: {fileID: 8300000, guid: 5e549804575af7e41a855056a0eb33df, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 5
+    isPlayMultiple: 0
+    volume: 0.6
+  - id: Audio.BACKGROUND_INGAME
+    clip: {fileID: 8300000, guid: 976b8a5e909577e48a03fe660d490ba8, type: 3}
+    listRandomAudioClips:
+    - {fileID: 8300000, guid: 976b8a5e909577e48a03fe660d490ba8, type: 3}
+    - {fileID: 8300000, guid: cb46e212cc57a0849a808f73ee497295, type: 3}
+    isLoop: 1
+    loopInterval: 5
+    isPlayMultiple: 0
+    volume: 0.5
+  - id: Audio.BACKGROUND_INGAME_GOLD
+    clip: {fileID: 8300000, guid: 8467168a888832a448a455bb4e180344, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 5
+    isPlayMultiple: 0
+    volume: 0.5
+  - id: Audio.BACKGROUND_INGAME_HARD
+    clip: {fileID: 8300000, guid: a601f7e9be877c24f9e750c8ff4fa476, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 5
+    isPlayMultiple: 0
+    volume: 0.5

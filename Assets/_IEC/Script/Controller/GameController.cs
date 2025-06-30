@@ -33,7 +33,7 @@ namespace IEC
                 case EventList.GamePlay.APPLY_AB_TEST:
                     break;
                 case EventList.GamePlay.NEW_GAME:
-                    //EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
+                    EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     OnNewGame();
                     PlayableController.Instance.ConfettiGroup.StopConfetti();
                     //Pool.Get<ConfettiGroup>().StopConfetti();

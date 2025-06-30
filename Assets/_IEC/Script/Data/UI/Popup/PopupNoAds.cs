@@ -24,7 +24,6 @@ namespace _IEC
                 Hide();
             };
             
-            AudioEventOpen = EventList.Audio.NO_ADS_PACK_POPUP_OPEN;
             
             onShow.AddListener(SetScaleAnim);
             onShowDone.AddListener(DoAnimationOpen);

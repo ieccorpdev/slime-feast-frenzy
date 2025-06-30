@@ -160,7 +160,7 @@ namespace _IEC.Features.Gameplay
                         if (m_CurrentTime < 0)
                         {
                             m_CurrentTime = 0;
-                            this.RaiseEvent(EventList.GamePlay.TIMER_TIME_OUT);
+                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_WIN);
                             ChangeState(State.Inactive);
                         }
                         

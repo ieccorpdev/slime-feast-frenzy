@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using _IEC.Features.Booster;
 using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
@@ -51,7 +52,7 @@ namespace _IEC.Features.Gameplay
 
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
-
+        public PlayableTutorial PlayableTutorial;
         public bool IsShowEnding
         {
             get => _isShowEnding;
@@ -95,6 +96,34 @@ namespace _IEC.Features.Gameplay
         {
             RecycleAllLevelObjects();
             ChangeState(State.None);
+        }
+
+        public void SpawnRelic(Vector3 pos, Vector3 rot, Vector3 scale, int spawmAmount)
+        {
+            if (isMaxItem) return;
+            var itemDefinition = PlayableController.Instance.ListItemDefinition[0];
+            for (int j = 0; j < spawmAmount; j++)
+            {
+                var newItem = Instantiate(itemDefinition.GetPrefab());
+                var itemComponent = newItem.GetComponent<BaseItem>();
+                if (itemComponent == null)
+                {
+                    itemComponent = newItem.AddComponent<BaseItem>();
+                }
+                var itemTransform = itemComponent.transform;
+                var itemData = new ItemData()
+                {
+                    itemId = "Relic_1",
+                    position = pos,
+                    eulerAngle = rot,
+                    localScale = scale,
+                    isStartKinematic = true,
+                };
+                itemTransform.parent = levelObjectHolder;
+                itemComponent.LoadData(itemData, itemDefinition);
+                itemComponent.transform.position = pos;
+                m_AllItems.Add(itemComponent);
+            }
         }
 
         public List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
@@ -250,10 +279,23 @@ namespace _IEC.Features.Gameplay
         }
 
         public Hole GetHolePlayer() => playerHole;
+        public bool isMaxItem => GetAllItems().Count >= PlayableController.Instance.maxItemSpawn;
+        public bool isEnabeSpawnMaxItem = false;
 
-        public List<BaseItem> GetAllItems() => m_AllItems
-            .Concat(m_AllSpecialItems)
-            .Concat(m_AllBoosters).ToList();
+        public List<BaseItem> GetAllItems()
+        {
+            for (int i = m_AllItems.Count - 1; i >= 0; i--)
+            {
+                if (m_AllItems[i] == null || m_AllItems[i].gameObject == null)
+                    m_AllItems.RemoveAt(i);
+            }
+            if (m_AllItems.Count > PlayableController.Instance.countShowTutorial)
+            {
+                PlayableTutorial.ShowTut();
+                isEnabeSpawnMaxItem = true;
+            }
+            return m_AllItems;
+        }  
 
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
@@ -449,6 +491,12 @@ namespace _IEC.Features.Gameplay
                 playerHole.StartMagnetHelper();
                 m_MagnetHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
                 m_MagnetHelperActive = true;
+            }
+            if (data.helperId == HelperId.ScaleUp)
+            {
+                playerHole.StartScaleByHelper();
+                m_ScaleUpHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
+                m_ScaleUpHelperActive = true;
             }
         }
 

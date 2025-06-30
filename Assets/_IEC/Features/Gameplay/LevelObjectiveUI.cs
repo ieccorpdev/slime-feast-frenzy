@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static IEC.EventList;
 
 namespace _IEC.Features.Gameplay
 {
@@ -107,7 +108,8 @@ namespace _IEC.Features.Gameplay
         private void PlayDoneAnimation()
         {
             DOCollectedAllObjectsEffect();
-
+            if (!PlayableController.Instance.isEndGame)
+                EventController.RaiseEvent(EventList.Audio.OBJECTIVE_CLEAR);
             txtNumber.gameObject.SetActive(false);
             imgCheckComplete.gameObject.SetActive(true);
         }

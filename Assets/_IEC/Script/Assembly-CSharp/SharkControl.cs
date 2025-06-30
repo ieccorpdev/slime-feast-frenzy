@@ -21,6 +21,7 @@ public class SharkControl : MonoBehaviour
         }
         //Call by animator triggerd event 
         m_hole.PlayEffectSharkDriveIn();
+        EventController.RaiseEvent(EventList.Audio.SHARK_DOWN);
     }
     public void EndAnimation()
     {

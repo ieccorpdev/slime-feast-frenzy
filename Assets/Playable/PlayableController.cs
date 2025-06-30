@@ -35,12 +35,20 @@ public class PlayableController : _BaseBehaviour
     //
     // [SerializeField] private GameObject stack;
     [Header("Playable Config")]
-    [LunaPlaygroundField("Fixed Timestep", 2, "Config")]
+    [LunaPlaygroundField("spawnMaxCount", 0, "Config")]
+    public int spawnMaxCount = 10;
+    [LunaPlaygroundField("spawnMinCount", 0, "Config")]
+    public int spawnMinCount = 5;
+    [LunaPlaygroundField("countShowTutorial", 0, "Config")]
+    public int countShowTutorial = 69;
+
     public float fixedTimeStep = 0.12f;
     public int level;
     public PrefabConfig prefabConfig;
-
-     // [LunaPlaygroundField("Limit Time", 0, "Config")]
+    public bool isEndGame = false;
+    [LunaPlaygroundField("max Item Spawn", 0, "Config")]
+    public int maxItemSpawn = 200;
+    // [LunaPlaygroundField("Limit Time", 0, "Config")]
     // public float limitTime;
     // [LunaPlaygroundField("Box Move Out", 0, "Config")]
     // public bool boxMoveOut;
@@ -146,10 +154,6 @@ public class PlayableController : _BaseBehaviour
         }
         EditorUtility.SetDirty(this);
     }
-    private void OnValidate()
-    {
-        InitItemDefinition();
-    }
 #endif
     public ItemDefinition GetItemDefinition(string itemId)
     {
@@ -198,20 +202,24 @@ public class PlayableController : _BaseBehaviour
     IEnumerator IShowHighLight()
     {
         yield return new WaitForSeconds(5);
-        HighLightCanvas.gameObject.SetActive(true);
         this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
     }
-    [Button]
-    private void OnMagnetButtonClicked()
+    public void OnMagnetButtonClicked()
     {
-        HighLightCanvas.gameObject.SetActive(false);
         this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
         {
             helperId = HelperId.Magnet
         });
     }
-    public HighLightCanvas HighLightCanvas;
+    public void OnExpandButtonClicked()
+    {
+        this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
+        this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
+        {
+            helperId = HelperId.ScaleUp
+        });
+    }
     public Button magnetButton;
 
     public LevelDataSO GetLevelSpawnData(int level)
@@ -344,6 +352,7 @@ public class PlayableController : _BaseBehaviour
         // });
         
         screenLevelWin.Show();
+        isEndGame = true;
     }
     public void DownLoad()
     {
