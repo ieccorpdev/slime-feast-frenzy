@@ -37,6 +37,7 @@ public class PlayableController : _BaseBehaviour
     [Header("Playable Config")]
     [LunaPlaygroundField("map height", 0, "Config")]
     public float mapHeight = 0;
+    [LunaPlaygroundField("fixedTimeStep", 0, "Config")]
     public float fixedTimeStep = 0.12f;
     public int level;
     public PrefabConfig prefabConfig;
@@ -99,7 +100,8 @@ public class PlayableController : _BaseBehaviour
     {
         instance = this;
         Application.targetFrameRate = 60;
-        Time.fixedDeltaTime = fixedTimeStep;
+        if (fixedTimeStep > 0)
+            Time.fixedDeltaTime = fixedTimeStep;
     }
 
     private void Start()
