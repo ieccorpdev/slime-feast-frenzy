@@ -35,82 +35,16 @@ public class PlayableController : _BaseBehaviour
     //
     // [SerializeField] private GameObject stack;
     [Header("Playable Config")]
-    [LunaPlaygroundField("spawnMaxCount", 0, "Config")]
-    public int spawnMaxCount = 10;
-    [LunaPlaygroundField("spawnMinCount", 0, "Config")]
-    public int spawnMinCount = 5;
-    [LunaPlaygroundField("countShowTutorial", 0, "Config")]
-    public int countShowTutorial = 69;
-
+    [LunaPlaygroundField("map height", 0, "Config")]
+    public float mapHeight = 0;
     public float fixedTimeStep = 0.12f;
     public int level;
     public PrefabConfig prefabConfig;
     public bool isEndGame = false;
     [LunaPlaygroundField("max Item Spawn", 0, "Config")]
     public int maxItemSpawn = 200;
-    // [LunaPlaygroundField("Limit Time", 0, "Config")]
-    // public float limitTime;
-    // [LunaPlaygroundField("Box Move Out", 0, "Config")]
-    // public bool boxMoveOut;
-    // [LunaPlaygroundField("Unlock All Stack", 0,"Config")]
-    // public bool unlockAllStack;
-    // [LunaPlaygroundField("Start Pos Tile", 0, "Config")]
-    // public int startPosTile = 10;
-    // [LunaPlaygroundField("Time Start Move", 0, "Config")]
-    // public float timeStartMove = 0.7f;
-    // [LunaPlaygroundField("Limit Move",0, "Config")]
-    // public int limitMove;
-    // [LunaPlaygroundField("Hide Stack",0, "Config")]
-    // public bool hideStack;
-    // [Header("Tutorial")]
-    // [LunaPlaygroundField("Num Tutorial", 0, "Config")]
-    // public int numTutorial;
-    // private int currentTutorial;
-    // [LunaPlaygroundField("Tutorial Duration", 0, "Config")]
-    // public float tutorialDuration;
-    // private float time;
-    // private bool isShowingTutorial;
-    //
-    //
-    // [Header("Game Param")]
-    //
-    // [LunaPlaygroundField("Use Dark BG", 0, "Config")]
-    // public bool isGameUseDarkBG;
-    // [LunaPlaygroundField("Do Spawn Anim", fieldSection: "Config")]
-    // public bool isDoSpawnAnim;
-    // [LunaPlaygroundField("Click Single Tile", fieldSection: "Config")]
-    // public bool isGameClickSingleTile;
-    // [LunaPlaygroundField("All Tile Hidden", 0, "Config")]
-    // public bool isAllTileHidden;
-    // [LunaPlaygroundField("Random Tile Hidden", 0, "Config")]
-    // public bool isRandomTileHidden;
-    // [LunaPlaygroundField("Random Tile Hidden Rate", 0, "Config")]
-    // public float randomTileHiddenRate = 0.2f;
-    // [LunaPlaygroundField("Amount Tile Start Not Hidden", 0, "Config")]
-    // public int amountTileStartNotHidden = 6;
-    // [LunaPlaygroundField("Amount Tile Allow CLick",0, "Config")]
-    // public int amountTileAllowClick = 8;
-    // [LunaPlaygroundField("Amount Spawn From Pos 0", 0, "Config")]
-    // public int amountSpawnFromPos0 = 2;
-    //
-    // [LunaPlaygroundField("Basic Tile Move Speed", 0, "Config")]
-    // public float basicTileMoveSpeed = 0.5f;
-    // [LunaPlaygroundField("Basic Tile Move Speed",0,"Config")]
-    // public float tileMoveSpeedOnRemoveAnotherTile = 10;
-    // [LunaPlaygroundField("Shape Id", 0, "Config")]
-    // public int shapeId = 0;
-    // public Camera MainCamera;
-    // [Space(10)]
-    //
-    // private Sequence sq;
-    // public Transform hand;
-    // [Header("End Card")] 
-    // public CanvasGroup endCard;
-    //
-    // public RectTransform icon;
-    // public RectTransform playNow;
-    // [HideInInspector]public bool isGameEnded;
-    // private float lastTimeTap;
+    public int countShowTutorial;
+
     public bool PlayableStarted
     {
         get;

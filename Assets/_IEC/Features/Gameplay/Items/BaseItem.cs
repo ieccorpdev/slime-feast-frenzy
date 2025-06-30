@@ -33,14 +33,6 @@ namespace _IEC.Features.Gameplay
         public ItemDefinition ItemDefinition => m_ItemDefinition;
         private Camera mainCam;
         public bool IsCollected => _isCollected;
-        private bool hasRenderer;
-        public static readonly Vector3[] forceDirections = new Vector3[]
-        {
-            Quaternion.Euler(0, 180, 0) * Vector3.up,       // 0 degree
-            Quaternion.Euler(0, 180, 120) * Vector3.up,     // 120 degree
-            Quaternion.Euler(0, 180, 240) * Vector3.up      // 240 degree
-        };
-        public static int forceIndex = 0;
 
         public Rigidbody Rb
         {
@@ -56,7 +48,6 @@ namespace _IEC.Features.Gameplay
         private static bool CanPlaySFX = true;
 
         private RigidbodyData savedData;
-        private static bool _isInit = false;
 
         public virtual void Start()
         {
@@ -65,33 +56,7 @@ namespace _IEC.Features.Gameplay
                 m_ItemDefinition = this.itemDefinition;
             }
             mainCam = Camera.main;
-            if (!_isInit)
-            {
-                _isInit = true;
-                isExplore = false;
-            }
-            else
-            {
-                StartCoroutine(DelayEnable(1f));
-            }
             UpdateManager.Instance.RegisterFixedUpdate(this);
-        }
-
-        IEnumerator DelayEnable(float delay)
-        {
-            yield return new WaitForSeconds(0.04f);
-            Vector3 forceDir = GetNextForceDirection() * 8f * (1 + Hole.Level * 0.2f);
-            Rb.AddForce(forceDir, ForceMode.Impulse);
-
-            yield return new WaitForSeconds(1f);
-            isExplore = false;
-        }
-
-        private Vector3 GetNextForceDirection()
-        {
-            Vector3 dir = forceDirections[forceIndex];
-            forceIndex = (forceIndex + 1) % forceDirections.Length;
-            return dir;
         }
 
         void OnDestroy()
@@ -107,20 +72,9 @@ namespace _IEC.Features.Gameplay
         //        rb.isKinematic = true;
         //    }
         //}
-        bool isExplore = true;
-        private static bool canSpawn = false;
-        private static bool isFirstStart = true;
 
         public void EnterHoleTrigger()
         {
-            if (!isExplore && (canSpawn || isFirstStart) && !PlayableController.Instance.isEndGame)
-            {
-                GamePlay.levelController.SpawnRelic(this.transform.position, this.transform.rotation.eulerAngles, this.transform.localScale,
-                    GamePlay.levelController.isEnabeSpawnMaxItem ? PlayableController.Instance.spawnMaxCount : PlayableController.Instance.spawnMinCount);
-                isExplore = true;
-                canSpawn = false;
-                isFirstStart = false;
-            }
             ChangeState(State.Collectable);
         }
 
@@ -244,7 +198,6 @@ namespace _IEC.Features.Gameplay
             if (myRenderer == null)
             {
                 myRenderer = GetComponentInChildren<Renderer>();
-                hasRenderer = true;
             }
 
             
@@ -255,6 +208,7 @@ namespace _IEC.Features.Gameplay
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
+            SaveAndDestroyRigidbody();
         }
 
         private void SaveAndDestroyRigidbody()
@@ -279,19 +233,19 @@ namespace _IEC.Features.Gameplay
 
         private void RestoreRigidbody()
         {
-            //if (rb == null)
-            //{
-            //    rb = gameObject.AddComponent<Rigidbody>();
-            //    rb.velocity = savedData.velocity;
-            //    rb.angularVelocity = savedData.angularVelocity;
-            //    rb.mass = savedData.mass;
-            //    rb.drag = savedData.drag;
-            //    rb.angularDrag = savedData.angularDrag;
-            //    rb.useGravity = savedData.useGravity;
-            //    rb.isKinematic = savedData.isKinematic;
-            //    rb.collisionDetectionMode = savedData.collisionDetectionMode;
-            //    rb.interpolation = RigidbodyInterpolation.Interpolate;
-            //}
+            if (rb == null)
+            {
+                rb = gameObject.AddComponent<Rigidbody>();
+                rb.velocity = savedData.velocity;
+                rb.angularVelocity = savedData.angularVelocity;
+                rb.mass = savedData.mass;
+                rb.drag = savedData.drag;
+                rb.angularDrag = savedData.angularDrag;
+                rb.useGravity = savedData.useGravity;
+                rb.isKinematic = savedData.isKinematic;
+                rb.collisionDetectionMode = savedData.collisionDetectionMode;
+                rb.interpolation = RigidbodyInterpolation.Interpolate;
+            }
         }
 
         protected void ChangeState(State newState)
@@ -329,8 +283,6 @@ namespace _IEC.Features.Gameplay
 
         protected virtual void OnBecomeCollectable()
         {
-            canSpawn = true;
-
             if (Game.usingNewLogicPull)
             {
                 onDraging = true;
@@ -359,9 +311,21 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedFixedUpdate()
         {
-            if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
+            bool hasRb = rb;
+
+            if (!hasRb)
             {
-                if (this.transform.position.y < -1f)
+                if (Time.frameCount % 2 == 0)
+                {
+                    if (IsInScreen(mainCam))
+                    {
+                        RestoreRigidbody();
+                    }
+                }
+            }
+            else if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
+            {
+                if (this.transform.position.y < PlayableController.Instance.mapHeight)
                 {
                     rb.isKinematic = false;
                     OnCollected(this.transform.position);
