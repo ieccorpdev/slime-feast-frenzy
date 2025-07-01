@@ -9,11 +9,15 @@ using UnityUtils;
 public enum WeatherTheme
 {
     NONE,
+    SUNLIGHT,
+    MOONLIGHT,
+    AURORA,
+    RAIN,
     SNOW,
     SNOW_STORM,
-    RAIN,
+    SAND_STORM,
+    FIREFLY,
     WIND,
-    LEAVES
 }
 [Serializable]
 public class WeatherConfig
@@ -29,6 +33,8 @@ public class ThemeController :  _BaseBehaviour, IGroup
     [SerializeField] private ParticleSystem splashEffect;
     [Header("Weather")] 
     public List<WeatherConfig> dataWeatherScene;
+
+    public WaterThemeConfig WaterThemeConfig => dataTheme;
     public void LocateGroup()
     {
         Pool.Set(this);

@@ -17,6 +17,8 @@ namespace IEC
     {
         [SerializeField] private GameplayTimer gameplayTimer;
         [SerializeField] private ScreenLevelWin_GroupStar groupStar;
+
+        public CharacterRecommendBar characterRecommendBar;
         
         public GameEventInfoBar starChaseInfoBar;
         public GameEventInfoBar sharkRaceInfoBar;
@@ -26,6 +28,8 @@ namespace IEC
         public TextMeshProUGUI goldDisplayText;
 
         public Button btnNext;
+        
+        Queue<PopupData> actionAfterShowAllPopup = new Queue<PopupData>();
 
         public int StarWon => gameplayTimer.CurrentRemainingTimeState switch
         {
@@ -70,6 +74,10 @@ namespace IEC
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.CollectedStars
                 , PlayerData.GetPlayerStat(PlayerGeneralStat.CollectedStars) + groupStar.StarWon);
+            
+            characterRecommendBar.gameObject.SetActive(characterRecommendBar.CheckSetupWinScreen());
+            
+            PlayerData.ResetTempCharacter();
         }
         
         private void CheckShowGameEventInfoBar()
@@ -78,22 +86,22 @@ namespace IEC
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
             chompOffInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
-            {
-                if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
-                {
-                    chompOffInfoBar.gameObject.SetActive(true);
-                    chompOffInfoBar.SetupData();
-                }
-            }
-            else if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)//Dont show first time -> show start popup at home
-            {
-                if ((!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0))
-                {
-                    sharkRaceInfoBar.gameObject.SetActive(true);
-                    sharkRaceInfoBar.SetupData();
-                }
-            }
+            // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+            // {
+            //     if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
+            //     {
+            //         chompOffInfoBar.gameObject.SetActive(true);
+            //         chompOffInfoBar.SetupData();
+            //     }
+            // }
+            // else if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock)//Dont show first time -> show start popup at home
+            // {
+            //     if ((!Locator.Main.PopupSharkRace.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count == 0))
+            //     {
+            //         sharkRaceInfoBar.gameObject.SetActive(true);
+            //         sharkRaceInfoBar.SetupData();
+            //     }
+            // }
             // else if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.StarChase).levelUnlock)// Dont show first time -> show start popup at home
             // {
             //     if (!Locator.Main.PopupStarChase.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.StarChase).listPlayerData.Count == 0)
@@ -149,21 +157,22 @@ namespace IEC
             
             //Check progress reward
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
+            if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+            {
+                PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
+            }
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
-                // popupQueue.Enqueue(new PopupData(
-                //     Locator.Main.ClaimBonusRewardPanel,
-                //     () =>
-                //     {
-                //         Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null);
-                //         Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
-                //     }, 
-                //     ShowNext));
+
                 Locator.Main.ClaimBonusRewardPanel.AddClaimRewardData(
                     new ShowClaimRewardData()
                     {
                         listDataReward = new List<Reward>(listReward),
+                        actionClose = () =>
+                        {
+                            Locator.Main.PopupProgressReward.progressBar.CheckShowTrophy();
+                        }
                     });
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
@@ -248,6 +257,17 @@ namespace IEC
                 popupQueue.Enqueue(StartChompOff);
             }
 
+            if (PlayerData.relicData.CheckIfHasReward(Config.relicConfig))
+            {
+                PopupData relicPopup = new PopupData(
+                    Locator.Main.PopupRelicHunt,
+                    () =>
+                    {
+                        Locator.Main.PopupRelicHunt.Show();
+                    }
+                );
+                popupQueue.Enqueue(relicPopup);
+            }
             // if (PlayerData.level > Config.AllGameEventConfig.GetGameEventConfig(EventType.SharkRace).levelUnlock 
             //     && Locator.Main.PopupSharkRace.IsEndEventStage() 
             //     && PlayerData.GetEventSaveData(EventType.SharkRace).listPlayerData.Count > 0
@@ -327,6 +347,13 @@ namespace IEC
                     
                     Locator.Main.HomeScreenTab.CheckAllEventsClaimableReward();
                     Locator.Main.HomeScreenTab.CheckAllPacksPopupOnWin();
+                    Locator.Main.HomeScreenTab.CheckShowTutorial();
+                    
+                    while(actionAfterShowAllPopup.Count > 0)
+                    {
+                        var popup = actionAfterShowAllPopup.Dequeue();
+                        Locator.Main.HomeScreenTab.AddPopupToShow(popup.popup, popup.onOpen, Locator.Main.HomeScreenTab.ShowNextPopup);
+                    }
                     
                     Locator.Main.HomeScreenTab.AddOpenSceneAction(
                         () =>
@@ -367,6 +394,11 @@ namespace IEC
             }
 
             return popupData;
+        }
+
+        public void AddActionAfterShowAllPopup(BasePopup popup,Action onOpen, Action onClose)
+        {
+            actionAfterShowAllPopup.Enqueue(new PopupData(popup, onOpen, onClose));
         }
         
         private void ShowPopup(BasePopup popup,Action onOpen, Action onClosed)

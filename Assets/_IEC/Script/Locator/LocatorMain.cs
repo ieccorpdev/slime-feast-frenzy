@@ -14,6 +14,7 @@ public static partial class Locator
         
         //"Home Main"
         public static HomeScreenTab HomeScreenTab => Pool.Get<HomeScreenTab>();
+        public static CharacterHomeTab CharacterHomeTab => Pool.Get<CharacterHomeTab>();
         public static PopupEditProfile PopupEditProfile=> Pool.Get<PopupEditProfile>();
         public static PopupProfile PopupProfile => Pool.Get<PopupProfile>();
         public static PopupEditProfileName PopupEditProfileName => Pool.Get<PopupEditProfileName>();
@@ -33,6 +34,7 @@ public static partial class Locator
         public static PopupHardLevel PopupHardLevel => Pool.Get<PopupHardLevel>();
 
         public static PopupAddHelper PopupAddHelper => Pool.Get<PopupAddHelper>();
+        public static PopupTrophyDetails PopupTrophyDetails => Pool.Get<PopupTrophyDetails>();
         public static PopupBooster PopupBooster => Pool.Get<PopupBooster>();
         public static PopupGiftCode PopupGiftCode => Pool.Get<PopupGiftCode>();
         public static PopupCloudSave PopupCloudSave => Pool.Get<PopupCloudSave>();
@@ -52,6 +54,12 @@ public static partial class Locator
         public static PopupChompOff PopupChompOff => Pool.Get<PopupChompOff>();
 
         public static PopupRelicHunt PopupRelicHunt => Pool.Get<PopupRelicHunt>();
+        public static PopupCharacterList PopupCharacterList => Pool.Get<PopupCharacterList>();
+
+        public static PopupInsufficientCharacterShard PopupInsufficientCharacterShard =>
+            Pool.Get<PopupInsufficientCharacterShard>();
+
+        public static PopupUnlockCharacter PopupUnlockCharacter => Pool.Get<PopupUnlockCharacter>();
 
         public static HighLightCanvas HighLightCanvas => Pool.Get<HighLightCanvas>();
 

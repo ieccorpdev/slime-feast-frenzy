@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Capybara Character Config
+  m_EditorClassIdentifier: 
+  isDefaultCharacter: 0
+  characterName: Capybara
+  comboCountToChange: 200
+  characterDescription: Change the weather and enlarge {0} when standing still
+  characterSelectionSprite: {fileID: 21300000, guid: c18b517383416f04285623237943671d,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 8b37c410e9a1ba44fbd9f30a27a750cd,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: 9d36e1704207b394a8e61162f252d089,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: 8c7fccd16683e904093cd0cd9727a610,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: f81aab28efbe4304082f74936d616943,
+    type: 3}
+  characterRecommendBarSprite: {fileID: 21300000, guid: 9d3392fd6bea2a6409d99f31a26509a9,
+    type: 3}
+  characterChangeIndicatorSprite: {fileID: 21300000, guid: 416611244bc0de444bde78a186b7ba99,
+    type: 3}
+  characterChangeIndicatorBg: {fileID: 21300000, guid: 7e3deaf24cdd139499171db53634fb69,
+    type: 3}
+  defaultCharacterPosY: -1.1
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 4dfe44f7b8b48524aa4c8bf2c8dfdc33,
+    type: 3}
+  characterControlPrefab: {fileID: 7676823836891351737, guid: 32cfea2f9a39e2a48bad2c2cd55f8956,
+    type: 3}
+  characterBitePrefab: {fileID: 3141785404682211741, guid: 6e66152bb10042444b63bdabfc4db2ff,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 80
+    goldCost: 0
+  - shardCost: 160
+    goldCost: 0
+  - shardCost: 320
+    goldCost: 0
+  listCharacterTraits: []
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.6
+  - statType: 1
+    statValue: 0.6
+  - statType: 2
+    statValue: 0.2
+  listCharacterPowers:
+  - powerType: 7
+    resourceAffected: 0
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 1.05
+      overrideDescriptionString: slightly
+    - conditionValueForPower: 0
+      buffAmount: 1.1
+      overrideDescriptionString: moderately
+    - conditionValueForPower: 0
+      buffAmount: 1.2
+      overrideDescriptionString: greatly
+  - powerType: 10
+    resourceAffected: 0
+    listCharacterPowerValue: []
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

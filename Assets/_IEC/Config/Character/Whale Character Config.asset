@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Whale Character Config
+  m_EditorClassIdentifier: 
+  isDefaultCharacter: 0
+  characterName: Whale
+  comboCountToChange: 100
+  characterDescription: Resist [icon_bomb] and lose {0}% exp instead
+  characterSelectionSprite: {fileID: 21300000, guid: 49b98e5195c8bec4da62e94c0fc75019,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 0eb12ac73d67e68409b40adc5acae44f,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: e0956bd59d68aab44839a117244ef86f,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: b8293f5d1bf4de94bb17f07f3a638bf4,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: 43902b781397dff40a15fa158d963c96,
+    type: 3}
+  characterRecommendBarSprite: {fileID: 21300000, guid: 88e8bb627cfd5de4aa66f643509c1205,
+    type: 3}
+  characterChangeIndicatorSprite: {fileID: 21300000, guid: ceefa1698eb30c04c926149a88034ef3,
+    type: 3}
+  characterChangeIndicatorBg: {fileID: 21300000, guid: d4b01d2ac2622fe4b94f06ac97c97d97,
+    type: 3}
+  defaultCharacterPosY: -1.1
+  characterAnimSpeed: 0.7
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 0f1c5b1aa1f152c4e836b17c22994c45,
+    type: 3}
+  characterControlPrefab: {fileID: 2743966393455320600, guid: 3304d0b1e188fb343a157ab17f372717,
+    type: 3}
+  characterBitePrefab: {fileID: 3405999012308954229, guid: bcadebd6bcbc5c247b7e739eec0bbc84,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 80
+    goldCost: 0
+  - shardCost: 160
+    goldCost: 0
+  - shardCost: 320
+    goldCost: 0
+  listCharacterTraits:
+  - traitType: 0
+    buffAmount: -0.2
+  - traitType: 1
+    buffAmount: 0.3
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.2
+  - statType: 1
+    statValue: 1
+  - statType: 2
+    statValue: 0.6
+  listCharacterPowers:
+  - powerType: 0
+    resourceAffected: 0
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 0.5
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 0.2
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 0.1
+      overrideDescriptionString: 
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

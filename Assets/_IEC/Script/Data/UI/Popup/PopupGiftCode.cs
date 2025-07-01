@@ -60,6 +60,7 @@ namespace IEC
             Debug.LogError("Input" + giftCode);
             if (!string.IsNullOrEmpty(giftCode))
             {
+                Locator.Service.PopupLoadingPurchaseIap.Show(PopupLoadingPurchaseIapMode.GiftCode);
                 EventController.RaiseEvent(EventList.Setting.REQUEST_GIFTCODE,new EventParam(){p0 = giftCode});
             }
             else

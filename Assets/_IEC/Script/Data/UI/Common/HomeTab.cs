@@ -20,25 +20,61 @@ namespace IEC
         private bool m_IsLock;
         public SpineAnimOT iconSpine;
         public bool isBigTabOn;
-        public RectTransform IconTransform => iconSpine != null? iconSpine.GetComponent<RectTransform>() : m_Icon.GetComponent<RectTransform>();
+
+        public RectTransform IconTransform => iconSpine != null
+            ? iconSpine.GetComponent<RectTransform>()
+            : m_Icon.GetComponent<RectTransform>();
+
         public SpineAnimOT shopIconSpine;
         public SpineAnimOT homeIconSpine;
         public SpineAnimOT leaderBoardIconSpine;
+        public SpineAnimOT characterIconSpine;
         private float localPosIconOff = -72.48f;
+        private Coroutine trophyCoroutine;
+
         private void Start()
         {
-            m_Btn.onClick.AddListener(()=>
+            m_Btn.onClick.AddListener(() =>
             {
-                if(m_IsLock) return;
+                if (m_IsLock) return;
                 onClick?.Invoke();
             });
-            
+
             SetActiveNoti(false);
+        }
+
+        private void OnEnable()
+        {
+            if (trophyCoroutine != null)
+            {
+                StopCoroutine(trophyCoroutine);
+            }
+
+            trophyCoroutine = StartCoroutine(IUpdateTrophyState());
+        }
+
+        private void OnDisable()
+        {
+            if (trophyCoroutine != null)
+            {
+                StopCoroutine(trophyCoroutine);
+            }
+        }
+
+        private IEnumerator IUpdateTrophyState()
+        {
+            yield return new WaitForEndOfFrame();
+            while (gameObject.activeSelf)
+            {
+                m_IconNoti?.gameObject.SetActive(Locator.Main.ScreenMain.trophyTab.HasNewTrophy() &&
+                                                 type == TabType.Trophy);
+                yield return null;
+            }
         }
 
         public void Init()
         {
-            SetSpineIcon(); 
+            SetSpineIcon();
             iconSpine.gameObject.SetActive(true);
             var state = iconSpine.ske.AnimationState;
             state.ClearTrack(0);
@@ -50,6 +86,7 @@ namespace IEC
             shopIconSpine.gameObject.SetActive(false);
             homeIconSpine.gameObject.SetActive(false);
             leaderBoardIconSpine.gameObject.SetActive(false);
+            characterIconSpine.gameObject.SetActive(false);
             m_Icon.gameObject.SetActive(false);
             switch (type)
             {
@@ -60,12 +97,16 @@ namespace IEC
                     iconSpine = shopIconSpine;
                     break;
                 case TabType.LeaderBoard:
+                case TabType.Trophy:
                     iconSpine = leaderBoardIconSpine;
+                    break;
+                case TabType.Character:
+                    iconSpine = characterIconSpine;
                     break;
             }
         }
 
-        public void SetData(TabConfig config, bool isOn,TabType lastTabType)
+        public void SetData(TabConfig config, bool isOn, TabType lastTabType)
         {
             type = config.type;
             //m_Icon.sprite = isOn ? config.spriteOn : config.spriteOff;
@@ -75,14 +116,24 @@ namespace IEC
                 SetAnimationSpineOff(lastTabType);
             }
         }
-        
+
         public void SetLock(bool isLock)
         {
             m_IsLock = isLock;
             //m_Icon.gameObject.SetActive(!isLock);
-            if (iconSpine) iconSpine.gameObject.SetActive(!isLock);
+
+            if (iconSpine)
+            {
+                iconSpine.gameObject.SetActive(!isLock);
+            }
+
+            if (type == Locator.Main.ScreenMain.bottomBar.lastTabType)
+            {
+                SetAnimationSpineOff(type);
+            }
+
             m_Lock.SetActive(isLock);
-            m_Lock.transform.localPosition = Vector3.up * -3f;
+            m_Lock.transform.localPosition = Vector3.up * -8;
             //if(isLock) m_Lock.transform.SetAsLastSibling();
         }
 
@@ -90,22 +141,24 @@ namespace IEC
         {
             if (m_IconNoti == null)
                 return;
-            
+
             m_IconNoti.gameObject.SetActive(isShowNoti);
         }
+
         public void SetAnimationSpineOn()
         {
             SetSpineIcon();
             if (iconSpine && !m_IsLock)
             {
                 iconSpine.gameObject.SetActive(true);
-                iconSpine.SetAnimation( "on" ,false,null);
+                iconSpine.SetAnimation("on", false, null);
             }
         }
+
         public void SetAnimationSpineOff(TabType lastTabType)
         {
             SetSpineIcon();
-            if(m_IsLock) return;
+            if (m_IsLock) return;
             iconSpine.gameObject.SetActive(true);
             var skeleton = iconSpine.ske.Skeleton;
             var state = iconSpine.ske.AnimationState;
@@ -128,6 +181,7 @@ namespace IEC
                     MixDirection.In
                 );
             }
+
             iconSpine.transform.localPosition = Vector3.up * localPosIconOff;
             iconSpine.ske.Update(0);
             iconSpine.ske.LateUpdate();

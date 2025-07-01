@@ -98,6 +98,10 @@ namespace IEC
             }
 
             showInfoSequence.Insert(delay, tapToContinueImg.transform.DOScaleX(1, 0.2f).SetEase(Ease.OutBack));
+            var scaleMulti = 1.1f;
+            var duration = 0.6f;
+            showInfoSequence.Append(tapToContinueImg.transform.DOScale(Vector3.one * scaleMulti, duration)
+                .SetLoops(-1, LoopType.Yoyo));
 
             showInfoSequence.Play();
         }

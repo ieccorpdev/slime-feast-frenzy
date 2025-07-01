@@ -17,6 +17,7 @@ namespace IEC
         public Image currentProgressRewardIcon;
         public TextMeshProUGUI progressRewardAmountText;
         public ProgressBarFillEffect progressFillBar;
+        [SerializeField] GameObject iconDoubleTag;
         [Header("Timer")] public TextMeshProUGUI resetTimerText;
         
         public ProgressRewardData ProgressRewardData { get; private set; }
@@ -32,22 +33,42 @@ namespace IEC
             {
                 gameObject.SetActive(true);
                 CheckReward();
-                UpdateProgressBar();   
+                UpdateProgressBar();
+                SetAtiveIcon();
             }
 
         }
 
-        private static void CheckReward()
+        private void SetAtiveIcon()
+        {
+            bool isOnDouble = PlayerData.IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount);
+            //MeoMew need call duy fix here
+            if(iconDoubleTag) iconDoubleTag.gameObject.SetActive(isOnDouble);
+        }
+
+        private void CheckReward()
         {
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             if (PlayerData.CheckClaimProgressReward(reward))
             {
                 System.Collections.Generic.List<Reward> listReward = new() {reward.reward};
-                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, null,true);
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(listReward, ()=>
+                {
+                    CheckShowTrophy();
+                },true);
                 Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel(ClaimBonusRewardSkin.Chest_1);
                 reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
             }
             Locator.Main.HomeScreenTab.progressRewardBar.DoAnimProgressBar();
+        }
+
+        public void CheckShowTrophy()
+        {
+            if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+            {
+                Locator.Main.HomeScreenTab.CheckShowTrophyPopup();
+                Locator.Main.HomeScreenTab.ShowNextPopup();
+            }
         }
 
         private void Update()

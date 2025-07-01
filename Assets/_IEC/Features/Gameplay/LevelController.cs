@@ -14,6 +14,7 @@ using MoreMountains.NiceVibrations;
 using UnityEditor;
 using UnityEngine;
 using BoosterData = IEC.BoosterData;
+using EventType = IEC.EventType;
 using Random = UnityEngine.Random;
 
 namespace _IEC.Features.Gameplay
@@ -51,6 +52,7 @@ namespace _IEC.Features.Gameplay
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
         private List<BaseItem> m_AllItems = new List<BaseItem>();
         private List<BaseItem> m_AllSpecialItems = new List<BaseItem>();
+        private List<BaseCharacterShardItem> m_AllCharacterShardItems = new List<BaseCharacterShardItem>();
         private List<BaseItem> m_AllRelicItems = new List<BaseItem>();
         private List<BaseItem> m_AllkingdomSpecialItems = new List<BaseItem>();
         private List<BombItem> m_AllBombs = new List<BombItem>();
@@ -61,6 +63,7 @@ namespace _IEC.Features.Gameplay
         public List<BaseItem> AllSpecialItems => m_AllSpecialItems;
         public List<BaseItem> AllRelicItems => m_AllRelicItems;
         public List<BaseItem> AllkingdomSpecialItems => m_AllkingdomSpecialItems;
+        public List<BaseCharacterShardItem> AllCharacterShards => m_AllCharacterShardItems;
         public float GetTimeMagnetHelper => m_MagnetHelperCoolDown;
         private Action addBoosterAction;
         public State CurrentState => m_CurrentState;
@@ -75,10 +78,15 @@ namespace _IEC.Features.Gameplay
         
         public int GoldCollected { get; private set; }
 
+        private List<string> listCharacterShardCollected = new();
+
+        public List<string> ListCharacterShardCollected => listCharacterShardCollected;
+
         private void OnEnable()
         {
             this.RegisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.RegisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.RegisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.RegisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -86,12 +94,14 @@ namespace _IEC.Features.Gameplay
             this.RegisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.RegisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.RegisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void OnDisable()
         {
             this.UnregisterListener(EventList.GamePlay.TIMER_TIME_OUT,OnLevelTimeOut);
             this.UnregisterListener(EventList.GamePlay.COLLECT_ITEM,OnCollectItem);
+            this.UnregisterListener(EventList.GamePlay.COLLECT_CHARACTER_SHARD,OnCollectCharacterShard);
             this.UnregisterListener(EventList.GamePlay.USER_USE_HELPER,OnUserUseHelper);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
@@ -99,6 +109,7 @@ namespace _IEC.Features.Gameplay
             this.UnregisterListener(EventList.GamePlay.USE_BOOSTER,OnUseBooster);
             this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectedBoosterItem);
             this.UnregisterListener(EventList.GamePlay.SPAWN_BOOSTER_ITEM, AddSpawnBoosterItem);
+            this.UnregisterListener(EventList.GamePlay.COMBO_LOST,CheckCharacterPowerOnCombo);
         }
 
         private void Update()
@@ -189,6 +200,7 @@ namespace _IEC.Features.Gameplay
             {
                 EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
             }
+            
             m_AllSpecialItems.Clear();
             int countSpecialProgressReward = PlayerData.ReachMaxProgressReward() ? 0 : Config.specialObjectConfig.GetSpawnAmount(PlayerData.level);
             m_AllSpecialItems = LevelHelper.SpawnSpecialItems(
@@ -197,6 +209,20 @@ namespace _IEC.Features.Gameplay
                 allItemHolder,
                 Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex)
             );
+            
+            m_AllCharacterShardItems.Clear();
+            int countShardItems = Config.characterShardObjectConfig.GetSpawnAmount(PlayerData.level);
+            m_AllCharacterShardItems = LevelHelper.SpawnCharacterShardItems(
+                GroundExtend.CalculateBounds(m_AllItems),
+                countShardItems, 
+                allItemHolder,
+                Config.characterShardObjectConfig.shardObjectItemDefinition
+            );
+            // foreach (var shardItem in m_AllCharacterShardItems)
+            // {
+            //     shardItem.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
+            // }
+            
             m_AllkingdomSpecialItems.Clear();
             int countAllkingdomSpecialItems = (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn 
                 && !PlayerData.journeyData.isCompleteJourney && PlayerData.journeyData.wasOpenJourney && !PlayerData.journeyData.isEndEvent)
@@ -218,7 +244,8 @@ namespace _IEC.Features.Gameplay
                 themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
             }
             
-            if (PlayerData.relicData.isAvaiableToSpawn)
+            if (PlayerData.relicData.isAvaiableToSpawn && 
+                Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload()))
             {
                 m_AllRelicItems.Clear();
                 int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
@@ -229,7 +256,16 @@ namespace _IEC.Features.Gameplay
                     Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
                 );
             }
-            themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
+            {
+                themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            }
+            else
+            {
+                var weatherSelected = Config.themeConfig.GetWeatherForLevel(PlayerData.level);
+                //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
+                themeController.ActiveWeatherEffect(weatherSelected);
+            }
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
@@ -274,7 +310,10 @@ namespace _IEC.Features.Gameplay
             playerHole.StopMagnetHelper();
             playerHole.Reset();
             SpecialProgressRewardObjCollected = 0;
+            listCharacterShardCollected.Clear();
             GoldCollected = 0;
+            
+            CheckCharacterPowerOnStartGame();
         }
 
         private void SearchAllObjectiveItems(List<BaseItem> allItems)
@@ -303,6 +342,14 @@ namespace _IEC.Features.Gameplay
             
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
+
+        private void OnCollectCharacterShard(object param)
+        {
+            var characterName = (string)param;
+            
+            listCharacterShardCollected.Add(characterName);
+            Locator.Game.ScreenInGame.OnCollectCharacterShard(null);
+        }
 
         private void OnCollectItem(object param)
         {
@@ -387,7 +434,7 @@ namespace _IEC.Features.Gameplay
             //{
             RelicObjCollected++;
             //}
-            EventController.RaiseEvent(EventList.Audio.RELIC_ITEM_GET);
+            EventController.RaiseEvent(EventList.Audio.SPECIAL_ITEM_GET);
             //GamePlay.gamePlayData.AddAchievementItem(data.itemID,data.xp);
             this.RaiseEvent(EventList.GamePlay.COLLECT_RELIC_ITEM_FOR_UI,data);
         }
@@ -451,11 +498,17 @@ namespace _IEC.Features.Gameplay
                 {
                     if (data.boosterType == ResourceType.EvolveStone)
                     {
+                        //playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
                         playerHole.AddXp(Mathf.FloorToInt(data.effectValue));
+                        EventController.RaiseEvent(EventList.Audio.GET_BOOSTER);
+                        
                     }
                     else if (data.boosterType == ResourceType.WindSurf)
                     {
+                        //playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
                         playerHole.OnCollectSpeedBooster(data.effectValue, data.effectTime);
+                        EventController.RaiseEvent(EventList.Audio.BOOSTER_WINDSURF);
+                        
                     }
                 };
 
@@ -574,7 +627,7 @@ namespace _IEC.Features.Gameplay
                     break;
                 case HelperId.Magnet:
                     playerHole.StartMagnetHelper();
-                    m_MagnetHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet);
+                    m_MagnetHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Vortex, Config.gamePlayConfig.GetHelperActiveTime(HelperId.Magnet));
                     m_MagnetHelperActive = true;
                     break;
                 case HelperId.FrozenTime:
@@ -582,7 +635,7 @@ namespace _IEC.Features.Gameplay
                 case HelperId.ScaleUp:
                     playerHole.StartScaleByHelper();
                     m_ScaleUpHelperActive = true;
-                    m_ScaleUpHelperCoolDown = Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
+                    m_ScaleUpHelperCoolDown = CheckCharacterPowerOnHelperDuration(ResourceType.Enlarge, Config.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp));
                     break;
                 case HelperId.Compass:
                     playerHole.StartCompassHelper();
@@ -600,6 +653,85 @@ namespace _IEC.Features.Gameplay
                     });
                     break;
             }
+            
+            CheckCharacterPowerOnUseHelper(data.helperId switch {
+                HelperId.Magnet => ResourceType.Vortex,
+                HelperId.FrozenTime => ResourceType.TimeStop,
+                HelperId.ScaleUp => ResourceType.Enlarge,
+                HelperId.Compass => ResourceType.Compass,
+                HelperId.None => ResourceType.Vortex,
+            });
+        }
+
+        public float GetDurationHelper(ResourceType helperType)
+        {
+            var helperId = helperType switch
+            {
+                ResourceType.Vortex => HelperId.Magnet,
+                ResourceType.TimeStop => HelperId.FrozenTime,
+                ResourceType.Enlarge => HelperId.ScaleUp,
+                ResourceType.Compass => HelperId.Compass,
+            };
+            
+            return CheckCharacterPowerOnHelperDuration(helperType, Config.gamePlayConfig.GetHelperActiveTime(helperId));
+        }
+
+        public float CheckCharacterPowerOnHelperDuration(ResourceType helperType, float helperTime)
+        {
+            var checkPowerHelperTime = playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseHelperTime, helperType);
+            if (checkPowerHelperTime != null)
+            {
+                helperTime += checkPowerHelperTime.GetCharacterPowerValue(PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName)).buffAmount;
+            }
+            return helperTime;
+        }
+
+        private void CheckCharacterPowerOnUseHelper(ResourceType helperType)
+        {
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnUseHelper,
+                helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.BombShieldOnHelper,
+                helperType);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseCameraSizeOnHelper,
+                helperType);
+        }
+
+        public int CheckCharacterPowerOnGainXp(int xp)
+        {
+            var checkXpPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.BonusXpOnSmallItems);
+            if (checkXpPower != null)
+            {
+                var value = checkXpPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
+                if (xp == value.conditionValueForPower)
+                {
+                    xp = Mathf.FloorToInt(xp * value.buffAmount);
+                }
+            }
+            return xp;
+        }
+
+        public void CheckCharacterPowerOnCombo(object param)
+        {
+            var comboCount = (int)param;
+            var checkPower = playerHole.CheckApplyCharacterPower(CharacterPowerType.AddTimerOnCombo);
+            if (checkPower != null)
+            {
+                var value = checkPower.GetCharacterPowerValue(
+                    PlayerData.GetCharacterLevel(playerHole.CurrentCharacterConfig.characterName));
+                if (comboCount >= value.conditionValueForPower)
+                {
+                    var time = comboCount * value.buffAmount;
+                    Locator.Game.ScreenInGame.gameplayTimer.AddTime(comboCount * value.buffAmount);
+                    Locator.Game.ScreenInGame.OnCollectMoreTimeFromCharacterPower((int)time, playerHole.transform.position + Vector3.up);
+                }
+            }
+        }
+
+        public void CheckCharacterPowerOnStartGame()
+        {
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
+            playerHole.CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
         }
 
         private void CollectObjectiveItem(CollectItemData data)
@@ -628,7 +760,9 @@ namespace _IEC.Features.Gameplay
         
         private void CollectNormalItem(CollectItemData data)
         {
-            playerHole.AddXp(data.xp);
+            var xp = CheckCharacterPowerOnGainXp(data.xp);
+            
+            playerHole.AddXp(xp);
         }
 
         private void CollectBomb()
@@ -637,8 +771,8 @@ namespace _IEC.Features.Gameplay
             
             if (IsInResultState() == false)
             {
-                playerHole.CollectABomb();
-                
+                var checkCharPowerOnBomb = playerHole.CheckApplyCharacterPower(CharacterPowerType.LoseXpInsteadOfDeadOnBomb);
+                playerHole.CollectABomb(checkCharPowerOnBomb == null);
                 GamePlay.mainCamera.GetComponent<CinemachineVirtualCamera>().Follow = null;
                 TweenControl.GetInstance().Shake(
                     target: GamePlay.mainCamera.gameObject,
@@ -656,17 +790,21 @@ namespace _IEC.Features.Gameplay
                     easeType: EaseType.InOutQuad,
                     delay: 0f
                 );
-                if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                if (checkCharPowerOnBomb == null)
                 {
-                    ChangeState(State.Lose);
-                    DOVirtual.DelayedCall(1.5f, () =>
+                    if (GamePlay.levelController.CurrentState != LevelController.State.Win)
                     {
-                        //Double check for sure
-                        if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                        ChangeState(State.Lose);
+                        DOVirtual.DelayedCall(1.5f, () =>
                         {
-                            EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,new EventParam(){p0 = LoseReason.Boom});
-                        }
-                    });
+                            //Double check for sure
+                            if (GamePlay.levelController.CurrentState != LevelController.State.Win)
+                            {
+                                EventController.RaiseEvent(EventList.GamePlay.LEVEL_LOSE,
+                                    new EventParam() { p0 = LoseReason.Boom });
+                            }
+                        });
+                    }
                 }
 
             }

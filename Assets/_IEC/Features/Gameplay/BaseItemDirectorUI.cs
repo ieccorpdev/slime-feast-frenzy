@@ -31,6 +31,13 @@ namespace _IEC.Features.Gameplay
         {
             m_ScreenWidth = Screen.width;
             imgIcon.sprite = item.GetIcon();
+            
+            if (item is BaseCharacterShardItem shardItem)
+            {
+
+                imgIcon.sprite = shardItem.CharacterConfig.characterShardSpriteSmall;
+            }
+            
             imgIcon.rectTransform.ForceToWidth(imgIcon.sprite,baseIconWidth);
             m_HoleTransform = holeTransform;
             parentRectTransform = transform.parent.GetComponent<RectTransform>();
@@ -114,15 +121,27 @@ namespace _IEC.Features.Gameplay
             var currentAnchorPosition = rectTransform.anchoredPosition;
             rectTransform.anchoredPosition = new Vector2(-m_ScreenWidth/2 + rectTransform.sizeDelta.x/2 + 50f, currentAnchorPosition.y);
         }
+
         private void UpdateAnchorPositionY(Vector3 dir)
         {
             Vector2 normalizedDir = new Vector2(dir.x, dir.z).normalized;
-            float radius = (m_ScreenWidth-rectTransform.sizeDelta.magnitude)/2;
+            float radius = (m_ScreenWidth - rectTransform.sizeDelta.magnitude) / 2;
             Vector2 anchoredPosition = normalizedDir * radius;
+
+            Vector2 parentSize = parentRectTransform.rect.size;
+            Vector2 selfSize = rectTransform.sizeDelta;
+
+            float minX = -parentSize.x / 2 + selfSize.x / 2;
+            float maxX = parentSize.x / 2 - selfSize.x / 2;
+            float minY = -parentSize.y / 2 + selfSize.y / 2;
+            float maxY = parentSize.y / 2 - selfSize.y / 2;
+
+            anchoredPosition.x = Mathf.Clamp(anchoredPosition.x, minX, maxX);
+            anchoredPosition.y = Mathf.Clamp(anchoredPosition.y, minY, maxY);
+
             rectTransform.anchoredPosition = anchoredPosition;
         }
 
-        
         private void ChangeState(State newState)
         {
             if (newState == m_CurrentState) return;

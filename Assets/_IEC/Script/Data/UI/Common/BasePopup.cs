@@ -108,6 +108,7 @@ namespace IEC
             }
             onHide.Invoke();
             onLostFocus.Invoke(true);
+            CallTempOnHide();
 
             if (isPlayAudioPopup && isAudioOpenPlayed)
             {
@@ -139,7 +140,7 @@ namespace IEC
             }
         }
 
-        private void HandleHideTopResourceBar()
+        protected virtual void HandleHideTopResourceBar()
         {
             if (!isResoucreBarShownBeforeShowPopup)
             {
