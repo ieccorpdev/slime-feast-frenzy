@@ -157,10 +157,7 @@ namespace IEC
             
             //Check progress reward
             var reward = Config.progressRewardConfig.GetRewardData(PlayerData.currentProgressMilestone);
-            if (PlayerData.currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
-            {
-                PlayerData.trophyData.CollectTrophy(TrophyType.OceanGift);
-            }
+
             while(PlayerData.CheckClaimProgressReward(reward))
             {
                 List<Reward> listReward = new(){reward.reward};
