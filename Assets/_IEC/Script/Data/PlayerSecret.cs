@@ -59,7 +59,7 @@ namespace IEC
         private GameConfig Config => Pool.Get<GameConfig>();
 
         private Game Game => Pool.Get<Game>();
-
+        public string cloudSaveUserId;
 
         public void AddUserVersion(string version, string abVersion, bool isForceSet = false)
         {
