@@ -1047,6 +1047,7 @@ namespace IEC
         public int currentProgress;
         public int currentProgressMilestone;
         public int currentSpecialItemIndex;
+        public bool alreadyDoneProgressReward;
         public void SaveTimeResetProgressReward()
         {
             timeLastResetProgressReward = DateTime.Now;
@@ -1064,6 +1065,8 @@ namespace IEC
                 {
                     currentSpecialItemIndex = 0;
                 }
+
+                alreadyDoneProgressReward = false;
             }
         }
 
@@ -1074,6 +1077,12 @@ namespace IEC
             if (IsUnlimitedBooster(ResourceType.DoubleSpecialObjectCount))
             {
                 currentProgress += progress;
+            }
+            
+            if (currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+            {
+                if(!alreadyDoneProgressReward) trophyData.CollectTrophy(TrophyType.OceanGift);
+                alreadyDoneProgressReward = true;
             }
         }
 
