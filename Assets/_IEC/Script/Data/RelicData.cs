@@ -20,7 +20,6 @@ namespace IEC
         public int relicItemIndex;
         public bool isNewEvent;
 
-
         public bool IsDoneLevel(ArtifactCollectorConfig config)
         {
             bool rs = true;
@@ -36,7 +35,8 @@ namespace IEC
 
         private bool AvaiableToSpawn()
         {
-            return hasJoinEvent && !hasDoneLevel;
+            bool isEnd = eventTimeEnd <= DateTime.Now;
+            return hasJoinEvent && !hasDoneLevel && !isEnd;
             //return true;
         }
 
@@ -69,9 +69,10 @@ namespace IEC
 
             return false;
         }
-        public bool CheckIfHasLockReward(ArtifactCollectorConfig config)
+        public bool CheckIfHasLockReward(ArtifactCollectorConfig config, bool checkCurrentLevelOnly = false)
         {
             var level = curRelicLevel;
+            if (!checkCurrentLevelOnly && curRelicLevel < config.ArtifactLevels.Count) return true;
             foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
             {
                 if (HasRewardedLevel(x.id)) continue;
@@ -87,31 +88,6 @@ namespace IEC
             return rs;
         }
 
-        // private Dictionary<ResourceType, int> CalculateRewardTotalsLastLevel(ArtifactCollectorConfig config,
-        //     int level
-        // )
-        // {
-        //     Dictionary<ResourceType, int> rs = new();
-        //     foreach (var x in config.ArtifactLevels[level - 1].artifactLevelRewards)
-        //     {
-        //         if (HasRewardedLevel(x.id)) continue;
-        //         foreach (var artifactRewardData in x.artifactRewards)
-        //         {
-        //             if (!rs.ContainsKey(artifactRewardData.artifactRewardType))
-        //             {
-        //                 rs.Add(artifactRewardData.artifactRewardType, artifactRewardData.value);
-        //             }
-        //             else
-        //             {
-        //                 rs[artifactRewardData.artifactRewardType] += artifactRewardData.value;
-        //             }
-        //         }
-        //
-        //         if (!claimedRewardIds.Contains(x.id)) claimedRewardIds.Add(x.id);
-        //     }
-        //
-        //     return rs;
-        // }
 
         public bool AbleTolevelUp(ArtifactCollectorConfig config)
         {

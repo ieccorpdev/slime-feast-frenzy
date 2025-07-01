@@ -160,6 +160,17 @@ namespace _IEC.Features.Gameplay
             },true);
 
         }
+
+        public void CollectCharacterShard(CollectItemData itemData, int number, Vector2 startAnchorPosition)
+        {
+            var objectiveUI = GetLevelObjectiveUI(itemData);
+            if (objectiveUI == null) return;
+            int maxSpecialObject = GamePlay.levelController.AllCharacterShards.Count;
+            EffectSpawnObjectTive(itemData, startAnchorPosition, objectiveUI, () =>
+            {
+                objectiveUI.SetNumber(number+"/"+maxSpecialObject, false);
+            },true);
+        }
         
         public void DisposeAll()
         {
@@ -260,6 +271,7 @@ namespace _IEC.Features.Gameplay
             HandleOceanGiftObject();
             HandleKingdomSpecialObjective();
             HandleRelicObject();
+            HandleCharacterShardObject();
             specialObjectiveParent.gameObject.SetActive(specialObjectiveUI.Find(x=>x.gameObject.activeSelf) !=null);
             StartCoroutine(RebuildNextFrame());
         }
@@ -321,6 +333,23 @@ namespace _IEC.Features.Gameplay
             m_ActiveObjectiveUIs.Add(objectiveContain);
             objectiveContain.gameObject.SetActive(count > 0);
         }
+
+        public void HandleCharacterShardObject()
+        {
+            var dataShard = Config.characterShardObjectConfig.shardObjectItemDefinition;
+            var shardObjective = new LevelObjective();
+            int count = GamePlay.levelController.AllCharacterShards.Count;
+            if (count <= 0)
+                return;
+            var charConfig = GamePlay.levelController.AllCharacterShards[0].CharacterConfig;
+            shardObjective.itemId = dataShard.GetId();
+            shardObjective.number = count;
+            LevelObjectiveUI objectiveContain = GetSpecialObjectiveEnable();
+            objectiveContain.LoadDataCharacterShard(shardObjective, charConfig.characterShardSpriteSmall);
+            m_ActiveObjectiveUIs.Add(objectiveContain);
+            objectiveContain.gameObject.SetActive(count > 0);
+        }
+        
         private void HideSpecialObjective()
         {
             foreach (var objSpecial in specialObjectiveUI)

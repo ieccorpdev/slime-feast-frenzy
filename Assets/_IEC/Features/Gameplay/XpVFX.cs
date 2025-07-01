@@ -25,6 +25,28 @@ namespace _IEC.Features.Gameplay
         {
             targetColor = color;
         }
+        
+        public void Show(string txt, float size = 1f)
+        {
+            textUI.text = txt;
+            gameObject.SetActive(true);
+            rectTransform.localScale = Vector3.one * size;
+
+            // Random start and end positions
+            var startPos = new Vector2(Random.Range(-50f, 50f), Random.Range(-20f, 20f));
+            var endPos = startPos + new Vector2(0f, Random.Range(150f, 250f));
+
+            rectTransform.anchoredPosition = startPos;
+            textUI.color = defaultColor;
+
+            // Stop previous coroutine if needed
+            if (showCoroutine != null)
+            {
+                StopCoroutine(showCoroutine);
+            }
+
+            showCoroutine = StartCoroutine(AnimateXP(startPos, endPos, time));
+        }
 
         public void Show(int xp, float size = 1f)
         {

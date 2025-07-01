@@ -53,14 +53,27 @@ namespace IEC
             public const string GOLD_CHANGE = "GamePlay.GOLD_CHANGE";
             public const string LIVES_TO_PLAY_CHANGE = "GamePlay.LIVES_TO_PLAY_CHANGE";
             public const string COLLECT_ITEM = "GamePlay.COLLECT_ITEM";
+            public const string COLLECT_CHARACTER_SHARD = "GamePlay.COLLECT_CHARACTER_SHARD";
             public const string COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI = "GamePlay.COLLECT_OBJECTIVE_ITEM_NEEDED_FOR_UI";
             public const string COLLECT_SPECIAL_ITEM_FOR_UI = "Gameplay.COLLECT_SPECIAL_ITEM_FOR_UI";
             public const string COLLECT_RELIC_ITEM_FOR_UI = "Gameplay.COLLECT_RELIC_ITEM_FOR_UI";
+            
+            public const string SELECT_NEW_CHARACTER = "GamePlay.SELECT_NEW_CHARACTER";
+            public const string SET_NEW_CHARACTER = "GamePlay.SET_NEW_CHARACTER";
+            public const string UPGRADE_CHARACTER = "GamePlay.UPGRADE_CHARACTER";
+            public const string CHANGE_TAB_CHARACTER_SHOP = "GamePlay.CHANGE_TAB_CHARACTER_SHOP";
 
             public const string UPDATE_CAMERA_TARGET = "Gameplay.UPDATE_CAMERA_TARGET";
             public const string TIMER_TIME_OUT = "Gameplay.TIMER_TIME_OUT";
             public const string USER_USE_HELPER = "Gameplay.USER_USE_HELPER";
             public const string TURN_ON_COMPASS_DIRECTOR = "Gameplay.TURN_ON_COMPASS_DIRECTOR";
+            public const string TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM = "Gameplay.TURN_ON_COMPASS_DIRECTOR_OCEAN_GIFT";
+            
+            public const string COMBO_REACHED = "Gameplay.COMBO_REACHED";
+            public const string COMBO_LOST = "Gameplay.COMBO_LOST";
+            public const string COMBO_RESET = "Gameplay.COMBO_RESET";
+            
+            public const string CHANGE_CHARACTER_ON_COMBO_REACHED = "Gameplay.CHANGE_CHARACTER_ON_COMBO_REACHED";
 
             public const string PAUSE_GAME = "Gameplay.PAUSE_GAME";
             public const string RESUME_GAME = "Gameplay.RESUME_GAME";

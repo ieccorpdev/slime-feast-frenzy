@@ -10,13 +10,18 @@ namespace _IEC.Features.Gameplay
     public class CompassDirectorControllerUI : _BaseBehaviour
     {
         private readonly List<BaseItemDirectorUI> m_ListDirectorUI = new List<BaseItemDirectorUI>();
+        private readonly List<BaseItemDirectorUI> m_ListSpecialObjectDirectorUI = new List<BaseItemDirectorUI>();
         private float m_CoolDownTime = 0;
         private bool m_IsPausing;
         private string m_CurrentID;
+
+        private int m_maxNumberSpecialDirectorUI;
         private int MaxNumberDirectorUI => Config.gamePlayConfig.maxNumberDirectorUI;
+
         private void Awake()
         {
             this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
+            this.RegisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,OnTurnOnCompassDirectorSpecialItem);
             this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
         }
@@ -24,6 +29,7 @@ namespace _IEC.Features.Gameplay
         private void OnDestroy()
         {
             this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR,OnTurnOnCompassDirector);
+            this.UnregisterListener(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,OnTurnOnCompassDirectorSpecialItem);
             this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
             this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
         }
@@ -65,6 +71,22 @@ namespace _IEC.Features.Gameplay
                     directorUI.gameObject.SetActive(false);
                 }
             }
+
+            count = 0;
+            foreach (var directorUI in m_ListSpecialObjectDirectorUI)
+            {
+                if (directorUI.IsNeededDirector() && count < m_maxNumberSpecialDirectorUI)
+                {
+                    count++;
+                    if(directorUI.gameObject.activeInHierarchy == false)
+                        directorUI.gameObject.SetActive(true);
+                    directorUI.UpdateDirectToBaseItem();
+                }
+                else
+                {
+                    directorUI.gameObject.SetActive(false);
+                }
+            }
         }
 
         private void OnTurnOnCompassDirector(object param)
@@ -72,6 +94,20 @@ namespace _IEC.Features.Gameplay
             var data = (TurnOnCompassDirector) param;
             LoadData(data.remainingObjectiveItems,data.holeTransform);
             TurnOn();
+        }
+        
+        private void OnTurnOnCompassDirectorSpecialItem(object param)
+        {
+            var data = (TurnOnCompassDirector) param;
+            m_maxNumberSpecialDirectorUI = data.maxCount;
+            foreach (var baseItem in data.remainingObjectiveItems)
+            {
+                if(baseItem == null) continue;
+                var director = Config.prefabConfig.itemDirectorUI.Spawn(transform);
+                director.Reset();
+                director.LoadData(data.holeTransform,baseItem);
+                m_ListSpecialObjectDirectorUI.Add(director);
+            }
         }
         
 
@@ -89,7 +125,7 @@ namespace _IEC.Features.Gameplay
 
         private void TurnOn()
         {
-            m_CoolDownTime = Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass);
+            m_CoolDownTime = GamePlay.levelController.CheckCharacterPowerOnHelperDuration(ResourceType.Compass, Config.gamePlayConfig.GetHelperActiveTime(HelperId.Compass));
             //gameObject.SetActive(true);
         }
         

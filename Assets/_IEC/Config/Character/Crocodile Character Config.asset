@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Crocodile Character Config
+  m_EditorClassIdentifier: 
+  isDefaultCharacter: 0
+  characterName: Crocodile
+  comboCountToChange: 150
+  characterDescription: Add to timer {0} based on combo count
+  characterSelectionSprite: {fileID: 21300000, guid: 7de2beeadc9d5f64894988b147d40d9c,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 86e31e330e5a4724cb7e3576b0191893,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: e7dd3c521dcb7524eb88edd7b3e202f8,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: bbe258d37ebbf4d4d8271c59f832d738,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: e86e521e9c869ba4887f58233ce9e68b,
+    type: 3}
+  characterRecommendBarSprite: {fileID: 21300000, guid: 8047c0f8211e53d498662c15c66323c1,
+    type: 3}
+  characterChangeIndicatorSprite: {fileID: 21300000, guid: 429c1fc59925f18448ab87b3bd549857,
+    type: 3}
+  characterChangeIndicatorBg: {fileID: 21300000, guid: abf23183080e49549b34a3e57b03073a,
+    type: 3}
+  defaultCharacterPosY: -0.9
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: e3c4de74fd219be4ab42a6fbe69f1354,
+    type: 3}
+  characterControlPrefab: {fileID: 7676823836891351737, guid: 8d4541a5b4c3a4848ae42633d1987030,
+    type: 3}
+  characterBitePrefab: {fileID: 3141785404682211741, guid: b6e17792dacf55a47ad654880e0c2cfd,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 80
+    goldCost: 0
+  - shardCost: 160
+    goldCost: 0
+  - shardCost: 320
+    goldCost: 0
+  listCharacterTraits: []
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.6
+  - statType: 1
+    statValue: 0.6
+  - statType: 2
+    statValue: 0.4
+  listCharacterPowers:
+  - powerType: 8
+    resourceAffected: 0
+    listCharacterPowerValue:
+    - conditionValueForPower: 100
+      buffAmount: 0.05
+      overrideDescriptionString: slightly
+    - conditionValueForPower: 100
+      buffAmount: 0.1
+      overrideDescriptionString: moderately
+    - conditionValueForPower: 100
+      buffAmount: 0.2
+      overrideDescriptionString: greatly
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

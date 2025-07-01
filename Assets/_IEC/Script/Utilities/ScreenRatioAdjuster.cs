@@ -2,15 +2,17 @@
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasScaler))]
+[RequireComponent(typeof(Canvas))]
 public class ScreenRatioAdjuster : MonoBehaviour
 {
-    public Camera targetCamera; 
+    private Camera targetCamera; 
     public float threshold = 20f / 9f;
-    public float matchUpRatio = 0; 
-    public float matchDownRatio = 1; 
+    private float matchUpRatio = 0;
+    private float matchDownRatio = 1; 
 
     void Start()
     {
+        targetCamera = this.GetComponent<Canvas>().worldCamera;
         AdjustCanvasScaler(true);
     }
 

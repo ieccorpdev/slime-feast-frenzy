@@ -70,13 +70,17 @@ namespace _IEC.Features.Gameplay
         }
         void UpdateGoldDisplay()
         {
-            txtNumberCoin.text = GamePlay.levelController.GoldCollected.ToString();
+            int gold = GamePlay.levelController.GoldCollected;
+            txtNumberCoin.text =gold.ToString();
+            txtNumberCoin.transform.parent.gameObject.SetActive(gold > 0);
         }
 
         void UpdateSpecialItemDisplay()
         {
-            txtNumberSpecialObject.text = GamePlay.levelController.SpecialProgressRewardObjCollected.ToString();
+            int specialCount = GamePlay.levelController.SpecialProgressRewardObjCollected;
+            txtNumberSpecialObject.text = specialCount.ToString();
             imgIconSpecialObject.sprite = Config.specialObjectConfig.GetSpecialItemDefinition(PlayerData.currentSpecialItemIndex).GetIcon();
+            txtNumberSpecialObject.transform.parent.gameObject.SetActive(specialCount >0);
         }
         void UpdateRelicItemDisplay()
         {

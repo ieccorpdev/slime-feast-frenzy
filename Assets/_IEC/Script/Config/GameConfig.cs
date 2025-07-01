@@ -90,6 +90,13 @@ namespace IEC
         public JourneyTripConfig journeyTripConfig;
         [Header("Game Event Live Ops")] 
         public GameEventLiveOpsConfig eventLiveOpsConfig;
+        [Header("Trophy")]
+        public TrophyRewardConfig trophyRewardConfig;
+        [Header("Characters")] 
+        public AllCharactersConfig allCharactersConfig;
+        public CharacterShopConfig characterShopConfig;
+        public CharacterShardObjectConfig characterShardObjectConfig;
+        public CharacterRecommendConfig characterRecommendConfig;
 
         public void PreloadAllConfig()
         {

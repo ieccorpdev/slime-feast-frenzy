@@ -146,6 +146,24 @@ namespace _IEC.Features.Gameplay
             }
         }
 
+        public void LoadDataCharacterShard(LevelObjective levelObjective, Sprite sprite,Vector2 sizeObj = default)
+        {
+            Reset();
+            itemId = levelObjective.itemId;
+            m_IsSpecial = false;
+            
+            SetText(GamePlay.levelController.ListCharacterShardCollected.Count + "/" + levelObjective.number.ToString());
+            imgIcon.sprite = sprite;
+            
+            if (sizeObj == default) sizeObj = new Vector2(100, 100);
+            imgIcon.rectTransform.sizeDelta = sizeObj;
+            
+            offsetFlyX = UnityEngine.Random.Range(-0.5f, 0.5f);
+            dirFlyX = Random.value < 0.5 ? 1 : -1;
+            m_isLoaded = true;
+            
+        }
+
         public void LoadData(LevelObjective levelObjective, bool isSpecial)
         {
             Reset();

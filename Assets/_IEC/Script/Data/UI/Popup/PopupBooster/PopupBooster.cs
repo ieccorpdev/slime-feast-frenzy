@@ -16,6 +16,9 @@ namespace IEC
         public Button playButton;
         public Button closeAllButton;
 
+        [Header("Character Recommend")] 
+        public CharacterRecommendBar characterRecommendBar;
+
         [Header("Win streak group")] 
         public GameObject streakLockObj, streakUnlockObj;
         public TextMeshProUGUI levelUnlockStreak;
@@ -56,7 +59,14 @@ namespace IEC
             UpdateBoosterButton();
             UpdateStreakDisplay();
 
+            PlayerData.ResetTempCharacter();
             CheckShowGameEventInfoBar();
+            CheckShowCharacterRecommendBar();
+        }
+
+        private void CheckShowCharacterRecommendBar()
+        {
+            characterRecommendBar.gameObject.SetActive(characterRecommendBar.CheckSetup());
         }
 
         private void CheckShowGameEventInfoBar()
@@ -64,7 +74,12 @@ namespace IEC
             sharkRaceInfoBar.gameObject.SetActive(false);
             starChaseInfoBar.gameObject.SetActive(false);
             chompOffInfoBar.gameObject.SetActive(false);
-            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock)
+            
+            int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
+                .eventDurationInHours / 24);
+            
+            if (PlayerData.level >= Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff).levelUnlock
+                && Config.eventLiveOpsConfig.IsEventOnDay(EventType.ChompOff, chompOffDuration, PlayerData.GetDaysSinceDownload()))
             {
                 if (!Locator.Main.PopupChompOff.IsEventCompleted() || PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count == 0)
                 {
