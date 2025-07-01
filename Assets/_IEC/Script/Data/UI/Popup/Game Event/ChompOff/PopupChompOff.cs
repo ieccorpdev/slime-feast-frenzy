@@ -137,10 +137,7 @@ namespace IEC
 
             eventSaveData.claimedReward = true;
             
-            bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-                eventType,
-                Mathf.FloorToInt(_eventConfig.eventDurationInHours / 24),
-                PlayerData.GetDaysSinceDownload());
+            bool active = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(eventType);
 
             if (!active || IsResetChompOff())
             {
@@ -175,6 +172,7 @@ namespace IEC
         public bool IsResetChompOff()
         {
             int daysPlayed = PlayerData.GetDaysSinceDownload();
+            int daysLastStarted = Config.eventLiveOpsConfig.GetLatestDayStartEvent(EventType.ChompOff, daysPlayed);
             var chompOffData = PlayerData.GetEventSaveData(EventType.ChompOff);
             int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
             int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
@@ -285,6 +283,7 @@ namespace IEC
             else
             {
                 _eventStarted = true;
+                InitEvent();
             }
         }
 
@@ -386,6 +385,14 @@ namespace IEC
             var data = _eventConfig.GetEventData(eventSaveData.eventIndex);
 
             return eventSaveData.timeStart.AddSeconds(data.eventStageTimeInSeconds);
+        }
+
+        public override bool IsEventCompleted()
+        {
+            if (IsEndEvent())
+                return true;
+            
+            return IsEventStageCompleted() && !IsHaveNextEventStage();
         }
 
         public override bool IsEndEventStage()

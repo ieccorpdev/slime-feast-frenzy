@@ -30,7 +30,7 @@ namespace _IEC.Features.Gameplay
         public Action completeActionEffect;
         private State m_CurrentState;
         private float m_CooldownTime;
-        private float HelperActiveTime => Config.gamePlayConfig.GetHelperActiveTime(helperId);
+        private float HelperActiveTime => GamePlay.levelController.CheckCharacterPowerOnHelperDuration(HelperType, Config.gamePlayConfig.GetHelperActiveTime(helperId));
         private bool m_IsGamePause;
         private PopupHelper m_MyPopup;
         [SerializeField] private Animator fillAnim;
@@ -45,6 +45,14 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private Transform lockIcon, groupUnlockDescription;
         private static Transform lastGroupUnlockDescription;
         public event Action OnClick;
+
+        public ResourceType HelperType => helperId switch
+        {
+            HelperId.Magnet => ResourceType.Vortex,
+            HelperId.FrozenTime => ResourceType.TimeStop,
+            HelperId.ScaleUp => ResourceType.Enlarge,
+            HelperId.Compass => ResourceType.Compass,
+        };
         private void Awake()
         {
             button.onClick.AddListener(() =>

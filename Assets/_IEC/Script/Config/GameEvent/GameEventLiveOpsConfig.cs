@@ -24,6 +24,7 @@ namespace IEC
             {"Relic Hunt", EventType.RelicHunt},
         };
 
+
         [Button]
         public void LoadData()
         {
@@ -82,18 +83,34 @@ namespace IEC
 
             return -1;
         }
-
-        public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
+        public DateTime GetNextTimeStartEvent(EventType eventType, int currentDay)
         {
+            if (listEventLiveOps.Count == 0)
+                return DateTime.MaxValue;
+
             if (currentDay > listEventLiveOps.Count - 1)
-                currentDay %= (listEventLiveOps.Count);
-            
-            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
+                currentDay %= listEventLiveOps.Count;
 
-            return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
+            int totalDays = listEventLiveOps.Count;
+            for (int i = 1; i <= totalDays; i++)
+            {
+                int nextDay = (currentDay + i) % totalDays;
+                if (listEventLiveOps[nextDay].listEvents.Contains(eventType))
+                {
+                    // Trả về thời điểm bắt đầu event tiếp theo
+                    return DateTime.Now.Date.AddDays(i);
+                }
+            }
+            return DateTime.MaxValue;
         }
-
-        public bool IsEventAvailable(EventType eventType, int eventDurationInDays, int currentDay)
+        /// <summary>
+        /// return true if event is on current day
+        /// </summary>
+        /// <param name="eventType"></param>
+        /// <param name="eventDurationInDays"></param>
+        /// <param name="currentDay"></param>
+        /// <returns></returns>
+        public bool IsEventOnDay(EventType eventType, int eventDurationInDays, int currentDay)
         {
             if (currentDay > listEventLiveOps.Count - 1)
                 currentDay %= (listEventLiveOps.Count);
@@ -105,6 +122,17 @@ namespace IEC
 
             return (currentDay - latestDayStartEvent) < eventDurationInDays;
         }
+        public DateTime GetTimeEndEvent(EventType eventType, int eventDurationInDays, int currentDay)
+        {
+            if (currentDay > listEventLiveOps.Count - 1)
+                currentDay %= (listEventLiveOps.Count);
+            
+            int latestDayStartEvent = GetLatestDayStartEvent(eventType, currentDay);
+
+            return (DateTime.Now.Date.AddDays(-(currentDay - latestDayStartEvent) + eventDurationInDays));
+        }
+
+
     }
 
     [System.Serializable]

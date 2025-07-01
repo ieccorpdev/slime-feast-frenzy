@@ -72,7 +72,7 @@ namespace IEC
                 return $"{remaining.Minutes:D2}mn{remaining.Seconds:D2}s";
         }
 
-        private TimeSpan GetTimeRemaining()
+        public TimeSpan GetTimeRemaining()
         {
             try
             {

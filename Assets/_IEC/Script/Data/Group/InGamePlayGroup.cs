@@ -60,6 +60,8 @@ namespace IEC
             ClearCurrentLevel();
             m_CurrentLevelController = GetLevelController();
             m_CurrentLevelController.LoadLevel(level);
+            
+            CheckLevelForcedTrial();
 
             IsInDebugAllItemsLevel = false;
         }
@@ -77,7 +79,20 @@ namespace IEC
         {
             return m_CurrentLevelController.GetLevelData().levelType;
         }
-        
+
+        private void CheckLevelForcedTrial()
+        {
+            var data = Config.characterRecommendConfig.GetForcedTrialCharacter(PlayerData.level);
+
+            if (data == null)
+                return;
+            
+            TweenControl.GetInstance().DelayCall(Locator.Main.PopupUnlockCharacter.gameObject.transform, 0.5f, () =>
+            {
+                Locator.Main.PopupUnlockCharacter.Setup(Config.allCharactersConfig.GetCharacterConfig(data.characterName), "Help has arrived!", "Tap to Continue");
+                Locator.Main.PopupUnlockCharacter.Show();
+            });
+        }
 
         public void SetFinishPlay()
         {

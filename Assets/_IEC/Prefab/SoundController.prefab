@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &9049274688606409165
 Transform:
@@ -74,14 +74,14 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.6
+    volume: 0.4
   - id: Audio.OBJECTIVE_GET
     clip: {fileID: 8300000, guid: c70028d7b1360ef42aa579f39163ac82, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.3
+    volume: 0.751
   - id: Audio.OBJECTIVE_CLEAR
     clip: {fileID: 8300000, guid: c114875f0f7852b43b32e01b4b085dbf, type: 3}
     listRandomAudioClips: []
@@ -95,7 +95,7 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.6
+    volume: 0.71
   - id: Audio.BOMB_IDLE
     clip: {fileID: 8300000, guid: 1d4c49092d9b3e04baf9f71449d064ed, type: 3}
     listRandomAudioClips: []
@@ -151,21 +151,21 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.7
+    volume: 0.5
   - id: Audio.COMPASS
     clip: {fileID: 8300000, guid: e46296793c2e37440b5db12538758013, type: 3}
     listRandomAudioClips: []
     isLoop: 1
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.6
+    volume: 0.9
   - id: Audio.MAGNET_START
     clip: {fileID: 8300000, guid: c9d7bf86be6377b44b756be5b7ac17d9, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.4
+    volume: 0.6
   - id: Audio.MAGNET_IDLE
     clip: {fileID: 8300000, guid: 99a6b237012a6f1429d52f2aecb336fe, type: 3}
     listRandomAudioClips: []
@@ -193,14 +193,14 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 1
+    volume: 0.8
   - id: Audio.COIN_GET
     clip: {fileID: 8300000, guid: a4ace24608d72f143a10041575948a86, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 1
-    volume: 1
+    volume: 0.5
   - id: Audio.ITEM_APPEAR
     clip: {fileID: 8300000, guid: 122dd1c4dd310a84f85c77d7c7d8feac, type: 3}
     listRandomAudioClips: []
@@ -221,7 +221,7 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 1
+    volume: 0.7
   - id: Audio.CHEST_OPEN
     clip: {fileID: 8300000, guid: df5abe4193f71ca4a8da611932b8b38a, type: 3}
     listRandomAudioClips: []
@@ -366,7 +366,7 @@ MonoBehaviour:
     isLoop: 0
     loopInterval: 0
     isPlayMultiple: 0
-    volume: 0.5
+    volume: 0.7
   - id: Audio.CHEST_IDLE
     clip: {fileID: 8300000, guid: 2dccb1b6797861d4a94886ec3038e294, type: 3}
     listRandomAudioClips: []
@@ -404,6 +404,48 @@ MonoBehaviour:
     volume: 1
   - id: Audio.RELIC_CLONE
     clip: {fileID: 8300000, guid: 7b35924c4a5d7904bbddee8bd49cac18, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_3
+    clip: {fileID: 8300000, guid: 95dd7be6005891440b0baecaad464b66, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_4
+    clip: {fileID: 8300000, guid: 7e2f06afcc471c744b5b032051128169, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.RELIC_CLONE_5
+    clip: {fileID: 8300000, guid: 98a6f8ec17255434c81bd9ce5056b984, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.BOOSTER_WINDSURF
+    clip: {fileID: 8300000, guid: d99da4f73b75176419a113a1901636c5, type: 3}
+    listRandomAudioClips: []
+    isLoop: 1
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.GET_BOOSTER
+    clip: {fileID: 8300000, guid: ef2a9f933e9c50941a51f176fe228bf0, type: 3}
+    listRandomAudioClips: []
+    isLoop: 0
+    loopInterval: 0
+    isPlayMultiple: 0
+    volume: 1
+  - id: Audio.REWARD_POPUP
+    clip: {fileID: 8300000, guid: a8611ec849398944ba4bd930bb987088, type: 3}
     listRandomAudioClips: []
     isLoop: 0
     loopInterval: 0

@@ -56,7 +56,7 @@ namespace _IECModules
             }
             for (int i = 0; i < Data.listInfoChooseTime.Count; i++)
             {
-                Notification.ScheduleNotification(BaseNotification.GameName, Data.listInfoChooseTime[i].message, Data.GetTimeSpanChooseTime(i));
+                Notification.ScheduleNotification(BaseNotification.GameName, Data.listInfoChooseTime[i].message, Data.GetTimeSpanChooseTime(i), Data.listInfoChooseTime[i].timeZoneId);
             }
         }
     }

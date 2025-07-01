@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5cf7a13fcf066d429745e94f850c8b5, type: 3}
+  m_Name: Hammerhead Character Config
+  m_EditorClassIdentifier: 
+  isDefaultCharacter: 0
+  characterName: Hammerhead Shark
+  comboCountToChange: 150
+  characterDescription: +{0}s duration when using [icon_compass]
+  characterSelectionSprite: {fileID: 21300000, guid: 5852ffac8f7204f41ad073691c21b332,
+    type: 3}
+  characterLockedSprite: {fileID: 21300000, guid: 0b79d953f68bb7f45b005deb8d1d7cb3,
+    type: 3}
+  characterMainSprite: {fileID: 21300000, guid: f036141abfd0c0742a162cd686b3e68b,
+    type: 3}
+  characterShardSpriteNormal: {fileID: 21300000, guid: 1b35b9e9c3fd1204a85a7f16b4ce9b62,
+    type: 3}
+  characterShardSpriteSmall: {fileID: 21300000, guid: e453c89c76cec5148b37fd0de5e8c90e,
+    type: 3}
+  characterRecommendBarSprite: {fileID: 21300000, guid: 3a93a6e1c7f41e448bb70fa680a0fdfc,
+    type: 3}
+  characterChangeIndicatorSprite: {fileID: 21300000, guid: bf330d5fd50e0d1448a13577336374be,
+    type: 3}
+  characterChangeIndicatorBg: {fileID: 21300000, guid: 5537d21c934eee147954aef992e424c2,
+    type: 3}
+  defaultCharacterPosY: -0.9
+  characterAnimSpeed: 1
+  characterHomePrefab: {fileID: 5419666077812410434, guid: 951b97a27011a544ebf3ccb54dc666b7,
+    type: 3}
+  characterControlPrefab: {fileID: 2743966393455320600, guid: c8a52bc0fd233114c8c1463d874c5da6,
+    type: 3}
+  characterBitePrefab: {fileID: 3405999012308954229, guid: 89f6b4230323d284f8fdb6555d099589,
+    type: 3}
+  listCharacterUpgrade:
+  - shardCost: 50
+    goldCost: 0
+  - shardCost: 100
+    goldCost: 0
+  - shardCost: 200
+    goldCost: 0
+  listCharacterTraits: []
+  listCharacterStat:
+  - statType: 0
+    statValue: 0.6
+  - statType: 1
+    statValue: 0.6
+  - statType: 2
+    statValue: 0.4
+  listCharacterPowers:
+  - powerType: 3
+    resourceAffected: 6
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 3
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 5
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 8
+      overrideDescriptionString: 
+  - powerType: 5
+    resourceAffected: 6
+    listCharacterPowerValue:
+    - conditionValueForPower: 0
+      buffAmount: 0.2
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 0.3
+      overrideDescriptionString: 
+    - conditionValueForPower: 0
+      buffAmount: 0.4
+      overrideDescriptionString: 
+  levelUnlock: 0
+  characterLevelOnUnlock: -1

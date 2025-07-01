@@ -28,7 +28,8 @@ public class HomeScreenTab : ScreenNavigateUI
     [Header("Daily Reward")] public Button btnDailyReward;
     public Image dailyRewardNotiImage;
     public DailyRewardHomeButton dailyRewardHomeButton;
-    [Header("Progress Reward")] public Button progressRewardButton;
+    [Header("Progress Reward")] 
+    public Button progressRewardButton;
     public ProgressRewardProgressBar progressRewardBar;
     [Header("Level Chest Reward")] public Button btnLevelChestReward;
     public BaseHomeFeatureButton levelChestHomeFeature;
@@ -244,6 +245,8 @@ public class HomeScreenTab : ScreenNavigateUI
         DoMoveBackAllObj(0.8f,
             () =>
             {
+                CheckSkinUnlockTrophy2();
+                CheckShowTrophyPopup();
                 if (onOpenSceneActionOnce == null)
                 {
                     CheckAllEventsClaimableReward();
@@ -252,7 +255,7 @@ public class HomeScreenTab : ScreenNavigateUI
                         PlayerData.isShowPackPopupsInHomeOnStartGame = true;
                         CheckAllPacksPopupOnStartHome();
                     }
-
+                    CheckShowTutorial();
                     ShowNextPopup();
                 }
                 else
@@ -477,10 +480,24 @@ public class HomeScreenTab : ScreenNavigateUI
         //}
         //piggyBankGoldGroup.UpdateGold(PlayerData.piggyBankGold);
     }
-
+    private Coroutine relicRoutine;
     private void UpdateButtonRelic()
     {
+        if(!gameObject.activeSelf) return;
+        if (relicRoutine != null)
+        {
+            StopCoroutine(relicRoutine);
+        }
+        relicRoutine = StartCoroutine(IUpdateButtonRelic());
+    }
+    IEnumerator IUpdateButtonRelic()
+    {
         RelicHuntEvent.UpdateUI();
+        while (Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt))
+        {
+            yield return new WaitForSeconds(0.1f);
+            RelicHuntEvent.UpdateUI();
+        }
     }
 
     public void UpdateBuildCity()
@@ -563,9 +580,28 @@ public class HomeScreenTab : ScreenNavigateUI
             onClosed?.Invoke();
         }
     }
+
+    public void CheckShowTutorial()
+    {
+        if (PlayerData.level >= Config.characterShopConfig.levelUnlock 
+            && !PlayerData.isShowCharacterTutorial
+            && PlayerData.GetCharacterLevel(Config.allCharactersConfig.GetListCharacterConfigNotDefault()[0].characterName) < 0
+            )
+        {
+            PlayerData.isShowCharacterTutorial = true;
+            AddPopupToShow(
+                null,
+                () =>
+                {
+                    Locator.Main.ScreenMain.homeScreenTutorial.DoTutorialCharacterShop();
+                }, 
+                ShowNextPopup);
+        }
+    }
     
     public void CheckAllPacksPopupOnWin()
     {
+        //No Ads popup
         if (Config.listLevelShowPackNoAdsHome.Contains(PlayerData.level) && !PlayerData.isNoAds)
         {
             AddPopupToShow(Locator.Main.PopupNoAds,
@@ -575,30 +611,73 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
-
     }
 
+    public void CheckShowTrophyPopup()
+    {
+        //Trophy Reward 
+        var (foundTrophy, typeTrophy) = PlayerData.trophyData.GetTrophyNotiUnlocked();
+        if (foundTrophy && PlayerData.level > Config.trophyRewardConfig.levelUnlock)
+        {
+            AddPopupToShow(Locator.Main.PopupTrophyDetails,
+                () =>
+                {
+                    var data = PlayerData.trophyData.GetTrophyDataConfig(typeTrophy);
+                    data.indexTrophyWasNoti = data.trophyCollected +1;// hmmm
+                    Locator.Main.PopupTrophyDetails.ShowTrophy(typeTrophy,ItemTrophyState.New,new TrophyEventData(),true);
+                },
+                ShowNextPopup);
+        }
+    }
+    public void CheckSkinUnlockTrophy2()
+    {
+        PlayerData.trophyData.SetTrophyTimes(TrophyType.SharkFrenzyForce,PlayerData.GetTotalCharacterUnlocked());
+    }
     public void CheckAllPacksPopupOnStartHome()
     {
-        if (PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
-                && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney)
+        bool avaliableToShowVoyage =
+            PlayerData.level >= Config.specialObjectConfig.kingdomSpecialObjectSpawnData.levelStartSpawn
+            && !PlayerData.journeyData.isBuyIAP && PlayerData.journeyData.wasOpenJourney;
+        bool avaliableToShowStarterPack = !PlayerData.isBoughtStarterPack;
+        Debug.Log($"avaliableToShowVoyage {avaliableToShowVoyage} -- avaliableToShowStarterPack {avaliableToShowStarterPack}");
+        if (avaliableToShowVoyage && avaliableToShowStarterPack)
         {
-            PlayerData.isShowStartedPackInStartGame = !PlayerData.isShowStartedPackInStartGame;
-            if (PlayerData.isShowStartedPackInStartGame)
+            if (PlayerData.isShowStartedPackInStartGame == false)
             {
                 AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
-                   () =>
-                   {
-                       Locator.Main.PopupVoyagePassIAPInfor.Show();
-                   },
-                   ShowNextPopup);
+                    () =>
+                    {
+                        Locator.Main.PopupVoyagePassIAPInfor.Show();
+                    },
+                    ShowNextPopup);
+                PlayerData.isShowStartedPackInStartGame = true;
             }
+            else
+            {
+                AddPopupToShow(Locator.Main.PopupStarterPack,
+                    () =>
+                    {
+                        Locator.Main.PopupStarterPack.Show();
+                    },
+                    ShowNextPopup);
+                PlayerData.isShowStartedPackInStartGame = false;
+                
+            }
+            return;
         }
-        else
+
+
+        if (avaliableToShowVoyage)
         {
-            PlayerData.isShowStartedPackInStartGame = false;
+            AddPopupToShow(Locator.Main.PopupVoyagePassIAPInfor,
+                () =>
+                {
+                    Locator.Main.PopupVoyagePassIAPInfor.Show();
+                },
+                ShowNextPopup);
         }
-        if (!PlayerData.isBoughtStarterPack && !PlayerData.isShowStartedPackInStartGame)
+
+        if (avaliableToShowStarterPack)
         {
             AddPopupToShow(Locator.Main.PopupStarterPack,
                 () =>
@@ -607,6 +686,7 @@ public class HomeScreenTab : ScreenNavigateUI
                 },
                 ShowNextPopup);
         }
+
     }
 
     public void CheckAllEventsClaimableReward()
@@ -658,7 +738,7 @@ public class HomeScreenTab : ScreenNavigateUI
             && PlayerData.GetEventSaveData(EventType.ChompOff).listPlayerData.Count > 0
             && !PlayerData.GetEventSaveData(EventType.ChompOff).claimedReward)
         {
-            AddPopupToShow(Locator.Main.PopupSharkRace,
+            AddPopupToShow(Locator.Main.PopupChompOff,
                 () =>
                 {
                     Locator.Main.PopupChompOff.Show();
@@ -687,10 +767,8 @@ public class HomeScreenTab : ScreenNavigateUI
         int daysLastChompOff = PlayerData.GetDaysFromDownloadToTime(chompOffData.timeStart);
         int chompOffDuration = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(EventType.ChompOff)
             .eventDurationInHours / 24);
-        bool active = Config.eventLiveOpsConfig.IsEventAvailable(
-            EventType.ChompOff,
-            chompOffDuration,
-            daysPlayed) && chompOffButton.IsEventCanShow();
+        bool active = Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.ChompOff) 
+                      && Config.eventLiveOpsConfig.IsEventOnDay(EventType.ChompOff, chompOffDuration, daysPlayed);
 
         if (Locator.Main.PopupChompOff.IsResetChompOff() )
         {

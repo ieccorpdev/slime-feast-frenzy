@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using _IEC.Features.Common.Extension;
@@ -13,6 +14,7 @@ using UnityEngine;
 
 public class Hole : _BaseBehaviour
 {
+	public HoleBombShield holeBombShield;
 	[SerializeField] private Transform holeGraphics;
 	[SerializeField] private Transform holeCanvases;
 	
@@ -44,14 +46,26 @@ public class Hole : _BaseBehaviour
 	private int m_Level;
 	private int m_Xp;
 	private float m_AdditionalSize = 0;
-	private float defaultPosYCharacter = -0.9f;
+	private float m_AdditionalSizeFromCharacterTrait = 1;
+	private float m_AdditionalSpeedFromCharacterTrait = 1;
+	private float m_AdditionalSizeFromCharacterPower = 1;
+	//Increase size while idle
+	private float m_characterIdleSizeIncrease = 0f;
+	private float m_characterIdleSizeIncreaseInterval = 1f;
+	private float m_currentIntervalIdleSizeIncrease = 0f;
+	private float m_characterMaxSize;
+	
+	private float defaultPosYCharacter = -0f;
 	private HashSet<BaseItem> m_CollectableItems = new HashSet<BaseItem>();
 	private string TweenIdScale => gameObject.GetInstanceID() + "scale";
 	private string WaterMagnetEffect => "_WhirlpoolRadius";
-	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) 
-	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0)) ;
+	public float Speed => CalculateIndices(_baseSpeed, Level,Settings.SpeedIncreasePerLevel) * m_AdditionalSpeedFromCharacterTrait 
+	                      * (1 + (timeEffectSpeedBooster > 0 ? (_speedBoosterIncrease / 100) : 0));
 
-	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) + m_AdditionalSize;
+	public float Size => CalculateIndices(Settings.BaseSize,Level,Settings.SizeIncreasePerLevel) 
+	                     * m_AdditionalSizeFromCharacterTrait 
+	                     * m_AdditionalSizeFromCharacterPower
+	                     + m_AdditionalSize;
 
 	public int Level => m_Level;
 
@@ -60,9 +74,11 @@ public class Hole : _BaseBehaviour
 	private float _baseSpeed;
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
-
 	private float _speedBoosterIncrease;
 	private float timeEffectSpeedBooster;
+
+	private float timeAdditionalCamSize;
+	private float _additionalCamSize;
 	public float baseSpeed
 	{
 		get => _baseSpeed;
@@ -71,6 +87,14 @@ public class Hole : _BaseBehaviour
 
 	public HoleConfig Settings => m_settings;
 
+	public CharacterConfig CurrentCharacterConfig { get; private set; }
+	public CharacterConfig TargetCharacterConfig { get; private set; }
+
+	private bool _isChangedToCurrentCharacter = false;
+	private bool _isInChangeCharacterAnim = false;
+	private Coroutine _changeCharacterCoroutine;
+	private bool isPausing;
+
 	private void Awake()
 	{
 		m_settings = EncryptedAssetModule.LoadAsset<HoleConfig>("HoleConfig.asset");
@@ -78,17 +102,43 @@ public class Hole : _BaseBehaviour
 		_defaultScaleGraphic = holeGraphics.localScale;
 		_baseSpeed = Settings.BaseSpeed;
 		
+		m_characterMaxSize = CalculateIndices(Settings.BaseSize, Settings.GetListLevel().Length - 1,
+			                     Settings.SizeIncreasePerLevel)
+		                     * m_AdditionalSizeFromCharacterTrait
+		                     + m_AdditionalSize;
+		
 		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+		this.RegisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
+		this.RegisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
+		this.RegisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
+            
+		
+	}
+
+	private void OnResumeGame(object obj)
+	{
+		isPausing = false;
+	}
+
+	private void OnPauseGame(object param)
+	{
+		isPausing = true;
 	}
 
 	private void OnDestroy()
 	{
 		this.UnregisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+		this.UnregisterListener(EventList.GamePlay.COMBO_REACHED,CheckChangeCharacterOnComboReach);
+		this.UnregisterListener(EventList.GamePlay.PAUSE_GAME,OnPauseGame);
+		this.UnregisterListener(EventList.GamePlay.RESUME_GAME,OnResumeGame);
 	}
 	private float cTime = 0;
 	public bool readyForSharkBite;
 	public void Update()
 	{
+		if (_isInChangeCharacterAnim)
+			return;
+		
 		if (GamePlay.levelController.CurrentState == LevelController.State.Play)
 		{
 			if (timeEffectSpeedBooster > 0)
@@ -101,12 +151,96 @@ public class Hole : _BaseBehaviour
 				if (speedLinesVFX.isPlaying)
 				{
 					speedLinesVFX.Stop();
+				} 
+				SoundController.StopSound(EventList.Audio.BOOSTER_WINDSURF);
+			}
+
+			if (timeAdditionalCamSize > 0)
+			{
+				timeAdditionalCamSize =
+					Mathf.Clamp(timeAdditionalCamSize - Time.deltaTime, 0, timeAdditionalCamSize);
+
+				if (timeAdditionalCamSize <= 0)
+				{
+					this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+					{
+						target =  transform,
+						//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+						// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+						//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+						cameraDistance = GetCamSize()
+					});
 				}
 			}
+
+			if(!isPausing) CheckIncreaseCharacterSizeOnIdle();
 		}
 
 		CheckSharkForm();
 		UpdateGravityBySpeed();
+	}
+
+	private void CheckIncreaseCharacterSizeOnIdle()
+	{
+		if (!Locator.Game.ScreenInGame.gameplayTimer.GameStarted)
+			return;
+		
+		if (m_characterIdleSizeIncrease < Mathf.Epsilon)
+			return;
+		
+		m_currentIntervalIdleSizeIncrease += Time.deltaTime;
+		if (m_currentIntervalIdleSizeIncrease >= m_characterIdleSizeIncreaseInterval)
+		{
+			m_currentIntervalIdleSizeIncrease = 0f;
+			
+			if (!holeController.IsMoving)
+			{
+				if (Size <= m_characterMaxSize)
+				{
+					m_AdditionalSizeFromCharacterPower *= m_characterIdleSizeIncrease;
+					if (m_AdditionalSizeFromCharacterPower > 1f)
+					{
+
+						SetSize(Size, true, null);
+					}
+				}
+			}
+			else
+			{
+				// if (m_AdditionalSizeFromCharacterPower > 1f)
+				// {
+				// 	m_AdditionalSizeFromCharacterPower = 1f;
+				// 	ResetSize();
+				// }
+
+				if (Mathf.Abs(m_AdditionalSizeFromCharacterPower - 1f) > Mathf.Epsilon)
+				{
+					m_AdditionalSizeFromCharacterPower /= (m_characterIdleSizeIncrease * 1.5f);
+					m_AdditionalSizeFromCharacterPower = Mathf.Max(m_AdditionalSizeFromCharacterPower, 1f);
+					
+					if (m_AdditionalSizeFromCharacterPower < 1f)
+						m_AdditionalSizeFromCharacterPower = 1f;
+					
+					SetSize(Size, true, null, false);
+				}
+			}
+			
+			this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET, new UpdateCameraTarget()
+			{
+				target = transform,
+				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+				cameraDistance = GetCamSize()
+			});
+		}
+	}
+
+	private float GetCamSize()
+	{
+		var baseSize = CalculateIndices(Settings.BaseCameraDistance, m_Level,
+			Settings.CameraDistanceIncreasePerLevel);
+		var bonusSize =  (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0)) *
+		                 Mathf.Max((m_AdditionalSizeFromCharacterPower / 2f), 1f);
+		 return baseSize * bonusSize;
 	}
 
 	private void UpdateGravityBySpeed()
@@ -163,7 +297,7 @@ public class Hole : _BaseBehaviour
 
 	public float GetDistanceToObject()
 	{
-		return Speed * 1.1f  + Level * 0.4f;
+		return (Speed * 1.1f  + Level * 0.4f) * m_AdditionalSizeFromCharacterTrait * m_AdditionalSizeFromCharacterPower;
 	}
 	void OnCollectLightningBooster(object param)
 	{
@@ -230,14 +364,16 @@ public class Hole : _BaseBehaviour
 			{
 				target =  myTransform,
 				//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
-				cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel)
+				// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,level,Settings.CameraDistanceIncreasePerLevel) 
+				//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+				cameraDistance = GetCamSize()
 			});
 		});
 		SetXp(0,false);
 
 	}
 
-	public void SetSize(float targetSize,bool isLerpSize,Action callback)
+	public void SetSize(float targetSize,bool isLerpSize,Action callback, bool playVfx = true)
 	{
 		var targetScale = targetSize * Vector3.one;
 		var myTransform = transform;
@@ -245,7 +381,9 @@ public class Hole : _BaseBehaviour
 		DOTween.Kill(TweenIdScale);
 		if (isLerpSize)
 		{
-			sizeUpVfx.Play();
+			if(playVfx)
+				sizeUpVfx.Play();
+			
 			//levelUpVfx.Play();
 			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
@@ -338,6 +476,58 @@ public class Hole : _BaseBehaviour
 	{
 		SetXp(m_Xp + xp,true);
 	}
+
+	public int GetCurrentXp()
+	{
+		int xp = m_Xp;
+		for (int i = 1; i < m_Level; i++)
+		{
+			xp += Settings.GetRequiredXp(i, false);
+		}
+		return xp;
+	}
+
+	public void DecreaseXp(int xp)
+	{
+		var totalDecreaseXp = xp;
+
+		while (totalDecreaseXp > 0)
+		{
+			if (totalDecreaseXp > m_Xp)
+			{
+				totalDecreaseXp -= m_Xp;
+				if(m_Level > 1)
+					m_Level--;
+				SetLevel(Level);
+				
+				if(m_Level == 1)
+				{
+					//totalDecreaseXp = 0;
+					if (m_Xp > totalDecreaseXp)
+					{
+						SetXp(m_Xp - totalDecreaseXp,true);
+					}
+					else
+					{
+						SetXp(0,true);
+					}
+
+					totalDecreaseXp = 0;
+				}
+				else
+				{
+					//SetXp(Settings.GetRequiredXp(Level, false) - 1, true);
+					//SetXp(0,true);
+					m_Xp = Settings.GetRequiredXp(Level, false);
+				}
+			}
+			else
+			{
+				SetXp(m_Xp - totalDecreaseXp,true);
+				totalDecreaseXp = 0;
+			}
+		}
+	}
 	
 	public void SetActive(bool active)
 	{
@@ -361,18 +551,21 @@ public class Hole : _BaseBehaviour
 		magnetVfx.Stop();
 	}
 
-	public void CollectABomb()
+	public void CollectABomb(bool isDoAnim = true)
 	{
 		SpawnVfx(exploreVfx);
-		SpawnVfx(deathVfx);
-		DOTween.Sequence()
-			.AppendInterval(0.2f)
-			.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
-			.InsertCallback(0.3f, () =>
-			{
-				//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
-			});
+		//SpawnVfx(deathVfx);
+		if (isDoAnim)
+		{
+			DOTween.Sequence()
+				.AppendInterval(0.2f)
+				.Append(holeGraphics.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.Join(holeCanvases.DOScale(Vector3.zero, 0.5f).SetEase(Ease.InBack))
+				.InsertCallback(0.3f, () =>
+				{
+					//SoundController.PlaySound(new AudioInfo(Config.soundConfig.bombLose, false));
+				});
+		}
 	}
 
 	public void ResetSize()
@@ -381,6 +574,14 @@ public class Hole : _BaseBehaviour
 		// Debug.LogError("Level: " + Level);
 		m_AdditionalSize = 0;
 		SetSize(Size,false,null);
+		this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+		{
+			target =  transform,
+			//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+			// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+			//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+			cameraDistance = GetCamSize()
+		});
 		holeGraphics.localScale = _defaultScaleGraphic;
 		holeCanvases.localScale = _defaultScaleCanvas;
 	}
@@ -406,12 +607,217 @@ public class Hole : _BaseBehaviour
 		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
+		_isChangedToCurrentCharacter = false;
+		CurrentCharacterConfig = Config.allCharactersConfig.GetDefaultCharacterConfig();
+		TargetCharacterConfig = Config.allCharactersConfig.GetCharacterConfig(PlayerData.GetCurrentCharacterName());
+		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
+		CheckCurrentCharacter();
+		CheckApplyCharacterTrait();
 		ResetSize();
 		m_Xp = 0;
 		xpBar.SetAmount(m_Xp,false);
 		SetLevel(1);
 		ResetCharacter();
 	}
+
+	#region Character Power
+
+	public void CheckChangeCharacterOnComboReach(object param)
+	{
+		if (_isChangedToCurrentCharacter)
+			return;
+		
+		var comboCount = (int)param;
+		if (TargetCharacterConfig.comboCountToChange > 0 && comboCount >= TargetCharacterConfig.comboCountToChange)
+		{
+			this.RaiseEvent(EventList.GamePlay.CHANGE_CHARACTER_ON_COMBO_REACHED);
+			this.RaiseEvent(EventList.GamePlay.COMBO_RESET);
+			_isChangedToCurrentCharacter = true;
+			_isInChangeCharacterAnim = true;
+
+			if (_changeCharacterCoroutine != null)
+			{
+				StopCoroutine(_changeCharacterCoroutine);
+			}
+
+			_changeCharacterCoroutine = StartCoroutine(ChangeCharacterAnim());
+		}
+	}
+
+	IEnumerator ChangeCharacterAnim()
+	{
+		this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
+		onSharkForm = true;
+		TurnHoleToShark();
+		
+		var animator = characterAnimator;
+		characterAnimator = null;
+		CurrentCharacterConfig = TargetCharacterConfig;
+		CheckCurrentCharacter();
+		if(characterAnimator != null)
+			characterAnimator.gameObject.SetActive(false);
+
+		yield return new WaitForSeconds(1f);
+		readyForSharkBite = true;
+		onSharkForm = false;
+		sharkBiteAnimator.transform.localScale *= 2f;
+		TriggerdBite();
+		
+		yield return new WaitForSeconds(0.5f);
+		if(animator != null)
+			Destroy(animator.gameObject);
+		yield return new WaitForSeconds(0.5f);
+		sharkBiteAnimator.transform.localScale  /= 2f;
+		
+		if(characterAnimator != null)
+			characterAnimator.gameObject.SetActive(true);
+		//TurnHoleToShark();
+		
+		//yield return new WaitForSeconds(1f);
+		
+		this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
+		_isInChangeCharacterAnim = false;
+
+		var power = CheckApplyCharacterPower(CharacterPowerType.SpeedBoostOnSpawn);
+		if (power != null)
+		{
+			var value = power.GetCharacterPowerValue(
+				PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName));
+			OnCollectSpeedBooster(80f, value.buffAmount);
+		}
+		
+		CheckApplyCharacterPower(CharacterPowerType.CompassSpecialItem);
+		CheckApplyCharacterPower(CharacterPowerType.IncreaseSizeOnIdle);
+		CheckApplyCharacterPower(CharacterPowerType.ChangeTheme);
+		
+		StopCoroutine(_changeCharacterCoroutine);
+		_changeCharacterCoroutine = null;
+	}
+	
+	private void CheckCurrentCharacter()
+	{
+		var charObj = CurrentCharacterConfig.characterControlPrefab
+			.Spawn(
+				characterParent, 
+				CurrentCharacterConfig.characterControlPrefab.transform.position,
+				CurrentCharacterConfig.characterControlPrefab.transform.rotation
+				);
+		
+		if(characterAnimator != null)
+			Destroy(characterAnimator.gameObject);
+		
+		characterAnimator = charObj;
+		charObj.GetComponent<SharkControl>().SetHole(this);
+		charObj.transform.localScale = CurrentCharacterConfig.characterControlPrefab.transform.localScale;
+
+		charObj.speed = CurrentCharacterConfig.characterAnimSpeed;
+		
+		var biteObj = CurrentCharacterConfig.characterBitePrefab
+			.Spawn(
+				sharkBiteParent,
+				CurrentCharacterConfig.characterBitePrefab.transform.position,
+				CurrentCharacterConfig.characterBitePrefab.transform.rotation
+				);
+		Destroy(sharkBiteAnimator.gameObject);
+		sharkBiteAnimator = biteObj;
+		biteObj.GetComponent<SharkControl>().SetHole(this);
+		biteObj.transform.localScale = CurrentCharacterConfig.characterBitePrefab.transform.localScale;
+		
+		biteObj.speed = CurrentCharacterConfig.characterAnimSpeed;
+
+		defaultPosYCharacter = CurrentCharacterConfig.defaultCharacterPosY;
+	}
+
+	private void CheckApplyCharacterTrait()
+	{
+		m_AdditionalSpeedFromCharacterTrait = 1;
+		m_AdditionalSizeFromCharacterTrait = 1;
+
+		foreach (var trait in CurrentCharacterConfig.listCharacterTraits)
+		{
+			switch (trait.traitType)
+			{
+				case CharacterTraitType.IncreaseSpeed:
+					m_AdditionalSpeedFromCharacterTrait += trait.buffAmount;
+					break;
+				case CharacterTraitType.IncreaseSize:
+					m_AdditionalSizeFromCharacterTrait += trait.buffAmount;
+					break;
+			}
+		}
+	}
+
+	public CharacterPower CheckApplyCharacterPower(CharacterPowerType powerType, ResourceType resourceAffected = default)
+	{
+		var power = CurrentCharacterConfig.GetPower(powerType, resourceAffected);
+		
+		if (power == null)
+			return null;
+
+		var value = power.GetCharacterPowerValue(PlayerData.GetCharacterLevel(PlayerData.playerCharacterName));
+		
+		switch (power.powerType)
+		{
+			case CharacterPowerType.LoseXpInsteadOfDeadOnBomb:
+				DecreaseXp(Mathf.FloorToInt(value.buffAmount * GetCurrentXp()));
+				break;
+			case CharacterPowerType.SpeedBoostOnUseHelper:
+				_speedBoosterIncrease = value.buffAmount;
+				timeEffectSpeedBooster += GamePlay.levelController.GetDurationHelper(resourceAffected);
+				speedLinesVFX.Play();
+				break;
+			case CharacterPowerType.BonusXpOnSmallItems:
+				break;
+			case CharacterPowerType.CompassSpecialItem:
+				int itemCount = value.buffAmount < 0
+					? GamePlay.levelController.AllSpecialItems.Count
+					: (int)value.buffAmount;
+				this.RaiseEvent(EventList.GamePlay.TURN_ON_COMPASS_DIRECTOR_SPECIAL_ITEM,new TurnOnCompassDirector()
+				{
+					maxCount = itemCount,
+					remainingObjectiveItems = GetAllItemsForCompassDirector(),
+					holeTransform = transform
+				});
+				break;
+			case CharacterPowerType.BombShieldOnHelper:
+				holeBombShield.SetupShield((int)value.buffAmount, GamePlay.levelController.GetDurationHelper(resourceAffected));
+				break;
+			case CharacterPowerType.IncreaseCameraSizeOnHelper:
+				timeAdditionalCamSize = GamePlay.levelController.GetDurationHelper(resourceAffected);
+				_additionalCamSize = value.buffAmount;
+				this.RaiseEvent(EventList.GamePlay.UPDATE_CAMERA_TARGET,new UpdateCameraTarget()
+				{
+					target =  transform,
+					//cameraDistance = Settings.BaseCameraDistance  + (level-1) * Settings.CameraDistanceIncreasePerLevel
+					// cameraDistance = CalculateIndices(Settings.BaseCameraDistance,m_Level,Settings.CameraDistanceIncreasePerLevel) 
+					//                  * (1 + (timeAdditionalCamSize > 0 ? _additionalCamSize : 0))
+					cameraDistance = GetCamSize()
+				});
+				break;
+			case CharacterPowerType.IncreaseSizeOnIdle:
+				m_characterIdleSizeIncrease = value.buffAmount;
+				break;
+			case CharacterPowerType.ChangeTheme:
+				GamePlay.levelController.themeController
+					.ActiveWeatherEffect(Config.themeConfig.GetWaterThemeForCharacterPower(GamePlay.levelController.themeController.WaterThemeConfig.themeType));
+				break;
+		}
+		
+		return power;
+	}
+
+	private List<BaseItem> GetAllItemsForCompassDirector()
+	{
+		List<BaseItem> listItems = new();
+		listItems.AddRange(GamePlay.levelController.AllSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllkingdomSpecialItems);
+		listItems.AddRange(GamePlay.levelController.AllRelicItems);
+		listItems.AddRange(GamePlay.levelController.AllCharacterShards);
+
+		return listItems;
+	}
+	
+	#endregion
 
 	public void HideLevelText()
 	{
@@ -448,6 +854,11 @@ public class Hole : _BaseBehaviour
 		characterGraphics.transform.localScale = Vector3.one;
 		characterParent.gameObject.SetActive(true);
 		characterAnimator.transform.localPosition = new Vector3(0, defaultPosYCharacter, 0);
+		
+		m_characterIdleSizeIncrease = 0f;
+		m_currentIntervalIdleSizeIncrease = 0f;
+		m_characterIdleSizeIncreaseInterval = 1f;
+		
 		StartAnimationCharacter();
 	}
 

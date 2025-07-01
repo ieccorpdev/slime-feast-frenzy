@@ -246,6 +246,7 @@ public class ClaimBonusRewardPanel : BasePopup
         }
         else
         {
+            EventController.RaiseEvent(EventList.Audio.REWARD_POPUP);
             targetSpineAnimObject.gameObject.SetActive(false);
             canClaim = true;
             canOpen = true;

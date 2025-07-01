@@ -4,6 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
+using _IEC.Features.Common.Extension;
+using IEC.Common.Event;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,6 +38,16 @@ namespace IEC
             ChangeComboColor();
         }
 
+        private void OnEnable()
+        {
+            this.RegisterListener(EventList.GamePlay.COMBO_RESET, ResetCombo);
+        }
+
+        private void OnDisable()
+        {
+            this.UnregisterListener(EventList.GamePlay.COMBO_RESET, ResetCombo);
+        }
+
         private void Show()
         {
             animator.Play("Show");
@@ -52,6 +64,8 @@ namespace IEC
             StartCoroutine(CheckInCombo());
             currentComboCount += bonusCombo;
             SetCombo(currentComboCount);
+            
+            this.RaiseEvent(EventList.GamePlay.COMBO_REACHED, currentComboCount);
 
             PlayerData.UpdatePlayerStat(
                 PlayerGeneralStat.HighestComboCount
@@ -61,6 +75,17 @@ namespace IEC
         IEnumerator CheckInCombo()
         {
             yield return new WaitForSeconds(comboTimeRange);
+            this.RaiseEvent(EventList.GamePlay.COMBO_LOST, currentComboCount);
+            currentComboCount = 0;
+            currentComboIndex = 0;
+            canVibrate = true;
+            subComboTxt.transform.parent.DOKill();
+            Hide();
+        }
+
+        private void ResetCombo(object param)
+        {
+            StopAllCoroutines();
             currentComboCount = 0;
             currentComboIndex = 0;
             canVibrate = true;
@@ -132,12 +157,16 @@ namespace IEC
             if (combo < 10000)
             {
                 comboTxt.transform.localPosition = comboTxtPos[comboTxt.text.Length - 1].localPosition;
+                comboTxt.fontSize = comboTxtPos[comboTxt.text.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
                 subComboTxt.transform.localPosition = subComboTxtPos[comboTxt.text.Length - 1].localPosition;
+                subComboTxt.fontSize = subComboTxtPos[comboTxt.text.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
             }
             else
             {
                 comboTxt.transform.position = comboTxtPos[comboTxtPos.Length - 1].position;
+                comboTxt.fontSize = comboTxtPos[comboTxtPos.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
                 subComboTxt.transform.position = subComboTxtPos[comboTxtPos.Length - 1].position;
+                subComboTxt.fontSize = subComboTxtPos[comboTxtPos.Length - 1].GetComponent<TextMeshProUGUI>().fontSize;
             }
 
             Show();

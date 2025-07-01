@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using IEC;
 using IEC.Helper;
+using Spine.Unity;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,16 +21,16 @@ public class RelicButtonEvent : _BaseBehaviour
     public Button button;
     private TimeSpan countdownTimeSpan;
     [SerializeField] private GameEventConfig _eventConfig;
+    private SkeletonGraphic spine;
 
-    public bool IsEventCanShow()
+    private void Start()
     {
-        //return true;
-        //Thisfuntioc is duplicate with GameEventHomeButton, need merge after
-        int level = PlayerData.level;
-        int levelUnlock = Config.relicConfig.levelUnlockFeature;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) &&
-               Config.eventLiveOpsConfig.IsEventAvailable(EventType.RelicHunt,
-                   Config.relicConfig.eventDurationInHours / 24, PlayerData.GetDaysSinceDownload());
+        spine = GetComponentInChildren<SkeletonGraphic>();
+    }
+    public bool IsEventCanShow()
+    {   
+        return Config.eventLiveOpsConfig.IsEventOnDay(EventType.RelicHunt, Config.relicConfig.eventDurationInHours/24, PlayerData.GetDaysSinceDownload()) &&
+               Locator.Main.ScreenMain.trophyTab.IsEventCanShow(EventType.RelicHunt);
     }
 
     public void UpdateUI()
@@ -45,6 +46,7 @@ public class RelicButtonEvent : _BaseBehaviour
         {
             return;
         }
+
         if (PlayerData.relicData.isNewEvent && PlayerData.relicData.lastEventRewards.Count > 0)
         {
             SetClaimLastEventState();
@@ -56,6 +58,7 @@ public class RelicButtonEvent : _BaseBehaviour
         {
             levelUnlockText.text = "Lvl. " + Config.relicConfig.levelUnlockFeature;
             lockedGroup.SetActive(true);
+            spine?.gameObject.SetActive(false);
             button.interactable = false;
         }
         else
@@ -70,9 +73,10 @@ public class RelicButtonEvent : _BaseBehaviour
             }
             else
             {
-                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config))
+                if (isMaxLevel && !PlayerData.relicData.CheckIfHasLockReward(config, true))
                 {
                     completedGroup.SetActive(true);
+                    spine?.gameObject.SetActive(false);
                     button.interactable = false;
                 }
                 else
@@ -93,6 +97,7 @@ public class RelicButtonEvent : _BaseBehaviour
                 timerGroup.gameObject.SetActive(false);
                 joinGroup.SetActive(true);
             }
+            
         }
     }
 
@@ -134,7 +139,15 @@ public class RelicButtonEvent : _BaseBehaviour
         else
         {
             gameObject.SetActive(false);
+            UpdateTimeEnd();
         }
+    }
+
+    private static void UpdateTimeEnd()
+    {
+        DateTime timeEnd = Config.eventLiveOpsConfig.GetTimeEndEvent(EventType.RelicHunt,
+            Mathf.FloorToInt(Config.relicConfig.eventDurationInHours / 24), PlayerData.GetDaysSinceDownload());
+        PlayerData.relicData.eventTimeEnd = timeEnd;
     }
 
     private void SetClaimLastEventState()
@@ -155,6 +168,7 @@ public class RelicButtonEvent : _BaseBehaviour
                     {
                         gameObject.SetActive(false);
                     }
+
                     PlayerData.relicData.lastEventRewards.Clear();
                     PlayerData.relicData.isNewEvent = false;
                 },
@@ -163,8 +177,5 @@ public class RelicButtonEvent : _BaseBehaviour
         });
     }
 
-    private void Update()
-    {
-        UpdateUI();
-    }
+
 }

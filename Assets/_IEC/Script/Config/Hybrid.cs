@@ -8,10 +8,10 @@ namespace IEC
     public enum TabType
     {
         Shop,
-        Tab2,
+        Character,
         Home,
         LeaderBoard,
-        Tab5
+        Trophy,
     }
 
     public enum ResourceType
