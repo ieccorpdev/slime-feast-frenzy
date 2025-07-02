@@ -440,7 +440,19 @@ namespace _IEC.Features.Gameplay
                 };
                 itemTransform.parent = levelObjectHolder;
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
-                itemComponent.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard());
+                List<CharacterConfig> ignoreCharacterList = new List<CharacterConfig>();
+                foreach (var characterConfig in Config.characterShardObjectConfig.listCharacterConfigForShard)
+                {
+                    var CurrentCharacterConfig =
+                        Config.allCharactersConfig.GetCharacterConfig(characterConfig.characterName);
+                    var CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
+                    var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
+                    if (upgradeConfig == null)
+                    {
+                        ignoreCharacterList.Add(characterConfig);
+                    }
+                }
+                itemComponent.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard(ignoreCharacterList));
                 itemComponent.LoadData(itemData, itemDefinition);
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(

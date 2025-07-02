@@ -141,6 +141,7 @@ namespace IEC
                 {
                     time = Config.gamePlayConfig.reviveTimeForTimer
                 });
+                PlayerData.AddPlayerLife();
                 this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
             });
         }
@@ -151,6 +152,7 @@ namespace IEC
             {
                 Hide();
                 Locator.Game.ScreenInGame.Show();
+                PlayerData.AddPlayerLife();
                 this.RaiseEvent(EventList.GamePlay.REVIVE_GAME);
             });
         }
