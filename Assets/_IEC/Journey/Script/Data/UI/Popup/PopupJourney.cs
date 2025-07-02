@@ -241,7 +241,12 @@ namespace IEC
                     RefreshUI();
                 }, true);
             }
-            
+            // hard fix 
+            if (listItemJourney[0].vipPass.statusItem == JourneyItemStatus.CANCLAIM)
+            {
+                PlayerData.journeyData.isEnableMaxHeart = true;
+                PlayerData.RaiseToMaxHealth();
+            }
             Hide();
             _canShow = true;
             Locator.Main.ScreenMain.SetInteractive(false);
