@@ -46,7 +46,7 @@ namespace PathCreation.Examples
             {
                 // Subscribed to the pathUpdated event so that we're notified if the path changes during the game
                 pathCreator.pathUpdated += OnPathChanged;
-                speed = Random.Range(0.5f, 1.1f);
+                speed = Random.Range(0.86f, 1.5f);
                 moving = false;
                 float startTime = Random.Range(1f, 4f);
                 StartCoroutine(DelayStart(startTime));

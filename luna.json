@@ -2,7 +2,7 @@
     "version": "6.3.0",
     "projectId": "38eebd4cf2b294042a597d2e76328ca7",
     "applicationID": 29428,
-    "creativeName": "SFF_v1_Special_Level_Explore",
+    "creativeName": "SFF_v3_Special_Level_Explore",
     "pgServer": "EU",
     "window": {
         "‐″": true
@@ -80,8 +80,8 @@
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "17.13",
-            "monoVersion": "9.0.3",
+            "msbuildVersion": "17.12",
+            "monoVersion": "9.0.2",
             "dotnetVersion": ""
         },
         "assets": {
@@ -33156,7 +33156,7 @@
                     },
                     {
                         "name": "lengthScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "lengthScale#set",
@@ -33164,7 +33164,7 @@
                     },
                     {
                         "name": "velocityScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "velocityScale#set",
@@ -33172,7 +33172,7 @@
                     },
                     {
                         "name": "cameraVelocityScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "cameraVelocityScale#set",
@@ -33184,7 +33184,7 @@
                     },
                     {
                         "name": "normalDirection#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingFudge#get",
@@ -36509,10 +36509,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "DelayDisable",
-                        "excluded": false
-                    },
-                    {
                         "name": "SaveAndDestroyRigidbody",
                         "excluded": false
                     },
@@ -36542,6 +36538,10 @@
                     },
                     {
                         "name": "MoveToXZPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DelayDisable",
                         "excluded": false
                     }
                 ]
@@ -37732,7 +37732,7 @@
                     },
                     {
                         "name": "OnCollectSpeedBooster",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PushItemToTrackingList",

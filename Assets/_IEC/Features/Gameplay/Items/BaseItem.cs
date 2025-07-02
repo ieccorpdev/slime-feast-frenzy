@@ -117,8 +117,14 @@ namespace _IEC.Features.Gameplay
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle();
-            StartCoroutine(DelayDisable(3));
-
+            if(ItemData.itemId == "jellyfish")
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                StartCoroutine(DelayDisable(1f));
+            }
             //DOVirtual.DelayedCall(3, () =>
             //{
             //    if (gameObject != null)
