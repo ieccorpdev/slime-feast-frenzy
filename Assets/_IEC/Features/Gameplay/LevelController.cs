@@ -173,6 +173,10 @@ namespace _IEC.Features.Gameplay
             }
             
             m_AllItems.Clear();
+            foreach (Transform child in allItemHolder .GetChild(0))
+            {
+                m_AllItems.Add(child.GetComponent<BaseItem>());
+            }
             m_AllItems = LevelHelper.SpawnAllItem(m_LevelConfig.levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {

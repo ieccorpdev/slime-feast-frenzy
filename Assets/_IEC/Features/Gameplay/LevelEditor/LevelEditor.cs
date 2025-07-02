@@ -1518,15 +1518,16 @@ namespace IEC
         private IEnumerable GetAllItemIdsWithXP()
         {
             return itemConfig.GetListItemDefinition()
-                .Where(x => x.GetXp().ToString().Equals(itemXP))
-                .Select(x => x.GetId());
+                    .Where(x => x.GetXp().ToString().Equals(itemXP))
+                ;
         }
 
         private IEnumerable GetAllItemXP()
         {
+              Debug.Log(itemConfig.GetListItemDefinition());
             return System.Linq.Enumerable.OrderBy(
                     itemConfig.GetListItemDefinition(), x => x.GetXp())
-                .Select(x => x.GetXp().ToString());
+                ;
         }
         
         private IEnumerable GetAllPillarItemIds()
@@ -1680,7 +1681,6 @@ namespace IEC
 
             [HideInInspector]
             public Transform itemHolder;
-            [HideInInspector]
             public GameplayItemPrefabConfig itemConfig;
 
             public ItemCountInScene()
