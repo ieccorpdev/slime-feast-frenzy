@@ -27,6 +27,11 @@ namespace IEC
             previousScrollPosition = 0f;
         }
 
+        public override void Show()
+        {
+            base.Show();
+            SetupStickBar();
+        }
 
         protected override void ShowStartPopup()
         {
@@ -75,12 +80,18 @@ namespace IEC
                     playerDataIndex = listPlayerData.IndexOf(eventPlayerData);
                 }
             }
-           
-            SetupStickBar();
         }
 
         private void SetupStickBar()
         {
+            foreach (var eventPlayerData in listPlayerData)
+            {
+                if (eventPlayerData.isPlayer)
+                {
+                    //get index of player data
+                    playerDataIndex = listPlayerData.IndexOf(eventPlayerData);
+                }
+            }
             if(playerDataUIBarBot == null || playerDataUIBarTop == null)
             {
                 return;

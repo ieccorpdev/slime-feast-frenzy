@@ -1078,12 +1078,6 @@ namespace IEC
             {
                 currentProgress += progress;
             }
-            
-            if (currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
-            {
-                if(!alreadyDoneProgressReward) trophyData.CollectTrophy(TrophyType.OceanGift);
-                alreadyDoneProgressReward = true;
-            }
         }
 
         public bool CheckClaimProgressReward(ProgressRewardData currentProgressData)
@@ -1098,6 +1092,11 @@ namespace IEC
             {
                 currentProgress -= currentProgressData.progress;
                 currentProgressMilestone++;
+                if (currentProgressMilestone >= Config.progressRewardConfig.listRewardData.Count)
+                {
+                    if(!alreadyDoneProgressReward) trophyData.CollectTrophy(TrophyType.OceanGift);
+                    alreadyDoneProgressReward = true;
+                }
                 return true;
             }
 
