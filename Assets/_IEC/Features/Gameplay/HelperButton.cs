@@ -178,7 +178,7 @@ namespace _IEC.Features.Gameplay
 
         public void ShowHint()
         {
-            groupHint.gameObject.SetActive(true);
+            groupHint.gameObject.SetActive(false);
         }
 
         public void HideHint()

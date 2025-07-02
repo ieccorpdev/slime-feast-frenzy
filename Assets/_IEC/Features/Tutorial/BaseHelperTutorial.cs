@@ -16,10 +16,10 @@ namespace _IEC.Features.Tutorial
 
         public void StartTutorial()
         {
-            this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
-            popupUnlockHelper.Hide();
-            helperButton.ShowHint();
-            HighLightCanvas.HighLightUI(helperButton.GetComponent<RectTransform>(),true,true);
+            // this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
+            // popupUnlockHelper.Hide();
+            // helperButton.ShowHint();
+            // HighLightCanvas.HighLightUI(helperButton.GetComponent<RectTransform>(),true,true);
             // popupUnlockHelper.Show();
         }
         private void Awake()

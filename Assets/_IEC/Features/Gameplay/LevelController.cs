@@ -208,37 +208,37 @@ namespace _IEC.Features.Gameplay
             //    Config.specialObjectConfig.kingdomSpecialObjective
             //);
 
-            //if (GamePlay.currentThemeSelect >= 0)
-            //{
-            //    themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
-            //}
-            //else
-            //{
-            //    themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
-            //}
-            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(4));
-            //if (PlayerData.relicData.isAvaiableToSpawn)
-            //{
-            //    m_AllRelicItems.Clear();
-            //    int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
-            //    m_AllRelicItems = LevelHelper.SpawnRelicItems(
-            //        GroundExtend.CalculateBounds(m_AllItems),
-            //        relicSpawnTime, 
-            //        allItemHolder,
-            //        Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
-            //    );
-            //}
-            themeController.ActiveWeatherEffect(WeatherTheme.RAIN);
-            //if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
-            //{
-            //    themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
-            //}
-            //else
-            //{
-            //    var weatherSelected = Config.themeConfig.GetWeatherForLevel(PlayerData.level);
-            //    //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
-            //    themeController.ActiveWeatherEffect(weatherSelected);
-            //}
+            // if (GamePlay.currentThemeSelect >= 0)
+            // {
+            //     themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(GamePlay.currentThemeSelect));
+            // }
+            // else
+            // {
+            //     themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
+            // }
+            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(0));
+            // if (PlayerData.relicData.isAvaiableToSpawn)
+            // {
+            //     m_AllRelicItems.Clear();
+            //     int relicSpawnTime = PlayerData.ReachMaxRelicReward() ? 0 : Config.relicConfig.GetSpawnAmount(PlayerData.level);
+            //     m_AllRelicItems = LevelHelper.SpawnRelicItems(
+            //         GroundExtend.CalculateBounds(m_AllItems),
+            //         relicSpawnTime, 
+            //         allItemHolder,
+            //         Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
+            //     );
+            // }
+            themeController.ActiveWeatherEffect(WeatherTheme.SUNLIGHT);
+            // if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
+            // {
+            //     themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
+            // }
+            // else
+            // {
+            //     var weatherSelected = Config.themeConfig.GetWeatherForLevel(PlayerData.level);
+            //     //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
+            //     themeController.ActiveWeatherEffect(weatherSelected);
+            // }
             
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
@@ -256,10 +256,10 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.Play);
             if (PlayerData.level == 1)
             {
-                this.RaiseEvent(EventList.GamePlay.START_TUTORIAL,new StartTutorialData()
-                {
-                    holeTransform =  playerHole.transform
-                });
+                // this.RaiseEvent(EventList.GamePlay.START_TUTORIAL,new StartTutorialData()
+                // {
+                //     holeTransform =  playerHole.transform
+                // });
             }
 
             if (addBoosterAction != null)
