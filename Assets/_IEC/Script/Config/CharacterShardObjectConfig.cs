@@ -24,11 +24,13 @@ namespace IEC
             return GetRandomWithZeroBias(spawnData?.dropChance ?? 0);
         }
 
-        public CharacterConfig GetRandomCharacterConfigForShard()
+        public CharacterConfig GetRandomCharacterConfigForShard(List<CharacterConfig> ignoreList = null)
         {
             if (listCharacterConfigForShard.Count == 0)
                 return null;
-            return listCharacterConfigForShard[Random.Range(0, listCharacterConfigForShard.Count)];
+            List<CharacterConfig> rs = new ();
+            rs = ignoreList != null ? listCharacterConfigForShard.Except(ignoreList).ToList() : listCharacterConfigForShard;
+            return rs[Random.Range(0, rs.Count)];
         }
         
         private int GetRandomWithZeroBias(float oneProbability)
