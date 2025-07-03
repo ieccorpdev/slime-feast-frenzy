@@ -281,7 +281,11 @@ public class TrophyScreenTab : ScreenNavigateUI
     {
         int level = PlayerData.level;
         int levelUnlock = Config.AllGameEventConfig.GetGameEventConfig(eventType).levelUnlock;
-        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock);
+        int eventDurationInDays = Mathf.FloorToInt(Config.AllGameEventConfig.GetGameEventConfig(eventType)
+            .eventDurationInHours / 24);
+        var isEventOnDay = Config.eventLiveOpsConfig.IsEventOnDay(eventType, eventDurationInDays,
+            PlayerData.GetDaysSinceDownload());
+        return (level + Config.AllGameEventConfig.diffLevelShow >= levelUnlock) && isEventOnDay;
     }
     public string GetTrophyTarget(TrophyType type)
     {

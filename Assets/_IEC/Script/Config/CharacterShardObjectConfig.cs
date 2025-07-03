@@ -30,6 +30,8 @@ namespace IEC
                 return null;
             List<CharacterConfig> rs = new ();
             rs = ignoreList != null ? listCharacterConfigForShard.Except(ignoreList).ToList() : listCharacterConfigForShard;
+            if (rs.Count == 0)
+                return null;
             return rs[Random.Range(0, rs.Count)];
         }
         
