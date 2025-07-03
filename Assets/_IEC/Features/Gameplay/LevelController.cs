@@ -216,7 +216,7 @@ namespace _IEC.Features.Gameplay
             // {
             //     themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeForLevel(PlayerData.level));
             // }
-            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(0));
+            themeController.LoadWaterTheme(Config.themeConfig.GetWaterThemeById(4));
             // if (PlayerData.relicData.isAvaiableToSpawn)
             // {
             //     m_AllRelicItems.Clear();
@@ -228,7 +228,7 @@ namespace _IEC.Features.Gameplay
             //         Config.relicConfig.GetRelicItemDefinition(PlayerData.relicData.relicItemIndex)
             //     );
             // }
-            themeController.ActiveWeatherEffect(WeatherTheme.SUNLIGHT);
+            themeController.ActiveWeatherEffect(WeatherTheme.RAIN);
             // if (GamePlay.currentWeatherSelect != WeatherTheme.NONE)
             // {
             //     themeController.ActiveWeatherEffect(GamePlay.currentWeatherSelect);
@@ -239,7 +239,7 @@ namespace _IEC.Features.Gameplay
             //     //Debug.LogError("Level: " + PlayerData.level + " Selected weather: " + weatherSelected);
             //     themeController.ActiveWeatherEffect(weatherSelected);
             // }
-            
+            //
             SetUpStartHolePosition(m_LevelConfig.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();
