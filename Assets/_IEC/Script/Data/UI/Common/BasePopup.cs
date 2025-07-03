@@ -42,10 +42,6 @@ namespace IEC
                 blackPanel.SetActive(isShowBlackPanel);
 
             mainPanel.transform.localScale = Vector3.one;
-            if (mainPanel.gameObject.TryGetComponent<AspectRatioScaler>(out var scaler))
-            {
-                scaler.UpdateRect();
-            }
 
             if (isHaveAnim)
             {
