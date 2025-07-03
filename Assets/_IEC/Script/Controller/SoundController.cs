@@ -170,7 +170,15 @@ namespace IEC
 
         AudioPlayer CreateAudio(string id, bool sound = true)
         {
+            Debug.Log("CreateAudio");
             var audio = Instantiate(audioPlayerPrefab, this.gameObject.transform);
+            var data = listMusicConfig.Find(x => x.id == id) ?? listSoundConfig.Find(x => x.id == id);
+            if (data is null or { clip: null })
+            {
+                Debug.LogError($"Sound {id} is null");
+            }
+            audio.SetData(data);
+            
             if (sound)
             {
                 m_ListSoundAudio.Add(audio);
