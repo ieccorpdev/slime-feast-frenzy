@@ -418,7 +418,20 @@ namespace _IEC.Features.Gameplay
             {
                 return res;
             }
-
+            List<CharacterConfig> ignoreCharacterList = new List<CharacterConfig>();
+            foreach (var characterConfig in Config.characterShardObjectConfig.listCharacterConfigForShard)
+            {
+                var CurrentCharacterConfig =
+                    Config.allCharactersConfig.GetCharacterConfig(characterConfig.characterName);
+                var CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
+                var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
+                if (upgradeConfig == null)
+                {
+                    ignoreCharacterList.Add(characterConfig);
+                }
+            }
+            var charConfig = Config.characterShardObjectConfig.GetRandomCharacterConfigForShard(ignoreCharacterList);
+            if (charConfig is null) return res;
             for (int i = 0; i < count; i++)
             {
                 var newItem = prefab.Spawn();
@@ -440,19 +453,8 @@ namespace _IEC.Features.Gameplay
                 };
                 itemTransform.parent = levelObjectHolder;
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
-                List<CharacterConfig> ignoreCharacterList = new List<CharacterConfig>();
-                foreach (var characterConfig in Config.characterShardObjectConfig.listCharacterConfigForShard)
-                {
-                    var CurrentCharacterConfig =
-                        Config.allCharactersConfig.GetCharacterConfig(characterConfig.characterName);
-                    var CurrentCharacterLevel = PlayerData.GetCharacterLevel(CurrentCharacterConfig.characterName);
-                    var upgradeConfig = CurrentCharacterConfig.GetCharacterUpgrade(CurrentCharacterLevel + 1);
-                    if (upgradeConfig == null)
-                    {
-                        ignoreCharacterList.Add(characterConfig);
-                    }
-                }
-                itemComponent.Setup(Config.characterShardObjectConfig.GetRandomCharacterConfigForShard(ignoreCharacterList));
+
+                itemComponent.Setup(charConfig);
                 itemComponent.LoadData(itemData, itemDefinition);
                 itemComponent.ItemData.position =
                     FindValidSpawnPosition(
