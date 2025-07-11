@@ -578,7 +578,6 @@ public class Hole : _BaseBehaviour
 	
 	public void Reset()
 	{
-		TurnOffAllVfx();
 		holeMagnet.gameObject.SetActive(false);
 		m_Level = 1;
 		_isChangedToCurrentCharacter = false;
