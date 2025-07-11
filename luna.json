@@ -2,7 +2,7 @@
     "version": "6.3.0",
     "projectId": "38eebd4cf2b294042a597d2e76328ca7",
     "applicationID": 29428,
-    "creativeName": "SFF_v3_Special_Level",
+    "creativeName": "SFF_v3_Special_Level_Explore",
     "pgServer": "EU",
     "window": {
         "‐″": true
@@ -163,7 +163,7 @@
         "enableMecanimWASM": true,
         "minify": true,
         "forceUncompressed": false,
-        "forceBase64": false,
+        "forceBase64": true,
         "graphicsConstraint": 28,
         "genericCheck": true,
         "disableAntiAliasing": true,
@@ -4612,7 +4612,7 @@
             },
             {
                 "name": "UnityEngine.QueryTriggerInteraction",
-                "excluded": true
+                "excluded": false
             },
             {
                 "name": "UnityEngine.QueueMode",
@@ -9359,10 +9359,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.UI.AspectRatioScaler",
-                "excluded": true
-            },
-            {
                 "name": "UnityToolbag.Dispatcher",
                 "excluded": true
             },
@@ -11075,10 +11071,6 @@
                 "excluded": true
             },
             {
-                "name": "UnityEngine.UI.AspectRatioScaler.AspectMode",
-                "excluded": true
-            },
-            {
                 "name": "EnhancedScrollerDemos.MultipleCellTypesDemo.FooterData",
                 "excluded": true
             },
@@ -11208,6 +11200,54 @@
             },
             {
                 "name": "_IEC.Script.GamePlay.IManagedUpdate",
+                "excluded": false
+            },
+            {
+                "name": "PathCreation.Examples.PathSceneTool",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.Examples.GeneratePathExample",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.Examples.PathSpawner",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.GlobalDisplaySettings",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.Examples.CylinderMeshCreator",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.Examples.PathPlacer",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.Examples.RoadMeshCreator",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.BezierPath.ControlMode",
+                "excluded": false
+            },
+            {
+                "name": "PathCreation.EndOfPathInstruction",
+                "excluded": false
+            },
+            {
+                "name": "PathCreation.GlobalDisplaySettings.HandleType",
+                "excluded": true
+            },
+            {
+                "name": "PathCreation.PathSpace",
+                "excluded": false
+            },
+            {
+                "name": "_IEC.Features.Gameplay.ItemSpawn",
                 "excluded": false
             }
         ],
@@ -17876,7 +17916,7 @@
                     },
                     {
                         "name": "value#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "value#set",
@@ -18000,7 +18040,7 @@
                     },
                     {
                         "name": "PingPong",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "SmoothDamp",
@@ -20664,7 +20704,7 @@
                     },
                     {
                         "name": "hdr#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "hdr#set",
@@ -20680,7 +20720,7 @@
                     },
                     {
                         "name": "clearFlags#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "clearFlags#set",
@@ -20768,7 +20808,7 @@
                     },
                     {
                         "name": "orthographicSize#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "orthographicSize#set",
@@ -20800,7 +20840,7 @@
                     },
                     {
                         "name": "targetTexture#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "targetTexture#set",
@@ -20836,7 +20876,7 @@
                     },
                     {
                         "name": "rect#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "rect#set",
@@ -25462,7 +25502,7 @@
                     },
                     {
                         "name": "HandleEndOfFrame",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "MoveNext",
@@ -26236,7 +26276,7 @@
                 "instanceMethods": [
                     {
                         "name": "uiScaleMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "uiScaleMode#set",
@@ -26244,7 +26284,7 @@
                     },
                     {
                         "name": "screenMatchMode#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "screenMatchMode#set",
@@ -26252,7 +26292,7 @@
                     },
                     {
                         "name": "referenceResolution#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referenceResolution#set",
@@ -26268,7 +26308,7 @@
                     },
                     {
                         "name": "matchWidthOrHeight#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "matchWidthOrHeight#set",
@@ -26276,7 +26316,7 @@
                     },
                     {
                         "name": "referencePixelsPerUnit#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "referencePixelsPerUnit#set",
@@ -31108,7 +31148,7 @@
                 "instanceMethods": [
                     {
                         "name": "World#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "gravity#get",
@@ -31244,7 +31284,7 @@
                     },
                     {
                         "name": "OverlapSphere",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "OverlapSphereNonAlloc",
@@ -31360,7 +31400,7 @@
                     },
                     {
                         "name": "ShouldHitTriggers",
-                        "excluded": true
+                        "excluded": false
                     }
                 ]
             },
@@ -33108,7 +33148,7 @@
                     },
                     {
                         "name": "lengthScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "lengthScale#set",
@@ -33116,7 +33156,7 @@
                     },
                     {
                         "name": "velocityScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "velocityScale#set",
@@ -33124,7 +33164,7 @@
                     },
                     {
                         "name": "cameraVelocityScale#get",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "cameraVelocityScale#set",
@@ -33136,7 +33176,7 @@
                     },
                     {
                         "name": "normalDirection#set",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "sortingFudge#get",
@@ -36262,7 +36302,7 @@
                     },
                     {
                         "name": "UnregisterListener",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "RaiseEvent$1",
@@ -36461,10 +36501,6 @@
                         "excluded": false
                     },
                     {
-                        "name": "DelayDisable",
-                        "excluded": false
-                    },
-                    {
                         "name": "SaveAndDestroyRigidbody",
                         "excluded": false
                     },
@@ -36482,6 +36518,22 @@
                     },
                     {
                         "name": "OnCollisionEnter",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DisableMove",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveToTarget",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MoveToXZPosition",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DelayDisable",
                         "excluded": false
                     }
                 ]
@@ -36971,16 +37023,6 @@
                 ]
             },
             {
-                "className": "_IEC.Features.Gameplay.ItemSpawn",
-                "staticMethods": [],
-                "instanceMethods": [
-                    {
-                        "name": "init",
-                        "excluded": false
-                    }
-                ]
-            },
-            {
                 "className": "_IEC.Features.Gameplay.ItemSpawnData",
                 "staticMethods": [],
                 "instanceMethods": [
@@ -37365,14 +37407,6 @@
                     {
                         "name": "init",
                         "excluded": false
-                    },
-                    {
-                        "name": "SetAllSpawnDataKinematic",
-                        "excluded": true
-                    },
-                    {
-                        "name": "CloneTo",
-                        "excluded": true
                     }
                 ]
             },
@@ -37690,7 +37724,7 @@
                     },
                     {
                         "name": "OnCollectSpeedBooster",
-                        "excluded": true
+                        "excluded": false
                     },
                     {
                         "name": "PushItemToTrackingList",
@@ -37939,15 +37973,7 @@
                 "staticMethods": [],
                 "instanceMethods": [
                     {
-                        "name": "init",
-                        "excluded": false
-                    },
-                    {
                         "name": "Awake",
-                        "excluded": false
-                    },
-                    {
-                        "name": "OnTriggerEnter",
                         "excluded": false
                     },
                     {
@@ -37955,15 +37981,11 @@
                         "excluded": false
                     },
                     {
-                        "name": "OnTriggerExit",
-                        "excluded": false
-                    },
-                    {
                         "name": "PullObject",
                         "excluded": false
                     },
                     {
-                        "name": "OnDisable",
+                        "name": "init",
                         "excluded": false
                     }
                 ]
@@ -38948,14 +38970,6 @@
                     },
                     {
                         "name": "SpawnAllItem",
-                        "excluded": false
-                    },
-                    {
-                        "name": "SpawnRelic",
-                        "excluded": false
-                    },
-                    {
-                        "name": "isMaxItem#get",
                         "excluded": false
                     }
                 ]
@@ -43989,6 +44003,624 @@
                     {
                         "name": "ctor",
                         "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.BezierPath",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "NumPoints#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NumAnchorPoints#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "NumSegments#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Space#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Space#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsClosed#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "IsClosed#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ControlPointMode#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ControlPointMode#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AutoControlLength#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AutoControlLength#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "FlipNormals#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "FlipNormals#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GlobalNormalsAngle#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GlobalNormalsAngle#set",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PathBounds#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor6",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor5",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor4",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor3",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor2",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getItem",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetPoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SetPoint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddSegmentToEnd",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AddSegmentToStart",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SplitSegment",
+                        "excluded": true
+                    },
+                    {
+                        "name": "DeleteSegment",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPointsInSegment",
+                        "excluded": false
+                    },
+                    {
+                        "name": "MovePoint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculateBoundsWithTransform",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetAnchorNormalAngle",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SetAnchorNormalAngle",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ResetNormalAngles",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateBounds",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AutoSetAllAffectedControlPoints",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AutoSetAllControlPoints",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AutoSetAnchorControlPoints",
+                        "excluded": true
+                    },
+                    {
+                        "name": "AutoSetStartAndEndControls",
+                        "excluded": true
+                    },
+                    {
+                        "name": "UpdateToNewPathSpace",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateClosedState",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LoopIndex",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NotifyPathModified",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.MinMax3D",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "AddValue",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.PathCreator",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "path#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "bezierPath#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "bezierPath#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EditorData#get",
+                        "excluded": true
+                    },
+                    {
+                        "name": "InitializeEditorData",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TriggerPathUpdate",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.PathCreatorData",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "bezierPath#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "bezierPath#set",
+                        "excluded": false
+                    },
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Initialize",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ResetBezierPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CreateBezier",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetVertexPath",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PathTransformed",
+                        "excluded": true
+                    },
+                    {
+                        "name": "VertexPathSettingsChanged",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PathModifiedByUndo",
+                        "excluded": true
+                    },
+                    {
+                        "name": "BezierPathEdited",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.Utility.CubicBezierUtility",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "EvaluateCurve$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EvaluateCurve",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EvaluateCurveDerivative$1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EvaluateCurveDerivative",
+                        "excluded": false
+                    },
+                    {
+                        "name": "EvaluateCurveSecondDerivative$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EvaluateCurveSecondDerivative",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Normal$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "Normal",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculateSegmentBounds",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SplitCurve",
+                        "excluded": true
+                    },
+                    {
+                        "name": "EstimateCurveLength",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ExtremePointTimes",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StationaryPointTimes",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.Examples.PathFollower",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Awake",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnDestroy",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPauseGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnResumeGame",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Start",
+                        "excluded": false
+                    },
+                    {
+                        "name": "DelayStart",
+                        "excluded": false
+                    },
+                    {
+                        "name": "Update",
+                        "excluded": false
+                    },
+                    {
+                        "name": "OnPathChanged",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StopMove",
+                        "excluded": false
+                    },
+                    {
+                        "name": "StartMoveDelay",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.Utility.MathUtility",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "TransformPoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "InverseTransformPoint",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TransformVector",
+                        "excluded": true
+                    },
+                    {
+                        "name": "InverseTransformVector",
+                        "excluded": true
+                    },
+                    {
+                        "name": "TransformDirection",
+                        "excluded": true
+                    },
+                    {
+                        "name": "InverseTransformDirection",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LineSegmentsIntersect",
+                        "excluded": true
+                    },
+                    {
+                        "name": "LinesIntersect",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PointOfLineLineIntersection",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClosestPointOnLineSegment",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ClosestPointOnLineSegment$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "SideOfLine",
+                        "excluded": true
+                    },
+                    {
+                        "name": "MinAngle",
+                        "excluded": false
+                    },
+                    {
+                        "name": "PointInTriangle",
+                        "excluded": true
+                    },
+                    {
+                        "name": "PointsAreClockwise",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ConstrainPosRot",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ConstrainRot",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.Utility.VertexPathUtility",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "SplitBezierPathByAngleError",
+                        "excluded": false
+                    },
+                    {
+                        "name": "SplitBezierPathEvenly",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.Utility.VertexPathUtility.PathSplitData",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.VertexPath",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "init",
+                        "excluded": false
+                    },
+                    {
+                        "name": "NumPoints#get",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor2",
+                        "excluded": false
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": false
+                    },
+                    {
+                        "name": "UpdateTransform",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetTangent",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetNormal",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetNormal$1",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPoint",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetPointAtDistance",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetDirectionAtDistance",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetNormalAtDistance",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetRotationAtDistance",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetPointAtTime",
+                        "excluded": false
+                    },
+                    {
+                        "name": "GetDirection",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetRotation",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetClosestPointOnPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetClosestTimeOnPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "GetClosestDistanceAlongPath",
+                        "excluded": true
+                    },
+                    {
+                        "name": "CalculatePercentOnPathData",
+                        "excluded": false
+                    },
+                    {
+                        "name": "CalculateClosestPointOnPathData",
+                        "excluded": true
+                    }
+                ]
+            },
+            {
+                "className": "PathCreation.VertexPath.TimeOnPathData",
+                "staticMethods": [],
+                "instanceMethods": [
+                    {
+                        "name": "getDefaultValue",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$ctor1",
+                        "excluded": false
+                    },
+                    {
+                        "name": "ctor",
+                        "excluded": true
+                    },
+                    {
+                        "name": "getHashCode",
+                        "excluded": true
+                    },
+                    {
+                        "name": "equals",
+                        "excluded": true
+                    },
+                    {
+                        "name": "$clone",
+                        "excluded": true
                     }
                 ]
             }

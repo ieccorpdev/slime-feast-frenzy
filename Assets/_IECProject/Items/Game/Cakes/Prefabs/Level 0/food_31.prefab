@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 255166519614775931}
   - component: {fileID: 3757500776293412318}
   - component: {fileID: 1423599576373909780}
-  - component: {fileID: 8924728111837479687}
+  - component: {fileID: 1436340522073744889}
   m_Layer: 0
   m_Name: Cupcake02
   m_TagString: Untagged
@@ -178,8 +178,8 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8924728111837479687
-MeshCollider:
+--- !u!136 &1436340522073744889
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -188,7 +188,7 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: -4483185998746643552, guid: 14584b33b8838d54ea8e84dcae2042f5, type: 3}
+  m_Radius: 0.056925327
+  m_Height: 0.11423303
+  m_Direction: 1
+  m_Center: {x: -0.000001989305, y: 0.057116516, z: -0.0000010170043}

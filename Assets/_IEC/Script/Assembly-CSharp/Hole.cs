@@ -32,8 +32,8 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
+	[SerializeField] private ParticleSystem speedLinesVFX;
 	public ParticleSystem waterSplashFx;
-	//[SerializeField] private ParticleSystem speedLinesVFX;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
 	[SerializeField]private Transform holePipe;
@@ -101,8 +101,8 @@ public class Hole : _BaseBehaviour
 			                     Settings.SizeIncreasePerLevel)
 		                     * m_AdditionalSizeFromCharacterTrait
 		                     + m_AdditionalSize;
-		
-		this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
+        EndAnimationCharacter();
+        this.RegisterListener(EventList.GamePlay.ON_BOOSTER_COLLECTED, OnCollectLightningBooster);
 	}
 
 	private void OnDestroy()
@@ -125,10 +125,10 @@ public class Hole : _BaseBehaviour
 			}
 			else
 			{
-				//if (speedLinesVFX.isPlaying)
-				//{
-				//	speedLinesVFX.Stop();
-				//} 
+				if (speedLinesVFX.isPlaying)
+				{
+					speedLinesVFX.Stop();
+				}
 			}
 
 			if (timeAdditionalCamSize > 0)
@@ -269,7 +269,7 @@ public class Hole : _BaseBehaviour
 
 	public float GetDistanceToObject()
 	{
-		return (Speed * 1.1f  + Level * 0.4f) * m_AdditionalSizeFromCharacterTrait * m_AdditionalSizeFromCharacterPower;
+		return (Speed * 1.5f  + Level * 0.4f) * m_AdditionalSizeFromCharacterTrait * m_AdditionalSizeFromCharacterPower;
 	}
 	void OnCollectLightningBooster(object param)
 	{
@@ -284,7 +284,7 @@ public class Hole : _BaseBehaviour
 	{
 		_speedBoosterIncrease = boosterIncrease;
 		timeEffectSpeedBooster += timeEffect;
-		//speedLinesVFX.Play();
+		speedLinesVFX.Play();
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -305,9 +305,14 @@ public class Hole : _BaseBehaviour
 
 	public void StartScaleByHelper()
 	{
-        m_AdditionalSize = 2;
+        m_AdditionalSize = 1.25f;
         SetSize(Size,true,null);
-	}
+		DOVirtual.DelayedCall(0.75f, () =>
+        {
+            m_AdditionalSize = 2.5f;
+            SetSize(Size, true, null);
+        });
+    }
 	public void StartCompassHelper()
 	{
 		radialCompassVfx.Play();
@@ -356,7 +361,7 @@ public class Hole : _BaseBehaviour
 				sizeUpVfx.Play();
 			
 			//levelUpVfx.Play();
-			myTransform.DOScale(targetScale, 0.5f).SetEase(Ease.OutBack).OnComplete(() =>
+			myTransform.DOScale(targetScale, 1f).SetEase(Ease.OutBack).OnComplete(() =>
 			{
 				callback?.Invoke();
 			}).SetId(TweenIdScale);
@@ -606,7 +611,7 @@ public class Hole : _BaseBehaviour
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
 		levelUpVfx.Stop();
-		//speedLinesVFX.Stop();
+		speedLinesVFX.Stop();
 	}
 
 	#region Character Animation
