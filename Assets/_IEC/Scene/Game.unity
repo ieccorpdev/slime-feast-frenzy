@@ -16173,8 +16173,8 @@ MonoBehaviour:
   ScreenInGame: {fileID: 5013068276028292672}
   useHelper: 0
   screenLevelWin: {fileID: 2029316458}
-  mapHeight: -0.2
-  fixedTimeStep: 0.05
+  mapHeight: 0
+  fixedTimeStep: 0.15
   level: 0
   prefabConfig: {fileID: 11400000, guid: 812db71aeabcbfa45b4abf07413290b6, type: 2}
   isEndGame: 0
@@ -16184,16 +16184,24 @@ MonoBehaviour:
   InGamePlayGroup: {fileID: 1118379855}
   Joystick: {fileID: 7449795621115547962}
   waveWaterMaterial: {fileID: 2100000, guid: c52413938de4a8a4a855d475300d4c41, type: 2}
-  levelData: {fileID: 11400000, guid: fc90f3f4b90cb1b4ca1539e73667401d, type: 2}
+  levelData: {fileID: 11400000, guid: db98babf4e617854982a27842725b1cc, type: 2}
   ListItemDefinition:
-  - {fileID: 11400000, guid: 95848bbc44772a94d9587c2470ff906f, type: 2}
-  - {fileID: 11400000, guid: 7adb111552f4a1349a430e980decd243, type: 2}
-  - {fileID: 11400000, guid: cf367da2f34b36d408308c57dad26291, type: 2}
-  - {fileID: 11400000, guid: 024ccb0defb1c00458551fb8e2f56655, type: 2}
-  - {fileID: 11400000, guid: 95f1b3447d73012459429aa089867936, type: 2}
-  - {fileID: 11400000, guid: cc62a5640fc72ab4ca019eff0741c00c, type: 2}
-  - {fileID: 11400000, guid: 481f0928e73de204781b4b2fb84e35ad, type: 2}
-  - {fileID: 11400000, guid: c2ca4449cbdc06b45a3ef0e5c5ed88c8, type: 2}
+  - {fileID: 11400000, guid: 2ff963dbbbfa2e84da1b37250e6fef9d, type: 2}
+  - {fileID: 11400000, guid: 037e3e41493354f418a3ecf04e466bcf, type: 2}
+  - {fileID: 11400000, guid: 7c8efe79a1df8804f91065eacd4acb0a, type: 2}
+  - {fileID: 11400000, guid: 19a2d5e3ae8743b4885f98c418c904c3, type: 2}
+  - {fileID: 11400000, guid: 39b1d2048f22d5c4f88f43e544ec9ade, type: 2}
+  - {fileID: 11400000, guid: 490576c1129f15c429ead30e26c95e40, type: 2}
+  - {fileID: 11400000, guid: 73ed972da538e7f47ad01fe08987a155, type: 2}
+  - {fileID: 11400000, guid: add4650309978c84a8fc2f6929e392b2, type: 2}
+  - {fileID: 11400000, guid: e62ca33b3e0e5c94b85779f9f8049872, type: 2}
+  - {fileID: 11400000, guid: 9d215af5abf402641b1bf4c8ee544773, type: 2}
+  - {fileID: 11400000, guid: ef70b2edf75f4c14f92f5df4bd90f666, type: 2}
+  - {fileID: 11400000, guid: 10c040d3019f50740b1061ad3545e0bb, type: 2}
+  - {fileID: 11400000, guid: 4972d36e7c270f74c88aabf6e843b0a0, type: 2}
+  - {fileID: 11400000, guid: 5a6eff403c16f8d4b93d34af293fa5a5, type: 2}
+  - {fileID: 11400000, guid: 4d8da7e01fdff6f48b127d4a47ee97c0, type: 2}
+  - {fileID: 11400000, guid: 4b525f22e68a7474fb9956435ee95eeb, type: 2}
   itemPrefabConfig: {fileID: 11400000, guid: 210586fbc29b543418f774f19e467e22, type: 2}
   magnetButton: {fileID: 0}
 --- !u!4 &1286157493
@@ -62043,19 +62051,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 203.74
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 181.44
+      value: 110
+      objectReference: {fileID: 0}
+    - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -3.3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -10.8
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 377421198000084772, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
+      propertyPath: m_ConstrainProportionsScale
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1305307902502287295, guid: fc768cd91b5e1e444b20ca0d6c79de7f, type: 3}
       propertyPath: m_SortingLayer
