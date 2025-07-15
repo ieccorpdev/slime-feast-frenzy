@@ -65,26 +65,26 @@ namespace _IEC.Features.Gameplay
             UpdateManager.Instance.UnregisterFixedUpdate(this);
         }
 
-        //private void OnCollisionEnter(Collision collision)
-        //{
-        //    if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
-        //    {
-        //        rb.isKinematic = true;
-        //    }
-        //}
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
+            {
+                rb.isKinematic = true;
+            }
+        }
 
         public void EnterHoleTrigger()
         {
             ChangeState(State.Collectable);
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
-            {
-                rb.velocity = Vector3.zero;
-            }
-        }
+        //private void OnCollisionEnter(Collision collision)
+        //{
+        //    if (m_CurrentState == State.Idle && collision.gameObject.layer == LayerMask.NameToLayer("Ground") && !_isCollected)
+        //    {
+        //        rb.velocity = Vector3.zero;
+        //    }
+        //}
 
         public Sprite GetIcon()
         {
@@ -208,7 +208,8 @@ namespace _IEC.Features.Gameplay
             rb.interpolation = RigidbodyInterpolation.Interpolate;
             m_ItemData = itemData;
             m_ItemDefinition = itemDefinition;
-            SaveAndDestroyRigidbody();
+            rb.isKinematic = true;
+            //SaveAndDestroyRigidbody();
         }
 
         private void SaveAndDestroyRigidbody()
@@ -311,19 +312,20 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedFixedUpdate()
         {
-            bool hasRb = rb;
+            //bool hasRb = rb;
 
-            if (!hasRb)
-            {
-                if (Time.frameCount % 2 == 0)
-                {
-                    if (IsInScreen(mainCam))
-                    {
-                        RestoreRigidbody();
-                    }
-                }
-            }
-            else if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
+            //if (!hasRb)
+            //{
+            //    if (Time.frameCount % 2 == 0)
+            //    {
+            //        if (IsInScreen(mainCam))
+            //        {
+            //            RestoreRigidbody();
+            //        }
+            //    }
+            //}
+            //else
+            if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
             {
                 if (this.transform.position.y < PlayableController.Instance.mapHeight)
                 {
