@@ -33,7 +33,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5875519486196677455}
-  - {fileID: 5377190708820426585}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -106,6 +105,7 @@ GameObject:
   - component: {fileID: 5875519486196677455}
   - component: {fileID: 7360520349125735658}
   - component: {fileID: 4738109013919301664}
+  - component: {fileID: 6162633570470085357}
   m_Layer: 0
   m_Name: PepperRed
   m_TagString: Untagged
@@ -178,49 +178,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &8077721707223250776
-GameObject:
+--- !u!135 &6162633570470085357
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5377190708820426585}
-  - component: {fileID: 8559656567894311418}
-  m_Layer: 0
-  m_Name: collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5377190708820426585
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8077721707223250776}
-  m_LocalRotation: {x: 0.000000021855694, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.0022054214, y: 1.4779476, z: -0.009221002}
-  m_LocalScale: {x: 20.87534, y: 24.282654, z: 22.616852}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4652397597804398}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &8559656567894311418
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8077721707223250776}
+  m_GameObject: {fileID: 6539747257817965045}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 2641048638805450744, guid: da71c1c0ba6fda8439d2e07a09b86f03, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.0609876
+  m_Center: {x: 0.000106727704, y: 0.0029532854, z: 0.00041154958}

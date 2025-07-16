@@ -33,7 +33,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1262543563338377439}
-  - {fileID: 5765039804529264774}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: -0, z: -0}
@@ -106,6 +105,7 @@ GameObject:
   - component: {fileID: 1262543563338377439}
   - component: {fileID: 2750203191343867770}
   - component: {fileID: 130138689415320496}
+  - component: {fileID: 8113094912133645413}
   m_Layer: 0
   m_Name: Matcha_Bowl (1)
   m_TagString: Untagged
@@ -178,49 +178,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!1 &4767530972069126227
-GameObject:
+--- !u!135 &8113094912133645413
+SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5765039804529264774}
-  - component: {fileID: 8049023646416882945}
-  m_Layer: 0
-  m_Name: collider
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5765039804529264774
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4767530972069126227}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.0033, y: 0.0112, z: 0.0017}
-  m_LocalScale: {x: 10.531437, y: 10.257208, z: 10.916602}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 4711435021389188}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &8049023646416882945
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4767530972069126227}
+  m_GameObject: {fileID: 1931661622519870053}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -7417417677875214469, guid: 106fc40fad961994ab5cfc558fa69031, type: 3}
+  serializedVersion: 2
+  m_Radius: 0.07436395
+  m_Center: {x: 0.011390191, y: 0.042494208, z: -0.00015438347}

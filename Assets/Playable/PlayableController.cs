@@ -42,8 +42,9 @@ public class PlayableController : _BaseBehaviour
     public bool isEndGame = false;
     public int countShowTutorial;
     public List<LevelDataSO> levelDataList;
-    [LunaPlaygroundField("Level", 0, "Config")]
     public int level;
+    [LunaPlaygroundField("Gravity", 0, "Config")]
+    public float gravity = -10f;
 
     public bool PlayableStarted
     {
@@ -118,7 +119,7 @@ public class PlayableController : _BaseBehaviour
     {
         instance = this;
         Application.targetFrameRate = 60;
-        Physics.gravity = new Vector3(0, -10, 0);
+        Physics.gravity = new Vector3(0, gravity, 0);
         if (fixedTimeStep > 0)
             Time.fixedDeltaTime = fixedTimeStep;
     }

@@ -94,52 +94,6 @@ MonoBehaviour:
   reductionFactor: 1
   targetObject: {fileID: 0}
   objectToScale: {fileID: 6243195985621797024}
---- !u!1 &1776229673494001
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4833839684201698}
-  - component: {fileID: 64765948363822761}
-  m_Layer: 0
-  m_Name: Cylinder
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4833839684201698
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776229673494001}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.043437067, z: 0}
-  m_LocalScale: {x: 0.0875, y: 0.044731107, z: 0.086619}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 5111415665579668431}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!64 &64765948363822761
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1776229673494001}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 0
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &5594796593540655477
 GameObject:
   m_ObjectHideFlags: 0
@@ -151,6 +105,7 @@ GameObject:
   - component: {fileID: 5111415665579668431}
   - component: {fileID: 8160732403207322730}
   - component: {fileID: 6243195985621797024}
+  - component: {fileID: 5309974677631016081}
   m_Layer: 0
   m_Name: Cheesecake_Mini_Cherry
   m_TagString: Untagged
@@ -169,8 +124,7 @@ Transform:
   m_LocalPosition: {x: -0, y: -0.00002220273, z: 0}
   m_LocalScale: {x: 12, y: 6.999142, z: 12}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 4833839684201698}
+  m_Children: []
   m_Father: {fileID: 4017243540011587}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -224,3 +178,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &5309974677631016081
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5594796593540655477}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.118495256, y: 0.15133363, z: 0.113400005}
+  m_Center: {x: 0.0025476273, y: 0.075666815, z: 0}
