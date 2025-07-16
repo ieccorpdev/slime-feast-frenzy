@@ -13,15 +13,6 @@ namespace IEC
         public enum spaceEnum { Local, World };
         public spaceEnum rotateSpace;
 
-        // Use this for initialization
-        void Start()
-        {
-            this.transform.localScale = Vector3.zero;
-            this.transform.DOScale(Vector3.one, 0.5f)
-                .SetEase(Ease.OutBack)
-                .SetUpdate(true); 
-        }
-
         // Update is called once per frame
         void Update()
         {

@@ -100,6 +100,7 @@ public class PlayableController : _BaseBehaviour
     {
         instance = this;
         Application.targetFrameRate = 60;
+        Physics.gravity = new Vector3(0, -10, 0);
         if (fixedTimeStep > 0)
             Time.fixedDeltaTime = fixedTimeStep;
     }
