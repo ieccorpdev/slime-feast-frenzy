@@ -72,7 +72,7 @@ namespace _IEC.Features.Gameplay
             objectiveVfx.Reset();
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());
-            objectiveVfx.gameObject.SetActive(true);
+            objectiveVfx.gameObject.SetActive(false);
             listObjectiveVfx.Add(objectiveVfx);
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();

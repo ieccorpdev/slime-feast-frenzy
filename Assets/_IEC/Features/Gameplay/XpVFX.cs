@@ -28,8 +28,8 @@ namespace _IEC.Features.Gameplay
 
         public void Show(int xp, float size = 1f)
         {
-            textUI.text = $"+{xp}";
-            gameObject.SetActive(true);
+            // textUI.text = $"+{xp}";
+            gameObject.SetActive(false);
             rectTransform.localScale = Vector3.one * size;
 
             var currentAnchorPos = new Vector2(Random.Range(-50f, 50f), Random.Range(-20f, 20f));

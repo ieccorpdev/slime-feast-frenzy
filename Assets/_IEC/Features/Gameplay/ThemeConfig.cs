@@ -22,7 +22,7 @@ namespace _IEC.Features.Gameplay
             if (themeModel == null)
             {
                 //Debug.LogError("Cant find theme: " + themeId);
-                themeModel = groundThemeConfigModels[0];
+                themeModel = groundThemeConfigModels[2];
             }
             var prefab = themeModel.GetElementById(id);
             if (prefab == null)
