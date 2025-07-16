@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
-using _IEC.Features.VipProHackerUITutorial;
 using DG.Tweening;
 using IEC;
 using Sirenix.OdinInspector;
@@ -39,12 +38,12 @@ public class PlayableController : _BaseBehaviour
     public float mapHeight = 0;
     [LunaPlaygroundField("fixedTimeStep", 0, "Config")]
     public float fixedTimeStep = 0.12f;
-    public int level;
     public PrefabConfig prefabConfig;
     public bool isEndGame = false;
-    [LunaPlaygroundField("max Item Spawn", 0, "Config")]
-    public int maxItemSpawn = 200;
     public int countShowTutorial;
+    public List<LevelDataSO> levelDataList;
+    [LunaPlaygroundField("Level", 0, "Config")]
+    public int level;
 
     public bool PlayableStarted
     {
@@ -62,10 +61,9 @@ public class PlayableController : _BaseBehaviour
 
     public InGamePlayGroup InGamePlayGroup;
 
-    public FloatingJoystick Joystick;
     public Material waveWaterMaterial;
-    public LevelDataSO levelData;
     public List<ItemDefinition> ListItemDefinition;
+
 #if UNITY_EDITOR
     public GameplayItemPrefabConfig itemPrefabConfig;
 
@@ -77,19 +75,39 @@ public class PlayableController : _BaseBehaviour
             ListItemDefinition = new List<ItemDefinition>();
         }
         ListItemDefinition.Clear();
-        foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
+        
+        foreach(var selectedLevelData in levelDataList)
         {
-            var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
-            if (itemDefinition == null)
+            foreach (var itemSpawn in selectedLevelData.levelSpawnData.listItemSpawns)
             {
-                Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
-                continue;
+                var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
+                if (itemDefinition == null)
+                {
+                    Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
+                    continue;
+                }
+                ListItemDefinition.Add(itemDefinition);
             }
-            ListItemDefinition.Add(itemDefinition);
         }
+        
         EditorUtility.SetDirty(this);
     }
+
+    private void LateUpdate()
+    {
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            level--;
+            LoadLevel(level);
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            level++;
+            LoadLevel(level);
+        }
+    }
 #endif
+
     public ItemDefinition GetItemDefinition(string itemId)
     {
         var itemDefinition = this.ListItemDefinition.Find(x => x.GetId() == itemId);
@@ -132,8 +150,6 @@ public class PlayableController : _BaseBehaviour
             case 5:
                 break;
         }
-        
-
     }
 
     IEnumerator IShowHighLight()
@@ -159,9 +175,9 @@ public class PlayableController : _BaseBehaviour
     }
     public Button magnetButton;
 
-    public LevelDataSO GetLevelSpawnData(int level)
+    public LevelDataSO GetLevelSpawnData(int lv)
     {
-        return levelData;
+        return levelDataList[level];
     }
 
     IEnumerator IE_DelayLoadLevel()
@@ -179,7 +195,6 @@ public class PlayableController : _BaseBehaviour
     }
     public void LoadLevel(int level)
     {
-        this.level = level;
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
     }
 
@@ -308,11 +323,10 @@ public class PlayableController : _BaseBehaviour
         //     PlayableStarted = true;
 
     }
-
     public void ClearCacheData()
     {
-        levelData = null;
+#if !UNITY_EDITOR
+        levelDataList.Clear();
+#endif
     }
-
-    
 }

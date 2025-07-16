@@ -98,34 +98,6 @@ namespace _IEC.Features.Gameplay
             ChangeState(State.None);
         }
 
-        public void SpawnRelic(Vector3 pos, Vector3 rot, Vector3 scale, int spawmAmount)
-        {
-            if (isMaxItem) return;
-            var itemDefinition = PlayableController.Instance.ListItemDefinition[0];
-            for (int j = 0; j < spawmAmount; j++)
-            {
-                var newItem = Instantiate(itemDefinition.GetPrefab());
-                var itemComponent = newItem.GetComponent<BaseItem>();
-                if (itemComponent == null)
-                {
-                    itemComponent = newItem.AddComponent<BaseItem>();
-                }
-                var itemTransform = itemComponent.transform;
-                var itemData = new ItemData()
-                {
-                    itemId = "Relic_1",
-                    position = pos,
-                    eulerAngle = rot,
-                    localScale = scale,
-                    isStartKinematic = true,
-                };
-                itemTransform.parent = levelObjectHolder;
-                itemComponent.LoadData(itemData, itemDefinition);
-                itemComponent.transform.position = pos;
-                m_AllItems.Add(itemComponent);
-            }
-        }
-
         public List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
         {
             Debug.Log("SpawnAllItem");
@@ -279,7 +251,6 @@ namespace _IEC.Features.Gameplay
         }
 
         public Hole GetHolePlayer() => playerHole;
-        public bool isMaxItem => GetAllItems().Count >= PlayableController.Instance.maxItemSpawn;
         public bool isEnabeSpawnMaxItem = false;
 
         public List<BaseItem> GetAllItems()
