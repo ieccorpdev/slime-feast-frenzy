@@ -290,6 +290,7 @@ namespace ToonyColorsPro
 
 				if (readmePathFull == null)
 				{
+					Debug.LogError("Couldn't find the path to '!ToonyColorsPro Readme.txt', you might have to reimport Toony Colors Pro.\nThis file is necessary to figure out the root directory of Toony Colors Pro.");
 					return null;
 				}
 
