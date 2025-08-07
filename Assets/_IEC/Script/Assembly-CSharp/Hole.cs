@@ -156,7 +156,20 @@ public class Hole : _BaseBehaviour
 		UpdateGravityBySpeed();
 	}
 
-	private void CheckIncreaseCharacterSizeOnIdle()
+    private void FixedUpdate()
+    {
+        foreach (var item in GamePlay.levelController.GetAllItems())
+        {
+            if (item == null || item.IsCollected)
+                continue;
+            if (Vector2.Distance(new Vector2(item.transform.position.x, item.transform.position.z), new Vector2(transform.position.x, transform.position.z)) < GetDistanceToObject() / 2)
+            {
+                item.Rb.isKinematic = false;
+            }
+        }
+    }
+
+    private void CheckIncreaseCharacterSizeOnIdle()
 	{
 		if (m_characterIdleSizeIncrease < Mathf.Epsilon)
 			return;
