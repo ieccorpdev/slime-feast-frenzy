@@ -8,7 +8,7 @@ namespace IEC
     public interface IReceiptVerifyService
     {
 #if (PluginUnityIAP)
-        void CheckReceipt(Product product, Action<bool> callback);
+        void CheckReceipt(Product product, bool isRestore, Action<bool> callback);
 #endif
     }
 }

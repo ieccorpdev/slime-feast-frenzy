@@ -45,6 +45,7 @@ public class ServicesConfig : ScriptableObject
     [Header("Iap Config")]
     public bool IapTestFree;
     public IapConfig IapConfig;
+    public string IapAdjustVerifyUrl;
 
     [Header("LeaderBoard")]
     public string DtaAppId;
@@ -72,6 +73,9 @@ public class ServicesConfig : ScriptableObject
     [Header("SDK Version")]
     public string firebaseSDKVersion;
     public string firebaseRemoteSDKVersion;
+    
+    [Header("Discord Webhook")]
+    public string discordWebhook;
 
     [HideInInspector]
     public string GDPR_KEY = "Gdpr";

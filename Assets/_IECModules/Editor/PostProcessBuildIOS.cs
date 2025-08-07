@@ -81,6 +81,10 @@ public class PostProcessBuildIOS : MonoBehaviour
             
             //Fix upload ipa xcode 14
             pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES", "NO");
+            //Fix upload ipa xcode 15
+            pbxProject.SetBuildProperty(pbxProject.GetUnityFrameworkTargetGuid(), "MARKETING_VERSION", PlayerSettings.bundleVersion);
+            // Add AdServices framework
+            pbxProject.AddFrameworkToProject(mainTargetGuid, "AdServices.framework", true );
             //
             pbxProject.WriteToFile(projectPath);
             
@@ -160,7 +164,9 @@ public class PostProcessBuildIOS : MonoBehaviour
             "yrqqpx2mcb.skadnetwork",
             "z4gj7hsk7h.skadnetwork",
             "su67r6k2v3.skadnetwork",
-            "h65wbv5k3f.skadnetwork"
+            "h65wbv5k3f.skadnetwork",
+            "z24wtl6j62.skadnetwork",
+            "k6y4y55b64.skadnetwork",
         };
         
         AddMissingSKAdNetworkID(listMissing, path);

@@ -9,10 +9,8 @@ namespace IEC
 {
     public class ABTestController : _BaseBehaviour, IController, IEventListener, IEventAwake, IEventStart
     {
-        #region COMMON
-
+#region COMMON
         const string SEMI_OVERRIDE_KEY = "Override.";
-
         public void LocateController()
         {
             Controllers.Add(this);
@@ -100,6 +98,8 @@ namespace IEC
             var curTestDate = abConfig.GetAbTestDate(abValue);
             var activeAb = listAbTestConfig.FindLast(x => x.IsActive);
             var activeDate = activeAb.GetAbTestDate(0);
+            var isNewAbDate = curTestDate.config.KeyName != activeDate.config.KeyName;
+            PlayerData.AddUserVersion(Application.version, isNewAbDate ? activeDate.FullVersion : curTestDate.FullVersion);
 
             CheckSemiOverride(curTestDate, activeDate, activeAb, dictOverride);
 
@@ -169,6 +169,7 @@ namespace IEC
 
             string oldVersion = "AB_" + curTestDate.date + "_v" + curTestDate.version;
             string newVersion = "AB_" + activeDate.date + "_v" + checkOverride;
+            PlayerData.AddUserVersion(Application.version, newVersion, true);
             string eventName = "Override_AB_";
             eventName += activeDate.date;
 
@@ -191,10 +192,12 @@ namespace IEC
                 cheatCode = ModuleController.cheatCode.GetCheatCodeParam(cheatCodeName);
             }
 
+            Pool.Get<ServiceData>().curAbTestDate = abTestConfig.ListEventsAB[abValue];
             cheatCode.action = cheatCodeParam =>
             {
                 abValue = cheatCodeParam.dropdownParam.value;
                 Services.DataNormal().SetInt(abTestConfig.KeyName, abValue);
+                Pool.Get<ServiceData>().curAbTestDate = abTestConfig.ListEventsAB[abValue];
                 ApplyAbTest(abTestConfig);
                 ResultAllAbTest();
             };
