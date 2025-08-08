@@ -111,6 +111,11 @@ namespace _IEC.Features.Gameplay
             {
                 return;
             }
+            if (m_ItemData.itemId == "Wind_Surf")
+                this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
+                {
+                    helperId = HelperId.SpeedUp
+                });
             this.RaiseEvent(EventList.GamePlay.COLLECT_ITEM,new CollectItemData()
             {
                 itemID = m_ItemData.itemId,

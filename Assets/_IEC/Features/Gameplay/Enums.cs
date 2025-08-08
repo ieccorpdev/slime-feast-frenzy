@@ -61,7 +61,8 @@ namespace _IEC.Features.Gameplay
         Magnet,
         FrozenTime,
         ScaleUp,
-        Compass
+        Compass,
+        SpeedUp,
     }
 
     public enum LevelType

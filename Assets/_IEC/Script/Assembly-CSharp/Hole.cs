@@ -32,7 +32,7 @@ public class Hole : _BaseBehaviour
 	[SerializeField] private ParticleSystem exploreVfx;
 	[SerializeField] private ParticleSystem deathVfx;
 	[SerializeField] private ParticleSystem lightningVfx;
-	[SerializeField] private ParticleSystem speedLinesVFX;
+	[SerializeField] private GameObject speedLinesVFX;
 	public ParticleSystem waterSplashFx;
 	[Header("Character")]
 	[SerializeField]private Transform characterGraphics;
@@ -74,7 +74,7 @@ public class Hole : _BaseBehaviour
 	private bool onSharkForm;
 	private bool onInitAnimNewGame;
 	private float _speedBoosterIncrease;
-	private float timeEffectSpeedBooster;
+	public float timeEffectSpeedBooster;
 
 	private float timeAdditionalCamSize;
 	private float _additionalCamSize;
@@ -125,11 +125,9 @@ public class Hole : _BaseBehaviour
 			}
 			else
 			{
-				if (speedLinesVFX.isPlaying)
-				{
-					speedLinesVFX.Stop();
-				}
-			}
+				speedLinesVFX.SetActive(false);
+
+            }
 
 			if (timeAdditionalCamSize > 0)
 			{
@@ -297,7 +295,7 @@ public class Hole : _BaseBehaviour
 	{
 		_speedBoosterIncrease = boosterIncrease;
 		timeEffectSpeedBooster += timeEffect;
-		speedLinesVFX.Play();
+		speedLinesVFX.SetActive(true);
 	}
 	
 	public void PushItemToTrackingList(BaseItem baseItem)
@@ -583,6 +581,10 @@ public class Hole : _BaseBehaviour
 		vfx.Play();
 	}
 	
+	public void StartSpeedUpByHelper()
+	{
+		_speedBoosterIncrease = 10;
+	}
 
 	private float CalculateIndices(float baseIndices, float level, float bias)
 	{
@@ -623,7 +625,6 @@ public class Hole : _BaseBehaviour
 		//levelUpVfx.Stop();
 		sizeUpVfx.Stop();
 		levelUpVfx.Stop();
-		speedLinesVFX.Stop();
 	}
 
 	#region Character Animation

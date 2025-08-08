@@ -491,6 +491,10 @@ namespace _IEC.Features.Gameplay
                 m_ScaleUpHelperCoolDown = PlayableController.Instance.gamePlayConfig.GetHelperActiveTime(HelperId.ScaleUp);
                 m_ScaleUpHelperActive = true;
             }
+            if (data.helperId == HelperId.SpeedUp)
+            {
+                playerHole.OnCollectSpeedBooster(100, 5);
+            }
         }
 
         private void CollectObjectiveItem(CollectItemData data)
