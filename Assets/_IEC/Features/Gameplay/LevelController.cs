@@ -100,7 +100,6 @@ namespace _IEC.Features.Gameplay
 
         public void SpawnRelic(Vector3 pos, Vector3 rot, Vector3 scale, int spawmAmount)
         {
-            if (isMaxItem) return;
             var itemDefinition = PlayableController.Instance.ListItemDefinition[0];
             for (int j = 0; j < spawmAmount; j++)
             {
@@ -113,7 +112,7 @@ namespace _IEC.Features.Gameplay
                 var itemTransform = itemComponent.transform;
                 var itemData = new ItemData()
                 {
-                    itemId = "Relic_1",
+                    itemId = itemDefinition.GetId(),
                     position = pos,
                     eulerAngle = rot,
                     localScale = scale,
@@ -224,6 +223,7 @@ namespace _IEC.Features.Gameplay
             var themeId = m_LevelConfig.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
             PlayableController.Instance.ClearCacheData();
+            SpawnRelic(new Vector3(2, 0, 5), Vector3.zero, Vector3.one, 1);
         }
 
         public void StartPlay()
