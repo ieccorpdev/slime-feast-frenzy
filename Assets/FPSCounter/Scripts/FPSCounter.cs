@@ -15,10 +15,13 @@ public class FPSCounter : MonoBehaviour
     float minFps = float.MaxValue;
     float totalFps = 0f;
     int totalIntervals = 0;
-
+    [LunaPlaygroundField("showFPS", 0, "Config")]
+    public bool showFPS = true;
     void Start()
     {
         txt = GetComponent<TMP_Text>();
+        txt.enabled = showFPS;
+        Application.targetFrameRate = 60;
     }
 
     void Update()
@@ -37,12 +40,21 @@ public class FPSCounter : MonoBehaviour
             totalIntervals++;
 
             float avgFps = totalFps / totalIntervals;
-
-            txt.text = string.Format(
+            if (showFPS)
+            {
+                txt.text = string.Format(
                 "FPS: {0:0}\nMax: {1:0}\nMin: {2:0}\nAvg: {3:0}",
                 fps, maxFps, minFps, avgFps
-            );
-            
+                );
+            }
+            if (fps < 30 && PlayableController.Instance.fixedTimeStep != 0)
+            {
+                Time.fixedDeltaTime = PlayableController.Instance.fixedTimeStep;
+            }
+            else
+            {
+                Time.fixedDeltaTime = 0.04f;
+            }
             time = 0.0f;
             frames = 0;
         }
