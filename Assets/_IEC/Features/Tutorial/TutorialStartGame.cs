@@ -94,7 +94,7 @@ namespace _IEC.Features.Tutorial
                     DOVirtual.DelayedCall(0.1f, () =>
                     {
                         collectInYourHole.gameObject.SetActive(false);
-                        hintCollectItems.gameObject.SetActive(true);
+                        // hintCollectItems.gameObject.SetActive(true);
                     }).SetId(DelayTweenId);
                     break;
             }

@@ -47,7 +47,7 @@ namespace _IEC.Features.Gameplay
             
             if (IsColliderCompletelyInTrigger(triggerBounds, otherBounds))
             {
-                item.EnterHoleTrigger();
+                // item.EnterHoleTrigger();
             }
         }
         

@@ -39,8 +39,8 @@ namespace _IEC.Features.Gameplay
         private LevelData m_CurrentLevelData;
         private float m_MagnetHelperCoolDown;
         private float m_ScaleUpHelperCoolDown;
-        private bool m_ScaleUpHelperActive;
-        private bool m_MagnetHelperActive;
+        [SerializeField] private bool m_ScaleUpHelperActive;
+        [SerializeField] private bool m_MagnetHelperActive;
         private bool m_IsGameplayPause;
         private int m_Level;
         private List<BaseItem> m_ObjectiveItems = new List<BaseItem>();
@@ -101,7 +101,8 @@ namespace _IEC.Features.Gameplay
         public void SpawnRelic(Vector3 pos, Vector3 rot, Vector3 scale, int spawmAmount)
         {
             if (isMaxItem) return;
-            var itemDefinition = PlayableController.Instance.ListItemDefinition[0];
+            // var itemDefinition = PlayableController.Instance.ListItemDefinition[0];
+            var itemDefinition = PlayableController.Instance.itemDefinitions[0];
             for (int j = 0; j < spawmAmount; j++)
             {
                 var newItem = Instantiate(itemDefinition.GetPrefab());
@@ -128,10 +129,9 @@ namespace _IEC.Features.Gameplay
 
         public List<BaseItem> SpawnAllItem(List<ItemSpawn> listItemData, Transform levelObjectHolder, int versionItem)
         {
-            Debug.Log("SpawnAllItem");
+            // Debug.Log("SpawnAllItem");
             var res = new List<BaseItem>();
-
-            Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
+            // Debug.Log(listItemData == null ? "myList is null!" : "myList has " + listItemData.Count + " items");
             foreach (var itemSpawn in listItemData)
             {
                 var itemDefinition = PlayableController.Instance.GetItemDefinition(itemSpawn.id);
@@ -209,28 +209,31 @@ namespace _IEC.Features.Gameplay
 
         public void LoadLevel(int level)
         {
-            m_Level = level;
-            int index = Mathf.Max(0, level - 1);
-            var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData(index);
 
-            m_AllItems.Clear();
-            var levelSpawnData = m_LevelConfig.levelSpawnData;
+            ClearLevel();
+            m_Level = level;
+
+            // var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData(index);
+            LevelDataSO currentLevel = PlayableController.Instance.CurrentLevel;
+
+
+            var levelSpawnData = currentLevel.levelSpawnData;
             m_AllItems = SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
             if (!Game.isUsingGroundExtend)
             {
-                LevelHelper.SpawnMap(m_LevelConfig, levelObjectHolder);
+                LevelHelper.SpawnMap(currentLevel, levelObjectHolder);
             }
 
-            m_AllBombs = LevelHelper.SpawnAllBomb(m_LevelConfig, m_AllItems, allItemHolder);
-            m_CurrentLevelData = LevelHelper.CreateLevelData(m_LevelConfig, level);
+            m_AllBombs = LevelHelper.SpawnAllBomb(currentLevel, m_AllItems, allItemHolder);
+            m_CurrentLevelData = LevelHelper.CreateLevelData(currentLevel, level);
 
-            SetUpStartHolePosition(m_LevelConfig.mapCenter);
+            SetUpStartHolePosition(currentLevel.mapCenter);
             SearchAllObjectiveItems(m_AllItems);
             Reset();
             playerHole.HideLevelText();
-            var themeId = m_LevelConfig.theme;
+            var themeId = currentLevel.theme;
             this.RaiseEvent(EventList.GamePlay.ON_LEVEL_LOADED, new EventLevelLoad(m_AllItems, themeId));
-            PlayableController.Instance.ClearCacheData();
+
         }
 
         public void StartPlay()
@@ -295,7 +298,7 @@ namespace _IEC.Features.Gameplay
                 isEnabeSpawnMaxItem = true;
             }
             return m_AllItems;
-        }  
+        }
 
         public Transform GetLevelObjectHolder() => levelObjectHolder;
         public Transform GetAllItemHolder() => allItemHolder;
@@ -439,23 +442,6 @@ namespace _IEC.Features.Gameplay
             }
         }
 
-        //List<BaseItem> SpawnBoosterItem(SpawnBoosterEventData data, MagicPouchBoosterType type)
-        //{
-        //    var itemDef = Config.magicPouchConfig.boosters.Find(x => x.type == type).itemDefinition;
-        //    if (itemDef == null)
-        //    {
-        //        Debug.LogError($"Missing item definition for {type}");
-        //        return null;
-        //    }
-        //    
-        //    return LevelHelper.SpawnBoosterItems(data.countWinStreak, allItemHolder, itemDef, new ItemData
-        //    {
-        //        itemId = itemDef.GetId(),
-        //        eulerAngle = Vector3.zero,
-        //        isStartKinematic = true,
-        //        position = data.posStartSpawn
-        //    });
-        //}
 
         private Vector3 GetRandomPositionInCircle(Vector3 center, float radius, float minDistanceFromCenter)
         {
@@ -485,7 +471,7 @@ namespace _IEC.Features.Gameplay
 
         private void OnUserUseHelper(object param)
         {
-            var data = (UserUseHelper) param;
+            var data = (UserUseHelper)param;
             if (data.helperId == HelperId.Magnet)
             {
                 playerHole.StartMagnetHelper();
@@ -638,6 +624,7 @@ namespace _IEC.Features.Gameplay
                         m_MagnetHelperCoolDown -= Time.deltaTime;
                         if (m_MagnetHelperCoolDown < 0)
                         {
+                            PlayableController.Instance.IsUseMagnetHelper = false;
                             m_MagnetHelperCoolDown = 0;
                             playerHole.StopMagnetHelper();
                             m_MagnetHelperActive = false;
@@ -698,6 +685,17 @@ namespace _IEC.Features.Gameplay
         public void LocateGroup()
         {
             Pool.Set(this);
+        }
+
+
+        public void ClearLevel()
+        {
+            var listItemInScenes = GetComponentsInChildren<BaseItem>();
+            foreach (var item in listItemInScenes)
+            {
+                Destroy(item.gameObject);
+            }
+            m_AllItems.Clear();
         }
     }
 }

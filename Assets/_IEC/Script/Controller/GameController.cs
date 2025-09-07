@@ -35,34 +35,34 @@ namespace IEC
                 case EventList.GamePlay.NEW_GAME:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
                     OnNewGame();
-                    PlayableController.Instance.ConfettiGroup.StopConfetti();
-                    //Pool.Get<ConfettiGroup>().StopConfetti();
-//                    Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM,true);
+                    // PlayableController.Instance.ConfettiGroup.StopConfetti();
+                 
                     break;
                 case EventList.GamePlay.NEW_GAME_HARD_LEVEL:
                     EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME_HARD);
                     OnNewGameHardLevel();
-                    PlayableController.Instance.ConfettiGroup.StopConfetti();
-                    //Pool.Get<ConfettiGroup>().StopConfetti();
+                    // PlayableController.Instance.ConfettiGroup.StopConfetti();
+                    
                     break;
                 case EventList.GamePlay.LEVEL_WIN:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
-//                    PlayerData.IncreaseBoosterStreak();
-   //                 PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
+                    PlayableController.Instance.NextLevel();
+                    //                    PlayerData.IncreaseBoosterStreak();
+                    //                 PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
                     // if(GamePlay.IsInLevelHard)
                     //     GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
                     // else
                     //GamePlay.IsWin = true;
-                    OnGameOver();
-                    PlayableController.Instance.ConfettiGroup.ShowConfetti();
+                    // OnGameOver();
+                    // PlayableController.Instance.ConfettiGroup.ShowConfetti();
+
 
                     //Pool.Get<ConfettiGroup>().ShowConfetti();
                     break;
                 case EventList.GamePlay.LEVEL_LOSE:
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.LOSE);
-
                     //GamePlay.IsWin = false;
                     OnGameOver();
                     break;
@@ -91,28 +91,34 @@ namespace IEC
         public void BehaviourStart()
         {
         
-            // Locator.Service.ScreenLoading.ShowLoading(0.5f, () =>
-            // {
-                // Scene.SendEvent(EventList.GamePlay.GO_MAIN);
-                // if (PlayerData.level < Config.levelWinBackHome)
-                // {
-                //     OpenScene(GameScene.Game);
-                // }
-                // else
-                // {
-                //     EventController.RaiseEvent(EventList.Audio.BACKGROUND_HOME);
-                // }
-                
-                //Check reset progress reward when player start game
-  
-            //});
-            // EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
         }
 
         public void OnNewGame()
         {
-            GamePlay.SetNewLevel(PlayableController.Instance.level);
+
+
+            if (PlayableController.Instance.currentLevelIndex >= PlayableController.Instance.levelIndexs.Length)
+            {
+                EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
+                PlayableController.Instance.ShowEndCard();
+                return;
+            }
+            else
+            {
+                if (PlayableController.Instance.isUseItem)
+                {
+                    PlayableController.Instance.PlayableTutorial.canShow = true;
+                    PlayableController.Instance.PlayableTutorial.ShowTut();
+                }
+                else
+                {
+                    PlayableController.Instance.PlayableTutorial.HideTut();
+                }
+            }
+
+            GamePlay.SetNewLevel(PlayableController.Instance.currentLevelIndex);
             ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
+
             ScreenInGame.Show();
             GamePlay.StartGamePlay();
             //GamePlay.SetGameState(Locator.Game.ScreenInGame);

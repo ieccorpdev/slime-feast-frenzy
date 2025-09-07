@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using _IEC.Features.Common.Extension;
 using _IEC.Features.Gameplay;
 using _IEC.Features.Gameplay.ObserverEventData;
-using _IEC.Features.VipProHackerUITutorial;
 using DG.Tweening;
 using IEC;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
@@ -51,7 +49,7 @@ public class PlayableController : _BaseBehaviour
         get;
         private set;
     }
-    
+
     public bool InitMoveAnimDone
     {
         get;
@@ -64,41 +62,97 @@ public class PlayableController : _BaseBehaviour
 
     public FloatingJoystick Joystick;
     public Material waveWaterMaterial;
-    public LevelDataSO levelData;
-    public List<ItemDefinition> ListItemDefinition;
+    // public LevelDataSO levelData; 
+    // public List<ItemDefinition> ListItemDefinition;
+
+    public PlayableTutorial PlayableTutorial;
+    [Space]
+    [Header("List level to play")]
+    public List<ItemDefinition> itemDefinitions;
+    [Space]
+    public List<LevelDataSO> levelDatas;
+    [Space]
+    [LunaPlaygroundField("Use Item")] public bool isUseItem = true;
+    [LunaPlaygroundField("Levels index")] public int[] levelIndexs;
+    public int currentLevelIndex;
+    public LevelDataSO CurrentLevel => levelDatas[levelIndexs[currentLevelIndex]];
+
+
+    public bool IsUseMagnetHelper = false;
+
+
+
+
 #if UNITY_EDITOR
     public GameplayItemPrefabConfig itemPrefabConfig;
 
+    // [Button]
+    // public void InitItemDefinition()
+    // {
+    //     if (ListItemDefinition == null)
+    //     {
+    //         ListItemDefinition = new List<ItemDefinition>();
+    //     }
+    //     ListItemDefinition.Clear();
+    //     foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
+    //     {
+    //         var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
+    //         if (itemDefinition == null)
+    //         {
+    //             Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
+    //             continue;
+    //         }
+    //         ListItemDefinition.Add(itemDefinition);
+    //     }
+    //     EditorUtility.SetDirty(this);
+    // }
+
     [Button]
-    public void InitItemDefinition()
+    public void InitAllItemDefination()
     {
-        if (ListItemDefinition == null)
+        if (itemDefinitions == null) itemDefinitions = new();
+        itemDefinitions.Clear();
+        levelDatas?.ForEach(levelData =>
         {
-            ListItemDefinition = new List<ItemDefinition>();
-        }
-        ListItemDefinition.Clear();
-        foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
-        {
-            var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
-            if (itemDefinition == null)
+            if (levelData.levelSpawnData == null)
             {
-                Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
-                continue;
+                Debug.LogError("Không có level Spawn Data rồi bé ơi");
             }
-            ListItemDefinition.Add(itemDefinition);
-        }
-        EditorUtility.SetDirty(this);
+            foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
+            {
+                var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
+                if (itemDefinition == null)
+                {
+                    Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
+                    continue;
+                }
+                if (!itemDefinitions.Contains(itemDefinition))
+                {
+                    itemDefinitions.Add(itemDefinition);
+                }
+            }
+        });
     }
+
 #endif
+    // public ItemDefinition GetItemDefinition(string itemId)
+    // {
+    //     var itemDefinition = this.ListItemDefinition.Find(x => x.GetId() == itemId);
+    //     return itemDefinition;
+    // }
+
     public ItemDefinition GetItemDefinition(string itemId)
     {
-        var itemDefinition = this.ListItemDefinition.Find(x => x.GetId() == itemId);
+        var itemDefinition = this.itemDefinitions.Find(x => x.GetId() == itemId);
         return itemDefinition;
     }
 
     public void Awake()
     {
         instance = this;
+#if UNITY_EDITOR
+        InitAllItemDefination();
+#endif
         Application.targetFrameRate = 60;
         if (fixedTimeStep > 0)
             Time.fixedDeltaTime = fixedTimeStep;
@@ -106,42 +160,17 @@ public class PlayableController : _BaseBehaviour
 
     private void Start()
     {
-
-        EventController.RaiseEvent(EventList.Audio.BACKGROUND_INGAME);
-        LoadLevel(level);
-
-        ShowTutorial();
-
-        switch (level)
+        LoadLevel(currentLevelIndex);
+        if(!isUseItem)
         {
-            case 1:
-                break;
-            case 2:
-                if (useHelper)
-                {
-                    magnetButton.onClick.RemoveAllListeners();
-                    magnetButton.onClick.AddListener(OnMagnetButtonClicked);
-                    StartCoroutine(IShowHighLight());
-                }
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
+            PlayableTutorial.HideTut();
         }
-        
-
     }
 
-    IEnumerator IShowHighLight()
-    {
-        yield return new WaitForSeconds(5);
-        this.RaiseEvent(EventList.GamePlay.PAUSE_GAME);
-    }
+
     public void OnMagnetButtonClicked()
     {
+        IsUseMagnetHelper = true;
         this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
         {
@@ -150,32 +179,14 @@ public class PlayableController : _BaseBehaviour
     }
     public void OnExpandButtonClicked()
     {
+        print("OnExpandButtonClicked");
         this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
         this.RaiseEvent(EventList.GamePlay.USER_USE_HELPER, new UserUseHelper()
         {
             helperId = HelperId.ScaleUp
         });
     }
-    public Button magnetButton;
 
-    public LevelDataSO GetLevelSpawnData(int level)
-    {
-        return levelData;
-    }
-
-    IEnumerator IE_DelayLoadLevel()
-    {
-        yield return new WaitForSeconds(3);
-    }
-    Color HexToColor(string hex)
-    {
-        Color color;
-        if (ColorUtility.TryParseHtmlString(hex, out color))
-        {
-            return color;
-        }
-        return Color.black; // fallback
-    }
     public void LoadLevel(int level)
     {
         this.level = level;
@@ -185,73 +196,8 @@ public class PlayableController : _BaseBehaviour
     public void DoneInitMoveAnim()
     {
         InitMoveAnimDone = true;
-        ShowTutorial();
     }
 
-    private void Update()
-    {
-        //ProcessInput();
-        // time += Time.deltaTime;
-        // if (time >= tutorialDuration)
-        // {
-        //     ShowTutorial();
-        // }
-    }
-
-    private void ShowTutorial()
-    {
-        // if (currentTutorial >= numTutorial) return;
-        // if (isShowingTutorial) return;
-        // if (isGameEnded) return;
-        // // Vector3 panelPos = LevelGenerator.GetRandomPanelPos();
-        // // if(panelPos == Vector3.zero) return;
-        //
-        // // var tile = LevelGenerator.TilePanels[0].Tiles.FirstOrDefault(tile =>
-        // //     tile.ColorType == LevelGenerator.TargetLines[0].TargetPanels[0].ColorType);
-        // //
-        // // Debug.Log(tile, tile);
-        //
-        // //Vector3 tilePos = LevelGenerator.TilePanels[0].Tiles[0].transform.position;
-        // //Vector3 tilePos = tile.transform.position;
-        //
-        // //hand.position = tilePos + new Vector3(0.5f, 1,1);
-        // hand.position =  new Vector3(0.76f, 1,8.78f);
-        // isShowingTutorial = true;
-        // hand.eulerAngles = new Vector3(90, 0, -20);
-        // sq = DOTween.Sequence();
-        // sq.Append(hand.DORotate(new Vector3(90,0,-5),0.4f));
-        // sq.AppendInterval(0.1f);
-        // sq.SetLoops(-1, LoopType.Yoyo);
-        // time = 0;
-        // lastTimeTap = Time.time;
-        // currentTutorial++;
-        // hand.gameObject.SetActive(true);
-    }
-
-    private void HideTutorial()
-    {
-        // if(!isShowingTutorial) return;
-        // sq?.Kill();
-        // isShowingTutorial = false;
-        // hand.gameObject.SetActive(false);
-    }
-    private void ProcessInput()
-    {
-        float timeInerval = 5;
-        // if (Time.time - lastTimeTap  >= 5)
-        // {
-        //     ShowTutorial();
-        // }
-        if(Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            LoadLevel(level - 1);
-        }
-        
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            LoadLevel(level + 1);
-        }
-    }
     public void OnEndOfTime()
     {
         ShowEndCard();
@@ -272,21 +218,6 @@ public class PlayableController : _BaseBehaviour
 
     public void ShowEndCard()
     {
-        // if (isGameEnded) return;
-        // HideTutorial();
-        // isGameEnded = true;
-        // endCard.alpha = 0;
-        // icon.localPosition = Vector3.up * 800;
-        // playNow.localPosition = Vector3.down * 800;
-        // endCard.gameObject.SetActive(true);
-        // endCard.alpha = 1;
-        // //endCard.DOFade(1, 1f);
-        // icon.DOLocalMoveY(200, 1f);
-        // playNow.DOLocalMoveY(-300, 1f).OnComplete(() =>
-        // {
-        //     playNow.DOScale(Vector3.one * 1.1f, 0.75f).SetLoops(-1, LoopType.Yoyo);
-        // });
-        
         screenLevelWin.Show();
         isEndGame = true;
     }
@@ -297,21 +228,26 @@ public class PlayableController : _BaseBehaviour
         Debug.Log("Download started");
     }
 
-    public void OnMove()
-    {
-        // time = 0;
-        // lastTimeTap = Time.time;
-        // HideTutorial();
-        //
-        // if (!PlayableStarted)
-        //     PlayableStarted = true;
 
+    public void NextLevel()
+    {
+        StartCoroutine(NextLevelCouroutine());
+    }
+    public void StopShowConfetti()
+    {
+        ConfettiGroup.StopConfetti();
     }
 
-    public void ClearCacheData()
+    private IEnumerator NextLevelCouroutine()
     {
-        levelData = null;
-    }
-
-    
+        yield return new WaitUntil(() => !GroupLevelObjectives.Instance.IsCollecting);
+        ConfettiGroup.ShowConfetti();
+        Invoke(nameof(StopShowConfetti), 3f);
+        if (currentLevelIndex < levelIndexs.Length)
+        {
+            currentLevelIndex++;
+            LoadLevel(currentLevelIndex);
+            EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+        }
+    }    
 }

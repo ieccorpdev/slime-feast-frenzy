@@ -10,6 +10,8 @@ namespace _IEC.Features.Gameplay
 {
     public class GroupLevelObjectives : MonoBehaviour
     {
+        public static GroupLevelObjectives Instance;
+
         public List<LevelObjectiveUI> levelObjectiveUis;
         [SerializeField] private Transform holder;
         [SerializeField] private Transform vfxHolder;
@@ -17,50 +19,34 @@ namespace _IEC.Features.Gameplay
         [SerializeField] private LevelObjectiveUI specialObjectiveUI;
         public GameObject specialObjectiveParent;
 
-        // private void Awake()
-        // {
-        //     this.RegisterListener(EventList.GamePlay.RESUME_GAME, OnGameResume);
-        // }
-        //
-        // private void OnDestroy()
-        // {
-        //     this.UnregisterListener(EventList.GamePlay.RESUME_GAME, OnGameResume);
-        // }
-        // void OnGameResume()
-        // {
-        //     if (Pool.Get<LevelController>().GetLevelData().levelType == LevelType.Coin) return;
-        //     foreach (var objectiveUI in levelObjectiveUis)
-        //     {
-        //         if(objectiveUI == null || !objectiveUI.gameObject.activeInHierarchy) continue;
-        //         var objectiveData = Pool.Get<LevelController>().GetLevelData().levelObjectives.Find(x => x.itemId == objectiveUI.itemId);
-        //         if (objectiveData == null)
-        //         {
-        //             Debug.LogError($"Missing objective??? {objectiveUI.itemId}");
-        //             continue;
-        //         }
-        //         
-        //         if(objectiveUI.IsComplete() || objectiveUI.CurrentNumber == objectiveData.number) continue;
-        //         objectiveUI.SetNumber(objectiveData.number);
-        //     }
-        // }
         
-        public void CollectAObject(string itemId, Vector2 startAnchorPosition)
+        
+        private int _collectedCount = 0;
+        public bool IsCollecting => _collectedCount > 0;
+
+        void Awake()
         {
+            Instance = this;
+        }
+
+        public void CollectAObject(string itemId, Vector2 startAnchorPosition, Action onAllCollected = null)
+        {
+            _collectedCount++;
             var objectiveUI = GetLevelObjectiveUI(itemId);
-            //if (objectiveUI.IsComplete()) return;
             var objectiveVfx = Instantiate(PlayableController.Instance.prefabConfig.levelObjectiveVfx, this.vfxHolder);
             objectiveVfx.Reset();
             objectiveVfx.SetAnchorPosition(startAnchorPosition);
             objectiveVfx.SetSprite(objectiveUI.GetSprite());
             objectiveVfx.gameObject.SetActive(true);
-                        
+
             //cache the value to make sure UI is updated correctly after delaying
             bool isCompleted = IsObjectiveCompleted(itemId);
             int newNumber = GetRemainingObjectiveNumber(itemId);
-            
+
             Vector3 startPos = objectiveVfx.transform.position;
             Vector3 endPos = objectiveUI.GetIconPosition();
-            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f),0 , 0); // Add a Y offset to create a curve
+            Vector3 midPos = (startPos + endPos) / 2 + new Vector3(UnityEngine.Random.Range(-0.5f, 0.5f), 0, 0); // Add a Y offset to create a curve
+
 
             DOTween.Sequence()
                 .Append(objectiveVfx.GetRectTransform().DOPath(new Vector3[] { startPos, midPos, endPos }, 1f, PathType.CatmullRom))
@@ -70,6 +56,7 @@ namespace _IEC.Features.Gameplay
                     objectiveUI.SetNumber(newNumber, isCompleted);
                     Destroy(objectiveVfx.gameObject);
                     //objectiveVfx.Recycle();
+                    _collectedCount--;
                 });
         }
 
@@ -110,19 +97,23 @@ namespace _IEC.Features.Gameplay
             return m_ActiveObjectiveUIs.Find(x => x.itemId.ToLower().Equals(itemId.ToLower()));
         }
         
-        public void LoadObjectiveData(List<LevelObjective> levelObjectives,LevelType levelType)
+        
+        public void LoadObjectiveData(List<LevelObjective> levelObjectives, LevelType levelType)
         {
+
             m_ActiveObjectiveUIs.Clear();
-            for (int i = 0; i < levelObjectives.Count; i ++)
+            for (int i = 0; i < levelObjectives.Count; i++)
             {
                 var levelObjective = levelObjectives[i];
                 var levelObjectiveUIObject = levelObjectiveUis[i].gameObject;
                 levelObjectiveUIObject.SetActive(true);
                 var levelObjectiveUI = levelObjectiveUIObject.GetComponent<LevelObjectiveUI>();
                 levelObjectiveUI.Reset();
-                levelObjectiveUI.LoadData(levelObjective,levelObjective.itemId.ToLower().Contains("coin"));
+                levelObjectiveUI.LoadData(levelObjective, levelObjective.itemId.ToLower().Contains("coin"));
                 //levelObjectiveUis.Add(levelObjectiveUI);
-                levelObjectiveUI.transform.parent = holder;
+                // levelObjectiveUI.transform.parent = holder;
+                levelObjectiveUI.transform.SetParent(holder);
+
                 var rectTransform = levelObjectiveUI.GetComponent<RectTransform>();
                 var currentAnchorPos3D = rectTransform.anchoredPosition3D;
                 currentAnchorPos3D.z = 0;

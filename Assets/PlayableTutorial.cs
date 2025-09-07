@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class PlayableTutorial : MonoBehaviour
 {
     public Button buttonMagnet, buttonExpand, buttonSpeedUp;
-    private bool canShow = true;
+    public bool canShow = true;
     public int enableTimeScale;
 
     private void Start()
@@ -60,5 +60,11 @@ public class PlayableTutorial : MonoBehaviour
             canShow = false;
             this.gameObject.SetActive(true);
         }
+    }
+
+    public void HideTut()
+    {
+        this.gameObject.SetActive(false);
+        Time.timeScale = 1;
     }
 }

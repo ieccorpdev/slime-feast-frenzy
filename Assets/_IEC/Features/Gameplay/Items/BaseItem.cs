@@ -118,7 +118,11 @@ namespace _IEC.Features.Gameplay
                 position = position,
                 xp = m_ItemDefinition.GetXp()
             });
-            rb.velocity = -10 * Vector3.up;
+            if (!PlayableController.Instance.IsUseMagnetHelper)
+            {
+                rb.velocity = -10 * Vector3.up;
+            }
+            
             DisableAllCollider();
             _isCollected = true;
             //gameObject.Recycle();
@@ -259,8 +263,9 @@ namespace _IEC.Features.Gameplay
                 case State.Idle:
                     break;
                 case State.Collectable:
-                    rb.isKinematic = false;
+                    // rb.isKinematic = false;
                     SetLayer(LayerMainWorld);
+                    OnBecomeCollectable();
                     break;
                 case State.Falling:
                     break;
@@ -275,6 +280,7 @@ namespace _IEC.Features.Gameplay
                     break;
                 case State.Collectable:
                     SetLayer(LayerHole);
+                    // DelayCollectable(3f);
                     OnBecomeCollectable();
                     break;
                 case State.Falling:
@@ -298,11 +304,7 @@ namespace _IEC.Features.Gameplay
             {
                 posOnWater.enabled = false;
             }
-            // if (_specialItemHighlightEffect != null)
-            // {
-            //     _specialItemHighlightEffect.gameObject.SetActive(false);
-            // }
-
+           
         }
 
         #region New Whirlpool Logic
@@ -312,19 +314,6 @@ namespace _IEC.Features.Gameplay
     
         public void ManagedFixedUpdate()
         {
-            //bool hasRb = rb;
-
-            //if (!hasRb)
-            //{
-            //    if (Time.frameCount % 2 == 0)
-            //    {
-            //        if (IsInScreen(mainCam))
-            //        {
-            //            RestoreRigidbody();
-            //        }
-            //    }
-            //}
-            //else
             if (m_CurrentState != State.Collectable && !rb.isKinematic && !_isCollected)
             {
                 if (this.transform.position.y < PlayableController.Instance.mapHeight)
