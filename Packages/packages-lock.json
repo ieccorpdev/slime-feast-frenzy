@@ -149,7 +149,10 @@
       "version": "1.0.0",
       "depth": 0,
       "source": "builtin",
-      "dependencies": {}
+      "dependencies": {
+        "com.unity.modules.tilemap": "1.0.0",
+        "com.unity.modules.uielements": "1.0.0"
+      }
     },
     "com.unity.2d.tilemap.extras": {
       "version": "2.2.8",
@@ -239,15 +242,35 @@
       },
       "url": "https://packages.unity.com"
     },
+    "com.unity.multiplayer-hlapi": {
+      "version": "1.0.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "nuget.mono-cecil": "0.1.6-preview"
+      },
+      "url": "https://packages.unity.com"
+    "com.unity.nuget.mono-cecil": {
+      "version": "1.10.1",
+      "depth": 2,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.nuget.newtonsoft-json": {
+      "version": "3.2.1",
+      "depth": 2,
     "com.unity.nuget.newtonsoft-json": {
       "version": "3.2.1",
       "depth": 0,
+    },
       "source": "registry",
       "dependencies": {},
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
       "version": "4.12.2",
+      "version": "4.3.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
@@ -255,6 +278,8 @@
         "com.unity.services.core": "1.12.5",
         "com.unity.modules.androidjni": "1.0.0",
         "com.unity.modules.jsonserialize": "1.0.0",
+        "com.unity.services.analytics": "4.0.1",
+        "com.unity.modules.unityanalytics": "1.0.0",
         "com.unity.modules.unitywebrequest": "1.0.0"
       },
       "url": "https://packages.unity.com"
@@ -265,6 +290,17 @@
       "source": "registry",
       "dependencies": {
         "com.unity.timeline": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
+    "com.unity.services.analytics": {
+      "version": "5.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.ugui": "1.0.0",
+        "com.unity.services.core": "1.10.1",
+        "com.unity.modules.jsonserialize": "1.0.0"
       },
       "url": "https://packages.unity.com"
     },
@@ -494,17 +530,6 @@
     "com.unity.modules.uielements": {
       "version": "1.0.0",
       "depth": 0,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.modules.ui": "1.0.0",
-        "com.unity.modules.imgui": "1.0.0",
-        "com.unity.modules.jsonserialize": "1.0.0",
-        "com.unity.modules.uielementsnative": "1.0.0"
-      }
-    },
-    "com.unity.modules.uielementsnative": {
-      "version": "1.0.0",
-      "depth": 1,
       "source": "builtin",
       "dependencies": {
         "com.unity.modules.ui": "1.0.0",
