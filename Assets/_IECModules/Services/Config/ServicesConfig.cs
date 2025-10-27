@@ -104,7 +104,7 @@ public class ServicesConfig : ScriptableObject
         return EcpmAdsWaterfall;
     }
 
-    public List<RemoteConfigData> GetRemoteConfigs()
+    public RemoteConfigData[] GetRemoteConfigs()
     {
         if (remoteConfigs == null)
         {
@@ -115,7 +115,7 @@ public class ServicesConfig : ScriptableObject
         {
             remoteConfigs.Add(remoteCustomEventFirebase);
         }
-        return remoteConfigs;
+        return remoteConfigs.ToArray();
     }
 
     public List<ABTestConfig> GetListAbTestConfig()
