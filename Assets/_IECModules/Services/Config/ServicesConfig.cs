@@ -38,6 +38,7 @@ public class ServicesConfig : ScriptableObject
     EcpmAdConfig[] EcpmAdsWaterfall;
 
     public AdsConfig ApplovinConfig;
+    public List<AdsConfigWithName> listApplovinHackConfig = new List<AdsConfigWithName>();
     public AdsConfig IronSourceConfig;
     public OguryAdsConfig OguryConfig;
     public AmazonConfig AmazonConfig;
@@ -104,7 +105,7 @@ public class ServicesConfig : ScriptableObject
         return EcpmAdsWaterfall;
     }
 
-    public List<RemoteConfigData> GetRemoteConfigs()
+    public RemoteConfigData[] GetRemoteConfigs()
     {
         if (remoteConfigs == null)
         {
@@ -115,7 +116,7 @@ public class ServicesConfig : ScriptableObject
         {
             remoteConfigs.Add(remoteCustomEventFirebase);
         }
-        return remoteConfigs;
+        return remoteConfigs.ToArray();
     }
 
     public List<ABTestConfig> GetListAbTestConfig()

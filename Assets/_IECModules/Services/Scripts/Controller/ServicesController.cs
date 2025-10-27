@@ -73,6 +73,9 @@ namespace IEC
         public Action<string> onPushEvent;
         public AdsEnum bannerPos = AdsEnum.BANNER_BOTTOM;
         private string m_TicketId => SystemInfo.deviceUniqueIdentifier.Substring(0,12);
+
+        private float m_DeltaTime;
+        private bool m_InitAdDone;
         #endregion
 
 #if PluginByteDanceChinaIOS
@@ -124,8 +127,16 @@ namespace IEC
                     //ShowWhiteBanner();
 #endif
                     Ads().Load(bannerPos, null);
+#if PluginApplovin
+                    AssignVariables();
+                    LoadAd(AdsEnum.INTERSTITIAL);
+                    LoadAd(AdsEnum.REWARD);
+                    //StartCoroutine(IE_LoadAd(AdsEnum.INTERSTITIAL));
+                    //StartCoroutine(IE_LoadAd(AdsEnum.REWARD));
+#else
                     SetActiveBanner(bannerPos, false);
                     StartCoroutine(IE_LoadAd());
+#endif
                     break;
                 case EventList.Service.ON_ADD_ANALYTIC_SAVE_DATA:
                     SaveData();
@@ -196,6 +207,10 @@ namespace IEC
         public void BehaviourUpdate(float deltaTime)
         {
             UnityToolbag.Dispatcher.Update();
+#if PluginApplovin
+            m_DeltaTime += (UnityEngine.Time.unscaledDeltaTime - m_DeltaTime) * 0.1f;
+            AssignFPS();
+#endif
         }
 
         public void BehaviourPauseApp(bool isPaused)
@@ -682,8 +697,9 @@ namespace IEC
                 m_Ads = ecpmAds;
 #endif
 #if (PluginApplovin)
+                var listHackConfig = config.listApplovinHackConfig;
                 var applovinAds = new ApplovinModule();
-                applovinAds.Init(config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
+                applovinAds.Init(listHackConfig, config.ApplovinConfig, config.AmazonConfig, true, true, (result) =>
                 {
                     if (result)
                     {
@@ -1586,7 +1602,7 @@ namespace IEC
 #if (PluginAdjust)
         AdjustAnalyticModule m_AdjustAnalytic;
 #endif
-        #endregion
+#endregion
 
         int GetIntDeviceVerion(string version)
         {
@@ -1619,6 +1635,78 @@ namespace IEC
                 yield return delaySec;
             }
         }
+
+        IEnumerator IE_LoadAd(AdsEnum adsEnum)
+        {
+#if PluginApplovin
+            var applovinAds = (ApplovinModule)m_Ads;
+            if (applovinAds == null) yield break;
+            var delaySec = new WaitForSecondsRealtime(applovinAds.IsHaveApplovinHack(adsEnum) ? 20 : 3);
+            while (true)
+            {
+                if (adsEnum == AdsEnum.INTERSTITIAL)
+                {
+                    if (!m_ServiceData.isNoAds)
+                    {
+                        Ads().Load(adsEnum, null);
+                    }
+                }
+                else
+                {
+                    Ads().Load(adsEnum, null);
+                }
+                yield return delaySec;
+            }
+#else
+            yield break;
+#endif
+        }
+        
+        private void LoadAdType(AdsEnum adsEnum)
+        {
+            switch (adsEnum)
+            {
+                case AdsEnum.INTERSTITIAL:
+                    if (!m_ServiceData.isNoAds)
+                    {
+                        Ads().Load(adsEnum, null);
+                    }
+                    break;
+                default:
+                    Ads().Load(adsEnum, null);
+                    break;
+            }
+        }
+
+#if PluginApplovin
+
+        private void LoadAd(AdsEnum adsEnum)
+        {
+            var applovinAds = (ApplovinModule)m_Ads;
+            if (applovinAds == null) return;
+            if (applovinAds.IsHaveApplovinHack(adsEnum))
+                LoadAdType(adsEnum);
+            else
+                StartCoroutine(IE_LoadAd(adsEnum));
+        }
+
+        private void AssignFPS()
+        {
+            if (!m_InitAdDone) return;
+            var applovinAds = (ApplovinModule)m_Ads;
+            applovinAds?.AssignFPS(GetCurrentFPS());
+        }
+
+        private void AssignVariables()
+        {
+            var applovinAds = (ApplovinModule)m_Ads;
+            applovinAds?.AssignFPSLimit(50, 55);
+            m_InitAdDone = true;
+            AssignFPS();
+        }
+#endif
+
+        private float GetCurrentFPS() => 1f / m_DeltaTime;
         
         public void ResetTimeShowFullAds()
         {

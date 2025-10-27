@@ -32,6 +32,13 @@ namespace IEC
     }
 
     [Serializable]
+    public class AdsConfigWithName
+    {
+        public string name;
+        public AdsConfig adsConfig;
+    }
+
+    [Serializable]
     public class AdsPlatformConfig
     {
         public string appID;

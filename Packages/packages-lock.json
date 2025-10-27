@@ -62,29 +62,38 @@
       "hash": "4a85af6626e6b9127adc3aa32f130bd05761b8f4"
     },
     "com.google.external-dependency-manager": {
-      "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.172",
+      "version": "https://gitlab.com/iec-public-registry/com.google.external-dependency-manager.git#1.2.186",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "d0976b385f245312df6cfda4927d194da8ee8e9d"
+      "hash": "be4f10dd4b0eb50fac807f7a052a171a5c16a3ab"
     },
     "com.google.firebase.analytics": {
-      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#11.6.0",
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.analytics.git#12.10.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.google.firebase.app": "11.6.0"
+        "com.google.firebase.app": "12.10.1"
       },
-      "hash": "8c3d0cae9ca3b897091f5da37042a9c9aef2cfd1"
+      "hash": "908edc9bc803eaf48e5e23bdc5eac00bc0fd4ab2"
     },
     "com.google.firebase.app": {
-      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#11.6.0",
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.app.git#12.10.1",
       "depth": 0,
       "source": "git",
       "dependencies": {
-        "com.google.external-dependency-manager": "1.2.177"
+        "com.google.external-dependency-manager": "1.2.186"
       },
-      "hash": "a7a0d893a14a4f0ca57f454586773b21f20cda04"
+      "hash": "8d37f55f288589d5a37bc5ca6e3b746340e8f929"
+    },
+    "com.google.firebase.remote-config": {
+      "version": "https://gitlab.com/iec-public-registry/com.google.firebase.remote-config.git#12.10.1",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.google.firebase.app": "12.10.1"
+      },
+      "hash": "0e9ac88082884bde0ba5ea2b738514dfa46c2610"
     },
     "com.google.play.common": {
       "version": "https://gitlab.com/iec-public-registry/com.google.play.common.git#1.8.2",
@@ -247,7 +256,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.purchasing": {
-      "version": "4.12.2",
+      "version": "4.13.0",
       "depth": 0,
       "source": "registry",
       "dependencies": {
