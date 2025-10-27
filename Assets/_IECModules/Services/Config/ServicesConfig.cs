@@ -38,6 +38,7 @@ public class ServicesConfig : ScriptableObject
     EcpmAdConfig[] EcpmAdsWaterfall;
 
     public AdsConfig ApplovinConfig;
+    public List<AdsConfigWithName> listApplovinHackConfig = new List<AdsConfigWithName>();
     public AdsConfig IronSourceConfig;
     public OguryAdsConfig OguryConfig;
     public AmazonConfig AmazonConfig;
