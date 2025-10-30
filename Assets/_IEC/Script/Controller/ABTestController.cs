@@ -263,6 +263,13 @@ namespace IEC
         void ResultAb20150101() {}
         void UpdateAb20150101(int abValue) {}
         */
+        void ResultAb20251028()
+        {
+
+        }
+        void UpdateAb20251028(int abValue)
+        {
+        }
         void ResultAb20250628()
         {
 
