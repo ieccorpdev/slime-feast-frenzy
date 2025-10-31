@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 #if(PluginCMP)
 using GoogleMobileAds.Ump.Api;
 #endif
@@ -11,7 +12,7 @@ using GoogleMobileAds.Ump.Api;
 using Facebook.Unity;
 #endif
 #if PluginAdjust
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 using IEC.Linq;
 using Sabresaurus.PlayerPrefsExtensions;
@@ -1216,20 +1217,25 @@ namespace IEC
             FeedbackDiscord("test@ieccorp.vn", "Test Content");
         }
 
-        public void FeedbackDiscord(string email, string contentFeedback)
+        public async Task FeedbackDiscord(string email, string contentFeedback)
         {
             if(!File.Exists(m_LogFileNonEncr)) return;
             var isIOS = Application.platform == RuntimePlatform.IPhonePlayer;
             string adjustId, firebasePseudoId, adjustCampaign, adjustNetwork, adjustCreative;
             adjustId = firebasePseudoId = adjustCampaign = adjustNetwork = adjustCreative = string.Empty;
 #if PluginAdjust
-            adjustId = Adjust.getAdid();
-            var attribution = Adjust.getAttribution();
-            if(attribution != null)
+            var adjustIdTcs = new TaskCompletionSource<string>();
+            Adjust.GetAdid(result => adjustIdTcs.SetResult(result));
+            adjustId = await adjustIdTcs.Task;
+            
+            var attributeTcs = new TaskCompletionSource<AdjustAttribution>();
+            Adjust.GetAttribution(result => attributeTcs.SetResult(result));
+            var attribute = await attributeTcs.Task;
+            if(attribute != null)
             {
-                adjustCampaign = attribution.campaign;
-                adjustNetwork = attribution.network;
-                adjustCreative = attribution.creative;
+                adjustCampaign = attribute.Campaign;
+                adjustNetwork = attribute.Network;
+                adjustCreative = attribute.Creative;
             }
 #endif
 #if PluginFirebaseAnalytic

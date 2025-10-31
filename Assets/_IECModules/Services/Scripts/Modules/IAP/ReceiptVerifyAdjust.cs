@@ -2,12 +2,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using _IECModules;
-using com.adjust.sdk;
+using AdjustSdk;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Purchasing;
@@ -23,6 +23,7 @@ namespace IEC
         private ServiceData serviceData;
 
         private ServicesController Services => Controllers.Get<ServicesController>();
+        private PlayerSecret PlayerData => Pool.Get<PlayerSecret>();
         private string AdjustVerifyUrl => Services.config.IapAdjustVerifyUrl;
 
         [Serializable]
@@ -171,7 +172,7 @@ namespace IEC
 #if UNITY_EDITOR
             if (isDebugEditor)
             {
-                VerifyPayment(product, callback);
+                _ = VerifyPayment(product, callback);
             }
             callback.Invoke(true);
             return;
@@ -180,7 +181,7 @@ namespace IEC
 
             if (validPurchaseOffline)
             {
-                VerifyPayment(product, callback);
+                _ = VerifyPayment(product, callback);
             }
             else
             {
@@ -188,11 +189,11 @@ namespace IEC
             }
         }
 
-        public void VerifyPayment(Product product, Action<bool> callback)
+        public async Task VerifyPayment(Product product, Action<bool> callback)
         {
             var receipt = product.receipt;
             PurchaseReceipt purchaseReceipt = jsonConverter.FromJson<PurchaseReceipt>(receipt);
-            AdjustData adjust = GetAdjustData(product);
+            AdjustData adjust = await GetAdjustData(product);
 
 #if UNITY_EDITOR
             ReceiptData checkingObjectEditor = new ReceiptData()
@@ -371,7 +372,7 @@ namespace IEC
             return headers;
         }
 
-        private AdjustData GetAdjustData(Product product)
+        private async Task<AdjustData> GetAdjustData(Product product)
         {
             var services = Controllers.Get<ServicesController>();
             var deviceInfo = new UserDeviceInfo();
@@ -390,19 +391,38 @@ namespace IEC
             
             AdjustData adjust = new AdjustData
             {
-                idfa = services.IsHaveIDFA ? services.UserIDFA : Adjust.getIdfa(),
+                idfa = string.Empty,
 #if UNITY_IOS
                 idfv = UnityEngine.iOS.Device.vendorIdentifier,
 #endif
                 app_token = (Application.platform == RuntimePlatform.Android) ? services.config.adjustConfig.androidID : services.config.adjustConfig.iosID,
                 event_token = adjustAnalyticModule.GetIAPEventId(),
-                adid = Adjust.getAdid(),
+                adid = string.Empty,
                 user_agent = services.Json().ToJson(deviceInfo),
                 ip_address = GetLocalIPAddress(),
                 created_at = DateTime.UtcNow,
                 revenue = revenue,
-                currency = currency
+                currency = currency,
             };
+
+            if (services.IsHaveIDFA)
+            {
+                adjust.idfa = services.UserIDFA;
+            }
+#if UNITY_IOS
+            else
+            {
+                var idfaTcs = new TaskCompletionSource<string>();
+                Adjust.GetIdfa(idfa => idfaTcs.SetResult(idfa));
+                adjust.idfa = await idfaTcs.Task;
+            }
+#endif
+
+#if !UNITY_EDITOR
+            var adidTcs = new TaskCompletionSource<string>();
+            Adjust.GetAdid(adid => adidTcs.SetResult(adid));
+            adjust.adid = await adidTcs.Task;
+#endif
 
             return adjust;
         }
