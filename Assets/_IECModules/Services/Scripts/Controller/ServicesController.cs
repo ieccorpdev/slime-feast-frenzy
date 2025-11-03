@@ -1702,11 +1702,11 @@ namespace IEC
             var applovinAds = (ApplovinModule)m_Ads;
             applovinAds?.AssignFPS(GetCurrentFPS());
         }
-
         private void AssignVariables()
         {
             var applovinAds = (ApplovinModule)m_Ads;
-            applovinAds?.AssignFPSLimit(50, 55);
+            Vector3 timeLimit = Pool.Get<Game>().limitFPSAndroidHackApplovin ? new Vector3(50, 55) : new Vector3(0, 5); 
+            applovinAds?.AssignFPSLimit(timeLimit.x,timeLimit.y);
             m_InitAdDone = true;
             AssignFPS();
         }
