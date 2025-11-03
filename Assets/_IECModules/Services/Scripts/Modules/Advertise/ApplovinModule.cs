@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 #if (PluginAdjust)
-using com.adjust.sdk;
+using AdjustSdk;
 #endif
 using DG.Tweening;
 
@@ -385,26 +385,7 @@ namespace IEC
 
         public float GetBannerHeight()
         {
-            var adaptiveHeight = MaxSdkUtils.GetAdaptiveBannerHeight();
-            float f = GetScreenDensity();
-            Debug.LogWarning("GetAdaptiveBannerHeight: " + adaptiveHeight);
-            Debug.LogWarning("GetScreenDensity: " + f);
-            return adaptiveHeight * f;
-        }
-
-        float GetScreenDensity()
-        {
-            if (Application.platform != RuntimePlatform.Android)
-            {
-                return MaxSdkUtils.GetScreenDensity();
-            }
-            AndroidJavaClass activityClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
-            AndroidJavaObject activity = activityClass.GetStatic<AndroidJavaObject>("currentActivity");
-
-            AndroidJavaObject metrics = new AndroidJavaObject("android.util.DisplayMetrics");
-            activity.Call<AndroidJavaObject>("getWindowManager").Call<AndroidJavaObject>("getDefaultDisplay").Call("getMetrics", metrics);
-
-            return metrics.Get<float>("ydpi") / 160f;
+            return MaxSdkUtils.GetAdaptiveBannerHeight() * Screen.dpi / 160f;
         }
 
         #region bannerAds
@@ -924,13 +905,13 @@ namespace IEC
         void AdjustTrackAdRevenue(string adUnitId, MaxSdkBase.AdInfo adInfo)
         {
 #if (PluginAdjust)
-            var adRevenue = new AdjustAdRevenue(AdjustConfig.AdjustAdRevenueSourceAppLovinMAX);
-            adRevenue.setRevenue(adInfo.Revenue, "USD");
-            adRevenue.setAdRevenueNetwork(adInfo.NetworkName);
-            adRevenue.setAdRevenueUnit(adInfo.AdUnitIdentifier);
-            adRevenue.setAdRevenuePlacement(adInfo.Placement);
+            var adRevenue = new AdjustAdRevenue("applovin_max_sdk");
+            adRevenue.SetRevenue(adInfo.Revenue, "USD");
+            adRevenue.AdRevenueNetwork = adInfo.NetworkName;
+            adRevenue.AdRevenueUnit = adInfo.AdUnitIdentifier;
+            adRevenue.AdRevenuePlacement = adInfo.Placement;
             Debug.LogWarning($"[Adjust ad track] revenue: {adInfo.Revenue}-{"USD"} | network: {adInfo.NetworkName} | adUnit: {adInfo.AdUnitIdentifier}");
-            Adjust.trackAdRevenue(adRevenue);
+            Adjust.TrackAdRevenue(adRevenue);
 #endif
         }
 

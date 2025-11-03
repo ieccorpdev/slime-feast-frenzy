@@ -1,9 +1,8 @@
 #if (PluginAdjust)
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using com.adjust.sdk;
+using AdjustSdk;
 using UnityEngine;
 
 namespace IEC
@@ -39,15 +38,14 @@ namespace IEC
             
             var adjustConfig = new AdjustConfig(appID, (isEnableSandBox) ? AdjustEnvironment.Sandbox : AdjustEnvironment.Production, true);
 #if UNITY_ANDROID
-            adjustConfig.setPreinstallTrackingEnabled(true);
+            adjustConfig.IsPreinstallTrackingEnabled = true;
 #endif
-            adjustConfig.setLogLevel(AdjustLogLevel.Suppress);
-            adjustConfig.setSendInBackground(false);
-            adjustConfig.setEventBufferingEnabled(false);
-            adjustConfig.setLaunchDeferredDeeplink(false);
-            Adjust.start(adjustConfig);
+            adjustConfig.LogLevel = AdjustLogLevel.Suppress;
+            adjustConfig.IsSendingInBackgroundEnabled = false;
+            adjustConfig.IsDeferredDeeplinkOpeningEnabled = false;
+            Adjust.InitSdk(adjustConfig);
             EnableThirdPartySharing();
-            Debug.LogWarning("Adjust Version:" + Adjust.getSdkVersion());
+            Adjust.GetSdkVersion(sdkVersion => Debug.LogWarning("Adjust Version:" + sdkVersion));
         }
 
         public void SetListEventRev(List<string> listEventRev)
@@ -74,10 +72,10 @@ namespace IEC
             }
             if (m_ListEventRev != null && m_ListEventRev.Contains(eventName))
             {
-                adjustEvent.setRevenue(value, currencyCode);
+                adjustEvent.SetRevenue(value, currencyCode);
                 adjustLog += $"__Rev:{value} | Currency:{currencyCode}";
             }
-            Adjust.trackEvent(adjustEvent);
+            Adjust.TrackEvent(adjustEvent);
             Debug.Log(adjustLog);
         }
 
@@ -101,7 +99,7 @@ namespace IEC
         public void EnableThirdPartySharing()
         {
             AdjustThirdPartySharing adjustThirdPartySharing = new AdjustThirdPartySharing(true);
-            Adjust.trackThirdPartySharing(adjustThirdPartySharing);
+            Adjust.TrackThirdPartySharing(adjustThirdPartySharing);
             Debug.LogWarning("Adjust enable third party sharing");
         }
 

@@ -17,6 +17,8 @@ namespace IEC
         public bool isDebugReset;
         public int emptyData;
         public int abVersion;
+        public bool limitFPSAndroidHackApplovin;
+        public float timeDelayFullAds;
         public bool levelCreative;
         public bool isHaveBooster = false;
         public float timeDelayFullAds = 120f;
