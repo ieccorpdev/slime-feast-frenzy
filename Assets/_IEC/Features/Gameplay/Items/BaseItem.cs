@@ -222,64 +222,78 @@ namespace _IEC.Features.Gameplay
             return m_CurrentState;
         }
 
-        public virtual void LoadData(ItemData itemData,ItemDefinition itemDefinition)
+      public virtual void LoadData(ItemData itemData, ItemDefinition itemDefinition)
+{
+    if (rb == null)
+        rb = GetComponent<Rigidbody>();
+
+    if (itemColliders == null || itemColliders.Count == 0)
+    {
+        itemColliders = GetComponentsInChildren<Transform>()
+            .Where(x => x.CompareTag("FallingItem_Physics") || x.GetComponentInChildren<Collider>() != null)
+            .Select(x =>
+            {
+                x.tag = "FallingItem_Physics";
+                return x.gameObject;
+            }).ToList();
+    }
+
+    transform.position = itemData.position;
+    transform.eulerAngles = itemData.eulerAngle;
+    transform.localScale = itemData.localScale;
+
+    bool hadRigidbody = rb != null;
+    if (hadRigidbody)
+    {
+        rb.isKinematic = true; 
+    }
+
+    foreach (var col in itemColliders)
+    {
+        var collider = col.GetComponent<Collider>();
+        if (collider != null)
         {
-            if (rb == null)
-            {
-                rb = GetComponent<Rigidbody>();
-            }
-
-            if (itemColliders == null || itemColliders.Count == 0)
-            {
-                itemColliders = GetComponentsInChildren<Transform>()
-                    .Where(x=>x.CompareTag("FallingItem_Physics") || x.GetComponentInChildren<Collider>() != null)
-                    .Select(x =>
-                    {
-                        x.tag = "FallingItem_Physics";
-                        return x.gameObject;
-                    }).ToList();
-            }
-            else
-            {
-                //TODO: cache colliders
-                foreach (var col in itemColliders)
-                {
-                    var collider = col.GetComponent<Collider>();
-                    if (collider != null)
-                    {
-                        collider.enabled = true;
-                    }
-                }
-            }
-
-            _isCollected = false;
-            
-            if (myRenderer == null)
-            {
-                myRenderer = GetComponentInChildren<Renderer>();
-                hasRenderer = true;
-            }
-
-            if (springOscillation == null)
-            {
-                springOscillation = GetComponentInChildren<SpringOscillation>();
-                if (springOscillation != null)
-                {
-                    hasSpringOscillation = true;
-                    springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
-                }
-            }
-            var myTransform = transform;
-            myTransform.position = itemData.position;
-            myTransform.eulerAngles = itemData.eulerAngle;
-            myTransform.transform.localScale = itemData.localScale;
-            if (itemData.isStartKinematic)
-            {
-                SaveAndDestroyRigidbody();
-            }
-            m_ItemData = itemData;
-            m_ItemDefinition = itemDefinition;
+            collider.enabled = true;
         }
+    }
+
+    if (hadRigidbody)
+    {
+        rb.isKinematic = itemData.isStartKinematic;
+        if (!rb.isKinematic)
+        {
+            rb.position = itemData.position;
+            rb.rotation = Quaternion.Euler(itemData.eulerAngle);
+        }
+    }
+
+    _isCollected = false;
+
+    if (myRenderer == null)
+    {
+        myRenderer = GetComponentInChildren<Renderer>();
+        hasRenderer = true;
+    }
+
+    if (springOscillation == null)
+    {
+        springOscillation = GetComponentInChildren<SpringOscillation>();
+        if (springOscillation != null)
+        {
+            hasSpringOscillation = true;
+            springOscillation.SetSizeDependentLimits(myRenderer.bounds.size);
+        }
+    }
+
+    if (itemData.isStartKinematic)
+    {
+        SaveAndDestroyRigidbody();
+    }
+
+    m_ItemData = itemData;
+    m_ItemDefinition = itemDefinition;
+}
+
 
         private void SaveAndDestroyRigidbody()
         {
