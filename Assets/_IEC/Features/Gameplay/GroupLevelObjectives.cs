@@ -234,7 +234,7 @@ namespace _IEC.Features.Gameplay
                 levelObjectiveUI.Reset();
                 levelObjectiveUI.LoadData(levelObjective,levelObjective.itemId.ToLower().Contains("coin"));
                 //levelObjectiveUis.Add(levelObjectiveUI);
-                levelObjectiveUI.transform.parent = holder;
+                levelObjectiveUI.transform.SetParent(holder);
                 var rectTransform = levelObjectiveUI.GetComponent<RectTransform>();
                 var currentAnchorPos3D = rectTransform.anchoredPosition3D;
                 currentAnchorPos3D.z = 0;

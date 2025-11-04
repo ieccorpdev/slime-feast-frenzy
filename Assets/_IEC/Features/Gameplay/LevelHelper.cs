@@ -50,7 +50,7 @@ namespace _IEC.Features.Gameplay
                 if (prefab == null) continue;
                 var tileObject = prefab.Spawn();
                 var tileTransform = tileObject.transform;
-                tileTransform.parent = levelObjectHolder;
+                tileTransform.SetParent(levelObjectHolder);
                 tileTransform.position = new Vector3(tileMapData.position.x, 0, tileMapData.position.y);
                 tileTransform.localScale = new Vector3(tileMapData.scale.x, 1, tileMapData.scale.y);
                 tileTransform.rotation = Quaternion.AngleAxis(tileMapData.rotateAngle, Vector3.up);
@@ -133,7 +133,7 @@ namespace _IEC.Features.Gameplay
                         itemComponent = newItem.AddComponent<BaseItem>();
                     }
 
-                    newItem.transform.parent = levelObjectHolder;
+                    newItem.transform.SetParent(levelObjectHolder);
 
                     itemComponent.LoadData(new ItemData()
                         {
@@ -205,15 +205,15 @@ namespace _IEC.Features.Gameplay
                     if (groupHolder == null)
                     {
                         groupHolder = new GameObject(itemData.groupID);
-                        groupHolder.transform.parent = levelObjectHolder;
+                        groupHolder.transform.SetParent(levelObjectHolder);
                         groupHolder.transform.position = itemData.groupPosition;
                     }
 
-                    itemTransform.parent = groupHolder.transform;
+                    itemTransform.SetParent(groupHolder.transform);
                 }
                 else
                 {
-                    itemTransform.parent = levelObjectHolder;
+                    itemTransform.SetParent(levelObjectHolder);
                 }
 
                 itemComponent.LoadData(itemData, itemDefinition);
@@ -261,7 +261,7 @@ namespace _IEC.Features.Gameplay
                 }
 
                 var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
+                itemTransform.SetParent(levelObjectHolder);
                 itemComponent.LoadData(itemData, itemDefinition);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
@@ -313,7 +313,7 @@ namespace _IEC.Features.Gameplay
 
                     var itemTransform = itemComponent.transform;
 
-                    itemTransform.parent = levelObjectHolder;
+                    itemTransform.SetParent(levelObjectHolder);
                     itemComponent.LoadData(spawnData.ToItemData(itemSpawn.id), itemDefinition);
 
                     var itemData = itemComponent.ItemData;
@@ -324,11 +324,11 @@ namespace _IEC.Features.Gameplay
                         if (groupHolder == null)
                         {
                             groupHolder = new GameObject(itemData.groupID);
-                            groupHolder.transform.parent = levelObjectHolder;
+                            groupHolder.transform.SetParent(levelObjectHolder);
                             groupHolder.transform.position = itemData.groupPosition;
                         }
 
-                        itemTransform.parent = groupHolder.transform;
+                        itemTransform.SetParent(groupHolder.transform);
                     }
 
                     res.Add(itemComponent);
@@ -399,7 +399,7 @@ namespace _IEC.Features.Gameplay
                 };
 
                 var itemTransform = itemComponent.transform;
-                itemTransform.parent = levelObjectHolder;
+                itemTransform.SetParent(levelObjectHolder);
                 itemComponent.LoadData(itemData, boosterData.itemDefinition);
                 res.Add(itemComponent);
                 itemIds.Add(itemData.itemId);
@@ -451,7 +451,7 @@ namespace _IEC.Features.Gameplay
                     localScale = Vector3.one,
                     isStartKinematic = false,
                 };
-                itemTransform.parent = levelObjectHolder;
+                itemTransform.SetParent(levelObjectHolder);
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
 
                 itemComponent.Setup(charConfig);
@@ -501,7 +501,7 @@ namespace _IEC.Features.Gameplay
                     localScale = Vector3.one * scale,
                     isStartKinematic = false,
                 };
-                itemTransform.parent = levelObjectHolder;
+                itemTransform.SetParent(levelObjectHolder);
                 //itemTransform.GetComponentInChildren<SpecialItemParticleEffectHighlight>().transform.localScale /= scale;
                 itemComponent.LoadData(itemData, itemDefinition);
                 itemComponent.ItemData.position =
@@ -560,7 +560,7 @@ namespace _IEC.Features.Gameplay
                         localScale = Vector3.one * spawnSize,
                         isStartKinematic = true,
                     };
-                    itemTransform.parent = levelObjectHolder;
+                    itemTransform.SetParent(levelObjectHolder);
                     itemComponent.LoadData(itemData, itemDefinition);
                     itemComponent.transform.position = spawnPos.Value;
                     res.Add(itemComponent);
@@ -834,3 +834,4 @@ namespace _IEC.Features.Gameplay
         }
     }
 }
+
