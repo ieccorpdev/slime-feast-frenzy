@@ -285,10 +285,10 @@ namespace _IEC.Features.Gameplay
         }
     }
 
-    if (itemData.isStartKinematic)
-    {
-        SaveAndDestroyRigidbody();
-    }
+    // if (itemData.isStartKinematic)
+    // {
+    //     SaveAndDestroyRigidbody();
+    // }
 
     m_ItemData = itemData;
     m_ItemDefinition = itemDefinition;
