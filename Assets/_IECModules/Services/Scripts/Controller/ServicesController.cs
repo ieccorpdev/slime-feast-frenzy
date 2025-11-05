@@ -286,11 +286,6 @@ namespace IEC
             }
 
             m_DataRemote = m_DataNormal;
-#if (PluginFirebaseRemote)
-            m_DataRemote = new FirebaseRemoteConfigModule(m_Json, m_SetUpFirebase, m_DataNormal, config.isTestRemoteConfig, config.GetRemoteConfigs());
-            SetPushCustomEventFirebase();
-            Debug.LogWarning($"Firebase Remote Config SDK Version: {config.firebaseRemoteSDKVersion}");
-#endif
 #if PluginByteDanceChinaIOS
             _initByteDance(config.appId, config.appName);
 #endif
