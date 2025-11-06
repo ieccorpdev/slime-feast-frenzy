@@ -59,6 +59,13 @@ namespace IEC
                     Services.SetActiveBanner(AdsEnum.BANNER_BOTTOM, false); //Disable banner Ads
                     Controllers.Get<AdsController>().UpdateWhiteBannerSize();
                 }
+
+                //For Voyage Pass
+                if (pack.bundleId.Contains("voyage"))
+                {
+                    PlayerData.journeyData.isBuyIAP = true;
+                }
+                
                 Locator.Main.PopupGiftCode.ReceiveGiftCode(listPackReward);
             }
         }
