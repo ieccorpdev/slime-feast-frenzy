@@ -77,8 +77,13 @@ namespace IEC
             {
                 Locator.Service.PopupSettingInHome.Hide();
             }
-            Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards,null); 
-            Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+
+            if (rewards.Count > 0)
+            {
+                Locator.Main.ClaimBonusRewardPanel.SetupRewardPanel(rewards, null);
+                Locator.Main.ClaimBonusRewardPanel.ShowingRewardPanel();
+            }
+
             EventController.RaiseEvent(EventList.GamePlay.UPDATE_RESOURCE_UI);
         }
 
