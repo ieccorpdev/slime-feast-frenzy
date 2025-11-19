@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using _IEC.Features.Booster;
 using _IEC.Features.Common;
 using _IEC.Features.Common.Extension;
@@ -216,6 +215,7 @@ namespace _IEC.Features.Gameplay
             // var m_LevelConfig = PlayableController.Instance.GetLevelSpawnData(index);
             LevelDataSO currentLevel = PlayableController.Instance.CurrentLevel;
 
+            print("LoadLevel: " + currentLevel.name);
 
             var levelSpawnData = currentLevel.levelSpawnData;
             m_AllItems = SpawnAllItem(levelSpawnData.listItemSpawns, allItemHolder, Game.itemVersion);
@@ -292,11 +292,11 @@ namespace _IEC.Features.Gameplay
                 if (m_AllItems[i] == null || m_AllItems[i].gameObject == null)
                     m_AllItems.RemoveAt(i);
             }
-            if (m_AllItems.Count > PlayableController.Instance.countShowTutorial)
-            {
-                PlayableTutorial.ShowTut();
-                isEnabeSpawnMaxItem = true;
-            }
+            // if (m_AllItems.Count > PlayableController.Instance.countShowTutorial)
+            // {
+            //     PlayableTutorial.ShowTut();
+            //     isEnabeSpawnMaxItem = true;
+            // }
             return m_AllItems;
         }
 

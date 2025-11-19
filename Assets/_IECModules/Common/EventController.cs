@@ -63,7 +63,7 @@ namespace IEC
 
             if (s_Instance != this) return;
 
-            Debug.Log("EventController Awake");
+            // Debug.Log("EventController Awake");
 
             if (m_IsDontDestroy)
             {

@@ -27,6 +27,39 @@ namespace _IEC.Features.Gameplay
         {
             spawnData.listItemSpawns = new List<ItemSpawn>(listItemSpawns);
         }
+
+    [Button]
+    public void RandomizeRotations(float minAngle = -10f, float maxAngle = 10f)
+    {
+        foreach (var item in listItemSpawns)
+        {
+            foreach (var data in item.listSpawnDatas)
+            {
+                // lấy rotation hiện tại
+                Vector3 rot = data.r.ToVector3();
+
+                // xoay ngẫu nhiên mỗi trục
+                rot.x += UnityEngine.Random.Range(minAngle, maxAngle);
+                rot.y += UnityEngine.Random.Range(minAngle, maxAngle);
+                rot.z += UnityEngine.Random.Range(minAngle, maxAngle);
+
+                data.r = new Rotation(rot.x, rot.y, rot.z);
+            }
+        }
+    }
+
+    [Button]
+    public void RandomizeSize()
+    {
+        foreach (var item in listItemSpawns)
+        {
+            foreach (var data in item.listSpawnDatas)
+            {
+
+                data.s = new Scale(1f, 1f, 1f);
+            }
+        }
+    }
     }
     
 

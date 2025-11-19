@@ -48,12 +48,7 @@ namespace IEC
                     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
                     EventController.RaiseEvent(EventList.Audio.WIN);
                     PlayableController.Instance.NextLevel();
-                    //                    PlayerData.IncreaseBoosterStreak();
-                    //                 PlayerData.AddProgressToProgressReward(GamePlay.levelController.SpecialProgressRewardObjCollected);
-                    // if(GamePlay.IsInLevelHard)
-                    //     GamePlay.SetGameState(Locator.Game.ScreenLevelWinHard);
-                    // else
-                    //GamePlay.IsWin = true;
+                 
                     // OnGameOver();
                     // PlayableController.Instance.ConfettiGroup.ShowConfetti();
 
@@ -96,25 +91,14 @@ namespace IEC
         public void OnNewGame()
         {
 
-
-            if (PlayableController.Instance.currentLevelIndex >= PlayableController.Instance.levelIndexs.Length)
-            {
-                EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
-                PlayableController.Instance.ShowEndCard();
-                return;
-            }
-            else
-            {
-                if (PlayableController.Instance.isUseItem)
-                {
-                    PlayableController.Instance.PlayableTutorial.canShow = true;
-                    PlayableController.Instance.PlayableTutorial.ShowTut();
-                }
-                else
-                {
-                    PlayableController.Instance.PlayableTutorial.HideTut();
-                }
-            }
+            // if (PlayableController.Instance.currentLevelIndex >= PlayableController.Instance.levelIndexs.Length)
+            // {
+            //     EventController.RaiseEvent(EventList.GamePlay.SET_MUTE_BACKGROUND_MUSIC);
+            //     PlayableController.Instance.ShowEndCard();
+            //     return;
+            // }
+            // else
+          
 
             GamePlay.SetNewLevel(PlayableController.Instance.currentLevelIndex);
             ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
@@ -124,6 +108,8 @@ namespace IEC
             //GamePlay.SetGameState(Locator.Game.ScreenInGame);
             this.RaiseEvent(EventList.GamePlay.RESUME_GAME);
             PushPlayLevelEvent();
+
+              
         }
    
         void OnNewGameHardLevel()

@@ -14,7 +14,6 @@ public class PlayableController : _BaseBehaviour
 {
     private static PlayableController instance;
     [FormerlySerializedAs("gameConfig")] public GamePlayConfig gamePlayConfig;
-    public ScreenInGame ScreenInGame;
     public bool useHelper;
     public static PlayableController Instance
     {
@@ -29,26 +28,19 @@ public class PlayableController : _BaseBehaviour
     }
     public ScreenLevelWin screenLevelWin;
 
-    // public LevelDataContainerSO LevelDataSO;
-    //
-    // [SerializeField] private GameObject stack;
+   
     [Header("Playable Config")]
     [LunaPlaygroundField("map height", 0, "Config")]
     public float mapHeight = 0;
     [LunaPlaygroundField("fixedTimeStep", 0, "Config")]
     public float fixedTimeStep = 0.12f;
-    public int level;
+    // public int level;
     public PrefabConfig prefabConfig;
     public bool isEndGame = false;
     [LunaPlaygroundField("max Item Spawn", 0, "Config")]
     public int maxItemSpawn = 200;
     public int countShowTutorial;
 
-    public bool PlayableStarted
-    {
-        get;
-        private set;
-    }
 
     public bool InitMoveAnimDone
     {
@@ -60,10 +52,7 @@ public class PlayableController : _BaseBehaviour
 
     public InGamePlayGroup InGamePlayGroup;
 
-    public FloatingJoystick Joystick;
     public Material waveWaterMaterial;
-    // public LevelDataSO levelData; 
-    // public List<ItemDefinition> ListItemDefinition;
 
     public PlayableTutorial PlayableTutorial;
     [Space]
@@ -75,8 +64,8 @@ public class PlayableController : _BaseBehaviour
     [LunaPlaygroundField("Use Item")] public bool isUseItem = true;
     [LunaPlaygroundField("Levels index")] public int[] levelIndexs;
     public int currentLevelIndex;
-    public LevelDataSO CurrentLevel => levelDatas[levelIndexs[currentLevelIndex]];
 
+    public LevelDataSO CurrentLevel => levelDatas[levelIndexs[currentLevelIndex]];
 
     public bool IsUseMagnetHelper = false;
 
@@ -86,28 +75,7 @@ public class PlayableController : _BaseBehaviour
 #if UNITY_EDITOR
     public GameplayItemPrefabConfig itemPrefabConfig;
 
-    // [Button]
-    // public void InitItemDefinition()
-    // {
-    //     if (ListItemDefinition == null)
-    //     {
-    //         ListItemDefinition = new List<ItemDefinition>();
-    //     }
-    //     ListItemDefinition.Clear();
-    //     foreach (var itemSpawn in levelData.levelSpawnData.listItemSpawns)
-    //     {
-    //         var itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemSpawn.id);
-    //         if (itemDefinition == null)
-    //         {
-    //             Debug.LogError($"Item Definition with id {itemSpawn.id} not found in prefab config.");
-    //             continue;
-    //         }
-    //         ListItemDefinition.Add(itemDefinition);
-    //     }
-    //     EditorUtility.SetDirty(this);
-    // }
-
-    [Button]
+    [Button(ButtonSizes.Medium)]
     public void InitAllItemDefination()
     {
         if (itemDefinitions == null) itemDefinitions = new();
@@ -135,24 +103,36 @@ public class PlayableController : _BaseBehaviour
     }
 
 #endif
-    // public ItemDefinition GetItemDefinition(string itemId)
-    // {
-    //     var itemDefinition = this.ListItemDefinition.Find(x => x.GetId() == itemId);
-    //     return itemDefinition;
-    // }
+    
 
     public ItemDefinition GetItemDefinition(string itemId)
     {
         var itemDefinition = this.itemDefinitions.Find(x => x.GetId() == itemId);
+        if(itemDefinition == null)
+        {
+            #if UNITY_EDITOR
+            itemDefinition = this.itemPrefabConfig.GetListItemDefinition().Find(x => x.GetId() == itemId);
+            if (itemDefinition == null)
+            {
+                Debug.LogError($"Item Definition with id {itemId} not found in prefab config.");
+            }
+            else
+            {
+                if (!itemDefinitions.Contains(itemDefinition))
+                {
+                    itemDefinitions.Add(itemDefinition);
+                }
+            }
+            #endif
+            // return itemDefinition;
+        }
         return itemDefinition;
     }
 
     public void Awake()
     {
         instance = this;
-#if UNITY_EDITOR
-        InitAllItemDefination();
-#endif
+
         Application.targetFrameRate = 60;
         if (fixedTimeStep > 0)
             Time.fixedDeltaTime = fixedTimeStep;
@@ -160,10 +140,15 @@ public class PlayableController : _BaseBehaviour
 
     private void Start()
     {
-        LoadLevel(currentLevelIndex);
-        if(!isUseItem)
+        LoadLevel();
+        if (PlayableController.Instance.isUseItem)
         {
-            PlayableTutorial.HideTut();
+            PlayableController.Instance.PlayableTutorial.canShow = true;
+            PlayableController.Instance.PlayableTutorial.ShowTut();
+        }
+        else
+        {
+            PlayableController.Instance.PlayableTutorial.HideTut();
         }
     }
 
@@ -187,9 +172,11 @@ public class PlayableController : _BaseBehaviour
         });
     }
 
-    public void LoadLevel(int level)
+    public void LoadLevel()
     {
-        this.level = level;
+        #if UNITY_EDITOR
+            InitAllItemDefination();
+        #endif
         EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
     }
 
@@ -243,11 +230,16 @@ public class PlayableController : _BaseBehaviour
         yield return new WaitUntil(() => !GroupLevelObjectives.Instance.IsCollecting);
         ConfettiGroup.ShowConfetti();
         Invoke(nameof(StopShowConfetti), 3f);
-        if (currentLevelIndex < levelIndexs.Length)
+        if (currentLevelIndex < levelIndexs.Length - 1)
         {
             currentLevelIndex++;
-            LoadLevel(currentLevelIndex);
+            LoadLevel();
             EventController.RaiseEvent(EventList.GamePlay.NEW_GAME);
+        }
+        else
+        {
+            ShowEndCard();
+            
         }
     }    
 }

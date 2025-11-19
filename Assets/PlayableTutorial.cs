@@ -50,6 +50,16 @@ public class PlayableTutorial : MonoBehaviour
                 EventController.RaiseEvent(EventList.Audio.HOLE_LEVELUP);
             });
         }
+
+        if (PlayableController.Instance.isUseItem)
+        {
+            canShow = true;
+            ShowTut();
+        }
+        else
+        {
+           HideTut();
+        }
     }
 
     public void ShowTut()
