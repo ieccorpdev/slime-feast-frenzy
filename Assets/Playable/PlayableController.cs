@@ -40,6 +40,14 @@ public class PlayableController : _BaseBehaviour
     [LunaPlaygroundField("max Item Spawn", 0, "Config")]
     public int maxItemSpawn = 200;
     public int countShowTutorial;
+    
+    [Header("Water Material Config")]
+    public GameObject waterMat;
+
+    [LunaPlaygroundField("Water Mat Index", 0, "Config")]
+    public int waterMatIndex = 0;
+
+    public List<Material> waterMaterials;
 
 
     public bool InitMoveAnimDone
@@ -150,6 +158,36 @@ public class PlayableController : _BaseBehaviour
         {
             PlayableController.Instance.PlayableTutorial.HideTut();
         }
+    }
+    
+    public void ApplyWaterMaterial()
+    {
+        if (waterMat == null)
+        {
+            Debug.LogWarning("waterMat is null");
+            return;
+        }
+
+        if (waterMaterials == null || waterMaterials.Count == 0)
+        {
+            Debug.LogWarning("waterMaterials is empty");
+            return;
+        }
+
+        if (waterMatIndex < 0 || waterMatIndex >= waterMaterials.Count)
+        {
+            Debug.LogWarning($"waterMatIndex {waterMatIndex} out of range");
+            return;
+        }
+
+        var renderer = waterMat.GetComponent<Renderer>();
+        if (renderer == null)
+        {
+            Debug.LogWarning("waterMat has no Renderer");
+            return;
+        }
+
+        renderer.material = waterMaterials[waterMatIndex];
     }
 
 

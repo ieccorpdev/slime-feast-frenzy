@@ -98,8 +98,8 @@ namespace IEC
             //     return;
             // }
             // else
-          
 
+            PlayableController.Instance.ApplyWaterMaterial();
             GamePlay.SetNewLevel(PlayableController.Instance.currentLevelIndex);
             ScreenInGame.LoadLevelData(GamePlay.GetLevelController().GetLevelData());
 
