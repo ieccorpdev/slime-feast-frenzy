@@ -53,7 +53,7 @@ namespace IEC
             {
                 groupMark.SetActiveDangerousMark(false);
             };
-            gameplayTimer.OnTimeUpdate += remainingTime => { groupMark.SetActiveDangerousMark(remainingTime <= 10); };
+            gameplayTimer.OnTimeUpdate += remainingTime => { groupMark.SetActiveDangerousMark(remainingTime <= 15); };
             gameplayTimer.OnUpdateFrozenState += isFrozen => { groupMark.SetActiveFrozenMark(isFrozen); };
         }
         
