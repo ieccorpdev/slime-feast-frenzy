@@ -1,8 +1,8 @@
 {
     "version": "7.0.0",
     "projectId": "38eebd4cf2b294042a597d2e76328ca7",
-    "applicationID": 32662,
-    "creativeName": "SFF_Playable_V10",
+    "applicationID": 29428,
+    "creativeName": "SFF_Playable_V13_03",
     "pgServer": "EU",
     "window": {
         "‐⁏": true
@@ -76,12 +76,12 @@
                 "Stubs/SupersonicWisdom/"
             ],
             "msbuildMac64": "/Library/Frameworks/Mono.framework/Versions/Current/bin/msbuild",
-            "msbuildWin64": "D:\\App\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\MSBuild.exe",
+            "msbuildWin64": "D:\\visual studio 2022\\MSBuild\\Current\\Bin\\MSBuild.exe",
             "externalSources": [],
             "externalJSLibraries": [],
             "scriptingDefines": [],
-            "msbuildVersion": "17.7",
-            "monoVersion": "7.0.11",
+            "msbuildVersion": "17.10",
+            "monoVersion": "8.0.7",
             "dotnetVersion": ""
         },
         "assets": {
@@ -127,7 +127,24 @@
             ],
             "includes": [
                 "Assets/Resources/DOTweenSettings.asset",
-                "Assets/TextMesh Pro/Resources/TMP Settings.asset"
+                "Assets/TextMesh Pro/Resources/TMP Settings.asset",
+                "Assets/TextMesh Pro/Shaders/TMPro_Properties.cginc",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF Overlay.shader",
+                "Assets/TextMesh Pro/Shaders/TMPro.cginc",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF SSD.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF.shader",
+                "Assets/TextMesh Pro/Shaders/TMPro_Surface.cginc",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Masking.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_Sprite.shader",
+                "Assets/TextMesh Pro/Shaders/TMPro_Mobile.cginc",
+                "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Custom-Atlas.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Surface-Mobile.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_Bitmap.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Surface.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_Bitmap-Mobile.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile Overlay.shader",
+                "Assets/TextMesh Pro/Shaders/TMP_SDF-Mobile SSD.shader"
             ]
         },
         "scenes": [
@@ -37423,6 +37440,10 @@
                     {
                         "name": "RandomizeRotations",
                         "excluded": true
+                    },
+                    {
+                        "name": "RandomizeSize",
+                        "excluded": true
                     }
                 ]
             },
@@ -44082,10 +44103,6 @@
                     },
                     {
                         "name": "Tick",
-                        "excluded": false
-                    },
-                    {
-                        "name": "Tick\",this)}this.c$-=t;if(this.c$<=0){pc.Application.getApplication().events.off(\"update",
                         "excluded": false
                     }
                 ]
